@@ -382,13 +382,14 @@ class ScParameterizedType private (
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ScParameterizedType]
 
-  override def equals(other: Any): Boolean = other match {
-    case that: ScParameterizedType =>
-      (that canEqual this) &&
-        designator == that.designator &&
-        typeArgs == that.typeArgs
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: ScParameterizedType =>
+        (that canEqual this) &&
+          designator == that.designator &&
+          typeArgs == that.typeArgs
+      case _ => false
+    }
 }
 
 object ScParameterizedType {

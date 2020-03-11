@@ -968,13 +968,14 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     * Directly wraps this ByteStringBuilder in an OutputStream. Write
     * operations on the stream are forwarded to the builder.
     */
-  def asOutputStream: java.io.OutputStream = new java.io.OutputStream {
-    def write(b: Int): Unit = builder += b.toByte
+  def asOutputStream: java.io.OutputStream =
+    new java.io.OutputStream {
+      def write(b: Int): Unit = builder += b.toByte
 
-    override def write(b: Array[Byte], off: Int, len: Int): Unit = {
-      builder.putBytes(b, off, len)
+      override def write(b: Array[Byte], off: Int, len: Int): Unit = {
+        builder.putBytes(b, off, len)
+      }
     }
-  }
 
   /**
     * Tests whether this ByteStringBuilder is empty.

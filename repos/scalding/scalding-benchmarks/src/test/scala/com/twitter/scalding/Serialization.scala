@@ -27,10 +27,11 @@ object SerializationBenchmark
   /**
     * This tends to create ascii strings
     */
-  def asciiStringGen: scGen[String] = scGen.parameterized { p =>
-    val thisSize = p.rng.nextInt(p.size + 1)
-    scGen.const(new String(Array.fill(thisSize)(p.rng.nextInt(128).toByte)))
-  }
+  def asciiStringGen: scGen[String] =
+    scGen.parameterized { p =>
+      val thisSize = p.rng.nextInt(p.size + 1)
+      scGen.const(new String(Array.fill(thisSize)(p.rng.nextInt(128).toByte)))
+    }
   def charStringGen: scGen[String] =
     scGen.listOf(scGen.choose(0.toChar, Char.MaxValue)).map(_.mkString)
 

@@ -1606,10 +1606,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       val clens = MatCols.colLens(values, numCols, ncols)
 
       val csca = colIx.scalarTag
-      def clen(c: Int) = clens(c) max {
-        val lst = csca.strList(colIx.raw(c)).map(_.length)
-        if (lst.length > 0) lst.max else 0
-      }
+      def clen(c: Int) =
+        clens(c) max {
+          val lst = csca.strList(colIx.raw(c)).map(_.length)
+          if (lst.length > 0) lst.max else 0
+        }
 
       var prevColMask =
         clens.map(x =>
@@ -1620,24 +1621,25 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       var prevColLabel = "" // recalls previous column's label at level L
 
       // build columns header
-      def createColHeader(l: Int) = (c: Int) => {
-        val labs = csca.strList(colIx.raw(c))
-        val currLab = labs(l)
+      def createColHeader(l: Int) =
+        (c: Int) => {
+          val labs = csca.strList(colIx.raw(c))
+          val currLab = labs(l)
 
-        val fmt = "%" + clen(c) + "s "
-        val res =
-          if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                .get(c)
-                .getOrElse(false)) {
-            prevColMask = prevColMask.updated(c, true)
-            currLab.formatted(fmt)
-          } else {
-            prevColMask = prevColMask.updated(c, false)
-            "".formatted(fmt)
-          }
-        prevColLabel = currLab
-        res
-      }
+          val fmt = "%" + clen(c) + "s "
+          val res =
+            if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
+                  .get(c)
+                  .getOrElse(false)) {
+              prevColMask = prevColMask.updated(c, true)
+              currLab.formatted(fmt)
+            } else {
+              prevColMask = prevColMask.updated(c, false)
+              "".formatted(fmt)
+            }
+          prevColLabel = currLab
+          res
+        }
 
       def colBreakStr = {
         prevColLabel = ""
@@ -1723,11 +1725,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def hashCode(): Int =
     values.hashCode() * 31 * 31 + rowIx.hashCode() * 31 + colIx.hashCode()
 
-  override def equals(other: Any): Boolean = other match {
-    case f: Frame[_, _, _] =>
-      (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case f: Frame[_, _, _] =>
+        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
+      case _ => false
+    }
 }
 
 object Frame extends BinOpFrame {

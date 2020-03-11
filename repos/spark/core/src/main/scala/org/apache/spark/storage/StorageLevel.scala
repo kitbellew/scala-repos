@@ -82,16 +82,17 @@ class StorageLevel private (
     new StorageLevel(useDisk, useMemory, useOffHeap, deserialized, replication)
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case s: StorageLevel =>
-      s.useDisk == useDisk &&
-        s.useMemory == useMemory &&
-        s.useOffHeap == useOffHeap &&
-        s.deserialized == deserialized &&
-        s.replication == replication
-    case _ =>
-      false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case s: StorageLevel =>
+        s.useDisk == useDisk &&
+          s.useMemory == useMemory &&
+          s.useOffHeap == useOffHeap &&
+          s.deserialized == deserialized &&
+          s.replication == replication
+      case _ =>
+        false
+    }
 
   def isValid: Boolean =
     (useMemory || useDisk || useOffHeap) && (replication > 0)
@@ -105,19 +106,21 @@ class StorageLevel private (
     ret
   }
 
-  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
-    out.writeByte(toInt)
-    out.writeByte(_replication)
-  }
+  override def writeExternal(out: ObjectOutput): Unit =
+    Utils.tryOrIOException {
+      out.writeByte(toInt)
+      out.writeByte(_replication)
+    }
 
-  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-    val flags = in.readByte()
-    _useDisk = (flags & 8) != 0
-    _useMemory = (flags & 4) != 0
-    _useOffHeap = (flags & 2) != 0
-    _deserialized = (flags & 1) != 0
-    _replication = in.readByte()
-  }
+  override def readExternal(in: ObjectInput): Unit =
+    Utils.tryOrIOException {
+      val flags = in.readByte()
+      _useDisk = (flags & 8) != 0
+      _useMemory = (flags & 4) != 0
+      _useOffHeap = (flags & 2) != 0
+      _deserialized = (flags & 1) != 0
+      _replication = in.readByte()
+    }
 
   @throws(classOf[IOException])
   private def readResolve(): Object = StorageLevel.getCachedStorageLevel(this)
@@ -164,21 +167,22 @@ object StorageLevel {
     * Return the StorageLevel object with the specified name.
     */
   @DeveloperApi
-  def fromString(s: String): StorageLevel = s match {
-    case "NONE"                  => NONE
-    case "DISK_ONLY"             => DISK_ONLY
-    case "DISK_ONLY_2"           => DISK_ONLY_2
-    case "MEMORY_ONLY"           => MEMORY_ONLY
-    case "MEMORY_ONLY_2"         => MEMORY_ONLY_2
-    case "MEMORY_ONLY_SER"       => MEMORY_ONLY_SER
-    case "MEMORY_ONLY_SER_2"     => MEMORY_ONLY_SER_2
-    case "MEMORY_AND_DISK"       => MEMORY_AND_DISK
-    case "MEMORY_AND_DISK_2"     => MEMORY_AND_DISK_2
-    case "MEMORY_AND_DISK_SER"   => MEMORY_AND_DISK_SER
-    case "MEMORY_AND_DISK_SER_2" => MEMORY_AND_DISK_SER_2
-    case "OFF_HEAP"              => OFF_HEAP
-    case _                       => throw new IllegalArgumentException(s"Invalid StorageLevel: $s")
-  }
+  def fromString(s: String): StorageLevel =
+    s match {
+      case "NONE"                  => NONE
+      case "DISK_ONLY"             => DISK_ONLY
+      case "DISK_ONLY_2"           => DISK_ONLY_2
+      case "MEMORY_ONLY"           => MEMORY_ONLY
+      case "MEMORY_ONLY_2"         => MEMORY_ONLY_2
+      case "MEMORY_ONLY_SER"       => MEMORY_ONLY_SER
+      case "MEMORY_ONLY_SER_2"     => MEMORY_ONLY_SER_2
+      case "MEMORY_AND_DISK"       => MEMORY_AND_DISK
+      case "MEMORY_AND_DISK_2"     => MEMORY_AND_DISK_2
+      case "MEMORY_AND_DISK_SER"   => MEMORY_AND_DISK_SER
+      case "MEMORY_AND_DISK_SER_2" => MEMORY_AND_DISK_SER_2
+      case "OFF_HEAP"              => OFF_HEAP
+      case _                       => throw new IllegalArgumentException(s"Invalid StorageLevel: $s")
+    }
 
   /**
     * :: DeveloperApi ::

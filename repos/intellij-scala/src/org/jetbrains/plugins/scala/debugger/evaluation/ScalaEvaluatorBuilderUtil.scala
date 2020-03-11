@@ -91,15 +91,17 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             evaluatorFor(expr)
         }
       case Some(p: ScProjectionType) =>
-        def exprToEvaluate(p: ScProjectionType): String = p.projected match {
-          case ScDesignatorType(elem) => elem.name + "." + p.actualElement.name
-          case projected: ScProjectionType =>
-            exprToEvaluate(projected) + "." + projected.actualElement.name
-          case ScThisType(cl) if contextClass == cl =>
-            s"this.${p.actualElement.name}"
-          case ScThisType(cl) => s"${cl.name}.this.${p.actualElement.name}"
-          case _              => throw EvaluationException(message)
-        }
+        def exprToEvaluate(p: ScProjectionType): String =
+          p.projected match {
+            case ScDesignatorType(elem) =>
+              elem.name + "." + p.actualElement.name
+            case projected: ScProjectionType =>
+              exprToEvaluate(projected) + "." + projected.actualElement.name
+            case ScThisType(cl) if contextClass == cl =>
+              s"this.${p.actualElement.name}"
+            case ScThisType(cl) => s"${cl.name}.this.${p.actualElement.name}"
+            case _              => throw EvaluationException(message)
+          }
         val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
           exprToEvaluate(p),
           ref.getContext,
@@ -785,10 +787,11 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     def addForNextClause(
         previousClausesEvaluators: Seq[Evaluator],
         clause: ScParameterClause): Seq[Evaluator] = {
-      def isDefaultExpr(expr: ScExpression) = expr match {
-        case ChildOf(p: ScParameter) => p.isDefaultParam
-        case _                       => false
-      }
+      def isDefaultExpr(expr: ScExpression) =
+        expr match {
+          case ChildOf(p: ScParameter) => p.isDefaultParam
+          case _                       => false
+        }
       previousClausesEvaluators ++ clause.effectiveParameters.map {
         case param =>
           val p = new Parameter(param)
@@ -1137,10 +1140,11 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
   def qualifierEvaluator(
       qualifier: Option[ScExpression],
-      ref: ScReferenceExpression): Evaluator = qualifier match {
-    case Some(q) => evaluatorFor(q)
-    case _       => thisOrImportedQualifierEvaluator(ref)
-  }
+      ref: ScReferenceExpression): Evaluator =
+    qualifier match {
+      case Some(q) => evaluatorFor(q)
+      case _       => thisOrImportedQualifierEvaluator(ref)
+    }
 
   def patternEvaluator(
       caseCl: ScCaseClause,
@@ -2024,29 +2028,31 @@ object ScalaEvaluatorBuilderUtil {
   def isGenerateAnonfun(elem: PsiElement): Boolean = {
     def isGenerateAnonfunWithCache: Boolean = {
 
-      def computation = elem match {
-        case e: ScExpression
-            if ScUnderScoreSectionUtil.underscores(e).nonEmpty =>
-          true
-        case b: ScBlock if b.isAnonymousFunction =>
-          false //handled in isGenerateAnonfunSimple
-        case e: ScExpression
-            if ScalaPsiUtil.isByNameArgument(e) || ScalaPsiUtil
-              .isArgumentOfFunctionType(e) =>
-          true
-        case ScalaPsiUtil.MethodValue(_) => true
-        case Both(
-              ChildOf(argExprs: ScArgumentExprList),
-              ScalaPositionManager.InsideAsync(call))
-            if call.args == argExprs =>
-          true
-        case _ => false
-      }
+      def computation =
+        elem match {
+          case e: ScExpression
+              if ScUnderScoreSectionUtil.underscores(e).nonEmpty =>
+            true
+          case b: ScBlock if b.isAnonymousFunction =>
+            false //handled in isGenerateAnonfunSimple
+          case e: ScExpression
+              if ScalaPsiUtil.isByNameArgument(e) || ScalaPsiUtil
+                .isArgumentOfFunctionType(e) =>
+            true
+          case ScalaPsiUtil.MethodValue(_) => true
+          case Both(
+                ChildOf(argExprs: ScArgumentExprList),
+                ScalaPositionManager.InsideAsync(call))
+              if call.args == argExprs =>
+            true
+          case _ => false
+        }
 
-      def cacheProvider = new CachedValueProvider[Boolean] {
-        override def compute(): Result[Boolean] =
-          Result.create(computation, elem)
-      }
+      def cacheProvider =
+        new CachedValueProvider[Boolean] {
+          override def compute(): Result[Boolean] =
+            Result.create(computation, elem)
+        }
 
       if (elem == null) false
       else CachedValuesManager.getCachedValue(elem, cacheProvider)

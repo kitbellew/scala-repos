@@ -57,14 +57,15 @@ object MacroUtil {
           .asInstanceOf[ScExpression])
     } catch { case _: IncorrectOperationException => None }
 
-  def getComponentFromArrayType(scType: ScType): Option[ScType] = scType match {
-    case javaArrType: JavaArrayType => Some(javaArrType.arg)
-    case paramType: ScParameterizedType
-        if paramType.canonicalText.startsWith("_root_.scala.Array") &&
-          paramType.typeArgs.length == 1 =>
-      Some(paramType.typeArgs.head)
-    case _ => None
-  }
+  def getComponentFromArrayType(scType: ScType): Option[ScType] =
+    scType match {
+      case javaArrType: JavaArrayType => Some(javaArrType.arg)
+      case paramType: ScParameterizedType
+          if paramType.canonicalText.startsWith("_root_.scala.Array") &&
+            paramType.typeArgs.length == 1 =>
+        Some(paramType.typeArgs.head)
+      case _ => None
+    }
 
   def getTypeLookupItem(
       scType: ScType,

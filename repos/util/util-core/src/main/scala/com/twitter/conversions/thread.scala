@@ -23,11 +23,13 @@ import scala.language.implicitConversions
   * Implicits for turning a block of code into a Runnable or Callable.
   */
 object thread {
-  implicit def makeRunnable(f: => Unit): Runnable = new Runnable() {
-    def run(): Unit = f
-  }
+  implicit def makeRunnable(f: => Unit): Runnable =
+    new Runnable() {
+      def run(): Unit = f
+    }
 
-  implicit def makeCallable[T](f: => T): Callable[T] = new Callable[T]() {
-    def call(): T = f
-  }
+  implicit def makeCallable[T](f: => T): Callable[T] =
+    new Callable[T]() {
+      def call(): T = f
+    }
 }

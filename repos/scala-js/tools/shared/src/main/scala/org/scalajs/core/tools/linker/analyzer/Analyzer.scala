@@ -685,9 +685,10 @@ private final class Analyzer(
       syntheticKind.isInstanceOf[MethodSyntheticKind.DefaultBridge]
 
     /** Throws MatchError if `!isDefaultBridge`. */
-    def defaultBridgeTarget: String = (syntheticKind: @unchecked) match {
-      case MethodSyntheticKind.DefaultBridge(target) => target
-    }
+    def defaultBridgeTarget: String =
+      (syntheticKind: @unchecked) match {
+        case MethodSyntheticKind.DefaultBridge(target) => target
+      }
 
     override def toString(): String = s"$owner.$encodedName"
 

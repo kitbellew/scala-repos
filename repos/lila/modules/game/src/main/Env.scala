@@ -64,16 +64,17 @@ final class Env(
 
   def cli = new Cli(db, system = system)
 
-  def onStart(gameId: String) = GameRepo game gameId foreach {
-    _ foreach { game =>
-      system.lilaBus.publish(actorApi.StartGame(game), 'startGame)
-      game.userIds foreach { userId =>
-        system.lilaBus.publish(
-          actorApi.UserStartGame(userId, game),
-          Symbol(s"userStartGame:$userId"))
+  def onStart(gameId: String) =
+    GameRepo game gameId foreach {
+      _ foreach { game =>
+        system.lilaBus.publish(actorApi.StartGame(game), 'startGame)
+        game.userIds foreach { userId =>
+          system.lilaBus.publish(
+            actorApi.UserStartGame(userId, game),
+            Symbol(s"userStartGame:$userId"))
+        }
       }
     }
-  }
 
   private def jsPath =
     "%s/%s".format(appPath, isProd.fold(JsPathCompiled, JsPathRaw))

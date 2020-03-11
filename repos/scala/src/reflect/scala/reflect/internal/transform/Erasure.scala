@@ -15,56 +15,59 @@ trait Erasure {
     /** Is `tp` an unbounded generic type (i.e. which could be instantiated
       *  with primitive as well as class types)?.
       */
-    private def genericCore(tp: Type): Type = tp.dealiasWiden match {
-      /* A Java Array<T> is erased to Array[Object] (T can only be a reference type), where as a Scala Array[T] is
-       * erased to Object. However, there is only symbol for the Array class. So to make the distinction between
-       * a Java and a Scala array, we check if the owner of T comes from a Java class.
-       * This however caused issue SI-5654. The additional test for EXSITENTIAL fixes it, see the ticket comments.
-       * In short, members of an existential type (e.g. `T` in `forSome { type T }`) can have pretty arbitrary
-       * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
-       */
-      case TypeRef(_, sym, _)
-          if sym.isAbstractType && (!sym.owner.isJavaDefined || sym.hasFlag(
-            Flags.EXISTENTIAL)) =>
-        tp
-      case ExistentialType(tparams, restp) =>
-        genericCore(restp)
-      case _ =>
-        NoType
-    }
+    private def genericCore(tp: Type): Type =
+      tp.dealiasWiden match {
+        /* A Java Array<T> is erased to Array[Object] (T can only be a reference type), where as a Scala Array[T] is
+         * erased to Object. However, there is only symbol for the Array class. So to make the distinction between
+         * a Java and a Scala array, we check if the owner of T comes from a Java class.
+         * This however caused issue SI-5654. The additional test for EXSITENTIAL fixes it, see the ticket comments.
+         * In short, members of an existential type (e.g. `T` in `forSome { type T }`) can have pretty arbitrary
+         * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
+         */
+        case TypeRef(_, sym, _)
+            if sym.isAbstractType && (!sym.owner.isJavaDefined || sym.hasFlag(
+              Flags.EXISTENTIAL)) =>
+          tp
+        case ExistentialType(tparams, restp) =>
+          genericCore(restp)
+        case _ =>
+          NoType
+      }
 
     /** If `tp` is of the form Array[...Array[T]...] where `T` is an abstract type
       *  then Some((N, T)) where N is the number of Array constructors enclosing `T`,
       *  otherwise None. Existentials on any level are ignored.
       */
-    def unapply(tp: Type): Option[(Int, Type)] = tp.dealiasWiden match {
-      case TypeRef(_, ArrayClass, List(arg)) =>
-        genericCore(arg) match {
-          case NoType =>
-            unapply(arg) match {
-              case Some((level, core)) => Some((level + 1, core))
-              case None                => None
-            }
-          case core =>
-            Some((1, core))
-        }
-      case ExistentialType(tparams, restp) =>
-        unapply(restp)
-      case _ =>
-        None
-    }
+    def unapply(tp: Type): Option[(Int, Type)] =
+      tp.dealiasWiden match {
+        case TypeRef(_, ArrayClass, List(arg)) =>
+          genericCore(arg) match {
+            case NoType =>
+              unapply(arg) match {
+                case Some((level, core)) => Some((level + 1, core))
+                case None                => None
+              }
+            case core =>
+              Some((1, core))
+          }
+        case ExistentialType(tparams, restp) =>
+          unapply(restp)
+        case _ =>
+          None
+      }
   }
 
   /** Arrays despite their finality may turn up as refined type parents,
     *  e.g. with "tagged types" like Array[Int] with T.
     */
-  protected def unboundedGenericArrayLevel(tp: Type): Int = tp match {
-    case GenericArray(level, core) if !(core <:< AnyRefTpe) => level
-    case RefinedType(ps, _) if ps.nonEmpty =>
-      logResult(s"Unbounded generic level for $tp is")(
-        (ps map unboundedGenericArrayLevel).max)
-    case _ => 0
-  }
+  protected def unboundedGenericArrayLevel(tp: Type): Int =
+    tp match {
+      case GenericArray(level, core) if !(core <:< AnyRefTpe) => level
+      case RefinedType(ps, _) if ps.nonEmpty =>
+        logResult(s"Unbounded generic level for $tp is")(
+          (ps map unboundedGenericArrayLevel).max)
+      case _ => 0
+    }
 
   // @M #2585 when generating a java generic signature that includes
   // a selection of an inner class p.I, (p = `pre`, I = `cls`) must
@@ -114,60 +117,62 @@ trait Erasure {
     protected def eraseDerivedValueClassRef(tref: TypeRef): Type =
       erasedValueClassArg(tref)
 
-    def apply(tp: Type): Type = tp match {
-      case ConstantType(_) =>
-        tp
-      case st: ThisType if st.sym.isPackageClass =>
-        tp
-      case st: SubType =>
-        apply(st.supertype)
-      case tref @ TypeRef(pre, sym, args) =>
-        if (sym == ArrayClass)
-          if (unboundedGenericArrayLevel(tp) == 1) ObjectTpe
-          else if (args.head.typeSymbol.isBottomClass) arrayType(ObjectTpe)
-          else typeRef(apply(pre), sym, args map applyInArray)
-        else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
-          ObjectTpe
-        else if (sym == UnitClass) BoxedUnitTpe
-        else if (sym.isRefinementClass) apply(mergeParents(tp.parents))
-        else if (sym.isDerivedValueClass) eraseDerivedValueClassRef(tref)
-        else if (sym.isClass) eraseNormalClassRef(tref)
-        else
-          apply(
-            sym.info asSeenFrom (pre, sym.owner)
-          ) // alias type or abstract type
-      case PolyType(tparams, restpe) =>
-        apply(restpe)
-      case ExistentialType(tparams, restpe) =>
-        apply(restpe)
-      case mt @ MethodType(params, restpe) =>
-        MethodType(
-          cloneSymbolsAndModify(params, ErasureMap.this),
-          if (restpe.typeSymbol == UnitClass) UnitTpe
-          // this replaces each typeref that refers to an argument
-          // by the type `p.tpe` of the actual argument p (p in params)
-          else apply(mt.resultType(mt.paramTypes))
-        )
-      case RefinedType(parents, decls) =>
-        apply(mergeParents(parents))
-      case AnnotatedType(_, atp) =>
-        apply(atp)
-      case ClassInfoType(parents, decls, clazz) =>
-        ClassInfoType(
-          if (clazz == ObjectClass || isPrimitiveValueClass(clazz)) Nil
-          else if (clazz == ArrayClass) ObjectTpe :: Nil
-          else removeLaterObjects(parents map this),
-          decls,
-          clazz)
-      case _ =>
-        mapOver(tp)
-    }
+    def apply(tp: Type): Type =
+      tp match {
+        case ConstantType(_) =>
+          tp
+        case st: ThisType if st.sym.isPackageClass =>
+          tp
+        case st: SubType =>
+          apply(st.supertype)
+        case tref @ TypeRef(pre, sym, args) =>
+          if (sym == ArrayClass)
+            if (unboundedGenericArrayLevel(tp) == 1) ObjectTpe
+            else if (args.head.typeSymbol.isBottomClass) arrayType(ObjectTpe)
+            else typeRef(apply(pre), sym, args map applyInArray)
+          else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
+            ObjectTpe
+          else if (sym == UnitClass) BoxedUnitTpe
+          else if (sym.isRefinementClass) apply(mergeParents(tp.parents))
+          else if (sym.isDerivedValueClass) eraseDerivedValueClassRef(tref)
+          else if (sym.isClass) eraseNormalClassRef(tref)
+          else
+            apply(
+              sym.info asSeenFrom (pre, sym.owner)
+            ) // alias type or abstract type
+        case PolyType(tparams, restpe) =>
+          apply(restpe)
+        case ExistentialType(tparams, restpe) =>
+          apply(restpe)
+        case mt @ MethodType(params, restpe) =>
+          MethodType(
+            cloneSymbolsAndModify(params, ErasureMap.this),
+            if (restpe.typeSymbol == UnitClass) UnitTpe
+            // this replaces each typeref that refers to an argument
+            // by the type `p.tpe` of the actual argument p (p in params)
+            else apply(mt.resultType(mt.paramTypes))
+          )
+        case RefinedType(parents, decls) =>
+          apply(mergeParents(parents))
+        case AnnotatedType(_, atp) =>
+          apply(atp)
+        case ClassInfoType(parents, decls, clazz) =>
+          ClassInfoType(
+            if (clazz == ObjectClass || isPrimitiveValueClass(clazz)) Nil
+            else if (clazz == ArrayClass) ObjectTpe :: Nil
+            else removeLaterObjects(parents map this),
+            decls,
+            clazz)
+        case _ =>
+          mapOver(tp)
+      }
 
-    def applyInArray(tp: Type): Type = tp match {
-      case tref @ TypeRef(_, sym, _) if sym.isDerivedValueClass =>
-        eraseNormalClassRef(tref)
-      case _ => apply(tp)
-    }
+    def applyInArray(tp: Type): Type =
+      tp match {
+        case tref @ TypeRef(_, sym, _) if sym.isDerivedValueClass =>
+          eraseNormalClassRef(tref)
+        case _ => apply(tp)
+      }
   }
 
   protected def verifyJavaErasure = false

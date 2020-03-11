@@ -144,12 +144,13 @@ abstract class HiveComparisonTest
       hiveQuery: TestHive.type#QueryExecution,
       answer: Seq[String]): Seq[String] = {
 
-    def isSorted(plan: LogicalPlan): Boolean = plan match {
-      case _: Join | _: Aggregate | _: Generate | _: Sample | _: Distinct =>
-        false
-      case PhysicalOperation(_, _, Sort(_, true, _)) => true
-      case _                                         => plan.children.iterator.exists(isSorted)
-    }
+    def isSorted(plan: LogicalPlan): Boolean =
+      plan match {
+        case _: Join | _: Aggregate | _: Generate | _: Sample | _: Distinct =>
+          false
+        case PhysicalOperation(_, _, Sort(_, true, _)) => true
+        case _                                         => plan.children.iterator.exists(isSorted)
+      }
 
     val orderedAnswer = hiveQuery.analyzed match {
       // Clean out non-deterministic time schema info.

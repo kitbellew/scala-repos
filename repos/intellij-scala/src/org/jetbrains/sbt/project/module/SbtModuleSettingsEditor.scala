@@ -90,15 +90,16 @@ private class ResolversModel(val resolvers: Seq[SbtResolver])
 
   override def getColumnName(columnIndex: Int) = columns(columnIndex)
 
-  def getValueAt(rowIndex: Int, columnIndex: Int) = columnIndex match {
-    case 0 => resolvers(rowIndex).name
-    case 1 => resolvers(rowIndex).root
-    case 2 =>
-      val ts: Long = resolvers(rowIndex).associatedIndex
-        .map(_.timestamp)
-        .getOrElse(SbtResolverIndex.NO_TIMESTAMP)
-      if (ts == SbtResolverIndex.NO_TIMESTAMP)
-        SbtBundle("sbt.settings.resolvers.neverUpdated")
-      else DateFormatUtil.formatDate(ts)
-  }
+  def getValueAt(rowIndex: Int, columnIndex: Int) =
+    columnIndex match {
+      case 0 => resolvers(rowIndex).name
+      case 1 => resolvers(rowIndex).root
+      case 2 =>
+        val ts: Long = resolvers(rowIndex).associatedIndex
+          .map(_.timestamp)
+          .getOrElse(SbtResolverIndex.NO_TIMESTAMP)
+        if (ts == SbtResolverIndex.NO_TIMESTAMP)
+          SbtBundle("sbt.settings.resolvers.neverUpdated")
+        else DateFormatUtil.formatDate(ts)
+    }
 }

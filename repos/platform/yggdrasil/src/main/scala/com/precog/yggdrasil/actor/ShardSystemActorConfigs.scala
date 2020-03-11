@@ -65,21 +65,22 @@ trait KafkaIngestActorProjectionSystemConfig extends ShardConfig {
     config[Long]("kafka.socket_timeout", 5000) millis
   def kafkaBufferSize: Int = config[Int]("kafka.buffer_size", 64 * 1024)
 
-  def ingestConfig = config.detach("ingest") |> { config =>
-    for {
-      failureLogRoot <- config.get[File]("failure_log_root")
-      if config[Boolean]("enabled", false)
-    } yield {
-      IngestConfig(
-        bufferSize = config[Int]("buffer_size", 1024 * 1024),
-        maxParallel = config[Int]("max_parallel", 5),
-        batchTimeout = config[Int]("timeout", 120) seconds,
-        maxConsecutiveFailures =
-          config[Int]("ingest.max_consecutive_failures", 3),
-        failureLogRoot = failureLogRoot
-      )
+  def ingestConfig =
+    config.detach("ingest") |> { config =>
+      for {
+        failureLogRoot <- config.get[File]("failure_log_root")
+        if config[Boolean]("enabled", false)
+      } yield {
+        IngestConfig(
+          bufferSize = config[Int]("buffer_size", 1024 * 1024),
+          maxParallel = config[Int]("max_parallel", 5),
+          batchTimeout = config[Int]("timeout", 120) seconds,
+          maxConsecutiveFailures =
+            config[Int]("ingest.max_consecutive_failures", 3),
+          failureLogRoot = failureLogRoot
+        )
+      }
     }
-  }
 
   def createYggCheckpointFlag =
     config.get[String]("ingest.createCheckpointFlag")

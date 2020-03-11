@@ -40,15 +40,16 @@ import scala.annotation.tailrec
 import java.util.concurrent.ConcurrentHashMap
 
 trait QueryLogger[M[+_], -P] { self =>
-  def contramap[P0](f: P0 => P): QueryLogger[M, P0] = new QueryLogger[M, P0] {
-    def die(): M[Unit] = self.die()
-    def error(pos: P0, msg: String): M[Unit] = self.error(f(pos), msg)
-    def warn(pos: P0, msg: String): M[Unit] = self.warn(f(pos), msg)
-    def info(pos: P0, msg: String): M[Unit] = self.info(f(pos), msg)
-    def log(pos: P0, msg: String): M[Unit] = self.log(f(pos), msg)
-    def timing(pos: P0, nanos: Long): M[Unit] = self.timing(f(pos), nanos)
-    def done: M[Unit] = self.done
-  }
+  def contramap[P0](f: P0 => P): QueryLogger[M, P0] =
+    new QueryLogger[M, P0] {
+      def die(): M[Unit] = self.die()
+      def error(pos: P0, msg: String): M[Unit] = self.error(f(pos), msg)
+      def warn(pos: P0, msg: String): M[Unit] = self.warn(f(pos), msg)
+      def info(pos: P0, msg: String): M[Unit] = self.info(f(pos), msg)
+      def log(pos: P0, msg: String): M[Unit] = self.log(f(pos), msg)
+      def timing(pos: P0, nanos: Long): M[Unit] = self.timing(f(pos), nanos)
+      def done: M[Unit] = self.done
+    }
 
   def die(): M[Unit]
 
@@ -142,17 +143,14 @@ trait LoggingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 
   def die(): M[Unit] = M.point { () }
 
-  def error(pos: P, msg: String): M[Unit] = M.point {
-    logger.error(pos.toString + " - " + msg)
-  }
+  def error(pos: P, msg: String): M[Unit] =
+    M.point { logger.error(pos.toString + " - " + msg) }
 
-  def warn(pos: P, msg: String): M[Unit] = M.point {
-    logger.warn(pos.toString + " - " + msg)
-  }
+  def warn(pos: P, msg: String): M[Unit] =
+    M.point { logger.warn(pos.toString + " - " + msg) }
 
-  def info(pos: P, msg: String): M[Unit] = M.point {
-    logger.info(pos.toString + " - " + msg)
-  }
+  def info(pos: P, msg: String): M[Unit] =
+    M.point { logger.info(pos.toString + " - " + msg) }
 
   def log(pos: P, msg: String): M[Unit] = info(pos, msg)
 }

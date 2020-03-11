@@ -53,14 +53,16 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
 
   private[this] type SplitIterators = ((Iterator[T], Int), Iterator[T])
 
-  private def isTrie(x: AnyRef) = x match {
-    case _: HashTrieMap[_, _] | _: HashTrieSet[_] => true
-    case _                                        => false
-  }
-  private def isContainer(x: AnyRef) = x match {
-    case _: HashMap1[_, _] | _: HashSet1[_] => true
-    case _                                  => false
-  }
+  private def isTrie(x: AnyRef) =
+    x match {
+      case _: HashTrieMap[_, _] | _: HashTrieSet[_] => true
+      case _                                        => false
+    }
+  private def isContainer(x: AnyRef) =
+    x match {
+      case _: HashMap1[_, _] | _: HashSet1[_] => true
+      case _                                  => false
+    }
 
   final class DupIterator(xs: Array[Iterable[T]]) extends {
     override val initDepth = outer.depth
@@ -76,9 +78,10 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
 
   def dupIterator: TrieIterator[T] = new DupIterator(elems)
 
-  private[this] def newIterator(xs: Array[Iterable[T]]) = new TrieIterator(xs) {
-    final override def getElem(x: AnyRef): T = outer.getElem(x)
-  }
+  private[this] def newIterator(xs: Array[Iterable[T]]) =
+    new TrieIterator(xs) {
+      final override def getElem(x: AnyRef): T = outer.getElem(x)
+    }
 
   private[this] def iteratorWithSize(
       arr: Array[Iterable[T]]): (Iterator[T], Int) =

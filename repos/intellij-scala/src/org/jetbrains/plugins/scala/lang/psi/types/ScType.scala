@@ -364,74 +364,78 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case _ => None
     }
 
-  def isSingletonType(tp: ScType): Boolean = tp match {
-    case _: ScThisType => true
-    case ScDesignatorType(v) =>
-      v match {
-        case t: ScTypedDefinition => t.isStable
-        case _                    => false
-      }
-    case ScProjectionType(_, elem, _) =>
-      elem match {
-        case t: ScTypedDefinition => t.isStable
-        case _                    => false
-      }
-    case _ => false
-  }
+  def isSingletonType(tp: ScType): Boolean =
+    tp match {
+      case _: ScThisType => true
+      case ScDesignatorType(v) =>
+        v match {
+          case t: ScTypedDefinition => t.isStable
+          case _                    => false
+        }
+      case ScProjectionType(_, elem, _) =>
+        elem match {
+          case t: ScTypedDefinition => t.isStable
+          case _                    => false
+        }
+      case _ => false
+    }
 
-  def extractDesignatorSingletonType(tp: ScType): Option[ScType] = tp match {
-    case ScDesignatorType(v) =>
-      v match {
-        case o: ScObject => None
-        case p: ScParameter if p.isStable =>
-          p.getRealParameterType(TypingContext.empty).toOption
-        case t: ScTypedDefinition if t.isStable =>
-          t.getType(TypingContext.empty).toOption
-        case _ => None
-      }
-    case proj @ ScProjectionType(_, elem, _) =>
-      elem match {
-        case o: ScObject => None
-        case p: ScParameter if p.isStable =>
-          p.getRealParameterType(TypingContext.empty)
-            .toOption
-            .map(proj.actualSubst.subst)
-        case t: ScTypedDefinition if t.isStable =>
-          t.getType(TypingContext.empty).toOption.map(proj.actualSubst.subst)
-        case _ => None
-      }
-    case _ => None
-  }
+  def extractDesignatorSingletonType(tp: ScType): Option[ScType] =
+    tp match {
+      case ScDesignatorType(v) =>
+        v match {
+          case o: ScObject => None
+          case p: ScParameter if p.isStable =>
+            p.getRealParameterType(TypingContext.empty).toOption
+          case t: ScTypedDefinition if t.isStable =>
+            t.getType(TypingContext.empty).toOption
+          case _ => None
+        }
+      case proj @ ScProjectionType(_, elem, _) =>
+        elem match {
+          case o: ScObject => None
+          case p: ScParameter if p.isStable =>
+            p.getRealParameterType(TypingContext.empty)
+              .toOption
+              .map(proj.actualSubst.subst)
+          case t: ScTypedDefinition if t.isStable =>
+            t.getType(TypingContext.empty).toOption.map(proj.actualSubst.subst)
+          case _ => None
+        }
+      case _ => None
+    }
 
   // TODO: Review this against SLS 3.2.1
-  def isStable(t: ScType): Boolean = t match {
-    case ScThisType(_) => true
-    case ScProjectionType(projected, element: ScObject, _) =>
-      isStable(projected)
-    case ScProjectionType(projected, element: ScTypedDefinition, _) =>
-      isStable(projected) && element.isStable
-    case ScDesignatorType(o: ScObject)                        => true
-    case ScDesignatorType(r: ScTypedDefinition) if r.isStable => true
-    case _                                                    => false
-  }
+  def isStable(t: ScType): Boolean =
+    t match {
+      case ScThisType(_) => true
+      case ScProjectionType(projected, element: ScObject, _) =>
+        isStable(projected)
+      case ScProjectionType(projected, element: ScTypedDefinition, _) =>
+        isStable(projected) && element.isStable
+      case ScDesignatorType(o: ScObject)                        => true
+      case ScDesignatorType(r: ScTypedDefinition) if r.isStable => true
+      case _                                                    => false
+    }
 
-  def projectionOption(tp: ScType): Option[ScType] = tp match {
-    case ScParameterizedType(des, _) => projectionOption(des)
-    case proj @ ScProjectionType(p, elem, _) =>
-      proj.actualElement match {
-        case c: PsiClass => Some(p)
-        case t: ScTypeAliasDefinition =>
-          projectionOption(
-            proj.actualSubst.subst(
-              t.aliasedType(TypingContext.empty).getOrElse(return None)))
-        case t: ScTypeAliasDeclaration => Some(p)
-        case _                         => None
-      }
-    case ScDesignatorType(t: ScTypeAliasDefinition) =>
-      projectionOption(
-        t.aliasedType(TypingContext.empty).getOrElse(return None))
-    case _ => None
-  }
+  def projectionOption(tp: ScType): Option[ScType] =
+    tp match {
+      case ScParameterizedType(des, _) => projectionOption(des)
+      case proj @ ScProjectionType(p, elem, _) =>
+        proj.actualElement match {
+          case c: PsiClass => Some(p)
+          case t: ScTypeAliasDefinition =>
+            projectionOption(
+              proj.actualSubst.subst(
+                t.aliasedType(TypingContext.empty).getOrElse(return None)))
+          case t: ScTypeAliasDeclaration => Some(p)
+          case _                         => None
+        }
+      case ScDesignatorType(t: ScTypeAliasDefinition) =>
+        projectionOption(
+          t.aliasedType(TypingContext.empty).getOrElse(return None))
+      case _ => None
+    }
 
   /**
     * Expands type aliases, including those in a type projection. Type Alias Declarations are replaced by their upper

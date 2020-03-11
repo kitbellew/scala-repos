@@ -20,19 +20,20 @@ object Youtube {
         parseSeconds(m group 1).fold(orig)(seconds => s"$orig&start=$seconds")
       })
 
-  private def parseSeconds(text: String) = text match {
-    case HourMinSecRegex(hourS, minS, secS) =>
-      for {
-        hour <- parseIntOption(hourS)
-        min <- parseIntOption(minS)
-        sec <- parseIntOption(secS)
-      } yield 3600 * hour + 60 * min + sec
-    case MinSecRegex(minS, secS) =>
-      for {
-        min <- parseIntOption(minS)
-        sec <- parseIntOption(secS)
-      } yield 60 * min + sec
-    case SecRegex(secS) => for { sec <- parseIntOption(secS) } yield sec
-    case _              => None
-  }
+  private def parseSeconds(text: String) =
+    text match {
+      case HourMinSecRegex(hourS, minS, secS) =>
+        for {
+          hour <- parseIntOption(hourS)
+          min <- parseIntOption(minS)
+          sec <- parseIntOption(secS)
+        } yield 3600 * hour + 60 * min + sec
+      case MinSecRegex(minS, secS) =>
+        for {
+          min <- parseIntOption(minS)
+          sec <- parseIntOption(secS)
+        } yield 60 * min + sec
+      case SecRegex(secS) => for { sec <- parseIntOption(secS) } yield sec
+      case _              => None
+    }
 }

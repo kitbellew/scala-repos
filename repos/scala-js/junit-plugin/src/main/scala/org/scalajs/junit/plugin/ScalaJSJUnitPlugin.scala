@@ -150,59 +150,62 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         TypeTree(
           getRequiredClass("org.scalajs.junit.JUnitMethodMetadata").toType)
 
-      override def transform(tree: Tree): Tree = tree match {
-        case tree: PackageDef =>
-          def isClassWithJUnitAnnotation(sym: Symbol): Boolean = sym match {
-            case _: ClassSymbol | _: ModuleSymbol =>
-              val hasAnnotationInClass = sym.selfType.members.exists {
-                case mtdSym: MethodSymbol => hasAnnotation(mtdSym, TestClass)
-                case _                    => false
+      override def transform(tree: Tree): Tree =
+        tree match {
+          case tree: PackageDef =>
+            def isClassWithJUnitAnnotation(sym: Symbol): Boolean =
+              sym match {
+                case _: ClassSymbol | _: ModuleSymbol =>
+                  val hasAnnotationInClass = sym.selfType.members.exists {
+                    case mtdSym: MethodSymbol =>
+                      hasAnnotation(mtdSym, TestClass)
+                    case _ => false
+                  }
+                  if (hasAnnotationInClass) true
+                  else
+                    sym.parentSymbols.headOption
+                      .fold(false)(isClassWithJUnitAnnotation)
+
+                case _ => false
               }
-              if (hasAnnotationInClass) true
-              else
-                sym.parentSymbols.headOption
-                  .fold(false)(isClassWithJUnitAnnotation)
 
-            case _ => false
-          }
+            val bootstrappers = tree.stats
+              .groupBy { // Group the class with its module
+                case clDef: ClassDef => Some(clDef.name)
+                case _               => None
+              }
+              .iterator
+              .flatMap {
+                case (Some(_), xs)
+                    if xs.exists(x => isClassWithJUnitAnnotation(x.symbol)) =>
+                  def isModule(cDef: ClassDef): Boolean =
+                    cDef.mods.hasFlag(Flags.MODULE)
+                  def isTestClass(cDef: ClassDef): Boolean = {
+                    !cDef.mods.hasFlag(Flags.MODULE) &&
+                    !cDef.mods.hasFlag(Flags.ABSTRACT) &&
+                    !cDef.mods.hasFlag(Flags.TRAIT)
+                  }
+                  // Get the class definition and do the transformation
+                  xs.collectFirst {
+                    case clDef: ClassDef if isTestClass(clDef) =>
+                      // Get the module definition
+                      val modDefOption = xs collectFirst {
+                        case clDef: ClassDef if isModule(clDef) => clDef
+                      }
+                      // Create a new module for the JUnit entry point.
+                      mkBootstrapperClass(clDef, modDefOption)
+                  }
 
-          val bootstrappers = tree.stats
-            .groupBy { // Group the class with its module
-              case clDef: ClassDef => Some(clDef.name)
-              case _               => None
-            }
-            .iterator
-            .flatMap {
-              case (Some(_), xs)
-                  if xs.exists(x => isClassWithJUnitAnnotation(x.symbol)) =>
-                def isModule(cDef: ClassDef): Boolean =
-                  cDef.mods.hasFlag(Flags.MODULE)
-                def isTestClass(cDef: ClassDef): Boolean = {
-                  !cDef.mods.hasFlag(Flags.MODULE) &&
-                  !cDef.mods.hasFlag(Flags.ABSTRACT) &&
-                  !cDef.mods.hasFlag(Flags.TRAIT)
-                }
-                // Get the class definition and do the transformation
-                xs.collectFirst {
-                  case clDef: ClassDef if isTestClass(clDef) =>
-                    // Get the module definition
-                    val modDefOption = xs collectFirst {
-                      case clDef: ClassDef if isModule(clDef) => clDef
-                    }
-                    // Create a new module for the JUnit entry point.
-                    mkBootstrapperClass(clDef, modDefOption)
-                }
+                case (_, xs) => None
+              }
 
-              case (_, xs) => None
-            }
+            val newStats = tree.stats.map(transform) ++ bootstrappers
 
-          val newStats = tree.stats.map(transform) ++ bootstrappers
+            treeCopy.PackageDef(tree: Tree, tree.pid, newStats.toList)
 
-          treeCopy.PackageDef(tree: Tree, tree.pid, newStats.toList)
-
-        case _ =>
-          super.transform(tree)
-      }
+          case _ =>
+            super.transform(tree)
+        }
 
       def mkBootstrapperClass(
           clazz: ClassDef,

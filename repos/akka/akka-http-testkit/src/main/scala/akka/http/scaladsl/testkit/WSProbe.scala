@@ -123,26 +123,28 @@ object WSProbe {
       def sendCompletion(): Unit = publisher.sendComplete()
 
       def expectMessage(): Message = subscriber.requestNext()
-      def expectMessage(text: String): Unit = expectMessage() match {
-        case t: TextMessage ⇒
-          val collectedMessage = collect(t.textStream)(_ + _)
-          assert(
-            collectedMessage == text,
-            s"""Expected TextMessage("$text") but got TextMessage("$collectedMessage")""")
-        case _ ⇒
-          throw new AssertionError(
-            s"""Expected TextMessage("$text") but got BinaryMessage""")
-      }
-      def expectMessage(bytes: ByteString): Unit = expectMessage() match {
-        case t: BinaryMessage ⇒
-          val collectedMessage = collect(t.dataStream)(_ ++ _)
-          assert(
-            collectedMessage == bytes,
-            s"""Expected BinaryMessage("$bytes") but got BinaryMessage("$collectedMessage")""")
-        case _ ⇒
-          throw new AssertionError(
-            s"""Expected BinaryMessage("$bytes") but got TextMessage""")
-      }
+      def expectMessage(text: String): Unit =
+        expectMessage() match {
+          case t: TextMessage ⇒
+            val collectedMessage = collect(t.textStream)(_ + _)
+            assert(
+              collectedMessage == text,
+              s"""Expected TextMessage("$text") but got TextMessage("$collectedMessage")""")
+          case _ ⇒
+            throw new AssertionError(
+              s"""Expected TextMessage("$text") but got BinaryMessage""")
+        }
+      def expectMessage(bytes: ByteString): Unit =
+        expectMessage() match {
+          case t: BinaryMessage ⇒
+            val collectedMessage = collect(t.dataStream)(_ ++ _)
+            assert(
+              collectedMessage == bytes,
+              s"""Expected BinaryMessage("$bytes") but got BinaryMessage("$collectedMessage")""")
+          case _ ⇒
+            throw new AssertionError(
+              s"""Expected BinaryMessage("$bytes") but got TextMessage""")
+        }
 
       def expectNoMessage(): Unit = subscriber.expectNoMsg()
       def expectNoMessage(max: FiniteDuration): Unit =

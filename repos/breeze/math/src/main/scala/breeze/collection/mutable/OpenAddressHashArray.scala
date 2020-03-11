@@ -175,27 +175,28 @@ final class OpenAddressHashArray[
   override def hashCode() =
     MurmurHash3.unorderedHash(iterator.filter(_._2 != default.value), 43)
 
-  override def equals(that: Any): Boolean = that match {
-    case that: OpenAddressHashArray[V] =>
-      (this eq that) ||
-        (this.size == that.size) && {
-          try {
-            this.iterator forall {
-              case (k, v) =>
-                that(k) match {
-                  case `v` =>
-                    true
-                  case _ => false
-                }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: OpenAddressHashArray[V] =>
+        (this eq that) ||
+          (this.size == that.size) && {
+            try {
+              this.iterator forall {
+                case (k, v) =>
+                  that(k) match {
+                    case `v` =>
+                      true
+                    case _ => false
+                  }
+              }
+            } catch {
+              case ex: ClassCastException =>
+                false
             }
-          } catch {
-            case ex: ClassCastException =>
-              false
           }
-        }
-    case _ =>
-      false
-  }
+      case _ =>
+        false
+    }
 
 }
 

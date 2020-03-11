@@ -976,18 +976,20 @@ object Serializers {
     private def argumentsRef(implicit pos: Position): VarRef =
       VarRef(Ident(ArgumentsName))(AnyType)
 
-    override def transform(tree: Tree, isStat: Boolean): Tree = tree match {
-      case VarRef(Ident(name, origName)) =>
-        implicit val pos = tree.pos
-        paramToIndex
-          .get(name)
-          .fold { if (name == "arguments") argumentsRef else tree } {
-            paramIndex => JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
-          }
+    override def transform(tree: Tree, isStat: Boolean): Tree =
+      tree match {
+        case VarRef(Ident(name, origName)) =>
+          implicit val pos = tree.pos
+          paramToIndex
+            .get(name)
+            .fold { if (name == "arguments") argumentsRef else tree } {
+              paramIndex =>
+                JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
+            }
 
-      case _ =>
-        super.transform(tree, isStat)
-    }
+        case _ =>
+          super.transform(tree, isStat)
+      }
   }
 
   private object RewriteArgumentsTransformer {

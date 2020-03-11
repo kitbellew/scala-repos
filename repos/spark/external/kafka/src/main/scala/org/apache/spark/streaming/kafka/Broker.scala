@@ -29,12 +29,13 @@ final class Broker private (
     /** Broker's port */
     val port: Int)
     extends Serializable {
-  override def equals(obj: Any): Boolean = obj match {
-    case that: Broker =>
-      this.host == that.host &&
-        this.port == that.port
-    case _ => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case that: Broker =>
+        this.host == that.host &&
+          this.port == that.port
+      case _ => false
+    }
 
   override def hashCode: Int = { 41 * (41 + host.hashCode) + port }
 

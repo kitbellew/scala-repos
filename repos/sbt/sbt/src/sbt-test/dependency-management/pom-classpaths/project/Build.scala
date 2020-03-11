@@ -14,25 +14,26 @@ object MyBuild extends Build {
       }
   )
 
-  def checkTask = InputTask(_ => parser) { result =>
-    (
-      result,
-      managedClasspath in Provided,
-      fullClasspath in Compile,
-      fullClasspath in Test,
-      fullClasspath in Runtime) map {
-      case ((conf, names), p, c, t, r) =>
-        println("Checking: " + conf.name)
-        checkClasspath(
-          conf match {
-            case Provided => p
-            case Compile  => c
-            case Test     => t
-            case Runtime  => r
-          },
-          names.toSet)
+  def checkTask =
+    InputTask(_ => parser) { result =>
+      (
+        result,
+        managedClasspath in Provided,
+        fullClasspath in Compile,
+        fullClasspath in Test,
+        fullClasspath in Runtime) map {
+        case ((conf, names), p, c, t, r) =>
+          println("Checking: " + conf.name)
+          checkClasspath(
+            conf match {
+              case Provided => p
+              case Compile  => c
+              case Test     => t
+              case Runtime  => r
+            },
+            names.toSet)
+      }
     }
-  }
 
   lazy val check = InputKey[Unit]("check")
   def parser: Parser[(Configuration, Seq[String])] =

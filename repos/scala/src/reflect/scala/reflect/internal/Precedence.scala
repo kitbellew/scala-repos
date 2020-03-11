@@ -14,10 +14,12 @@ final class Precedence private (val level: Int)
 
 object Precedence extends (Int => Precedence) {
   private val ErrorName = "<error>"
-  private def isAssignmentOp(name: String) = name match {
-    case "!=" | "<=" | ">=" | "" => false
-    case _                       => name.last == '=' && name.head != '=' && isOperatorPart(name.head)
-  }
+  private def isAssignmentOp(name: String) =
+    name match {
+      case "!=" | "<=" | ">=" | "" => false
+      case _ =>
+        name.last == '=' && name.head != '=' && isOperatorPart(name.head)
+    }
   private def firstChar(ch: Char): Precedence =
     apply((ch: @switch) match {
       case '|'             => 2
@@ -32,9 +34,10 @@ object Precedence extends (Int => Precedence) {
     })
 
   def apply(level: Int): Precedence = new Precedence(level)
-  def apply(name: String): Precedence = name match {
-    case "" | ErrorName            => this(-1)
-    case _ if isAssignmentOp(name) => this(0)
-    case _                         => firstChar(name charAt 0)
-  }
+  def apply(name: String): Precedence =
+    name match {
+      case "" | ErrorName            => this(-1)
+      case _ if isAssignmentOp(name) => this(0)
+      case _                         => firstChar(name charAt 0)
+    }
 }

@@ -33,10 +33,11 @@ object VarFoo {
 }
 
 object Foo {
-  def unapply(x: Any): Option[Product2[Int, String]] = x match {
-    case y: Bar => Some(y.size, y.name)
-    case _      => None
-  }
+  def unapply(x: Any): Option[Product2[Int, String]] =
+    x match {
+      case y: Bar => Some(y.size, y.name)
+      case _      => None
+    }
   def doMatch1(b: Bar) = b match { case Foo(s: Int, n: String)           => (s, n) }
   def doMatch2(b: Bar) = b match { case Fii()                            => null }
   def doMatch3(b: Bar) = b match { case Faa(n: String)                   => n }
@@ -57,10 +58,11 @@ object Foo {
 // same, but now object is not top-level
 object Mas {
   object Gaz {
-    def unapply(x: Any): Option[Product2[Int, String]] = x match {
-      case y: Baz => Some(y.size, y.name)
-      case _      => None
-    }
+    def unapply(x: Any): Option[Product2[Int, String]] =
+      x match {
+        case y: Baz => Some(y.size, y.name)
+        case _      => None
+      }
   }
   class Baz {
     var size: Int = 60

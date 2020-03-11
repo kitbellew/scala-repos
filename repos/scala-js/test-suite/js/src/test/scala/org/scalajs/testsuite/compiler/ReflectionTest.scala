@@ -28,10 +28,11 @@ import org.scalajs.testsuite.utils.Platform._
 class ReflectionTest {
   import ReflectionTest._
 
-  def implicitClassTagTest[A: ClassTag](x: Any): Boolean = x match {
-    case x: A => true
-    case _    => false
-  }
+  def implicitClassTagTest[A: ClassTag](x: Any): Boolean =
+    x match {
+      case x: A => true
+      case _    => false
+    }
 
   @Test def java_lang_Class_getName_under_normal_circumstances(): Unit = {
     assertEquals("scala.Some", classOf[scala.Some[_]].getName)

@@ -16,10 +16,11 @@ object Baz extends Foo {
 }
 
 object Test_ {
-  def matcher(s: String) = s match {
-    case Bar(x) => println("bar")
-    case Baz(x) => println("baz")
+  def matcher(s: String) =
+    s match {
+      case Bar(x) => println("bar")
+      case Baz(x) => println("baz")
 //                          ^
 // error: unreachable code
-  }
+    }
 }

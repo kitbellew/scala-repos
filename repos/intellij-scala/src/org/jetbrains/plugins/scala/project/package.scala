@@ -224,10 +224,11 @@ package object project {
   }
 
   class ScalaModule(val module: Module) {
-    def sdk: ScalaSdk = module.scalaSdk.map(new ScalaSdk(_)).getOrElse {
-      throw new IllegalStateException(
-        "Module has no Scala SDK: " + module.getName)
-    }
+    def sdk: ScalaSdk =
+      module.scalaSdk.map(new ScalaSdk(_)).getOrElse {
+        throw new IllegalStateException(
+          "Module has no Scala SDK: " + module.getName)
+      }
   }
 
   object ScalaModule {

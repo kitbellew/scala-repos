@@ -210,22 +210,23 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
 
   /** An iterator returning all entries.
     */
-  protected def entriesIterator: Iterator[Entry] = new AbstractIterator[Entry] {
-    val iterTable = table
-    var idx = lastPopulatedIndex
-    var es = iterTable(idx)
+  protected def entriesIterator: Iterator[Entry] =
+    new AbstractIterator[Entry] {
+      val iterTable = table
+      var idx = lastPopulatedIndex
+      var es = iterTable(idx)
 
-    def hasNext = es != null
-    def next() = {
-      val res = es
-      es = es.next
-      while (es == null && idx > 0) {
-        idx = idx - 1
-        es = iterTable(idx)
+      def hasNext = es != null
+      def next() = {
+        val res = es
+        es = es.next
+        while (es == null && idx > 0) {
+          idx = idx - 1
+          es = iterTable(idx)
+        }
+        res.asInstanceOf[Entry]
       }
-      res.asInstanceOf[Entry]
     }
-  }
 
   /** Avoid iterator for a 2x faster traversal. */
   protected def foreachEntry[U](f: Entry => U) {
@@ -307,11 +308,12 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapReset(tableLength: Int) = if (sizemap ne null) {
-    val nsize = calcSizeMapSize(tableLength)
-    if (sizemap.length != nsize) sizemap = new Array[Int](nsize)
-    else java.util.Arrays.fill(sizemap, 0)
-  }
+  protected def nnSizeMapReset(tableLength: Int) =
+    if (sizemap ne null) {
+      val nsize = calcSizeMapSize(tableLength)
+      if (sizemap.length != nsize) sizemap = new Array[Int](nsize)
+      else java.util.Arrays.fill(sizemap, 0)
+    }
 
   private[collection] final def totalSizeMapBuckets =
     if (sizeMapBucketSize < table.length) 1
@@ -400,14 +402,15 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     if (alwaysInitSizeMap && sizemap == null) sizeMapInitAndRebuild()
   }
 
-  private[collection] def hashTableContents = new HashTable.Contents(
-    _loadFactor,
-    table,
-    tableSize,
-    threshold,
-    seedvalue,
-    sizemap
-  )
+  private[collection] def hashTableContents =
+    new HashTable.Contents(
+      _loadFactor,
+      table,
+      tableSize,
+      threshold,
+      seedvalue,
+      sizemap
+    )
 }
 
 private[collection] object HashTable {
@@ -512,16 +515,17 @@ private[collection] object HashTable {
       val sizemap: Array[Int]
   ) {
     import scala.collection.DebugUtils._
-    private[collection] def debugInformation = buildString { append =>
-      append("Hash table contents")
-      append("-------------------")
-      append("Table: [" + arrayString(table, 0, table.length) + "]")
-      append("Table size: " + tableSize)
-      append("Load factor: " + loadFactor)
-      append("Seedvalue: " + seedvalue)
-      append("Threshold: " + threshold)
-      append("Sizemap: [" + arrayString(sizemap, 0, sizemap.length) + "]")
-    }
+    private[collection] def debugInformation =
+      buildString { append =>
+        append("Hash table contents")
+        append("-------------------")
+        append("Table: [" + arrayString(table, 0, table.length) + "]")
+        append("Table size: " + tableSize)
+        append("Load factor: " + loadFactor)
+        append("Seedvalue: " + seedvalue)
+        append("Threshold: " + threshold)
+        append("Sizemap: [" + arrayString(sizemap, 0, sizemap.length) + "]")
+      }
   }
 
 }

@@ -85,8 +85,8 @@ trait InlineParsers extends BaseParsers {
     * used to quickly escape any text between special inline markdown like
     * emphasis.
     */
-  def markdownText(special: Set[Char], markdownEscapes: Boolean) = Parser {
-    in =>
+  def markdownText(special: Set[Char], markdownEscapes: Boolean) =
+    Parser { in =>
       if (in.atEnd) { Failure("End of input.", in) }
       else {
         var start = in.offset
@@ -118,7 +118,7 @@ trait InlineParsers extends BaseParsers {
         if (result.length == 0) Failure("No text consumed.", in)
         else Success(result.toString(), in.drop(i - in.offset))
       }
-  }
+    }
 
   /**
     *  all markdown inline element parsers or'ed together
@@ -149,21 +149,22 @@ trait InlineParsers extends BaseParsers {
   /** Hand rolled parser that parses a chunk of special inline markdown (like links or emphasis)
     * based on a one char lookahead.
     */
-  def elementParsers(ctx: InlineContext) = Parser { in =>
-    if (in.atEnd) { Failure("End of Input Reached", in) }
-    else {
-      in.first match {
-        case ' ' => br(in)
-        case '`' => code(in)
-        case '<' => (xmlTag | fastLink(ctx))(in)
-        case '[' => link(ctx)(in)
-        case '*' => spanAsterisk(ctx)(in)
-        case '_' => spanUnderscore(ctx)(in)
-        case '!' => img(ctx)(in)
-        case _   => Failure("Lookahead does not start inline element.", in)
+  def elementParsers(ctx: InlineContext) =
+    Parser { in =>
+      if (in.atEnd) { Failure("End of Input Reached", in) }
+      else {
+        in.first match {
+          case ' ' => br(in)
+          case '`' => code(in)
+          case '<' => (xmlTag | fastLink(ctx))(in)
+          case '[' => link(ctx)(in)
+          case '*' => spanAsterisk(ctx)(in)
+          case '_' => spanUnderscore(ctx)(in)
+          case '!' => img(ctx)(in)
+          case _   => Failure("Lookahead does not start inline element.", in)
+        }
       }
     }
-  }
 
   /** Parses a single inline token. Either a span element or a chunk of text.
     */
@@ -308,9 +309,10 @@ trait InlineParsers extends BaseParsers {
   /**
     * Parses a referenced image.
     */
-  def refImg(ctx: InlineContext): Parser[String] = ref(ctx) ^^ {
-    case (LinkDefinition(_, u, ttl), alt) => deco.decorateImg(alt, u, ttl)
-  }
+  def refImg(ctx: InlineContext): Parser[String] =
+    ref(ctx) ^^ {
+      case (LinkDefinition(_, u, ttl), alt) => deco.decorateImg(alt, u, ttl)
+    }
 
   /** Parses inline in a span element like bold or emphasis or link up until the given end marker
     */

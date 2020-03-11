@@ -66,31 +66,32 @@ trait Var[+T] { self =>
     * the outer Var changes, but only if there are any observers.  An
     * unobserved Var returned by flatMap will not invoke `f`
     */
-  def flatMap[U](f: T => Var[U]): Var[U] = new Var[U] {
-    def observe(depth: Int, obs: Observer[U]) = {
-      val inner = new AtomicReference(Closable.nop)
-      val outer = self.observe(
-        depth,
-        Observer(t => {
-          // TODO: Right now we rely on synchronous propagation; and
-          // thus also synchronous closes. We should instead perform
-          // asynchronous propagation so that it is is safe &
-          // predictable to have asynchronously closing Vars, for
-          // example. Currently the only source of potentially
-          // asynchronous closing is Var.async; here we have modified
-          // the external process to close asynchronously with the Var
-          // itself. Thus we know the code path here is synchronous:
-          // we control all Var implementations, and also all Closable
-          // combinators have been modified to evaluate their respective
-          // Futures eagerly.
-          val done = inner.getAndSet(f(t).observe(depth + 1, obs)).close()
-          assert(done.isDone)
-        })
-      )
+  def flatMap[U](f: T => Var[U]): Var[U] =
+    new Var[U] {
+      def observe(depth: Int, obs: Observer[U]) = {
+        val inner = new AtomicReference(Closable.nop)
+        val outer = self.observe(
+          depth,
+          Observer(t => {
+            // TODO: Right now we rely on synchronous propagation; and
+            // thus also synchronous closes. We should instead perform
+            // asynchronous propagation so that it is is safe &
+            // predictable to have asynchronously closing Vars, for
+            // example. Currently the only source of potentially
+            // asynchronous closing is Var.async; here we have modified
+            // the external process to close asynchronously with the Var
+            // itself. Thus we know the code path here is synchronous:
+            // we control all Var implementations, and also all Closable
+            // combinators have been modified to evaluate their respective
+            // Futures eagerly.
+            val done = inner.getAndSet(f(t).observe(depth + 1, obs)).close()
+            assert(done.isDone)
+          })
+        )
 
-      Closable.sequence(outer, Closable.ref(inner))
+        Closable.sequence(outer, Closable.ref(inner))
+      }
     }
-  }
 
   def join[U](other: Var[U]): Var[(T, U)] =
     for { t <- self; u <- other } yield (t, u)
@@ -140,12 +141,13 @@ object Var {
       * an observer gives the owner exclusive rights to publish
       * to it while it has not been claimed by another owner.
       */
-    def claim(newOwner: AnyRef): Unit = synchronized {
-      if (thisOwner ne newOwner) {
-        thisOwner = newOwner
-        thisVersion = Long.MinValue
+    def claim(newOwner: AnyRef): Unit =
+      synchronized {
+        if (thisOwner ne newOwner) {
+          thisOwner = newOwner
+          thisVersion = Long.MinValue
+        }
       }
-    }
 
     /**
       * Publish the given versioned value with the given owner.
@@ -154,12 +156,13 @@ object Var {
       * assumption of a monotonically increasing version number)
       * the publish operation is a no-op.
       */
-    def publish(owner: AnyRef, value: T, version: Long): Unit = synchronized {
-      if ((owner eq thisOwner) && thisVersion < version) {
-        thisVersion = version
-        observe(value)
+    def publish(owner: AnyRef, value: T, version: Long): Unit =
+      synchronized {
+        if ((owner eq thisOwner) && thisVersion < version) {
+          thisVersion = version
+          observe(value)
+        }
       }
-    }
   }
 
   private[util] object Observer {
@@ -353,15 +356,16 @@ private object UpdatableVar {
     def :=(newv: T) = copy(value = newv, version = version + 1)
   }
 
-  implicit def order[T] = new Ordering[Party[T]] {
-    // This is safe because observers are compared
-    // only from the same counter.
-    def compare(a: Party[T], b: Party[T]): Int = {
-      val c1 = a.depth compare b.depth
-      if (c1 != 0) return c1
-      a.n compare b.n
+  implicit def order[T] =
+    new Ordering[Party[T]] {
+      // This is safe because observers are compared
+      // only from the same counter.
+      def compare(a: Party[T], b: Party[T]): Int = {
+        val c1 = a.depth compare b.depth
+        if (c1 != 0) return c1
+        a.n compare b.n
+      }
     }
-  }
 }
 
 private[util] class UpdatableVar[T](init: T)
@@ -384,15 +388,16 @@ private[util] class UpdatableVar[T](init: T)
 
   def apply(): T = state.get.value
 
-  def update(newv: T): Unit = synchronized {
-    val State(value, version, parties) = cas(_ := newv)
-    for (p @ Party(obs, _, _) <- parties) {
-      // An antecedent update may have closed the current
-      // party (e.g. flatMap does this); we need to check that
-      // the party is active here in order to prevent stale updates.
-      if (p.active) obs.publish(this, value, version)
+  def update(newv: T): Unit =
+    synchronized {
+      val State(value, version, parties) = cas(_ := newv)
+      for (p @ Party(obs, _, _) <- parties) {
+        // An antecedent update may have closed the current
+        // party (e.g. flatMap does this); we need to check that
+        // the party is active here in order to prevent stale updates.
+        if (p.active) obs.publish(this, value, version)
+      }
     }
-  }
 
   protected def observe(depth: Int, obs: Observer[T]): Closable = {
     obs.claim(this)

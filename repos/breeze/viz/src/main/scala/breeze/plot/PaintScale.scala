@@ -51,10 +51,11 @@ case class CategoricalPaintScale[T](categories: Function1[T, Paint])
     else { categories(value) }
   }
 
-  private def ida(v: T) = categories match {
-    case f: PartialFunction[T, Paint] => f.isDefinedAt(v)
-    case _                            => true
-  }
+  private def ida(v: T) =
+    categories match {
+      case f: PartialFunction[T, Paint] => f.isDefinedAt(v)
+      case _                            => true
+    }
 }
 
 object PaintScale {

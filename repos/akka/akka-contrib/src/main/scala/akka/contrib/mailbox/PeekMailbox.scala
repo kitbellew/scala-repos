@@ -94,20 +94,21 @@ class PeekMailbox(owner: ActorRef, system: ActorSystem, maxRetries: Int)
   val Marker = maxRetries + 1
 
   // this logic does not work if maxRetries==0, but then you could also use a normal mailbox
-  override def dequeue(): Envelope = tries match {
-    case -1 ⇒
-      queue.poll()
-    case 0 | Marker ⇒
-      val e = queue.peek()
-      tries = if (e eq null) 0 else 1
-      e
-    case `maxRetries` ⇒
-      tries = Marker
-      queue.poll()
-    case n ⇒
-      tries = n + 1
-      queue.peek()
-  }
+  override def dequeue(): Envelope =
+    tries match {
+      case -1 ⇒
+        queue.poll()
+      case 0 | Marker ⇒
+        val e = queue.peek()
+        tries = if (e eq null) 0 else 1
+        e
+      case `maxRetries` ⇒
+        tries = Marker
+        queue.poll()
+      case n ⇒
+        tries = n + 1
+        queue.peek()
+    }
 
   def ack(): Unit = {
     // do not dequeue for real if double-ack() or ack() on last try

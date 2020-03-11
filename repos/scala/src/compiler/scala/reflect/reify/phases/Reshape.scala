@@ -90,9 +90,10 @@ trait Reshape {
     private def undoMacroExpansion(tree: Tree): Tree =
       tree.attachments.get[analyzer.MacroExpansionAttachment] match {
         case Some(analyzer.MacroExpansionAttachment(original, _)) =>
-          def mkImplicitly(tp: Type) = atPos(tree.pos)(
-            gen.mkNullaryCall(Predef_implicitly, List(tp))
-          )
+          def mkImplicitly(tp: Type) =
+            atPos(tree.pos)(
+              gen.mkNullaryCall(Predef_implicitly, List(tp))
+            )
           val sym = original.symbol
           original match {
             // this hack is necessary until I fix implicit macros
@@ -199,48 +200,52 @@ trait Reshape {
       CompoundTypeTree(Template(parents1, self, stats1))
     }
 
-    private def toPreTyperTypedOrAnnotated(tree: Tree): Tree = tree match {
-      case ty @ Typed(expr1, tpt) =>
-        if (reifyDebug) println("reify typed: " + tree)
-        val original = tpt match {
-          case tt @ TypeTree() => tt.original
-          case tpt             => tpt
-        }
-        val annotatedArg = {
-          def loop(tree: Tree): Tree = tree match {
-            case annotated1 @ Annotated(ann, annotated2 @ Annotated(_, _)) =>
-              loop(annotated2)
-            case annotated1 @ Annotated(ann, arg) => arg
-            case _                                => EmptyTree
+    private def toPreTyperTypedOrAnnotated(tree: Tree): Tree =
+      tree match {
+        case ty @ Typed(expr1, tpt) =>
+          if (reifyDebug) println("reify typed: " + tree)
+          val original = tpt match {
+            case tt @ TypeTree() => tt.original
+            case tpt             => tpt
           }
+          val annotatedArg = {
+            def loop(tree: Tree): Tree =
+              tree match {
+                case annotated1 @ Annotated(
+                      ann,
+                      annotated2 @ Annotated(_, _)) =>
+                  loop(annotated2)
+                case annotated1 @ Annotated(ann, arg) => arg
+                case _                                => EmptyTree
+              }
 
-          loop(original)
-        }
-        if (annotatedArg != EmptyTree) {
-          if (annotatedArg.isType) {
-            if (reifyDebug)
-              println("verdict: was an annotated type, reify as usual")
-            ty
-          } else {
-            if (reifyDebug)
-              println(
-                "verdict: was an annotated value, equivalent is " + original)
-            toPreTyperTypedOrAnnotated(original)
+            loop(original)
           }
-        } else {
-          if (reifyDebug) println("verdict: wasn't annotated, reify as usual")
-          ty
-        }
-      case at @ Annotated(annot, arg) =>
-        if (reifyDebug) println("reify type annotations for: " + tree)
-        assert(
-          at.tpe.isInstanceOf[AnnotatedType],
-          "%s (%s)".format(at.tpe, at.tpe.kind))
-        val annot1 = toPreTyperAnnotation(
-          at.tpe.asInstanceOf[AnnotatedType].annotations(0))
-        if (reifyDebug) println("originals are: " + annot1)
-        Annotated(annot1, arg).copyAttrs(at)
-    }
+          if (annotatedArg != EmptyTree) {
+            if (annotatedArg.isType) {
+              if (reifyDebug)
+                println("verdict: was an annotated type, reify as usual")
+              ty
+            } else {
+              if (reifyDebug)
+                println(
+                  "verdict: was an annotated value, equivalent is " + original)
+              toPreTyperTypedOrAnnotated(original)
+            }
+          } else {
+            if (reifyDebug) println("verdict: wasn't annotated, reify as usual")
+            ty
+          }
+        case at @ Annotated(annot, arg) =>
+          if (reifyDebug) println("reify type annotations for: " + tree)
+          assert(
+            at.tpe.isInstanceOf[AnnotatedType],
+            "%s (%s)".format(at.tpe, at.tpe.kind))
+          val annot1 = toPreTyperAnnotation(
+            at.tpe.asInstanceOf[AnnotatedType].annotations(0))
+          if (reifyDebug) println("originals are: " + annot1)
+          Annotated(annot1, arg).copyAttrs(at)
+      }
 
     /** Restore pre-typer representation of an annotation.
       *  The trick here is to retain the symbols that have been populated during typechecking of the annotation.
@@ -275,10 +280,11 @@ trait Reshape {
     }
 
     private def toPreTyperLazyVal(ddef: DefDef): ValDef = {
-      def extractRhs(rhs: Tree) = rhs match {
-        case Block(Assign(lhs, rhs) :: Nil, _) if lhs.symbol.isLazy => rhs
-        case _                                                      => rhs // unit or trait case
-      }
+      def extractRhs(rhs: Tree) =
+        rhs match {
+          case Block(Assign(lhs, rhs) :: Nil, _) if lhs.symbol.isLazy => rhs
+          case _                                                      => rhs // unit or trait case
+        }
       val DefDef(mods0, name0, _, _, tpt0, rhs0) = ddef
       val name1 = name0.dropLocal
       val Modifiers(flags0, privateWithin0, annotations0) = mods0
@@ -312,9 +318,10 @@ trait Reshape {
                 val chars = s.toCharArray; chars(0) = chars(0).toLower;
                 new String(chars)
               }
-            def findValDef(name: String) = symdefs.values collectFirst {
-              case vdef: ValDef if vdef.name.dropLocal string_== name => vdef
-            }
+            def findValDef(name: String) =
+              symdefs.values collectFirst {
+                case vdef: ValDef if vdef.name.dropLocal string_== name => vdef
+              }
             val valdef =
               findValDef(name).orElse(findValDef(uncapitalize(name))).orNull
             if (valdef != null)

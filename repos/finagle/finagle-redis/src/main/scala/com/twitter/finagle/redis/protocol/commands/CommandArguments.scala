@@ -11,10 +11,11 @@ case object WithScores extends CommandArgument {
   def command = "WITHSCORES"
   val WITHSCORES = command
   def commandBytes = StringToChannelBuffer(command)
-  def unapply(s: String) = s.toUpperCase match {
-    case WITHSCORES => Some(s)
-    case _          => None
-  }
+  def unapply(s: String) =
+    s.toUpperCase match {
+      case WITHSCORES => Some(s)
+      case _          => None
+    }
   override def toString = command
   def toChannelBuffer = commandBytes
   @deprecated("Prefer option") val asArg = Some(WithScores)

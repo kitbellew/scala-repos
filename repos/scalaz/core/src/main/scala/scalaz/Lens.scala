@@ -339,9 +339,10 @@ trait LensFamilyFunctions {
 
 trait LensFunctions extends LensFamilyFunctions {
 
-  def lens[A, B](r: A => Store[B, A]): Lens[A, B] = new Lens[A, B] {
-    def run(a: A): Store[B, A] = r(a)
-  }
+  def lens[A, B](r: A => Store[B, A]): Lens[A, B] =
+    new Lens[A, B] {
+      def run(a: A): Store[B, A] = r(a)
+    }
 
   def lensg[A, B](set: A => B => A, get: A => B): Lens[A, B] =
     lens(a => Store(set(a), get(a)))
@@ -493,10 +494,11 @@ abstract class LensInstances extends LensInstances0 {
       lens: LensFamily[S1, S2, Set[K], Set[K]]) {
 
     /** Setting the value of this lens will change whether or not it is present in the set */
-    def contains(key: K) = lensFamilyg[S1, S2, Boolean, Boolean](
-      s => b => lens.mod(m => if (b) m + key else m - key, s): Id[S2],
-      s => lens.get(s).contains(key)
-    )
+    def contains(key: K) =
+      lensFamilyg[S1, S2, Boolean, Boolean](
+        s => b => lens.mod(m => if (b) m + key else m - key, s): Id[S2],
+        s => lens.get(s).contains(key)
+      )
 
     def &=(that: Set[K]): IndexedState[S1, S2, Set[K]] =
       lens %= (_ & that)

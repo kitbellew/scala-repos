@@ -90,10 +90,11 @@ trait SymbolTrackers {
       }
 
       def apply(sym: Symbol): Node = new Node(sym, Nil)
-      def apply(syms: Set[Symbol]): Node = nodes(syms) match {
-        case List(x) => x
-        case xs      => new Node(NoSymbol, xs)
-      }
+      def apply(syms: Set[Symbol]): Node =
+        nodes(syms) match {
+          case List(x) => x
+          case xs      => new Node(NoSymbol, xs)
+        }
     }
     class Node(val root: Symbol, val children: List[Hierarchy])
         extends Hierarchy {
@@ -107,36 +108,39 @@ trait SymbolTrackers {
             "  "
           ).mkString take 2
 
-      def changedOwnerString = changed.owners get root match {
-        case Some(prev) => " [Owner was " + prev + ", now " + root.owner + "]"
-        case _          => ""
-      }
-      def flagSummaryString = changed.flags get root match {
-        case Some(oldFlags) =>
-          val added = masked & ~oldFlags
-          val removed = oldFlags & ~masked
-          val all = masked | oldFlags
-          val strs = 0 to 63 map { bit =>
-            val flag = 1L << bit
-            val prefix =
-              (
-                if ((added & flag) != 0L) "+"
-                else if ((removed & flag) != 0L) "-"
-                else ""
-              )
-            if ((all & flag) == 0L) "" else prefix + Flags.flagToString(flag)
-          }
+      def changedOwnerString =
+        changed.owners get root match {
+          case Some(prev) => " [Owner was " + prev + ", now " + root.owner + "]"
+          case _          => ""
+        }
+      def flagSummaryString =
+        changed.flags get root match {
+          case Some(oldFlags) =>
+            val added = masked & ~oldFlags
+            val removed = oldFlags & ~masked
+            val all = masked | oldFlags
+            val strs = 0 to 63 map { bit =>
+              val flag = 1L << bit
+              val prefix =
+                (
+                  if ((added & flag) != 0L) "+"
+                  else if ((removed & flag) != 0L) "-"
+                  else ""
+                )
+              if ((all & flag) == 0L) "" else prefix + Flags.flagToString(flag)
+            }
 
-          " " + strs.filterNot(_ == "").mkString("[", " ", "]")
-        case _ =>
-          if (masked == 0L) "" else " (" + Flags.flagsToString(masked) + ")"
-      }
-      def symString(sym: Symbol) = (
-        if (settings.debug && sym.hasCompleteInfo) {
-          val s = sym.defString take 240
-          if (s.length == 240) s + "..." else s
-        } else sym + changedOwnerString + flagSummaryString
-      )
+            " " + strs.filterNot(_ == "").mkString("[", " ", "]")
+          case _ =>
+            if (masked == 0L) "" else " (" + Flags.flagsToString(masked) + ")"
+        }
+      def symString(sym: Symbol) =
+        (
+          if (settings.debug && sym.hasCompleteInfo) {
+            val s = sym.defString take 240
+            if (s.length == 240) s + "..." else s
+          } else sym + changedOwnerString + flagSummaryString
+        )
 
       def flatten = children.foldLeft(Set(root))(_ ++ _.flatten)
       def indentString(indent: String): String = {

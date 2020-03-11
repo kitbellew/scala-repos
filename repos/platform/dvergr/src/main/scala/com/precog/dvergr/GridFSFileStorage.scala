@@ -61,10 +61,11 @@ object GridFSFileStorage {
     apply(mongo.getDB(config[String]("database")))
   }
 
-  def apply[M[+_]](db: DB)(implicit M0: Monad[M]) = new GridFSFileStorage[M] {
-    val M = M0
-    val gridFS = new GridFS(db)
-  }
+  def apply[M[+_]](db: DB)(implicit M0: Monad[M]) =
+    new GridFSFileStorage[M] {
+      val M = M0
+      val gridFS = new GridFS(db)
+    }
 }
 
 /**
@@ -79,9 +80,8 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
 
   def gridFS: GridFS
 
-  def exists(file: String): M[Boolean] = M.point {
-    gridFS.findOne(file) != null
-  }
+  def exists(file: String): M[Boolean] =
+    M.point { gridFS.findOne(file) != null }
 
   def save(file: String, data: FileData[M]): M[Unit] =
     M.point {
@@ -94,44 +94,46 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
       }
       inFile.getOutputStream()
     } flatMap { out =>
-      def save(data: StreamT[M, Array[Byte]]): M[Unit] = data.uncons flatMap {
-        case Some((bytes, tail)) =>
-          out.write(bytes)
-          save(tail)
+      def save(data: StreamT[M, Array[Byte]]): M[Unit] =
+        data.uncons flatMap {
+          case Some((bytes, tail)) =>
+            out.write(bytes)
+            save(tail)
 
-        case None =>
-          M.point { out.close() }
-      }
+          case None =>
+            M.point { out.close() }
+        }
 
       save(data.data)
     }
 
-  def load(filename: String): M[Option[FileData[M]]] = M.point {
-    Option(gridFS.findOne(filename)) map { file =>
-      val idealChunkSize = file.getChunkSize
-      val chunkSize =
-        if (idealChunkSize > MaxChunkSize) MaxChunkSize
-        else idealChunkSize.toInt
-      val mimeType = Option(file.getContentType) flatMap { ct =>
-        MimeTypes.parseMimeTypes(ct).headOption
-      }
-      val in0 = file.getInputStream()
-
-      FileData(
-        mimeType,
-        StreamT.unfoldM[M, Array[Byte], InputStream](in0) { in =>
-          M.point {
-            val buffer = new Array[Byte](chunkSize)
-            val len = in.read(buffer)
-            if (len < 0) { None }
-            else if (len < buffer.length) {
-              Some((java.util.Arrays.copyOf(buffer, len), in))
-            } else { Some((buffer, in)) }
-          }
+  def load(filename: String): M[Option[FileData[M]]] =
+    M.point {
+      Option(gridFS.findOne(filename)) map { file =>
+        val idealChunkSize = file.getChunkSize
+        val chunkSize =
+          if (idealChunkSize > MaxChunkSize) MaxChunkSize
+          else idealChunkSize.toInt
+        val mimeType = Option(file.getContentType) flatMap { ct =>
+          MimeTypes.parseMimeTypes(ct).headOption
         }
-      )
+        val in0 = file.getInputStream()
+
+        FileData(
+          mimeType,
+          StreamT.unfoldM[M, Array[Byte], InputStream](in0) { in =>
+            M.point {
+              val buffer = new Array[Byte](chunkSize)
+              val len = in.read(buffer)
+              if (len < 0) { None }
+              else if (len < buffer.length) {
+                Some((java.util.Arrays.copyOf(buffer, len), in))
+              } else { Some((buffer, in)) }
+            }
+          }
+        )
+      }
     }
-  }
 
   def remove(file: String): M[Unit] = M.point(gridFS.remove(file))
 }

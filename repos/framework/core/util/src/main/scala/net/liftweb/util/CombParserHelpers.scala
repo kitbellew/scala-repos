@@ -139,9 +139,8 @@ trait CombParserHelpers {
   /**
     * @return a parser returning an Int if succeeding
     */
-  def aNumber: Parser[Int] = rep1(elem("Number", isNum)) ^^ {
-    case xs => xs.mkString("").toInt
-  }
+  def aNumber: Parser[Int] =
+    rep1(elem("Number", isNum)) ^^ { case xs => xs.mkString("").toInt }
 
   /**
     * @return a parser which tries the permutations of a list of parsers

@@ -34,24 +34,26 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert(exc == intercept[Exception] { Await.result(trans.read()) })
   }
 
-  def fromList[A](seq: => List[A]) = new Transport[Any, Option[A]] {
-    private[this] var next = seq
-    def write(in: Any) = Future.exception(new Exception)
-    def read() = synchronized {
-      if (next.isEmpty) Future.None
-      else {
-        val head = next.head
-        next = next.tail
-        Future.value(Some(head))
-      }
+  def fromList[A](seq: => List[A]) =
+    new Transport[Any, Option[A]] {
+      private[this] var next = seq
+      def write(in: Any) = Future.exception(new Exception)
+      def read() =
+        synchronized {
+          if (next.isEmpty) Future.None
+          else {
+            val head = next.head
+            next = next.tail
+            Future.value(Some(head))
+          }
+        }
+      val status = Status.Open
+      val onClose = new Promise[Throwable]
+      val localAddress = new SocketAddress {}
+      val remoteAddress = new SocketAddress {}
+      val peerCertificate = None
+      def close(deadline: Time) = Future.exception(new Exception)
     }
-    val status = Status.Open
-    val onClose = new Promise[Throwable]
-    val localAddress = new SocketAddress {}
-    val remoteAddress = new SocketAddress {}
-    val peerCertificate = None
-    def close(deadline: Time) = Future.exception(new Exception)
-  }
 
   class Failed extends Transport[Any, Any] {
     def write(in: Any) = Future.exception(new Exception)
@@ -144,11 +146,12 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val readq = new AsyncQueue[String]
     val trans = new QueueTransport(writeq, readq)
     val fail = new Exception("fail")
-    def read(string: String) = string match {
-      case "eof"  => Future.None
-      case "fail" => Future.exception(fail)
-      case x      => Future.value(Some(Buf.Utf8(x)))
-    }
+    def read(string: String) =
+      string match {
+        case "eof"  => Future.None
+        case "fail" => Future.exception(fail)
+        case x      => Future.value(Some(Buf.Utf8(x)))
+      }
     val coll = Transport.collate(trans, read)
     assert(!coll.isDefined)
 

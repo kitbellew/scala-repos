@@ -170,30 +170,31 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
     final def findDirectChildren(
         apiKey: APIKey,
-        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] = path match {
-      // If asked for the root path, we simply determine children
-      // based on the api key permissions to avoid a massive tree walk
-      case Path.Root =>
-        logger.debug("Defaulting on root-level child browse to account path")
-        for {
-          children <- EitherT.right(
-            permissionsFinder.findBrowsableChildren(apiKey, path))
-          nonRoot = children.filterNot(_ == Path.Root)
-          childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
-        } yield { childMetadata.toSet }
+        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
+      path match {
+        // If asked for the root path, we simply determine children
+        // based on the api key permissions to avoid a massive tree walk
+        case Path.Root =>
+          logger.debug("Defaulting on root-level child browse to account path")
+          for {
+            children <- EitherT.right(
+              permissionsFinder.findBrowsableChildren(apiKey, path))
+            nonRoot = children.filterNot(_ == Path.Root)
+            childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
+          } yield { childMetadata.toSet }
 
-      case other =>
-        for {
-          children <- vfs.findDirectChildren(path)
-          permitted <- EitherT.right(
-            permissionsFinder.findBrowsableChildren(apiKey, path))
-        } yield {
-          children filter {
-            case PathMetadata(child, _) =>
-              permitted.exists(_.isEqualOrParentOf(path / child))
+        case other =>
+          for {
+            children <- vfs.findDirectChildren(path)
+            permitted <- EitherT.right(
+              permissionsFinder.findBrowsableChildren(apiKey, path))
+          } yield {
+            children filter {
+              case PathMetadata(child, _) =>
+                permitted.exists(_.isEqualOrParentOf(path / child))
+            }
           }
-        }
-    }
+      }
 
     final def executeStoredQuery(
         platform: Platform[M, Block, StreamT[M, Block]],

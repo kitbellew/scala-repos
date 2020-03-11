@@ -15,9 +15,8 @@ class Application extends Controller {
   def takeBool2(b: Boolean) = Action { Ok(s"$b") }
   def takeList(x: List[Int]) = Action { Ok(x.mkString(",")) }
   def takeJavaList(x: java.util.List[Integer]) = Action { Ok(x.mkString(",")) }
-  def urlcoding(dynamic: String, static: String, query: String) = Action {
-    Ok(s"dynamic=$dynamic static=$static query=$query")
-  }
+  def urlcoding(dynamic: String, static: String, query: String) =
+    Action { Ok(s"dynamic=$dynamic static=$static query=$query") }
   def route(parameter: String) = Action { Ok(parameter) }
   def routetest(parameter: String) = Action { Ok(parameter) }
   def routedefault(parameter: String) = Action { Ok(parameter) }

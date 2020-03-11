@@ -311,9 +311,10 @@ object AdSamples {
       )
     }
 
-  def recipientsSample = listOfN(2, oneOf(departments)).map { list =>
-    JArray(list.map { JString(_) })
-  }
+  def recipientsSample =
+    listOfN(2, oneOf(departments)).map { list =>
+      JArray(list.map { JString(_) })
+    }
 
   def paymentsSample =
     for {

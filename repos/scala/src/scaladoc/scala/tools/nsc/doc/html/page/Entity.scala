@@ -601,27 +601,28 @@ trait EntityPage extends HtmlPage {
 
       def paramCommentToHtml(
           prs: List[ParameterEntity],
-          comment: Comment): NodeSeq = prs match {
+          comment: Comment): NodeSeq =
+        prs match {
 
-        case (tp: TypeParam) :: rest =>
-          val paramEntry: NodeSeq = {
-            <dt class="tparam">{tp.name}</dt><dd class="cmt">{
-              bodyToHtml(comment.typeParams(tp.name))
-            }</dd>
-          }
-          paramEntry ++ paramCommentToHtml(rest, comment)
+          case (tp: TypeParam) :: rest =>
+            val paramEntry: NodeSeq = {
+              <dt class="tparam">{tp.name}</dt><dd class="cmt">{
+                bodyToHtml(comment.typeParams(tp.name))
+              }</dd>
+            }
+            paramEntry ++ paramCommentToHtml(rest, comment)
 
-        case (vp: ValueParam) :: rest =>
-          val paramEntry: NodeSeq = {
-            <dt class="param">{vp.name}</dt><dd class="cmt">{
-              bodyToHtml(comment.valueParams(vp.name))
-            }</dd>
-          }
-          paramEntry ++ paramCommentToHtml(rest, comment)
+          case (vp: ValueParam) :: rest =>
+            val paramEntry: NodeSeq = {
+              <dt class="param">{vp.name}</dt><dd class="cmt">{
+                bodyToHtml(comment.valueParams(vp.name))
+              }</dd>
+            }
+            paramEntry ++ paramCommentToHtml(rest, comment)
 
-        case _ =>
-          NodeSeq.Empty
-      }
+          case _ =>
+            NodeSeq.Empty
+        }
 
       mbr.comment.fold(NodeSeq.Empty) { comment =>
         val cmtedPrs = prs filter {
@@ -1006,10 +1007,11 @@ trait EntityPage extends HtmlPage {
       hi: Option[TypeEntity],
       lo: Option[TypeEntity],
       hasLinks: Boolean): NodeSeq = {
-    def bound0(bnd: Option[TypeEntity], pre: String): NodeSeq = bnd match {
-      case None      => NodeSeq.Empty
-      case Some(tpe) => scala.xml.Text(pre) ++ typeToHtml(tpe, hasLinks)
-    }
+    def bound0(bnd: Option[TypeEntity], pre: String): NodeSeq =
+      bnd match {
+        case None      => NodeSeq.Empty
+        case Some(tpe) => scala.xml.Text(pre) ++ typeToHtml(tpe, hasLinks)
+      }
     bound0(lo, " >: ") ++ bound0(hi, " <: ")
   }
 
@@ -1088,24 +1090,25 @@ trait EntityPage extends HtmlPage {
               {nameHtml}
             </a> else nameHtml
       }{
-        def tparamsToHtml(mbr: Any): NodeSeq = mbr match {
-          case hk: HigherKinded =>
-            val tpss = hk.typeParams
-            if (tpss.isEmpty) NodeSeq.Empty
-            else {
-              def tparam0(tp: TypeParam): NodeSeq =
-                <span name={tp.name}>{tp.variance + tp.name}{tparamsToHtml(tp)}{
-                  boundsToHtml(tp.hi, tp.lo, hasLinks)
-                }</span>
-              def tparams0(tpss: List[TypeParam]): NodeSeq =
-                (tpss: @unchecked) match {
-                  case tp :: Nil => tparam0(tp)
-                  case tp :: tps => tparam0(tp) ++ Text(", ") ++ tparams0(tps)
-                }
-              <span class="tparams">[{tparams0(tpss)}]</span>
-            }
-          case _ => NodeSeq.Empty
-        }
+        def tparamsToHtml(mbr: Any): NodeSeq =
+          mbr match {
+            case hk: HigherKinded =>
+              val tpss = hk.typeParams
+              if (tpss.isEmpty) NodeSeq.Empty
+              else {
+                def tparam0(tp: TypeParam): NodeSeq =
+                  <span name={tp.name}>{tp.variance + tp.name}{
+                    tparamsToHtml(tp)
+                  }{boundsToHtml(tp.hi, tp.lo, hasLinks)}</span>
+                def tparams0(tpss: List[TypeParam]): NodeSeq =
+                  (tpss: @unchecked) match {
+                    case tp :: Nil => tparam0(tp)
+                    case tp :: tps => tparam0(tp) ++ Text(", ") ++ tparams0(tps)
+                  }
+                <span class="tparams">[{tparams0(tpss)}]</span>
+              }
+            case _ => NodeSeq.Empty
+          }
         tparamsToHtml(mbr)
       }{
         if (isReduced) NodeSeq.Empty
@@ -1122,17 +1125,19 @@ trait EntityPage extends HtmlPage {
                 }
               }</span>
 
-            def params0(vlss: List[ValueParam]): NodeSeq = vlss match {
-              case Nil       => NodeSeq.Empty
-              case vl :: Nil => param0(vl)
-              case vl :: vls => param0(vl) ++ Text(", ") ++ params0(vls)
-            }
-            def implicitCheck(vlss: List[ValueParam]): NodeSeq = vlss match {
-              case vl :: vls =>
-                if (vl.isImplicit) { <span class="implicit">implicit </span> }
-                else Text("")
-              case _ => Text("")
-            }
+            def params0(vlss: List[ValueParam]): NodeSeq =
+              vlss match {
+                case Nil       => NodeSeq.Empty
+                case vl :: Nil => param0(vl)
+                case vl :: vls => param0(vl) ++ Text(", ") ++ params0(vls)
+              }
+            def implicitCheck(vlss: List[ValueParam]): NodeSeq =
+              vlss match {
+                case vl :: vls =>
+                  if (vl.isImplicit) { <span class="implicit">implicit </span> }
+                  else Text("")
+                case _ => Text("")
+              }
             vlsss map { vlss =>
               <span class="params">({
                 implicitCheck(vlss) ++ params0(vlss)
@@ -1253,12 +1258,13 @@ trait EntityPage extends HtmlPage {
   }
 
   private def argumentsToHtml(argss: List[ValueArgument]): NodeSeq = {
-    def argumentsToHtml0(argss: List[ValueArgument]): NodeSeq = argss match {
-      case Nil        => NodeSeq.Empty
-      case arg :: Nil => argumentToHtml(arg)
-      case arg :: args =>
-        argumentToHtml(arg) ++ scala.xml.Text(", ") ++ argumentsToHtml0(args)
-    }
+    def argumentsToHtml0(argss: List[ValueArgument]): NodeSeq =
+      argss match {
+        case Nil        => NodeSeq.Empty
+        case arg :: Nil => argumentToHtml(arg)
+        case arg :: args =>
+          argumentToHtml(arg) ++ scala.xml.Text(", ") ++ argumentsToHtml0(args)
+      }
     <span class="args">({argumentsToHtml0(argss)})</span>
   }
 
@@ -1277,10 +1283,11 @@ trait EntityPage extends HtmlPage {
   private def bodyToStr(body: comment.Body): String =
     body.blocks flatMap (blockToStr(_)) mkString ""
 
-  private def blockToStr(block: comment.Block): String = block match {
-    case comment.Paragraph(in) => inlineToStr(in)
-    case _                     => block.toString
-  }
+  private def blockToStr(block: comment.Block): String =
+    block match {
+      case comment.Paragraph(in) => inlineToStr(in)
+      case _                     => block.toString
+    }
 
   private def typeToHtmlWithStupidTypes(
       tpl: TemplateEntity,
@@ -1340,12 +1347,13 @@ object EntityPage {
       gen: DiagramGenerator,
       docTpl: DocTemplateEntity,
       rep: ScalaDocReporter
-  ): EntityPage = new EntityPage {
-    def universe = uni
-    def generator = gen
-    def tpl = docTpl
-    def reporter = rep
-  }
+  ): EntityPage =
+    new EntityPage {
+      def universe = uni
+      def generator = gen
+      def tpl = docTpl
+      def reporter = rep
+    }
 
   /* Vlad: Lesson learned the hard way: don't put any stateful code that references the model here,
    * it won't be garbage collected and you'll end up filling the heap with garbage */

@@ -48,13 +48,14 @@ final class Env(
 
   def countEnabled = cached.countEnabled
 
-  def cli = new lila.common.Cli {
-    import tube.userTube
-    def process = {
-      case "user" :: "email" :: userId :: email :: Nil =>
-        UserRepo.email(User normalize userId, email) inject "done"
+  def cli =
+    new lila.common.Cli {
+      import tube.userTube
+      def process = {
+        case "user" :: "email" :: userId :: email :: Nil =>
+          UserRepo.email(User normalize userId, email) inject "done"
+      }
     }
-  }
 
   system.actorOf(Props(new Actor {
     override def preStart() {

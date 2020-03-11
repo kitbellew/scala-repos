@@ -606,17 +606,19 @@ class LightArrayRevolverSchedulerSpec
         }
       }
     val driver = new Driver {
-      def wakeUp(d: FiniteDuration) = lbq.get match {
-        case q: LinkedBlockingQueue[Long] ⇒ q.offer(d.toNanos)
-        case _ ⇒
-      }
+      def wakeUp(d: FiniteDuration) =
+        lbq.get match {
+          case q: LinkedBlockingQueue[Long] ⇒ q.offer(d.toNanos)
+          case _ ⇒
+        }
       def expectWait(): FiniteDuration = probe.expectMsgType[Long].nanos
       def probe = prb
       def step = sched.TickDuration
-      def close() = lbq.getAndSet(null) match {
-        case q: LinkedBlockingQueue[Long] ⇒ q.offer(0L)
-        case _ ⇒
-      }
+      def close() =
+        lbq.getAndSet(null) match {
+          case q: LinkedBlockingQueue[Long] ⇒ q.offer(0L)
+          case _ ⇒
+        }
     }
     driver.expectWait()
     try thunk(sched, driver)

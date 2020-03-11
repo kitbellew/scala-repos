@@ -55,9 +55,10 @@ trait Publisher[Evt] {
     *
     *  @return true, iff both publishers contain the same sequence of elements.
     */
-  override def equals(obj: Any): Boolean = obj match {
-    case that: Publisher[_] =>
-      filters == that.filters && suspended == that.suspended
-    case _ => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case that: Publisher[_] =>
+        filters == that.filters && suspended == that.suspended
+      case _ => false
+    }
 }

@@ -9,13 +9,14 @@ object Test extends App {
     override def toString = value.toString;
   }
 
-  implicit def conversions(x: Value) = new {
-    def toInt =
-      x match {
-        case Num(n) => n
-        case _      => throw new RuntimeException
-      }
-  }
+  implicit def conversions(x: Value) =
+    new {
+      def toInt =
+        x match {
+          case Num(n) => n
+          case _      => throw new RuntimeException
+        }
+    }
 
   def eval(v: Value): Value = {
     println("hey")

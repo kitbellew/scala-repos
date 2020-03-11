@@ -144,19 +144,20 @@ object FormFieldDirectives extends FormFieldDirectives {
         f: A ⇒ Directive1[B]): FieldDefAux[A, Directive1[B]] = fieldDef(f)
     private def handleFieldResult[T](
         fieldName: String,
-        result: Future[T]): Directive1[T] = onComplete(result).flatMap {
-      case Success(x) ⇒ provide(x)
-      case Failure(Unmarshaller.NoContentException) ⇒
-        reject(MissingFormFieldRejection(fieldName))
-      case Failure(x: UnsupportedContentTypeException) ⇒
-        reject(UnsupportedRequestContentTypeRejection(x.supported))
-      case Failure(x) ⇒
-        reject(
-          MalformedFormFieldRejection(
-            fieldName,
-            x.getMessage.nullAsEmpty,
-            Option(x.getCause)))
-    }
+        result: Future[T]): Directive1[T] =
+      onComplete(result).flatMap {
+        case Success(x) ⇒ provide(x)
+        case Failure(Unmarshaller.NoContentException) ⇒
+          reject(MissingFormFieldRejection(fieldName))
+        case Failure(x: UnsupportedContentTypeException) ⇒
+          reject(UnsupportedRequestContentTypeRejection(x.supported))
+        case Failure(x) ⇒
+          reject(
+            MalformedFormFieldRejection(
+              fieldName,
+              x.getMessage.nullAsEmpty,
+              Option(x.getCause)))
+      }
 
     //////////////////// "regular" formField extraction ////////////////////
 

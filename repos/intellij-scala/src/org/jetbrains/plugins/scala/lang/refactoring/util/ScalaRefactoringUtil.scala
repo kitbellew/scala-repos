@@ -344,12 +344,13 @@ object ScalaRefactoringUtil {
     val cachedType = element.getType(TypingContext.empty).getOrAny
 
     object ReferenceToFunction {
-      def unapply(refExpr: ScReferenceExpression) = refExpr.bind() match {
-        case Some(srr: ScalaResolveResult)
-            if srr.element.isInstanceOf[ScFunction] =>
-          Some(srr.element.asInstanceOf[ScFunction])
-        case _ => None
-      }
+      def unapply(refExpr: ScReferenceExpression) =
+        refExpr.bind() match {
+          case Some(srr: ScalaResolveResult)
+              if srr.element.isInstanceOf[ScFunction] =>
+            Some(srr.element.asInstanceOf[ScFunction])
+          case _ => None
+        }
     }
     // Handle omitted parentheses in calls to functions with empty parameter list.
     // todo add a test for case with only implicit parameter list.
@@ -637,14 +638,15 @@ object ScalaRefactoringUtil {
       var selectionHighlighter: RangeHighlighter = null
       val markupModel = editor.getMarkupModel
 
-      def addHighlighter() = if (selectionHighlighter == null) {
-        selectionHighlighter = markupModel.addRangeHighlighter(
-          start,
-          end,
-          HighlighterLayer.SELECTION + 1,
-          textAttributes,
-          HighlighterTargetArea.EXACT_RANGE)
-      }
+      def addHighlighter() =
+        if (selectionHighlighter == null) {
+          selectionHighlighter = markupModel.addRangeHighlighter(
+            start,
+            end,
+            HighlighterLayer.SELECTION + 1,
+            textAttributes,
+            HighlighterTargetArea.EXACT_RANGE)
+        }
 
       def removeHighlighter() =
         if (selectionHighlighter != null)
@@ -1363,12 +1365,13 @@ object ScalaRefactoringUtil {
 
   @tailrec
   def container(element: PsiElement, file: PsiFile): PsiElement = {
-    def oneExprBody(fun: ScFunctionDefinition): Boolean = fun.body match {
-      case Some(_: ScBlock)                     => false
-      case Some(newTd: ScNewTemplateDefinition) => false
-      case Some(_)                              => true
-      case None                                 => false
-    }
+    def oneExprBody(fun: ScFunctionDefinition): Boolean =
+      fun.body match {
+        case Some(_: ScBlock)                     => false
+        case Some(newTd: ScNewTemplateDefinition) => false
+        case Some(_)                              => true
+        case None                                 => false
+      }
 
     if (element == null) file
     else {
@@ -1429,20 +1432,23 @@ object ScalaRefactoringUtil {
       project: Project,
       editor: Editor,
       refactoringName: String): Boolean = {
-    def errors(elem: PsiElement): Option[String] = elem match {
-      case funDef: ScFunctionDefinition if hasOutsideUsages(funDef) =>
-        ScalaBundle.message("cannot.extract.used.function.definition").toOption
-      case _: ScBlockStatement                                        => None
-      case comm: PsiComment if !comm.getParent.isInstanceOf[ScMember] => None
-      case _: PsiWhiteSpace                                           => None
-      case _ if ScalaTokenTypes.tSEMICOLON == elem.getNode.getElementType =>
-        None
-      case typeDef: ScTypeDefinition if hasOutsideUsages(typeDef) =>
-        ScalaBundle.message("cannot.extract.used.type.definition").toOption
-      case _: ScSelfInvocation =>
-        ScalaBundle.message("cannot.extract.self.invocation").toOption
-      case _ => ScalaBundle.message("cannot.extract.empty.message").toOption
-    }
+    def errors(elem: PsiElement): Option[String] =
+      elem match {
+        case funDef: ScFunctionDefinition if hasOutsideUsages(funDef) =>
+          ScalaBundle
+            .message("cannot.extract.used.function.definition")
+            .toOption
+        case _: ScBlockStatement                                        => None
+        case comm: PsiComment if !comm.getParent.isInstanceOf[ScMember] => None
+        case _: PsiWhiteSpace                                           => None
+        case _ if ScalaTokenTypes.tSEMICOLON == elem.getNode.getElementType =>
+          None
+        case typeDef: ScTypeDefinition if hasOutsideUsages(typeDef) =>
+          ScalaBundle.message("cannot.extract.used.type.definition").toOption
+        case _: ScSelfInvocation =>
+          ScalaBundle.message("cannot.extract.self.invocation").toOption
+        case _ => ScalaBundle.message("cannot.extract.empty.message").toOption
+      }
 
     def hasOutsideUsages(elem: PsiElement): Boolean = {
       val scope = new LocalSearchScope(

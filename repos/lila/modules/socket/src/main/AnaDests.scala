@@ -17,9 +17,8 @@ case class AnaDests(variant: Variant, fen: String, path: String) {
         case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"
       } mkString " "
 
-  def opening = Variant.openingSensibleVariants(variant) ?? {
-    FullOpeningDB findByFen fen
-  }
+  def opening =
+    Variant.openingSensibleVariants(variant) ?? { FullOpeningDB findByFen fen }
 }
 
 object AnaDests {

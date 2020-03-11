@@ -7,9 +7,10 @@ trait ZipWith[N, S] {
 }
 
 object ZipWith {
-  implicit def ZeroZipWith[S] = new ZipWith[Zero, S] {
-    type T = Stream[S]
-  }
+  implicit def ZeroZipWith[S] =
+    new ZipWith[Zero, S] {
+      type T = Stream[S]
+    }
 
   implicit def SuccZipWith[N, S, R](implicit zWith: ZipWith[N, R]) =
     new ZipWith[Succ[N], S => R] {

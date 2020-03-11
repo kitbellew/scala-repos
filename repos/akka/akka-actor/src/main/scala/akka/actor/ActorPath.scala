@@ -56,10 +56,12 @@ object ActorPath {
   /**
     * Parse string as actor path; throws java.net.MalformedURLException if unable to do so.
     */
-  def fromString(s: String): ActorPath = s match {
-    case ActorPathExtractor(addr, elems) ⇒ RootActorPath(addr) / elems
-    case _ ⇒ throw new MalformedURLException("cannot parse as ActorPath: " + s)
-  }
+  def fromString(s: String): ActorPath =
+    s match {
+      case ActorPathExtractor(addr, elems) ⇒ RootActorPath(addr) / elems
+      case _ ⇒
+        throw new MalformedURLException("cannot parse as ActorPath: " + s)
+    }
 
   @deprecated("Use `isValidPathElement` instead", since = "2.3.8")
   val ElementRegex =
@@ -301,11 +303,12 @@ final case class RootActorPath(address: Address, name: String = "/")
   override def toSerializationFormatWithAddress(addr: Address): String =
     toStringWithAddress(addr)
 
-  override def compareTo(other: ActorPath): Int = other match {
-    case r: RootActorPath ⇒
-      toString compareTo r.toString // FIXME make this cheaper by comparing address and name in isolation
-    case c: ChildActorPath ⇒ 1
-  }
+  override def compareTo(other: ActorPath): Int =
+    other match {
+      case r: RootActorPath ⇒
+        toString compareTo r.toString // FIXME make this cheaper by comparing address and name in isolation
+      case c: ChildActorPath ⇒ 1
+    }
 
   /**
     * INTERNAL API
@@ -358,10 +361,11 @@ final class ChildActorPath private[akka] (
 
   override def root: RootActorPath = {
     @tailrec
-    def rec(p: ActorPath): RootActorPath = p match {
-      case r: RootActorPath ⇒ r
-      case _ ⇒ rec(p.parent)
-    }
+    def rec(p: ActorPath): RootActorPath =
+      p match {
+        case r: RootActorPath ⇒ r
+        case _ ⇒ rec(p.parent)
+      }
     rec(this)
   }
 
@@ -433,17 +437,18 @@ final class ChildActorPath private[akka] (
       diff: Int,
       rootString: RootActorPath ⇒ String): JStringBuilder = {
     @tailrec
-    def rec(p: ActorPath): JStringBuilder = p match {
-      case r: RootActorPath ⇒
-        val rootStr = rootString(r)
-        sb.replace(0, rootStr.length, rootStr)
-      case c: ChildActorPath ⇒
-        val start = c.toStringOffset + diff
-        val end = start + c.name.length
-        sb.replace(start, end, c.name)
-        if (c ne this) sb.replace(end, end + 1, "/")
-        rec(c.parent)
-    }
+    def rec(p: ActorPath): JStringBuilder =
+      p match {
+        case r: RootActorPath ⇒
+          val rootStr = rootString(r)
+          sb.replace(0, rootStr.length, rootStr)
+        case c: ChildActorPath ⇒
+          val start = c.toStringOffset + diff
+          val end = start + c.name.length
+          sb.replace(start, end, c.name)
+          if (c ne this) sb.replace(end, end + 1, "/")
+          rec(c.parent)
+      }
 
     sb.setLength(length)
     rec(this)
@@ -472,15 +477,16 @@ final class ChildActorPath private[akka] (
     import akka.routing.MurmurHash._
 
     @tailrec
-    def rec(p: ActorPath, h: Int, c: Int, k: Int): Int = p match {
-      case r: RootActorPath ⇒ extendHash(h, r.##, c, k)
-      case _ ⇒
-        rec(
-          p.parent,
-          extendHash(h, stringHash(name), c, k),
-          nextMagicA(c),
-          nextMagicB(k))
-    }
+    def rec(p: ActorPath, h: Int, c: Int, k: Int): Int =
+      p match {
+        case r: RootActorPath ⇒ extendHash(h, r.##, c, k)
+        case _ ⇒
+          rec(
+            p.parent,
+            extendHash(h, stringHash(name), c, k),
+            nextMagicA(c),
+            nextMagicB(k))
+      }
 
     finalizeHash(rec(this, startHash(42), startMagicA, startMagicB))
   }

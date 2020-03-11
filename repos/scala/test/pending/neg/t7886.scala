@@ -8,10 +8,11 @@ case class Unravel[A](m: Contra[A], msg: A)
 
 object Test extends Covariant[Any] {
   def g(m: Contra[Any]): Unit = m accept 5
-  def f(x: Any): Unit = x match {
-    case Unravel(m, msg) => g(m)
-    case _               =>
-  }
+  def f(x: Any): Unit =
+    x match {
+      case Unravel(m, msg) => g(m)
+      case _               =>
+    }
   def main(args: Array[String]) {
     f(
       Unravel[String](

@@ -232,24 +232,28 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           // If this is a primitive method type (like '+' in 5+5=10) then the
           // parameter types and the (unboxed) result type should all be primitive types,
           // and the method name should be in the primitive->structural map.
-          def isJavaValueMethod = (
-            (resType :: paramTypes forall isJavaValueType) && // issue #1110
-              (getPrimitiveReplacementForStructuralCall(methSym.name).isDefined)
-          )
+          def isJavaValueMethod =
+            (
+              (resType :: paramTypes forall isJavaValueType) && // issue #1110
+                (getPrimitiveReplacementForStructuralCall(
+                  methSym.name).isDefined)
+            )
           // Erasure lets Unit through as Unit, but a method returning Any will have an
           // erased return type of Object and should also allow Unit.
           def isDefinitelyUnit = (resultSym == UnitClass)
           def isMaybeUnit = (resultSym == ObjectClass) || isDefinitelyUnit
           // If there's any chance this signature could be met by an Array.
           val isArrayMethodSignature = {
-            def typesMatchApply = paramTypes match {
-              case List(tp) => tp <:< IntTpe
-              case _        => false
-            }
-            def typesMatchUpdate = paramTypes match {
-              case List(tp1, tp2) => (tp1 <:< IntTpe) && isMaybeUnit
-              case _              => false
-            }
+            def typesMatchApply =
+              paramTypes match {
+                case List(tp) => tp <:< IntTpe
+                case _        => false
+              }
+            def typesMatchUpdate =
+              paramTypes match {
+                case List(tp1, tp2) => (tp1 <:< IntTpe) && isMaybeUnit
+                case _              => false
+              }
 
             (methSym.name == nme.length && params.isEmpty) ||
             (methSym.name == nme.clone_ && params.isEmpty) ||
@@ -334,24 +338,25 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           }
 
           /* A native Array call. */
-          def genArrayCall = fixResult(
-            methSym.name match {
-              case nme.length =>
-                REF(boxMethod(IntClass)) APPLY (REF(
-                  arrayLengthMethod) APPLY args)
-              case nme.update =>
-                REF(arrayUpdateMethod) APPLY List(
-                  args(0),
-                  (REF(unboxMethod(IntClass)) APPLY args(1)),
-                  args(2))
-              case nme.apply =>
-                REF(arrayApplyMethod) APPLY List(
-                  args(0),
-                  (REF(unboxMethod(IntClass)) APPLY args(1)))
-              case nme.clone_ => REF(arrayCloneMethod) APPLY List(args(0))
-            },
-            mustBeUnit = methSym.name == nme.update
-          )
+          def genArrayCall =
+            fixResult(
+              methSym.name match {
+                case nme.length =>
+                  REF(boxMethod(IntClass)) APPLY (REF(
+                    arrayLengthMethod) APPLY args)
+                case nme.update =>
+                  REF(arrayUpdateMethod) APPLY List(
+                    args(0),
+                    (REF(unboxMethod(IntClass)) APPLY args(1)),
+                    args(2))
+                case nme.apply =>
+                  REF(arrayApplyMethod) APPLY List(
+                    args(0),
+                    (REF(unboxMethod(IntClass)) APPLY args(1)))
+                case nme.clone_ => REF(arrayCloneMethod) APPLY List(args(0))
+              },
+              mustBeUnit = methSym.name == nme.update
+            )
 
           /* A conditional Array call, when we can't determine statically if the argument is
            * an Array, but the structural type method signature is consistent with an Array method
@@ -452,120 +457,125 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       }
     }
 
-    override def transform(tree: Tree): Tree = tree match {
-      case _: ClassDef if genBCode.isJavaEntryPoint(tree.symbol, currentUnit) =>
-        // collecting symbols for entry points here (as opposed to GenBCode where they are used)
-        // has the advantage of saving an additional pass over all ClassDefs.
-        entryPoints ::= tree.symbol
-        super.transform(tree)
+    override def transform(tree: Tree): Tree =
+      tree match {
+        case _: ClassDef
+            if genBCode.isJavaEntryPoint(tree.symbol, currentUnit) =>
+          // collecting symbols for entry points here (as opposed to GenBCode where they are used)
+          // has the advantage of saving an additional pass over all ClassDefs.
+          entryPoints ::= tree.symbol
+          super.transform(tree)
 
-      /* Transforms dynamic calls (i.e. calls to methods that are undefined
-       * in the erased type space) to -- dynamically -- unsafe calls using
-       * reflection. This is used for structural sub-typing of refinement
-       * types, but may be used for other dynamic calls in the future.
-       * For 'a.f(b)' it will generate something like:
-       * 'a.getClass().
-       * '  getMethod("f", Array(classOf[b.type])).
-       * '  invoke(a, Array(b))
-       * plus all the necessary casting/boxing/etc. machinery required
-       * for type-compatibility (see fixResult).
-       *
-       * USAGE CONTRACT:
-       * There are a number of assumptions made on the way a dynamic apply
-       * is used. Assumptions relative to type are handled by the erasure
-       * phase.
-       * - The applied arguments are compatible with AnyRef, which means
-       *   that an argument tree typed as AnyVal has already been extended
-       *   with the necessary boxing calls. This implies that passed
-       *   arguments might not be strictly compatible with the method's
-       *   parameter types (a boxed integer while int is expected).
-       * - The expected return type is an AnyRef, even when the method's
-       *   return type is an AnyVal. This means that the tree containing the
-       *   call has already been extended with the necessary unboxing calls
-       *   (or is happy with the boxed type).
-       * - The type-checker has prevented dynamic applies on methods which
-       *   parameter's erased types are not statically known at the call site.
-       *   This is necessary to allow dispatching the call to the correct
-       *   method (dispatching on parameters is static in Scala). In practice,
-       *   this limitation only arises when the called method is defined as a
-       *   refinement, where the refinement defines a parameter based on a
-       *   type variable. */
+        /* Transforms dynamic calls (i.e. calls to methods that are undefined
+         * in the erased type space) to -- dynamically -- unsafe calls using
+         * reflection. This is used for structural sub-typing of refinement
+         * types, but may be used for other dynamic calls in the future.
+         * For 'a.f(b)' it will generate something like:
+         * 'a.getClass().
+         * '  getMethod("f", Array(classOf[b.type])).
+         * '  invoke(a, Array(b))
+         * plus all the necessary casting/boxing/etc. machinery required
+         * for type-compatibility (see fixResult).
+         *
+         * USAGE CONTRACT:
+         * There are a number of assumptions made on the way a dynamic apply
+         * is used. Assumptions relative to type are handled by the erasure
+         * phase.
+         * - The applied arguments are compatible with AnyRef, which means
+         *   that an argument tree typed as AnyVal has already been extended
+         *   with the necessary boxing calls. This implies that passed
+         *   arguments might not be strictly compatible with the method's
+         *   parameter types (a boxed integer while int is expected).
+         * - The expected return type is an AnyRef, even when the method's
+         *   return type is an AnyVal. This means that the tree containing the
+         *   call has already been extended with the necessary unboxing calls
+         *   (or is happy with the boxed type).
+         * - The type-checker has prevented dynamic applies on methods which
+         *   parameter's erased types are not statically known at the call site.
+         *   This is necessary to allow dispatching the call to the correct
+         *   method (dispatching on parameters is static in Scala). In practice,
+         *   this limitation only arises when the called method is defined as a
+         *   refinement, where the refinement defines a parameter based on a
+         *   type variable. */
 
-      case tree: ApplyDynamic if tree.symbol.owner.isRefinementClass =>
-        transformApplyDynamic(tree)
+        case tree: ApplyDynamic if tree.symbol.owner.isRefinementClass =>
+          transformApplyDynamic(tree)
 
-      /* Some cleanup transformations add members to templates (classes, traits, etc).
-       * When inside a template (i.e. the body of one of its members), two maps
-       * (newStaticMembers and newStaticInits) are available in the tree transformer. Any mapping from
-       * a symbol to a MemberDef (DefDef, ValDef, etc.) that is in newStaticMembers once the
-       * transformation of the template is finished will be added as a member to the
-       * template. Any mapping from a symbol to a tree that is in newStaticInits, will be added
-       * as a statement of the form "symbol = tree" to the beginning of the default
-       * constructor. */
-      case Template(parents, self, body) =>
-        localTyper = typer.atOwner(tree, currentClass)
-        transformTemplate(tree)
+        /* Some cleanup transformations add members to templates (classes, traits, etc).
+         * When inside a template (i.e. the body of one of its members), two maps
+         * (newStaticMembers and newStaticInits) are available in the tree transformer. Any mapping from
+         * a symbol to a MemberDef (DefDef, ValDef, etc.) that is in newStaticMembers once the
+         * transformation of the template is finished will be added as a member to the
+         * template. Any mapping from a symbol to a tree that is in newStaticInits, will be added
+         * as a statement of the form "symbol = tree" to the beginning of the default
+         * constructor. */
+        case Template(parents, self, body) =>
+          localTyper = typer.atOwner(tree, currentClass)
+          transformTemplate(tree)
 
-      case Literal(c) if c.tag == ClazzTag =>
-        val tpe = c.typeValue
-        typedWithPos(tree.pos) {
-          if (isPrimitiveValueClass(tpe.typeSymbol)) {
-            if (tpe.typeSymbol == UnitClass) REF(BoxedUnit_TYPE)
-            else Select(REF(boxedModule(tpe.typeSymbol)), nme.TYPE_)
-          } else tree
-        }
+        case Literal(c) if c.tag == ClazzTag =>
+          val tpe = c.typeValue
+          typedWithPos(tree.pos) {
+            if (isPrimitiveValueClass(tpe.typeSymbol)) {
+              if (tpe.typeSymbol == UnitClass) REF(BoxedUnit_TYPE)
+              else Select(REF(boxedModule(tpe.typeSymbol)), nme.TYPE_)
+            } else tree
+          }
 
-      /*
-       * This transformation should identify Scala symbol invocations in the tree and replace them
-       * with references to a statically cached instance.
-       *
-       * The reasoning behind this transformation is the following. Symbols get interned - they are stored
-       * in a global map which is protected with a lock. The reason for this is making equality checks
-       * quicker. But calling Symbol.apply, although it does return a unique symbol, accesses a locked object,
-       * making symbol access slow. To solve this, the unique symbol from the global symbol map in Symbol
-       * is accessed only once during class loading, and after that, the unique symbol is in the statically
-       * initialized call site returned by invokedynamic. Hence, it is cheap to both reach the unique symbol
-       * and do equality checks on it.
-       *
-       * And, finally, be advised - Scala's Symbol literal (scala.Symbol) and the Symbol class of the compiler
-       * have little in common.
-       */
-      case Apply(
-            fn @ Select(qual, _),
-            (arg @ Literal(Constant(symname: String))) :: Nil)
-          if treeInfo.isQualifierSafeToElide(
-            qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
-        super.transform(
-          treeCopy.ApplyDynamic(
-            tree,
-            atPos(fn.pos)(
-              Ident(SymbolLiteral_dummy).setType(SymbolLiteral_dummy.info)),
-            LIT(SymbolLiteral_bootstrap) :: arg :: Nil))
+        /*
+         * This transformation should identify Scala symbol invocations in the tree and replace them
+         * with references to a statically cached instance.
+         *
+         * The reasoning behind this transformation is the following. Symbols get interned - they are stored
+         * in a global map which is protected with a lock. The reason for this is making equality checks
+         * quicker. But calling Symbol.apply, although it does return a unique symbol, accesses a locked object,
+         * making symbol access slow. To solve this, the unique symbol from the global symbol map in Symbol
+         * is accessed only once during class loading, and after that, the unique symbol is in the statically
+         * initialized call site returned by invokedynamic. Hence, it is cheap to both reach the unique symbol
+         * and do equality checks on it.
+         *
+         * And, finally, be advised - Scala's Symbol literal (scala.Symbol) and the Symbol class of the compiler
+         * have little in common.
+         */
+        case Apply(
+              fn @ Select(qual, _),
+              (arg @ Literal(Constant(symname: String))) :: Nil)
+            if treeInfo.isQualifierSafeToElide(
+              qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
+          super.transform(
+            treeCopy.ApplyDynamic(
+              tree,
+              atPos(fn.pos)(
+                Ident(SymbolLiteral_dummy).setType(SymbolLiteral_dummy.info)),
+              LIT(SymbolLiteral_bootstrap) :: arg :: Nil))
 
-      // Replaces `Array(Predef.wrapArray(ArrayValue(...).$asInstanceOf[...]), <tag>)`
-      // with just `ArrayValue(...).$asInstanceOf[...]`
-      //
-      // See SI-6611; we must *only* do this for literal vararg arrays.
-      case Apply(
-            appMeth,
-            List(
-              Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
-              _))
-          if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
-        super.transform(arg)
-      case Apply(
-            appMeth,
-            List(
-              elem0,
-              Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
-          if wrapArrayMeth.symbol == Predef_wrapArray(
-            elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(elemtpt.tpe) =>
-        super.transform(
-          treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
+        // Replaces `Array(Predef.wrapArray(ArrayValue(...).$asInstanceOf[...]), <tag>)`
+        // with just `ArrayValue(...).$asInstanceOf[...]`
+        //
+        // See SI-6611; we must *only* do this for literal vararg arrays.
+        case Apply(
+              appMeth,
+              List(
+                Apply(
+                  wrapRefArrayMeth,
+                  List(arg @ StripCast(ArrayValue(_, _)))),
+                _))
+            if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
+          super.transform(arg)
+        case Apply(
+              appMeth,
+              List(
+                elem0,
+                Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
+            if wrapArrayMeth.symbol == Predef_wrapArray(
+              elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(
+              elemtpt.tpe) =>
+          super.transform(
+            treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
 
-      case _ =>
-        super.transform(tree)
-    }
+        case _ =>
+          super.transform(tree)
+      }
 
   } // CleanUpTransformer
 

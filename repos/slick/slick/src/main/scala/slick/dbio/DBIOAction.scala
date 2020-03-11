@@ -62,10 +62,11 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Run another action after this action, if it completed successfully, and return the result
     * of the second action. If either of the two actions fails, the resulting action also fails. */
   def andThen[R2, S2 <: NoStream, E2 <: Effect](
-      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] = a match {
-    case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](this +: as2)
-    case a                  => AndThenAction[R2, S2, E with E2](Vector(this, a))
-  }
+      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
+    a match {
+      case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](this +: as2)
+      case a                  => AndThenAction[R2, S2, E with E2](Vector(this, a))
+    }
 
   /** Run another action after this action, if it completed successfully, and return the result
     * of both actions. If either of the two actions fails, the resulting action also fails. */
@@ -373,10 +374,11 @@ object DBIOAction {
       } finally trampoline.set(null)
     }
 
-    override def execute(runnable: Runnable): Unit = trampoline.get() match {
-      case null => runTrampoline(runnable)
-      case r    => trampoline.set(runnable :: r)
-    }
+    override def execute(runnable: Runnable): Unit =
+      trampoline.get() match {
+        case null => runTrampoline(runnable)
+        case r    => trampoline.set(runnable :: r)
+      }
 
     override def reportFailure(t: Throwable): Unit = throw t
   }
@@ -432,10 +434,11 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
       })
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
-      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] = a match {
-    case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](as ++ as2)
-    case a                  => AndThenAction[R2, S2, E with E2](as :+ a)
-  }
+      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
+    a match {
+      case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](as ++ as2)
+      case a                  => AndThenAction[R2, S2, E with E2](as :+ a)
+    }
 }
 
 /** A DBIOAction that represents a `sequence` or operation for sequencing in the DBIOAction monad. */
@@ -561,64 +564,69 @@ trait SynchronousDatabaseAction[
   def supportsStreaming: Boolean = true
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
-      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] = a match {
-    case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
-      new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
-        self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]] +:
-          a.as.asInstanceOf[IndexedSeq[
-            SynchronousDatabaseAction[Any, S2, B, E with E2]]])
-    case a: SynchronousDatabaseAction[_, _, _, _] =>
-      new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
-        Vector(
-          self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]],
-          a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]]))
-    case a => super.andThen[R2, S2, E2](a)
-  }
+      a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
+    a match {
+      case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
+        new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
+          self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]] +:
+            a.as.asInstanceOf[IndexedSeq[
+              SynchronousDatabaseAction[Any, S2, B, E with E2]]])
+      case a: SynchronousDatabaseAction[_, _, _, _] =>
+        new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
+          Vector(
+            self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]],
+            a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]]))
+      case a => super.andThen[R2, S2, E2](a)
+    }
 
   private[this] def superZip[R2, E2 <: Effect](
       a: DBIOAction[R2, NoStream, E2]) = super.zip[R2, E2](a)
   override def zip[R2, E2 <: Effect](a: DBIOAction[R2, NoStream, E2])
-      : DBIOAction[(R, R2), NoStream, E with E2] = a match {
-    case a: SynchronousDatabaseAction[_, _, _, _] =>
-      new SynchronousDatabaseAction.Fused[(R, R2), NoStream, B, E with E2] {
-        def run(context: B#Context): (R, R2) = {
-          val r1 = self.run(context)
-          val r2 = a
-            .asInstanceOf[SynchronousDatabaseAction[R2, NoStream, B, E2]]
-            .run(context)
-          (r1, r2)
+      : DBIOAction[(R, R2), NoStream, E with E2] =
+    a match {
+      case a: SynchronousDatabaseAction[_, _, _, _] =>
+        new SynchronousDatabaseAction.Fused[(R, R2), NoStream, B, E with E2] {
+          def run(context: B#Context): (R, R2) = {
+            val r1 = self.run(context)
+            val r2 = a
+              .asInstanceOf[SynchronousDatabaseAction[R2, NoStream, B, E2]]
+              .run(context)
+            (r1, r2)
+          }
+          override def nonFusedEquivalentAction
+              : DBIOAction[(R, R2), NoStream, E with E2] = superZip(a)
         }
-        override def nonFusedEquivalentAction
-            : DBIOAction[(R, R2), NoStream, E with E2] = superZip(a)
-      }
-    case a => superZip(a)
-  }
+      case a => superZip(a)
+    }
 
   private[this] def superAndFinally[E2 <: Effect](
       a: DBIOAction[_, NoStream, E2]) = super.andFinally[E2](a)
   override def andFinally[E2 <: Effect](
-      a: DBIOAction[_, NoStream, E2]): DBIOAction[R, S, E with E2] = a match {
-    case a: SynchronousDatabaseAction[_, _, _, _] =>
-      new SynchronousDatabaseAction.Fused[R, S, B, E with E2] {
-        def run(context: B#Context): R = {
-          val res =
-            try self.run(context)
-            catch {
-              case NonFatal(ex) =>
-                try a
-                  .asInstanceOf[SynchronousDatabaseAction[Any, NoStream, B, E2]]
-                  .run(context)
-                catch ignoreFollowOnError
-                throw ex
-            }
-          a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]].run(context)
-          res
+      a: DBIOAction[_, NoStream, E2]): DBIOAction[R, S, E with E2] =
+    a match {
+      case a: SynchronousDatabaseAction[_, _, _, _] =>
+        new SynchronousDatabaseAction.Fused[R, S, B, E with E2] {
+          def run(context: B#Context): R = {
+            val res =
+              try self.run(context)
+              catch {
+                case NonFatal(ex) =>
+                  try a
+                    .asInstanceOf[
+                      SynchronousDatabaseAction[Any, NoStream, B, E2]]
+                    .run(context)
+                  catch ignoreFollowOnError
+                  throw ex
+              }
+            a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
+              .run(context)
+            res
+          }
+          override def nonFusedEquivalentAction: DBIOAction[R, S, E with E2] =
+            superAndFinally(a)
         }
-        override def nonFusedEquivalentAction: DBIOAction[R, S, E with E2] =
-          superAndFinally(a)
-      }
-    case a => superAndFinally(a)
-  }
+      case a => superAndFinally(a)
+    }
 
   private[this] def superWithPinnedSession = super.withPinnedSession
   override def withPinnedSession: DBIOAction[R, S, E] =
@@ -688,20 +696,29 @@ object SynchronousDatabaseAction {
     override def nonFusedEquivalentAction: DBIOAction[R, S, E] =
       AndThenAction[R, S, E](as)
     override def andThen[R2, S2 <: NoStream, E2 <: Effect](
-        a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] = a match {
-      case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
-        new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
-          as.asInstanceOf[IndexedSeq[
-            SynchronousDatabaseAction[Any, S2, B, E with E2]]] ++
-            a.as.asInstanceOf[IndexedSeq[
-              SynchronousDatabaseAction[Any, S2, B, E with E2]]])
-      case a: SynchronousDatabaseAction[_, _, _, _] =>
-        new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
-          as.asInstanceOf[IndexedSeq[
-            SynchronousDatabaseAction[Any, S2, B, E with E2]]] :+
-            a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]])
-      case a => super.andThen(a)
-    }
+        a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
+      a match {
+        case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
+          new SynchronousDatabaseAction.FusedAndThenAction[
+            R2,
+            S2,
+            B,
+            E with E2](
+            as.asInstanceOf[IndexedSeq[
+              SynchronousDatabaseAction[Any, S2, B, E with E2]]] ++
+              a.as.asInstanceOf[IndexedSeq[
+                SynchronousDatabaseAction[Any, S2, B, E with E2]]])
+        case a: SynchronousDatabaseAction[_, _, _, _] =>
+          new SynchronousDatabaseAction.FusedAndThenAction[
+            R2,
+            S2,
+            B,
+            E with E2](
+            as.asInstanceOf[IndexedSeq[
+              SynchronousDatabaseAction[Any, S2, B, E with E2]]] :+
+              a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]])
+        case a => super.andThen(a)
+      }
   }
 
   /** Fuse `flatMap` / `map`, `cleanUp` and `filter` / `withFilter` combinators if they use

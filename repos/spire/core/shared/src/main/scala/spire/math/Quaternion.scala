@@ -115,13 +115,14 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
     else (19 * r.##) + (41 * i.##) + (13 * j.##) + (77 * k.##) + 97
 
   // not typesafe, so this is the best we can do :(
-  override def equals(that: Any): Boolean = that match {
-    case that: Quaternion[_] => this === that
-    case that: Complex[_] =>
-      r == that.real && i == that.imag && anyIsZero(j) && anyIsZero(k)
-    case that =>
-      sillyIsReal && r == that
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: Quaternion[_] => this === that
+      case that: Complex[_] =>
+        r == that.real && i == that.imag && anyIsZero(j) && anyIsZero(k)
+      case that =>
+        sillyIsReal && r == that
+    }
 
   def ===(that: Quaternion[_]): Boolean =
     r == that.r && i == that.i && j == that.j && k == that.k
@@ -154,18 +155,19 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
 
   def toComplex: Complex[A] = Complex(r, i)
 
-  def signum(implicit o: IsReal[A]): Int = r.signum match {
-    case 0 =>
-      i.signum match {
-        case 0 =>
-          j.signum match {
-            case 0 => k.signum
-            case n => n
-          }
-        case n => n
-      }
-    case n => n
-  }
+  def signum(implicit o: IsReal[A]): Int =
+    r.signum match {
+      case 0 =>
+        i.signum match {
+          case 0 =>
+            j.signum match {
+              case 0 => k.signum
+              case n => n
+            }
+          case n => n
+        }
+      case n => n
+    }
 
   def quaternionSignum(implicit
       f: Field[A],
@@ -239,12 +241,13 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       (j * rhs.real) + (k * rhs.imag),
       (j * rhs.imag) + (k * rhs.real)
     )
-  def *(rhs: Quaternion[A])(implicit s: Rng[A]): Quaternion[A] = Quaternion(
-    (lhs.r * rhs.r) - (lhs.i * rhs.i) - (lhs.j * rhs.j) - (lhs.k * rhs.k),
-    (lhs.r * rhs.i) + (lhs.i * rhs.r) + (lhs.j * rhs.k) - (lhs.k * rhs.j),
-    (lhs.r * rhs.j) - (lhs.i * rhs.k) + (lhs.j * rhs.r) + (lhs.k * rhs.i),
-    (lhs.r * rhs.k) + (lhs.i * rhs.j) - (lhs.j * rhs.i) + (lhs.k * rhs.r)
-  )
+  def *(rhs: Quaternion[A])(implicit s: Rng[A]): Quaternion[A] =
+    Quaternion(
+      (lhs.r * rhs.r) - (lhs.i * rhs.i) - (lhs.j * rhs.j) - (lhs.k * rhs.k),
+      (lhs.r * rhs.i) + (lhs.i * rhs.r) + (lhs.j * rhs.k) - (lhs.k * rhs.j),
+      (lhs.r * rhs.j) - (lhs.i * rhs.k) + (lhs.j * rhs.r) + (lhs.k * rhs.i),
+      (lhs.r * rhs.k) + (lhs.i * rhs.j) - (lhs.j * rhs.i) + (lhs.k * rhs.r)
+    )
 
   def /(rhs: A)(implicit f: Field[A]): Quaternion[A] =
     Quaternion(r / rhs, i / rhs, j / rhs, k / rhs)

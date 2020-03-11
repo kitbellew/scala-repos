@@ -133,9 +133,10 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
 
   implicit val estimatorMonoid: Monoid[ReducerEstimator] =
     new Monoid[ReducerEstimator] {
-      override def zero: ReducerEstimator = new ReducerEstimator {
-        override def estimateReducers(info: FlowStrategyInfo) = None
-      }
+      override def zero: ReducerEstimator =
+        new ReducerEstimator {
+          override def estimateReducers(info: FlowStrategyInfo) = None
+        }
 
       override def plus(
           l: ReducerEstimator,

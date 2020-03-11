@@ -90,10 +90,11 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
   }
 
   override def toString: String = s"TypedMultiMap($map)"
-  override def equals(other: Any) = other match {
-    case o: TypedMultiMap[_, _] ⇒ map == o.map
-    case _ ⇒ false
-  }
+  override def equals(other: Any) =
+    other match {
+      case o: TypedMultiMap[_, _] ⇒ map == o.map
+      case _ ⇒ false
+    }
   override def hashCode: Int = map.hashCode
 }
 

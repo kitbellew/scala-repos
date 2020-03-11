@@ -121,10 +121,11 @@ final case class Failed(cause: Throwable, child: ActorRef[Nothing])
 
   private[this] var _decision: Decision = _
   def decide(decision: Decision): Unit = _decision = decision
-  def getDecision: Decision = _decision match {
-    case null ⇒ NoFailureResponse
-    case x ⇒ x
-  }
+  def getDecision: Decision =
+    _decision match {
+      case null ⇒ NoFailureResponse
+      case x ⇒ x
+    }
 }
 
 /**

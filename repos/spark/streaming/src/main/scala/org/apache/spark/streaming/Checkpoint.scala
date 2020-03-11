@@ -301,25 +301,27 @@ private[streaming] class CheckpointWriter(
     }
   }
 
-  def stop(): Unit = synchronized {
-    if (stopped) return
+  def stop(): Unit =
+    synchronized {
+      if (stopped) return
 
-    executor.shutdown()
-    val startTime = System.currentTimeMillis()
-    val terminated =
-      executor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
-    if (!terminated) { executor.shutdownNow() }
-    val endTime = System.currentTimeMillis()
-    logInfo(
-      "CheckpointWriter executor terminated ? " + terminated +
-        ", waited for " + (endTime - startTime) + " ms.")
-    stopped = true
-  }
+      executor.shutdown()
+      val startTime = System.currentTimeMillis()
+      val terminated =
+        executor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
+      if (!terminated) { executor.shutdownNow() }
+      val endTime = System.currentTimeMillis()
+      logInfo(
+        "CheckpointWriter executor terminated ? " + terminated +
+          ", waited for " + (endTime - startTime) + " ms.")
+      stopped = true
+    }
 
-  private def fs = synchronized {
-    if (_fs == null) _fs = new Path(checkpointDir).getFileSystem(hadoopConf)
-    _fs
-  }
+  private def fs =
+    synchronized {
+      if (_fs == null) _fs = new Path(checkpointDir).getFileSystem(hadoopConf)
+      _fs
+    }
 
   private def reset() = synchronized { _fs = null }
 }

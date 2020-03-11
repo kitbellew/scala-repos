@@ -413,18 +413,19 @@ object ScalaPsiUtil {
         secondPart: Boolean,
         noApplicability: Boolean,
         withoutImplicitsForArgs: Boolean = noImplicitsForArgs) {
-      def args = processor match {
-        case _ if !noImplicitsForArgs => Seq.empty
-        case m: MethodResolveProcessor =>
-          m.argumentClauses.flatMap(
-            _.map(
-              _.getTypeAfterImplicitConversion(
-                checkImplicits = false,
-                isShape = m.isShapeResolve,
-                None)._1.getOrAny
-            ))
-        case _ => Seq.empty
-      }
+      def args =
+        processor match {
+          case _ if !noImplicitsForArgs => Seq.empty
+          case m: MethodResolveProcessor =>
+            m.argumentClauses.flatMap(
+              _.map(
+                _.getTypeAfterImplicitConversion(
+                  checkImplicits = false,
+                  isShape = m.isShapeResolve,
+                  None)._1.getOrAny
+              ))
+          case _ => Seq.empty
+        }
       val exprType = ImplicitCollector
         .exprType(e, fromUnder = false)
         .getOrElse(return
@@ -1231,14 +1232,15 @@ object ScalaPsiUtil {
     elem.getPrevSibling
   }
 
-  def isLValue(elem: PsiElement) = elem match {
-    case e: ScExpression =>
-      e.getParent match {
-        case as: ScAssignStmt => as.getLExpression eq e
-        case _                => false
-      }
-    case _ => false
-  }
+  def isLValue(elem: PsiElement) =
+    elem match {
+      case e: ScExpression =>
+        e.getParent match {
+          case as: ScAssignStmt => as.getLExpression eq e
+          case _                => false
+        }
+      case _ => false
+    }
 
   def getNextStubOrPsiElement(elem: PsiElement): PsiElement = {
     elem match {
@@ -1901,16 +1903,17 @@ object ScalaPsiUtil {
     }
   }
 
-  def isScope(element: PsiElement): Boolean = element match {
-    case _: ScalaFile | _: ScBlock | _: ScTemplateBody | _: ScPackageContainer |
-        _: ScParameters | _: ScTypeParamClause | _: ScCaseClause |
-        _: ScForStatement | _: ScExistentialClause | _: ScEarlyDefinitions |
-        _: ScRefinement =>
-      true
-    case e: ScPatternDefinition if e.getContext.isInstanceOf[ScCaseClause] =>
-      true // {case a => val a = 1}
-    case _ => false
-  }
+  def isScope(element: PsiElement): Boolean =
+    element match {
+      case _: ScalaFile | _: ScBlock | _: ScTemplateBody |
+          _: ScPackageContainer | _: ScParameters | _: ScTypeParamClause |
+          _: ScCaseClause | _: ScForStatement | _: ScExistentialClause |
+          _: ScEarlyDefinitions | _: ScRefinement =>
+        true
+      case e: ScPatternDefinition if e.getContext.isInstanceOf[ScCaseClause] =>
+        true // {case a => val a = 1}
+      case _ => false
+    }
 
   def stringValueOf(e: PsiLiteral): Option[String] =
     e.getValue.toOption.flatMap(_.asOptionOf[String])
@@ -1991,12 +1994,13 @@ object ScalaPsiUtil {
       param: ScParameter): Option[ScParameter] = {
     val fun = PsiTreeUtil.getParentOfType(param, classOf[ScFunction], true)
 
-    def paramFromConstructor(td: ScClass) = td.constructor match {
-      case Some(constr) =>
-        constr.parameters.find(p =>
-          p.name == param.name) // TODO multiple parameter sections.
-      case _ => None
-    }
+    def paramFromConstructor(td: ScClass) =
+      td.constructor match {
+        case Some(constr) =>
+          constr.parameters.find(p =>
+            p.name == param.name) // TODO multiple parameter sections.
+        case _ => None
+      }
 
     if (fun == null) { None }
     else if (fun.isSyntheticCopy) {
@@ -2033,11 +2037,12 @@ object ScalaPsiUtil {
       .isDefined
   }
 
-  private def isCanonicalArg(expr: ScExpression) = expr match {
-    case _: ScParenthesisedExpr      => false
-    case ScBlock(expr: ScExpression) => false
-    case _                           => true
-  }
+  private def isCanonicalArg(expr: ScExpression) =
+    expr match {
+      case _: ScParenthesisedExpr      => false
+      case ScBlock(expr: ScExpression) => false
+      case _                           => true
+    }
 
   def isByNameArgument(expr: ScExpression) = {
     isCanonicalArg(expr) && ScalaPsiUtil.parameterOf(expr).exists(_.isByName)
@@ -2099,11 +2104,13 @@ object ScalaPsiUtil {
         case _ => None
       }
     }
-    private def isSimpleUnderscore(expr: ScExpression) = expr match {
-      case _: ScUnderscoreSection => expr.getText == "_"
-      case typed: ScTypedStmt     => Option(typed.expr).map(_.getText).contains("_")
-      case _                      => false
-    }
+    private def isSimpleUnderscore(expr: ScExpression) =
+      expr match {
+        case _: ScUnderscoreSection => expr.getText == "_"
+        case typed: ScTypedStmt =>
+          Option(typed.expr).map(_.getText).contains("_")
+        case _ => false
+      }
     private def numberOfArgumentClauses(mc: ScMethodCall): Int = {
       mc.getEffectiveInvokedExpr match {
         case m: ScMethodCall => 1 + numberOfArgumentClauses(m)
@@ -2188,13 +2195,14 @@ object ScalaPsiUtil {
   //todo: fix it
   // This is a conservative approximation, we should really resolve the operation
   // to differentiate self assignment from calling a method whose name happens to be an assignment operator.
-  def isPossiblyAssignment(elem: PsiElement): Boolean = elem.getContext match {
-    case assign: ScAssignStmt if assign.getLExpression == elem => true
-    case infix: ScInfixExpr if infix.isAssignmentOperator      => true
-    case ref1 @ ScReferenceExpression.withQualifier(`elem`) =>
-      ParserUtils.isAssignmentOperator(ref1.refName)
-    case _ => false
-  }
+  def isPossiblyAssignment(elem: PsiElement): Boolean =
+    elem.getContext match {
+      case assign: ScAssignStmt if assign.getLExpression == elem => true
+      case infix: ScInfixExpr if infix.isAssignmentOperator      => true
+      case ref1 @ ScReferenceExpression.withQualifier(`elem`) =>
+        ParserUtils.isAssignmentOperator(ref1.refName)
+      case _ => false
+    }
 
   def availableImportAliases(
       position: PsiElement): Set[(ScReferenceElement, String)] = {
@@ -2429,22 +2437,23 @@ object ScalaPsiUtil {
     *
     * @return true if language level and flags are correct
     */
-  def isSAMEnabled(e: PsiElement) = e.scalaLanguageLevel match {
-    case Some(lang) if lang < Scala_2_11 => false
-    case Some(lang) if lang == Scala_2_11 =>
-      val settings = e.module match {
-        case Some(module) => module.scalaCompilerSettings
-        case None =>
-          ScalaCompilerConfiguration
-            .instanceIn(e.getProject)
-            .defaultProfile
-            .getSettings
-      }
-      settings.experimental || settings.additionalCompilerOptions.contains(
-        "-Xexperimental")
-    case _ =>
-      true //if there's no module e.scalaLanguageLevel is None, we treat it as Scala 2.12
-  }
+  def isSAMEnabled(e: PsiElement) =
+    e.scalaLanguageLevel match {
+      case Some(lang) if lang < Scala_2_11 => false
+      case Some(lang) if lang == Scala_2_11 =>
+        val settings = e.module match {
+          case Some(module) => module.scalaCompilerSettings
+          case None =>
+            ScalaCompilerConfiguration
+              .instanceIn(e.getProject)
+              .defaultProfile
+              .getSettings
+        }
+        settings.experimental || settings.additionalCompilerOptions.contains(
+          "-Xexperimental")
+      case _ =>
+        true //if there's no module e.scalaLanguageLevel is None, we treat it as Scala 2.12
+    }
 
   /**
     * Determines if expected can be created with a Single Abstract Method and if so return the required ScType for it

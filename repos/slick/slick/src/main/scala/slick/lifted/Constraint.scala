@@ -37,30 +37,32 @@ object ForeignKey {
       originalTargetColumns: TT => P,
       onUpdate: model.ForeignKeyAction,
       onDelete: model.ForeignKeyAction
-  ): ForeignKey = new ForeignKey(
-    name,
-    sourceTable,
-    onUpdate,
-    onDelete,
-    originalSourceColumns,
-    originalTargetColumns.asInstanceOf[Any => Any],
-    linearizeFieldRefs(pShape.toNode(originalSourceColumns)),
-    linearizeFieldRefs(
-      pShape.toNode(originalTargetColumns(targetTableShaped.value))),
-    linearizeFieldRefs(
-      pShape.toNode(originalTargetColumns(originalTargetTable))),
-    targetTableShaped.value.tableNode,
-    pShape
-  )
+  ): ForeignKey =
+    new ForeignKey(
+      name,
+      sourceTable,
+      onUpdate,
+      onDelete,
+      originalSourceColumns,
+      originalTargetColumns.asInstanceOf[Any => Any],
+      linearizeFieldRefs(pShape.toNode(originalSourceColumns)),
+      linearizeFieldRefs(
+        pShape.toNode(originalTargetColumns(targetTableShaped.value))),
+      linearizeFieldRefs(
+        pShape.toNode(originalTargetColumns(originalTargetTable))),
+      targetTableShaped.value.tableNode,
+      pShape
+    )
 
   def linearizeFieldRefs(n: Node): IndexedSeq[Node] = {
     val sels = new ArrayBuffer[Node]
-    def f(n: Node): Unit = n match {
-      case _: Select | _: Ref | _: TableNode => sels += n
-      case _: ProductNode | _: OptionApply | _: GetOrElse | _: TypeMapping |
-          _: ClientSideOp =>
-        n.childrenForeach(f)
-    }
+    def f(n: Node): Unit =
+      n match {
+        case _: Select | _: Ref | _: TableNode => sels += n
+        case _: ProductNode | _: OptionApply | _: GetOrElse | _: TypeMapping |
+            _: ClientSideOp =>
+          n.childrenForeach(f)
+      }
     f(n)
     sels
   }

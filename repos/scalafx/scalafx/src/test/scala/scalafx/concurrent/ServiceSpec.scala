@@ -47,8 +47,9 @@ class ServiceSpec[T]
 
   override protected def getScalaClassInstance = Service[T](null)
 
-  override protected def getJavaClassInstance = new jfxc.Service[T] {
-    protected def createTask = null
-  }
+  override protected def getJavaClassInstance =
+    new jfxc.Service[T] {
+      protected def createTask = null
+    }
 
 }

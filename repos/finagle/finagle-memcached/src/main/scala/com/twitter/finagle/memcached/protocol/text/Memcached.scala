@@ -54,26 +54,28 @@ object MemcachedServerPipelineFactory extends ChannelPipelineFactory {
 }
 class Memcached extends CodecFactory[Command, Response] {
 
-  def server = Function.const {
-    new Codec[Command, Response] {
-      def pipelineFactory = MemcachedServerPipelineFactory
+  def server =
+    Function.const {
+      new Codec[Command, Response] {
+        def pipelineFactory = MemcachedServerPipelineFactory
+      }
     }
-  }
 
-  def client = Function.const {
-    new Codec[Command, Response] {
-      def pipelineFactory = MemcachedClientPipelineFactory
+  def client =
+    Function.const {
+      new Codec[Command, Response] {
+        def pipelineFactory = MemcachedClientPipelineFactory
 
-      // pass every request through a filter to create trace data
-      override def prepareConnFactory(
-          underlying: ServiceFactory[Command, Response],
-          params: Stack.Params) =
-        new MemcachedLoggingFilter(params[param.Stats].statsReceiver)
-          .andThen(underlying)
+        // pass every request through a filter to create trace data
+        override def prepareConnFactory(
+            underlying: ServiceFactory[Command, Response],
+            params: Stack.Params) =
+          new MemcachedLoggingFilter(params[param.Stats].statsReceiver)
+            .andThen(underlying)
 
-      override def newTraceInitializer = MemcachedTraceInitializer.Module
+        override def newTraceInitializer = MemcachedTraceInitializer.Module
+      }
     }
-  }
 
   override val protocolLibraryName: String = "memcached"
 }

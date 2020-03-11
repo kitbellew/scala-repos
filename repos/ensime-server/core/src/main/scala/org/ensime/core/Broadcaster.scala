@@ -52,9 +52,8 @@ class Broadcaster extends Actor with ActorLogging {
       send(message)
   }
 
-  private def send(message: Any): Unit = for { subscriber <- subscribers } {
-    subscriber forward message
-  }
+  private def send(message: Any): Unit =
+    for { subscriber <- subscribers } { subscriber forward message }
 }
 
 object Broadcaster {

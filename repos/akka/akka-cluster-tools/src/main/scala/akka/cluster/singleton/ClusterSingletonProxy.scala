@@ -186,10 +186,11 @@ final class ClusterSingletonProxy(
     identifyTimer = None
   }
 
-  def matchingRole(member: Member): Boolean = role match {
-    case None ⇒ true
-    case Some(r) ⇒ member.hasRole(r)
-  }
+  def matchingRole(member: Member): Boolean =
+    role match {
+      case None ⇒ true
+      case Some(r) ⇒ member.hasRole(r)
+    }
 
   def handleInitial(state: CurrentClusterState): Unit = {
     trackChange { () ⇒

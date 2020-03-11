@@ -42,13 +42,14 @@ private[loadbalancer] trait P2CSuite {
       fs: Var[Traversable[P2CServiceFactory]],
       sr: StatsReceiver = NullStatsReceiver,
       clock: (() => Long) = System.nanoTime
-  ): ServiceFactory[Unit, Int] = new P2CBalancer(
-    Activity(fs.map(Activity.Ok(_))),
-    maxEffort = 5,
-    rng = Rng(12345L),
-    statsReceiver = sr,
-    emptyException = noBrokers
-  )
+  ): ServiceFactory[Unit, Int] =
+    new P2CBalancer(
+      Activity(fs.map(Activity.Ok(_))),
+      maxEffort = 5,
+      rng = Rng(12345L),
+      statsReceiver = sr,
+      emptyException = noBrokers
+    )
 
   def assertEven(fs: Traversable[P2CServiceFactory]) {
     val ml = fs.head.meanLoad
@@ -96,15 +97,16 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     override def status = stat
   }
 
-  def statsDict(r: InMemoryStatsReceiver) = new {
-    private val zero = () => 0
+  def statsDict(r: InMemoryStatsReceiver) =
+    new {
+      private val zero = () => 0
 
-    def rsize = r.gauges.getOrElse(Seq("size"), zero)()
-    def adds = r.counters.getOrElse(Seq("adds"), 0)
-    def removes = r.counters.getOrElse(Seq("removes"), 0)
-    def load = r.gauges.getOrElse(Seq("load"), zero)()
-    def available = r.gauges.getOrElse(Seq("available"), zero)()
-  }
+      def rsize = r.gauges.getOrElse(Seq("size"), zero)()
+      def adds = r.counters.getOrElse(Seq("adds"), 0)
+      def removes = r.counters.getOrElse(Seq("removes"), 0)
+      def load = r.gauges.getOrElse(Seq("load"), zero)()
+      def available = r.gauges.getOrElse(Seq("available"), zero)()
+    }
 
   test("Balances evenly") {
     val init = Vector.tabulate(N) { i => new LoadedFactory(i) }

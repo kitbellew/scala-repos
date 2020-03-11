@@ -259,13 +259,14 @@ trait AccountManagementControllerBase extends ControllerBase {
       }
     }
 
-  protected def uniqueUserName: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      getAccountByUserName(value, true).map { _ => "User already exists." }
-  }
+  protected def uniqueUserName: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        getAccountByUserName(value, true).map { _ => "User already exists." }
+    }
 
   protected def uniqueMailAddress(paramName: String = ""): Constraint =
     new Constraint() {

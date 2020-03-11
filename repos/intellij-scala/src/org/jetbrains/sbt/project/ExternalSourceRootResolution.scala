@@ -208,10 +208,11 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
   }
 
   private case class Root(scope: Root.Scope, kind: Root.Kind, directory: File) {
-    def base: Option[File] = Root.DefaultPaths.collectFirst {
-      case paths if directory.parent.exists(_.endsWith(paths: _*)) =>
-        directory << (paths.length + 1)
-    }
+    def base: Option[File] =
+      Root.DefaultPaths.collectFirst {
+        case paths if directory.parent.exists(_.endsWith(paths: _*)) =>
+          directory << (paths.length + 1)
+      }
   }
 
   private object Root {

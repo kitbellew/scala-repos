@@ -305,10 +305,11 @@ private[util] trait Props extends Logger {
 
   private lazy val _modeName = dotLen(modeName)
 
-  private def dotLen(in: String): String = in match {
-    case null | "" => in
-    case x         => x + "."
-  }
+  private def dotLen(in: String): String =
+    in match {
+      case null | "" => in
+      case x         => x + "."
+    }
 
   /**
     * The resource path segment corresponding to the current system user

@@ -621,23 +621,24 @@ trait EvaluatorModule
   }
 
   private def linearProvPossibilities(prov: Provenance): List[Provenance] = {
-    def loop(prov: Provenance): List[Provenance] = prov match {
-      case ProductProvenance(left, right) =>
-        loop(left) ++ loop(right)
+    def loop(prov: Provenance): List[Provenance] =
+      prov match {
+        case ProductProvenance(left, right) =>
+          loop(left) ++ loop(right)
 
-      case CoproductProvenance(left, right) => {
-        val leftRec = loop(left)
-        val rightRec = loop(right)
+        case CoproductProvenance(left, right) => {
+          val leftRec = loop(left)
+          val rightRec = loop(right)
 
-        val merged = leftRec zip rightRec map {
-          case (l, r) => CoproductProvenance(l, r)
+          val merged = leftRec zip rightRec map {
+            case (l, r) => CoproductProvenance(l, r)
+          }
+
+          merged ++ (leftRec drop merged.length) ++ (rightRec drop merged.length)
         }
 
-        merged ++ (leftRec drop merged.length) ++ (rightRec drop merged.length)
+        case prov => prov :: Nil
       }
-
-      case prov => prov :: Nil
-    }
 
     val (_, back) =
       loop(prov).foldLeft((Set[Provenance](), List[Provenance]())) {

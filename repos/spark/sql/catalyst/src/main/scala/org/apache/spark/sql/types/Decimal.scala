@@ -259,12 +259,13 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     } else { toBigDecimal.compare(other.toBigDecimal) }
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case d: Decimal =>
-      compare(d) == 0
-    case _ =>
-      false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case d: Decimal =>
+        compare(d) == 0
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = toBigDecimal.hashCode()
 

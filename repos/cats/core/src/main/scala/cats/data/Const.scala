@@ -101,10 +101,11 @@ private[data] sealed abstract class ConstInstances0 extends ConstInstances1 {
     }
 
   implicit def constPartialOrder[A: PartialOrder, B]
-      : PartialOrder[Const[A, B]] = new PartialOrder[Const[A, B]] {
-    def partialCompare(x: Const[A, B], y: Const[A, B]): Double =
-      x partialCompare y
-  }
+      : PartialOrder[Const[A, B]] =
+    new PartialOrder[Const[A, B]] {
+      def partialCompare(x: Const[A, B], y: Const[A, B]): Double =
+        x partialCompare y
+    }
 
   implicit def constApplicative[C: Monoid]: Applicative[Const[C, ?]] =
     new Applicative[Const[C, ?]] {
@@ -123,10 +124,11 @@ private[data] sealed abstract class ConstInstances0 extends ConstInstances1 {
 }
 
 private[data] sealed abstract class ConstInstances1 {
-  implicit def constEq[A: Eq, B]: Eq[Const[A, B]] = new Eq[Const[A, B]] {
-    def eqv(x: Const[A, B], y: Const[A, B]): Boolean =
-      x === y
-  }
+  implicit def constEq[A: Eq, B]: Eq[Const[A, B]] =
+    new Eq[Const[A, B]] {
+      def eqv(x: Const[A, B], y: Const[A, B]): Boolean =
+        x === y
+    }
 
   implicit def constApply[C: Semigroup]: Apply[Const[C, ?]] =
     new Apply[Const[C, ?]] {

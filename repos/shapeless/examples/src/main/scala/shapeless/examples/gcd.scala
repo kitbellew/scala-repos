@@ -38,9 +38,10 @@ object GCDExamples {
 
     type Aux[X <: Nat, Y <: Nat, Z <: Nat] = GCD[X, Y] { type Out = Z }
 
-    implicit def gcd0[X <: Nat]: Aux[X, X, X] = new GCD[X, X] {
-      type Out = X
-    }
+    implicit def gcd0[X <: Nat]: Aux[X, X, X] =
+      new GCD[X, X] {
+        type Out = X
+      }
     implicit def gcd1[X <: Nat, Y <: Nat, Z <: Nat, Out0 <: Nat](implicit
         ev0: LT[X, Y],
         ev1: Diff.Aux[Y, X, Z],
@@ -50,9 +51,10 @@ object GCDExamples {
       }
     implicit def gcd2[X <: Nat, Y <: Nat, Out0 <: Nat](implicit
         ev0: LT[Y, X],
-        ev1: Aux[Y, X, Out0]): Aux[X, Y, Out0] = new GCD[X, Y] {
-      type Out = Out0
-    }
+        ev1: Aux[Y, X, Out0]): Aux[X, Y, Out0] =
+      new GCD[X, Y] {
+        type Out = Out0
+      }
   }
 
   import GCD._

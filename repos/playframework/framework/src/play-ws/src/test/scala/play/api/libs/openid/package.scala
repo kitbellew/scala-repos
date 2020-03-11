@@ -16,18 +16,22 @@ package object openid {
 
   implicit def stringToSeq(s: String): Seq[String] = Seq(s)
 
-  implicit def urlToRichUrl(url: URL) = new RichUrl[URL] {
-    def hostAndPath =
-      new URL(
-        url.getProtocol,
-        url.getHost,
-        url.getPort,
-        url.getPath).toExternalForm
-  }
+  implicit def urlToRichUrl(url: URL) =
+    new RichUrl[URL] {
+      def hostAndPath =
+        new URL(
+          url.getProtocol,
+          url.getHost,
+          url.getPort,
+          url.getPath).toExternalForm
+    }
 
-  def readFixture(filePath: String): String = this.synchronized {
-    Source.fromInputStream(this.getClass.getResourceAsStream(filePath)).mkString
-  }
+  def readFixture(filePath: String): String =
+    this.synchronized {
+      Source
+        .fromInputStream(this.getClass.getResourceAsStream(filePath))
+        .mkString
+    }
 
   def parseQueryString(url: String): Params = {
     catching(classOf[MalformedURLException]) opt new URL(url) map { url =>
@@ -44,17 +48,18 @@ package object openid {
       identity: String,
       defaultSigned: String =
         "op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle")
-      : Map[String, Seq[String]] = Map(
-    "openid.ns" -> "http://specs.openid.net/auth/2.0",
-    "openid.mode" -> "id_res",
-    "openid.op_endpoint" -> "https://www.google.com/a/example.com/o8/ud?be=o8",
-    "openid.claimed_id" -> claimedId,
-    "openid.identity" -> identity,
-    "openid.return_to" -> "https://example.com/openid?abc=false",
-    "openid.response_nonce" -> "2012-05-25T06:47:55ZEJvRv76xQcWbTG",
-    "openid.assoc_handle" -> "AMlYA9VC8_UIj4-y4K_X2E_mdv-123-ABC",
-    "openid.signed" -> defaultSigned,
-    "openid.sig" -> "MWRsJZ/9AOMQt9gH6zTZIfIjk6g="
-  )
+      : Map[String, Seq[String]] =
+    Map(
+      "openid.ns" -> "http://specs.openid.net/auth/2.0",
+      "openid.mode" -> "id_res",
+      "openid.op_endpoint" -> "https://www.google.com/a/example.com/o8/ud?be=o8",
+      "openid.claimed_id" -> claimedId,
+      "openid.identity" -> identity,
+      "openid.return_to" -> "https://example.com/openid?abc=false",
+      "openid.response_nonce" -> "2012-05-25T06:47:55ZEJvRv76xQcWbTG",
+      "openid.assoc_handle" -> "AMlYA9VC8_UIj4-y4K_X2E_mdv-123-ABC",
+      "openid.signed" -> defaultSigned,
+      "openid.sig" -> "MWRsJZ/9AOMQt9gH6zTZIfIjk6g="
+    )
 
 }

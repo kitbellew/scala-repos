@@ -551,10 +551,11 @@ private[http] abstract class HttpMessageParser[
     */
   private def done(): StateResult = null // StateResult is a phantom type
 
-  def contentType(cth: Option[`Content-Type`]) = cth match {
-    case Some(x) ⇒ x.contentType
-    case None ⇒ ContentTypes.`application/octet-stream`
-  }
+  def contentType(cth: Option[`Content-Type`]) =
+    cth match {
+      case Some(x) ⇒ x.contentType
+      case None ⇒ ContentTypes.`application/octet-stream`
+    }
 
   def emptyEntity(cth: Option[`Content-Type`]) =
     StrictEntityCreator(

@@ -80,13 +80,14 @@ private[spark] object BlockManagerMessages {
         out.writeLong(diskSize)
       }
 
-    override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-      blockManagerId = BlockManagerId(in)
-      blockId = BlockId(in.readUTF())
-      storageLevel = StorageLevel(in)
-      memSize = in.readLong()
-      diskSize = in.readLong()
-    }
+    override def readExternal(in: ObjectInput): Unit =
+      Utils.tryOrIOException {
+        blockManagerId = BlockManagerId(in)
+        blockId = BlockId(in.readUTF())
+        storageLevel = StorageLevel(in)
+        memSize = in.readLong()
+        diskSize = in.readLong()
+      }
   }
 
   case class GetLocations(blockId: BlockId) extends ToBlockManagerMaster

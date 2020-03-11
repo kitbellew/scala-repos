@@ -262,46 +262,51 @@ trait Solving extends Logic {
     class AlreadyInCNF(symbolMapping: SymbolMapping) {
 
       object ToLiteral {
-        def unapply(f: Prop): Option[Lit] = f match {
-          case Not(ToLiteral(lit)) => Some(-lit)
-          case sym: Sym            => Some(symbolMapping.lit(sym))
-          case _                   => None
-        }
+        def unapply(f: Prop): Option[Lit] =
+          f match {
+            case Not(ToLiteral(lit)) => Some(-lit)
+            case sym: Sym            => Some(symbolMapping.lit(sym))
+            case _                   => None
+          }
       }
 
       object ToDisjunction {
-        def unapply(f: Prop): Option[Array[Clause]] = f match {
-          case Or(fv) =>
-            val cl = fv.foldLeft(Option(clause())) {
-              case (Some(clause), ToLiteral(lit)) =>
-                Some(clause + lit)
-              case (_, _) =>
-                None
-            }
-            cl.map(Array(_))
-          case True           => Some(Array()) // empty, no clauses needed
-          case False          => Some(Array(clause())) // empty clause can't be satisfied
-          case ToLiteral(lit) => Some(Array(clause(lit)))
-          case _              => None
-        }
+        def unapply(f: Prop): Option[Array[Clause]] =
+          f match {
+            case Or(fv) =>
+              val cl = fv.foldLeft(Option(clause())) {
+                case (Some(clause), ToLiteral(lit)) =>
+                  Some(clause + lit)
+                case (_, _) =>
+                  None
+              }
+              cl.map(Array(_))
+            case True => Some(Array()) // empty, no clauses needed
+            case False =>
+              Some(Array(clause())) // empty clause can't be satisfied
+            case ToLiteral(lit) => Some(Array(clause(lit)))
+            case _              => None
+          }
       }
 
       /**
         * Checks if propositional formula is already in CNF
         */
       object ToCnf {
-        def unapply(f: Prop): Option[Solvable] = f match {
-          case ToDisjunction(clauses) => Some(Solvable(clauses, symbolMapping))
-          case And(fv) =>
-            val clauses = fv.foldLeft(Option(mutable.ArrayBuffer[Clause]())) {
-              case (Some(cnf), ToDisjunction(clauses)) =>
-                Some(cnf ++= clauses)
-              case (_, _) =>
-                None
-            }
-            clauses.map(c => Solvable(c.toArray, symbolMapping))
-          case _ => None
-        }
+        def unapply(f: Prop): Option[Solvable] =
+          f match {
+            case ToDisjunction(clauses) =>
+              Some(Solvable(clauses, symbolMapping))
+            case And(fv) =>
+              val clauses = fv.foldLeft(Option(mutable.ArrayBuffer[Clause]())) {
+                case (Some(cnf), ToDisjunction(clauses)) =>
+                  Some(cnf ++= clauses)
+                case (_, _) =>
+                  None
+              }
+              clauses.map(c => Solvable(c.toArray, symbolMapping))
+            case _ => None
+          }
       }
     }
 

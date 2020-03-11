@@ -153,26 +153,27 @@ private final class React(
     results: mutable.Map[String, SuiteResult]) {
   import ForkTags._
   @annotation.tailrec
-  def react(): Unit = is.readObject match {
-    case `Done` =>
-      os.writeObject(Done); os.flush()
-    case Array(`Error`, s: String) =>
-      log.error(s); react()
-    case Array(`Warn`, s: String) =>
-      log.warn(s); react()
-    case Array(`Info`, s: String) =>
-      log.info(s); react()
-    case Array(`Debug`, s: String) =>
-      log.debug(s); react()
-    case t: Throwable =>
-      log.trace(t); react()
-    case Array(group: String, tEvents: Array[Event]) =>
-      listeners.foreach(_ startGroup group)
-      val event = TestEvent(tEvents)
-      listeners.foreach(_ testEvent event)
-      val suiteResult = SuiteResult(tEvents)
-      results += group -> suiteResult
-      listeners.foreach(_ endGroup (group, suiteResult.result))
-      react()
-  }
+  def react(): Unit =
+    is.readObject match {
+      case `Done` =>
+        os.writeObject(Done); os.flush()
+      case Array(`Error`, s: String) =>
+        log.error(s); react()
+      case Array(`Warn`, s: String) =>
+        log.warn(s); react()
+      case Array(`Info`, s: String) =>
+        log.info(s); react()
+      case Array(`Debug`, s: String) =>
+        log.debug(s); react()
+      case t: Throwable =>
+        log.trace(t); react()
+      case Array(group: String, tEvents: Array[Event]) =>
+        listeners.foreach(_ startGroup group)
+        val event = TestEvent(tEvents)
+        listeners.foreach(_ testEvent event)
+        val suiteResult = SuiteResult(tEvents)
+        results += group -> suiteResult
+        listeners.foreach(_ endGroup (group, suiteResult.result))
+        react()
+    }
 }

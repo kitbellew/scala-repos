@@ -69,12 +69,13 @@ trait Timer {
     var pending = true
     val p = new Promise[A]()
 
-    def isFirst(): Boolean = p.synchronized {
-      if (pending) {
-        pending = false
-        true
-      } else { false }
-    }
+    def isFirst(): Boolean =
+      p.synchronized {
+        if (pending) {
+          pending = false
+          true
+        } else { false }
+      }
 
     val task = schedule(time) { if (isFirst()) p.update(Try(f)) }
 
@@ -154,21 +155,23 @@ class ReferenceCountingTimer(factory: () => Timer)
   private[this] var refcount = 0
   private[this] var underlying: Timer = null
 
-  def acquire(): Unit = synchronized {
-    refcount += 1
-    if (refcount == 1) {
-      require(underlying == null)
-      underlying = factory()
+  def acquire(): Unit =
+    synchronized {
+      refcount += 1
+      if (refcount == 1) {
+        require(underlying == null)
+        underlying = factory()
+      }
     }
-  }
 
-  def stop(): Unit = synchronized {
-    refcount -= 1
-    if (refcount == 0) {
-      underlying.stop()
-      underlying = null
+  def stop(): Unit =
+    synchronized {
+      refcount -= 1
+      if (refcount == 0) {
+        underlying.stop()
+        underlying = null
+      }
     }
-  }
 
   // Just dispatch to the underlying timer. It's the responsibility of
   // the API consumer to not call into the timer once it has been
@@ -243,13 +246,15 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
   // before the epoch (e.g. Time.Bottom), move any pre-epoch times to the epoch.
   private[this] def safeTime(time: Time): Time = { time.max(Time.epoch) }
 
-  private[this] def toJavaTimerTask(f: => Unit) = new java.util.TimerTask {
-    def run(): Unit = f
-  }
+  private[this] def toJavaTimerTask(f: => Unit) =
+    new java.util.TimerTask {
+      def run(): Unit = f
+    }
 
-  private[this] def toTimerTask(task: java.util.TimerTask) = new TimerTask {
-    def cancel(): Unit = task.cancel()
-  }
+  private[this] def toTimerTask(task: java.util.TimerTask) =
+    new TimerTask {
+      def cancel(): Unit = task.cancel()
+    }
 }
 
 class ScheduledThreadPoolTimer(
@@ -280,9 +285,10 @@ class ScheduledThreadPoolTimer(
       new ScheduledThreadPoolExecutor(poolSize, threadFactory, h)
   }
 
-  private[this] def toRunnable(f: => Unit): Runnable = new Runnable {
-    def run(): Unit = f
-  }
+  private[this] def toRunnable(f: => Unit): Runnable =
+    new Runnable {
+      def run(): Unit = f
+    }
 
   protected def scheduleOnce(when: Time)(f: => Unit): TimerTask = {
     val runnable = toRunnable(f)
@@ -338,32 +344,35 @@ class MockTimer extends Timer {
   case class Task(var when: Time, runner: () => Unit) extends TimerTask {
     var isCancelled = false
 
-    def cancel(): Unit = MockTimer.this.synchronized {
-      isCancelled = true
-      nCancelled += 1
-      when = Time.now
-      tick()
-    }
+    def cancel(): Unit =
+      MockTimer.this.synchronized {
+        isCancelled = true
+        nCancelled += 1
+        when = Time.now
+        tick()
+      }
   }
 
   var isStopped = false
   var tasks = ArrayBuffer[Task]()
   var nCancelled = 0
 
-  def tick(): Unit = synchronized {
-    if (isStopped) throw new IllegalStateException("timer is stopped already")
+  def tick(): Unit =
+    synchronized {
+      if (isStopped) throw new IllegalStateException("timer is stopped already")
 
-    val now = Time.now
-    val (toRun, toQueue) = tasks.partition { task => task.when <= now }
-    tasks = toQueue
-    toRun.filterNot(_.isCancelled).foreach(_.runner())
-  }
+      val now = Time.now
+      val (toRun, toQueue) = tasks.partition { task => task.when <= now }
+      tasks = toQueue
+      toRun.filterNot(_.isCancelled).foreach(_.runner())
+    }
 
-  protected def scheduleOnce(when: Time)(f: => Unit): TimerTask = synchronized {
-    val task = Task(when, () => f)
-    tasks += task
-    task
-  }
+  protected def scheduleOnce(when: Time)(f: => Unit): TimerTask =
+    synchronized {
+      val task = Task(when, () => f)
+      tasks += task
+      task
+    }
 
   /**
     * Pay attention that ticking frozen time forward more than 1x duration will
@@ -377,12 +386,13 @@ class MockTimer extends Timer {
       def cancel(): Unit = MockTimer.this.synchronized { isCancelled = true }
     }
 
-    def runAndReschedule(): Unit = MockTimer.this.synchronized {
-      if (!isCancelled) {
-        schedule(Time.now + period) { runAndReschedule() }
-        f
+    def runAndReschedule(): Unit =
+      MockTimer.this.synchronized {
+        if (!isCancelled) {
+          schedule(Time.now + period) { runAndReschedule() }
+          f
+        }
       }
-    }
 
     schedule(when) { runAndReschedule() } // discard
     task

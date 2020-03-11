@@ -132,10 +132,11 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   def compareTo(that: URI): Int = internalCompare(that)(_.compareTo(_))
 
-  override def equals(that: Any): Boolean = that match {
-    case that: URI => internalCompare(that)(URI.escapeAwareCompare) == 0
-    case _         => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: URI => internalCompare(that)(URI.escapeAwareCompare) == 0
+      case _         => false
+    }
 
   def getAuthority(): String = _authority.map(decodeComponent).orNull
   def getFragment(): String = _fragment.map(decodeComponent).orNull
@@ -247,9 +248,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   }
 
   def relativize(uri: URI): URI = {
-    def authoritiesEqual = this._authority.fold(uri._authority.isEmpty) { a1 =>
-      uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
-    }
+    def authoritiesEqual =
+      this._authority.fold(uri._authority.isEmpty) { a1 =>
+        uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
+      }
 
     if (this.isOpaque || uri.isOpaque ||
         this._scheme != uri._scheme || !authoritiesEqual) uri

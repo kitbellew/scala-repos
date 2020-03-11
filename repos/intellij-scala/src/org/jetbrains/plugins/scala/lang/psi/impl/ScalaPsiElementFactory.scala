@@ -785,28 +785,29 @@ object ScalaPsiElementFactory {
       isVariable: Boolean,
       expr: ScExpression,
       manager: PsiManager): ScMember = {
-    def stmtText(stmt: ScBlockStatement): String = stmt match {
-      case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
-      case fun @ ScFunctionExpr(parSeq, Some(result)) =>
-        val paramText =
-          if (parSeq.size == 1) {
-            val par = parSeq.head
-            if (par.typeElement.isDefined && par.getPrevSiblingNotWhitespace == null)
-              s"(${par.getText})"
-            else fun.params.getText
-          } else fun.params.getText
-        val resultText = result match {
-          case block: ScBlock
-              if !block.hasRBrace && block.statements.size != 1 =>
-            s"{\n${block.getText}\n}"
-          case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
-          case _                                       => result.getText
-        }
-        val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
-        s"$paramText $arrow $resultText"
-      case null => ""
-      case _    => stmt.getText
-    }
+    def stmtText(stmt: ScBlockStatement): String =
+      stmt match {
+        case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
+        case fun @ ScFunctionExpr(parSeq, Some(result)) =>
+          val paramText =
+            if (parSeq.size == 1) {
+              val par = parSeq.head
+              if (par.typeElement.isDefined && par.getPrevSiblingNotWhitespace == null)
+                s"(${par.getText})"
+              else fun.params.getText
+            } else fun.params.getText
+          val resultText = result match {
+            case block: ScBlock
+                if !block.hasRBrace && block.statements.size != 1 =>
+              s"{\n${block.getText}\n}"
+            case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
+            case _                                       => result.getText
+          }
+          val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
+          s"$paramText $arrow $resultText"
+        case null => ""
+        case _    => stmt.getText
+      }
     val beforeColon = if (ScalaNamesUtil.isOpCharacter(name.last)) " " else ""
     val typeText =
       if (typeName != null && typeName != "") {

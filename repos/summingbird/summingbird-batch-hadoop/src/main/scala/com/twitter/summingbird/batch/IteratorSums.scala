@@ -79,41 +79,45 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
     }
 
   def groupedStatefulSummer[K: Equiv, V: Semigroup](
-      sz: Int): StatefulSummer[(K, V)] = new StatefulSummer[(K, V)] {
-    require(sz > 0, "buffer <= 0 not allowed")
+      sz: Int): StatefulSummer[(K, V)] =
+    new StatefulSummer[(K, V)] {
+      require(sz > 0, "buffer <= 0 not allowed")
 
-    // The StatefulSummer (wrongly?) needs this, but it is never used
-    def semigroup = Semigroup.from {
-      case ((lk, lv), (rk, rv)) =>
-        // if the keys match, sum, else return the new pair
-        if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv)) else (rk, rv)
-    }
+      // The StatefulSummer (wrongly?) needs this, but it is never used
+      def semigroup =
+        Semigroup.from {
+          case ((lk, lv), (rk, rv)) =>
+            // if the keys match, sum, else return the new pair
+            if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
+            else (rk, rv)
+        }
 
-    var lastK: Option[K] = None
-    val buffer = new ArrayBuffer[V](sz)
+      var lastK: Option[K] = None
+      val buffer = new ArrayBuffer[V](sz)
 
-    def put(kv: (K, V)): Option[(K, V)] = {
-      val (k, v) = kv
-      val res = lastK.flatMap { lk =>
-        if (!Equiv[K].equiv(lk, k)) flush
-        else if (buffer.size > sz)
-          flush.flatMap(put(_)) // put it back in the front
-        else None
+      def put(kv: (K, V)): Option[(K, V)] = {
+        val (k, v) = kv
+        val res = lastK.flatMap { lk =>
+          if (!Equiv[K].equiv(lk, k)) flush
+          else if (buffer.size > sz)
+            flush.flatMap(put(_)) // put it back in the front
+          else None
+        }
+        lastK = Some(k)
+        buffer += v
+        res
       }
-      lastK = Some(k)
-      buffer += v
-      res
-    }
 
-    def isFlushed = buffer.isEmpty
+      def isFlushed = buffer.isEmpty
 
-    def flush = {
-      // sumOption is highly optimized
-      val res = Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
-      buffer.clear
-      res
+      def flush = {
+        // sumOption is highly optimized
+        val res =
+          Semigroup.sumOption(buffer).flatMap { sv => lastK.map((_, sv)) }
+        buffer.clear
+        res
+      }
     }
-  }
 
   def groupedSum[K1: Equiv, V1: Semigroup](
       in: Iterator[(K1, V1)],

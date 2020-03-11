@@ -623,12 +623,13 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     * Note that DistributedFileSystem is a `@LimitedPrivate` class, which for all practical reasons
     * makes it more public than not.
     */
-  private[history] def isFsInSafeMode(): Boolean = fs match {
-    case dfs: DistributedFileSystem =>
-      isFsInSafeMode(dfs)
-    case _ =>
-      false
-  }
+  private[history] def isFsInSafeMode(): Boolean =
+    fs match {
+      case dfs: DistributedFileSystem =>
+        isFsInSafeMode(dfs)
+      case _ =>
+        false
+    }
 
   // For testing.
   private[history] def isFsInSafeMode(dfs: DistributedFileSystem): Boolean = {

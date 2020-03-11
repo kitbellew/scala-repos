@@ -15,11 +15,12 @@ private[lease] class GenerationalRandom private[lease] (
   private var last = rand.nextInt().abs
   private var gen = info.generation()
 
-  def apply() = synchronized {
-    if (gen != info.generation()) {
-      gen = info.generation()
-      last = rand.nextInt().abs
+  def apply() =
+    synchronized {
+      if (gen != info.generation()) {
+        gen = info.generation()
+        last = rand.nextInt().abs
+      }
+      last
     }
-    last
-  }
 }

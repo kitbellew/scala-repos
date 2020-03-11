@@ -485,11 +485,12 @@ class LazyMacros(val c: whitebox.Context)
           }
 
         val existingInstAvailable = existingInstOpt.exists { actualTree =>
-          def ignored = actualTree match {
-            case TypeApply(method, other) =>
-              method.toString().endsWith(ignoring)
-            case _ => false
-          }
+          def ignored =
+            actualTree match {
+              case TypeApply(method, other) =>
+                method.toString().endsWith(ignoring)
+              case _ => false
+            }
 
           ignoring.isEmpty || !ignored
         }

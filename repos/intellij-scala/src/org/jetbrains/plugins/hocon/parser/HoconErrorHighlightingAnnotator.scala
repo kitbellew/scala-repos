@@ -42,26 +42,28 @@ class HoconErrorHighlightingAnnotator extends Annotator {
         @tailrec
         def validateConcatenation(
             constrainingToken: IElementType,
-            child: ASTNode): Unit = if (child != null) {
-          (constrainingToken, child.getElementType) match {
-            case (
-                  _,
-                  Substitution | BadCharacter | TokenType.ERROR_ELEMENT |
-                  TokenType.WHITE_SPACE) =>
-              validateConcatenation(constrainingToken, child.getTreeNext)
+            child: ASTNode): Unit =
+          if (child != null) {
+            (constrainingToken, child.getElementType) match {
+              case (
+                    _,
+                    Substitution | BadCharacter | TokenType.ERROR_ELEMENT |
+                    TokenType.WHITE_SPACE) =>
+                validateConcatenation(constrainingToken, child.getTreeNext)
 
-            case (StringValue, StringValue) | (Object, Object) |
-                (Array, Array) | (null, _) =>
-              validateConcatenation(child.getElementType, child.getTreeNext)
+              case (StringValue, StringValue) | (Object, Object) |
+                  (Array, Array) | (null, _) =>
+                validateConcatenation(child.getElementType, child.getTreeNext)
 
-            case (required, actual) =>
-              holder.createErrorAnnotation(
-                child,
-                s"cannot concatenate ${uncaps(required.toString)} with ${uncaps(actual.toString)}")
-              validateConcatenation(actual, child.getTreeNext)
+              case (required, actual) =>
+                holder.createErrorAnnotation(
+                  child,
+                  s"cannot concatenate ${uncaps(
+                    required.toString)} with ${uncaps(actual.toString)}")
+                validateConcatenation(actual, child.getTreeNext)
 
+            }
           }
-        }
 
         validateConcatenation(null, element.getNode.getFirstChildNode)
 

@@ -5,9 +5,8 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class GlobalRegistryTest extends RegistryTest {
-  def mkRegistry(): Registry = GlobalRegistry.withRegistry(new SimpleRegistry) {
-    GlobalRegistry.get
-  }
+  def mkRegistry(): Registry =
+    GlobalRegistry.withRegistry(new SimpleRegistry) { GlobalRegistry.get }
   def name: String = "GlobalRegistry"
 
   val unique = Seq("__flibberty", "__gibbert", "__warbly", "$$parkour")

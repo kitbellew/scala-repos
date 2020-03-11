@@ -361,9 +361,10 @@ trait PLensFamilyFunctions extends PLensInstances {
 trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
   import BijectionT._
 
-  def plens[A, B](r: A => Option[Store[B, A]]): PLens[A, B] = new PLens[A, B] {
-    def run(a: A): Option[Store[B, A]] = r(a)
-  }
+  def plens[A, B](r: A => Option[Store[B, A]]): PLens[A, B] =
+    new PLens[A, B] {
+      def run(a: A): Option[Store[B, A]] = r(a)
+    }
 
   def plensf[A, B](r: PartialFunction[A, Store[B, A]]): PLens[A, B] =
     plens(r.lift)

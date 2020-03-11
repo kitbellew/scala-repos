@@ -97,12 +97,13 @@ object Test {
   def assertNoRelationship[T: Manifest, U: Manifest] =
     assert(typeCompare[T, U] == NONE, "assertNoRelationship")
 
-  def testVariancesVia[T: Manifest, U: Manifest] = assert(
-    typeCompare[T, U] == SUB &&
-      showsCovariance[T, U, List] &&
-      showsInvariance[T, U, Set],
-    "testVariancesVia"
-  )
+  def testVariancesVia[T: Manifest, U: Manifest] =
+    assert(
+      typeCompare[T, U] == SUB &&
+        showsCovariance[T, U, List] &&
+        showsInvariance[T, U, Set],
+      "testVariancesVia"
+    )
 
   def runAllTests = {
     assertAnyVal[AnyVal]

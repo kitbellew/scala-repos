@@ -11,10 +11,11 @@ object ZipFun {
 }
 
 object Test1253 { // compile-only
-  def foo(t: (Int, String)) = t match {
-    case (1, "") => throw new Exception
-    case (r, _)  => throw new Exception(r.toString)
-  }
+  def foo(t: (Int, String)) =
+    t match {
+      case (1, "") => throw new Exception
+      case (r, _)  => throw new Exception(r.toString)
+    }
 }
 
 object Foo1258 {
@@ -61,14 +62,15 @@ object TestIfOpt { //compile-only "test EqualsPatternClass in combination with M
     val offset: Int
     def matching: Option[Token]
   }
-  def go(tok: Token) = (tok.matching: @unchecked) match {
-    case Some(other) if true => Some(other)
-    case _ if true =>
-      tok.matching match {
-        case Some(other) => Some(other)
-        case _           => None
-      }
-  }
+  def go(tok: Token) =
+    (tok.matching: @unchecked) match {
+      case Some(other) if true => Some(other)
+      case _ if true =>
+        tok.matching match {
+          case Some(other) => Some(other)
+          case _           => None
+        }
+    }
 }
 
 object Go { // bug #1277 compile-only
@@ -107,10 +109,11 @@ class Test806_818 { // #806, #811 compile only -- type of bind
     type Node <: NodeImpl
     trait NodeImpl
     trait IfImpl
-    private def coerceIf(node: Node) = node match {
-      case node: IfImpl => node // var node is of type Node with IfImpl!
-      case _            => null
-    }
+    private def coerceIf(node: Node) =
+      node match {
+        case node: IfImpl => node // var node is of type Node with IfImpl!
+        case _            => null
+      }
   }
 }
 

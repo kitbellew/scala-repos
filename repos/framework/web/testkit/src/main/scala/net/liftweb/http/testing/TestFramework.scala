@@ -630,11 +630,12 @@ object TestHelpers {
 
   type CRK = JavaList[String]
 
-  implicit def jitToIt[T](in: JavaIterator[T]): Iterator[T] = new Iterator[T] {
-    def next: T = in.next
+  implicit def jitToIt[T](in: JavaIterator[T]): Iterator[T] =
+    new Iterator[T] {
+      def next: T = in.next
 
-    def hasNext = in.hasNext
-  }
+      def hasNext = in.hasNext
+    }
 
   private def snurpHeaders(
       in: JavaMap[String, CRK]): Map[String, List[String]] = {
@@ -866,18 +867,19 @@ abstract class BaseResponse(
     with BaseGetPoster
     with GetPosterHelper {
   private object FindElem {
-    def unapply(in: NodeSeq): Option[Elem] = in match {
-      case e: Elem         => Some(e)
-      case d: Document     => unapply(d.docElem)
-      case g: Group        => unapply(g.nodes)
-      case n: Text         => None
-      case sn: SpecialNode => None
-      case n: NodeSeq =>
-        val ns: Seq[Node] = n
-        val x: Seq[Elem] = ns.flatMap(v => unapply(v))
-        x.headOption
-      case _ => None
-    }
+    def unapply(in: NodeSeq): Option[Elem] =
+      in match {
+        case e: Elem         => Some(e)
+        case d: Document     => unapply(d.docElem)
+        case g: Group        => unapply(g.nodes)
+        case n: Text         => None
+        case sn: SpecialNode => None
+        case n: NodeSeq =>
+          val ns: Seq[Node] = n
+          val x: Seq[Elem] = ns.flatMap(v => unapply(v))
+          x.headOption
+        case _ => None
+      }
   }
 
   /**

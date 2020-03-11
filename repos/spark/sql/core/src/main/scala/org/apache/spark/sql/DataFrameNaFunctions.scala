@@ -442,13 +442,14 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     new Column(CaseKeyWhen(keyExpr, branches :+ keyExpr)).as(col.name)
   }
 
-  private def convertToDouble(v: Any): Double = v match {
-    case v: Float  => v.toDouble
-    case v: Double => v
-    case v: Long   => v.toDouble
-    case v: Int    => v.toDouble
-    case v =>
-      throw new IllegalArgumentException(
-        s"Unsupported value type ${v.getClass.getName} ($v).")
-  }
+  private def convertToDouble(v: Any): Double =
+    v match {
+      case v: Float  => v.toDouble
+      case v: Double => v
+      case v: Long   => v.toDouble
+      case v: Int    => v.toDouble
+      case v =>
+        throw new IllegalArgumentException(
+          s"Unsupported value type ${v.getClass.getName} ($v).")
+    }
 }

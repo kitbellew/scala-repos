@@ -110,13 +110,14 @@ object SpnegoAuthenticator {
     trait JAAS {
       val loginContext: String
 
-      def load(): Future[GSSContext] = pool {
-        log.debug("Getting context: %s", loginContext)
-        val portal = new LoginContext(loginContext)
-        // TODO: should logout?
-        portal.login()
-        Subject.doAs(portal.getSubject, createContextAction)
-      }
+      def load(): Future[GSSContext] =
+        pool {
+          log.debug("Getting context: %s", loginContext)
+          val portal = new LoginContext(loginContext)
+          // TODO: should logout?
+          portal.login()
+          Subject.doAs(portal.getSubject, createContextAction)
+        }
 
       private val createContextAction =
         new PrivilegedAction[GSSContext] {
@@ -146,14 +147,15 @@ object SpnegoAuthenticator {
 
       def init(
           context: GSSContext,
-          challengeToken: Option[Token]): Future[Token] = pool {
-        val tokenIn = challengeToken.getOrElse(Token.Empty)
-        var tokenOut: Token = null
-        do {
-          tokenOut = context.initSecContext(tokenIn, 0, tokenIn.length)
-        } while (tokenOut == null);
-        tokenOut
-      }
+          challengeToken: Option[Token]): Future[Token] =
+        pool {
+          val tokenIn = challengeToken.getOrElse(Token.Empty)
+          var tokenOut: Token = null
+          do {
+            tokenOut = context.initSecContext(tokenIn, 0, tokenIn.length)
+          } while (tokenOut == null);
+          tokenOut
+        }
 
       protected def createGSSContext(): GSSContext =
         manager.createContext(

@@ -170,12 +170,13 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
   "The CSRF module" should {
     val environment =
       Environment(new java.io.File("."), getClass.getClassLoader, Mode.Test)
-    def fakeContext = Context(
-      environment,
-      None,
-      new DefaultWebCommands,
-      Configuration.load(environment)
-    )
+    def fakeContext =
+      Context(
+        environment,
+        None,
+        new DefaultWebCommands,
+        Configuration.load(environment)
+      )
     def loader = new GuiceApplicationLoader
     "allow injecting CSRF filters" in {
       val app = loader.load(fakeContext)
@@ -185,60 +186,63 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
 
   def buildCsrfCheckRequest(
       sendUnauthorizedResult: Boolean,
-      configuration: (String, String)*) = new CsrfTester {
-    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-        handleResponse: (WSResponse) => T) = {
-      val config = configuration ++ Seq(
-        "play.http.filters" -> classOf[CsrfFilters].getName) ++ {
-        if (sendUnauthorizedResult)
+      configuration: (String, String)*) =
+    new CsrfTester {
+      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+          handleResponse: (WSResponse) => T) = {
+        val config = configuration ++ Seq(
+          "play.http.filters" -> classOf[CsrfFilters].getName) ++ {
+          if (sendUnauthorizedResult)
+            Seq(
+              "play.filters.csrf.errorHandler" -> classOf[
+                CustomErrorHandler].getName)
+          else Nil
+        }
+        withServer(config) { case _ => Action(Results.Ok) } {
+          import play.api.Play.current
+          handleResponse(
+            await(makeRequest(WS.url("http://localhost:" + testServerPort))))
+        }
+      }
+    }
+
+  def buildCsrfCheckRequestWithJavaHandler() =
+    new CsrfTester {
+      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+          handleResponse: (WSResponse) => T) = {
+        withServer(
           Seq(
-            "play.filters.csrf.errorHandler" -> classOf[
-              CustomErrorHandler].getName)
-        else Nil
-      }
-      withServer(config) { case _ => Action(Results.Ok) } {
-        import play.api.Play.current
-        handleResponse(
-          await(makeRequest(WS.url("http://localhost:" + testServerPort))))
-      }
-    }
-  }
-
-  def buildCsrfCheckRequestWithJavaHandler() = new CsrfTester {
-    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-        handleResponse: (WSResponse) => T) = {
-      withServer(
-        Seq(
-          "play.http.filters" -> classOf[CsrfFilters].getName,
-          "play.filters.csrf.cookie.name" -> "csrf",
-          "play.filters.csrf.errorHandler" -> "play.filters.csrf.JavaErrorHandler"
-        )) { case _ => Action(Results.Ok) } {
-        import play.api.Play.current
-        handleResponse(
-          await(makeRequest(WS.url("http://localhost:" + testServerPort))))
+            "play.http.filters" -> classOf[CsrfFilters].getName,
+            "play.filters.csrf.cookie.name" -> "csrf",
+            "play.filters.csrf.errorHandler" -> "play.filters.csrf.JavaErrorHandler"
+          )) { case _ => Action(Results.Ok) } {
+          import play.api.Play.current
+          handleResponse(
+            await(makeRequest(WS.url("http://localhost:" + testServerPort))))
+        }
       }
     }
-  }
 
-  def buildCsrfAddToken(configuration: (String, String)*) = new CsrfTester {
-    def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-        handleResponse: (WSResponse) => T) =
-      withServer(
-        configuration ++ Seq(
-          "play.http.filters" -> classOf[CsrfFilters].getName)
-      ) {
-        case _ =>
-          Action { implicit req =>
-            CSRF.getToken(req).map { token =>
-              Results.Ok(token.value)
-            } getOrElse Results.NotFound
-          }
-      } {
-        import play.api.Play.current
-        handleResponse(
-          await(makeRequest(WS.url("http://localhost:" + testServerPort))))
-      }
-  }
+  def buildCsrfAddToken(configuration: (String, String)*) =
+    new CsrfTester {
+      def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
+          handleResponse: (WSResponse) => T) =
+        withServer(
+          configuration ++ Seq(
+            "play.http.filters" -> classOf[CsrfFilters].getName)
+        ) {
+          case _ =>
+            Action { implicit req =>
+              CSRF.getToken(req).map { token =>
+                Results.Ok(token.value)
+              } getOrElse Results.NotFound
+            }
+        } {
+          import play.api.Play.current
+          handleResponse(
+            await(makeRequest(WS.url("http://localhost:" + testServerPort))))
+        }
+    }
 
   def buildCsrfAddResponseHeaders(responseHeaders: (String, String)*) =
     new CsrfTester {

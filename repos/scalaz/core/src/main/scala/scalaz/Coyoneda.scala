@@ -27,9 +27,10 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
   @inline final def unlift(implicit F: Functor[F]): F[A] = run
 
   /** Converts to `Yoneda[F,A]` given that `F` is a functor */
-  final def toYoneda(implicit F: Functor[F]): Yoneda[F, A] = new Yoneda[F, A] {
-    def apply[B](f: A => B) = F.map(fi)(k andThen f)
-  }
+  final def toYoneda(implicit F: Functor[F]): Yoneda[F, A] =
+    new Yoneda[F, A] {
+      def apply[B](f: A => B) = F.map(fi)(k andThen f)
+    }
 
   /** Simple function composition. Allows map fusion without touching
     * the underlying `F`.
@@ -43,11 +44,12 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
   import Id._
 
   /** `Coyoneda[F,_]` is the left Kan extension of `F` along `Id` */
-  def toLan: Lan[Id, F, A] = new Lan[Id, F, A] {
-    type I = coyo.I
-    val v = fi
-    def f(i: I) = k(i)
-  }
+  def toLan: Lan[Id, F, A] =
+    new Lan[Id, F, A] {
+      type I = coyo.I
+      val v = fi
+      def f(i: I) = k(i)
+    }
 
   /** `Coyoneda` is a monad in an endofunctor category */
   def flatMap[G[_]](f: F ~> Coyoneda[G, ?]): Coyoneda[G, A] =

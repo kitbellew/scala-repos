@@ -144,10 +144,11 @@ sealed abstract class HList extends Product {
   }
 
   override final lazy val hashCode: Int = toList.hashCode
-  override final def equals(that: Any) = that match {
-    case that: HList => toList == that.toList
-    case _           => false
-  }
+  override final def equals(that: Any) =
+    that match {
+      case that: HList => toList == that.toList
+      case _           => false
+    }
   final def canEqual(that: Any) = that.isInstanceOf[HList]
 }
 

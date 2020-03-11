@@ -145,18 +145,19 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
   }
 
   /** Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = o match {
-    case rv: VecAny[_] =>
-      (this eq rv) || (this.length == rv.length) && {
-        var i = 0
-        var eq = true
-        while (eq && i < this.length) {
-          eq &&= (apply(i) == rv(i) || this.scalarTag
-            .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
-          i += 1
+  override def equals(o: Any): Boolean =
+    o match {
+      case rv: VecAny[_] =>
+        (this eq rv) || (this.length == rv.length) && {
+          var i = 0
+          var eq = true
+          while (eq && i < this.length) {
+            eq &&= (apply(i) == rv(i) || this.scalarTag
+              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            i += 1
+          }
+          eq
         }
-        eq
-      }
-    case _ => super.equals(o)
-  }
+      case _ => super.equals(o)
+    }
 }

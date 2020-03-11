@@ -49,25 +49,27 @@ trait RegressionTestSupport[M[+_]] {
   def jvalues(
       samples: Seq[(Array[Double], Double)],
       cpaths: Seq[CPath],
-      mod: Int = 1): Seq[JValue] = samples.zipWithIndex map {
-    case ((xs, y), idx) =>
-      val cvalues = xs.map { x => CDouble(x).asInstanceOf[CValue] } :+ CDouble(
-        y.toDouble).asInstanceOf[CValue]
-      val withCPath = {
-        if (idx % mod == 0) cpaths zip cvalues.toSeq
-        else if (idx % mod == 1) cpaths.tail zip cvalues.tail.toSeq
-        else cpaths.tail.tail zip cvalues.tail.tail.toSeq
-      }
-      val withJPath = withCPath map {
-        case (cpath, cvalue) => cPathToJPaths(cpath, cvalue) head
-      } // `head` is only okay if we don't have any homogeneous arrays
-      val withJValue = withJPath map {
-        case (jpath, cvalue) => (jpath, cvalue.toJValue)
-      }
-      withJValue.foldLeft(JArray(Nil).asInstanceOf[JValue]) {
-        case (target, (jpath, jvalue)) => target.unsafeInsert(jpath, jvalue)
-      }
-  }
+      mod: Int = 1): Seq[JValue] =
+    samples.zipWithIndex map {
+      case ((xs, y), idx) =>
+        val cvalues = xs.map { x =>
+          CDouble(x).asInstanceOf[CValue]
+        } :+ CDouble(y.toDouble).asInstanceOf[CValue]
+        val withCPath = {
+          if (idx % mod == 0) cpaths zip cvalues.toSeq
+          else if (idx % mod == 1) cpaths.tail zip cvalues.tail.toSeq
+          else cpaths.tail.tail zip cvalues.tail.tail.toSeq
+        }
+        val withJPath = withCPath map {
+          case (cpath, cvalue) => cPathToJPaths(cpath, cvalue) head
+        } // `head` is only okay if we don't have any homogeneous arrays
+        val withJValue = withJPath map {
+          case (jpath, cvalue) => (jpath, cvalue.toJValue)
+        }
+        withJValue.foldLeft(JArray(Nil).asInstanceOf[JValue]) {
+          case (target, (jpath, jvalue)) => target.unsafeInsert(jpath, jvalue)
+        }
+    }
 
   def stdDevMean(values: List[Double]): (Double, Double) = {
     val count = values.size

@@ -86,17 +86,18 @@ trait TreeAndTypeAnalysis extends Debugging {
     tp <:< tpImpliedNormalizedToAny
   }
 
-  def equivalentTree(a: Tree, b: Tree): Boolean = (a, b) match {
-    case (Select(qual1, _), Select(qual2, _)) =>
-      equivalentTree(qual1, qual2) && a.symbol == b.symbol
-    case (Ident(_), Ident(_))       => a.symbol == b.symbol
-    case (Literal(c1), Literal(c2)) => c1 == c2
-    case (This(_), This(_))         => a.symbol == b.symbol
-    case (Apply(fun1, args1), Apply(fun2, args2)) =>
-      equivalentTree(fun1, fun2) && args1.corresponds(args2)(equivalentTree)
-    // Those are the only cases we need to handle in the pattern matcher
-    case _ => false
-  }
+  def equivalentTree(a: Tree, b: Tree): Boolean =
+    (a, b) match {
+      case (Select(qual1, _), Select(qual2, _)) =>
+        equivalentTree(qual1, qual2) && a.symbol == b.symbol
+      case (Ident(_), Ident(_))       => a.symbol == b.symbol
+      case (Literal(c1), Literal(c2)) => c1 == c2
+      case (This(_), This(_))         => a.symbol == b.symbol
+      case (Apply(fun1, args1), Apply(fun2, args2)) =>
+        equivalentTree(fun1, fun2) && args1.corresponds(args2)(equivalentTree)
+      // Those are the only cases we need to handle in the pattern matcher
+      case _ => false
+    }
 
   trait CheckableTreeAndTypeAnalysis {
     val typer: Typer
@@ -157,17 +158,18 @@ trait TreeAndTypeAnalysis extends Debugging {
             // and added to a new group
             def groupChildren(
                 wl: List[Symbol],
-                acc: List[List[Type]]): List[List[Type]] = wl match {
-              case hd :: tl =>
-                val children = enumerateChildren(hd)
-                // put each trait in a new group, since traits could belong to the same
-                // group as a derived class
-                val (traits, nonTraits) = children.partition(_.isTrait)
-                val filtered =
-                  (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
-                groupChildren(tl ++ children, acc ++ filtered)
-              case Nil => acc
-            }
+                acc: List[List[Type]]): List[List[Type]] =
+              wl match {
+                case hd :: tl =>
+                  val children = enumerateChildren(hd)
+                  // put each trait in a new group, since traits could belong to the same
+                  // group as a derived class
+                  val (traits, nonTraits) = children.partition(_.isTrait)
+                  val filtered =
+                    (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
+                  groupChildren(tl ++ children, acc ++ filtered)
+                case Nil => acc
+              }
 
             groupChildren(sym :: Nil, Nil)
           } else {
@@ -212,13 +214,14 @@ trait TreeAndTypeAnalysis extends Debugging {
       object typeArgsToWildcardsExceptArray extends TypeMap {
         // SI-6771 dealias would be enough today, but future proofing with the dealiasWiden.
         // See neg/t6771b.scala for elaboration
-        def apply(tp: Type): Type = tp.dealias match {
-          case TypeRef(pre, sym, args)
-              if args.nonEmpty && (sym ne ArrayClass) =>
-            TypeRef(pre, sym, args map (_ => WildcardType))
-          case _ =>
-            mapOver(tp)
-        }
+        def apply(tp: Type): Type =
+          tp.dealias match {
+            case TypeRef(pre, sym, args)
+                if args.nonEmpty && (sym ne ArrayClass) =>
+              TypeRef(pre, sym, args map (_ => WildcardType))
+            case _ =>
+              mapOver(tp)
+          }
       }
       val result = typeArgsToWildcardsExceptArray(tp)
       debug.patmatResult(s"checkableType($tp)")(result)
@@ -319,13 +322,14 @@ trait MatchApproximation
             if (tpOverride != NoType) t setType tpOverride else t
         }
 
-      def uniqueTp(tp: Type): Type = tp match {
-        // typerefs etc are already hashconsed
-        case _: UniqueType => tp
-        case tp @ RefinedType(parents, EmptyScope) =>
-          tp.memo(tp: Type)(identity) // TODO: does this help?
-        case _ => tp
-      }
+      def uniqueTp(tp: Type): Type =
+        tp match {
+          // typerefs etc are already hashconsed
+          case _: UniqueType => tp
+          case tp @ RefinedType(parents, EmptyScope) =>
+            tp.memo(tp: Type)(identity) // TODO: does this help?
+          case _ => tp
+        }
 
       // produce the unique tree used to refer to this binder
       // the type of the binder passed to the first invocation
@@ -450,9 +454,10 @@ trait MatchApproximation
       val fullRewrite = (irrefutableExtractor orElse rewriteListPattern)
       val refutableRewrite = irrefutableExtractor
 
-      @inline def onUnknown(handler: TreeMaker => Prop) = new TreeMakerToProp {
-        def handleUnknown(tm: TreeMaker) = handler(tm)
-      }
+      @inline def onUnknown(handler: TreeMaker => Prop) =
+        new TreeMakerToProp {
+          def handleUnknown(tm: TreeMaker) = handler(tm)
+        }
 
       // used for CSE -- rewrite all unknowns to False (the most conservative option)
       object conservative extends TreeMakerToProp {
@@ -720,10 +725,11 @@ trait MatchAnalysis extends MatchApproximation {
     case class ListExample(ctorArgs: List[CounterExample])
         extends CounterExample {
       protected[MatchAnalyzer] override def flattenConsArgs
-          : List[CounterExample] = ctorArgs match {
-        case hd :: tl :: Nil => hd :: tl.flattenConsArgs
-        case _               => Nil
-      }
+          : List[CounterExample] =
+        ctorArgs match {
+          case hd :: tl :: Nil => hd :: tl.flattenConsArgs
+          case _               => Nil
+        }
       protected[MatchAnalyzer] lazy val elems = flattenConsArgs
 
       override def coveredBy(other: CounterExample): Boolean =
@@ -883,23 +889,27 @@ trait MatchAnalysis extends MatchApproximation {
         varAssignment: Map[Var, (Seq[Const], Seq[Const])])
         : Option[CounterExample] = {
       // chop a path into a list of symbols
-      def chop(path: Tree): List[Symbol] = path match {
-        case Ident(_)          => List(path.symbol)
-        case Select(pre, name) => chop(pre) :+ path.symbol
-        case _                 =>
-          // debug.patmat("don't know how to chop "+ path)
-          Nil
-      }
+      def chop(path: Tree): List[Symbol] =
+        path match {
+          case Ident(_)          => List(path.symbol)
+          case Select(pre, name) => chop(pre) :+ path.symbol
+          case _                 =>
+            // debug.patmat("don't know how to chop "+ path)
+            Nil
+        }
 
       // turn the variable assignments into a tree
       // the root is the scrutinee (x1), edges are labelled by the fields that are assigned
       // a node is a variable example (which is later turned into a counter example)
       object VariableAssignment {
-        private def findVar(path: List[Symbol]) = path match {
-          case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
-          case _ =>
-            varAssignment.find { case (v, a) => chop(v.path) == path }.map(_._1)
-        }
+        private def findVar(path: List[Symbol]) =
+          path match {
+            case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
+            case _ =>
+              varAssignment
+                .find { case (v, a) => chop(v.path) == path }
+                .map(_._1)
+          }
 
         private val uniques = new mutable.HashMap[Var, VariableAssignment]
         private def unique(variable: Var): VariableAssignment =

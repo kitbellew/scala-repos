@@ -13,9 +13,10 @@ package p {
     def O: { def apply(): X }
   }
   object `package` extends T[Int] {
-    def O: { def apply(): Int } = new {
-      def apply(): Int = 42
-    }
+    def O: { def apply(): Int } =
+      new {
+        def apply(): Int = 42
+      }
   }
 
   object Test {

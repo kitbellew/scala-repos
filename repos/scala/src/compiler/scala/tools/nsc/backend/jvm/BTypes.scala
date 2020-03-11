@@ -324,20 +324,21 @@ abstract class BTypes {
     * referring to BTypes.
     */
   sealed trait BType {
-    final override def toString: String = this match {
-      case UNIT                     => "V"
-      case BOOL                     => "Z"
-      case CHAR                     => "C"
-      case BYTE                     => "B"
-      case SHORT                    => "S"
-      case INT                      => "I"
-      case FLOAT                    => "F"
-      case LONG                     => "J"
-      case DOUBLE                   => "D"
-      case ClassBType(internalName) => "L" + internalName + ";"
-      case ArrayBType(component)    => "[" + component
-      case MethodBType(args, res)   => "(" + args.mkString + ")" + res
-    }
+    final override def toString: String =
+      this match {
+        case UNIT                     => "V"
+        case BOOL                     => "Z"
+        case CHAR                     => "C"
+        case BYTE                     => "B"
+        case SHORT                    => "S"
+        case INT                      => "I"
+        case FLOAT                    => "F"
+        case LONG                     => "J"
+        case DOUBLE                   => "D"
+        case ClassBType(internalName) => "L" + internalName + ";"
+        case ArrayBType(component)    => "[" + component
+        case MethodBType(args, res)   => "(" + args.mkString + ")" + res
+      }
 
     /**
       * @return The Java descriptor of this type. Examples:
@@ -351,11 +352,12 @@ abstract class BTypes {
     /**
       * @return 0 for void, 2 for long and double, 1 otherwise
       */
-    final def size: Int = this match {
-      case UNIT          => 0
-      case LONG | DOUBLE => 2
-      case _             => 1
-    }
+    final def size: Int =
+      this match {
+        case UNIT          => 0
+        case LONG | DOUBLE => 2
+        case _             => 1
+      }
 
     final def isPrimitive: Boolean = this.isInstanceOf[PrimitiveBType]
     final def isRef: Boolean = this.isInstanceOf[RefBType]
@@ -447,49 +449,53 @@ abstract class BTypes {
       * Compute the upper bound of two types.
       * Takes promotions of numeric primitives into account.
       */
-    final def maxType(other: BType): BType = this match {
-      case pt: PrimitiveBType => pt.maxValueType(other)
+    final def maxType(other: BType): BType =
+      this match {
+        case pt: PrimitiveBType => pt.maxValueType(other)
 
-      case _: ArrayBType | _: ClassBType =>
-        if (isNothingType) return other
-        if (other.isNothingType) return this
-        if (this == other) return this
+        case _: ArrayBType | _: ClassBType =>
+          if (isNothingType) return other
+          if (other.isNothingType) return this
+          if (this == other) return this
 
-        assert(other.isRef, s"Cannot compute maxType: $this, $other")
-        // Approximate `lub`. The common type of two references is always ObjectReference.
-        ObjectRef
+          assert(other.isRef, s"Cannot compute maxType: $this, $other")
+          // Approximate `lub`. The common type of two references is always ObjectReference.
+          ObjectRef
 
-      case _: MethodBType =>
-        assertionError(s"unexpected method type when computing maxType: $this")
-    }
+        case _: MethodBType =>
+          assertionError(
+            s"unexpected method type when computing maxType: $this")
+      }
 
     /**
       * See documentation of [[typedOpcode]].
       * The numbers are taken from asm.Type.VOID_TYPE ff., the values are those shifted by << 8.
       */
-    private def loadStoreOpcodeOffset: Int = this match {
-      case UNIT | INT  => 0
-      case BOOL | BYTE => 5
-      case CHAR        => 6
-      case SHORT       => 7
-      case FLOAT       => 2
-      case LONG        => 1
-      case DOUBLE      => 3
-      case _           => 4
-    }
+    private def loadStoreOpcodeOffset: Int =
+      this match {
+        case UNIT | INT  => 0
+        case BOOL | BYTE => 5
+        case CHAR        => 6
+        case SHORT       => 7
+        case FLOAT       => 2
+        case LONG        => 1
+        case DOUBLE      => 3
+        case _           => 4
+      }
 
     /**
       * See documentation of [[typedOpcode]].
       * The numbers are taken from asm.Type.VOID_TYPE ff., the values are those shifted by << 16.
       */
-    private def typedOpcodeOffset: Int = this match {
-      case UNIT                             => 5
-      case BOOL | CHAR | BYTE | SHORT | INT => 0
-      case FLOAT                            => 2
-      case LONG                             => 1
-      case DOUBLE                           => 3
-      case _                                => 4
-    }
+    private def typedOpcodeOffset: Int =
+      this match {
+        case UNIT                             => 5
+        case BOOL | CHAR | BYTE | SHORT | INT => 0
+        case FLOAT                            => 2
+        case LONG                             => 1
+        case DOUBLE                           => 3
+        case _                                => 4
+      }
 
     /**
       * Some JVM opcodes have typed variants. This method returns the correct opcode according to
@@ -518,21 +524,22 @@ abstract class BTypes {
       *  - for an OBJECT type, the 'L' and ';' are not part of the range of the created Type
       *  - for an ARRAY type, the full descriptor is part of the range
       */
-    def toASMType: asm.Type = this match {
-      case UNIT   => asm.Type.VOID_TYPE
-      case BOOL   => asm.Type.BOOLEAN_TYPE
-      case CHAR   => asm.Type.CHAR_TYPE
-      case BYTE   => asm.Type.BYTE_TYPE
-      case SHORT  => asm.Type.SHORT_TYPE
-      case INT    => asm.Type.INT_TYPE
-      case FLOAT  => asm.Type.FLOAT_TYPE
-      case LONG   => asm.Type.LONG_TYPE
-      case DOUBLE => asm.Type.DOUBLE_TYPE
-      case ClassBType(internalName) =>
-        asm.Type.getObjectType(internalName) // see (*) above
-      case a: ArrayBType  => asm.Type.getObjectType(a.descriptor)
-      case m: MethodBType => asm.Type.getMethodType(m.descriptor)
-    }
+    def toASMType: asm.Type =
+      this match {
+        case UNIT   => asm.Type.VOID_TYPE
+        case BOOL   => asm.Type.BOOLEAN_TYPE
+        case CHAR   => asm.Type.CHAR_TYPE
+        case BYTE   => asm.Type.BYTE_TYPE
+        case SHORT  => asm.Type.SHORT_TYPE
+        case INT    => asm.Type.INT_TYPE
+        case FLOAT  => asm.Type.FLOAT_TYPE
+        case LONG   => asm.Type.LONG_TYPE
+        case DOUBLE => asm.Type.DOUBLE_TYPE
+        case ClassBType(internalName) =>
+          asm.Type.getObjectType(internalName) // see (*) above
+        case a: ArrayBType  => asm.Type.getObjectType(a.descriptor)
+        case m: MethodBType => asm.Type.getMethodType(m.descriptor)
+      }
 
     def asRefBType: RefBType = this.asInstanceOf[RefBType]
     def asArrayBType: ArrayBType = this.asInstanceOf[ArrayBType]
@@ -628,10 +635,11 @@ abstract class BTypes {
       *
       * This can be verified for example using javap or ASMifier.
       */
-    def classOrArrayType: String = this match {
-      case ClassBType(internalName) => internalName
-      case a: ArrayBType            => a.descriptor
-    }
+    def classOrArrayType: String =
+      this match {
+        case ClassBType(internalName) => internalName
+        case a: ArrayBType            => a.descriptor
+      }
   }
 
   /**
@@ -1196,15 +1204,17 @@ abstract class BTypes {
       flags: Int)
 
   final case class ArrayBType(componentType: BType) extends RefBType {
-    def dimension: Int = componentType match {
-      case a: ArrayBType => 1 + a.dimension
-      case _             => 1
-    }
+    def dimension: Int =
+      componentType match {
+        case a: ArrayBType => 1 + a.dimension
+        case _             => 1
+      }
 
-    def elementType: BType = componentType match {
-      case a: ArrayBType => a.elementType
-      case t             => t
-    }
+    def elementType: BType =
+      componentType match {
+        case a: ArrayBType => a.elementType
+        case t             => t
+      }
   }
 
   final case class MethodBType(argumentTypes: List[BType], returnType: BType)

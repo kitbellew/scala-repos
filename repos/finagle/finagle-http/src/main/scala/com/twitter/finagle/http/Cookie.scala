@@ -17,9 +17,8 @@ class Cookie(private[http] val underlying: NettyCookie) {
   def maxAge: Duration = underlying.getMaxAge.seconds
   def name: String = underlying.getName
   def path: String = underlying.getPath
-  def ports: Set[Int] = underlying.getPorts.asScala.toSet map { i: Integer =>
-    i.intValue
-  }
+  def ports: Set[Int] =
+    underlying.getPorts.asScala.toSet map { i: Integer => i.intValue }
   def value: String = underlying.getValue
   def version: Int = underlying.getVersion
   def httpOnly: Boolean = underlying.isHttpOnly
@@ -38,10 +37,11 @@ class Cookie(private[http] val underlying: NettyCookie) {
   def isDiscard_=(discard: Boolean) { underlying.setDiscard(discard) }
   def isSecure_=(secure: Boolean) { underlying.setSecure(secure) }
 
-  override def equals(obj: Any): Boolean = obj match {
-    case c: Cookie => underlying.equals(c.underlying)
-    case _         => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case c: Cookie => underlying.equals(c.underlying)
+      case _         => false
+    }
 
   override def hashCode(): Int = underlying.hashCode()
 }

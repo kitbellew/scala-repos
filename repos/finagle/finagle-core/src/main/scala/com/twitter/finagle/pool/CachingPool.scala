@@ -51,24 +51,26 @@ private[finagle] class CachingPool[Req, Rep](
     }
   }
 
-  def apply(conn: ClientConnection): Future[Service[Req, Rep]] = synchronized {
-    if (!isOpen) Future.exception(new ServiceClosedException)
-    else {
-      get() match {
-        case Some(service) =>
-          Future.value(new WrappedService(service))
-        case None =>
-          factory(conn) map { new WrappedService(_) }
+  def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
+    synchronized {
+      if (!isOpen) Future.exception(new ServiceClosedException)
+      else {
+        get() match {
+          case Some(service) =>
+            Future.value(new WrappedService(service))
+          case None =>
+            factory(conn) map { new WrappedService(_) }
+        }
       }
     }
-  }
 
-  def close(deadline: Time) = synchronized {
-    isOpen = false
+  def close(deadline: Time) =
+    synchronized {
+      isOpen = false
 
-    cache.evictAll()
-    factory.close(deadline)
-  }
+      cache.evictAll()
+      factory.close(deadline)
+    }
 
   override def status =
     if (isOpen) factory.status else Status.Closed

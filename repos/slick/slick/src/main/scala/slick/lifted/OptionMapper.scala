@@ -160,43 +160,47 @@ sealed trait OptionLift[M, O] {
 object OptionLift extends OptionLiftLowPriority {
   final implicit def repOptionLift[M <: Rep[_], P](
       implicit shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
-      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
-    def lift(v: M): Rep[Option[P]] = {
-      val n = OptionApply(v.toNode)
-      val packed = shape.pack(v)
-      packed match {
-        case r: Rep.TypedRep[_]
-            if !r.tpe.isInstanceOf[OptionType] /* An primitive column */ =>
-          Rep.forNode[Option[P]](n)(r.tpe.asInstanceOf[TypedType[P]].optionType)
-        case _ =>
-          RepOption[P](ShapedValue(packed, shape.packedShape), n)
+      : OptionLift[M, Rep[Option[P]]] =
+    new OptionLift[M, Rep[Option[P]]] {
+      def lift(v: M): Rep[Option[P]] = {
+        val n = OptionApply(v.toNode)
+        val packed = shape.pack(v)
+        packed match {
+          case r: Rep.TypedRep[_]
+              if !r.tpe.isInstanceOf[OptionType] /* An primitive column */ =>
+            Rep.forNode[Option[P]](n)(
+              r.tpe.asInstanceOf[TypedType[P]].optionType)
+          case _ =>
+            RepOption[P](ShapedValue(packed, shape.packedShape), n)
+        }
       }
     }
-  }
 }
 
 sealed trait OptionLiftLowPriority {
   final implicit def anyOptionLift[M, P](
       implicit shape: Shape[_ <: FlatShapeLevel, M, _, P])
-      : OptionLift[M, Rep[Option[P]]] = new OptionLift[M, Rep[Option[P]]] {
-    def lift(v: M): Rep[Option[P]] =
-      RepOption[P](
-        ShapedValue(shape.pack(v), shape.packedShape),
-        OptionApply(shape.toNode(v)))
-  }
+      : OptionLift[M, Rep[Option[P]]] =
+    new OptionLift[M, Rep[Option[P]]] {
+      def lift(v: M): Rep[Option[P]] =
+        RepOption[P](
+          ShapedValue(shape.pack(v), shape.packedShape),
+          OptionApply(shape.toNode(v)))
+    }
 
   /** Get a suitably typed base value for a `Rep[Option[_]]` */
-  def baseValue[M, O](v: O, path: Node): M = v match {
-    case RepOption(base, _) =>
-      base.asInstanceOf[ShapedValue[M, _]].encodeRef(path).value
-    case r: Rep.TypedRep[_] /* An Option column */ =>
-      Rep
-        .columnPlaceholder[Any](
-          r.tpe
-            .asInstanceOf[OptionType]
-            .elementType
-            .asInstanceOf[TypedType[Any]])
-        .encodeRef(path)
-        .asInstanceOf[M]
-  }
+  def baseValue[M, O](v: O, path: Node): M =
+    v match {
+      case RepOption(base, _) =>
+        base.asInstanceOf[ShapedValue[M, _]].encodeRef(path).value
+      case r: Rep.TypedRep[_] /* An Option column */ =>
+        Rep
+          .columnPlaceholder[Any](
+            r.tpe
+              .asInstanceOf[OptionType]
+              .elementType
+              .asInstanceOf[TypedType[Any]])
+          .encodeRef(path)
+          .asInstanceOf[M]
+    }
 }

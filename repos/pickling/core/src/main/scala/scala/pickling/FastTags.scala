@@ -62,13 +62,14 @@ trait FastTypeTag[T] extends Equals {
   // since we typeFromString(key) to get the Type anyhow there's
   // no downside to just using the string (the string has to
   // contain all the information).
-  override def equals(x: Any) = canEqual(x) && {
-    x match {
-      case null                  => false
-      case other: FastTypeTag[_] => this.key == other.key
-      case _                     => false
+  override def equals(x: Any) =
+    canEqual(x) && {
+      x match {
+        case null                  => false
+        case other: FastTypeTag[_] => this.key == other.key
+        case _                     => false
+      }
     }
-  }
   override def hashCode = key.hashCode
   override def toString = "FastTypeTag[" + key + "]"
 }

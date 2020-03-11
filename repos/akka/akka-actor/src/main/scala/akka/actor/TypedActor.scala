@@ -47,19 +47,21 @@ trait TypedActorFactory {
     * Stops the underlying ActorRef for the supplied TypedActor proxy,
     * if any, returns whether it could find the find the ActorRef or not
     */
-  def stop(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
-    case null ⇒ false
-    case ref ⇒ ref.asInstanceOf[InternalActorRef].stop; true
-  }
+  def stop(proxy: AnyRef): Boolean =
+    getActorRefFor(proxy) match {
+      case null ⇒ false
+      case ref ⇒ ref.asInstanceOf[InternalActorRef].stop; true
+    }
 
   /**
     * Sends a PoisonPill the underlying ActorRef for the supplied TypedActor proxy,
     * if any, returns whether it could find the find the ActorRef or not
     */
-  def poisonPill(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
-    case null ⇒ false
-    case ref ⇒ ref ! PoisonPill; true
-  }
+  def poisonPill(proxy: AnyRef): Boolean =
+    getActorRefFor(proxy) match {
+      case null ⇒ false
+      case ref ⇒ ref ! PoisonPill; true
+    }
 
   /**
     * Returns whether the supplied AnyRef is a TypedActor proxy or not
@@ -272,22 +274,24 @@ object TypedActor
     *
     * Throws ClassCastException if the supplied type T isn't the type of the proxy associated with this TypedActor.
     */
-  def self[T <: AnyRef] = selfReference.get.asInstanceOf[T] match {
-    case null ⇒
-      throw new IllegalStateException(
-        "Calling TypedActor.self outside of a TypedActor implementation method!")
-    case some ⇒ some
-  }
+  def self[T <: AnyRef] =
+    selfReference.get.asInstanceOf[T] match {
+      case null ⇒
+        throw new IllegalStateException(
+          "Calling TypedActor.self outside of a TypedActor implementation method!")
+      case some ⇒ some
+    }
 
   /**
     * Returns the ActorContext (for a TypedActor) when inside a method call in a TypedActor.
     */
-  def context: ActorContext = currentContext.get match {
-    case null ⇒
-      throw new IllegalStateException(
-        "Calling TypedActor.context outside of a TypedActor implementation method!")
-    case some ⇒ some
-  }
+  def context: ActorContext =
+    currentContext.get match {
+      case null ⇒
+        throw new IllegalStateException(
+          "Calling TypedActor.context outside of a TypedActor implementation method!")
+      case some ⇒ some
+    }
 
   /**
     * Returns the default dispatcher (for a TypedActor) when inside a method call in a TypedActor.
@@ -315,17 +319,19 @@ object TypedActor
 
     private val me = withContext[T](createInstance)
 
-    override def supervisorStrategy: SupervisorStrategy = me match {
-      case l: Supervisor ⇒ l.supervisorStrategy
-      case _ ⇒ super.supervisorStrategy
-    }
-
-    override def preStart(): Unit = withContext {
+    override def supervisorStrategy: SupervisorStrategy =
       me match {
-        case l: PreStart ⇒ l.preStart()
-        case _ ⇒ super.preStart()
+        case l: Supervisor ⇒ l.supervisorStrategy
+        case _ ⇒ super.supervisorStrategy
       }
-    }
+
+    override def preStart(): Unit =
+      withContext {
+        me match {
+          case l: PreStart ⇒ l.preStart()
+          case _ ⇒ super.preStart()
+        }
+      }
 
     override def postStop(): Unit =
       try {
@@ -353,12 +359,13 @@ object TypedActor
         }
       }
 
-    override def postRestart(reason: Throwable): Unit = withContext {
-      me match {
-        case l: PostRestart ⇒ l.postRestart(reason)
-        case _ ⇒ super.postRestart(reason)
+    override def postRestart(reason: Throwable): Unit =
+      withContext {
+        me match {
+          case l: PostRestart ⇒ l.postRestart(reason)
+          case _ ⇒ super.postRestart(reason)
+        }
       }
-    }
 
     protected def withContext[U](unitOfWork: ⇒ U): U = {
       TypedActor.selfReference set proxyVar.get

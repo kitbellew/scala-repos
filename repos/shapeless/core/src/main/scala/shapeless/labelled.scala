@@ -61,11 +61,12 @@ trait FieldPoly extends Poly1 {
   import labelled._
 
   class FieldCaseBuilder[A, T] {
-    def apply[Res](fn: A => Res) = new Case[FieldType[T, A]] {
-      type Result = FieldType[T, Res]
-      val value: Function1[A :: HNil, FieldType[T, Res]] =
-        (l: A :: HNil) => field[T](fn(l.head))
-    }
+    def apply[Res](fn: A => Res) =
+      new Case[FieldType[T, A]] {
+        type Result = FieldType[T, Res]
+        val value: Function1[A :: HNil, FieldType[T, Res]] =
+          (l: A :: HNil) => field[T](fn(l.head))
+      }
   }
 
   def atField[A](w: Witness) = new FieldCaseBuilder[A, w.T]

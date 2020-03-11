@@ -125,17 +125,18 @@ private[streaming] class BlockGenerator(
   @volatile private var state = Initialized
 
   /** Start block generating and pushing threads. */
-  def start(): Unit = synchronized {
-    if (state == Initialized) {
-      state = Active
-      blockIntervalTimer.start()
-      blockPushingThread.start()
-      logInfo("Started BlockGenerator")
-    } else {
-      throw new SparkException(
-        s"Cannot start BlockGenerator as its not in the Initialized state [state = $state]")
+  def start(): Unit =
+    synchronized {
+      if (state == Initialized) {
+        state = Active
+        blockIntervalTimer.start()
+        blockPushingThread.start()
+        logInfo("Started BlockGenerator")
+      } else {
+        throw new SparkException(
+          s"Cannot start BlockGenerator as its not in the Initialized state [state = $state]")
+      }
     }
-  }
 
   /**
     * Stop everything in the right order such that all the data added is pushed out correctly.
@@ -271,9 +272,8 @@ private[streaming] class BlockGenerator(
   private def keepPushingBlocks() {
     logInfo("Started block pushing thread")
 
-    def areBlocksBeingGenerated: Boolean = synchronized {
-      state != StoppedGeneratingBlocks
-    }
+    def areBlocksBeingGenerated: Boolean =
+      synchronized { state != StoppedGeneratingBlocks }
 
     try {
       // While blocks are being generated, keep polling for to-be-pushed blocks and push them.

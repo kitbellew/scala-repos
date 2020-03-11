@@ -90,14 +90,15 @@ private[spark] abstract class LauncherBackend {
 
   private class BackendConnection(s: Socket) extends LauncherConnection(s) {
 
-    override protected def handle(m: Message): Unit = m match {
-      case _: Stop =>
-        fireStopRequest()
+    override protected def handle(m: Message): Unit =
+      m match {
+        case _: Stop =>
+          fireStopRequest()
 
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Unexpected message type: ${m.getClass().getName()}")
-    }
+        case _ =>
+          throw new IllegalArgumentException(
+            s"Unexpected message type: ${m.getClass().getName()}")
+      }
 
     override def close(): Unit = {
       try { super.close() }

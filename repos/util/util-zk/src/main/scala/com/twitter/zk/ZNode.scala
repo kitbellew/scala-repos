@@ -26,10 +26,11 @@ trait ZNode {
   override def toString = "ZNode(%s)".format(path)
 
   /** ZNodes are equal if they share a path. */
-  override def equals(other: Any) = other match {
-    case z @ ZNode(_) => (z.hashCode == hashCode)
-    case _            => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case z @ ZNode(_) => (z.hashCode == hashCode)
+      case _            => false
+    }
 
   /*
    * Helpers
@@ -66,10 +67,11 @@ trait ZNode {
   }
 
   /** The absolute path of a child */
-  def childPath(child: String): String = path match {
-    case path if (!path.endsWith("/")) => path + "/" + child
-    case path                          => path + child
-  }
+  def childPath(child: String): String =
+    path match {
+      case path if (!path.endsWith("/")) => path + "/" + child
+      case path                          => path + child
+    }
 
   /** Create a copy of this ZNode with an alternate ZkClient. */
   def withZkClient(zk: ZkClient): ZNode = ZNode(zk, path)
@@ -95,11 +97,12 @@ trait ZNode {
   }
 
   /** Returns a Future that is satisfied with this ZNode */
-  def delete(version: Int = 0): Future[ZNode] = zkClient.retrying { zk =>
-    val result = new UnitCallbackPromise
-    zk.delete(path, version, result, null)
-    result map { _ => this }
-  }
+  def delete(version: Int = 0): Future[ZNode] =
+    zkClient.retrying { zk =>
+      val result = new UnitCallbackPromise
+      zk.delete(path, version, result, null)
+      result map { _ => this }
+    }
 
   /** Returns a Future that is satisfied with this ZNode with its metadata and data */
   def setData(data: Array[Byte], version: Int): Future[ZNode.Data] =
@@ -110,22 +113,24 @@ trait ZNode {
     }
 
   /** Returns a Future that is satisfied with a reference to this ZNode */
-  def sync(): Future[ZNode] = zkClient.retrying { zk =>
-    val result = new UnitCallbackPromise
-    zk.sync(path, result, null)
-    result map { _ => this }
-  }
+  def sync(): Future[ZNode] =
+    zkClient.retrying { zk =>
+      val result = new UnitCallbackPromise
+      zk.sync(path, result, null)
+      result map { _ => this }
+    }
 
   /** Provides access to this node's children. */
   val getChildren: ZOp[ZNode.Children] = new ZOp[ZNode.Children] {
     import LiftableFuture._
 
     /** Get this ZNode with its metadata and children */
-    def apply(): Future[ZNode.Children] = zkClient.retrying { zk =>
-      val result = new ChildrenCallbackPromise(ZNode.this)
-      zk.getChildren(path, false, result, null)
-      result
-    }
+    def apply(): Future[ZNode.Children] =
+      zkClient.retrying { zk =>
+        val result = new ChildrenCallbackPromise(ZNode.this)
+        zk.getChildren(path, false, result, null)
+        result
+      }
 
     /**
       * Get a ZNode with its metadata and children; and install a watch for changes.
@@ -136,12 +141,13 @@ trait ZNode {
       * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
       * Future will error without returning a Watch.
       */
-    def watch() = zkClient.retrying { zk =>
-      val result = new ChildrenCallbackPromise(ZNode.this)
-      val update = new EventPromise
-      zk.getChildren(path, update, result, null)
-      result.liftNoNode map { ZNode.Watch(_, update) }
-    }
+    def watch() =
+      zkClient.retrying { zk =>
+        val result = new ChildrenCallbackPromise(ZNode.this)
+        val update = new EventPromise
+        zk.getChildren(path, update, result, null)
+        result.liftNoNode map { ZNode.Watch(_, update) }
+      }
   }
 
   /** Provides access to this node's data. */
@@ -149,11 +155,12 @@ trait ZNode {
     import LiftableFuture._
 
     /** Get this node's data */
-    def apply(): Future[ZNode.Data] = zkClient.retrying { zk =>
-      val result = new DataCallbackPromise(ZNode.this)
-      zk.getData(path, false, result, null)
-      result
-    }
+    def apply(): Future[ZNode.Data] =
+      zkClient.retrying { zk =>
+        val result = new DataCallbackPromise(ZNode.this)
+        zk.getData(path, false, result, null)
+        result
+      }
 
     /**
       * Get this node's metadata and data; and install a watch for changes.
@@ -164,12 +171,13 @@ trait ZNode {
       * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
       * Future will error without returning a Watch.
       */
-    def watch() = zkClient.retrying { zk =>
-      val result = new DataCallbackPromise(ZNode.this)
-      val update = new EventPromise
-      zk.getData(path, update, result, null)
-      result.liftNoNode map { ZNode.Watch(_, update) }
-    }
+    def watch() =
+      zkClient.retrying { zk =>
+        val result = new DataCallbackPromise(ZNode.this)
+        val update = new EventPromise
+        zk.getData(path, update, result, null)
+        result.liftNoNode map { ZNode.Watch(_, update) }
+      }
   }
 
   /** Provides access to this node's metadata. */
@@ -177,19 +185,21 @@ trait ZNode {
     import LiftableFuture._
 
     /** Get this node's metadata. */
-    def apply() = zkClient.retrying { zk =>
-      val result = new ExistsCallbackPromise(ZNode.this)
-      zk.exists(path, false, result, null)
-      result
-    }
+    def apply() =
+      zkClient.retrying { zk =>
+        val result = new ExistsCallbackPromise(ZNode.this)
+        zk.exists(path, false, result, null)
+        result
+      }
 
     /** Get this node's metadata and watch for updates */
-    def watch() = zkClient.retrying { zk =>
-      val result = new ExistsCallbackPromise(ZNode.this)
-      val update = new EventPromise
-      zk.exists(path, update, result, null)
-      result.liftNoNode.map { ZNode.Watch(_, update) }
-    }
+    def watch() =
+      zkClient.retrying { zk =>
+        val result = new ExistsCallbackPromise(ZNode.this)
+        val update = new EventPromise
+        zk.exists(path, update, result, null)
+        result.liftNoNode.map { ZNode.Watch(_, update) }
+      }
   }
 
   /**
@@ -277,11 +287,12 @@ trait ZNode {
 
   /** AuthFailed and Expired are unmonitorable. Everything else can be resumed. */
   protected[this] object MonitorableEvent {
-    def unapply(event: WatchedEvent) = event match {
-      case StateEvent.AuthFailed() => false
-      case StateEvent.Expired()    => false
-      case _                       => true
-    }
+    def unapply(event: WatchedEvent) =
+      event match {
+        case StateEvent.AuthFailed() => false
+        case StateEvent.Expired()    => false
+        case _                       => true
+      }
   }
 }
 
@@ -291,11 +302,12 @@ trait ZNode {
 object ZNode {
 
   /** Build a ZNode */
-  def apply(zk: ZkClient, _path: String) = new ZNode {
-    PathUtils.validatePath(_path)
-    protected[zk] val zkClient = zk
-    val path = _path
-  }
+  def apply(zk: ZkClient, _path: String) =
+    new ZNode {
+      PathUtils.validatePath(_path)
+      protected[zk] val zkClient = zk
+      val path = _path
+    }
 
   /** matcher */
   def unapply(znode: ZNode) = Some(znode.path)
@@ -309,21 +321,23 @@ object ZNode {
   trait Exists extends ZNode {
     val stat: Stat
 
-    override def equals(other: Any) = other match {
-      case Exists(p, s) => (p == path && s == stat)
-      case o            => super.equals(o)
-    }
+    override def equals(other: Any) =
+      other match {
+        case Exists(p, s) => (p == path && s == stat)
+        case o            => super.equals(o)
+      }
 
     def apply(children: Seq[String]): ZNode.Children = apply(stat, children)
     def apply(bytes: Array[Byte]): ZNode.Data = apply(stat, bytes)
   }
 
   object Exists {
-    def apply(znode: ZNode, _stat: Stat) = new Exists {
-      val path = znode.path
-      protected[zk] val zkClient = znode.zkClient
-      val stat = _stat
-    }
+    def apply(znode: ZNode, _stat: Stat) =
+      new Exists {
+        val path = znode.path
+        protected[zk] val zkClient = znode.zkClient
+        val stat = _stat
+      }
     def apply(znode: Exists): Exists = apply(znode, znode.stat)
     def unapply(znode: Exists) = Some((znode.path, znode.stat))
   }
@@ -333,19 +347,21 @@ object ZNode {
     val stat: Stat
     val children: Seq[ZNode]
 
-    override def equals(other: Any) = other match {
-      case Children(p, s, c) => (p == path && s == stat && c == children)
-      case o                 => super.equals(o)
-    }
+    override def equals(other: Any) =
+      other match {
+        case Children(p, s, c) => (p == path && s == stat && c == children)
+        case o                 => super.equals(o)
+      }
   }
 
   object Children {
-    def apply(znode: Exists, _children: Seq[ZNode]): Children = new Children {
-      val path = znode.path
-      protected[zk] val zkClient = znode.zkClient
-      val stat = znode.stat
-      val children = _children
-    }
+    def apply(znode: Exists, _children: Seq[ZNode]): Children =
+      new Children {
+        val path = znode.path
+        protected[zk] val zkClient = znode.zkClient
+        val stat = znode.stat
+        val children = _children
+      }
     def apply(znode: ZNode, stat: Stat, children: Seq[String]): Children = {
       apply(Exists(znode, stat), children.map(znode.apply))
     }
@@ -357,19 +373,21 @@ object ZNode {
     val stat: Stat
     val bytes: Array[Byte]
 
-    override def equals(other: Any) = other match {
-      case Data(p, s, b) => (p == path && s == stat && b == bytes)
-      case o             => super.equals(o)
-    }
+    override def equals(other: Any) =
+      other match {
+        case Data(p, s, b) => (p == path && s == stat && b == bytes)
+        case o             => super.equals(o)
+      }
   }
 
   object Data {
-    def apply(znode: ZNode, _stat: Stat, _bytes: Array[Byte]) = new Data {
-      val path = znode.path
-      protected[zk] val zkClient = znode.zkClient
-      val stat = _stat
-      val bytes = _bytes
-    }
+    def apply(znode: ZNode, _stat: Stat, _bytes: Array[Byte]) =
+      new Data {
+        val path = znode.path
+        protected[zk] val zkClient = znode.zkClient
+        val stat = _stat
+        val bytes = _bytes
+      }
     def apply(znode: Exists, bytes: Array[Byte]): Data =
       apply(znode, znode.stat, bytes)
     def unapply(znode: Data) = Some((znode.path, znode.stat, znode.bytes))

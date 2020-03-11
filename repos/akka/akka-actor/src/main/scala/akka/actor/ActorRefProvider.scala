@@ -355,17 +355,18 @@ trait ActorRefFactory {
     * the supplied path, it is recommended to send a message and gather the
     * replies in order to resolve the matching set of actors.
     */
-  def actorSelection(path: String): ActorSelection = path match {
-    case RelativeActorPath(elems) ⇒
-      if (elems.isEmpty) ActorSelection(provider.deadLetters, "")
-      else if (elems.head.isEmpty)
-        ActorSelection(provider.rootGuardian, elems.tail)
-      else ActorSelection(lookupRoot, elems)
-    case ActorPathExtractor(address, elems) ⇒
-      ActorSelection(provider.rootGuardianAt(address), elems)
-    case _ ⇒
-      ActorSelection(provider.deadLetters, "")
-  }
+  def actorSelection(path: String): ActorSelection =
+    path match {
+      case RelativeActorPath(elems) ⇒
+        if (elems.isEmpty) ActorSelection(provider.deadLetters, "")
+        else if (elems.head.isEmpty)
+          ActorSelection(provider.rootGuardian, elems.tail)
+        else ActorSelection(lookupRoot, elems)
+      case ActorPathExtractor(address, elems) ⇒
+        ActorSelection(provider.rootGuardianAt(address), elems)
+      case _ ⇒
+        ActorSelection(provider.deadLetters, "")
+    }
 
   /**
     * Construct an [[akka.actor.ActorSelection]] from the given path, which is
@@ -621,11 +622,12 @@ private[akka] class LocalActorRefProvider private[akka] (
   /**
     * Overridable supervision strategy to be used by the “/user” guardian.
     */
-  protected def rootGuardianStrategy: SupervisorStrategy = OneForOneStrategy() {
-    case ex ⇒
-      log.error(ex, "guardian failed, shutting down system")
-      SupervisorStrategy.Stop
-  }
+  protected def rootGuardianStrategy: SupervisorStrategy =
+    OneForOneStrategy() {
+      case ex ⇒
+        log.error(ex, "guardian failed, shutting down system")
+        SupervisorStrategy.Stop
+    }
 
   /**
     * Overridable supervision strategy to be used by the “/user” guardian.
@@ -654,12 +656,13 @@ private[akka] class LocalActorRefProvider private[akka] (
       theOneWhoWalksTheBubblesOfSpaceTime,
       rootPath) {
       override def getParent: InternalActorRef = this
-      override def getSingleChild(name: String): InternalActorRef = name match {
-        case "temp" ⇒ tempContainer
-        case "deadLetters" ⇒ deadLetters
-        case other ⇒
-          extraNames.get(other).getOrElse(super.getSingleChild(other))
-      }
+      override def getSingleChild(name: String): InternalActorRef =
+        name match {
+          case "temp" ⇒ tempContainer
+          case "deadLetters" ⇒ deadLetters
+          case other ⇒
+            extraNames.get(other).getOrElse(super.getSingleChild(other))
+        }
     }
 
   override def rootGuardianAt(address: Address): ActorRef =
@@ -728,21 +731,22 @@ private[akka] class LocalActorRefProvider private[akka] (
   @deprecated("use actorSelection instead of actorFor", "2.2")
   private[akka] override def actorFor(
       ref: InternalActorRef,
-      path: String): InternalActorRef = path match {
-    case RelativeActorPath(elems) ⇒
-      if (elems.isEmpty) {
-        log.debug(
-          "look-up of empty path string [{}] fails (per definition)",
-          path)
+      path: String): InternalActorRef =
+    path match {
+      case RelativeActorPath(elems) ⇒
+        if (elems.isEmpty) {
+          log.debug(
+            "look-up of empty path string [{}] fails (per definition)",
+            path)
+          deadLetters
+        } else if (elems.head.isEmpty) actorFor(rootGuardian, elems.tail)
+        else actorFor(ref, elems)
+      case ActorPathExtractor(address, elems) if address == rootPath.address ⇒
+        actorFor(rootGuardian, elems)
+      case _ ⇒
+        log.debug("look-up of unknown path [{}] failed", path)
         deadLetters
-      } else if (elems.head.isEmpty) actorFor(rootGuardian, elems.tail)
-      else actorFor(ref, elems)
-    case ActorPathExtractor(address, elems) if address == rootPath.address ⇒
-      actorFor(rootGuardian, elems)
-    case _ ⇒
-      log.debug("look-up of unknown path [{}] failed", path)
-      deadLetters
-  }
+    }
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
   private[akka] override def actorFor(path: ActorPath): InternalActorRef =
@@ -767,13 +771,14 @@ private[akka] class LocalActorRefProvider private[akka] (
         case x ⇒ x
       }
 
-  def resolveActorRef(path: String): ActorRef = path match {
-    case ActorPathExtractor(address, elems) if address == rootPath.address ⇒
-      resolveActorRef(rootGuardian, elems)
-    case _ ⇒
-      log.debug("resolve of unknown path [{}] failed", path)
-      deadLetters
-  }
+  def resolveActorRef(path: String): ActorRef =
+    path match {
+      case ActorPathExtractor(address, elems) if address == rootPath.address ⇒
+        resolveActorRef(rootGuardian, elems)
+      case _ ⇒
+        log.debug("resolve of unknown path [{}] failed", path)
+        deadLetters
+    }
 
   def resolveActorRef(path: ActorPath): ActorRef = {
     if (path.root == rootPath) resolveActorRef(rootGuardian, path.elements)

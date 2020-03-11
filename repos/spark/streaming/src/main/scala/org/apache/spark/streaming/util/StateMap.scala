@@ -196,21 +196,23 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   def shouldCompact: Boolean = { deltaChainLength >= deltaChainThreshold }
 
   /** Length of the delta chains of this map */
-  def deltaChainLength: Int = parentStateMap match {
-    case map: OpenHashMapBasedStateMap[_, _] => map.deltaChainLength + 1
-    case _                                   => 0
-  }
+  def deltaChainLength: Int =
+    parentStateMap match {
+      case map: OpenHashMapBasedStateMap[_, _] => map.deltaChainLength + 1
+      case _                                   => 0
+    }
 
   /**
     * Approximate number of keys in the map. This is an overestimation that is mainly used to
     * reserve capacity in a new map at delta compaction time.
     */
-  def approxSize: Int = deltaMap.size + {
-    parentStateMap match {
-      case s: OpenHashMapBasedStateMap[_, _] => s.approxSize
-      case _                                 => 0
+  def approxSize: Int =
+    deltaMap.size + {
+      parentStateMap match {
+        case s: OpenHashMapBasedStateMap[_, _] => s.approxSize
+        case _                                 => 0
+      }
     }
-  }
 
   /** Get all the data of this map as string formatted as a tree based on the delta depth */
   override def toDebugString(): String = {

@@ -166,15 +166,17 @@ class ScLiteralImpl(node: ASTNode)
     if (isMultiLineString) new PassthroughLiteralEscaper(this)
     else new ScLiteralEscaper(this)
 
-  def isString = getFirstChild.getNode.getElementType match {
-    case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
-    case _                                                           => false
-  }
+  def isString =
+    getFirstChild.getNode.getElementType match {
+      case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
+      case _                                                           => false
+    }
 
-  def isMultiLineString = getFirstChild.getNode.getElementType match {
-    case ScalaTokenTypes.tMULTILINE_STRING => true
-    case _                                 => false
-  }
+  def isMultiLineString =
+    getFirstChild.getNode.getElementType match {
+      case ScalaTokenTypes.tMULTILINE_STRING => true
+      case _                                 => false
+    }
 
   override def isSymbol: Boolean =
     getFirstChild.getNode.getElementType == ScalaTokenTypes.tSYMBOL

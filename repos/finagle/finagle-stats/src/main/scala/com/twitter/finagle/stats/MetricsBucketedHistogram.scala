@@ -34,10 +34,11 @@ private[stats] class MetricsBucketedHistogram(
 
   def getName: String = name
 
-  def clear(): Unit = current.synchronized {
-    current.clear()
-    snap.clear()
-  }
+  def clear(): Unit =
+    current.synchronized {
+      current.clear()
+      snap.clear()
+    }
 
   def add(value: Long): Unit = current.synchronized { current.add(value) }
 

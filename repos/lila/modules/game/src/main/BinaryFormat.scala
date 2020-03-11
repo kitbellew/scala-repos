@@ -12,9 +12,8 @@ object BinaryFormat {
 
   object pgn {
 
-    def write(moves: PgnMoves): ByteArray = ByteArray {
-      format.pgn.Binary.writeMoves(moves).get.toArray
-    }
+    def write(moves: PgnMoves): ByteArray =
+      ByteArray { format.pgn.Binary.writeMoves(moves).get.toArray }
 
     def read(ba: ByteArray): PgnMoves =
       format.pgn.Binary.readMoves(ba.value.toList).get
@@ -33,22 +32,24 @@ object BinaryFormat {
     private val decodeList: List[(Int, MT)] = encodeList.map(x => x._2 -> x._1)
     private val decodeMap: Map[Int, MT] = decodeList.toMap
 
-    private def findClose(v: MT, in: List[(MT, Int)]): Option[Int] = in match {
-      case (a, b) :: (c, d) :: rest =>
-        if (math.abs(a - v) <= math.abs(c - v)) Some(b)
-        else findClose(v, (c, d) :: rest)
-      case (a, b) :: rest => Some(b)
-      case _              => None
-    }
+    private def findClose(v: MT, in: List[(MT, Int)]): Option[Int] =
+      in match {
+        case (a, b) :: (c, d) :: rest =>
+          if (math.abs(a - v) <= math.abs(c - v)) Some(b)
+          else findClose(v, (c, d) :: rest)
+        case (a, b) :: rest => Some(b)
+        case _              => None
+      }
 
-    def write(mts: Vector[MT]): ByteArray = ByteArray {
-      def enc(mt: MT) =
-        encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
-      (mts grouped 2 map {
-        case Vector(a, b) => (enc(a) << 4) + enc(b)
-        case Vector(a)    => enc(a) << 4
-      }).map(_.toByte).toArray
-    }
+    def write(mts: Vector[MT]): ByteArray =
+      ByteArray {
+        def enc(mt: MT) =
+          encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
+        (mts grouped 2 map {
+          case Vector(a, b) => (enc(a) << 4) + enc(b)
+          case Vector(a)    => enc(a) << 4
+        }).map(_.toByte).toArray
+      }
 
     def read(ba: ByteArray): Vector[MT] = {
       def dec(x: Int) = decodeMap get x getOrElse decodeMap(size - 1)
@@ -58,14 +59,15 @@ object BinaryFormat {
 
   case class clock(since: DateTime) {
 
-    def write(clock: Clock): ByteArray = ByteArray {
-      def time(t: Float) = writeSignedInt24((t * 100).toInt)
-      def timer(seconds: Double) = writeTimer((seconds * 100).toLong)
-      Array(writeClockLimit(clock.limit), writeInt8(clock.increment)) ++
-        time(clock.whiteTime) ++
-        time(clock.blackTime) ++
-        timer(clock.timerOption getOrElse 0d) map (_.toByte)
-    }
+    def write(clock: Clock): ByteArray =
+      ByteArray {
+        def time(t: Float) = writeSignedInt24((t * 100).toInt)
+        def timer(seconds: Double) = writeTimer((seconds * 100).toLong)
+        Array(writeClockLimit(clock.limit), writeInt8(clock.increment)) ++
+          time(clock.whiteTime) ++
+          time(clock.blackTime) ++
+          timer(clock.timerOption getOrElse 0d) map (_.toByte)
+      }
 
     def read(
         ba: ByteArray,
@@ -202,9 +204,10 @@ object BinaryFormat {
     } toArray
 
     def write(pieces: PieceMap): ByteArray = {
-      def posInt(pos: Pos): Int = (pieces get pos).fold(0) { piece =>
-        piece.color.fold(0, 8) + roleToInt(piece.role)
-      }
+      def posInt(pos: Pos): Int =
+        (pieces get pos).fold(0) { piece =>
+          piece.color.fold(0, 8) + roleToInt(piece.role)
+        }
       ByteArray(groupedPos map {
         case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
       })
@@ -240,14 +243,15 @@ object BinaryFormat {
         case 7 if variant.antichess => Some(King)
         case _                      => None
       }
-    private def roleToInt(role: Role): Int = role match {
-      case Pawn   => 6
-      case King   => 1
-      case Queen  => 2
-      case Rook   => 3
-      case Knight => 4
-      case Bishop => 5
-    }
+    private def roleToInt(role: Role): Int =
+      role match {
+        case Pawn   => 6
+        case King   => 1
+        case Queen  => 2
+        case Rook   => 3
+        case Knight => 4
+        case Bishop => 5
+      }
   }
 
   @inline private def toInt(b: Byte): Int = b & 0xff

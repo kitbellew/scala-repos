@@ -48,10 +48,11 @@ final class TestSelector(_testName: String) extends Selector with Serializable {
     */
   def testName(): String = _testName
 
-  override def equals(that: Any): Boolean = that match {
-    case that: TestSelector => this.testName == that.testName
-    case _                  => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: TestSelector => this.testName == that.testName
+      case _                  => false
+    }
 
   override def hashCode(): Int = testName.hashCode()
   override def toString(): String = s"TestSelector($testName)"
@@ -73,10 +74,11 @@ final class NestedSuiteSelector(_suiteId: String)
     */
   def suiteId(): String = _suiteId
 
-  override def equals(that: Any): Boolean = that match {
-    case that: NestedSuiteSelector => this.suiteId == that.suiteId
-    case _                         => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: NestedSuiteSelector => this.suiteId == that.suiteId
+      case _                         => false
+    }
 
   override def hashCode(): Int = suiteId.hashCode()
   override def toString(): String = s"NestedSuiteSelector($suiteId)"
@@ -106,11 +108,12 @@ final class NestedTestSelector(_suiteId: String, _testName: String)
     */
   def testName(): String = _testName
 
-  override def equals(that: Any): Boolean = that match {
-    case that: NestedTestSelector =>
-      this.suiteId == that.suiteId && this.testName == that.testName
-    case _ => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: NestedTestSelector =>
+        this.suiteId == that.suiteId && this.testName == that.testName
+      case _ => false
+    }
 
   override def hashCode(): Int = {
     var retVal = 17
@@ -146,11 +149,12 @@ final class TestWildcardSelector(_testWildcard: String)
     */
   def testWildcard(): String = _testWildcard
 
-  override def equals(that: Any): Boolean = that match {
-    case that: TestWildcardSelector =>
-      this.testWildcard == that.testWildcard
-    case _ => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: TestWildcardSelector =>
+        this.testWildcard == that.testWildcard
+      case _ => false
+    }
 
   override def hashCode(): Int = testWildcard.hashCode()
 

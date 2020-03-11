@@ -216,25 +216,26 @@ package scalaguide.forms.scalaforms {
       def index = Action { Ok(views.html.user(userForm)) }
       // #form-render
 
-      def userPostHandlingFailure() = Action { implicit request =>
-        val userForm = userFormConstraints
+      def userPostHandlingFailure() =
+        Action { implicit request =>
+          val userForm = userFormConstraints
 
+          //#userForm-handling-failure
+          userForm.bindFromRequest.fold(
+            formWithErrors => {
+              // binding failure, you retrieve the form containing errors:
+              BadRequest(views.html.user(formWithErrors))
+            },
+            userData => {
+              /* binding success, you get the actual value. */
+              val newUser = models.User(userData.name, userData.age)
+              val id = models.User.create(newUser)
+              Redirect(routes.Application.home(id))
+            }
+          )
         //#userForm-handling-failure
-        userForm.bindFromRequest.fold(
-          formWithErrors => {
-            // binding failure, you retrieve the form containing errors:
-            BadRequest(views.html.user(formWithErrors))
-          },
-          userData => {
-            /* binding success, you get the actual value. */
-            val newUser = models.User(userData.name, userData.age)
-            val id = models.User.create(newUser)
-            Redirect(routes.Application.home(id))
-          }
-        )
-      //#userForm-handling-failure
 
-      }
+        }
 
       // #form-bodyparser
       val userPost = Action(parse.form(userForm)) { implicit request =>
@@ -466,46 +467,48 @@ package scalaguide.forms.scalaforms {
       // #contact-form
 
       // #contact-edit
-      def editContact = Action {
-        val existingContact = Contact(
-          "Fake",
-          "Contact",
-          Some("Fake company"),
-          informations = List(
-            ContactInformation(
-              "Personal",
-              Some("fakecontact@gmail.com"),
-              List("01.23.45.67.89", "98.76.54.32.10")
-            ),
-            ContactInformation(
-              "Professional",
-              Some("fakecontact@company.com"),
-              List("01.23.45.67.89")
-            ),
-            ContactInformation(
-              "Previous",
-              Some("fakecontact@oldcompany.com"),
-              List()
+      def editContact =
+        Action {
+          val existingContact = Contact(
+            "Fake",
+            "Contact",
+            Some("Fake company"),
+            informations = List(
+              ContactInformation(
+                "Personal",
+                Some("fakecontact@gmail.com"),
+                List("01.23.45.67.89", "98.76.54.32.10")
+              ),
+              ContactInformation(
+                "Professional",
+                Some("fakecontact@company.com"),
+                List("01.23.45.67.89")
+              ),
+              ContactInformation(
+                "Previous",
+                Some("fakecontact@oldcompany.com"),
+                List()
+              )
             )
           )
-        )
-        Ok(views.html.contact.form(contactForm.fill(existingContact)))
-      }
+          Ok(views.html.contact.form(contactForm.fill(existingContact)))
+        }
       // #contact-edit
 
       // #contact-save
-      def saveContact = Action { implicit request =>
-        contactForm.bindFromRequest.fold(
-          formWithErrors => {
-            BadRequest(views.html.contact.form(formWithErrors))
-          },
-          contact => {
-            val contactId = Contact.save(contact)
-            Redirect(routes.Application.showContact(contactId))
-              .flashing("success" -> "Contact saved!")
-          }
-        )
-      }
+      def saveContact =
+        Action { implicit request =>
+          contactForm.bindFromRequest.fold(
+            formWithErrors => {
+              BadRequest(views.html.contact.form(formWithErrors))
+            },
+            contact => {
+              val contactId = Contact.save(contact)
+              Redirect(routes.Application.showContact(contactId))
+                .flashing("success" -> "Contact saved!")
+            }
+          )
+        }
       // #contact-save
 
       def showContact(id: Int) = Action { Ok("Contact id: " + id) }

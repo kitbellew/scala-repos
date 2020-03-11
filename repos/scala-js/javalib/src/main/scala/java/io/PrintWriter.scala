@@ -33,13 +33,14 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   def flush(): Unit =
     ensureOpenAndTrapIOExceptions(out.flush())
 
-  def close(): Unit = trapIOExceptions {
-    if (!closed) {
-      flush()
-      closed = true
-      out.close()
+  def close(): Unit =
+    trapIOExceptions {
+      if (!closed) {
+        flush()
+        closed = true
+        out.close()
+      }
     }
-  }
 
   def checkError(): Boolean = {
     if (closed) {

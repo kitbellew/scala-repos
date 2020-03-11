@@ -55,10 +55,11 @@ private[round] final class Socket(
     def setBye { bye = 3 }
     private def isBye = bye > 0
 
-    private def isHostingSimul: Fu[Boolean] = userId ?? { u =>
-      simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[
-        Set[String]] map (_ contains u)
-    }
+    private def isHostingSimul: Fu[Boolean] =
+      userId ?? { u =>
+        simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[
+          Set[String]] map (_ contains u)
+      }
 
     def isGone =
       if (time < (nowMillis - isBye

@@ -157,14 +157,14 @@ class ExecutionTest extends WordSpec with Matchers {
     }
 
     "Config transformer will isolate Configs" in {
-      def doesNotHaveVariable(message: String) = Execution.getConfig.flatMap {
-        cfg =>
+      def doesNotHaveVariable(message: String) =
+        Execution.getConfig.flatMap { cfg =>
           if (cfg.get("test.cfg.variable").isDefined)
             Execution.failed(
               new Exception(
                 s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
           else Execution.from(())
-      }
+        }
 
       val hasVariable = Execution.getConfig.flatMap { cfg =>
         if (cfg.get("test.cfg.variable").isEmpty)

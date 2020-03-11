@@ -42,9 +42,8 @@ object LogTester {
 class LogBuffer extends AppenderBase[ILoggingEvent] {
   private val buffer = ListBuffer.empty[ILoggingEvent]
 
-  def append(eventObject: ILoggingEvent) = buffer.synchronized {
-    buffer.append(eventObject)
-  }
+  def append(eventObject: ILoggingEvent) =
+    buffer.synchronized { buffer.append(eventObject) }
 
   def find(
       level: Option[Level] = None,

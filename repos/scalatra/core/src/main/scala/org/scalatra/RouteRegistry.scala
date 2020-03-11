@@ -79,9 +79,8 @@ class RouteRegistry {
   /**
     * Add a route that explicitly matches one or more response codes.
     */
-  def addStatusRoute(codes: Range, route: Route) = codes.foreach { code =>
-    _statusRoutes.put(code, route)
-  }
+  def addStatusRoute(codes: Range, route: Route) =
+    codes.foreach { code => _statusRoutes.put(code, route) }
 
   /**
     * Prepends a route to the method's route sequence.

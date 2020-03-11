@@ -71,10 +71,11 @@ class LEventsSpec extends Specification with TestEvents {
   """
 
   val dbName = "test_pio_storage_events_" + hashCode
-  def hbDO = Storage.getDataObject[LEvents](
-    StorageTestUtils.hbaseSourceName,
-    dbName
-  )
+  def hbDO =
+    Storage.getDataObject[LEvents](
+      StorageTestUtils.hbaseSourceName,
+      dbName
+    )
 
   def jdbcDO =
     Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)

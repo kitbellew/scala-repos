@@ -29,8 +29,9 @@ private[spark] class SerializableConfiguration(
       value.write(out)
     }
 
-  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
-    value = new Configuration(false)
-    value.readFields(in)
-  }
+  private def readObject(in: ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      value = new Configuration(false)
+      value.readFields(in)
+    }
 }

@@ -69,19 +69,21 @@ private[spark] class ApproximateActionListener[T, U, R](
     * Waits for up to timeout milliseconds since the listener was created and then returns a
     * PartialResult with the result so far. This may be complete if the whole job is done.
     */
-  def awaitResult(): PartialResult[R] = synchronized {
-    val finishTime = startTime + timeout
-    while (true) {
-      val time = System.currentTimeMillis()
-      if (failure.isDefined) { throw failure.get }
-      else if (finishedTasks == totalTasks) {
-        return new PartialResult(evaluator.currentResult(), true)
-      } else if (time >= finishTime) {
-        resultObject = Some(new PartialResult(evaluator.currentResult(), false))
-        return resultObject.get
-      } else { this.wait(finishTime - time) }
+  def awaitResult(): PartialResult[R] =
+    synchronized {
+      val finishTime = startTime + timeout
+      while (true) {
+        val time = System.currentTimeMillis()
+        if (failure.isDefined) { throw failure.get }
+        else if (finishedTasks == totalTasks) {
+          return new PartialResult(evaluator.currentResult(), true)
+        } else if (time >= finishTime) {
+          resultObject =
+            Some(new PartialResult(evaluator.currentResult(), false))
+          return resultObject.get
+        } else { this.wait(finishTime - time) }
+      }
+      // Should never be reached, but required to keep the compiler happy
+      return null
     }
-    // Should never be reached, but required to keep the compiler happy
-    return null
-  }
 }

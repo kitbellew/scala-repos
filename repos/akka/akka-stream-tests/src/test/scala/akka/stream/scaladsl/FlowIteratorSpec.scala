@@ -60,11 +60,12 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
 
   "produce onError when hasNext throws" in {
     val iterable = new immutable.Iterable[Int] {
-      override def iterator: Iterator[Int] = new Iterator[Int] {
-        override def hasNext: Boolean =
-          throw new IllegalStateException("no next")
-        override def next(): Int = -1
-      }
+      override def iterator: Iterator[Int] =
+        new Iterator[Int] {
+          override def hasNext: Boolean =
+            throw new IllegalStateException("no next")
+          override def next(): Int = -1
+        }
     }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()

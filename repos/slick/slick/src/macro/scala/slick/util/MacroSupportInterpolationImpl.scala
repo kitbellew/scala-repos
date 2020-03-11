@@ -30,10 +30,11 @@ object MacroSupportInterpolationImpl {
       val sb = new StringBuilder
       val len = str.length
       var pos = 0
-      def flushSB: Unit = if (!sb.isEmpty) {
-        exprs += append(Literal(Constant(sb.toString)))
-        sb.clear()
-      }
+      def flushSB: Unit =
+        if (!sb.isEmpty) {
+          exprs += append(Literal(Constant(sb.toString)))
+          sb.clear()
+        }
       while (pos < len) {
         str.charAt(pos) match {
           case '\\' =>

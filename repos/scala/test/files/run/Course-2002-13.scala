@@ -51,17 +51,19 @@ object Terms {
 
   type Subst = List[Binding];
 
-  def lookup(s: Subst, name: String): Option[Term] = s match {
-    case List()  => None
-    case b :: s1 => if (name == b.name) Some(b.term) else lookup(s1, name)
-  }
+  def lookup(s: Subst, name: String): Option[Term] =
+    s match {
+      case List()  => None
+      case b :: s1 => if (name == b.name) Some(b.term) else lookup(s1, name)
+    }
 
   case class Var(a: String) extends Term {
     override def toString() = a;
-    def map(s: Subst): Term = lookup(s, a) match {
-      case Some(b) => b map s
-      case None    => this;
-    }
+    def map(s: Subst): Term =
+      lookup(s, a) match {
+        case Some(b) => b map s
+        case None    => this;
+      }
     def tyvars = List(a);
   }
 
@@ -77,23 +79,26 @@ object Terms {
 
   val NoTerm = Con("<none>", List());
 
-  def unify1(x: Term, y: Term, s: Subst): Option[Subst] = (x, y) match {
-    case (Var(a), Var(b)) if (a == b) =>
-      Some(s)
-    case (Var(a), _) =>
-      lookup(s, a) match {
-        case Some(x1) => unify(x1, y, s)
-        case None     => if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
-      }
-    case (_, Var(b)) =>
-      lookup(s, b) match {
-        case Some(y1) => unify(x, y1, s)
-        case None     => if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
-      }
-    case (Con(a, xs), Con(b, ys)) if (a == b) =>
-      unify(xs, ys, s)
-    case _ => None
-  }
+  def unify1(x: Term, y: Term, s: Subst): Option[Subst] =
+    (x, y) match {
+      case (Var(a), Var(b)) if (a == b) =>
+        Some(s)
+      case (Var(a), _) =>
+        lookup(s, a) match {
+          case Some(x1) => unify(x1, y, s)
+          case None =>
+            if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
+        }
+      case (_, Var(b)) =>
+        lookup(s, b) match {
+          case Some(y1) => unify(x, y1, s)
+          case None =>
+            if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
+        }
+      case (Con(a, xs), Con(b, ys)) if (a == b) =>
+        unify(xs, ys, s)
+      case _ => None
+    }
 
   def unify(x: Term, y: Term, s: Subst): Option[Subst] = {
     val ss = unify1(x, y, s);
@@ -129,28 +134,31 @@ object Programs {
       lhs.toString() + " :- " + rhs.mkString("", ",", "") + ".";
   }
 
-  def list2stream[a](xs: List[a]): Stream[a] = xs match {
-    case List()   => Stream.empty
-    case x :: xs1 => Stream.cons(x, list2stream(xs1))
-  }
-  def option2stream[a](xo: Option[a]): Stream[a] = xo match {
-    case None    => Stream.empty
-    case Some(x) => Stream.cons(x, Stream.empty)
-  }
+  def list2stream[a](xs: List[a]): Stream[a] =
+    xs match {
+      case List()   => Stream.empty
+      case x :: xs1 => Stream.cons(x, list2stream(xs1))
+    }
+  def option2stream[a](xo: Option[a]): Stream[a] =
+    xo match {
+      case None    => Stream.empty
+      case Some(x) => Stream.cons(x, Stream.empty)
+    }
 
   def solve(query: List[Term], clauses: List[Clause]): Stream[Subst] = {
 
-    def solve2(query: List[Term], s: Subst): Stream[Subst] = query match {
-      case List() =>
-        Stream.cons(s, Stream.empty)
-      case Con("not", qs) :: query1 =>
-        if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
-        else Stream.empty
-      case q :: query1 =>
-        for (clause <- list2stream(clauses);
-             s1 <- tryClause(clause.newInstance, q, s);
-             s2 <- solve1(query1, s1)) yield s2
-    }
+    def solve2(query: List[Term], s: Subst): Stream[Subst] =
+      query match {
+        case List() =>
+          Stream.cons(s, Stream.empty)
+        case Con("not", qs) :: query1 =>
+          if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
+          else Stream.empty
+        case q :: query1 =>
+          for (clause <- list2stream(clauses);
+               s1 <- tryClause(clause.newInstance, q, s);
+               s2 <- solve1(query1, s1)) yield s2
+      }
 
     def solve1(query: List[Term], s: Subst): Stream[Subst] = {
       val ss = solve2(query, s);

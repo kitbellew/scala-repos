@@ -143,73 +143,74 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     }
 
     /** Returns the string representation of given token. */
-    def token2string(token: Int): String = token match {
-      case IDENTIFIER => "identifier"
-      case CHARLIT    => "character literal"
-      case DOUBLELIT  => "double literal"
-      case FLOATLIT   => "float literal"
-      case INTLIT     => "integer literal"
-      case LONGLIT    => "long literal"
-      case STRINGLIT  => "string literal"
-      case EOF        => "eof"
-      case ERROR      => "something"
-      case AMP        => "`&'"
-      case AMPAMP     => "`&&'"
-      case AMPEQ      => "`&='"
-      case ASTERISK   => "`*'"
-      case ASTERISKEQ => "`*='"
-      case AT         => "`@'"
-      case BANG       => "`!'"
-      case BANGEQ     => "`!='"
-      case BAR        => "`|'"
-      case BARBAR     => "`||'"
-      case BAREQ      => "`|='"
-      case COLON      => "`:'"
-      case COMMA      => "`,'"
-      case DOT        => "`.'"
-      case DOTDOTDOT  => "`...'"
-      case EQEQ       => "`=='"
-      case EQUALS     => "`='"
-      case GT         => "`>'"
-      case GTEQ       => "`>='"
-      case GTGT       => "`>>'"
-      case GTGTEQ     => "`>>='"
-      case GTGTGT     => "`>>>'"
-      case GTGTGTEQ   => "`>>>='"
-      case HAT        => "`^'"
-      case HATEQ      => "`^='"
-      case LBRACE     => "`{'"
-      case LBRACKET   => "`['"
-      case LPAREN     => "`('"
-      case LT         => "`<'"
-      case LTEQ       => "`<='"
-      case LTLT       => "`<<'"
-      case LTLTEQ     => "`<<='"
-      case MINUS      => "`-'"
-      case MINUSEQ    => "`-='"
-      case MINUSMINUS => "`--'"
-      case PERCENT    => "`%'"
-      case PERCENTEQ  => "`%='"
-      case PLUS       => "`+'"
-      case PLUSEQ     => "`+='"
-      case PLUSPLUS   => "`++'"
-      case QMARK      => "`?'"
-      case RBRACE     => "`}'"
-      case RBRACKET   => "`]'"
-      case RPAREN     => "`)'"
-      case SEMI       => "`;'"
-      case SLASH      => "`/'"
-      case SLASHEQ    => "`/='"
-      case TILDE      => "`~'"
-      case _ =>
-        try ("`" + tokenName(token) + "'")
-        catch {
-          case _: ArrayIndexOutOfBoundsException =>
-            "`<" + token + ">'"
-          case _: NullPointerException =>
-            "`<(" + token + ")>'"
-        }
-    }
+    def token2string(token: Int): String =
+      token match {
+        case IDENTIFIER => "identifier"
+        case CHARLIT    => "character literal"
+        case DOUBLELIT  => "double literal"
+        case FLOATLIT   => "float literal"
+        case INTLIT     => "integer literal"
+        case LONGLIT    => "long literal"
+        case STRINGLIT  => "string literal"
+        case EOF        => "eof"
+        case ERROR      => "something"
+        case AMP        => "`&'"
+        case AMPAMP     => "`&&'"
+        case AMPEQ      => "`&='"
+        case ASTERISK   => "`*'"
+        case ASTERISKEQ => "`*='"
+        case AT         => "`@'"
+        case BANG       => "`!'"
+        case BANGEQ     => "`!='"
+        case BAR        => "`|'"
+        case BARBAR     => "`||'"
+        case BAREQ      => "`|='"
+        case COLON      => "`:'"
+        case COMMA      => "`,'"
+        case DOT        => "`.'"
+        case DOTDOTDOT  => "`...'"
+        case EQEQ       => "`=='"
+        case EQUALS     => "`='"
+        case GT         => "`>'"
+        case GTEQ       => "`>='"
+        case GTGT       => "`>>'"
+        case GTGTEQ     => "`>>='"
+        case GTGTGT     => "`>>>'"
+        case GTGTGTEQ   => "`>>>='"
+        case HAT        => "`^'"
+        case HATEQ      => "`^='"
+        case LBRACE     => "`{'"
+        case LBRACKET   => "`['"
+        case LPAREN     => "`('"
+        case LT         => "`<'"
+        case LTEQ       => "`<='"
+        case LTLT       => "`<<'"
+        case LTLTEQ     => "`<<='"
+        case MINUS      => "`-'"
+        case MINUSEQ    => "`-='"
+        case MINUSMINUS => "`--'"
+        case PERCENT    => "`%'"
+        case PERCENTEQ  => "`%='"
+        case PLUS       => "`+'"
+        case PLUSEQ     => "`+='"
+        case PLUSPLUS   => "`++'"
+        case QMARK      => "`?'"
+        case RBRACE     => "`}'"
+        case RBRACKET   => "`]'"
+        case RPAREN     => "`)'"
+        case SEMI       => "`;'"
+        case SLASH      => "`/'"
+        case SLASHEQ    => "`/='"
+        case TILDE      => "`~'"
+        case _ =>
+          try ("`" + tokenName(token) + "'")
+          catch {
+            case _: ArrayIndexOutOfBoundsException =>
+              "`<" + token + ">'"
+            case _: NullPointerException =>
+              "`<(" + token + ")>'"
+          }
+      }
   }
 
   /** A scanner for Java.
@@ -568,15 +569,17 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     }
 
     protected def skipComment(): Boolean = {
-      @tailrec def skipLineComment(): Unit = in.ch match {
-        case CR | LF | SU =>
-        case _            => in.next; skipLineComment()
-      }
-      @tailrec def skipJavaComment(): Unit = in.ch match {
-        case SU  => incompleteInputError("unclosed comment")
-        case '*' => in.next; if (in.ch == '/') in.next else skipJavaComment()
-        case _   => in.next; skipJavaComment()
-      }
+      @tailrec def skipLineComment(): Unit =
+        in.ch match {
+          case CR | LF | SU =>
+          case _            => in.next; skipLineComment()
+        }
+      @tailrec def skipJavaComment(): Unit =
+        in.ch match {
+          case SU  => incompleteInputError("unclosed comment")
+          case '*' => in.next; if (in.ch == '/') in.next else skipJavaComment()
+          case _   => in.next; skipJavaComment()
+        }
       in.ch match {
         case '/' => in.next; skipLineComment(); true
         case '*' => in.next; skipJavaComment(); true
@@ -804,28 +807,29 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       token = EOF
     }
 
-    override def toString() = token match {
-      case IDENTIFIER =>
-        "id(" + name + ")"
-      case CHARLIT =>
-        "char(" + intVal + ")"
-      case INTLIT =>
-        "int(" + intVal + ")"
-      case LONGLIT =>
-        "long(" + intVal + ")"
-      case FLOATLIT =>
-        "float(" + floatVal + ")"
-      case DOUBLELIT =>
-        "double(" + floatVal + ")"
-      case STRINGLIT =>
-        "string(" + name + ")"
-      case SEMI =>
-        ";"
-      case COMMA =>
-        ","
-      case _ =>
-        JavaScannerConfiguration.token2string(token)
-    }
+    override def toString() =
+      token match {
+        case IDENTIFIER =>
+          "id(" + name + ")"
+        case CHARLIT =>
+          "char(" + intVal + ")"
+        case INTLIT =>
+          "int(" + intVal + ")"
+        case LONGLIT =>
+          "long(" + intVal + ")"
+        case FLOATLIT =>
+          "float(" + floatVal + ")"
+        case DOUBLELIT =>
+          "double(" + floatVal + ")"
+        case STRINGLIT =>
+          "string(" + name + ")"
+        case SEMI =>
+          ";"
+        case COMMA =>
+          ","
+        case _ =>
+          JavaScannerConfiguration.token2string(token)
+      }
 
     /** INIT: read lookahead character and token.
       */

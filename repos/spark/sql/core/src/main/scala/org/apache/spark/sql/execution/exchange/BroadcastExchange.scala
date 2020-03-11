@@ -40,11 +40,12 @@ case class BroadcastExchange(mode: BroadcastMode, child: SparkPlan)
 
   override def outputPartitioning: Partitioning = BroadcastPartitioning(mode)
 
-  override def sameResult(plan: SparkPlan): Boolean = plan match {
-    case p: BroadcastExchange =>
-      mode.compatibleWith(p.mode) && child.sameResult(p.child)
-    case _ => false
-  }
+  override def sameResult(plan: SparkPlan): Boolean =
+    plan match {
+      case p: BroadcastExchange =>
+        mode.compatibleWith(p.mode) && child.sameResult(p.child)
+      case _ => false
+    }
 
   @transient
   private val timeout: Duration = {

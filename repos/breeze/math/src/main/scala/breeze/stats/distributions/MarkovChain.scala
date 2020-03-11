@@ -32,15 +32,16 @@ object MarkovChain {
     * Given an initial state and an arbitrary Markov transition, return a sampler
     * for doing mcmc
     */
-  def apply[T](init: T)(resample: T => Rand[T]): Process[T] = new Process[T] {
-    val inner = resample(init);
-    def draw() = {
-      val next = inner.draw();
-      next
-    }
+  def apply[T](init: T)(resample: T => Rand[T]): Process[T] =
+    new Process[T] {
+      val inner = resample(init);
+      def draw() = {
+        val next = inner.draw();
+        next
+      }
 
-    override def observe(x: T) = { MarkovChain(x)(resample) }
-  }
+      override def observe(x: T) = { MarkovChain(x)(resample) }
+    }
 
   /**
     * Combinators for creating transition kernels from other kernels or things

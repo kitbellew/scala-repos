@@ -9,9 +9,8 @@ object Test {
     case b: B[u, v] => (new B[u, v] {}): A[u with v]
   } // OK
 
-  def f[T, U](p: A[T with U]): A[T with U] = p match {
-    case b: B[u, v] => new A[u with v] {}
-  } // Not OK
+  def f[T, U](p: A[T with U]): A[T with U] =
+    p match { case b: B[u, v] => new A[u with v] {} } // Not OK
 }
 
 object Test1 {

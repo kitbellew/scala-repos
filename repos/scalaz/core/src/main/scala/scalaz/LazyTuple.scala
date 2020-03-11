@@ -28,10 +28,11 @@ sealed abstract class LazyTuple4[A, B, C, D] {
 }
 
 object LazyTuple2 extends LazyTuple2Instances {
-  def apply[A, B](a: => A, b: => B): LazyTuple2[A, B] = new LazyTuple2[A, B] {
-    def _1 = a
-    def _2 = b
-  }
+  def apply[A, B](a: => A, b: => B): LazyTuple2[A, B] =
+    new LazyTuple2[A, B] {
+      def _1 = a
+      def _2 = b
+    }
 }
 
 object LazyTuple3 extends LazyTuple3Instances {
@@ -48,22 +49,24 @@ object LazyTuple4 extends LazyTuple4Instances {
       a: => A,
       b: => B,
       c: => C,
-      d: => D): LazyTuple4[A, B, C, D] = new LazyTuple4[A, B, C, D] {
-    def _1 = a
-    def _2 = b
-    def _3 = c
-    def _4 = d
-  }
+      d: => D): LazyTuple4[A, B, C, D] =
+    new LazyTuple4[A, B, C, D] {
+      def _1 = a
+      def _2 = b
+      def _3 = c
+      def _4 = d
+    }
 }
 
 object LazyTuple {
   type :&:[A, B] = LazyTuple2[A, B]
 
-  def lazyTuple2[A, B](a: => A, b: => B): (A :&: B) = new (A :&: B) {
-    def _1 = a
+  def lazyTuple2[A, B](a: => A, b: => B): (A :&: B) =
+    new (A :&: B) {
+      def _1 = a
 
-    def _2 = b
-  }
+      def _2 = b
+    }
 
   def lazyTuple3[A, B, C](a: => A, b: => B, c: => C): LazyTuple3[A, B, C] =
     new LazyTuple3[A, B, C] {
@@ -78,15 +81,16 @@ object LazyTuple {
       a: => A,
       b: => B,
       c: => C,
-      d: => D): LazyTuple4[A, B, C, D] = new LazyTuple4[A, B, C, D] {
-    def _1 = a
+      d: => D): LazyTuple4[A, B, C, D] =
+    new LazyTuple4[A, B, C, D] {
+      def _1 = a
 
-    def _2 = b
+      def _2 = b
 
-    def _3 = c
+      def _3 = c
 
-    def _4 = d
-  }
+      def _4 = d
+    }
 }
 
 sealed abstract class LazyTuple2Instances0 {
@@ -323,10 +327,11 @@ private trait LazyTuple2Semigroup[A1, A2]
     extends Semigroup[LazyTuple2[A1, A2]] {
   implicit def _1: Semigroup[A1]
   implicit def _2: Semigroup[A2]
-  def append(f1: LazyTuple2[A1, A2], f2: => LazyTuple2[A1, A2]) = LazyTuple2(
-    _1.append(f1._1, f2._1),
-    _2.append(f1._2, f2._2)
-  )
+  def append(f1: LazyTuple2[A1, A2], f2: => LazyTuple2[A1, A2]) =
+    LazyTuple2(
+      _1.append(f1._1, f2._1),
+      _2.append(f1._2, f2._2)
+    )
 }
 private trait LazyTuple3Semigroup[A1, A2, A3]
     extends Semigroup[LazyTuple3[A1, A2, A3]] {
@@ -348,12 +353,13 @@ private trait LazyTuple4Semigroup[A1, A2, A3, A4]
   implicit def _4: Semigroup[A4]
   def append(
       f1: LazyTuple4[A1, A2, A3, A4],
-      f2: => LazyTuple4[A1, A2, A3, A4]) = LazyTuple4(
-    _1.append(f1._1, f2._1),
-    _2.append(f1._2, f2._2),
-    _3.append(f1._3, f2._3),
-    _4.append(f1._4, f2._4)
-  )
+      f2: => LazyTuple4[A1, A2, A3, A4]) =
+    LazyTuple4(
+      _1.append(f1._1, f2._1),
+      _2.append(f1._2, f2._2),
+      _3.append(f1._3, f2._3),
+      _4.append(f1._4, f2._4)
+    )
 }
 
 private trait LazyTuple2Equal[A1, A2] extends Equal[LazyTuple2[A1, A2]] {

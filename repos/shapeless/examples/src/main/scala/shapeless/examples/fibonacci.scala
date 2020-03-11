@@ -79,9 +79,10 @@ object FibonacciExamples {
   }
 
   object Fibs {
-    implicit def fibs0 = new Fibs[_0, HNil] {
-      def apply() = HNil
-    }
+    implicit def fibs0 =
+      new Fibs[_0, HNil] {
+        def apply() = HNil
+      }
 
     implicit def fibsN[N <: Nat, H <: Nat, T <: HList](implicit
         fib: Fibonacci[N, H],

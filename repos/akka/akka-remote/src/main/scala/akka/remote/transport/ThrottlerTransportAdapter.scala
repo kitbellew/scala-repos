@@ -57,10 +57,11 @@ object ThrottlerTransportAdapter {
 
     @SerialVersionUID(1L)
     case object Send extends Direction {
-      override def includes(other: Direction): Boolean = other match {
-        case Send ⇒ true
-        case _ ⇒ false
-      }
+      override def includes(other: Direction): Boolean =
+        other match {
+          case Send ⇒ true
+          case _ ⇒ false
+        }
 
       /**
         * Java API: get the singleton instance
@@ -70,10 +71,11 @@ object ThrottlerTransportAdapter {
 
     @SerialVersionUID(1L)
     case object Receive extends Direction {
-      override def includes(other: Direction): Boolean = other match {
-        case Receive ⇒ true
-        case _ ⇒ false
-      }
+      override def includes(other: Direction): Boolean =
+        other match {
+          case Receive ⇒ true
+          case _ ⇒ false
+        }
 
       /**
         * Java API: get the singleton instance
@@ -619,11 +621,12 @@ private[transport] class ThrottledAssociation(
     }
   }
 
-  def scheduleDequeue(delay: FiniteDuration): Unit = inboundThrottleMode match {
-    case Blackhole ⇒ // Do nothing
-    case _ if delay <= Duration.Zero ⇒ self ! Dequeue
-    case _ ⇒ setTimer(DequeueTimerName, Dequeue, delay, repeat = false)
-  }
+  def scheduleDequeue(delay: FiniteDuration): Unit =
+    inboundThrottleMode match {
+      case Blackhole ⇒ // Do nothing
+      case _ if delay <= Duration.Zero ⇒ self ! Dequeue
+      case _ ⇒ setTimer(DequeueTimerName, Dequeue, delay, repeat = false)
+    }
 
 }
 

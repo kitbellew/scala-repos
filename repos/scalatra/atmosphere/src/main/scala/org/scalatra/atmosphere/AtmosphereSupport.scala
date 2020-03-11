@@ -75,10 +75,11 @@ trait AtmosphereSupport
       else TextMessage(txt)
     } getOrElse TextMessage("")
 
-  private[this] def isFilter = self match {
-    case _: ScalatraFilter => true
-    case _                 => false
-  }
+  private[this] def isFilter =
+    self match {
+      case _: ScalatraFilter => true
+      case _                 => false
+    }
 
   val atmosphereFramework = new ScalatraAtmosphereFramework(isFilter, false)
 

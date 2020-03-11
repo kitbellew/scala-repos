@@ -52,10 +52,11 @@ object WorksheetDiffSplitters {
       viewerEditor.getDocument,
       originalEditor.getProject)
 
-    override def getEditor(side: FragmentSide) = side match {
-      case FragmentSide.SIDE1 => left.get()
-      case FragmentSide.SIDE2 => right.get()
-    }
+    override def getEditor(side: FragmentSide) =
+      side match {
+        case FragmentSide.SIDE1 => left.get()
+        case FragmentSide.SIDE2 => right.get()
+      }
 
     override def getLineBlocks: LineBlocks = lineBlocks
   }
@@ -124,46 +125,47 @@ object WorksheetDiffSplitters {
 
     override def redrawDiffs(): Unit = getDivider.repaint()
 
-    override def createDivider() = new DividerImpl {
-      override def paint(g: Graphics) {
-        super.paint(g)
-        val width = getWidth
-        val height = getHeight
-        val editorHeight = editor1.getComponent.getHeight
+    override def createDivider() =
+      new DividerImpl {
+        override def paint(g: Graphics) {
+          super.paint(g)
+          val width = getWidth
+          val height = getHeight
+          val editorHeight = editor1.getComponent.getHeight
 
-        val gg = g
-          .create(0, height - editorHeight, width, editorHeight)
-          .asInstanceOf[Graphics2D]
-        var flag = false
+          val gg = g
+            .create(0, height - editorHeight, width, editorHeight)
+            .asInstanceOf[Graphics2D]
+          var flag = false
 
-        val (firstVisible1, lastVisible1) = getVisibleInterval(editor1)
-        val (firstVisible2, lastVisible2) = getVisibleInterval(editor2)
+          val (firstVisible1, lastVisible1) = getVisibleInterval(editor1)
+          val (firstVisible2, lastVisible2) = getVisibleInterval(editor2)
 
-        val lineHeight1 = editor1.getLineHeight
-        val lineHeight2 = editor2.getLineHeight
+          val lineHeight1 = editor1.getLineHeight
+          val lineHeight2 = editor2.getLineHeight
 
-        val plainPolygons = intervals zip changes collect {
-          case ((from, to), (offset, spaces))
-              if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to && firstVisible2 <=
-                (offset - to + from) && lastVisible2 >= (offset + spaces) =>
-            flag = !flag
-            new DividerPolygon(
-              (from + 1) * lineHeight1,
-              (offset - to + from - firstVisible2 + 1) * lineHeight2,
-              (to + 1) * lineHeight1,
-              (offset + spaces - firstVisible2 + 1) * lineHeight2,
-              if (flag) COLOR1 else COLOR2,
-              false
-            )
+          val plainPolygons = intervals zip changes collect {
+            case ((from, to), (offset, spaces))
+                if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to && firstVisible2 <=
+                  (offset - to + from) && lastVisible2 >= (offset + spaces) =>
+              flag = !flag
+              new DividerPolygon(
+                (from + 1) * lineHeight1,
+                (offset - to + from - firstVisible2 + 1) * lineHeight2,
+                (to + 1) * lineHeight1,
+                (offset + spaces - firstVisible2 + 1) * lineHeight2,
+                if (flag) COLOR1 else COLOR2,
+                false
+              )
+          }
+
+          DividerPolygon.paintPolygons(
+            new util.ArrayList[DividerPolygon](
+              wrapAsJava asJavaCollection plainPolygons),
+            gg,
+            width)
+          gg.dispose()
         }
-
-        DividerPolygon.paintPolygons(
-          new util.ArrayList[DividerPolygon](
-            wrapAsJava asJavaCollection plainPolygons),
-          gg,
-          width)
-        gg.dispose()
       }
-    }
   }
 }

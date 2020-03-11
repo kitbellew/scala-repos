@@ -148,15 +148,17 @@ private[hive] object HiveShim {
       } else { functionClassName.hashCode() }
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case a: HiveFunctionWrapper if functionClassName == a.functionClassName =>
-        // In case of udf macro, check to make sure they point to the same underlying UDF
-        if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
-          a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
-            instance.asInstanceOf[GenericUDFMacro].getBody()
-        } else { true }
-      case _ => false
-    }
+    override def equals(other: Any): Boolean =
+      other match {
+        case a: HiveFunctionWrapper
+            if functionClassName == a.functionClassName =>
+          // In case of udf macro, check to make sure they point to the same underlying UDF
+          if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
+            a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
+              instance.asInstanceOf[GenericUDFMacro].getBody()
+          } else { true }
+        case _ => false
+      }
 
     @transient
     def deserializeObjectByKryo[T: ClassTag](

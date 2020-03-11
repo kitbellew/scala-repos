@@ -82,8 +82,9 @@ object FileBackedHistory {
 
   final val defaultFileName = ".scala_history"
 
-  def defaultFile: File = File(
-    propOrNone("scala.shell.histfile") map (Path.apply) getOrElse (Path(
-      userHome) / defaultFileName)
-  )
+  def defaultFile: File =
+    File(
+      propOrNone("scala.shell.histfile") map (Path.apply) getOrElse (Path(
+        userHome) / defaultFileName)
+    )
 }

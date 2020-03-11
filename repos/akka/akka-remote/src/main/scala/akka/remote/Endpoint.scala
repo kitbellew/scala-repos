@@ -754,12 +754,13 @@ private[remote] class EndpointWriter(
       becomeWritingOrSendBufferedMessages()
   }
 
-  def enqueueInBuffer(msg: AnyRef): Unit = msg match {
-    case s @ Send(_: PriorityMessage, _, _, _) ⇒ prioBuffer offer s
-    case s @ Send(ActorSelectionMessage(_: PriorityMessage, _, _), _, _, _) ⇒
-      prioBuffer offer s
-    case _ ⇒ buffer offer msg
-  }
+  def enqueueInBuffer(msg: AnyRef): Unit =
+    msg match {
+      case s @ Send(_: PriorityMessage, _, _, _) ⇒ prioBuffer offer s
+      case s @ Send(ActorSelectionMessage(_: PriorityMessage, _, _), _, _, _) ⇒
+        prioBuffer offer s
+      case _ ⇒ buffer offer msg
+    }
 
   val buffering: Receive = {
     case s: Send ⇒ enqueueInBuffer(s)
@@ -809,16 +810,17 @@ private[remote] class EndpointWriter(
 
   def sendBufferedMessages(): Unit = {
 
-    def delegate(msg: Any): Boolean = msg match {
-      case s: Send ⇒
-        writeSend(s)
-      case FlushAndStop ⇒
-        flushAndStop()
-        false
-      case s @ StopReading(_, replyTo) ⇒
-        reader.foreach(_.tell(s, replyTo))
-        true
-    }
+    def delegate(msg: Any): Boolean =
+      msg match {
+        case s: Send ⇒
+          writeSend(s)
+        case FlushAndStop ⇒
+          flushAndStop()
+          false
+        case s @ StopReading(_, replyTo) ⇒
+          reader.foreach(_.tell(s, replyTo))
+          true
+      }
 
     @tailrec def writeLoop(count: Int): Boolean =
       if (count > 0 && !buffer.isEmpty) if (delegate(buffer.peek)) {
@@ -980,36 +982,37 @@ private[remote] class EndpointWriter(
       enqueueInBuffer(s)
   }
 
-  override def unhandled(message: Any): Unit = message match {
-    case Terminated(r) if r == reader.orNull ⇒
-      publishAndThrow(
-        new EndpointDisassociatedException("Disassociated"),
-        Logging.DebugLevel)
-    case s @ StopReading(_, replyTo) ⇒
-      reader match {
-        case Some(r) ⇒
-          r.tell(s, replyTo)
-        case None ⇒
-          // initializing, buffer and take care of it later when buffer is sent
-          enqueueInBuffer(s)
-      }
-    case TakeOver(newHandle, replyTo) ⇒
-      // Shutdown old reader
-      handle foreach { _.disassociate() }
-      handle = Some(newHandle)
-      replyTo ! TookOver(self, newHandle)
-      context.become(handoff)
-    case FlushAndStop ⇒
-      stopReason = AssociationHandle.Shutdown
-      context.stop(self)
-    case OutboundAck(ack) ⇒
-      lastAck = Some(ack)
-      if (ackDeadline.isOverdue()) trySendPureAck()
-    case AckIdleCheckTimer ⇒ // Ignore
-    case FlushAndStopTimeout ⇒ // ignore
-    case BackoffTimer ⇒ // ignore
-    case other ⇒ super.unhandled(other)
-  }
+  override def unhandled(message: Any): Unit =
+    message match {
+      case Terminated(r) if r == reader.orNull ⇒
+        publishAndThrow(
+          new EndpointDisassociatedException("Disassociated"),
+          Logging.DebugLevel)
+      case s @ StopReading(_, replyTo) ⇒
+        reader match {
+          case Some(r) ⇒
+            r.tell(s, replyTo)
+          case None ⇒
+            // initializing, buffer and take care of it later when buffer is sent
+            enqueueInBuffer(s)
+        }
+      case TakeOver(newHandle, replyTo) ⇒
+        // Shutdown old reader
+        handle foreach { _.disassociate() }
+        handle = Some(newHandle)
+        replyTo ! TookOver(self, newHandle)
+        context.become(handoff)
+      case FlushAndStop ⇒
+        stopReason = AssociationHandle.Shutdown
+        context.stop(self)
+      case OutboundAck(ack) ⇒
+        lastAck = Some(ack)
+        if (ackDeadline.isOverdue()) trySendPureAck()
+      case AckIdleCheckTimer ⇒ // Ignore
+      case FlushAndStopTimeout ⇒ // ignore
+      case BackoffTimer ⇒ // ignore
+      case other ⇒ super.unhandled(other)
+    }
 
   def flushAndStop(): Unit = {
     // Try to send a last Ack message
@@ -1049,16 +1052,18 @@ private[remote] class EndpointWriter(
     Some(newReader)
   }
 
-  private def serializeMessage(msg: Any): SerializedMessage = handle match {
-    case Some(h) ⇒
-      Serialization.currentTransportInformation.withValue(
-        Serialization.Information(h.localAddress, extendedSystem)) {
-        (MessageSerializer.serialize(extendedSystem, msg.asInstanceOf[AnyRef]))
-      }
-    case None ⇒
-      throw new EndpointException(
-        "Internal error: No handle was present during serialization of outbound message.")
-  }
+  private def serializeMessage(msg: Any): SerializedMessage =
+    handle match {
+      case Some(h) ⇒
+        Serialization.currentTransportInformation.withValue(
+          Serialization.Information(h.localAddress, extendedSystem)) {
+          (MessageSerializer
+            .serialize(extendedSystem, msg.asInstanceOf[AnyRef]))
+        }
+      case None ⇒
+        throw new EndpointException(
+          "Internal error: No handle was present during serialization of outbound message.")
+    }
 
 }
 
@@ -1208,24 +1213,25 @@ private[remote] class EndpointReader(
     case _ ⇒
   }
 
-  private def handleDisassociated(info: DisassociateInfo): Unit = info match {
-    case AssociationHandle.Unknown ⇒
-      context.stop(self)
-    case AssociationHandle.Shutdown ⇒
-      throw ShutDownAssociation(
-        localAddress,
-        remoteAddress,
-        InvalidAssociationException(
-          "The remote system terminated the association because it is shutting down."))
-    case AssociationHandle.Quarantined ⇒
-      throw InvalidAssociation(
-        localAddress,
-        remoteAddress,
-        InvalidAssociationException("The remote system has quarantined this system. No further associations " +
-          "to the remote system are possible until this system is restarted."),
-        Some(AssociationHandle.Quarantined)
-      )
-  }
+  private def handleDisassociated(info: DisassociateInfo): Unit =
+    info match {
+      case AssociationHandle.Unknown ⇒
+        context.stop(self)
+      case AssociationHandle.Shutdown ⇒
+        throw ShutDownAssociation(
+          localAddress,
+          remoteAddress,
+          InvalidAssociationException(
+            "The remote system terminated the association because it is shutting down."))
+      case AssociationHandle.Quarantined ⇒
+        throw InvalidAssociation(
+          localAddress,
+          remoteAddress,
+          InvalidAssociationException("The remote system has quarantined this system. No further associations " +
+            "to the remote system are possible until this system is restarted."),
+          Some(AssociationHandle.Quarantined)
+        )
+    }
 
   private def deliverAndAck(): Unit = {
     val (updatedBuffer, deliver, ack) = ackedReceiveBuffer.extractDeliverable

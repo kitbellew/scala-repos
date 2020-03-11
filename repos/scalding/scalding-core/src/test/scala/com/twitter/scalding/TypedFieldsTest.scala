@@ -105,9 +105,10 @@ class TypedFieldsJob(args: Args) extends Job(args) {
 // useful interfaces (such as Comparable)
 
 class Opaque(val str: String) {
-  override def equals(other: Any) = other match {
-    case other: Opaque => str equals other.str
-    case _             => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case other: Opaque => str equals other.str
+      case _             => false
+    }
   override def hashCode = str.hashCode
 }

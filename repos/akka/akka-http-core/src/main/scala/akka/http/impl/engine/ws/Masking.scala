@@ -51,10 +51,11 @@ private[http] object Masking {
     override def toString: String = s"Masking($random)"
   }
   private class Unmasking extends Masker {
-    def extractMask(header: FrameHeader): Int = header.mask match {
-      case Some(mask) ⇒ mask
-      case None ⇒ throw new ProtocolException("Frame wasn't masked")
-    }
+    def extractMask(header: FrameHeader): Int =
+      header.mask match {
+        case Some(mask) ⇒ mask
+        case None ⇒ throw new ProtocolException("Frame wasn't masked")
+      }
     def setNewMask(header: FrameHeader, mask: Int): FrameHeader =
       header.copy(mask = None)
     override def toString: String = "Unmasking"

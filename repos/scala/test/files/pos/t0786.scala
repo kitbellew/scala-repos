@@ -7,13 +7,15 @@ object ImplicitProblem {
     def eval: Int
   }
 
-  implicit def toRep0(n: Int) = new Rep[Int] {
-    def eval = 0
-  }
+  implicit def toRep0(n: Int) =
+    new Rep[Int] {
+      def eval = 0
+    }
 
-  implicit def toRepN[T](n: M[T])(implicit f: T => Rep[T]) = new Rep[M[T]] {
-    def eval = f(nullval[T]).eval + 1
-  }
+  implicit def toRepN[T](n: M[T])(implicit f: T => Rep[T]) =
+    new Rep[M[T]] {
+      def eval = f(nullval[T]).eval + 1
+    }
 
   def depth[T <% Rep[T]](n: T) = n.eval
 

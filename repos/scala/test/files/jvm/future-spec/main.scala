@@ -22,9 +22,8 @@ trait Features {
 trait Output {
   val buffer = new StringBuilder
 
-  def bufferPrintln(a: Any) = buffer.synchronized {
-    buffer.append(a.toString + "\n")
-  }
+  def bufferPrintln(a: Any) =
+    buffer.synchronized { buffer.append(a.toString + "\n") }
 }
 
 trait MinimalScalaTest extends Output with Features {
@@ -33,34 +32,36 @@ trait MinimalScalaTest extends Output with Features {
 
   def check() { if (throwables.nonEmpty) println(buffer.toString) }
 
-  implicit def stringops(s: String) = new {
+  implicit def stringops(s: String) =
+    new {
 
-    def should[U](snippets: => U) = {
-      bufferPrintln(s + " should:")
-      snippets
-    }
-
-    def in[U](snippet: => U) = {
-      try {
-        bufferPrintln("- " + s)
-        snippet
-        bufferPrintln("[OK] Test passed.")
-      } catch {
-        case e: Throwable =>
-          bufferPrintln("[FAILED] " + e)
-          bufferPrintln(e.getStackTrace().mkString("\n"))
-          throwables += e
+      def should[U](snippets: => U) = {
+        bufferPrintln(s + " should:")
+        snippets
       }
+
+      def in[U](snippet: => U) = {
+        try {
+          bufferPrintln("- " + s)
+          snippet
+          bufferPrintln("[OK] Test passed.")
+        } catch {
+          case e: Throwable =>
+            bufferPrintln("[FAILED] " + e)
+            bufferPrintln(e.getStackTrace().mkString("\n"))
+            throwables += e
+        }
+      }
+
     }
 
-  }
+  implicit def objectops(obj: Any) =
+    new {
 
-  implicit def objectops(obj: Any) = new {
+      def mustBe(other: Any) = assert(obj == other, obj + " is not " + other)
+      def mustEqual(other: Any) = mustBe(other)
 
-    def mustBe(other: Any) = assert(obj == other, obj + " is not " + other)
-    def mustEqual(other: Any) = mustBe(other)
-
-  }
+    }
 
   def intercept[T <: Throwable: Manifest](body: => Any): T = {
     try {

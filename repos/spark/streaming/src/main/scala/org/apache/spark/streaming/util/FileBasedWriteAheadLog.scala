@@ -132,24 +132,25 @@ private[streaming] class FileBasedWriteAheadLog(
     * the latest the records. This does not deal with currently active log files, and
     * hence the implementation is kept simple.
     */
-  def readAll(): JIterator[ByteBuffer] = synchronized {
-    val logFilesToRead = pastLogs.map { _.path } ++ currentLogPath
-    logInfo("Reading from the logs:\n" + logFilesToRead.mkString("\n"))
-    def readFile(file: String): Iterator[ByteBuffer] = {
-      logDebug(s"Creating log reader with $file")
-      val reader = new FileBasedWriteAheadLogReader(file, hadoopConf)
-      CompletionIterator[ByteBuffer, Iterator[ByteBuffer]](
-        reader,
-        reader.close _)
+  def readAll(): JIterator[ByteBuffer] =
+    synchronized {
+      val logFilesToRead = pastLogs.map { _.path } ++ currentLogPath
+      logInfo("Reading from the logs:\n" + logFilesToRead.mkString("\n"))
+      def readFile(file: String): Iterator[ByteBuffer] = {
+        logDebug(s"Creating log reader with $file")
+        val reader = new FileBasedWriteAheadLogReader(file, hadoopConf)
+        CompletionIterator[ByteBuffer, Iterator[ByteBuffer]](
+          reader,
+          reader.close _)
+      }
+      if (!closeFileAfterWrite) {
+        logFilesToRead.iterator.map(readFile).flatten.asJava
+      } else {
+        // For performance gains, it makes sense to parallelize the recovery if
+        // closeFileAfterWrite = true
+        seqToParIterator(executionContext, logFilesToRead, readFile).asJava
+      }
     }
-    if (!closeFileAfterWrite) {
-      logFilesToRead.iterator.map(readFile).flatten.asJava
-    } else {
-      // For performance gains, it makes sense to parallelize the recovery if
-      // closeFileAfterWrite = true
-      seqToParIterator(executionContext, logFilesToRead, readFile).asJava
-    }
-  }
 
   /**
     * Delete the log files that are older than the threshold time.
@@ -205,11 +206,12 @@ private[streaming] class FileBasedWriteAheadLog(
   }
 
   /** Stop the manager, close any open log writer */
-  def close(): Unit = synchronized {
-    if (currentLogWriter != null) { currentLogWriter.close() }
-    executionContext.shutdown()
-    logInfo("Stopped write ahead log manager")
-  }
+  def close(): Unit =
+    synchronized {
+      if (currentLogWriter != null) { currentLogWriter.close() }
+      executionContext.shutdown()
+      logInfo("Stopped write ahead log manager")
+    }
 
   /** Get the current log writer while taking care of rotation */
   private def getLogWriter(currentTime: Long): FileBasedWriteAheadLogWriter =
@@ -235,30 +237,32 @@ private[streaming] class FileBasedWriteAheadLog(
     }
 
   /** Initialize the log directory or recover existing logs inside the directory */
-  private def initializeOrRecover(): Unit = synchronized {
-    val logDirectoryPath = new Path(logDirectory)
-    val fileSystem =
-      HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
+  private def initializeOrRecover(): Unit =
+    synchronized {
+      val logDirectoryPath = new Path(logDirectory)
+      val fileSystem =
+        HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
 
-    if (fileSystem.exists(logDirectoryPath) &&
-        fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
-      val logFileInfo = logFilesTologInfo(
-        fileSystem.listStatus(logDirectoryPath).map { _.getPath })
-      pastLogs.clear()
-      pastLogs ++= logFileInfo
-      logInfo(
-        s"Recovered ${logFileInfo.size} write ahead log files from $logDirectory")
-      logDebug(
-        s"Recovered files are:\n${logFileInfo.map(_.path).mkString("\n")}")
+      if (fileSystem.exists(logDirectoryPath) &&
+          fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
+        val logFileInfo = logFilesTologInfo(
+          fileSystem.listStatus(logDirectoryPath).map { _.getPath })
+        pastLogs.clear()
+        pastLogs ++= logFileInfo
+        logInfo(
+          s"Recovered ${logFileInfo.size} write ahead log files from $logDirectory")
+        logDebug(
+          s"Recovered files are:\n${logFileInfo.map(_.path).mkString("\n")}")
+      }
     }
-  }
 
-  private def resetWriter(): Unit = synchronized {
-    if (currentLogWriter != null) {
-      currentLogWriter.close()
-      currentLogWriter = null
+  private def resetWriter(): Unit =
+    synchronized {
+      if (currentLogWriter != null) {
+        currentLogWriter.close()
+        currentLogWriter = null
+      }
     }
-  }
 }
 
 private[streaming] object FileBasedWriteAheadLog {

@@ -142,10 +142,11 @@ class SecurityHeadersFilter @Inject() (config: SecurityHeadersConfig)
   /**
     * Applies the filter to an action, appending the headers to the result so it shows in the HTTP response.
     */
-  def apply(next: EssentialAction) = EssentialAction { req =>
-    import play.api.libs.iteratee.Execution.Implicits.trampoline
-    next(req).map(_.withHeaders(headers(req): _*))
-  }
+  def apply(next: EssentialAction) =
+    EssentialAction { req =>
+      import play.api.libs.iteratee.Execution.Implicits.trampoline
+      next(req).map(_.withHeaders(headers(req): _*))
+    }
 }
 
 /**
@@ -161,10 +162,11 @@ class SecurityHeadersConfigProvider @Inject() (configuration: Configuration)
   * The security headers module.
   */
 class SecurityHeadersModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = Seq(
-    bind[SecurityHeadersConfig].toProvider[SecurityHeadersConfigProvider],
-    bind[SecurityHeadersFilter].toSelf
-  )
+  def bindings(environment: Environment, configuration: Configuration) =
+    Seq(
+      bind[SecurityHeadersConfig].toProvider[SecurityHeadersConfigProvider],
+      bind[SecurityHeadersFilter].toSelf
+    )
 }
 
 /**

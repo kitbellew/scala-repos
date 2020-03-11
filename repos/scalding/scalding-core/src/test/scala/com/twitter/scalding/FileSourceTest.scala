@@ -289,10 +289,11 @@ class FileSourceTest extends WordSpec with Matchers {
 
 object TestPath {
   def getCurrentDirectory = new java.io.File(".").getCanonicalPath
-  def prefix = getCurrentDirectory.split("/").last match {
-    case "scalding-core" => getCurrentDirectory
-    case _               => getCurrentDirectory + "/scalding-core"
-  }
+  def prefix =
+    getCurrentDirectory.split("/").last match {
+      case "scalding-core" => getCurrentDirectory
+      case _               => getCurrentDirectory + "/scalding-core"
+    }
   val testfsPathRoot =
     prefix + "/src/test/resources/com/twitter/scalding/test_filesystem/"
 }

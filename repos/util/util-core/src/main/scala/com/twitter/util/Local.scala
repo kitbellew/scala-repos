@@ -24,10 +24,11 @@ object Local {
     */
   def restore(saved: Context): Unit = localCtx.set(saved)
 
-  private def add(): Int = synchronized {
-    size += 1
-    size - 1
-  }
+  private def add(): Int =
+    synchronized {
+      size += 1
+      size - 1
+    }
 
   private def set(i: Int, v: Option[_]): Unit = {
     assert(i < size)

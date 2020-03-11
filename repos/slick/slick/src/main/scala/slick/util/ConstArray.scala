@@ -127,23 +127,24 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
     if (changed) new ConstArray[T](ar) else this
   }
 
-  def zipWithIndex: ConstArrayOp[(T, Int)] = new ConstArrayOp[(T, Int)] {
-    def map[R](f: ((T, Int)) => R): ConstArray[R] = {
-      var i = 0
-      self.map { v =>
-        val r = f(v, i)
-        i += 1
-        r
+  def zipWithIndex: ConstArrayOp[(T, Int)] =
+    new ConstArrayOp[(T, Int)] {
+      def map[R](f: ((T, Int)) => R): ConstArray[R] = {
+        var i = 0
+        self.map { v =>
+          val r = f(v, i)
+          i += 1
+          r
+        }
+      }
+      def foreach[R](f: ((T, Int)) => R): Unit = {
+        var i = 0
+        self.foreach { v =>
+          f(v, i)
+          i += 1
+        }
       }
     }
-    def foreach[R](f: ((T, Int)) => R): Unit = {
-      var i = 0
-      self.foreach { v =>
-        f(v, i)
-        i += 1
-      }
-    }
-  }
 
   def zip[U](u: ConstArray[U]): ConstArrayOp[(T, U)] =
     new ConstArrayOp[(T, U)] {
@@ -169,15 +170,16 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   override def toString = a.mkString("ConstArray(", ", ", ")")
 
-  def iterator: Iterator[T] = new Iterator[T] {
-    private[this] var pos = 0
-    def hasNext: Boolean = pos < self.length
-    def next(): T = {
-      var r = a(pos)
-      pos += 1
-      r.asInstanceOf[T]
+  def iterator: Iterator[T] =
+    new Iterator[T] {
+      private[this] var pos = 0
+      def hasNext: Boolean = pos < self.length
+      def next(): T = {
+        var r = a(pos)
+        pos += 1
+        r.asInstanceOf[T]
+      }
     }
-  }
 
   def indexWhere(f: T => Boolean): Int = {
     var i = 0
@@ -220,29 +222,30 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
     else new ConstArray[T](ar, ri)
   }
 
-  def withFilter(p: T => Boolean): ConstArrayOp[T] = new ConstArrayOp[T] {
-    def map[R](f: T => R): ConstArray[R] = {
-      val ar = new Array[Any](length)
-      var i, ri = 0
-      while (i < length) {
-        val v = a(i).asInstanceOf[T]
-        if (p(v)) {
-          ar(ri) = f(v)
-          ri += 1
+  def withFilter(p: T => Boolean): ConstArrayOp[T] =
+    new ConstArrayOp[T] {
+      def map[R](f: T => R): ConstArray[R] = {
+        val ar = new Array[Any](length)
+        var i, ri = 0
+        while (i < length) {
+          val v = a(i).asInstanceOf[T]
+          if (p(v)) {
+            ar(ri) = f(v)
+            ri += 1
+          }
+          i += 1
         }
-        i += 1
+        if (ri == 0) ConstArray.empty else new ConstArray[R](ar, ri)
       }
-      if (ri == 0) ConstArray.empty else new ConstArray[R](ar, ri)
-    }
-    def foreach[R](f: T => R): Unit = {
-      var i = 0
-      while (i < length) {
-        val v = a(i).asInstanceOf[T]
-        if (p(v)) f(v)
-        i += 1
+      def foreach[R](f: T => R): Unit = {
+        var i = 0
+        while (i < length) {
+          val v = a(i).asInstanceOf[T]
+          if (p(v)) f(v)
+          i += 1
+        }
       }
     }
-  }
 
   def mkString(sep: String) = iterator.mkString(sep)
 
@@ -271,10 +274,11 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   ///////////////////////////////////////////////////////// conversion
 
-  def toSeq: immutable.IndexedSeq[T] = new immutable.IndexedSeq[T] {
-    def apply(idx: Int) = self(idx)
-    def length = self.length
-  }
+  def toSeq: immutable.IndexedSeq[T] =
+    new immutable.IndexedSeq[T] {
+      def apply(idx: Int) = self(idx)
+      def length = self.length
+    }
 
   def toSet: immutable.HashSet[T @uncheckedVariance] = {
     val b = immutable.HashSet.newBuilder[T]
@@ -382,19 +386,20 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
     }
   }
 
-  override def equals(o: Any): Boolean = o match {
-    case o: ConstArray[_] =>
-      if (length != o.length) false
-      else {
-        var i = 0
-        while (i < length) {
-          if (a(i) != o(i)) return false
-          i += 1
+  override def equals(o: Any): Boolean =
+    o match {
+      case o: ConstArray[_] =>
+        if (length != o.length) false
+        else {
+          var i = 0
+          while (i < length) {
+            if (a(i) != o(i)) return false
+            i += 1
+          }
+          true
         }
-        true
-      }
-    case _ => false
-  }
+      case _ => false
+    }
 
   ///////////////////////////////////////////////////////// Product
 

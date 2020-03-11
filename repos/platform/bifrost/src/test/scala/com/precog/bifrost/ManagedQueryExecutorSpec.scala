@@ -106,12 +106,13 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
     executionResult.valueOr(err => sys.error(err.toString))
   }
 
-  def cancel(jobId: JobId, ticks: Int): Future[Boolean] = schedule(ticks) {
-    jobManager
-      .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-      .map(_.fold(_ => false, _ => true))
-      .copoint
-  }
+  def cancel(jobId: JobId, ticks: Int): Future[Boolean] =
+    schedule(ticks) {
+      jobManager
+        .cancel(jobId, "Yarrrr", yggConfig.clock.now())
+        .map(_.fold(_ => false, _ => true))
+        .copoint
+    }
 
   def poll(jobId: JobId): Future[Option[(Option[MimeType], String)]] = {
     jobManager.getResult(jobId) flatMap {

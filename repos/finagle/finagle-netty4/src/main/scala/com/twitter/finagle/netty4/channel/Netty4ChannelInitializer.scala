@@ -144,17 +144,18 @@ private[netty4] class ChannelExceptionHandler(
   private[this] val readTimeoutCounter = stats.counter("read_timeout")
   private[this] val writeTimeoutCounter = stats.counter("write_timeout")
 
-  private[this] def severity(exc: Throwable): Level = exc match {
-    case e: Failure => e.logLevel
-    case _: java.nio.channels.ClosedChannelException |
-        _: javax.net.ssl.SSLException | _: ReadTimeoutException |
-        _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
-      Level.FINEST
-    case e: java.io.IOException
-        if FinestIOExceptionMessages.contains(e.getMessage) =>
-      Level.FINEST
-    case _ => Level.WARNING
-  }
+  private[this] def severity(exc: Throwable): Level =
+    exc match {
+      case e: Failure => e.logLevel
+      case _: java.nio.channels.ClosedChannelException |
+          _: javax.net.ssl.SSLException | _: ReadTimeoutException |
+          _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
+        Level.FINEST
+      case e: java.io.IOException
+          if FinestIOExceptionMessages.contains(e.getMessage) =>
+        Level.FINEST
+      case _ => Level.WARNING
+    }
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,

@@ -30,28 +30,30 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
   /**
     * Blocking method to wait for and return the final value.
     */
-  def getFinalValue(): R = synchronized {
-    while (finalValue.isEmpty && failure.isEmpty) { this.wait() }
-    if (finalValue.isDefined) { return finalValue.get }
-    else { throw failure.get }
-  }
+  def getFinalValue(): R =
+    synchronized {
+      while (finalValue.isEmpty && failure.isEmpty) { this.wait() }
+      if (finalValue.isDefined) { return finalValue.get }
+      else { throw failure.get }
+    }
 
   /**
     * Set a handler to be called when this PartialResult completes. Only one completion handler
     * is supported per PartialResult.
     */
-  def onComplete(handler: R => Unit): PartialResult[R] = synchronized {
-    if (completionHandler.isDefined) {
-      throw new UnsupportedOperationException(
-        "onComplete cannot be called twice")
+  def onComplete(handler: R => Unit): PartialResult[R] =
+    synchronized {
+      if (completionHandler.isDefined) {
+        throw new UnsupportedOperationException(
+          "onComplete cannot be called twice")
+      }
+      completionHandler = Some(handler)
+      if (finalValue.isDefined) {
+        // We already have a final value, so let's call the handler
+        handler(finalValue.get)
+      }
+      return this
     }
-    completionHandler = Some(handler)
-    if (finalValue.isDefined) {
-      // We already have a final value, so let's call the handler
-      handler(finalValue.get)
-    }
-    return this
-  }
 
   /**
     * Set a handler to be called if this PartialResult's job fails. Only one failure handler
@@ -75,9 +77,8 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     */
   def map[T](f: R => T): PartialResult[T] = {
     new PartialResult[T](f(initialVal), isFinal) {
-      override def getFinalValue(): T = synchronized {
-        f(PartialResult.this.getFinalValue())
-      }
+      override def getFinalValue(): T =
+        synchronized { f(PartialResult.this.getFinalValue()) }
       override def onComplete(handler: T => Unit): PartialResult[T] =
         synchronized {
           PartialResult.this.onComplete(handler.compose(f)).map(f)
@@ -85,12 +86,13 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
       override def onFail(handler: Exception => Unit) {
         synchronized { PartialResult.this.onFail(handler) }
       }
-      override def toString: String = synchronized {
-        PartialResult.this.getFinalValueInternal() match {
-          case Some(value) => "(final: " + f(value) + ")"
-          case None        => "(partial: " + initialValue + ")"
+      override def toString: String =
+        synchronized {
+          PartialResult.this.getFinalValueInternal() match {
+            case Some(value) => "(final: " + f(value) + ")"
+            case None        => "(partial: " + initialValue + ")"
+          }
         }
-      }
       def getFinalValueInternal(): Option[T] =
         PartialResult.this.getFinalValueInternal().map(f)
     }
@@ -126,10 +128,11 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     }
   }
 
-  override def toString: String = synchronized {
-    finalValue match {
-      case Some(value) => "(final: " + value + ")"
-      case None        => "(partial: " + initialValue + ")"
+  override def toString: String =
+    synchronized {
+      finalValue match {
+        case Some(value) => "(final: " + value + ")"
+        case None        => "(partial: " + initialValue + ")"
+      }
     }
-  }
 }

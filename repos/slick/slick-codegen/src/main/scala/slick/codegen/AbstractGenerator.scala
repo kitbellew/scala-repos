@@ -214,17 +214,19 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** All definitions in this table class including disabled ones grouped into logical groups. */
       def definitions = {
-        def OptionDef = new Def {
-          def doc = "Maps whole row to an option. Useful for outer joins."
-          override def enabled = optionEnabled
-          def code = option
-          def rawName = ???
-        }
-        def StarDef = new Def {
-          def doc = ""
-          def code = star
-          def rawName = ???
-        }
+        def OptionDef =
+          new Def {
+            def doc = "Maps whole row to an option. Useful for outer joins."
+            override def enabled = optionEnabled
+            def code = option
+            def rawName = ???
+          }
+        def StarDef =
+          new Def {
+            def doc = ""
+            def code = star
+            def rawName = ???
+          }
 
         Seq[Seq[Def]](
           Seq(StarDef, OptionDef),
@@ -492,11 +494,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       }
 
       /** Name (escaped if colliding with Scala keyword). */
-      final def name: TermName = termName {
-        if (slickTableTermMembersNoArgs.contains(rawName)) {
-          disambiguateTerm(rawName)
-        } else rawName
-      }
+      final def name: TermName =
+        termName {
+          if (slickTableTermMembersNoArgs.contains(rawName)) {
+            disambiguateTerm(rawName)
+          } else rawName
+        }
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */
       def disambiguateTerm(name: String, postfix: String = "X"): String =

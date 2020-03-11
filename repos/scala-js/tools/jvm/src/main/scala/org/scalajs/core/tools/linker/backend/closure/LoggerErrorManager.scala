@@ -18,11 +18,12 @@ private[closure] class LoggerErrorManager(private val log: Logger)
     else super.report(level, error)
   }
 
-  def println(level: CheckLevel, error: JSError): Unit = level match {
-    case CheckLevel.WARNING => log.warn(s"Closure: ${error}")
-    case CheckLevel.ERROR   => log.error(s"Closure: ${error}")
-    case CheckLevel.OFF     =>
-  }
+  def println(level: CheckLevel, error: JSError): Unit =
+    level match {
+      case CheckLevel.WARNING => log.warn(s"Closure: ${error}")
+      case CheckLevel.ERROR   => log.error(s"Closure: ${error}")
+      case CheckLevel.OFF     =>
+    }
 
   protected def printSummary(): Unit = {
     val msg =

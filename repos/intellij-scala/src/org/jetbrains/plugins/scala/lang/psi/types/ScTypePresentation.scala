@@ -448,13 +448,14 @@ object ScTypePresentation {
         t2.canonicalText.replace("_root_.", ""))
   }
 
-  def shouldExpand(ta: ScTypeAliasDefinition): Boolean = ta match {
-    case _: ScLightTypeAliasDefinition | childOf(_: ScRefinement) => true
-    case _ =>
-      ScalaPsiUtil
-        .superTypeMembers(ta)
-        .exists(_.isInstanceOf[ScTypeAliasDeclaration])
-  }
+  def shouldExpand(ta: ScTypeAliasDefinition): Boolean =
+    ta match {
+      case _: ScLightTypeAliasDefinition | childOf(_: ScRefinement) => true
+      case _ =>
+        ScalaPsiUtil
+          .superTypeMembers(ta)
+          .exists(_.isInstanceOf[ScTypeAliasDeclaration])
+    }
 
   type A = ScTypePresentation { type B }
 

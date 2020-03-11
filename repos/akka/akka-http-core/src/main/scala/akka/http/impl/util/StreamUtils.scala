@@ -92,34 +92,36 @@ private[http] object StreamUtils {
       length: Long): Flow[ByteString, ByteString, NotUsed] = {
     val transformer = new StatefulStage[ByteString, ByteString] {
 
-      def skipping = new State {
-        var toSkip = start
+      def skipping =
+        new State {
+          var toSkip = start
 
-        override def onPush(
-            element: ByteString,
-            ctx: Context[ByteString]): SyncDirective =
-          if (element.length < toSkip) {
-            // keep skipping
-            toSkip -= element.length
-            ctx.pull()
-          } else {
-            become(taking(length))
-            // toSkip <= element.length <= Int.MaxValue
-            current.onPush(element.drop(toSkip.toInt), ctx)
-          }
-      }
-
-      def taking(initiallyRemaining: Long) = new State {
-        var remaining: Long = initiallyRemaining
-
-        override def onPush(
-            element: ByteString,
-            ctx: Context[ByteString]): SyncDirective = {
-          val data = element.take(math.min(remaining, Int.MaxValue).toInt)
-          remaining -= data.size
-          if (remaining <= 0) ctx.pushAndFinish(data) else ctx.push(data)
+          override def onPush(
+              element: ByteString,
+              ctx: Context[ByteString]): SyncDirective =
+            if (element.length < toSkip) {
+              // keep skipping
+              toSkip -= element.length
+              ctx.pull()
+            } else {
+              become(taking(length))
+              // toSkip <= element.length <= Int.MaxValue
+              current.onPush(element.drop(toSkip.toInt), ctx)
+            }
         }
-      }
+
+      def taking(initiallyRemaining: Long) =
+        new State {
+          var remaining: Long = initiallyRemaining
+
+          override def onPush(
+              element: ByteString,
+              ctx: Context[ByteString]): SyncDirective = {
+            val data = element.take(math.min(remaining, Int.MaxValue).toInt)
+            remaining -= data.size
+            if (remaining <= 0) ctx.pushAndFinish(data) else ctx.push(data)
+          }
+        }
 
       override def initial: State = if (start > 0) skipping else taking(length)
     }
@@ -283,11 +285,12 @@ private[http] object StreamUtils {
     val stage = new PushPullStage[A, B] {
       var recovery: Option[B] = None
       def onPush(elem: A, ctx: Context[B]): SyncDirective = ctx.push(elem)
-      def onPull(ctx: Context[B]): SyncDirective = recovery match {
-        case None ⇒ ctx.pull()
-        case Some(x) ⇒ { recovery = null; ctx.push(x) }
-        case null ⇒ ctx.finish()
-      }
+      def onPull(ctx: Context[B]): SyncDirective =
+        recovery match {
+          case None ⇒ ctx.pull()
+          case Some(x) ⇒ { recovery = null; ctx.push(x) }
+          case null ⇒ ctx.finish()
+        }
       override def onUpstreamFailure(
           cause: Throwable,
           ctx: Context[B]): TerminationDirective =
@@ -351,19 +354,20 @@ private[http] object StreamUtils {
     def open(): Unit
   }
   object OneTimeValve {
-    def apply(): OneTimeValve = new OneTimeValve {
-      val promise = Promise[Unit]()
-      val _source =
-        Source
-          .fromFuture(promise.future)
-          .drop(1) // we are only interested in the completion event
+    def apply(): OneTimeValve =
+      new OneTimeValve {
+        val promise = Promise[Unit]()
+        val _source =
+          Source
+            .fromFuture(promise.future)
+            .drop(1) // we are only interested in the completion event
 
-      def source[T]: Source[T, NotUsed] =
-        _source.asInstanceOf[
-          Source[T, NotUsed]
-        ] // safe, because source won't generate any elements
-      def open(): Unit = promise.success(())
-    }
+        def source[T]: Source[T, NotUsed] =
+          _source.asInstanceOf[
+            Source[T, NotUsed]
+          ] // safe, because source won't generate any elements
+        def open(): Unit = promise.success(())
+      }
   }
 }
 

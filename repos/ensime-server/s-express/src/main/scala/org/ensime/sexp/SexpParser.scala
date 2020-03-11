@@ -67,62 +67,64 @@ object SexpParser {
 class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   import SexpParser._
-  private def SexpP: Rule1[Sexp] = rule {
-    SexpAtomP | SexpListP | SexpEmptyList | SexpConsP | SexpQuotedP
-  }
+  private def SexpP: Rule1[Sexp] =
+    rule { SexpAtomP | SexpListP | SexpEmptyList | SexpConsP | SexpQuotedP }
 
-  private def SexpConsP: Rule1[SexpCons] = rule {
-    LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
-      (x: Sexp, y: Sexp) => SexpCons(x, y)
+  private def SexpConsP: Rule1[SexpCons] =
+    rule {
+      LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
+        (x: Sexp, y: Sexp) => SexpCons(x, y)
+      }
     }
-  }
 
-  private def SexpListP: Rule1[Sexp] = rule {
-    LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
-      (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
+  private def SexpListP: Rule1[Sexp] =
+    rule {
+      LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
+        (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
+      }
     }
-  }
 
-  private def SexpAtomP: Rule1[SexpAtom] = rule {
-    SexpCharP | SexpStringP | SexpNaNP | SexpNumberP | SexpSymbolP
-  }
+  private def SexpAtomP: Rule1[SexpAtom] =
+    rule { SexpCharP | SexpStringP | SexpNaNP | SexpNumberP | SexpSymbolP }
 
-  private def SexpCharP: Rule1[SexpChar] = rule {
-    '?' ~ NormalChar ~> { SexpChar }
-  }
+  private def SexpCharP: Rule1[SexpChar] =
+    rule { '?' ~ NormalChar ~> { SexpChar } }
 
-  def SexpStringP = rule {
-    '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString))
-  }
+  def SexpStringP =
+    rule {
+      '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString))
+    }
 
   def CharactersSB = rule { zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB) }
 
   def NormalCharSB = rule { NCCharPredicate ~ appendSB() }
 
-  def EscapedCharSB = rule(
-    QuoteSlashBackSlash ~ appendSB()
-      | '\"' ~ appendSB('\"')
-      | 'b' ~ appendSB('\b')
-      | 's' ~ appendSB(' ')
-      | 'f' ~ appendSB('\f')
-      | 'n' ~ appendSB('\n')
-      | 'r' ~ appendSB('\r')
-      | 't' ~ appendSB('\t')
-      | ' ' ~ appendSB(
-        ""
-      ) // special emacs magic for comments \<space< and \<newline> are removed
-      | '\n' ~ appendSB("")
-      | 'a' ~ appendSB('\u0007') // bell
-      | 'v' ~ appendSB('\u000b') // vertical tab
-      | 'e' ~ appendSB('\u001b') // escape
-      | 'd' ~ appendSB('\u007f') // DEL
-  )
+  def EscapedCharSB =
+    rule(
+      QuoteSlashBackSlash ~ appendSB()
+        | '\"' ~ appendSB('\"')
+        | 'b' ~ appendSB('\b')
+        | 's' ~ appendSB(' ')
+        | 'f' ~ appendSB('\f')
+        | 'n' ~ appendSB('\n')
+        | 'r' ~ appendSB('\r')
+        | 't' ~ appendSB('\t')
+        | ' ' ~ appendSB(
+          ""
+        ) // special emacs magic for comments \<space< and \<newline> are removed
+        | '\n' ~ appendSB("")
+        | 'a' ~ appendSB('\u0007') // bell
+        | 'v' ~ appendSB('\u000b') // vertical tab
+        | 'e' ~ appendSB('\u001b') // escape
+        | 'd' ~ appendSB('\u007f') // DEL
+    )
 
-  def SexpNumberP = rule {
-    capture(Integer ~ optional(Frac) ~ optional(Exp)) ~> { s: String =>
-      SexpNumber(BigDecimal(s))
+  def SexpNumberP =
+    rule {
+      capture(Integer ~ optional(Frac) ~ optional(Exp)) ~> { s: String =>
+        SexpNumber(BigDecimal(s))
+      }
     }
-  }
 
   import CharPredicate.{Digit, Digit19}
 
@@ -134,40 +136,37 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   def Exp = rule { ExpPredicate ~ optional(PlusMinusPredicate) ~ Digits }
 
-  private def SexpNaNP: Rule1[SexpAtom] = rule {
-    "-1.0e+INF" ~ push(SexpNegInf) |
-      "1.0e+INF" ~ push(SexpPosInf) |
-      optional('-') ~ "0.0e+NaN" ~ push(SexpNaN)
-  }
-
-  private def SexpQuotedP: Rule1[Sexp] = rule {
-    '\'' ~ SexpP ~> { v: Sexp => SexpCons(SexpQuote, v) }
-  }
-
-  private def SexpSymbolP: Rule1[SexpAtom] = rule {
-    // ? allowed at the end of symbol names
-    capture(
-      oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
-        SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
-      if (sym == "nil") SexpNil else SexpSymbol(sym)
+  private def SexpNaNP: Rule1[SexpAtom] =
+    rule {
+      "-1.0e+INF" ~ push(SexpNegInf) |
+        "1.0e+INF" ~ push(SexpPosInf) |
+        optional('-') ~ "0.0e+NaN" ~ push(SexpNaN)
     }
-  }
 
-  private def SexpEmptyList: Rule1[SexpNil.type] = rule {
-    LeftBrace ~ RightBrace ~ push(SexpNil)
-  }
+  private def SexpQuotedP: Rule1[Sexp] =
+    rule { '\'' ~ SexpP ~> { v: Sexp => SexpCons(SexpQuote, v) } }
 
-  private def NormalChar: Rule1[Char] = rule {
-    NormalCharPredicate ~ push(lastChar)
-  }
+  private def SexpSymbolP: Rule1[SexpAtom] =
+    rule {
+      // ? allowed at the end of symbol names
+      capture(
+        oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
+          SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
+        if (sym == "nil") SexpNil else SexpSymbol(sym)
+      }
+    }
 
-  private def Whitespace: Rule0 = rule {
-    zeroOrMore(Comment | WhiteSpacePredicate)
-  }
+  private def SexpEmptyList: Rule1[SexpNil.type] =
+    rule { LeftBrace ~ RightBrace ~ push(SexpNil) }
 
-  private def Comment: Rule0 = rule {
-    ';' ~ zeroOrMore(NotNewLinePredicate) ~ ("\n" | EOI)
-  }
+  private def NormalChar: Rule1[Char] =
+    rule { NormalCharPredicate ~ push(lastChar) }
+
+  private def Whitespace: Rule0 =
+    rule { zeroOrMore(Comment | WhiteSpacePredicate) }
+
+  private def Comment: Rule0 =
+    rule { ';' ~ zeroOrMore(NotNewLinePredicate) ~ ("\n" | EOI) }
 
   private def LeftBrace: Rule0 = rule { Whitespace ~ '(' ~ Whitespace }
 

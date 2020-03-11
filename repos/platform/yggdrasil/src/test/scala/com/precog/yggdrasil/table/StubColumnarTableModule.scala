@@ -89,46 +89,48 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
         .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
     }
 
-    override def load(apiKey: APIKey, jtpe: JType) = EitherT {
-      self.toJson map { events =>
-        val parsedV = events.toStream.traverse[
-          ({ type λ[α] = Validation[ResourceError, α] })#λ,
-          Stream[JObject]] {
-          case JString(pathStr) =>
-            success {
-              indexLock synchronized { // block the WHOLE WORLD
-                val path = Path(pathStr)
+    override def load(apiKey: APIKey, jtpe: JType) =
+      EitherT {
+        self.toJson map { events =>
+          val parsedV = events.toStream.traverse[
+            ({ type λ[α] = Validation[ResourceError, α] })#λ,
+            Stream[JObject]] {
+            case JString(pathStr) =>
+              success {
+                indexLock synchronized { // block the WHOLE WORLD
+                  val path = Path(pathStr)
 
-                val index = initialIndices get path getOrElse {
-                  initialIndices += (path -> currentIndex)
-                  currentIndex
-                }
+                  val index = initialIndices get path getOrElse {
+                    initialIndices += (path -> currentIndex)
+                    currentIndex
+                  }
 
-                val target = path.path.replaceAll("/$", ".json")
-                val src =
-                  io.Source fromInputStream getClass.getResourceAsStream(target)
-                val parsed = src.getLines map JParser.parse toStream
+                  val target = path.path.replaceAll("/$", ".json")
+                  val src =
+                    io.Source fromInputStream getClass.getResourceAsStream(
+                      target)
+                  val parsed = src.getLines map JParser.parse toStream
 
-                currentIndex += parsed.length
+                  currentIndex += parsed.length
 
-                parsed zip (Stream from index) map {
-                  case (value, id) =>
-                    JObject(
-                      JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                        "value",
-                        value) :: Nil)
+                  parsed zip (Stream from index) map {
+                    case (value, id) =>
+                      JObject(
+                        JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                          "value",
+                          value) :: Nil)
+                  }
                 }
               }
-            }
 
-          case x =>
-            failure(ResourceError.corrupt(
-              "Attempted to load JSON as a table from something that wasn't a string: " + x))
+            case x =>
+              failure(ResourceError.corrupt(
+                "Attempted to load JSON as a table from something that wasn't a string: " + x))
+          }
+
+          parsedV.map(_.flatten).disjunction.map(fromJson(_))
         }
-
-        parsedV.map(_.flatten).disjunction.map(fromJson(_))
       }
-    }
 
     def groupByN(
         groupKeys: Seq[TransSpec1],

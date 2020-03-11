@@ -57,16 +57,17 @@ private[metrics] object MetricsCollector {
     val useCustom = !CollectorFallback
     val useInternal = CollectorFallback && CollectorProvider == ""
 
-    def create(provider: String) = TryNative {
-      log.debug(s"Trying ${provider}.")
-      system
-        .asInstanceOf[ExtendedActorSystem]
-        .dynamicAccess
-        .createInstanceFor[MetricsCollector](
-          provider,
-          List(classOf[ActorSystem] -> system))
-        .get
-    }
+    def create(provider: String) =
+      TryNative {
+        log.debug(s"Trying ${provider}.")
+        system
+          .asInstanceOf[ExtendedActorSystem]
+          .dynamicAccess
+          .createInstanceFor[MetricsCollector](
+            provider,
+            List(classOf[ActorSystem] -> system))
+          .get
+      }
 
     val collector =
       if (useCustom) create(collectorCustom)

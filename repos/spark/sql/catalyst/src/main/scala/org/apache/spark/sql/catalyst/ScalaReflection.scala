@@ -41,9 +41,10 @@ object ScalaReflection extends ScalaReflection {
   // we need to use def at here. So, every time we call mirror, it is using the
   // class loader of the current thread.
   // SPARK-13640: Synchronize this because universe.runtimeMirror is not thread-safe in Scala 2.10.
-  override def mirror: universe.Mirror = ScalaReflectionLock.synchronized {
-    universe.runtimeMirror(Thread.currentThread().getContextClassLoader)
-  }
+  override def mirror: universe.Mirror =
+    ScalaReflectionLock.synchronized {
+      universe.runtimeMirror(Thread.currentThread().getContextClassLoader)
+    }
 
   import universe._
 
@@ -112,12 +113,13 @@ object ScalaReflection extends ScalaReflection {
   /**
     * Returns true if the value of this data type is same between internal and external.
     */
-  def isNativeType(dt: DataType): Boolean = dt match {
-    case BooleanType | ByteType | ShortType | IntegerType | LongType |
-        FloatType | DoubleType | BinaryType =>
-      true
-    case _ => false
-  }
+  def isNativeType(dt: DataType): Boolean =
+    dt match {
+      case BooleanType | ByteType | ShortType | IntegerType | LongType |
+          FloatType | DoubleType | BinaryType =>
+        true
+      case _ => false
+    }
 
   /**
     * Returns an expression that can be used to construct an object of type `T` given an input
@@ -191,10 +193,11 @@ object ScalaReflection extends ScalaReflection {
       def upCastToExpectedType(
           expr: Expression,
           expected: DataType,
-          walkedTypePath: Seq[String]): Expression = expected match {
-        case _: StructType => expr
-        case _             => UpCast(expr, expected, walkedTypePath)
-      }
+          walkedTypePath: Seq[String]): Expression =
+        expected match {
+          case _: StructType => expr
+          case _             => UpCast(expr, expected, walkedTypePath)
+        }
 
       val className = getClassNameFromType(tpe)
       tpe match {
@@ -743,10 +746,11 @@ trait ScalaReflection {
   case class Schema(dataType: DataType, nullable: Boolean)
 
   /** Returns a Sequence of attributes for the given case class type. */
-  def attributesFor[T: TypeTag]: Seq[Attribute] = schemaFor[T] match {
-    case Schema(s: StructType, _) =>
-      s.toAttributes
-  }
+  def attributesFor[T: TypeTag]: Seq[Attribute] =
+    schemaFor[T] match {
+      case Schema(s: StructType, _) =>
+        s.toAttributes
+    }
 
   /** Returns a catalyst DataType and its nullability for the given Scala Type using reflection. */
   def schemaFor[T: TypeTag]: Schema = schemaFor(localTypeOf[T])
@@ -762,106 +766,111 @@ trait ScalaReflection {
     * @see SPARK-5281
     */
   // SPARK-13640: Synchronize this because TypeTag.tpe is not thread-safe in Scala 2.10.
-  def localTypeOf[T: TypeTag]: `Type` = ScalaReflectionLock.synchronized {
-    val tag = implicitly[TypeTag[T]]
-    tag.in(mirror).tpe.normalize
-  }
+  def localTypeOf[T: TypeTag]: `Type` =
+    ScalaReflectionLock.synchronized {
+      val tag = implicitly[TypeTag[T]]
+      tag.in(mirror).tpe.normalize
+    }
 
   /** Returns a catalyst DataType and its nullability for the given Scala Type using reflection. */
-  def schemaFor(tpe: `Type`): Schema = ScalaReflectionLock.synchronized {
-    val className = getClassNameFromType(tpe)
+  def schemaFor(tpe: `Type`): Schema =
+    ScalaReflectionLock.synchronized {
+      val className = getClassNameFromType(tpe)
 
-    tpe match {
+      tpe match {
 
-      case t
-          if Utils.classIsLoadable(className) &&
-            Utils
-              .classForName(className)
-              .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
-        // Note: We check for classIsLoadable above since Utils.classForName uses Java reflection,
-        //       whereas className is from Scala reflection.  This can make it hard to find classes
-        //       in some cases, such as when a class is enclosed in an object (in which case
-        //       Java appends a '$' to the object name but Scala does not).
-        val udt = Utils
-          .classForName(className)
-          .getAnnotation(classOf[SQLUserDefinedType])
-          .udt()
-          .newInstance()
-        Schema(udt, nullable = true)
-      case t if t <:< localTypeOf[Option[_]] =>
-        val TypeRef(_, _, Seq(optType)) = t
-        Schema(schemaFor(optType).dataType, nullable = true)
-      case t if t <:< localTypeOf[Array[Byte]] =>
-        Schema(BinaryType, nullable = true)
-      case t if t <:< localTypeOf[Array[_]] =>
-        val TypeRef(_, _, Seq(elementType)) = t
-        val Schema(dataType, nullable) = schemaFor(elementType)
-        Schema(ArrayType(dataType, containsNull = nullable), nullable = true)
-      case t if t <:< localTypeOf[Seq[_]] =>
-        val TypeRef(_, _, Seq(elementType)) = t
-        val Schema(dataType, nullable) = schemaFor(elementType)
-        Schema(ArrayType(dataType, containsNull = nullable), nullable = true)
-      case t if t <:< localTypeOf[Map[_, _]] =>
-        val TypeRef(_, _, Seq(keyType, valueType)) = t
-        val Schema(valueDataType, valueNullable) = schemaFor(valueType)
-        Schema(
-          MapType(
-            schemaFor(keyType).dataType,
-            valueDataType,
-            valueContainsNull = valueNullable),
-          nullable = true)
-      case t if t <:< localTypeOf[Product] =>
-        val params = getConstructorParameters(t)
-        Schema(
-          StructType(params.map {
-            case (fieldName, fieldType) =>
-              val Schema(dataType, nullable) = schemaFor(fieldType)
-              StructField(fieldName, dataType, nullable)
-          }),
-          nullable = true
-        )
-      case t if t <:< localTypeOf[String] => Schema(StringType, nullable = true)
-      case t if t <:< localTypeOf[java.sql.Timestamp] =>
-        Schema(TimestampType, nullable = true)
-      case t if t <:< localTypeOf[java.sql.Date] =>
-        Schema(DateType, nullable = true)
-      case t if t <:< localTypeOf[BigDecimal] =>
-        Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
-      case t if t <:< localTypeOf[java.math.BigDecimal] =>
-        Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
-      case t if t <:< localTypeOf[Decimal] =>
-        Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Integer] =>
-        Schema(IntegerType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Long] =>
-        Schema(LongType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Double] =>
-        Schema(DoubleType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Float] =>
-        Schema(FloatType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Short] =>
-        Schema(ShortType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Byte] =>
-        Schema(ByteType, nullable = true)
-      case t if t <:< localTypeOf[java.lang.Boolean] =>
-        Schema(BooleanType, nullable = true)
-      case t if t <:< definitions.IntTpe =>
-        Schema(IntegerType, nullable = false)
-      case t if t <:< definitions.LongTpe => Schema(LongType, nullable = false)
-      case t if t <:< definitions.DoubleTpe =>
-        Schema(DoubleType, nullable = false)
-      case t if t <:< definitions.FloatTpe =>
-        Schema(FloatType, nullable = false)
-      case t if t <:< definitions.ShortTpe =>
-        Schema(ShortType, nullable = false)
-      case t if t <:< definitions.ByteTpe => Schema(ByteType, nullable = false)
-      case t if t <:< definitions.BooleanTpe =>
-        Schema(BooleanType, nullable = false)
-      case other =>
-        throw new UnsupportedOperationException(
-          s"Schema for type $other is not supported")
+        case t
+            if Utils.classIsLoadable(className) &&
+              Utils
+                .classForName(className)
+                .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
+          // Note: We check for classIsLoadable above since Utils.classForName uses Java reflection,
+          //       whereas className is from Scala reflection.  This can make it hard to find classes
+          //       in some cases, such as when a class is enclosed in an object (in which case
+          //       Java appends a '$' to the object name but Scala does not).
+          val udt = Utils
+            .classForName(className)
+            .getAnnotation(classOf[SQLUserDefinedType])
+            .udt()
+            .newInstance()
+          Schema(udt, nullable = true)
+        case t if t <:< localTypeOf[Option[_]] =>
+          val TypeRef(_, _, Seq(optType)) = t
+          Schema(schemaFor(optType).dataType, nullable = true)
+        case t if t <:< localTypeOf[Array[Byte]] =>
+          Schema(BinaryType, nullable = true)
+        case t if t <:< localTypeOf[Array[_]] =>
+          val TypeRef(_, _, Seq(elementType)) = t
+          val Schema(dataType, nullable) = schemaFor(elementType)
+          Schema(ArrayType(dataType, containsNull = nullable), nullable = true)
+        case t if t <:< localTypeOf[Seq[_]] =>
+          val TypeRef(_, _, Seq(elementType)) = t
+          val Schema(dataType, nullable) = schemaFor(elementType)
+          Schema(ArrayType(dataType, containsNull = nullable), nullable = true)
+        case t if t <:< localTypeOf[Map[_, _]] =>
+          val TypeRef(_, _, Seq(keyType, valueType)) = t
+          val Schema(valueDataType, valueNullable) = schemaFor(valueType)
+          Schema(
+            MapType(
+              schemaFor(keyType).dataType,
+              valueDataType,
+              valueContainsNull = valueNullable),
+            nullable = true)
+        case t if t <:< localTypeOf[Product] =>
+          val params = getConstructorParameters(t)
+          Schema(
+            StructType(params.map {
+              case (fieldName, fieldType) =>
+                val Schema(dataType, nullable) = schemaFor(fieldType)
+                StructField(fieldName, dataType, nullable)
+            }),
+            nullable = true
+          )
+        case t if t <:< localTypeOf[String] =>
+          Schema(StringType, nullable = true)
+        case t if t <:< localTypeOf[java.sql.Timestamp] =>
+          Schema(TimestampType, nullable = true)
+        case t if t <:< localTypeOf[java.sql.Date] =>
+          Schema(DateType, nullable = true)
+        case t if t <:< localTypeOf[BigDecimal] =>
+          Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
+        case t if t <:< localTypeOf[java.math.BigDecimal] =>
+          Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
+        case t if t <:< localTypeOf[Decimal] =>
+          Schema(DecimalType.SYSTEM_DEFAULT, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Integer] =>
+          Schema(IntegerType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Long] =>
+          Schema(LongType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Double] =>
+          Schema(DoubleType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Float] =>
+          Schema(FloatType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Short] =>
+          Schema(ShortType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Byte] =>
+          Schema(ByteType, nullable = true)
+        case t if t <:< localTypeOf[java.lang.Boolean] =>
+          Schema(BooleanType, nullable = true)
+        case t if t <:< definitions.IntTpe =>
+          Schema(IntegerType, nullable = false)
+        case t if t <:< definitions.LongTpe =>
+          Schema(LongType, nullable = false)
+        case t if t <:< definitions.DoubleTpe =>
+          Schema(DoubleType, nullable = false)
+        case t if t <:< definitions.FloatTpe =>
+          Schema(FloatType, nullable = false)
+        case t if t <:< definitions.ShortTpe =>
+          Schema(ShortType, nullable = false)
+        case t if t <:< definitions.ByteTpe =>
+          Schema(ByteType, nullable = false)
+        case t if t <:< definitions.BooleanTpe =>
+          Schema(BooleanType, nullable = false)
+        case other =>
+          throw new UnsupportedOperationException(
+            s"Schema for type $other is not supported")
+      }
     }
-  }
 
   /**
     * Returns a catalyst DataType and its nullability for the given Scala Type using reflection.

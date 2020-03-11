@@ -142,12 +142,13 @@ final class Env(
   def version(tourId: String): Fu[Int] =
     socketHub ? Ask(tourId, GetVersion) mapTo manifest[Int]
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "tournament" :: "leaderboard" :: "generate" :: Nil =>
-        leaderboardIndexer.generateAll inject "Done!"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "tournament" :: "leaderboard" :: "generate" :: Nil =>
+          leaderboardIndexer.generateAll inject "Done!"
+      }
     }
-  }
 
   private lazy val autoPairing =
     new AutoPairing(roundMap = roundMap, system = system, onStart = onStart)

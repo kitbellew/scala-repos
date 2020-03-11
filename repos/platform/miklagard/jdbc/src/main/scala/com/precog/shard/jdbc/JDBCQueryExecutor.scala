@@ -210,11 +210,12 @@ class JDBCQueryExecutor(
     def structure(
         userUID: String,
         path: Path,
-        cpath: CPath): Future[Validation[String, JObject]] = Promise.successful(
-      Success(
-        JObject(Map("children" -> JArray.empty, "types" -> JObject.empty))
-      ) // TODO: Implement from table metadata
-    )
+        cpath: CPath): Future[Validation[String, JObject]] =
+      Promise.successful(
+        Success(
+          JObject(Map("children" -> JArray.empty, "types" -> JObject.empty))
+        ) // TODO: Implement from table metadata
+      )
 
     def currentVersion(apiKey: APIKey, path: Path) = Promise.successful(None)
     def currentAuthorities(apiKey: APIKey, path: Path) =

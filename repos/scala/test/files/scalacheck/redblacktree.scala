@@ -76,36 +76,41 @@ package scala.collection.immutable.redblacktree {
 
     def rootIsBlack[A](t: Tree[String, A]) = isBlack(t)
 
-    def areAllLeavesBlack[A](t: Tree[String, A]): Boolean = t match {
-      case null => isBlack(t)
-      case ne   => List(ne.left, ne.right) forall areAllLeavesBlack
-    }
+    def areAllLeavesBlack[A](t: Tree[String, A]): Boolean =
+      t match {
+        case null => isBlack(t)
+        case ne   => List(ne.left, ne.right) forall areAllLeavesBlack
+      }
 
-    def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean = t match {
-      case RedTree(_, _, left, right) =>
-        List(left, right) forall (t => isBlack(t) && areRedNodeChildrenBlack(t))
-      case BlackTree(_, _, left, right) =>
-        List(left, right) forall areRedNodeChildrenBlack
-      case null => true
-    }
+    def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean =
+      t match {
+        case RedTree(_, _, left, right) =>
+          List(left, right) forall (t =>
+            isBlack(t) && areRedNodeChildrenBlack(t))
+        case BlackTree(_, _, left, right) =>
+          List(left, right) forall areRedNodeChildrenBlack
+        case null => true
+      }
 
-    def blackNodesToLeaves[A](t: Tree[String, A]): List[Int] = t match {
-      case null => List(1)
-      case BlackTree(_, _, left, right) =>
-        List(left, right) flatMap blackNodesToLeaves map (_ + 1)
-      case RedTree(_, _, left, right) =>
-        List(left, right) flatMap blackNodesToLeaves
-    }
+    def blackNodesToLeaves[A](t: Tree[String, A]): List[Int] =
+      t match {
+        case null => List(1)
+        case BlackTree(_, _, left, right) =>
+          List(left, right) flatMap blackNodesToLeaves map (_ + 1)
+        case RedTree(_, _, left, right) =>
+          List(left, right) flatMap blackNodesToLeaves
+      }
 
-    def areBlackNodesToLeavesEqual[A](t: Tree[String, A]): Boolean = t match {
-      case null => true
-      case ne =>
-        (
-          blackNodesToLeaves(ne).distinct.size == 1
-            && areBlackNodesToLeavesEqual(ne.left)
-            && areBlackNodesToLeavesEqual(ne.right)
-        )
-    }
+    def areBlackNodesToLeavesEqual[A](t: Tree[String, A]): Boolean =
+      t match {
+        case null => true
+        case ne =>
+          (
+            blackNodesToLeaves(ne).distinct.size == 1
+              && areBlackNodesToLeavesEqual(ne.left)
+              && areBlackNodesToLeavesEqual(ne.right)
+          )
+      }
 
     def orderIsPreserved[A](t: Tree[String, A]): Boolean =
       iterator(t) zip iterator(t).drop(1) forall { case (x, y) => x._1 < y._1 }
@@ -113,10 +118,11 @@ package scala.collection.immutable.redblacktree {
     def heightIsBounded(t: Tree[_, _]): Boolean =
       height(t) <= (2 * (32 - Integer.numberOfLeadingZeros(count(t) + 2)) - 2)
 
-    def setup(invariant: Tree[String, Int] => Boolean) = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        invariant(newTree)
-    }
+    def setup(invariant: Tree[String, Int] => Boolean) =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          invariant(newTree)
+      }
 
     property("root is black") = setup(rootIsBlack)
     property("all leaves are black") = setup(areAllLeavesBlack)

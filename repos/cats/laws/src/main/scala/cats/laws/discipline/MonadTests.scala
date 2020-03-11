@@ -26,11 +26,12 @@ trait MonadTests[F[_]] extends ApplicativeTests[F] with FlatMapTests[F] {
       def name: String = "monad"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(applicative[A, B, C], flatMap[A, B, C])
-      def props: Seq[(String, Prop)] = Seq(
-        "monad left identity" -> forAll(laws.monadLeftIdentity[A, B] _),
-        "monad right identity" -> forAll(laws.monadRightIdentity[A] _),
-        "map flatMap coherence" -> forAll(laws.mapFlatMapCoherence[A, B] _)
-      )
+      def props: Seq[(String, Prop)] =
+        Seq(
+          "monad left identity" -> forAll(laws.monadLeftIdentity[A, B] _),
+          "monad right identity" -> forAll(laws.monadRightIdentity[A] _),
+          "map flatMap coherence" -> forAll(laws.mapFlatMapCoherence[A, B] _)
+        )
     }
   }
 }

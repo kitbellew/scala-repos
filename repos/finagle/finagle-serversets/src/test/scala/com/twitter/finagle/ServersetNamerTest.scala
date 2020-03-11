@@ -10,9 +10,10 @@ import scala.language.implicitConversions
 @RunWith(classOf[JUnitRunner])
 class ServersetNamerTest extends FunSuite with AssertionsForJUnit {
 
-  def mkNamer(f: String => Var[Addr]): Namer = new com.twitter.serverset {
-    override protected[this] def resolve(spec: String) = f(spec)
-  }
+  def mkNamer(f: String => Var[Addr]): Namer =
+    new com.twitter.serverset {
+      override protected[this] def resolve(spec: String) = f(spec)
+    }
 
   def schemeOk(scheme: String): Unit = {
     val addr = Addr.Bound(Address(7127))

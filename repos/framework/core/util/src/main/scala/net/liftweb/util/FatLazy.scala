@@ -47,14 +47,15 @@ class FatLazy[T](f: => T) {
     *
     * @return the value of the instance
     */
-  def get: T = synchronized {
-    value match {
-      case Full(v) => v
-      case _ =>
-        value = Full(f)
-        value.openOrThrowException("We just checked that this is a Full box.")
+  def get: T =
+    synchronized {
+      value match {
+        case Full(v) => v
+        case _ =>
+          value = Full(f)
+          value.openOrThrowException("We just checked that this is a Full box.")
+      }
     }
-  }
 
   /**
     * Test whether the value of this class has been set or initialized from the default.
@@ -68,10 +69,11 @@ class FatLazy[T](f: => T) {
     *
     * @return v
     */
-  def set(v: T): T = synchronized {
-    value = Full(v)
-    v
-  }
+  def set(v: T): T =
+    synchronized {
+      value = Full(v)
+      v
+    }
 
   /**
     * Copy the value of the specified FatLazy into this FatLazy

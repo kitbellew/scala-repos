@@ -71,9 +71,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   def notifyAll(msg: JsObject) { members.values.foreach(_ push msg) }
 
-  def notifyAllAsync[A: Writes](t: String, data: A) = Future {
-    notifyAll(t, data)
-  }
+  def notifyAllAsync[A: Writes](t: String, data: A) =
+    Future { notifyAll(t, data) }
 
   def notifyAllAsync(t: String) = Future { notifyAll(t) }
 
@@ -130,9 +129,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   def setAlive(uid: String) { aliveUids put uid }
 
-  def membersByUserId(userId: String): Iterable[M] = members collect {
-    case (_, member) if member.userId.contains(userId) => member
-  }
+  def membersByUserId(userId: String): Iterable[M] =
+    members collect {
+      case (_, member) if member.userId.contains(userId) => member
+    }
 
   def userIds: Iterable[String] = members.values.flatMap(_.userId)
 

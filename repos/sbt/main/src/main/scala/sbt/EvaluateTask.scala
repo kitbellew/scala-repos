@@ -338,11 +338,12 @@ object EvaluateTask {
       structure: BuildStructure): T =
     key in extracted.currentRef get structure.data getOrElse default
 
-  def injectSettings: Seq[Setting[_]] = Seq(
-    (state in GlobalScope) ::= dummyState,
-    (streamsManager in GlobalScope) ::= dummyStreamsManager,
-    (executionRoots in GlobalScope) ::= dummyRoots
-  )
+  def injectSettings: Seq[Setting[_]] =
+    Seq(
+      (state in GlobalScope) ::= dummyState,
+      (streamsManager in GlobalScope) ::= dummyStreamsManager,
+      (executionRoots in GlobalScope) ::= dummyRoots
+    )
 
   def evalPluginDef(
       log: Logger)(pluginDef: BuildStructure, state: State): PluginData = {
@@ -538,10 +539,11 @@ object EvaluateTask {
       }
     }
     // propagate the defining key for reporting the origin
-    def overwriteNode(i: Incomplete): Boolean = i.node match {
-      case Some(t: Task[_]) => transformNode(t).isEmpty
-      case _                => true
-    }
+    def overwriteNode(i: Incomplete): Boolean =
+      i.node match {
+        case Some(t: Task[_]) => transformNode(t).isEmpty
+        case _                => true
+      }
     def run() = {
       val x = new Execute[Task](
         Execute.config(config.checkCycles, overwriteNode),

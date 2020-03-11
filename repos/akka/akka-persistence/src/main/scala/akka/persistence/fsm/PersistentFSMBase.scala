@@ -348,12 +348,13 @@ trait PersistentFSMBase[S, D, E]
   /**
     * Return next state data (available in onTransition handlers)
     */
-  final def nextStateData = nextState match {
-    case null ⇒
-      throw new IllegalStateException(
-        "nextStateData is only available during onTransition")
-    case x ⇒ x.stateData
-  }
+  final def nextStateData =
+    nextState match {
+      case null ⇒
+        throw new IllegalStateException(
+          "nextStateData is only available during onTransition")
+      case x ⇒ x.stateData
+    }
 
   /*
    * ****************************************************************
@@ -561,11 +562,12 @@ trait PersistentFSMBase[S, D, E]
     * By default [[PersistentFSM.Failure]] is logged at error level and other reason
     * types are not logged. It is possible to override this behavior.
     */
-  protected def logTermination(reason: Reason): Unit = reason match {
-    case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-    case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
-    case _ ⇒
-  }
+  protected def logTermination(reason: Reason): Unit =
+    reason match {
+      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
+      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+      case _ ⇒
+    }
 }
 
 /**

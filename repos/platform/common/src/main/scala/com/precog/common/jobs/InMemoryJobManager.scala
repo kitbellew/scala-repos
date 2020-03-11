@@ -97,9 +97,8 @@ trait BaseInMemoryJobManager[M[+_]]
 
   def findJob(id: JobId): M[Option[Job]] = M.point { jobs get id map (_.job) }
 
-  def listJobs(apiKey: APIKey): M[Seq[Job]] = M.point {
-    jobs.values.toList map (_.job) filter (_.apiKey == apiKey)
-  }
+  def listJobs(apiKey: APIKey): M[Seq[Job]] =
+    M.point { jobs.values.toList map (_.job) filter (_.apiKey == apiKey) }
 
   def updateStatus(
       jobId: JobId,
@@ -141,13 +140,11 @@ trait BaseInMemoryJobManager[M[+_]]
     }
   }
 
-  def getStatus(jobId: JobId): M[Option[Status]] = M.point {
-    jobs get jobId flatMap (_.status)
-  }
+  def getStatus(jobId: JobId): M[Option[Status]] =
+    M.point { jobs get jobId flatMap (_.status) }
 
-  def listChannels(jobId: JobId): M[Seq[String]] = M.point {
-    jobs get jobId map (_.channels.keys.toList) getOrElse Nil
-  }
+  def listChannels(jobId: JobId): M[Seq[String]] =
+    M.point { jobs get jobId map (_.channels.keys.toList) getOrElse Nil }
 
   def addMessage(jobId: JobId, channel: String, value: JValue): M[Message] = {
     M.point {

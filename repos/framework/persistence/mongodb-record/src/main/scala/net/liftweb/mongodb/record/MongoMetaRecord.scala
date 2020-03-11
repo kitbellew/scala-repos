@@ -50,10 +50,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
    * be changed to type MandatoryTypedField in a future version. When
    * that happens this will no longer be necessary.
    */
-  private def idValue(inst: BaseRecord): Any = inst.id match {
-    case f: MandatoryTypedField[_] => f.value
-    case x                         => x
-  }
+  private def idValue(inst: BaseRecord): Any =
+    inst.id match {
+      case f: MandatoryTypedField[_] => f.value
+      case x                         => x
+    }
 
   /*
    * Use the collection associated with this Meta.
@@ -140,12 +141,13 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Find all rows in this collection.
     * Retrieves all documents and puts them in memory.
     */
-  def findAll: List[BaseRecord] = useColl { coll =>
-    /** Mongo Cursors are both Iterable and Iterator,
-      * so we need to reduce ambiguity for implicits
-      */
-    (coll.find: Iterator[DBObject]).map(fromDBObject).toList
-  }
+  def findAll: List[BaseRecord] =
+    useColl { coll =>
+      /** Mongo Cursors are both Iterable and Iterator,
+        * so we need to reduce ambiguity for implicits
+        */
+      (coll.find: Iterator[DBObject]).map(fromDBObject).toList
+    }
 
   /**
     * Find all rows using a DBObject query.
@@ -278,16 +280,14 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   /**
     * Save the instance in the appropriate backing store. Uses the WriteConcern set on the MongoClient instance.
     */
-  def save(inst: BaseRecord): Boolean = saveOp(inst) {
-    useColl { coll => coll.save(inst.asDBObject) }
-  }
+  def save(inst: BaseRecord): Boolean =
+    saveOp(inst) { useColl { coll => coll.save(inst.asDBObject) } }
 
   /**
     * Save the instance in the appropriate backing store
     */
-  def save(inst: BaseRecord, concern: WriteConcern): Boolean = saveOp(inst) {
-    useColl { coll => coll.save(inst.asDBObject, concern) }
-  }
+  def save(inst: BaseRecord, concern: WriteConcern): Boolean =
+    saveOp(inst) { useColl { coll => coll.save(inst.asDBObject, concern) } }
 
   /*
    * Save a document to the db using the given Mongo instance
@@ -360,51 +360,52 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     *
     * Note: PatternField will always set the dirty flag when set.
     */
-  def update(inst: BaseRecord): Unit = updateOp(inst) {
-    val dirtyFields = fields(inst).filter(_.dirty_?)
-    if (dirtyFields.length > 0) {
-      val (fullFields, otherFields) = dirtyFields
-        .map(field => (field.name, fieldDbValue(field)))
-        .partition(pair => pair._2.isDefined)
+  def update(inst: BaseRecord): Unit =
+    updateOp(inst) {
+      val dirtyFields = fields(inst).filter(_.dirty_?)
+      if (dirtyFields.length > 0) {
+        val (fullFields, otherFields) = dirtyFields
+          .map(field => (field.name, fieldDbValue(field)))
+          .partition(pair => pair._2.isDefined)
 
-      val fieldsToSet = fullFields.map(pair =>
-        (pair._1, pair._2.openOrThrowException("these are all Full")))
+        val fieldsToSet = fullFields.map(pair =>
+          (pair._1, pair._2.openOrThrowException("these are all Full")))
 
-      val fieldsToUnset: List[String] = otherFields
-        .filter(pair =>
-          pair._2 match {
-            case Empty => true
-            case _     => false
-          })
-        .map(_._1)
+        val fieldsToUnset: List[String] = otherFields
+          .filter(pair =>
+            pair._2 match {
+              case Empty => true
+              case _     => false
+            })
+          .map(_._1)
 
-      if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {
-        val dbo = BasicDBObjectBuilder.start
+        if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {
+          val dbo = BasicDBObjectBuilder.start
 
-        if (fieldsToSet.length > 0) {
-          dbo.add(
-            "$set",
-            fieldsToSet
-              .foldLeft(BasicDBObjectBuilder.start) { (builder, pair) =>
-                builder.add(pair._1, pair._2)
-              }
-              .get
-          )
+          if (fieldsToSet.length > 0) {
+            dbo.add(
+              "$set",
+              fieldsToSet
+                .foldLeft(BasicDBObjectBuilder.start) { (builder, pair) =>
+                  builder.add(pair._1, pair._2)
+                }
+                .get
+            )
+          }
+
+          if (fieldsToUnset.length > 0) {
+            dbo.add(
+              "$unset",
+              fieldsToUnset
+                .foldLeft(BasicDBObjectBuilder.start) { (builder, fieldName) =>
+                  builder.add(fieldName, 1)
+                }
+                .get
+            )
+          }
+
+          update(inst, dbo.get)
         }
-
-        if (fieldsToUnset.length > 0) {
-          dbo.add(
-            "$unset",
-            fieldsToUnset
-              .foldLeft(BasicDBObjectBuilder.start) { (builder, fieldName) =>
-                builder.add(fieldName, 1)
-              }
-              .get
-          )
-        }
-
-        update(inst, dbo.get)
       }
     }
-  }
 }

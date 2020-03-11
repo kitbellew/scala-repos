@@ -35,11 +35,12 @@ case class Info(
 
   def isEmpty = score.isEmpty && mate.isEmpty
 
-  def forceCentipawns: Option[Int] = mate match {
-    case None             => score.map(_.centipawns)
-    case Some(m) if m < 0 => Some(Int.MinValue - m)
-    case Some(m)          => Some(Int.MaxValue - m)
-  }
+  def forceCentipawns: Option[Int] =
+    mate match {
+      case None             => score.map(_.centipawns)
+      case Some(m) if m < 0 => Some(Int.MinValue - m)
+      case Some(m)          => Some(Int.MaxValue - m)
+    }
 
   override def toString =
     s"Info $color [$ply] ${score.fold("?")(_.showPawns)} ${mate | 0} ${variation.mkString(" ")}"
@@ -54,21 +55,22 @@ object Info {
 
   def start(ply: Int) = Info(ply, Score.initial.some, none, Nil)
 
-  def decode(ply: Int, str: String): Option[Info] = str.split(separator) match {
-    case Array()       => Info(ply).some
-    case Array(cp)     => Info(ply, Score(cp)).some
-    case Array(cp, ma) => Info(ply, Score(cp), parseIntOption(ma)).some
-    case Array(cp, ma, va) =>
-      Info(ply, Score(cp), parseIntOption(ma), va.split(' ').toList).some
-    case Array(cp, ma, va, be) =>
-      Info(
-        ply,
-        Score(cp),
-        parseIntOption(ma),
-        va.split(' ').toList,
-        Uci.Move piotr be).some
-    case _ => none
-  }
+  def decode(ply: Int, str: String): Option[Info] =
+    str.split(separator) match {
+      case Array()       => Info(ply).some
+      case Array(cp)     => Info(ply, Score(cp)).some
+      case Array(cp, ma) => Info(ply, Score(cp), parseIntOption(ma)).some
+      case Array(cp, ma, va) =>
+        Info(ply, Score(cp), parseIntOption(ma), va.split(' ').toList).some
+      case Array(cp, ma, va, be) =>
+        Info(
+          ply,
+          Score(cp),
+          parseIntOption(ma),
+          va.split(' ').toList,
+          Uci.Move piotr be).some
+      case _ => none
+    }
 
   def decodeList(str: String, fromPly: Int): Option[List[Info]] = {
     str.split(listSeparator).toList.zipWithIndex map {

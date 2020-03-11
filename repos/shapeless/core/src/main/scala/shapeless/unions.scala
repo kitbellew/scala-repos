@@ -80,14 +80,15 @@ class UnionMacros(val c: whitebox.Context) {
     def mkElem(keyTpe: Type, value: Tree): Tree =
       q"$value.asInstanceOf[${mkFieldTpe(keyTpe, value.tpe)}]"
 
-    def promoteElem(elem: Tree): Tree = elem match {
-      case q""" $prefix(${Literal(k: Constant)}, $v) """ =>
-        mkElem(mkSingletonSymbolType(k), v)
-      case _ =>
-        c.abort(
-          c.enclosingPosition,
-          s"$elem has the wrong shape for a record field")
-    }
+    def promoteElem(elem: Tree): Tree =
+      elem match {
+        case q""" $prefix(${Literal(k: Constant)}, $v) """ =>
+          mkElem(mkSingletonSymbolType(k), v)
+        case _ =>
+          c.abort(
+            c.enclosingPosition,
+            s"$elem has the wrong shape for a record field")
+      }
 
     val q"${methodString: String}" = method
     if (methodString != "apply")

@@ -124,13 +124,14 @@ class Tools[C <: Context](val c: C) {
       val subclasses = MutableList[Symbol]()
       def analyze(sym: Symbol) =
         if (isRelevantSubclass(baseSym, sym)) subclasses += sym
-      def loop(tree: Tree): Unit = tree match {
-        // NOTE: only looking for classes defined in objects or top-level classes!
-        case PackageDef(_, stats) => stats.foreach(loop)
-        case cdef: ClassDef       => analyze(cdef.symbol)
-        case mdef: ModuleDef      => mdef.impl.body.foreach(loop)
-        case _                    => // do nothing
-      }
+      def loop(tree: Tree): Unit =
+        tree match {
+          // NOTE: only looking for classes defined in objects or top-level classes!
+          case PackageDef(_, stats) => stats.foreach(loop)
+          case cdef: ClassDef       => analyze(cdef.symbol)
+          case mdef: ModuleDef      => mdef.impl.body.foreach(loop)
+          case _                    => // do nothing
+        }
       c.enclosingRun.units.map(_.body).foreach(loop)
       subclasses.toList
     }
@@ -270,13 +271,14 @@ trait RichTypes {
       }
     }
 
-    def isEffectivelyPrimitive: Boolean = tpe match {
-      case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
-      case TypeRef(_, sym, eltpe :: Nil)
-          if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
-        true
-      case _ => false
-    }
+    def isEffectivelyPrimitive: Boolean =
+      tpe match {
+        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
+        case TypeRef(_, sym, eltpe :: Nil)
+            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
+          true
+        case _ => false
+      }
 
     def isEffectivelyFinal = tpe.typeSymbol.isEffectivelyFinal
 

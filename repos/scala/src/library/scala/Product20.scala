@@ -116,29 +116,30 @@ trait Product20[
     */
 
   @throws(classOf[IndexOutOfBoundsException])
-  override def productElement(n: Int) = n match {
-    case 0  => _1
-    case 1  => _2
-    case 2  => _3
-    case 3  => _4
-    case 4  => _5
-    case 5  => _6
-    case 6  => _7
-    case 7  => _8
-    case 8  => _9
-    case 9  => _10
-    case 10 => _11
-    case 11 => _12
-    case 12 => _13
-    case 13 => _14
-    case 14 => _15
-    case 15 => _16
-    case 16 => _17
-    case 17 => _18
-    case 18 => _19
-    case 19 => _20
-    case _  => throw new IndexOutOfBoundsException(n.toString())
-  }
+  override def productElement(n: Int) =
+    n match {
+      case 0  => _1
+      case 1  => _2
+      case 2  => _3
+      case 3  => _4
+      case 4  => _5
+      case 5  => _6
+      case 6  => _7
+      case 7  => _8
+      case 8  => _9
+      case 9  => _10
+      case 10 => _11
+      case 11 => _12
+      case 12 => _13
+      case 13 => _14
+      case 14 => _15
+      case 15 => _16
+      case 16 => _17
+      case 17 => _18
+      case 18 => _19
+      case 19 => _20
+      case _  => throw new IndexOutOfBoundsException(n.toString())
+    }
 
   /** A projection of element 1 of this Product.
     *  @return   A projection of element 1.

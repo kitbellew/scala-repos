@@ -48,28 +48,32 @@ class ConfigParser(
 
   def root = rep(includeFile | assignment | sectionOpen | sectionClose)
 
-  def includeFile = "include" ~> string ^^ {
-    case filename: String =>
-      new ConfigParser(prefix, map, importer) parse importer.importFile(
-        filename)
-  }
+  def includeFile =
+    "include" ~> string ^^ {
+      case filename: String =>
+        new ConfigParser(prefix, map, importer) parse importer.importFile(
+          filename)
+    }
 
-  def assignment = identToken ~ assignToken ~ value ^^ {
-    case k ~ a ~ v => map(prefix + k) = v
-  }
+  def assignment =
+    identToken ~ assignToken ~ value ^^ {
+      case k ~ a ~ v => map(prefix + k) = v
+    }
 
-  def sectionOpen = sectionToken <~ "{" ^^ { name =>
-    sections push name
-    createPrefix
-  }
-
-  def sectionClose = "}" ^^ { _ =>
-    if (sections.isEmpty) { failure("dangling close tag") }
-    else {
-      sections.pop
+  def sectionOpen =
+    sectionToken <~ "{" ^^ { name =>
+      sections push name
       createPrefix
     }
-  }
+
+  def sectionClose =
+    "}" ^^ { _ =>
+      if (sections.isEmpty) { failure("dangling close tag") }
+      else {
+        sections.pop
+        createPrefix
+      }
+    }
 
   def parse(in: String): Map[String, Any] = {
     parseAll(root, in) match {

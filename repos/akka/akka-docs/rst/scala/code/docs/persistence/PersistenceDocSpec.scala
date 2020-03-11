@@ -132,12 +132,13 @@ object PersistenceDocSpec {
         case evt: Evt => updateState(evt)
       }
 
-      def updateState(evt: Evt): Unit = evt match {
-        case MsgSent(s) =>
-          deliver(destination)(deliveryId => Msg(deliveryId, s))
+      def updateState(evt: Evt): Unit =
+        evt match {
+          case MsgSent(s) =>
+            deliver(destination)(deliveryId => Msg(deliveryId, s))
 
-        case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
-      }
+          case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
+        }
     }
 
     class MyDestination extends Actor {

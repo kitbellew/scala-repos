@@ -77,23 +77,23 @@ class PhantomJSEnv(
 
     private object websocketListener
         extends WebsocketListener { // scalastyle:ignore
-      def onRunning(): Unit = ComPhantomRunner.this.synchronized {
-        mgrIsRunning = true
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onRunning(): Unit =
+        ComPhantomRunner.this.synchronized {
+          mgrIsRunning = true
+          ComPhantomRunner.this.notifyAll()
+        }
 
-      def onOpen(): Unit = ComPhantomRunner.this.synchronized {
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onOpen(): Unit =
+        ComPhantomRunner.this.synchronized { ComPhantomRunner.this.notifyAll() }
 
-      def onClose(): Unit = ComPhantomRunner.this.synchronized {
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onClose(): Unit =
+        ComPhantomRunner.this.synchronized { ComPhantomRunner.this.notifyAll() }
 
-      def onMessage(msg: String): Unit = ComPhantomRunner.this.synchronized {
-        recvBuf.enqueue(msg)
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onMessage(msg: String): Unit =
+        ComPhantomRunner.this.synchronized {
+          recvBuf.enqueue(msg)
+          ComPhantomRunner.this.notifyAll()
+        }
 
       def log(msg: String): Unit = logger.debug(s"PhantomJS WS Jetty: $msg")
     }
@@ -244,49 +244,53 @@ class PhantomJSEnv(
       future
     }
 
-    def send(msg: String): Unit = synchronized {
-      if (awaitConnection()) {
-        val fragParts = msg.length / MaxCharPayloadSize
+    def send(msg: String): Unit =
+      synchronized {
+        if (awaitConnection()) {
+          val fragParts = msg.length / MaxCharPayloadSize
 
-        for (i <- 0 until fragParts) {
-          val payload =
-            msg.substring(i * MaxCharPayloadSize, (i + 1) * MaxCharPayloadSize)
-          mgr.sendMessage("1" + payload)
+          for (i <- 0 until fragParts) {
+            val payload = msg.substring(
+              i * MaxCharPayloadSize,
+              (i + 1) * MaxCharPayloadSize)
+            mgr.sendMessage("1" + payload)
+          }
+
+          mgr.sendMessage("0" + msg.substring(fragParts * MaxCharPayloadSize))
+        }
+      }
+
+    def receive(timeout: Duration): String =
+      synchronized {
+        if (recvBuf.isEmpty && !awaitConnection())
+          throw new ComJSEnv.ComClosedException("Phantom.js isn't connected")
+
+        val deadline = OptDeadline(timeout)
+
+        @tailrec
+        def loop(): String = {
+          /* The fragments are accumulated in an instance-wide buffer in case
+           * receiving a non-first fragment times out.
+           */
+          val frag = receiveFrag(deadline)
+          fragmentsBuf ++= frag.substring(1)
+
+          if (frag(0) == '0') {
+            val result = fragmentsBuf.result()
+            fragmentsBuf.clear()
+            result
+          } else if (frag(0) == '1') { loop() }
+          else { throw new AssertionError("Bad fragmentation flag in " + frag) }
         }
 
-        mgr.sendMessage("0" + msg.substring(fragParts * MaxCharPayloadSize))
+        try { loop() }
+        catch {
+          case e: Throwable if !e.isInstanceOf[TimeoutException] =>
+            fragmentsBuf
+              .clear() // the protocol is broken, so discard the buffer
+            throw e
+        }
       }
-    }
-
-    def receive(timeout: Duration): String = synchronized {
-      if (recvBuf.isEmpty && !awaitConnection())
-        throw new ComJSEnv.ComClosedException("Phantom.js isn't connected")
-
-      val deadline = OptDeadline(timeout)
-
-      @tailrec
-      def loop(): String = {
-        /* The fragments are accumulated in an instance-wide buffer in case
-         * receiving a non-first fragment times out.
-         */
-        val frag = receiveFrag(deadline)
-        fragmentsBuf ++= frag.substring(1)
-
-        if (frag(0) == '0') {
-          val result = fragmentsBuf.result()
-          fragmentsBuf.clear()
-          result
-        } else if (frag(0) == '1') { loop() }
-        else { throw new AssertionError("Bad fragmentation flag in " + frag) }
-      }
-
-      try { loop() }
-      catch {
-        case e: Throwable if !e.isInstanceOf[TimeoutException] =>
-          fragmentsBuf.clear() // the protocol is broken, so discard the buffer
-          throw e
-      }
-    }
 
     private def receiveFrag(deadline: OptDeadline): String = {
       while (recvBuf.isEmpty && !mgr.isClosed && !deadline.isOverdue)
@@ -343,10 +347,11 @@ class PhantomJSEnv(
       * PhantomJS doesn't support Function.prototype.bind. We polyfill it.
       * https://github.com/ariya/phantomjs/issues/10522
       */
-    override protected def initFiles(): Seq[VirtualJSFile] = Seq(
-      // scalastyle:off line.size.limit
-      new MemVirtualJSFile("bindPolyfill.js").withContent(
-        """
+    override protected def initFiles(): Seq[VirtualJSFile] =
+      Seq(
+        // scalastyle:off line.size.limit
+        new MemVirtualJSFile("bindPolyfill.js").withContent(
+          """
             |// Polyfill for Function.bind from Facebook react:
             |// https://github.com/facebook/react/blob/3dc10749080a460e48bee46d769763ec7191ac76/src/test/phantomjs-shims.js
             |// Originally licensed under Apache 2.0
@@ -386,9 +391,9 @@ class PhantomJSEnv(
             |
             |})();
             |""".stripMargin
-      ),
-      new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
-        """
+        ),
+        new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
+          """
             |__ScalaJSEnv = {
             |  exitFunction: function(status) {
             |    window.callPhantom({
@@ -398,9 +403,9 @@ class PhantomJSEnv(
             |  }
             |};
             """.stripMargin
+        )
+        // scalastyle:on line.size.limit
       )
-      // scalastyle:on line.size.limit
-    )
 
     protected def writeWebpageLauncher(out: Writer): Unit = {
       out.write(s"""<html><head>
@@ -495,13 +500,14 @@ class PhantomJSEnv(
     }
   }
 
-  protected def htmlEscape(str: String): String = str.flatMap {
-    case '<' => "&lt;"
-    case '>' => "&gt;"
-    case '"' => "&quot;"
-    case '&' => "&amp;"
-    case c   => c :: Nil
-  }
+  protected def htmlEscape(str: String): String =
+    str.flatMap {
+      case '<' => "&lt;"
+      case '>' => "&gt;"
+      case '"' => "&quot;"
+      case '&' => "&amp;"
+      case c   => c :: Nil
+    }
 
 }
 

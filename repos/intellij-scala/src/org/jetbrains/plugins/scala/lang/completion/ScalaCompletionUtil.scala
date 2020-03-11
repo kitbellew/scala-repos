@@ -380,22 +380,23 @@ object ScalaCompletionUtil {
   def positionFromParameters(parameters: CompletionParameters): PsiElement = {
 
     @tailrec
-    def inner(element: PsiElement): PsiElement = element match {
-      case null =>
-        parameters.getPosition //we got to the top of the tree and didn't find a modificationTrackerOwner
-      case owner: ScModificationTrackerOwner
-          if owner.isValidModificationTrackerOwner() =>
-        if (owner.containingFile.contains(parameters.getOriginalFile)) {
-          owner
-            .getMirrorPositionForCompletion(
-              getDummyIdentifier(
-                parameters.getOffset,
-                parameters.getOriginalFile),
-              parameters.getOffset - owner.getTextRange.getStartOffset)
-            .getOrElse(parameters.getPosition)
-        } else parameters.getPosition
-      case _ => inner(element.getContext)
-    }
+    def inner(element: PsiElement): PsiElement =
+      element match {
+        case null =>
+          parameters.getPosition //we got to the top of the tree and didn't find a modificationTrackerOwner
+        case owner: ScModificationTrackerOwner
+            if owner.isValidModificationTrackerOwner() =>
+          if (owner.containingFile.contains(parameters.getOriginalFile)) {
+            owner
+              .getMirrorPositionForCompletion(
+                getDummyIdentifier(
+                  parameters.getOffset,
+                  parameters.getOriginalFile),
+                parameters.getOffset - owner.getTextRange.getStartOffset)
+              .getOrElse(parameters.getPosition)
+          } else parameters.getPosition
+        case _ => inner(element.getContext)
+      }
     inner(parameters.getOriginalPosition)
   }
 

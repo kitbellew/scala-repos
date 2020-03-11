@@ -102,10 +102,11 @@ sealed trait List[@specialized +A]
     */
   def reverseMap[B](f: A => B): List[B] = {
     @tailrec
-    def loop(l: List[A], res: List[B]): List[B] = l match {
-      case Nil          => res
-      case head :: tail => loop(tail, f(head) :: res)
-    }
+    def loop(l: List[A], res: List[B]): List[B] =
+      l match {
+        case Nil          => res
+        case head :: tail => loop(tail, f(head) :: res)
+      }
     loop(this, Nil)
   }
 
@@ -208,10 +209,11 @@ sealed trait List[@specialized +A]
     */
   override def takeRight(n: Int): List[A] = {
     @tailrec
-    def loop(lead: List[A], lag: List[A]): List[A] = lead match {
-      case Nil       => lag
-      case _ :: tail => loop(tail, lag.tail)
-    }
+    def loop(lead: List[A], lag: List[A]): List[A] =
+      lead match {
+        case Nil       => lag
+        case _ :: tail => loop(tail, lag.tail)
+      }
     loop(drop(n), this)
   }
 
@@ -432,10 +434,11 @@ case object Nil extends List[Nothing] {
   override def tail: List[Nothing] =
     throw new NoSuchElementException("tail of empty list")
   // Removal of equals method here might lead to an infinite recursion similar to IntMap.equals.
-  override def equals(that: Any) = that match {
-    case that1: Seq[_] => that1.isEmpty
-    case _             => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case that1: Seq[_] => that1.isEmpty
+      case _             => false
+    }
 }
 
 /** A non empty list characterized by a head and a tail.

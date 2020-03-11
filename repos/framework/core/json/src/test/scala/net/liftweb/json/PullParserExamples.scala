@@ -28,15 +28,16 @@ object PullParserExamples extends Specification {
 
   "Pull parsing example" in {
     val parser = (p: Parser) => {
-      def parse: BigInt = p.nextToken match {
-        case FieldStart("postalCode") =>
-          p.nextToken match {
-            case IntVal(code) => code
-            case _            => p.fail("expected int")
-          }
-        case End => p.fail("no field named 'postalCode'")
-        case _   => parse
-      }
+      def parse: BigInt =
+        p.nextToken match {
+          case FieldStart("postalCode") =>
+            p.nextToken match {
+              case IntVal(code) => code
+              case _            => p.fail("expected int")
+            }
+          case End => p.fail("no field named 'postalCode'")
+          case _   => parse
+        }
 
       parse
     }

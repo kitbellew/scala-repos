@@ -12,18 +12,20 @@ class MarshalledContextTest extends FunSuite with AssertionsForJUnit {
 
   val a = new ctx.Key[String]("a.key") {
     def marshal(value: String) = Buf.Utf8(value)
-    def tryUnmarshal(buf: Buf) = buf match {
-      case Buf.Utf8(value) => Return(value)
-      case _               => Throw(new IllegalArgumentException)
-    }
+    def tryUnmarshal(buf: Buf) =
+      buf match {
+        case Buf.Utf8(value) => Return(value)
+        case _               => Throw(new IllegalArgumentException)
+      }
   }
 
   val b = new ctx.Key[Int]("b.key") {
     def marshal(value: Int) = Buf.U32BE(value)
-    def tryUnmarshal(buf: Buf) = buf match {
-      case Buf.U32BE(value, Buf.Empty) => Return(value)
-      case _                           => Throw(new IllegalArgumentException)
-    }
+    def tryUnmarshal(buf: Buf) =
+      buf match {
+        case Buf.U32BE(value, Buf.Empty) => Return(value)
+        case _                           => Throw(new IllegalArgumentException)
+      }
   }
 
   test("Only marshal the most recent binding for a given key") {

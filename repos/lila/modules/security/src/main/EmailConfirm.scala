@@ -34,8 +34,8 @@ final class EmailConfirmMailGun(
 
   def effective = true
 
-  def send(user: User, email: String): Funit = tokener make user flatMap {
-    token =>
+  def send(user: User, email: String): Funit =
+    tokener make user flatMap { token =>
       lila.mon.email.confirmation()
       val url = s"$baseUrl/signup/confirm/$token"
       WS.url(s"$apiUrl/messages")
@@ -57,41 +57,43 @@ Please do not reply to this message; it was sent from an unmonitored email addre
 """)
         ))
         .void
-  }
+    }
 
-  def confirm(token: String): Fu[Option[User]] = tokener read token flatMap {
-    case u @ Some(user) => UserRepo setEmailConfirmed user.id inject u
-    case _              => fuccess(none)
-  }
+  def confirm(token: String): Fu[Option[User]] =
+    tokener read token flatMap {
+      case u @ Some(user) => UserRepo setEmailConfirmed user.id inject u
+      case _              => fuccess(none)
+    }
 
   private object tokener {
 
     private val separator = '|'
 
     private def makeHash(msg: String) = Algo.hmac(secret).sha1(msg).hex take 14
-    private def getHashedEmail(userId: User.ID) = UserRepo email userId map {
-      p => makeHash(~p) take 6
-    }
+    private def getHashedEmail(userId: User.ID) =
+      UserRepo email userId map { p => makeHash(~p) take 6 }
     private def makePayload(userId: String, passwd: String) =
       s"$userId$separator$passwd"
 
-    def make(user: User) = getHashedEmail(user.id) map { hashedEmail =>
-      val payload = makePayload(user.id, hashedEmail)
-      val hash = makeHash(payload)
-      val token = s"$payload$separator$hash"
-      base64 encode token
-    }
-
-    def read(token: String): Fu[Option[User]] = (base64 decode token) ?? {
-      _ split separator match {
-        case Array(userId, userHashedEmail, hash)
-            if makeHash(makePayload(userId, userHashedEmail)) == hash =>
-          getHashedEmail(userId) flatMap { hashedEmail =>
-            (userHashedEmail == hashedEmail) ?? (UserRepo enabledById userId)
-          }
-        case _ => fuccess(none)
+    def make(user: User) =
+      getHashedEmail(user.id) map { hashedEmail =>
+        val payload = makePayload(user.id, hashedEmail)
+        val hash = makeHash(payload)
+        val token = s"$payload$separator$hash"
+        base64 encode token
       }
-    }
+
+    def read(token: String): Fu[Option[User]] =
+      (base64 decode token) ?? {
+        _ split separator match {
+          case Array(userId, userHashedEmail, hash)
+              if makeHash(makePayload(userId, userHashedEmail)) == hash =>
+            getHashedEmail(userId) flatMap { hashedEmail =>
+              (userHashedEmail == hashedEmail) ?? (UserRepo enabledById userId)
+            }
+          case _ => fuccess(none)
+        }
+      }
   }
 
   private object base64 {

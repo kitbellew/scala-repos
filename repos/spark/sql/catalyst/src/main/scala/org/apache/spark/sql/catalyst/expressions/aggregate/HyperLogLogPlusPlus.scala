@@ -304,10 +304,11 @@ case class HyperLogLogPlusPlus(
     // val Z = 1.0d / zInverse
     // val E = alphaM2 * Z
     @inline
-    def EBiasCorrected = alphaM2 / zInverse match {
-      case e if p < 19 && e < 5.0d * m => e - estimateBias(e)
-      case e                           => e
-    }
+    def EBiasCorrected =
+      alphaM2 / zInverse match {
+        case e if p < 19 && e < 5.0d * m => e - estimateBias(e)
+        case e                           => e
+      }
 
     // Estimate the cardinality.
     val estimate = if (V > 0) {
@@ -1477,12 +1478,13 @@ object HyperLogLogPlusPlus {
   )
   // scalastyle:on
 
-  private def validateDoubleLiteral(exp: Expression): Double = exp match {
-    case Literal(d: Double, DoubleType) => d
-    case Literal(dec: Decimal, _)       => dec.toDouble
-    case _ =>
-      throw new AnalysisException(
-        "The second argument should be a double literal.")
-  }
+  private def validateDoubleLiteral(exp: Expression): Double =
+    exp match {
+      case Literal(d: Double, DoubleType) => d
+      case Literal(dec: Decimal, _)       => dec.toDouble
+      case _ =>
+        throw new AnalysisException(
+          "The second argument should be a double literal.")
+    }
 
 }

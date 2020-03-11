@@ -22,31 +22,34 @@ abstract class InterruptReq {
   private var waiting: List[Continuation] = Nil
 
   /** To be called from interrupted server to execute demanded task */
-  def execute(): Unit = synchronized {
-    try { result = Some(Left(todo())) }
-    catch { case t: Throwable => result = Some(Right(t)) }
-    finally {
-      notify()
-      for (k <- waiting.reverse) k(result.get)
+  def execute(): Unit =
+    synchronized {
+      try { result = Some(Left(todo())) }
+      catch { case t: Throwable => result = Some(Right(t)) }
+      finally {
+        notify()
+        for (k <- waiting.reverse) k(result.get)
+      }
     }
-  }
 
   /** To be called from interrupting client to get result for interrupt */
-  def getResult(): R = synchronized {
-    while (result.isEmpty) {
-      try { wait() }
-      catch { case _: InterruptedException => () }
+  def getResult(): R =
+    synchronized {
+      while (result.isEmpty) {
+        try { wait() }
+        catch { case _: InterruptedException => () }
+      }
+
+      result.get match {
+        case Left(res) => res
+        case Right(t)  => throw new FailedInterrupt(t)
+      }
     }
 
-    result.get match {
-      case Left(res) => res
-      case Right(t)  => throw new FailedInterrupt(t)
+  def onComplete(k: Continuation) =
+    synchronized {
+      if (result.isDefined) k(result.get) else waiting = k :: waiting
     }
-  }
-
-  def onComplete(k: Continuation) = synchronized {
-    if (result.isDefined) k(result.get) else waiting = k :: waiting
-  }
 }
 
 class FailedInterrupt(cause: Throwable)

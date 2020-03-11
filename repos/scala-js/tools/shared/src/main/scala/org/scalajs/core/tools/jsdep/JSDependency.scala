@@ -52,15 +52,16 @@ final class JSDependency(
       minifiedResourceName)
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: JSDependency =>
-      this.resourceName == that.resourceName &&
-        this.dependencies == that.dependencies &&
-        this.commonJSName == that.commonJSName &&
-        this.minifiedResourceName == that.minifiedResourceName
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: JSDependency =>
+        this.resourceName == that.resourceName &&
+          this.dependencies == that.dependencies &&
+          this.commonJSName == that.commonJSName &&
+          this.minifiedResourceName == that.minifiedResourceName
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = {
     import scala.util.hashing.MurmurHash3._

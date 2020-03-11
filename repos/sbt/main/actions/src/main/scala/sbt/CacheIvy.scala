@@ -304,9 +304,8 @@ object CacheIvy {
     )
   // For some reason sbinary seems to detect unserialized instance Set[ModuleID] to be not equal. #1620
   implicit def moduleSetIC: InputCache[Set[ModuleID]] = {
-    implicit def toSeq(ms: Set[ModuleID]): Seq[ModuleID] = ms.toSeq.sortBy {
-      _.toString
-    }
+    implicit def toSeq(ms: Set[ModuleID]): Seq[ModuleID] =
+      ms.toSeq.sortBy { _.toString }
     wrapIn
   }
 

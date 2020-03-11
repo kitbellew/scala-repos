@@ -15,9 +15,8 @@ final class StreamerList(val store: {
 
   def find(id: String): Fu[Option[Streamer]] = get map (_ find (_.id == id))
 
-  private[tv] def lichessIds: Fu[Set[String]] = get map {
-    _.filter(_.featured).map(_.lichessName.toLowerCase).toSet
-  }
+  private[tv] def lichessIds: Fu[Set[String]] =
+    get map { _.filter(_.featured).map(_.lichessName.toLowerCase).toSet }
 
   private[tv] def validate(text: String): (List[Streamer], List[Exception]) =
     Try {

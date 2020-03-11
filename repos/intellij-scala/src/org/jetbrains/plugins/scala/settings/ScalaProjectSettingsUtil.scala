@@ -35,36 +35,39 @@ object ScalaProjectSettingsUtil {
     true
   }
 
-  def getPatternValidator: InputValidator = new InputValidator {
-    def checkInput(inputString: String): Boolean = {
-      checkInput(inputString, checkExcludes = true)
+  def getPatternValidator: InputValidator =
+    new InputValidator {
+      def checkInput(inputString: String): Boolean = {
+        checkInput(inputString, checkExcludes = true)
+      }
+
+      @tailrec
+      private def checkInput(
+          inputString: String,
+          checkExcludes: Boolean): Boolean = {
+        if (checkExcludes && inputString.startsWith(
+              ScalaCodeStyleSettings.EXCLUDE_PREFIX))
+          checkInput(
+            inputString.substring(ScalaCodeStyleSettings.EXCLUDE_PREFIX.length),
+            checkExcludes = false)
+        else
+          inputString.contains(".") && ScalaProjectSettingsUtil.isValidPackage(
+            inputString)
+      }
+
+      def canClose(inputString: String): Boolean = { checkInput(inputString) }
     }
 
-    @tailrec
-    private def checkInput(
-        inputString: String,
-        checkExcludes: Boolean): Boolean = {
-      if (checkExcludes && inputString.startsWith(
-            ScalaCodeStyleSettings.EXCLUDE_PREFIX))
-        checkInput(
-          inputString.substring(ScalaCodeStyleSettings.EXCLUDE_PREFIX.length),
-          checkExcludes = false)
-      else
-        inputString.contains(".") && ScalaProjectSettingsUtil.isValidPackage(
-          inputString)
+  def getPackageValidator: InputValidator =
+    new InputValidator {
+      def checkInput(inputString: String): Boolean = {
+        ScalaProjectSettingsUtil.isValidPackage(
+          inputString,
+          checkPlaceholder = false)
+      }
+
+      def canClose(inputString: String): Boolean = { checkInput(inputString) }
     }
-
-    def canClose(inputString: String): Boolean = { checkInput(inputString) }
-  }
-
-  def getPackageValidator: InputValidator = new InputValidator {
-    def checkInput(inputString: String): Boolean = {
-      ScalaProjectSettingsUtil
-        .isValidPackage(inputString, checkPlaceholder = false)
-    }
-
-    def canClose(inputString: String): Boolean = { checkInput(inputString) }
-  }
 
   def getPatternListPanel(
       parent: JComponent,

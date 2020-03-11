@@ -276,12 +276,13 @@ class HiveContext private[hive] (
 
       // We recursively find all jars in the class loader chain,
       // starting from the given classLoader.
-      def allJars(classLoader: ClassLoader): Array[URL] = classLoader match {
-        case null => Array.empty[URL]
-        case urlClassLoader: URLClassLoader =>
-          urlClassLoader.getURLs ++ allJars(urlClassLoader.getParent)
-        case other => allJars(other.getParent)
-      }
+      def allJars(classLoader: ClassLoader): Array[URL] =
+        classLoader match {
+          case null => Array.empty[URL]
+          case urlClassLoader: URLClassLoader =>
+            urlClassLoader.getURLs ++ allJars(urlClassLoader.getParent)
+          case other => allJars(other.getParent)
+        }
 
       val classLoader = Utils.getContextOrSparkClassLoader
       val jars = allJars(classLoader)
@@ -579,33 +580,34 @@ class HiveContext private[hive] (
       * Returns the result as a hive compatible sequence of strings.  For native commands, the
       * execution is simply passed back to Hive.
       */
-    def stringResult(): Seq[String] = executedPlan match {
-      case ExecutedCommand(desc: DescribeHiveTableCommand) =>
-        // If it is a describe command for a Hive table, we want to have the output format
-        // be similar with Hive.
-        desc.run(self).map {
-          case Row(name: String, dataType: String, comment) =>
-            Seq(
-              name,
-              dataType,
-              Option(comment.asInstanceOf[String]).getOrElse(""))
-              .map(s => String.format(s"%-20s", s))
-              .mkString("\t")
-        }
-      case command: ExecutedCommand =>
-        command.executeCollect().map(_.getString(0))
+    def stringResult(): Seq[String] =
+      executedPlan match {
+        case ExecutedCommand(desc: DescribeHiveTableCommand) =>
+          // If it is a describe command for a Hive table, we want to have the output format
+          // be similar with Hive.
+          desc.run(self).map {
+            case Row(name: String, dataType: String, comment) =>
+              Seq(
+                name,
+                dataType,
+                Option(comment.asInstanceOf[String]).getOrElse(""))
+                .map(s => String.format(s"%-20s", s))
+                .mkString("\t")
+          }
+        case command: ExecutedCommand =>
+          command.executeCollect().map(_.getString(0))
 
-      case other =>
-        val result: Seq[Seq[Any]] =
-          other.executeCollectPublic().map(_.toSeq).toSeq
-        // We need the types so we can output struct field names
-        val types = analyzed.output.map(_.dataType)
-        // Reformat to match hive tab delimited output.
-        result
-          .map(_.zip(types).map(HiveContext.toHiveString))
-          .map(_.mkString("\t"))
-          .toSeq
-    }
+        case other =>
+          val result: Seq[Seq[Any]] =
+            other.executeCollectPublic().map(_.toSeq).toSeq
+          // We need the types so we can output struct field names
+          val types = analyzed.output.map(_.dataType)
+          // Reformat to match hive tab delimited output.
+          result
+            .map(_.zip(types).map(HiveContext.toHiveString))
+            .map(_.mkString("\t"))
+            .toSeq
+      }
 
     override def simpleString: String =
       logical match {
@@ -775,61 +777,65 @@ private[hive] object HiveContext {
       TimestampType,
       BinaryType)
 
-  protected[sql] def toHiveString(a: (Any, DataType)): String = a match {
-    case (struct: Row, StructType(fields)) =>
-      struct.toSeq
-        .zip(fields)
-        .map {
-          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-        }
-        .mkString("{", ",", "}")
-    case (seq: Seq[_], ArrayType(typ, _)) =>
-      seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
-    case (map: Map[_, _], MapType(kType, vType, _)) =>
-      map
-        .map {
-          case (key, value) =>
-            toHiveStructString((key, kType)) + ":" + toHiveStructString(
-              (value, vType))
-        }
-        .toSeq
-        .sorted
-        .mkString("{", ",", "}")
-    case (null, _)                     => "NULL"
-    case (d: Int, DateType)            => new DateWritable(d).toString
-    case (t: Timestamp, TimestampType) => new TimestampWritable(t).toString
-    case (bin: Array[Byte], BinaryType) =>
-      new String(bin, StandardCharsets.UTF_8)
-    case (decimal: java.math.BigDecimal, DecimalType()) =>
-      // Hive strips trailing zeros so use its toString
-      HiveDecimal.create(decimal).toString
-    case (other, tpe) if primitiveTypes contains tpe => other.toString
-  }
+  protected[sql] def toHiveString(a: (Any, DataType)): String =
+    a match {
+      case (struct: Row, StructType(fields)) =>
+        struct.toSeq
+          .zip(fields)
+          .map {
+            case (v, t) =>
+              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+          }
+          .mkString("{", ",", "}")
+      case (seq: Seq[_], ArrayType(typ, _)) =>
+        seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
+      case (map: Map[_, _], MapType(kType, vType, _)) =>
+        map
+          .map {
+            case (key, value) =>
+              toHiveStructString((key, kType)) + ":" + toHiveStructString(
+                (value, vType))
+          }
+          .toSeq
+          .sorted
+          .mkString("{", ",", "}")
+      case (null, _)                     => "NULL"
+      case (d: Int, DateType)            => new DateWritable(d).toString
+      case (t: Timestamp, TimestampType) => new TimestampWritable(t).toString
+      case (bin: Array[Byte], BinaryType) =>
+        new String(bin, StandardCharsets.UTF_8)
+      case (decimal: java.math.BigDecimal, DecimalType()) =>
+        // Hive strips trailing zeros so use its toString
+        HiveDecimal.create(decimal).toString
+      case (other, tpe) if primitiveTypes contains tpe => other.toString
+    }
 
   /** Hive outputs fields of structs slightly differently than top level attributes. */
-  protected def toHiveStructString(a: (Any, DataType)): String = a match {
-    case (struct: Row, StructType(fields)) =>
-      struct.toSeq
-        .zip(fields)
-        .map {
-          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-        }
-        .mkString("{", ",", "}")
-    case (seq: Seq[_], ArrayType(typ, _)) =>
-      seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
-    case (map: Map[_, _], MapType(kType, vType, _)) =>
-      map
-        .map {
-          case (key, value) =>
-            toHiveStructString((key, kType)) + ":" + toHiveStructString(
-              (value, vType))
-        }
-        .toSeq
-        .sorted
-        .mkString("{", ",", "}")
-    case (null, _)                                   => "null"
-    case (s: String, StringType)                     => "\"" + s + "\""
-    case (decimal, DecimalType())                    => decimal.toString
-    case (other, tpe) if primitiveTypes contains tpe => other.toString
-  }
+  protected def toHiveStructString(a: (Any, DataType)): String =
+    a match {
+      case (struct: Row, StructType(fields)) =>
+        struct.toSeq
+          .zip(fields)
+          .map {
+            case (v, t) =>
+              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+          }
+          .mkString("{", ",", "}")
+      case (seq: Seq[_], ArrayType(typ, _)) =>
+        seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
+      case (map: Map[_, _], MapType(kType, vType, _)) =>
+        map
+          .map {
+            case (key, value) =>
+              toHiveStructString((key, kType)) + ":" + toHiveStructString(
+                (value, vType))
+          }
+          .toSeq
+          .sorted
+          .mkString("{", ",", "}")
+      case (null, _)                                   => "null"
+      case (s: String, StringType)                     => "\"" + s + "\""
+      case (decimal, DecimalType())                    => decimal.toString
+      case (other, tpe) if primitiveTypes contains tpe => other.toString
+    }
 }

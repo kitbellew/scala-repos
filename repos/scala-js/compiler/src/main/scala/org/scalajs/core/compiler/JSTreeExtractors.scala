@@ -41,13 +41,15 @@ object JSTreeExtractors {
           exprs: List[Tree],
           acc: List[(StringLiteral, Tree)],
           failIfNonLit: Boolean
-      ): Option[List[(StringLiteral, Tree)]] = exprs match {
-        case Tuple2(name: StringLiteral, value) :: xs =>
-          genNamedLitExtract(xs, (name, value) :: acc, failIfNonLit)
-        case _ :: xs =>
-          if (failIfNonLit) None else genNamedLitExtract(xs, acc, failIfNonLit)
-        case Nil => Some(acc.reverse)
-      }
+      ): Option[List[(StringLiteral, Tree)]] =
+        exprs match {
+          case Tuple2(name: StringLiteral, value) :: xs =>
+            genNamedLitExtract(xs, (name, value) :: acc, failIfNonLit)
+          case _ :: xs =>
+            if (failIfNonLit) None
+            else genNamedLitExtract(xs, acc, failIfNonLit)
+          case Nil => Some(acc.reverse)
+        }
     }
 
     /**
@@ -69,24 +71,25 @@ object JSTreeExtractors {
       *  But also (Scala): x -> y
       */
     object Tuple2 {
-      def unapply(tree: Tree): Option[(Tree, Tree)] = tree match {
-        // case (x, y)
-        case New(ClassType("T2"), Ident("init___O__O", _), List(_1, _2)) =>
-          Some((_1, _2))
-        // case x -> y
-        case Apply(
-              LoadModule(ClassType("s_Predef$ArrowAssoc$")),
-              Ident("$$minus$greater$extension__O__O__T2", _),
-              List(
-                Apply(
-                  LoadModule(ClassType("s_Predef$")),
-                  Ident("any2ArrowAssoc__O__O" | "ArrowAssoc__O__O", _),
-                  List(_1)),
-                _2)) =>
-          Some((_1, _2))
-        case _ =>
-          None
-      }
+      def unapply(tree: Tree): Option[(Tree, Tree)] =
+        tree match {
+          // case (x, y)
+          case New(ClassType("T2"), Ident("init___O__O", _), List(_1, _2)) =>
+            Some((_1, _2))
+          // case x -> y
+          case Apply(
+                LoadModule(ClassType("s_Predef$ArrowAssoc$")),
+                Ident("$$minus$greater$extension__O__O__T2", _),
+                List(
+                  Apply(
+                    LoadModule(ClassType("s_Predef$")),
+                    Ident("any2ArrowAssoc__O__O" | "ArrowAssoc__O__O", _),
+                    List(_1)),
+                  _2)) =>
+            Some((_1, _2))
+          case _ =>
+            None
+        }
     }
   }
 

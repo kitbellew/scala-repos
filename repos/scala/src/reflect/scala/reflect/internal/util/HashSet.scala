@@ -68,16 +68,17 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
   }
   def addEntries(xs: TraversableOnce[T]) { xs foreach addEntry }
 
-  def iterator = new Iterator[T] {
-    private var i = 0
-    def hasNext: Boolean = {
-      while (i < table.length && (table(i) eq null)) i += 1
-      i < table.length
+  def iterator =
+    new Iterator[T] {
+      private var i = 0
+      def hasNext: Boolean = {
+        while (i < table.length && (table(i) eq null)) i += 1
+        i < table.length
+      }
+      def next(): T =
+        if (hasNext) { i += 1; table(i - 1).asInstanceOf[T] }
+        else null
     }
-    def next(): T =
-      if (hasNext) { i += 1; table(i - 1).asInstanceOf[T] }
-      else null
-  }
 
   private def addOldEntry(x: T) {
     var h = index(x.##)

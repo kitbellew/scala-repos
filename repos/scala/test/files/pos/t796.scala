@@ -14,10 +14,11 @@ object Test extends App {
       if (x % 2 == 0) Some(Tuple1(x / 2)) else None
   }
 
-  def test(x: Int) = x match {
-    case Twice(y) => "x is two times " + y
-    case _        => "x is odd"
-  }
+  def test(x: Int) =
+    x match {
+      case Twice(y) => "x is two times " + y
+      case _        => "x is odd"
+    }
 
   Console.println(test(3))
   Console.println(test(4))

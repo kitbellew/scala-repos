@@ -902,12 +902,13 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     def shutdown()(implicit ec: ExecutionContextExecutor): Future[Done] =
       gatewayFuture.flatMap(_.shutdown())
 
-    private[http] def toJava = new akka.http.javadsl.HostConnectionPool {
-      override def setup = HostConnectionPool.this.setup
-      override def shutdown(
-          executor: ExecutionContextExecutor): CompletionStage[Done] =
-        HostConnectionPool.this.shutdown()(executor).toJava
-    }
+    private[http] def toJava =
+      new akka.http.javadsl.HostConnectionPool {
+        override def setup = HostConnectionPool.this.setup
+        override def shutdown(
+            executor: ExecutionContextExecutor): CompletionStage[Done] =
+          HostConnectionPool.this.shutdown()(executor).toJava
+      }
   }
 
   //////////////////// EXTENSION SETUP ///////////////////

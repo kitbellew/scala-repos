@@ -238,10 +238,11 @@ private[finagle] class PipelineFactory(
   private class DrainQueue[T] {
     private[this] var q = new mutable.Queue[T]
 
-    def offer(e: T): Boolean = synchronized {
-      if (q != null) q.enqueue(e)
-      q != null
-    }
+    def offer(e: T): Boolean =
+      synchronized {
+        if (q != null) q.enqueue(e)
+        q != null
+      }
 
     def drain(): Iterable[T] = {
       synchronized {

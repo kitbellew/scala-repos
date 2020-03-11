@@ -243,21 +243,22 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   }
 
   override /*IterableLike*/
-  def sameElements[B >: A](that: GenIterable[B]): Boolean = that match {
-    case that1: LinearSeq[_] =>
-      // Probably immutable, so check reference identity first (it's quick anyway)
-      (this eq that1) || {
-        var these = this
-        var those = that1
-        while (!these.isEmpty && !those.isEmpty && these.head == those.head) {
-          these = these.tail
-          those = those.tail
+  def sameElements[B >: A](that: GenIterable[B]): Boolean =
+    that match {
+      case that1: LinearSeq[_] =>
+        // Probably immutable, so check reference identity first (it's quick anyway)
+        (this eq that1) || {
+          var these = this
+          var those = that1
+          while (!these.isEmpty && !those.isEmpty && these.head == those.head) {
+            these = these.tail
+            those = those.tail
+          }
+          these.isEmpty && those.isEmpty
         }
-        these.isEmpty && those.isEmpty
-      }
-    case _ =>
-      super.sameElements(that)
-  }
+      case _ =>
+        super.sameElements(that)
+    }
 
   override /*SeqLike*/
   def lengthCompare(len: Int): Int = {

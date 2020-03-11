@@ -1155,11 +1155,12 @@ object Thrift {
       def this(
           a: Double,
           b: String
-      ) = this(
-        a,
-        b,
-        Map.empty
-      )
+      ) =
+        this(
+          a,
+          b,
+          Map.empty
+        )
     }
   }
 

@@ -159,17 +159,18 @@ object JavaTypeInference {
     * Unlike `inferDataType`, this function doesn't do any massaging of types into the Spark SQL type
     * system.  As a result, ObjectType will be returned for things like boxed Integers.
     */
-  private def inferExternalType(cls: Class[_]): DataType = cls match {
-    case c if c == java.lang.Boolean.TYPE => BooleanType
-    case c if c == java.lang.Byte.TYPE    => ByteType
-    case c if c == java.lang.Short.TYPE   => ShortType
-    case c if c == java.lang.Integer.TYPE => IntegerType
-    case c if c == java.lang.Long.TYPE    => LongType
-    case c if c == java.lang.Float.TYPE   => FloatType
-    case c if c == java.lang.Double.TYPE  => DoubleType
-    case c if c == classOf[Array[Byte]]   => BinaryType
-    case _                                => ObjectType(cls)
-  }
+  private def inferExternalType(cls: Class[_]): DataType =
+    cls match {
+      case c if c == java.lang.Boolean.TYPE => BooleanType
+      case c if c == java.lang.Byte.TYPE    => ByteType
+      case c if c == java.lang.Short.TYPE   => ShortType
+      case c if c == java.lang.Integer.TYPE => IntegerType
+      case c if c == java.lang.Long.TYPE    => LongType
+      case c if c == java.lang.Float.TYPE   => FloatType
+      case c if c == java.lang.Double.TYPE  => DoubleType
+      case c if c == classOf[Array[Byte]]   => BinaryType
+      case _                                => ObjectType(cls)
+    }
 
   /**
     * Returns an expression that can be used to construct an object of java bean `T` given an input

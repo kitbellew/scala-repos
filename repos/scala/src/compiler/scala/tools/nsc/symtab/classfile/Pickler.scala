@@ -130,24 +130,26 @@ abstract class Pickler extends SubComponent {
       *
       *  @return      true iff entry is new.
       */
-    private def putEntry(entry: AnyRef): Boolean = index.get(entry) match {
-      case Some(_) => false
-      case None =>
-        if (ep == entries.length) {
-          val entries1 = new Array[AnyRef](ep * 2)
-          System.arraycopy(entries, 0, entries1, 0, ep)
-          entries = entries1
-        }
-        entries(ep) = entry
-        index(entry) = ep
-        ep = ep + 1
-        true
-    }
+    private def putEntry(entry: AnyRef): Boolean =
+      index.get(entry) match {
+        case Some(_) => false
+        case None =>
+          if (ep == entries.length) {
+            val entries1 = new Array[AnyRef](ep * 2)
+            System.arraycopy(entries, 0, entries1, 0, ep)
+            entries = entries1
+          }
+          entries(ep) = entry
+          index(entry) = ep
+          ep = ep + 1
+          true
+      }
 
-    private def deskolemizeTypeSymbols(ref: AnyRef): AnyRef = ref match {
-      case sym: Symbol => deskolemize(sym)
-      case _           => ref
-    }
+    private def deskolemizeTypeSymbols(ref: AnyRef): AnyRef =
+      ref match {
+        case sym: Symbol => deskolemize(sym)
+        case _           => ref
+      }
 
     /** If the symbol is a type skolem, deskolemize and log it.
       *  If we fail to deskolemize, in a method like
@@ -221,49 +223,50 @@ abstract class Pickler extends SubComponent {
 
     /** Store type and everything it refers to in map index.
       */
-    private def putType(tp: Type): Unit = if (putEntry(tp)) {
-      tp match {
-        case NoType | NoPrefix =>
-          ;
-        case ThisType(sym) =>
-          putSymbol(sym)
-        case SingleType(pre, sym) =>
-          putType(pre)
-          putSymbol(sym)
-        case SuperType(thistpe, supertpe) =>
-          putType(thistpe)
-          putType(supertpe)
-        case ConstantType(value) =>
-          putConstant(value)
-        case TypeRef(pre, sym, args) =>
-          putType(pre)
-          putSymbol(sym)
-          putTypes(args)
-        case TypeBounds(lo, hi) =>
-          putType(lo)
-          putType(hi)
-        case tp: CompoundType =>
-          putSymbol(tp.typeSymbol)
-          putTypes(tp.parents)
-          putSymbols(tp.decls.toList)
-        case MethodType(params, restpe) =>
-          putType(restpe)
-          putSymbols(params)
-        case NullaryMethodType(restpe) =>
-          putType(restpe)
-        case PolyType(tparams, restpe) =>
-          putType(restpe)
-          putSymbols(tparams)
-        case ExistentialType(tparams, restpe) =>
-          putType(restpe)
-          putSymbols(tparams)
-        case AnnotatedType(_, underlying) =>
-          putType(underlying)
-          tp.staticAnnotations foreach putAnnotation
-        case _ =>
-          throw new FatalError("bad type: " + tp + "(" + tp.getClass + ")")
+    private def putType(tp: Type): Unit =
+      if (putEntry(tp)) {
+        tp match {
+          case NoType | NoPrefix =>
+            ;
+          case ThisType(sym) =>
+            putSymbol(sym)
+          case SingleType(pre, sym) =>
+            putType(pre)
+            putSymbol(sym)
+          case SuperType(thistpe, supertpe) =>
+            putType(thistpe)
+            putType(supertpe)
+          case ConstantType(value) =>
+            putConstant(value)
+          case TypeRef(pre, sym, args) =>
+            putType(pre)
+            putSymbol(sym)
+            putTypes(args)
+          case TypeBounds(lo, hi) =>
+            putType(lo)
+            putType(hi)
+          case tp: CompoundType =>
+            putSymbol(tp.typeSymbol)
+            putTypes(tp.parents)
+            putSymbols(tp.decls.toList)
+          case MethodType(params, restpe) =>
+            putType(restpe)
+            putSymbols(params)
+          case NullaryMethodType(restpe) =>
+            putType(restpe)
+          case PolyType(tparams, restpe) =>
+            putType(restpe)
+            putSymbols(tparams)
+          case ExistentialType(tparams, restpe) =>
+            putType(restpe)
+            putSymbols(tparams)
+          case AnnotatedType(_, underlying) =>
+            putType(underlying)
+            tp.staticAnnotations foreach putAnnotation
+          case _ =>
+            throw new FatalError("bad type: " + tp + "(" + tp.getClass + ")")
+        }
       }
-    }
     private def putTypes(tps: List[Type]) { tps foreach putType }
 
     private object putTreeTraverser extends Traverser {
@@ -455,45 +458,49 @@ abstract class Pickler extends SubComponent {
       // TODO: is there any way this can come back and bite us in the bottom?
       // ugliness and thrift aside, this should make this somewhat more backward compatible
       // (I'm not sure how old scalac's would deal with nested PolyTypes, as these used to be folded into one)
-      def writeTypeBody(tpe: Type): Unit = tpe match {
-        case NoType | NoPrefix    =>
-        case ThisType(sym)        => writeRef(sym)
-        case SingleType(pre, sym) => writeRef(pre); writeRef(sym)
-        case SuperType(thistpe, supertpe) =>
-          writeRef(thistpe); writeRef(supertpe)
-        case ConstantType(value) => writeRef(value)
-        case TypeBounds(lo, hi)  => writeRef(lo); writeRef(hi)
-        case TypeRef(pre, sym, args) =>
-          writeRef(pre); writeRef(sym); writeRefs(args)
-        case MethodType(formals, restpe) => writeRef(restpe); writeRefs(formals)
-        case NullaryMethodType(restpe)   => writeRef(restpe); writeRefs(Nil)
-        case PolyType(tparams, restpe)   => writeRef(restpe); writeRefs(tparams)
-        case ExistentialType(tparams, restpe) =>
-          writeRef(restpe); writeRefs(tparams)
-        case StaticallyAnnotatedType(annots, tp) =>
-          writeRef(tp); writeRefs(annots)
-        case AnnotatedType(_, tp) =>
-          writeTypeBody(
-            tp
-          ) // write the underlying type if there are no static annotations
-        case CompoundType(parents, _, clazz) =>
-          writeRef(clazz); writeRefs(parents)
-      }
+      def writeTypeBody(tpe: Type): Unit =
+        tpe match {
+          case NoType | NoPrefix    =>
+          case ThisType(sym)        => writeRef(sym)
+          case SingleType(pre, sym) => writeRef(pre); writeRef(sym)
+          case SuperType(thistpe, supertpe) =>
+            writeRef(thistpe); writeRef(supertpe)
+          case ConstantType(value) => writeRef(value)
+          case TypeBounds(lo, hi)  => writeRef(lo); writeRef(hi)
+          case TypeRef(pre, sym, args) =>
+            writeRef(pre); writeRef(sym); writeRefs(args)
+          case MethodType(formals, restpe) =>
+            writeRef(restpe); writeRefs(formals)
+          case NullaryMethodType(restpe) => writeRef(restpe); writeRefs(Nil)
+          case PolyType(tparams, restpe) => writeRef(restpe); writeRefs(tparams)
+          case ExistentialType(tparams, restpe) =>
+            writeRef(restpe); writeRefs(tparams)
+          case StaticallyAnnotatedType(annots, tp) =>
+            writeRef(tp); writeRefs(annots)
+          case AnnotatedType(_, tp) =>
+            writeTypeBody(
+              tp
+            ) // write the underlying type if there are no static annotations
+          case CompoundType(parents, _, clazz) =>
+            writeRef(clazz); writeRefs(parents)
+        }
 
       def writeTreeBody(tree: Tree) {
         writeNat(picklerSubTag(tree))
         if (!tree.isEmpty) writeTreeBodyTraverser traverse tree
       }
 
-      def writeConstant(c: Constant): Unit = c.tag match {
-        case BooleanTag => writeLong(if (c.booleanValue) 1 else 0)
-        case FloatTag   => writeLong(floatToIntBits(c.floatValue).toLong)
-        case DoubleTag  => writeLong(doubleToLongBits(c.doubleValue))
-        case StringTag  => writeRef(newTermName(c.stringValue))
-        case ClazzTag   => writeRef(c.typeValue)
-        case EnumTag    => writeRef(c.symbolValue)
-        case tag        => if (ByteTag <= tag && tag <= LongTag) writeLong(c.longValue)
-      }
+      def writeConstant(c: Constant): Unit =
+        c.tag match {
+          case BooleanTag => writeLong(if (c.booleanValue) 1 else 0)
+          case FloatTag   => writeLong(floatToIntBits(c.floatValue).toLong)
+          case DoubleTag  => writeLong(doubleToLongBits(c.doubleValue))
+          case StringTag  => writeRef(newTermName(c.stringValue))
+          case ClazzTag   => writeRef(c.typeValue)
+          case EnumTag    => writeRef(c.symbolValue)
+          case tag =>
+            if (ByteTag <= tag && tag <= LongTag) writeLong(c.longValue)
+        }
 
       def writeModifiers(mods: Modifiers) {
         val pflags = rawToPickledFlags(mods.flags)
@@ -511,20 +518,21 @@ abstract class Pickler extends SubComponent {
         }
       }
 
-      def writeBody(entry: AnyRef): Unit = entry match {
-        case tree: Tree              => writeTreeBody(tree)
-        case sym: Symbol             => writeSymbolBody(sym)
-        case tpe: Type               => writeTypeBody(tpe)
-        case name: Name              => writeName(name)
-        case const: Constant         => writeConstant(const)
-        case mods: Modifiers         => writeModifiers(mods)
-        case annot: AnnotationInfo   => writeAnnotation(annot)
-        case (target: Symbol, other) => writeSymbolTuple(target, other)
-        case ArrayAnnotArg(args)     => args foreach writeClassfileAnnotArg
-        case _ =>
-          devWarning(
-            s"Unexpected entry to pickler ${shortClassOfInstance(entry)} $entry")
-      }
+      def writeBody(entry: AnyRef): Unit =
+        entry match {
+          case tree: Tree              => writeTreeBody(tree)
+          case sym: Symbol             => writeSymbolBody(sym)
+          case tpe: Type               => writeTypeBody(tpe)
+          case name: Name              => writeName(name)
+          case const: Constant         => writeConstant(const)
+          case mods: Modifiers         => writeModifiers(mods)
+          case annot: AnnotationInfo   => writeAnnotation(annot)
+          case (target: Symbol, other) => writeSymbolTuple(target, other)
+          case ArrayAnnotArg(args)     => args foreach writeClassfileAnnotArg
+          case _ =>
+            devWarning(
+              s"Unexpected entry to pickler ${shortClassOfInstance(entry)} $entry")
+        }
 
       // begin writeEntry
       // The picklerTag method can't determine if it's an external symbol reference

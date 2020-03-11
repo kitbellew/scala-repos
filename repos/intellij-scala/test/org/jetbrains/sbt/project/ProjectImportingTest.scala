@@ -50,45 +50,48 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
       modules := Seq(root, foo, bar)
     })
 
-  def testUnmanagedDependency() = runTest(
-    new project("unmanagedDependency") {
-      modules += new module("unmanagedDependency") {
-        lazy val unmanagedLibrary = new library("SBT: unmanaged-jars") {
-          classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+  def testUnmanagedDependency() =
+    runTest(
+      new project("unmanagedDependency") {
+        modules += new module("unmanagedDependency") {
+          lazy val unmanagedLibrary = new library("SBT: unmanaged-jars") {
+            classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+          }
+          libraries += unmanagedLibrary
+          libraryDependencies += unmanagedLibrary
         }
-        libraries += unmanagedLibrary
-        libraryDependencies += unmanagedLibrary
       }
-    }
-  )
+    )
 
-  def testSharedSources() = runTest(
-    new project("sharedSources") {
-      lazy val sharedSourcesModule = new module("sharedSources-sources") {
-        contentRoots += getProjectPath + "/shared"
-        ProjectStructureDsl.sources += "src/main/scala"
+  def testSharedSources() =
+    runTest(
+      new project("sharedSources") {
+        lazy val sharedSourcesModule = new module("sharedSources-sources") {
+          contentRoots += getProjectPath + "/shared"
+          ProjectStructureDsl.sources += "src/main/scala"
+        }
+
+        lazy val foo = new module("foo") {
+          moduleDependencies += sharedSourcesModule
+        }
+
+        lazy val bar = new module("bar") {
+          moduleDependencies += sharedSourcesModule
+        }
+
+        modules := Seq(foo, bar, sharedSourcesModule)
       }
+    )
 
-      lazy val foo = new module("foo") {
-        moduleDependencies += sharedSourcesModule
+  def testExcludedDirectories() =
+    runTest(
+      new project("root") {
+        modules += new module("root") {
+          excluded := Seq(
+            "directory-to-exclude-1",
+            "directory/to/exclude/2"
+          )
+        }
       }
-
-      lazy val bar = new module("bar") {
-        moduleDependencies += sharedSourcesModule
-      }
-
-      modules := Seq(foo, bar, sharedSourcesModule)
-    }
-  )
-
-  def testExcludedDirectories() = runTest(
-    new project("root") {
-      modules += new module("root") {
-        excluded := Seq(
-          "directory-to-exclude-1",
-          "directory/to/exclude/2"
-        )
-      }
-    }
-  )
+    )
 }

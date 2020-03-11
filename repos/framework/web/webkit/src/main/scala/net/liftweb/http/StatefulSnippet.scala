@@ -191,10 +191,11 @@ object TransientSnippet {
   /**
     * Compute if the instance should be treated as transient
     */
-  def notTransient(obj: Any): Boolean = obj match {
-    case t: TransientSnippet => !t.transient_?
-    case _                   => true
-  }
+  def notTransient(obj: Any): Boolean =
+    obj match {
+      case t: TransientSnippet => !t.transient_?
+      case _                   => true
+    }
 }
 
 /**

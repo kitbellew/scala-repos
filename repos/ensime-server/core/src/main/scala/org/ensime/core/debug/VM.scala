@@ -195,13 +195,14 @@ class VM(
 
     // Group locations by file and line
     case class LocationClass(loc: Location) {
-      override def equals(that: Any): Boolean = that match {
-        case that: Location =>
-          loc.sourcePath == that.sourcePath &&
-            loc.sourceName == that.sourceName &&
-            loc.lineNumber == that.lineNumber
-        case _ => false
-      }
+      override def equals(that: Any): Boolean =
+        that match {
+          case that: Location =>
+            loc.sourcePath == that.sourcePath &&
+              loc.sourceName == that.sourceName &&
+              loc.lineNumber == that.lineNumber
+          case _ => false
+        }
       override def hashCode: Int =
         loc.lineNumber.hashCode ^ loc.sourceName.hashCode
     }

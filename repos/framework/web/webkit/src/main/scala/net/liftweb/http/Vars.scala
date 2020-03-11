@@ -70,21 +70,22 @@ class VarsJBridge {
 abstract class SessionVar[T](dflt: => T)
     extends AnyVar[T, SessionVar[T]](dflt)
     with LazyLoggable {
-  override protected def findFunc(name: String): Box[T] = S.session match {
-    case Full(s) => s.get(name)
-    case _ =>
-      if (LiftRules.throwOnOutOfScopeVarAccess) {
-        throw new IllegalAccessException(
-          "Access to SessionVar outside a request or comet actor scope")
-      }
+  override protected def findFunc(name: String): Box[T] =
+    S.session match {
+      case Full(s) => s.get(name)
+      case _ =>
+        if (LiftRules.throwOnOutOfScopeVarAccess) {
+          throw new IllegalAccessException(
+            "Access to SessionVar outside a request or comet actor scope")
+        }
 
-      if (showWarningWhenAccessedOutOfSessionScope_?)
-        logger.warn(
-          "Getting a SessionVar " + name + " outside session scope"
-        ) // added warning per issue 188
+        if (showWarningWhenAccessedOutOfSessionScope_?)
+          logger.warn(
+            "Getting a SessionVar " + name + " outside session scope"
+          ) // added warning per issue 188
 
-      Empty
-  }
+        Empty
+    }
 
   /**
     * Stateless session enforcement is new to Lift, but there
@@ -120,24 +121,25 @@ abstract class SessionVar[T](dflt: => T)
     * Different Vars require different mechanisms for synchronization.  This method implements
     * the Var specific synchronization mechanism
     */
-  def doSync[F](f: => F): F = S.session match {
-    case Full(s) =>
-      // lock the session while the Var-specific lock object is found/created
-      val lockName = name + VarConstants.lockSuffix
-      val lockObj = s.synchronized {
-        s.get[AnyRef](lockName) match {
-          case Full(lock) => lock
-          case _ =>
-            val lock = new AnyRef
-            s.set(lockName, lock)
-            lock
+  def doSync[F](f: => F): F =
+    S.session match {
+      case Full(s) =>
+        // lock the session while the Var-specific lock object is found/created
+        val lockName = name + VarConstants.lockSuffix
+        val lockObj = s.synchronized {
+          s.get[AnyRef](lockName) match {
+            case Full(lock) => lock
+            case _ =>
+              val lock = new AnyRef
+              s.set(lockName, lock)
+              lock
+          }
         }
-      }
 
-      // execute the query in the scope of the lock obj
-      lockObj.synchronized { f }
-    case _ => f
-  }
+        // execute the query in the scope of the lock obj
+        lockObj.synchronized { f }
+      case _ => f
+    }
 
   def showWarningWhenAccessedOutOfSessionScope_? = false
 
@@ -198,23 +200,24 @@ abstract class ContainerVar[T](dflt: => T)(
     extends AnyVar[T, ContainerVar[T]](dflt)
     with LazyLoggable {
 
-  override protected def findFunc(name: String): Box[T] = S.session match {
-    case Full(session) => {
-      localGet(session, name) match {
-        case Full(array: Array[Byte]) =>
-          Full(containerSerializer.deserialize(array))
-        case _ => Empty
+  override protected def findFunc(name: String): Box[T] =
+    S.session match {
+      case Full(session) => {
+        localGet(session, name) match {
+          case Full(array: Array[Byte]) =>
+            Full(containerSerializer.deserialize(array))
+          case _ => Empty
+        }
+      }
+      case _ => {
+        if (showWarningWhenAccessedOutOfSessionScope_?)
+          logger.warn(
+            "Getting a SessionVar " + name + " outside session scope"
+          ) // added warning per issue 188
+
+        Empty
       }
     }
-    case _ => {
-      if (showWarningWhenAccessedOutOfSessionScope_?)
-        logger.warn(
-          "Getting a SessionVar " + name + " outside session scope"
-        ) // added warning per issue 188
-
-      Empty
-    }
-  }
 
   private def localSet(session: LiftSession, name: String, value: Any): Unit = {
     for { httpSession <- session.httpSession } httpSession.setAttribute(

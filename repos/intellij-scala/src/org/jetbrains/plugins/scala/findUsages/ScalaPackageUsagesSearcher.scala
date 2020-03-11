@@ -47,10 +47,11 @@ class ScalaPackageUsagesSearcher
     def processTextOccurrence(
         element: PsiElement,
         offsetInElement: Int,
-        consumer: Processor[PsiReference]): Boolean = inReadAction {
-      val reference: PsiReference = element.getReference
-      if (reference == null || !reference.isReferenceTo(myTarget)) { true }
-      else consumer.process(reference)
-    }
+        consumer: Processor[PsiReference]): Boolean =
+      inReadAction {
+        val reference: PsiReference = element.getReference
+        if (reference == null || !reference.isReferenceTo(myTarget)) { true }
+        else consumer.process(reference)
+      }
   }
 }

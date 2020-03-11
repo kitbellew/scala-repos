@@ -743,28 +743,30 @@ object TestNodeProvider {
     } else new util.ArrayList[TreeElement]()
   }
 
-  def isUTestInfixExpr(psiElement: PsiElement): Boolean = psiElement match {
-    case inifxExpr: ScInfixExpr =>
-      checkScInfixExpr(inifxExpr, "$minus", List("java.lang.Object")) ||
-        checkScInfixExpr(inifxExpr, "$minus", List())
-    case _ => false
-  }
+  def isUTestInfixExpr(psiElement: PsiElement): Boolean =
+    psiElement match {
+      case inifxExpr: ScInfixExpr =>
+        checkScInfixExpr(inifxExpr, "$minus", List("java.lang.Object")) ||
+          checkScInfixExpr(inifxExpr, "$minus", List())
+      case _ => false
+    }
 
-  def isUTestApplyCall(psiElement: PsiElement): Boolean = psiElement match {
-    case methodCall: ScMethodCall =>
-      val literal = methodCall.getEffectiveInvokedExpr
-      literal.isInstanceOf[ScLiteral] && {
-        val (_, actualType, _, _) = literal.getImplicitConversions()
-        actualType match {
-          case Some(funDef: ScFunctionDefinition) =>
-            funDef.getName == "TestableSymbol" && funDef.isSynthetic && checkClauses(
-              funDef.getParameterList.clauses,
-              List("scala.Symbol"))
-          case _ => false
+  def isUTestApplyCall(psiElement: PsiElement): Boolean =
+    psiElement match {
+      case methodCall: ScMethodCall =>
+        val literal = methodCall.getEffectiveInvokedExpr
+        literal.isInstanceOf[ScLiteral] && {
+          val (_, actualType, _, _) = literal.getImplicitConversions()
+          actualType match {
+            case Some(funDef: ScFunctionDefinition) =>
+              funDef.getName == "TestableSymbol" && funDef.isSynthetic && checkClauses(
+                funDef.getParameterList.clauses,
+                List("scala.Symbol"))
+            case _ => false
+          }
         }
-      }
-    case _ => false
-  }
+      case _ => false
+    }
 
   def isUTestSuiteApplyCall(psiElement: PsiElement): Boolean =
     psiElement match {

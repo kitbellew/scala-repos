@@ -352,15 +352,16 @@ private final class TrapExit(delegateManager: SecurityManager)
     // once while they are all locked.  This is the closest thing to a snapshot that can be accomplished.
     private[this] def threadsInGroups(
         toProcess: List[ThreadGroup],
-        accum: List[ThreadGroup]): List[Thread] = toProcess match {
-      case group :: tail =>
-        // ThreadGroup implementation synchronizes on its methods, so by synchronizing here, we can workaround its quirks somewhat
-        group.synchronized {
-          // not tail recursive because of synchronized
-          threadsInGroups(threadGroups(group) ::: tail, group :: accum)
-        }
-      case Nil => accum.flatMap(threads)
-    }
+        accum: List[ThreadGroup]): List[Thread] =
+      toProcess match {
+        case group :: tail =>
+          // ThreadGroup implementation synchronizes on its methods, so by synchronizing here, we can workaround its quirks somewhat
+          group.synchronized {
+            // not tail recursive because of synchronized
+            threadsInGroups(threadGroups(group) ::: tail, group :: accum)
+          }
+        case Nil => accum.flatMap(threads)
+      }
 
     // gets the immediate child ThreadGroups of `group`
     private[this] def threadGroups(group: ThreadGroup): List[ThreadGroup] = {
@@ -405,24 +406,26 @@ private final class TrapExit(delegateManager: SecurityManager)
     * Handles a valid call to `System.exit` by setting the exit code and
     * interrupting remaining threads for the application associated with `t`, if one exists.
     */
-  private[this] def exitApp(t: Thread, status: Int): Unit = getApp(t) match {
-    case None =>
-      System.err.println(
-        s"Could not exit($status): no application associated with $t")
-    case Some(a) =>
-      a.exitCode.set(status)
-      stopAllThreads(a)
-  }
+  private[this] def exitApp(t: Thread, status: Int): Unit =
+    getApp(t) match {
+      case None =>
+        System.err.println(
+          s"Could not exit($status): no application associated with $t")
+      case Some(a) =>
+        a.exitCode.set(status)
+        stopAllThreads(a)
+    }
 
   /** SecurityManager hook to trap calls to `System.exit` to avoid shutting down the whole JVM.*/
-  override def checkExit(status: Int): Unit = if (active) {
-    val t = currentThread
-    val stack = t.getStackTrace
-    if (stack == null || stack.exists(isRealExit)) {
-      exitApp(t, status)
-      throw new TrapExitSecurityException(status)
+  override def checkExit(status: Int): Unit =
+    if (active) {
+      val t = currentThread
+      val stack = t.getStackTrace
+      if (stack == null || stack.exists(isRealExit)) {
+        exitApp(t, status)
+        throw new TrapExitSecurityException(status)
+      }
     }
-  }
 
   /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed.*/
   private def isRealExit(element: StackTraceElement): Boolean =

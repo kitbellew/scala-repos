@@ -29,8 +29,9 @@ private[spark] class SerializableJobConf(@transient var value: JobConf)
       value.write(out)
     }
 
-  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
-    value = new JobConf(false)
-    value.readFields(in)
-  }
+  private def readObject(in: ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      value = new JobConf(false)
+      value.readFields(in)
+    }
 }

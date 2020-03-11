@@ -147,19 +147,22 @@ object JsonParser {
     var root: Option[JValue] = None
 
     // This is a slightly faster way to correct order of fields and arrays than using 'map'.
-    def reverse(v: JValue): JValue = v match {
-      case JObject(l) =>
-        JObject(
-          (l.map { field => field.copy(value = reverse(field.value)) }).reverse)
-      case JArray(l) => JArray(l.map(reverse).reverse)
-      case x         => x
-    }
+    def reverse(v: JValue): JValue =
+      v match {
+        case JObject(l) =>
+          JObject((l.map { field =>
+            field.copy(value = reverse(field.value))
+          }).reverse)
+        case JArray(l) => JArray(l.map(reverse).reverse)
+        case x         => x
+      }
 
     def closeBlock(v: Any) {
-      @inline def toJValue(x: Any) = x match {
-        case json: JValue => json
-        case _            => p.fail("unexpected field " + x)
-      }
+      @inline def toJValue(x: Any) =
+        x match {
+          case json: JValue => json
+          case _            => p.fail("unexpected field " + x)
+        }
 
       vals.peekOption match {
         case Some(JField(name: String, value)) =>
@@ -451,10 +454,11 @@ object JsonParser {
       if (createNew) RecycledSegment(new Array(segmentSize)) else segments.poll
     }
 
-    def release(s: Segment) = s match {
-      case _: RecycledSegment => segments.offer(s)
-      case _                  =>
-    }
+    def release(s: Segment) =
+      s match {
+        case _: RecycledSegment => segments.offer(s)
+        case _                  =>
+      }
   }
 
   sealed trait Segment {

@@ -28,14 +28,15 @@ class TestAsyncInetResolver extends Resolver {
 
   private[this] val pool = FuturePool.unboundedPool
 
-  def bind(spec: String): Var[Addr] = spec match {
-    case HostPort(host, port) =>
-      Var.async[Addr](Addr.Pending) { update =>
-        pool { update() = Addr.Bound(Address(host, port)) }
-        Closable.nop
-      }
+  def bind(spec: String): Var[Addr] =
+    spec match {
+      case HostPort(host, port) =>
+        Var.async[Addr](Addr.Pending) { update =>
+          pool { update() = Addr.Bound(Address(host, port)) }
+          Closable.nop
+        }
 
-    case _ => Var.value(Addr.Failed(spec + " is not a host:port"))
-  }
+      case _ => Var.value(Addr.Failed(spec + " is not a host:port"))
+    }
 
 }

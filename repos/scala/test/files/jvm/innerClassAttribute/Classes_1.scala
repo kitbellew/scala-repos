@@ -191,11 +191,12 @@ class SI_9105 {
     def m: Object = { class B; new B } //        SI_9105            m$1
     val f: Object = { class C; new C } //        SI_9105           null
   }
-  def met = (s: String) => {
-    class D //        SI_9105            met
-    def m: Object = { class E; new E } //        SI_9105            m$1
-    val f: Object = { class F; new F } //        SI_9105            met
-  }
+  def met =
+    (s: String) => {
+      class D //        SI_9105            met
+      def m: Object = { class E; new E } //        SI_9105            m$1
+      val f: Object = { class F; new F } //        SI_9105            met
+    }
 
   def byName(op: => Any) = 0
 
@@ -205,12 +206,13 @@ class SI_9105 {
     val f: Object = { class I; new I } //        SI_9105           null
     ""
   }
-  def bnM = byName {
-    class J //        SI_9105            bnM
-    def m: Object = { class K; new K } //        SI_9105            m$1
-    val f: Object = { class L; new L } //        SI_9105            bnM
-    ""
-  }
+  def bnM =
+    byName {
+      class J //        SI_9105            bnM
+      def m: Object = { class K; new K } //        SI_9105            m$1
+      val f: Object = { class L; new L } //        SI_9105            bnM
+      ""
+    }
 }
 
 trait SI_9124 {
@@ -220,13 +222,15 @@ trait SI_9124 {
     def f1 = 0
   } // nested class, enclosing class SI_9124, no encl meth
 
-  def f = new A {
-    def f2 = 0
-  } // enclosing method is f in the interface SI_9124
+  def f =
+    new A {
+      def f2 = 0
+    } // enclosing method is f in the interface SI_9124
 
-  private def g: Object = new A {
-    def f3 = 0
-  } // only encl class (SI_9124), encl meth can be g in 2.12 because the interface SI_9124 now has the method g
+  private def g: Object =
+    new A {
+      def f3 = 0
+    } // only encl class (SI_9124), encl meth can be g in 2.12 because the interface SI_9124 now has the method g
 
   object O { // member, no encl meth attribute
     new A {

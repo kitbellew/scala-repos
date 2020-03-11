@@ -186,18 +186,19 @@ trait ProdConsAnalyzerImpl {
   }
 
   def ultimateConsumersOfOutputsFrom(
-      insn: AbstractInsnNode): Set[AbstractInsnNode] = insn match {
-    case _: UninitializedLocalProducer => Set.empty
-    case _ =>
-      lazy val next = insn match {
-        case _: ParameterProducer               => methodNode.instructions.getFirst
-        case ExceptionProducer(handlerLabel, _) => handlerLabel
-        case _                                  => insn.getNext
-      }
-      outputValueSlots(insn)
-        .flatMap(slot => ultimateConsumersOfValueAt(next, slot))
-        .toSet
-  }
+      insn: AbstractInsnNode): Set[AbstractInsnNode] =
+    insn match {
+      case _: UninitializedLocalProducer => Set.empty
+      case _ =>
+        lazy val next = insn match {
+          case _: ParameterProducer               => methodNode.instructions.getFirst
+          case ExceptionProducer(handlerLabel, _) => handlerLabel
+          case _                                  => insn.getNext
+        }
+        outputValueSlots(insn)
+          .flatMap(slot => ultimateConsumersOfValueAt(next, slot))
+          .toSet
+    }
 
   private def isCopyOperation(insn: AbstractInsnNode): Boolean = {
     isLoadOrStore(insn) || {
@@ -232,24 +233,27 @@ trait ProdConsAnalyzerImpl {
 
     def stackValue(n: Int) = (frame.peekStack(n), frame.stackTop - n)
 
-    def dupX1Case = (producedIndex(2): @switch) match {
-      case 0 | 2 => stackValue(0)
-      case 1     => stackValue(1)
-    }
+    def dupX1Case =
+      (producedIndex(2): @switch) match {
+        case 0 | 2 => stackValue(0)
+        case 1     => stackValue(1)
+      }
 
     // Form 1 of dup_x2
-    def dupX2Case = (producedIndex(3): @switch) match {
-      case 0 | 3 => stackValue(0)
-      case 1     => stackValue(2)
-      case 2     => stackValue(1)
-    }
+    def dupX2Case =
+      (producedIndex(3): @switch) match {
+        case 0 | 3 => stackValue(0)
+        case 1     => stackValue(2)
+        case 2     => stackValue(1)
+      }
 
     // Form 1 of dup2_x1
-    def dup2X1Case = (producedIndex(3): @switch) match {
-      case 0 | 3 => stackValue(1)
-      case 1 | 4 => stackValue(0)
-      case 2     => stackValue(2)
-    }
+    def dup2X1Case =
+      (producedIndex(3): @switch) match {
+        case 0 | 3 => stackValue(1)
+        case 1 | 4 => stackValue(0)
+        case 2     => stackValue(2)
+      }
 
     if (isLoad(copyOp)) {
       val slot = copyOp.asInstanceOf[VarInsnNode].`var`
@@ -331,22 +335,25 @@ trait ProdConsAnalyzerImpl {
         consumedSlot - (numUsedSlotsAfterCopy - numProduced)
       }
 
-      def dupX1Case = (consumedIndex(3): @switch) match {
-        case 0 => Set(top - 1)
-        case 1 => Set(top - 2, top)
-      }
+      def dupX1Case =
+        (consumedIndex(3): @switch) match {
+          case 0 => Set(top - 1)
+          case 1 => Set(top - 2, top)
+        }
 
-      def dupX2Case = (consumedIndex(4): @switch) match {
-        case 0 => Set(top - 2)
-        case 1 => Set(top - 1)
-        case 2 => Set(top - 3, top)
-      }
+      def dupX2Case =
+        (consumedIndex(4): @switch) match {
+          case 0 => Set(top - 2)
+          case 1 => Set(top - 1)
+          case 2 => Set(top - 3, top)
+        }
 
-      def dup2X1Case = (consumedIndex(5): @switch) match {
-        case 0 => Set(top - 2)
-        case 1 => Set(top - 4, top - 1)
-        case 2 => Set(top - 3, top)
-      }
+      def dup2X1Case =
+        (consumedIndex(5): @switch) match {
+          case 0 => Set(top - 2)
+          case 1 => Set(top - 4, top - 1)
+          case 2 => Set(top - 3, top)
+        }
 
       if (isLoad(copyOp)) Set(top)
       else
@@ -421,23 +428,24 @@ trait ProdConsAnalyzerImpl {
   }
 
   /** Returns the frame slots holding the values produced by executing `insn`. */
-  private def outputValueSlots(insn: AbstractInsnNode): Seq[Int] = insn match {
-    case ParameterProducer(local)          => Seq(local)
-    case UninitializedLocalProducer(local) => Seq(local)
-    case ExceptionProducer(_, frame)       => Seq(frame.stackTop)
-    case _ =>
-      if (insn.getOpcode == -1) return Seq.empty
-      if (isStore(insn)) { Seq(insn.asInstanceOf[VarInsnNode].`var`) }
-      else if (insn.getOpcode == IINC) {
-        Seq(insn.asInstanceOf[IincInsnNode].`var`)
-      } else {
-        val frame = frameAt(insn)
-        val prodCons = InstructionStackEffect.forAsmAnalysis(insn, frame)
-        val nextFrame = frameAt(insn.getNext)
-        val stackSize = nextFrame.getLocals + nextFrame.getStackSize
-        (stackSize - InstructionStackEffect.prod(prodCons)) until stackSize
-      }
-  }
+  private def outputValueSlots(insn: AbstractInsnNode): Seq[Int] =
+    insn match {
+      case ParameterProducer(local)          => Seq(local)
+      case UninitializedLocalProducer(local) => Seq(local)
+      case ExceptionProducer(_, frame)       => Seq(frame.stackTop)
+      case _ =>
+        if (insn.getOpcode == -1) return Seq.empty
+        if (isStore(insn)) { Seq(insn.asInstanceOf[VarInsnNode].`var`) }
+        else if (insn.getOpcode == IINC) {
+          Seq(insn.asInstanceOf[IincInsnNode].`var`)
+        } else {
+          val frame = frameAt(insn)
+          val prodCons = InstructionStackEffect.forAsmAnalysis(insn, frame)
+          val nextFrame = frameAt(insn.getNext)
+          val stackSize = nextFrame.getLocals + nextFrame.getStackSize
+          (stackSize - InstructionStackEffect.prod(prodCons)) until stackSize
+        }
+    }
 
   /** For each instruction, a set of potential consumers of the produced values. */
   private lazy val _consumersOfOutputsFrom

@@ -103,13 +103,14 @@ trait StringHelpers {
     * @return the CamelCased string
     */
   def camelify(name: String): String = {
-    def loop(x: List[Char]): List[Char] = (x: @unchecked) match {
-      case '_' :: '_' :: rest => loop('_' :: rest)
-      case '_' :: c :: rest   => Character.toUpperCase(c) :: loop(rest)
-      case '_' :: Nil         => Nil
-      case c :: rest          => c :: loop(rest)
-      case Nil                => Nil
-    }
+    def loop(x: List[Char]): List[Char] =
+      (x: @unchecked) match {
+        case '_' :: '_' :: rest => loop('_' :: rest)
+        case '_' :: c :: rest   => Character.toUpperCase(c) :: loop(rest)
+        case '_' :: Nil         => Nil
+        case c :: rest          => c :: loop(rest)
+        case Nil                => Nil
+      }
     if (name == null) "" else loop('_' :: name.toList).mkString
   }
 
@@ -361,13 +362,14 @@ trait StringHelpers {
     else {
       val toDo = what.toList.reverse
 
-      def commaIt(in: List[Char]): List[Char] = in match {
-        case Nil                   => in
-        case x :: Nil              => in
-        case x1 :: x2 :: Nil       => in
-        case x1 :: x2 :: x3 :: Nil => in
-        case x1 :: x2 :: x3 :: xs  => x1 :: x2 :: x3 :: ',' :: commaIt(xs)
-      }
+      def commaIt(in: List[Char]): List[Char] =
+        in match {
+          case Nil                   => in
+          case x :: Nil              => in
+          case x1 :: x2 :: Nil       => in
+          case x1 :: x2 :: x3 :: Nil => in
+          case x1 :: x2 :: x3 :: xs  => x1 :: x2 :: x3 :: ',' :: commaIt(xs)
+        }
       commaIt(toDo).reverse.mkString("")
     }
   }
@@ -391,10 +393,11 @@ trait StringHelpers {
     *
     * @return Full(s.trim) if s is not null or blank, Empty otherwise
     */
-  def emptyForBlank(s: String) = blankForNull(s).trim match {
-    case "" => Empty
-    case s  => Full(s)
-  }
+  def emptyForBlank(s: String) =
+    blankForNull(s).trim match {
+      case "" => Empty
+      case s  => Full(s)
+    }
 }
 
 /**

@@ -50,8 +50,9 @@ class TransitionSpec
       def interpolate(p1: Double) {}
     }) {}
 
-  override def getJavaClassInstance = new jfxa.Transition() {
-    def interpolate(p1: Double) {}
-  }
+  override def getJavaClassInstance =
+    new jfxa.Transition() {
+      def interpolate(p1: Double) {}
+    }
 
 }

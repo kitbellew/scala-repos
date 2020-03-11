@@ -100,11 +100,14 @@ object Plugin {
     */
   private def loadDescriptionFromJar(jarp: Path): Try[PluginDescription] = {
     // XXX Return to this once we have more ARM support
-    def read(is: Option[InputStream]) = is match {
-      case None =>
-        throw new PluginLoadException(jarp.path, s"Missing $PluginXML in $jarp")
-      case Some(is) => PluginDescription.fromXML(is)
-    }
+    def read(is: Option[InputStream]) =
+      is match {
+        case None =>
+          throw new PluginLoadException(
+            jarp.path,
+            s"Missing $PluginXML in $jarp")
+        case Some(is) => PluginDescription.fromXML(is)
+      }
     Try(new Jar(jarp.jfile).withEntryStream(PluginXML)(read))
   }
 
@@ -160,14 +163,17 @@ object Plugin {
     // scan jar paths for plugins, taking the first plugin you find.
     // a path element can be either a plugin.jar or an exploded dir.
     def findDescriptor(ps: List[Path]) = {
-      def loop(qs: List[Path]): Try[PluginDescription] = qs match {
-        case Nil => Failure(new MissingPluginException(ps))
-        case p :: rest =>
-          if (p.isDirectory)
-            loadDescriptionFromFile(p.toDirectory / PluginXML) orElse loop(rest)
-          else if (p.isFile) loadDescriptionFromJar(p.toFile) orElse loop(rest)
-          else loop(rest)
-      }
+      def loop(qs: List[Path]): Try[PluginDescription] =
+        qs match {
+          case Nil => Failure(new MissingPluginException(ps))
+          case p :: rest =>
+            if (p.isDirectory)
+              loadDescriptionFromFile(p.toDirectory / PluginXML) orElse loop(
+                rest)
+            else if (p.isFile)
+              loadDescriptionFromJar(p.toFile) orElse loop(rest)
+            else loop(rest)
+        }
       loop(ps)
     }
     val fromPaths: PDResults = paths map (p => (p, findDescriptor(p))) map {

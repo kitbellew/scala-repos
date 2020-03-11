@@ -36,15 +36,16 @@ case class Assessible(analysed: Analysed) {
   def suspiciousHoldAlert(color: Color): Boolean =
     game.player(color).hasSuspiciousHoldAlert
 
-  def mkFlags(color: Color): PlayerFlags = PlayerFlags(
-    suspiciousErrorRate(color),
-    alwaysHasAdvantage(color),
-    highBlurRate(color),
-    moderateBlurRate(color),
-    consistentMoveTimes(Pov(game, color)),
-    noFastMoves(Pov(game, color)),
-    suspiciousHoldAlert(color)
-  )
+  def mkFlags(color: Color): PlayerFlags =
+    PlayerFlags(
+      suspiciousErrorRate(color),
+      alwaysHasAdvantage(color),
+      highBlurRate(color),
+      moderateBlurRate(color),
+      consistentMoveTimes(Pov(game, color)),
+      noFastMoves(Pov(game, color)),
+      suspiciousHoldAlert(color)
+    )
 
   private val T = true
   private val F = false

@@ -54,12 +54,13 @@ case class SampleClassG(a: java.util.Date)
 case class SampleClassFail(a: Option[Option[Int]])
 
 object MacroProperties extends Properties("TypeDescriptor.roundTrip") {
-  def roundTrip[T: Arbitrary: TypeDescriptor]: Prop = forAll { t: T =>
-    val setter = implicitly[TypeDescriptor[T]].setter
-    val converter = implicitly[TypeDescriptor[T]].converter
-    val fields = implicitly[TypeDescriptor[T]].fields
-    converter(new TupleEntry(fields, setter(t))) == t
-  }
+  def roundTrip[T: Arbitrary: TypeDescriptor]: Prop =
+    forAll { t: T =>
+      val setter = implicitly[TypeDescriptor[T]].setter
+      val converter = implicitly[TypeDescriptor[T]].converter
+      val fields = implicitly[TypeDescriptor[T]].fields
+      converter(new TupleEntry(fields, setter(t))) == t
+    }
 
   def propertyFor[T: TypeTag: Arbitrary: TypeDescriptor]: Unit = {
     property(typeTag[T].tpe.toString) = roundTrip[T]

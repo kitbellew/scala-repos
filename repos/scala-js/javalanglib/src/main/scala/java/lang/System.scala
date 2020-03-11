@@ -337,11 +337,12 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     * line with continuation symbol at the end and schedule a line continuation
     * symbol for the new line if the buffer is flushed.
     */
-  override def flush(): Unit = if (!flushed) {
-    doWriteLine(buffer + LineContEnd)
-    buffer = LineContStart
-    flushed = true
-  }
+  override def flush(): Unit =
+    if (!flushed) {
+      doWriteLine(buffer + LineContEnd)
+      buffer = LineContStart
+      flushed = true
+    }
 
   override def close(): Unit = ()
 

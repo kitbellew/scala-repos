@@ -64,9 +64,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     type Key = Int
 
     @volatile private var slices = slices0
-    private[InMemoryVFSModule] def append(slice: Slice) = synchronized {
-      slices = slices :+ slice
-    }
+    private[InMemoryVFSModule] def append(slice: Slice) =
+      synchronized { slices = slices :+ slice }
 
     def structure(implicit M: Monad[M]): M[Set[ColumnRef]] =
       M.point(slices.flatMap(_.columns.keySet).toSet)
@@ -89,18 +88,18 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       extends ProjectionResource {
     val mimeType = FileContent.XQuirrelData
 
-    def append(data: NIHDB.Batch): IO[PrecogUnit] = IO {
-      proj.append(Slice.fromJValues(data.values.toStream))
-    }
+    def append(data: NIHDB.Batch): IO[PrecogUnit] =
+      IO { proj.append(Slice.fromJValues(data.values.toStream)) }
 
     def recordCount(implicit M: Monad[M]): M[Long] = M point { proj.length }
     def projection(implicit M: Monad[M]): M[Projection] = M point { proj }
-    def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) = OptionT {
-      M.point {
-        table.ColumnarTableModule
-          .byteStream(proj.getBlockStream(None), Some(mimeType))
+    def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) =
+      OptionT {
+        M.point {
+          table.ColumnarTableModule
+            .byteStream(proj.getBlockStream(None), Some(mimeType))
+        }
       }
-    }
   }
 
   case class InMemoryBlobResource(
@@ -117,9 +116,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
           .option(new String(data, "UTF-8"))
       })
 
-    def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) = OptionT {
-      M.point { Some(data :: StreamT.empty[M, Array[Byte]]) }
-    }
+    def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) =
+      OptionT { M.point { Some(data :: StreamT.empty[M, Array[Byte]]) } }
   }
 
   class VFSCompanion extends VFSCompanionLike {
@@ -405,13 +403,14 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       }
     }
 
-    def currentVersion(path: Path): M[Option[VersionEntry]] = M point {
-      data.get((path, Version.Current)) map {
-        case BinaryRecord(resource, id) =>
-          VersionEntry(id, PathData.BLOB(resource.mimeType), clock.instant)
-        case JsonRecord(_, id) =>
-          VersionEntry(id, PathData.NIHDB, clock.instant)
+    def currentVersion(path: Path): M[Option[VersionEntry]] =
+      M point {
+        data.get((path, Version.Current)) map {
+          case BinaryRecord(resource, id) =>
+            VersionEntry(id, PathData.BLOB(resource.mimeType), clock.instant)
+          case JsonRecord(_, id) =>
+            VersionEntry(id, PathData.NIHDB, clock.instant)
+        }
       }
-    }
   }
 }

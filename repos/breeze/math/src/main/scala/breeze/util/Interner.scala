@@ -33,9 +33,8 @@ import java.io.{ObjectInputStream, ObjectOutputStream};
 class Interner[T] extends (T => T) with Serializable {
   override def apply(t: T) = intern(t);
 
-  def intern(t: T): T = synchronized {
-    inner.getOrElseUpdate(t, new WeakReference[T](t)).get;
-  }
+  def intern(t: T): T =
+    synchronized { inner.getOrElseUpdate(t, new WeakReference[T](t)).get; }
 
   def clear() = inner.clear();
   def size = inner.size;

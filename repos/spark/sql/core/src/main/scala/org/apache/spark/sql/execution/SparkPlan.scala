@@ -127,9 +127,8 @@ abstract class SparkPlan
     * Returns the result of this query as a broadcast variable by delegating to doBroadcast after
     * preparations. Concrete implementations of SparkPlan should override doBroadcast.
     */
-  final def executeBroadcast[T](): broadcast.Broadcast[T] = executeQuery {
-    doExecuteBroadcast()
-  }
+  final def executeBroadcast[T](): broadcast.Broadcast[T] =
+    executeQuery { doExecuteBroadcast() }
 
   /**
     * Execute a query after preparing the query and adding query plan information to created RDDs

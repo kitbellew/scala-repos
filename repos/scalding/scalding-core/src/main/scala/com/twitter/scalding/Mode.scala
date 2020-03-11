@@ -61,10 +61,11 @@ object Mode {
   def putMode(mode: Mode, args: Args): Args = new ArgsWithMode(args.m, mode)
 
   /** Get a Mode if this Args was the result of a putMode */
-  def getMode(args: Args): Option[Mode] = args match {
-    case withMode: ArgsWithMode => Some(withMode.mode)
-    case _                      => None
-  }
+  def getMode(args: Args): Option[Mode] =
+    args match {
+      case withMode: ArgsWithMode => Some(withMode.mode)
+      case _                      => None
+    }
 
   val CascadingFlowConnectorClassKey = "cascading.flow.connector.class"
   val CascadingFlowProcessClassKey = "cascading.flow.process.class"

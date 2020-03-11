@@ -37,11 +37,12 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       val stats = cd.impl.body
       val clazz = cd.symbol
 
-      def checkableForInit(sym: Symbol) = (
-        (sym ne null)
-          && (sym.isVal || sym.isVar)
-          && !(sym hasFlag LAZY | DEFERRED | SYNTHETIC)
-      )
+      def checkableForInit(sym: Symbol) =
+        (
+          (sym ne null)
+            && (sym.isVal || sym.isVar)
+            && !(sym hasFlag LAZY | DEFERRED | SYNTHETIC)
+        )
       val uninitializedVals = mutable.Set[Symbol](
         stats collect {
           case vd: ValDef if checkableForInit(vd.symbol) =>
@@ -403,15 +404,16 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       def rewriteArrayUpdate(tree: Tree): Tree = {
         val arrayUpdateMethod = currentRun.runDefinitions.arrayUpdateMethod
         val adapter = new Transformer {
-          override def transform(t: Tree): Tree = t match {
-            case Apply(fun @ Select(receiver, method), List(xs, idx, v))
-                if fun.symbol == arrayUpdateMethod =>
-              localTyper.typed(
-                Apply(
-                  gen.mkAttributedSelect(xs, arrayUpdateMethod),
-                  List(idx, v)))
-            case _ => super.transform(t)
-          }
+          override def transform(t: Tree): Tree =
+            t match {
+              case Apply(fun @ Select(receiver, method), List(xs, idx, v))
+                  if fun.symbol == arrayUpdateMethod =>
+                localTyper.typed(
+                  Apply(
+                    gen.mkAttributedSelect(xs, arrayUpdateMethod),
+                    List(idx, v)))
+              case _ => super.transform(t)
+            }
         }
         adapter.transform(tree)
       }
@@ -565,11 +567,12 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         sym.isParamAccessor && sym.owner == clazz
 
       // Terminology: a stationary location is never written after being read.
-      private def isStationaryParamRef(sym: Symbol) = (
-        isParamRef(sym) &&
-          !(sym.isGetter && sym.accessed.isVariable) &&
-          !sym.isSetter
-      )
+      private def isStationaryParamRef(sym: Symbol) =
+        (
+          isParamRef(sym) &&
+            !(sym.isGetter && sym.accessed.isVariable) &&
+            !sym.isSetter
+        )
 
       private def possiblySpecialized(s: Symbol) =
         specializeTypes.specializedTypeVars(s).nonEmpty
@@ -586,30 +589,33 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         !isDelayedInitSubclass && isStationaryParamRef(
           sym) && !possiblySpecialized(sym)
 
-      override def transform(tree: Tree): Tree = tree match {
-        case Apply(Select(This(_), _), List()) =>
-          // references to parameter accessor methods of own class become references to parameters
-          // outer accessors become references to $outer parameter
-          if (clazz.isTrait) super.transform(tree)
-          else if (canBeSupplanted(tree.symbol))
-            gen.mkAttributedIdent(
-              parameter(tree.symbol.accessed)) setPos tree.pos
-          else if (tree.symbol.outerSource == clazz)
-            gen.mkAttributedIdent(parameterNamed(nme.OUTER)) setPos tree.pos
-          else super.transform(tree)
+      override def transform(tree: Tree): Tree =
+        tree match {
+          case Apply(Select(This(_), _), List()) =>
+            // references to parameter accessor methods of own class become references to parameters
+            // outer accessors become references to $outer parameter
+            if (clazz.isTrait) super.transform(tree)
+            else if (canBeSupplanted(tree.symbol))
+              gen.mkAttributedIdent(
+                parameter(tree.symbol.accessed)) setPos tree.pos
+            else if (tree.symbol.outerSource == clazz)
+              gen.mkAttributedIdent(parameterNamed(nme.OUTER)) setPos tree.pos
+            else super.transform(tree)
 
-        case Select(This(_), _) if canBeSupplanted(tree.symbol) =>
-          // references to parameter accessor field of own class become references to parameters
-          gen.mkAttributedIdent(parameter(tree.symbol)) setPos tree.pos
+          case Select(This(_), _) if canBeSupplanted(tree.symbol) =>
+            // references to parameter accessor field of own class become references to parameters
+            gen.mkAttributedIdent(parameter(tree.symbol)) setPos tree.pos
 
-        case Select(_, _)
-            if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
-          if (possiblySpecialized(tree.symbol)) { usesSpecializedField = true }
-          super.transform(tree)
+          case Select(_, _)
+              if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
+            if (possiblySpecialized(tree.symbol)) {
+              usesSpecializedField = true
+            }
+            super.transform(tree)
 
-        case _ =>
-          super.transform(tree)
-      }
+          case _ =>
+            super.transform(tree)
+        }
 
       // Move tree into constructor, take care of changing owner from `oldOwner` to `newOwner` (the primary constructor symbol)
       def apply(oldOwner: Symbol, newOwner: Symbol)(tree: Tree) =
@@ -785,11 +791,12 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
       // Return a pair consisting of (all statements up to and including superclass and trait constr calls, rest)
       def splitAtSuper(stats: List[Tree]) = {
-        def isConstr(tree: Tree): Boolean = tree match {
-          case Block(_, expr) =>
-            isConstr(expr) // SI-6481 account for named argument blocks
-          case _ => (tree.symbol ne null) && tree.symbol.isConstructor
-        }
+        def isConstr(tree: Tree): Boolean =
+          tree match {
+            case Block(_, expr) =>
+              isConstr(expr) // SI-6481 account for named argument blocks
+            case _ => (tree.symbol ne null) && tree.symbol.isConstructor
+          }
         val (pre, rest0) = stats span (!isConstr(_))
         val (supercalls, rest) = rest0 span (isConstr(_))
         (pre ::: supercalls, rest)

@@ -109,12 +109,13 @@ private[impl] class ReviveOffersActor(
     }
   }
 
-  override def receive: Receive = LoggingReceive {
-    Seq(
-      receiveOffersWantedNotifications,
-      receiveReviveOffersEvents
-    ).reduceLeft[Receive](_.orElse[Any, Unit](_))
-  }
+  override def receive: Receive =
+    LoggingReceive {
+      Seq(
+        receiveOffersWantedNotifications,
+        receiveReviveOffersEvents
+      ).reduceLeft[Receive](_.orElse[Any, Unit](_))
+    }
 
   private[this] def receiveOffersWantedNotifications: Receive = {
     case OffersWanted(true) =>

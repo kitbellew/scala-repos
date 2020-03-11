@@ -247,17 +247,18 @@ final class JsonView(
       .noNull
   }
 
-  private def sheetJson(sheet: ScoreSheet) = sheet match {
-    case s: arena.ScoringSystem.Sheet =>
-      val o = Json.obj(
-        "scores" -> s.scores.reverse.map { score =>
-          if (score.flag == arena.ScoringSystem.Normal) JsNumber(score.value)
-          else Json.arr(score.value, score.flag.id)
-        },
-        "total" -> s.total
-      )
-      s.onFire.fold(o + ("fire" -> JsBoolean(true)), o)
-  }
+  private def sheetJson(sheet: ScoreSheet) =
+    sheet match {
+      case s: arena.ScoringSystem.Sheet =>
+        val o = Json.obj(
+          "scores" -> s.scores.reverse.map { score =>
+            if (score.flag == arena.ScoringSystem.Normal) JsNumber(score.value)
+            else Json.arr(score.value, score.flag.id)
+          },
+          "total" -> s.total
+        )
+        s.onFire.fold(o + ("fire" -> JsBoolean(true)), o)
+    }
 
   private def playerJson(sheets: Map[String, ScoreSheet], tour: Tournament)(
       rankedPlayer: RankedPlayer): JsObject =

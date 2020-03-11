@@ -125,10 +125,11 @@ object ParserSettings extends SettingsCompanion[ParserSettings] {
     case object RFC6265 extends CookieParsingMode
     case object Raw extends CookieParsingMode
 
-    def apply(mode: String): CookieParsingMode = mode.toRootLowerCase match {
-      case "rfc6265" ⇒ RFC6265
-      case "raw" ⇒ Raw
-    }
+    def apply(mode: String): CookieParsingMode =
+      mode.toRootLowerCase match {
+        case "rfc6265" ⇒ RFC6265
+        case "raw" ⇒ Raw
+      }
   }
 
   trait ErrorLoggingVerbosity

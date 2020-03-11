@@ -7,9 +7,8 @@ trait SB[A] extends Buffer[A] {
   abstract override def insertAll(n: Int, iter: Traversable[A]): Unit =
     synchronized { super.insertAll(n, iter) }
 
-  abstract override def update(n: Int, newelem: A): Unit = synchronized {
-    super.update(n, newelem)
-  }
+  abstract override def update(n: Int, newelem: A): Unit =
+    synchronized { super.update(n, newelem) }
 }
 
 object Test extends App {

@@ -16,8 +16,9 @@ class Application @Inject() (env: Environment, configuration: Configuration)
 
   def config = Action { Ok(configuration.underlying.getString("some.config")) }
 
-  def count = Action {
-    val num = env.resource("application.conf").toSeq.size
-    Ok(num.toString)
-  }
+  def count =
+    Action {
+      val num = env.resource("application.conf").toSeq.size
+      Ok(num.toString)
+    }
 }

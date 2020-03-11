@@ -45,20 +45,22 @@ private[memory] abstract class MemoryPool(lock: Object) {
   /**
     * Expands the pool by `delta` bytes.
     */
-  final def incrementPoolSize(delta: Long): Unit = lock.synchronized {
-    require(delta >= 0)
-    _poolSize += delta
-  }
+  final def incrementPoolSize(delta: Long): Unit =
+    lock.synchronized {
+      require(delta >= 0)
+      _poolSize += delta
+    }
 
   /**
     * Shrinks the pool by `delta` bytes.
     */
-  final def decrementPoolSize(delta: Long): Unit = lock.synchronized {
-    require(delta >= 0)
-    require(delta <= _poolSize)
-    require(_poolSize - delta >= memoryUsed)
-    _poolSize -= delta
-  }
+  final def decrementPoolSize(delta: Long): Unit =
+    lock.synchronized {
+      require(delta >= 0)
+      require(delta <= _poolSize)
+      require(_poolSize - delta >= memoryUsed)
+      _poolSize -= delta
+    }
 
   /**
     * Returns the amount of used memory in this pool (in bytes).

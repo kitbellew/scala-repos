@@ -639,10 +639,11 @@ private[transport] class ProtocolStateActor(
     }
   }
 
-  private def safeClassName(obj: AnyRef): String = obj match {
-    case null ⇒ "null"
-    case _ ⇒ obj.getClass.getName
-  }
+  private def safeClassName(obj: AnyRef): String =
+    obj match {
+      case null ⇒ "null"
+      case _ ⇒ obj.getClass.getName
+    }
 
   override def postStop(): Unit = {
     cancelTimer("heartbeat-timer")

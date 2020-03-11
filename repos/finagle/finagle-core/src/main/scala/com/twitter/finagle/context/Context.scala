@@ -130,10 +130,11 @@ trait Context {
 
   private[this] val local = new Local[Env]
 
-  private[finagle] def env: Env = local() match {
-    case Some(env) => env
-    case None      => Empty
-  }
+  private[finagle] def env: Env =
+    local() match {
+      case Some(env) => env
+      case None      => Empty
+    }
 
   /**
     * Retrieve the current definition of a key.
@@ -352,9 +353,10 @@ final class MarshalledContext extends Context {
 
     def build: Env = env
 
-    private[this] def copy(buf: Buf): Buf = buf match {
-      case ChannelBufferBuf(cb) => Buf.ByteBuffer.Shared(cb.toByteBuffer)
-      case _                    => buf
-    }
+    private[this] def copy(buf: Buf): Buf =
+      buf match {
+        case ChannelBufferBuf(cb) => Buf.ByteBuffer.Shared(cb.toByteBuffer)
+        case _                    => buf
+      }
   }
 }

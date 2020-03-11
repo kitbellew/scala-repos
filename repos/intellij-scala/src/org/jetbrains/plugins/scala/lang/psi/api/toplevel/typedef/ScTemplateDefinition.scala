@@ -350,10 +350,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     }
   }
 
-  def isScriptFileClass = getContainingFile match {
-    case file: ScalaFile => file.isScriptFile(false)
-    case _               => false
-  }
+  def isScriptFileClass =
+    getContainingFile match {
+      case file: ScalaFile => file.isScriptFile(false)
+      case _               => false
+    }
 
   def processDeclarations(
       processor: PsiScopeProcessor,

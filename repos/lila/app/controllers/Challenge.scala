@@ -18,9 +18,10 @@ object Challenge extends LilaController {
 
   private def env = Env.challenge
 
-  def all = Auth { implicit ctx => me =>
-    env.api allFor me.id map { all => Ok(env.jsonView(all)) as JSON }
-  }
+  def all =
+    Auth { implicit ctx => me =>
+      env.api allFor me.id map { all => Ok(env.jsonView(all)) as JSON }
+    }
 
   def show(id: String) = Open { implicit ctx => showId(id) }
 
@@ -58,22 +59,24 @@ object Challenge extends LilaController {
   private def isForMe(challenge: ChallengeModel)(implicit ctx: Context) =
     challenge.destUserId.fold(true)(ctx.userId.contains)
 
-  def accept(id: String) = Open { implicit ctx =>
-    OptionFuResult(env.api byId id) { c =>
-      isForMe(c) ?? env.api.accept(c, ctx.me).flatMap {
-        case Some(pov) =>
-          negotiate(
-            html = Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
-            api = apiVersion =>
-              Env.api.roundApi.player(pov, apiVersion) map { Ok(_) }
-          ) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
-        case None =>
-          negotiate(
-            html = Redirect(routes.Round.watcher(c.id, "white")).fuccess,
-            api = _ => notFoundJson("Someone else accepted the challenge"))
+  def accept(id: String) =
+    Open { implicit ctx =>
+      OptionFuResult(env.api byId id) { c =>
+        isForMe(c) ?? env.api.accept(c, ctx.me).flatMap {
+          case Some(pov) =>
+            negotiate(
+              html =
+                Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
+              api = apiVersion =>
+                Env.api.roundApi.player(pov, apiVersion) map { Ok(_) }
+            ) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
+          case None =>
+            negotiate(
+              html = Redirect(routes.Round.watcher(c.id, "white")).fuccess,
+              api = _ => notFoundJson("Someone else accepted the challenge"))
+        }
       }
     }
-  }
 
   private def withChallengeAnonCookie(
       cond: Boolean,
@@ -92,63 +95,68 @@ object Challenge extends LilaController {
       }
     } map { cookieOption => cookieOption.fold(res) { res.withCookies(_) } }
 
-  def decline(id: String) = Auth { implicit ctx => me =>
-    OptionFuResult(env.api byId id) { c =>
-      if (isForMe(c)) env.api decline c else notFound
+  def decline(id: String) =
+    Auth { implicit ctx => me =>
+      OptionFuResult(env.api byId id) { c =>
+        if (isForMe(c)) env.api decline c else notFound
+      }
     }
-  }
 
-  def cancel(id: String) = Open { implicit ctx =>
-    OptionFuResult(env.api byId id) { c =>
-      if (isMine(c)) env.api cancel c else notFound
+  def cancel(id: String) =
+    Open { implicit ctx =>
+      OptionFuResult(env.api byId id) { c =>
+        if (isMine(c)) env.api cancel c else notFound
+      }
     }
-  }
 
-  def rematchOf(gameId: String) = Auth { implicit ctx => me =>
-    OptionFuResult(GameRepo game gameId) { g =>
-      Pov
-        .opponentOfUserId(g, me.id)
-        .flatMap(_.userId) ?? UserRepo.byId flatMap {
-        _ ?? { opponent =>
-          restriction(opponent) flatMap {
-            case Some(r) =>
-              BadRequest(
-                jsonError(r.replace("{{user}}", opponent.username))).fuccess
-            case _ =>
-              env.api.rematchOf(g, me) map {
-                _.fold(
-                  Ok,
-                  BadRequest(jsonError("Sorry, couldn't create the rematch.")))
-              }
+  def rematchOf(gameId: String) =
+    Auth { implicit ctx => me =>
+      OptionFuResult(GameRepo game gameId) { g =>
+        Pov
+          .opponentOfUserId(g, me.id)
+          .flatMap(_.userId) ?? UserRepo.byId flatMap {
+          _ ?? { opponent =>
+            restriction(opponent) flatMap {
+              case Some(r) =>
+                BadRequest(
+                  jsonError(r.replace("{{user}}", opponent.username))).fuccess
+              case _ =>
+                env.api.rematchOf(g, me) map {
+                  _.fold(
+                    Ok,
+                    BadRequest(
+                      jsonError("Sorry, couldn't create the rematch.")))
+                }
+            }
           }
         }
       }
     }
-  }
 
   def restriction(user: lila.user.User)(
-      implicit ctx: Context): Fu[Option[String]] = ctx.me match {
-    case None => fuccess("Only registered players can send challenges.".some)
-    case Some(me) =>
-      Env.relation.api.fetchBlocks(user.id, me.id) flatMap {
-        case true =>
-          fuccess(s"{{user}} doesn't accept challenges from you.".some)
-        case false =>
-          Env.pref.api getPref user zip Env.relation.api
-            .fetchFollows(user.id, me.id) map {
-            case (pref, follow) =>
-              lila.pref.Pref.Challenge.block(
-                me,
-                user,
-                pref.challenge,
-                follow,
-                fromCheat = me.engine && !user.engine)
-          }
-      }
-  }
+      implicit ctx: Context): Fu[Option[String]] =
+    ctx.me match {
+      case None => fuccess("Only registered players can send challenges.".some)
+      case Some(me) =>
+        Env.relation.api.fetchBlocks(user.id, me.id) flatMap {
+          case true =>
+            fuccess(s"{{user}} doesn't accept challenges from you.".some)
+          case false =>
+            Env.pref.api getPref user zip Env.relation.api
+              .fetchFollows(user.id, me.id) map {
+              case (pref, follow) =>
+                lila.pref.Pref.Challenge.block(
+                  me,
+                  user,
+                  pref.challenge,
+                  follow,
+                  fromCheat = me.engine && !user.engine)
+            }
+        }
+    }
 
-  def websocket(id: String, apiVersion: Int) = SocketOption[JsValue] {
-    implicit ctx =>
+  def websocket(id: String, apiVersion: Int) =
+    SocketOption[JsValue] { implicit ctx =>
       env.api byId id flatMap {
         _ ?? { c =>
           get("sri") ?? { uid =>
@@ -156,5 +164,5 @@ object Challenge extends LilaController {
           }
         }
       }
-  }
+    }
 }

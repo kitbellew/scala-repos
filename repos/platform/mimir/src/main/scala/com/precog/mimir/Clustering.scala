@@ -145,10 +145,11 @@ trait KMediansCoreSetClustering {
       CoreSetTree(cs, k)
     }
 
-    implicit def CoreSetMonoid: Monoid[CoreSetTree] = new Monoid[CoreSetTree] {
-      def zero = CoreSetTree.empty
-      def append(c1: CoreSetTree, c2: => CoreSetTree) = c1 ++ c2
-    }
+    implicit def CoreSetMonoid: Monoid[CoreSetTree] =
+      new Monoid[CoreSetTree] {
+        def zero = CoreSetTree.empty
+        def append(c1: CoreSetTree, c2: => CoreSetTree) = c1 ++ c2
+      }
   }
 
   def weightArray(xs: Array[Double], ws: Array[Long]) {
@@ -536,19 +537,20 @@ trait KMediansCoreSetClustering {
       hash
     }
 
-    override def equals(that: Any): Boolean = that match {
-      case GridPoint(
-            thatPoint
-          ) => //Eq[Array[Double]].eqv(this.point, thatPoint)
-        if (this.point.length != thatPoint.length) return false
-        var i = 0
-        while (i < this.point.length) {
-          if (this.point(i) != thatPoint(i)) return false
-          i += 1
-        }
-        true
-      case _ => false
-    }
+    override def equals(that: Any): Boolean =
+      that match {
+        case GridPoint(
+              thatPoint
+            ) => //Eq[Array[Double]].eqv(this.point, thatPoint)
+          if (this.point.length != thatPoint.length) return false
+          var i = 0
+          while (i < this.point.length) {
+            if (this.point(i) != thatPoint(i)) return false
+            i += 1
+          }
+          true
+        case _ => false
+      }
   }
 }
 
@@ -574,43 +576,46 @@ trait ClusteringLibModule[M[+_]]
       type KS = List[Int]
       val epsilon = 0.1
 
-      implicit def monoidKS = new Monoid[KS] {
-        def zero: KS = List.empty[Int]
-        def append(ks1: KS, ks2: => KS) = ks1 ++ ks2
-      }
-
-      def reducerKS: CReducer[KS] = new CReducer[KS] {
-        def reduce(schema: CSchema, range: Range): KS = {
-          val columns = schema.columns(JObjectFixedT(Map("value" -> JNumberT)))
-          val cols: List[Int] = (columns flatMap {
-            case lc: LongColumn =>
-              range collect {
-                case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
-              }
-
-            case dc: DoubleColumn =>
-              range flatMap { i =>
-                if (dc.isDefinedAt(i)) {
-                  val n = dc(i)
-                  if (n.isValidInt && n > 0) { Some(n.toInt) }
-                  else { None }
-                } else { None }
-              }
-
-            case nc: NumColumn =>
-              range flatMap { i =>
-                if (nc.isDefinedAt(i)) {
-                  val n = nc(i)
-                  if (n.isValidInt && n > 0) { Some(n.toInt) }
-                  else { None }
-                } else { None }
-              }
-
-            case _ => List.empty[Int]
-          }).toList
-          cols
+      implicit def monoidKS =
+        new Monoid[KS] {
+          def zero: KS = List.empty[Int]
+          def append(ks1: KS, ks2: => KS) = ks1 ++ ks2
         }
-      }
+
+      def reducerKS: CReducer[KS] =
+        new CReducer[KS] {
+          def reduce(schema: CSchema, range: Range): KS = {
+            val columns =
+              schema.columns(JObjectFixedT(Map("value" -> JNumberT)))
+            val cols: List[Int] = (columns flatMap {
+              case lc: LongColumn =>
+                range collect {
+                  case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
+                }
+
+              case dc: DoubleColumn =>
+                range flatMap { i =>
+                  if (dc.isDefinedAt(i)) {
+                    val n = dc(i)
+                    if (n.isValidInt && n > 0) { Some(n.toInt) }
+                    else { None }
+                  } else { None }
+                }
+
+              case nc: NumColumn =>
+                range flatMap { i =>
+                  if (nc.isDefinedAt(i)) {
+                    val n = nc(i)
+                    if (n.isValidInt && n > 0) { Some(n.toInt) }
+                    else { None }
+                  } else { None }
+                }
+
+              case _ => List.empty[Int]
+            }).toList
+            cols
+          }
+        }
 
       def reducerFeatures(k: Int): CReducer[CoreSetTree] =
         new CReducer[CoreSetTree] {
@@ -679,74 +684,75 @@ trait ClusteringLibModule[M[+_]]
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
       }
 
-      def morph1Apply(ks: List[Int]): Morph1Apply = new Morph1Apply {
-        def apply(table0: Table, ctx: MorphContext): M[Table] = {
-          val table = table0.transform(
-            DerefObjectStatic(
-              trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
-              paths.Value))
+      def morph1Apply(ks: List[Int]): Morph1Apply =
+        new Morph1Apply {
+          def apply(table0: Table, ctx: MorphContext): M[Table] = {
+            val table = table0.transform(
+              DerefObjectStatic(
+                trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
+                paths.Value))
 
-          val defaultNumber = new java.util.concurrent.atomic.AtomicInteger(1)
+            val defaultNumber = new java.util.concurrent.atomic.AtomicInteger(1)
 
-          val res = ks map { k =>
-            val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
+            val res = ks map { k =>
+              val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
 
-            val specs: M[Seq[(TransSpec1, JType)]] = schemas map {
-              _ map { jtype => (trans.Typed(TransSpec1.Id, jtype), jtype) }
-            }
-
-            val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
-              specs map { ts =>
-                StreamT.fromStream(M.point((ts map {
-                  case (spec, jtype) => (table.transform(spec), jtype)
-                }).toStream))
+              val specs: M[Seq[(TransSpec1, JType)]] = schemas map {
+                _ map { jtype => (trans.Typed(TransSpec1.Id, jtype), jtype) }
               }
+
+              val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
+                specs map { ts =>
+                  StreamT.fromStream(M.point((ts map {
+                    case (spec, jtype) => (table.transform(spec), jtype)
+                  }).toStream))
+                }
+              }
+
+              // arrived at semi-emprically testing 400k rows of data
+              // TODO: arguably this should be a parameter we can pass in to tune things.
+              val sliceSize = 4000
+              val features: StreamT[M, Table] = tables flatMap {
+                case (tbl, jtype) =>
+                  val coreSetTree = tbl
+                    .canonicalize(sliceSize)
+                    .toArray[Double]
+                    .normalize
+                    .reduce(reducerFeatures(k))
+
+                  StreamT(coreSetTree map { tree =>
+                    StreamT.Yield(
+                      extract(tree, k, jtype, defaultNumber.getAndIncrement),
+                      StreamT.empty[M, Table])
+                  })
+              }
+
+              features
             }
 
-            // arrived at semi-emprically testing 400k rows of data
-            // TODO: arguably this should be a parameter we can pass in to tune things.
-            val sliceSize = 4000
-            val features: StreamT[M, Table] = tables flatMap {
-              case (tbl, jtype) =>
-                val coreSetTree = tbl
-                  .canonicalize(sliceSize)
-                  .toArray[Double]
-                  .normalize
-                  .reduce(reducerFeatures(k))
+            val tables: StreamT[M, Table] =
+              res.foldLeft(StreamT.empty[M, Table])(_ ++ _)
+            val modelConcat = buildConstantWrapSpec(
+              OuterObjectConcat(
+                DerefObjectStatic(Leaf(SourceLeft), paths.Value),
+                DerefObjectStatic(Leaf(SourceRight), paths.Value)))
 
-                StreamT(coreSetTree map { tree =>
-                  StreamT.Yield(
-                    extract(tree, k, jtype, defaultNumber.getAndIncrement),
-                    StreamT.empty[M, Table])
-                })
+            def merge(
+                table: Option[Table],
+                tables: StreamT[M, Table]): OptionT[M, Table] = {
+              OptionT(tables.uncons flatMap {
+                case Some((head, tail)) =>
+                  table map { tbl =>
+                    merge(Some(tbl.cross(head)(modelConcat)), tail).run
+                  } getOrElse { merge(Some(head), tail).run }
+                case None =>
+                  M.point(table)
+              })
             }
 
-            features
+            merge(None, tables) getOrElse Table.empty
           }
-
-          val tables: StreamT[M, Table] =
-            res.foldLeft(StreamT.empty[M, Table])(_ ++ _)
-          val modelConcat = buildConstantWrapSpec(
-            OuterObjectConcat(
-              DerefObjectStatic(Leaf(SourceLeft), paths.Value),
-              DerefObjectStatic(Leaf(SourceRight), paths.Value)))
-
-          def merge(
-              table: Option[Table],
-              tables: StreamT[M, Table]): OptionT[M, Table] = {
-            OptionT(tables.uncons flatMap {
-              case Some((head, tail)) =>
-                table map { tbl =>
-                  merge(Some(tbl.cross(head)(modelConcat)), tail).run
-                } getOrElse { merge(Some(head), tail).run }
-              case None =>
-                M.point(table)
-            })
-          }
-
-          merge(None, tables) getOrElse Table.empty
         }
-      }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] =
         t2.reduce(reducerKS) map { ks => (t1, morph1Apply(ks)) }

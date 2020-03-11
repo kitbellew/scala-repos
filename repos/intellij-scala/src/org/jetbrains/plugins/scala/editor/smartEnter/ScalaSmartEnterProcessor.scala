@@ -138,10 +138,11 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
   }
 
   private def collectAllAtCaret(caret: PsiElement): Iterable[PsiElement] = {
-    def doNotVisit(e: PsiElement) = e match {
-      case _: PsiClass | _: PsiStatement | _: PsiMethod => true
-      case _                                            => false
-    }
+    def doNotVisit(e: PsiElement) =
+      e match {
+        case _: PsiClass | _: PsiStatement | _: PsiMethod => true
+        case _                                            => false
+      }
 
     val buffer =
       scala.collection.mutable.ArrayBuffer((caret, doNotVisit(caret)))

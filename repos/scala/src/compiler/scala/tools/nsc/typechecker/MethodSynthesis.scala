@@ -23,9 +23,10 @@ trait MethodSynthesis {
 
   class ClassMethodSynthesis(val clazz: Symbol, localTyper: Typer) {
     def mkThis = This(clazz) setPos clazz.pos.focus
-    def mkThisSelect(sym: Symbol) = atPos(clazz.pos.focus)(
-      if (clazz.isClass) Select(This(clazz), sym) else Ident(sym)
-    )
+    def mkThisSelect(sym: Symbol) =
+      atPos(clazz.pos.focus)(
+        if (clazz.isClass) Select(This(clazz), sym) else Ident(sym)
+      )
 
     private def isOverride(name: TermName) =
       clazzMember(name).alternatives exists (sym =>
@@ -197,58 +198,59 @@ trait MethodSynthesis {
       )
     }
 
-    def addDerivedTrees(typer: Typer, stat: Tree): List[Tree] = stat match {
-      case vd @ ValDef(mods, name, tpt, rhs)
-          if deriveAccessors(vd) && !vd.symbol.isModuleVar =>
-        // If we don't save the annotations, they seem to wander off.
-        val annotations = stat.symbol.initialize.annotations
-        val trees = (
-          (field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
-            map (acc => atPos(vd.pos.focus)(acc derive annotations))
-            filterNot (_ eq EmptyTree)
-        )
-        // Verify each annotation landed safely somewhere, else warn.
-        // Filtering when isParamAccessor is a necessary simplification
-        // because there's a bunch of unwritten annotation code involving
-        // the propagation of annotations - constructor parameter annotations
-        // may need to make their way to parameters of the constructor as
-        // well as fields of the class, etc.
-        if (!mods.isParamAccessor)
-          annotations foreach (ann =>
-            if (!trees.exists(_.symbol hasAnnotation ann.symbol))
-              issueAnnotationWarning(vd, ann, GetterTargetClass))
+    def addDerivedTrees(typer: Typer, stat: Tree): List[Tree] =
+      stat match {
+        case vd @ ValDef(mods, name, tpt, rhs)
+            if deriveAccessors(vd) && !vd.symbol.isModuleVar =>
+          // If we don't save the annotations, they seem to wander off.
+          val annotations = stat.symbol.initialize.annotations
+          val trees = (
+            (field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
+              map (acc => atPos(vd.pos.focus)(acc derive annotations))
+              filterNot (_ eq EmptyTree)
+          )
+          // Verify each annotation landed safely somewhere, else warn.
+          // Filtering when isParamAccessor is a necessary simplification
+          // because there's a bunch of unwritten annotation code involving
+          // the propagation of annotations - constructor parameter annotations
+          // may need to make their way to parameters of the constructor as
+          // well as fields of the class, etc.
+          if (!mods.isParamAccessor)
+            annotations foreach (ann =>
+              if (!trees.exists(_.symbol hasAnnotation ann.symbol))
+                issueAnnotationWarning(vd, ann, GetterTargetClass))
 
-        trees
-      case vd: ValDef =>
-        warnForDroppedAnnotations(vd)
-        vd :: Nil
-      case cd @ ClassDef(mods, _, _, _) if mods.isImplicit =>
-        val annotations = stat.symbol.initialize.annotations
-        // TODO: need to shuffle annotations between wrapper and class.
-        val wrapper = ImplicitClassWrapper(cd)
-        val meth = wrapper.derivedSym
-        context.unit.synthetics get meth match {
-          case Some(mdef) =>
-            context.unit.synthetics -= meth
-            meth setAnnotations (annotations filter annotationFilter(
-              MethodTargetClass,
-              defaultRetention = false))
-            cd.symbol setAnnotations (annotations filter annotationFilter(
-              ClassTargetClass,
-              defaultRetention = true))
-            List(cd, mdef)
-          case _ =>
-            // Shouldn't happen, but let's give ourselves a reasonable error when it does
-            context.error(
-              cd.pos,
-              s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys
-                .mkString(", ")}")
-            // Soldier on for the sake of the presentation compiler
-            List(cd)
-        }
-      case _ =>
-        stat :: Nil
-    }
+          trees
+        case vd: ValDef =>
+          warnForDroppedAnnotations(vd)
+          vd :: Nil
+        case cd @ ClassDef(mods, _, _, _) if mods.isImplicit =>
+          val annotations = stat.symbol.initialize.annotations
+          // TODO: need to shuffle annotations between wrapper and class.
+          val wrapper = ImplicitClassWrapper(cd)
+          val meth = wrapper.derivedSym
+          context.unit.synthetics get meth match {
+            case Some(mdef) =>
+              context.unit.synthetics -= meth
+              meth setAnnotations (annotations filter annotationFilter(
+                MethodTargetClass,
+                defaultRetention = false))
+              cd.symbol setAnnotations (annotations filter annotationFilter(
+                ClassTargetClass,
+                defaultRetention = true))
+              List(cd, mdef)
+            case _ =>
+              // Shouldn't happen, but let's give ourselves a reasonable error when it does
+              context.error(
+                cd.pos,
+                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys
+                  .mkString(", ")}")
+              // Soldier on for the sake of the presentation compiler
+              List(cd)
+          }
+        case _ =>
+          stat :: Nil
+      }
 
     def standardAccessors(vd: ValDef): List[DerivedFromValDef] =
       if (vd.mods.isLazy) List(LazyValGetter(vd))
@@ -390,10 +392,11 @@ trait MethodSynthesis {
     }
     sealed trait DerivedSetter extends DerivedFromValDef {
       override def isSetter = true
-      private def setterParam = derivedSym.paramss match {
-        case (p :: Nil) :: _ => p
-        case _               => NoSymbol
-      }
+      private def setterParam =
+        derivedSym.paramss match {
+          case (p :: Nil) :: _ => p
+          case _               => NoSymbol
+        }
 
       private def setterRhs = {
         assert(

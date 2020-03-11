@@ -476,23 +476,24 @@ object scalac extends Command {
       Link(Bold("scalap") & "(1)", "scalap.html")
   )
 
-  def manpage = new Document {
-    title = command
-    date = "March 2012"
-    author = "Stephane Micheloud"
-    version = "1.0"
-    sections = List(
-      name,
-      synopsis,
-      parameters,
-      description,
-      options,
-      environment,
-      examples,
-      exitStatus,
-      authors,
-      bugs,
-      copyright,
-      seeAlso)
-  }
+  def manpage =
+    new Document {
+      title = command
+      date = "March 2012"
+      author = "Stephane Micheloud"
+      version = "1.0"
+      sections = List(
+        name,
+        synopsis,
+        parameters,
+        description,
+        options,
+        environment,
+        examples,
+        exitStatus,
+        authors,
+        bugs,
+        copyright,
+        seeAlso)
+    }
 }

@@ -94,13 +94,11 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
     }
   }
 
-  def getInputStreams(): Array[InputDStream[_]] = this.synchronized {
-    inputStreams.toArray
-  }
+  def getInputStreams(): Array[InputDStream[_]] =
+    this.synchronized { inputStreams.toArray }
 
-  def getOutputStreams(): Array[DStream[_]] = this.synchronized {
-    outputStreams.toArray
-  }
+  def getOutputStreams(): Array[DStream[_]] =
+    this.synchronized { outputStreams.toArray }
 
   def getReceiverInputStreams(): Array[ReceiverInputDStream[_]] =
     this.synchronized {
@@ -110,9 +108,8 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
         .toArray
     }
 
-  def getInputStreamName(streamId: Int): Option[String] = synchronized {
-    inputStreams.find(_.id == streamId).map(_.name)
-  }
+  def getInputStreamName(streamId: Int): Option[String] =
+    synchronized { inputStreams.find(_.id == streamId).map(_.name) }
 
   def generateJobs(time: Time): Seq[Job] = {
     logDebug("Generating jobs for time " + time)

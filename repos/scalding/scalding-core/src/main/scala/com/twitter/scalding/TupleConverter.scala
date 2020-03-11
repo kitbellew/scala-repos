@@ -39,10 +39,11 @@ trait TupleConverter[@specialized(Int, Long, Float, Double) T]
     extends java.io.Serializable
     with TupleArity { self =>
   def apply(te: TupleEntry): T
-  def andThen[U](fn: T => U): TupleConverter[U] = new TupleConverter[U] {
-    def apply(te: TupleEntry) = fn(self(te))
-    def arity = self.arity
-  }
+  def andThen[U](fn: T => U): TupleConverter[U] =
+    new TupleConverter[U] {
+      def apply(te: TupleEntry) = fn(self(te))
+      def arity = self.arity
+    }
 }
 
 trait LowPriorityTupleConverters extends java.io.Serializable {
@@ -101,14 +102,16 @@ object TupleConverter extends GeneratedTupleConverters {
     */
   implicit lazy val ProductTupleConverter: TupleConverter[Product] =
     new TupleConverter[Product] {
-      def wrap(tup: CTuple): Product = new Product {
-        def canEqual(that: Any) = that match {
-          case p: Product => true
-          case _          => false
+      def wrap(tup: CTuple): Product =
+        new Product {
+          def canEqual(that: Any) =
+            that match {
+              case p: Product => true
+              case _          => false
+            }
+          def productArity = tup.size
+          def productElement(idx: Int) = tup.getObject(idx)
         }
-        def productArity = tup.size
-        def productElement(idx: Int) = tup.getObject(idx)
-      }
       override def apply(tup: TupleEntry) = wrap(tup.getTupleCopy)
       override def arity = -1
     }

@@ -81,12 +81,13 @@ sealed trait RValue { self =>
 }
 
 object RValue {
-  def fromJValue(jv: JValue): RValue = jv match {
-    case JObject(fields) =>
-      RObject(fields map { case (k, v) => (k, fromJValue(v)) })
-    case JArray(elements) => RArray(elements map fromJValue)
-    case other            => CType.toCValue(other)
-  }
+  def fromJValue(jv: JValue): RValue =
+    jv match {
+      case JObject(fields) =>
+        RObject(fields map { case (k, v) => (k, fromJValue(v)) })
+      case JArray(elements) => RArray(elements map fromJValue)
+      case other            => CType.toCValue(other)
+    }
 
   def unsafeInsert(
       rootTarget: RValue,
@@ -101,11 +102,12 @@ object RValue {
             i: Int,
             rem: CPath,
             v: RValue): List[RValue] = {
-          def update(l: List[RValue], j: Int): List[RValue] = l match {
-            case x :: xs =>
-              (if (j == i) rec(x, rem, v) else x) :: update(xs, j + 1)
-            case Nil => Nil
-          }
+          def update(l: List[RValue], j: Int): List[RValue] =
+            l match {
+              case x :: xs =>
+                (if (j == i) rec(x, rem, v) else x) :: update(xs, j + 1)
+              case Nil => Nil
+            }
 
           update(l.padTo(i + 1, CUndefined), 0)
         }
@@ -201,29 +203,30 @@ sealed trait CNumericValue[@spec(Long, Double) A] extends CWrappedValue[A] {
 }
 
 object CValue {
-  def compareValues(a: CValue, b: CValue): Int = (a, b) match {
-    case (CString(as), CString(bs))   => as.compareTo(bs)
-    case (CBoolean(ab), CBoolean(bb)) => ab.compareTo(bb)
-    case (CLong(al), CLong(bl))       => al.compareTo(bl)
-    case (CDouble(ad), CDouble(bd))   => ad.compareTo(bd)
-    case (CNum(an), CNum(bn))         => an.compare(bn)
-    case (CDate(ad), CDate(bd))       => ad.compareTo(bd)
-    case (CPeriod(ad), CPeriod(bd)) =>
-      (ad.toStandardDuration).compareTo(bd.toStandardDuration)
-    case (CArray(as, CArrayType(atpe)), CArray(bs, CArrayType(btpe)))
-        if atpe == btpe =>
-      (as.view zip bs.view) map {
-        case (a, b) =>
-          compareValues(atpe(a), btpe(b))
-      } find (_ != 0) getOrElse (as.size - bs.size)
-    case (a: CNumericValue[_], b: CNumericValue[_]) =>
-      compareValues(
-        a.toCNum,
-        b.toCNum
-      ) // The only safe way to compare any mix of the 3 types.
-    case (a: CNullValue, b: CNullValue) if a.cType == b.cType => 0
-    case (a, b)                                               => a.cType.typeIndex - b.cType.typeIndex
-  }
+  def compareValues(a: CValue, b: CValue): Int =
+    (a, b) match {
+      case (CString(as), CString(bs))   => as.compareTo(bs)
+      case (CBoolean(ab), CBoolean(bb)) => ab.compareTo(bb)
+      case (CLong(al), CLong(bl))       => al.compareTo(bl)
+      case (CDouble(ad), CDouble(bd))   => ad.compareTo(bd)
+      case (CNum(an), CNum(bn))         => an.compare(bn)
+      case (CDate(ad), CDate(bd))       => ad.compareTo(bd)
+      case (CPeriod(ad), CPeriod(bd)) =>
+        (ad.toStandardDuration).compareTo(bd.toStandardDuration)
+      case (CArray(as, CArrayType(atpe)), CArray(bs, CArrayType(btpe)))
+          if atpe == btpe =>
+        (as.view zip bs.view) map {
+          case (a, b) =>
+            compareValues(atpe(a), btpe(b))
+        } find (_ != 0) getOrElse (as.size - bs.size)
+      case (a: CNumericValue[_], b: CNumericValue[_]) =>
+        compareValues(
+          a.toCNum,
+          b.toCNum
+        ) // The only safe way to compare any mix of the 3 types.
+      case (a: CNullValue, b: CNullValue) if a.cType == b.cType => 0
+      case (a, b)                                               => a.cType.typeIndex - b.cType.typeIndex
+    }
 
   implicit object CValueOrder extends Order[CValue] {
     def order(a: CValue, b: CValue): Ordering =
@@ -237,28 +240,30 @@ sealed trait CType extends Serializable {
   def isNumeric: Boolean = false
 
   @inline
-  private[common] final def typeIndex = this match {
-    case CUndefined => 0
+  private[common] final def typeIndex =
+    this match {
+      case CUndefined => 0
 
-    case CBoolean => 1
+      case CBoolean => 1
 
-    case CString => 2
+      case CString => 2
 
-    case CLong   => 4
-    case CDouble => 6
-    case CNum    => 7
+      case CLong   => 4
+      case CDouble => 6
+      case CNum    => 7
 
-    case CEmptyObject => 8
+      case CEmptyObject => 8
 
-    case CEmptyArray => 9
+      case CEmptyArray => 9
 
-    case CArrayType(_) => 10 // TODO: Should this account for the element type?
+      case CArrayType(_) =>
+        10 // TODO: Should this account for the element type?
 
-    case CNull => 11
+      case CNull => 11
 
-    case CDate   => 12
-    case CPeriod => 13
-  }
+      case CDate   => 12
+      case CPeriod => 13
+    }
 }
 
 sealed trait CNullType extends CType with CNullValue
@@ -278,41 +283,43 @@ sealed trait CNumericType[@spec(Long, Double) A] extends CValueType[A] {
 }
 
 object CType {
-  def nameOf(c: CType): String = c match {
-    case CString              => "String"
-    case CBoolean             => "Boolean"
-    case CLong                => "Long"
-    case CDouble              => "Double"
-    case CNum                 => "Decimal"
-    case CNull                => "Null"
-    case CEmptyObject         => "EmptyObject"
-    case CEmptyArray          => "EmptyArray"
-    case CArrayType(elemType) => "Array[%s]" format nameOf(elemType)
-    case CDate                => "Timestamp"
-    case CPeriod              => "Period"
-    case CUndefined           => sys.error("CUndefined cannot be serialized")
-  }
+  def nameOf(c: CType): String =
+    c match {
+      case CString              => "String"
+      case CBoolean             => "Boolean"
+      case CLong                => "Long"
+      case CDouble              => "Double"
+      case CNum                 => "Decimal"
+      case CNull                => "Null"
+      case CEmptyObject         => "EmptyObject"
+      case CEmptyArray          => "EmptyArray"
+      case CArrayType(elemType) => "Array[%s]" format nameOf(elemType)
+      case CDate                => "Timestamp"
+      case CPeriod              => "Period"
+      case CUndefined           => sys.error("CUndefined cannot be serialized")
+    }
 
   val ArrayName = """Array[(.*)]""".r
 
-  def fromName(n: String): Option[CType] = n match {
-    case "String"      => Some(CString)
-    case "Boolean"     => Some(CBoolean)
-    case "Long"        => Some(CLong)
-    case "Double"      => Some(CDouble)
-    case "Decimal"     => Some(CNum)
-    case "Null"        => Some(CNull)
-    case "EmptyObject" => Some(CEmptyObject)
-    case "EmptyArray"  => Some(CEmptyArray)
-    case ArrayName(elemName) =>
-      fromName(elemName) flatMap {
-        case elemType: CValueType[_] => Some(CArrayType(elemType))
-        case _                       => None
-      }
-    case "Timestamp" => Some(CDate)
-    case "Period"    => Some(CPeriod)
-    case _           => None
-  }
+  def fromName(n: String): Option[CType] =
+    n match {
+      case "String"      => Some(CString)
+      case "Boolean"     => Some(CBoolean)
+      case "Long"        => Some(CLong)
+      case "Double"      => Some(CDouble)
+      case "Decimal"     => Some(CNum)
+      case "Null"        => Some(CNull)
+      case "EmptyObject" => Some(CEmptyObject)
+      case "EmptyArray"  => Some(CEmptyArray)
+      case ArrayName(elemName) =>
+        fromName(elemName) flatMap {
+          case elemType: CValueType[_] => Some(CArrayType(elemType))
+          case _                       => None
+        }
+      case "Timestamp" => Some(CDate)
+      case "Period"    => Some(CPeriod)
+      case _           => None
+    }
 
   implicit val decomposer: Decomposer[CType] = new Decomposer[CType] {
     def decompose(ctype: CType): JValue = JString(nameOf(ctype))
@@ -366,60 +373,63 @@ object CType {
   private val emptyJArray = JArray(Nil)
   private val emptyJObject = JObject(Map())
   @inline
-  final def toCValue(jval: JValue): CValue = (jval: @unchecked) match {
-    case JString(s) => CString(s)
+  final def toCValue(jval: JValue): CValue =
+    (jval: @unchecked) match {
+      case JString(s) => CString(s)
 
-    case JNum(d) => {
-      val ctype = forJValue(jval)
-      ctype match {
-        case Some(CLong)   => CLong(d.toLong)
-        case Some(CDouble) => CDouble(d.toDouble)
-        case _             => CNum(d)
+      case JNum(d) => {
+        val ctype = forJValue(jval)
+        ctype match {
+          case Some(CLong)   => CLong(d.toLong)
+          case Some(CDouble) => CDouble(d.toDouble)
+          case _             => CNum(d)
+        }
       }
-    }
 
-    case JBool(b)                    => CBoolean(b)
-    case JNull                       => CNull
-    case JObject(es) if es.size == 0 => CEmptyObject
-    case JArray(Nil)                 => CEmptyArray
-    case JArray(values) =>
-      sys.error("TODO: Allow for homogeneous JArrays -> CArray.")
-  }
+      case JBool(b)                    => CBoolean(b)
+      case JNull                       => CNull
+      case JObject(es) if es.size == 0 => CEmptyObject
+      case JArray(Nil)                 => CEmptyArray
+      case JArray(values) =>
+        sys.error("TODO: Allow for homogeneous JArrays -> CArray.")
+    }
 
   @inline
-  final def forJValue(jval: JValue): Option[CType] = jval match {
-    case JBool(_) => Some(CBoolean)
+  final def forJValue(jval: JValue): Option[CType] =
+    jval match {
+      case JBool(_) => Some(CBoolean)
 
-    case JNum(d) => {
-      lazy val isLong =
-        try {
-          d.toLongExact
-          true
-        } catch { case _: ArithmeticException => false }
+      case JNum(d) => {
+        lazy val isLong =
+          try {
+            d.toLongExact
+            true
+          } catch { case _: ArithmeticException => false }
 
-      lazy val isDouble =
-        try { BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d }
-        catch {
-          case _: NumberFormatException | _: ArithmeticException => false
-        }
+        lazy val isDouble =
+          try { BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d }
+          catch {
+            case _: NumberFormatException | _: ArithmeticException => false
+          }
 
-      if (isLong) Some(CLong) else if (isDouble) Some(CDouble) else Some(CNum)
+        if (isLong) Some(CLong) else if (isDouble) Some(CDouble) else Some(CNum)
+      }
+
+      case JString(_)                      => Some(CString)
+      case JNull                           => Some(CNull)
+      case JArray(Nil)                     => Some(CEmptyArray)
+      case o: JObject if o == emptyJObject => Some(CEmptyObject)
+      case o: JArray if o == emptyJArray =>
+        None // TODO Allow homogeneous JArrays -> CType
+      case _ => None
     }
-
-    case JString(_)                      => Some(CString)
-    case JNull                           => Some(CNull)
-    case JArray(Nil)                     => Some(CEmptyArray)
-    case o: JObject if o == emptyJObject => Some(CEmptyObject)
-    case o: JArray if o == emptyJArray =>
-      None // TODO Allow homogeneous JArrays -> CType
-    case _ => None
-  }
 
   implicit object CTypeOrder extends Order[CType] {
-    def order(t1: CType, t2: CType): Ordering = (t1, t2) match {
-      case (CArrayType(t1), CArrayType(t2)) => order(t1, t2)
-      case (_, _)                           => Order[Int].order(t1.typeIndex, t2.typeIndex)
-    }
+    def order(t1: CType, t2: CType): Ordering =
+      (t1, t2) match {
+        case (CArrayType(t1), CArrayType(t2)) => order(t1, t2)
+        case (_, _)                           => Order[Int].order(t1.typeIndex, t2.typeIndex)
+      }
   }
 }
 
@@ -489,12 +499,13 @@ case class CArray[@spec(Boolean, Long, Double) A](
         leafEquiv(a.asInstanceOf[Array[AnyRef]], b.asInstanceOf[Array[AnyRef]])
     }
 
-  override def equals(that: Any): Boolean = that match {
-    case v @ CArray(_, thatCType) if cType == thatCType =>
-      equiv(value, v.value, cType.elemType)
+  override def equals(that: Any): Boolean =
+    that match {
+      case v @ CArray(_, thatCType) if cType == thatCType =>
+        equiv(value, v.value, cType.elemType)
 
-    case _ => false
-  }
+      case _ => false
+    }
 
   override def toString: String =
     value.mkString("CArray(Array(", ", ", "), " + cType.toString + ")")

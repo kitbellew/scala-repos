@@ -37,10 +37,11 @@ class RayleighTest
 
   def fromDouble(x: Double) = x
 
-  implicit def arbDistr = Arbitrary {
-    for (scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
-      yield new Rayleigh(scale)(RandBasis.mt0)
-  }
+  implicit def arbDistr =
+    Arbitrary {
+      for (scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
+        yield new Rayleigh(scale)(RandBasis.mt0)
+    }
 
   override type Distr = Rayleigh
 }

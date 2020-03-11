@@ -131,30 +131,32 @@ trait BasicBackend { self =>
     protected[this] def createPublisher[T](
         a: DBIOAction[_, Streaming[T], Nothing],
         createCtx: Subscriber[_ >: T] => StreamingContext)
-        : DatabasePublisher[T] = new DatabasePublisher[T] {
-      def subscribe(s: Subscriber[_ >: T]) = {
-        if (s eq null) throw new NullPointerException("Subscriber is null")
-        val ctx = createCtx(s)
-        if (streamLogger.isDebugEnabled)
-          streamLogger.debug(s"Signaling onSubscribe($ctx)")
-        val subscribed =
-          try { s.onSubscribe(ctx.subscription); true }
-          catch {
-            case NonFatal(ex) =>
-              streamLogger
-                .warn("Subscriber.onSubscribe failed unexpectedly", ex)
-              false
+        : DatabasePublisher[T] =
+      new DatabasePublisher[T] {
+        def subscribe(s: Subscriber[_ >: T]) = {
+          if (s eq null) throw new NullPointerException("Subscriber is null")
+          val ctx = createCtx(s)
+          if (streamLogger.isDebugEnabled)
+            streamLogger.debug(s"Signaling onSubscribe($ctx)")
+          val subscribed =
+            try { s.onSubscribe(ctx.subscription); true }
+            catch {
+              case NonFatal(ex) =>
+                streamLogger.warn(
+                  "Subscriber.onSubscribe failed unexpectedly",
+                  ex)
+                false
+            }
+          if (subscribed) {
+            try {
+              runInContext(a, ctx, true, true).onComplete {
+                case Success(_) => ctx.tryOnComplete
+                case Failure(t) => ctx.tryOnError(t)
+              }(DBIO.sameThreadExecutionContext)
+            } catch { case NonFatal(ex) => ctx.tryOnError(ex) }
           }
-        if (subscribed) {
-          try {
-            runInContext(a, ctx, true, true).onComplete {
-              case Success(_) => ctx.tryOnComplete
-              case Failure(t) => ctx.tryOnError(t)
-            }(DBIO.sameThreadExecutionContext)
-          } catch { case NonFatal(ex) => ctx.tryOnError(ex) }
         }
       }
-    }
 
     /** Create the default DatabaseActionContext for this backend. */
     protected[this] def createDatabaseActionContext[T](
@@ -556,29 +558,31 @@ trait BasicBackend { self =>
 
     /** Finish the stream with `onComplete` if it is not finished yet. May only be called from a
       * synchronous action context. */
-    def tryOnComplete: Unit = if (!finished && !cancelRequested) {
-      if (streamLogger.isDebugEnabled)
-        streamLogger.debug("Signaling onComplete()")
-      finished = true
-      try subscriber.onComplete()
-      catch {
-        case NonFatal(ex) =>
-          streamLogger.warn("Subscriber.onComplete failed unexpectedly", ex)
+    def tryOnComplete: Unit =
+      if (!finished && !cancelRequested) {
+        if (streamLogger.isDebugEnabled)
+          streamLogger.debug("Signaling onComplete()")
+        finished = true
+        try subscriber.onComplete()
+        catch {
+          case NonFatal(ex) =>
+            streamLogger.warn("Subscriber.onComplete failed unexpectedly", ex)
+        }
       }
-    }
 
     /** Finish the stream with `onError` if it is not finished yet. May only be called from a
       * synchronous action context. */
-    def tryOnError(t: Throwable): Unit = if (!finished) {
-      if (streamLogger.isDebugEnabled)
-        streamLogger.debug(s"Signaling onError($t)")
-      finished = true
-      try subscriber.onError(t)
-      catch {
-        case NonFatal(ex) =>
-          streamLogger.warn("Subscriber.onError failed unexpectedly", ex)
+    def tryOnError(t: Throwable): Unit =
+      if (!finished) {
+        if (streamLogger.isDebugEnabled)
+          streamLogger.debug(s"Signaling onError($t)")
+        finished = true
+        try subscriber.onError(t)
+        catch {
+          case NonFatal(ex) =>
+            streamLogger.warn("Subscriber.onError failed unexpectedly", ex)
+        }
       }
-    }
 
     /** Restart a suspended streaming action. Must only be called from the Subscriber context. */
     def restartStreaming: Unit = {
@@ -605,22 +609,24 @@ trait BasicBackend { self =>
 
     ////////////////////////////////////////////////////////////////////////// Subscription methods
 
-    def request(l: Long): Unit = if (!cancelRequested) {
-      if (l <= 0) {
-        deferredError = new IllegalArgumentException(
-          "Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
-        cancel
-      } else {
-        if (!cancelRequested && remaining.getAndAdd(l) == 0L) restartStreaming
+    def request(l: Long): Unit =
+      if (!cancelRequested) {
+        if (l <= 0) {
+          deferredError = new IllegalArgumentException(
+            "Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
+          cancel
+        } else {
+          if (!cancelRequested && remaining.getAndAdd(l) == 0L) restartStreaming
+        }
       }
-    }
 
-    def cancel: Unit = if (!cancelRequested) {
-      cancelRequested = true
-      // Restart streaming because cancelling requires closing the result set and the session from
-      // within a synchronous action context. This will also complete the result Promise and thus
-      // allow the rest of the scheduled Action to run.
-      if (remaining.getAndSet(Long.MaxValue) == 0L) restartStreaming
-    }
+    def cancel: Unit =
+      if (!cancelRequested) {
+        cancelRequested = true
+        // Restart streaming because cancelling requires closing the result set and the session from
+        // within a synchronous action context. This will also complete the result Promise and thus
+        // allow the rest of the scheduled Action to run.
+        if (remaining.getAndSet(Long.MaxValue) == 0L) restartStreaming
+      }
   }
 }

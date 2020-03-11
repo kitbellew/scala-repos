@@ -55,47 +55,50 @@ private[play] class MaterializeOnDemandPublisher[T](source: Source[T, _])(
 
   class ForwardingSubscription(subscriber: Subscriber[_ >: T])
       extends Subscription {
-    def cancel() = exclusive {
-      case ForwardingDemand(subscription) =>
-        state = Cancelled
-        subscription.cancel()
-      case _ =>
-        // If we're still awaiting demand, we go cancelled, and the source is never materialized.
-        // If we're already cancelled, we stay cancelled.
-        // If we're caching demand, we short circuit that, and just cancel.
-        state = Cancelled
-    }
+    def cancel() =
+      exclusive {
+        case ForwardingDemand(subscription) =>
+          state = Cancelled
+          subscription.cancel()
+        case _ =>
+          // If we're still awaiting demand, we go cancelled, and the source is never materialized.
+          // If we're already cancelled, we stay cancelled.
+          // If we're caching demand, we short circuit that, and just cancel.
+          state = Cancelled
+      }
 
-    def request(n: Long) = exclusive {
-      case AwaitingDemand =>
-        state = CachingDemand(n)
-        source.runWith(
-          Sink.fromSubscriber(new ForwardingSubscriber(subscriber)))
-      case CachingDemand(demand) =>
-        state = CachingDemand(n + demand)
-      case Cancelled =>
-      // nop, as required by the spec
-      case ForwardingDemand(subscription) =>
-        subscription.request(n)
-    }
+    def request(n: Long) =
+      exclusive {
+        case AwaitingDemand =>
+          state = CachingDemand(n)
+          source.runWith(
+            Sink.fromSubscriber(new ForwardingSubscriber(subscriber)))
+        case CachingDemand(demand) =>
+          state = CachingDemand(n + demand)
+        case Cancelled =>
+        // nop, as required by the spec
+        case ForwardingDemand(subscription) =>
+          subscription.request(n)
+      }
   }
 
   class ForwardingSubscriber[S >: T](subscriber: Subscriber[S])
       extends Subscriber[S] {
 
-    def onSubscribe(subscription: Subscription) = exclusive {
-      case CachingDemand(demand) =>
-        state = ForwardingDemand(subscription)
-        subscription.request(demand)
-      case Cancelled =>
-        state = ForwardingDemand(subscription)
-        subscription.cancel()
-      case ForwardingDemand(_) =>
-        throw new IllegalStateException("Subscribe invoked twice")
-      case AwaitingDemand =>
-        throw new IllegalStateException(
-          "Impossible state: awaiting demand when a forwarding subscriber has already been created")
-    }
+    def onSubscribe(subscription: Subscription) =
+      exclusive {
+        case CachingDemand(demand) =>
+          state = ForwardingDemand(subscription)
+          subscription.request(demand)
+        case Cancelled =>
+          state = ForwardingDemand(subscription)
+          subscription.cancel()
+        case ForwardingDemand(_) =>
+          throw new IllegalStateException("Subscribe invoked twice")
+        case AwaitingDemand =>
+          throw new IllegalStateException(
+            "Impossible state: awaiting demand when a forwarding subscriber has already been created")
+      }
 
     def onError(t: Throwable) = subscriber.onError(t)
 

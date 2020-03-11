@@ -40,10 +40,11 @@ trait MongoDocument[BaseDocument] extends JsonObject[BaseDocument] {
 
   def save = meta.save(this)
 
-  def getRef: Option[MongoRef] = _id match {
-    case oid: ObjectId => Some(MongoRef(meta.collectionName, oid))
-    case _             => None
-  }
+  def getRef: Option[MongoRef] =
+    _id match {
+      case oid: ObjectId => Some(MongoRef(meta.collectionName, oid))
+      case _             => None
+    }
 }
 
 /*

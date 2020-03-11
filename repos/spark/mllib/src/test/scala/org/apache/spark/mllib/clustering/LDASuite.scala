@@ -655,11 +655,12 @@ private[clustering] object LDASuite {
 
   def tinyK: Int = 3
   def tinyVocabSize: Int = 5
-  def tinyTopicsAsArray: Array[Array[Double]] = Array(
-    Array[Double](0.1, 0.2, 0.3, 0.4, 0.0), // topic 0
-    Array[Double](0.5, 0.05, 0.05, 0.1, 0.3), // topic 1
-    Array[Double](0.2, 0.2, 0.05, 0.05, 0.5) // topic 2
-  )
+  def tinyTopicsAsArray: Array[Array[Double]] =
+    Array(
+      Array[Double](0.1, 0.2, 0.3, 0.4, 0.0), // topic 0
+      Array[Double](0.5, 0.05, 0.05, 0.1, 0.3), // topic 1
+      Array[Double](0.2, 0.2, 0.05, 0.05, 0.5) // topic 2
+    )
   def tinyTopics: Matrix =
     new DenseMatrix(
       numRows = tinyVocabSize,

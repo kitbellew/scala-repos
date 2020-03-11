@@ -163,15 +163,17 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
 
 object FSMTimingSpec {
 
-  def suspend(actorRef: ActorRef): Unit = actorRef match {
-    case l: ActorRefWithCell ⇒ l.suspend()
-    case _ ⇒
-  }
+  def suspend(actorRef: ActorRef): Unit =
+    actorRef match {
+      case l: ActorRefWithCell ⇒ l.suspend()
+      case _ ⇒
+    }
 
-  def resume(actorRef: ActorRef): Unit = actorRef match {
-    case l: ActorRefWithCell ⇒ l.resume(causedByFailure = null)
-    case _ ⇒
-  }
+  def resume(actorRef: ActorRef): Unit =
+    actorRef match {
+      case l: ActorRefWithCell ⇒ l.resume(causedByFailure = null)
+      case _ ⇒
+    }
 
   trait State
   case object Initial extends State

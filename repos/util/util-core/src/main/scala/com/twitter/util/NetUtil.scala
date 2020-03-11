@@ -98,14 +98,14 @@ object NetUtil {
   }
 
   // Get the ip block from CIDR notation, returned as (subnet, subnetMask)
-  def cidrToIpBlock(cidr: String): (Int, Int) = cidr.split('/') match {
-    case Array(ip, prefixLen) => ipToIpBlock(ip, Some(prefixLen.toInt))
-    case Array(ip)            => ipToIpBlock(ip, None)
-  }
+  def cidrToIpBlock(cidr: String): (Int, Int) =
+    cidr.split('/') match {
+      case Array(ip, prefixLen) => ipToIpBlock(ip, Some(prefixLen.toInt))
+      case Array(ip)            => ipToIpBlock(ip, None)
+    }
 
-  def isIpInBlock(ip: Int, ipBlock: (Int, Int)): Boolean = ipBlock match {
-    case (netIp, mask) => (mask & ip) == netIp
-  }
+  def isIpInBlock(ip: Int, ipBlock: (Int, Int)): Boolean =
+    ipBlock match { case (netIp, mask) => (mask & ip) == netIp }
 
   def isInetAddressInBlock(
       inetAddress: InetAddress,

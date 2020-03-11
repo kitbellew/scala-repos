@@ -34,11 +34,12 @@ trait Parsers { self: Quasiquotes =>
     def correspondingPosition(offset: Int): Position = {
       val posMapList = posMap.toList
       def containsOffset(start: Int, end: Int) = start <= offset && offset < end
-      def fallbackPosition = posMapList match {
-        case (pos1, (start1, end1)) :: _ if start1 > offset => pos1
-        case _ :+ ((pos2, (start2, end2))) if end2 <= offset =>
-          pos2.withPoint(pos2.point + (end2 - start2))
-      }
+      def fallbackPosition =
+        posMapList match {
+          case (pos1, (start1, end1)) :: _ if start1 > offset => pos1
+          case _ :+ ((pos2, (start2, end2))) if end2 <= offset =>
+            pos2.withPoint(pos2.point + (end2 - start2))
+        }
       posMapList
         .sliding(2)
         .collect {
@@ -60,10 +61,11 @@ trait Parsers { self: Quasiquotes =>
         .getOrElse(fallbackPosition)
     }
 
-    override def token2string(token: Int): String = token match {
-      case EOF => "end of quote"
-      case _   => super.token2string(token)
-    }
+    override def token2string(token: Int): String =
+      token match {
+        case EOF => "end of quote"
+        case _   => super.token2string(token)
+      }
 
     def entryPoint: QuasiquoteParser => Tree
 
@@ -94,18 +96,19 @@ trait Parsers { self: Quasiquotes =>
           TupleTypePlaceholder(trees)
 
         // q"{ $x }"
-        override def makeBlock(stats: List[Tree]): Tree = method match {
-          case nme.apply =>
-            stats match {
-              // we don't want to eagerly flatten trees with placeholders as they
-              // might have to be wrapped into a block depending on their value
-              case (head @ Ident(name)) :: Nil if isHole(name) =>
-                Block(Nil, head)
-              case _ => gen.mkBlock(stats, doFlatten = true)
-            }
-          case nme.unapply => gen.mkBlock(stats, doFlatten = false)
-          case other       => global.abort("unreachable")
-        }
+        override def makeBlock(stats: List[Tree]): Tree =
+          method match {
+            case nme.apply =>
+              stats match {
+                // we don't want to eagerly flatten trees with placeholders as they
+                // might have to be wrapped into a block depending on their value
+                case (head @ Ident(name)) :: Nil if isHole(name) =>
+                  Block(Nil, head)
+                case _ => gen.mkBlock(stats, doFlatten = true)
+              }
+            case nme.unapply => gen.mkBlock(stats, doFlatten = false)
+            case other       => global.abort("unreachable")
+          }
 
         // tq"$a => $b"
         override def makeFunctionTypeTree(
@@ -133,10 +136,11 @@ trait Parsers { self: Quasiquotes =>
         else super.param(owner, implicitmod, caseParam)
 
       // q"($x) => ..." && q"class X { selfie => }
-      override def convertToParam(tree: Tree): ValDef = tree match {
-        case Ident(name) if isHole(name) => ParamPlaceholder(NoFlags, name)
-        case _                           => super.convertToParam(tree)
-      }
+      override def convertToParam(tree: Tree): ValDef =
+        tree match {
+          case Ident(name) if isHole(name) => ParamPlaceholder(NoFlags, name)
+          case _                           => super.convertToParam(tree)
+        }
 
       // q"foo match { case $x }"
       override def caseClause(): CaseDef =
@@ -148,10 +152,11 @@ trait Parsers { self: Quasiquotes =>
           c
         } else super.caseClause()
 
-      override def caseBlock(): Tree = super.caseBlock() match {
-        case Block(Nil, expr) => expr
-        case other            => other
-      }
+      override def caseBlock(): Tree =
+        super.caseBlock() match {
+          case Block(Nil, expr) => expr
+          case other            => other
+        }
 
       override def isAnnotation: Boolean =
         super.isAnnotation || (isHole && lookingAhead { isAnnotation })
@@ -180,19 +185,20 @@ trait Parsers { self: Quasiquotes =>
 
       // $mods def foo
       // $mods T
-      override def readAnnots(annot: => Tree): List[Tree] = in.token match {
-        case AT =>
-          in.nextToken()
-          annot :: readAnnots(annot)
-        case _ if isHole && lookingAhead {
-              isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in.token == LPAREN
-            } =>
-          val ann = ModsPlaceholder(in.name)
-          in.nextToken()
-          ann :: readAnnots(annot)
-        case _ =>
-          Nil
-      }
+      override def readAnnots(annot: => Tree): List[Tree] =
+        in.token match {
+          case AT =>
+            in.nextToken()
+            annot :: readAnnots(annot)
+          case _ if isHole && lookingAhead {
+                isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in.token == LPAREN
+              } =>
+            val ann = ModsPlaceholder(in.name)
+            in.nextToken()
+            ann :: readAnnots(annot)
+          case _ =>
+            Nil
+        }
 
       override def refineStat(): List[Tree] =
         if (isHole && !isDclIntro) {
@@ -201,10 +207,12 @@ trait Parsers { self: Quasiquotes =>
           result
         } else super.refineStat()
 
-      override def ensureEarlyDef(tree: Tree) = tree match {
-        case Ident(name: TermName) if isHole(name) => EarlyDefPlaceholder(name)
-        case _                                     => super.ensureEarlyDef(tree)
-      }
+      override def ensureEarlyDef(tree: Tree) =
+        tree match {
+          case Ident(name: TermName) if isHole(name) =>
+            EarlyDefPlaceholder(name)
+          case _ => super.ensureEarlyDef(tree)
+        }
 
       override def isTypedParam(tree: Tree) =
         super.isTypedParam(tree) || (tree match {
@@ -212,12 +220,13 @@ trait Parsers { self: Quasiquotes =>
           case _                           => false
         })
 
-      override def topStat = super.topStat.orElse {
-        case _ if isHole =>
-          val stats = PackageStatPlaceholder(in.name) :: Nil
-          in.nextToken()
-          stats
-      }
+      override def topStat =
+        super.topStat.orElse {
+          case _ if isHole =>
+            val stats = PackageStatPlaceholder(in.name) :: Nil
+            in.nextToken()
+            stats
+        }
 
       override def enumerator(isFirst: Boolean, allowNestedIf: Boolean = true) =
         if (isHole && lookingAhead {
@@ -233,10 +242,12 @@ trait Parsers { self: Quasiquotes =>
   /** Wrapper around tree parsed in q"..." quote. Needed to support ..$ splicing on top-level. */
   object Q {
     def apply(tree: Tree): Block = Block(Nil, tree).updateAttachment(Q)
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case Block(Nil, contents) if tree.hasAttachment[Q.type] => Some(contents)
-      case _                                                  => None
-    }
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case Block(Nil, contents) if tree.hasAttachment[Q.type] =>
+          Some(contents)
+        case _ => None
+      }
   }
 
   object TermParser extends Parser {

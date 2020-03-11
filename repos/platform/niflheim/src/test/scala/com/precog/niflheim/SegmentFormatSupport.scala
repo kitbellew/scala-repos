@@ -53,27 +53,29 @@ trait SegmentFormatSupport {
       parts <- Gen.listOfN(len, Gen.identifier)
     } yield CPath(parts mkString ".")
 
-  def genBitSet(length: Int, density: Double): Gen[BitSet] = Gen { params =>
-    val bits = new mutable.ArrayBuffer[Int]
-    Loop.range(0, bits.length) { row =>
-      if (params.rng.nextDouble < density) bits += row
+  def genBitSet(length: Int, density: Double): Gen[BitSet] =
+    Gen { params =>
+      val bits = new mutable.ArrayBuffer[Int]
+      Loop.range(0, bits.length) { row =>
+        if (params.rng.nextDouble < density) bits += row
+      }
+      Some(BitSetUtil.create(bits.toArray))
     }
-    Some(BitSetUtil.create(bits.toArray))
-  }
 
-  def genForCType[A](ctype: CValueType[A]): Gen[A] = ctype match {
-    case CPeriod  => arbitrary[Long].map(new Period(_))
-    case CBoolean => arbitrary[Boolean]
-    case CString  => arbitrary[String]
-    case CLong    => arbitrary[Long]
-    case CDouble  => arbitrary[Double]
-    case CNum     => arbitrary[BigDecimal]
-    case CDate    => arbitrary[Long] map (new DateTime(_))
-    case CArrayType(elemType: CValueType[a]) =>
-      val list: Gen[List[a]] = listOf(genForCType(elemType))
-      val array: Gen[Array[a]] = list map (_.toArray(elemType.manifest))
-      array
-  }
+  def genForCType[A](ctype: CValueType[A]): Gen[A] =
+    ctype match {
+      case CPeriod  => arbitrary[Long].map(new Period(_))
+      case CBoolean => arbitrary[Boolean]
+      case CString  => arbitrary[String]
+      case CLong    => arbitrary[Long]
+      case CDouble  => arbitrary[Double]
+      case CNum     => arbitrary[BigDecimal]
+      case CDate    => arbitrary[Long] map (new DateTime(_))
+      case CArrayType(elemType: CValueType[a]) =>
+        val list: Gen[List[a]] = listOf(genForCType(elemType))
+        val array: Gen[Array[a]] = list map (_.toArray(elemType.manifest))
+        array
+    }
 
   def genCValueType(maxDepth: Int = 2): Gen[CValueType[_]] = {
     val basic: Gen[CValueType[_]] = oneOf(

@@ -364,11 +364,12 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     }
   }
 
-  private def contextOf(element: PsiElement) = element match {
-    case p: ScReferencePattern => p.getParent.getParent
-    case field: PsiField       => field.getModifierList
-    case _                     => element
-  }
+  private def contextOf(element: PsiElement) =
+    element match {
+      case p: ScReferencePattern => p.getParent.getParent
+      case field: PsiField       => field.getModifierList
+      case _                     => element
+    }
 }
 
 object ScalaLanguageInjector {
@@ -454,10 +455,11 @@ object ScalaLanguageInjector {
   def getRangeInElement(element: ScLiteral) =
     scalaStringLiteralManipulator getRangeInElement element
 
-  def isSafeCall(testExpr: ScExpression) = testExpr match {
-    case methodInv: MethodInvocation =>
-      safeMethodsNames contains methodInv.getEffectiveInvokedExpr.getText
-    case ref: ScReferenceExpression => safeMethodsNames contains ref.refName
-    case _                          => false
-  }
+  def isSafeCall(testExpr: ScExpression) =
+    testExpr match {
+      case methodInv: MethodInvocation =>
+        safeMethodsNames contains methodInv.getEffectiveInvokedExpr.getText
+      case ref: ScReferenceExpression => safeMethodsNames contains ref.refName
+      case _                          => false
+    }
 }

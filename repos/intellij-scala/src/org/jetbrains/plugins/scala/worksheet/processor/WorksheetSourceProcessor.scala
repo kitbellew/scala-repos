@@ -124,12 +124,13 @@ object WorksheetSourceProcessor {
 
     @inline def countNls(str: String) = str.count(_ == '\n')
 
-    @inline def insertNlsFromWs(psi: PsiElement) = psi.getNextSibling match {
-      case ws: PsiWhiteSpace =>
-        val c = countNls(ws.getText)
-        if (c == 0) ";" else StringUtil.repeat("\n", c)
-      case _ => ";"
-    }
+    @inline def insertNlsFromWs(psi: PsiElement) =
+      psi.getNextSibling match {
+        case ws: PsiWhiteSpace =>
+          val c = countNls(ws.getText)
+          if (c == 0) ";" else StringUtil.repeat("\n", c)
+        case _ => ";"
+      }
 
     @inline def psiToLineNumbers(psi: PsiElement): Option[String] =
       ifDocument map {
@@ -386,10 +387,11 @@ object WorksheetSourceProcessor {
           } getOrElse p.name
         }
 
-        def typeElement2Types(te: ScTypeElement) = te match {
-          case tpl: ScTupleTypeElement => tpl.components
-          case other                   => Seq(other)
-        }
+        def typeElement2Types(te: ScTypeElement) =
+          te match {
+            case tpl: ScTupleTypeElement => tpl.components
+            case other                   => Seq(other)
+          }
 
         val lineNum = psiToLineNumbers(varDef)
 
@@ -469,17 +471,18 @@ object WorksheetSourceProcessor {
       .isUseEclipseCompatibility
 
     @tailrec
-    def isObjectOk(psi: PsiElement): Boolean = psi match {
-      case _: ScImportStmt | _: PsiWhiteSpace | _: PsiComment =>
-        isObjectOk(psi.getNextSibling)
-      case obj: ScObject =>
-        obj.extendsBlock.templateParents.isEmpty && isObjectOk(
-          obj.getNextSibling
-        ) //isOk(psi.getNextSibling) - for compatibility with Eclipse. Its worksheet proceeds with expressions inside first object found
-      case _: PsiClass if isEclipseMode => isObjectOk(psi.getNextSibling)
-      case null                         => true
-      case _                            => false
-    }
+    def isObjectOk(psi: PsiElement): Boolean =
+      psi match {
+        case _: ScImportStmt | _: PsiWhiteSpace | _: PsiComment =>
+          isObjectOk(psi.getNextSibling)
+        case obj: ScObject =>
+          obj.extendsBlock.templateParents.isEmpty && isObjectOk(
+            obj.getNextSibling
+          ) //isOk(psi.getNextSibling) - for compatibility with Eclipse. Its worksheet proceeds with expressions inside first object found
+        case _: PsiClass if isEclipseMode => isObjectOk(psi.getNextSibling)
+        case null                         => true
+        case _                            => false
+      }
 
     isObjectOk(file.getFirstChild)
   }

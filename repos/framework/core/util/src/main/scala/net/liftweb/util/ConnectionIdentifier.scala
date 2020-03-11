@@ -27,10 +27,11 @@ trait ConnectionIdentifier {
 
   override def hashCode() = jndiName.hashCode()
 
-  override def equals(other: Any): Boolean = other match {
-    case ci: ConnectionIdentifier => ci.jndiName == this.jndiName
-    case _                        => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case ci: ConnectionIdentifier => ci.jndiName == this.jndiName
+      case _                        => false
+    }
 }
 
 case object DefaultConnectionIdentifier extends ConnectionIdentifier {

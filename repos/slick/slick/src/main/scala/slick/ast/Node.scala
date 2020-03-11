@@ -154,11 +154,12 @@ final case class ProductNode(children: ConstArray[Node])
       t
     })
   def flatten: ProductNode = {
-    def f(n: Node): ConstArray[Node] = n match {
-      case ProductNode(ns) => ns.flatMap(f)
-      case StructNode(els) => els.flatMap(el => f(el._2))
-      case n               => ConstArray(n)
-    }
+    def f(n: Node): ConstArray[Node] =
+      n match {
+        case ProductNode(ns) => ns.flatMap(f)
+        case StructNode(els) => els.flatMap(el => f(el._2))
+        case n               => ConstArray(n)
+      }
     ProductNode(f(this))
   }
 }
@@ -211,10 +212,11 @@ class LiteralNode(
   override def hashCode =
     buildType.hashCode() + (if (value == null) 0
                             else value.asInstanceOf[AnyRef].hashCode)
-  override def equals(o: Any) = o match {
-    case l: LiteralNode => buildType == l.buildType && value == l.value
-    case _              => false
-  }
+  override def equals(o: Any) =
+    o match {
+      case l: LiteralNode => buildType == l.buildType && value == l.value
+      case _              => false
+    }
 }
 
 object LiteralNode {
@@ -684,12 +686,13 @@ final case class Select(in: Node, field: TermSymbol)
   def child = in
   override def childNames = Seq("in")
   protected[this] def rebuild(child: Node) = copy(in = child)
-  override def getDumpInfo = Path.unapply(this) match {
-    case Some(l) =>
-      super.getDumpInfo
-        .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
-    case None => super.getDumpInfo
-  }
+  override def getDumpInfo =
+    Path.unapply(this) match {
+      case Some(l) =>
+        super.getDumpInfo
+          .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
+      case None => super.getDumpInfo
+    }
   protected def buildType = in.nodeType.select(field)
   def pathString = in.asInstanceOf[PathElement].pathString + "." + field
   def untypedPath = {
@@ -729,11 +732,12 @@ final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
 /** A constructor/extractor for nested Selects starting at a Ref so that, for example,
   * `c :: b :: a :: Nil` corresponds to path `a.b.c`. */
 object Path {
-  def apply(l: List[TermSymbol]): PathElement = l match {
-    case s :: Nil => Ref(s)
-    case s :: l   => Select(apply(l), s)
-    case _        => throw new SlickException("Empty Path")
-  }
+  def apply(l: List[TermSymbol]): PathElement =
+    l match {
+      case s :: Nil => Ref(s)
+      case s :: l   => Select(apply(l), s)
+      case _        => throw new SlickException("Empty Path")
+    }
   def unapply(n: PathElement): Option[List[TermSymbol]] = {
     var l = new ListBuffer[TermSymbol]
     var el: Node = n
@@ -751,10 +755,11 @@ object Path {
   }
   def toString(path: Seq[TermSymbol]): String =
     path.reverseIterator.mkString("Path ", ".", "")
-  def toString(s: Select): String = s match {
-    case Path(syms) => toString(syms)
-    case n          => n.toString
-  }
+  def toString(s: Select): String =
+    s match {
+      case Path(syms) => toString(syms)
+      case n          => n.toString
+    }
 }
 
 /** A constructor/extractor for nested Selects starting at a Ref so that, for example,
@@ -863,11 +868,12 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   /** Return a null-extended version of a single-column IfThenElse expression */
   def nullExtend
       : IfThenElse = { //TODO 3.2: Remove this method. It is only preserved for binary compatibility in 3.1.1
-    def isOpt(n: Node) = n match {
-      case LiteralNode(null)  => true
-      case _ :@ OptionType(_) => true
-      case _                  => false
-    }
+    def isOpt(n: Node) =
+      n match {
+        case LiteralNode(null)  => true
+        case _ :@ OptionType(_) => true
+        case _                  => false
+      }
     val hasOpt = (ifThenClauses.map(_._2) ++ Iterator(elseClause)).exists(isOpt)
     if (hasOpt)
       mapResultClauses(ch => if (isOpt(ch)) ch else OptionApply(ch)).infer()
@@ -981,47 +987,48 @@ object QueryParameter {
     * on two primitive values. The given Nodes must also be of type `LiteralNode` or
     * `QueryParameter`. */
   def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(
-      implicit tpe: ScalaBaseType[T]): Node = (l, r) match {
-    case (
-          LiteralNode(lv) :@ (lt: TypedType[_]),
-          LiteralNode(rv) :@ (rt: TypedType[_]))
-        if lt.scalaType == tpe && rt.scalaType == tpe =>
-      LiteralNode[T](op(lv.asInstanceOf[T], rv.asInstanceOf[T])).infer()
-    case (
-          LiteralNode(lv) :@ (lt: TypedType[_]),
-          QueryParameter(re, rt: TypedType[_], _))
-        if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(
-        new (Any => T) {
-          def apply(param: Any) =
-            op(lv.asInstanceOf[T], re(param).asInstanceOf[T])
-          override def toString = s"($lv $name $re)"
-        },
-        tpe)
-    case (
-          QueryParameter(le, lt: TypedType[_], _),
-          LiteralNode(rv) :@ (rt: TypedType[_]))
-        if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(
-        new (Any => T) {
-          def apply(param: Any) =
-            op(le(param).asInstanceOf[T], rv.asInstanceOf[T])
-          override def toString = s"($le $name $rv)"
-        },
-        tpe)
-    case (
-          QueryParameter(le, lt: TypedType[_], _),
-          QueryParameter(re, rt: TypedType[_], _))
-        if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(
-        new (Any => T) {
-          def apply(param: Any) =
-            op(le(param).asInstanceOf[T], re(param).asInstanceOf[T])
-          override def toString = s"($le $name $re)"
-        },
-        tpe)
-    case _ =>
-      throw new SlickException(
-        s"Cannot fuse nodes $l, $r as constant operations of type $tpe")
-  }
+      implicit tpe: ScalaBaseType[T]): Node =
+    (l, r) match {
+      case (
+            LiteralNode(lv) :@ (lt: TypedType[_]),
+            LiteralNode(rv) :@ (rt: TypedType[_]))
+          if lt.scalaType == tpe && rt.scalaType == tpe =>
+        LiteralNode[T](op(lv.asInstanceOf[T], rv.asInstanceOf[T])).infer()
+      case (
+            LiteralNode(lv) :@ (lt: TypedType[_]),
+            QueryParameter(re, rt: TypedType[_], _))
+          if lt.scalaType == tpe && rt.scalaType == tpe =>
+        QueryParameter(
+          new (Any => T) {
+            def apply(param: Any) =
+              op(lv.asInstanceOf[T], re(param).asInstanceOf[T])
+            override def toString = s"($lv $name $re)"
+          },
+          tpe)
+      case (
+            QueryParameter(le, lt: TypedType[_], _),
+            LiteralNode(rv) :@ (rt: TypedType[_]))
+          if lt.scalaType == tpe && rt.scalaType == tpe =>
+        QueryParameter(
+          new (Any => T) {
+            def apply(param: Any) =
+              op(le(param).asInstanceOf[T], rv.asInstanceOf[T])
+            override def toString = s"($le $name $rv)"
+          },
+          tpe)
+      case (
+            QueryParameter(le, lt: TypedType[_], _),
+            QueryParameter(re, rt: TypedType[_], _))
+          if lt.scalaType == tpe && rt.scalaType == tpe =>
+        QueryParameter(
+          new (Any => T) {
+            def apply(param: Any) =
+              op(le(param).asInstanceOf[T], re(param).asInstanceOf[T])
+            override def toString = s"($le $name $re)"
+          },
+          tpe)
+      case _ =>
+        throw new SlickException(
+          s"Cannot fuse nodes $l, $r as constant operations of type $tpe")
+    }
 }

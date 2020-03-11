@@ -216,11 +216,12 @@ object SerializationTestUtils {
     FetchResponse(1, topicDataFetchResponse)
   }
 
-  def createTestOffsetRequest = new OffsetRequest(
-    collection.immutable.Map(
-      TopicAndPartition(topic1, 1) -> PartitionOffsetRequestInfo(1000, 200)),
-    replicaId = 0
-  )
+  def createTestOffsetRequest =
+    new OffsetRequest(
+      collection.immutable.Map(
+        TopicAndPartition(topic1, 1) -> PartitionOffsetRequestInfo(1000, 200)),
+      replicaId = 0
+    )
 
   def createTestOffsetResponse: OffsetResponse = {
     new OffsetResponse(

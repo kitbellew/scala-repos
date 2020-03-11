@@ -104,14 +104,15 @@ class Analyzer(
     if (config.sourceMode) scalaCompiler.askReloadAllFiles()
   }
 
-  protected def makeScalaCompiler() = new RichPresentationCompiler(
-    config,
-    settings,
-    reporter,
-    self,
-    indexer,
-    search
-  )
+  protected def makeScalaCompiler() =
+    new RichPresentationCompiler(
+      config,
+      settings,
+      reporter,
+      self,
+      indexer,
+      search
+    )
 
   protected def restartCompiler(keepLoaded: Boolean): Unit = {
     log.warning("Restarting the Presentation Compiler")
@@ -129,39 +130,41 @@ class Analyzer(
 
   def receive: Receive = startup
 
-  def startup: Receive = withLabel("startup") {
-    case FullTypeCheckCompleteEvent =>
-      reporter.enable()
-      // legacy clients expect to see AnalyzerReady and a
-      // FullTypeCheckCompleteEvent on connection.
-      broadcaster ! Broadcaster.Persist(AnalyzerReadyEvent)
-      broadcaster ! Broadcaster.Persist(FullTypeCheckCompleteEvent)
-      context.become(ready)
-      unstashAll()
+  def startup: Receive =
+    withLabel("startup") {
+      case FullTypeCheckCompleteEvent =>
+        reporter.enable()
+        // legacy clients expect to see AnalyzerReady and a
+        // FullTypeCheckCompleteEvent on connection.
+        broadcaster ! Broadcaster.Persist(AnalyzerReadyEvent)
+        broadcaster ! Broadcaster.Persist(FullTypeCheckCompleteEvent)
+        context.become(ready)
+        unstashAll()
 
-    case other =>
-      stash()
-  }
+      case other =>
+        stash()
+    }
 
-  def ready: Receive = withLabel("ready") {
-    case ReloadExistingFilesEvent if allFilesMode =>
-      log.info("Skipping reload, in all-files mode")
-    case ReloadExistingFilesEvent =>
-      restartCompiler(keepLoaded = true)
+  def ready: Receive =
+    withLabel("ready") {
+      case ReloadExistingFilesEvent if allFilesMode =>
+        log.info("Skipping reload, in all-files mode")
+      case ReloadExistingFilesEvent =>
+        restartCompiler(keepLoaded = true)
 
-    case FullTypeCheckCompleteEvent =>
-      broadcaster ! FullTypeCheckCompleteEvent
+      case FullTypeCheckCompleteEvent =>
+        broadcaster ! FullTypeCheckCompleteEvent
 
-    case req: RpcAnalyserRequest =>
-      // fommil: I'm not entirely sure about the logic of
-      // enabling/disabling the reporter so I am reluctant to refactor
-      // this, but it would perhaps be simpler if we enable the
-      // reporter when the presentation compiler is loaded, and only
-      // disable it when we explicitly want it to be quiet, instead of
-      // enabling on every incoming message.
-      reporter.enable()
-      allTheThings(req)
-  }
+      case req: RpcAnalyserRequest =>
+        // fommil: I'm not entirely sure about the logic of
+        // enabling/disabling the reporter so I am reluctant to refactor
+        // this, but it would perhaps be simpler if we enable the
+        // reporter when the presentation compiler is loaded, and only
+        // disable it when we explicitly want it to be quiet, instead of
+        // enabling on every incoming message.
+        reporter.enable()
+        allTheThings(req)
+    }
 
   def allTheThings: PartialFunction[RpcAnalyserRequest, Unit] = {
     case RemoveFileReq(file: File) =>

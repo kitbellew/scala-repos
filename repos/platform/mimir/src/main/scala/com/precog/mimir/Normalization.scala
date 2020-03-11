@@ -86,59 +86,60 @@ trait NormalizationHelperModule[M[+_]]
         }
       }
 
-      def reducer = new CReducer[Result] {
-        def reduce(schema: CSchema, range: Range) = {
-          val refs: Set[ColumnRef] = schema.columnRefs
+      def reducer =
+        new CReducer[Result] {
+          def reduce(schema: CSchema, range: Range) = {
+            val refs: Set[ColumnRef] = schema.columnRefs
 
-          def collectReduction(reduction: Reduction): Set[CPath] = {
-            refs collect {
-              case ColumnRef(selector, ctype)
-                  if selector.hasSuffix(
-                    CPathField(reduction.name)) && ctype.isNumeric =>
-                selector.take(selector.length - 1) getOrElse CPath.Identity
+            def collectReduction(reduction: Reduction): Set[CPath] = {
+              refs collect {
+                case ColumnRef(selector, ctype)
+                    if selector.hasSuffix(
+                      CPathField(reduction.name)) && ctype.isNumeric =>
+                  selector.take(selector.length - 1) getOrElse CPath.Identity
+              }
             }
-          }
 
-          val meanPaths = collectReduction(Mean)
-          val stdDevPaths = collectReduction(StdDev)
+            val meanPaths = collectReduction(Mean)
+            val stdDevPaths = collectReduction(StdDev)
 
-          val commonPaths = (meanPaths & stdDevPaths).toList
+            val commonPaths = (meanPaths & stdDevPaths).toList
 
-          def getColumns(reduction: Reduction): List[(CPath, NumColumn)] = {
-            commonPaths map { path =>
-              val augPath = path \ CPathField(reduction.name)
-              val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
+            def getColumns(reduction: Reduction): List[(CPath, NumColumn)] = {
+              commonPaths map { path =>
+                val augPath = path \ CPathField(reduction.name)
+                val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
 
-              val cols =
-                jtype map { schema.columns } getOrElse Set.empty[Column]
-              val unifiedCol = unifyNumColumns(cols.toList)
+                val cols =
+                  jtype map { schema.columns } getOrElse Set.empty[Column]
+                val unifiedCol = unifyNumColumns(cols.toList)
 
-              (path, unifiedCol)
+                (path, unifiedCol)
+              }
             }
-          }
 
-          val meanCols = getColumns(Mean)
-          val stdDevCols = getColumns(StdDev)
+            val meanCols = getColumns(Mean)
+            val stdDevCols = getColumns(StdDev)
 
-          val totalColumns: List[(CPath, (NumColumn, NumColumn))] = {
-            meanCols flatMap {
-              case (cpathMean, colMean) =>
-                stdDevCols collect {
-                  case (cpathStdDev, colStdDev) if cpathMean == cpathStdDev =>
-                    (cpathMean, (colMean, colStdDev))
-                }
+            val totalColumns: List[(CPath, (NumColumn, NumColumn))] = {
+              meanCols flatMap {
+                case (cpathMean, colMean) =>
+                  stdDevCols collect {
+                    case (cpathStdDev, colStdDev) if cpathMean == cpathStdDev =>
+                      (cpathMean, (colMean, colStdDev))
+                  }
+              }
             }
-          }
 
-          range.toList map { i =>
-            totalColumns.collect {
-              case (cpath, (meanCol, stdDevCol))
-                  if meanCol.isDefinedAt(i) && stdDevCol.isDefinedAt(i) =>
-                (cpath, Stats(meanCol(i), stdDevCol(i)))
-            }.toMap
+            range.toList map { i =>
+              totalColumns.collect {
+                case (cpath, (meanCol, stdDevCol))
+                    if meanCol.isDefinedAt(i) && stdDevCol.isDefinedAt(i) =>
+                  (cpath, Stats(meanCol(i), stdDevCol(i)))
+              }.toMap
+            }
           }
         }
-      }
 
       def applyMapper(
           summary: Result,
@@ -160,76 +161,79 @@ trait NormalizationHelperModule[M[+_]]
       }
 
       def normMapper(f: RowValueWithStats => BigDecimal)(
-          singleSummary: Summary) = new CMapperS[M] {
+          singleSummary: Summary) =
+        new CMapperS[M] {
 
-        def findSuffices(cpath: CPath): Set[CPath] =
-          singleSummary.keySet.filter(cpath.hasSuffix)
+          def findSuffices(cpath: CPath): Set[CPath] =
+            singleSummary.keySet.filter(cpath.hasSuffix)
 
-        def map(
-            cols: Map[ColumnRef, Column],
-            range: Range): Map[ColumnRef, Column] = {
-          val numericCols = cols filter {
-            case (ColumnRef(cpath, ctype), _) =>
-              ctype.isNumeric
-          }
-
-          val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
-            numericCols.groupBy { case (ColumnRef(selector, _), _) => selector }
-
-          def continue: Map[ColumnRef, Column] = {
-            val unifiedCols: Map[ColumnRef, Column] = {
-              groupedCols map {
-                case (cpath, refs) =>
-                  (ColumnRef(cpath, CNum), unifyNumColumns(refs.values))
-              }
+          def map(
+              cols: Map[ColumnRef, Column],
+              range: Range): Map[ColumnRef, Column] = {
+            val numericCols = cols filter {
+              case (ColumnRef(cpath, ctype), _) =>
+                ctype.isNumeric
             }
 
-            val resultsAll = unifiedCols collect {
-              case (ColumnRef(selector, ctype), col: NumColumn)
-                  if findSuffices(selector).size == 1 => {
-                val suffix = findSuffices(selector).head
+            val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
+              numericCols.groupBy {
+                case (ColumnRef(selector, _), _) => selector
+              }
 
-                val mean = singleSummary(suffix).mean
-                val stdDev = singleSummary(suffix).stdDev
-
-                val newColumn = new Map1Column(col) with NumColumn {
-                  def value(row: Int) =
-                    RowValueWithStats(
-                      col(row).addContext,
-                      Stats(mean.addContext, stdDev.addContext))
-
-                  def apply(row: Int) = f(value(row))
+            def continue: Map[ColumnRef, Column] = {
+              val unifiedCols: Map[ColumnRef, Column] = {
+                groupedCols map {
+                  case (cpath, refs) =>
+                    (ColumnRef(cpath, CNum), unifyNumColumns(refs.values))
                 }
+              }
 
-                (ColumnRef(selector, ctype), newColumn)
+              val resultsAll = unifiedCols collect {
+                case (ColumnRef(selector, ctype), col: NumColumn)
+                    if findSuffices(selector).size == 1 => {
+                  val suffix = findSuffices(selector).head
+
+                  val mean = singleSummary(suffix).mean
+                  val stdDev = singleSummary(suffix).stdDev
+
+                  val newColumn = new Map1Column(col) with NumColumn {
+                    def value(row: Int) =
+                      RowValueWithStats(
+                        col(row).addContext,
+                        Stats(mean.addContext, stdDev.addContext))
+
+                    def apply(row: Int) = f(value(row))
+                  }
+
+                  (ColumnRef(selector, ctype), newColumn)
+                }
+              }
+
+              val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
+              val definedBitset = bitsets reduceOption {
+                _ & _
+              } getOrElse BitSetUtil.create()
+
+              def intersectColumn(col: NumColumn): NumColumn = {
+                new BitsetColumn(definedBitset) with NumColumn {
+                  def apply(row: Int) = col.apply(row)
+                }
+              }
+
+              resultsAll map {
+                case (ref, col) =>
+                  (ref, intersectColumn(col))
               }
             }
 
-            val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
-            val definedBitset = bitsets reduceOption {
-              _ & _
-            } getOrElse BitSetUtil.create()
-
-            def intersectColumn(col: NumColumn): NumColumn = {
-              new BitsetColumn(definedBitset) with NumColumn {
-                def apply(row: Int) = col.apply(row)
-              }
+            val subsumes = singleSummary forall {
+              case (cpath, _) =>
+                groupedCols.keySet exists { _.hasSuffix(cpath) }
             }
 
-            resultsAll map {
-              case (ref, col) =>
-                (ref, intersectColumn(col))
-            }
+            if (subsumes) continue else Map.empty[ColumnRef, Column]
           }
-
-          val subsumes = singleSummary forall {
-            case (cpath, _) =>
-              groupedCols.keySet exists { _.hasSuffix(cpath) }
-          }
-
-          if (subsumes) continue else Map.empty[ColumnRef, Column]
         }
-      }
 
       lazy val alignment =
         MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
@@ -256,15 +260,16 @@ trait NormalizationLibModule[M[+_]] extends NormalizationHelperModule[M] {
         with NormalizationHelper {
       override val idPolicy: IdentityPolicy = IdentityPolicy.Retain.Left
 
-      def morph1Apply(summary: Result) = new Morph1Apply {
+      def morph1Apply(summary: Result) =
+        new Morph1Apply {
 
-        def apply(table: Table, ctx: MorphContext): M[Table] = {
-          def makeValue(info: RowValueWithStats): BigDecimal =
-            (info.rowValue - info.stats.mean) / info.stats.stdDev
+          def apply(table: Table, ctx: MorphContext): M[Table] = {
+            def makeValue(info: RowValueWithStats): BigDecimal =
+              (info.rowValue - info.stats.mean) / info.stats.stdDev
 
-          applyMapper(summary, normMapper(makeValue), table, ctx)
+            applyMapper(summary, normMapper(makeValue), table, ctx)
+          }
         }
-      }
     }
 
     object Denormalization
@@ -272,15 +277,16 @@ trait NormalizationLibModule[M[+_]] extends NormalizationHelperModule[M] {
         with NormalizationHelper {
       override val idPolicy: IdentityPolicy = IdentityPolicy.Retain.Left
 
-      def morph1Apply(summary: Result) = new Morph1Apply {
+      def morph1Apply(summary: Result) =
+        new Morph1Apply {
 
-        def apply(table: Table, ctx: MorphContext): M[Table] = {
-          def makeValue(info: RowValueWithStats): BigDecimal =
-            (info.rowValue * info.stats.stdDev) + info.stats.mean
+          def apply(table: Table, ctx: MorphContext): M[Table] = {
+            def makeValue(info: RowValueWithStats): BigDecimal =
+              (info.rowValue * info.stats.stdDev) + info.stats.mean
 
-          applyMapper(summary, normMapper(makeValue), table, ctx)
+            applyMapper(summary, normMapper(makeValue), table, ctx)
+          }
         }
-      }
     }
   }
 }

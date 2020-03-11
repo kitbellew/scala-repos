@@ -144,16 +144,15 @@ package object interpreter extends ReplConfig with ReplStrings {
       val catcher = catching(
         classOf[MissingRequirementError],
         classOf[ScalaReflectionException])
-      def typeFromTypeString: Option[ClassSymbol] = catcher opt {
-        exprTyper.typeOfTypeString(expr).typeSymbol.asClass
-      }
-      def typeFromNameTreatedAsTerm: Option[ClassSymbol] = catcher opt {
-        val moduleClass = exprTyper.typeOfExpression(expr).typeSymbol
-        moduleClass.linkedClassOfClass.asClass
-      }
-      def typeFromFullName: Option[ClassSymbol] = catcher opt {
-        intp.global.rootMirror.staticClass(expr)
-      }
+      def typeFromTypeString: Option[ClassSymbol] =
+        catcher opt { exprTyper.typeOfTypeString(expr).typeSymbol.asClass }
+      def typeFromNameTreatedAsTerm: Option[ClassSymbol] =
+        catcher opt {
+          val moduleClass = exprTyper.typeOfExpression(expr).typeSymbol
+          moduleClass.linkedClassOfClass.asClass
+        }
+      def typeFromFullName: Option[ClassSymbol] =
+        catcher opt { intp.global.rootMirror.staticClass(expr) }
       def typeOfTerm: Option[TypeSymbol] =
         replInfo(symbolOfLine(expr)).typeSymbol match {
           case sym: TypeSymbol => Some(sym)

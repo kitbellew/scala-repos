@@ -21,20 +21,21 @@ object Traversable {
         p: E => scala.collection.TraversableLike[A, E]): Iteratee[E, Option[A]]
   }
 
-  def head[E] = new Head[E] {
-    def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
-        : Iteratee[E, Option[A]] = {
+  def head[E] =
+    new Head[E] {
+      def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
+          : Iteratee[E, Option[A]] = {
 
-      def step: K[E, Option[A]] = {
-        case Input.Empty => Cont(step)
-        case Input.EOF   => Done(None, Input.EOF)
-        case Input.El(xs) if !xs.isEmpty =>
-          Done(Some(xs.head), Input.El(xs.tail))
-        case Input.El(empty) => Cont(step)
+        def step: K[E, Option[A]] = {
+          case Input.Empty => Cont(step)
+          case Input.EOF   => Done(None, Input.EOF)
+          case Input.El(xs) if !xs.isEmpty =>
+            Done(Some(xs.head), Input.El(xs.tail))
+          case Input.El(empty) => Cont(step)
+        }
+        Cont(step)
       }
-      Cont(step)
     }
-  }
 
   def takeUpTo[M](count: Long)(implicit
       p: M => scala.collection.TraversableLike[_, M]): Enumeratee[M, M] =
@@ -121,35 +122,36 @@ object Traversable {
     */
   def splitOnceAt[M, E](p: E => Boolean)(implicit
       traversableLike: M => scala.collection.TraversableLike[E, M],
-      ec: ExecutionContext): Enumeratee[M, M] = new CheckDone[M, M] {
-    val pec = ec.prepare()
+      ec: ExecutionContext): Enumeratee[M, M] =
+    new CheckDone[M, M] {
+      val pec = ec.prepare()
 
-    def step[A](k: K[M, A]): K[M, Iteratee[M, A]] = {
+      def step[A](k: K[M, A]): K[M, Iteratee[M, A]] = {
 
-      case in @ Input.El(e) =>
-        Iteratee.flatten(Future(e.span(p))(pec).map {
-          case (prefix, suffix) if suffix.isEmpty =>
-            new CheckDone[M, M] {
-              def continue[A](k: K[M, A]) = Cont(step(k))
-            } &> k(Input.El(prefix))
-          case (prefix, suffix) =>
-            Done(
-              if (prefix.isEmpty) Cont(k) else k(Input.El(prefix)),
-              Input.El(suffix.drop(1)))
-        }(dec))
+        case in @ Input.El(e) =>
+          Iteratee.flatten(Future(e.span(p))(pec).map {
+            case (prefix, suffix) if suffix.isEmpty =>
+              new CheckDone[M, M] {
+                def continue[A](k: K[M, A]) = Cont(step(k))
+              } &> k(Input.El(prefix))
+            case (prefix, suffix) =>
+              Done(
+                if (prefix.isEmpty) Cont(k) else k(Input.El(prefix)),
+                Input.El(suffix.drop(1)))
+          }(dec))
 
-      case Input.Empty =>
-        new CheckDone[M, M] {
-          def continue[A](k: K[M, A]) = Cont(step(k))
-        } &> k(Input.Empty)
+        case Input.Empty =>
+          new CheckDone[M, M] {
+            def continue[A](k: K[M, A]) = Cont(step(k))
+          } &> k(Input.Empty)
 
-      case Input.EOF => Done(Cont(k), Input.EOF)
+        case Input.EOF => Done(Cont(k), Input.EOF)
+
+      }
+
+      def continue[A](k: K[M, A]) = Cont(step(k))
 
     }
-
-    def continue[A](k: K[M, A]) = Cont(step(k))
-
-  }
 
   def drop[M](count: Int)(implicit
       p: M => scala.collection.TraversableLike[_, M]): Enumeratee[M, M] =

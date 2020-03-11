@@ -28,10 +28,11 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
   private var myRefCountHolder: ScalaRefCountHolder = null
   private var myAnnotationHolder: AnnotationHolderImpl = null
 
-  override def suitableForFile(file: PsiFile): Boolean = file match {
-    case _: ScalaFile => true
-    case otherFile    => ScalaLanguageDerivative hasDerivativeOnFile otherFile
-  }
+  override def suitableForFile(file: PsiFile): Boolean =
+    file match {
+      case _: ScalaFile => true
+      case otherFile    => ScalaLanguageDerivative hasDerivativeOnFile otherFile
+    }
 
   def visit(element: PsiElement) { runAnnotator(element) }
 

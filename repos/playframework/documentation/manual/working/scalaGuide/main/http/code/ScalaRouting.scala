@@ -20,12 +20,13 @@ package controllers {
   class Clients extends Controller {
 
     // #show-client-action
-    def show(id: Long) = Action {
-      Client
-        .findById(id)
-        .map { client => Ok(views.html.Clients.display(client)) }
-        .getOrElse(NotFound)
-    }
+    def show(id: Long) =
+      Action {
+        Client
+          .findById(id)
+          .map { client => Ok(views.html.Clients.display(client)) }
+          .getOrElse(NotFound)
+      }
     // #show-client-action
 
     def list() = Action(Ok("all clients"))
@@ -38,11 +39,12 @@ package controllers {
     def loadContentFromDatabase(page: String) = Some("showing page " + page)
 
     // #show-page-action
-    def show(page: String) = Action {
-      loadContentFromDatabase(page)
-        .map { htmlContent => Ok(htmlContent).as("text/html") }
-        .getOrElse(NotFound)
-    }
+    def show(page: String) =
+      Action {
+        loadContentFromDatabase(page)
+          .map { htmlContent => Ok(htmlContent).as("text/html") }
+          .getOrElse(NotFound)
+      }
     // #show-page-action
   }
 

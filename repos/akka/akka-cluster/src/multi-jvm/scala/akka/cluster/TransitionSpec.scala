@@ -61,14 +61,14 @@ abstract class TransitionSpec
 
   def seenLatestGossip: Set[RoleName] = clusterView.seenBy flatMap roleName
 
-  def awaitSeen(addresses: Address*): Unit = awaitAssert {
-    (seenLatestGossip map address) should ===(addresses.toSet)
-  }
+  def awaitSeen(addresses: Address*): Unit =
+    awaitAssert { (seenLatestGossip map address) should ===(addresses.toSet) }
 
-  def awaitMembers(addresses: Address*): Unit = awaitAssert {
-    clusterView.refreshCurrentState()
-    memberAddresses should ===(addresses.toSet)
-  }
+  def awaitMembers(addresses: Address*): Unit =
+    awaitAssert {
+      clusterView.refreshCurrentState()
+      memberAddresses should ===(addresses.toSet)
+    }
 
   def awaitMemberStatus(address: Address, status: MemberStatus): Unit =
     awaitAssert {

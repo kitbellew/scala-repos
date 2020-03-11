@@ -116,10 +116,11 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
 
   def dbFieldClass = classOf[Date]
 
-  def toLong: Long = get match {
-    case null    => 0L
-    case d: Date => d.getTime / 1000L
-  }
+  def toLong: Long =
+    get match {
+      case null    => 0L
+      case d: Date => d.getTime / 1000L
+    }
 
   def asJsExp: JsExp = JE.Num(toLong)
 
@@ -161,23 +162,25 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
       }/>))
     }
 
-  override def setFromAny(f: Any): Date = f match {
-    case JsonAST.JNull                   => this.set(null)
-    case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
-    case "" | null                       => this.set(null)
-    case s: String                       => parse(s).map(s => this.set(s)).openOr(this.get)
-    case x :: _                          => setFromAny(x)
-    case d: Date                         => this.set(d)
-    case Some(d: Date)                   => this.set(d)
-    case Full(d: Date)                   => this.set(d)
-    case None | Empty | Failure(_, _, _) => this.set(null)
-    case f                               => toDate(f).map(d => this.set(d)).openOr(this.get)
-  }
+  override def setFromAny(f: Any): Date =
+    f match {
+      case JsonAST.JNull                   => this.set(null)
+      case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
+      case "" | null                       => this.set(null)
+      case s: String                       => parse(s).map(s => this.set(s)).openOr(this.get)
+      case x :: _                          => setFromAny(x)
+      case d: Date                         => this.set(d)
+      case Some(d: Date)                   => this.set(d)
+      case Full(d: Date)                   => this.set(d)
+      case None | Empty | Failure(_, _, _) => this.set(null)
+      case f                               => toDate(f).map(d => this.set(d)).openOr(this.get)
+    }
 
-  def jdbcFriendly(field: String): Object = get match {
-    case null => null
-    case d    => new java.sql.Time(d.getTime)
-  }
+  def jdbcFriendly(field: String): Object =
+    get match {
+      case null => null
+      case d    => new java.sql.Time(d.getTime)
+    }
 
   def real_convertToJDBCFriendly(value: Date): Object =
     if (value == null) null else new java.sql.Time(value.getTime)

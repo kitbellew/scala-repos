@@ -40,9 +40,10 @@ sealed abstract class RegionTInstances1 {
     }
 
   implicit def RegionTMonad[S, M[_]](
-      implicit M0: Monad[M]): Monad[RegionT[S, M, ?]] = new RegionTMonad[S, M] {
-    implicit def M = M0
-  }
+      implicit M0: Monad[M]): Monad[RegionT[S, M, ?]] =
+    new RegionTMonad[S, M] {
+      implicit def M = M0
+    }
 }
 
 sealed abstract class RegionTInstances extends RegionTInstances1 {}

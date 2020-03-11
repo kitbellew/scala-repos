@@ -680,20 +680,22 @@ private[collection] final class CNode[K, V](
     "CNode %x\n%s".format(bitmap, array.map(_.string(lev + 1)).mkString("\n"))
 
   /* quiescently consistent - don't call concurrently to anything involving a GCAS!! */
-  private def collectElems: Seq[(K, V)] = array flatMap {
-    case sn: SNode[K, V] => Some(sn.kvPair)
-    case in: INode[K, V] =>
-      in.mainnode match {
-        case tn: TNode[K, V] => Some(tn.kvPair)
-        case ln: LNode[K, V] => ln.listmap.toList
-        case cn: CNode[K, V] => cn.collectElems
-      }
-  }
+  private def collectElems: Seq[(K, V)] =
+    array flatMap {
+      case sn: SNode[K, V] => Some(sn.kvPair)
+      case in: INode[K, V] =>
+        in.mainnode match {
+          case tn: TNode[K, V] => Some(tn.kvPair)
+          case ln: LNode[K, V] => ln.listmap.toList
+          case cn: CNode[K, V] => cn.collectElems
+        }
+    }
 
-  private def collectLocalElems: Seq[String] = array flatMap {
-    case sn: SNode[K, V] => Some(sn.kvPair._2.toString)
-    case in: INode[K, V] => Some(in.toString.drop(14) + "(" + in.gen + ")")
-  }
+  private def collectLocalElems: Seq[String] =
+    array flatMap {
+      case sn: SNode[K, V] => Some(sn.kvPair._2.toString)
+      case in: INode[K, V] => Some(in.toString.drop(14) + "(" + in.gen + ")")
+    }
 
   override def toString = {
     val elems = collectLocalElems
@@ -767,13 +769,14 @@ final class TrieMap[K, V] private (
   @volatile /*private*/
   var root = r
 
-  def this(hashf: Hashing[K], ef: Equiv[K]) = this(
-    INode.newRootNode,
-    AtomicReferenceFieldUpdater
-      .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root"),
-    hashf,
-    ef
-  )
+  def this(hashf: Hashing[K], ef: Equiv[K]) =
+    this(
+      INode.newRootNode,
+      AtomicReferenceFieldUpdater
+        .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root"),
+      hashf,
+      ef
+    )
 
   def this() = this(Hashing.default, Equiv.universal)
 
@@ -1122,25 +1125,27 @@ private[collection] class TrieMapIterator[K, V](
       r
     } else Iterator.empty.next()
 
-  private def readin(in: INode[K, V]) = in.gcasRead(ct) match {
-    case cn: CNode[K, V] =>
-      depth += 1
-      stack(depth) = cn.array
-      stackpos(depth) = -1
-      advance()
-    case tn: TNode[K, V] =>
-      current = tn
-    case ln: LNode[K, V] =>
-      subiter = ln.listmap.iterator
-      checkSubiter()
-    case null =>
-      current = null
-  }
+  private def readin(in: INode[K, V]) =
+    in.gcasRead(ct) match {
+      case cn: CNode[K, V] =>
+        depth += 1
+        stack(depth) = cn.array
+        stackpos(depth) = -1
+        advance()
+      case tn: TNode[K, V] =>
+        current = tn
+      case ln: LNode[K, V] =>
+        subiter = ln.listmap.iterator
+        checkSubiter()
+      case null =>
+        current = null
+    }
 
-  private def checkSubiter() = if (!subiter.hasNext) {
-    subiter = null
-    advance()
-  }
+  private def checkSubiter() =
+    if (!subiter.hasNext) {
+      subiter = null
+      advance()
+    }
 
   private def initialize() {
     assert(ct.isReadOnly)

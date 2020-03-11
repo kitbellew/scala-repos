@@ -102,15 +102,16 @@ final class Vector[+A] private[immutable] (
 
   // can still be improved
   override /*SeqLike*/
-  def reverseIterator: Iterator[A] = new AbstractIterator[A] {
-    private var i = self.length
-    def hasNext: Boolean = 0 < i
-    def next(): A =
-      if (0 < i) {
-        i -= 1
-        self(i)
-      } else Iterator.empty.next()
-  }
+  def reverseIterator: Iterator[A] =
+    new AbstractIterator[A] {
+      private var i = self.length
+      def hasNext: Boolean = 0 < i
+      def next(): A =
+        if (0 < i) {
+          i -= 1
+          self(i)
+        } else Iterator.empty.next()
+    }
 
   // TODO: reverse
 
@@ -481,20 +482,21 @@ final class Vector[+A] private[immutable] (
 
   // low-level implementation (needs cleanup, maybe move to util class)
 
-  private def shiftTopLevel(oldLeft: Int, newLeft: Int) = (depth - 1) match {
-    case 0 =>
-      display0 = copyRange(display0, oldLeft, newLeft)
-    case 1 =>
-      display1 = copyRange(display1, oldLeft, newLeft)
-    case 2 =>
-      display2 = copyRange(display2, oldLeft, newLeft)
-    case 3 =>
-      display3 = copyRange(display3, oldLeft, newLeft)
-    case 4 =>
-      display4 = copyRange(display4, oldLeft, newLeft)
-    case 5 =>
-      display5 = copyRange(display5, oldLeft, newLeft)
-  }
+  private def shiftTopLevel(oldLeft: Int, newLeft: Int) =
+    (depth - 1) match {
+      case 0 =>
+        display0 = copyRange(display0, oldLeft, newLeft)
+      case 1 =>
+        display1 = copyRange(display1, oldLeft, newLeft)
+      case 2 =>
+        display2 = copyRange(display2, oldLeft, newLeft)
+      case 3 =>
+        display3 = copyRange(display3, oldLeft, newLeft)
+      case 4 =>
+        display4 = copyRange(display4, oldLeft, newLeft)
+      case 5 =>
+        display5 = copyRange(display5, oldLeft, newLeft)
+    }
 
   private def zeroLeft(array: Array[AnyRef], index: Int): Unit = {
     var i = 0; while (i < index) { array(i) = null; i += 1 }
@@ -997,44 +999,45 @@ private[immutable] trait VectorPointer[T] {
   // requires structure is at pos index
   // ensures structure is clean and at pos index and writable at all levels except 0
 
-  private[immutable] final def stabilize(index: Int) = (depth - 1) match {
-    case 5 =>
-      display5 = copyOf(display5)
-      display4 = copyOf(display4)
-      display3 = copyOf(display3)
-      display2 = copyOf(display2)
-      display1 = copyOf(display1)
-      display5((index >> 25) & 31) = display4
-      display4((index >> 20) & 31) = display3
-      display3((index >> 15) & 31) = display2
-      display2((index >> 10) & 31) = display1
-      display1((index >> 5) & 31) = display0
-    case 4 =>
-      display4 = copyOf(display4)
-      display3 = copyOf(display3)
-      display2 = copyOf(display2)
-      display1 = copyOf(display1)
-      display4((index >> 20) & 31) = display3
-      display3((index >> 15) & 31) = display2
-      display2((index >> 10) & 31) = display1
-      display1((index >> 5) & 31) = display0
-    case 3 =>
-      display3 = copyOf(display3)
-      display2 = copyOf(display2)
-      display1 = copyOf(display1)
-      display3((index >> 15) & 31) = display2
-      display2((index >> 10) & 31) = display1
-      display1((index >> 5) & 31) = display0
-    case 2 =>
-      display2 = copyOf(display2)
-      display1 = copyOf(display1)
-      display2((index >> 10) & 31) = display1
-      display1((index >> 5) & 31) = display0
-    case 1 =>
-      display1 = copyOf(display1)
-      display1((index >> 5) & 31) = display0
-    case 0 =>
-  }
+  private[immutable] final def stabilize(index: Int) =
+    (depth - 1) match {
+      case 5 =>
+        display5 = copyOf(display5)
+        display4 = copyOf(display4)
+        display3 = copyOf(display3)
+        display2 = copyOf(display2)
+        display1 = copyOf(display1)
+        display5((index >> 25) & 31) = display4
+        display4((index >> 20) & 31) = display3
+        display3((index >> 15) & 31) = display2
+        display2((index >> 10) & 31) = display1
+        display1((index >> 5) & 31) = display0
+      case 4 =>
+        display4 = copyOf(display4)
+        display3 = copyOf(display3)
+        display2 = copyOf(display2)
+        display1 = copyOf(display1)
+        display4((index >> 20) & 31) = display3
+        display3((index >> 15) & 31) = display2
+        display2((index >> 10) & 31) = display1
+        display1((index >> 5) & 31) = display0
+      case 3 =>
+        display3 = copyOf(display3)
+        display2 = copyOf(display2)
+        display1 = copyOf(display1)
+        display3((index >> 15) & 31) = display2
+        display2((index >> 10) & 31) = display1
+        display1((index >> 5) & 31) = display0
+      case 2 =>
+        display2 = copyOf(display2)
+        display1 = copyOf(display1)
+        display2((index >> 10) & 31) = display1
+        display1((index >> 5) & 31) = display0
+      case 1 =>
+        display1 = copyOf(display1)
+        display1((index >> 5) & 31) = display0
+      case 0 =>
+    }
 
   /// USED IN UPDATE AND APPEND BACK
 

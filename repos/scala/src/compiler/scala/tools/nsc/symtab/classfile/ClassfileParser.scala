@@ -218,18 +218,19 @@ abstract class ClassfileParser {
     }
 
     /** Return the name found at given index. */
-    def getName(index: Int): Name = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
-      else
-        values(index) match {
-          case name: Name => name
-          case _ =>
-            val start = firstExpecting(index, CONSTANT_UTF8)
-            recordAtIndex(
-              newTermName(in.buf, start + 2, in.getChar(start).toInt),
-              index)
-        }
-    )
+    def getName(index: Int): Name =
+      (
+        if (index <= 0 || len <= index) errorBadIndex(index)
+        else
+          values(index) match {
+            case name: Name => name
+            case _ =>
+              val start = firstExpecting(index, CONSTANT_UTF8)
+              recordAtIndex(
+                newTermName(in.buf, start + 2, in.getChar(start).toInt),
+                index)
+          }
+      )
 
     /** Return the name found at given index in the constant pool, with '/' replaced by '.'. */
     def getExternalName(index: Int): Name = {
@@ -294,20 +295,21 @@ abstract class ClassfileParser {
       *  arrays are considered to be class types, they might
       *  appear as entries in 'newarray' or 'cast' opcodes.
       */
-    def getClassOrArrayType(index: Int): Type = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
-      else
-        values(index) match {
-          case tp: Type    => tp
-          case cls: Symbol => cls.tpe_*
-          case _ =>
-            val name = getClassName(index)
-            name charAt 0 match {
-              case ARRAY_TAG => recordAtIndex(sigToType(null, name), index)
-              case _         => recordAtIndex(classNameToSymbol(name), index).tpe_*
-            }
-        }
-    )
+    def getClassOrArrayType(index: Int): Type =
+      (
+        if (index <= 0 || len <= index) errorBadIndex(index)
+        else
+          values(index) match {
+            case tp: Type    => tp
+            case cls: Symbol => cls.tpe_*
+            case _ =>
+              val name = getClassName(index)
+              name charAt 0 match {
+                case ARRAY_TAG => recordAtIndex(sigToType(null, name), index)
+                case _         => recordAtIndex(classNameToSymbol(name), index).tpe_*
+              }
+          }
+      )
 
     def getType(index: Int): Type = getType(null, index)
     def getType(sym: Symbol, index: Int): Type =
@@ -334,16 +336,17 @@ abstract class ClassfileParser {
       })
     }
     def getConstant(index: Char): Constant = getConstant(index.toInt)
-    def getConstant(index: Int): Constant = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
-      else
-        values(index) match {
-          case const: Constant => const
-          case sym: Symbol     => Constant(sym.tpe_*)
-          case tpe: Type       => Constant(tpe)
-          case _               => recordAtIndex(createConstant(index), index)
-        }
-    )
+    def getConstant(index: Int): Constant =
+      (
+        if (index <= 0 || len <= index) errorBadIndex(index)
+        else
+          values(index) match {
+            case const: Constant => const
+            case sym: Symbol     => Constant(sym.tpe_*)
+            case tpe: Type       => Constant(tpe)
+            case _               => recordAtIndex(createConstant(index), index)
+          }
+      )
 
     private def getSubArray(bytes: Array[Byte]): Array[Byte] = {
       val decodedLength = ByteCodecs.decode(bytes)
@@ -352,19 +355,20 @@ abstract class ClassfileParser {
       arr
     }
 
-    def getBytes(index: Int): Array[Byte] = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
-      else
-        values(index) match {
-          case xs: Array[Byte] => xs
-          case _ =>
-            val start = firstExpecting(index, CONSTANT_UTF8)
-            val len = (in getChar start).toInt
-            val bytes = new Array[Byte](len)
-            System.arraycopy(in.buf, start + 2, bytes, 0, len)
-            recordAtIndex(getSubArray(bytes), index)
-        }
-    )
+    def getBytes(index: Int): Array[Byte] =
+      (
+        if (index <= 0 || len <= index) errorBadIndex(index)
+        else
+          values(index) match {
+            case xs: Array[Byte] => xs
+            case _ =>
+              val start = firstExpecting(index, CONSTANT_UTF8)
+              val len = (in getChar start).toInt
+              val bytes = new Array[Byte](len)
+              System.arraycopy(in.buf, start + 2, bytes, 0, len)
+              recordAtIndex(getSubArray(bytes), index)
+          }
+      )
 
     def getBytes(indices: List[Int]): Array[Byte] = {
       val head = indices.head
@@ -434,11 +438,12 @@ abstract class ClassfileParser {
   /** FIXME - we shouldn't be doing ad hoc lookups in the empty package.
     *  The method called "getClassByName" should either return the class or not.
     */
-  private def lookupClass(name: Name) = (
-    if (name containsChar '.')
-      rootMirror getClassByName name // see tickets #2464, #3756
-    else definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName)
-  )
+  private def lookupClass(name: Name) =
+    (
+      if (name containsChar '.')
+        rootMirror getClassByName name // see tickets #2464, #3756
+      else definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName)
+    )
 
   /** Return the class symbol of the given name. */
   def classNameToSymbol(name: Name): Symbol = {
@@ -673,72 +678,75 @@ abstract class ClassfileParser {
         case VOID_TAG   => UnitTpe
         case BOOL_TAG   => BooleanTpe
         case 'L' =>
-          def processInner(tp: Type): Type = tp match {
-            case TypeRef(pre, sym, args) if (!sym.isStatic) =>
-              typeRef(processInner(pre.widen), sym, args)
-            case _ =>
-              tp
-          }
-          def processClassType(tp: Type): Type = tp match {
-            case TypeRef(pre, classSym, args) =>
-              val existentials = new ListBuffer[Symbol]()
-              if (sig.charAt(index) == '<') {
-                accept('<')
-                val xs = new ListBuffer[Type]()
-                var i = 0
-                while (sig.charAt(index) != '>') {
-                  sig.charAt(index) match {
-                    case variance @ ('+' | '-' | '*') =>
-                      index += 1
-                      val bounds = variance match {
-                        case '+' =>
-                          TypeBounds.upper(objToAny(sig2type(tparams, skiptvs)))
-                        case '-' =>
-                          val tp = sig2type(tparams, skiptvs)
-                          // sig2type seems to return AnyClass regardless of the situation:
-                          // we don't want Any as a LOWER bound.
-                          if (tp.typeSymbol == AnyClass) TypeBounds.empty
-                          else TypeBounds.lower(tp)
-                        case '*' => TypeBounds.empty
-                      }
-                      val newtparam = sym.newExistential(
-                        newTypeName("?" + i),
-                        sym.pos) setInfo bounds
-                      existentials += newtparam
-                      xs += newtparam.tpeHK
-                      i += 1
-                    case _ =>
-                      xs += sig2type(tparams, skiptvs)
-                  }
-                }
-                accept('>')
-                assert(xs.length > 0, tp)
-                debuglogResult("new existential")(
-                  newExistentialType(
-                    existentials.toList,
-                    typeRef(pre, classSym, xs.toList)))
-              }
-              // isMonomorphicType is false if the info is incomplete, as it usually is here
-              // so have to check unsafeTypeParams.isEmpty before worrying about raw type case below,
-              // or we'll create a boatload of needless existentials.
-              else if (classSym.isMonomorphicType || classSym.unsafeTypeParams.isEmpty)
+          def processInner(tp: Type): Type =
+            tp match {
+              case TypeRef(pre, sym, args) if (!sym.isStatic) =>
+                typeRef(processInner(pre.widen), sym, args)
+              case _ =>
                 tp
-              else
-                debuglogResult(s"raw type from $classSym") {
-                  // raw type - existentially quantify all type parameters
-                  val eparams = typeParamsToExistentials(
-                    classSym,
-                    classSym.unsafeTypeParams)
-                  newExistentialType(
-                    eparams,
-                    typeRef(pre, classSym, eparams.map(_.tpeHK)))
+            }
+          def processClassType(tp: Type): Type =
+            tp match {
+              case TypeRef(pre, classSym, args) =>
+                val existentials = new ListBuffer[Symbol]()
+                if (sig.charAt(index) == '<') {
+                  accept('<')
+                  val xs = new ListBuffer[Type]()
+                  var i = 0
+                  while (sig.charAt(index) != '>') {
+                    sig.charAt(index) match {
+                      case variance @ ('+' | '-' | '*') =>
+                        index += 1
+                        val bounds = variance match {
+                          case '+' =>
+                            TypeBounds.upper(
+                              objToAny(sig2type(tparams, skiptvs)))
+                          case '-' =>
+                            val tp = sig2type(tparams, skiptvs)
+                            // sig2type seems to return AnyClass regardless of the situation:
+                            // we don't want Any as a LOWER bound.
+                            if (tp.typeSymbol == AnyClass) TypeBounds.empty
+                            else TypeBounds.lower(tp)
+                          case '*' => TypeBounds.empty
+                        }
+                        val newtparam = sym.newExistential(
+                          newTypeName("?" + i),
+                          sym.pos) setInfo bounds
+                        existentials += newtparam
+                        xs += newtparam.tpeHK
+                        i += 1
+                      case _ =>
+                        xs += sig2type(tparams, skiptvs)
+                    }
+                  }
+                  accept('>')
+                  assert(xs.length > 0, tp)
+                  debuglogResult("new existential")(
+                    newExistentialType(
+                      existentials.toList,
+                      typeRef(pre, classSym, xs.toList)))
                 }
-            case tp =>
-              assert(
-                sig.charAt(index) != '<',
-                s"sig=$sig, index=$index, tp=$tp")
-              tp
-          }
+                // isMonomorphicType is false if the info is incomplete, as it usually is here
+                // so have to check unsafeTypeParams.isEmpty before worrying about raw type case below,
+                // or we'll create a boatload of needless existentials.
+                else if (classSym.isMonomorphicType || classSym.unsafeTypeParams.isEmpty)
+                  tp
+                else
+                  debuglogResult(s"raw type from $classSym") {
+                    // raw type - existentially quantify all type parameters
+                    val eparams = typeParamsToExistentials(
+                      classSym,
+                      classSym.unsafeTypeParams)
+                    newExistentialType(
+                      eparams,
+                      typeRef(pre, classSym, eparams.map(_.tpeHK)))
+                  }
+              case tp =>
+                assert(
+                  sig.charAt(index) != '<',
+                  s"sig=$sig, index=$index, tp=$tp")
+                tp
+            }
 
           val classSym = classNameToSymbol(subName(c => c == ';' || c == '<'))
           assert(!classSym.isOverloaded, classSym.alternatives)

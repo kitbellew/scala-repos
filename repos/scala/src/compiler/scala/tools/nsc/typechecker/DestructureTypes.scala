@@ -59,19 +59,21 @@ trait DestructureTypes {
             names.indices.toList,
             (i: Int) => atom(names(i).toString, args(i))))
     }
-    private def typeTypeName(tp: Type) = tp match {
-      case mt @ MethodType(_, _) if mt.isImplicit => "ImplicitMethodType"
-      case TypeRef(_, sym, _)                     => typeRefType(sym)
-      case _                                      => tp.kind
-    }
+    private def typeTypeName(tp: Type) =
+      tp match {
+        case mt @ MethodType(_, _) if mt.isImplicit => "ImplicitMethodType"
+        case TypeRef(_, sym, _)                     => typeRefType(sym)
+        case _                                      => tp.kind
+      }
 
-    def wrapTree(tree: Tree): Node = withType(
-      tree match {
-        case x: NameTree => atom(x.name.toString, x)
-        case _           => wrapAtom(tree)
-      },
-      tree.productPrefix
-    )
+    def wrapTree(tree: Tree): Node =
+      withType(
+        tree match {
+          case x: NameTree => atom(x.name.toString, x)
+          case _           => wrapAtom(tree)
+        },
+        tree.productPrefix
+      )
     def wrapSymbolInfo(sym: Symbol): Node = {
       if ((sym eq NoSymbol) || openSymbols(sym)) wrapEmpty
       else {
@@ -84,12 +86,13 @@ trait DestructureTypes {
     def list(nodes: List[Node]): Node = wrapSequence(nodes)
     def product(tp: Type, nodes: Node*): Node =
       product(typeTypeName(tp), nodes: _*)
-    def product(typeName: String, nodes: Node*): Node = (
-      nodes.toList filterNot (_ == wrapEmpty) match {
-        case Nil => wrapEmpty
-        case xs  => withType(wrapProduct(xs), typeName)
-      }
-    )
+    def product(typeName: String, nodes: Node*): Node =
+      (
+        nodes.toList filterNot (_ == wrapEmpty) match {
+          case Nil => wrapEmpty
+          case xs  => withType(wrapProduct(xs), typeName)
+        }
+      )
 
     def atom[U](label: String, value: U): Node = node(label, wrapAtom(value))
     def constant(label: String, const: Constant): Node = atom(label, const)
@@ -110,10 +113,11 @@ trait DestructureTypes {
       wrapMono(valueParams(params), resultType(restpe))
     def nullaryFunction(restpe: Type): Node = wrapMono(wrapEmpty, this(restpe))
 
-    def prefix(pre: Type): Node = pre match {
-      case NoPrefix => wrapEmpty
-      case _        => this("pre", pre)
-    }
+    def prefix(pre: Type): Node =
+      pre match {
+        case NoPrefix => wrapEmpty
+        case _        => this("pre", pre)
+      }
     def typeBounds(lo0: Type, hi0: Type): Node = {
       val lo =
         if ((lo0 eq WildcardType) || (lo0.typeSymbol eq NothingClass)) wrapEmpty
@@ -125,18 +129,20 @@ trait DestructureTypes {
       product("TypeBounds", lo, hi)
     }
 
-    def annotation(ann: AnnotationInfo): Node = product(
-      "AnnotationInfo",
-      this("atp", ann.atp),
-      node("args", treeList(ann.args)),
-      assocsNode(ann)
-    )
-    def typeConstraint(constr: TypeConstraint): Node = product(
-      "TypeConstraint",
-      node("lo", typeList(constr.loBounds)),
-      node("hi", typeList(constr.hiBounds)),
-      this("inst", constr.inst)
-    )
+    def annotation(ann: AnnotationInfo): Node =
+      product(
+        "AnnotationInfo",
+        this("atp", ann.atp),
+        node("args", treeList(ann.args)),
+        assocsNode(ann)
+      )
+    def typeConstraint(constr: TypeConstraint): Node =
+      product(
+        "TypeConstraint",
+        node("lo", typeList(constr.loBounds)),
+        node("hi", typeList(constr.hiBounds)),
+        this("inst", constr.inst)
+      )
     def annotatedType(annotations: List[AnnotationInfo], underlying: Type) =
       product(
         "AnnotatedType",
@@ -167,15 +173,16 @@ trait DestructureTypes {
       )
     }
 
-    def symbolType(sym: Symbol) = (
-      if (sym.isRefinementClass) "Refinement"
-      else if (sym.isAliasType) "Alias"
-      else if (sym.isTypeSkolem) "TypeSkolem"
-      else if (sym.isTypeParameter) "TypeParam"
-      else if (sym.isAbstractType) "AbstractType"
-      else if (sym.isType) "TypeSymbol"
-      else "TermSymbol"
-    )
+    def symbolType(sym: Symbol) =
+      (
+        if (sym.isRefinementClass) "Refinement"
+        else if (sym.isAliasType) "Alias"
+        else if (sym.isTypeSkolem) "TypeSkolem"
+        else if (sym.isTypeParameter) "TypeParam"
+        else if (sym.isAbstractType) "AbstractType"
+        else if (sym.isType) "TypeSymbol"
+        else "TermSymbol"
+      )
     def typeRefType(sym: Symbol) =
       (
         if (sym.isRefinementClass) "RefinementTypeRef"
@@ -189,34 +196,36 @@ trait DestructureTypes {
     def node(label: String, node: Node): Node = withLabel(node, label)
     def apply(label: String, tp: Type): Node = withLabel(this(tp), label)
 
-    def apply(tp: Type): Node = tp match {
-      case AntiPolyType(pre, targs) => product(tp, prefix(pre), typeArgs(targs))
-      case ClassInfoType(parents, decls, clazz) =>
-        product(tp, parentList(parents), scope(decls), wrapAtom(clazz))
-      case ConstantType(const) => product(tp, constant("value", const))
-      case OverloadedType(pre, alts) =>
-        product(
-          tp,
-          prefix(pre),
-          node("alts", typeList(alts map pre.memberType)))
-      case RefinedType(parents, decls) =>
-        product(tp, parentList(parents), scope(decls))
-      case SingleType(pre, sym) => product(tp, prefix(pre), wrapAtom(sym))
-      case SuperType(thistp, supertp) =>
-        product(tp, this("this", thistp), this("super", supertp))
-      case ThisType(clazz) => product(tp, wrapAtom(clazz))
-      case TypeVar(inst, constr) =>
-        product(tp, this("inst", inst), typeConstraint(constr))
-      case AnnotatedType(annotations, underlying) =>
-        annotatedType(annotations, underlying)
-      case ExistentialType(tparams, underlying) =>
-        polyFunction(tparams, underlying)
-      case PolyType(tparams, restpe)    => polyFunction(tparams, restpe)
-      case MethodType(params, restpe)   => monoFunction(params, restpe)
-      case NullaryMethodType(restpe)    => nullaryFunction(restpe)
-      case TypeBounds(lo, hi)           => typeBounds(lo, hi)
-      case tr @ TypeRef(pre, sym, args) => typeRef(tr)
-      case _                            => wrapAtom(tp) // XXX see what this is
-    }
+    def apply(tp: Type): Node =
+      tp match {
+        case AntiPolyType(pre, targs) =>
+          product(tp, prefix(pre), typeArgs(targs))
+        case ClassInfoType(parents, decls, clazz) =>
+          product(tp, parentList(parents), scope(decls), wrapAtom(clazz))
+        case ConstantType(const) => product(tp, constant("value", const))
+        case OverloadedType(pre, alts) =>
+          product(
+            tp,
+            prefix(pre),
+            node("alts", typeList(alts map pre.memberType)))
+        case RefinedType(parents, decls) =>
+          product(tp, parentList(parents), scope(decls))
+        case SingleType(pre, sym) => product(tp, prefix(pre), wrapAtom(sym))
+        case SuperType(thistp, supertp) =>
+          product(tp, this("this", thistp), this("super", supertp))
+        case ThisType(clazz) => product(tp, wrapAtom(clazz))
+        case TypeVar(inst, constr) =>
+          product(tp, this("inst", inst), typeConstraint(constr))
+        case AnnotatedType(annotations, underlying) =>
+          annotatedType(annotations, underlying)
+        case ExistentialType(tparams, underlying) =>
+          polyFunction(tparams, underlying)
+        case PolyType(tparams, restpe)    => polyFunction(tparams, restpe)
+        case MethodType(params, restpe)   => monoFunction(params, restpe)
+        case NullaryMethodType(restpe)    => nullaryFunction(restpe)
+        case TypeBounds(lo, hi)           => typeBounds(lo, hi)
+        case tr @ TypeRef(pre, sym, args) => typeRef(tr)
+        case _                            => wrapAtom(tp) // XXX see what this is
+      }
   }
 }

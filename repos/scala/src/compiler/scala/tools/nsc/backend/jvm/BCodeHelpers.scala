@@ -920,18 +920,19 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
     // @M don't generate java generics sigs for (members of) implementation
     // classes, as they are monomorphic (TODO: ok?)
-    private def needsGenericSignature(sym: Symbol) = !(
-      // PP: This condition used to include sym.hasExpandedName, but this leads
-      // to the total loss of generic information if a private member is
-      // accessed from a closure: both the field and the accessor were generated
-      // without it.  This is particularly bad because the availability of
-      // generic information could disappear as a consequence of a seemingly
-      // unrelated change.
-      settings.Ynogenericsig
-        || sym.isArtifact
-        || sym.isLiftedMethod
-        || sym.isBridge
-    )
+    private def needsGenericSignature(sym: Symbol) =
+      !(
+        // PP: This condition used to include sym.hasExpandedName, but this leads
+        // to the total loss of generic information if a private member is
+        // accessed from a closure: both the field and the accessor were generated
+        // without it.  This is particularly bad because the availability of
+        // generic information could disappear as a consequence of a seemingly
+        // unrelated change.
+        settings.Ynogenericsig
+          || sym.isArtifact
+          || sym.isLiftedMethod
+          || sym.isBridge
+      )
 
     /* @return
      *   - `null` if no Java signature is to be added (`null` is what ASM expects in these cases).
@@ -1028,11 +1029,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         isRemoteClass: Boolean,
         isJMethodPublic: Boolean,
         meth: Symbol) {
-      def hasThrowsRemoteException = meth.annotations.exists {
-        case ThrownException(exc) =>
-          exc.typeSymbol == definitions.RemoteExceptionClass
-        case _ => false
-      }
+      def hasThrowsRemoteException =
+        meth.annotations.exists {
+          case ThrownException(exc) =>
+            exc.typeSymbol == definitions.RemoteExceptionClass
+          case _ => false
+        }
       val needsAnnotation = {
         (isRemoteClass ||
         isRemote(meth) && isJMethodPublic) && !hasThrowsRemoteException
@@ -1494,14 +1496,15 @@ object BCodeHelpers {
 
   class TestOp(val op: Int) extends AnyVal {
     import TestOp._
-    def negate = this match {
-      case EQ => NE
-      case NE => EQ
-      case LT => GE
-      case GE => LT
-      case GT => LE
-      case LE => GT
-    }
+    def negate =
+      this match {
+        case EQ => NE
+        case NE => EQ
+        case LT => GE
+        case GE => LT
+        case GT => LE
+        case LE => GT
+      }
     def opcodeIF = asm.Opcodes.IFEQ + op
     def opcodeIFICMP = asm.Opcodes.IF_ICMPEQ + op
   }

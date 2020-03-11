@@ -78,19 +78,21 @@ sealed trait Schedule extends Loggable {
   /**
     * Re-create the underlying <code>SingleThreadScheduledExecutor</code>
     */
-  def restart: Unit = synchronized {
-    if ((service eq null) || service.isShutdown)
-      service = Executors.newSingleThreadScheduledExecutor(TF)
-    if ((pool eq null) || pool.isShutdown) pool = buildExecutor()
-  }
+  def restart: Unit =
+    synchronized {
+      if ((service eq null) || service.isShutdown)
+        service = Executors.newSingleThreadScheduledExecutor(TF)
+      if ((pool eq null) || pool.isShutdown) pool = buildExecutor()
+    }
 
   /**
     * Shut down the underlying <code>SingleThreadScheduledExecutor</code>
     */
-  def shutdown(): Unit = synchronized {
-    service.shutdown
-    pool.shutdown
-  }
+  def shutdown(): Unit =
+    synchronized {
+      service.shutdown
+      pool.shutdown
+    }
 
   /**
     * Schedules the sending of a message to occur after the specified delay.

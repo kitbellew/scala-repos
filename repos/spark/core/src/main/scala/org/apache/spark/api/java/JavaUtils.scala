@@ -67,10 +67,12 @@ private[spark] object JavaUtils {
                 override def setValue(v1: B): B = self.put(k, v1)
                 override def hashCode: Int =
                   byteswap32(k.hashCode) + (byteswap32(v.hashCode) << 16)
-                override def equals(other: Any): Boolean = other match {
-                  case e: ju.Map.Entry[_, _] => k == e.getKey && v == e.getValue
-                  case _                     => false
-                }
+                override def equals(other: Any): Boolean =
+                  other match {
+                    case e: ju.Map.Entry[_, _] =>
+                      k == e.getKey && v == e.getValue
+                    case _ => false
+                  }
               }
             }
 

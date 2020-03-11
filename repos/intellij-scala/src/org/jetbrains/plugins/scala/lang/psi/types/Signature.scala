@@ -85,16 +85,17 @@ case class TypeAliasSignature(
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeAliasSignature]
 
-  override def equals(other: Any): Boolean = other match {
-    case that: TypeAliasSignature =>
-      (that canEqual this) &&
-        name == that.name &&
-        typeParams == that.typeParams &&
-        lowerBound == that.lowerBound &&
-        upperBound == that.upperBound &&
-        isDefinition == that.isDefinition
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: TypeAliasSignature =>
+        (that canEqual this) &&
+          name == that.name &&
+          typeParams == that.typeParams &&
+          lowerBound == that.lowerBound &&
+          upperBound == that.upperBound &&
+          isDefinition == that.isDefinition
+      case _ => false
+    }
 
   override def hashCode(): Int = {
     val state = Seq(name, typeParams, lowerBound, upperBound, isDefinition)
@@ -212,10 +213,11 @@ class Signature(
     (true, undefSubst)
   }
 
-  override def equals(that: Any) = that match {
-    case s: Signature => equiv(s) && parameterlessKind == s.parameterlessKind
-    case _            => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case s: Signature => equiv(s) && parameterlessKind == s.parameterlessKind
+      case _            => false
+    }
 
   def parameterlessKind: Int = {
     namedElement match {
@@ -272,24 +274,26 @@ object Signature {
 
 import com.intellij.psi.PsiMethod
 object PhysicalSignature {
-  def typesEval(method: PsiMethod): List[Seq[() => ScType]] = method match {
-    case fun: ScFunction =>
-      fun.effectiveParameterClauses
-        .map(clause =>
-          ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters))
-        .toList
-    case _ =>
-      List(ScalaPsiUtil.mapToLazyTypesSeq(method.getParameterList match {
-        case p: ScParameters => p.params
-        case p               => p.getParameters.toSeq
-      }))
-  }
+  def typesEval(method: PsiMethod): List[Seq[() => ScType]] =
+    method match {
+      case fun: ScFunction =>
+        fun.effectiveParameterClauses
+          .map(clause =>
+            ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters))
+          .toList
+      case _ =>
+        List(ScalaPsiUtil.mapToLazyTypesSeq(method.getParameterList match {
+          case p: ScParameters => p.params
+          case p               => p.getParameters.toSeq
+        }))
+    }
 
-  def paramLength(method: PsiMethod): List[Int] = method match {
-    case fun: ScFunction =>
-      fun.effectiveParameterClauses.map(_.effectiveParameters.length).toList
-    case _ => List(method.getParameterList.getParametersCount)
-  }
+  def paramLength(method: PsiMethod): List[Int] =
+    method match {
+      case fun: ScFunction =>
+        fun.effectiveParameterClauses.map(_.effectiveParameters.length).toList
+      case _ => List(method.getParameterList.getParametersCount)
+    }
 
   def hasRepeatedParam(method: PsiMethod): Seq[Int] = {
     method.getParameterList match {

@@ -32,7 +32,8 @@ object MetricSpace extends MetricSpace0 {
 private[algebra] trait MetricSpace0 {
   implicit def realMetricSpace[@sp(Int, Long, Float, Double) R](implicit
       R0: IsReal[R],
-      R1: Rng[R]): MetricSpace[R, R] = new MetricSpace[R, R] {
-    def distance(v: R, w: R): R = R0.abs(R1.minus(v, w))
-  }
+      R1: Rng[R]): MetricSpace[R, R] =
+    new MetricSpace[R, R] {
+      def distance(v: R, w: R): R = R0.abs(R1.minus(v, w))
+    }
 }

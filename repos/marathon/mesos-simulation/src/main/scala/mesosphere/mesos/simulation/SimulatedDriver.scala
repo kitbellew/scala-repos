@@ -89,10 +89,11 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
   @volatile
   var driverActorRefOpt: Option[ActorRef] = None
 
-  private def status: Status = system match {
-    case None    => Status.DRIVER_STOPPED
-    case Some(_) => Status.DRIVER_RUNNING
-  }
+  private def status: Status =
+    system match {
+      case None    => Status.DRIVER_STOPPED
+      case Some(_) => Status.DRIVER_RUNNING
+    }
 
   override def start(): Status = {
     log.info("Starting simulated Mesos")

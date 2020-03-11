@@ -24,14 +24,15 @@ object ClientSideOp {
       case n => f(n)
     }
   def mapResultSetMapping(n: Node, keepType: Boolean = true)(
-      f: ResultSetMapping => Node): Node = n match {
-    case r: ResultSetMapping => f(r)
-    case n: ClientSideOp =>
-      n.nodeMapServerSide(
-        keepType,
-        (ch => mapResultSetMapping(ch, keepType)(f)))
-    case n => throw new SlickException("No ResultSetMapping found in tree")
-  }
+      f: ResultSetMapping => Node): Node =
+    n match {
+      case r: ResultSetMapping => f(r)
+      case n: ClientSideOp =>
+        n.nodeMapServerSide(
+          keepType,
+          (ch => mapResultSetMapping(ch, keepType)(f)))
+      case n => throw new SlickException("No ResultSetMapping found in tree")
+    }
 }
 
 /** Get the first element of a collection. For client-side operations only. */

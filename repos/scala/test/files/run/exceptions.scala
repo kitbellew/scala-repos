@@ -5,10 +5,11 @@
 //############################################################################
 
 abstract class IntMap[A] {
-  def lookup(key: Int): A = this match {
-    case Empty() => sys.error("KO")
-    case _       => sys.error("ok")
-  }
+  def lookup(key: Int): A =
+    this match {
+      case Empty() => sys.error("KO")
+      case _       => sys.error("ok")
+    }
 }
 
 case class Empty[A]() extends IntMap[A];

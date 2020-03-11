@@ -430,13 +430,14 @@ trait ParSeqLike[
       protected[this] val pit: SeqSplitter[T])
       extends Accessor[Int, IndexWhere] {
     @volatile var result: Int = -1
-    def leaf(prev: Option[Int]) = if (from < pit.indexFlag) {
-      val r = pit.indexWhere(pred)
-      if (r != -1) {
-        result = from + r
-        pit.setIndexFlagIfLesser(from)
+    def leaf(prev: Option[Int]) =
+      if (from < pit.indexFlag) {
+        val r = pit.indexWhere(pred)
+        if (r != -1) {
+          result = from + r
+          pit.setIndexFlagIfLesser(from)
+        }
       }
-    }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
     override def split = {
@@ -457,13 +458,14 @@ trait ParSeqLike[
       protected[this] val pit: SeqSplitter[T])
       extends Accessor[Int, LastIndexWhere] {
     @volatile var result: Int = -1
-    def leaf(prev: Option[Int]) = if (pos > pit.indexFlag) {
-      val r = pit.lastIndexWhere(pred)
-      if (r != -1) {
-        result = pos + r
-        pit.setIndexFlagIfGreater(pos)
+    def leaf(prev: Option[Int]) =
+      if (pos > pit.indexFlag) {
+        val r = pit.lastIndexWhere(pred)
+        if (r != -1) {
+          result = pos + r
+          pit.setIndexFlagIfGreater(pos)
+        }
       }
-    }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
     override def split = {
@@ -510,10 +512,11 @@ trait ParSeqLike[
       val otherpit: SeqSplitter[U])
       extends Accessor[Boolean, SameElements[U]] {
     @volatile var result: Boolean = true
-    def leaf(prev: Option[Boolean]) = if (!pit.isAborted) {
-      result = pit.sameElements(otherpit)
-      if (!result) pit.abort()
-    }
+    def leaf(prev: Option[Boolean]) =
+      if (!pit.isAborted) {
+        result = pit.sameElements(otherpit)
+        if (!result) pit.abort()
+      }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
     override def split = {
@@ -578,10 +581,11 @@ trait ParSeqLike[
       val otherpit: SeqSplitter[S])
       extends Accessor[Boolean, Corresponds[S]] {
     @volatile var result: Boolean = true
-    def leaf(prev: Option[Boolean]) = if (!pit.isAborted) {
-      result = pit.corresponds(corr)(otherpit)
-      if (!result) pit.abort()
-    }
+    def leaf(prev: Option[Boolean]) =
+      if (!pit.isAborted) {
+        result = pit.corresponds(corr)(otherpit)
+        if (!result) pit.abort()
+      }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
     override def split = {

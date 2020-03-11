@@ -741,21 +741,22 @@ object AkkaBuild extends Build {
     }
 
   def akkaStreamAndHttpPreviousArtifacts(
-      id: String): Def.Initialize[Set[sbt.ModuleID]] = Def.setting {
-    if (enableMiMa) {
-      val versions = {
-        val akka24Versions = Seq("2.4.2")
-        val akka24NewArtifacts = Seq(
-          "akka-http-core"
-        )
+      id: String): Def.Initialize[Set[sbt.ModuleID]] =
+    Def.setting {
+      if (enableMiMa) {
+        val versions = {
+          val akka24Versions = Seq("2.4.2")
+          val akka24NewArtifacts = Seq(
+            "akka-http-core"
+          )
 
-        akka24Versions
-      }
+          akka24Versions
+        }
 
-      // check against all binary compatible artifacts
-      versions.map(organization.value %% id % _).toSet
-    } else Set.empty
-  }
+        // check against all binary compatible artifacts
+        versions.map(organization.value %% id % _).toSet
+      } else Set.empty
+    }
 
   def loadSystemProperties(fileName: String): Unit = {
     import scala.collection.JavaConverters._

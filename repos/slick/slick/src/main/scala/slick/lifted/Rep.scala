@@ -33,12 +33,14 @@ trait Rep[T] {
 }
 
 object Rep {
-  def forNode[T: TypedType](n: Node): Rep[T] = new TypedRep[T] {
-    def toNode = n
-  }
-  def forNodeUntyped[T](n: Node): Rep[T] = new UntypedRep[T] {
-    def toNode = n
-  }
+  def forNode[T: TypedType](n: Node): Rep[T] =
+    new TypedRep[T] {
+      def toNode = n
+    }
+  def forNodeUntyped[T](n: Node): Rep[T] =
+    new UntypedRep[T] {
+      def toNode = n
+    }
 
   abstract class TypedRep[T](implicit final val tpe: TypedType[T])
       extends Rep[T] {
@@ -49,12 +51,13 @@ object Rep {
     def encodeRef(path: Node): Rep[T] = forNodeUntyped(path)
   }
 
-  def columnPlaceholder[T: TypedType]: Rep[T] = new Rep[T] {
-    def encodeRef(path: Node): Rep[T] = Rep.forNode[T](path)
-    def toNode =
-      throw new SlickException(
-        "Internal error: Cannot get Node from Rep.columnPlaceholder")
-  }
+  def columnPlaceholder[T: TypedType]: Rep[T] =
+    new Rep[T] {
+      def encodeRef(path: Node): Rep[T] = Rep.forNode[T](path)
+      def toNode =
+        throw new SlickException(
+          "Internal error: Cannot get Node from Rep.columnPlaceholder")
+    }
 
   /** Lift a value inside a `Rep` into a `Some` Option value. */
   def Some[M, O](v: M)(implicit od: OptionLift[M, O]): O = od.lift(v)

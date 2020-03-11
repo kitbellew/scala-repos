@@ -118,9 +118,10 @@ trait EventIncludes {
     * @param handler code executed when event is handled.
     * @return JavaFX EventHandler which will wrap the input code `handler`.
     */
-  def handle[J <: jfxe.Event, R](handler: => R) = new jfxe.EventHandler[J] {
-    def handle(event: J) { handler }
-  }
+  def handle[J <: jfxe.Event, R](handler: => R) =
+    new jfxe.EventHandler[J] {
+      def handle(event: J) { handler }
+    }
 
   /**
     * Converts a closure to a JavaFX EventHandler. It is used when information about event is not be used.

@@ -92,10 +92,11 @@ class Inliner[BT <: BTypes](val btypes: BT) {
   /**
     * True for statically resolved trait callsites that should be rewritten to the static implementation method.
     */
-  def doRewriteTraitCallsite(callsite: Callsite) = callsite.callee match {
-    case Right(callee) => callee.safeToRewrite
-    case _             => false
-  }
+  def doRewriteTraitCallsite(callsite: Callsite) =
+    callsite.callee match {
+      case Right(callee) => callee.safeToRewrite
+      case _             => false
+    }
 
   /**
     * Rewrite the INVOKEINTERFACE callsite of a final trait method invocation to INVOKESTATIC of the
@@ -249,19 +250,20 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       def isReachable(start: MethodNode, goal: MethodNode): Boolean = {
         @tailrec def reachableImpl(
             check: List[MethodNode],
-            visited: Set[MethodNode]): Boolean = check match {
-          case x :: xs =>
-            if (x == goal) true
-            else if (visited(x)) reachableImpl(xs, visited)
-            else {
-              val callees =
-                nonElidedRequests(x).map(_.callsite.callee.get.callee)
-              reachableImpl(xs ::: callees.toList, visited + x)
-            }
+            visited: Set[MethodNode]): Boolean =
+          check match {
+            case x :: xs =>
+              if (x == goal) true
+              else if (visited(x)) reachableImpl(xs, visited)
+              else {
+                val callees =
+                  nonElidedRequests(x).map(_.callsite.callee.get.callee)
+                reachableImpl(xs ::: callees.toList, visited + x)
+              }
 
-          case Nil =>
-            false
-        }
+            case Nil =>
+              false
+          }
         reachableImpl(List(start), Set.empty)
       }
 

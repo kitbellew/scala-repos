@@ -41,11 +41,12 @@ class ReplReporter(intp: IMain)
 
   import scala.io.AnsiColor.{RED, YELLOW, RESET}
 
-  def severityColor(severity: Severity): String = severity match {
-    case ERROR   => RED
-    case WARNING => YELLOW
-    case INFO    => RESET
-  }
+  def severityColor(severity: Severity): String =
+    severity match {
+      case ERROR   => RED
+      case WARNING => YELLOW
+      case INFO    => RESET
+    }
 
   override def print(pos: Position, msg: String, severity: Severity) {
     val prefix =

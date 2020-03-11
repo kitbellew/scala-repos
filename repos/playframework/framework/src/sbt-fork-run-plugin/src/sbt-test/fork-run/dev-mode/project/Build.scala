@@ -19,33 +19,35 @@ object DevModeBuild {
     val verifyResourceContains = InputKey[Unit]("verifyResourceContains")
   }
 
-  def settings: Seq[Setting[_]] = Seq(
-    DevModeKeys.writeRunProperties := {
-      IO.write(
-        file("run.properties"),
-        s"project.version=${play.core.PlayVersion.current}")
-    },
-    DevModeKeys.waitForServer := { DevModeBuild.waitForServer() },
-    DevModeKeys.resetReloads := { (target.value / "reload.log").delete() },
-    DevModeKeys.verifyReloads := {
-      val expected = Def.spaceDelimited().parsed.head.toInt
-      val actual =
-        try IO.readLines(target.value / "reload.log").count(_.nonEmpty)
-        catch { case _: java.io.IOException => 0 }
-      if (expected == actual) { println(s"Expected and got $expected reloads") }
-      else {
-        throw new RuntimeException(
-          s"Expected $expected reloads but got $actual")
+  def settings: Seq[Setting[_]] =
+    Seq(
+      DevModeKeys.writeRunProperties := {
+        IO.write(
+          file("run.properties"),
+          s"project.version=${play.core.PlayVersion.current}")
+      },
+      DevModeKeys.waitForServer := { DevModeBuild.waitForServer() },
+      DevModeKeys.resetReloads := { (target.value / "reload.log").delete() },
+      DevModeKeys.verifyReloads := {
+        val expected = Def.spaceDelimited().parsed.head.toInt
+        val actual =
+          try IO.readLines(target.value / "reload.log").count(_.nonEmpty)
+          catch { case _: java.io.IOException => 0 }
+        if (expected == actual) {
+          println(s"Expected and got $expected reloads")
+        } else {
+          throw new RuntimeException(
+            s"Expected $expected reloads but got $actual")
+        }
+      },
+      DevModeKeys.verifyResourceContains := {
+        val args = Def.spaceDelimited("<path> <status> <words> ...").parsed
+        val path = args.head
+        val status = args.tail.head.toInt
+        val assertions = args.tail.tail
+        DevModeBuild.verifyResourceContains(path, status, assertions, 0)
       }
-    },
-    DevModeKeys.verifyResourceContains := {
-      val args = Def.spaceDelimited("<path> <status> <words> ...").parsed
-      val path = args.head
-      val status = args.tail.head.toInt
-      val assertions = args.tail.tail
-      DevModeBuild.verifyResourceContains(path, status, assertions, 0)
-    }
-  )
+    )
 
   val ServerMaxAttempts = 3 * 60
   val ServerWaitTime = 1000L

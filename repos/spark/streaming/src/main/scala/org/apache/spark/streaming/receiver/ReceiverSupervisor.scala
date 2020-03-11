@@ -143,24 +143,25 @@ private[streaming] abstract class ReceiverSupervisor(
   }
 
   /** Start receiver */
-  def startReceiver(): Unit = synchronized {
-    try {
-      if (onReceiverStart()) {
-        logInfo(s"Starting receiver $streamId")
-        receiverState = Started
-        receiver.onStart()
-        logInfo(s"Called receiver $streamId onStart")
-      } else {
-        // The driver refused us
-        stop(
-          "Registered unsuccessfully because Driver refused to start receiver " + streamId,
-          None)
+  def startReceiver(): Unit =
+    synchronized {
+      try {
+        if (onReceiverStart()) {
+          logInfo(s"Starting receiver $streamId")
+          receiverState = Started
+          receiver.onStart()
+          logInfo(s"Called receiver $streamId onStart")
+        } else {
+          // The driver refused us
+          stop(
+            "Registered unsuccessfully because Driver refused to start receiver " + streamId,
+            None)
+        }
+      } catch {
+        case NonFatal(t) =>
+          stop("Error starting receiver " + streamId, Some(t))
       }
-    } catch {
-      case NonFatal(t) =>
-        stop("Error starting receiver " + streamId, Some(t))
     }
-  }
 
   /** Stop receiver */
   def stopReceiver(message: String, error: Option[Throwable]): Unit =

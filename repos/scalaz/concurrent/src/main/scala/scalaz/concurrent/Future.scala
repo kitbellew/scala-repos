@@ -65,15 +65,16 @@ import scala.concurrent.duration._
 sealed abstract class Future[+A] {
   import Future._
 
-  def flatMap[B](f: A => Future[B]): Future[B] = this match {
-    case Now(a)         => Suspend(() => f(a))
-    case Suspend(thunk) => BindSuspend(thunk, f)
-    case Async(listen)  => BindAsync(listen, f)
-    case BindSuspend(thunk, g) =>
-      Suspend(() => BindSuspend(thunk, g andThen (_ flatMap f)))
-    case BindAsync(listen, g) =>
-      Suspend(() => BindAsync(listen, g andThen (_ flatMap f)))
-  }
+  def flatMap[B](f: A => Future[B]): Future[B] =
+    this match {
+      case Now(a)         => Suspend(() => f(a))
+      case Suspend(thunk) => BindSuspend(thunk, f)
+      case Async(listen)  => BindAsync(listen, f)
+      case BindSuspend(thunk, g) =>
+        Suspend(() => BindSuspend(thunk, g andThen (_ flatMap f)))
+      case BindAsync(listen, g) =>
+        Suspend(() => BindAsync(listen, g andThen (_ flatMap f)))
+    }
 
   def map[B](f: A => B): Future[B] =
     flatMap(f andThen (b => Future.now(b)))
@@ -127,11 +128,12 @@ sealed abstract class Future[+A] {
     * the start of this `Future`.
     */
   @annotation.tailrec
-  final def step: Future[A] = this match {
-    case Suspend(thunk)        => thunk().step
-    case BindSuspend(thunk, f) => (thunk() flatMap f).step
-    case _                     => this
-  }
+  final def step: Future[A] =
+    this match {
+      case Suspend(thunk)        => thunk().step
+      case BindSuspend(thunk, f) => (thunk() flatMap f).step
+      case _                     => this
+    }
 
   /** Like `step`, but may be interrupted by setting `cancel` to true. */
   @annotation.tailrec
@@ -192,16 +194,17 @@ sealed abstract class Future[+A] {
     unsafePerformAsyncInterruptibly(cb, cancel)
 
   /** Run this `Future` and block awaiting its result. */
-  def unsafePerformSync: A = this match {
-    case Now(a) => a
-    case _ => {
-      val latch = new java.util.concurrent.CountDownLatch(1)
-      @volatile var result: Option[A] = None
-      unsafePerformAsync { a => result = Some(a); latch.countDown }
-      latch.await
-      result.get
+  def unsafePerformSync: A =
+    this match {
+      case Now(a) => a
+      case _ => {
+        val latch = new java.util.concurrent.CountDownLatch(1)
+        @volatile var result: Option[A] = None
+        unsafePerformAsync { a => result = Some(a); latch.countDown }
+        latch.await
+        result.get
+      }
     }
-  }
 
   @deprecated("use unsafePerformSync", "7.2")
   def run: A =

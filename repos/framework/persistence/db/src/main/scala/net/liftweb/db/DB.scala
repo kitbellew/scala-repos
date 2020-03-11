@@ -280,26 +280,27 @@ trait DB extends Loggable {
 
             var success = false
             if (eager) {
-              def recurseMe(lst: List[ConnectionIdentifier]): T = lst match {
-                case Nil =>
-                  try {
+              def recurseMe(lst: List[ConnectionIdentifier]): T =
+                lst match {
+                  case Nil =>
                     try {
-                      val ret = f
-                      success = !S.exceptionThrown_?
-                      ret
-                    } catch {
-                      // this is the case when we want to commit the transaction
-                      // but continue to throw the exception
-                      case e: LiftFlowOfControlException => {
+                      try {
+                        val ret = f
                         success = !S.exceptionThrown_?
-                        throw e
+                        ret
+                      } catch {
+                        // this is the case when we want to commit the transaction
+                        // but continue to throw the exception
+                        case e: LiftFlowOfControlException => {
+                          success = !S.exceptionThrown_?
+                          throw e
+                        }
                       }
-                    }
 
-                  } finally { clearThread(success) }
+                    } finally { clearThread(success) }
 
-                case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
-              }
+                  case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
+                }
               recurseMe(in)
             } else {
               CurrentConnectionSet.run(new ThreadBasedConnectionManager(in)) {
@@ -412,10 +413,11 @@ trait DB extends Loggable {
   def appendPostTransaction(func: Boolean => Unit): Unit =
     appendPostTransaction(DefaultConnectionIdentifier, func)
 
-  private def runLogger(logged: Statement, time: Long) = logged match {
-    case st: DBLog => logFuncs.foreach(_(st, time))
-    case _         => // NOP
-  }
+  private def runLogger(logged: Statement, time: Long) =
+    logged match {
+      case st: DBLog => logFuncs.foreach(_(st, time))
+      case _         => // NOP
+    }
 
   def statement[T](db: SuperConnection)(f: (Statement) => T): T = {
     Helpers.calcTime {
@@ -1303,28 +1305,30 @@ trait ProtoDBVendor extends ConnectionManager {
       }
     }
 
-  def releaseConnection(conn: Connection): Unit = synchronized {
-    if (tempMaxSize > maxPoolSize) {
-      tryo { conn.close() }
-      tempMaxSize -= 1
-      poolSize -= 1
-    } else { pool = conn :: pool }
-    logger.debug("Released connection. poolSize=%d".format(poolSize))
-    notifyAll
-  }
+  def releaseConnection(conn: Connection): Unit =
+    synchronized {
+      if (tempMaxSize > maxPoolSize) {
+        tryo { conn.close() }
+        tempMaxSize -= 1
+        poolSize -= 1
+      } else { pool = conn :: pool }
+      logger.debug("Released connection. poolSize=%d".format(poolSize))
+      notifyAll
+    }
 
   def closeAllConnections_!(): Unit = _closeAllConnections_!(0)
 
-  private def _closeAllConnections_!(cnt: Int): Unit = synchronized {
-    logger.info("Closing all connections")
-    if (poolSize <= 0 || cnt > 10) ()
-    else {
-      pool.foreach { c => tryo(c.close); poolSize -= 1 }
-      pool = Nil
+  private def _closeAllConnections_!(cnt: Int): Unit =
+    synchronized {
+      logger.info("Closing all connections")
+      if (poolSize <= 0 || cnt > 10) ()
+      else {
+        pool.foreach { c => tryo(c.close); poolSize -= 1 }
+        pool = Nil
 
-      if (poolSize > 0) wait(250)
+        if (poolSize > 0) wait(250)
 
-      _closeAllConnections_!(cnt + 1)
+        _closeAllConnections_!(cnt + 1)
+      }
     }
-  }
 }

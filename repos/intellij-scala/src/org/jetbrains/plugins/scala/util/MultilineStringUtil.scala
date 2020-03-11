@@ -93,23 +93,24 @@ object MultilineStringUtil {
       "stripMargin").isEmpty && !hasMarginChars(element, marginChar)
   }
 
-  def needAddByType(literal: ScLiteral): Boolean = literal match {
-    case interpolated: ScInterpolatedStringLiteral =>
-      interpolated.reference match {
-        case Some(ref: ScReferenceExpression) =>
-          ref.resolve() match {
-            case funDef: ScFunction =>
-              val tpe = funDef.returnType
-              tpe.exists(scType =>
-                scType.canonicalText.endsWith(
-                  "java.lang.String") || scType.canonicalText.endsWith(
-                  "scala.Predef.String"))
-            case _ => true
-          }
-        case _ => true
-      }
-    case _ => true
-  }
+  def needAddByType(literal: ScLiteral): Boolean =
+    literal match {
+      case interpolated: ScInterpolatedStringLiteral =>
+        interpolated.reference match {
+          case Some(ref: ScReferenceExpression) =>
+            ref.resolve() match {
+              case funDef: ScFunction =>
+                val tpe = funDef.returnType
+                tpe.exists(scType =>
+                  scType.canonicalText.endsWith(
+                    "java.lang.String") || scType.canonicalText.endsWith(
+                    "scala.Predef.String"))
+              case _ => true
+            }
+          case _ => true
+        }
+      case _ => true
+    }
 
   def insertStripMargin(
       document: Document,
@@ -185,19 +186,21 @@ object MultilineStringUtil {
       .headOption
   }
 
-  def isMLString(element: PsiElement): Boolean = element match {
-    case lit: ScLiteral if lit.isMultiLineString => true
-    case _                                       => false
-  }
+  def isMLString(element: PsiElement): Boolean =
+    element match {
+      case lit: ScLiteral if lit.isMultiLineString => true
+      case _                                       => false
+    }
 
   def interpolatorPrefixLength(literal: ScLiteral) =
     interpolatorPrefix(literal).length
 
-  def interpolatorPrefix(literal: ScLiteral) = literal match {
-    case isl: ScInterpolatedStringLiteral if isl.reference.isDefined =>
-      isl.reference.get.refName
-    case _ => ""
-  }
+  def interpolatorPrefix(literal: ScLiteral) =
+    literal match {
+      case isl: ScInterpolatedStringLiteral if isl.reference.isDefined =>
+        isl.reference.get.refName
+      case _ => ""
+    }
 
   def containsArgs(
       currentArgs: Array[Array[ScExpression]],

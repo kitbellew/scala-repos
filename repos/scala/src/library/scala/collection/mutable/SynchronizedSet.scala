@@ -31,41 +31,35 @@ trait SynchronizedSet[A] extends Set[A] {
 
   override def isEmpty: Boolean = synchronized { super.isEmpty }
 
-  abstract override def contains(elem: A) = synchronized {
-    super.contains(elem)
-  }
+  abstract override def contains(elem: A) =
+    synchronized { super.contains(elem) }
 
-  abstract override def +=(elem: A): this.type = synchronized[this.type] {
-    super.+=(elem)
-  }
+  abstract override def +=(elem: A): this.type =
+    synchronized[this.type] { super.+=(elem) }
 
   override def ++=(xs: TraversableOnce[A]): this.type =
     synchronized[this.type] { super.++=(xs) }
 
-  abstract override def -=(elem: A): this.type = synchronized[this.type] {
-    super.-=(elem)
-  }
+  abstract override def -=(elem: A): this.type =
+    synchronized[this.type] { super.-=(elem) }
 
   override def --=(xs: TraversableOnce[A]): this.type =
     synchronized[this.type] { super.--=(xs) }
 
-  override def update(elem: A, included: Boolean): Unit = synchronized {
-    super.update(elem, included)
-  }
+  override def update(elem: A, included: Boolean): Unit =
+    synchronized { super.update(elem, included) }
 
   override def add(elem: A): Boolean = synchronized { super.add(elem) }
 
   override def remove(elem: A): Boolean = synchronized { super.remove(elem) }
 
-  override def intersect(that: scala.collection.GenSet[A]) = synchronized {
-    super.intersect(that)
-  }
+  override def intersect(that: scala.collection.GenSet[A]) =
+    synchronized { super.intersect(that) }
 
   abstract override def clear(): Unit = synchronized { super.clear() }
 
-  override def subsetOf(that: scala.collection.GenSet[A]) = synchronized {
-    super.subsetOf(that)
-  }
+  override def subsetOf(that: scala.collection.GenSet[A]) =
+    synchronized { super.subsetOf(that) }
 
   override def foreach[U](f: A => U) = synchronized { super.foreach(f) }
 

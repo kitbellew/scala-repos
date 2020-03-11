@@ -159,15 +159,16 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
     if (loc.nonEmpty) Some(loc.elem) else None
   }
 
-  override def iterator: Iterator[A] = new AbstractIterator[A] {
-    var elems = self
-    def hasNext = elems.nonEmpty
-    def next = {
-      val res = elems.elem
-      elems = elems.next
-      res
+  override def iterator: Iterator[A] =
+    new AbstractIterator[A] {
+      var elems = self
+      def hasNext = elems.nonEmpty
+      def next = {
+        val res = elems.elem
+        elems = elems.next
+        res
+      }
     }
-  }
 
   override def foreach[U](f: A => U) {
     var these = this

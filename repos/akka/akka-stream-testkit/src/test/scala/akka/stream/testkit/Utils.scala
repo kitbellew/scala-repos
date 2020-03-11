@@ -45,12 +45,13 @@ object Utils {
       case _ ⇒ block
     }
 
-  def assertDispatcher(ref: ActorRef, dispatcher: String): Unit = ref match {
-    case r: ActorRefWithCell ⇒
-      if (r.underlying.props.dispatcher != dispatcher)
-        throw new AssertionError(
-          s"Expected $ref to use dispatcher [$dispatcher], yet used: [${r.underlying.props.dispatcher}]")
-    case _ ⇒
-      throw new Exception(s"Unable to determine dispatcher of $ref")
-  }
+  def assertDispatcher(ref: ActorRef, dispatcher: String): Unit =
+    ref match {
+      case r: ActorRefWithCell ⇒
+        if (r.underlying.props.dispatcher != dispatcher)
+          throw new AssertionError(
+            s"Expected $ref to use dispatcher [$dispatcher], yet used: [${r.underlying.props.dispatcher}]")
+      case _ ⇒
+        throw new Exception(s"Unable to determine dispatcher of $ref")
+    }
 }

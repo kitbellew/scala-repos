@@ -69,11 +69,12 @@ object LiteralTests extends Properties("Literal") {
 
   //This evaluates by recursively walking the tree without memoization
   //as lit.evaluate should do
-  def slowEvaluate[T](lit: Literal[T, Box]): Box[T] = lit match {
-    case ConstLit(n)         => n
-    case UnaryLit(in, fn)    => fn(slowEvaluate(in))
-    case BinaryLit(a, b, fn) => fn(slowEvaluate(a), slowEvaluate(b))
-  }
+  def slowEvaluate[T](lit: Literal[T, Box]): Box[T] =
+    lit match {
+      case ConstLit(n)         => n
+      case UnaryLit(in, fn)    => fn(slowEvaluate(in))
+      case BinaryLit(a, b, fn) => fn(slowEvaluate(a), slowEvaluate(b))
+    }
 
   property("Literal.evaluate must match simple explanation") =
     forAll(genLiteral) { (l: Literal[Int, Box]) =>

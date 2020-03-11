@@ -48,24 +48,25 @@ object BuildSettings {
   /**
     * These settings are used by all projects
     */
-  def playCommonSettings: Seq[Setting[_]] = scalariformSettings ++ Seq(
-    homepage := Some(url("https://playframework.com")),
-    ivyLoggingLevel := UpdateLogging.DownloadOnly,
-    resolvers ++= Seq(
-      "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases",
-      Resolver.typesafeRepo("releases"),
-      Resolver.typesafeIvyRepo("releases")
-    ),
-    fork in Test := true,
-    parallelExecution in Test := false,
-    testListeners in (Test, test) := Nil,
-    javaOptions in Test ++= Seq(maxMetaspace, "-Xmx512m", "-Xms128m"),
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v"),
-    bintrayPackage := "play-sbt-plugin",
-    autoAPIMappings := true,
-    apiMappings += scalaInstance.value.libraryJar -> url(
-      raw"""http://scala-lang.org/files/archive/api/${scalaInstance.value.actualVersion}/index.html""")
-  )
+  def playCommonSettings: Seq[Setting[_]] =
+    scalariformSettings ++ Seq(
+      homepage := Some(url("https://playframework.com")),
+      ivyLoggingLevel := UpdateLogging.DownloadOnly,
+      resolvers ++= Seq(
+        "Scalaz Bintray Repo" at "https://dl.bintray.com/scalaz/releases",
+        Resolver.typesafeRepo("releases"),
+        Resolver.typesafeIvyRepo("releases")
+      ),
+      fork in Test := true,
+      parallelExecution in Test := false,
+      testListeners in (Test, test) := Nil,
+      javaOptions in Test ++= Seq(maxMetaspace, "-Xmx512m", "-Xms128m"),
+      testOptions += Tests.Argument(TestFrameworks.JUnit, "-v"),
+      bintrayPackage := "play-sbt-plugin",
+      autoAPIMappings := true,
+      apiMappings += scalaInstance.value.libraryJar -> url(
+        raw"""http://scala-lang.org/files/archive/api/${scalaInstance.value.actualVersion}/index.html""")
+    )
 
   /**
     * These settings are used by all projects that are part of the runtime, as opposed to development, mode of Play.
@@ -81,10 +82,11 @@ object BuildSettings {
       Docs.apiDocsInclude := true
     )
 
-  def javaVersionSettings(version: String): Seq[Setting[_]] = Seq(
-    javacOptions ++= Seq("-source", version, "-target", version),
-    javacOptions in doc := Seq("-source", version)
-  )
+  def javaVersionSettings(version: String): Seq[Setting[_]] =
+    Seq(
+      javacOptions ++= Seq("-source", version, "-target", version),
+      javacOptions in doc := Seq("-source", version)
+    )
 
   /**
     * A project that is shared between the SBT runtime and the Play runtime
@@ -125,21 +127,23 @@ object BuildSettings {
       .settings(omnidocSettings: _*)
   }
 
-  def omnidocSettings: Seq[Setting[_]] = Omnidoc.projectSettings ++ Seq(
-    omnidocSnapshotBranch := snapshotBranch,
-    omnidocPathPrefix := "framework/"
-  )
-
-  def playScriptedSettings: Seq[Setting[_]] = Seq(
-    ScriptedPlugin.scripted <<= ScriptedPlugin.scripted.tag(Tags.Test),
-    scriptedLaunchOpts ++= Seq(
-      "-Xmx768m",
-      maxMetaspace,
-      "-Dscala.version=" + sys.props
-        .get("scripted.scala.version")
-        .getOrElse((scalaVersion in PlayBuild.PlayProject).value)
+  def omnidocSettings: Seq[Setting[_]] =
+    Omnidoc.projectSettings ++ Seq(
+      omnidocSnapshotBranch := snapshotBranch,
+      omnidocPathPrefix := "framework/"
     )
-  )
+
+  def playScriptedSettings: Seq[Setting[_]] =
+    Seq(
+      ScriptedPlugin.scripted <<= ScriptedPlugin.scripted.tag(Tags.Test),
+      scriptedLaunchOpts ++= Seq(
+        "-Xmx768m",
+        maxMetaspace,
+        "-Dscala.version=" + sys.props
+          .get("scripted.scala.version")
+          .getOrElse((scalaVersion in PlayBuild.PlayProject).value)
+      )
+    )
 
   def playFullScriptedSettings: Seq[Setting[_]] =
     ScriptedPlugin.scriptedSettings ++ Seq(

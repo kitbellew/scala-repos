@@ -50,11 +50,13 @@ object STRef extends STRefInstances {
   def apply[S]: (Id ~> STRef[S, ?]) =
     stRef[S]
 
-  def stRef[S]: (Id ~> STRef[S, ?]) = new (Id ~> STRef[S, ?]) {
-    def apply[A](a: A) = new STRef[S, A] {
-      var value = a
+  def stRef[S]: (Id ~> STRef[S, ?]) =
+    new (Id ~> STRef[S, ?]) {
+      def apply[A](a: A) =
+        new STRef[S, A] {
+          var value = a
+        }
     }
-  }
 }
 
 sealed abstract class STRefInstances {
@@ -138,9 +140,10 @@ object ST extends STInstances {
   def apply[S, A](a: => A): ST[S, A] =
     returnST(a)
 
-  def st[S, A](f: Tower[S] => (Tower[S], A)): ST[S, A] = new ST[S, A] {
-    private[effect] def apply(s: Tower[S]) = f(s)
-  }
+  def st[S, A](f: Tower[S] => (Tower[S], A)): ST[S, A] =
+    new ST[S, A] {
+      private[effect] def apply(s: Tower[S]) = f(s)
+    }
 
   // Implicit conversions between IO and ST
   implicit def STToIO[A](st: ST[IvoryTower, A]): IO[A] =

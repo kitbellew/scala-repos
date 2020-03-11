@@ -351,10 +351,11 @@ case class Product[R, C, C2, V](
     * Structural, NOT mathematical equality (e.g. (A*B) * C != A * (B*C))
     * Used for the Matrix2OptimizationTest (so that it doesn't care about expressions)
     */
-  override def equals(obj: Any): Boolean = obj match {
-    case Product(tl, tr, _, _) => left.equals(tl) && right.equals(tr)
-    case _                     => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case Product(tl, tr, _, _) => left.equals(tl) && right.equals(tr)
+      case _                     => false
+    }
 
   override def hashCode(): Int = left.hashCode ^ right.hashCode
 

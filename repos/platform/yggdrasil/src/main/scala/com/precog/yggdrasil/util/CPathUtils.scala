@@ -49,9 +49,8 @@ object CPathUtils {
 
   private def addComponent(
       c: JPathNode,
-      xs: List[(JPath, CValue)]): List[(JPath, CValue)] = xs map {
-    case (path, value) => (JPath(c :: path.nodes), value)
-  }
+      xs: List[(JPath, CValue)]): List[(JPath, CValue)] =
+    xs map { case (path, value) => (JPath(c :: path.nodes), value) }
 
   /**
     * Returns the intersection of `cPath1` and `cPath2`. If there are no
@@ -69,18 +68,19 @@ object CPathUtils {
     def loop(
         ps1: List[CPathNode],
         ps2: List[CPathNode],
-        matches: List[CPathNode]): Option[CPath] = (ps1, ps2) match {
-      case (Nil, Nil) =>
-        Some(CPath(matches.reverse))
-      case (p1 :: ps1, p2 :: ps2) if p1 == p2 =>
-        loop(ps1, ps2, p1 :: matches)
-      case (CPathArray :: ps1, (p2: CPathIndex) :: ps2) =>
-        loop(ps1, ps2, p2 :: matches)
-      case ((p1: CPathIndex) :: ps1, CPathArray :: ps2) =>
-        loop(ps1, ps2, p1 :: matches)
-      case _ =>
-        None
-    }
+        matches: List[CPathNode]): Option[CPath] =
+      (ps1, ps2) match {
+        case (Nil, Nil) =>
+          Some(CPath(matches.reverse))
+        case (p1 :: ps1, p2 :: ps2) if p1 == p2 =>
+          loop(ps1, ps2, p1 :: matches)
+        case (CPathArray :: ps1, (p2: CPathIndex) :: ps2) =>
+          loop(ps1, ps2, p2 :: matches)
+        case ((p1: CPathIndex) :: ps1, CPathArray :: ps2) =>
+          loop(ps1, ps2, p1 :: matches)
+        case _ =>
+          None
+      }
 
     loop(cPath1.nodes, cPath2.nodes, Nil)
   }
@@ -90,18 +90,19 @@ object CPathUtils {
     def loop(
         ps1: List[CPathNode],
         ps2: List[CPathNode],
-        acc: List[CPathNode]): Option[CPath] = (ps1, ps2) match {
-      case (Nil, Nil) =>
-        Some(CPath(acc.reverse))
-      case (p1 :: ps1, p2 :: ps2) if p1 == p2 =>
-        loop(ps1, ps2, p1 :: acc)
-      case (CPathArray :: ps1, (_: CPathIndex) :: ps2) =>
-        loop(ps1, ps2, CPathArray :: acc)
-      case ((_: CPathIndex) :: ps1, CPathArray :: ps2) =>
-        loop(ps1, ps2, CPathArray :: acc)
-      case _ =>
-        None
-    }
+        acc: List[CPathNode]): Option[CPath] =
+      (ps1, ps2) match {
+        case (Nil, Nil) =>
+          Some(CPath(acc.reverse))
+        case (p1 :: ps1, p2 :: ps2) if p1 == p2 =>
+          loop(ps1, ps2, p1 :: acc)
+        case (CPathArray :: ps1, (_: CPathIndex) :: ps2) =>
+          loop(ps1, ps2, CPathArray :: acc)
+        case ((_: CPathIndex) :: ps1, CPathArray :: ps2) =>
+          loop(ps1, ps2, CPathArray :: acc)
+        case _ =>
+          None
+      }
 
     loop(cPath1.nodes, cPath2.nodes, Nil)
   }
@@ -127,21 +128,22 @@ object CPathUtils {
     def cand(
         left: List[CPathNode],
         right: List[CPathNode],
-        candidates: List[CPath]): List[CPath] = right match {
-      case (p @ CPathIndex(i)) :: right =>
-        cand(
-          p :: left,
-          right,
-          CPath(left.foldLeft(CPathIndex(i + 1) :: zero(right)) { (acc, p) =>
-            p :: acc
-          }) :: candidates)
+        candidates: List[CPath]): List[CPath] =
+      right match {
+        case (p @ CPathIndex(i)) :: right =>
+          cand(
+            p :: left,
+            right,
+            CPath(left.foldLeft(CPathIndex(i + 1) :: zero(right)) { (acc, p) =>
+              p :: acc
+            }) :: candidates)
 
-      case p :: right =>
-        cand(p :: left, right, candidates)
+        case p :: right =>
+          cand(p :: left, right, candidates)
 
-      case Nil =>
-        candidates
-    }
+        case Nil =>
+          candidates
+      }
 
     cand(Nil, cPath.nodes, Nil)
   }

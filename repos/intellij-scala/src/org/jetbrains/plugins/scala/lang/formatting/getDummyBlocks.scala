@@ -869,27 +869,29 @@ object getDummyBlocks {
       }
     }
     @tailrec
-    def addFor(children: List[ASTNode]): Unit = children match {
-      case forWord :: tail if forWord.getElementType == ScalaTokenTypes.kFOR =>
-        addSubBlock(forWord, null)
-        addFor(tail)
-      case lParen :: tail
-          if lParen.getElementType == ScalaTokenTypes.tLPARENTHESIS ||
-            lParen.getElementType == ScalaTokenTypes.tLBRACE =>
-        val closingType =
-          if (lParen.getElementType == ScalaTokenTypes.tLPARENTHESIS)
-            ScalaTokenTypes.tRPARENTHESIS
-          else ScalaTokenTypes.tRBRACE
-        val (_, after) =
-          tail.span(elem => elem.getElementType != closingType)
-        if (after.isEmpty) { addTail(children) }
-        else {
-          addSubBlock(lParen, after.head)
-          addTail(after.tail)
-        }
-      case _ =>
-        addTail(children)
-    }
+    def addFor(children: List[ASTNode]): Unit =
+      children match {
+        case forWord :: tail
+            if forWord.getElementType == ScalaTokenTypes.kFOR =>
+          addSubBlock(forWord, null)
+          addFor(tail)
+        case lParen :: tail
+            if lParen.getElementType == ScalaTokenTypes.tLPARENTHESIS ||
+              lParen.getElementType == ScalaTokenTypes.tLBRACE =>
+          val closingType =
+            if (lParen.getElementType == ScalaTokenTypes.tLPARENTHESIS)
+              ScalaTokenTypes.tRPARENTHESIS
+            else ScalaTokenTypes.tRBRACE
+          val (_, after) =
+            tail.span(elem => elem.getElementType != closingType)
+          if (after.isEmpty) { addTail(children) }
+          else {
+            addSubBlock(lParen, after.head)
+            addTail(after.tail)
+          }
+        case _ =>
+          addTail(children)
+      }
     addFor(children.filter(isCorrectBlock).toList)
     subBlocks
   }

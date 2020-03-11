@@ -459,30 +459,31 @@ trait EventFormats {
     Json.writes[SchedulerReregisteredEvent]
 
   //scalastyle:off cyclomatic.complexity
-  def eventToJson(event: MarathonEvent): JsValue = event match {
-    case event: AppTerminatedEvent         => Json.toJson(event)
-    case event: ApiPostEvent               => Json.toJson(event)
-    case event: Subscribe                  => Json.toJson(event)
-    case event: Unsubscribe                => Json.toJson(event)
-    case event: EventStreamAttached        => Json.toJson(event)
-    case event: EventStreamDetached        => Json.toJson(event)
-    case event: AddHealthCheck             => Json.toJson(event)
-    case event: RemoveHealthCheck          => Json.toJson(event)
-    case event: FailedHealthCheck          => Json.toJson(event)
-    case event: HealthStatusChanged        => Json.toJson(event)
-    case event: GroupChangeSuccess         => Json.toJson(event)
-    case event: GroupChangeFailed          => Json.toJson(event)
-    case event: DeploymentSuccess          => Json.toJson(event)
-    case event: DeploymentFailed           => Json.toJson(event)
-    case event: DeploymentStatus           => Json.toJson(event)
-    case event: DeploymentStepSuccess      => Json.toJson(event)
-    case event: DeploymentStepFailure      => Json.toJson(event)
-    case event: MesosStatusUpdateEvent     => Json.toJson(event)
-    case event: MesosFrameworkMessageEvent => Json.toJson(event)
-    case event: SchedulerDisconnectedEvent => Json.toJson(event)
-    case event: SchedulerRegisteredEvent   => Json.toJson(event)
-    case event: SchedulerReregisteredEvent => Json.toJson(event)
-  }
+  def eventToJson(event: MarathonEvent): JsValue =
+    event match {
+      case event: AppTerminatedEvent         => Json.toJson(event)
+      case event: ApiPostEvent               => Json.toJson(event)
+      case event: Subscribe                  => Json.toJson(event)
+      case event: Unsubscribe                => Json.toJson(event)
+      case event: EventStreamAttached        => Json.toJson(event)
+      case event: EventStreamDetached        => Json.toJson(event)
+      case event: AddHealthCheck             => Json.toJson(event)
+      case event: RemoveHealthCheck          => Json.toJson(event)
+      case event: FailedHealthCheck          => Json.toJson(event)
+      case event: HealthStatusChanged        => Json.toJson(event)
+      case event: GroupChangeSuccess         => Json.toJson(event)
+      case event: GroupChangeFailed          => Json.toJson(event)
+      case event: DeploymentSuccess          => Json.toJson(event)
+      case event: DeploymentFailed           => Json.toJson(event)
+      case event: DeploymentStatus           => Json.toJson(event)
+      case event: DeploymentStepSuccess      => Json.toJson(event)
+      case event: DeploymentStepFailure      => Json.toJson(event)
+      case event: MesosStatusUpdateEvent     => Json.toJson(event)
+      case event: MesosFrameworkMessageEvent => Json.toJson(event)
+      case event: SchedulerDisconnectedEvent => Json.toJson(event)
+      case event: SchedulerRegisteredEvent   => Json.toJson(event)
+      case event: SchedulerReregisteredEvent => Json.toJson(event)
+    }
   //scalastyle:on
 }
 
@@ -782,15 +783,16 @@ trait AppAndGroupFormats {
               FetchUri(uri = uri, extract = FetchUri.isExtract(uri))
             }
 
-        def portDefinitions: Seq[PortDefinition] = extra.ipAddress match {
-          case Some(ipAddress) => Seq.empty[PortDefinition]
-          case None =>
-            extra.maybePortDefinitions.getOrElse {
-              extra.maybePorts
-                .map { ports => PortDefinitions.apply(ports: _*) }
-                .getOrElse(AppDefinition.DefaultPortDefinitions)
-            }
-        }
+        def portDefinitions: Seq[PortDefinition] =
+          extra.ipAddress match {
+            case Some(ipAddress) => Seq.empty[PortDefinition]
+            case None =>
+              extra.maybePortDefinitions.getOrElse {
+                extra.maybePorts
+                  .map { ports => PortDefinitions.apply(ports: _*) }
+                  .getOrElse(AppDefinition.DefaultPortDefinitions)
+              }
+          }
 
         app.copy(
           fetch = fetch,

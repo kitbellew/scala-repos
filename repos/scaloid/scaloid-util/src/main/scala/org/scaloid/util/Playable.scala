@@ -115,7 +115,6 @@ abstract class PlayableConnector(activity: SActivity) {
 
   def stop(): Unit = playable.foreach(stop)
 
-  def toggle(): Unit = playable.foreach { p =>
-    if (p.running) stop(p) else start(p)
-  }
+  def toggle(): Unit =
+    playable.foreach { p => if (p.running) stop(p) else start(p) }
 }

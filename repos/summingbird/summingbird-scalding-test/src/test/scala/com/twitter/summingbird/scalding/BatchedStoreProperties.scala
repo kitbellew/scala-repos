@@ -89,12 +89,10 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
       } yield (in, batcher, testStore)
     }
 
-  implicit def arbitraryLocalMode: Arbitrary[Mode] = Arbitrary {
-    Gen.const(Local(true))
-  }
-  implicit def arbitraryCommutativity: Arbitrary[Commutativity] = Arbitrary {
-    Gen.oneOf(Seq(Commutative, NonCommutative))
-  }
+  implicit def arbitraryLocalMode: Arbitrary[Mode] =
+    Arbitrary { Gen.const(Local(true)) }
+  implicit def arbitraryCommutativity: Arbitrary[Commutativity] =
+    Arbitrary { Gen.oneOf(Seq(Commutative, NonCommutative)) }
 
   property(
     "readAfterLastBatch should return interval starting from the last batch written") = {

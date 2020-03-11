@@ -235,10 +235,11 @@ abstract class LazyVals
       *  at the very beginning of the method.
       */
     private def addBitmapDefs(methSym: Symbol, rhs: Tree): Tree = {
-      def prependStats(stats: List[Tree], tree: Tree): Block = tree match {
-        case Block(stats1, res) => Block(stats ::: stats1, res)
-        case _                  => Block(stats, tree)
-      }
+      def prependStats(stats: List[Tree], tree: Tree): Block =
+        tree match {
+          case Block(stats1, res) => Block(stats ::: stats1, res)
+          case _                  => Block(stats, tree)
+        }
 
       val bmps = bitmaps(methSym) map (ValDef(_, ZERO))
 

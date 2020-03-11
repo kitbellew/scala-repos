@@ -12,20 +12,21 @@ import lila.user.{User, UserContext, Perfs}
 
 trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
 
-  def showProgress(progress: Int, withTitle: Boolean = true) = Html {
-    val span = progress match {
-      case 0          => ""
-      case p if p > 0 => s"""<span class="positive" data-icon="N">$p</span>"""
-      case p if p < 0 =>
-        s"""<span class="negative" data-icon="M">${math.abs(p)}</span>"""
+  def showProgress(progress: Int, withTitle: Boolean = true) =
+    Html {
+      val span = progress match {
+        case 0          => ""
+        case p if p > 0 => s"""<span class="positive" data-icon="N">$p</span>"""
+        case p if p < 0 =>
+          s"""<span class="negative" data-icon="M">${math.abs(p)}</span>"""
+      }
+      val title =
+        if (withTitle)
+          """data-hint="Rating progression over the last twelve games""""
+        else ""
+      val klass = if (withTitle) "progress hint--bottom" else "progress"
+      s"""<span $title class="$klass">$span</span>"""
     }
-    val title =
-      if (withTitle)
-        """data-hint="Rating progression over the last twelve games""""
-      else ""
-    val klass = if (withTitle) "progress hint--bottom" else "progress"
-    s"""<span $title class="$klass">$span</span>"""
-  }
 
   val topBarSortedPerfTypes: List[PerfType] = List(
     PerfType.Bullet,
@@ -73,14 +74,15 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       nb: Int,
       provisional: Boolean,
       icon: Char,
-      klass: String)(implicit ctx: Context) = Html {
-    val title = s"$name rating over ${nb.localize} games"
-    val attr = if (klass == "title") "title" else "data-hint"
-    val number =
-      if (nb > 0) s"$rating${if (provisional) "?" else ""}"
-      else "&nbsp;&nbsp;&nbsp;-"
-    s"""<span $attr="$title" class="$klass"><span data-icon="$icon">$number</span></span>"""
-  }
+      klass: String)(implicit ctx: Context) =
+    Html {
+      val title = s"$name rating over ${nb.localize} games"
+      val attr = if (klass == "title") "title" else "data-hint"
+      val number =
+        if (nb > 0) s"$rating${if (provisional) "?" else ""}"
+        else "&nbsp;&nbsp;&nbsp;-"
+      s"""<span $attr="$title" class="$klass"><span data-icon="$icon">$number</span></span>"""
+    }
 
   def showPerfRating(perfType: PerfType, perf: Perf, klass: String)(
       implicit ctx: Context): Html =
@@ -107,13 +109,14 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       case (pt, perf) => showPerfRating(pt, perf, klass = "hint--bottom")
     }
 
-  def showRatingDiff(diff: Int) = Html {
-    diff match {
-      case 0          => """<span class="rp null">±0</span>"""
-      case d if d > 0 => s"""<span class="rp up">+$d</span>"""
-      case d          => s"""<span class="rp down">$d</span>"""
+  def showRatingDiff(diff: Int) =
+    Html {
+      diff match {
+        case 0          => """<span class="rp null">±0</span>"""
+        case d if d > 0 => s"""<span class="rp up">+$d</span>"""
+        case d          => s"""<span class="rp down">$d</span>"""
+      }
     }
-  }
 
   def lightUser(userId: String): Option[LightUser] = Env.user lightUser userId
   def lightUser(userId: Option[String]): Option[LightUser] =
@@ -131,8 +134,29 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       withOnline: Boolean = true,
       withTitle: Boolean = true,
       truncate: Option[Int] = None,
-      params: String = ""): Html = Html {
-    userIdOption.flatMap(lightUser).fold(User.anonymous) { user =>
+      params: String = ""): Html =
+    Html {
+      userIdOption.flatMap(lightUser).fold(User.anonymous) { user =>
+        userIdNameLink(
+          userId = user.id,
+          username = user.name,
+          title = user.title,
+          cssClass = cssClass,
+          withOnline = withOnline,
+          withTitle = withTitle,
+          truncate = truncate,
+          params = params)
+      }
+    }
+
+  def lightUserLink(
+      user: LightUser,
+      cssClass: Option[String] = None,
+      withOnline: Boolean = true,
+      withTitle: Boolean = true,
+      truncate: Option[Int] = None,
+      params: String = ""): Html =
+    Html {
       userIdNameLink(
         userId = user.id,
         username = user.name,
@@ -143,60 +167,44 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
         truncate = truncate,
         params = params)
     }
-  }
-
-  def lightUserLink(
-      user: LightUser,
-      cssClass: Option[String] = None,
-      withOnline: Boolean = true,
-      withTitle: Boolean = true,
-      truncate: Option[Int] = None,
-      params: String = ""): Html = Html {
-    userIdNameLink(
-      userId = user.id,
-      username = user.name,
-      title = user.title,
-      cssClass = cssClass,
-      withOnline = withOnline,
-      withTitle = withTitle,
-      truncate = truncate,
-      params = params)
-  }
 
   def userIdLink(userId: String, cssClass: Option[String]): Html =
     userIdLink(userId.some, cssClass)
 
-  def userIdLinkMini(userId: String) = Html {
-    val user = lightUser(userId)
-    val name = user.fold(userId)(_.name)
-    val content = user.fold(userId)(_.titleNameHtml)
-    val klass = userClass(userId, none, false)
-    val href = userHref(name)
-    s"""<a data-icon="r" $klass $href>&nbsp;$content</a>"""
-  }
+  def userIdLinkMini(userId: String) =
+    Html {
+      val user = lightUser(userId)
+      val name = user.fold(userId)(_.name)
+      val content = user.fold(userId)(_.titleNameHtml)
+      val klass = userClass(userId, none, false)
+      val href = userHref(name)
+      s"""<a data-icon="r" $klass $href>&nbsp;$content</a>"""
+    }
 
   def usernameLink(
       usernameOption: Option[String],
       cssClass: Option[String] = None,
       withOnline: Boolean = true,
       withTitle: Boolean = true,
-      truncate: Option[Int] = None): Html = Html {
-    usernameOption.fold(User.anonymous) { username =>
-      userIdNameLink(
-        username.toLowerCase,
-        username,
-        cssClass,
-        withOnline,
-        withTitle,
-        truncate)
+      truncate: Option[Int] = None): Html =
+    Html {
+      usernameOption.fold(User.anonymous) { username =>
+        userIdNameLink(
+          username.toLowerCase,
+          username,
+          cssClass,
+          withOnline,
+          withTitle,
+          truncate)
+      }
     }
-  }
 
-  private def titleTag(title: Option[String]) = title match {
-    case None => ""
-    case Some(t) =>
-      s"""<span class="title" title="${User titleName t}">$t</span>&nbsp;"""
-  }
+  private def titleTag(title: Option[String]) =
+    title match {
+      case None => ""
+      case Some(t) =>
+        s"""<span class="title" title="${User titleName t}">$t</span>&nbsp;"""
+    }
 
   private def userIdNameLink(
       userId: String,
@@ -226,17 +234,18 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       withBestRating: Boolean = false,
       withPerfRating: Option[PerfType] = None,
       text: Option[String] = None,
-      params: String = "") = Html {
-    val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
-    val href = userHref(user.username, params)
-    val content = text | user.username
-    val titleS = if (withTitle) titleTag(user.title) else ""
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
-    val rating = userRating(user, withPerfRating, withBestRating)
-    val donor = if (withDonor) donorBadge else ""
-    s"""<a$dataIcon $klass $href>$space$titleS$content$rating$donor</a>"""
-  }
+      params: String = "") =
+    Html {
+      val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
+      val href = userHref(user.username, params)
+      val content = text | user.username
+      val titleS = if (withTitle) titleTag(user.title) else ""
+      val space = if (withOnline) "&nbsp;" else ""
+      val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+      val rating = userRating(user, withPerfRating, withBestRating)
+      val donor = if (withDonor) donorBadge else ""
+      s"""<a$dataIcon $klass $href>$space$titleS$content$rating$donor</a>"""
+    }
 
   def userInfosLink(
       userId: String,
@@ -264,27 +273,29 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       withTitle: Boolean = true,
       withBestRating: Boolean = false,
       withPerfRating: Option[PerfType] = None,
-      text: Option[String] = None) = Html {
-    val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
-    val href = s"data-${userHref(user.username)}"
-    val content = text | user.username
-    val titleS = if (withTitle) titleTag(user.title) else ""
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
-    val rating = userRating(user, withPerfRating, withBestRating)
-    s"""<span$dataIcon $klass $href>$space$titleS$content$rating</span>"""
-  }
+      text: Option[String] = None) =
+    Html {
+      val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
+      val href = s"data-${userHref(user.username)}"
+      val content = text | user.username
+      val titleS = if (withTitle) titleTag(user.title) else ""
+      val space = if (withOnline) "&nbsp;" else ""
+      val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+      val rating = userRating(user, withPerfRating, withBestRating)
+      s"""<span$dataIcon $klass $href>$space$titleS$content$rating</span>"""
+    }
 
-  def userIdSpanMini(userId: String, withOnline: Boolean = false) = Html {
-    val user = lightUser(userId)
-    val name = user.fold(userId)(_.name)
-    val content = user.fold(userId)(_.titleNameHtml)
-    val klass = userClass(userId, none, false)
-    val href = s"data-${userHref(name)}"
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
-    s"""<span$dataIcon $klass $href>$space$content</span>"""
-  }
+  def userIdSpanMini(userId: String, withOnline: Boolean = false) =
+    Html {
+      val user = lightUser(userId)
+      val name = user.fold(userId)(_.name)
+      val content = user.fold(userId)(_.titleNameHtml)
+      val klass = userClass(userId, none, false)
+      val href = s"data-${userHref(name)}"
+      val space = if (withOnline) "&nbsp;" else ""
+      val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+      s"""<span$dataIcon $klass $href>$space$content</span>"""
+    }
 
   private def renderRating(perf: Perf) =
     s"&nbsp;(${perf.intRating}${if (perf.provisional) "?" else ""})"

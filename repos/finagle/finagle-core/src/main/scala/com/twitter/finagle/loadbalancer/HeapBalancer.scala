@@ -124,29 +124,30 @@ class HeapBalancer[Req, Rep](
     removes.incr()
   }
 
-  private[this] def put(n: Node) = synchronized {
-    n.load -= 1
-    if (n.index < 0) {
-      // n has already been removed from the group, therefore do nothing
-    } else if (n.load == Zero && size > 1) {
-      // since we know that n is now <= any element in the heap, we
-      // can do interesting stuff without violating the heap
-      // invariant.
+  private[this] def put(n: Node) =
+    synchronized {
+      n.load -= 1
+      if (n.index < 0) {
+        // n has already been removed from the group, therefore do nothing
+      } else if (n.load == Zero && size > 1) {
+        // since we know that n is now <= any element in the heap, we
+        // can do interesting stuff without violating the heap
+        // invariant.
 
-      // remove n from the heap.
-      val i = n.index
-      swap(heap, i, size)
-      fixDown(heap, i, size - 1)
+        // remove n from the heap.
+        val i = n.index
+        swap(heap, i, size)
+        fixDown(heap, i, size - 1)
 
-      // pick a random node with which we can swap n
-      val j = rng.nextInt(size) + 1
-      swap(heap, j, size)
-      fixUp(heap, j)
+        // pick a random node with which we can swap n
+        val j = rng.nextInt(size) + 1
+        swap(heap, j, size)
+        fixUp(heap, j)
 
-      // expand the heap again
-      fixUp(heap, size)
-    } else { fixUp(heap, n.index) }
-  }
+        // expand the heap again
+        fixUp(heap, size)
+      } else { fixUp(heap, n.index) }
+    }
 
   @tailrec
   private[this] def get(): Node = {

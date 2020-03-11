@@ -14,9 +14,8 @@ final class ModApi(
     lightUserApi: LightUserApi,
     lilaBus: lila.common.Bus) {
 
-  def toggleEngine(mod: String, username: String): Funit = withUser(username) {
-    user => setEngine(mod, username, !user.engine)
-  }
+  def toggleEngine(mod: String, username: String): Funit =
+    withUser(username) { user => setEngine(mod, username, !user.engine) }
 
   def setEngine(mod: String, username: String, v: Boolean): Funit =
     withUser(username) { user =>
@@ -40,9 +39,8 @@ final class ModApi(
         setEngine("lichess", username, true)
     }
 
-  def toggleBooster(mod: String, username: String): Funit = withUser(username) {
-    user => setBooster(mod, username, !user.booster)
-  }
+  def toggleBooster(mod: String, username: String): Funit =
+    withUser(username) { user => setBooster(mod, username, !user.booster) }
 
   def setBooster(mod: String, username: String, v: Boolean): Funit =
     withUser(username) { user =>
@@ -76,29 +74,30 @@ final class ModApi(
           .MarkTroll(user.id, mod)) inject user.troll
     }
 
-  def ban(mod: String, username: String): Funit = withUser(username) { user =>
-    userSpy(user.id) flatMap { spy =>
-      UserRepo.toggleIpBan(user.id) zip
-        logApi.ban(mod, user.id, !user.ipBan) zip
-        user.ipBan.fold(
-          firewall unblockIps spy.ipStrings,
-          (spy.ipStrings map firewall.blockIp).sequenceFu >>
-            (SecurityStore disconnect user.id)
-        ) void
+  def ban(mod: String, username: String): Funit =
+    withUser(username) { user =>
+      userSpy(user.id) flatMap { spy =>
+        UserRepo.toggleIpBan(user.id) zip
+          logApi.ban(mod, user.id, !user.ipBan) zip
+          user.ipBan.fold(
+            firewall unblockIps spy.ipStrings,
+            (spy.ipStrings map firewall.blockIp).sequenceFu >>
+              (SecurityStore disconnect user.id)
+          ) void
+      }
     }
-  }
 
   def closeAccount(mod: String, username: String): Fu[Option[User]] =
     withUser(username) { user =>
       user.enabled ?? { logApi.closeAccount(mod, user.id) inject user.some }
     }
 
-  def reopenAccount(mod: String, username: String): Funit = withUser(username) {
-    user =>
+  def reopenAccount(mod: String, username: String): Funit =
+    withUser(username) { user =>
       !user.enabled ?? {
         (UserRepo enable user.id) >> logApi.reopenAccount(mod, user.id)
       }
-  }
+    }
 
   def setTitle(mod: String, username: String, title: Option[String]): Funit =
     withUser(username) { user =>

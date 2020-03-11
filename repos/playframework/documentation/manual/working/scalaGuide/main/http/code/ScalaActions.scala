@@ -79,13 +79,14 @@ package scalaguide.http.scalaactions {
         //#simple-result-action
         import play.api.http.HttpEntity
 
-        def index = Action {
-          Result(
-            header = ResponseHeader(200, Map.empty),
-            body =
-              HttpEntity.Strict(ByteString("Hello world!"), Some("text/plain"))
-          )
-        }
+        def index =
+          Action {
+            Result(
+              header = ResponseHeader(200, Map.empty),
+              body = HttpEntity
+                .Strict(ByteString("Hello world!"), Some("text/plain"))
+            )
+          }
         //#simple-result-action
         assertAction(index) { result =>
           contentAsString(result) must_== "Hello world!"

@@ -34,11 +34,12 @@ trait TypeComparers {
   def subsametypeRecursions = _subsametypeRecursions
   def subsametypeRecursions_=(value: Int) = _subsametypeRecursions = value
 
-  private def isUnifiable(pre1: Type, pre2: Type) = (
-    (isEligibleForPrefixUnification(pre1) || isEligibleForPrefixUnification(
-      pre2))
-      && (pre1 =:= pre2)
-  )
+  private def isUnifiable(pre1: Type, pre2: Type) =
+    (
+      (isEligibleForPrefixUnification(pre1) || isEligibleForPrefixUnification(
+        pre2))
+        && (pre1 =:= pre2)
+    )
 
   /** Returns true iff we are past phase specialize,
     *  sym1 and sym2 are two existential skolems with equal names and bounds,
@@ -66,11 +67,12 @@ trait TypeComparers {
       sym1: Symbol,
       pre1: Type,
       sym2: Symbol,
-      pre2: Type): Boolean = (
-    if (sym1 eq sym2)
-      sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
-    else (sym1.name == sym2.name) && isUnifiable(pre1, pre2)
-  )
+      pre2: Type): Boolean =
+    (
+      if (sym1 eq sym2)
+        sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
+      else (sym1.name == sym2.name) && isUnifiable(pre1, pre2)
+    )
 
   def isDifferentType(tp1: Type, tp2: Type): Boolean =
     try {
@@ -88,17 +90,19 @@ trait TypeComparers {
   def isDifferentTypeConstructor(tp1: Type, tp2: Type) =
     !isSameTypeConstructor(tp1, tp2)
 
-  private def isSameTypeConstructor(tr1: TypeRef, tr2: TypeRef): Boolean = (
-    (tr1.sym eq tr2.sym)
-      && !isDifferentType(tr1.pre, tr2.pre)
-  )
-  private def isSameTypeConstructor(tp1: Type, tp2: Type): Boolean = (
-    tp1.isInstanceOf[TypeRef]
-      && tp2.isInstanceOf[TypeRef]
-      && isSameTypeConstructor(
-        tp1.asInstanceOf[TypeRef],
-        tp2.asInstanceOf[TypeRef])
-  )
+  private def isSameTypeConstructor(tr1: TypeRef, tr2: TypeRef): Boolean =
+    (
+      (tr1.sym eq tr2.sym)
+        && !isDifferentType(tr1.pre, tr2.pre)
+    )
+  private def isSameTypeConstructor(tp1: Type, tp2: Type): Boolean =
+    (
+      tp1.isInstanceOf[TypeRef]
+        && tp2.isInstanceOf[TypeRef]
+        && isSameTypeConstructor(
+          tp1.asInstanceOf[TypeRef],
+          tp2.asInstanceOf[TypeRef])
+    )
 
   /** Do `tp1` and `tp2` denote equivalent types? */
   def isSameType(tp1: Type, tp2: Type): Boolean =
@@ -124,11 +128,12 @@ trait TypeComparers {
     }
 
   // @pre: at least one argument has annotations
-  private def sameAnnotatedTypes(tp1: Type, tp2: Type) = (
-    annotationsConform(tp1, tp2)
-      && annotationsConform(tp2, tp1)
-      && (tp1.withoutAnnotations =:= tp2.withoutAnnotations)
-  )
+  private def sameAnnotatedTypes(tp1: Type, tp2: Type) =
+    (
+      annotationsConform(tp1, tp2)
+        && annotationsConform(tp2, tp1)
+        && (tp1.withoutAnnotations =:= tp2.withoutAnnotations)
+    )
   // We flush out any AnnotatedTypes before calling isSameType2 because
   // unlike most other subclasses of Type, we have to allow for equivalence of any
   // combination of { tp1, tp2 } { is, is not } an AnnotatedType - this because the
@@ -141,15 +146,17 @@ trait TypeComparers {
       case _ => isSameType2(tp1, tp2)
     }
 
-  private def isSameHKTypes(tp1: Type, tp2: Type) = (
-    tp1.isHigherKinded
-      && tp2.isHigherKinded
-      && (tp1.normalize =:= tp2.normalize)
-  )
-  private def isSameTypeRef(tr1: TypeRef, tr2: TypeRef) = (
-    equalSymsAndPrefixes(tr1.sym, tr1.pre, tr2.sym, tr2.pre)
-      && (isSameHKTypes(tr1, tr2) || isSameTypes(tr1.args, tr2.args))
-  )
+  private def isSameHKTypes(tp1: Type, tp2: Type) =
+    (
+      tp1.isHigherKinded
+        && tp2.isHigherKinded
+        && (tp1.normalize =:= tp2.normalize)
+    )
+  private def isSameTypeRef(tr1: TypeRef, tr2: TypeRef) =
+    (
+      equalSymsAndPrefixes(tr1.sym, tr1.pre, tr2.sym, tr2.pre)
+        && (isSameHKTypes(tr1, tr2) || isSameTypes(tr1.args, tr2.args))
+    )
 
   private def isSameSingletonType(
       tp1: SingletonType,
@@ -169,11 +176,12 @@ trait TypeComparers {
     ((origin1 ne tp1) || (origin2 ne tp2)) && (origin1 =:= origin2)
   }
 
-  private def isSameMethodType(mt1: MethodType, mt2: MethodType) = (
-    isSameTypes(mt1.paramTypes, mt2.paramTypes)
-      && (mt1.resultType =:= mt2.resultType.substSym(mt2.params, mt1.params))
-      && (mt1.isImplicit == mt2.isImplicit)
-  )
+  private def isSameMethodType(mt1: MethodType, mt2: MethodType) =
+    (
+      isSameTypes(mt1.paramTypes, mt2.paramTypes)
+        && (mt1.resultType =:= mt2.resultType.substSym(mt2.params, mt1.params))
+        && (mt1.isImplicit == mt2.isImplicit)
+    )
 
   private def equalTypeParamsAndResult(
       tparams1: List[Symbol],
@@ -215,14 +223,15 @@ trait TypeComparers {
      *  are hidden bundles of mutable state, cruising the type system picking
      *  up any type constraints naive enough to get into their hot rods.
      */
-    def mutateNonTypeConstructs(lhs: Type, rhs: Type) = lhs match {
-      case BoundedWildcardType(bounds) => bounds containsType rhs
-      case tv @ TypeVar(_, _) =>
-        tv.registerTypeEquality(rhs, typeVarLHS = lhs eq tp1)
-      case TypeRef(tv @ TypeVar(_, _), sym, _) =>
-        tv.registerTypeSelection(sym, rhs)
-      case _ => false
-    }
+    def mutateNonTypeConstructs(lhs: Type, rhs: Type) =
+      lhs match {
+        case BoundedWildcardType(bounds) => bounds containsType rhs
+        case tv @ TypeVar(_, _) =>
+          tv.registerTypeEquality(rhs, typeVarLHS = lhs eq tp1)
+        case TypeRef(tv @ TypeVar(_, _), sym, _) =>
+          tv.registerTypeSelection(sym, rhs)
+        case _ => false
+      }
     /*  SingletonType receives this additional scrutiny because there are
      *  a variety of Types which must be treated as equivalent even if they
      *  arrive in different guises. For instance, object Foo in the following
@@ -235,63 +244,65 @@ trait TypeComparers {
      *  SingleType(pkg.type, Foo: ModuleSymbol)
      *  AliasTypeRef(NoPrefix, sym: AliasSymbol, Nil) where sym.info is one of the above
      */
-    def sameSingletonType = tp1 match {
-      case tp1: SingletonType =>
-        tp2 match {
-          case tp2: SingletonType => isSameSingletonType(tp1, tp2)
-          case _                  => false
-        }
-      case _ => false
-    }
+    def sameSingletonType =
+      tp1 match {
+        case tp1: SingletonType =>
+          tp2 match {
+            case tp2: SingletonType => isSameSingletonType(tp1, tp2)
+            case _                  => false
+          }
+        case _ => false
+      }
 
     /*  Those false cases certainly are ugly. There's a proposed SIP to deuglify it.
      *    https://docs.google.com/a/improving.org/document/d/1onPrzSqyDpHScc9PS_hpxJwa3FlPtthxw-bAuuEe8uA
      */
-    def sameTypeAndSameCaseClass = tp1 match {
-      case tp1: TypeRef =>
-        tp2 match {
-          case tp2: TypeRef => isSameTypeRef(tp1, tp2); case _ => false
-        }
-      case tp1: MethodType =>
-        tp2 match {
-          case tp2: MethodType => isSameMethodType(tp1, tp2); case _ => false
-        }
-      case RefinedType(ps1, decls1) =>
-        tp2 match {
-          case RefinedType(ps2, decls2) =>
-            isSameTypes(ps1, ps2) && (decls1 isSameScope decls2);
-          case _ => false
-        }
-      case SingleType(pre1, sym1) =>
-        tp2 match {
-          case SingleType(pre2, sym2)                            =>
-            equalSymsAndPrefixes(sym1, pre1, sym2, pre2); case _ => false
-        }
-      case PolyType(ps1, res1) =>
-        tp2 match {
-          case PolyType(ps2, res2)                                 =>
-            equalTypeParamsAndResult(ps1, res1, ps2, res2); case _ => false
-        }
-      case ExistentialType(qs1, res1) =>
-        tp2 match {
-          case ExistentialType(qs2, res2)                          =>
-            equalTypeParamsAndResult(qs1, res1, qs2, res2); case _ => false
-        }
-      case ThisType(sym1) =>
-        tp2 match { case ThisType(sym2) => sym1 eq sym2; case _ => false }
-      case ConstantType(c1) =>
-        tp2 match { case ConstantType(c2) => c1 == c2; case _ => false }
-      case NullaryMethodType(res1) =>
-        tp2 match {
-          case NullaryMethodType(res2) => res1 =:= res2; case _ => false
-        }
-      case TypeBounds(lo1, hi1) =>
-        tp2 match {
-          case TypeBounds(lo2, hi2) => lo1 =:= lo2 && hi1 =:= hi2;
-          case _                    => false
-        }
-      case _ => false
-    }
+    def sameTypeAndSameCaseClass =
+      tp1 match {
+        case tp1: TypeRef =>
+          tp2 match {
+            case tp2: TypeRef => isSameTypeRef(tp1, tp2); case _ => false
+          }
+        case tp1: MethodType =>
+          tp2 match {
+            case tp2: MethodType => isSameMethodType(tp1, tp2); case _ => false
+          }
+        case RefinedType(ps1, decls1) =>
+          tp2 match {
+            case RefinedType(ps2, decls2) =>
+              isSameTypes(ps1, ps2) && (decls1 isSameScope decls2);
+            case _ => false
+          }
+        case SingleType(pre1, sym1) =>
+          tp2 match {
+            case SingleType(pre2, sym2)                            =>
+              equalSymsAndPrefixes(sym1, pre1, sym2, pre2); case _ => false
+          }
+        case PolyType(ps1, res1) =>
+          tp2 match {
+            case PolyType(ps2, res2)                                 =>
+              equalTypeParamsAndResult(ps1, res1, ps2, res2); case _ => false
+          }
+        case ExistentialType(qs1, res1) =>
+          tp2 match {
+            case ExistentialType(qs2, res2)                          =>
+              equalTypeParamsAndResult(qs1, res1, qs2, res2); case _ => false
+          }
+        case ThisType(sym1) =>
+          tp2 match { case ThisType(sym2) => sym1 eq sym2; case _ => false }
+        case ConstantType(c1) =>
+          tp2 match { case ConstantType(c2) => c1 == c2; case _ => false }
+        case NullaryMethodType(res1) =>
+          tp2 match {
+            case NullaryMethodType(res2) => res1 =:= res2; case _ => false
+          }
+        case TypeBounds(lo1, hi1) =>
+          tp2 match {
+            case TypeBounds(lo2, hi2) => lo1 =:= lo2 && hi1 =:= hi2;
+            case _                    => false
+          }
+        case _ => false
+      }
 
     (sameTypeAndSameCaseClass
     || sameSingletonType
@@ -353,20 +364,22 @@ trait TypeComparers {
     *  will have to figure things out.
     */
   private def typeRelationPreCheck(tp1: Type, tp2: Type): TriState = {
-    def isTrue = (
-      (tp1 eq tp2)
-        || isErrorOrWildcard(tp1)
-        || isErrorOrWildcard(tp2)
-        || (tp1 eq NoPrefix) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
-        || (tp2 eq NoPrefix) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
-    )
+    def isTrue =
+      (
+        (tp1 eq tp2)
+          || isErrorOrWildcard(tp1)
+          || isErrorOrWildcard(tp2)
+          || (tp1 eq NoPrefix) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+          || (tp2 eq NoPrefix) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+      )
     // isFalse, assuming !isTrue
-    def isFalse = (
-      (tp1 eq NoType)
-        || (tp2 eq NoType)
-        || (tp1 eq NoPrefix)
-        || (tp2 eq NoPrefix)
-    )
+    def isFalse =
+      (
+        (tp1 eq NoType)
+          || (tp2 eq NoType)
+          || (tp1 eq NoPrefix)
+          || (tp2 eq NoPrefix)
+      )
 
     if (isTrue) TriState.True
     else if (isFalse) TriState.False
@@ -395,10 +408,11 @@ trait TypeComparers {
       def sub1(tp: Type) =
         if (isMethod) tp else tp.substSym(tparams1, substitutes)
       def sub2(tp: Type) = tp.substSym(tparams2, substitutes)
-      def cmp(p1: Symbol, p2: Symbol) = (
-        methodHigherOrderTypeParamsSubVariance(p2, p1)
-          && sub2(p2.info) <:< sub1(p1.info)
-      )
+      def cmp(p1: Symbol, p2: Symbol) =
+        (
+          methodHigherOrderTypeParamsSubVariance(p2, p1)
+            && sub2(p2.info) <:< sub1(p1.info)
+        )
 
       (tparams1 corresponds tparams2)(cmp) && (sub1(res1) <:< sub2(res2))
     }
@@ -467,89 +481,92 @@ trait TypeComparers {
      *   - bind TypeVars  on the right, if lhs is not Annotated nor BoundedWildcard
      *   - handle common cases for first-kind TypeRefs on both sides as a fast path.
      */
-    def firstTry = tp2 match {
-      // fast path: two typerefs, none of them HK
-      case tr2: TypeRef =>
-        tp1 match {
-          case tr1: TypeRef =>
-            // TODO - dedicate a method to TypeRef/TypeRef subtyping.
-            // These typerefs are pattern matched up and down far more
-            // than is necessary.
-            val sym1 = tr1.sym
-            val sym2 = tr2.sym
-            val pre1 = tr1.pre
-            val pre2 = tr2.pre
-            (((if (sym1 eq sym2)
-                 phase.erasedTypes || sym1.owner.hasPackageFlag || isSubType(
-                   pre1,
-                   pre2,
-                   depth)
-               else
-                 (sym1.name == sym2.name && !sym1.isModuleClass && !sym2.isModuleClass &&
-                 (isUnifiable(pre1, pre2) ||
-                 isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||
-                 sym2.isAbstractType && isSubPre(pre1, pre2, sym2)))) &&
-            isSubArgs(tr1.args, tr2.args, sym1.typeParams, depth))
-            ||
-            sym2.isClass && {
-              val base = tr1 baseType sym2
-              // During bootstrap, `base eq NoType` occurs about 2.5 times as often as `base ne NoType`.
-              // The extra check seems like a worthwhile optimization (about 2.5M useless calls to isSubtype saved during that run).
-              (base ne tr1) && (base ne NoType) && isSubType(base, tr2, depth)
-            }
-            ||
-            thirdTryRef(tr1, tr2))
-          case _ =>
-            secondTry
-        }
-      case AnnotatedType(_, _) =>
-        isSubType(tp1.withoutAnnotations, tp2.withoutAnnotations, depth) &&
-          annotationsConform(tp1, tp2)
-      case BoundedWildcardType(bounds) =>
-        isSubType(tp1, bounds.hi, depth)
-      case tv2 @ TypeVar(_, constr2) =>
-        tp1 match {
-          case AnnotatedType(_, _) | BoundedWildcardType(_) =>
-            secondTry
-          case _ =>
-            tv2.registerBound(tp1, isLowerBound = true)
-        }
-      case _ =>
-        secondTry
-    }
+    def firstTry =
+      tp2 match {
+        // fast path: two typerefs, none of them HK
+        case tr2: TypeRef =>
+          tp1 match {
+            case tr1: TypeRef =>
+              // TODO - dedicate a method to TypeRef/TypeRef subtyping.
+              // These typerefs are pattern matched up and down far more
+              // than is necessary.
+              val sym1 = tr1.sym
+              val sym2 = tr2.sym
+              val pre1 = tr1.pre
+              val pre2 = tr2.pre
+              (((if (sym1 eq sym2)
+                   phase.erasedTypes || sym1.owner.hasPackageFlag || isSubType(
+                     pre1,
+                     pre2,
+                     depth)
+                 else
+                   (sym1.name == sym2.name && !sym1.isModuleClass && !sym2.isModuleClass &&
+                   (isUnifiable(pre1, pre2) ||
+                   isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||
+                   sym2.isAbstractType && isSubPre(pre1, pre2, sym2)))) &&
+              isSubArgs(tr1.args, tr2.args, sym1.typeParams, depth))
+              ||
+              sym2.isClass && {
+                val base = tr1 baseType sym2
+                // During bootstrap, `base eq NoType` occurs about 2.5 times as often as `base ne NoType`.
+                // The extra check seems like a worthwhile optimization (about 2.5M useless calls to isSubtype saved during that run).
+                (base ne tr1) && (base ne NoType) && isSubType(base, tr2, depth)
+              }
+              ||
+              thirdTryRef(tr1, tr2))
+            case _ =>
+              secondTry
+          }
+        case AnnotatedType(_, _) =>
+          isSubType(tp1.withoutAnnotations, tp2.withoutAnnotations, depth) &&
+            annotationsConform(tp1, tp2)
+        case BoundedWildcardType(bounds) =>
+          isSubType(tp1, bounds.hi, depth)
+        case tv2 @ TypeVar(_, constr2) =>
+          tp1 match {
+            case AnnotatedType(_, _) | BoundedWildcardType(_) =>
+              secondTry
+            case _ =>
+              tv2.registerBound(tp1, isLowerBound = true)
+          }
+        case _ =>
+          secondTry
+      }
 
     /* Second try, on the left:
      *   - unwrap AnnotatedTypes, BoundedWildcardTypes,
      *   - bind typevars,
      *   - handle existential types by skolemization.
      */
-    def secondTry = tp1 match {
-      case AnnotatedType(_, _) =>
-        isSubType(tp1.withoutAnnotations, tp2.withoutAnnotations, depth) &&
-          annotationsConform(tp1, tp2)
-      case BoundedWildcardType(bounds) =>
-        isSubType(tp1.bounds.lo, tp2, depth)
-      case tv @ TypeVar(_, _) =>
-        tv.registerBound(tp2, isLowerBound = false)
-      case ExistentialType(_, _) =>
-        try {
-          skolemizationLevel += 1
-          isSubType(tp1.skolemizeExistential, tp2, depth)
-        } finally { skolemizationLevel -= 1 }
-      case _ =>
-        thirdTry
-    }
+    def secondTry =
+      tp1 match {
+        case AnnotatedType(_, _) =>
+          isSubType(tp1.withoutAnnotations, tp2.withoutAnnotations, depth) &&
+            annotationsConform(tp1, tp2)
+        case BoundedWildcardType(bounds) =>
+          isSubType(tp1.bounds.lo, tp2, depth)
+        case tv @ TypeVar(_, _) =>
+          tv.registerBound(tp2, isLowerBound = false)
+        case ExistentialType(_, _) =>
+          try {
+            skolemizationLevel += 1
+            isSubType(tp1.skolemizeExistential, tp2, depth)
+          } finally { skolemizationLevel -= 1 }
+        case _ =>
+          thirdTry
+      }
 
     def thirdTryRef(tp1: Type, tp2: TypeRef): Boolean = {
       val sym2 = tp2.sym
       def retry(lhs: Type, rhs: Type) = isSubType(lhs, rhs, depth)
       def abstractTypeOnRight(lo: Type) =
         isDifferentTypeConstructor(tp2, lo) && retry(tp1, lo)
-      def classOnRight = (
-        if (isRawType(tp2)) retry(tp1, rawToExistential(tp2))
-        else if (sym2.isRefinementClass) retry(tp1, sym2.info)
-        else fourthTry
-      )
+      def classOnRight =
+        (
+          if (isRawType(tp2)) retry(tp1, rawToExistential(tp2))
+          else if (sym2.isRefinementClass) retry(tp1, sym2.info)
+          else fourthTry
+        )
       sym2 match {
         case SingletonClass => tp1.isStable || fourthTry
         case _: ClassSymbol => classOnRight
@@ -565,45 +582,46 @@ trait TypeComparers {
      *   - handle typerefs and existentials.
      *   - handle left+right method types, polytypes, typebounds
      */
-    def thirdTry = tp2 match {
-      case tr2: TypeRef =>
-        thirdTryRef(tp1, tr2)
-      case rt2: RefinedType =>
-        (rt2.parents forall (isSubType(tp1, _, depth))) &&
-          (rt2.decls forall (specializesSym(tp1, _, depth)))
-      case et2: ExistentialType =>
-        et2.withTypeVars(isSubType(tp1, _, depth), depth) || fourthTry
-      case mt2: MethodType =>
-        tp1 match {
-          case mt1 @ MethodType(params1, res1) =>
-            val params2 = mt2.params
-            val res2 = mt2.resultType
-            (sameLength(params1, params2) &&
-            mt1.isImplicit == mt2.isImplicit &&
-            matchingParams(params1, params2, mt1.isJava, mt2.isJava) &&
-            isSubType(res1.substSym(params1, params2), res2, depth))
-          // TODO: if mt1.params.isEmpty, consider NullaryMethodType?
-          case _ =>
-            false
-        }
-      case pt2 @ NullaryMethodType(_) =>
-        tp1 match {
-          // TODO: consider MethodType mt for which mt.params.isEmpty??
-          case pt1 @ NullaryMethodType(_) =>
-            isSubType(pt1.resultType, pt2.resultType, depth)
-          case _ =>
-            false
-        }
-      case TypeBounds(lo2, hi2) =>
-        tp1 match {
-          case TypeBounds(lo1, hi1) =>
-            isSubType(lo2, lo1, depth) && isSubType(hi1, hi2, depth)
-          case _ =>
-            false
-        }
-      case _ =>
-        fourthTry
-    }
+    def thirdTry =
+      tp2 match {
+        case tr2: TypeRef =>
+          thirdTryRef(tp1, tr2)
+        case rt2: RefinedType =>
+          (rt2.parents forall (isSubType(tp1, _, depth))) &&
+            (rt2.decls forall (specializesSym(tp1, _, depth)))
+        case et2: ExistentialType =>
+          et2.withTypeVars(isSubType(tp1, _, depth), depth) || fourthTry
+        case mt2: MethodType =>
+          tp1 match {
+            case mt1 @ MethodType(params1, res1) =>
+              val params2 = mt2.params
+              val res2 = mt2.resultType
+              (sameLength(params1, params2) &&
+              mt1.isImplicit == mt2.isImplicit &&
+              matchingParams(params1, params2, mt1.isJava, mt2.isJava) &&
+              isSubType(res1.substSym(params1, params2), res2, depth))
+            // TODO: if mt1.params.isEmpty, consider NullaryMethodType?
+            case _ =>
+              false
+          }
+        case pt2 @ NullaryMethodType(_) =>
+          tp1 match {
+            // TODO: consider MethodType mt for which mt.params.isEmpty??
+            case pt1 @ NullaryMethodType(_) =>
+              isSubType(pt1.resultType, pt2.resultType, depth)
+            case _ =>
+              false
+          }
+        case TypeBounds(lo2, hi2) =>
+          tp1 match {
+            case TypeBounds(lo1, hi1) =>
+              isSubType(lo2, lo1, depth) && isSubType(hi1, hi2, depth)
+            case _ =>
+              false
+          }
+        case _ =>
+          fourthTry
+      }
 
     /* Fourth try, on the left:
      *   - handle typerefs, refined types, and singleton types.
@@ -616,10 +634,11 @@ trait TypeComparers {
 
       tp1 match {
         case tr1 @ TypeRef(pre1, sym1, _) =>
-          def nullOnLeft = tp2 match {
-            case TypeRef(_, sym2, _) => sym1 isBottomSubClass sym2
-            case _                   => isSingleType(tp2) && retry(tp1, tp2.widen)
-          }
+          def nullOnLeft =
+            tp2 match {
+              case TypeRef(_, sym2, _) => sym1 isBottomSubClass sym2
+              case _                   => isSingleType(tp2) && retry(tp1, tp2.widen)
+            }
 
           sym1 match {
             case NothingClass => true
@@ -666,20 +685,22 @@ trait TypeComparers {
         isSubType(tp1, tp2)
     }
 
-  def isNumericSubType(tp1: Type, tp2: Type) = (
-    isNumericSubClass(
-      primitiveBaseClass(tp1.dealiasWiden),
-      primitiveBaseClass(tp2.dealias))
-  )
+  def isNumericSubType(tp1: Type, tp2: Type) =
+    (
+      isNumericSubClass(
+        primitiveBaseClass(tp1.dealiasWiden),
+        primitiveBaseClass(tp2.dealias))
+    )
 
   /** If the given type has a primitive class among its base classes,
     *  the symbol of that class. Otherwise, NoSymbol.
     */
   private def primitiveBaseClass(tp: Type): Symbol = {
-    @tailrec def loop(bases: List[Symbol]): Symbol = bases match {
-      case Nil     => NoSymbol
-      case x :: xs => if (isPrimitiveValueClass(x)) x else loop(xs)
-    }
+    @tailrec def loop(bases: List[Symbol]): Symbol =
+      bases match {
+        case Nil     => NoSymbol
+        case x :: xs => if (isPrimitiveValueClass(x)) x else loop(xs)
+      }
     loop(tp.baseClasses)
   }
 }

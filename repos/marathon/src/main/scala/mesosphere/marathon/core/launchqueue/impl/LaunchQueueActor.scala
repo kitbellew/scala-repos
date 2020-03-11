@@ -69,15 +69,16 @@ private[impl] class LaunchQueueActor(
   implicit val askTimeout: Timeout =
     launchQueueConfig.launchQueueRequestTimeout().milliseconds
 
-  override def receive: Receive = LoggingReceive {
-    Seq(
-      receiveHandlePurging,
-      receiveTaskUpdateToSuspendedActor,
-      receiveMessagesToSuspendedActor,
-      receiveTaskUpdate,
-      receiveHandleNormalCommands
-    ).reduce(_.orElse[Any, Unit](_))
-  }
+  override def receive: Receive =
+    LoggingReceive {
+      Seq(
+        receiveHandlePurging,
+        receiveTaskUpdateToSuspendedActor,
+        receiveMessagesToSuspendedActor,
+        receiveTaskUpdate,
+        receiveHandleNormalCommands
+      ).reduce(_.orElse[Any, Unit](_))
+    }
 
   /**
     * Handles purging of an actor.
@@ -223,11 +224,12 @@ private[impl] class LaunchQueueActor(
     actorRef
   }
 
-  override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
-    case NonFatal(e) =>
-      // We periodically check if scaling is needed, so we should recover. TODO: Speedup
-      // Just restarting an AppTaskLauncherActor will potentially lead to starting too many tasks.
-      Stop
-    case m: Any => SupervisorStrategy.defaultDecider(m)
-  }
+  override def supervisorStrategy: SupervisorStrategy =
+    OneForOneStrategy() {
+      case NonFatal(e) =>
+        // We periodically check if scaling is needed, so we should recover. TODO: Speedup
+        // Just restarting an AppTaskLauncherActor will potentially lead to starting too many tasks.
+        Stop
+      case m: Any => SupervisorStrategy.defaultDecider(m)
+    }
 }

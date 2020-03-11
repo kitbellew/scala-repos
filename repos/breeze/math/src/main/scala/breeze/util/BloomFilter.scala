@@ -60,11 +60,12 @@ class BloomFilter[@specialized(Int, Long) T](
     */
   def load: Double = bits.cardinality().toDouble / numBuckets
 
-  override def equals(other: Any) = other match {
-    case that: BloomFilter[_] =>
-      this.numBuckets == that.numBuckets && this.numHashFunctions == that.numHashFunctions && this.bits == that.bits
-    case _ => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case that: BloomFilter[_] =>
+        this.numBuckets == that.numBuckets && this.numHashFunctions == that.numHashFunctions && this.bits == that.bits
+      case _ => false
+    }
 
   def +=(o: T): this.type = {
     activeBuckets(o).foreach(i => bits.set(i))

@@ -104,8 +104,9 @@ trait PsiElementExtTrait {
 
   def scopes: Iterator[PsiElement] = contexts.filter(ScalaPsiUtil.isScope)
 
-  def containingScalaFile: Option[ScalaFile] = repr.getContainingFile match {
-    case sf: ScalaFile => Some(sf)
-    case _             => None
-  }
+  def containingScalaFile: Option[ScalaFile] =
+    repr.getContainingFile match {
+      case sf: ScalaFile => Some(sf)
+      case _             => None
+    }
 }

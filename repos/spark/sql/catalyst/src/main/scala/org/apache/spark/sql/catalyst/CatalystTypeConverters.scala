@@ -194,35 +194,36 @@ object CatalystTypeConverters {
     private[this] val keyConverter = getConverterForType(keyType)
     private[this] val valueConverter = getConverterForType(valueType)
 
-    override def toCatalystImpl(scalaValue: Any): MapData = scalaValue match {
-      case m: Map[_, _] =>
-        val length = m.size
-        val convertedKeys = new Array[Any](length)
-        val convertedValues = new Array[Any](length)
+    override def toCatalystImpl(scalaValue: Any): MapData =
+      scalaValue match {
+        case m: Map[_, _] =>
+          val length = m.size
+          val convertedKeys = new Array[Any](length)
+          val convertedValues = new Array[Any](length)
 
-        var i = 0
-        for ((key, value) <- m) {
-          convertedKeys(i) = keyConverter.toCatalyst(key)
-          convertedValues(i) = valueConverter.toCatalyst(value)
-          i += 1
-        }
-        ArrayBasedMapData(convertedKeys, convertedValues)
+          var i = 0
+          for ((key, value) <- m) {
+            convertedKeys(i) = keyConverter.toCatalyst(key)
+            convertedValues(i) = valueConverter.toCatalyst(value)
+            i += 1
+          }
+          ArrayBasedMapData(convertedKeys, convertedValues)
 
-      case jmap: JavaMap[_, _] =>
-        val length = jmap.size()
-        val convertedKeys = new Array[Any](length)
-        val convertedValues = new Array[Any](length)
+        case jmap: JavaMap[_, _] =>
+          val length = jmap.size()
+          val convertedKeys = new Array[Any](length)
+          val convertedValues = new Array[Any](length)
 
-        var i = 0
-        val iter = jmap.entrySet.iterator
-        while (iter.hasNext) {
-          val entry = iter.next()
-          convertedKeys(i) = keyConverter.toCatalyst(entry.getKey)
-          convertedValues(i) = valueConverter.toCatalyst(entry.getValue)
-          i += 1
-        }
-        ArrayBasedMapData(convertedKeys, convertedValues)
-    }
+          var i = 0
+          val iter = jmap.entrySet.iterator
+          while (iter.hasNext) {
+            val entry = iter.next()
+            convertedKeys(i) = keyConverter.toCatalyst(entry.getKey)
+            convertedValues(i) = valueConverter.toCatalyst(entry.getValue)
+            i += 1
+          }
+          ArrayBasedMapData(convertedKeys, convertedValues)
+      }
 
     override def toScala(catalystValue: MapData): Map[Any, Any] = {
       if (catalystValue == null) { null }
@@ -425,32 +426,33 @@ object CatalystTypeConverters {
     *        (It does not support UDT)
     *  This is used to create an RDD or test results with correct types for Catalyst.
     */
-  def convertToCatalyst(a: Any): Any = a match {
-    case s: String    => StringConverter.toCatalyst(s)
-    case d: Date      => DateConverter.toCatalyst(d)
-    case t: Timestamp => TimestampConverter.toCatalyst(t)
-    case d: BigDecimal =>
-      new DecimalConverter(DecimalType(d.precision, d.scale)).toCatalyst(d)
-    case d: JavaBigDecimal =>
-      new DecimalConverter(DecimalType(d.precision, d.scale)).toCatalyst(d)
-    case seq: Seq[Any] =>
-      new GenericArrayData(seq.map(convertToCatalyst).toArray)
-    case r: Row          => InternalRow(r.toSeq.map(convertToCatalyst): _*)
-    case arr: Array[Any] => new GenericArrayData(arr.map(convertToCatalyst))
-    case m: Map[_, _] =>
-      val length = m.size
-      val convertedKeys = new Array[Any](length)
-      val convertedValues = new Array[Any](length)
+  def convertToCatalyst(a: Any): Any =
+    a match {
+      case s: String    => StringConverter.toCatalyst(s)
+      case d: Date      => DateConverter.toCatalyst(d)
+      case t: Timestamp => TimestampConverter.toCatalyst(t)
+      case d: BigDecimal =>
+        new DecimalConverter(DecimalType(d.precision, d.scale)).toCatalyst(d)
+      case d: JavaBigDecimal =>
+        new DecimalConverter(DecimalType(d.precision, d.scale)).toCatalyst(d)
+      case seq: Seq[Any] =>
+        new GenericArrayData(seq.map(convertToCatalyst).toArray)
+      case r: Row          => InternalRow(r.toSeq.map(convertToCatalyst): _*)
+      case arr: Array[Any] => new GenericArrayData(arr.map(convertToCatalyst))
+      case m: Map[_, _] =>
+        val length = m.size
+        val convertedKeys = new Array[Any](length)
+        val convertedValues = new Array[Any](length)
 
-      var i = 0
-      for ((key, value) <- m) {
-        convertedKeys(i) = convertToCatalyst(key)
-        convertedValues(i) = convertToCatalyst(value)
-        i += 1
-      }
-      ArrayBasedMapData(convertedKeys, convertedValues)
-    case other => other
-  }
+        var i = 0
+        for ((key, value) <- m) {
+          convertedKeys(i) = convertToCatalyst(key)
+          convertedValues(i) = convertToCatalyst(value)
+          i += 1
+        }
+        ArrayBasedMapData(convertedKeys, convertedValues)
+      case other => other
+    }
 
   /**
     * Converts Catalyst types used internally in rows to standard Scala types

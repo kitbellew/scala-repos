@@ -33,16 +33,18 @@ case class Challenge(
   def challengerIsAnon = challenger.isLeft
   def destUserId = destUser.map(_.id)
 
-  def daysPerTurn = timeControl match {
-    case TimeControl.Correspondence(d) => d.some
-    case _                             => none
-  }
+  def daysPerTurn =
+    timeControl match {
+      case TimeControl.Correspondence(d) => d.some
+      case _                             => none
+    }
   def unlimited = timeControl == TimeControl.Unlimited
 
-  def clock = timeControl match {
-    case c: TimeControl.Clock => c.some
-    case _                    => none
-  }
+  def clock =
+    timeControl match {
+      case c: TimeControl.Clock => c.some
+      case _                    => none
+    }
 
   def hasClock = clock.isDefined
 
@@ -99,10 +101,11 @@ object Challenge {
     case object Black extends ColorChoice
   }
 
-  private def speedOf(timeControl: TimeControl) = timeControl match {
-    case c: TimeControl.Clock => Speed(c.chessClock)
-    case _                    => Speed.Correspondence
-  }
+  private def speedOf(timeControl: TimeControl) =
+    timeControl match {
+      case c: TimeControl.Clock => Speed(c.chessClock)
+      case _                    => Speed.Correspondence
+    }
 
   private def perfTypeOf(variant: Variant, timeControl: TimeControl): PerfType =
     PerfPicker

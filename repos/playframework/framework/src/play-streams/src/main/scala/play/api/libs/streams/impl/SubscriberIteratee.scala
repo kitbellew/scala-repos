@@ -114,27 +114,29 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
     Future { promise.completeWith(folder(Step.Done((), Input.Empty))) }(ec)
   }
 
-  def cancel() = exclusive {
-    case AwaitingDemand(_, cancelled) =>
-      cancelled()
-      state = Cancelled
-    case _ =>
-      state = Cancelled
-  }
+  def cancel() =
+    exclusive {
+      case AwaitingDemand(_, cancelled) =>
+        cancelled()
+        state = Cancelled
+      case _ =>
+        state = Cancelled
+    }
 
-  def request(n: Long) = exclusive {
-    case NoDemand =>
-      state = Demand(n)
-    case AwaitingDemand(demand, _) =>
-      demand()
-      if (n == 1) { state = NoDemand }
-      else { state = Demand(n - 1) }
-    case Demand(old) =>
-      state = Demand(old + n)
-    case Cancelled =>
-    // nop, 3.6 of reactive streams spec
-    case NotSubscribed =>
-      throw new IllegalStateException(
-        "Demand requested before subscription made")
-  }
+  def request(n: Long) =
+    exclusive {
+      case NoDemand =>
+        state = Demand(n)
+      case AwaitingDemand(demand, _) =>
+        demand()
+        if (n == 1) { state = NoDemand }
+        else { state = Demand(n - 1) }
+      case Demand(old) =>
+        state = Demand(old + n)
+      case Cancelled =>
+      // nop, 3.6 of reactive streams spec
+      case NotSubscribed =>
+        throw new IllegalStateException(
+          "Demand requested before subscription made")
+    }
 }

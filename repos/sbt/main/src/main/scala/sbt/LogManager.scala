@@ -120,10 +120,11 @@ object LogManager {
         "Stack trace suppressed: run %s for the full output.".format(
           command(context.useColor)))
   }
-  def unwrapStreamsKey(key: ScopedKey[_]): ScopedKey[_] = key.scope.task match {
-    case Select(task) => ScopedKey(key.scope.copy(task = Global), task)
-    case _            => key // should never get here
-  }
+  def unwrapStreamsKey(key: ScopedKey[_]): ScopedKey[_] =
+    key.scope.task match {
+      case Select(task) => ScopedKey(key.scope.copy(task = Global), task)
+      case _            => key // should never get here
+    }
 
   // if global logging levels are not explicitly set, set them from project settings
   private[sbt] def setGlobalLogLevels(s: State, data: Settings[Scope]): State =

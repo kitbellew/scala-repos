@@ -189,9 +189,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
   /* Obtains the name for the value with id `i`. If no name is cached
    * in `nmap`, it populates `nmap` using reflection.
    */
-  private def nameOf(i: Int): String = synchronized {
-    nmap.getOrElse(i, { populateNameMap(); nmap(i) })
-  }
+  private def nameOf(i: Int): String =
+    synchronized { nmap.getOrElse(i, { populateNameMap(); nmap(i) }) }
 
   /** The type of the enumerated values. */
   @SerialVersionUID(7091335633555234129L)
@@ -205,11 +204,12 @@ abstract class Enumeration(initial: Int) extends Serializable {
 
     override def compare(that: Value): Int =
       if (this.id < that.id) -1 else if (this.id == that.id) 0 else 1
-    override def equals(other: Any) = other match {
-      case that: Enumeration#Value =>
-        (outerEnum eq that.outerEnum) && (id == that.id)
-      case _ => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case that: Enumeration#Value =>
+          (outerEnum eq that.outerEnum) && (id == that.id)
+        case _ => false
+      }
     override def hashCode: Int = id.##
 
     /** Create a ValueSet which contains this value and another one */

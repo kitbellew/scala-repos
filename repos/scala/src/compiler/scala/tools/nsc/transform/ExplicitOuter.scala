@@ -72,10 +72,11 @@ abstract class ExplicitOuter
     "arg" + nme.OUTER)
 
   class RemoveBindingsTransformer(toRemove: Set[Symbol]) extends Transformer {
-    override def transform(tree: Tree) = tree match {
-      case Bind(_, body) if toRemove(tree.symbol) => super.transform(body)
-      case _                                      => super.transform(tree)
-    }
+    override def transform(tree: Tree) =
+      tree match {
+        case Bind(_, body) if toRemove(tree.symbol) => super.transform(body)
+        case _                                      => super.transform(tree)
+      }
   }
 
   def outerAccessor(clazz: Symbol): Symbol = {
@@ -163,69 +164,71 @@ abstract class ExplicitOuter
     *  Note: this transformInfo need not be reflected as the JVM reflection already
     *  elides outer pointers.
     */
-  def transformInfo(sym: Symbol, tp: Type): Type = tp match {
-    case MethodType(params, resTp) =>
-      val resTpTransformed = transformInfo(sym, resTp)
+  def transformInfo(sym: Symbol, tp: Type): Type =
+    tp match {
+      case MethodType(params, resTp) =>
+        val resTpTransformed = transformInfo(sym, resTp)
 
-      // juggle flags (and mangle names) after transforming info
-      if (sym.owner.isTrait) {
-        // TODO: I don't believe any private accessors remain after the fields phase
-        if ((sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isModule)
-          sym.makeNotPrivate(sym.owner) // 5
-        if (sym.isProtected) sym setFlag notPROTECTED // 6
-      }
+        // juggle flags (and mangle names) after transforming info
+        if (sym.owner.isTrait) {
+          // TODO: I don't believe any private accessors remain after the fields phase
+          if ((sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isModule)
+            sym.makeNotPrivate(sym.owner) // 5
+          if (sym.isProtected) sym setFlag notPROTECTED // 6
+        }
 
-      val paramsWithOuter =
-        if (sym.isClassConstructor && isInner(sym.owner)) // 1
-          sym
-            .newValueParameter(innerClassConstructorParamName, sym.pos)
-            .setInfo(sym.owner.outerClass.thisType) :: params
-        else params
+        val paramsWithOuter =
+          if (sym.isClassConstructor && isInner(sym.owner)) // 1
+            sym
+              .newValueParameter(innerClassConstructorParamName, sym.pos)
+              .setInfo(sym.owner.outerClass.thisType) :: params
+          else params
 
-      if ((resTpTransformed ne resTp) || (paramsWithOuter ne params))
-        MethodType(paramsWithOuter, resTpTransformed)
-      else tp
+        if ((resTpTransformed ne resTp) || (paramsWithOuter ne params))
+          MethodType(paramsWithOuter, resTpTransformed)
+        else tp
 
-    case ClassInfoType(parents, decls, clazz) =>
-      var decls1 = decls
-      if (isInner(clazz) && !clazz.isInterface) {
-        decls1 = decls.cloneScope
-        decls1 enter newOuterAccessor(clazz) // 3
-        if (hasOuterField(clazz)) //2
-          decls1 enter newOuterField(clazz)
-      }
-      if (!clazz.isTrait && !parents.isEmpty) {
-        for (mc <- clazz.mixinClasses) {
-          val mixinOuterAcc: Symbol = exitingExplicitOuter(outerAccessor(mc))
-          if (mixinOuterAcc != NoSymbol) {
-            if (skipMixinOuterAccessor(clazz, mc))
-              debuglog(
-                s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
-            else {
-              if (decls1 eq decls) decls1 = decls.cloneScope
-              val newAcc = mixinOuterAcc
-                .cloneSymbol(clazz, mixinOuterAcc.flags & ~DEFERRED)
-              newAcc setInfo (clazz.thisType memberType mixinOuterAcc)
-              decls1 enter newAcc
+      case ClassInfoType(parents, decls, clazz) =>
+        var decls1 = decls
+        if (isInner(clazz) && !clazz.isInterface) {
+          decls1 = decls.cloneScope
+          decls1 enter newOuterAccessor(clazz) // 3
+          if (hasOuterField(clazz)) //2
+            decls1 enter newOuterField(clazz)
+        }
+        if (!clazz.isTrait && !parents.isEmpty) {
+          for (mc <- clazz.mixinClasses) {
+            val mixinOuterAcc: Symbol = exitingExplicitOuter(outerAccessor(mc))
+            if (mixinOuterAcc != NoSymbol) {
+              if (skipMixinOuterAccessor(clazz, mc))
+                debuglog(
+                  s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
+              else {
+                if (decls1 eq decls) decls1 = decls.cloneScope
+                val newAcc = mixinOuterAcc.cloneSymbol(
+                  clazz,
+                  mixinOuterAcc.flags & ~DEFERRED)
+                newAcc setInfo (clazz.thisType memberType mixinOuterAcc)
+                decls1 enter newAcc
+              }
             }
           }
         }
-      }
-      if (decls1 eq decls) tp else ClassInfoType(parents, decls1, clazz)
-    case PolyType(tparams, restp) =>
-      val restp1 = transformInfo(sym, restp)
-      if (restp eq restp1) tp else PolyType(tparams, restp1)
+        if (decls1 eq decls) tp else ClassInfoType(parents, decls1, clazz)
+      case PolyType(tparams, restp) =>
+        val restp1 = transformInfo(sym, restp)
+        if (restp eq restp1) tp else PolyType(tparams, restp1)
 
-    case _ =>
-      // Local fields of traits need to be unconditionally unprivatized.
-      // Reason: Those fields might need to be unprivatized if referenced by an inner class.
-      // On the other hand, mixing in the trait into a separately compiled
-      // class needs to have a common naming scheme, independently of whether
-      // the field was accessed from an inner class or not. See #2946
-      if (sym.owner.isTrait && sym.isLocalToThis &&
-          (sym.getterIn(sym.owner) == NoSymbol)) sym.makeNotPrivate(sym.owner)
-      tp
-  }
+      case _ =>
+        // Local fields of traits need to be unconditionally unprivatized.
+        // Reason: Those fields might need to be unprivatized if referenced by an inner class.
+        // On the other hand, mixing in the trait into a separately compiled
+        // class needs to have a common naming scheme, independently of whether
+        // the field was accessed from an inner class or not. See #2946
+        if (sym.owner.isTrait && sym.isLocalToThis &&
+            (sym.getterIn(sym.owner) == NoSymbol)) sym.makeNotPrivate(sym.owner)
+        tp
+    }
 
   /** A base class for transformers that maintain outerParam
     *  values for outer parameters of constructors.
@@ -243,10 +246,11 @@ abstract class ExplicitOuter
       *
       * Will return `EmptyTree` if there is no outer accessor because of a premature self reference.
       */
-    protected def outerValue: Tree = outerParam match {
-      case NoSymbol   => outerSelect(gen.mkAttributedThis(currentClass))
-      case outerParam => gen.mkAttributedIdent(outerParam)
-    }
+    protected def outerValue: Tree =
+      outerParam match {
+        case NoSymbol   => outerSelect(gen.mkAttributedThis(currentClass))
+        case outerParam => gen.mkAttributedIdent(outerParam)
+      }
 
     /** Select and apply outer accessor from 'base'
       *  The result is typed but not positioned.
@@ -384,13 +388,14 @@ abstract class ExplicitOuter
 
     /** The definition tree of the outer accessor of current class
       */
-    def outerAccessorDef: Tree = localTyper typed {
-      val acc = outerAccessor(currentClass)
-      val rhs =
-        if (acc.isDeferred) EmptyTree
-        else Select(This(currentClass), outerField(currentClass))
-      DefDef(acc, rhs)
-    }
+    def outerAccessorDef: Tree =
+      localTyper typed {
+        val acc = outerAccessor(currentClass)
+        val rhs =
+          if (acc.isDeferred) EmptyTree
+          else Select(This(currentClass), outerField(currentClass))
+        DefDef(acc, rhs)
+      }
 
     /** The definition tree of the outer accessor for class mixinClass.
       *

@@ -81,21 +81,22 @@ trait LogisticRegressionLibModule[M[+_]]
       type ColumnValues = Array[Double]
       type Result = Option[Seq[ColumnValues]]
 
-      implicit def monoid = new Monoid[Result] {
-        def zero = None
-        def append(
-            t1: Option[Seq[ColumnValues]],
-            t2: => Option[Seq[ColumnValues]]) = {
-          t1 match {
-            case None => t2
-            case Some(c1) =>
-              t2 match {
-                case None     => Some(c1)
-                case Some(c2) => Some(c1 ++ c2)
-              }
+      implicit def monoid =
+        new Monoid[Result] {
+          def zero = None
+          def append(
+              t1: Option[Seq[ColumnValues]],
+              t2: => Option[Seq[ColumnValues]]) = {
+            t1 match {
+              case None => t2
+              case Some(c1) =>
+                t2 match {
+                  case None     => Some(c1)
+                  case Some(c2) => Some(c1 ++ c2)
+                }
+            }
           }
         }
-      }
 
       def checkValue(value: Double): Double = {
         if (value isPosInfinity) Double.MaxValue
@@ -162,23 +163,24 @@ trait LogisticRegressionLibModule[M[+_]]
         if (seq.isEmpty) None else Some(seq)
       }
 
-      def reducer: Reducer[Result] = new Reducer[Result] {
-        def reduce(schema: CSchema, range: Range): Result = {
-          val features = schema.columns(JArrayHomogeneousT(JNumberT))
+      def reducer: Reducer[Result] =
+        new Reducer[Result] {
+          def reduce(schema: CSchema, range: Range): Result = {
+            val features = schema.columns(JArrayHomogeneousT(JNumberT))
 
-          val result: Set[Result] = features map {
-            case c: HomogeneousArrayColumn[_]
-                if c.tpe.manifest.erasure == classOf[Array[Double]] =>
-              val mapped = range filter { r => c.isDefinedAt(r) } map { i =>
-                1.0 +: c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
-              }
-              reduceDouble(mapped)
-            case _ => None
+            val result: Set[Result] = features map {
+              case c: HomogeneousArrayColumn[_]
+                  if c.tpe.manifest.erasure == classOf[Array[Double]] =>
+                val mapped = range filter { r => c.isDefinedAt(r) } map { i =>
+                  1.0 +: c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
+                }
+                reduceDouble(mapped)
+              case _ => None
+            }
+
+            if (result.isEmpty) None else result.suml(monoid)
           }
-
-          if (result.isEmpty) None else result.suml(monoid)
         }
-      }
 
       @tailrec
       def gradloop(

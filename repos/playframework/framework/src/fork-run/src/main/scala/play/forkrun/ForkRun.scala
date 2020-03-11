@@ -162,10 +162,11 @@ object ForkRun {
   }
 
   def askForReload(actor: ActorRef)(
-      implicit timeout: Timeout): () => CompileResult = () => {
-    val future = (actor ? ForkRun.Reload).mapTo[CompileResult]
-    Await.result(future, timeout.duration)
-  }
+      implicit timeout: Timeout): () => CompileResult =
+    () => {
+      val future = (actor ? ForkRun.Reload).mapTo[CompileResult]
+      Await.result(future, timeout.duration)
+    }
 
   def waitForStop(): Unit = {
     System.in.read() match {

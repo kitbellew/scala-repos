@@ -260,10 +260,11 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
   ignore("names() correctly uses timeouts") {
     val state = new InMemoryStore() {
 
-      override def allIds(): Future[scala.Seq[ID]] = Future {
-        synchronized { blocking(wait()) }
-        Seq.empty
-      }
+      override def allIds(): Future[scala.Seq[ID]] =
+        Future {
+          synchronized { blocking(wait()) }
+          Seq.empty
+        }
     }
     val config =
       new ScallopConf(Seq("--master", "foo", "--marathon_store_timeout", "1"))

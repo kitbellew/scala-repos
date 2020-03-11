@@ -99,15 +99,17 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
     def getRawType = classOf[Box[Failure]]
   }
 
-  private def serializeException(exception: Box[Throwable]) = exception match {
-    case Full(x) => JString(javaSerialize(x))
-    case _       => JNull
-  }
+  private def serializeException(exception: Box[Throwable]) =
+    exception match {
+      case Full(x) => JString(javaSerialize(x))
+      case _       => JNull
+    }
 
-  private def deserializeException(json: JValue) = json match {
-    case JString(s) => Full(javaDeserialize(s).asInstanceOf[Throwable])
-    case _          => Empty
-  }
+  private def deserializeException(json: JValue) =
+    json match {
+      case JString(s) => Full(javaDeserialize(s).asInstanceOf[Throwable])
+      case _          => Empty
+    }
 
   private def javaSerialize(obj: AnyRef): String = {
     val bytes = new ByteArrayOutputStream

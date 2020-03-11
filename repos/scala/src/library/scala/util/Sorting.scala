@@ -247,47 +247,48 @@ object Sorting {
 
   // TODO: add upper bound: T <: AnyRef, propagate to callers below (not binary compatible)
   // Maybe also rename all these methods to `sort`.
-  @inline private def sort[T](a: Array[T], ord: Ordering[T]): Unit = a match {
-    case _: Array[AnyRef] =>
-      // Note that runtime matches are covariant, so could actually be any Array[T] s.t. T is not primitive (even boxed value classes)
-      if (a.length > 1 && (ord eq null))
-        throw new NullPointerException("Ordering")
-      java.util.Arrays.sort(a, ord)
-    case a: Array[Int] =>
-      if (ord eq Ordering.Int) java.util.Arrays.sort(a)
-      else mergeSort[Int](a, 0, a.length, ord)
-    case a: Array[Double] =>
-      mergeSort[Double](
-        a,
-        0,
-        a.length,
-        ord
-      ) // Because not all NaNs are identical, stability is meaningful!
-    case a: Array[Long] =>
-      if (ord eq Ordering.Long) java.util.Arrays.sort(a)
-      else mergeSort[Long](a, 0, a.length, ord)
-    case a: Array[Float] =>
-      mergeSort[Float](
-        a,
-        0,
-        a.length,
-        ord
-      ) // Because not all NaNs are identical, stability is meaningful!
-    case a: Array[Char] =>
-      if (ord eq Ordering.Char) java.util.Arrays.sort(a)
-      else mergeSort[Char](a, 0, a.length, ord)
-    case a: Array[Byte] =>
-      if (ord eq Ordering.Byte) java.util.Arrays.sort(a)
-      else mergeSort[Byte](a, 0, a.length, ord)
-    case a: Array[Short] =>
-      if (ord eq Ordering.Short) java.util.Arrays.sort(a)
-      else mergeSort[Short](a, 0, a.length, ord)
-    case a: Array[Boolean] =>
-      if (ord eq Ordering.Boolean) booleanSort(a)
-      else mergeSort[Boolean](a, 0, a.length, ord)
-    // Array[Unit] is matched as an Array[AnyRef] due to covariance in runtime matching.  Not worth catching it as a special case.
-    case null => throw new NullPointerException
-  }
+  @inline private def sort[T](a: Array[T], ord: Ordering[T]): Unit =
+    a match {
+      case _: Array[AnyRef] =>
+        // Note that runtime matches are covariant, so could actually be any Array[T] s.t. T is not primitive (even boxed value classes)
+        if (a.length > 1 && (ord eq null))
+          throw new NullPointerException("Ordering")
+        java.util.Arrays.sort(a, ord)
+      case a: Array[Int] =>
+        if (ord eq Ordering.Int) java.util.Arrays.sort(a)
+        else mergeSort[Int](a, 0, a.length, ord)
+      case a: Array[Double] =>
+        mergeSort[Double](
+          a,
+          0,
+          a.length,
+          ord
+        ) // Because not all NaNs are identical, stability is meaningful!
+      case a: Array[Long] =>
+        if (ord eq Ordering.Long) java.util.Arrays.sort(a)
+        else mergeSort[Long](a, 0, a.length, ord)
+      case a: Array[Float] =>
+        mergeSort[Float](
+          a,
+          0,
+          a.length,
+          ord
+        ) // Because not all NaNs are identical, stability is meaningful!
+      case a: Array[Char] =>
+        if (ord eq Ordering.Char) java.util.Arrays.sort(a)
+        else mergeSort[Char](a, 0, a.length, ord)
+      case a: Array[Byte] =>
+        if (ord eq Ordering.Byte) java.util.Arrays.sort(a)
+        else mergeSort[Byte](a, 0, a.length, ord)
+      case a: Array[Short] =>
+        if (ord eq Ordering.Short) java.util.Arrays.sort(a)
+        else mergeSort[Short](a, 0, a.length, ord)
+      case a: Array[Boolean] =>
+        if (ord eq Ordering.Boolean) booleanSort(a)
+        else mergeSort[Boolean](a, 0, a.length, ord)
+      // Array[Unit] is matched as an Array[AnyRef] due to covariance in runtime matching.  Not worth catching it as a special case.
+      case null => throw new NullPointerException
+    }
 
   // TODO: remove unnecessary ClassTag (not binary compatible)
   /** Sort array `a` using the Ordering on its elements, preserving the original ordering where possible.  Uses `java.util.Arrays.sort` unless `K` is a primitive type. */

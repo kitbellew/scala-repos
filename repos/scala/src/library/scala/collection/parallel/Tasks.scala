@@ -90,9 +90,8 @@ trait Tasks {
   private[parallel] val debugMessages =
     scala.collection.mutable.ArrayBuffer[String]()
 
-  private[parallel] def debuglog(s: String) = synchronized {
-    debugMessages += s
-  }
+  private[parallel] def debuglog(s: String) =
+    synchronized { debugMessages += s }
 
   trait WrappedTask[R, +Tp] {
 
@@ -229,34 +228,37 @@ trait ThreadPoolTasks extends Tasks {
     @volatile var owned = false
     @volatile var completed = false
 
-    def start() = synchronized {
-      // debuglog("Starting " + body)
-      // utb: future = executor.submit(this)
-      executor.synchronized {
-        incrTasks()
-        executor.submit(this)
-      }
-    }
-    def sync() = synchronized {
-      // debuglog("Syncing on " + body)
-      // utb: future.get()
-      executor.synchronized {
-        val coresize = executor.getCorePoolSize
-        if (coresize < totaltasks) {
-          executor.setCorePoolSize(coresize + 1)
-          //assert(executor.getCorePoolSize == (coresize + 1))
+    def start() =
+      synchronized {
+        // debuglog("Starting " + body)
+        // utb: future = executor.submit(this)
+        executor.synchronized {
+          incrTasks()
+          executor.submit(this)
         }
       }
-      while (!completed) this.wait
-    }
-    def tryCancel() = synchronized {
-      // utb: future.cancel(false)
-      if (!owned) {
-        // debuglog("Cancelling " + body)
-        owned = true
-        true
-      } else false
-    }
+    def sync() =
+      synchronized {
+        // debuglog("Syncing on " + body)
+        // utb: future.get()
+        executor.synchronized {
+          val coresize = executor.getCorePoolSize
+          if (coresize < totaltasks) {
+            executor.setCorePoolSize(coresize + 1)
+            //assert(executor.getCorePoolSize == (coresize + 1))
+          }
+        }
+        while (!completed) this.wait
+      }
+    def tryCancel() =
+      synchronized {
+        // utb: future.cancel(false)
+        if (!owned) {
+          // debuglog("Cancelling " + body)
+          owned = true
+          true
+        } else false
+      }
     def run() = {
       // utb: compute
       var isOkToRun = false
@@ -274,12 +276,13 @@ trait ThreadPoolTasks extends Tasks {
         // debuglog("skipping body of " + body)
       }
     }
-    override def release() = synchronized {
-      //println("releasing: " + this + ", body: " + this.body)
-      completed = true
-      executor.synchronized { decrTasks() }
-      this.notifyAll
-    }
+    override def release() =
+      synchronized {
+        //println("releasing: " + this + ", body: " + this.body)
+        completed = true
+        executor.synchronized { decrTasks() }
+        this.notifyAll
+      }
   }
 
   protected def newWrappedTask[R, Tp](b: Task[R, Tp]): WrappedTask[R, Tp]

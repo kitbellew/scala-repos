@@ -229,80 +229,83 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       assign: PsiElement,
       processor: BaseProcessor) {
     for (variant <- callReference.multiResolve(false)) {
-      def processResult(r: ScalaResolveResult) = r match {
-        case ScalaResolveResult(fun: ScFunction, subst)
-            if r.isDynamic &&
-              fun.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
-          //add synthetic parameter
-          if (!processor.isInstanceOf[CompletionProcessor]) {
-            val state: ResolveState = ResolveState
-              .initial()
-              .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
-            processor.execute(
-              ScalaPsiElementFactory
-                .createParameterFromText(ref.refName + ": Any", getManager),
-              state)
-          }
-        case ScalaResolveResult(named, subst)
-            if call.applyOrUpdateElement.exists(_.isDynamic) &&
-              call.applyOrUpdateElement.get.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
-          //add synthetic parameter
-          if (!processor.isInstanceOf[CompletionProcessor]) {
-            val state: ResolveState = ResolveState
-              .initial()
-              .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
-            processor.execute(
-              ScalaPsiElementFactory
-                .createParameterFromText(ref.refName + ": Any", getManager),
-              state)
-          }
-        case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>
-          if (!processor.isInstanceOf[CompletionProcessor]) {
-            fun.getParamByName(ref.refName, invocationCount - 1) match { //todo: why -1?
-              case Some(param) =>
-                var state = ResolveState.initial
-                  .put(ScSubstitutor.key, subst)
-                  .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
-                if (!ScalaPsiUtil.memberNamesEquals(param.name, ref.refName)) {
-                  state =
-                    state.put(ResolverEnv.nameKey, param.deprecatedName.get)
-                }
-                processor.execute(param, state)
-              case None =>
+      def processResult(r: ScalaResolveResult) =
+        r match {
+          case ScalaResolveResult(fun: ScFunction, subst)
+              if r.isDynamic &&
+                fun.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
+            //add synthetic parameter
+            if (!processor.isInstanceOf[CompletionProcessor]) {
+              val state: ResolveState = ResolveState
+                .initial()
+                .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
+              processor.execute(
+                ScalaPsiElementFactory
+                  .createParameterFromText(ref.refName + ": Any", getManager),
+                state)
             }
-          } else {
-            //for completion only!
-            funCollectNamedCompletions(
-              fun.paramClauses,
-              assign,
-              processor,
-              subst,
-              exprs,
-              invocationCount)
-          }
-        case ScalaResolveResult(fun: FakePsiMethod, subst: ScSubstitutor) => //todo: ?
-        case ScalaResolveResult(method: PsiMethod, subst) =>
-          assign.getContext match {
-            case args: ScArgumentExprList =>
-              args.getContext match {
-                case methodCall: ScMethodCall
-                    if methodCall.isNamedParametersEnabledEverywhere =>
-                  method.getParameterList.getParameters foreach { p =>
-                    processor.execute(
-                      p,
-                      ResolveState
-                        .initial()
-                        .put(ScSubstitutor.key, subst)
-                        .put(
-                          CachesUtil.NAMED_PARAM_KEY,
-                          java.lang.Boolean.TRUE))
+          case ScalaResolveResult(named, subst)
+              if call.applyOrUpdateElement.exists(_.isDynamic) &&
+                call.applyOrUpdateElement.get.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
+            //add synthetic parameter
+            if (!processor.isInstanceOf[CompletionProcessor]) {
+              val state: ResolveState = ResolveState
+                .initial()
+                .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
+              processor.execute(
+                ScalaPsiElementFactory
+                  .createParameterFromText(ref.refName + ": Any", getManager),
+                state)
+            }
+          case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>
+            if (!processor.isInstanceOf[CompletionProcessor]) {
+              fun.getParamByName(ref.refName, invocationCount - 1) match { //todo: why -1?
+                case Some(param) =>
+                  var state = ResolveState.initial
+                    .put(ScSubstitutor.key, subst)
+                    .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
+                  if (!ScalaPsiUtil.memberNamesEquals(
+                        param.name,
+                        ref.refName)) {
+                    state =
+                      state.put(ResolverEnv.nameKey, param.deprecatedName.get)
                   }
-                case _ =>
+                  processor.execute(param, state)
+                case None =>
               }
-            case _ =>
-          }
-        case _ =>
-      }
+            } else {
+              //for completion only!
+              funCollectNamedCompletions(
+                fun.paramClauses,
+                assign,
+                processor,
+                subst,
+                exprs,
+                invocationCount)
+            }
+          case ScalaResolveResult(fun: FakePsiMethod, subst: ScSubstitutor) => //todo: ?
+          case ScalaResolveResult(method: PsiMethod, subst) =>
+            assign.getContext match {
+              case args: ScArgumentExprList =>
+                args.getContext match {
+                  case methodCall: ScMethodCall
+                      if methodCall.isNamedParametersEnabledEverywhere =>
+                    method.getParameterList.getParameters foreach { p =>
+                      processor.execute(
+                        p,
+                        ResolveState
+                          .initial()
+                          .put(ScSubstitutor.key, subst)
+                          .put(
+                            CachesUtil.NAMED_PARAM_KEY,
+                            java.lang.Boolean.TRUE))
+                    }
+                  case _ =>
+                }
+              case _ =>
+            }
+          case _ =>
+        }
       variant match {
         case x: ScalaResolveResult =>
           processResult(x)

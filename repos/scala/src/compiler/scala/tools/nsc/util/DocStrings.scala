@@ -134,10 +134,11 @@ object DocStrings {
   /** The first start tag of a list of tag intervals,
     *  or the end of the whole comment string - 2 if list is empty
     */
-  def startTag(str: String, sections: List[(Int, Int)]) = sections match {
-    case Nil             => str.length - 2
-    case (start, _) :: _ => start
-  }
+  def startTag(str: String, sections: List[(Int, Int)]) =
+    sections match {
+      case Nil             => str.length - 2
+      case (start, _) :: _ => start
+    }
 
   /** A map from parameter names to start/end indices describing all parameter
     *  sections in `str` tagged with `tag`, where `sections` is the index of `str`.

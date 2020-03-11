@@ -67,10 +67,11 @@ object Conneg {
     private val qFormat: DecimalFormat = new DecimalFormat("0.###")
 
     /** Parser for a single conneg value. */
-    def conneg: Parser[Option[Conneg[T]]] = entry ~ qValue ^^ {
-      case Some(entry) ~ q => Some(new Conneg(entry, q))
-      case _               => None
-    }
+    def conneg: Parser[Option[Conneg[T]]] =
+      entry ~ qValue ^^ {
+        case Some(entry) ~ q => Some(new Conneg(entry, q))
+        case _               => None
+      }
 
     /** Parser for a list of conneg values. */
     def connegs: Parser[List[Option[Conneg[T]]]] = repsep(conneg, ",")

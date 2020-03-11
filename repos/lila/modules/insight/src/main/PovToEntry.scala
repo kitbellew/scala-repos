@@ -74,14 +74,15 @@ object PovToEntry {
         }
       }
 
-  private def pgnMoveToRole(pgn: String): Role = pgn.head match {
-    case 'N'       => chess.Knight
-    case 'B'       => chess.Bishop
-    case 'R'       => chess.Rook
-    case 'Q'       => chess.Queen
-    case 'K' | 'O' => chess.King
-    case _         => chess.Pawn
-  }
+  private def pgnMoveToRole(pgn: String): Role =
+    pgn.head match {
+      case 'N'       => chess.Knight
+      case 'B'       => chess.Bishop
+      case 'R'       => chess.Rook
+      case 'Q'       => chess.Queen
+      case 'K' | 'O' => chess.King
+      case _         => chess.Pawn
+    }
 
   private def makeMoves(from: RichPov): List[Move] = {
     val cpDiffs = ~from.moveAccuracy toVector
@@ -132,17 +133,19 @@ object PovToEntry {
     }
   }
 
-  private def queenTrade(from: RichPov) = QueenTrade {
-    from.division.end.fold(from.boards.last.some)(from.boards.list.lift) match {
-      case Some(board) =>
-        chess.Color.all.forall { color =>
-          !board.hasPiece(chess.Piece(color, chess.Queen))
-        }
-      case _ =>
-        logger.warn(s"http://l.org/${from.pov.game.id} missing endgame board")
-        false
+  private def queenTrade(from: RichPov) =
+    QueenTrade {
+      from.division.end
+        .fold(from.boards.last.some)(from.boards.list.lift) match {
+        case Some(board) =>
+          chess.Color.all.forall { color =>
+            !board.hasPiece(chess.Piece(color, chess.Queen))
+          }
+        case _ =>
+          logger.warn(s"http://l.org/${from.pov.game.id} missing endgame board")
+          false
+      }
     }
-  }
 
   private def convert(from: RichPov): Option[Entry] = {
     import from._

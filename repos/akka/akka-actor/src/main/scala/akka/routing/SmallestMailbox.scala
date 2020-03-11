@@ -80,10 +80,11 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     }
   }
 
-  protected def isTerminated(a: Routee): Boolean = a match {
-    case ActorRefRoutee(ref) ⇒ ref.isTerminated
-    case _ ⇒ false
-  }
+  protected def isTerminated(a: Routee): Boolean =
+    a match {
+      case ActorRefRoutee(ref) ⇒ ref.isTerminated
+      case _ ⇒ false
+    }
 
   /**
     * Returns true if the actor is currently processing a message.
@@ -91,15 +92,16 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     * Method is exposed to subclasses to be able to implement custom
     * routers based on mailbox and actor internal state.
     */
-  protected def isProcessingMessage(a: Routee): Boolean = a match {
-    case ActorRefRoutee(x: ActorRefWithCell) ⇒
-      x.underlying match {
-        case cell: ActorCell ⇒
-          cell.mailbox.isScheduled && cell.currentMessage != null
-        case _ ⇒ false
-      }
-    case _ ⇒ false
-  }
+  protected def isProcessingMessage(a: Routee): Boolean =
+    a match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒
+        x.underlying match {
+          case cell: ActorCell ⇒
+            cell.mailbox.isScheduled && cell.currentMessage != null
+          case _ ⇒ false
+        }
+      case _ ⇒ false
+    }
 
   /**
     * Returns true if the actor currently has any pending messages
@@ -108,10 +110,11 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     * Method is exposed to subclasses to be able to implement custom
     * routers based on mailbox and actor internal state.
     */
-  protected def hasMessages(a: Routee): Boolean = a match {
-    case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.hasMessages
-    case _ ⇒ false
-  }
+  protected def hasMessages(a: Routee): Boolean =
+    a match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.hasMessages
+      case _ ⇒ false
+    }
 
   /**
     * Returns true if the actor is currently suspended.
@@ -119,14 +122,15 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     * Method is exposed to subclasses to be able to implement custom
     * routers based on mailbox and actor internal state.
     */
-  protected def isSuspended(a: Routee): Boolean = a match {
-    case ActorRefRoutee(x: ActorRefWithCell) ⇒
-      x.underlying match {
-        case cell: ActorCell ⇒ cell.mailbox.isSuspended
-        case _ ⇒ true
-      }
-    case _ ⇒ false
-  }
+  protected def isSuspended(a: Routee): Boolean =
+    a match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒
+        x.underlying match {
+          case cell: ActorCell ⇒ cell.mailbox.isSuspended
+          case _ ⇒ true
+        }
+      case _ ⇒ false
+    }
 
   /**
     * Returns the number of pending messages in the mailbox of the actor.
@@ -134,10 +138,11 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     * Method is exposed to subclasses to be able to implement custom
     * routers based on mailbox and actor internal state.
     */
-  protected def numberOfMessages(a: Routee): Int = a match {
-    case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.numberOfMessages
-    case _ ⇒ 0
-  }
+  protected def numberOfMessages(a: Routee): Int =
+    a match {
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.numberOfMessages
+      case _ ⇒ 0
+    }
 }
 
 /**

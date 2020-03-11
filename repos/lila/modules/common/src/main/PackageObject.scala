@@ -44,11 +44,12 @@ trait PackageObject extends Steroids with WithFuture {
 
   implicit final class LilaPimpedTry[A](v: scala.util.Try[A]) {
 
-    def fold[B](fe: Exception => B, fa: A => B): B = v match {
-      case scala.util.Failure(e: Exception) => fe(e)
-      case scala.util.Failure(e)            => throw e
-      case scala.util.Success(a)            => fa(a)
-    }
+    def fold[B](fe: Exception => B, fa: A => B): B =
+      v match {
+        case scala.util.Failure(e: Exception) => fe(e)
+        case scala.util.Failure(e)            => throw e
+        case scala.util.Success(a)            => fa(a)
+      }
 
     def future: Fu[A] = fold(Future.failed, fuccess)
   }
@@ -174,27 +175,27 @@ trait WithPlay { self: PackageObject =>
         case scala.util.Success(e)            => succ(e)
       }
 
-    def mapFailure(f: Exception => Exception) = fua recover {
-      case cause: Exception => throw f(cause)
-    }
+    def mapFailure(f: Exception => Exception) =
+      fua recover { case cause: Exception => throw f(cause) }
 
-    def prefixFailure(p: => String) = fua mapFailure { e =>
-      common.LilaException(s"$p ${e.getMessage}")
-    }
+    def prefixFailure(p: => String) =
+      fua mapFailure { e => common.LilaException(s"$p ${e.getMessage}") }
 
-    def thenPp: Fu[A] = fua ~ {
-      _.effectFold(
-        e => println("[failure] " + e),
-        a => println("[success] " + a)
-      )
-    }
+    def thenPp: Fu[A] =
+      fua ~ {
+        _.effectFold(
+          e => println("[failure] " + e),
+          a => println("[success] " + a)
+        )
+      }
 
-    def thenPp(msg: String): Fu[A] = fua ~ {
-      _.effectFold(
-        e => println(s"[$msg] [failure] $e"),
-        a => println(s"[$msg] [success] $a")
-      )
-    }
+    def thenPp(msg: String): Fu[A] =
+      fua ~ {
+        _.effectFold(
+          e => println(s"[$msg] [failure] $e"),
+          a => println(s"[$msg] [success] $a")
+        )
+      }
 
     def awaitSeconds(seconds: Int): A = {
       import scala.concurrent.duration._
@@ -215,25 +216,23 @@ trait WithPlay { self: PackageObject =>
 
   implicit final class LilaPimpedFutureZero[A: Zero](fua: Fu[A]) {
 
-    def nevermind: Fu[A] = fua recover {
-      case e: lila.common.LilaException             => zero[A]
-      case e: java.util.concurrent.TimeoutException => zero[A]
-    }
+    def nevermind: Fu[A] =
+      fua recover {
+        case e: lila.common.LilaException             => zero[A]
+        case e: java.util.concurrent.TimeoutException => zero[A]
+      }
   }
 
   implicit final class LilaPimpedFutureOption[A](fua: Fu[Option[A]]) {
 
-    def flatten(msg: => String): Fu[A] = fua flatMap {
-      _.fold[Fu[A]](fufail(msg))(fuccess(_))
-    }
+    def flatten(msg: => String): Fu[A] =
+      fua flatMap { _.fold[Fu[A]](fufail(msg))(fuccess(_)) }
 
-    def orElse(other: => Fu[Option[A]]): Fu[Option[A]] = fua flatMap {
-      _.fold(other) { x => fuccess(x.some) }
-    }
+    def orElse(other: => Fu[Option[A]]): Fu[Option[A]] =
+      fua flatMap { _.fold(other) { x => fuccess(x.some) } }
 
-    def getOrElse(other: => Fu[A]): Fu[A] = fua flatMap {
-      _.fold(other)(fuccess)
-    }
+    def getOrElse(other: => Fu[A]): Fu[A] =
+      fua flatMap { _.fold(other)(fuccess) }
   }
 
   implicit final class LilaPimpedFutureValid[A](fua: Fu[Valid[A]]) {

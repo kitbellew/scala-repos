@@ -390,20 +390,22 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   def toVec: Vec[A]
 
   private var flatCache: Option[Vec[A]] = None
-  private def flatten(implicit st: ST[A]): Vec[A] = flatCache.getOrElse {
-    this.synchronized {
-      flatCache = Some(toVec)
-      flatCache.get
+  private def flatten(implicit st: ST[A]): Vec[A] =
+    flatCache.getOrElse {
+      this.synchronized {
+        flatCache = Some(toVec)
+        flatCache.get
+      }
     }
-  }
 
   private var flatCacheT: Option[Vec[A]] = None
-  private def flattenT(implicit st: ST[A]): Vec[A] = flatCacheT.getOrElse {
-    this.synchronized {
-      flatCacheT = Some(T.toVec)
-      flatCacheT.get
+  private def flattenT(implicit st: ST[A]): Vec[A] =
+    flatCacheT.getOrElse {
+      this.synchronized {
+        flatCacheT = Some(T.toVec)
+        flatCacheT.get
+      }
     }
-  }
 
   // access like vector in row-major order
   private[saddle] def apply(i: Int): A
@@ -475,20 +477,21 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     * Row-by-row equality check of all values.
     * NB: to avoid boxing, overwrite in child classes
     */
-  override def equals(o: Any): Boolean = o match {
-    case rv: Mat[_] =>
-      (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
-        var i = 0
-        var eq = true
-        while (eq && i < length) {
-          eq &&= (apply(i) == rv(i) || this.scalarTag
-            .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
-          i += 1
+  override def equals(o: Any): Boolean =
+    o match {
+      case rv: Mat[_] =>
+        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+          var i = 0
+          var eq = true
+          while (eq && i < length) {
+            eq &&= (apply(i) == rv(i) || this.scalarTag
+              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            i += 1
+          }
+          eq
         }
-        eq
-      }
-    case _ => false
-  }
+      case _ => false
+    }
 }
 
 object Mat extends BinOpMat {

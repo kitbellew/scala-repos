@@ -260,74 +260,76 @@ trait Importers { to: SymbolTable =>
 
     // ============== TYPES ==============
 
-    def recreateType(their: from.Type): Type = their match {
-      case from.TypeRef(pre, sym, args) =>
-        TypeRef(importType(pre), importSymbol(sym), args map importType)
-      case from.ThisType(clazz) =>
-        ThisType(importSymbol(clazz))
-      case from.SingleType(pre, sym) =>
-        SingleType(importType(pre), importSymbol(sym))
-      case from.MethodType(params, result) =>
-        MethodType(params map importSymbol, importType(result))
-      case from.PolyType(tparams, result) =>
-        PolyType(tparams map importSymbol, importType(result))
-      case from.NullaryMethodType(result) =>
-        NullaryMethodType(importType(result))
-      case from.ConstantType(constant @ from.Constant(_)) =>
-        ConstantType(importConstant(constant))
-      case from.SuperType(thistpe, supertpe) =>
-        SuperType(importType(thistpe), importType(supertpe))
-      case from.TypeBounds(lo, hi) =>
-        TypeBounds(importType(lo), importType(hi))
-      case from.BoundedWildcardType(bounds) =>
-        BoundedWildcardType(importType(bounds).asInstanceOf[TypeBounds])
-      case from.ClassInfoType(parents, decls, clazz) =>
-        val myclazz = importSymbol(clazz)
-        val myscope =
-          if (myclazz.isPackageClass) newPackageScope(myclazz) else newScope
-        val myclazzTpe = ClassInfoType(parents map importType, myscope, myclazz)
-        myclazz setInfo GenPolyType(
-          myclazz.typeParams,
+    def recreateType(their: from.Type): Type =
+      their match {
+        case from.TypeRef(pre, sym, args) =>
+          TypeRef(importType(pre), importSymbol(sym), args map importType)
+        case from.ThisType(clazz) =>
+          ThisType(importSymbol(clazz))
+        case from.SingleType(pre, sym) =>
+          SingleType(importType(pre), importSymbol(sym))
+        case from.MethodType(params, result) =>
+          MethodType(params map importSymbol, importType(result))
+        case from.PolyType(tparams, result) =>
+          PolyType(tparams map importSymbol, importType(result))
+        case from.NullaryMethodType(result) =>
+          NullaryMethodType(importType(result))
+        case from.ConstantType(constant @ from.Constant(_)) =>
+          ConstantType(importConstant(constant))
+        case from.SuperType(thistpe, supertpe) =>
+          SuperType(importType(thistpe), importType(supertpe))
+        case from.TypeBounds(lo, hi) =>
+          TypeBounds(importType(lo), importType(hi))
+        case from.BoundedWildcardType(bounds) =>
+          BoundedWildcardType(importType(bounds).asInstanceOf[TypeBounds])
+        case from.ClassInfoType(parents, decls, clazz) =>
+          val myclazz = importSymbol(clazz)
+          val myscope =
+            if (myclazz.isPackageClass) newPackageScope(myclazz) else newScope
+          val myclazzTpe =
+            ClassInfoType(parents map importType, myscope, myclazz)
+          myclazz setInfo GenPolyType(
+            myclazz.typeParams,
+            myclazzTpe
+          ) // needed so that newly created symbols find their scope
+          decls foreach importSymbol // will enter itself into myclazz
           myclazzTpe
-        ) // needed so that newly created symbols find their scope
-        decls foreach importSymbol // will enter itself into myclazz
-        myclazzTpe
-      case from.RefinedType(parents, decls) =>
-        RefinedType(
-          parents map importType,
-          importScope(decls),
-          importSymbol(their.typeSymbol))
-      case from.ExistentialType(tparams, result) =>
-        newExistentialType(tparams map importSymbol, importType(result))
-      case from.OverloadedType(pre, alts) =>
-        OverloadedType(importType(pre), alts map importSymbol)
-      case from.ImportType(qual) =>
-        ImportType(importTree(qual))
-      case from.AntiPolyType(pre, targs) =>
-        AntiPolyType(importType(pre), targs map importType)
-      case their: from.TypeVar =>
-        val myconstr = new TypeConstraint(
-          their.constr.loBounds map importType,
-          their.constr.hiBounds map importType)
-        myconstr.inst = importType(their.constr.inst)
-        TypeVar(
-          importType(their.origin),
-          myconstr,
-          their.typeArgs map importType,
-          their.params map importSymbol)
-      case from.AnnotatedType(annots, result) =>
-        AnnotatedType(annots map importAnnotationInfo, importType(result))
-      case from.ErrorType =>
-        ErrorType
-      case from.WildcardType =>
-        WildcardType
-      case from.NoType =>
-        NoType
-      case from.NoPrefix =>
-        NoPrefix
-      case null =>
-        null
-    }
+        case from.RefinedType(parents, decls) =>
+          RefinedType(
+            parents map importType,
+            importScope(decls),
+            importSymbol(their.typeSymbol))
+        case from.ExistentialType(tparams, result) =>
+          newExistentialType(tparams map importSymbol, importType(result))
+        case from.OverloadedType(pre, alts) =>
+          OverloadedType(importType(pre), alts map importSymbol)
+        case from.ImportType(qual) =>
+          ImportType(importTree(qual))
+        case from.AntiPolyType(pre, targs) =>
+          AntiPolyType(importType(pre), targs map importType)
+        case their: from.TypeVar =>
+          val myconstr = new TypeConstraint(
+            their.constr.loBounds map importType,
+            their.constr.hiBounds map importType)
+          myconstr.inst = importType(their.constr.inst)
+          TypeVar(
+            importType(their.origin),
+            myconstr,
+            their.typeArgs map importType,
+            their.params map importSymbol)
+        case from.AnnotatedType(annots, result) =>
+          AnnotatedType(annots map importAnnotationInfo, importType(result))
+        case from.ErrorType =>
+          ErrorType
+        case from.WildcardType =>
+          WildcardType
+        case from.NoType =>
+          NoType
+        case from.NoPrefix =>
+          NoPrefix
+        case null =>
+          null
+      }
 
     def importType(their: from.Type): Type = {
       tpeMap.weakGet(their) match {
@@ -361,146 +363,147 @@ trait Importers { to: SymbolTable =>
       }
     }
 
-    def recreateTree(their: from.Tree): to.Tree = their match {
-      case from.ClassDef(mods, name, tparams, impl) =>
-        new ClassDef(
-          importModifiers(mods),
-          importName(name).toTypeName,
-          tparams map importTypeDef,
-          importTemplate(impl))
-      case from.PackageDef(pid, stats) =>
-        new PackageDef(importRefTree(pid), stats map importTree)
-      case from.ModuleDef(mods, name, impl) =>
-        new ModuleDef(
-          importModifiers(mods),
-          importName(name).toTermName,
-          importTemplate(impl))
-      case from.noSelfType =>
-        noSelfType
-      case from.pendingSuperCall =>
-        pendingSuperCall
-      case from.ValDef(mods, name, tpt, rhs) =>
-        new ValDef(
-          importModifiers(mods),
-          importName(name).toTermName,
-          importTree(tpt),
-          importTree(rhs))
-      case from.DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
-        new DefDef(
-          importModifiers(mods),
-          importName(name).toTermName,
-          tparams map importTypeDef,
-          mmap(vparamss)(importValDef),
-          importTree(tpt),
-          importTree(rhs))
-      case from.TypeDef(mods, name, tparams, rhs) =>
-        new TypeDef(
-          importModifiers(mods),
-          importName(name).toTypeName,
-          tparams map importTypeDef,
-          importTree(rhs))
-      case from.LabelDef(name, params, rhs) =>
-        new LabelDef(
-          importName(name).toTermName,
-          params map importIdent,
-          importTree(rhs))
-      case from.Import(expr, selectors) =>
-        new Import(importTree(expr), selectors map importImportSelector)
-      case from.Template(parents, self, body) =>
-        new Template(
-          parents map importTree,
-          importValDef(self),
-          body map importTree)
-      case from.Block(stats, expr) =>
-        new Block(stats map importTree, importTree(expr))
-      case from.CaseDef(pat, guard, body) =>
-        new CaseDef(importTree(pat), importTree(guard), importTree(body))
-      case from.Alternative(trees) =>
-        new Alternative(trees map importTree)
-      case from.Star(elem) =>
-        new Star(importTree(elem))
-      case from.Bind(name, body) =>
-        new Bind(importName(name), importTree(body))
-      case from.UnApply(fun, args) =>
-        new UnApply(importTree(fun), args map importTree)
-      case from.ArrayValue(elemtpt, elems) =>
-        new ArrayValue(importTree(elemtpt), elems map importTree)
-      case from.Function(vparams, body) =>
-        new Function(vparams map importValDef, importTree(body))
-      case from.Assign(lhs, rhs) =>
-        new Assign(importTree(lhs), importTree(rhs))
-      case from.AssignOrNamedArg(lhs, rhs) =>
-        new AssignOrNamedArg(importTree(lhs), importTree(rhs))
-      case from.If(cond, thenp, elsep) =>
-        new If(importTree(cond), importTree(thenp), importTree(elsep))
-      case from.Match(selector, cases) =>
-        new Match(importTree(selector), cases map importCaseDef)
-      case from.Return(expr) =>
-        new Return(importTree(expr))
-      case from.Try(block, catches, finalizer) =>
-        new Try(
-          importTree(block),
-          catches map importCaseDef,
-          importTree(finalizer))
-      case from.Throw(expr) =>
-        new Throw(importTree(expr))
-      case from.New(tpt) =>
-        new New(importTree(tpt))
-      case from.Typed(expr, tpt) =>
-        new Typed(importTree(expr), importTree(tpt))
-      case from.TypeApply(fun, args) =>
-        new TypeApply(importTree(fun), args map importTree)
-      case from.Apply(fun, args) =>
-        their match {
-          case _: from.ApplyToImplicitArgs =>
-            new ApplyToImplicitArgs(importTree(fun), args map importTree)
-          case _: from.ApplyImplicitView =>
-            new ApplyImplicitView(importTree(fun), args map importTree)
-          case _ =>
-            new Apply(importTree(fun), args map importTree)
-        }
-      case from.ApplyDynamic(qual, args) =>
-        new ApplyDynamic(importTree(qual), args map importTree)
-      case from.Super(qual, mix) =>
-        new Super(importTree(qual), importName(mix).toTypeName)
-      case from.This(qual) =>
-        new This(importName(qual).toTypeName)
-      case from.Select(qual, name) =>
-        new Select(importTree(qual), importName(name))
-      case from.Ident(name) =>
-        new Ident(importName(name))
-      case from.ReferenceToBoxed(ident) =>
-        new ReferenceToBoxed(importTree(ident) match {
-          case ident: Ident => ident
-        })
-      case from.Literal(constant @ from.Constant(_)) =>
-        new Literal(importConstant(constant))
-      case theirtt @ from.TypeTree() =>
-        val mytt = TypeTree()
-        if (theirtt.original != null)
-          mytt.setOriginal(importTree(theirtt.original))
-        mytt
-      case from.Annotated(annot, arg) =>
-        new Annotated(importTree(annot), importTree(arg))
-      case from.SingletonTypeTree(ref) =>
-        new SingletonTypeTree(importTree(ref))
-      case from.SelectFromTypeTree(qual, name) =>
-        new SelectFromTypeTree(importTree(qual), importName(name).toTypeName)
-      case from.CompoundTypeTree(templ) =>
-        new CompoundTypeTree(importTemplate(templ))
-      case from.AppliedTypeTree(tpt, args) =>
-        new AppliedTypeTree(importTree(tpt), args map importTree)
-      case from.TypeBoundsTree(lo, hi) =>
-        new TypeBoundsTree(importTree(lo), importTree(hi))
-      case from.ExistentialTypeTree(tpt, whereClauses) =>
-        new ExistentialTypeTree(
-          importTree(tpt),
-          whereClauses map importMemberDef)
-      case from.EmptyTree =>
-        EmptyTree
-      case null =>
-        null
-    }
+    def recreateTree(their: from.Tree): to.Tree =
+      their match {
+        case from.ClassDef(mods, name, tparams, impl) =>
+          new ClassDef(
+            importModifiers(mods),
+            importName(name).toTypeName,
+            tparams map importTypeDef,
+            importTemplate(impl))
+        case from.PackageDef(pid, stats) =>
+          new PackageDef(importRefTree(pid), stats map importTree)
+        case from.ModuleDef(mods, name, impl) =>
+          new ModuleDef(
+            importModifiers(mods),
+            importName(name).toTermName,
+            importTemplate(impl))
+        case from.noSelfType =>
+          noSelfType
+        case from.pendingSuperCall =>
+          pendingSuperCall
+        case from.ValDef(mods, name, tpt, rhs) =>
+          new ValDef(
+            importModifiers(mods),
+            importName(name).toTermName,
+            importTree(tpt),
+            importTree(rhs))
+        case from.DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
+          new DefDef(
+            importModifiers(mods),
+            importName(name).toTermName,
+            tparams map importTypeDef,
+            mmap(vparamss)(importValDef),
+            importTree(tpt),
+            importTree(rhs))
+        case from.TypeDef(mods, name, tparams, rhs) =>
+          new TypeDef(
+            importModifiers(mods),
+            importName(name).toTypeName,
+            tparams map importTypeDef,
+            importTree(rhs))
+        case from.LabelDef(name, params, rhs) =>
+          new LabelDef(
+            importName(name).toTermName,
+            params map importIdent,
+            importTree(rhs))
+        case from.Import(expr, selectors) =>
+          new Import(importTree(expr), selectors map importImportSelector)
+        case from.Template(parents, self, body) =>
+          new Template(
+            parents map importTree,
+            importValDef(self),
+            body map importTree)
+        case from.Block(stats, expr) =>
+          new Block(stats map importTree, importTree(expr))
+        case from.CaseDef(pat, guard, body) =>
+          new CaseDef(importTree(pat), importTree(guard), importTree(body))
+        case from.Alternative(trees) =>
+          new Alternative(trees map importTree)
+        case from.Star(elem) =>
+          new Star(importTree(elem))
+        case from.Bind(name, body) =>
+          new Bind(importName(name), importTree(body))
+        case from.UnApply(fun, args) =>
+          new UnApply(importTree(fun), args map importTree)
+        case from.ArrayValue(elemtpt, elems) =>
+          new ArrayValue(importTree(elemtpt), elems map importTree)
+        case from.Function(vparams, body) =>
+          new Function(vparams map importValDef, importTree(body))
+        case from.Assign(lhs, rhs) =>
+          new Assign(importTree(lhs), importTree(rhs))
+        case from.AssignOrNamedArg(lhs, rhs) =>
+          new AssignOrNamedArg(importTree(lhs), importTree(rhs))
+        case from.If(cond, thenp, elsep) =>
+          new If(importTree(cond), importTree(thenp), importTree(elsep))
+        case from.Match(selector, cases) =>
+          new Match(importTree(selector), cases map importCaseDef)
+        case from.Return(expr) =>
+          new Return(importTree(expr))
+        case from.Try(block, catches, finalizer) =>
+          new Try(
+            importTree(block),
+            catches map importCaseDef,
+            importTree(finalizer))
+        case from.Throw(expr) =>
+          new Throw(importTree(expr))
+        case from.New(tpt) =>
+          new New(importTree(tpt))
+        case from.Typed(expr, tpt) =>
+          new Typed(importTree(expr), importTree(tpt))
+        case from.TypeApply(fun, args) =>
+          new TypeApply(importTree(fun), args map importTree)
+        case from.Apply(fun, args) =>
+          their match {
+            case _: from.ApplyToImplicitArgs =>
+              new ApplyToImplicitArgs(importTree(fun), args map importTree)
+            case _: from.ApplyImplicitView =>
+              new ApplyImplicitView(importTree(fun), args map importTree)
+            case _ =>
+              new Apply(importTree(fun), args map importTree)
+          }
+        case from.ApplyDynamic(qual, args) =>
+          new ApplyDynamic(importTree(qual), args map importTree)
+        case from.Super(qual, mix) =>
+          new Super(importTree(qual), importName(mix).toTypeName)
+        case from.This(qual) =>
+          new This(importName(qual).toTypeName)
+        case from.Select(qual, name) =>
+          new Select(importTree(qual), importName(name))
+        case from.Ident(name) =>
+          new Ident(importName(name))
+        case from.ReferenceToBoxed(ident) =>
+          new ReferenceToBoxed(importTree(ident) match {
+            case ident: Ident => ident
+          })
+        case from.Literal(constant @ from.Constant(_)) =>
+          new Literal(importConstant(constant))
+        case theirtt @ from.TypeTree() =>
+          val mytt = TypeTree()
+          if (theirtt.original != null)
+            mytt.setOriginal(importTree(theirtt.original))
+          mytt
+        case from.Annotated(annot, arg) =>
+          new Annotated(importTree(annot), importTree(arg))
+        case from.SingletonTypeTree(ref) =>
+          new SingletonTypeTree(importTree(ref))
+        case from.SelectFromTypeTree(qual, name) =>
+          new SelectFromTypeTree(importTree(qual), importName(name).toTypeName)
+        case from.CompoundTypeTree(templ) =>
+          new CompoundTypeTree(importTemplate(templ))
+        case from.AppliedTypeTree(tpt, args) =>
+          new AppliedTypeTree(importTree(tpt), args map importTree)
+        case from.TypeBoundsTree(lo, hi) =>
+          new TypeBoundsTree(importTree(lo), importTree(hi))
+        case from.ExistentialTypeTree(tpt, whereClauses) =>
+          new ExistentialTypeTree(
+            importTree(tpt),
+            whereClauses map importMemberDef)
+        case from.EmptyTree =>
+          EmptyTree
+        case null =>
+          null
+      }
 
     def importTree(their: from.Tree): Tree = {
       val my = recreateTree(their)

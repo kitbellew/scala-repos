@@ -190,42 +190,43 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
       out.defaultWriteObject()
     }
 
-  private def readBroadcastBlock(): T = Utils.tryOrIOException {
-    TorrentBroadcast.synchronized {
-      setConf(SparkEnv.get.conf)
-      val blockManager = SparkEnv.get.blockManager
-      blockManager.getLocalValues(broadcastId).map(_.data.next()) match {
-        case Some(x) =>
-          releaseLock(broadcastId)
-          x.asInstanceOf[T]
+  private def readBroadcastBlock(): T =
+    Utils.tryOrIOException {
+      TorrentBroadcast.synchronized {
+        setConf(SparkEnv.get.conf)
+        val blockManager = SparkEnv.get.blockManager
+        blockManager.getLocalValues(broadcastId).map(_.data.next()) match {
+          case Some(x) =>
+            releaseLock(broadcastId)
+            x.asInstanceOf[T]
 
-        case None =>
-          logInfo("Started reading broadcast variable " + id)
-          val startTimeMs = System.currentTimeMillis()
-          val blocks = readBlocks().flatMap(_.getChunks())
-          logInfo(
-            "Reading broadcast variable " + id + " took" + Utils.getUsedTimeMs(
-              startTimeMs))
+          case None =>
+            logInfo("Started reading broadcast variable " + id)
+            val startTimeMs = System.currentTimeMillis()
+            val blocks = readBlocks().flatMap(_.getChunks())
+            logInfo(
+              "Reading broadcast variable " + id + " took" + Utils
+                .getUsedTimeMs(startTimeMs))
 
-          val obj = TorrentBroadcast.unBlockifyObject[T](
-            blocks,
-            SparkEnv.get.serializer,
-            compressionCodec)
-          // Store the merged copy in BlockManager so other tasks on this executor don't
-          // need to re-fetch it.
-          val storageLevel = StorageLevel.MEMORY_AND_DISK
-          if (!blockManager.putSingle(
-                broadcastId,
-                obj,
-                storageLevel,
-                tellMaster = false)) {
-            throw new SparkException(
-              s"Failed to store $broadcastId in BlockManager")
-          }
-          obj
+            val obj = TorrentBroadcast.unBlockifyObject[T](
+              blocks,
+              SparkEnv.get.serializer,
+              compressionCodec)
+            // Store the merged copy in BlockManager so other tasks on this executor don't
+            // need to re-fetch it.
+            val storageLevel = StorageLevel.MEMORY_AND_DISK
+            if (!blockManager.putSingle(
+                  broadcastId,
+                  obj,
+                  storageLevel,
+                  tellMaster = false)) {
+              throw new SparkException(
+                s"Failed to store $broadcastId in BlockManager")
+            }
+            obj
+        }
       }
     }
-  }
 
   /**
     * If running in a task, register the given block's locks for release upon task completion.

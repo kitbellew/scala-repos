@@ -315,10 +315,11 @@ trait SliceTransforms[M[+_]]
 
           val sourceSlice = composeSliceTransform2(source)
 
-          def complement(col: BoolColumn) = new BoolColumn {
-            def isDefinedAt(row: Int) = col.isDefinedAt(row)
-            def apply(row: Int) = !col(row)
-          }
+          def complement(col: BoolColumn) =
+            new BoolColumn {
+              def isDefinedAt(row: Int) = col.isDefinedAt(row)
+              def apply(row: Int) = !col(row)
+            }
 
           sourceSlice map { ss =>
             new Slice {
@@ -342,12 +343,10 @@ trait SliceTransforms[M[+_]]
 
                 val columns = comparable ++ other
                 val aggregate = new BoolColumn {
-                  def isDefinedAt(row: Int) = columns.exists {
-                    _.isDefinedAt(row)
-                  }
-                  def apply(row: Int) = columns.exists { col =>
-                    col.isDefinedAt(row) && col(row)
-                  }
+                  def isDefinedAt(row: Int) =
+                    columns.exists { _.isDefinedAt(row) }
+                  def apply(row: Int) =
+                    columns.exists { col => col.isDefinedAt(row) && col(row) }
                 }
 
                 Map(
@@ -893,14 +892,15 @@ trait SliceTransforms[M[+_]]
       SliceTransform1S(st.initial, { case (a, s) => st.f0(a, s) :-> f })
 
     private def map[A](st: SliceTransform1[A])(
-        f: Slice => Slice): SliceTransform1[A] = st match {
-      case (st: SliceTransform1S[_]) => mapS(st)(f)
-      case SliceTransform1M(i, g) =>
-        SliceTransform1M(i, { case (a, s) => g(a, s) map (_ :-> f) })
-      case SliceTransform1SMS(sta, stb, stc) =>
-        SliceTransform1SMS(sta, stb, mapS(stc)(f))
-      case MappedState1(sta, to, from) => MappedState1(map(sta)(f), to, from)
-    }
+        f: Slice => Slice): SliceTransform1[A] =
+      st match {
+        case (st: SliceTransform1S[_]) => mapS(st)(f)
+        case SliceTransform1M(i, g) =>
+          SliceTransform1M(i, { case (a, s) => g(a, s) map (_ :-> f) })
+        case SliceTransform1SMS(sta, stb, stc) =>
+          SliceTransform1SMS(sta, stb, mapS(stc)(f))
+        case MappedState1(sta, to, from) => MappedState1(map(sta)(f), to, from)
+      }
 
     private def chainS[A, B](
         sta: SliceTransform1S[A],
@@ -1021,10 +1021,11 @@ trait SliceTransforms[M[+_]]
         initial: A,
         f: (A, Slice) => M[(A, Slice)])
         extends SliceTransform1[A] {
-      def advance(s: Slice): M[(SliceTransform1[A], Slice)] = apply(s) map {
-        case (next, slice) =>
-          (SliceTransform1M[A](next, f), slice)
-      }
+      def advance(s: Slice): M[(SliceTransform1[A], Slice)] =
+        apply(s) map {
+          case (next, slice) =>
+            (SliceTransform1M[A](next, f), slice)
+        }
     }
 
     private[table] case class SliceTransform1SMS[A, B, C](
@@ -1195,11 +1196,12 @@ trait SliceTransforms[M[+_]]
     def andThen[B](that: SliceTransform1[B]): SliceTransform2[(A, B)] =
       SliceTransform2.chain(this, that)
 
-    def parallel: SliceTransform1[A] = this match {
-      case (st: SliceTransform2S[_]) =>
-        SliceTransform1.liftM[A](initial, { (a, s) => st.f0(a, s, s) })
-      case _ => SliceTransform1[A](initial, { (a, s) => f(a, s, s) })
-    }
+    def parallel: SliceTransform1[A] =
+      this match {
+        case (st: SliceTransform2S[_]) =>
+          SliceTransform1.liftM[A](initial, { (a, s) => st.f0(a, s, s) })
+        case _ => SliceTransform1[A](initial, { (a, s) => f(a, s, s) })
+      }
   }
 
   object SliceTransform2 {
@@ -1227,15 +1229,18 @@ trait SliceTransforms[M[+_]]
         { case (a, sl, sr) => st.f0(a, sl, sr) :-> f })
 
     private def map[A](st: SliceTransform2[A])(
-        f: Slice => Slice): SliceTransform2[A] = st match {
-      case (st: SliceTransform2S[_]) => mapS(st)(f)
-      case SliceTransform2M(i, g) =>
-        SliceTransform2M(i, { case (a, sl, sr) => g(a, sl, sr) map (_ :-> f) })
-      case SliceTransform2SM(sta, stb) => SliceTransform2SM(sta, stb map f)
-      case SliceTransform2MS(sta, stb) =>
-        SliceTransform2MS(sta, SliceTransform1.mapS(stb)(f))
-      case MappedState2(sta, to, from) => MappedState2(map(sta)(f), to, from)
-    }
+        f: Slice => Slice): SliceTransform2[A] =
+      st match {
+        case (st: SliceTransform2S[_]) => mapS(st)(f)
+        case SliceTransform2M(i, g) =>
+          SliceTransform2M(
+            i,
+            { case (a, sl, sr) => g(a, sl, sr) map (_ :-> f) })
+        case SliceTransform2SM(sta, stb) => SliceTransform2SM(sta, stb map f)
+        case SliceTransform2MS(sta, stb) =>
+          SliceTransform2MS(sta, SliceTransform1.mapS(stb)(f))
+        case MappedState2(sta, to, from) => MappedState2(map(sta)(f), to, from)
+      }
 
     private def chainS[A, B](
         sta: SliceTransform2S[A],
@@ -1427,21 +1432,24 @@ trait ConcatHelpers {
 }
 
 trait ArrayConcatHelpers extends ConcatHelpers {
-  def filterArrays(columns: Map[ColumnRef, Column]) = columns.filter {
-    case (ColumnRef(CPath(CPathIndex(_), _ @_*), _), _) => true
-    case (ColumnRef(CPath.Identity, CEmptyArray), _)    => true
-    case _                                              => false
-  }
+  def filterArrays(columns: Map[ColumnRef, Column]) =
+    columns.filter {
+      case (ColumnRef(CPath(CPathIndex(_), _ @_*), _), _) => true
+      case (ColumnRef(CPath.Identity, CEmptyArray), _)    => true
+      case _                                              => false
+    }
 
-  def filterEmptyArrays(columns: Map[ColumnRef, Column]) = columns.filter {
-    case (ColumnRef(CPath.Identity, CEmptyArray), _) => true
-    case _                                           => false
-  }
+  def filterEmptyArrays(columns: Map[ColumnRef, Column]) =
+    columns.filter {
+      case (ColumnRef(CPath.Identity, CEmptyArray), _) => true
+      case _                                           => false
+    }
 
-  def collectIndices(columns: Map[ColumnRef, Column]) = columns.collect {
-    case (ref @ ColumnRef(CPath(CPathIndex(i), xs @ _*), ctype), col) =>
-      (i, xs, ref, col)
-  }
+  def collectIndices(columns: Map[ColumnRef, Column]) =
+    columns.collect {
+      case (ref @ ColumnRef(CPath(CPathIndex(i), xs @ _*), ctype), col) =>
+        (i, xs, ref, col)
+    }
 
   def buildEmptyArrays(emptyBits: BitSet) =
     Map(ColumnRef(CPath.Identity, CEmptyArray) -> EmptyArrayColumn(emptyBits))
@@ -1466,21 +1474,24 @@ trait ArrayConcatHelpers extends ConcatHelpers {
 }
 
 trait ObjectConcatHelpers extends ConcatHelpers {
-  def filterObjects(columns: Map[ColumnRef, Column]) = columns.filter {
-    case (ColumnRef(CPath(CPathField(_), _ @_*), _), _) => true
-    case (ColumnRef(CPath.Identity, CEmptyObject), _)   => true
-    case _                                              => false
-  }
+  def filterObjects(columns: Map[ColumnRef, Column]) =
+    columns.filter {
+      case (ColumnRef(CPath(CPathField(_), _ @_*), _), _) => true
+      case (ColumnRef(CPath.Identity, CEmptyObject), _)   => true
+      case _                                              => false
+    }
 
-  def filterEmptyObjects(columns: Map[ColumnRef, Column]) = columns.filter {
-    case (ColumnRef(CPath.Identity, CEmptyObject), _) => true
-    case _                                            => false
-  }
+  def filterEmptyObjects(columns: Map[ColumnRef, Column]) =
+    columns.filter {
+      case (ColumnRef(CPath.Identity, CEmptyObject), _) => true
+      case _                                            => false
+    }
 
-  def filterFields(columns: Map[ColumnRef, Column]) = columns.filter {
-    case (ColumnRef(CPath(CPathField(_), _ @_*), _), _) => true
-    case _                                              => false
-  }
+  def filterFields(columns: Map[ColumnRef, Column]) =
+    columns.filter {
+      case (ColumnRef(CPath(CPathField(_), _ @_*), _), _) => true
+      case _                                              => false
+    }
 
   def buildFields(
       leftColumns: Map[ColumnRef, Column],

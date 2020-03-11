@@ -18,31 +18,32 @@ trait ArbitraryTreesAndNames {
   def genTypeName = for (name <- shortIdent(8)) yield TypeName(name)
   def genName = oneOf(genTermName, genTypeName)
 
-  def genFlagSet = oneOf(
-    TRAIT,
-    INTERFACE,
-    MUTABLE,
-    MACRO,
-    DEFERRED,
-    ABSTRACT,
-    FINAL,
-    SEALED,
-    IMPLICIT,
-    LAZY,
-    OVERRIDE,
-    PRIVATE,
-    PROTECTED,
-    LOCAL,
-    CASE,
-    ABSOVERRIDE,
-    BYNAMEPARAM,
-    PARAM,
-    COVARIANT,
-    CONTRAVARIANT,
-    DEFAULTPARAM,
-    PRESUPER,
-    DEFAULTINIT
-  )
+  def genFlagSet =
+    oneOf(
+      TRAIT,
+      INTERFACE,
+      MUTABLE,
+      MACRO,
+      DEFERRED,
+      ABSTRACT,
+      FINAL,
+      SEALED,
+      IMPLICIT,
+      LAZY,
+      OVERRIDE,
+      PRIVATE,
+      PROTECTED,
+      LOCAL,
+      CASE,
+      ABSOVERRIDE,
+      BYNAMEPARAM,
+      PARAM,
+      COVARIANT,
+      CONTRAVARIANT,
+      DEFAULTPARAM,
+      PRESUPER,
+      DEFAULTINIT
+    )
 
   def genModifiers = for (flagset <- genFlagSet) yield Modifiers(flagset)
 

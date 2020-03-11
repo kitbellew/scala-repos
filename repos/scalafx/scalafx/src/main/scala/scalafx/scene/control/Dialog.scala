@@ -46,10 +46,11 @@ trait DConvert[T, F] {
 
 object DConvert {
   def apply[T, F](implicit conv: DConvert[T, F]) = conv
-  implicit def t2r[T, R]: DConvert[T, T => R] = new DConvert[T, T => R] {
-    type S = R
-    def apply(t: T, f: T => R) = f(t)
-  }
+  implicit def t2r[T, R]: DConvert[T, T => R] =
+    new DConvert[T, T => R] {
+      type S = R
+      def apply(t: T, f: T => R) = f(t)
+    }
 }
 
 /**

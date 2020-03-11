@@ -14,13 +14,14 @@ abstract class StandardRoute extends Route {
 }
 
 object StandardRoute {
-  def apply(route: Route): StandardRoute = route match {
-    case x: StandardRoute ⇒ x
-    case x ⇒
-      new StandardRoute {
-        def apply(ctx: RequestContext) = x(ctx)
-      }
-  }
+  def apply(route: Route): StandardRoute =
+    route match {
+      case x: StandardRoute ⇒ x
+      case x ⇒
+        new StandardRoute {
+          def apply(ctx: RequestContext) = x(ctx)
+        }
+    }
 
   /**
     * Converts the StandardRoute into a directive that never passes the request to its inner route

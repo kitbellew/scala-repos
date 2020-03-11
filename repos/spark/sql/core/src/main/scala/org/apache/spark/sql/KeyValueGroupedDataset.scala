@@ -218,11 +218,12 @@ class KeyValueGroupedDataset[K, V] private[sql] (
   private def agg(exprs: Column*): DataFrame =
     groupedData.agg(withEncoder(exprs.head), exprs.tail.map(withEncoder): _*)
 
-  private def withEncoder(c: Column): Column = c match {
-    case tc: TypedColumn[_, _] =>
-      tc.withInputType(resolvedVEncoder.bind(dataAttributes), dataAttributes)
-    case _ => c
-  }
+  private def withEncoder(c: Column): Column =
+    c match {
+      case tc: TypedColumn[_, _] =>
+        tc.withInputType(resolvedVEncoder.bind(dataAttributes), dataAttributes)
+      case _ => c
+    }
 
   /**
     * Internal helper function for building typed aggregations that return tuples.  For simplicity

@@ -143,19 +143,21 @@ trait Definitions extends api.StandardDefinitions {
         ObjectRefClass)
     }
 
-    def isNumericSubClass(sub: Symbol, sup: Symbol) = (
-      (numericWeight contains sub)
-        && (numericWeight contains sup)
-        && (numericWeight(sup) % numericWeight(sub) == 0)
-    )
+    def isNumericSubClass(sub: Symbol, sup: Symbol) =
+      (
+        (numericWeight contains sub)
+          && (numericWeight contains sup)
+          && (numericWeight(sup) % numericWeight(sub) == 0)
+      )
 
     /** Is symbol a numeric value class? */
     def isNumericValueClass(sym: Symbol) = ScalaNumericValueClasses contains sym
 
-    def isGetClass(sym: Symbol) = (
-      sym.name == nme.getClass_ // this condition is for performance only, this is called from `Typer#stabilize`.
-        && getClassMethods(sym)
-    )
+    def isGetClass(sym: Symbol) =
+      (
+        sym.name == nme.getClass_ // this condition is for performance only, this is called from `Typer#stabilize`.
+          && getClassMethods(sym)
+      )
 
     lazy val UnitClass = valueClassSymbol(tpnme.Unit)
     lazy val ByteClass = valueClassSymbol(tpnme.Byte)
@@ -217,30 +219,32 @@ trait Definitions extends api.StandardDefinitions {
     lazy val RuntimePackage = getPackage(TermName("scala.runtime"))
     lazy val RuntimePackageClass = RuntimePackage.moduleClass.asClass
 
-    def javaTypeToValueClass(jtype: Class[_]): Symbol = jtype match {
-      case java.lang.Void.TYPE      => UnitClass
-      case java.lang.Byte.TYPE      => ByteClass
-      case java.lang.Character.TYPE => CharClass
-      case java.lang.Short.TYPE     => ShortClass
-      case java.lang.Integer.TYPE   => IntClass
-      case java.lang.Long.TYPE      => LongClass
-      case java.lang.Float.TYPE     => FloatClass
-      case java.lang.Double.TYPE    => DoubleClass
-      case java.lang.Boolean.TYPE   => BooleanClass
-      case _                        => NoSymbol
-    }
-    def valueClassToJavaType(sym: Symbol): Class[_] = sym match {
-      case UnitClass    => java.lang.Void.TYPE
-      case ByteClass    => java.lang.Byte.TYPE
-      case CharClass    => java.lang.Character.TYPE
-      case ShortClass   => java.lang.Short.TYPE
-      case IntClass     => java.lang.Integer.TYPE
-      case LongClass    => java.lang.Long.TYPE
-      case FloatClass   => java.lang.Float.TYPE
-      case DoubleClass  => java.lang.Double.TYPE
-      case BooleanClass => java.lang.Boolean.TYPE
-      case _            => null
-    }
+    def javaTypeToValueClass(jtype: Class[_]): Symbol =
+      jtype match {
+        case java.lang.Void.TYPE      => UnitClass
+        case java.lang.Byte.TYPE      => ByteClass
+        case java.lang.Character.TYPE => CharClass
+        case java.lang.Short.TYPE     => ShortClass
+        case java.lang.Integer.TYPE   => IntClass
+        case java.lang.Long.TYPE      => LongClass
+        case java.lang.Float.TYPE     => FloatClass
+        case java.lang.Double.TYPE    => DoubleClass
+        case java.lang.Boolean.TYPE   => BooleanClass
+        case _                        => NoSymbol
+      }
+    def valueClassToJavaType(sym: Symbol): Class[_] =
+      sym match {
+        case UnitClass    => java.lang.Void.TYPE
+        case ByteClass    => java.lang.Byte.TYPE
+        case CharClass    => java.lang.Character.TYPE
+        case ShortClass   => java.lang.Short.TYPE
+        case IntClass     => java.lang.Integer.TYPE
+        case LongClass    => java.lang.Long.TYPE
+        case FloatClass   => java.lang.Float.TYPE
+        case DoubleClass  => java.lang.Double.TYPE
+        case BooleanClass => java.lang.Boolean.TYPE
+        case _            => null
+      }
 
     /** Fully initialize the symbol, type, or scope.
       */
@@ -272,43 +276,47 @@ trait Definitions extends api.StandardDefinitions {
       *  - members of Any or Object, because every instance will inherit a
       *    definition which supersedes the imported one
       */
-    def isUnimportable(sym: Symbol) = (
-      (sym eq NoSymbol)
-        || sym.isConstructor
-        || sym.isPrivateLocal
-    )
+    def isUnimportable(sym: Symbol) =
+      (
+        (sym eq NoSymbol)
+          || sym.isConstructor
+          || sym.isPrivateLocal
+      )
     def isUnimportableUnlessRenamed(sym: Symbol) =
       isUnimportable(sym) || isUniversalMember(sym)
     def isImportable(sym: Symbol) = !isUnimportable(sym)
 
     /** Is this type equivalent to Any, AnyVal, or AnyRef? */
-    def isTrivialTopType(tp: Type) = (
-      tp =:= AnyTpe
-        || tp =:= AnyValTpe
-        || tp =:= AnyRefTpe
-    )
+    def isTrivialTopType(tp: Type) =
+      (
+        tp =:= AnyTpe
+          || tp =:= AnyValTpe
+          || tp =:= AnyRefTpe
+      )
 
     def isUnitType(tp: Type) =
       tp.typeSymbol == UnitClass && tp.annotations.isEmpty
 
     def hasMultipleNonImplicitParamLists(member: Symbol): Boolean =
       hasMultipleNonImplicitParamLists(member.info)
-    def hasMultipleNonImplicitParamLists(info: Type): Boolean = info match {
-      case PolyType(_, restpe)                                   => hasMultipleNonImplicitParamLists(restpe)
-      case MethodType(_, MethodType(p :: _, _)) if !p.isImplicit => true
-      case _                                                     => false
-    }
+    def hasMultipleNonImplicitParamLists(info: Type): Boolean =
+      info match {
+        case PolyType(_, restpe)                                   => hasMultipleNonImplicitParamLists(restpe)
+        case MethodType(_, MethodType(p :: _, _)) if !p.isImplicit => true
+        case _                                                     => false
+      }
 
-    private def fixupAsAnyTrait(tpe: Type): Type = tpe match {
-      case ClassInfoType(parents, decls, clazz) =>
-        if (parents.head.typeSymbol == AnyClass) tpe
-        else {
-          assert(parents.head.typeSymbol == ObjectClass, parents)
-          ClassInfoType(AnyTpe :: parents.tail, decls, clazz)
-        }
-      case PolyType(tparams, restpe) =>
-        PolyType(tparams, fixupAsAnyTrait(restpe))
-    }
+    private def fixupAsAnyTrait(tpe: Type): Type =
+      tpe match {
+        case ClassInfoType(parents, decls, clazz) =>
+          if (parents.head.typeSymbol == AnyClass) tpe
+          else {
+            assert(parents.head.typeSymbol == ObjectClass, parents)
+            ClassInfoType(AnyTpe :: parents.tail, decls, clazz)
+          }
+        case PolyType(tparams, restpe) =>
+          PolyType(tparams, fixupAsAnyTrait(restpe))
+      }
 
     // top types
     lazy val AnyClass = enterNewClass(
@@ -368,10 +376,11 @@ trait Definitions extends api.StandardDefinitions {
       override def isSubClass(that: Symbol) = true
     }
     final object NullClass extends BottomClassSymbol(tpnme.Null, AnyRefClass) {
-      override def isSubClass(that: Symbol) = (
-        (that eq AnyClass)
-          || (that ne NothingClass) && (that isSubClass ObjectClass)
-      )
+      override def isSubClass(that: Symbol) =
+        (
+          (that eq AnyClass)
+            || (that ne NothingClass) && (that isSubClass ObjectClass)
+        )
     }
 
     // exceptions and other throwables
@@ -418,9 +427,10 @@ trait Definitions extends api.StandardDefinitions {
     def Predef_wrapArray(tp: Type) =
       getMemberMethod(PredefModule, wrapArrayMethodName(tp))
     def Predef_??? = getMemberMethod(PredefModule, nme.???)
-    def isPredefMemberNamed(sym: Symbol, name: Name) = (
-      (sym.name == name) && (sym.owner == PredefModule.moduleClass)
-    )
+    def isPredefMemberNamed(sym: Symbol, name: Name) =
+      (
+        (sym.name == name) && (sym.owner == PredefModule.moduleClass)
+      )
 
     /** Specialization.
       */
@@ -490,32 +500,36 @@ trait Definitions extends api.StandardDefinitions {
     def isVarArgTypes(formals: Seq[Type]) =
       formals.nonEmpty && isRepeatedParamType(formals.last)
 
-    def firstParamType(tpe: Type): Type = tpe.paramTypes match {
-      case p :: _ => p
-      case _      => NoType
-    }
-    def isImplicitParamss(paramss: List[List[Symbol]]) = paramss match {
-      case (p :: _) :: _ => p.isImplicit
-      case _             => false
-    }
+    def firstParamType(tpe: Type): Type =
+      tpe.paramTypes match {
+        case p :: _ => p
+        case _      => NoType
+      }
+    def isImplicitParamss(paramss: List[List[Symbol]]) =
+      paramss match {
+        case (p :: _) :: _ => p.isImplicit
+        case _             => false
+      }
 
-    def hasRepeatedParam(tp: Type): Boolean = tp match {
-      case MethodType(formals, restpe) =>
-        isScalaVarArgs(formals) || hasRepeatedParam(restpe)
-      case PolyType(_, restpe) => hasRepeatedParam(restpe)
-      case _                   => false
-    }
+    def hasRepeatedParam(tp: Type): Boolean =
+      tp match {
+        case MethodType(formals, restpe) =>
+          isScalaVarArgs(formals) || hasRepeatedParam(restpe)
+        case PolyType(_, restpe) => hasRepeatedParam(restpe)
+        case _                   => false
+      }
 
     // wrapping and unwrapping
     def dropByName(tp: Type): Type =
       elementExtract(ByNameParamClass, tp) orElse tp
-    def dropRepeated(tp: Type): Type = (
-      if (isJavaRepeatedParamType(tp))
-        elementExtract(JavaRepeatedParamClass, tp) orElse tp
-      else if (isScalaRepeatedParamType(tp))
-        elementExtract(RepeatedParamClass, tp) orElse tp
-      else tp
-    )
+    def dropRepeated(tp: Type): Type =
+      (
+        if (isJavaRepeatedParamType(tp))
+          elementExtract(JavaRepeatedParamClass, tp) orElse tp
+        else if (isScalaRepeatedParamType(tp))
+          elementExtract(RepeatedParamClass, tp) orElse tp
+        else tp
+      )
     def repeatedToSingle(tp: Type): Type =
       elementExtract(RepeatedParamClass, tp) orElse elementExtract(
         JavaRepeatedParamClass,
@@ -791,21 +805,22 @@ trait Definitions extends api.StandardDefinitions {
     def abstractFunctionType(formals: List[Type], restpe: Type) =
       AbstractFunctionClass.specificType(formals, restpe)
 
-    def wrapArrayMethodName(elemtp: Type): TermName = elemtp.typeSymbol match {
-      case ByteClass    => nme.wrapByteArray
-      case ShortClass   => nme.wrapShortArray
-      case CharClass    => nme.wrapCharArray
-      case IntClass     => nme.wrapIntArray
-      case LongClass    => nme.wrapLongArray
-      case FloatClass   => nme.wrapFloatArray
-      case DoubleClass  => nme.wrapDoubleArray
-      case BooleanClass => nme.wrapBooleanArray
-      case UnitClass    => nme.wrapUnitArray
-      case _ =>
-        if ((elemtp <:< AnyRefTpe) && !isPhantomClass(elemtp.typeSymbol))
-          nme.wrapRefArray
-        else nme.genericWrapArray
-    }
+    def wrapArrayMethodName(elemtp: Type): TermName =
+      elemtp.typeSymbol match {
+        case ByteClass    => nme.wrapByteArray
+        case ShortClass   => nme.wrapShortArray
+        case CharClass    => nme.wrapCharArray
+        case IntClass     => nme.wrapIntArray
+        case LongClass    => nme.wrapLongArray
+        case FloatClass   => nme.wrapFloatArray
+        case DoubleClass  => nme.wrapDoubleArray
+        case BooleanClass => nme.wrapBooleanArray
+        case UnitClass    => nme.wrapUnitArray
+        case _ =>
+          if ((elemtp <:< AnyRefTpe) && !isPhantomClass(elemtp.typeSymbol))
+            nme.wrapRefArray
+          else nme.genericWrapArray
+      }
 
     def isTupleSymbol(sym: Symbol) =
       TupleClass.seq contains unspecializedSymbol(sym)
@@ -912,10 +927,11 @@ trait Definitions extends api.StandardDefinitions {
 
     /** if tpe <: ProductN[T1,...,TN], returns List(T1,...,TN) else Nil */
     @deprecated("No longer used", "2.11.0") def getProductArgs(
-        tpe: Type): List[Type] = tpe.baseClasses find isProductNSymbol match {
-      case Some(x) => tpe.baseType(x).typeArgs
-      case _       => Nil
-    }
+        tpe: Type): List[Type] =
+      tpe.baseClasses find isProductNSymbol match {
+        case Some(x) => tpe.baseType(x).typeArgs
+        case _       => Nil
+      }
 
     @deprecated("No longer used", "2.11.0") def unapplyUnwrap(tpe: Type) =
       tpe.finalResultType.dealiasWiden match {
@@ -926,40 +942,43 @@ trait Definitions extends api.StandardDefinitions {
     def getterMemberTypes(tpe: Type, getters: List[Symbol]): List[Type] =
       getters map (m => dropNullaryMethod(tpe memberType m))
 
-    def dropNullaryMethod(tp: Type) = tp match {
-      case NullaryMethodType(restpe) => restpe
-      case _                         => tp
-    }
+    def dropNullaryMethod(tp: Type) =
+      tp match {
+        case NullaryMethodType(restpe) => restpe
+        case _                         => tp
+      }
 
     /** An implementation of finalResultType which does only what
       *  finalResultType is documented to do. Defining it externally to
       *  Type helps ensure people can't come to depend on accidental
       *  aspects of its behavior. This is all of it!
       */
-    def finalResultType(tp: Type): Type = tp match {
-      case PolyType(_, restpe)       => finalResultType(restpe)
-      case MethodType(_, restpe)     => finalResultType(restpe)
-      case NullaryMethodType(restpe) => finalResultType(restpe)
-      case _                         => tp
-    }
+    def finalResultType(tp: Type): Type =
+      tp match {
+        case PolyType(_, restpe)       => finalResultType(restpe)
+        case MethodType(_, restpe)     => finalResultType(restpe)
+        case NullaryMethodType(restpe) => finalResultType(restpe)
+        case _                         => tp
+      }
 
     /** Similarly, putting all the isStable logic in one place.
       *  This makes it like 1000x easier to see the overall logic
       *  of the method.
       */
-    def isStable(tp: Type): Boolean = tp match {
-      case _: SingletonType                             => true
-      case NoPrefix                                     => true
-      case TypeRef(_, NothingClass | SingletonClass, _) => true
-      case TypeRef(_, sym, _) if sym.isAbstractType =>
-        tp.bounds.hi.typeSymbol isSubClass SingletonClass
-      case TypeRef(pre, sym, _) if sym.isModuleClass => isStable(pre)
-      case TypeRef(_, _, _) if tp ne tp.dealias      => isStable(tp.dealias)
-      case TypeVar(origin, _)                        => isStable(origin)
-      case AnnotatedType(_, atp)                     => isStable(atp) // Really?
-      case _: SimpleTypeProxy                        => isStable(tp.underlying)
-      case _                                         => false
-    }
+    def isStable(tp: Type): Boolean =
+      tp match {
+        case _: SingletonType                             => true
+        case NoPrefix                                     => true
+        case TypeRef(_, NothingClass | SingletonClass, _) => true
+        case TypeRef(_, sym, _) if sym.isAbstractType =>
+          tp.bounds.hi.typeSymbol isSubClass SingletonClass
+        case TypeRef(pre, sym, _) if sym.isModuleClass => isStable(pre)
+        case TypeRef(_, _, _) if tp ne tp.dealias      => isStable(tp.dealias)
+        case TypeVar(origin, _)                        => isStable(origin)
+        case AnnotatedType(_, atp)                     => isStable(atp) // Really?
+        case _: SimpleTypeProxy                        => isStable(tp.underlying)
+        case _                                         => false
+      }
     def isVolatile(tp: Type): Boolean = {
       // need to be careful not to fall into an infinite recursion here
       // because volatile checking is done before all cycles are detected.
@@ -968,18 +987,19 @@ trait Definitions extends api.StandardDefinitions {
       def isVolatileAbstractType: Boolean = {
         def sym = tp.typeSymbol
         def volatileUpperBound = isVolatile(tp.bounds.hi)
-        def safeIsVolatile = (
-          if (volatileRecursions < TypeConstants.LogVolatileThreshold)
-            volatileUpperBound
-          // we can return true when pendingVolatiles contains sym, because
-          // a cycle will be detected afterwards and an error will result anyway.
-          else
-            pendingVolatiles(sym) || {
-              pendingVolatiles += sym
-              try volatileUpperBound
-              finally pendingVolatiles -= sym
-            }
-        )
+        def safeIsVolatile =
+          (
+            if (volatileRecursions < TypeConstants.LogVolatileThreshold)
+              volatileUpperBound
+            // we can return true when pendingVolatiles contains sym, because
+            // a cycle will be detected afterwards and an error will result anyway.
+            else
+              pendingVolatiles(sym) || {
+                pendingVolatiles += sym
+                try volatileUpperBound
+                finally pendingVolatiles -= sym
+              }
+          )
         volatileRecursions += 1
         try safeIsVolatile
         finally volatileRecursions -= 1
@@ -1120,29 +1140,32 @@ trait Definitions extends api.StandardDefinitions {
     //         extractor to limit exposure to regressions like the reported problem with existentials.
     //         TODO fix the existential problem in the general case, see test/pending/pos/t8128.scala
     private def typeArgOfBaseTypeOr(tp: Type, baseClass: Symbol)(
-        or: => Type): Type = (tp baseType baseClass).typeArgs match {
-      case x :: Nil =>
-        val x1 = x
-        val x2 = repackExistential(x1)
-        x2
-      case _ => or
-    }
+        or: => Type): Type =
+      (tp baseType baseClass).typeArgs match {
+        case x :: Nil =>
+          val x1 = x
+          val x2 = repackExistential(x1)
+          x2
+        case _ => or
+      }
 
     // Can't only check for _1 thanks to pos/t796.
-    def hasSelectors(tp: Type) = (
-      (tp.members containsName nme._1)
-        && (tp.members containsName nme._2)
-    )
+    def hasSelectors(tp: Type) =
+      (
+        (tp.members containsName nme._1)
+          && (tp.members containsName nme._2)
+      )
 
     /** Returns the method symbols for members _1, _2, ..., _N
       *  which exist in the given type.
       */
     def productSelectors(tpe: Type): List[Symbol] = {
-      def loop(n: Int): List[Symbol] = tpe member TermName("_" + n) match {
-        case NoSymbol                => Nil
-        case m if m.paramss.nonEmpty => Nil
-        case m                       => m :: loop(n + 1)
-      }
+      def loop(n: Int): List[Symbol] =
+        tpe member TermName("_" + n) match {
+          case NoSymbol                => Nil
+          case m if m.paramss.nonEmpty => Nil
+          case m                       => m :: loop(n + 1)
+        }
       // Since ErrorType always returns a symbol from a call to member, we
       // had better not start looking for _1, _2, etc. expecting it to run out.
       if (tpe.isErroneous) Nil else loop(1)
@@ -1155,12 +1178,13 @@ trait Definitions extends api.StandardDefinitions {
       */
     def resultOfMatchingMethod(tp: Type, name: TermName)(
         paramTypes: Type*): Type = {
-      def matchesParams(member: Symbol) = member.paramss match {
-        case Nil => paramTypes.isEmpty
-        case ps :: rest =>
-          (rest.isEmpty || isImplicitParamss(
-            rest)) && (ps corresponds paramTypes)(_.tpe =:= _)
-      }
+      def matchesParams(member: Symbol) =
+        member.paramss match {
+          case Nil => paramTypes.isEmpty
+          case ps :: rest =>
+            (rest.isEmpty || isImplicitParamss(
+              rest)) && (ps corresponds paramTypes)(_.tpe =:= _)
+        }
       tp member name filter matchesParams match {
         case NoSymbol => NoType
         case member   => (tp memberType member).finalResultType
@@ -1173,16 +1197,17 @@ trait Definitions extends api.StandardDefinitions {
     /** Can we tell by inspecting the symbol that it will never
       *  at any phase have type parameters?
       */
-    def neverHasTypeParameters(sym: Symbol) = sym match {
-      case _: RefinementClassSymbol => true
-      case _: ModuleClassSymbol     => true
-      case _ =>
-        (
-          sym.isPrimitiveValueClass
-            || sym.isAnonymousClass
-            || sym.initialize.isMonomorphicType
-        )
-    }
+    def neverHasTypeParameters(sym: Symbol) =
+      sym match {
+        case _: RefinementClassSymbol => true
+        case _: ModuleClassSymbol     => true
+        case _ =>
+          (
+            sym.isPrimitiveValueClass
+              || sym.isAnonymousClass
+              || sym.initialize.isMonomorphicType
+          )
+      }
 
     def EnumType(sym: Symbol) = {
       // given (in java): "class A { enum E { VAL1 } }"
@@ -1290,19 +1315,21 @@ trait Definitions extends api.StandardDefinitions {
     }
 
     /** Remove references to class Object (other than the head) in a list of parents */
-    def removeLaterObjects(tps: List[Type]): List[Type] = tps match {
-      case Nil     => Nil
-      case x :: xs => x :: xs.filterNot(_.typeSymbol == ObjectClass)
-    }
+    def removeLaterObjects(tps: List[Type]): List[Type] =
+      tps match {
+        case Nil     => Nil
+        case x :: xs => x :: xs.filterNot(_.typeSymbol == ObjectClass)
+      }
 
     /** Remove all but one reference to class Object from a list of parents. */
-    def removeRedundantObjects(tps: List[Type]): List[Type] = tps match {
-      case Nil => Nil
-      case x :: xs =>
-        if (x.typeSymbol == ObjectClass)
-          x :: xs.filterNot(_.typeSymbol == ObjectClass)
-        else x :: removeRedundantObjects(xs)
-    }
+    def removeRedundantObjects(tps: List[Type]): List[Type] =
+      tps match {
+        case Nil => Nil
+        case x :: xs =>
+          if (x.typeSymbol == ObjectClass)
+            x :: xs.filterNot(_.typeSymbol == ObjectClass)
+          else x :: removeRedundantObjects(xs)
+      }
 
     /** The following transformations applied to a list of parents.
       *  If any parent is a class/trait, all parents which normalize to
@@ -1317,10 +1344,11 @@ trait Definitions extends api.StandardDefinitions {
     }
 
     /** Flatten curried parameter lists of a method type. */
-    def allParameters(tpe: Type): List[Symbol] = tpe match {
-      case MethodType(params, res) => params ::: allParameters(res)
-      case _                       => Nil
-    }
+    def allParameters(tpe: Type): List[Symbol] =
+      tpe match {
+        case MethodType(params, res) => params ::: allParameters(res)
+        case _                       => Nil
+      }
 
     def typeStringNoPackage(tp: Type) =
       "" + tp stripPrefix tp.typeSymbol.enclosingPackage.fullName + "."
@@ -1331,11 +1359,12 @@ trait Definitions extends api.StandardDefinitions {
     def parentsString(parents: List[Type]) =
       normalizedParents(parents) mkString " with "
 
-    def valueParamsString(tp: Type) = tp match {
-      case MethodType(params, _) =>
-        params map (_.defString) mkString ("(", ",", ")")
-      case _ => ""
-    }
+    def valueParamsString(tp: Type) =
+      tp match {
+        case MethodType(params, _) =>
+          params map (_.defString) mkString ("(", ",", ")")
+        case _ => ""
+      }
 
     // members of class java.lang.{ Object, String }
     lazy val Object_## =
@@ -1472,10 +1501,11 @@ trait Definitions extends api.StandardDefinitions {
     // Language features
     lazy val languageFeatureModule = getRequiredModule("scala.languageFeature")
 
-    def isMetaAnnotation(sym: Symbol): Boolean = metaAnnotations(sym) || (
-      // Trying to allow for deprecated locations
-      sym.isAliasType && isMetaAnnotation(sym.info.typeSymbol)
-    )
+    def isMetaAnnotation(sym: Symbol): Boolean =
+      metaAnnotations(sym) || (
+        // Trying to allow for deprecated locations
+        sym.isAliasType && isMetaAnnotation(sym.info.typeSymbol)
+      )
     lazy val metaAnnotations: Set[Symbol] = getPackage(TermName(
       "scala.annotation.meta")).info.members filter (_ isSubClass StaticAnnotationClass) toSet
 
@@ -1483,17 +1513,18 @@ trait Definitions extends api.StandardDefinitions {
     // * By default, annotations on (`val`-, `var`- or plain) constructor parameters
     // * end up on the parameter, not on any other entity. Annotations on fields
     // * by default only end up on the field.
-    def defaultAnnotationTarget(t: Tree): Symbol = t match {
-      case ClassDef(_, _, _, _) => ClassTargetClass
-      case ModuleDef(_, _, _)   => ObjectTargetClass
-      case vd @ ValDef(_, _, _, _) if vd.symbol.isParamAccessor =>
-        ParamTargetClass
-      case vd @ ValDef(_, _, _, _) if vd.symbol.isValueParameter =>
-        ParamTargetClass
-      case ValDef(_, _, _, _)       => FieldTargetClass
-      case DefDef(_, _, _, _, _, _) => MethodTargetClass
-      case _                        => GetterTargetClass
-    }
+    def defaultAnnotationTarget(t: Tree): Symbol =
+      t match {
+        case ClassDef(_, _, _, _) => ClassTargetClass
+        case ModuleDef(_, _, _)   => ObjectTargetClass
+        case vd @ ValDef(_, _, _, _) if vd.symbol.isParamAccessor =>
+          ParamTargetClass
+        case vd @ ValDef(_, _, _, _) if vd.symbol.isValueParameter =>
+          ParamTargetClass
+        case ValDef(_, _, _, _)       => FieldTargetClass
+        case DefDef(_, _, _, _, _, _) => MethodTargetClass
+        case _                        => GetterTargetClass
+      }
 
     lazy val AnnotationDefaultAttr: ClassSymbol = {
       val sym = RuntimePackageClass.newClassSymbol(
@@ -1734,18 +1765,20 @@ trait Definitions extends api.StandardDefinitions {
         boxedClass.map(kvp => (kvp._2: Symbol, kvp._1)).getOrElse(sym, NoSymbol)
 
     /** Is type's symbol a numeric value class? */
-    def isNumericValueType(tp: Type): Boolean = tp match {
-      case TypeRef(_, sym, _) => isNumericValueClass(sym)
-      case _                  => false
-    }
+    def isNumericValueType(tp: Type): Boolean =
+      tp match {
+        case TypeRef(_, sym, _) => isNumericValueClass(sym)
+        case _                  => false
+      }
 
     // todo: reconcile with javaSignature!!!
     def signature(tp: Type): String = {
-      def erasure(tp: Type): Type = tp match {
-        case st: SubType             => erasure(st.supertype)
-        case RefinedType(parents, _) => erasure(parents.head)
-        case _                       => tp
-      }
+      def erasure(tp: Type): Type =
+        tp match {
+          case st: SubType             => erasure(st.supertype)
+          case RefinedType(parents, _) => erasure(parents.head)
+          case _                       => tp
+        }
       def flatNameString(sym: Symbol, separator: Char): String =
         if (sym == NoSymbol)
           "" // be more resistant to error conditions, e.g. neg/t3222.scala

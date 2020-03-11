@@ -45,9 +45,10 @@ package scalaguide.http.scalaactionscomposition {
         testAction(index)
 
         //#basic-logging-parse
-        def submit = LoggingAction(parse.text) { request =>
-          Ok("Got a body " + request.body.length + " bytes long")
-        }
+        def submit =
+          LoggingAction(parse.text) { request =>
+            Ok("Got a body " + request.body.length + " bytes long")
+          }
         //#basic-logging-parse
 
         val request = FakeRequest().withTextBody("hello with the parse")
@@ -101,11 +102,11 @@ package scalaguide.http.scalaactionscomposition {
         //#actions-def-wrapping
         import play.api.mvc._
 
-        def logging[A](action: Action[A]) = Action.async(action.parser) {
-          request =>
+        def logging[A](action: Action[A]) =
+          Action.async(action.parser) { request =>
             Logger.info("Calling action")
             action(request)
-        }
+          }
         //#actions-def-wrapping
 
         val request = FakeRequest().withTextBody("hello with the parse")
@@ -116,15 +117,15 @@ package scalaguide.http.scalaactionscomposition {
         //#modify-request
         import play.api.mvc._
 
-        def xForwardedFor[A](action: Action[A]) = Action.async(action.parser) {
-          request =>
+        def xForwardedFor[A](action: Action[A]) =
+          Action.async(action.parser) { request =>
             val newRequest = request.headers.get("X-Forwarded-For").map { xff =>
               new WrappedRequest[A](request) {
                 override def remoteAddress = xff
               }
             } getOrElse request
             action(newRequest)
-        }
+          }
         //#modify-request
 
         testAction(xForwardedFor(Action(Ok)))
@@ -134,14 +135,14 @@ package scalaguide.http.scalaactionscomposition {
         //#block-request
         import play.api.mvc._
 
-        def onlyHttps[A](action: Action[A]) = Action.async(action.parser) {
-          request =>
+        def onlyHttps[A](action: Action[A]) =
+          Action.async(action.parser) { request =>
             request.headers.get("X-Forwarded-Proto").collect {
               case "https" => action(request)
             } getOrElse {
               Future.successful(Forbidden("Only HTTPS requests allowed"))
             }
-        }
+          }
         //#block-request
 
         testAction(action = onlyHttps(Action(Ok)), expectedResponse = FORBIDDEN)
@@ -154,10 +155,10 @@ package scalaguide.http.scalaactionscomposition {
         import play.api.mvc._
         import play.api.libs.concurrent.Execution.Implicits._
 
-        def addUaHeader[A](action: Action[A]) = Action.async(action.parser) {
-          request =>
+        def addUaHeader[A](action: Action[A]) =
+          Action.async(action.parser) { request =>
             action(request).map(_.withHeaders("X-UA-Compatible" -> "Chrome=1"))
-        }
+          }
         //#modify-result
 
         assertAction(addUaHeader(Action(Ok))) { result =>
@@ -176,15 +177,17 @@ package scalaguide.http.scalaactionscomposition {
         object UserAction
             extends ActionBuilder[UserRequest]
             with ActionTransformer[Request, UserRequest] {
-          def transform[A](request: Request[A]) = Future.successful {
-            new UserRequest(request.session.get("username"), request)
-          }
+          def transform[A](request: Request[A]) =
+            Future.successful {
+              new UserRequest(request.session.get("username"), request)
+            }
         }
         //#authenticated-action-builder
 
-        def currentUser = UserAction { request =>
-          Ok("The current user is " + request.username.getOrElse("anonymous"))
-        }
+        def currentUser =
+          UserAction { request =>
+            Ok("The current user is " + request.username.getOrElse("anonymous"))
+          }
 
         testAction(currentUser)
 
@@ -208,21 +211,23 @@ package scalaguide.http.scalaactionscomposition {
         //#item-action-builder
         def ItemAction(itemId: String) =
           new ActionRefiner[UserRequest, ItemRequest] {
-            def refine[A](input: UserRequest[A]) = Future.successful {
-              ItemDao
-                .findById(itemId)
-                .map(new ItemRequest(_, input))
-                .toRight(NotFound)
-            }
+            def refine[A](input: UserRequest[A]) =
+              Future.successful {
+                ItemDao
+                  .findById(itemId)
+                  .map(new ItemRequest(_, input))
+                  .toRight(NotFound)
+              }
           }
         //#item-action-builder
 
         //#permission-check-action
         object PermissionCheckAction extends ActionFilter[ItemRequest] {
-          def filter[A](input: ItemRequest[A]) = Future.successful {
-            if (!input.item.accessibleByUser(input.username)) Some(Forbidden)
-            else None
-          }
+          def filter[A](input: ItemRequest[A]) =
+            Future.successful {
+              if (!input.item.accessibleByUser(input.username)) Some(Forbidden)
+              else None
+            }
         }
         //#permission-check-action
 

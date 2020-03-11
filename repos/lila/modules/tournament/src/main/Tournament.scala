@@ -36,10 +36,11 @@ case class Tournament(
     else if (scheduled && clock.hasIncrement) s"$name Inc $system"
     else s"$name $system"
 
-  def isMarathon = schedule.map(_.freq) exists {
-    case Schedule.Freq.ExperimentalMarathon | Schedule.Freq.Marathon => true
-    case _                                                           => false
-  }
+  def isMarathon =
+    schedule.map(_.freq) exists {
+      case Schedule.Freq.ExperimentalMarathon | Schedule.Freq.Marathon => true
+      case _                                                           => false
+    }
 
   def isUnique = schedule.map(_.freq) exists (Schedule.Freq.Unique ==)
 
@@ -70,10 +71,11 @@ case class Tournament(
 
   def overlaps(other: Tournament) = interval overlaps other.interval
 
-  def similarTo(other: Tournament) = (schedule, other.schedule) match {
-    case (Some(s1), Some(s2)) if s1 similarTo s2 => true
-    case _                                       => false
-  }
+  def similarTo(other: Tournament) =
+    (schedule, other.schedule) match {
+      case (Some(s1), Some(s2)) if s1 similarTo s2 => true
+      case _                                       => false
+    }
 
   def speed = Speed(clock.chessClock.some)
 
@@ -88,9 +90,8 @@ case class Tournament(
 
   def berserkable = system.berserkable && clock.chessClock.berserkable
 
-  def clockStatus = secondsToFinish |> { s =>
-    "%02d:%02d".format(s / 60, s % 60)
-  }
+  def clockStatus =
+    secondsToFinish |> { s => "%02d:%02d".format(s / 60, s % 60) }
 
   def spotlightedNow =
     spotlight.filter { s =>

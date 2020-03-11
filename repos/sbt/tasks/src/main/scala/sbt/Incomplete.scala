@@ -69,7 +69,6 @@ object Incomplete extends Enumeration {
     visitAll(i) { exceptions ++= _.directCause.toList }
     exceptions.all
   }
-  def show(tpe: Value) = tpe match {
-    case Skipped => "skipped"; case Error => "error"
-  }
+  def show(tpe: Value) =
+    tpe match { case Skipped => "skipped"; case Error => "error" }
 }

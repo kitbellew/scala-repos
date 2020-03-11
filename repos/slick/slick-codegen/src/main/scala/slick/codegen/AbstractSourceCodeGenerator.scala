@@ -51,10 +51,11 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
 
     def compoundType(types: Seq[String]): String = {
       if (hlistEnabled) {
-        def mkHList(types: List[String]): String = types match {
-          case Nil       => "HNil"
-          case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
-        }
+        def mkHList(types: List[String]): String =
+          types match {
+            case Nil       => "HNil"
+            case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
+          }
         mkHList(types.toList)
       } else compoundValue(types)
     }
@@ -237,13 +238,14 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
 
     class ForeignKeyDef(model: m.ForeignKey)
         extends super.ForeignKeyDef(model) {
-      def actionCode(action: ForeignKeyAction) = action match {
-        case ForeignKeyAction.Cascade    => "ForeignKeyAction.Cascade"
-        case ForeignKeyAction.Restrict   => "ForeignKeyAction.Restrict"
-        case ForeignKeyAction.NoAction   => "ForeignKeyAction.NoAction"
-        case ForeignKeyAction.SetNull    => "ForeignKeyAction.SetNull"
-        case ForeignKeyAction.SetDefault => "ForeignKeyAction.SetDefault"
-      }
+      def actionCode(action: ForeignKeyAction) =
+        action match {
+          case ForeignKeyAction.Cascade    => "ForeignKeyAction.Cascade"
+          case ForeignKeyAction.Restrict   => "ForeignKeyAction.Restrict"
+          case ForeignKeyAction.NoAction   => "ForeignKeyAction.NoAction"
+          case ForeignKeyAction.SetNull    => "ForeignKeyAction.SetNull"
+          case ForeignKeyAction.SetDefault => "ForeignKeyAction.SetDefault"
+        }
       def code = {
         val pkTable = referencedTable.TableValue.name
         val (pkColumns, fkColumns) =

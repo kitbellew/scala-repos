@@ -10,12 +10,13 @@ class GraphZipWithSpec extends TwoStreamsSetup {
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
-    val zip = b.add(ZipWith((_: Int) + (_: Int)))
-    override def left: Inlet[Int] = zip.in0
-    override def right: Inlet[Int] = zip.in1
-    override def out: Outlet[Int] = zip.out
-  }
+  override def fixture(b: GraphDSL.Builder[_]): Fixture =
+    new Fixture(b) {
+      val zip = b.add(ZipWith((_: Int) + (_: Int)))
+      override def left: Inlet[Int] = zip.in0
+      override def right: Inlet[Int] = zip.in1
+      override def out: Outlet[Int] = zip.out
+    }
 
   "ZipWith" must {
 

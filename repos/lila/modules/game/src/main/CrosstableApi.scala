@@ -14,10 +14,11 @@ final class CrosstableApi(coll: Coll) {
 
   private val maxGames = 20
 
-  def apply(game: Game): Fu[Option[Crosstable]] = game.userIds.distinct match {
-    case List(u1, u2) => apply(u1, u2)
-    case _            => fuccess(none)
-  }
+  def apply(game: Game): Fu[Option[Crosstable]] =
+    game.userIds.distinct match {
+      case List(u1, u2) => apply(u1, u2)
+      case _            => fuccess(none)
+    }
 
   def apply(u1: String, u2: String): Fu[Option[Crosstable]] =
     coll.find(select(u1, u2)).one[Crosstable] orElse create(u1, u2) recoverWith
@@ -32,33 +33,35 @@ final class CrosstableApi(coll: Coll) {
       )
       .one[BSONDocument] map { ~_.flatMap(_.getAs[Int]("n")) }
 
-  def add(game: Game): Funit = game.userIds.distinct.sorted match {
-    case List(u1, u2) =>
-      val result = Result(game.id, game.winnerUserId)
-      val bsonResult = Crosstable.crosstableBSONHandler.writeResult(result, u1)
-      val bson = BSONDocument(
-        "$inc" -> BSONDocument(
-          Crosstable.BSONFields.nbGames -> BSONInteger(1),
-          "s1" -> BSONInteger(game.winnerUserId match {
-            case Some(u) if u == u1 => 10
-            case None               => 5
-            case _                  => 0
-          }),
-          "s2" -> BSONInteger(game.winnerUserId match {
-            case Some(u) if u == u2 => 10
-            case None               => 5
-            case _                  => 0
-          })
-        )
-      ) ++ BSONDocument(
-        "$push" -> BSONDocument(
-          Crosstable.BSONFields.results -> BSONDocument(
-            "$each" -> List(bsonResult),
-            "$slice" -> -maxGames
-          )))
-      coll.update(select(u1, u2), bson).void
-    case _ => funit
-  }
+  def add(game: Game): Funit =
+    game.userIds.distinct.sorted match {
+      case List(u1, u2) =>
+        val result = Result(game.id, game.winnerUserId)
+        val bsonResult =
+          Crosstable.crosstableBSONHandler.writeResult(result, u1)
+        val bson = BSONDocument(
+          "$inc" -> BSONDocument(
+            Crosstable.BSONFields.nbGames -> BSONInteger(1),
+            "s1" -> BSONInteger(game.winnerUserId match {
+              case Some(u) if u == u1 => 10
+              case None               => 5
+              case _                  => 0
+            }),
+            "s2" -> BSONInteger(game.winnerUserId match {
+              case Some(u) if u == u2 => 10
+              case None               => 5
+              case _                  => 0
+            })
+          )
+        ) ++ BSONDocument(
+          "$push" -> BSONDocument(
+            Crosstable.BSONFields.results -> BSONDocument(
+              "$each" -> List(bsonResult),
+              "$slice" -> -maxGames
+            )))
+        coll.update(select(u1, u2), bson).void
+      case _ => funit
+    }
 
   private def exists(u1: String, u2: String) =
     coll.count(select(u1, u2).some) map (0 !=)

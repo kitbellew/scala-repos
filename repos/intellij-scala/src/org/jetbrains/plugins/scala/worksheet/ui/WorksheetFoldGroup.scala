@@ -58,15 +58,21 @@ class WorksheetFoldGroup(
     traverseAndChange(collapsedRegion, expand = false)
   }
 
-  def getCorrespondInfo = regions map {
-    case FoldRegionInfo(
-          region: WorksheetFoldRegionDelegate,
-          _,
+  def getCorrespondInfo =
+    regions map {
+      case FoldRegionInfo(
+            region: WorksheetFoldRegionDelegate,
+            _,
+            leftStart,
+            spaces,
+            lsLength) =>
+        (
+          region.getStartOffset,
+          region.getEndOffset,
           leftStart,
           spaces,
-          lsLength) =>
-      (region.getStartOffset, region.getEndOffset, leftStart, spaces, lsLength)
-  }
+          lsLength)
+    }
 
   private def traverseAndChange(
       target: WorksheetFoldRegionDelegate,
@@ -182,10 +188,11 @@ class WorksheetFoldGroup(
       trueStart: Int,
       spaces: Int,
       lsLength: Int) {
-    override def equals(obj: scala.Any): Boolean = obj match {
-      case info: FoldRegionInfo => this.region.equals(info.region)
-      case _                    => false
-    }
+    override def equals(obj: scala.Any): Boolean =
+      obj match {
+        case info: FoldRegionInfo => this.region.equals(info.region)
+        case _                    => false
+      }
 
     override def hashCode(): Int = region.hashCode()
   }

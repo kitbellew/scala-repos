@@ -34,15 +34,17 @@ object DeepSearchExamples extends App {
     implicit def hlistishSearchable[A, L <: HList, Q](implicit
         gen: Generic.Aux[A, L],
         s: Searchable[L, Q]
-    ): Searchable[A, Q] = new Searchable[A, Q] {
-      def find(p: Q => Boolean)(a: A) = s.find(p)(gen to a)
-    }
+    ): Searchable[A, Q] =
+      new Searchable[A, Q] {
+        def find(p: Q => Boolean)(a: A) = s.find(p)(gen to a)
+      }
   }
 
   object Searchable extends LowPrioritySearchable {
-    implicit def elemSearchable[A]: Searchable[A, A] = new Searchable[A, A] {
-      def find(p: A => Boolean)(a: A) = if (p(a)) Some(a) else None
-    }
+    implicit def elemSearchable[A]: Searchable[A, A] =
+      new Searchable[A, A] {
+        def find(p: A => Boolean)(a: A) = if (p(a)) Some(a) else None
+      }
 
     implicit def listSearchable[A, Q](
         implicit s: Searchable[A, Q]): Searchable[List[A], Q] =
@@ -58,10 +60,11 @@ object DeepSearchExamples extends App {
     implicit def hlistSearchable[H, T <: HList, Q](implicit
         hs: Searchable[H, Q] = null,
         ts: Searchable[T, Q]
-    ): Searchable[H :: T, Q] = new Searchable[H :: T, Q] {
-      def find(p: Q => Boolean)(a: H :: T) =
-        Option(hs).flatMap(_.find(p)(a.head)) orElse ts.find(p)(a.tail)
-    }
+    ): Searchable[H :: T, Q] =
+      new Searchable[H :: T, Q] {
+        def find(p: Q => Boolean)(a: H :: T) =
+          Option(hs).flatMap(_.find(p)(a.head)) orElse ts.find(p)(a.tail)
+      }
   }
 
   case class SearchableWrapper[A](a: A) {

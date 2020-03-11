@@ -61,11 +61,12 @@ object Dependency {
     } else { None }
   }
 
-  private def isPrimary(ref: ScReferenceElement) = ref match {
-    case it @ Parent(postfix: ScPostfixExpr) => it == postfix.operand
-    case it @ Parent(infix: ScInfixExpr)     => it == infix.lOp
-    case it                                  => it.qualifier.isEmpty
-  }
+  private def isPrimary(ref: ScReferenceElement) =
+    ref match {
+      case it @ Parent(postfix: ScPostfixExpr) => it == postfix.operand
+      case it @ Parent(infix: ScInfixExpr)     => it == infix.lOp
+      case it                                  => it.qualifier.isEmpty
+    }
 
   private def dependencyFor(
       reference: ScReferenceElement,

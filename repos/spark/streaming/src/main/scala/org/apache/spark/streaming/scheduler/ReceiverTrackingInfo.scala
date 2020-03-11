@@ -46,14 +46,15 @@ private[streaming] case class ReceiverTrackingInfo(
     endpoint: Option[RpcEndpointRef] = None,
     errorInfo: Option[ReceiverErrorInfo] = None) {
 
-  def toReceiverInfo: ReceiverInfo = ReceiverInfo(
-    receiverId,
-    name.getOrElse(""),
-    state == ReceiverState.ACTIVE,
-    location = runningExecutor.map(_.host).getOrElse(""),
-    executorId = runningExecutor.map(_.executorId).getOrElse(""),
-    lastErrorMessage = errorInfo.map(_.lastErrorMessage).getOrElse(""),
-    lastError = errorInfo.map(_.lastError).getOrElse(""),
-    lastErrorTime = errorInfo.map(_.lastErrorTime).getOrElse(-1L)
-  )
+  def toReceiverInfo: ReceiverInfo =
+    ReceiverInfo(
+      receiverId,
+      name.getOrElse(""),
+      state == ReceiverState.ACTIVE,
+      location = runningExecutor.map(_.host).getOrElse(""),
+      executorId = runningExecutor.map(_.executorId).getOrElse(""),
+      lastErrorMessage = errorInfo.map(_.lastErrorMessage).getOrElse(""),
+      lastError = errorInfo.map(_.lastError).getOrElse(""),
+      lastErrorTime = errorInfo.map(_.lastErrorTime).getOrElse(-1L)
+    )
 }

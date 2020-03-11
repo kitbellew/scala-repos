@@ -11,9 +11,8 @@ object Test {
 
   // contravariance, allowed
   final class Bop5[T, U, -V]
-  def s4[T1, T2](x: Bop5[_, T1, T2]) = x match {
-    case Seq('b', 'o', 'b') => true
-  }
+  def s4[T1, T2](x: Bop5[_, T1, T2]) =
+    x match { case Seq('b', 'o', 'b') => true }
 
   // free type parameter, allowed
   final class Bop3[T]

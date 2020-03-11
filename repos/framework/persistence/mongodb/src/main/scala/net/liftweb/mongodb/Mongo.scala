@@ -69,21 +69,23 @@ object MongoDB {
   /**
     * Get a DB reference
     */
-  def getDb(name: ConnectionIdentifier): Option[DB] = dbs.get(name) match {
-    case null       => None
-    case (mngo, db) => Some(mngo.getDB(db))
-  }
+  def getDb(name: ConnectionIdentifier): Option[DB] =
+    dbs.get(name) match {
+      case null       => None
+      case (mngo, db) => Some(mngo.getDB(db))
+    }
 
   /**
     * Get a Mongo collection. Gets a Mongo db first.
     */
   private def getCollection(
       name: ConnectionIdentifier,
-      collectionName: String): Option[DBCollection] = getDb(name) match {
-    case Some(mongo) if mongo != null =>
-      Some(mongo.getCollection(collectionName))
-    case _ => None
-  }
+      collectionName: String): Option[DBCollection] =
+    getDb(name) match {
+      case Some(mongo) if mongo != null =>
+        Some(mongo.getCollection(collectionName))
+      case _ => None
+    }
 
   /**
     * Executes function {@code f} with the mongo db named {@code name}.

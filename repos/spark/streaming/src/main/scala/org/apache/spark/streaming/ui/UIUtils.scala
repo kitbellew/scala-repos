@@ -30,15 +30,16 @@ private[streaming] object UIUtils {
   /**
     * Return the short string for a `TimeUnit`.
     */
-  def shortTimeUnitString(unit: TimeUnit): String = unit match {
-    case TimeUnit.NANOSECONDS  => "ns"
-    case TimeUnit.MICROSECONDS => "us"
-    case TimeUnit.MILLISECONDS => "ms"
-    case TimeUnit.SECONDS      => "sec"
-    case TimeUnit.MINUTES      => "min"
-    case TimeUnit.HOURS        => "hrs"
-    case TimeUnit.DAYS         => "days"
-  }
+  def shortTimeUnitString(unit: TimeUnit): String =
+    unit match {
+      case TimeUnit.NANOSECONDS  => "ns"
+      case TimeUnit.MICROSECONDS => "us"
+      case TimeUnit.MILLISECONDS => "ms"
+      case TimeUnit.SECONDS      => "sec"
+      case TimeUnit.MINUTES      => "min"
+      case TimeUnit.HOURS        => "hrs"
+      case TimeUnit.DAYS         => "days"
+    }
 
   /**
     * Find the best `TimeUnit` for converting milliseconds to a friendly string. Return the value

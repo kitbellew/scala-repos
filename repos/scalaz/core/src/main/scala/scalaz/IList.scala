@@ -660,10 +660,11 @@ sealed abstract class IListInstances extends IListInstance0 {
         }
 
       override def index[A](fa: IList[A], i: Int) = {
-        @tailrec def go(as: IList[A], n: Int): Option[A] = as match {
-          case ICons(h, t) => if (n == i) Some(h) else go(t, n + 1)
-          case INil()      => None
-        }
+        @tailrec def go(as: IList[A], n: Int): Option[A] =
+          as match {
+            case ICons(h, t) => if (n == i) Some(h) else go(t, n + 1)
+            case INil()      => None
+          }
         if (i < 0) None else go(fa, 0)
       }
 
@@ -677,18 +678,20 @@ sealed abstract class IListInstances extends IListInstance0 {
         fa.mapAccumRight(z)(f)
 
       override def any[A](fa: IList[A])(p: A => Boolean): Boolean = {
-        @tailrec def loop(fa: IList[A]): Boolean = fa match {
-          case INil()      => false
-          case ICons(h, t) => p(h) || loop(t)
-        }
+        @tailrec def loop(fa: IList[A]): Boolean =
+          fa match {
+            case INil()      => false
+            case ICons(h, t) => p(h) || loop(t)
+          }
         loop(fa)
       }
 
       override def all[A](fa: IList[A])(p: A => Boolean): Boolean = {
-        @tailrec def loop(fa: IList[A]): Boolean = fa match {
-          case INil()      => true
-          case ICons(h, t) => p(h) && loop(t)
-        }
+        @tailrec def loop(fa: IList[A]): Boolean =
+          fa match {
+            case INil()      => true
+            case ICons(h, t) => p(h) && loop(t)
+          }
         loop(fa)
       }
 

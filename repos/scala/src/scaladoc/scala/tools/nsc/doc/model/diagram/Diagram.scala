@@ -58,14 +58,15 @@ sealed abstract class Node {
   def tpl: Option[TemplateEntity]
 
   /** shortcut to get a DocTemplateEntity */
-  def doctpl: Option[DocTemplateEntity] = tpl match {
-    case Some(tpl) =>
-      tpl match {
-        case d: DocTemplateEntity => Some(d)
-        case _                    => None
-      }
-    case _ => None
-  }
+  def doctpl: Option[DocTemplateEntity] =
+    tpl match {
+      case Some(tpl) =>
+        tpl match {
+          case d: DocTemplateEntity => Some(d)
+          case _                    => None
+        }
+      case _ => None
+    }
   /* shortcuts to find the node type without matching */
   def isThisNode = false
   def isNormalNode = false

@@ -144,63 +144,66 @@ trait TestShardService
         .map(_ => expiredAPIKey)
   } copoint
 
-  def configureShardState(config: Configuration) = Future {
-    val accountFinder = new StaticAccountFinder[Future]("test", testAPIKey)
-    val scheduler = NoopScheduler[Future]
-    val platform = new TestPlatform
-      with SecureVFSModule[Future, Slice]
-      with InMemoryVFSModule[Future] {
-      override val jobActorSystem = self.actorSystem
-      override val actorSystem = self.actorSystem
-      override val executionContext = self.executionContext
-      override val accessControl =
-        new DirectAPIKeyFinder(self.apiKeyManager)(self.M)
+  def configureShardState(config: Configuration) =
+    Future {
+      val accountFinder = new StaticAccountFinder[Future]("test", testAPIKey)
+      val scheduler = NoopScheduler[Future]
+      val platform = new TestPlatform
+        with SecureVFSModule[Future, Slice]
+        with InMemoryVFSModule[Future] {
+        override val jobActorSystem = self.actorSystem
+        override val actorSystem = self.actorSystem
+        override val executionContext = self.executionContext
+        override val accessControl =
+          new DirectAPIKeyFinder(self.apiKeyManager)(self.M)
 
-      val defaultTimeout = Duration(90, TimeUnit.SECONDS)
-      implicit val M = self.M
-      implicit val IOT = new (IO ~> Future) {
-        def apply[A](io: IO[A]) = Future { io.unsafePerformIO }
+        val defaultTimeout = Duration(90, TimeUnit.SECONDS)
+        implicit val M = self.M
+        implicit val IOT = new (IO ~> Future) {
+          def apply[A](io: IO[A]) = Future { io.unsafePerformIO }
+        }
+
+        override val jobManager = self.jobManager
+
+        val ownerMap = Map(
+          Path("/") -> Set("root"),
+          Path("/test") -> Set("test"),
+          Path("/test/foo") -> Set("test"),
+          Path("/expired") -> Set("expired"),
+          Path("/inaccessible") -> Set("other"),
+          Path("/inaccessible/foo") -> Set("other")
+        )
+
+        def stubValue(authorities: Authorities)
+            : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
+          (
+            \/.right(
+              Vector(
+                JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
+                JObject("foo" -> JString("foov2")))),
+            authorities)
+
+        val stubData = ownerMap mapValues { accounts =>
+          stubValue(Authorities.ifPresent(accounts).get)
+        }
+
+        val rawVFS = new InMemoryVFS(stubData, clock)
+        val permissionsFinder = new PermissionsFinder(
+          self.apiKeyFinder,
+          accountFinder,
+          clock.instant())
+        val vfs = new SecureVFS(rawVFS, permissionsFinder, jobManager, clock)
       }
 
-      override val jobManager = self.jobManager
-
-      val ownerMap = Map(
-        Path("/") -> Set("root"),
-        Path("/test") -> Set("test"),
-        Path("/test/foo") -> Set("test"),
-        Path("/expired") -> Set("expired"),
-        Path("/inaccessible") -> Set("other"),
-        Path("/inaccessible/foo") -> Set("other")
-      )
-
-      def stubValue(authorities: Authorities)
-          : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
-        (
-          \/.right(
-            Vector(
-              JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
-              JObject("foo" -> JString("foov2")))),
-          authorities)
-
-      val stubData = ownerMap mapValues { accounts =>
-        stubValue(Authorities.ifPresent(accounts).get)
-      }
-
-      val rawVFS = new InMemoryVFS(stubData, clock)
-      val permissionsFinder =
-        new PermissionsFinder(self.apiKeyFinder, accountFinder, clock.instant())
-      val vfs = new SecureVFS(rawVFS, permissionsFinder, jobManager, clock)
+      ShardState(
+        platform,
+        self.apiKeyFinder,
+        self.accountFinder,
+        scheduler,
+        jobManager,
+        clock,
+        Stoppable.Noop)
     }
-
-    ShardState(
-      platform,
-      self.apiKeyFinder,
-      self.accountFinder,
-      scheduler,
-      jobManager,
-      clock,
-      Stoppable.Noop)
-  }
 
   val utf8 = Charset.forName("UTF-8")
 

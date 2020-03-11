@@ -328,85 +328,91 @@ private[niflheim] class NIHDBActor private (
       .unsafePerformIO
   }
 
-  private def initDirs(f: File) = IO {
-    if (!f.isDirectory) {
-      if (!f.mkdirs) { throw new Exception("Failed to create dir: " + f) }
-    }
-  }
-
-  private def initActorState = IO {
-    logger.debug("Opening log in " + baseDir)
-    val txLog = new CookStateLog(baseDir, txLogScheduler)
-    logger.debug("Current raw block id = " + txLog.currentBlockId)
-
-    // We'll need to update our current thresholds based on what we read out of any raw logs we open
-    var maxOffset = currentState.maxOffset
-
-    val currentRawFile = rawFileFor(txLog.currentBlockId)
-    val (currentLog, rawLogOffsets) = if (currentRawFile.exists) {
-      val (handler, offsets, ok) =
-        RawHandler.load(txLog.currentBlockId, currentRawFile)
-      if (!ok) {
-        logger.warn(
-          "Corruption detected and recovery performed on " + currentRawFile)
+  private def initDirs(f: File) =
+    IO {
+      if (!f.isDirectory) {
+        if (!f.mkdirs) { throw new Exception("Failed to create dir: " + f) }
       }
-      (handler, offsets)
-    } else {
-      (RawHandler.empty(txLog.currentBlockId, currentRawFile), Seq.empty[Long])
     }
 
-    rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
-      maxOffset = maxOffset max newMaxOffset
-    }
+  private def initActorState =
+    IO {
+      logger.debug("Opening log in " + baseDir)
+      val txLog = new CookStateLog(baseDir, txLogScheduler)
+      logger.debug("Current raw block id = " + txLog.currentBlockId)
 
-    val pendingCooks = txLog.pendingCookIds.map { id =>
-      val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
-      if (!ok) {
-        logger.warn(
-          "Corruption detected and recovery performed on " + currentRawFile)
+      // We'll need to update our current thresholds based on what we read out of any raw logs we open
+      var maxOffset = currentState.maxOffset
+
+      val currentRawFile = rawFileFor(txLog.currentBlockId)
+      val (currentLog, rawLogOffsets) = if (currentRawFile.exists) {
+        val (handler, offsets, ok) =
+          RawHandler.load(txLog.currentBlockId, currentRawFile)
+        if (!ok) {
+          logger.warn(
+            "Corruption detected and recovery performed on " + currentRawFile)
+        }
+        (handler, offsets)
+      } else {
+        (
+          RawHandler.empty(txLog.currentBlockId, currentRawFile),
+          Seq.empty[Long])
       }
-      maxOffset = math.max(maxOffset, offsets.max)
-      (id, reader)
-    }.toMap
 
-    this.currentState = currentState.copy(maxOffset = maxOffset)
+      rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
+        maxOffset = maxOffset max newMaxOffset
+      }
 
-    // Restore the cooked map
-    val cooked = currentState.readers(cookedDir)
+      val pendingCooks = txLog.pendingCookIds.map { id =>
+        val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
+        if (!ok) {
+          logger.warn(
+            "Corruption detected and recovery performed on " + currentRawFile)
+        }
+        maxOffset = math.max(maxOffset, offsets.max)
+        (id, reader)
+      }.toMap
 
-    val blockState = BlockState(cooked, pendingCooks, currentLog)
-    val currentBlocks = computeBlockMap(blockState)
+      this.currentState = currentState.copy(maxOffset = maxOffset)
 
-    logger.debug("Initial block state = " + blockState)
+      // Restore the cooked map
+      val cooked = currentState.readers(cookedDir)
 
-    // Re-fire any restored pending cooks
-    blockState.pending.foreach {
-      case (id, reader) =>
-        logger.debug(
-          "Restarting pending cook on block %s:%d".format(baseDir, id))
-        chef ! Prepare(id, cookSequence.getAndIncrement, cookedDir, reader)
+      val blockState = BlockState(cooked, pendingCooks, currentLog)
+      val currentBlocks = computeBlockMap(blockState)
+
+      logger.debug("Initial block state = " + blockState)
+
+      // Re-fire any restored pending cooks
+      blockState.pending.foreach {
+        case (id, reader) =>
+          logger.debug(
+            "Restarting pending cook on block %s:%d".format(baseDir, id))
+          chef ! Prepare(id, cookSequence.getAndIncrement, cookedDir, reader)
+      }
+
+      new State(txLog, blockState, currentBlocks)
     }
 
-    new State(txLog, blockState, currentBlocks)
-  }
-
-  private def open = actorState.map(IO(_)) getOrElse {
-    for {
-      _ <- initDirs(cookedDir)
-      _ <- initDirs(rawDir)
-      state <- initActorState
-    } yield state
-  }
-
-  private def quiesce = IO {
-    actorState foreach { s =>
-      logger.debug("Releasing resources for projection in " + baseDir)
-      s.blockState.rawLog.close
-      s.txLog.close
-      ProjectionState.toFile(currentState, descriptorFile)
-      actorState = None
+  private def open =
+    actorState.map(IO(_)) getOrElse {
+      for {
+        _ <- initDirs(cookedDir)
+        _ <- initDirs(rawDir)
+        state <- initActorState
+      } yield state
     }
-  }
+
+  private def quiesce =
+    IO {
+      actorState foreach { s =>
+        logger.debug("Releasing resources for projection in " + baseDir)
+        s.blockState.rawLog.close
+        s.txLog.close
+        ProjectionState.toFile(currentState, descriptorFile)
+        actorState = None
+      }
+    }
 
   private def close = {
     IO(logger.debug("Closing projection in " + baseDir)) >> quiesce
@@ -554,11 +560,12 @@ private[niflheim] object ProjectionState {
   implicit val stateDecomposer = decomposer[ProjectionState](v1Schema)
   implicit val stateExtractor = extractor[ProjectionState](v1Schema)
 
-  def fromFile(input: File): IO[Validation[Error, ProjectionState]] = IO {
-    JParser.parseFromFile(input).bimap(Extractor.Thrown(_), x => x).flatMap {
-      jv => jv.validated[ProjectionState]
+  def fromFile(input: File): IO[Validation[Error, ProjectionState]] =
+    IO {
+      JParser.parseFromFile(input).bimap(Extractor.Thrown(_), x => x).flatMap {
+        jv => jv.validated[ProjectionState]
+      }
     }
-  }
 
   def toFile(state: ProjectionState, output: File): IO[Boolean] = {
     IOUtils.safeWriteToFile(state.serialize.renderCompact, output)

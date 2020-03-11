@@ -81,54 +81,56 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       ORMultiMapKeyManifest -> (bytes ⇒ ORMultiMapKey(keyIdFromBinary(bytes)))
     )
 
-  override def manifest(obj: AnyRef): String = obj match {
-    case _: ORSet[_] ⇒ ORSetManifest
-    case _: GSet[_] ⇒ GSetManifest
-    case _: GCounter ⇒ GCounterManifest
-    case _: PNCounter ⇒ PNCounterManifest
-    case _: Flag ⇒ FlagManifest
-    case _: LWWRegister[_] ⇒ LWWRegisterManifest
-    case _: ORMap[_] ⇒ ORMapManifest
-    case _: LWWMap[_] ⇒ LWWMapManifest
-    case _: PNCounterMap ⇒ PNCounterMapManifest
-    case _: ORMultiMap[_] ⇒ ORMultiMapManifest
-    case DeletedData ⇒ DeletedDataManifest
-    case _: VersionVector ⇒ VersionVectorManifest
+  override def manifest(obj: AnyRef): String =
+    obj match {
+      case _: ORSet[_] ⇒ ORSetManifest
+      case _: GSet[_] ⇒ GSetManifest
+      case _: GCounter ⇒ GCounterManifest
+      case _: PNCounter ⇒ PNCounterManifest
+      case _: Flag ⇒ FlagManifest
+      case _: LWWRegister[_] ⇒ LWWRegisterManifest
+      case _: ORMap[_] ⇒ ORMapManifest
+      case _: LWWMap[_] ⇒ LWWMapManifest
+      case _: PNCounterMap ⇒ PNCounterMapManifest
+      case _: ORMultiMap[_] ⇒ ORMultiMapManifest
+      case DeletedData ⇒ DeletedDataManifest
+      case _: VersionVector ⇒ VersionVectorManifest
 
-    case _: ORSetKey[_] ⇒ ORSetKeyManifest
-    case _: GSetKey[_] ⇒ GSetKeyManifest
-    case _: GCounterKey ⇒ GCounterKeyManifest
-    case _: PNCounterKey ⇒ PNCounterKeyManifest
-    case _: FlagKey ⇒ FlagKeyManifest
-    case _: LWWRegisterKey[_] ⇒ LWWRegisterKeyManifest
-    case _: ORMapKey[_] ⇒ ORMapKeyManifest
-    case _: LWWMapKey[_] ⇒ LWWMapKeyManifest
-    case _: PNCounterMapKey ⇒ PNCounterMapKeyManifest
-    case _: ORMultiMapKey[_] ⇒ ORMultiMapKeyManifest
+      case _: ORSetKey[_] ⇒ ORSetKeyManifest
+      case _: GSetKey[_] ⇒ GSetKeyManifest
+      case _: GCounterKey ⇒ GCounterKeyManifest
+      case _: PNCounterKey ⇒ PNCounterKeyManifest
+      case _: FlagKey ⇒ FlagKeyManifest
+      case _: LWWRegisterKey[_] ⇒ LWWRegisterKeyManifest
+      case _: ORMapKey[_] ⇒ ORMapKeyManifest
+      case _: LWWMapKey[_] ⇒ LWWMapKeyManifest
+      case _: PNCounterMapKey ⇒ PNCounterMapKeyManifest
+      case _: ORMultiMapKey[_] ⇒ ORMultiMapKeyManifest
 
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
-  def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: ORSet[_] ⇒ compress(orsetToProto(m))
-    case m: GSet[_] ⇒ gsetToProto(m).toByteArray
-    case m: GCounter ⇒ gcounterToProto(m).toByteArray
-    case m: PNCounter ⇒ pncounterToProto(m).toByteArray
-    case m: Flag ⇒ flagToProto(m).toByteArray
-    case m: LWWRegister[_] ⇒ lwwRegisterToProto(m).toByteArray
-    case m: ORMap[_] ⇒ compress(ormapToProto(m))
-    case m: LWWMap[_] ⇒ compress(lwwmapToProto(m))
-    case m: PNCounterMap ⇒ compress(pncountermapToProto(m))
-    case m: ORMultiMap[_] ⇒ compress(multimapToProto(m))
-    case DeletedData ⇒ dm.Empty.getDefaultInstance.toByteArray
-    case m: VersionVector ⇒ versionVectorToProto(m).toByteArray
-    case Key(id) ⇒ keyIdToBinary(id)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: ORSet[_] ⇒ compress(orsetToProto(m))
+      case m: GSet[_] ⇒ gsetToProto(m).toByteArray
+      case m: GCounter ⇒ gcounterToProto(m).toByteArray
+      case m: PNCounter ⇒ pncounterToProto(m).toByteArray
+      case m: Flag ⇒ flagToProto(m).toByteArray
+      case m: LWWRegister[_] ⇒ lwwRegisterToProto(m).toByteArray
+      case m: ORMap[_] ⇒ compress(ormapToProto(m))
+      case m: LWWMap[_] ⇒ compress(lwwmapToProto(m))
+      case m: PNCounterMap ⇒ compress(pncountermapToProto(m))
+      case m: ORMultiMap[_] ⇒ compress(multimapToProto(m))
+      case DeletedData ⇒ dm.Empty.getDefaultInstance.toByteArray
+      case m: VersionVector ⇒ versionVectorToProto(m).toByteArray
+      case Key(id) ⇒ keyIdToBinary(id)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {

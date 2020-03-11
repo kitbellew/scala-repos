@@ -48,12 +48,13 @@ class ChartSpec
 
   override def getScalaClassInstance = new Chart(getJavaClassInstance) {}
 
-  override def getJavaClassInstance = new jfxsc.Chart {
-    def layoutChartChildren(
-        top: Double,
-        left: Double,
-        width: Double,
-        height: Double) {}
-  }
+  override def getJavaClassInstance =
+    new jfxsc.Chart {
+      def layoutChartChildren(
+          top: Double,
+          left: Double,
+          width: Double,
+          height: Double) {}
+    }
 
 }

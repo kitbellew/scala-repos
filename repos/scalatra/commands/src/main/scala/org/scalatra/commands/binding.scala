@@ -138,10 +138,11 @@ sealed trait Binding {
   def validateWith(validators: BindingValidator[T]*): Binding
   def transform(transformer: T => T): Binding
 
-  def original: Option[S] = field match {
-    case v: DataboundFieldDescriptor[_, _] => Some(v.original.asInstanceOf[S])
-    case _                                 => None
-  }
+  def original: Option[S] =
+    field match {
+      case v: DataboundFieldDescriptor[_, _] => Some(v.original.asInstanceOf[S])
+      case _                                 => None
+    }
 
   implicit def typeConverter: TypeConverter[S, T]
 

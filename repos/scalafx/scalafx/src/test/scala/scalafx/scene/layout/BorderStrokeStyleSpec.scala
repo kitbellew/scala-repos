@@ -49,13 +49,14 @@ class BorderStrokeStyleSpec
   override protected def getScalaClassInstance =
     new BorderStrokeStyle(getJavaClassInstance) {}
 
-  override protected def getJavaClassInstance = new jfxsl.BorderStrokeStyle(
-    StrokeType.Centered,
-    StrokeLineJoin.BEVEL,
-    StrokeLineCap.BUTT,
-    1,
-    1,
-    new java.util.ArrayList[java.lang.Double]()
-  )
+  override protected def getJavaClassInstance =
+    new jfxsl.BorderStrokeStyle(
+      StrokeType.Centered,
+      StrokeLineJoin.BEVEL,
+      StrokeLineCap.BUTT,
+      1,
+      1,
+      new java.util.ArrayList[java.lang.Double]()
+    )
 
 }

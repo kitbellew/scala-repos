@@ -151,14 +151,15 @@ abstract class SimpleRetryPolicy[A](i: Int)
 
 object RetryPolicy extends JavaSingleton {
   object RetryableWriteException {
-    def unapply(thr: Throwable): Option[Throwable] = thr match {
-      // We don't retry interruptions by default since they
-      // indicate that the request was discarded.
-      case f: Failure if f.isFlagged(Failure.Interrupted) => None
-      case f: Failure if f.isFlagged(Failure.Restartable) => Some(f.show)
-      case WriteException(exc)                            => Some(exc)
-      case _                                              => None
-    }
+    def unapply(thr: Throwable): Option[Throwable] =
+      thr match {
+        // We don't retry interruptions by default since they
+        // indicate that the request was discarded.
+        case f: Failure if f.isFlagged(Failure.Interrupted) => None
+        case f: Failure if f.isFlagged(Failure.Restartable) => Some(f.show)
+        case WriteException(exc)                            => Some(exc)
+        case _                                              => None
+      }
   }
 
   /**
@@ -195,15 +196,16 @@ object RetryPolicy extends JavaSingleton {
   ): RetryPolicy[(Req, Try[Rep])] =
     new RetryPolicy[(Req, Try[Rep])] {
       def apply(input: (Req, Try[Rep]))
-          : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] = input match {
-        case (_, t @ Throw(_)) =>
-          policy(t.asInstanceOf[Throw[Nothing]]) match {
-            case Some((howlong, nextPolicy)) =>
-              Some((howlong, convertExceptionPolicy(nextPolicy)))
-            case None => None
-          }
-        case (_, Return(_)) => None
-      }
+          : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
+        input match {
+          case (_, t @ Throw(_)) =>
+            policy(t.asInstanceOf[Throw[Nothing]]) match {
+              case Some((howlong, nextPolicy)) =>
+                Some((howlong, convertExceptionPolicy(nextPolicy)))
+              case None => None
+            }
+          case (_, Return(_)) => None
+        }
     }
 
   /**

@@ -56,7 +56,8 @@ object Bippy {
   }
 
   // slurp the compilation result
-  def slurp(args: String*): String = stringFromStream { stream =>
-    Console.withOut(stream) { Console.withErr(stream) { compile(args: _*) } }
-  }
+  def slurp(args: String*): String =
+    stringFromStream { stream =>
+      Console.withOut(stream) { Console.withErr(stream) { compile(args: _*) } }
+    }
 }

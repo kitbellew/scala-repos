@@ -82,12 +82,13 @@ object ServerConfig {
   sealed trait Yes
   type FullySpecified[Req, Rep] = ServerConfig[Req, Rep, Yes, Yes, Yes]
 
-  def nilServer[Req, Rep] = new FinagleServer[Req, Rep] {
-    def serve(
-        addr: SocketAddress,
-        service: ServiceFactory[Req, Rep]): ListeningServer =
-      NullServer
-  }
+  def nilServer[Req, Rep] =
+    new FinagleServer[Req, Rep] {
+      def serve(
+          addr: SocketAddress,
+          service: ServiceFactory[Req, Rep]): ListeningServer =
+        NullServer
+    }
 
   // params specific to ServerBuilder
   private[builder] case class BindTo(addr: SocketAddress) {

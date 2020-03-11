@@ -540,17 +540,19 @@ object KryoTest {
 
   class ClassWithNoArgConstructor {
     var x: Int = 0
-    override def equals(other: Any): Boolean = other match {
-      case c: ClassWithNoArgConstructor => x == c.x
-      case _                            => false
-    }
+    override def equals(other: Any): Boolean =
+      other match {
+        case c: ClassWithNoArgConstructor => x == c.x
+        case _                            => false
+      }
   }
 
   class ClassWithoutNoArgConstructor(val x: Int) {
-    override def equals(other: Any): Boolean = other match {
-      case c: ClassWithoutNoArgConstructor => x == c.x
-      case _                               => false
-    }
+    override def equals(other: Any): Boolean =
+      other match {
+        case c: ClassWithoutNoArgConstructor => x == c.x
+        case _                               => false
+      }
   }
 
   class MyRegistrator extends KryoRegistrator {

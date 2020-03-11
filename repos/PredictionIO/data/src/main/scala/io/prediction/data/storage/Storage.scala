@@ -402,19 +402,20 @@ object Storage extends Logging {
   def getPEvents(): PEvents =
     getPDataObject[PEvents](EventDataRepository)
 
-  def config: Map[String, Map[String, Map[String, String]]] = Map(
-    "sources" -> s2cm.toMap.map {
-      case (source, clientMeta) =>
-        source -> clientMeta
-          .map { cm =>
-            Map(
-              "type" -> cm.sourceType,
-              "config" -> cm.config.properties
-                .map(t => s"${t._1} -> ${t._2}")
-                .mkString(", ")
-            )
-          }
-          .getOrElse(Map.empty)
-    }
-  )
+  def config: Map[String, Map[String, Map[String, String]]] =
+    Map(
+      "sources" -> s2cm.toMap.map {
+        case (source, clientMeta) =>
+          source -> clientMeta
+            .map { cm =>
+              Map(
+                "type" -> cm.sourceType,
+                "config" -> cm.config.properties
+                  .map(t => s"${t._1} -> ${t._2}")
+                  .mkString(", ")
+              )
+            }
+            .getOrElse(Map.empty)
+      }
+    )
 }

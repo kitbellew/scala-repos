@@ -68,42 +68,45 @@ trait PostgresProfile extends JdbcProfile {
       }
     override def createColumnBuilder(
         tableBuilder: TableBuilder,
-        meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta) {
-      val VarCharPattern = "^'(.*)'::character varying$".r
-      val IntPattern = "^\\((-?[0-9]*)\\)$".r
-      override def default =
-        meta.columnDef
-          .map((_, tpe))
-          .collect {
-            case ("true", "Boolean")                   => Some(Some(true))
-            case ("false", "Boolean")                  => Some(Some(false))
-            case (VarCharPattern(str), "String")       => Some(Some(str))
-            case (IntPattern(v), "Int")                => Some(Some(v.toInt))
-            case (IntPattern(v), "Long")               => Some(Some(v.toLong))
-            case ("NULL::character varying", "String") => Some(None)
-            case (v, "java.util.UUID") => {
-              val uuid = v
-                .replaceAll("[\'\"]", "") //strip quotes
-                .stripSuffix("::uuid") //strip suffix
-              Some(Some(java.util.UUID.fromString(uuid)))
+        meta: MColumn): ColumnBuilder =
+      new ColumnBuilder(tableBuilder, meta) {
+        val VarCharPattern = "^'(.*)'::character varying$".r
+        val IntPattern = "^\\((-?[0-9]*)\\)$".r
+        override def default =
+          meta.columnDef
+            .map((_, tpe))
+            .collect {
+              case ("true", "Boolean")                   => Some(Some(true))
+              case ("false", "Boolean")                  => Some(Some(false))
+              case (VarCharPattern(str), "String")       => Some(Some(str))
+              case (IntPattern(v), "Int")                => Some(Some(v.toInt))
+              case (IntPattern(v), "Long")               => Some(Some(v.toLong))
+              case ("NULL::character varying", "String") => Some(None)
+              case (v, "java.util.UUID") => {
+                val uuid = v
+                  .replaceAll("[\'\"]", "") //strip quotes
+                  .stripSuffix("::uuid") //strip suffix
+                Some(Some(java.util.UUID.fromString(uuid)))
+              }
             }
+            .getOrElse {
+              val d = super.default
+              if (meta.nullable == Some(true) && d == None) { Some(None) }
+              else d
+            }
+        override def length: Option[Int] = {
+          val l = super.length
+          if (tpe == "String" && varying && l == Some(2147483647)) None else l
+        }
+        override def tpe =
+          meta.typeName match {
+            case "bytea" => "Array[Byte]"
+            case "lo" if meta.sqlType == java.sql.Types.DISTINCT =>
+              "java.sql.Blob"
+            case "uuid" => "java.util.UUID"
+            case _      => super.tpe
           }
-          .getOrElse {
-            val d = super.default
-            if (meta.nullable == Some(true) && d == None) { Some(None) }
-            else d
-          }
-      override def length: Option[Int] = {
-        val l = super.length
-        if (tpe == "String" && varying && l == Some(2147483647)) None else l
       }
-      override def tpe = meta.typeName match {
-        case "bytea"                                         => "Array[Byte]"
-        case "lo" if meta.sqlType == java.sql.Types.DISTINCT => "java.sql.Blob"
-        case "uuid"                                          => "java.util.UUID"
-        case _                                               => super.tpe
-      }
-    }
     override def createIndexBuilder(
         tableBuilder: TableBuilder,
         meta: Seq[MIndexInfo]): IndexBuilder =
@@ -141,18 +144,19 @@ trait PostgresProfile extends JdbcProfile {
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String = tmd.sqlType match {
-    case java.sql.Types.VARCHAR =>
-      val size =
-        sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
-      size.fold("VARCHAR")(l =>
-        if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
-    case java.sql.Types.BLOB   => "lo"
-    case java.sql.Types.DOUBLE => "DOUBLE PRECISION"
-    /* PostgreSQL does not have a TINYINT type, so we use SMALLINT instead. */
-    case java.sql.Types.TINYINT => "SMALLINT"
-    case _                      => super.defaultSqlTypeName(tmd, sym)
-  }
+      sym: Option[FieldSymbol]): String =
+    tmd.sqlType match {
+      case java.sql.Types.VARCHAR =>
+        val size =
+          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        size.fold("VARCHAR")(l =>
+          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
+      case java.sql.Types.BLOB   => "lo"
+      case java.sql.Types.DOUBLE => "DOUBLE PRECISION"
+      /* PostgreSQL does not have a TINYINT type, so we use SMALLINT instead. */
+      case java.sql.Types.TINYINT => "SMALLINT"
+      case _                      => super.defaultSqlTypeName(tmd, sym)
+    }
 
   class QueryBuilder(tree: Node, state: CompilerState)
       extends super.QueryBuilder(tree, state) {
@@ -164,12 +168,13 @@ trait PostgresProfile extends JdbcProfile {
       (c.distinct, c.select) match {
         case (Some(ProductNode(onNodes)), Pure(ProductNode(selNodes), _))
             if onNodes.nonEmpty =>
-          def eligible(a: ConstArray[Node]) = a.forall {
-            case _: PathElement    => true
-            case _: LiteralNode    => true
-            case _: QueryParameter => true
-            case _                 => false
-          }
+          def eligible(a: ConstArray[Node]) =
+            a.forall {
+              case _: PathElement    => true
+              case _: LiteralNode    => true
+              case _: QueryParameter => true
+              case _                 => false
+            }
           if (eligible(onNodes) && eligible(selNodes) &&
               onNodes.iterator
                 .collect[List[TermSymbol]] { case FwdPath(ss) => ss }
@@ -183,23 +188,25 @@ trait PostgresProfile extends JdbcProfile {
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
-        offset: Option[Node]) = (fetch, offset) match {
-      case (Some(t), Some(d)) => b"\nlimit $t offset $d"
-      case (Some(t), None)    => b"\nlimit $t"
-      case (None, Some(d))    => b"\noffset $d"
-      case _                  =>
-    }
+        offset: Option[Node]) =
+      (fetch, offset) match {
+        case (Some(t), Some(d)) => b"\nlimit $t offset $d"
+        case (Some(t), None)    => b"\nlimit $t"
+        case (None, Some(d))    => b"\noffset $d"
+        case _                  =>
+      }
 
-    override def expr(n: Node, skipParens: Boolean = false) = n match {
-      case Library.UCase(ch)                        => b"upper($ch)"
-      case Library.LCase(ch)                        => b"lower($ch)"
-      case Library.IfNull(ch, d)                    => b"coalesce($ch, $d)"
-      case Library.NextValue(SequenceNode(name))    => b"nextval('$name')"
-      case Library.CurrentValue(SequenceNode(name)) => b"currval('$name')"
-      case Library.CurrentDate()                    => b"current_date"
-      case Library.CurrentTime()                    => b"current_time"
-      case _                                        => super.expr(n, skipParens)
-    }
+    override def expr(n: Node, skipParens: Boolean = false) =
+      n match {
+        case Library.UCase(ch)                        => b"upper($ch)"
+        case Library.LCase(ch)                        => b"lower($ch)"
+        case Library.IfNull(ch, d)                    => b"coalesce($ch, $d)"
+        case Library.NextValue(SequenceNode(name))    => b"nextval('$name')"
+        case Library.CurrentValue(SequenceNode(name)) => b"currval('$name')"
+        case Library.CurrentDate()                    => b"current_date"
+        case Library.CurrentTime()                    => b"current_time"
+        case _                                        => super.expr(n, skipParens)
+      }
   }
 
   class UpsertBuilder(ins: Insert) extends super.UpsertBuilder(ins) {
@@ -224,9 +231,10 @@ trait PostgresProfile extends JdbcProfile {
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override def createPhase1 = super.createPhase1 ++ columns.flatMap {
-      case cb: ColumnDDLBuilder => cb.createLobTrigger(table.tableName)
-    }
+    override def createPhase1 =
+      super.createPhase1 ++ columns.flatMap {
+        case cb: ColumnDDLBuilder => cb.createLobTrigger(table.tableName)
+      }
     override def dropPhase1 = {
       val dropLobs = columns.flatMap {
         case cb: ColumnDDLBuilder => cb.dropLobTrigger(table.tableName)

@@ -37,25 +37,26 @@ import scalafx.scene.text.Font
 
 class EnsembleDropShadow extends EnsembleExample {
 
-  def getContent = new VBox {
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-    spacing = 30
-    padding = Insets(20, 75, 20, 75)
-    children = List(
-      new Label {
-        text = "Ensemble Drop Shadow 1"
-        font = new Font("Verdana", 20)
-        effect = new DropShadow(12, Color.Blue) {
-          offsetX = 60
-          offsetY = 15
+  def getContent =
+    new VBox {
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      spacing = 30
+      padding = Insets(20, 75, 20, 75)
+      children = List(
+        new Label {
+          text = "Ensemble Drop Shadow 1"
+          font = new Font("Verdana", 20)
+          effect = new DropShadow(12, Color.Blue) {
+            offsetX = 60
+            offsetY = 15
+          }
+        },
+        new Label {
+          text = "Ensemble Drop Shadow 2"
+          font = new Font("Verdana", 20)
+          effect = new DropShadow()
         }
-      },
-      new Label {
-        text = "Ensemble Drop Shadow 2"
-        font = new Font("Verdana", 20)
-        effect = new DropShadow()
-      }
-    )
-  }
+      )
+    }
 }

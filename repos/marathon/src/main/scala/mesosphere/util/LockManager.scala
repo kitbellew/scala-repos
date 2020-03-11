@@ -24,17 +24,18 @@ trait LockManager {
 
 object LockManager {
 
-  def create(): LockManager = new LockManager {
-    val locks = loadingCache[String]()
-    override def executeSequentially[T](key: String)(future: => Future[T])(
-        implicit ec: ExecutionContext): Future[T] = {
-      val lock = locks.get(key)
-      scala.concurrent.blocking { lock.acquire() }
-      val result = future
-      result.onComplete { _ => lock.release() }
-      result
+  def create(): LockManager =
+    new LockManager {
+      val locks = loadingCache[String]()
+      override def executeSequentially[T](key: String)(future: => Future[T])(
+          implicit ec: ExecutionContext): Future[T] = {
+        val lock = locks.get(key)
+        scala.concurrent.blocking { lock.acquire() }
+        val result = future
+        result.onComplete { _ => lock.release() }
+        result
+      }
     }
-  }
 
   private[this] def loadingCache[A <: AnyRef](): LoadingCache[A, Semaphore] = {
     CacheBuilder

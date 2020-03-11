@@ -466,27 +466,28 @@ private[interval] object Tree {
       */
     protected def onLeaf(a0: Boolean, a: Leaf): Boolean
 
-    private final def op(a0: Boolean, a: Tree, value: Long): Boolean = a match {
-      case a: Branch =>
-        val prefix = a.prefix
-        val level = a.level
-        if (!hasMatchAt(value, prefix, level)) {
-          // key is either before or after a
-          val branchLevel = levelAbove(prefix, value)
-          if (zeroAt(prefix, branchLevel)) a0 ^ a.sign // after
-          else a0 // before
-        } else {
-          // key is within a
-          if (zeroAt(value, level)) op(a0, a.left, value)
-          else op(a0 ^ a.left.sign, a.right, value)
-        }
-      case a: Leaf =>
-        if (a.prefix == value) onLeaf(a0, a)
-        else if (unsigned_<(a.prefix, value)) a0 ^ a.sign
-        else a0
-      case _ =>
-        a0
-    }
+    private final def op(a0: Boolean, a: Tree, value: Long): Boolean =
+      a match {
+        case a: Branch =>
+          val prefix = a.prefix
+          val level = a.level
+          if (!hasMatchAt(value, prefix, level)) {
+            // key is either before or after a
+            val branchLevel = levelAbove(prefix, value)
+            if (zeroAt(prefix, branchLevel)) a0 ^ a.sign // after
+            else a0 // before
+          } else {
+            // key is within a
+            if (zeroAt(value, level)) op(a0, a.left, value)
+            else op(a0 ^ a.left.sign, a.right, value)
+          }
+        case a: Leaf =>
+          if (a.prefix == value) onLeaf(a0, a)
+          else if (unsigned_<(a.prefix, value)) a0 ^ a.sign
+          else a0
+        case _ =>
+          a0
+      }
   }
 
   object SampleBelow extends Sampler {

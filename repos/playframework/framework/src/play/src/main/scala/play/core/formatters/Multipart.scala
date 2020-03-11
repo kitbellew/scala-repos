@@ -156,12 +156,13 @@ object Multipart {
           (Source.single(f.get) ++ data).mapMaterializedValue((_) => ())
         }
 
-        def completePartFormatting(): Source[ByteString, Any] = bodyPart match {
-          case MultipartFormData.DataPart(_, data) =>
-            Source.single((f ~~ ByteString(data)).get)
-          case MultipartFormData.FilePart(_, _, _, ref) => bodyPartChunks(ref)
-          case _                                        => throw new UnsupportedOperationException()
-        }
+        def completePartFormatting(): Source[ByteString, Any] =
+          bodyPart match {
+            case MultipartFormData.DataPart(_, data) =>
+              Source.single((f ~~ ByteString(data)).get)
+            case MultipartFormData.FilePart(_, _, _, ref) => bodyPartChunks(ref)
+            case _                                        => throw new UnsupportedOperationException()
+          }
 
         renderBoundary(
           f,

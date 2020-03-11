@@ -51,10 +51,11 @@ object Printers {
       }
     }
 
-    protected def shouldPrintSepAfterTree(tree: Tree): Boolean = tree match {
-      case _: DocComment | _: FunctionDef | _: ClassDef => false
-      case _                                            => true
-    }
+    protected def shouldPrintSepAfterTree(tree: Tree): Boolean =
+      tree match {
+        case _: DocComment | _: FunctionDef | _: ClassDef => false
+        case _                                            => true
+      }
 
     protected def printRow(ts: List[Tree], start: Char, end: Char): Unit = {
       print(start)
@@ -285,13 +286,14 @@ object Printers {
         // Expressions
 
         case New(ctor, args) =>
-          def containsOnlySelectsFromAtom(tree: Tree): Boolean = tree match {
-            case DotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
-            case BracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
-            case VarRef(_)              => true
-            case This()                 => true
-            case _                      => false // in particular, Apply
-          }
+          def containsOnlySelectsFromAtom(tree: Tree): Boolean =
+            tree match {
+              case DotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
+              case BracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
+              case VarRef(_)              => true
+              case This()                 => true
+              case _                      => false // in particular, Apply
+            }
           if (containsOnlySelectsFromAtom(ctor)) {
             print("new ")
             print(ctor)
@@ -526,10 +528,11 @@ object Printers {
     protected def print(ident: Ident): Unit =
       printEscapeJS(ident.name, out)
 
-    private final def print(propName: PropertyName): Unit = propName match {
-      case lit: StringLiteral => print(lit: Tree)
-      case ident: Ident       => print(ident)
-    }
+    private final def print(propName: PropertyName): Unit =
+      propName match {
+        case lit: StringLiteral => print(lit: Tree)
+        case ident: Ident       => print(ident)
+      }
 
     protected def print(s: String): Unit =
       out.write(s)
@@ -601,9 +604,8 @@ object Printers {
 
     def apply(x: Int): Position = positions(x)
 
-    def reverseSourceMap(tree: Tree): Unit = doneBreak.breakable {
-      printTopLevelTree(tree)
-    }
+    def reverseSourceMap(tree: Tree): Unit =
+      doneBreak.breakable { printTopLevelTree(tree) }
 
     override def printTree(tree: Tree, isStat: Boolean): Unit = {
       if (positions(curLine).isEmpty) positions(curLine) = tree.pos

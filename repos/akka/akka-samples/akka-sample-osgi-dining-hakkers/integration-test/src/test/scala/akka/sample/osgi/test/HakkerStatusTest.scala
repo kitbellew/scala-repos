@@ -44,10 +44,11 @@ class HakkerStatusTest
   var testProbe: TestProbe = _
 
   @Configuration
-  def config: Array[PaxOption] = Array[PaxOption](
-    karafOptionsWithTestBundles(),
-    featureDiningHakkers() //, debugOptions(level = LogLevelOption.LogLevel.DEBUG)
-  )
+  def config: Array[PaxOption] =
+    Array[PaxOption](
+      karafOptionsWithTestBundles(),
+      featureDiningHakkers() //, debugOptions(level = LogLevelOption.LogLevel.DEBUG)
+    )
 
   // Junit @Before and @After can be used as well
 

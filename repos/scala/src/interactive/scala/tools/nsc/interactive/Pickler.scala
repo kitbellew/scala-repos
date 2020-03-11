@@ -98,38 +98,42 @@ object Pickler {
       *  leaves failures alone
       *  @param   f the function to apply.
       */
-    def map[U](f: T => U): Unpickled[U] = this match {
-      case UnpickleSuccess(x) => UnpickleSuccess(f(x))
-      case f: UnpickleFailure => f
-    }
+    def map[U](f: T => U): Unpickled[U] =
+      this match {
+        case UnpickleSuccess(x) => UnpickleSuccess(f(x))
+        case f: UnpickleFailure => f
+      }
 
     /** Transforms success values to successes or failures using given function,
       *  leaves failures alone.
       *  @param   f the function to apply.
       */
-    def flatMap[U](f: T => Unpickled[U]): Unpickled[U] = this match {
-      case UnpickleSuccess(x) => f(x)
-      case f: UnpickleFailure => f
-    }
+    def flatMap[U](f: T => Unpickled[U]): Unpickled[U] =
+      this match {
+        case UnpickleSuccess(x) => f(x)
+        case f: UnpickleFailure => f
+      }
 
     /** Tries alternate expression if current result is a failure
       *  @param alt  the alternate expression to be tried in case of failure
       */
-    def orElse[U >: T](alt: => Unpickled[U]): Unpickled[U] = this match {
-      case UnpickleSuccess(x) => this
-      case f: UnpickleFailure => alt
-    }
+    def orElse[U >: T](alt: => Unpickled[U]): Unpickled[U] =
+      this match {
+        case UnpickleSuccess(x) => this
+        case f: UnpickleFailure => alt
+      }
 
     /** Transforms failures into thrown `MalformedInput` exceptions.
       *  @throws  MalformedInput   if current result is a failure
       */
-    def requireSuccess: UnpickleSuccess[T] = this match {
-      case s @ UnpickleSuccess(x) => s
-      case f: UnpickleFailure =>
-        throw new MalformedInput(
-          f.rd,
-          "Unrecoverable unpickle failure:\n" + f.errMsg)
-    }
+    def requireSuccess: UnpickleSuccess[T] =
+      this match {
+        case s @ UnpickleSuccess(x) => s
+        case f: UnpickleFailure =>
+          throw new MalformedInput(
+            f.rd,
+            "Unrecoverable unpickle failure:\n" + f.errMsg)
+      }
   }
 
   /** A class representing successful unpicklings
@@ -215,17 +219,19 @@ object Pickler {
 
   /** Same as `p ~ q`
     */
-  def seqPickler[T, U](p: Pickler[T], q: => Pickler[U]) = new Pickler[T ~ U] {
-    lazy val qq = q
-    def pickle(wr: Writer, x: T ~ U) = {
-      p.pickle(wr, x.fst)
-      wr.write(',')
-      q.pickle(wr, x.snd)
+  def seqPickler[T, U](p: Pickler[T], q: => Pickler[U]) =
+    new Pickler[T ~ U] {
+      lazy val qq = q
+      def pickle(wr: Writer, x: T ~ U) = {
+        p.pickle(wr, x.fst)
+        wr.write(',')
+        q.pickle(wr, x.snd)
+      }
+      def unpickle(rd: Lexer) =
+        for (x <- p.unpickle(rd);
+             y <- { rd.accept(','); qq.unpickle(rd).requireSuccess })
+          yield x ~ y
     }
-    def unpickle(rd: Lexer) =
-      for (x <- p.unpickle(rd);
-           y <- { rd.accept(','); qq.unpickle(rd).requireSuccess }) yield x ~ y
-  }
 
   /** Same as `p | q`
     */
@@ -308,12 +314,13 @@ object Pickler {
     *                  succeeds if the matcher function is defined on the current token.
     */
   private def tokenPickler[T](kind: String)(
-      matcher: PartialFunction[Token, T]) = new Pickler[T] {
-    def pickle(wr: Writer, x: T) = wr.write(x.toString)
-    def unpickle(rd: Lexer) =
-      if (matcher isDefinedAt rd.token) nextSuccess(rd, matcher(rd.token))
-      else errorExpected(rd, kind)
-  }
+      matcher: PartialFunction[Token, T]) =
+    new Pickler[T] {
+      def pickle(wr: Writer, x: T) = wr.write(x.toString)
+      def unpickle(rd: Lexer) =
+        if (matcher isDefinedAt rd.token) nextSuccess(rd, matcher(rd.token))
+        else errorExpected(rd, kind)
+    }
 
   /** A pickler for values of type `Long`, represented as integer literals */
   implicit val longPickler: Pickler[Long] =
@@ -347,11 +354,12 @@ object Pickler {
   implicit val stringPickler: Pickler[String] = new Pickler[String] {
     def pickle(wr: Writer, x: String) =
       wr.write(if (x == null) "null" else quoted(x))
-    def unpickle(rd: Lexer) = rd.token match {
-      case StringLit(s) => nextSuccess(rd, s)
-      case NullLit      => nextSuccess(rd, null)
-      case _            => errorExpected(rd, "string literal")
-    }
+    def unpickle(rd: Lexer) =
+      rd.token match {
+        case StringLit(s) => nextSuccess(rd, s)
+        case NullLit      => nextSuccess(rd, null)
+        case _            => errorExpected(rd, "string literal")
+      }
   }
 
   /** A pickler for pairs, represented as `~`-pairs */

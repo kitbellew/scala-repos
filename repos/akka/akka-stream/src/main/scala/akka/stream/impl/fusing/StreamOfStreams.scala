@@ -30,78 +30,79 @@ final class FlattenMerge[T, M](breadth: Int)
   override def initialAttributes = DefaultAttributes.flattenMerge
   override val shape = FlowShape(in, out)
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
+  override def createLogic(attr: Attributes) =
+    new GraphStageLogic(shape) {
 
-    var sources = Set.empty[SubSinkInlet[T]]
-    def activeSources = sources.size
+      var sources = Set.empty[SubSinkInlet[T]]
+      def activeSources = sources.size
 
-    var q: BufferImpl[SubSinkInlet[T]] = _
+      var q: BufferImpl[SubSinkInlet[T]] = _
 
-    override def preStart(): Unit = q = BufferImpl(breadth, materializer)
+      override def preStart(): Unit = q = BufferImpl(breadth, materializer)
 
-    def pushOut(): Unit = {
-      val src = q.dequeue()
-      push(out, src.grab())
-      if (!src.isClosed) src.pull() else removeSource(src)
-    }
-
-    setHandler(
-      in,
-      new InHandler {
-        override def onPush(): Unit = {
-          val source = grab(in)
-          addSource(source)
-          if (activeSources < breadth) tryPull(in)
-        }
-        override def onUpstreamFinish(): Unit =
-          if (activeSources == 0) completeStage()
+      def pushOut(): Unit = {
+        val src = q.dequeue()
+        push(out, src.grab())
+        if (!src.isClosed) src.pull() else removeSource(src)
       }
-    )
 
-    setHandler(
-      out,
-      new OutHandler {
-        override def onPull(): Unit = {
-          pull(in)
-          setHandler(out, outHandler)
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            val source = grab(in)
+            addSource(source)
+            if (activeSources < breadth) tryPull(in)
+          }
+          override def onUpstreamFinish(): Unit =
+            if (activeSources == 0) completeStage()
         }
-      })
+      )
 
-    val outHandler = new OutHandler {
-      // could be unavailable due to async input having been executed before this notification
-      override def onPull(): Unit =
-        if (q.nonEmpty && isAvailable(out)) pushOut()
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            pull(in)
+            setHandler(out, outHandler)
+          }
+        })
+
+      val outHandler = new OutHandler {
+        // could be unavailable due to async input having been executed before this notification
+        override def onPull(): Unit =
+          if (q.nonEmpty && isAvailable(out)) pushOut()
+      }
+
+      def addSource(source: Graph[SourceShape[T], M]): Unit = {
+        val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
+        sinkIn.setHandler(new InHandler {
+          override def onPush(): Unit = {
+            if (isAvailable(out)) {
+              push(out, sinkIn.grab())
+              sinkIn.pull()
+            } else { q.enqueue(sinkIn) }
+          }
+          override def onUpstreamFinish(): Unit =
+            if (!sinkIn.isAvailable) removeSource(sinkIn)
+        })
+        sinkIn.pull()
+        sources += sinkIn
+        Source
+          .fromGraph(source)
+          .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
+      }
+
+      def removeSource(src: SubSinkInlet[T]): Unit = {
+        val pullSuppressed = activeSources == breadth
+        sources -= src
+        if (pullSuppressed) tryPull(in)
+        if (activeSources == 0 && isClosed(in)) completeStage()
+      }
+
+      override def postStop(): Unit = sources.foreach(_.cancel())
+
     }
-
-    def addSource(source: Graph[SourceShape[T], M]): Unit = {
-      val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
-      sinkIn.setHandler(new InHandler {
-        override def onPush(): Unit = {
-          if (isAvailable(out)) {
-            push(out, sinkIn.grab())
-            sinkIn.pull()
-          } else { q.enqueue(sinkIn) }
-        }
-        override def onUpstreamFinish(): Unit =
-          if (!sinkIn.isAvailable) removeSource(sinkIn)
-      })
-      sinkIn.pull()
-      sources += sinkIn
-      Source
-        .fromGraph(source)
-        .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
-    }
-
-    def removeSource(src: SubSinkInlet[T]): Unit = {
-      val pullSuppressed = activeSources == breadth
-      sources -= src
-      if (pullSuppressed) tryPull(in)
-      if (activeSources == 0 && isClosed(in)) completeStage()
-    }
-
-    override def postStop(): Unit = sources.foreach(_.cancel())
-
-  }
 
   override def toString: String = s"FlattenMerge($breadth)"
 }
@@ -153,16 +154,17 @@ final class PrefixAndTail[T](n: Int)
 
     private def prefixComplete = builder eq null
 
-    private def subHandler = new OutHandler {
-      override def onPull(): Unit = {
-        setKeepGoing(false)
-        cancelTimer(SubscriptionTimer)
-        pull(in)
-        tailSource.setHandler(new OutHandler {
-          override def onPull(): Unit = pull(in)
-        })
+    private def subHandler =
+      new OutHandler {
+        override def onPull(): Unit = {
+          setKeepGoing(false)
+          cancelTimer(SubscriptionTimer)
+          pull(in)
+          tailSource.setHandler(new OutHandler {
+            override def onPull(): Unit = pull(in)
+          })
+        }
       }
-    }
 
     private def openSubstream(): Source[T, NotUsed] = {
       val timeout = ActorMaterializer
@@ -445,19 +447,21 @@ final class SubSink[T](
 
   private val status = new AtomicReference[AnyRef]
 
-  def pullSubstream(): Unit = status.get match {
-    case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(RequestOne)
-    case null ⇒
-      if (!status.compareAndSet(null, RequestOne))
-        status.get.asInstanceOf[Command ⇒ Unit](RequestOne)
-  }
+  def pullSubstream(): Unit =
+    status.get match {
+      case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(RequestOne)
+      case null ⇒
+        if (!status.compareAndSet(null, RequestOne))
+          status.get.asInstanceOf[Command ⇒ Unit](RequestOne)
+    }
 
-  def cancelSubstream(): Unit = status.get match {
-    case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(Cancel)
-    case x ⇒ // a potential RequestOne is overwritten
-      if (!status.compareAndSet(x, Cancel))
-        status.get.asInstanceOf[Command ⇒ Unit](Cancel)
-  }
+  def cancelSubstream(): Unit =
+    status.get match {
+      case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(Cancel)
+      case x ⇒ // a potential RequestOne is overwritten
+        if (!status.compareAndSet(x, Cancel))
+          status.get.asInstanceOf[Command ⇒ Unit](Cancel)
+    }
 
   override def createLogic(attr: Attributes) =
     new GraphStageLogic(shape) with InHandler {
@@ -541,31 +545,35 @@ final class SubSource[T](
 
   private val status = new AtomicReference[AnyRef]
 
-  def pushSubstream(elem: T): Unit = status.get match {
-    case f: AsyncCallback[Any] @unchecked ⇒
-      f.invoke(ActorSubscriberMessage.OnNext(elem))
-    case _ ⇒
-      throw new IllegalStateException("cannot push to uninitialized substream")
-  }
+  def pushSubstream(elem: T): Unit =
+    status.get match {
+      case f: AsyncCallback[Any] @unchecked ⇒
+        f.invoke(ActorSubscriberMessage.OnNext(elem))
+      case _ ⇒
+        throw new IllegalStateException(
+          "cannot push to uninitialized substream")
+    }
 
-  def completeSubstream(): Unit = status.get match {
-    case f: AsyncCallback[Any] @unchecked ⇒
-      f.invoke(ActorSubscriberMessage.OnComplete)
-    case null ⇒
-      if (!status.compareAndSet(null, ActorSubscriberMessage.OnComplete))
-        status.get
-          .asInstanceOf[AsyncCallback[Any]]
-          .invoke(ActorSubscriberMessage.OnComplete)
-  }
+  def completeSubstream(): Unit =
+    status.get match {
+      case f: AsyncCallback[Any] @unchecked ⇒
+        f.invoke(ActorSubscriberMessage.OnComplete)
+      case null ⇒
+        if (!status.compareAndSet(null, ActorSubscriberMessage.OnComplete))
+          status.get
+            .asInstanceOf[AsyncCallback[Any]]
+            .invoke(ActorSubscriberMessage.OnComplete)
+    }
 
-  def failSubstream(ex: Throwable): Unit = status.get match {
-    case f: AsyncCallback[Any] @unchecked ⇒
-      f.invoke(ActorSubscriberMessage.OnError(ex))
-    case null ⇒
-      val failure = ActorSubscriberMessage.OnError(ex)
-      if (!status.compareAndSet(null, failure))
-        status.get.asInstanceOf[AsyncCallback[Any]].invoke(failure)
-  }
+  def failSubstream(ex: Throwable): Unit =
+    status.get match {
+      case f: AsyncCallback[Any] @unchecked ⇒
+        f.invoke(ActorSubscriberMessage.OnError(ex))
+      case null ⇒
+        val failure = ActorSubscriberMessage.OnError(ex)
+        if (!status.compareAndSet(null, failure))
+          status.get.asInstanceOf[AsyncCallback[Any]].invoke(failure)
+    }
 
   def timeout(d: FiniteDuration): Boolean =
     status.compareAndSet(

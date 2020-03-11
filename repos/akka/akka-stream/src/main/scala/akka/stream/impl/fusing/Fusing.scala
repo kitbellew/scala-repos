@@ -834,11 +834,12 @@ private[stream] object Fusing {
   /**
     * Determine whether the given CopiedModule has an AsyncBoundary attribute.
     */
-  private def isAsync(m: CopiedModule): Boolean = m match {
-    case CopiedModule(_, inherited, orig) ⇒
-      val attr = inherited and orig.attributes
-      attr.contains(AsyncBoundary)
-  }
+  private def isAsync(m: CopiedModule): Boolean =
+    m match {
+      case CopiedModule(_, inherited, orig) ⇒
+        val attr = inherited and orig.attributes
+        attr.contains(AsyncBoundary)
+    }
 
   /**
     * Figure out the dispatcher setting of a module.
@@ -854,8 +855,9 @@ private[stream] object Fusing {
   /**
     * See through copied modules to the “real” module.
     */
-  private def realModule(m: Module): Module = m match {
-    case CopiedModule(_, _, of) ⇒ realModule(of)
-    case other ⇒ other
-  }
+  private def realModule(m: Module): Module =
+    m match {
+      case CopiedModule(_, _, of) ⇒ realModule(of)
+      case other ⇒ other
+    }
 }

@@ -73,9 +73,10 @@ trait QueryTInstances0[Q[+_]] {
 
 trait QueryTInstances[Q[+_]] extends QueryTInstances0[Q] {
   implicit def queryTMonadTrans(implicit Q0: SwappableMonad[Q])
-      : Hoist[({ type λ[μ[+_], α] = QueryT[Q, μ, α] })#λ] = new QueryTHoist[Q] {
-    def Q = Q0
-  }
+      : Hoist[({ type λ[μ[+_], α] = QueryT[Q, μ, α] })#λ] =
+    new QueryTHoist[Q] {
+      def Q = Q0
+    }
 
   implicit def queryTMonad[M[+_]](implicit
       M0: Monad[M],

@@ -27,12 +27,13 @@ object PendingRequestFilter {
       // n.b. we can't simply compose the `PendingRequestFilter` onto the `next`
       // service factory since we need a distinct filter instance to provide
       // distinct state per-session.
-      def make(_param: Param, next: ServiceFactory[Req, Rep]) = _param match {
-        case Param(Some(limit)) =>
-          next.map(new PendingRequestFilter[Req, Rep](limit).andThen(_))
+      def make(_param: Param, next: ServiceFactory[Req, Rep]) =
+        _param match {
+          case Param(Some(limit)) =>
+            next.map(new PendingRequestFilter[Req, Rep](limit).andThen(_))
 
-        case Param(None) => next
-      }
+          case Param(None) => next
+        }
     }
 
   val PendingRequestsLimitExceeded =

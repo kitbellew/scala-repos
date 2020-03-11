@@ -174,12 +174,13 @@ private[akka] class ReplayFilter(
     buffer.clear()
   }
 
-  def logIssue(errMsg: String): Unit = mode match {
-    case Warn | RepairByDiscardOld ⇒ log.warning(errMsg)
-    case Fail ⇒ log.error(errMsg)
-    case Disabled ⇒
-      throw new IllegalArgumentException("mode must not be Disabled")
-  }
+  def logIssue(errMsg: String): Unit =
+    mode match {
+      case Warn | RepairByDiscardOld ⇒ log.warning(errMsg)
+      case Fail ⇒ log.error(errMsg)
+      case Disabled ⇒
+        throw new IllegalArgumentException("mode must not be Disabled")
+    }
 
   def fail(cause: IllegalStateException): Unit = {
     buffer.clear()

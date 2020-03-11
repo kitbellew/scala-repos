@@ -92,15 +92,16 @@ trait TypeDiagnostics {
   def linePrecedes(t1: Tree, t2: Tree) = posPrecedes(t1.pos, t2.pos)
 
   private object DealiasedType extends TypeMap {
-    def apply(tp: Type): Type = tp match {
-      // Avoid "explaining" that String is really java.lang.String,
-      // while still dealiasing types from non-default namespaces.
-      case TypeRef(pre, sym, args)
-          if sym.isAliasType && !sym.isInDefaultNamespace =>
-        mapOver(tp.dealias)
-      case _ =>
-        mapOver(tp)
-    }
+    def apply(tp: Type): Type =
+      tp match {
+        // Avoid "explaining" that String is really java.lang.String,
+        // while still dealiasing types from non-default namespaces.
+        case TypeRef(pre, sym, args)
+            if sym.isAliasType && !sym.isInDefaultNamespace =>
+          mapOver(tp.dealias)
+        case _ =>
+          mapOver(tp)
+      }
   }
 
   /** An explanatory note to be added to error messages
@@ -110,13 +111,14 @@ trait TypeDiagnostics {
       "\n(Note that variables need to be initialized to be defined)"
     else ""
 
-  private def methodTypeErrorString(tp: Type) = tp match {
-    case mt @ MethodType(params, resultType) =>
-      def forString = params map (_.defString)
+  private def methodTypeErrorString(tp: Type) =
+    tp match {
+      case mt @ MethodType(params, resultType) =>
+        def forString = params map (_.defString)
 
-      forString.mkString("(", ",", ")") + resultType
-    case x => x.toString
-  }
+        forString.mkString("(", ",", ")") + resultType
+      case x => x.toString
+    }
 
   /**
     * [a, b, c] => "(a, b, c)"
@@ -136,10 +138,11 @@ trait TypeDiagnostics {
     parenthesize(varPatterNames.getOrElse(genericParams).mkString(", "))
   }
 
-  def alternatives(tree: Tree): List[Type] = tree.tpe match {
-    case OverloadedType(pre, alternatives) => alternatives map pre.memberType
-    case _                                 => Nil
-  }
+  def alternatives(tree: Tree): List[Type] =
+    tree.tpe match {
+      case OverloadedType(pre, alternatives) => alternatives map pre.memberType
+      case _                                 => Nil
+    }
   def alternativesString(tree: Tree) =
     alternatives(tree) map (x =>
       "  " + methodTypeErrorString(x)) mkString ("", " <and>\n", "\n")
@@ -187,18 +190,20 @@ trait TypeDiagnostics {
     else defaultMessage
   }
 
-  def disambiguate(ss: List[String]) = ss match {
-    case Nil => Nil
-    case s :: ss =>
-      s :: (ss map { case `s` => "(some other)" + s; case x => x })
-  }
+  def disambiguate(ss: List[String]) =
+    ss match {
+      case Nil => Nil
+      case s :: ss =>
+        s :: (ss map { case `s` => "(some other)" + s; case x => x })
+    }
 
   // todo: use also for other error messages
-  def existentialContext(tp: Type) = tp.skolemsExceptMethodTypeParams match {
-    case Nil => ""
-    case xs =>
-      " where " + (disambiguate(xs map (_.existentialToString)) mkString ", ")
-  }
+  def existentialContext(tp: Type) =
+    tp.skolemsExceptMethodTypeParams match {
+      case Nil => ""
+      case xs =>
+        " where " + (disambiguate(xs map (_.existentialToString)) mkString ", ")
+    }
 
   def explainAlias(tp: Type) = {
     // Don't automatically normalize standard aliases; they still will be
@@ -311,11 +316,12 @@ trait TypeDiagnostics {
   // being false would do that, but if I return "<suppressed>" under
   // that condition, I see it.
   def foundReqMsg(found: Type, req: Type): String = {
-    def baseMessage = (
-      ";\n found   : " + found.toLongString + existentialContext(
-        found) + explainAlias(found) +
-        "\n required: " + req + existentialContext(req) + explainAlias(req)
-    )
+    def baseMessage =
+      (
+        ";\n found   : " + found.toLongString + existentialContext(
+          found) + explainAlias(found) +
+          "\n required: " + req + existentialContext(req) + explainAlias(req)
+      )
     (withDisambiguation(Nil, found, req)(baseMessage)
       + explainVariance(found, req)
       + explainAnyVsAnyRef(found, req))
@@ -358,9 +364,11 @@ trait TypeDiagnostics {
 
     // functions to manipulate the name
     def preQualify() = modifyName(trueOwner.fullName + "." + _)
-    def postQualify() = if (!(postQualifiedWith contains trueOwner)) {
-      postQualifiedWith ::= trueOwner; modifyName(_ + "(in " + trueOwner + ")")
-    }
+    def postQualify() =
+      if (!(postQualifiedWith contains trueOwner)) {
+        postQualifiedWith ::= trueOwner;
+        modifyName(_ + "(in " + trueOwner + ")")
+      }
     def typeQualify() = if (sym.isTypeParameterOrSkolem) postQualify()
     def nameQualify() =
       if (trueOwner.isPackageClass) preQualify() else postQualify()
@@ -496,20 +504,22 @@ trait TypeDiagnostics {
         def defnSymbols = defnTrees.toList map (_.symbol)
         def localVars = defnSymbols filter (t => t.isLocalToBlock && t.isVar)
 
-        def qualifiesTerm(sym: Symbol) = (
-          (sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock)
-            && !nme.isLocalName(sym.name)
-            && !sym.isParameter
-            && !sym.isParamAccessor // could improve this, but it's a pain
-            && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
-            && !(sym.isGetter && sym.accessed.isEarlyInitialized)
-        )
+        def qualifiesTerm(sym: Symbol) =
+          (
+            (sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock)
+              && !nme.isLocalName(sym.name)
+              && !sym.isParameter
+              && !sym.isParamAccessor // could improve this, but it's a pain
+              && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
+              && !(sym.isGetter && sym.accessed.isEarlyInitialized)
+          )
         def qualifiesType(sym: Symbol) = !sym.isDefinedInPackage
-        def qualifies(sym: Symbol) = (
-          (sym ne null)
-            && (sym.isTerm && qualifiesTerm(sym) || sym.isType && qualifiesType(
-              sym))
-        )
+        def qualifies(sym: Symbol) =
+          (
+            (sym ne null)
+              && (sym.isTerm && qualifiesTerm(
+                sym) || sym.isType && qualifiesType(sym))
+          )
 
         override def traverse(t: Tree): Unit = {
           t match {
@@ -540,26 +550,28 @@ trait TypeDiagnostics {
           }
           super.traverse(t)
         }
-        def isUnusedType(m: Symbol): Boolean = (
-          m.isType
-            && !m.isTypeParameterOrSkolem // would be nice to improve this
-            && (m.isPrivate || m.isLocalToBlock)
-            && !(treeTypes.exists(tp =>
-              tp exists (t => t.typeSymbolDirect == m)))
-        )
-        def isUnusedTerm(m: Symbol): Boolean = (
-          (m.isTerm)
-            && (m.isPrivate || m.isLocalToBlock)
-            && !targets(m)
-            && !(m.name == nme.WILDCARD) // e.g. val _ = foo
-            && !ignoreNames(m.name.toTermName) // serialization methods
-            && !isConstantType(
-              m.info.resultType
-            ) // subject to constant inlining
-            && !treeTypes.exists(
-              _ contains m
-            ) // e.g. val a = new Foo ; new a.Bar
-        )
+        def isUnusedType(m: Symbol): Boolean =
+          (
+            m.isType
+              && !m.isTypeParameterOrSkolem // would be nice to improve this
+              && (m.isPrivate || m.isLocalToBlock)
+              && !(treeTypes.exists(tp =>
+                tp exists (t => t.typeSymbolDirect == m)))
+          )
+        def isUnusedTerm(m: Symbol): Boolean =
+          (
+            (m.isTerm)
+              && (m.isPrivate || m.isLocalToBlock)
+              && !targets(m)
+              && !(m.name == nme.WILDCARD) // e.g. val _ = foo
+              && !ignoreNames(m.name.toTermName) // serialization methods
+              && !isConstantType(
+                m.info.resultType
+              ) // subject to constant inlining
+              && !treeTypes.exists(
+                _ contains m
+              ) // e.g. val a = new Foo ; new a.Bar
+          )
         def unusedTypes = defnTrees.toList filter (t => isUnusedType(t.symbol))
         def unusedTerms = defnTrees.toList filter (v => isUnusedTerm(v.symbol))
         // local vars which are never set, except those already returned in unused
@@ -660,16 +672,17 @@ trait TypeDiagnostics {
     /** Returns Some(msg) if the given tree is untyped apparently due
       *  to a cyclic reference, and None otherwise.
       */
-    def cyclicReferenceMessage(sym: Symbol, tree: Tree) = condOpt(tree) {
-      case ValDef(_, _, tpt, _) if tpt.tpe == null =>
-        "recursive " + sym + " needs type"
-      case DefDef(_, _, _, _, tpt, _) if tpt.tpe == null =>
-        List(cyclicAdjective(sym), sym, "needs result type") mkString " "
-      case Import(expr, selectors) =>
-        ("encountered unrecoverable cycle resolving import." +
-          "\nNote: this is often due in part to a class depending on a definition nested within its companion." +
-          "\nIf applicable, you may wish to try moving some members into another object.")
-    }
+    def cyclicReferenceMessage(sym: Symbol, tree: Tree) =
+      condOpt(tree) {
+        case ValDef(_, _, tpt, _) if tpt.tpe == null =>
+          "recursive " + sym + " needs type"
+        case DefDef(_, _, _, _, tpt, _) if tpt.tpe == null =>
+          List(cyclicAdjective(sym), sym, "needs result type") mkString " "
+        case Import(expr, selectors) =>
+          ("encountered unrecoverable cycle resolving import." +
+            "\nNote: this is often due in part to a class depending on a definition nested within its companion." +
+            "\nIf applicable, you may wish to try moving some members into another object.")
+      }
 
     // warn about class/method/type-members' type parameters that shadow types already in scope
     def warnTypeParameterShadow(tparams: List[TypeDef], sym: Symbol): Unit =

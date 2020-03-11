@@ -89,15 +89,16 @@ class ScPackagingImpl private (
     if (stub != null) {
       return stub.asInstanceOf[ScPackageContainerStub].prefix
     }
-    def parentPackageName(e: PsiElement): String = e.getParent match {
-      case p: ScPackaging =>
-        val _packName = parentPackageName(p)
-        if (_packName.length > 0) _packName + "." + p.getPackageName
-        else p.getPackageName
-      case f: ScalaFileImpl => "" //f.getPackageName
-      case null             => ""
-      case parent           => parentPackageName(parent)
-    }
+    def parentPackageName(e: PsiElement): String =
+      e.getParent match {
+        case p: ScPackaging =>
+          val _packName = parentPackageName(p)
+          if (_packName.length > 0) _packName + "." + p.getPackageName
+          else p.getPackageName
+        case f: ScalaFileImpl => "" //f.getPackageName
+        case null             => ""
+        case parent           => parentPackageName(parent)
+      }
     parentPackageName(this)
   }
 

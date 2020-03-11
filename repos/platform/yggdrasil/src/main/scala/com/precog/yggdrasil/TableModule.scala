@@ -53,35 +53,39 @@ object TableSize {
 case class ExactSize(minSize: Long) extends TableSize {
   val maxSize = minSize
 
-  def +(other: TableSize) = other match {
-    case ExactSize(n)         => ExactSize(minSize + n)
-    case EstimateSize(n1, n2) => EstimateSize(minSize + n1, minSize + n2)
-    case UnknownSize          => UnknownSize
-    case InfiniteSize         => InfiniteSize
-  }
+  def +(other: TableSize) =
+    other match {
+      case ExactSize(n)         => ExactSize(minSize + n)
+      case EstimateSize(n1, n2) => EstimateSize(minSize + n1, minSize + n2)
+      case UnknownSize          => UnknownSize
+      case InfiniteSize         => InfiniteSize
+    }
 
-  def *(other: TableSize) = other match {
-    case ExactSize(n)         => ExactSize(minSize * n)
-    case EstimateSize(n1, n2) => EstimateSize(minSize * n1, minSize * n2)
-    case UnknownSize          => UnknownSize
-    case InfiniteSize         => InfiniteSize
-  }
+  def *(other: TableSize) =
+    other match {
+      case ExactSize(n)         => ExactSize(minSize * n)
+      case EstimateSize(n1, n2) => EstimateSize(minSize * n1, minSize * n2)
+      case UnknownSize          => UnknownSize
+      case InfiniteSize         => InfiniteSize
+    }
 }
 
 case class EstimateSize(minSize: Long, maxSize: Long) extends TableSize {
-  def +(other: TableSize) = other match {
-    case ExactSize(n)         => EstimateSize(minSize + n, maxSize + n)
-    case EstimateSize(n1, n2) => EstimateSize(minSize + n1, maxSize + n2)
-    case UnknownSize          => UnknownSize
-    case InfiniteSize         => InfiniteSize
-  }
+  def +(other: TableSize) =
+    other match {
+      case ExactSize(n)         => EstimateSize(minSize + n, maxSize + n)
+      case EstimateSize(n1, n2) => EstimateSize(minSize + n1, maxSize + n2)
+      case UnknownSize          => UnknownSize
+      case InfiniteSize         => InfiniteSize
+    }
 
-  def *(other: TableSize) = other match {
-    case ExactSize(n)         => EstimateSize(minSize * n, maxSize * n)
-    case EstimateSize(n1, n2) => EstimateSize(minSize * n1, maxSize * n2)
-    case UnknownSize          => UnknownSize
-    case InfiniteSize         => InfiniteSize
-  }
+  def *(other: TableSize) =
+    other match {
+      case ExactSize(n)         => EstimateSize(minSize * n, maxSize * n)
+      case EstimateSize(n1, n2) => EstimateSize(minSize * n1, maxSize * n2)
+      case UnknownSize          => UnknownSize
+      case InfiniteSize         => InfiniteSize
+    }
 }
 
 case object UnknownSize extends TableSize {
@@ -354,14 +358,14 @@ trait TableModule[M[+_]] extends TransSpecModule {
       alignment: GroupingSpec.Alignment)
       extends GroupingSpec {
     def sources: Vector[GroupingSource] = left.sources ++ right.sources
-    def sorted: M[GroupingAlignment] = (left.sorted |@| right.sorted) {
-      (t1, t2) =>
+    def sorted: M[GroupingAlignment] =
+      (left.sorted |@| right.sorted) { (t1, t2) =>
         GroupingAlignment(
           groupKeyLeftTrans,
           groupKeyRightTrans,
           t1,
           t2,
           alignment)
-    }
+      }
   }
 }

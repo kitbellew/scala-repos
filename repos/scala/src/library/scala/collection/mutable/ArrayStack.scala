@@ -224,14 +224,15 @@ class ArrayStack[T] private (
   /** Creates and iterator over the stack in LIFO order.
     *  @return an iterator over the elements of the stack.
     */
-  override def iterator: Iterator[T] = new AbstractIterator[T] {
-    var currentIndex = index
-    def hasNext = currentIndex > 0
-    def next() = {
-      currentIndex -= 1
-      table(currentIndex).asInstanceOf[T]
+  override def iterator: Iterator[T] =
+    new AbstractIterator[T] {
+      var currentIndex = index
+      def hasNext = currentIndex > 0
+      def next() = {
+        currentIndex -= 1
+        table(currentIndex).asInstanceOf[T]
+      }
     }
-  }
 
   override def foreach[U](f: T => U) {
     var currentIndex = index

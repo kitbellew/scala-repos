@@ -69,11 +69,12 @@ abstract class SimpleJsonWireFormat extends WireFormat {
 
   def parseInMessage(message: String): InboundMessage = parseMessage(message)
 
-  def render(message: OutboundMessage) = message match {
-    case TextMessage(text) => text
-    case JsonMessage(json) => renderJson(json)
-    case _                 => ""
-  }
+  def render(message: OutboundMessage) =
+    message match {
+      case TextMessage(text) => text
+      case JsonMessage(json) => renderJson(json)
+      case _                 => ""
+    }
 
   protected def renderJson(json: JValue): String
 }

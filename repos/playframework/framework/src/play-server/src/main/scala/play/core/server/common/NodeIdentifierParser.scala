@@ -65,10 +65,11 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
 
   private def obfport = regex("_[\\p{Alnum}\\._-]+".r)
 
-  private def inetAddress = new PartialFunction[String, InetAddress] {
-    def isDefinedAt(s: String) = Try { InetAddress.getByName(s) }.isSuccess
-    def apply(s: String) = Try { InetAddress.getByName(s) }.get
-  }
+  private def inetAddress =
+    new PartialFunction[String, InetAddress] {
+      def isDefinedAt(s: String) = Try { InetAddress.getByName(s) }.isSuccess
+      def apply(s: String) = Try { InetAddress.getByName(s) }.get
+    }
 }
 
 private[common] object NodeIdentifierParser {

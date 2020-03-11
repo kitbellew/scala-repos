@@ -43,26 +43,27 @@ import scalafx.scene.layout.{Priority, VBox}
   */
 class EnsembleGaussianBlur extends EnsembleExample {
 
-  def getContent = new VBox {
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-    spacing = 10
-    padding = Insets(20, 100, 20, 100)
-    children = List(
-      new ImageView {
-        image = new Image(
-          this.getClass
-            .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
-        effect = new GaussianBlur()
-      },
-      new ImageView {
-        image = new Image(
-          this.getClass
-            .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
-        effect = new GaussianBlur() {
-          radius = 5d
+  def getContent =
+    new VBox {
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      spacing = 10
+      padding = Insets(20, 100, 20, 100)
+      children = List(
+        new ImageView {
+          image = new Image(
+            this.getClass
+              .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+          effect = new GaussianBlur()
+        },
+        new ImageView {
+          image = new Image(
+            this.getClass
+              .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+          effect = new GaussianBlur() {
+            radius = 5d
+          }
         }
-      }
-    )
-  }
+      )
+    }
 }

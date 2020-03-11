@@ -377,10 +377,11 @@ trait TypeCase[T] extends Serializable {
 
 object TypeCase {
   import syntax.typeable._
-  def apply[T](implicit tt: Typeable[T]): TypeCase[T] = new TypeCase[T] {
-    def unapply(t: Any): Option[T] = t.cast[T]
-    override def toString = s"TypeCase[${tt.describe}]"
-  }
+  def apply[T](implicit tt: Typeable[T]): TypeCase[T] =
+    new TypeCase[T] {
+      def unapply(t: Any): Option[T] = t.cast[T]
+      override def toString = s"TypeCase[${tt.describe}]"
+    }
 }
 
 @macrocompat.bundle

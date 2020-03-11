@@ -171,9 +171,10 @@ private[coordinator] class GroupMetadata(
 
   def allMemberMetadata = members.values.toList
 
-  def rebalanceTimeout = members.values.foldLeft(0) { (timeout, member) =>
-    timeout.max(member.sessionTimeoutMs)
-  }
+  def rebalanceTimeout =
+    members.values.foldLeft(0) { (timeout, member) =>
+      timeout.max(member.sessionTimeoutMs)
+    }
 
   // TODO: decide if ids should be predictable or random
   def generateMemberIdSuffix = UUID.randomUUID().toString

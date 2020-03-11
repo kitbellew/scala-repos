@@ -21,12 +21,12 @@ trait IsolatedSourceResolverFixture
       finally { vfs.close() }
     }
   override def withSourceResolver(
-      testCode: (EnsimeConfig, SourceResolver) => Any): Any = withEnsimeConfig {
-    config =>
+      testCode: (EnsimeConfig, SourceResolver) => Any): Any =
+    withEnsimeConfig { config =>
       implicit val vfs = EnsimeVFS()
       try { testCode(config, new SourceResolver(config)) }
       finally { vfs.close() }
-  }
+    }
 }
 
 trait SharedSourceResolverFixture

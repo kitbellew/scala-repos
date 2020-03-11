@@ -46,9 +46,8 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
     override def postStop(): Unit = monitor ! PostStop(persistenceId)
 
     def receiveRecover = { case x ⇒ monitor ! x }
-    def receiveCommand = behavior orElse {
-      case m: Multi ⇒ m.cmd.foreach(behavior)
-    }
+    def receiveCommand =
+      behavior orElse { case m: Multi ⇒ m.cmd.foreach(behavior) }
 
     val behavior: Receive = {
       case p: Persist ⇒ P(p)

@@ -79,19 +79,21 @@ abstract class EnumeratorP[E, F[_]] { self =>
 }
 
 trait EnumeratorPFunctions {
-  def empty[E, F[_]]: EnumeratorP[E, F] = new EnumeratorP[E, F] {
-    def apply[G[_]](implicit MO: MonadPartialOrder[G, F]) = {
-      import MO._
-      EnumeratorT.empty[E, G]
+  def empty[E, F[_]]: EnumeratorP[E, F] =
+    new EnumeratorP[E, F] {
+      def apply[G[_]](implicit MO: MonadPartialOrder[G, F]) = {
+        import MO._
+        EnumeratorT.empty[E, G]
+      }
     }
-  }
 
-  def perform[E, F[_], B](f: F[B]): EnumeratorP[E, F] = new EnumeratorP[E, F] {
-    def apply[G[_]](implicit MO: MonadPartialOrder[G, F]) = {
-      import MO._
-      EnumeratorT.perform[E, G, B](MO.promote(f))
+  def perform[E, F[_], B](f: F[B]): EnumeratorP[E, F] =
+    new EnumeratorP[E, F] {
+      def apply[G[_]](implicit MO: MonadPartialOrder[G, F]) = {
+        import MO._
+        EnumeratorT.perform[E, G, B](MO.promote(f))
+      }
     }
-  }
 
   def enumPStream[E, F[_]: Monad](xs: Stream[E]): EnumeratorP[E, F] =
     new EnumeratorP[E, F] {
@@ -135,20 +137,22 @@ trait EnumeratorPFunctions {
       }
     }
 
-  def mergeE[E: Order, F[_]: Monad] = liftE2[E, E, E, F] {
-    new ForallM[λ[β[_] => Enumeratee2T[E, E, E, β]]] {
-      def apply[G[_]: Monad] = mergeI[E, G]
+  def mergeE[E: Order, F[_]: Monad] =
+    liftE2[E, E, E, F] {
+      new ForallM[λ[β[_] => Enumeratee2T[E, E, E, β]]] {
+        def apply[G[_]: Monad] = mergeI[E, G]
+      }
     }
-  }
 
   def mergeAll[E: Order, F[_]: Monad](
       enumerators: EnumeratorP[E, F]*): EnumeratorP[E, F] = {
     @tailrec def mergeOne(
         e: EnumeratorP[E, F],
-        es: List[EnumeratorP[E, F]]): EnumeratorP[E, F] = es match {
-      case x :: xs => mergeOne(e merge x, xs)
-      case Nil     => e
-    }
+        es: List[EnumeratorP[E, F]]): EnumeratorP[E, F] =
+      es match {
+        case x :: xs => mergeOne(e merge x, xs)
+        case Nil     => e
+      }
 
     enumerators.toList match {
       case x :: xs => mergeOne(x, xs)

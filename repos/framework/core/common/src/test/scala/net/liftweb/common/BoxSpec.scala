@@ -160,9 +160,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     }
     "define a 'pass' method passing the can to a function and returning itself (alias: $)" in {
       var empty = false
-      def emptyString(s: Box[String]) = s foreach { c: String =>
-        empty = c.isEmpty
-      }
+      def emptyString(s: Box[String]) =
+        s foreach { c: String => empty = c.isEmpty }
       Full("") $ emptyString _
       empty must beTrue
     }
@@ -443,10 +442,11 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
 trait BoxGenerator {
 
-  implicit def genThrowable: Arbitrary[Throwable] = Arbitrary[Throwable] {
-    case object UserException extends Throwable
-    const(UserException)
-  }
+  implicit def genThrowable: Arbitrary[Throwable] =
+    Arbitrary[Throwable] {
+      case object UserException extends Throwable
+      const(UserException)
+    }
 
   implicit def genBox[T](implicit a: Arbitrary[T]): Arbitrary[Box[T]] =
     Arbitrary[Box[T]] {

@@ -28,10 +28,11 @@ object CombinableBox {
 
   type Result[A] = Either[List[Failure], A]
 
-  private implicit def emptyBoxToFailure(eb: EmptyBox): Failure = eb match {
-    case (f: Failure) => f
-    case Empty        => Failure("Empty")
-  }
+  private implicit def emptyBoxToFailure(eb: EmptyBox): Failure =
+    eb match {
+      case (f: Failure) => f
+      case Empty        => Failure("Empty")
+    }
 
   implicit def boxToCombinableBox[A](in: Box[A]): CombinableBox[A, HNil] =
     CombinableBox(in match {
@@ -47,13 +48,14 @@ object CombinableBox {
       in: Result[A :+: B]): CombinableBox[A, B] =
     CombinableBox(in)
 
-  implicit def resultToBox[A](result: Result[A]): Box[A] = result match {
-    case Left(Nil)      => Empty
-    case Left(f :: Nil) => f
-    case Left(f) =>
-      new ParamFailure("Multiple Failures", Empty, Empty, FailureList(f))
-    case Right(x) => Full(x)
-  }
+  implicit def resultToBox[A](result: Result[A]): Box[A] =
+    result match {
+      case Left(Nil)      => Empty
+      case Left(f :: Nil) => f
+      case Left(f) =>
+        new ParamFailure("Multiple Failures", Empty, Empty, FailureList(f))
+      case Right(x) => Full(x)
+    }
 
   /**
     * If the `[[Failure]]` is going to be condensed, a `FailureList` is generated

@@ -137,12 +137,13 @@ private[akka] class RepointableActorRef(
 
   def restart(cause: Throwable): Unit = underlying.restart(cause)
 
-  def isStarted: Boolean = underlying match {
-    case _: UnstartedCell ⇒ false
-    case null ⇒
-      throw new IllegalStateException("isStarted called before initialized")
-    case _ ⇒ true
-  }
+  def isStarted: Boolean =
+    underlying match {
+      case _: UnstartedCell ⇒ false
+      case null ⇒
+        throw new IllegalStateException("isStarted called before initialized")
+      case _ ⇒ true
+    }
 
   @deprecated(
     "Use context.watch(actor) and receive Terminated(actor)",
@@ -215,31 +216,32 @@ private[akka] class UnstartedCell(
 
   import systemImpl.settings.UnstartedPushTimeout.{duration ⇒ timeout}
 
-  def replaceWith(cell: Cell): Unit = locked {
-    try {
-      def drainSysmsgQueue(): Unit = {
-        // using while in case a sys msg enqueues another sys msg
-        while (sysmsgQueue.nonEmpty) {
-          var sysQ = sysmsgQueue.reverse
-          sysmsgQueue = SystemMessageList.LNil
-          while (sysQ.nonEmpty) {
-            val msg = sysQ.head
-            sysQ = sysQ.tail
-            msg.unlink()
-            cell.sendSystemMessage(msg)
+  def replaceWith(cell: Cell): Unit =
+    locked {
+      try {
+        def drainSysmsgQueue(): Unit = {
+          // using while in case a sys msg enqueues another sys msg
+          while (sysmsgQueue.nonEmpty) {
+            var sysQ = sysmsgQueue.reverse
+            sysmsgQueue = SystemMessageList.LNil
+            while (sysQ.nonEmpty) {
+              val msg = sysQ.head
+              sysQ = sysQ.tail
+              msg.unlink()
+              cell.sendSystemMessage(msg)
+            }
           }
         }
-      }
 
-      drainSysmsgQueue()
-
-      while (!queue.isEmpty) {
-        cell.sendMessage(queue.poll())
-        // drain sysmsgQueue in case a msg enqueues a sys msg
         drainSysmsgQueue()
-      }
-    } finally { self.swapCell(cell) }
-  }
+
+        while (!queue.isEmpty) {
+          cell.sendMessage(queue.poll())
+          // drain sysmsgQueue in case a msg enqueues a sys msg
+          drainSysmsgQueue()
+        }
+      } finally { self.swapCell(cell) }
+    }
 
   def system: ActorSystem = systemImpl
   def start(): this.type = this
@@ -248,10 +250,11 @@ private[akka] class UnstartedCell(
     sendSystemMessage(Resume(causedByFailure))
   def restart(cause: Throwable): Unit = sendSystemMessage(Recreate(cause))
   def stop(): Unit = sendSystemMessage(Terminate())
-  override private[akka] def isTerminated: Boolean = locked {
-    val cell = self.underlying
-    if (cellIsReady(cell)) cell.isTerminated else false
-  }
+  override private[akka] def isTerminated: Boolean =
+    locked {
+      val cell = self.underlying
+      if (cellIsReady(cell)) cell.isTerminated else false
+    }
   def parent: InternalActorRef = supervisor
   def childrenRefs: ChildrenContainer = ChildrenContainer.EmptyChildrenContainer
   def getChildByName(name: String): Option[ChildRestartStats] = None
@@ -301,15 +304,17 @@ private[akka] class UnstartedCell(
   private[this] final def cellIsReady(cell: Cell): Boolean =
     (cell ne this) && (cell ne null)
 
-  def hasMessages: Boolean = locked {
-    val cell = self.underlying
-    if (cellIsReady(cell)) cell.hasMessages else !queue.isEmpty
-  }
+  def hasMessages: Boolean =
+    locked {
+      val cell = self.underlying
+      if (cellIsReady(cell)) cell.hasMessages else !queue.isEmpty
+    }
 
-  def numberOfMessages: Int = locked {
-    val cell = self.underlying
-    if (cellIsReady(cell)) cell.numberOfMessages else queue.size
-  }
+  def numberOfMessages: Int =
+    locked {
+      val cell = self.underlying
+      if (cellIsReady(cell)) cell.numberOfMessages else queue.size
+    }
 
   private[this] final def locked[T](body: ⇒ T): T = {
     lock.lock()

@@ -139,13 +139,15 @@ final class RelationApi(
           }
       }
 
-  private def limitFollow(u: ID) = countFollowing(u) flatMap { nb =>
-    (nb >= maxFollow) ?? RelationRepo.drop(u, true, nb - maxFollow + 1)
-  }
+  private def limitFollow(u: ID) =
+    countFollowing(u) flatMap { nb =>
+      (nb >= maxFollow) ?? RelationRepo.drop(u, true, nb - maxFollow + 1)
+    }
 
-  private def limitBlock(u: ID) = countBlocking(u) flatMap { nb =>
-    (nb >= maxBlock) ?? RelationRepo.drop(u, false, nb - maxBlock + 1)
-  }
+  private def limitBlock(u: ID) =
+    countBlocking(u) flatMap { nb =>
+      (nb >= maxBlock) ?? RelationRepo.drop(u, false, nb - maxBlock + 1)
+    }
 
   def block(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit

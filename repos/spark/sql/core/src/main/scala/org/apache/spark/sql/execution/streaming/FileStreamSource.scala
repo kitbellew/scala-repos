@@ -74,24 +74,25 @@ class FileStreamSource(
     * `synchronized` on this method is for solving race conditions in tests. In the normal usage,
     * there is no race here, so the cost of `synchronized` should be rare.
     */
-  private def fetchMaxOffset(): LongOffset = synchronized {
-    val filesPresent = fetchAllFiles()
-    val newFiles = new ArrayBuffer[String]()
-    filesPresent.foreach { file =>
-      if (!seenFiles.contains(file)) {
-        logDebug(s"new file: $file")
-        newFiles.append(file)
-        seenFiles.add(file)
-      } else { logDebug(s"old file: $file") }
-    }
+  private def fetchMaxOffset(): LongOffset =
+    synchronized {
+      val filesPresent = fetchAllFiles()
+      val newFiles = new ArrayBuffer[String]()
+      filesPresent.foreach { file =>
+        if (!seenFiles.contains(file)) {
+          logDebug(s"new file: $file")
+          newFiles.append(file)
+          seenFiles.add(file)
+        } else { logDebug(s"old file: $file") }
+      }
 
-    if (newFiles.nonEmpty) {
-      maxBatchId += 1
-      metadataLog.add(maxBatchId, newFiles)
-    }
+      if (newFiles.nonEmpty) {
+        maxBatchId += 1
+        metadataLog.add(maxBatchId, newFiles)
+      }
 
-    new LongOffset(maxBatchId)
-  }
+      new LongOffset(maxBatchId)
+    }
 
   /**
     * For test only. Run `func` with the internal lock to make sure when `func` is running,

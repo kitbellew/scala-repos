@@ -13,14 +13,15 @@ class GraphConcatSpec extends TwoStreamsSetup {
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
-    val concat = b add Concat[Outputs]()
+  override def fixture(b: GraphDSL.Builder[_]): Fixture =
+    new Fixture(b) {
+      val concat = b add Concat[Outputs]()
 
-    override def left: Inlet[Outputs] = concat.in(0)
-    override def right: Inlet[Outputs] = concat.in(1)
-    override def out: Outlet[Outputs] = concat.out
+      override def left: Inlet[Outputs] = concat.in(0)
+      override def right: Inlet[Outputs] = concat.in(1)
+      override def out: Outlet[Outputs] = concat.out
 
-  }
+    }
 
   "Concat" must {
     import GraphDSL.Implicits._

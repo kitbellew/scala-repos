@@ -30,9 +30,8 @@ class AsyncController @Inject() (actorSystem: ActorSystem)(
     * will be called when the application receives a `GET` request with
     * a path of `/message`.
     */
-  def message = Action.async {
-    getFutureMessage(1.second).map { msg => Ok(msg) }
-  }
+  def message =
+    Action.async { getFutureMessage(1.second).map { msg => Ok(msg) } }
 
   private def getFutureMessage(delayTime: FiniteDuration): Future[String] = {
     val promise: Promise[String] = Promise[String]()

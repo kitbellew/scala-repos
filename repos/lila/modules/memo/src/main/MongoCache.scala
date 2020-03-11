@@ -17,16 +17,17 @@ final class MongoCache[K, V: MongoCache.Handler] private (
     f: K => Fu[V],
     keyToString: K => String) {
 
-  def apply(k: K): Fu[V] = cache(k) {
-    coll.find(select(k)).one[Entry] flatMap {
-      case None =>
-        f(k) flatMap { v =>
-          coll.insert(makeEntry(k, v)) recover
-            lila.db.recoverDuplicateKey(_ => ()) inject v
-        }
-      case Some(entry) => fuccess(entry.v)
+  def apply(k: K): Fu[V] =
+    cache(k) {
+      coll.find(select(k)).one[Entry] flatMap {
+        case None =>
+          f(k) flatMap { v =>
+            coll.insert(makeEntry(k, v)) recover
+              lila.db.recoverDuplicateKey(_ => ()) inject v
+          }
+        case Some(entry) => fuccess(entry.v)
+      }
     }
-  }
 
   def remove(k: K): Funit =
     coll.remove(select(k)).void >>- (cache remove k)

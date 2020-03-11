@@ -75,18 +75,21 @@ trait OutputFormatter {
     *
     * @return
     */
-  def convertToText(topNode: Element): String = topNode match {
-    case null => ""
-    case node => {
-      (
-        node
-          .children()
-          .map((e: Element) => { StringEscapeUtils.unescapeHtml(e.text).trim }))
-        .toList
-        .mkString("\n\n")
-    }
+  def convertToText(topNode: Element): String =
+    topNode match {
+      case null => ""
+      case node => {
+        (
+          node
+            .children()
+            .map((e: Element) => {
+              StringEscapeUtils.unescapeHtml(e.text).trim
+            }))
+          .toList
+          .mkString("\n\n")
+      }
 
-  }
+    }
 
   /**
     * cleans up and converts any nodes that should be considered text into text

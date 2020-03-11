@@ -309,8 +309,9 @@ class WebSocketClientSpec
     }
   }
 
-  def UpgradeRequestBytes = ByteString {
-    """GET /ws HTTP/1.1
+  def UpgradeRequestBytes =
+    ByteString {
+      """GET /ws HTTP/1.1
       |Upgrade: websocket
       |Connection: upgrade
       |Sec-WebSocket-Key: YLQguzhR2dR6y5M9vnA5mw==
@@ -319,10 +320,11 @@ class WebSocketClientSpec
       |User-Agent: akka-http/test
       |
       |""".stripMarginWithNewline("\r\n")
-  }
+    }
 
-  def UpgradeResponseBytes = ByteString {
-    """HTTP/1.1 101 Switching Protocols
+  def UpgradeResponseBytes =
+    ByteString {
+      """HTTP/1.1 101 Switching Protocols
       |Upgrade: websocket
       |Sec-WebSocket-Accept: ujmZX4KXZqjwy6vi1aQFH5p4Ygk=
       |Server: akka-http/test
@@ -330,7 +332,7 @@ class WebSocketClientSpec
       |Connection: upgrade
       |
       |""".stripMarginWithNewline("\r\n")
-  }
+    }
 
   abstract class EstablishedConnectionSetup extends TestSetup {
     expectWireData(UpgradeRequestBytes)

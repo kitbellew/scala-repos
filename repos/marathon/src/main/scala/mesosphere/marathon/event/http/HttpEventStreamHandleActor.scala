@@ -47,11 +47,12 @@ class HttpEventStreamHandleActor(
       sendAllMessages()
   }
 
-  def stashEvents: Receive = handleWorkDone orElse {
-    case event: MarathonEvent if outstanding.size >= maxOutStanding =>
-      dropEvent(event)
-    case event: MarathonEvent => outstanding = event :: outstanding
-  }
+  def stashEvents: Receive =
+    handleWorkDone orElse {
+      case event: MarathonEvent if outstanding.size >= maxOutStanding =>
+        dropEvent(event)
+      case event: MarathonEvent => outstanding = event :: outstanding
+    }
 
   def handleWorkDone: Receive = {
     case WorkDone => sendAllMessages()
@@ -76,16 +77,17 @@ class HttpEventStreamHandleActor(
     } else { context.become(waitForEvent) }
   }
 
-  private[this] def handleException(ex: Throwable): Unit = ex match {
-    case eof: EOFException =>
-      log.info(
-        s"Received EOF from stream handle $handle. Ignore subsequent events.")
-      //We know the connection is dead, but it is not finalized from the container.
-      //Do not act any longer on any event.
-      context.become(Actor.emptyBehavior)
-    case _ =>
-      log.warning("Could not send message to {} reason: {}", handle, ex)
-  }
+  private[this] def handleException(ex: Throwable): Unit =
+    ex match {
+      case eof: EOFException =>
+        log.info(
+          s"Received EOF from stream handle $handle. Ignore subsequent events.")
+        //We know the connection is dead, but it is not finalized from the container.
+        //Do not act any longer on any event.
+        context.become(Actor.emptyBehavior)
+      case _ =>
+        log.warning("Could not send message to {} reason: {}", handle, ex)
+    }
 
   private[this] def dropEvent(event: MarathonEvent): Unit = {
     log.warning("Ignore event {} for handle {} (slow consumer)", event, handle)

@@ -21,22 +21,24 @@ class CometSpec extends Specification {
   class MockController(val materializer: Materializer) extends Controller {
 
     //#comet-string
-    def cometString = Action {
-      implicit val m = materializer
-      def stringSource: Source[String, _] = Source(List("kiki", "foo", "bar"))
-      Ok.chunked(stringSource via Comet.string("parent.cometMessage"))
-        .as(ContentTypes.HTML)
-    }
+    def cometString =
+      Action {
+        implicit val m = materializer
+        def stringSource: Source[String, _] = Source(List("kiki", "foo", "bar"))
+        Ok.chunked(stringSource via Comet.string("parent.cometMessage"))
+          .as(ContentTypes.HTML)
+      }
     //#comet-string
 
     //#comet-json
-    def cometJson = Action {
-      implicit val m = materializer
-      def stringSource: Source[JsValue, _] =
-        Source(List(JsString("jsonString")))
-      Ok.chunked(stringSource via Comet.json("parent.cometMessage"))
-        .as(ContentTypes.HTML)
-    }
+    def cometJson =
+      Action {
+        implicit val m = materializer
+        def stringSource: Source[JsValue, _] =
+          Source(List(JsString("jsonString")))
+        Ok.chunked(stringSource via Comet.json("parent.cometMessage"))
+          .as(ContentTypes.HTML)
+      }
     //#comet-json
   }
 

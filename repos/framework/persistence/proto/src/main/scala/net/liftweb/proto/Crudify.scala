@@ -793,16 +793,17 @@ trait Crudify {
           node <- bindNode(html)
         } yield node
 
-      def doSubmit() = item.validate match {
-        case Nil =>
-          S.notice(noticeMsg)
-          item.save
-          S.redirectTo(from)
+      def doSubmit() =
+        item.validate match {
+          case Nil =>
+            S.notice(noticeMsg)
+            item.save
+            S.redirectTo(from)
 
-        case xs =>
-          S.error(xs)
-          snipName.foreach(S.mapSnippet(_, loop))
-      }
+          case xs =>
+            S.error(xs)
+            snipName.foreach(S.mapSnippet(_, loop))
+        }
 
       val bind =
         ".field" #> doFields _ &

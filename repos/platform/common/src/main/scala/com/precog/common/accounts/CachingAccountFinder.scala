@@ -58,23 +58,22 @@ class CachingAccountFinder[M[+_]: Monad](
   private val byAccountIdCache = Cache.simple[AccountId, AccountDetails](
     settings.byAccountIdCacheSettings: _*)
 
-  protected def add(apiKey: APIKey, accountId: AccountId) = IO {
-    byKeyCache.put(apiKey, accountId)
-  }
+  protected def add(apiKey: APIKey, accountId: AccountId) =
+    IO { byKeyCache.put(apiKey, accountId) }
 
-  protected def add(details: AccountDetails) = IO {
-    byAccountIdCache.put(details.accountId, details)
-  }
+  protected def add(details: AccountDetails) =
+    IO { byAccountIdCache.put(details.accountId, details) }
 
-  def findAccountByAPIKey(apiKey: APIKey) = byKeyCache.get(apiKey) match {
-    case None =>
-      delegate.findAccountByAPIKey(apiKey) map {
-        _ map { _ tap (add(apiKey, _)) unsafePerformIO }
-      }
+  def findAccountByAPIKey(apiKey: APIKey) =
+    byKeyCache.get(apiKey) match {
+      case None =>
+        delegate.findAccountByAPIKey(apiKey) map {
+          _ map { _ tap (add(apiKey, _)) unsafePerformIO }
+        }
 
-    case idOpt =>
-      idOpt.point[M]
-  }
+      case idOpt =>
+        idOpt.point[M]
+    }
 
   def findAccountDetailsById(accountId: AccountId) =
     byAccountIdCache.get(accountId) match {

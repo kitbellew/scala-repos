@@ -47,16 +47,17 @@ object CronExpressionSerialization {
   }
 
   implicit val cronExpressionExtractor = new Extractor[CronExpression] {
-    def validated(jv: JValue) = jv match {
-      case JString(expr) =>
-        Validation
-          .fromTryCatch(new CronExpression(expr))
-          .leftMap(Extractor.Error.thrown)
-      case invalid =>
-        Failure(
-          Extractor.Error.invalid(
-            "Could not parse CRON expression from " + invalid))
-    }
+    def validated(jv: JValue) =
+      jv match {
+        case JString(expr) =>
+          Validation
+            .fromTryCatch(new CronExpression(expr))
+            .leftMap(Extractor.Error.thrown)
+        case invalid =>
+          Failure(
+            Extractor.Error.invalid(
+              "Could not parse CRON expression from " + invalid))
+      }
   }
 }
 

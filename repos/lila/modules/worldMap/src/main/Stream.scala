@@ -70,17 +70,17 @@ object Stream {
   private def truncate(d: Double) = lila.common.Maths.truncateAt(d, 4)
 
   private val bytes2base64 = java.util.Base64.getEncoder.encodeToString _
-  private def game2json(md5: MessageDigest)(game: Game): JsValue = Json.obj(
-    "id" -> bytes2base64(md5.digest(game.id getBytes "UTF-8") take 6),
-    "ps" -> Json.toJson {
-      game.points.map { p => List(p.lat, p.lon) map truncate }
-    }
-  )
+  private def game2json(md5: MessageDigest)(game: Game): JsValue =
+    Json.obj(
+      "id" -> bytes2base64(md5.digest(game.id getBytes "UTF-8") take 6),
+      "ps" -> Json.toJson {
+        game.points.map { p => List(p.lat, p.lon) map truncate }
+      }
+    )
 
   case class Point(lat: Double, lon: Double)
-  def toPoint(ipLoc: IpLocation): Option[Point] = ipLoc.geoPoint map { p =>
-    Point(p.latitude, p.longitude)
-  }
+  def toPoint(ipLoc: IpLocation): Option[Point] =
+    ipLoc.geoPoint map { p => Point(p.latitude, p.longitude) }
 
   sealed trait Event
   object Event {

@@ -22,12 +22,13 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
   def describe: String = {
     import Variable._
 
-    def varType(v: Variable[F]): String = v match {
-      case Ignored(_)       => "ignored"
-      case Continuous(_, _) => "continuous"
-      case Categorical(_)   => "categorical"
-      case Missing(v0, _)   => s"${varType(v0)} with missing values"
-    }
+    def varType(v: Variable[F]): String =
+      v match {
+        case Ignored(_)       => "ignored"
+        case Continuous(_, _) => "continuous"
+        case Categorical(_)   => "categorical"
+        case Missing(v0, _)   => s"${varType(v0)} with missing values"
+      }
 
     val vars = variables.zipWithIndex map {
       case (v, i) =>
@@ -48,9 +49,10 @@ object DataSet {
     result
   }
 
-  private def readDataSet(path: String): List[String] = withResource(path) {
-    reader => Stream.continually(reader.readLine()).takeWhile(_ != null).toList
-  }
+  private def readDataSet(path: String): List[String] =
+    withResource(path) { reader =>
+      Stream.continually(reader.readLine()).takeWhile(_ != null).toList
+    }
 
   type Output[+K] = (Int, String => K)
 
@@ -176,70 +178,75 @@ object Variable {
   protected val Unlabeled = "unnamed variable"
 
   case class Ignored(label: String = Unlabeled) extends Variable[Nothing] {
-    def apply() = new Builder[String, String => List[Nothing]] {
-      def +=(s: String) = this
-      def clear(): Unit = ()
-      def result() = s => Nil
-    }
+    def apply() =
+      new Builder[String, String => List[Nothing]] {
+        def +=(s: String) = this
+        def clear(): Unit = ()
+        def result() = s => Nil
+      }
   }
 
   case class Continuous[+F](label: String = Unlabeled, f: String => F)
       extends Variable[F] {
-    def apply() = new Builder[String, String => List[F]] {
-      def +=(s: String) = this
-      def clear(): Unit = ()
-      def result() = { s => f(s) :: Nil }
-    }
+    def apply() =
+      new Builder[String, String => List[F]] {
+        def +=(s: String) = this
+        def clear(): Unit = ()
+        def result() = { s => f(s) :: Nil }
+      }
   }
 
   case class Categorical[+F: Ring](label: String = Unlabeled)
       extends Variable[F] {
-    def apply() = new Builder[String, String => List[F]] {
-      var categories: Set[String] = Set.empty
+    def apply() =
+      new Builder[String, String => List[F]] {
+        var categories: Set[String] = Set.empty
 
-      def +=(s: String) = {
-        categories += s
-        this
-      }
-      def clear(): Unit = { categories = Set.empty }
-      def result() = {
-        val orderedCategories = categories.toList
+        def +=(s: String) = {
+          categories += s
+          this
+        }
+        def clear(): Unit = { categories = Set.empty }
+        def result() = {
+          val orderedCategories = categories.toList
 
-        { s =>
-          orderedCategories map (cat =>
-            if (cat == s) Ring[F].one else Ring[F].zero)
+          { s =>
+            orderedCategories map (cat =>
+              if (cat == s) Ring[F].one else Ring[F].zero)
+          }
         }
       }
-    }
   }
 
   case class Missing[+F](default: Variable[F], sentinel: String)
       extends Variable[F] {
     def label = default.label
 
-    def apply() = new Builder[String, String => List[F]] {
-      val defaultBuilder = default.apply()
-      val values: ListBuffer[String] = new ListBuffer[String]
+    def apply() =
+      new Builder[String, String => List[F]] {
+        val defaultBuilder = default.apply()
+        val values: ListBuffer[String] = new ListBuffer[String]
 
-      def +=(s: String) = {
-        if (s != sentinel) {
-          defaultBuilder += s
-          values += s
+        def +=(s: String) = {
+          if (s != sentinel) {
+            defaultBuilder += s
+            values += s
+          }
+          this
         }
-        this
-      }
-      def clear(): Unit = { values.clear(); defaultBuilder.clear() }
-      def result() = {
-        val real = defaultBuilder.result()
-        val occurences = values.foldLeft(Map.empty[List[F], Int]) { (acc, v) =>
-          val k = real(v)
-          acc + (k -> (acc.getOrElse(k, 0) + 1))
-        }
-        val mostCommon = occurences.maxBy(_._2)._1
+        def clear(): Unit = { values.clear(); defaultBuilder.clear() }
+        def result() = {
+          val real = defaultBuilder.result()
+          val occurences = values.foldLeft(Map.empty[List[F], Int]) {
+            (acc, v) =>
+              val k = real(v)
+              acc + (k -> (acc.getOrElse(k, 0) + 1))
+          }
+          val mostCommon = occurences.maxBy(_._2)._1
 
-        { s => if (s == sentinel) mostCommon else real(s) }
+          { s => if (s == sentinel) mostCommon else real(s) }
+        }
       }
-    }
   }
 }
 

@@ -148,12 +148,13 @@ private[internal] trait TypeConstraints {
 
     def instWithinBounds = instValid && isWithinBounds(inst)
 
-    def isWithinBounds(tp: Type): Boolean = (
-      lobounds.forall(_ <:< tp)
-        && hibounds.forall(tp <:< _)
-        && (numlo == NoType || (numlo weak_<:< tp))
-        && (numhi == NoType || (tp weak_<:< numhi))
-    )
+    def isWithinBounds(tp: Type): Boolean =
+      (
+        lobounds.forall(_ <:< tp)
+          && hibounds.forall(tp <:< _)
+          && (numlo == NoType || (numlo weak_<:< tp))
+          && (numhi == NoType || (tp weak_<:< numhi))
+      )
 
     var inst: Type = NoType // @M reduce visibility?
 
@@ -273,12 +274,13 @@ private[internal] trait TypeConstraints {
     // println("solving "+tvars+"/"+tparams+"/"+(tparams map (_.info)))
     foreach3(tvars, tparams, variances)(solveOne)
 
-    def logBounds(tv: TypeVar) = log {
-      val what =
-        if (!tv.instValid) "is invalid"
-        else s"does not conform to bounds: ${tv.constr}"
-      s"Inferred type for ${tv.originString} (${tv.inst}) $what"
-    }
+    def logBounds(tv: TypeVar) =
+      log {
+        val what =
+          if (!tv.instValid) "is invalid"
+          else s"does not conform to bounds: ${tv.constr}"
+        s"Inferred type for ${tv.originString} (${tv.inst}) $what"
+      }
 
     tvars forall (tv => tv.instWithinBounds || util.andFalse(logBounds(tv)))
   }

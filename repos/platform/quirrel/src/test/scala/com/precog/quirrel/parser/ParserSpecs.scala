@@ -2837,34 +2837,36 @@ object ParserSpecs
   private def parseSingle(str: String): Expr = parseSingle(LineStream(str))
 
   private object PathLit {
-    def unapply(expr: Expr): Option[String] = expr match {
-      case Dispatch(
-            _,
-            Identifier(Vector(), "load"),
-            Vector(
-              Dispatch(
-                _,
-                Identifier(Vector("std", "fs"), "expandPath"),
-                Vector(StrLit(_, str))))) =>
-        Some(str)
+    def unapply(expr: Expr): Option[String] =
+      expr match {
+        case Dispatch(
+              _,
+              Identifier(Vector(), "load"),
+              Vector(
+                Dispatch(
+                  _,
+                  Identifier(Vector("std", "fs"), "expandPath"),
+                  Vector(StrLit(_, str))))) =>
+          Some(str)
 
-      case _ => None
-    }
+        case _ => None
+      }
   }
 
   private object RelPathLit {
-    def unapply(expr: Expr): Option[String] = expr match {
-      case Dispatch(
-            _,
-            Identifier(Vector(), "relativeLoad"),
-            Vector(
-              Dispatch(
-                _,
-                Identifier(Vector("std", "fs"), "expandPath"),
-                Vector(StrLit(_, str))))) =>
-        Some(str)
+    def unapply(expr: Expr): Option[String] =
+      expr match {
+        case Dispatch(
+              _,
+              Identifier(Vector(), "relativeLoad"),
+              Vector(
+                Dispatch(
+                  _,
+                  Identifier(Vector("std", "fs"), "expandPath"),
+                  Vector(StrLit(_, str))))) =>
+          Some(str)
 
-      case _ => None
-    }
+        case _ => None
+      }
   }
 }

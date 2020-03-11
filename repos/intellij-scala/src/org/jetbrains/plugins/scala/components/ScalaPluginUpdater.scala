@@ -340,12 +340,13 @@ object ScalaPluginUpdater {
   def patchPluginVersion(newVersion: String) = {
     import scala.xml._
     val versionPatcher = new RewriteRule {
-      override def transform(n: Node): NodeSeq = n match {
-        case <version>{_}</version> => <version>{newVersion}</version>
-        case <include/> =>
-          NodeSeq.Empty // relative path includes break temp file parsing
-        case other => other
-      }
+      override def transform(n: Node): NodeSeq =
+        n match {
+          case <version>{_}</version> => <version>{newVersion}</version>
+          case <include/> =>
+            NodeSeq.Empty // relative path includes break temp file parsing
+          case other => other
+        }
     }
     val stream =
       getClass.getClassLoader.getResource("META-INF/plugin.xml").openStream()
@@ -412,7 +413,8 @@ object ScalaPluginUpdater {
   def invokeLater(f: => Unit) =
     ApplicationManager.getApplication.executeOnPooledThread(toRunnable(f))
 
-  def toRunnable(f: => Unit) = new Runnable {
-    override def run(): Unit = f
-  }
+  def toRunnable(f: => Unit) =
+    new Runnable {
+      override def run(): Unit = f
+    }
 }

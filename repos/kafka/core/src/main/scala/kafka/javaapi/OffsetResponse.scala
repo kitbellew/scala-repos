@@ -33,10 +33,11 @@ class OffsetResponse(private val underlying: kafka.api.OffsetResponse) {
       .offsets
       .toArray
 
-  override def equals(other: Any) = canEqual(other) && {
-    val otherOffsetResponse = other.asInstanceOf[kafka.javaapi.OffsetResponse]
-    this.underlying.equals(otherOffsetResponse.underlying)
-  }
+  override def equals(other: Any) =
+    canEqual(other) && {
+      val otherOffsetResponse = other.asInstanceOf[kafka.javaapi.OffsetResponse]
+      this.underlying.equals(otherOffsetResponse.underlying)
+    }
 
   def canEqual(other: Any) = other.isInstanceOf[kafka.javaapi.OffsetResponse]
 

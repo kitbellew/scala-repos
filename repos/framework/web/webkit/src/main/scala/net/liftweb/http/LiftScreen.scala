@@ -216,9 +216,8 @@ trait AbstractScreen extends Factory with Loggable {
     protected def otherFuncVendors(what: Manifest[ValueType])
         : Box[(ValueType, ValueType => Any) => NodeSeq] = Empty
 
-    def validate: List[FieldError] = currentField.doWith(this) {
-      validations.flatMap(_.apply(is))
-    }
+    def validate: List[FieldError] =
+      currentField.doWith(this) { validations.flatMap(_.apply(is)) }
 
     def validations: List[ValueType => List[FieldError]] = Nil
 
@@ -1344,16 +1343,17 @@ trait ScreenWizardRendered extends Loggable {
 
     val savAdditionalFormBindings = additionalFormBindings
 
-    def bindErrors: CssBindFunc = notices.filter(_._3.isEmpty) match {
-      case Nil => remove(_.globalErrors)
-      case xs =>
-        replaceChildren(_.globalErrors) #> xs.map {
-          case (noticeType, msg, _) =>
-            val metaData: MetaData =
-              noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
-            nsSetChildren(_.error, msg) & update(_.error, metaData)
-        }
-    }
+    def bindErrors: CssBindFunc =
+      notices.filter(_._3.isEmpty) match {
+        case Nil => remove(_.globalErrors)
+        case xs =>
+          replaceChildren(_.globalErrors) #> xs.map {
+            case (noticeType, msg, _) =>
+              val metaData: MetaData =
+                noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
+              nsSetChildren(_.error, msg) & update(_.error, metaData)
+          }
+      }
 
     def bindFieldsWithAdditional(xhtml: NodeSeq) =
       (savAdditionalFormBindings map (bindFields & _) openOr (bindFields))(
@@ -1412,13 +1412,14 @@ trait ScreenWizardRendered extends Loggable {
       else { ret }
     }
 
-    def bindScreenInfo: CssBindFunc = (currentScreenNumber, screenCount) match {
-      case (Full(num), Full(cnt)) =>
-        replaceChildren(_.screenInfo) #> (nsSetChildren(
-          _.screenNumber,
-          num) & nsSetChildren(_.totalScreens, cnt))
-      case _ => remove(_.screenInfo)
-    }
+    def bindScreenInfo: CssBindFunc =
+      (currentScreenNumber, screenCount) match {
+        case (Full(num), Full(cnt)) =>
+          replaceChildren(_.screenInfo) #> (nsSetChildren(
+            _.screenNumber,
+            num) & nsSetChildren(_.totalScreens, cnt))
+        case _ => remove(_.screenInfo)
+      }
 
     logger.trace("Preparing to bind", fields)
 

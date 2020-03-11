@@ -203,15 +203,16 @@ trait ObservableMap[K, V]
     *
     * @return The new `iterator`.
     */
-  def iterator = new Iterator[(K, V)] {
-    // Definition copied from JavaConversions.JMapWrapperLike.iterator
-    val it = delegate.entrySet.iterator
-    def hasNext = it.hasNext
-    def next() = {
-      val e = it.next();
-      (e.getKey, e.getValue)
+  def iterator =
+    new Iterator[(K, V)] {
+      // Definition copied from JavaConversions.JMapWrapperLike.iterator
+      val it = delegate.entrySet.iterator
+      def hasNext = it.hasNext
+      def next() = {
+        val e = it.next();
+        (e.getKey, e.getValue)
+      }
     }
-  }
 
   /**
     * This $MAP's size.

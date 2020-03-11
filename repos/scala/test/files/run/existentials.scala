@@ -4,9 +4,8 @@ import scala.language.reflectiveCalls
 class Foo {
   class Line {
     case class Cell[T](var x: T)
-    def f[T](x: Any): Cell[t1] forSome { type t1 } = x match {
-      case y: Cell[t] => y
-    }
+    def f[T](x: Any): Cell[t1] forSome { type t1 } =
+      x match { case y: Cell[t] => y }
 
     var x: Cell[T] forSome { type T } = new Cell(1)
     println({ x = new Cell("abc"); x })
@@ -60,19 +59,21 @@ object Test extends App {
   val x = { class I; class J; (new C(new I), new C(new J)) }
   val y: (C[X], C[Y]) forSome { type X; type Y } = x
 
-  def foo(x: Counter[T] { def name: String } forSome { type T }) = x match {
-    case ctr: Counter[t] =>
-      val c = ctr.newCounter
-      println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
-    case _ =>
-  }
+  def foo(x: Counter[T] { def name: String } forSome { type T }) =
+    x match {
+      case ctr: Counter[t] =>
+        val c = ctr.newCounter
+        println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
+      case _ =>
+    }
 
-  def fooW(x: Counter[T] { def name: String } forSome { type T }) = x match {
-    case ctr: Counter[t] =>
-      val c = ctr.newCounter
-      println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
-    case _ =>
-  }
+  def fooW(x: Counter[T] { def name: String } forSome { type T }) =
+    x match {
+      case ctr: Counter[t] =>
+        val c = ctr.newCounter
+        println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
+      case _ =>
+    }
 
   val ci = new Counter[Int] {
     def newCounter = 0

@@ -20,10 +20,11 @@ object consistencyError {
   bx = 1
   label.tpe = (val rs: scala.collection.immutable.Stream[A])None.type
    */
-  def crash[A](lefts: Stream[A], rights: Stream[A]) = (lefts, rights) match {
-    case (Stream.Empty, Stream.Empty) => None
-    case (l #:: ls, rs)               => None
-  }
+  def crash[A](lefts: Stream[A], rights: Stream[A]) =
+    (lefts, rights) match {
+      case (Stream.Empty, Stream.Empty) => None
+      case (l #:: ls, rs)               => None
+    }
 
   // These work
   // def works1[A](lefts: Stream[A]) = lefts match {

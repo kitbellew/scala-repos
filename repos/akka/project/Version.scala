@@ -34,11 +34,12 @@ object Version {
   def generateVersion(
       dir: SettingKey[File],
       locate: File => File,
-      template: String) = Def.task[Seq[File]] {
-    val file = locate(dir.value)
-    val content = template.stripMargin.format(version.value)
-    if (!file.exists || IO.read(file) != content) IO.write(file, content)
-    Seq(file)
-  }
+      template: String) =
+    Def.task[Seq[File]] {
+      val file = locate(dir.value)
+      val content = template.stripMargin.format(version.value)
+      if (!file.exists || IO.read(file) != content) IO.write(file, content)
+      Seq(file)
+    }
 
 }

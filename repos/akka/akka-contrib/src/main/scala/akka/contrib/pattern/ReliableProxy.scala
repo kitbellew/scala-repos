@@ -299,9 +299,8 @@ class ReliableProxy(
       targetPath)
   }
 
-  override def supervisorStrategy = OneForOneStrategy() {
-    case _ ⇒ SupervisorStrategy.Escalate
-  }
+  override def supervisorStrategy =
+    OneForOneStrategy() { case _ ⇒ SupervisorStrategy.Escalate }
 
   override def postStop() {
     logDebug(

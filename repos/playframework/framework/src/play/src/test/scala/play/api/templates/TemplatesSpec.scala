@@ -45,8 +45,9 @@ object TemplatesSpec extends Specification {
 
   def string(bytes: ByteString): String = bytes.utf8String
 
-  def consume(entity: HttpEntity): String = entity match {
-    case HttpEntity.Strict(data, _) => string(data)
-    case _                          => throw new IllegalArgumentException("Expected strict body")
-  }
+  def consume(entity: HttpEntity): String =
+    entity match {
+      case HttpEntity.Strict(data, _) => string(data)
+      case _                          => throw new IllegalArgumentException("Expected strict body")
+    }
 }

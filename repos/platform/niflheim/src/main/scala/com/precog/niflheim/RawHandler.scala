@@ -118,8 +118,9 @@ class RawHandler private[niflheim] (
 
   override def isStable: Boolean = os == null
 
-  def close(): Unit = if (os != null) {
-    os.close()
-    os = null
-  }
+  def close(): Unit =
+    if (os != null) {
+      os.close()
+      os = null
+    }
 }

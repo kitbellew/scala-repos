@@ -91,12 +91,13 @@ object PlainSQL extends App {
       state varchar not null,
       zip varchar not null)"""
 
-  def insertSuppliers: DBIO[Unit] = DBIO.seq(
-    // Insert some suppliers
-    sqlu"insert into suppliers values(101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')",
-    sqlu"insert into suppliers values(49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')",
-    sqlu"insert into suppliers values(150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')"
-  )
+  def insertSuppliers: DBIO[Unit] =
+    DBIO.seq(
+      // Insert some suppliers
+      sqlu"insert into suppliers values(101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')",
+      sqlu"insert into suppliers values(49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')",
+      sqlu"insert into suppliers values(150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')"
+    )
   //#sqlu
 
   def insertCoffees: DBIO[Unit] = {

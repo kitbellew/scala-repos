@@ -85,12 +85,13 @@ private[persistence] trait InmemMessages {
       pid: String,
       fromSnr: Long,
       toSnr: Long,
-      max: Long): immutable.Seq[PersistentRepr] = messages.get(pid) match {
-    case Some(ms) ⇒
-      ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
-        .take(safeLongToInt(max))
-    case None ⇒ Nil
-  }
+      max: Long): immutable.Seq[PersistentRepr] =
+    messages.get(pid) match {
+      case Some(ms) ⇒
+        ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
+          .take(safeLongToInt(max))
+      case None ⇒ Nil
+    }
 
   def highestSequenceNr(pid: String): Long = {
     val snro = for {

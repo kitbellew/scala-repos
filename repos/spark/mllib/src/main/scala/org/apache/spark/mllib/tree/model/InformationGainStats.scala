@@ -46,17 +46,18 @@ class InformationGainStats(
       s"right impurity = $rightImpurity"
   }
 
-  override def equals(o: Any): Boolean = o match {
-    case other: InformationGainStats =>
-      gain == other.gain &&
-        impurity == other.impurity &&
-        leftImpurity == other.leftImpurity &&
-        rightImpurity == other.rightImpurity &&
-        leftPredict == other.leftPredict &&
-        rightPredict == other.rightPredict
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: InformationGainStats =>
+        gain == other.gain &&
+          impurity == other.impurity &&
+          leftImpurity == other.leftImpurity &&
+          rightImpurity == other.rightImpurity &&
+          leftPredict == other.leftPredict &&
+          rightPredict == other.rightPredict
 
-    case _ => false
-  }
+      case _ => false
+    }
 
   override def hashCode: Int = {
     com.google.common.base.Objects.hashCode(

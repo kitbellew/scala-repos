@@ -10,56 +10,60 @@ object Test extends App {
 
   def output(num: Int, msg: String) { println("test" + num + ": " + msg) }
 
-  def testOnSuccess(): Unit = once { done =>
-    val f = future { output(1, "hai world") }
-    f onSuccess {
-      case _ =>
-        output(1, "kthxbye")
-        done()
+  def testOnSuccess(): Unit =
+    once { done =>
+      val f = future { output(1, "hai world") }
+      f onSuccess {
+        case _ =>
+          output(1, "kthxbye")
+          done()
+      }
     }
-  }
 
-  def testOnSuccessWhenCompleted(): Unit = once { done =>
-    val f = future { output(2, "hai world") }
-    f onSuccess {
-      case _ =>
-        output(2, "awsum thx")
-        f onSuccess {
-          case _ =>
-            output(2, "kthxbye")
-            done()
-        }
+  def testOnSuccessWhenCompleted(): Unit =
+    once { done =>
+      val f = future { output(2, "hai world") }
+      f onSuccess {
+        case _ =>
+          output(2, "awsum thx")
+          f onSuccess {
+            case _ =>
+              output(2, "kthxbye")
+              done()
+          }
+      }
     }
-  }
 
-  def testOnSuccessWhenFailed(): Unit = once { done =>
-    val f = future[Unit] {
-      output(3, "hai world")
-      done()
-      throw new Exception
+  def testOnSuccessWhenFailed(): Unit =
+    once { done =>
+      val f = future[Unit] {
+        output(3, "hai world")
+        done()
+        throw new Exception
+      }
+      f onSuccess {
+        case _ =>
+          output(3, "onoes")
+      }
     }
-    f onSuccess {
-      case _ =>
-        output(3, "onoes")
-    }
-  }
 
-  def testOnFailure(): Unit = once { done =>
-    val f = future[Unit] {
-      output(4, "hai world")
-      throw new Exception
+  def testOnFailure(): Unit =
+    once { done =>
+      val f = future[Unit] {
+        output(4, "hai world")
+        throw new Exception
+      }
+      f onSuccess {
+        case _ =>
+          output(4, "onoes")
+          done()
+      }
+      f onFailure {
+        case _ =>
+          output(4, "kthxbye")
+          done()
+      }
     }
-    f onSuccess {
-      case _ =>
-        output(4, "onoes")
-        done()
-    }
-    f onFailure {
-      case _ =>
-        output(4, "kthxbye")
-        done()
-    }
-  }
 
   def testOnFailureWhenSpecialThrowable(num: Int, cause: Throwable): Unit =
     once { done =>

@@ -933,36 +933,37 @@ class HiveWindowFunctionQueryFileSuite
     TestHive.reset()
   }
 
-  override def blackList: Seq[String] = Seq(
-    // Partitioned table functions are not supported.
-    "ptf*",
-    // tests of windowing.q are in HiveWindowFunctionQueryBaseSuite
-    "windowing.q",
-    // This one failed on the expression of
-    // sum(lag(p_retailprice,1,0.0)) over w1
-    // lag(p_retailprice,1,0.0) is a GenericUDF and the argument inspector of
-    // p_retailprice created by HiveInspectors is
-    // PrimitiveObjectInspectorFactory.javaDoubleObjectInspector.
-    // However, seems Hive assumes it is
-    // PrimitiveObjectInspectorFactory.writableDoubleObjectInspector, which introduces an error.
-    "windowing_expressions",
-    // Hive's results are not deterministic
-    "windowing_multipartitioning",
-    "windowing_navfn",
-    "windowing_ntile",
-    "windowing_udaf",
-    "windowing_windowspec",
-    "windowing_rank"
-  )
+  override def blackList: Seq[String] =
+    Seq(
+      // Partitioned table functions are not supported.
+      "ptf*",
+      // tests of windowing.q are in HiveWindowFunctionQueryBaseSuite
+      "windowing.q",
+      // This one failed on the expression of
+      // sum(lag(p_retailprice,1,0.0)) over w1
+      // lag(p_retailprice,1,0.0) is a GenericUDF and the argument inspector of
+      // p_retailprice created by HiveInspectors is
+      // PrimitiveObjectInspectorFactory.javaDoubleObjectInspector.
+      // However, seems Hive assumes it is
+      // PrimitiveObjectInspectorFactory.writableDoubleObjectInspector, which introduces an error.
+      "windowing_expressions",
+      // Hive's results are not deterministic
+      "windowing_multipartitioning",
+      "windowing_navfn",
+      "windowing_ntile",
+      "windowing_udaf",
+      "windowing_windowspec",
+      "windowing_rank"
+    )
 
-  override def whiteList: Seq[String] = Seq(
-    "windowing_udaf2",
-    "windowing_columnPruning",
-    "windowing_adjust_rowcontainer_sz"
-  )
+  override def whiteList: Seq[String] =
+    Seq(
+      "windowing_udaf2",
+      "windowing_columnPruning",
+      "windowing_adjust_rowcontainer_sz"
+    )
 
   // Only run those query tests in the realWhileList (do not try other ignored query files).
-  override def testCases: Seq[(String, File)] = super.testCases.filter {
-    case (name, _) => realWhiteList.contains(name)
-  }
+  override def testCases: Seq[(String, File)] =
+    super.testCases.filter { case (name, _) => realWhiteList.contains(name) }
 }

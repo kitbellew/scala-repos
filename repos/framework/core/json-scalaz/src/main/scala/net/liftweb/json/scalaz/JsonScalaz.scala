@@ -45,9 +45,10 @@ trait Types {
       UncategorizedError(key, desc, Nil).fail.liftFailNel
   }
 
-  implicit def JValueShow[A <: JValue]: Show[A] = new Show[A] {
-    def show(json: A) = compact(render(json)).toList
-  }
+  implicit def JValueShow[A <: JValue]: Show[A] =
+    new Show[A] {
+      def show(json: A) = compact(render(json)).toList
+    }
 
   implicit def JValueZero: Zero[JValue] = zero(JNothing)
   implicit def JValueSemigroup: Semigroup[JValue] = semigroup(_ ++ _)
@@ -72,17 +73,18 @@ trait Types {
     implicitly[JSONR[A]].read(json)
   def toJSON[A: JSONW](value: A): JValue = implicitly[JSONW[A]].write(value)
 
-  def field[A: JSONR](name: String)(json: JValue): Result[A] = json match {
-    case JObject(fs) =>
-      fs.find(_.name == name)
-        .map(f => implicitly[JSONR[A]].read(f.value))
-        .orElse(
-          implicitly[JSONR[A]]
-            .read(JNothing)
-            .fold(_ => none, x => some(Success(x))))
-        .getOrElse(NoSuchFieldError(name, json).fail.liftFailNel)
-    case x => UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
-  }
+  def field[A: JSONR](name: String)(json: JValue): Result[A] =
+    json match {
+      case JObject(fs) =>
+        fs.find(_.name == name)
+          .map(f => implicitly[JSONR[A]].read(f.value))
+          .orElse(
+            implicitly[JSONR[A]]
+              .read(JNothing)
+              .fold(_ => none, x => some(Success(x))))
+          .getOrElse(NoSuchFieldError(name, json).fail.liftFailNel)
+      case x => UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
+    }
 
   def validate[A: JSONR](name: String): Kleisli[Result, JValue, A] =
     kleisli(field[A](name))

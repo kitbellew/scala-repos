@@ -256,37 +256,38 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
   }
 
   object ResourceFile {
-    def apply(url: URL): Option[ResourceFile] = url.getProtocol match {
-      case "file" ⇒
-        val file = new File(url.toURI)
-        if (file.isDirectory) None
-        else Some(ResourceFile(url, file.length(), file.lastModified()))
-      case "jar" ⇒
-        val path =
-          new URI(
-            url.getPath).getPath // remove "file:" prefix and normalize whitespace
-        val bangIndex = path.indexOf('!')
-        val filePath = path.substring(0, bangIndex)
-        val resourcePath = path.substring(bangIndex + 2)
-        val jar = new java.util.zip.ZipFile(filePath)
-        try {
-          val entry = jar.getEntry(resourcePath)
-          Option(jar.getInputStream(entry)) map { is ⇒
-            is.close()
-            ResourceFile(url, entry.getSize, entry.getTime)
-          }
-        } finally jar.close()
-      case _ ⇒
-        val conn = url.openConnection()
-        try {
-          conn.setUseCaches(
-            false
-          ) // otherwise the JDK will keep the connection open when we close!
-          val len = conn.getContentLength
-          val lm = conn.getLastModified
-          Some(ResourceFile(url, len, lm))
-        } finally conn.getInputStream.close()
-    }
+    def apply(url: URL): Option[ResourceFile] =
+      url.getProtocol match {
+        case "file" ⇒
+          val file = new File(url.toURI)
+          if (file.isDirectory) None
+          else Some(ResourceFile(url, file.length(), file.lastModified()))
+        case "jar" ⇒
+          val path =
+            new URI(
+              url.getPath).getPath // remove "file:" prefix and normalize whitespace
+          val bangIndex = path.indexOf('!')
+          val filePath = path.substring(0, bangIndex)
+          val resourcePath = path.substring(bangIndex + 2)
+          val jar = new java.util.zip.ZipFile(filePath)
+          try {
+            val entry = jar.getEntry(resourcePath)
+            Option(jar.getInputStream(entry)) map { is ⇒
+              is.close()
+              ResourceFile(url, entry.getSize, entry.getTime)
+            }
+          } finally jar.close()
+        case _ ⇒
+          val conn = url.openConnection()
+          try {
+            conn.setUseCaches(
+              false
+            ) // otherwise the JDK will keep the connection open when we close!
+            val len = conn.getContentLength
+            val lm = conn.getLastModified
+            Some(ResourceFile(url, len, lm))
+          } finally conn.getInputStream.close()
+      }
   }
   case class ResourceFile(url: URL, length: Long, lastModified: Long)
 

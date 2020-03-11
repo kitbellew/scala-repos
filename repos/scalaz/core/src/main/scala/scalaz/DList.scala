@@ -102,10 +102,11 @@ object DList extends DListInstances {
 }
 
 sealed abstract class DListInstances {
-  implicit def dlistMonoid[A]: Monoid[DList[A]] = new Monoid[DList[A]] {
-    val zero = DList[A]()
-    def append(a: DList[A], b: => DList[A]) = a ++ b
-  }
+  implicit def dlistMonoid[A]: Monoid[DList[A]] =
+    new Monoid[DList[A]] {
+      val zero = DList[A]()
+      def append(a: DList[A], b: => DList[A]) = a ++ b
+    }
   implicit val dlistMonadPlus: MonadPlus[DList]
     with Traverse[DList]
     with BindRec[DList]

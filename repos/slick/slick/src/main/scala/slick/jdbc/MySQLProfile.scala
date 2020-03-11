@@ -85,25 +85,26 @@ trait MySQLProfile extends JdbcProfile { profile =>
       }
     override def createColumnBuilder(
         tableBuilder: TableBuilder,
-        meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta) {
-      override def default =
-        meta.columnDef
-          .map((_, tpe))
-          .collect {
-            case (v, "String")    => Some(Some(v))
-            case ("1", "Boolean") => Some(Some(true))
-            case ("0", "Boolean") => Some(Some(false))
-          }
-          .getOrElse {
-            val d = super.default
-            if (meta.nullable == Some(true) && d == None) { Some(None) }
-            else d
-          }
-      override def length: Option[Int] = {
-        val l = super.length
-        if (tpe == "String" && varying && l == Some(65535)) None else l
+        meta: MColumn): ColumnBuilder =
+      new ColumnBuilder(tableBuilder, meta) {
+        override def default =
+          meta.columnDef
+            .map((_, tpe))
+            .collect {
+              case (v, "String")    => Some(Some(v))
+              case ("1", "Boolean") => Some(Some(true))
+              case ("0", "Boolean") => Some(Some(false))
+            }
+            .getOrElse {
+              val d = super.default
+              if (meta.nullable == Some(true) && d == None) { Some(None) }
+              else d
+            }
+        override def length: Option[Int] = {
+          val l = super.length
+          if (tpe == "String" && varying && l == Some(65535)) None else l
+        }
       }
-    }
   }
 
   override def createModelBuilder(
@@ -132,28 +133,29 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String = tmd.sqlType match {
-    case java.sql.Types.VARCHAR =>
-      sym.flatMap(
-        _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
-        case Some(l) =>
-          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
-        case None =>
-          defaultStringType match {
-            case Some(s) => s
-            case None =>
-              if (sym
-                    .flatMap(_.findColumnOption[
-                      RelationalProfile.ColumnOption.Default[_]])
-                    .isDefined ||
-                  sym
-                    .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                    .isDefined) "VARCHAR(254)"
-              else "TEXT"
-          }
-      }
-    case _ => super.defaultSqlTypeName(tmd, sym)
-  }
+      sym: Option[FieldSymbol]): String =
+    tmd.sqlType match {
+      case java.sql.Types.VARCHAR =>
+        sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+          case Some(l) =>
+            if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
+          case None =>
+            defaultStringType match {
+              case Some(s) => s
+              case None =>
+                if (sym
+                      .flatMap(_.findColumnOption[
+                        RelationalProfile.ColumnOption.Default[_]])
+                      .isDefined ||
+                    sym
+                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
+                      .isDefined) "VARCHAR(254)"
+                else "TEXT"
+            }
+        }
+      case _ => super.defaultSqlTypeName(tmd, sym)
+    }
 
   protected lazy val defaultStringType =
     profileConfig.getStringOpt("defaultStringType")
@@ -207,29 +209,31 @@ trait MySQLProfile extends JdbcProfile { profile =>
     override protected val parenthesizeNestedRHSJoin = true
     override protected val quotedJdbcFns = Some(Nil)
 
-    override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
-      case Library.Cast(ch) :@ JdbcType(ti, _) =>
-        val tn =
-          if (ti == columnTypes.stringJdbcType) "VARCHAR"
-          else ti.sqlTypeName(None)
-        b"\({fn convert(!${ch},$tn)}\)"
-      case Library.NextValue(SequenceNode(name)) => b"`${name + "_nextval"}()"
-      case Library.CurrentValue(SequenceNode(name)) =>
-        b"`${name + "_currval"}()"
-      case RowNum(sym, true)    => b"(@`$sym := @`$sym + 1)"
-      case RowNum(sym, false)   => b"@`$sym"
-      case RowNumGen(sym, init) => b"@`$sym := $init"
-      case _                    => super.expr(n, skipParens)
-    }
+    override def expr(n: Node, skipParens: Boolean = false): Unit =
+      n match {
+        case Library.Cast(ch) :@ JdbcType(ti, _) =>
+          val tn =
+            if (ti == columnTypes.stringJdbcType) "VARCHAR"
+            else ti.sqlTypeName(None)
+          b"\({fn convert(!${ch},$tn)}\)"
+        case Library.NextValue(SequenceNode(name)) => b"`${name + "_nextval"}()"
+        case Library.CurrentValue(SequenceNode(name)) =>
+          b"`${name + "_currval"}()"
+        case RowNum(sym, true)    => b"(@`$sym := @`$sym + 1)"
+        case RowNum(sym, false)   => b"@`$sym"
+        case RowNumGen(sym, init) => b"@`$sym := $init"
+        case _                    => super.expr(n, skipParens)
+      }
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
-        offset: Option[Node]) = (fetch, offset) match {
-      case (Some(t), Some(d)) => b"\nlimit $d,$t"
-      case (Some(t), None)    => b"\nlimit $t"
-      case (None, Some(d))    => b"\nlimit $d,18446744073709551615"
-      case _                  =>
-    }
+        offset: Option[Node]) =
+      (fetch, offset) match {
+        case (Some(t), Some(d)) => b"\nlimit $d,$t"
+        case (Some(t), None)    => b"\nlimit $t"
+        case (None, Some(d))    => b"\nlimit $d,18446744073709551615"
+        case _                  =>
+      }
 
     override protected def buildOrdering(n: Node, o: Ordering) {
       if (o.nulls.last && !o.direction.desc) b"isnull($n),"

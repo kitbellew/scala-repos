@@ -29,9 +29,10 @@ class StackOverflow1 {
     def apply(l: L, f: F): Out
   }
 
-  implicit def foldCurry1[H, Out] = new FoldCurry[H :: HNil, H => Out, Out] {
-    def apply(l: H :: HNil, f: H => Out) = f(l.head)
-  }
+  implicit def foldCurry1[H, Out] =
+    new FoldCurry[H :: HNil, H => Out, Out] {
+      def apply(l: H :: HNil, f: H => Out) = f(l.head)
+    }
 
   implicit def foldCurry2[H, T <: HList, FT, Out](
       implicit fct: FoldCurry[T, FT, Out]) =

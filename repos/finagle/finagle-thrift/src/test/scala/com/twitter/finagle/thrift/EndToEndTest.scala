@@ -43,17 +43,19 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     def add(a: Int, b: Int) = Future.exception(new AnException)
     def add_one(a: Int, b: Int) = Future.Void
     def multiply(a: Int, b: Int) = Future { a * b }
-    def complex_return(someString: String) = Future {
-      Trace.record("hey it's me!")
-      new SomeStruct(123, Trace.id.parentId.toString)
-    }
+    def complex_return(someString: String) =
+      Future {
+        Trace.record("hey it's me!")
+        new SomeStruct(123, Trace.id.parentId.toString)
+      }
     def someway() = Future.Void
-    def show_me_your_dtab() = Future {
-      val stringer = new StringWriter
-      val printer = new PrintWriter(stringer)
-      Dtab.local.print(printer)
-      stringer.toString
-    }
+    def show_me_your_dtab() =
+      Future {
+        val stringer = new StringWriter
+        val printer = new PrintWriter(stringer)
+        Dtab.local.print(printer)
+        stringer.toString
+      }
 
     def show_me_your_dtab_size() = Future { Dtab.local.length }
   }

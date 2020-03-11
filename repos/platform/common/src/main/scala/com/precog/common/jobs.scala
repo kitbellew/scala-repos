@@ -28,10 +28,11 @@ package object jobs {
   trait IdExtractor {
     val NonNegInt = """(\d+)""".r
 
-    def unapply(str: String): Option[Long] = str match {
-      case NonNegInt(str) => Some(str.toLong)
-      case _              => None
-    }
+    def unapply(str: String): Option[Long] =
+      str match {
+        case NonNegInt(str) => Some(str.toLong)
+        case _              => None
+      }
   }
 
   object StatusId extends IdExtractor

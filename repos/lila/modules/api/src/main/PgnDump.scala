@@ -22,17 +22,19 @@ final class PgnDump(
 
   def filename(game: Game) = dumper filename game
 
-  def exportUserGames(userId: String): Enumerator[String] = PgnStream {
-    import lila.game.tube.gameTube
-    import lila.game.BSONHandlers.gameBSONHandler
-    pimpQB($query(Query user userId)).sort(Query.sortCreated).cursor[Game]()
-  }
+  def exportUserGames(userId: String): Enumerator[String] =
+    PgnStream {
+      import lila.game.tube.gameTube
+      import lila.game.BSONHandlers.gameBSONHandler
+      pimpQB($query(Query user userId)).sort(Query.sortCreated).cursor[Game]()
+    }
 
-  def exportGamesFromIds(ids: List[String]): Enumerator[String] = PgnStream {
-    import lila.game.tube.gameTube
-    import lila.game.BSONHandlers.gameBSONHandler
-    pimpQB($query byIds ids).sort(Query.sortCreated).cursor[Game]()
-  }
+  def exportGamesFromIds(ids: List[String]): Enumerator[String] =
+    PgnStream {
+      import lila.game.tube.gameTube
+      import lila.game.BSONHandlers.gameBSONHandler
+      pimpQB($query byIds ids).sort(Query.sortCreated).cursor[Game]()
+    }
 
   private def PgnStream(
       cursor: reactivemongo.api.Cursor[Game]): Enumerator[String] = {

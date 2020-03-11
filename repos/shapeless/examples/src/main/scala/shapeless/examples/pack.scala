@@ -77,9 +77,8 @@ object PackExamples extends App {
           type H = H0
           type T = T0
 
-          def split(p: Pack[F, H :: T]): (F[H], Pack[F, T]) = p match {
-            case PCons(fh, pt) => (fh, pt)
-          }
+          def split(p: Pack[F, H :: T]): (F[H], Pack[F, T]) =
+            p match { case PCons(fh, pt) => (fh, pt) }
         }
     }
   }

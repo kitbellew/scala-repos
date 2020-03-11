@@ -47,12 +47,13 @@ trait EssentialAction
     */
   def apply() = this
 
-  def asJava: play.mvc.EssentialAction = new play.mvc.EssentialAction() {
-    import play.api.libs.concurrent.Execution.Implicits.defaultContext
-    def apply(rh: play.mvc.Http.RequestHeader) =
-      self(rh._underlyingHeader).map(_.asJava).asJava
-    override def apply(rh: RequestHeader) = self(rh)
-  }
+  def asJava: play.mvc.EssentialAction =
+    new play.mvc.EssentialAction() {
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
+      def apply(rh: play.mvc.Http.RequestHeader) =
+        self(rh._underlyingHeader).map(_.asJava).asJava
+      override def apply(rh: RequestHeader) = self(rh)
+    }
 
 }
 
@@ -267,10 +268,11 @@ object BodyParser {
 
   def apply[T](debugName: String)(
       f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
-      : BodyParser[T] = new BodyParser[T] {
-    def apply(rh: RequestHeader) = f(rh)
-    override def toString = "BodyParser(" + debugName + ")"
-  }
+      : BodyParser[T] =
+    new BodyParser[T] {
+      def apply(rh: RequestHeader) = f(rh)
+      override def toString = "BodyParser(" + debugName + ")"
+    }
 
   /**
     * Create an anonymous BodyParser
@@ -299,10 +301,11 @@ object BodyParser {
   @deprecated("Use apply instead", "2.5.0")
   def iteratee[T](debugName: String)(
       f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
-      : BodyParser[T] = new BodyParser[T] {
-    def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
-    override def toString = "BodyParser(" + debugName + ")"
-  }
+      : BodyParser[T] =
+    new BodyParser[T] {
+      def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
+      override def toString = "BodyParser(" + debugName + ")"
+    }
 
 }
 
@@ -386,9 +389,8 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     * @return an action
     */
   final def apply[A](bodyParser: BodyParser[A])(
-      block: R[A] => Result): Action[A] = async(bodyParser) { req: R[A] =>
-    Future.successful(block(req))
-  }
+      block: R[A] => Result): Action[A] =
+    async(bodyParser) { req: R[A] => Future.successful(block(req)) }
 
   /**
     * Constructs an `Action` with default content.

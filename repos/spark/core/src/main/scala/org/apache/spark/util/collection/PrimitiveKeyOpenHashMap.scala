@@ -90,28 +90,29 @@ private[spark] class PrimitiveKeyOpenHashMap[@specialized(
     }
   }
 
-  override def iterator: Iterator[(K, V)] = new Iterator[(K, V)] {
-    var pos = 0
-    var nextPair: (K, V) = computeNextPair()
+  override def iterator: Iterator[(K, V)] =
+    new Iterator[(K, V)] {
+      var pos = 0
+      var nextPair: (K, V) = computeNextPair()
 
-    /** Get the next value we should return from next(), or null if we're finished iterating */
-    def computeNextPair(): (K, V) = {
-      pos = _keySet.nextPos(pos)
-      if (pos >= 0) {
-        val ret = (_keySet.getValue(pos), _values(pos))
-        pos += 1
-        ret
-      } else { null }
+      /** Get the next value we should return from next(), or null if we're finished iterating */
+      def computeNextPair(): (K, V) = {
+        pos = _keySet.nextPos(pos)
+        if (pos >= 0) {
+          val ret = (_keySet.getValue(pos), _values(pos))
+          pos += 1
+          ret
+        } else { null }
+      }
+
+      def hasNext: Boolean = nextPair != null
+
+      def next(): (K, V) = {
+        val pair = nextPair
+        nextPair = computeNextPair()
+        pair
+      }
     }
-
-    def hasNext: Boolean = nextPair != null
-
-    def next(): (K, V) = {
-      val pair = nextPair
-      nextPair = computeNextPair()
-      pair
-    }
-  }
 
   // The following member variables are declared as protected instead of private for the
   // specialization to work (specialized class extends the unspecialized one and needs access

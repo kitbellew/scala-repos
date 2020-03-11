@@ -217,12 +217,13 @@ class FlowStageSpec
         .transform(() ⇒
           new StatefulStage[String, String] {
             var s = ""
-            override def initial = new State {
-              override def onPush(element: String, ctx: Context[String]) = {
-                s += element
-                ctx.pull()
+            override def initial =
+              new State {
+                override def onPush(element: String, ctx: Context[String]) = {
+                  s += element
+                  ctx.pull()
+                }
               }
-            }
             override def onUpstreamFinish(ctx: Context[String]) =
               terminationEmit(Iterator.single(s + "B"), ctx)
           })
@@ -262,13 +263,14 @@ class FlowStageSpec
         .fromPublisher(p)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
-            override def initial = new State {
-              override def onPush(elem: Int, ctx: Context[Int]) = {
-                if (elem == 2) {
-                  throw new IllegalArgumentException("two not allowed")
-                } else { emit(Iterator(elem, elem), ctx) }
+            override def initial =
+              new State {
+                override def onPush(elem: Int, ctx: Context[Int]) = {
+                  if (elem == 2) {
+                    throw new IllegalArgumentException("two not allowed")
+                  } else { emit(Iterator(elem, elem), ctx) }
+                }
               }
-            }
           })
         .runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
@@ -290,9 +292,11 @@ class FlowStageSpec
           else elem)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
-            override def initial = new State {
-              override def onPush(elem: Int, ctx: Context[Int]) = ctx.push(elem)
-            }
+            override def initial =
+              new State {
+                override def onPush(elem: Int, ctx: Context[Int]) =
+                  ctx.push(elem)
+              }
 
             override def onUpstreamFailure(
                 cause: Throwable,
@@ -318,10 +322,11 @@ class FlowStageSpec
         .fromPublisher(p)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
-            override def initial = new State {
-              override def onPush(elem: Int, ctx: Context[Int]) =
-                emit(Iterator(elem, elem), ctx)
-            }
+            override def initial =
+              new State {
+                override def onPush(elem: Int, ctx: Context[Int]) =
+                  emit(Iterator(elem, elem), ctx)
+              }
           })
         .runWith(TestSink.probe[Int])
         .request(1000)
@@ -343,9 +348,10 @@ class FlowStageSpec
         .fromPublisher(p)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
-            override def initial = new State {
-              override def onPush(elem: Int, ctx: Context[Int]) = ctx.pull()
-            }
+            override def initial =
+              new State {
+                override def onPush(elem: Int, ctx: Context[Int]) = ctx.pull()
+              }
             override def onUpstreamFinish(ctx: Context[Int]) =
               terminationEmit(Iterator(1, 2, 3), ctx)
           })
@@ -450,10 +456,11 @@ class FlowStageSpec
           .transform(() ⇒
             new StatefulStage[Int, Int] {
 
-              def initial: StageState[Int, Int] = new State {
-                override def onPush(element: Int, ctx: Context[Int]) =
-                  ctx.pushAndFinish(element)
-              }
+              def initial: StageState[Int, Int] =
+                new State {
+                  override def onPush(element: Int, ctx: Context[Int]) =
+                    ctx.pushAndFinish(element)
+                }
               override def onUpstreamFinish(
                   ctx: Context[Int]): TerminationDirective =
                 terminationEmit(Iterator(42), ctx)
@@ -482,10 +489,11 @@ class FlowStageSpec
         .single("hi")
         .transform(() ⇒
           new StatefulStage[String, String] {
-            override def initial = new State {
-              override def onPush(elem: String, ctx: Context[String]) =
-                emit(Iterator(elem + "1", elem + "2"), ctx)
-            }
+            override def initial =
+              new State {
+                override def onPush(elem: String, ctx: Context[String]) =
+                  emit(Iterator(elem + "1", elem + "2"), ctx)
+              }
             override def onUpstreamFinish(ctx: Context[String]) = {
               terminationEmit(Iterator("byebye"), ctx)
             }

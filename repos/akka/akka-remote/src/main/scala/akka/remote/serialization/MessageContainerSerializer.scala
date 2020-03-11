@@ -30,12 +30,13 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
 
   def includeManifest: Boolean = false
 
-  def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case sel: ActorSelectionMessage ⇒ serializeSelection(sel)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Cannot serialize object of type [${obj.getClass.getName}]")
-  }
+  def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case sel: ActorSelectionMessage ⇒ serializeSelection(sel)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Cannot serialize object of type [${obj.getClass.getName}]")
+    }
 
   import ContainerFormats.PatternType._
 

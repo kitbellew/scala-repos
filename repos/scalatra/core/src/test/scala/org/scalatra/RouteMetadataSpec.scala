@@ -23,18 +23,19 @@ object RouteMetadataSpec {
     route.copy(metadata = route.metadata + (key -> value))
   }
 
-  def servlet = new ScalatraServlet {
-    val zero: Route = get("/zero/:key") { zero.metadata.size.toString }
+  def servlet =
+    new ScalatraServlet {
+      val zero: Route = get("/zero/:key") { zero.metadata.size.toString }
 
-    val one: Route = get("/one/:key", meta('foo, "bar")) {
-      renderMeta(one, Symbol(params("key")))
+      val one: Route = get("/one/:key", meta('foo, "bar")) {
+        renderMeta(one, Symbol(params("key")))
+      }
+
+      val two: Route = get("/two/:key", meta('foo, "bar"), meta('foo, "baz")) {
+        renderMeta(two, Symbol(params("key")))
+      }
+
+      def renderMeta(route: Route, key: Symbol) =
+        route.metadata.getOrElse(key, "None")
     }
-
-    val two: Route = get("/two/:key", meta('foo, "bar"), meta('foo, "baz")) {
-      renderMeta(two, Symbol(params("key")))
-    }
-
-    def renderMeta(route: Route, key: Symbol) =
-      route.metadata.getOrElse(key, "None")
-  }
 }

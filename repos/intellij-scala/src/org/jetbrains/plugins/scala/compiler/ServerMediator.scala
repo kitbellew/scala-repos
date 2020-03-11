@@ -69,12 +69,13 @@ class ServerMediator(project: Project) extends ProjectComponent {
   CompilerManager.getInstance(project).addBeforeTask(checkSettingsTask)
 
   private def checkCompilationSettings(): Boolean = {
-    def hasClashes(module: Module) = module.hasScala && {
-      val extension = CompilerModuleExtension.getInstance(module)
-      val production = extension.getCompilerOutputUrl
-      val test = extension.getCompilerOutputUrlForTests
-      production == test
-    }
+    def hasClashes(module: Module) =
+      module.hasScala && {
+        val extension = CompilerModuleExtension.getInstance(module)
+        val production = extension.getCompilerOutputUrl
+        val test = extension.getCompilerOutputUrlForTests
+        production == test
+      }
     val modulesWithClashes =
       ModuleManager.getInstance(project).getModules.toSeq.filter(hasClashes)
 

@@ -209,13 +209,14 @@ private[netty] class NettyRpcEnv(
       if (!promise.tryFailure(e)) { logWarning(s"Ignored failure: $e") }
     }
 
-    def onSuccess(reply: Any): Unit = reply match {
-      case RpcFailure(e) => onFailure(e)
-      case rpcReply =>
-        if (!promise.trySuccess(rpcReply)) {
-          logWarning(s"Ignored message: $reply")
-        }
-    }
+    def onSuccess(reply: Any): Unit =
+      reply match {
+        case RpcFailure(e) => onFailure(e)
+        case rpcReply =>
+          if (!promise.trySuccess(rpcReply)) {
+            logWarning(s"Ignored message: $reply")
+          }
+      }
 
     try {
       if (remoteAddr == address) {
@@ -528,10 +529,11 @@ private[netty] class NettyRpcEndpointRef(
 
   def toURI: URI = new URI(_address.toString)
 
-  final override def equals(that: Any): Boolean = that match {
-    case other: NettyRpcEndpointRef => _address == other._address
-    case _                          => false
-  }
+  final override def equals(that: Any): Boolean =
+    that match {
+      case other: NettyRpcEndpointRef => _address == other._address
+      case _                          => false
+    }
 
   final override def hashCode(): Int =
     if (_address == null) 0 else _address.hashCode()

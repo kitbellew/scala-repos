@@ -199,10 +199,11 @@ object SBTConsole {
         def freshIdScanner = console.freshIdScanner
       }
 
-    def eval(str: String): Set[SValue] = evalE(str) match {
-      case Success(results) => results.map(_._2)
-      case Failure(t)       => throw t
-    }
+    def eval(str: String): Set[SValue] =
+      evalE(str) match {
+        case Success(results) => results.map(_._2)
+        case Failure(t)       => throw t
+      }
 
     def evalE(str: String) = {
       val dag = produceDAG(str)

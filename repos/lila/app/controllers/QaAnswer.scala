@@ -10,32 +10,33 @@ import views._
 
 object QaAnswer extends QaController {
 
-  def create(id: QuestionId) = AuthBody { implicit ctx => me =>
-    WithQuestion(id) { q =>
-      implicit val req = ctx.body
-      forms.answer.bindFromRequest.fold(
-        err => renderQuestion(q, Some(err)),
-        data =>
-          api.answer.create(data, q, me) map { answer =>
-            Redirect(
-              routes.QaQuestion.show(q.id, q.slug) + "#answer-" + answer.id)
-          }
-      )
+  def create(id: QuestionId) =
+    AuthBody { implicit ctx => me =>
+      WithQuestion(id) { q =>
+        implicit val req = ctx.body
+        forms.answer.bindFromRequest.fold(
+          err => renderQuestion(q, Some(err)),
+          data =>
+            api.answer.create(data, q, me) map { answer =>
+              Redirect(
+                routes.QaQuestion.show(q.id, q.slug) + "#answer-" + answer.id)
+            }
+        )
+      }
     }
-  }
 
-  def accept(questionId: QuestionId, answerId: AnswerId) = AuthBody {
-    implicit ctx => me =>
+  def accept(questionId: QuestionId, answerId: AnswerId) =
+    AuthBody { implicit ctx => me =>
       (api.question findById questionId) zip (api.answer findById answerId) flatMap {
         case (Some(q), Some(a)) if (QaAuth canEdit q) =>
           api.answer.accept(q, a) inject Redirect(
             routes.QaQuestion.show(q.id, q.slug))
         case _ => notFound
       }
-  }
+    }
 
-  def vote(questionId: QuestionId, answerId: AnswerId) = AuthBody {
-    implicit ctx => me =>
+  def vote(questionId: QuestionId, answerId: AnswerId) =
+    AuthBody { implicit ctx => me =>
       implicit val req = ctx.body
       forms.vote.bindFromRequest.fold(
         err => fuccess(BadRequest),
@@ -50,10 +51,10 @@ object QaAnswer extends QaController {
             case None => NotFound
           }
       )
-  }
+    }
 
-  def doEdit(questionId: QuestionId, answerId: AnswerId) = AuthBody {
-    implicit ctx => me =>
+  def doEdit(questionId: QuestionId, answerId: AnswerId) =
+    AuthBody { implicit ctx => me =>
       WithOwnAnswer(questionId, answerId) { q => a =>
         implicit val req = ctx.body
         forms.editAnswer.bindFromRequest.fold(
@@ -67,7 +68,7 @@ object QaAnswer extends QaController {
             }
         )
       }
-  }
+    }
 
   def remove(questionId: QuestionId, answerId: AnswerId) =
     Secure(_.ModerateQa) { implicit ctx => me =>
@@ -78,8 +79,8 @@ object QaAnswer extends QaController {
       }
     }
 
-  def moveTo(questionId: QuestionId, answerId: AnswerId) = AuthBody {
-    implicit ctx => me =>
+  def moveTo(questionId: QuestionId, answerId: AnswerId) =
+    AuthBody { implicit ctx => me =>
       WithOwnAnswer(questionId, answerId) { q => a =>
         implicit val req = ctx.body
         forms.moveAnswer.bindFromRequest.fold(
@@ -96,5 +97,5 @@ object QaAnswer extends QaController {
           }
         )
       }
-  }
+    }
 }

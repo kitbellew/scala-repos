@@ -80,10 +80,11 @@ object H5Store {
       group: String,
       from: X,
       to: X,
-      inclusive: Boolean): Series[X, T] = withMonitor {
-    val series = readPandasSeries[X, T](path, group)
-    series.sliceBy(from, to, inclusive)
-  }
+      inclusive: Boolean): Series[X, T] =
+    withMonitor {
+      val series = readPandasSeries[X, T](path, group)
+      series.sliceBy(from, to, inclusive)
+    }
 
   /**
     * Read a Frame from an HDF5 file.
@@ -95,9 +96,8 @@ object H5Store {
     */
   def readFrame[RX: ST: ORD, CX: ST: ORD, T: ST](
       path: String,
-      group: String): Frame[RX, CX, T] = withMonitor {
-    readPandasFrame[RX, CX, T](path, group)
-  }
+      group: String): Frame[RX, CX, T] =
+    withMonitor { readPandasFrame[RX, CX, T](path, group) }
 
   /**
     * Read a Frame slice from an HDF5 file. Note that the whole frame is still read into memory,
@@ -123,11 +123,12 @@ object H5Store {
       colFrom: CX,
       colTo: CX,
       rowInclusive: Boolean,
-      colInclusive: Boolean): Frame[RX, CX, T] = withMonitor {
-    val fr = readPandasFrame[RX, CX, T](path, group)
-    fr.colSliceBy(colFrom, colTo, colInclusive)
-      .rowSliceBy(rowFrom, rowTo, rowInclusive)
-  }
+      colInclusive: Boolean): Frame[RX, CX, T] =
+    withMonitor {
+      val fr = readPandasFrame[RX, CX, T](path, group)
+      fr.colSliceBy(colFrom, colTo, colInclusive)
+        .rowSliceBy(rowFrom, rowTo, rowInclusive)
+    }
 
   /**
     * Read a Series from an already-open HDF5 file.
@@ -156,10 +157,11 @@ object H5Store {
       group: String,
       from: X,
       to: X,
-      inclusive: Boolean): Series[X, T] = withMonitor {
-    val series = readPandasSeries[X, T](fileid, group)
-    series.sliceBy(from, to, inclusive)
-  }
+      inclusive: Boolean): Series[X, T] =
+    withMonitor {
+      val series = readPandasSeries[X, T](fileid, group)
+      series.sliceBy(from, to, inclusive)
+    }
 
   /**
     * Read a Frame from an HDF5 file.
@@ -171,9 +173,8 @@ object H5Store {
     */
   def readFrame[RX: ST: ORD, CX: ST: ORD, T: ST](
       fileid: Int,
-      group: String): Frame[RX, CX, T] = withMonitor {
-    readPandasFrame[RX, CX, T](fileid, group)
-  }
+      group: String): Frame[RX, CX, T] =
+    withMonitor { readPandasFrame[RX, CX, T](fileid, group) }
 
   /**
     * Read a Frame slice from an HDF5 file. Note that the whole frame is still read into memory,
@@ -199,11 +200,12 @@ object H5Store {
       colFrom: CX,
       colTo: CX,
       rowInclusive: Boolean,
-      colInclusive: Boolean): Frame[RX, CX, T] = withMonitor {
-    val fr = readPandasFrame[RX, CX, T](fileid, group)
-    fr.colSliceBy(colFrom, colTo, colInclusive)
-      .rowSliceBy(rowFrom, rowTo, rowInclusive)
-  }
+      colInclusive: Boolean): Frame[RX, CX, T] =
+    withMonitor {
+      val fr = readPandasFrame[RX, CX, T](fileid, group)
+      fr.colSliceBy(colFrom, colTo, colInclusive)
+        .rowSliceBy(rowFrom, rowTo, rowInclusive)
+    }
 
   // ** writing
 
@@ -314,30 +316,33 @@ object H5Store {
     * Open an HDF5 file and return an integer handle.
     * @param path Path of file
     */
-  def openFile(path: String, readOnly: Boolean = true): Int = withMonitor {
-    val rwParam =
-      if (readOnly) HDF5Constants.H5F_ACC_RDONLY else HDF5Constants.H5F_ACC_RDWR
-    val fid = H5.H5Fopen(path, rwParam, HDF5Constants.H5P_DEFAULT)
-    assertException(fid >= 0, "Could not open file " + path)
-    // H5Reg.save(fid, H5F) <-- don't want fid automatically released on error
-    fid
-  }
+  def openFile(path: String, readOnly: Boolean = true): Int =
+    withMonitor {
+      val rwParam =
+        if (readOnly) HDF5Constants.H5F_ACC_RDONLY
+        else HDF5Constants.H5F_ACC_RDWR
+      val fid = H5.H5Fopen(path, rwParam, HDF5Constants.H5P_DEFAULT)
+      assertException(fid >= 0, "Could not open file " + path)
+      // H5Reg.save(fid, H5F) <-- don't want fid automatically released on error
+      fid
+    }
 
   /**
     * Create an HDF5 file and return an integer handle.
     * @param path Path of file
     */
-  def createFile(path: String): Int = withMonitor {
-    val fid = H5.H5Fcreate(
-      path,
-      HDF5Constants.H5F_ACC_EXCL,
-      HDF5Constants.H5P_DEFAULT,
-      HDF5Constants.H5P_DEFAULT)
-    assertException(fid >= 0, "Could not create file " + path)
-    writePytablesHeader(fid)
-    // H5Reg.save(fid, H5F) <-- don't want fid automatically released on error
-    fid
-  }
+  def createFile(path: String): Int =
+    withMonitor {
+      val fid = H5.H5Fcreate(
+        path,
+        HDF5Constants.H5F_ACC_EXCL,
+        HDF5Constants.H5P_DEFAULT,
+        HDF5Constants.H5P_DEFAULT)
+      assertException(fid >= 0, "Could not create file " + path)
+      writePytablesHeader(fid)
+      // H5Reg.save(fid, H5F) <-- don't want fid automatically released on error
+      fid
+    }
 
   /**
     * Close an HDF5 file and return an integer handle.
@@ -355,9 +360,8 @@ object H5Store {
   /**
     * Query for number of open resource handles held by HDF5 Library
     */
-  def openResourceCount: Int = withMonitor {
-    ncsa.hdf.hdf5lib.H5.getOpenIDCount
-  }
+  def openResourceCount: Int =
+    withMonitor { ncsa.hdf.hdf5lib.H5.getOpenIDCount }
 
   // *** private helper functions
 

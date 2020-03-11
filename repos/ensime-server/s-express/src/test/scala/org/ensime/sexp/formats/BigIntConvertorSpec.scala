@@ -35,13 +35,13 @@ class BigIntConvertorCheck
     extends EnsimeSpec
     with GeneratorDrivenPropertyChecks {
 
-  def positiveIntStream: Arbitrary[Stream[Int]] = Arbitrary {
-    Gen.containerOf[Stream, Int](Gen.chooseNum(0, 2 * Short.MaxValue))
-  }
+  def positiveIntStream: Arbitrary[Stream[Int]] =
+    Arbitrary {
+      Gen.containerOf[Stream, Int](Gen.chooseNum(0, 2 * Short.MaxValue))
+    }
 
-  implicit def arbitraryBitSet: Arbitrary[BitSet] = Arbitrary {
-    for (seq <- positiveIntStream.arbitrary) yield BitSet(seq: _*)
-  }
+  implicit def arbitraryBitSet: Arbitrary[BitSet] =
+    Arbitrary { for (seq <- positiveIntStream.arbitrary) yield BitSet(seq: _*) }
 
   "BigIntConvertor" should "round-trip BigInt <=> BitSet" in {
     forAll { (bigint: BigInt) =>

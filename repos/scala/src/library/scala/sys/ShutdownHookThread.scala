@@ -22,10 +22,11 @@ class ShutdownHookThread private (name: String) extends Thread(name) {
 
 object ShutdownHookThread {
   private var hookNameCount: Int = 0
-  private def hookName(): String = synchronized {
-    hookNameCount += 1
-    "shutdownHook" + hookNameCount
-  }
+  private def hookName(): String =
+    synchronized {
+      hookNameCount += 1
+      "shutdownHook" + hookNameCount
+    }
 
   /** Creates, names, and registers a shutdown hook to run the
     *  given code.

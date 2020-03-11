@@ -709,11 +709,12 @@ class EndToEndTest
     val requestReceived = Array.fill(nreqs)(new Promise[String])
     val testService = new TestService.FutureIface {
       @volatile var nReqReceived = 0
-      def query(x: String) = synchronized {
-        nReqReceived += 1
-        requestReceived(nReqReceived - 1).setValue(x)
-        servicePromises(nReqReceived - 1)
-      }
+      def query(x: String) =
+        synchronized {
+          nReqReceived += 1
+          requestReceived(nReqReceived - 1).setValue(x)
+          servicePromises(nReqReceived - 1)
+        }
     }
     val server = ThriftMux.serveIface(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),

@@ -35,12 +35,13 @@ trait MemberLookup extends base.MemberLookupBase {
     else mbrs.min(Ordering[MemberEntity].on[(MemberEntity, LinkTo)](_._1))._2
   }
 
-  override def toString(link: LinkTo) = link match {
-    case LinkToTpl(tpl: EntityImpl) => tpl.sym.toString
-    case LinkToMember(mbr: EntityImpl, inTpl: EntityImpl) =>
-      mbr.sym.signatureString + " in " + inTpl.sym.toString
-    case _ => link.toString
-  }
+  override def toString(link: LinkTo) =
+    link match {
+      case LinkToTpl(tpl: EntityImpl) => tpl.sym.toString
+      case LinkToMember(mbr: EntityImpl, inTpl: EntityImpl) =>
+        mbr.sym.signatureString + " in " + inTpl.sym.toString
+      case _ => link.toString
+    }
 
   override def findExternalLink(
       sym: Symbol,

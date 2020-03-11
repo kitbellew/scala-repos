@@ -45,18 +45,20 @@ trait ToFunctorOps extends ToFunctorOps0 with ToInvariantFunctorOps {
 
   ////
 
-  implicit def ToLiftV[F[_], A, B](v: A => B) = new LiftV[F, A, B] {
-    def self = v
-  }
+  implicit def ToLiftV[F[_], A, B](v: A => B) =
+    new LiftV[F, A, B] {
+      def self = v
+    }
 
   // TODO Duplication
   trait LiftV[F[_], A, B] extends Ops[A => B] {
     def lift(implicit F: Functor[F]) = F.lift(self)
   }
 
-  implicit def ToFunctorIdV[A](v: A) = new FunctorIdV[A] {
-    def self = v
-  }
+  implicit def ToFunctorIdV[A](v: A) =
+    new FunctorIdV[A] {
+      def self = v
+    }
 
   trait FunctorIdV[A] extends Ops[A] {
     def mapply[F[_], B](f: F[A => B])(implicit F: Functor[F]): F[B] =
@@ -71,9 +73,10 @@ trait FunctorSyntax[F[_]] extends InvariantFunctorSyntax[F] {
 
   def F: Functor[F]
   ////
-  implicit def ToLiftV[A, B](v: A => B): LiftV[A, B] = new LiftV[A, B] {
-    def self = v
-  }
+  implicit def ToLiftV[A, B](v: A => B): LiftV[A, B] =
+    new LiftV[A, B] {
+      def self = v
+    }
 
   trait LiftV[A, B] extends Ops[A => B] {
     def lift = F.lift(self)

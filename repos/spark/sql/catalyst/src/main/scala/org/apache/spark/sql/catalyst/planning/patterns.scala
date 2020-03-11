@@ -129,54 +129,56 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
         LogicalPlan,
         LogicalPlan)
 
-  def unapply(plan: LogicalPlan): Option[ReturnType] = plan match {
-    case join @ Join(left, right, joinType, condition) =>
-      logDebug(s"Considering join on: $condition")
-      // Find equi-join predicates that can be evaluated before the join, and thus can be used
-      // as join keys.
-      val predicates = condition.map(splitConjunctivePredicates).getOrElse(Nil)
-      val joinKeys = predicates.flatMap {
-        case EqualTo(l, r) if canEvaluate(l, left) && canEvaluate(r, right) =>
-          Some((l, r))
-        case EqualTo(l, r) if canEvaluate(l, right) && canEvaluate(r, left) =>
-          Some((r, l))
-        // Replace null with default value for joining key, then those rows with null in it could
-        // be joined together
-        case EqualNullSafe(l, r)
-            if canEvaluate(l, left) && canEvaluate(r, right) =>
-          Some(
-            (
-              Coalesce(Seq(l, Literal.default(l.dataType))),
-              Coalesce(Seq(r, Literal.default(r.dataType)))))
-        case EqualNullSafe(l, r)
-            if canEvaluate(l, right) && canEvaluate(r, left) =>
-          Some(
-            (
-              Coalesce(Seq(r, Literal.default(r.dataType))),
-              Coalesce(Seq(l, Literal.default(l.dataType)))))
-        case other => None
-      }
-      val otherPredicates = predicates.filterNot {
-        case EqualTo(l, r) =>
-          canEvaluate(l, left) && canEvaluate(r, right) ||
-            canEvaluate(l, right) && canEvaluate(r, left)
-        case other => false
-      }
+  def unapply(plan: LogicalPlan): Option[ReturnType] =
+    plan match {
+      case join @ Join(left, right, joinType, condition) =>
+        logDebug(s"Considering join on: $condition")
+        // Find equi-join predicates that can be evaluated before the join, and thus can be used
+        // as join keys.
+        val predicates =
+          condition.map(splitConjunctivePredicates).getOrElse(Nil)
+        val joinKeys = predicates.flatMap {
+          case EqualTo(l, r) if canEvaluate(l, left) && canEvaluate(r, right) =>
+            Some((l, r))
+          case EqualTo(l, r) if canEvaluate(l, right) && canEvaluate(r, left) =>
+            Some((r, l))
+          // Replace null with default value for joining key, then those rows with null in it could
+          // be joined together
+          case EqualNullSafe(l, r)
+              if canEvaluate(l, left) && canEvaluate(r, right) =>
+            Some(
+              (
+                Coalesce(Seq(l, Literal.default(l.dataType))),
+                Coalesce(Seq(r, Literal.default(r.dataType)))))
+          case EqualNullSafe(l, r)
+              if canEvaluate(l, right) && canEvaluate(r, left) =>
+            Some(
+              (
+                Coalesce(Seq(r, Literal.default(r.dataType))),
+                Coalesce(Seq(l, Literal.default(l.dataType)))))
+          case other => None
+        }
+        val otherPredicates = predicates.filterNot {
+          case EqualTo(l, r) =>
+            canEvaluate(l, left) && canEvaluate(r, right) ||
+              canEvaluate(l, right) && canEvaluate(r, left)
+          case other => false
+        }
 
-      if (joinKeys.nonEmpty) {
-        val (leftKeys, rightKeys) = joinKeys.unzip
-        logDebug(s"leftKeys:$leftKeys | rightKeys:$rightKeys")
-        Some(
-          (
-            joinType,
-            leftKeys,
-            rightKeys,
-            otherPredicates.reduceOption(And),
-            left,
-            right))
-      } else { None }
-    case _ => None
-  }
+        if (joinKeys.nonEmpty) {
+          val (leftKeys, rightKeys) = joinKeys.unzip
+          logDebug(s"leftKeys:$leftKeys | rightKeys:$rightKeys")
+          Some(
+            (
+              joinType,
+              leftKeys,
+              rightKeys,
+              otherPredicates.reduceOption(And),
+              left,
+              right))
+        } else { None }
+      case _ => None
+    }
 }
 
 /**
@@ -226,11 +228,12 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
   * A pattern that collects all adjacent unions and returns their children as a Seq.
   */
 object Unions {
-  def unapply(plan: LogicalPlan): Option[Seq[LogicalPlan]] = plan match {
-    case u: Union =>
-      Some(collectUnionChildren(mutable.Stack(u), Seq.empty[LogicalPlan]))
-    case _ => None
-  }
+  def unapply(plan: LogicalPlan): Option[Seq[LogicalPlan]] =
+    plan match {
+      case u: Union =>
+        Some(collectUnionChildren(mutable.Stack(u), Seq.empty[LogicalPlan]))
+      case _ => None
+    }
 
   // Doing a depth-first tree traversal to combine all the union children.
   @tailrec
@@ -253,10 +256,11 @@ object Unions {
   * Extractor for retrieving Int value.
   */
 object IntegerIndex {
-  def unapply(a: Any): Option[Int] = a match {
-    case Literal(a: Int, IntegerType) => Some(a)
-    // When resolving ordinal in Sort, negative values are extracted for issuing error messages.
-    case UnaryMinus(IntegerLiteral(v)) => Some(-v)
-    case _                             => None
-  }
+  def unapply(a: Any): Option[Int] =
+    a match {
+      case Literal(a: Int, IntegerType) => Some(a)
+      // When resolving ordinal in Sort, negative values are extracted for issuing error messages.
+      case UnaryMinus(IntegerLiteral(v)) => Some(-v)
+      case _                             => None
+    }
 }

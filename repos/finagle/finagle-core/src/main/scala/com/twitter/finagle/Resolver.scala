@@ -201,15 +201,16 @@ private[finagle] class InetResolver(
   /**
     * Binds to the specified hostnames, and refreshes the DNS information periodically.
     */
-  def bind(hosts: String): Var[Addr] = Try(parseHostPorts(hosts)) match {
-    case Return(hp) =>
-      bindHostPortsToAddr(hp.map {
-        case (host, port) =>
-          (host, port, Addr.Metadata.empty)
-      })
-    case Throw(exc) =>
-      Var.value(Addr.Failed(exc))
-  }
+  def bind(hosts: String): Var[Addr] =
+    Try(parseHostPorts(hosts)) match {
+      case Return(hp) =>
+        bindHostPortsToAddr(hp.map {
+          case (host, port) =>
+            (host, port, Addr.Metadata.empty)
+        })
+      case Throw(exc) =>
+        Var.value(Addr.Failed(exc))
+    }
 }
 
 /**

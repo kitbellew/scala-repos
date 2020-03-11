@@ -35,16 +35,16 @@ trait WebCommands {
 class DefaultWebCommands extends WebCommands {
   private[this] val handlers = ArrayBuffer.empty[HandleWebCommandSupport]
 
-  def addHandler(handler: HandleWebCommandSupport): Unit = synchronized {
-    handlers += handler
-  }
+  def addHandler(handler: HandleWebCommandSupport): Unit =
+    synchronized { handlers += handler }
 
   def handleWebCommand(
       request: RequestHeader,
       buildLink: BuildLink,
-      path: File): Option[Result] = synchronized {
-    (handlers.toStream flatMap {
-      _.handleWebCommand(request, buildLink, path).toSeq
-    }).headOption
-  }
+      path: File): Option[Result] =
+    synchronized {
+      (handlers.toStream flatMap {
+        _.handleWebCommand(request, buildLink, path).toSeq
+      }).headOption
+    }
 }

@@ -58,35 +58,36 @@ trait PatternMatching
 
   class MatchTransformer(unit: CompilationUnit)
       extends TypingTransformer(unit) {
-    override def transform(tree: Tree): Tree = tree match {
-      case Match(sel, cases) =>
-        val origTp = tree.tpe
-        // setType origTp intended for CPS -- TODO: is it necessary?
-        val translated = translator.translateMatch(
-          treeCopy.Match(
+    override def transform(tree: Tree): Tree =
+      tree match {
+        case Match(sel, cases) =>
+          val origTp = tree.tpe
+          // setType origTp intended for CPS -- TODO: is it necessary?
+          val translated = translator.translateMatch(
+            treeCopy.Match(
+              tree,
+              transform(sel),
+              transformTrees(cases).asInstanceOf[List[CaseDef]]))
+          try { localTyper.typed(translated) setType origTp }
+          catch {
+            case x: (Types#TypeError) =>
+              // TODO: this should never happen; error should've been reported during type checking
+              reporter.error(
+                tree.pos,
+                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x.msg)
+              translated
+          }
+        case Try(block, catches, finalizer) =>
+          treeCopy.Try(
             tree,
-            transform(sel),
-            transformTrees(cases).asInstanceOf[List[CaseDef]]))
-        try { localTyper.typed(translated) setType origTp }
-        catch {
-          case x: (Types#TypeError) =>
-            // TODO: this should never happen; error should've been reported during type checking
-            reporter.error(
-              tree.pos,
-              "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x.msg)
-            translated
-        }
-      case Try(block, catches, finalizer) =>
-        treeCopy.Try(
-          tree,
-          transform(block),
-          translator.translateTry(
-            transformTrees(catches).asInstanceOf[List[CaseDef]],
-            tree.tpe,
-            tree.pos),
-          transform(finalizer))
-      case _ => super.transform(tree)
-    }
+            transform(block),
+            translator.translateTry(
+              transformTrees(catches).asInstanceOf[List[CaseDef]],
+              tree.tpe,
+              tree.pos),
+            transform(finalizer))
+        case _ => super.transform(tree)
+      }
 
     // TODO: only instantiate new match translator when localTyper has changed
     // override def atOwner[A](tree: Tree, owner: Symbol)(trans: => A): A

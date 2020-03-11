@@ -435,59 +435,61 @@ class ScalaChangeSignatureDialog(
     removeClauseButton
   }
 
-  protected def downAction = new AnActionButtonRunnable {
-    override def run(t: AnActionButton): Unit = {
-      val table = parametersTable
-      val selected = table.getSelectedRow
-      if (selected < 0 || selected >= table.getModel.getRowCount - 1) return
-      val editedColumn = editingColumn(table)
-      TableUtil.stopEditing(table)
+  protected def downAction =
+    new AnActionButtonRunnable {
+      override def run(t: AnActionButton): Unit = {
+        val table = parametersTable
+        val selected = table.getSelectedRow
+        if (selected < 0 || selected >= table.getModel.getRowCount - 1) return
+        val editedColumn = editingColumn(table)
+        TableUtil.stopEditing(table)
 
-      val itemBelow = myParametersTableModel.getItem(selected + 1)
-      val item = myParametersTableModel.getItem(selected)
-      if (itemBelow.startsNewClause) {
-        itemBelow.startsNewClause = false
-        if (selected > 0) item.startsNewClause = true
-        myParametersTableModel.fireTableDataChanged()
-      } else {
+        val itemBelow = myParametersTableModel.getItem(selected + 1)
+        val item = myParametersTableModel.getItem(selected)
+        if (itemBelow.startsNewClause) {
+          itemBelow.startsNewClause = false
+          if (selected > 0) item.startsNewClause = true
+          myParametersTableModel.fireTableDataChanged()
+        } else {
+          if (item.startsNewClause) {
+            item.startsNewClause = false
+            itemBelow.startsNewClause = true
+          }
+          myParametersTableModel.exchangeRows(selected, selected + 1)
+          table.setRowSelectionInterval(selected + 1, selected + 1)
+        }
+        finishAndRestoreEditing(editedColumn)
+      }
+    }
+
+  protected def upAction =
+    new AnActionButtonRunnable {
+      override def run(t: AnActionButton): Unit = {
+        val table = parametersTable
+        val selected = table.getSelectedRow
+        if (selected <= 0 || selected >= table.getModel.getRowCount) return
+        val editedColumn = editingColumn(table)
+        TableUtil.stopEditing(table)
+        val item = myParametersTableModel.getItem(selected)
         if (item.startsNewClause) {
           item.startsNewClause = false
-          itemBelow.startsNewClause = true
+          if (selected != table.getModel.getRowCount - 1) {
+            val itemBelow = myParametersTableModel.getItem(selected + 1)
+            itemBelow.startsNewClause = true
+          }
+          myParametersTableModel.fireTableDataChanged()
+        } else {
+          val itemAbove = myParametersTableModel.getItem(selected - 1)
+          if (itemAbove.startsNewClause) {
+            itemAbove.startsNewClause = false
+            item.startsNewClause = true
+          }
+          myParametersTableModel.exchangeRows(selected, selected - 1)
+          table.setRowSelectionInterval(selected - 1, selected - 1)
         }
-        myParametersTableModel.exchangeRows(selected, selected + 1)
-        table.setRowSelectionInterval(selected + 1, selected + 1)
+        finishAndRestoreEditing(editedColumn)
       }
-      finishAndRestoreEditing(editedColumn)
     }
-  }
-
-  protected def upAction = new AnActionButtonRunnable {
-    override def run(t: AnActionButton): Unit = {
-      val table = parametersTable
-      val selected = table.getSelectedRow
-      if (selected <= 0 || selected >= table.getModel.getRowCount) return
-      val editedColumn = editingColumn(table)
-      TableUtil.stopEditing(table)
-      val item = myParametersTableModel.getItem(selected)
-      if (item.startsNewClause) {
-        item.startsNewClause = false
-        if (selected != table.getModel.getRowCount - 1) {
-          val itemBelow = myParametersTableModel.getItem(selected + 1)
-          itemBelow.startsNewClause = true
-        }
-        myParametersTableModel.fireTableDataChanged()
-      } else {
-        val itemAbove = myParametersTableModel.getItem(selected - 1)
-        if (itemAbove.startsNewClause) {
-          itemAbove.startsNewClause = false
-          item.startsNewClause = true
-        }
-        myParametersTableModel.exchangeRows(selected, selected - 1)
-        table.setRowSelectionInterval(selected - 1, selected - 1)
-      }
-      finishAndRestoreEditing(editedColumn)
-    }
-  }
 
   protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(true)

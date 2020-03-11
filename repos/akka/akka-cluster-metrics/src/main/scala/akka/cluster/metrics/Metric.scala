@@ -47,10 +47,11 @@ final case class Metric private[metrics] (
   /**
     * The numerical value of the average, if defined, otherwise the latest value
     */
-  def smoothValue: Double = average match {
-    case Some(avg) ⇒ avg.value
-    case None ⇒ value.doubleValue
-  }
+  def smoothValue: Double =
+    average match {
+      case Some(avg) ⇒ avg.value
+      case None ⇒ value.doubleValue
+    }
 
   /**
     * @return true if this value is smoothed
@@ -63,10 +64,11 @@ final case class Metric private[metrics] (
   def sameAs(that: Metric): Boolean = name == that.name
 
   override def hashCode = name.##
-  override def equals(obj: Any) = obj match {
-    case other: Metric ⇒ sameAs(other)
-    case _ ⇒ false
-  }
+  override def equals(obj: Any) =
+    obj match {
+      case other: Metric ⇒ sameAs(other)
+      case _ ⇒ false
+    }
 
 }
 
@@ -94,10 +96,11 @@ object Metric extends MetricNumericConverter {
   def create(
       name: String,
       value: Try[Number],
-      decayFactor: Option[Double]): Option[Metric] = value match {
-    case Success(v) ⇒ create(name, v, decayFactor)
-    case Failure(_) ⇒ None
-  }
+      decayFactor: Option[Double]): Option[Metric] =
+    value match {
+      case Success(v) ⇒ create(name, v, decayFactor)
+      case Failure(_) ⇒ None
+    }
 
   def createEWMA(value: Double, decayFactor: Option[Double]): Option[EWMA] =
     decayFactor match {
@@ -215,24 +218,25 @@ object StandardMetrics {
     * Java API to extract Cpu data from nodeMetrics, if the nodeMetrics
     * contains necessary cpu metrics, otherwise it returns null.
     */
-  def extractCpu(nodeMetrics: NodeMetrics): Cpu = nodeMetrics match {
-    case Cpu(
+  def extractCpu(nodeMetrics: NodeMetrics): Cpu =
+    nodeMetrics match {
+      case Cpu(
+            address,
+            timestamp,
+            systemLoadAverage,
+            cpuCombined,
+            cpuStolen,
+            processors) ⇒
+        // note that above extractor returns tuple
+        Cpu(
           address,
           timestamp,
           systemLoadAverage,
           cpuCombined,
           cpuStolen,
-          processors) ⇒
-      // note that above extractor returns tuple
-      Cpu(
-        address,
-        timestamp,
-        systemLoadAverage,
-        cpuCombined,
-        cpuStolen,
-        processors)
-    case _ ⇒ null
-  }
+          processors)
+      case _ ⇒ null
+    }
 
   /**
     * @param address [[akka.actor.Address]] of the node the metrics are gathered at
@@ -287,23 +291,25 @@ private[metrics] trait MetricNumericConverter {
     * <ul><li>JMX system load average and max heap can be 'undefined' for certain OS, in which case a -1 is returned</li>
     * <li>SIGAR combined CPU can occasionally return a NaN or Infinite (known bug)</li></ul>
     */
-  def defined(value: Number): Boolean = convertNumber(value) match {
-    case Left(a) ⇒ a >= 0
-    case Right(b) ⇒ !(b < 0.0 || b.isNaN || b.isInfinite)
-  }
+  def defined(value: Number): Boolean =
+    convertNumber(value) match {
+      case Left(a) ⇒ a >= 0
+      case Right(b) ⇒ !(b < 0.0 || b.isNaN || b.isInfinite)
+    }
 
   /**
     * May involve rounding or truncation.
     */
-  def convertNumber(from: Any): Either[Long, Double] = from match {
-    case n: Int ⇒ Left(n)
-    case n: Long ⇒ Left(n)
-    case n: Double ⇒ Right(n)
-    case n: Float ⇒ Right(n)
-    case n: BigInt ⇒ Left(n.longValue)
-    case n: BigDecimal ⇒ Right(n.doubleValue)
-    case x ⇒ throw new IllegalArgumentException(s"Not a number [$x]")
-  }
+  def convertNumber(from: Any): Either[Long, Double] =
+    from match {
+      case n: Int ⇒ Left(n)
+      case n: Long ⇒ Left(n)
+      case n: Double ⇒ Right(n)
+      case n: Float ⇒ Right(n)
+      case n: BigInt ⇒ Left(n.longValue)
+      case n: BigDecimal ⇒ Right(n.doubleValue)
+      case x ⇒ throw new IllegalArgumentException(s"Not a number [$x]")
+    }
 
 }
 
@@ -359,9 +365,8 @@ final case class NodeMetrics(
     copy(metrics = merged, timestamp = latestNode.timestamp)
   }
 
-  def metric(key: String): Option[Metric] = metrics.collectFirst {
-    case m if m.name == key ⇒ m
-  }
+  def metric(key: String): Option[Metric] =
+    metrics.collectFirst { case m if m.name == key ⇒ m }
 
   /**
     * Java API
@@ -375,10 +380,11 @@ final case class NodeMetrics(
   def sameAs(that: NodeMetrics): Boolean = address == that.address
 
   override def hashCode = address.##
-  override def equals(obj: Any) = obj match {
-    case other: NodeMetrics ⇒ sameAs(other)
-    case _ ⇒ false
-  }
+  override def equals(obj: Any) =
+    obj match {
+      case other: NodeMetrics ⇒ sameAs(other)
+      case _ ⇒ false
+    }
 
 }
 
@@ -431,8 +437,7 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
   /**
     * Returns [[NodeMetrics]] for a node if exists.
     */
-  def nodeMetricsFor(address: Address): Option[NodeMetrics] = nodes find { n ⇒
-    n.address == address
-  }
+  def nodeMetricsFor(address: Address): Option[NodeMetrics] =
+    nodes find { n ⇒ n.address == address }
 
 }

@@ -152,21 +152,22 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     MethodBType(tpe.paramTypes map typeToBType, resultType)
   }
 
-  def bootstrapMethodArg(t: Constant, pos: Position): AnyRef = t match {
-    case Constant(mt: Type) =>
-      methodBTypeFromMethodType(
-        transformedType(mt),
-        isConstructor = false).toASMType
-    case c @ Constant(sym: Symbol)   => staticHandleFromSymbol(sym)
-    case c @ Constant(value: String) => value
-    case c @ Constant(value) if c.isNonUnitAnyVal =>
-      c.value.asInstanceOf[AnyRef]
-    case _ =>
-      reporter.error(
-        pos,
-        "Unable to convert static argument of ApplyDynamic into a classfile constant: " + t);
-      null
-  }
+  def bootstrapMethodArg(t: Constant, pos: Position): AnyRef =
+    t match {
+      case Constant(mt: Type) =>
+        methodBTypeFromMethodType(
+          transformedType(mt),
+          isConstructor = false).toASMType
+      case c @ Constant(sym: Symbol)   => staticHandleFromSymbol(sym)
+      case c @ Constant(value: String) => value
+      case c @ Constant(value) if c.isNonUnitAnyVal =>
+        c.value.asInstanceOf[AnyRef]
+      case _ =>
+        reporter.error(
+          pos,
+          "Unable to convert static argument of ApplyDynamic into a classfile constant: " + t);
+        null
+    }
 
   def staticHandleFromSymbol(sym: Symbol): asm.Handle = {
     val owner =
@@ -365,14 +366,15 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         classSym.isJava,
         s"Expected Java class symbol, got ${classSym.fullName}")
       import asm.Opcodes._
-      def enumFlags = ACC_ENUM | {
-        // Java enums have the `ACC_ABSTRACT` flag if they have a deferred method.
-        // We cannot trust `hasAbstractFlag`: the ClassfileParser adds `ABSTRACT` and `SEALED` to all
-        // Java enums for exhaustiveness checking.
-        val hasAbstractMethod =
-          classSym.info.decls.exists(s => s.isMethod && s.isDeferred)
-        if (hasAbstractMethod) ACC_ABSTRACT else 0
-      }
+      def enumFlags =
+        ACC_ENUM | {
+          // Java enums have the `ACC_ABSTRACT` flag if they have a deferred method.
+          // We cannot trust `hasAbstractFlag`: the ClassfileParser adds `ABSTRACT` and `SEALED` to all
+          // Java enums for exhaustiveness checking.
+          val hasAbstractMethod =
+            classSym.info.decls.exists(s => s.isMethod && s.isDeferred)
+          if (hasAbstractMethod) ACC_ABSTRACT else 0
+        }
       GenBCode.mkFlags(
         // SI-9393: the classfile / java source parser make java annotation symbols look like classes.
         // here we recover the actual classfile flags.
@@ -713,10 +715,11 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     * True for module classes of package level objects. The backend will generate a mirror class for
     * such objects.
     */
-  final def isTopLevelModuleClass(sym: Symbol): Boolean = exitingPickler {
-    // phase travel to pickler required for isNestedClass (looks at owner)
-    sym.isModuleClass && !sym.isNestedClass
-  }
+  final def isTopLevelModuleClass(sym: Symbol): Boolean =
+    exitingPickler {
+      // phase travel to pickler required for isNestedClass (looks at owner)
+      sym.isModuleClass && !sym.isNestedClass
+    }
 
   /**
     * True for module classes of modules that are top-level or owned only by objects. Module classes

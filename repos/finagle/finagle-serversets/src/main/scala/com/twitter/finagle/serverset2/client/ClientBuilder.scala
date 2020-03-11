@@ -26,15 +26,16 @@ private[client] case class ClientConfig(
     val sessionId: Option[Long],
     val password: Option[Buf],
     val timer: Timer) {
-  def toMap: Map[String, Any] = Map(
-    "hosts" -> hosts,
-    "sessionTimeout" -> sessionTimeout,
-    "statsReceiver" -> statsReceiver,
-    "readOnlyOK" -> readOnlyOK,
-    "sessionId" -> sessionId,
-    "password" -> password,
-    "timer" -> timer
-  )
+  def toMap: Map[String, Any] =
+    Map(
+      "hosts" -> hosts,
+      "sessionTimeout" -> sessionTimeout,
+      "statsReceiver" -> statsReceiver,
+      "readOnlyOK" -> readOnlyOK,
+      "sessionId" -> sessionId,
+      "password" -> password,
+      "timer" -> timer
+    )
 
   override def toString = {
     "ClientConfig(%s)".format(toMap flatMap {

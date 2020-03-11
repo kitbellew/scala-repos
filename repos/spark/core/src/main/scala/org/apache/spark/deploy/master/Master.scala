@@ -161,9 +161,8 @@ private[deploy] class Master(
     masterWebUiUrl = "http://" + masterPublicAddress + ":" + webUi.boundPort
     checkForWorkerTimeOutTask = forwardMessageThread.scheduleAtFixedRate(
       new Runnable {
-        override def run(): Unit = Utils.tryLogNonFatalError {
-          self.send(CheckForWorkerTimeOut)
-        }
+        override def run(): Unit =
+          Utils.tryLogNonFatalError { self.send(CheckForWorkerTimeOut) }
       },
       0,
       WORKER_TIMEOUT_MS,
@@ -251,9 +250,8 @@ private[deploy] class Master(
         beginRecovery(storedApps, storedDrivers, storedWorkers)
         recoveryCompletionTask = forwardMessageThread.schedule(
           new Runnable {
-            override def run(): Unit = Utils.tryLogNonFatalError {
-              self.send(CompleteRecovery)
-            }
+            override def run(): Unit =
+              Utils.tryLogNonFatalError { self.send(CompleteRecovery) }
           },
           WORKER_TIMEOUT_MS,
           TimeUnit.MILLISECONDS)

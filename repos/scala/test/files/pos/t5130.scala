@@ -18,9 +18,10 @@ object Test {
   }
   val v2 = new A with A2 {}
   val v3: A { def c: Unit } = null
-  def d1 = new A {
-    def c = ()
-  }
+  def d1 =
+    new A {
+      def c = ()
+    }
   def d2 = new A with A2 {}
   def d3: A { def c: Unit } = null
   var x1 = new A {
@@ -35,9 +36,10 @@ object Test {
     }
     val mv2 = new A with A2 {}
     val mv3: A { def c: Unit } = null
-    def md1 = new A {
-      def c = ()
-    }
+    def md1 =
+      new A {
+        def c = ()
+      }
     def md2 = new A with A2 {}
     def md3: A { def c: Unit } = null
 

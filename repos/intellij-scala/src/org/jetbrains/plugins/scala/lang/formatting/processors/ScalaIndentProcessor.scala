@@ -55,31 +55,33 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       return Indent.getNormalIndent
     }
 
-    def processFunExpr(expr: ScFunctionExpr): Indent = expr.result match {
-      case Some(e) if e == child.getPsi =>
-        child.getPsi match {
-          case _: ScBlockImpl => Indent.getNoneIndent
-          case _: ScBlockExpr
-              if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-            Indent.getNormalIndent
-          case _: ScBlockExpr  => Indent.getNoneIndent
-          case _: ScExpression => Indent.getNormalIndent
-          case _               => Indent.getNoneIndent
-        }
-      case Some(e) if child.isInstanceOf[PsiComment] => Indent.getNormalIndent
-      //the above case is a hack added to fix SCL-6803; probably will backfire with unintended indents
-      case _ => Indent.getNoneIndent
-    }
+    def processFunExpr(expr: ScFunctionExpr): Indent =
+      expr.result match {
+        case Some(e) if e == child.getPsi =>
+          child.getPsi match {
+            case _: ScBlockImpl => Indent.getNoneIndent
+            case _: ScBlockExpr
+                if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
+                  settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
+              Indent.getNormalIndent
+            case _: ScBlockExpr  => Indent.getNoneIndent
+            case _: ScExpression => Indent.getNormalIndent
+            case _               => Indent.getNoneIndent
+          }
+        case Some(e) if child.isInstanceOf[PsiComment] => Indent.getNormalIndent
+        //the above case is a hack added to fix SCL-6803; probably will backfire with unintended indents
+        case _ => Indent.getNoneIndent
+      }
 
-    def processMethodCall = child.getPsi match {
-      case arg: ScArgumentExprList if arg.isBraceArgs =>
-        if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-            settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
-          Indent.getNormalIndent
-        else Indent.getNoneIndent
-      case _ => Indent.getContinuationWithoutFirstIndent
-    }
+    def processMethodCall =
+      child.getPsi match {
+        case arg: ScArgumentExprList if arg.isBraceArgs =>
+          if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
+              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
+            Indent.getNormalIndent
+          else Indent.getNoneIndent
+        case _ => Indent.getContinuationWithoutFirstIndent
+      }
 
     //the methodCall/functionExpr have dot block as optional, so cases with and without dot are considered
     if (node.getElementType == ScalaTokenTypes.tDOT)

@@ -363,16 +363,17 @@ object ProducerFeatureTest {
     var lastMessage: Option[String] = None
     def endpointUri = uri
 
-    override def transformOutgoingMessage(msg: Any) = msg match {
-      case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒
-          if (body == "err") throw new Exception("Crash!")
-          val upperMsg = body.toUpperCase
-          lastSender = Some(sender())
-          lastMessage = Some(upperMsg)
-        }
-        else msg
-    }
+    override def transformOutgoingMessage(msg: Any) =
+      msg match {
+        case msg: CamelMessage ⇒
+          if (upper) msg.mapBody { body: String ⇒
+            if (body == "err") throw new Exception("Crash!")
+            val upperMsg = body.toUpperCase
+            lastSender = Some(sender())
+            lastMessage = Some(upperMsg)
+          }
+          else msg
+      }
 
     override def postStop() {
       for (msg ← lastMessage; aref ← lastSender) context.parent ! ((aref, msg))
@@ -390,11 +391,12 @@ object ProducerFeatureTest {
       // which would cause a deadletter message in the test output.
     }
 
-    override protected def transformOutgoingMessage(msg: Any) = msg match {
-      case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
-        else msg
-    }
+    override protected def transformOutgoingMessage(msg: Any) =
+      msg match {
+        case msg: CamelMessage ⇒
+          if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
+          else msg
+      }
   }
 
   class TestForwarder(uri: String, target: ActorRef)
@@ -462,10 +464,11 @@ object ProducerFeatureTest {
   }
 
   class SimpleProducer(override val endpointUri: String) extends Producer {
-    override protected def transformResponse(msg: Any) = msg match {
-      case m: CamelMessage ⇒ m.bodyAs[String]
-      case m: Any ⇒ m
-    }
+    override protected def transformResponse(msg: Any) =
+      msg match {
+        case m: CamelMessage ⇒ m.bodyAs[String]
+        case m: Any ⇒ m
+      }
   }
 
   class IntermittentErrorConsumer(override val endpointUri: String)

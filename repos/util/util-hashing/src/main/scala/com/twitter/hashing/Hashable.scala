@@ -5,12 +5,14 @@ import java.security.MessageDigest
 /** Type-class for generic hashing
   */
 trait Hashable[-T, +R] extends (T => R) { self =>
-  override def andThen[A](fn: (R) => A): Hashable[T, A] = new Hashable[T, A] {
-    override def apply(t: T) = fn(self.apply(t))
-  }
-  override def compose[A](fn: (A) => T): Hashable[A, R] = new Hashable[A, R] {
-    override def apply(a: A) = self.apply(fn(a))
-  }
+  override def andThen[A](fn: (R) => A): Hashable[T, A] =
+    new Hashable[T, A] {
+      override def apply(t: T) = fn(self.apply(t))
+    }
+  override def compose[A](fn: (A) => T): Hashable[A, R] =
+    new Hashable[A, R] {
+      override def apply(a: A) = self.apply(fn(a))
+    }
 }
 
 trait LowPriorityHashable {
@@ -37,9 +39,10 @@ object Hashable extends LowPriorityHashable {
   def hash[T, R](t: T)(implicit hasher: Hashable[T, R]): R = hasher(t)
 
   // Some standard hashing:
-  def hashCode[T]: Hashable[T, Int] = new Hashable[T, Int] {
-    def apply(t: T) = t.hashCode
-  }
+  def hashCode[T]: Hashable[T, Int] =
+    new Hashable[T, Int] {
+      def apply(t: T) = t.hashCode
+    }
 
   private[this] val MaxUnsignedInt: Long = 0xFFFFFFFFL
 

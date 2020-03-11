@@ -23,8 +23,8 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
 
   val lookupElements: Array[LookupElement] = calcLookupElements().toArray
 
-  def calcLookupElements(): Seq[LookupElementBuilder] = lookupItems.map {
-    elem =>
+  def calcLookupElements(): Seq[LookupElementBuilder] =
+    lookupItems.map { elem =>
       LookupElementBuilder
         .create(elem, lookupString(elem))
         .withInsertHandler(new InsertHandler[LookupElement] {
@@ -48,7 +48,7 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
             }
           }
         })
-  }
+    }
 
   override def calculateResult(context: ExpressionContext): Result =
     new TextResult(lookupString(defaultItem))

@@ -14,14 +14,15 @@ class Matrix[@specialized A: ClassTag](val rows: Int, val cols: Int) {
 
   def update(i: Int, j: Int, e: A) { arr(i)(j) = e }
 
-  def rowsIterator: Iterator[Array[A]] = new Iterator[Array[A]] {
-    var idx = 0;
-    def hasNext = idx < rows
-    def next = {
-      idx += 1
-      arr(idx - 1)
+  def rowsIterator: Iterator[Array[A]] =
+    new Iterator[Array[A]] {
+      var idx = 0;
+      def hasNext = idx < rows
+      def next = {
+        idx += 1
+        arr(idx - 1)
+      }
     }
-  }
 }
 
 object Test {

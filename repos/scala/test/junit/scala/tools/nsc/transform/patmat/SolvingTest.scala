@@ -39,10 +39,11 @@ object TestSolver extends Logic with Solving {
 
     class Var(val x: Tree) extends AbsVar {
 
-      override def equals(other: scala.Any): Boolean = other match {
-        case that: Var => this.x == that.x
-        case _         => false
-      }
+      override def equals(other: scala.Any): Boolean =
+        other match {
+          case that: Var => this.x == that.x
+          case _         => false
+        }
 
       override def hashCode(): Int = x.hashCode()
 
@@ -136,21 +137,23 @@ object TestSolver extends Logic with Solving {
 
       def merge(a: Clause, b: Clause) = a ++ b
 
-      def negationNormalFormNot(p: Prop): Prop = p match {
-        case And(ps) => Or(ps map negationNormalFormNot)
-        case Or(ps)  => And(ps map negationNormalFormNot)
-        case Not(p)  => negationNormalForm(p)
-        case True    => False
-        case False   => True
-        case s: Sym  => Not(s)
-      }
+      def negationNormalFormNot(p: Prop): Prop =
+        p match {
+          case And(ps) => Or(ps map negationNormalFormNot)
+          case Or(ps)  => And(ps map negationNormalFormNot)
+          case Not(p)  => negationNormalForm(p)
+          case True    => False
+          case False   => True
+          case s: Sym  => Not(s)
+        }
 
-      def negationNormalForm(p: Prop): Prop = p match {
-        case Or(ps)                  => Or(ps map negationNormalForm)
-        case And(ps)                 => And(ps map negationNormalForm)
-        case Not(negated)            => negationNormalFormNot(negated)
-        case True | False | (_: Sym) => p
-      }
+      def negationNormalForm(p: Prop): Prop =
+        p match {
+          case Or(ps)                  => Or(ps map negationNormalForm)
+          case And(ps)                 => And(ps map negationNormalForm)
+          case Not(negated)            => negationNormalFormNot(negated)
+          case True | False | (_: Sym) => p
+        }
 
       val TrueF: Formula = Array()
       val FalseF = Array(clause())

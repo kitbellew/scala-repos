@@ -59,15 +59,17 @@ object MaybeOrdering {
 trait CPathComparator { self =>
   def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering
 
-  def swap: CPathComparator = new CPathComparator {
-    def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering =
-      self.compare(row2, row1, indices).complement
-  }
+  def swap: CPathComparator =
+    new CPathComparator {
+      def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering =
+        self.compare(row2, row1, indices).complement
+    }
 
-  def complement: CPathComparator = new CPathComparator {
-    def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering =
-      self.compare(row1, row2, indices).complement
-  }
+  def complement: CPathComparator =
+    new CPathComparator {
+      def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering =
+        self.compare(row1, row2, indices).complement
+    }
 }
 
 object CPathComparator {
@@ -88,43 +90,46 @@ object CPathComparator {
       lPath: CPath,
       lCol: Column,
       rPath: CPath,
-      rCol: Column): CPathComparator = (lCol, rCol) match {
-    case (lCol: BoolColumn, rCol: BoolColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: LongColumn, rCol: LongColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: LongColumn, rCol: DoubleColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: LongColumn, rCol: NumColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: DoubleColumn, rCol: LongColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: DoubleColumn, rCol: DoubleColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: DoubleColumn, rCol: NumColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: NumColumn, rCol: LongColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: NumColumn, rCol: DoubleColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: NumColumn, rCol: NumColumn) => CPathComparator(lCol(_), rCol(_))
-    case (lCol: StrColumn, rCol: StrColumn) => CPathComparator(lCol(_), rCol(_))
-    case (lCol: DateColumn, rCol: DateColumn) =>
-      CPathComparator(lCol(_), rCol(_))
-    case (lCol: HomogeneousArrayColumn[_], rCol: HomogeneousArrayColumn[_]) =>
-      CPathComparator(lPath, lCol, rPath, rCol)
-    case (lCol: HomogeneousArrayColumn[_], rCol) =>
-      CPathComparator(lPath, lCol, rPath, rCol)
-    case (lCol, rCol: HomogeneousArrayColumn[_]) =>
-      CPathComparator(rPath, rCol, lPath, lCol).swap
-    case (lCol, rCol) =>
-      val ordering = MaybeOrdering.fromInt {
-        implicitly[scalaz.Order[CType]].apply(lCol.tpe, rCol.tpe).toInt
-      }
-      new CPathComparator {
-        def compare(r1: Int, r2: Int, indices: Array[Int]) = ordering
-      }
-  }
+      rCol: Column): CPathComparator =
+    (lCol, rCol) match {
+      case (lCol: BoolColumn, rCol: BoolColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: LongColumn, rCol: LongColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: LongColumn, rCol: DoubleColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: LongColumn, rCol: NumColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: DoubleColumn, rCol: LongColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: DoubleColumn, rCol: DoubleColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: DoubleColumn, rCol: NumColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: NumColumn, rCol: LongColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: NumColumn, rCol: DoubleColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: NumColumn, rCol: NumColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: StrColumn, rCol: StrColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: DateColumn, rCol: DateColumn) =>
+        CPathComparator(lCol(_), rCol(_))
+      case (lCol: HomogeneousArrayColumn[_], rCol: HomogeneousArrayColumn[_]) =>
+        CPathComparator(lPath, lCol, rPath, rCol)
+      case (lCol: HomogeneousArrayColumn[_], rCol) =>
+        CPathComparator(lPath, lCol, rPath, rCol)
+      case (lCol, rCol: HomogeneousArrayColumn[_]) =>
+        CPathComparator(rPath, rCol, lPath, lCol).swap
+      case (lCol, rCol) =>
+        val ordering = MaybeOrdering.fromInt {
+          implicitly[scalaz.Order[CType]].apply(lCol.tpe, rCol.tpe).toInt
+        }
+        new CPathComparator {
+          def compare(r1: Int, r2: Int, indices: Array[Int]) = ordering
+        }
+    }
 
   def apply(
       lPath: CPath,

@@ -239,10 +239,11 @@ private[scalding] object InternalService {
       * This weird E trick is because the inferred type below is
       * Product with Serializable with Either[V, U]
       */
-    implicit def lookupFirst[E <: Either[V, U]]: Ordering[E] = Ordering.by {
-      case Left(_)  => 0
-      case Right(_) => 1
-    }
+    implicit def lookupFirst[E <: Either[V, U]]: Ordering[E] =
+      Ordering.by {
+        case Left(_)  => 0
+        case Right(_) => 1
+      }
 
     val bothPipes = (left.map { case (t, (k, v)) => (k, (t, Left(v))) } ++
       mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) }).group

@@ -354,27 +354,28 @@ object Execution {
     protected lazy val thread = new Thread(new Runnable {
       def run() {
         @annotation.tailrec
-        def go(): Unit = messageQueue.take match {
-          case Stop => ()
-          case RunFlowDef(conf, mode, fd, promise) =>
-            try {
-              promise.completeWith(
-                ExecutionContext.newContext(conf)(fd, mode).run)
-            } catch {
-              case t: Throwable =>
-                // something bad happened, but this thread is a daemon
-                // that should only stop if all others have stopped or
-                // we have received the stop message.
-                // Stopping this thread prematurely can deadlock
-                // futures from the promise we have.
-                // In a sense, this thread does not exist logically and
-                // must forward all exceptions to threads that requested
-                // this work be started.
-                promise.tryFailure(t)
-            }
-            // Loop
-            go()
-        }
+        def go(): Unit =
+          messageQueue.take match {
+            case Stop => ()
+            case RunFlowDef(conf, mode, fd, promise) =>
+              try {
+                promise.completeWith(
+                  ExecutionContext.newContext(conf)(fd, mode).run)
+              } catch {
+                case t: Throwable =>
+                  // something bad happened, but this thread is a daemon
+                  // that should only stop if all others have stopped or
+                  // we have received the stop message.
+                  // Stopping this thread prematurely can deadlock
+                  // futures from the promise we have.
+                  // In a sense, this thread does not exist logically and
+                  // must forward all exceptions to threads that requested
+                  // this work be started.
+                  promise.tryFailure(t)
+              }
+              // Loop
+              go()
+          }
 
         // Now we actually run the recursive loop
         go()
@@ -748,15 +749,16 @@ object Execution {
     }
 
     def unwrapListEither[A, B, C](
-        it: List[(A, Either[B, C])]): (List[(A, B)], List[(A, C)]) = it match {
-      case (a, Left(b)) :: tail =>
-        val (l, r) = unwrapListEither(tail)
-        ((a, b) :: l, r)
-      case (a, Right(c)) :: tail =>
-        val (l, r) = unwrapListEither(tail)
-        (l, (a, c) :: r)
-      case Nil => (Nil, Nil)
-    }
+        it: List[(A, Either[B, C])]): (List[(A, B)], List[(A, C)]) =
+      it match {
+        case (a, Left(b)) :: tail =>
+          val (l, r) = unwrapListEither(tail)
+          ((a, b) :: l, r)
+        case (a, Right(c)) :: tail =>
+          val (l, r) = unwrapListEither(tail)
+          (l, (a, c) :: r)
+        case Nil => (Nil, Nil)
+      }
 
     // We look up to see if any of our ToWrite elements have already been ran
     // if so we remove them from the cache.
@@ -1022,10 +1024,11 @@ object Execution {
     @annotation.tailrec
     def go(
         xs: List[Execution[T]],
-        acc: Execution[List[T]]): Execution[List[T]] = xs match {
-      case Nil       => acc
-      case h :: tail => go(tail, h.zip(acc).map { case (y, ys) => y :: ys })
-    }
+        acc: Execution[List[T]]): Execution[List[T]] =
+      xs match {
+        case Nil       => acc
+        case h :: tail => go(tail, h.zip(acc).map { case (y, ys) => y :: ys })
+      }
     // This pushes all of them onto a list, and then reverse to keep order
     go(exs.toList, from(Nil)).map(_.reverse)
   }
@@ -1097,11 +1100,12 @@ object ExecutionCounters {
   /**
     * This is the zero of the ExecutionCounter Monoid
     */
-  def empty: ExecutionCounters = new ExecutionCounters {
-    def keys = Set.empty
-    def get(key: StatKey) = None
-    override def toMap = Map.empty
-  }
+  def empty: ExecutionCounters =
+    new ExecutionCounters {
+      def keys = Set.empty
+      def get(key: StatKey) = None
+      override def toMap = Map.empty
+    }
 
   /**
     * Just gets the counters from the CascadingStats and ignores

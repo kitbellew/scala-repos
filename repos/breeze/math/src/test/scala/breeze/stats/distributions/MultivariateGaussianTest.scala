@@ -59,10 +59,11 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
         .unnormalizedLogPdf(DenseVector(1.0)) === -0.5)
   }
 
-  implicit def arbDistr = Arbitrary {
-    for (mean <- genVector.arbitrary; std <- genMatrix.arbitrary)
-      yield new MultivariateGaussian(mean, std);
-  }
+  implicit def arbDistr =
+    Arbitrary {
+      for (mean <- genVector.arbitrary; std <- genMatrix.arbitrary)
+        yield new MultivariateGaussian(mean, std);
+    }
 
   val numSamples = 5000
 

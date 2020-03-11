@@ -80,19 +80,20 @@ private[finagle] case class ThriftServerPreparer(
   def prepare(
       factory: ServiceFactory[Array[Byte], Array[Byte]],
       params: Stack.Params
-  ): ServiceFactory[Array[Byte], Array[Byte]] = factory.map { service =>
-    val payloadSize = new PayloadSizeFilter[Array[Byte], Array[Byte]](
-      params[param.Stats].statsReceiver,
-      _.length,
-      _.length)
+  ): ServiceFactory[Array[Byte], Array[Byte]] =
+    factory.map { service =>
+      val payloadSize = new PayloadSizeFilter[Array[Byte], Array[Byte]](
+        params[param.Stats].statsReceiver,
+        _.length,
+        _.length)
 
-    val ttwitter = new TTwitterServerFilter(serviceName, protocolFactory)
+      val ttwitter = new TTwitterServerFilter(serviceName, protocolFactory)
 
-    payloadSize
-      .andThen(ttwitter)
-      .andThen(uncaughtExceptionsFilter)
-      .andThen(service)
-  }
+      payloadSize
+        .andThen(ttwitter)
+        .andThen(uncaughtExceptionsFilter)
+        .andThen(service)
+    }
 }
 
 private[thrift] class ThriftServerChannelBufferEncoder

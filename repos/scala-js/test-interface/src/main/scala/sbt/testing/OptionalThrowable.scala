@@ -41,11 +41,12 @@ final class OptionalThrowable(private val exception: Throwable)
     else exception
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: OptionalThrowable =>
-      this.exception eq that.exception
-    case _ => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: OptionalThrowable =>
+        this.exception eq that.exception
+      case _ => false
+    }
 
   override def hashCode(): Int =
     if (exception == null) 0 else exception.hashCode()

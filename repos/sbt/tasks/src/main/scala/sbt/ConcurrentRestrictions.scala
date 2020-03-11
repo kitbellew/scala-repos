@@ -157,18 +157,19 @@ object ConcurrentRestrictions {
       /** Tasks that cannot be run yet because they cannot execute concurrently with the currently running tasks.*/
       private[this] val pending = new LinkedList[Enqueue]
 
-      def submit(node: A, work: () => R): Unit = synchronized {
-        val newState = tags.add(tagState, node)
-        // if the new task is allowed to run concurrently with the currently running tasks,
-        //   submit it to be run by the backing j.u.c.CompletionService
-        if (tags valid newState) {
-          tagState = newState
-          submitValid(node, work)
-        } else {
-          if (running == 0) errorAddingToIdle()
-          pending.add(new Enqueue(node, work))
+      def submit(node: A, work: () => R): Unit =
+        synchronized {
+          val newState = tags.add(tagState, node)
+          // if the new task is allowed to run concurrently with the currently running tasks,
+          //   submit it to be run by the backing j.u.c.CompletionService
+          if (tags valid newState) {
+            tagState = newState
+            submitValid(node, work)
+          } else {
+            if (running == 0) errorAddingToIdle()
+            pending.add(new Enqueue(node, work))
+          }
         }
-      }
       private[this] def submitValid(node: A, work: () => R) = {
         running += 1
         val wrappedWork = () =>
@@ -176,14 +177,15 @@ object ConcurrentRestrictions {
           finally cleanup(node)
         CompletionService.submit(wrappedWork, jservice)
       }
-      private[this] def cleanup(node: A): Unit = synchronized {
-        running -= 1
-        tagState = tags.remove(tagState, node)
-        if (!tags.valid(tagState))
-          warn(
-            "Invalid restriction: removing a completed node from a valid system must result in a valid system.")
-        submitValid(new LinkedList)
-      }
+      private[this] def cleanup(node: A): Unit =
+        synchronized {
+          running -= 1
+          tagState = tags.remove(tagState, node)
+          if (!tags.valid(tagState))
+            warn(
+              "Invalid restriction: removing a completed node from a valid system must result in a valid system.")
+          submitValid(new LinkedList)
+        }
       private[this] def errorAddingToIdle() =
         warn(
           "Invalid restriction: adding a node to an idle system must be allowed.")

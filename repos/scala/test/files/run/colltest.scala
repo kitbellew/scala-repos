@@ -16,14 +16,15 @@ class TestSet(s0: Set[Int], s1: Set[Int]) {
       case 7         => s.size
     }
   }
-  def explain(n: Int, s: Set[Int]): String = n & 7 match {
-    case 0 | 1 | 2 => "contains"
-    case 3         => "add"
-    case 4         => "remove"
-    case 5         => if (s.size > Threshold) "remove" else "add"
-    case 6         => "add"
-    case 7         => "size"
-  }
+  def explain(n: Int, s: Set[Int]): String =
+    n & 7 match {
+      case 0 | 1 | 2 => "contains"
+      case 3         => "add"
+      case 4         => "remove"
+      case 5         => if (s.size > Threshold) "remove" else "add"
+      case 6         => "add"
+      case 7         => "size"
+    }
   def checkSubSet(pre: String, s0: Set[Int], s1: Set[Int]) {
     for (e <- s0.iterator) if (!(s1 contains e)) {
       assert(false, pre + " element: " + e + "\n S0 = " + s0 + "\n S1 = " + s1)

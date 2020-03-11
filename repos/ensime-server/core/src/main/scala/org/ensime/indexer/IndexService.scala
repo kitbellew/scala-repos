@@ -64,12 +64,13 @@ object IndexService extends SLF4JLogging {
   implicit object FieldIndexS
       extends AFqnIndexS(classOf[FieldIndex], FieldIndex)
   implicit object FqnIndexS extends DocumentRecovery[FqnIndex] {
-    def toEntity(d: Document) = d.get("TYPE") match {
-      case "ClassIndex"  => ClassIndexS.toEntity(d)
-      case "MethodIndex" => MethodIndexS.toEntity(d)
-      case "FieldIndex"  => FieldIndexS.toEntity(d)
-      case o             => throw new IllegalStateException(o)
-    }
+    def toEntity(d: Document) =
+      d.get("TYPE") match {
+        case "ClassIndex"  => ClassIndexS.toEntity(d)
+        case "MethodIndex" => MethodIndexS.toEntity(d)
+        case "FieldIndex"  => FieldIndexS.toEntity(d)
+        case o             => throw new IllegalStateException(o)
+      }
   }
   private val ClassIndexT = new TermQuery(
     new Term("TYPE", classOf[ClassIndex].getSimpleName))

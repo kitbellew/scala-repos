@@ -52,24 +52,25 @@ abstract class ConstantFolder {
       // compiler itself crashing
     }
 
-  private def foldUnop(op: Name, x: Constant): Constant = (op, x.tag) match {
-    case (nme.UNARY_!, BooleanTag) => Constant(!x.booleanValue)
+  private def foldUnop(op: Name, x: Constant): Constant =
+    (op, x.tag) match {
+      case (nme.UNARY_!, BooleanTag) => Constant(!x.booleanValue)
 
-    case (nme.UNARY_~, IntTag)  => Constant(~x.intValue)
-    case (nme.UNARY_~, LongTag) => Constant(~x.longValue)
+      case (nme.UNARY_~, IntTag)  => Constant(~x.intValue)
+      case (nme.UNARY_~, LongTag) => Constant(~x.longValue)
 
-    case (nme.UNARY_+, IntTag)    => Constant(+x.intValue)
-    case (nme.UNARY_+, LongTag)   => Constant(+x.longValue)
-    case (nme.UNARY_+, FloatTag)  => Constant(+x.floatValue)
-    case (nme.UNARY_+, DoubleTag) => Constant(+x.doubleValue)
+      case (nme.UNARY_+, IntTag)    => Constant(+x.intValue)
+      case (nme.UNARY_+, LongTag)   => Constant(+x.longValue)
+      case (nme.UNARY_+, FloatTag)  => Constant(+x.floatValue)
+      case (nme.UNARY_+, DoubleTag) => Constant(+x.doubleValue)
 
-    case (nme.UNARY_-, IntTag)    => Constant(-x.intValue)
-    case (nme.UNARY_-, LongTag)   => Constant(-x.longValue)
-    case (nme.UNARY_-, FloatTag)  => Constant(-x.floatValue)
-    case (nme.UNARY_-, DoubleTag) => Constant(-x.doubleValue)
+      case (nme.UNARY_-, IntTag)    => Constant(-x.intValue)
+      case (nme.UNARY_-, LongTag)   => Constant(-x.longValue)
+      case (nme.UNARY_-, FloatTag)  => Constant(-x.floatValue)
+      case (nme.UNARY_-, DoubleTag) => Constant(-x.doubleValue)
 
-    case _ => null
-  }
+      case _ => null
+    }
 
   /** These are local helpers to keep foldBinop from overly taxing the
     *  optimizer.
