@@ -185,8 +185,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
             .join(withSmoker.group)
             .flatMapValues {
               case (
-                  (((name: String, gender: String), age: Int), income: Long),
-                  smoker) =>
+                    (((name: String, gender: String), age: Int), income: Long),
+                    smoker) =>
                 val lifeExpectancy = (gender, smoker) match {
                   case ("M", true)  => 68
                   case ("M", false) => 72

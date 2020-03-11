@@ -225,8 +225,8 @@ package object collections {
           def checkResolve(left: ScExpression, right: ScExpression) =
             (stripped(left), stripped(right)) match {
               case (
-                  leftRef: ScReferenceExpression,
-                  rightRef: ScReferenceExpression) =>
+                    leftRef: ScReferenceExpression,
+                    rightRef: ScReferenceExpression) =>
                 Set(leftRef.resolve(), rightRef.resolve()) equals Set(x, y)
               case _ => false
             }
@@ -240,8 +240,8 @@ package object collections {
           }
         case ScInfixExpr(underscore(), oper, underscore()) => Some(oper)
         case ScMethodCall(
-            refExpr: ScReferenceExpression,
-            Seq(underscore(), underscore())) =>
+              refExpr: ScReferenceExpression,
+              Seq(underscore(), underscore())) =>
           Some(refExpr)
         case _ => None
       }
@@ -596,12 +596,11 @@ package object collections {
               _) if infix.isAssignmentOperator =>
           infix
         case MethodRepr(
-            itself,
-            Some(
-              definedOutside(
+              itself,
+              Some(definedOutside(
                 ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
-            Some(ref),
-            _)
+              Some(ref),
+              _)
             if isSideEffectCollectionMethod(ref) || isSetter(
               ref) || hasUnitReturnType(ref) =>
           itself

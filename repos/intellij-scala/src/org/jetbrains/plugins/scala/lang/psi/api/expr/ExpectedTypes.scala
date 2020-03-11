@@ -202,9 +202,9 @@ private[expr] object ExpectedTypes {
                 ) /* See SCL-3512, SCL-3525, SCL-4809, SCL-6785 */ =>
             ref.bind() match {
               case Some(
-                  ScalaResolveResult(
-                    named: PsiNamedElement,
-                    subst: ScSubstitutor)) =>
+                    ScalaResolveResult(
+                      named: PsiNamedElement,
+                      subst: ScSubstitutor)) =>
                 ScalaPsiUtil.nameContext(named) match {
                   case v: ScValue =>
                     Array(
@@ -556,8 +556,8 @@ private[expr] object ExpectedTypes {
           }
         } else applyForParams(params)
       case Success(
-          t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
-          _) =>
+            t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
+            _) =>
         val subst = t.abstractTypeSubstitutor
         val newParams =
           params.map(p => p.copy(paramType = subst.subst(p.paramType)))

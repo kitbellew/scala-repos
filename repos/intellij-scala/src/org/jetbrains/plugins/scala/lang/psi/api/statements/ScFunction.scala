@@ -196,8 +196,8 @@ trait ScFunction
             var typeParamSubst = ScSubstitutor.empty
             fun.typeParameters.zip(typeParameters).foreach {
               case (
-                  oldParam: ScSyntheticTypeParameter,
-                  newParam: ScTypeParam) =>
+                    oldParam: ScSyntheticTypeParameter,
+                    newParam: ScTypeParam) =>
                 typeParamSubst = typeParamSubst.bindT(
                   (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
                   new ScTypeParameterType(newParam, subst))

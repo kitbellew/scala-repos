@@ -120,12 +120,12 @@ class PortsMatcher(
 
       mappings.iterator.map {
         case PortMapping(
-            containerPort,
-            hostPort,
-            servicePort,
-            protocol,
-            name,
-            labels) if hostPort == 0 =>
+              containerPort,
+              hostPort,
+              servicePort,
+              protocol,
+              name,
+              labels) if hostPort == 0 =>
           if (!availablePortsWithoutStaticHostPorts.hasNext) {
             log.info(
               s"Offer [${offer.getId.getValue}]. $resourceSelector. " +

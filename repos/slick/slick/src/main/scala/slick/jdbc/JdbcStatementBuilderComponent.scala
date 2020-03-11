@@ -539,16 +539,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     def buildUpdate: SQLBuilder.Result = {
       val (gen, from, where, select) = tree match {
         case Comprehension(
-            sym,
-            from: TableNode,
-            Pure(select, _),
-            where,
-            None,
-            _,
-            None,
-            None,
-            None,
-            None) =>
+              sym,
+              from: TableNode,
+              Pure(select, _),
+              where,
+              None,
+              _,
+              None,
+              None,
+              None,
+              None) =>
           select match {
             case f @ Select(Ref(struct), _) if struct == sym =>
               (sym, from, where, ConstArray(f.field))
@@ -583,16 +583,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         throw new SlickException("Invalid query for DELETE statement: " + msg)
       val (gen, from, where) = tree match {
         case Comprehension(
-            sym,
-            from,
-            Pure(select, _),
-            where,
-            _,
-            _,
-            None,
-            distinct,
-            fetch,
-            offset) =>
+              sym,
+              from,
+              Pure(select, _),
+              where,
+              _,
+              _,
+              None,
+              distinct,
+              fetch,
+              offset) =>
           if (fetch.isDefined || offset.isDefined || distinct.isDefined)
             fail(".take, .drop and .distinct are not supported for deleting")
           from match {
@@ -664,9 +664,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       n.replace(
         {
           case InsertColumn(
-              ConstArray(Select(ref, ElementSymbol(idx))),
-              fs,
-              tpe) =>
+                ConstArray(Select(ref, ElementSymbol(idx))),
+                fs,
+                tpe) =>
             val newPaths =
               reordering(idx - 1).map(i => Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe

@@ -1302,8 +1302,8 @@ abstract class Erasure
               finally tpt setType specialErasure(tree1.symbol)(
                 tree1.symbol.tpe).resultType
             case ApplyDynamic(
-                qual,
-                Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>
+                  qual,
+                  Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>
               tree
             case _ =>
               super.transform(tree1).clearType()

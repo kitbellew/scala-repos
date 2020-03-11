@@ -1209,13 +1209,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
           (sliceIndex, jdbmState)
 
         case SortedSlice(
-            indexName,
-            kslice0,
-            vslice0,
-            vEncoder0,
-            keyRefs,
-            valRefs,
-            count) =>
+              indexName,
+              kslice0,
+              vslice0,
+              vEncoder0,
+              keyRefs,
+              valRefs,
+              count) =>
           val keyRowFormat = RowFormat.forSortingKey(krefs)
           val keyComparator =
             SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
@@ -1317,8 +1317,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   (k: SortingKey) => M.point(None))))
 
           case (
-              SliceIndex(name, dbFile, _, _, _, keyColumns, valColumns, count),
-              index) =>
+                SliceIndex(
+                  name,
+                  dbFile,
+                  _,
+                  _,
+                  _,
+                  keyColumns,
+                  valColumns,
+                  count),
+                index) =>
             val sortProjection = new JDBMRawSortProjection[M](
               dbFile,
               name,

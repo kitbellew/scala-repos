@@ -73,8 +73,8 @@ final class AssessApi(
       relatedUsers zip
       (relatedUsers flatMap UserRepo.filterByEngine) map {
       case (
-          ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
-          relatedCheaters) =>
+            ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
+            relatedCheaters) =>
         Some(
           PlayerAggregateAssessment(
             user,

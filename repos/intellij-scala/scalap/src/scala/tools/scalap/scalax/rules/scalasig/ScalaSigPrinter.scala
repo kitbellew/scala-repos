@@ -645,9 +645,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                   if refinementClass(classSymbol) =>
                 ""
               case (
-                  ThisType(typeSymbol: ClassSymbol),
-                  ExternalSymbol(_, Some(parent), _),
-                  _)
+                    ThisType(typeSymbol: ClassSymbol),
+                    ExternalSymbol(_, Some(parent), _),
+                    _)
                   if typeSymbol.path != parent.path && checkContainsSelf(
                     typeSymbol.selfType,
                     parent) =>

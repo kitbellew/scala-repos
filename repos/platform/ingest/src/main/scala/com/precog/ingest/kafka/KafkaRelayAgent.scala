@@ -226,9 +226,9 @@ final class KafkaRelayAgent(
       Future.sequence(messageFutures) map { messages: List[Authorized] =>
         val identified: List[Message] = messages.flatMap {
           case Authorized(
-              Ingest(apiKey, path, _, data, jobId, timestamp, storeMode),
-              offset,
-              Some(authorities)) =>
+                Ingest(apiKey, path, _, data, jobId, timestamp, storeMode),
+                offset,
+                Some(authorities)) =>
             def encodeIngestMessages(ev: List[IngestMessage]): List[Message] = {
               val messages = ev.map(centralCodec.toMessage)
 
@@ -270,9 +270,9 @@ final class KafkaRelayAgent(
               "Unable to establish owner account ID for ingest of event " + event)
 
           case Authorized(
-              archive @ Archive(apiKey, path, jobId, timestamp),
-              offset,
-              _) =>
+                archive @ Archive(apiKey, path, jobId, timestamp),
+                offset,
+                _) =>
             List(
               centralCodec.toMessage(
                 ArchiveMessage(
@@ -283,9 +283,9 @@ final class KafkaRelayAgent(
                   timestamp)))
 
           case Authorized(
-              StoreFile(apiKey, path, _, jobId, content, timestamp, stream),
-              offset,
-              Some(authorities)) =>
+                StoreFile(apiKey, path, _, jobId, content, timestamp, stream),
+                offset,
+                Some(authorities)) =>
             List(
               centralCodec.toMessage(
                 StoreFileMessage(

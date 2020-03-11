@@ -189,7 +189,7 @@ class MacroExpandAction extends AnAction {
         reformatCode(newPsi)
         newPsi.firstChild match {
           case Some(
-              block: ScBlock
+                block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
             block.children

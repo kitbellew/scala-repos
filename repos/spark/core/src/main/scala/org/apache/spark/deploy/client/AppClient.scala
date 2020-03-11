@@ -189,11 +189,11 @@ private[spark] class AppClient(
         stop()
 
       case ExecutorAdded(
-          id: Int,
-          workerId: String,
-          hostPort: String,
-          cores: Int,
-          memory: Int) =>
+            id: Int,
+            workerId: String,
+            hostPort: String,
+            cores: Int,
+            memory: Int) =>
         val fullId = appId + "/" + id
         logInfo(
           "Executor added: %s on %s (%s) with %d cores"

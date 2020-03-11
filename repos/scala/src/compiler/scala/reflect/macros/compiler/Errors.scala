@@ -123,8 +123,8 @@ trait Errors extends Traces {
         (rtpe, atpe) match {
           case _ if rtpe eq atpe => success()
           case (
-              TypeRef(_, RepeatedParamClass, rtpe :: Nil),
-              TypeRef(_, RepeatedParamClass, atpe :: Nil)) =>
+                TypeRef(_, RepeatedParamClass, rtpe :: Nil),
+                TypeRef(_, RepeatedParamClass, atpe :: Nil)) =>
             check(rtpe, atpe)
           case (ExprClassOf(_), TreeType()) if rtpe.prefix =:= atpe.prefix =>
             success()

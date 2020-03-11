@@ -120,8 +120,8 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     */
   def sortedBy(column: Int): SortState = sort match {
     case (
-        `column`,
-        true
+          `column`,
+          true
         ) => // descending is only if it was already sorted ascending
       (column, false)
     case _ =>

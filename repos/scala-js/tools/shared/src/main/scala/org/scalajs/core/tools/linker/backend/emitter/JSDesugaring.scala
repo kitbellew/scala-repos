@@ -876,8 +876,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           true
 
         // JavaScript expressions that can always have side-effects
@@ -1851,8 +1851,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         // JavaScript expressions
 
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           // Shortcut for this field which is heavily used
           envField("g")
 

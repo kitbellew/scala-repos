@@ -1265,14 +1265,14 @@ object Defaults extends BuildCommon {
       scalaInstance in task,
       streams) map {
       case (
-          cs: IncrementalCompilerImpl.Compilers,
-          cp,
-          options,
-          initCommands,
-          cleanup,
-          temp,
-          si,
-          s) =>
+            cs: IncrementalCompilerImpl.Compilers,
+            cp,
+            options,
+            initCommands,
+            cleanup,
+            temp,
+            si,
+            s) =>
         val cpFiles = data(cp)
         val fullcp = (cpFiles ++ si.allJars).distinct
         val loader = sbt.internal.inc.classpath.ClasspathUtilities

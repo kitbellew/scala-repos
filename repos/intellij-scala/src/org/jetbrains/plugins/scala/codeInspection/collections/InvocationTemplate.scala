@@ -54,10 +54,10 @@ class InvocationTemplate(nameCondition: String => Boolean) {
         if (ref.isDefined && refCondition(ref.get)) Some(qual, args)
         else None
       case MethodRepr(
-          _,
-          Some(MethodRepr(_, qualOpt, Some(ref), firstArgs)),
-          None,
-          secondArgs) if nameCondition(ref.refName) && refCondition(ref) =>
+            _,
+            Some(MethodRepr(_, qualOpt, Some(ref), firstArgs)),
+            None,
+            secondArgs) if nameCondition(ref.refName) && refCondition(ref) =>
         Some(qualOpt.orNull, firstArgs ++ secondArgs)
       case _ => None
     }

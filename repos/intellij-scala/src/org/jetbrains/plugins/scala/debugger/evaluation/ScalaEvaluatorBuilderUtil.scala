@@ -1645,11 +1645,11 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
     methodCall match {
       case hasDeepestInvokedReference(
-          ScReferenceExpression.withQualifier(implicitlyConvertedTo(expr))) =>
+            ScReferenceExpression.withQualifier(implicitlyConvertedTo(expr))) =>
         val copy = methodCall.copy().asInstanceOf[ScMethodCall]
         copy match {
           case hasDeepestInvokedReference(
-              ScReferenceExpression.withQualifier(q)) =>
+                ScReferenceExpression.withQualifier(q)) =>
             q.replaceExpression(expr, removeParenthesis = false)
             evaluatorFor(copy)
           case _ =>
@@ -2050,8 +2050,9 @@ object ScalaEvaluatorBuilderUtil {
           true
         case ScalaPsiUtil.MethodValue(_) => true
         case Both(
-            ChildOf(argExprs: ScArgumentExprList),
-            ScalaPositionManager.InsideAsync(call)) if call.args == argExprs =>
+              ChildOf(argExprs: ScArgumentExprList),
+              ScalaPositionManager.InsideAsync(call))
+            if call.args == argExprs =>
           true
         case _ => false
       }
@@ -2165,7 +2166,7 @@ object ScalaEvaluatorBuilderUtil {
       place: PsiElement): Boolean = {
     named match {
       case ScalaPsiUtil.inNameContext(
-          enum @ (_: ScEnumerator | _: ScGenerator)) =>
+            enum @ (_: ScEnumerator | _: ScGenerator)) =>
         enum.getParent.getParent match {
           case ScForStatement(enums, body) =>
             enums.namings.map(_.pattern) match {
@@ -2233,8 +2234,8 @@ object ScalaEvaluatorBuilderUtil {
       elem match {
         case c: ScClassParameter if c.isPrivateThis => Some(c)
         case Both(
-            bp: ScBindingPattern,
-            ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue))) =>
+              bp: ScBindingPattern,
+              ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue))) =>
           v match {
             case mo: ScModifierListOwner
                 if mo.getModifierList.accessModifier.exists(am =>

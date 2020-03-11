@@ -137,15 +137,15 @@ object TestResultLogger {
         pendingCount) =
         results.events.foldLeft((0, 0, 0, 0, 0, 0, 0)) {
           case (
-              (
-                skippedAcc,
-                errorAcc,
-                passedAcc,
-                failureAcc,
-                ignoredAcc,
-                canceledAcc,
-                pendingAcc),
-              (name, testEvent)) =>
+                (
+                  skippedAcc,
+                  errorAcc,
+                  passedAcc,
+                  failureAcc,
+                  ignoredAcc,
+                  canceledAcc,
+                  pendingAcc),
+                (name, testEvent)) =>
             (
               skippedAcc + testEvent.skippedCount,
               errorAcc + testEvent.errorCount,

@@ -471,13 +471,13 @@ private[akka] class ClusterShardingGuardian extends Actor {
 
   def receive = {
     case Start(
-        typeName,
-        entityProps,
-        settings,
-        extractEntityId,
-        extractShardId,
-        allocationStrategy,
-        handOffStopMessage) ⇒
+          typeName,
+          entityProps,
+          settings,
+          extractEntityId,
+          extractShardId,
+          allocationStrategy,
+          handOffStopMessage) ⇒
       import settings.role
       import settings.tuningParameters.coordinatorFailureBackoff
 

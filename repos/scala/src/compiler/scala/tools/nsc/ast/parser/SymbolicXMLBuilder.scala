@@ -252,13 +252,13 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
       val uri1 = attrMap(z) match {
         case Apply(
-            Select(
-              New(
-                Select(
-                  Select(Select(Ident(nme.ROOTPKG), nme.scala_), nme.xml),
-                  tpnme.Text)),
-              nme.CONSTRUCTOR),
-            List(uri @ Literal(Constant(_)))) =>
+              Select(
+                New(
+                  Select(
+                    Select(Select(Ident(nme.ROOTPKG), nme.scala_), nme.xml),
+                    tpnme.Text)),
+                nme.CONSTRUCTOR),
+              List(uri @ Literal(Constant(_)))) =>
           mkAssign(uri)
         case Select(_, nme.Nil) =>
           mkAssign(const(null)) // allow for xmlns="" -- bug #1626

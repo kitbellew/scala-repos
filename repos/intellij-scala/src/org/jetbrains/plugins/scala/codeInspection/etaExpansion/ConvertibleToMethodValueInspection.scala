@@ -92,8 +92,8 @@ class ConvertibleToMethodValueInspection
     qual.depthFirst(e => !e.isInstanceOf[ScImportStmt]).forall {
       case _: ScNewTemplateDefinition => false
       case Both(
-          _: ScReferenceExpression | ScConstructor.byReference(_),
-          ResolvesTo(named: PsiNamedElement)) =>
+            _: ScReferenceExpression | ScConstructor.byReference(_),
+            ResolvesTo(named: PsiNamedElement)) =>
         isStable(named)
       case _ => true
     }

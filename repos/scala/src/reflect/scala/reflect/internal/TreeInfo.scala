@@ -858,9 +858,9 @@ abstract class TreeInfo {
     def unapply(tree: Tree): Option[Tree] = tree match {
       // SI-7868 Admit Select() to account for numeric widening, e.g. <unapplySelector>.toInt
       case Apply(
-          fun,
-          (Ident(nme.SELECTOR_DUMMY) |
-          Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
+            fun,
+            (Ident(nme.SELECTOR_DUMMY) |
+            Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
         Some(fun)
       case Apply(fun, _) => unapply(fun)
       case _             => None
@@ -928,8 +928,8 @@ abstract class TreeInfo {
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) = tree match {
       case Apply(
-          TypeApply(Select(qual, oper), _),
-          List(Literal(Constant(name)))) if nameTest(oper) =>
+            TypeApply(Select(qual, oper), _),
+            List(Literal(Constant(name)))) if nameTest(oper) =>
         Some((qual, name))
       case Apply(Select(qual, oper), List(Literal(Constant(name))))
           if nameTest(oper) =>

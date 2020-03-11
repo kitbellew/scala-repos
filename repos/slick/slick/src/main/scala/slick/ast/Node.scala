@@ -977,13 +977,13 @@ object QueryParameter {
   def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(
       implicit tpe: ScalaBaseType[T]): Node = (l, r) match {
     case (
-        LiteralNode(lv) :@ (lt: TypedType[_]),
-        LiteralNode(rv) :@ (rt: TypedType[_]))
+          LiteralNode(lv) :@ (lt: TypedType[_]),
+          LiteralNode(rv) :@ (rt: TypedType[_]))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       LiteralNode[T](op(lv.asInstanceOf[T], rv.asInstanceOf[T])).infer()
     case (
-        LiteralNode(lv) :@ (lt: TypedType[_]),
-        QueryParameter(re, rt: TypedType[_], _))
+          LiteralNode(lv) :@ (lt: TypedType[_]),
+          QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {
@@ -993,8 +993,8 @@ object QueryParameter {
         },
         tpe)
     case (
-        QueryParameter(le, lt: TypedType[_], _),
-        LiteralNode(rv) :@ (rt: TypedType[_]))
+          QueryParameter(le, lt: TypedType[_], _),
+          LiteralNode(rv) :@ (rt: TypedType[_]))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {
@@ -1004,8 +1004,8 @@ object QueryParameter {
         },
         tpe)
     case (
-        QueryParameter(le, lt: TypedType[_], _),
-        QueryParameter(re, rt: TypedType[_], _))
+          QueryParameter(le, lt: TypedType[_], _),
+          QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {

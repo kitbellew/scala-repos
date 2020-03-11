@@ -61,8 +61,8 @@ private[http] class RejectionHandlerWrapper(
           case UnsupportedRequestEncodingRejection(supported) ⇒
             handleUnsupportedRequestEncodingRejection(ctx, supported.asJava)
           case UnsatisfiableRangeRejection(
-              unsatisfiableRanges,
-              actualEntityLength) ⇒
+                unsatisfiableRanges,
+                actualEntityLength) ⇒
             handleUnsatisfiableRangeRejection(
               ctx,
               unsatisfiableRanges.asJava,

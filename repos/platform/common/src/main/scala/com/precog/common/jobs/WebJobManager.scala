@@ -280,10 +280,10 @@ trait WebJobManager
                     case None      => Left("Could not find job with ID: " + jobId)
                   }
                 case HttpResponse(
-                    HttpStatus(BadRequest, _),
-                    _,
-                    Some(JString(msg)),
-                    _) =>
+                      HttpStatus(BadRequest, _),
+                      _,
+                      Some(JString(msg)),
+                      _) =>
                   BadResponse(msg)
                 case res =>
                   BadResponse(unexpected(res))

@@ -310,7 +310,7 @@ object CustomSerializerExamples extends Specification {
         (
           {
             case JObject(
-                JField("start", JInt(s)) :: JField("end", JInt(e)) :: Nil) =>
+                  JField("start", JInt(s)) :: JField("end", JInt(e)) :: Nil) =>
               new Interval(s.longValue, e.longValue)
           },
           {

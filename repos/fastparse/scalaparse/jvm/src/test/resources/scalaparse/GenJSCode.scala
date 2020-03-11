@@ -693,8 +693,8 @@ abstract class GenJSCode
         rhs match {
           // Shape of a constructor that only calls super
           case Block(
-              List(Apply(fun @ Select(_: Super, _), args)),
-              Literal(_)) =>
+                List(Apply(fun @ Select(_: Super, _), args)),
+                Literal(_)) =>
             val callee = fun.symbol
             implicit val dummyPos = NoPosition
 
@@ -924,8 +924,8 @@ abstract class GenJSCode
 
       val body = tree match {
         case Block(
-            (thisDef @ ValDef(_, nme.THIS, _, initialThis)) :: otherStats,
-            rhs) =>
+              (thisDef @ ValDef(_, nme.THIS, _, initialThis)) :: otherStats,
+              rhs) =>
           // This method has tail jumps
           withScopedVars(
             (initialThis match {
@@ -1230,34 +1230,34 @@ abstract class GenJSCode
       tree match {
         // while (cond) { body }
         case LabelDef(
-            lname,
-            Nil,
-            If(
-              cond,
-              Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
-              Literal(_))) if (target.symbol == sym) =>
+              lname,
+              Nil,
+              If(
+                cond,
+                Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
+                Literal(_))) if (target.symbol == sym) =>
           js.While(genExpr(cond), js.Block(bodyStats map genStat))
 
         // while (cond) { body }; result
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              List(
-                If(
-                  cond,
-                  Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
-                  Literal(_))),
-              result)) if (target.symbol == sym) =>
+              lname,
+              Nil,
+              Block(
+                List(
+                  If(
+                    cond,
+                    Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
+                    Literal(_))),
+                result)) if (target.symbol == sym) =>
           js.Block(
             js.While(genExpr(cond), js.Block(bodyStats map genStat)),
             genExpr(result))
 
         // while (true) { body }
         case LabelDef(
-            lname,
-            Nil,
-            Block(bodyStats, Apply(target @ Ident(lname2), Nil)))
+              lname,
+              Nil,
+              Block(bodyStats, Apply(target @ Ident(lname2), Nil)))
             if (target.symbol == sym) =>
           js.While(js.BooleanLiteral(true), js.Block(bodyStats map genStat))
 
@@ -1267,22 +1267,22 @@ abstract class GenJSCode
 
         // do { body } while (cond)
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              bodyStats,
-              If(cond, Apply(target @ Ident(lname2), Nil), Literal(_))))
+              lname,
+              Nil,
+              Block(
+                bodyStats,
+                If(cond, Apply(target @ Ident(lname2), Nil), Literal(_))))
             if (target.symbol == sym) =>
           js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond))
 
         // do { body } while (cond); result
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              bodyStats :+
+              lname,
+              Nil,
+              Block(
+                bodyStats :+
                 If(cond, Apply(target @ Ident(lname2), Nil), Literal(_)),
-              result)) if (target.symbol == sym) =>
+                result)) if (target.symbol == sym) =>
           js.Block(
             js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond)),
             genExpr(result))
@@ -3563,7 +3563,7 @@ abstract class GenJSCode
       arg match {
         // foo(arg1, arg2, ..., argN) where N > 0
         case MaybeAsInstanceOf(
-            WrapArray(MaybeAsInstanceOf(ArrayValue(tpt, elems)))) =>
+              WrapArray(MaybeAsInstanceOf(ArrayValue(tpt, elems)))) =>
           /* Value classes in arrays are already boxed, so no need to use
            * the type before erasure.
            */

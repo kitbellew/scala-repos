@@ -677,9 +677,9 @@ private[spark] class ApplicationMaster(
     override def receiveAndReply(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       case RequestExecutors(
-          requestedTotal,
-          localityAwareTasks,
-          hostToLocalTaskCount) =>
+            requestedTotal,
+            localityAwareTasks,
+            hostToLocalTaskCount) =>
         Option(allocator) match {
           case Some(a) =>
             if (a.requestTotalExecutorsWithPreferredLocalities(

@@ -168,8 +168,14 @@ class Zk2Resolver(
             val endpoint = endpointOption.getOrElse(null)
             val subseq = eps collect {
               case (
-                  Endpoint(names, host, port, shard, Endpoint.Status.Alive, _),
-                  weight) if names.contains(endpoint) && host != null =>
+                    Endpoint(
+                      names,
+                      host,
+                      port,
+                      shard,
+                      Endpoint.Status.Alive,
+                      _),
+                    weight) if names.contains(endpoint) && host != null =>
                 val metadata =
                   ZkMetadata.toAddrMetadata(ZkMetadata(Some(shard)))
                 (host, port, metadata + (WeightedAddress.weightKey -> weight))

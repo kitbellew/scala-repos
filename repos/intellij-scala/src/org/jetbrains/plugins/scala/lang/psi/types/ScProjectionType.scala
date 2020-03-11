@@ -103,8 +103,8 @@ class ScProjectionType private (
                             .zip(typeArgs)
                             .forall {
                               case (
-                                  tParam: ScTypeParam,
-                                  ScTypeParameterType(_, _, _, _, param))
+                                    tParam: ScTypeParam,
+                                    ScTypeParameterType(_, _, _, _, param))
                                   if tParam == param =>
                                 true
                               case _ => false
@@ -528,8 +528,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                           .zip(typeArgs)
                           .forall {
                             case (
-                                tParam: ScTypeParam,
-                                ScTypeParameterType(_, _, _, _, param))
+                                  tParam: ScTypeParam,
+                                  ScTypeParameterType(_, _, _, _, param))
                                 if tParam == param =>
                               true
                             case _ => false

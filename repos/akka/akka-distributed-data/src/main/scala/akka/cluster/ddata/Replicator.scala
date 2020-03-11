@@ -631,8 +631,8 @@ object Replicator {
           c: ReplicatedData,
           p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
         case (
-            c: RemovedNodePruning,
-            (removed, PruningState(_, PruningPerformed))) ⇒
+              c: RemovedNodePruning,
+              (removed, PruningState(_, PruningPerformed))) ⇒
           if (c.needPruningFrom(removed)) c.pruningCleanup(removed) else c
         case (c, _) ⇒ c
       }
@@ -1406,8 +1406,8 @@ final class Replicator(settings: ReplicatorSettings)
     // perform pruning when all seen Init
     dataEntries.foreach {
       case (
-          key,
-          (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+            key,
+            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
         pruning.foreach {
           case (removed, PruningState(owner, PruningInitialized(seen)))
               if owner == selfUniqueAddress
@@ -1432,8 +1432,8 @@ final class Replicator(settings: ReplicatorSettings)
     def allPruningPerformed(removed: UniqueAddress): Boolean = {
       dataEntries forall {
         case (
-            key,
-            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+              key,
+              (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
           pruning.get(removed) match {
             case Some(PruningState(_, PruningInitialized(_))) ⇒ false
             case _ ⇒ true
@@ -1452,8 +1452,8 @@ final class Replicator(settings: ReplicatorSettings)
         tombstoneNodes += removed
         dataEntries.foreach {
           case (
-              key,
-              (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
+                key,
+                (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
             setData(key, pruningCleanupTombstoned(removed, envelope))
           case _ ⇒ // deleted, or pruning not needed
         }

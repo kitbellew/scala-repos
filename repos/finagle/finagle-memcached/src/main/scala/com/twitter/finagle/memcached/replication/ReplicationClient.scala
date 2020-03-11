@@ -437,8 +437,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
       resultsMap =>
         val getsResultSeq = resultsMap map {
           case (
-              key,
-              ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
+                key,
+                ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
             val newCas = uniques map { case Buf.Utf8(s) => s } mkString ("|")
             val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
             GetsResult(GetResult(hits = Map(key -> newValue)))

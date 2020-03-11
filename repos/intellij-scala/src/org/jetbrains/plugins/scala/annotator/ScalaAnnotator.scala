@@ -135,9 +135,9 @@ class ScalaAnnotator
         if (isAdvancedHighlightingEnabled(element)) {
           expr.getTypeExt(TypingContext.empty) match {
             case ExpressionTypeResult(
-                Success(t, _),
-                _,
-                Some(implicitFunction)) =>
+                  Success(t, _),
+                  _,
+                  Some(implicitFunction)) =>
               highlightImplicitView(expr, implicitFunction, t, expr, holder)
             case _ =>
           }
@@ -956,8 +956,8 @@ class ScalaAnnotator
                 messageKey,
                 td => new CreateApplyQuickFix(td, mc))) return
         case Both(
-            p: ScPattern,
-            (_: ScConstructorPattern | _: ScInfixPattern)) =>
+              p: ScPattern,
+              (_: ScConstructorPattern | _: ScInfixPattern)) =>
           val messageKey = "cannot.resolve.unapply.method"
           if (addCreateApplyOrUnapplyFix(
                 messageKey,

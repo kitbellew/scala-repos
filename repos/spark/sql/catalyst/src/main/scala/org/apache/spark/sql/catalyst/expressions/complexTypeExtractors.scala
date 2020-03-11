@@ -62,8 +62,8 @@ object ExtractValue {
         GetStructField(child, ordinal, Some(fieldName))
 
       case (
-          ArrayType(StructType(fields), containsNull),
-          NonNullLiteral(v, StringType)) =>
+            ArrayType(StructType(fields), containsNull),
+            NonNullLiteral(v, StringType)) =>
         val fieldName = v.toString
         val ordinal = findField(fields, fieldName, resolver)
         GetArrayStructFields(

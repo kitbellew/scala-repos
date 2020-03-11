@@ -1336,8 +1336,8 @@ object ScalaRefactoringUtil {
         false
       case _: ScFunction => true
       case Both(
-          fun: ScFunction,
-          _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
+            fun: ScFunction,
+            _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
         true
       case ifSt: ScIfStmt
           if Seq(ifSt.thenBranch, ifSt.elseBranch) contains Option(parExpr) =>

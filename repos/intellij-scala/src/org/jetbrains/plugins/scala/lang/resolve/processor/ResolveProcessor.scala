@@ -267,10 +267,10 @@ class ResolveProcessor(
         res.foldLeft(true) {
           case (false, _) => false
           case (
-              true,
-              rr @ ScalaResolveResult(
-                _: ScTypeAlias | _: ScClass | _: ScTrait,
-                _)) =>
+                true,
+                rr @ ScalaResolveResult(
+                  _: ScTypeAlias | _: ScClass | _: ScTrait,
+                  _)) =>
             rr.element.name != r.element.name ||
               ScalaPsiUtil
                 .superTypeMembers(rr.element)

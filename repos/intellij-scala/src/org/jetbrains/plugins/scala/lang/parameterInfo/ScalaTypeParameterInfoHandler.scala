@@ -255,9 +255,9 @@ class ScalaTypeParameterInfoHandler
                   val bind = resRef.bind()
                   bind match {
                     case Some(
-                        r @ ScalaResolveResult(
-                          method: PsiMethod,
-                          substitutor)) =>
+                          r @ ScalaResolveResult(
+                            method: PsiMethod,
+                            substitutor)) =>
                       res += Tuple2(r.getElement, substitutor)
                     case _ =>
                   }
@@ -270,19 +270,19 @@ class ScalaTypeParameterInfoHandler
                     case Some(ref) =>
                       ref.bind() match {
                         case Some(
-                            r @ ScalaResolveResult(
-                              method: PsiMethod,
-                              substitutor)) =>
+                              r @ ScalaResolveResult(
+                                method: PsiMethod,
+                                substitutor)) =>
                           res += Tuple2(r.getActualElement, substitutor)
                         case Some(
-                            ScalaResolveResult(
-                              element: PsiClass,
-                              substitutor)) =>
+                              ScalaResolveResult(
+                                element: PsiClass,
+                                substitutor)) =>
                           res += Tuple2(element, substitutor)
                         case Some(
-                            ScalaResolveResult(
-                              element: ScTypeParametersOwner,
-                              substitutor)) =>
+                              ScalaResolveResult(
+                                element: ScTypeParametersOwner,
+                                substitutor)) =>
                           res += Tuple2(element, substitutor)
                         case _ =>
                       }

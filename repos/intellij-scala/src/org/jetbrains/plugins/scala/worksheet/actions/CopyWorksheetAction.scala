@@ -90,13 +90,13 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
       case m: WorksheetFoldRegionDelegate =>
         (0 /: m.getWorksheetGroup.getCorrespondInfo) {
           case (
-              lastEnd,
-              (
-                rightStartOffset,
-                rightEndOffset,
-                leftOffset,
-                spaces,
-                leftLength)) =>
+                lastEnd,
+                (
+                  rightStartOffset,
+                  rightEndOffset,
+                  leftOffset,
+                  spaces,
+                  leftLength)) =>
             val leftStart = {
               var j = lastEnd
 

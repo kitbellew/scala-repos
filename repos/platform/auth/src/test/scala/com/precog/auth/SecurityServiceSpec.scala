@@ -181,14 +181,14 @@ class SecurityServiceSpec
 
   def mkNewGrantRequest(grant: Grant) = grant match {
     case Grant(
-        _,
-        name,
-        description,
-        _,
-        parentIds,
-        permissions,
-        _,
-        expirationDate) =>
+          _,
+          name,
+          description,
+          _,
+          parentIds,
+          permissions,
+          _,
+          expirationDate) =>
       v1.NewGrantRequest(
         name,
         description,
@@ -341,10 +341,10 @@ class SecurityServiceSpec
       getAPIKeyDetails("not-gonna-find-it") must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(NotFound, _),
-              _,
-              Some(JString("Unable to find API key not-gonna-find-it")),
-              _) =>
+                HttpStatus(NotFound, _),
+                _,
+                Some(JString("Unable to find API key not-gonna-find-it")),
+                _) =>
             ok
         }
       }
@@ -416,10 +416,10 @@ class SecurityServiceSpec
       createAPIKeyRaw(rootAPIKey, request) must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(BadRequest, msg),
-              _,
-              Some(JObject(elems)),
-              _) if elems.contains("error") =>
+                HttpStatus(BadRequest, msg),
+                _,
+                Some(JObject(elems)),
+                _) if elems.contains("error") =>
             msg must startWith("Invalid new API key request body")
         }
       }
@@ -433,13 +433,13 @@ class SecurityServiceSpec
       createAPIKey(expired.apiKey, request) must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(BadRequest, _),
-              _,
-              Some(JObject(elems)),
-              _) if elems.contains("error") =>
+                HttpStatus(BadRequest, _),
+                _,
+                Some(JObject(elems)),
+                _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(
-                  "Unable to create API key with expired permission") =>
+                    "Unable to create API key with expired permission") =>
                 ok
             }
         }
@@ -454,10 +454,10 @@ class SecurityServiceSpec
       createAPIKey(user2.apiKey, request) must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(BadRequest, _),
-              _,
-              Some(JObject(elems)),
-              _) if elems.contains("error") =>
+                HttpStatus(BadRequest, _),
+                _,
+                Some(JObject(elems)),
+                _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(msg) =>
                 msg must startWith(
@@ -509,10 +509,10 @@ class SecurityServiceSpec
       getGrantDetails(user1.apiKey, "not-gonna-find-it") must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(NotFound, _),
-              _,
-              Some(JString("Unable to find grant not-gonna-find-it")),
-              _) =>
+                HttpStatus(NotFound, _),
+                _,
+                Some(JString("Unable to find grant not-gonna-find-it")),
+                _) =>
             ok
         }
       }
@@ -547,10 +547,10 @@ class SecurityServiceSpec
           None)) must awaited(to) {
         beLike {
           case HttpResponse(
-              HttpStatus(BadRequest, _),
-              _,
-              Some(JObject(elems)),
-              _) if elems.contains("error") =>
+                HttpStatus(BadRequest, _),
+                _,
+                Some(JObject(elems)),
+                _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(msg) =>
                 msg must startWith(

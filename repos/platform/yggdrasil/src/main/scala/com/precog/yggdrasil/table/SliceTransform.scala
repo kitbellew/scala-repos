@@ -867,9 +867,9 @@ trait SliceTransforms[M[+_]]
 
       (this, t, t2) match {
         case (
-            sta: SliceTransform1S[_],
-            stb: SliceTransform1S[_],
-            stc: SliceTransform1S[_]) =>
+              sta: SliceTransform1S[_],
+              stb: SliceTransform1S[_],
+              stc: SliceTransform1S[_]) =>
           SliceTransform1S(
             (sta.initial, stb.initial, stc.initial),
             {
@@ -1020,8 +1020,8 @@ trait SliceTransforms[M[+_]]
             { case ((a, b, c), d)      => (a, ((b, c), d), ()) })
 
         case (
-            SliceTransform1SMS(sta, stb, stc),
-            SliceTransform1SMS(std, ste, stf)) =>
+              SliceTransform1SMS(sta, stb, stc),
+              SliceTransform1SMS(std, ste, stf)) =>
           val st = SliceTransform1SMS(
             sta,
             stb andThen stc andThen std andThen ste,
@@ -1186,9 +1186,9 @@ trait SliceTransforms[M[+_]]
 
       (this, t, t2) match {
         case (
-            sta: SliceTransform2S[_],
-            stb: SliceTransform2S[_],
-            stc: SliceTransform2S[_]) =>
+              sta: SliceTransform2S[_],
+              stb: SliceTransform2S[_],
+              stc: SliceTransform2S[_]) =>
           SliceTransform2S(
             (sta.initial, stb.initial, stc.initial),
             {

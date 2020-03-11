@@ -20,10 +20,10 @@ object Macros {
     // val kvps = xs.toList map { case q"${_}(${Literal(Constant(name: String))}).->[${_}]($value)" => name -> value }
     val kvps = xs.map(_.tree).toList map {
       case Apply(
-          TypeApply(
-            Select(Apply(_, List(Literal(Constant(name: String)))), _),
-            _),
-          List(value)) =>
+            TypeApply(
+              Select(Apply(_, List(Literal(Constant(name: String)))), _),
+              _),
+            List(value)) =>
         name -> value
     }
     // val fields = kvps map { case (k, v) => q"@body($v) def ${TermName(k)} = macro Macros.selFieldImpl" }

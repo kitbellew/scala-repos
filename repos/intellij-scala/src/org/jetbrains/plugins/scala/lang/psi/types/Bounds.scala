@@ -215,8 +215,8 @@ object Bounds {
     else {
       (t1, t2) match {
         case (
-            ScSkolemizedType(name, args, lower, upper),
-            ScSkolemizedType(name2, args2, lower2, upper2)) =>
+              ScSkolemizedType(name, args, lower, upper),
+              ScSkolemizedType(name2, args2, lower2, upper2)) =>
           ScSkolemizedType(
             name,
             args,
@@ -295,8 +295,8 @@ object Bounds {
           case (_, ScTypeParameterType(_, Nil, _, upper, _)) =>
             lub(t1, upper.v, checkWeak)
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             ScSkolemizedType(
               name,
               args,
@@ -424,8 +424,8 @@ object Bounds {
       } else {
         (substed1, substed2) match {
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             val newLub =
               if (stopAddingUpperBound) types.Any
               else

@@ -94,8 +94,8 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
           emptyNameLookupTable(),
           Map[Node[P], String]())) {
         case (
-            (clusters, producerMappings, nameLookupTable, nodeShortName),
-            node) =>
+              (clusters, producerMappings, nameLookupTable, nodeShortName),
+              node) =>
           val (nodeDefinitions, mappings, newNameLookupTable) =
             getSubGraphStr(nameLookupTable, node)
           val shortName = "cluster_" + node.hashCode.toHexString
