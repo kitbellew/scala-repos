@@ -90,8 +90,10 @@ private[round] final class Rematcher(
       situation = initialFen flatMap Forsyth.<<<
       pieces = pov.game.variant match {
         case Chess960 =>
-          if (rematch960Cache.get(pov.game.id)) Chess960.pieces
-          else situation.fold(Chess960.pieces)(_.situation.board.pieces)
+          if (rematch960Cache.get(pov.game.id))
+            Chess960.pieces
+          else
+            situation.fold(Chess960.pieces)(_.situation.board.pieces)
         case FromPosition =>
           situation.fold(Standard.pieces)(_.situation.board.pieces)
         case variant => variant.pieces
@@ -108,7 +110,11 @@ private[round] final class Rematcher(
       ),
       whitePlayer = returnPlayer(pov.game, White, users),
       blackPlayer = returnPlayer(pov.game, Black, users),
-      mode = if (users.exists(_.lame)) chess.Mode.Casual else pov.game.mode,
+      mode =
+        if (users.exists(_.lame))
+          chess.Mode.Casual
+        else
+          pov.game.mode,
       variant = pov.game.variant,
       source = pov.game.source | Source.Lobby,
       daysPerTurn = pov.game.daysPerTurn,

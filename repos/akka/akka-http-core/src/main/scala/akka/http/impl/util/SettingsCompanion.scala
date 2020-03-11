@@ -33,8 +33,10 @@ private[http] abstract class SettingsCompanion[T](
       system, {
         val settings = apply(system.settings.config)
         val c =
-          if (cache.size < MaxCached) cache
-          else cache.tail // drop the first (and oldest) cache entry
+          if (cache.size < MaxCached)
+            cache
+          else
+            cache.tail // drop the first (and oldest) cache entry
         cache = c.updated(system, settings)
         settings
       }

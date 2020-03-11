@@ -127,8 +127,8 @@ trait MultipartUnmarshallers {
             FastFuture.successful {
               entity match {
                 case HttpEntity.Strict(
-                    ContentType(mediaType: MediaType.Multipart, _),
-                    data) ⇒
+                      ContentType(mediaType: MediaType.Multipart, _),
+                      data) ⇒
                   val builder = new VectorBuilder[BPS]()
                   val iter =
                     new IteratorInterpreter[ByteString, BodyPartParser.Output](
@@ -162,8 +162,8 @@ trait MultipartUnmarshallers {
                     .prefixAndTail(1)
                     .collect {
                       case (
-                          Seq(BodyPartStart(headers, createEntity)),
-                          entityParts) ⇒
+                            Seq(BodyPartStart(headers, createEntity)),
+                            entityParts) ⇒
                         createBodyPart(createEntity(entityParts), headers)
                       case (Seq(ParseError(errorInfo)), rest) ⇒
                         SubSource.kill(rest)

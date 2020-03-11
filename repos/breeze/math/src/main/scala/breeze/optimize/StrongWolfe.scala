@@ -101,7 +101,11 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
       for (i <- 0 until maxZoomIter) {
         // Interp assumes left less than right in t value, so flip if needed
-        val t = if (low.t > hi.t) interp(hi, low) else interp(low, hi)
+        val t =
+          if (low.t > hi.t)
+            interp(hi, low)
+          else
+            interp(low, hi)
 
         // Evaluate objective at t, and build bracket
         val c = phi(t)

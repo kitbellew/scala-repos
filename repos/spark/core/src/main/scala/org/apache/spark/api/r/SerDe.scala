@@ -119,7 +119,10 @@ private[spark] object SerDe {
 
   def readBoolean(in: DataInputStream): Boolean = {
     val intVal = in.readInt()
-    if (intVal == 0) false else true
+    if (intVal == 0)
+      false
+    else
+      true
   }
 
   def readDate(in: DataInputStream): Date = {
@@ -404,7 +407,11 @@ private[spark] object SerDe {
   }
 
   def writeBoolean(out: DataOutputStream, value: Boolean): Unit = {
-    val intValue = if (value) 1 else 0
+    val intValue =
+      if (value)
+        1
+      else
+        0
     out.writeInt(intValue)
   }
 

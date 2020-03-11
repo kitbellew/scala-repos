@@ -18,7 +18,8 @@ abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
   def iteratorTo(maxRows: Int)(
       implicit session: JdbcBackend#Session): CloseableIterator[R] = {
     val rs = createResultSet(session)
-    if (rs eq null) CloseableIterator.empty
+    if (rs eq null)
+      CloseableIterator.empty
     else {
       val pr = new PositionedResult(rs) {
         def close() = rs.close()

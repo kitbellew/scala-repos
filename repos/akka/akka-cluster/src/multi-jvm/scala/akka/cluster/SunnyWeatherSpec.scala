@@ -78,7 +78,8 @@ abstract class SunnyWeatherSpec
         unexpected.get should ===(SortedSet.empty)
         awaitMembersUp(roles.size)
         assertLeaderIn(roles)
-        if (n % 5 == 0) log.debug("Passed period [{}]", n)
+        if (n % 5 == 0)
+          log.debug("Passed period [{}]", n)
         Thread.sleep(1000)
       }
 

@@ -165,12 +165,17 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (ahi == bhi) {
       val alo = a.lo
       val blo = b.lo
-      if (alo == blo) 0
-      else if (inlineUnsignedInt_<(alo, blo)) -1
-      else 1
+      if (alo == blo)
+        0
+      else if (inlineUnsignedInt_<(alo, blo))
+        -1
+      else
+        1
     } else {
-      if (ahi < bhi) -1
-      else 1
+      if (ahi < bhi)
+        -1
+      else
+        1
     }
   }
 
@@ -190,15 +195,19 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   def <(b: RuntimeLong): Boolean = {
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_<(a.lo, b.lo)
-    else ahi < bhi
+    if (ahi == bhi)
+      inlineUnsignedInt_<(a.lo, b.lo)
+    else
+      ahi < bhi
   }
 
   def <=(b: RuntimeLong): Boolean = {
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_<=(a.lo, b.lo)
-    else ahi < bhi
+    if (ahi == bhi)
+      inlineUnsignedInt_<=(a.lo, b.lo)
+    else
+      ahi < bhi
   }
 
   def >(b: RuntimeLong): Boolean = {
@@ -208,8 +217,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
      */
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_>(a.lo, b.lo)
-    else bhi < ahi // workaround here
+    if (ahi == bhi)
+      inlineUnsignedInt_>(a.lo, b.lo)
+    else
+      bhi < ahi // workaround here
   }
 
   def >=(b: RuntimeLong): Boolean = {
@@ -219,8 +230,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
      */
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_>=(a.lo, b.lo)
-    else bhi < ahi // workaround here
+    if (ahi == bhi)
+      inlineUnsignedInt_>=(a.lo, b.lo)
+    else
+      bhi < ahi // workaround here
   }
 
   // Bitwise operations
@@ -244,16 +257,22 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val n = n0 & 63
     val lo = this.lo
 
-    if (n == 0) this
-    else if (n < 32) new RuntimeLong(lo << n, (lo >>> -n) | (hi << n))
-    else new RuntimeLong(0, lo << n)
+    if (n == 0)
+      this
+    else if (n < 32)
+      new RuntimeLong(lo << n, (lo >>> -n) | (hi << n))
+    else
+      new RuntimeLong(0, lo << n)
   }
 
   @inline
   private def inline_<<(lo: Int, hi: Int, n: Int): (Int, Int) = {
-    if (n == 0) (lo, hi)
-    else if (n < 32) (lo << n, (lo >>> -n) | (hi << n))
-    else (0, lo << n)
+    if (n == 0)
+      (lo, hi)
+    else if (n < 32)
+      (lo << n, (lo >>> -n) | (hi << n))
+    else
+      (0, lo << n)
   }
 
   /** Logical shift right */
@@ -261,16 +280,22 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val n = n0 & 63
     val hi = this.hi
 
-    if (n == 0) this
-    else if (n < 32) new RuntimeLong((lo >>> n) | (hi << -n), hi >>> n)
-    else new RuntimeLong(hi >>> n, 0)
+    if (n == 0)
+      this
+    else if (n < 32)
+      new RuntimeLong((lo >>> n) | (hi << -n), hi >>> n)
+    else
+      new RuntimeLong(hi >>> n, 0)
   }
 
   @inline
   private def inline_>>>(lo: Int, hi: Int, n: Int): (Int, Int) = {
-    if (n == 0) (lo, hi)
-    else if (n < 32) ((lo >>> n) | (hi << -n), hi >>> n)
-    else (hi >>> n, 0)
+    if (n == 0)
+      (lo, hi)
+    else if (n < 32)
+      ((lo >>> n) | (hi << -n), hi >>> n)
+    else
+      (hi >>> n, 0)
   }
 
   /** Arithmetic shift right */
@@ -278,9 +303,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val n = n0 & 63
     val hi = this.hi
 
-    if (n == 0) this
-    else if (n < 32) new RuntimeLong((lo >>> n) | (hi << -n), hi >> n)
-    else new RuntimeLong(hi >> n, hi >> 31)
+    if (n == 0)
+      this
+    else if (n < 32)
+      new RuntimeLong((lo >>> n) | (hi << -n), hi >> n)
+    else
+      new RuntimeLong(hi >> n, hi >> 31)
   }
 
   // Arithmetic operations
@@ -295,7 +323,11 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     var absHi = hi
     if (neg) {
       absLo = -lo
-      absHi = if (lo != 0) ~hi else -hi
+      absHi =
+        if (lo != 0)
+          ~hi
+        else
+          -hi
     }
     (neg, absLo, absHi)
   }
@@ -308,7 +340,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @inline
   private def inline_+(alo: Int, ahi: Int, blo: Int, bhi: Int): (Int, Int) = {
     val lo = alo + blo
-    (lo, ahi + bhi + (if (inlineUnsignedInt_<(lo, alo)) 1 else 0))
+    (
+      lo,
+      ahi + bhi + (if (inlineUnsignedInt_<(lo, alo))
+                     1
+                   else
+                     0))
   }
 
   def -(b: RuntimeLong): RuntimeLong = {
@@ -319,7 +356,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @inline
   private def inline_-(alo: Int, ahi: Int, blo: Int, bhi: Int): (Int, Int) = {
     val lo = alo - blo
-    (lo, ahi - bhi + (if (inlineUnsignedInt_>(lo, alo)) -1 else 0))
+    (
+      lo,
+      ahi - bhi + (if (inlineUnsignedInt_>(lo, alo))
+                     -1
+                   else
+                     0))
   }
 
   def *(b: RuntimeLong): RuntimeLong = {
@@ -369,19 +411,25 @@ final class RuntimeLong(val lo: Int, val hi: Int)
 
     if (isInt32(alo, ahi)) {
       if (isInt32(blo, bhi)) {
-        if (alo == Int.MinValue && blo == -1) new RuntimeLong(Int.MinValue, 0)
-        else new RuntimeLong(alo / blo)
+        if (alo == Int.MinValue && blo == -1)
+          new RuntimeLong(Int.MinValue, 0)
+        else
+          new RuntimeLong(alo / blo)
       } else {
         // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
-        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) MinusOne
-        else Zero // because abs(b) > abs(a)
+        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0))
+          MinusOne
+        else
+          Zero // because abs(b) > abs(a)
       }
     } else {
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (bNeg, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_/(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
-      if (aNeg == bNeg) absR
-      else inlineLongUnary_-(absR.lo, absR.hi)
+      if (aNeg == bNeg)
+        absR
+      else
+        inlineLongUnary_-(absR.lo, absR.hi)
     }
   }
 
@@ -426,8 +474,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     } else {
       if (bhi == 0 && isPowerOfTwo_IKnowItsNot0(blo)) {
         val pow = log2OfPowerOfTwo(blo)
-        if (pow == 0) new RuntimeLong(alo, ahi)
-        else new RuntimeLong((alo >>> pow) | (ahi << -pow), ahi >>> pow)
+        if (pow == 0)
+          new RuntimeLong(alo, ahi)
+        else
+          new RuntimeLong((alo >>> pow) | (ahi << -pow), ahi >>> pow)
       } else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi)) {
         val pow = log2OfPowerOfTwo(bhi)
         new RuntimeLong(ahi >>> pow, 0)
@@ -449,19 +499,25 @@ final class RuntimeLong(val lo: Int, val hi: Int)
 
     if (isInt32(alo, ahi)) {
       if (isInt32(blo, bhi)) {
-        if (blo != -1) new RuntimeLong(alo % blo)
-        else Zero // Work around https://github.com/ariya/phantomjs/issues/12198
+        if (blo != -1)
+          new RuntimeLong(alo % blo)
+        else
+          Zero // Work around https://github.com/ariya/phantomjs/issues/12198
       } else {
         // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
-        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) Zero
-        else a // because abs(b) > abs(a)
+        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0))
+          Zero
+        else
+          a // because abs(b) > abs(a)
       }
     } else {
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (_, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_%(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
-      if (aNeg) inlineLongUnary_-(absR.lo, absR.hi)
-      else absR
+      if (aNeg)
+        inlineLongUnary_-(absR.lo, absR.hi)
+      else
+        absR
     }
   }
 
@@ -586,9 +642,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       }
     }
 
-    if (ask == AskQuotient) new RuntimeLong(quotLo, quotHi)
-    else if (ask == AskRemainder) new RuntimeLong(remLo, remHi)
-    else js.Tuple4(quotLo, quotHi, remLo, remHi)
+    if (ask == AskQuotient)
+      new RuntimeLong(quotLo, quotHi)
+    else if (ask == AskRemainder)
+      new RuntimeLong(remLo, remHi)
+    else
+      js.Tuple4(quotLo, quotHi, remLo, remHi)
   }
 
   // TODO Remove these. They were support for intrinsics before 0.6.6.
@@ -604,8 +663,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = this.lo
     val hi = this.hi
 
-    if (hi != 0) Integer.toBinaryString(hi) + padBinary32(lo)
-    else Integer.toBinaryString(lo)
+    if (hi != 0)
+      Integer.toBinaryString(hi) + padBinary32(lo)
+    else
+      Integer.toBinaryString(lo)
   }
 
   @deprecated("Use java.lang.Long.toHexString instead.", "0.6.6")
@@ -619,8 +680,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = this.lo
     val hi = this.hi
 
-    if (hi != 0) Integer.toHexString(hi) + padHex8(lo)
-    else Integer.toHexString(lo)
+    if (hi != 0)
+      Integer.toHexString(hi) + padHex8(lo)
+    else
+      Integer.toHexString(lo)
   }
 
   @deprecated("Use java.lang.Long.toOctalString instead.", "0.6.6")
@@ -638,9 +701,12 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val mp = ((lo >>> 30) + (hi << 2)) & 0x3fffffff
     val hp = hi >>> 28
 
-    if (hp != 0) Integer.toOctalString(hp) + padOctal10(mp) + padOctal10(lp)
-    else if (mp != 0) Integer.toOctalString(mp) + padOctal10(lp)
-    else Integer.toOctalString(lp)
+    if (hp != 0)
+      Integer.toOctalString(hp) + padOctal10(mp) + padOctal10(lp)
+    else if (mp != 0)
+      Integer.toOctalString(mp) + padOctal10(lp)
+    else
+      Integer.toOctalString(lp)
   }
 
   @deprecated("Use java.lang.Long.bitCount instead.", "0.6.6")
@@ -650,23 +716,30 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @deprecated("Use java.lang.Long.signum instead.", "0.6.6")
   def signum: RuntimeLong = {
     val hi = this.hi
-    if (hi < 0) MinusOne
-    else if (isZero(lo, hi)) Zero
-    else One
+    if (hi < 0)
+      MinusOne
+    else if (isZero(lo, hi))
+      Zero
+    else
+      One
   }
 
   @deprecated("Use java.lang.Long.numberOfLeadingZeros instead.", "0.6.6")
   def numberOfLeadingZeros: Int = {
     val hi = this.hi
-    if (hi != 0) Integer.numberOfLeadingZeros(hi)
-    else Integer.numberOfLeadingZeros(lo) + 32
+    if (hi != 0)
+      Integer.numberOfLeadingZeros(hi)
+    else
+      Integer.numberOfLeadingZeros(lo) + 32
   }
 
   @deprecated("Use java.lang.Long.numberOfTrailingZeros instead.", "0.6.6")
   def numberOfTrailingZeros: Int = {
     val lo = this.lo
-    if (lo != 0) Integer.numberOfTrailingZeros(lo)
-    else Integer.numberOfTrailingZeros(hi) + 32
+    if (lo != 0)
+      Integer.numberOfTrailingZeros(lo)
+    else
+      Integer.numberOfTrailingZeros(hi) + 32
   }
 
   // TODO Remove those. There are remnant of before we had LongReflectiveCall
@@ -711,11 +784,17 @@ object RuntimeLong {
       MaxValue
     } else {
       val neg = value < 0
-      val absValue = if (neg) -value else value
+      val absValue =
+        if (neg)
+          -value
+        else
+          value
       val lo = rawToInt(absValue)
       val hi = rawToInt(absValue / TwoPow32)
-      if (neg) inlineLongUnary_-(lo, hi)
-      else new RuntimeLong(lo, hi)
+      if (neg)
+        inlineLongUnary_-(lo, hi)
+      else
+        new RuntimeLong(lo, hi)
     }
   }
 
@@ -777,14 +856,18 @@ object RuntimeLong {
 
     /** Returns the number of leading zeros in the given long (lo, hi). */
     @inline def inlineNumberOfLeadingZeros(lo: Int, hi: Int): Int =
-      if (hi != 0) Integer.numberOfLeadingZeros(hi)
-      else Integer.numberOfLeadingZeros(lo) + 32
+      if (hi != 0)
+        Integer.numberOfLeadingZeros(hi)
+      else
+        Integer.numberOfLeadingZeros(lo) + 32
 
     /** Tests whether the unsigned long (alo, ahi) is >= (blo, bhi). */
     @inline
     def inlineUnsigned_>=(alo: Int, ahi: Int, blo: Int, bhi: Int): Boolean =
-      if (ahi == bhi) inlineUnsignedInt_>=(alo, blo)
-      else inlineUnsignedInt_>=(ahi, bhi)
+      if (ahi == bhi)
+        inlineUnsignedInt_>=(alo, blo)
+      else
+        inlineUnsignedInt_>=(ahi, bhi)
 
     @inline
     def inlineUnsignedInt_<(a: Int, b: Int): Boolean =
@@ -814,11 +897,21 @@ object RuntimeLong {
 
     @inline
     def inlineLongUnary_-(lo: Int, hi: Int): RuntimeLong =
-      new RuntimeLong(-lo, if (lo != 0) ~hi else -hi)
+      new RuntimeLong(
+        -lo,
+        if (lo != 0)
+          ~hi
+        else
+          -hi)
 
     @inline
     def inline_unary_-(lo: Int, hi: Int): (Int, Int) =
-      (-lo, if (lo != 0) ~hi else -hi)
+      (
+        -lo,
+        if (lo != 0)
+          ~hi
+        else
+          -hi)
   }
 
 }

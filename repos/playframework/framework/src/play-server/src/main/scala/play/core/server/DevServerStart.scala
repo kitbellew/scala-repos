@@ -168,8 +168,8 @@ object DevServerStart {
                                     case Array(file: java.io.File, null) =>
                                       Some((file, None))
                                     case Array(
-                                        file: java.io.File,
-                                        line: java.lang.Integer) =>
+                                          file: java.io.File,
+                                          line: java.lang.Integer) =>
                                       Some((file, Some(line)))
                                     case _ => None
                                   }

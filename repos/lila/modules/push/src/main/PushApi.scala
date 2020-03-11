@@ -19,7 +19,8 @@ private final class PushApi(
     roundSocketHub: ActorSelection) {
 
   def finish(game: Game): Funit =
-    if (!game.isCorrespondence || game.hasAi) funit
+    if (!game.isCorrespondence || game.hasAi)
+      funit
     else
       game.userIds
         .map { userId =>

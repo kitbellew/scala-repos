@@ -66,7 +66,9 @@ object SeriesGrouper {
       vec: Vec[T],
       groups: Array[(Y, Array[Int])],
       fn: (Y, Vec[T]) => Vec[U]): Vec[U] = {
-    val iter = for ((k, i) <- groups) yield (fn(k, vec(i)), i)
+    val iter =
+      for ((k, i) <- groups)
+        yield (fn(k, vec(i)), i)
     val res = Array.ofDim[U](vec.length)
     for ((v, i) <- iter) {
       val sz = v.length

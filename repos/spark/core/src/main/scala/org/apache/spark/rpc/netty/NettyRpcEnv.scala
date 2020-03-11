@@ -135,7 +135,10 @@ private[netty] class NettyRpcEnv(
 
   @Nullable
   override lazy val address: RpcAddress = {
-    if (server != null) RpcAddress(host, server.getPort()) else null
+    if (server != null)
+      RpcAddress(host, server.getPort())
+    else
+      null
   }
 
   override def setupEndpoint(
@@ -372,30 +375,31 @@ private[netty] class NettyRpcEnv(
   }
 
   private def downloadClient(host: String, port: Int): TransportClient = {
-    if (fileDownloadFactory == null) synchronized {
-      if (fileDownloadFactory == null) {
-        val module = "files"
-        val prefix = "spark.rpc.io."
-        val clone = conf.clone()
+    if (fileDownloadFactory == null)
+      synchronized {
+        if (fileDownloadFactory == null) {
+          val module = "files"
+          val prefix = "spark.rpc.io."
+          val clone = conf.clone()
 
-        // Copy any RPC configuration that is not overridden in the spark.files namespace.
-        conf.getAll.foreach {
-          case (key, value) =>
-            if (key.startsWith(prefix)) {
-              val opt = key.substring(prefix.length())
-              clone.setIfMissing(s"spark.$module.io.$opt", value)
-            }
+          // Copy any RPC configuration that is not overridden in the spark.files namespace.
+          conf.getAll.foreach {
+            case (key, value) =>
+              if (key.startsWith(prefix)) {
+                val opt = key.substring(prefix.length())
+                clone.setIfMissing(s"spark.$module.io.$opt", value)
+              }
+          }
+
+          val ioThreads = clone.getInt("spark.files.io.threads", 1)
+          val downloadConf =
+            SparkTransportConf.fromSparkConf(clone, module, ioThreads)
+          val downloadContext =
+            new TransportContext(downloadConf, new NoOpRpcHandler(), true)
+          fileDownloadFactory =
+            downloadContext.createClientFactory(createClientBootstraps())
         }
-
-        val ioThreads = clone.getInt("spark.files.io.threads", 1)
-        val downloadConf =
-          SparkTransportConf.fromSparkConf(clone, module, ioThreads)
-        val downloadContext =
-          new TransportContext(downloadConf, new NoOpRpcHandler(), true)
-        fileDownloadFactory =
-          downloadContext.createClientFactory(createClientBootstraps())
       }
-    }
     fileDownloadFactory.createClient(host, port)
   }
 
@@ -545,11 +549,17 @@ private[netty] class NettyRpcEndpointRef(
   @transient @volatile var client: TransportClient = _
 
   private val _address =
-    if (endpointAddress.rpcAddress != null) endpointAddress else null
+    if (endpointAddress.rpcAddress != null)
+      endpointAddress
+    else
+      null
   private val _name = endpointAddress.name
 
   override def address: RpcAddress =
-    if (_address != null) _address.rpcAddress else null
+    if (_address != null)
+      _address.rpcAddress
+    else
+      null
 
   private def readObject(in: ObjectInputStream): Unit = {
     in.defaultReadObject()
@@ -584,7 +594,10 @@ private[netty] class NettyRpcEndpointRef(
   }
 
   final override def hashCode(): Int =
-    if (_address == null) 0 else _address.hashCode()
+    if (_address == null)
+      0
+    else
+      _address.hashCode()
 }
 
 /**

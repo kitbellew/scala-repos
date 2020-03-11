@@ -75,8 +75,10 @@ abstract class TypeInferenceTestBase
     val addOne =
       if (PsiTreeUtil.getParentOfType(
             scalaFile.findElementAt(startOffset),
-            classOf[ScExpression]) != null) 0
-      else 1 //for xml tests
+            classOf[ScExpression]) != null)
+        0
+      else
+        1 //for xml tests
     val expr: ScExpression = PsiTreeUtil.findElementOfClassAtRange(
       scalaFile,
       startOffset + addOne,
@@ -99,9 +101,11 @@ abstract class TypeInferenceTestBase
             if (resText.startsWith(fewVariantsMarker)) {
               val results =
                 resText.substring(fewVariantsMarker.length).trim.split('\n')
-              if (!results.contains(res)) assertEquals(results(0), res)
+              if (!results.contains(res))
+                assertEquals(results(0), res)
               return
-            } else resText
+            } else
+              resText
           case _ =>
             throw new AssertionError(
               "Test result must be in last comment statement.")

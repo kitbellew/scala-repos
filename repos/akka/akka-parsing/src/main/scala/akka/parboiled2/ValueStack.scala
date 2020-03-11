@@ -85,7 +85,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
         throw new IllegalArgumentException("`down` must not be negative")
       case 0 ⇒ push(value)
       case 1 ⇒
-        if (down > _size) throw new ValueStackUnderflowException
+        if (down > _size)
+          throw new ValueStackUnderflowException
         val newSize = _size + 1
         ensureSize(newSize)
         val targetIx = _size - down
@@ -103,7 +104,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
       val newSize = _size - 1
       _size = newSize
       buffer(newSize)
-    } else throw new ValueStackUnderflowException
+    } else
+      throw new ValueStackUnderflowException
 
   /**
     * Removes the element `down` elements below the current top element from the stack
@@ -117,7 +119,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
         throw new IllegalArgumentException("`down` must not be negative")
       case 0 ⇒ pop()
       case 1 ⇒
-        if (down >= _size) throw new ValueStackUnderflowException
+        if (down >= _size)
+          throw new ValueStackUnderflowException
         val newSize = _size - 1
         val targetIx = newSize - down
         val result = buffer(targetIx)
@@ -131,8 +134,10 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if the stack is empty.
     */
   def peek: Any =
-    if (_size > 0) buffer(_size - 1)
-    else throw new ValueStackUnderflowException
+    if (_size > 0)
+      buffer(_size - 1)
+    else
+      throw new ValueStackUnderflowException
 
   /**
     * Returns the element `down` elements below the current top element without removing it.
@@ -146,8 +151,10 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
         throw new IllegalArgumentException("`down` must not be negative")
       case 0 ⇒ peek
       case 1 ⇒
-        if (down >= _size) throw new ValueStackUnderflowException
-        else buffer(_size - down - 1)
+        if (down >= _size)
+          throw new ValueStackUnderflowException
+        else
+          buffer(_size - down - 1)
     }
 
   /**
@@ -156,7 +163,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws an `IllegalArgumentException` if `down` is negative.
     */
   def poke(down: Int, value: Any): Unit = {
-    if (down >= _size) throw new ValueStackUnderflowException
+    if (down >= _size)
+      throw new ValueStackUnderflowException
     require(down >= 0, "`down` must be >= 0")
     buffer(_size - down - 1) = value
   }
@@ -166,7 +174,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if `size < 2`.
     */
   def swap(): Unit = {
-    if (_size < 2) throw new ValueStackUnderflowException
+    if (_size < 2)
+      throw new ValueStackUnderflowException
     val temp = buffer(_size - 1)
     buffer(_size - 1) = buffer(_size - 2)
     buffer(_size - 2) = temp
@@ -177,7 +186,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if `size < 3`.
     */
   def swap3(): Unit = {
-    if (_size < 3) throw new ValueStackUnderflowException
+    if (_size < 3)
+      throw new ValueStackUnderflowException
     val temp = buffer(_size - 1)
     buffer(_size - 1) = buffer(_size - 3)
     buffer(_size - 3) = temp
@@ -188,7 +198,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if `size < 4`.
     */
   def swap4(): Unit = {
-    if (_size < 4) throw new ValueStackUnderflowException
+    if (_size < 4)
+      throw new ValueStackUnderflowException
     var temp = buffer(_size - 1)
     buffer(_size - 1) = buffer(_size - 4)
     buffer(_size - 4) = temp
@@ -202,7 +213,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if `size < 5`.
     */
   def swap5(): Unit = {
-    if (_size < 5) throw new ValueStackUnderflowException
+    if (_size < 5)
+      throw new ValueStackUnderflowException
     var temp = buffer(_size - 1)
     buffer(_size - 1) = buffer(_size - 5)
     buffer(_size - 5) = temp
@@ -231,8 +243,10 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
       end: Int = _size,
       prependTo: HList = HNil): L = {
     require(0 <= start && start <= end, "`start` must be >= 0 and <= `end`")
-    if (start == end) prependTo.asInstanceOf[L]
-    else toHList[L](start, end - 1, buffer(end - 1) :: prependTo)
+    if (start == end)
+      prependTo.asInstanceOf[L]
+    else
+      toHList[L](start, end - 1, buffer(end - 1) :: prependTo)
   }
 
   /**
@@ -256,7 +270,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
         val newBuffer = new Array[Any](newSize)
         System.arraycopy(buffer, 0, newBuffer, 0, _size)
         buffer = newBuffer
-      } else throw new ValueStackOverflowException
+      } else
+        throw new ValueStackOverflowException
 }
 
 class ValueStackOverflowException extends RuntimeException

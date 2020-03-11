@@ -19,14 +19,16 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
   */
 class TemplateFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val (leaf, _) = processPsiLeafForFilter(
       getLeafByOffset(context.getTextRange.getStartOffset, context))
 
     if (leaf != null) {
       val parent = leaf.getParent
       val tuple = ScalaCompletionUtil.getForAll(parent, leaf)
-      if (tuple._1) return tuple._2
+      if (tuple._1)
+        return tuple._2
       parent match {
         case _: ScReferenceExpression =>
           parent.getParent match {

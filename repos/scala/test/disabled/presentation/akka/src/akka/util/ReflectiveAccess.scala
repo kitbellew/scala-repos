@@ -203,8 +203,10 @@ object ReflectiveAccess {
           val instance = value.getDeclaredField("MODULE$")
           instance.setAccessible(true)
           val obj = instance.get(null)
-          if (obj eq null) Left(new NullPointerException)
-          else Right(obj.asInstanceOf[T])
+          if (obj eq null)
+            Left(new NullPointerException)
+          else
+            Right(obj.asInstanceOf[T])
         case Left(exception) =>
           Left(
             exception
@@ -229,7 +231,8 @@ object ReflectiveAccess {
           case c: ClassNotFoundException => Left(c)
         }
 
-      if (first.isRight) first
+      if (first.isRight)
+        first
       else {
         // Second option is to use the ContextClassLoader
         val second =
@@ -242,18 +245,21 @@ object ReflectiveAccess {
             case c: ClassNotFoundException => Left(c)
           }
 
-        if (second.isRight) second
+        if (second.isRight)
+          second
         else {
           val third =
             try {
               if (classloader ne loader)
                 Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
-              else Left(null) //Horrid
+              else
+                Left(null) //Horrid
             } catch {
               case c: ClassNotFoundException => Left(c)
             }
 
-          if (third.isRight) third
+          if (third.isRight)
+            third
           else {
             try {
               Right(

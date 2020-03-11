@@ -37,11 +37,14 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
     val text = document.getText
     val caretOffset = caretOffsetRef.get.intValue
 
-    if (caretOffset == 0 || caretOffset >= text.length()) return Result.Continue
+    if (caretOffset == 0 || caretOffset >= text.length())
+      return Result.Continue
 
     val element = file findElementAt caretOffset
-    if (!inMultilineString(element)) return Result.Continue
-    else wasInMultilineString = true
+    if (!inMultilineString(element))
+      return Result.Continue
+    else
+      wasInMultilineString = true
 
     val ch1 = text.charAt(caretOffset - 1)
     val ch2 = text.charAt(caretOffset)
@@ -66,7 +69,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       file: PsiFile,
       editor: Editor,
       dataContext: DataContext): Result = {
-    if (!file.isInstanceOf[ScalaFile]) return Result.Continue
+    if (!file.isInstanceOf[ScalaFile])
+      return Result.Continue
 
     val caretModel = editor.getCaretModel
     val document = editor.getDocument
@@ -78,7 +82,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
     val project = file.getProject
     val element = file.findElementAt(offset)
 
-    if (!wasInMultilineString) return Result.Continue
+    if (!wasInMultilineString)
+      return Result.Continue
     wasInMultilineString = false
 
     val marginChar = getMarginChar(element)
@@ -112,8 +117,10 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       }
 
     def getSmartLength(line: String) =
-      if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
-      else line.length
+      if (useTabs)
+        line.length + line.count(_ == '\t') * (tabSize - 1)
+      else
+        line.length
 
     def insertNewLine(nlOffset: Int, indent: Int, trimPreviousLine: Boolean) {
       document.insertString(nlOffset, "\n")
@@ -148,14 +155,16 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       val nextLine =
         if (document.getLineCount > prevLineNumber + 2)
           getLineByNumber(prevLineNumber + 2)
-        else ""
+        else
+          ""
 
       def prevLinePrefixAfterDelimiter(offsetInLine: Int): Int =
         if (prevLine.length > offsetInLine)
           prevLine
             .substring(offsetInLine)
             .prefixLength(c => c == ' ' || c == '\t')
-        else 0
+        else
+          0
 
       val wasSingleLine =
         literal.getText.indexOf("\n") == literal.getText.lastIndexOf("\n")
@@ -198,17 +207,21 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
             insertStripMargin(document, literal, marginChar))
 
         val prevIndent =
-          if (inConcatenation.isDefined) inConcatenation.map { expr =>
-            val exprStart = expr.getTextRange.getStartOffset
-            val lineStart =
-              document.getLineStartOffset(document.getLineNumber(exprStart))
-            getSmartLength(document.getText.substring(lineStart, exprStart))
-          }.get
-          else prefixLength(prevLine)
+          if (inConcatenation.isDefined)
+            inConcatenation.map { expr =>
+              val exprStart = expr.getTextRange.getStartOffset
+              val lineStart =
+                document.getLineStartOffset(document.getLineNumber(exprStart))
+              getSmartLength(document.getText.substring(lineStart, exprStart))
+            }.get
+          else
+            prefixLength(prevLine)
 
         val needInsertIndentInt =
-          if (needInsertNLBefore && inConcatenation.isEmpty) regularIndent
-          else 0
+          if (needInsertNLBefore && inConcatenation.isEmpty)
+            regularIndent
+          else
+            0
 
         if (needInsertNLBefore) {
           insertNewLine(
@@ -254,7 +267,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           if (isPrevLineFirst)
             prevLinePrefixAfterDelimiter(
               firstMLQuoteLength) + firstMLQuoteLength
-          else prevLine.prefixLength(c => c == ' ' || c == '\t')
+          else
+            prevLine.prefixLength(c => c == ' ' || c == '\t')
 
         val prefixStriped = prevLine.substring(wsPrefix)
 
@@ -273,8 +287,10 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
               if (isPrevLineTrimmedFirst)
                 beforeQuotes + firstMLQuoteLength + prevLineWsPrefixAfterQuotes
               else
-                (if (isCurrentLineEmpty) elementStart
-                 else elementStart - wsPrefix) + prevLineWsPrefixAfterQuotes
+                (if (isCurrentLineEmpty)
+                   elementStart
+                 else
+                   elementStart - wsPrefix) + prevLineWsPrefixAfterQuotes
             forceIndent(
               currentLineOffset,
               getSmartLength(getSmartSpaces(spacesToInsert)),
@@ -290,19 +306,23 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           }
         } else {
           val wsAfterMargin =
-            if (isPrevLineFirst) firstMLQuoteLength
-            else prevLinePrefixAfterDelimiter(wsPrefix + 1)
+            if (isPrevLineFirst)
+              firstMLQuoteLength
+            else
+              prevLinePrefixAfterDelimiter(wsPrefix + 1)
 
           if (!currentLine.trim.startsWith(Seq(marginChar))) {
             val inBraces = prevLine.endsWith("{") && nextLine.trim.startsWith(
               "}") || prevLine.endsWith("(") && nextLine.trim.startsWith(")")
             val prefix =
-              if (inBraces) getPrefix(nextLine)
+              if (inBraces)
+                getPrefix(nextLine)
               else if (prevLine.trim.startsWith(Seq(marginChar)))
                 getPrefix(prevLine)
               else if (nextLine.trim.startsWith(Seq(marginChar)))
                 getPrefix(nextLine)
-              else getPrefix(currentLine)
+              else
+                getPrefix(currentLine)
 
             forceIndent(caretOffset, getSmartLength(prefix), marginCharOpt)
             document.insertString(caretOffset, getSpaces(wsAfterMargin))

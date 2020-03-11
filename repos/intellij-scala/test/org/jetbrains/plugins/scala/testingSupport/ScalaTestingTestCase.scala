@@ -268,7 +268,8 @@ abstract class ScalaTestingTestCase(
                 event: ProcessEvent,
                 outputType: Key[_]) {
               val text = event.getText
-              if (debug) print(text)
+              if (debug)
+                print(text)
             }
           },
           runner

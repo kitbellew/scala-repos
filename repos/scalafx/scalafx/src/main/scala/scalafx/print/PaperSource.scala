@@ -43,7 +43,10 @@ object PaperSource {
     * @return JavaFX PaperSource
     */
   implicit def sfxPaperSource2jfx(ps: PaperSource): jfxp.PaperSource =
-    if (ps != null) ps.delegate else null
+    if (ps != null)
+      ps.delegate
+    else
+      null
 
   /** Specify to automatically select the tray. */
   val Automatic: PaperSource = new PaperSource(jfxp.PaperSource.AUTOMATIC)

@@ -5,7 +5,8 @@ object A {
 }
 
 object Test {
-  for (A(a) <- List(new A)) yield a // spurious dead code warning.
+  for (A(a) <- List(new A))
+    yield a // spurious dead code warning.
 }
 
 // List(new A()).withFilter(((check$ifrefutable$2) => check$ifrefutable$2: @scala.unchecked match {

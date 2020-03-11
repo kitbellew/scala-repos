@@ -289,7 +289,9 @@ class FutureDocSpec extends AkkaSpec {
   "demonstrate usage of fold" in {
     //#fold
     // Create a sequence of Futures
-    val futures = for (i <- 1 to 1000) yield Future(i * 2)
+    val futures =
+      for (i <- 1 to 1000)
+        yield Future(i * 2)
     val futureSum = Future.fold(futures)(0)(_ + _)
     futureSum foreach println
     //#fold
@@ -299,7 +301,9 @@ class FutureDocSpec extends AkkaSpec {
   "demonstrate usage of reduce" in {
     //#reduce
     // Create a sequence of Futures
-    val futures = for (i <- 1 to 1000) yield Future(i * 2)
+    val futures =
+      for (i <- 1 to 1000)
+        yield Future(i * 2)
     val futureSum = Future.reduce(futures)(_ + _)
     futureSum foreach println
     //#reduce

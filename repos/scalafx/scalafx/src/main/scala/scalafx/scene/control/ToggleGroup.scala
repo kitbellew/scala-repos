@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object ToggleGroup {
   implicit def sfxToggleGroup2jfx(v: ToggleGroup): jfxsc.ToggleGroup =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

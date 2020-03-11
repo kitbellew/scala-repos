@@ -24,7 +24,8 @@ private[tournament] final class Reminder(renderer: ActorSelection)
           val userIds =
             if (activeUserIds.size > max)
               scala.util.Random.shuffle(activeUserIds) take max
-            else activeUserIds
+            else
+              activeUserIds
           bus.publish(
             SendTos(
               userIds.toSet,

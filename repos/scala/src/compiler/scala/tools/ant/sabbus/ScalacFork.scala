@@ -90,7 +90,11 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
   }
 
   override def execute() {
-    def plural(x: Int) = if (x > 1) "s" else ""
+    def plural(x: Int) =
+      if (x > 1)
+        "s"
+      else
+        ""
 
     log(
       "Executing ant task scalacfork, origin: %s".format(originOfThis),
@@ -148,8 +152,12 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
       t map { s =>
         if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
           "\"" + s.flatMap(c =>
-            (if (c == '"' || c == '\\') "\\" else "") + c) + "\""
-        else s
+            (if (c == '"' || c == '\\')
+               "\\"
+             else
+               "") + c) + "\""
+        else
+          s
       } mkString "\n"
 
     // dump the arguments to a file and do "java @file"

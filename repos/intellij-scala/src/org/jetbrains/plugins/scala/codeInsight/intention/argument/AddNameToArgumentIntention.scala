@@ -25,7 +25,8 @@ class AddNameToArgumentIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    if (!element.isValid) return
+    if (!element.isValid)
+      return
     IntentionUtils.addNameToArgumentsFix(element, onlyBoolean = false) match {
       case Some(x) => x()
       case None    =>

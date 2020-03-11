@@ -55,9 +55,15 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val nextSaturday = today.plusDays((13 - today.getDayOfWeek) % 7)
 
       def orTomorrow(date: DateTime) =
-        if (date isBefore rightNow) date plusDays 1 else date
+        if (date isBefore rightNow)
+          date plusDays 1
+        else
+          date
       def orNextWeek(date: DateTime) =
-        if (date isBefore rightNow) date plusWeeks 1 else date
+        if (date isBefore rightNow)
+          date plusWeeks 1
+        else
+          date
 
       val isHalloween = today.getMonthOfYear == 10 && today.getDayOfMonth == 31
 

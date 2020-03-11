@@ -99,8 +99,10 @@ trait Constants extends api.Constants {
     }
 
     def booleanValue: Boolean =
-      if (tag == BooleanTag) value.asInstanceOf[Boolean]
-      else throw new Error("value " + value + " is not a boolean")
+      if (tag == BooleanTag)
+        value.asInstanceOf[Boolean]
+      else
+        throw new Error("value " + value + " is not a boolean")
 
     def byteValue: Byte = tag match {
       case ByteTag   => value.asInstanceOf[Byte]
@@ -204,9 +206,12 @@ trait Constants extends api.Constants {
     }
 
     def stringValue: String =
-      if (value == null) "null"
-      else if (tag == ClazzTag) signature(typeValue)
-      else value.toString()
+      if (value == null)
+        "null"
+      else if (tag == ClazzTag)
+        signature(typeValue)
+      else
+        value.toString()
 
     @switch def escapedChar(ch: Char): String = ch match {
       case '\b' => "\\b"
@@ -218,8 +223,10 @@ trait Constants extends api.Constants {
       case '\'' => "\\\'"
       case '\\' => "\\\\"
       case _ =>
-        if (ch.isControl) "\\0" + toOctalString(ch.toInt)
-        else String.valueOf(ch)
+        if (ch.isControl)
+          "\\0" + toOctalString(ch.toInt)
+        else
+          String.valueOf(ch)
     }
 
     def escapedStringValue: String = {

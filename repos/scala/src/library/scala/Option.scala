@@ -22,7 +22,11 @@ object Option {
     *  @param  x the value
     *  @return   Some(value) if value != null, None if value == null
     */
-  def apply[A](x: A): Option[A] = if (x == null) None else Some(x)
+  def apply[A](x: A): Option[A] =
+    if (x == null)
+      None
+    else
+      Some(x)
 
   /** An Option factory which returns `None` in a manner consistent with
     *  the collections hierarchy.
@@ -120,7 +124,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @param default  the default expression.
     */
   @inline final def getOrElse[B >: A](default: => B): B =
-    if (isEmpty) default else this.get
+    if (isEmpty)
+      default
+    else
+      this.get
 
   /** Returns the option's value if it is nonempty,
     * or `null` if it is empty.
@@ -146,7 +153,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @see foreach
     */
   @inline final def map[B](f: A => B): Option[B] =
-    if (isEmpty) None else Some(f(this.get))
+    if (isEmpty)
+      None
+    else
+      Some(f(this.get))
 
   /** Returns the result of applying $f to this $option's
     *  value if the $option is nonempty.  Otherwise, evaluates
@@ -158,7 +168,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @param  f       the function to apply if nonempty.
     */
   @inline final def fold[B](ifEmpty: => B)(f: A => B): B =
-    if (isEmpty) ifEmpty else f(this.get)
+    if (isEmpty)
+      ifEmpty
+    else
+      f(this.get)
 
   /** Returns the result of applying $f to this $option's value if
     * this $option is nonempty.
@@ -171,10 +184,16 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @see foreach
     */
   @inline final def flatMap[B](f: A => Option[B]): Option[B] =
-    if (isEmpty) None else f(this.get)
+    if (isEmpty)
+      None
+    else
+      f(this.get)
 
   def flatten[B](implicit ev: A <:< Option[B]): Option[B] =
-    if (isEmpty) None else ev(this.get)
+    if (isEmpty)
+      None
+    else
+      ev(this.get)
 
   /** Returns this $option if it is nonempty '''and''' applying the predicate $p to
     * this $option's value returns true. Otherwise, return $none.
@@ -182,7 +201,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @param  p   the predicate used for testing.
     */
   @inline final def filter(p: A => Boolean): Option[A] =
-    if (isEmpty || p(this.get)) this else None
+    if (isEmpty || p(this.get))
+      this
+    else
+      None
 
   /** Returns this $option if it is nonempty '''and''' applying the predicate $p to
     * this $option's value returns false. Otherwise, return $none.
@@ -190,7 +212,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @param  p   the predicate used for testing.
     */
   @inline final def filterNot(p: A => Boolean): Option[A] =
-    if (isEmpty || !p(this.get)) this else None
+    if (isEmpty || !p(this.get))
+      this
+    else
+      None
 
   /** Returns false if the option is $none, true otherwise.
     *  @note   Implemented here to avoid the implicit conversion to Iterable.
@@ -258,7 +283,8 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @see flatMap
     */
   @inline final def foreach[U](f: A => U) {
-    if (!isEmpty) f(this.get)
+    if (!isEmpty)
+      f(this.get)
   }
 
   /** Returns a $some containing the result of
@@ -283,27 +309,38 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  value (if possible), or $none.
     */
   @inline final def collect[B](pf: PartialFunction[A, B]): Option[B] =
-    if (!isEmpty) pf.lift(this.get) else None
+    if (!isEmpty)
+      pf.lift(this.get)
+    else
+      None
 
   /** Returns this $option if it is nonempty,
     *  otherwise return the result of evaluating `alternative`.
     *  @param alternative the alternative expression.
     */
   @inline final def orElse[B >: A](alternative: => Option[B]): Option[B] =
-    if (isEmpty) alternative else this
+    if (isEmpty)
+      alternative
+    else
+      this
 
   /** Returns a singleton iterator returning the $option's value
     * if it is nonempty, or an empty iterator if the option is empty.
     */
   def iterator: Iterator[A] =
-    if (isEmpty) collection.Iterator.empty
-    else collection.Iterator.single(this.get)
+    if (isEmpty)
+      collection.Iterator.empty
+    else
+      collection.Iterator.single(this.get)
 
   /** Returns a singleton list containing the $option's value
     * if it is nonempty, or the empty list if the $option is empty.
     */
   def toList: List[A] =
-    if (isEmpty) List() else new ::(this.get, Nil)
+    if (isEmpty)
+      List()
+    else
+      new ::(this.get, Nil)
 
   /** Returns a [[scala.util.Left]] containing the given
     * argument `left` if this $option is empty, or
@@ -314,7 +351,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     * @see toLeft
     */
   @inline final def toRight[X](left: => X) =
-    if (isEmpty) Left(left) else Right(this.get)
+    if (isEmpty)
+      Left(left)
+    else
+      Right(this.get)
 
   /** Returns a [[scala.util.Right]] containing the given
     * argument `right` if this is empty, or
@@ -325,7 +365,10 @@ sealed abstract class Option[+A] extends Product with Serializable {
     * @see toRight
     */
   @inline final def toLeft[X](right: => X) =
-    if (isEmpty) Right(right) else Left(this.get)
+    if (isEmpty)
+      Right(right)
+    else
+      Left(this.get)
 }
 
 /** Class `Some[A]` represents existing values of type

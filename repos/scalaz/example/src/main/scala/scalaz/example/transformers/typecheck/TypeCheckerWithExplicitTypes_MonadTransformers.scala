@@ -23,7 +23,10 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
       t2: Type,
       resultType: Type,
       errorMsg: String): String \/ Type =
-    if (t1 == t2) success(resultType) else typeError(errorMsg)
+    if (t1 == t2)
+      success(resultType)
+    else
+      typeError(errorMsg)
 
   type V[+T] = String \/ T
 

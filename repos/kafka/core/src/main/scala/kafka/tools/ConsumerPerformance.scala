@@ -316,7 +316,10 @@ object ConsumerPerformance {
         options.valueOf(fetchSizeOpt).toString)
       props.put(
         ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-        if (options.has(resetBeginningOffsetOpt)) "latest" else "earliest")
+        if (options.has(resetBeginningOffsetOpt))
+          "latest"
+        else
+          "earliest")
       props.put(
         ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
         classOf[ByteArrayDeserializer])
@@ -339,7 +342,10 @@ object ConsumerPerformance {
         options.valueOf(fetchSizeOpt).toString)
       props.put(
         "auto.offset.reset",
-        if (options.has(resetBeginningOffsetOpt)) "largest" else "smallest")
+        if (options.has(resetBeginningOffsetOpt))
+          "largest"
+        else
+          "smallest")
       props.put("zookeeper.connect", options.valueOf(zkConnectOpt))
       props.put("consumer.timeout.ms", "1000")
       props.put(

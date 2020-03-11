@@ -30,8 +30,10 @@ object ClassPathMemoryConsumptionTester {
   }
 
   def main(args: Array[String]): Unit = {
-    if (args contains "-help") usage()
-    else doTest(args)
+    if (args contains "-help")
+      usage()
+    else
+      doTest(args)
   }
 
   private def doTest(args: Array[String]) = {
@@ -77,7 +79,8 @@ object ClassPathMemoryConsumptionTester {
 
   private def argsWithoutRequiredInstances(args: Array[String]) = {
     val instancesIndex = args.indexOf("-requiredInstances")
-    if (instancesIndex == -1) args
+    if (instancesIndex == -1)
+      args
     else
       args.dropRight(args.length - instancesIndex) ++ args.drop(
         instancesIndex + 2)

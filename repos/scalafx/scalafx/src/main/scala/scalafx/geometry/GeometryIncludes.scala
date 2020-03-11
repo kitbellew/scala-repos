@@ -48,8 +48,10 @@ trait GeometryIncludes {
     * @return ScalaFX Bounds
     */
   implicit def jfxBounds2sfx(b: jfxg.Bounds): Bounds =
-    if (b != null) new Bounds(b) {}
-    else null
+    if (b != null)
+      new Bounds(b) {}
+    else
+      null
 
   /**
     * Converts a
@@ -60,7 +62,10 @@ trait GeometryIncludes {
     * @return ScalaFX BoundingBox
     */
   implicit def jfxBoundingBox2sfx(b: jfxg.BoundingBox): BoundingBox =
-    if (b != null) new BoundingBox(b) else null
+    if (b != null)
+      new BoundingBox(b)
+    else
+      null
 
   /**
     * Converts a
@@ -71,7 +76,10 @@ trait GeometryIncludes {
     * @return ScalaFX Dimension2D
     */
   implicit def jfxDimension2D2sfx(d: jfxg.Dimension2D): Dimension2D =
-    if (d != null) new Dimension2D(d) else null
+    if (d != null)
+      new Dimension2D(d)
+    else
+      null
 
   /**
     * Converts a
@@ -104,7 +112,10 @@ trait GeometryIncludes {
     * @return ScalaFX Insets
     */
   implicit def jfxInsets2sfx(i: jfxg.Insets): Insets =
-    if (i != null) new Insets(i) else null
+    if (i != null)
+      new Insets(i)
+    else
+      null
 
   /**
     * Converts a
@@ -137,7 +148,10 @@ trait GeometryIncludes {
     * @return ScalaFX Point2D
     */
   implicit def jfxPoint2D2sfx(p: jfxg.Point2D): Point2D =
-    if (p != null) new Point2D(p) else null
+    if (p != null)
+      new Point2D(p)
+    else
+      null
 
   /**
     * Converts a
@@ -148,7 +162,10 @@ trait GeometryIncludes {
     * @return ScalaFX Point3D
     */
   implicit def jfxPoint3D2sfx(p: jfxg.Point3D): Point3D =
-    if (p != null) new Point3D(p) else null
+    if (p != null)
+      new Point3D(p)
+    else
+      null
 
   /**
     * Converts a
@@ -169,7 +186,10 @@ trait GeometryIncludes {
     * @return ScalaFX Rectangle2D
     */
   implicit def jfxRectangle2D2sfx(r: jfxg.Rectangle2D): Rectangle2D =
-    if (r != null) new Rectangle2D(r) else null
+    if (r != null)
+      new Rectangle2D(r)
+    else
+      null
 
   /**
     * Converts a

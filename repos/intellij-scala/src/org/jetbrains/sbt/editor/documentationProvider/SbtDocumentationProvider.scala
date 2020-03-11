@@ -97,7 +97,10 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
     case ScInfixExpr(lOp, _, rOp) =>
       val str = argToString(lOp).getOrElse("") ++
         argToString(rOp).getOrElse("")
-      if (str.nonEmpty) Some(str) else None
+      if (str.nonEmpty)
+        Some(str)
+      else
+        None
     case refExpr: ScReferenceExpression =>
       Some(refExpr.getText)
     case _ =>

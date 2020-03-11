@@ -49,8 +49,10 @@ trait RouteTest
   def testConfig: Config = {
     val source = testConfigSource
     val config =
-      if (source.isEmpty) ConfigFactory.empty()
-      else ConfigFactory.parseString(source)
+      if (source.isEmpty)
+        ConfigFactory.empty()
+      else
+        ConfigFactory.parseString(source)
     config.withFallback(ConfigFactory.load())
   }
   implicit val system = createActorSystem()
@@ -61,7 +63,8 @@ trait RouteTest
 
   private val dynRR = new DynamicVariable[RouteTestResult](null)
   private def result =
-    if (dynRR.value ne null) dynRR.value
+    if (dynRR.value ne null)
+      dynRR.value
     else
       sys.error("This value is only available inside of a `check` construct!")
 
@@ -69,7 +72,10 @@ trait RouteTest
     result ⇒ dynRR.withValue(result.awaitResult)(body)
 
   private def responseSafe =
-    if (dynRR.value ne null) dynRR.value.response else "<not available anymore>"
+    if (dynRR.value ne null)
+      dynRR.value.response
+    else
+      "<not available anymore>"
 
   def handled: Boolean = result.handled
   def response: HttpResponse = result.response
@@ -118,7 +124,8 @@ trait RouteTest
   def rejections: immutable.Seq[Rejection] = result.rejections
   def rejection: Rejection = {
     val r = rejections
-    if (r.size == 1) r.head
+    if (r.size == 1)
+      r.head
     else
       failTest("Expected a single rejection but got %s (%s)".format(r.size, r))
   }

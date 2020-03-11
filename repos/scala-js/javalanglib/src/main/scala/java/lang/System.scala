@@ -254,8 +254,10 @@ object System {
 
   def setProperties(properties: ju.Properties): Unit = {
     SystemProperties.value =
-      if (properties != null) properties
-      else SystemProperties.loadSystemProperties()
+      if (properties != null)
+        properties
+      else
+        SystemProperties.loadSystemProperties()
   }
 
   def getProperty(key: String): String =
@@ -317,7 +319,11 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
   override def print(s: Array[scala.Char]): Unit =
     printString(String.valueOf(s))
   override def print(s: String): Unit =
-    printString(if (s == null) "null" else s)
+    printString(
+      if (s == null)
+        "null"
+      else
+        s)
   override def print(obj: AnyRef): Unit = printString(String.valueOf(obj))
 
   override def println(): Unit = printString("\n")

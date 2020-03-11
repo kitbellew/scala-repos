@@ -49,8 +49,10 @@ final class CookedReader(
     segmentFormat: SegmentFormat)
     extends StorageReader {
   private val metadataFile =
-    if (metadataFile0.isAbsolute) metadataFile0
-    else new File(baseDir, metadataFile0.getPath)
+    if (metadataFile0.isAbsolute)
+      metadataFile0
+    else
+      new File(baseDir, metadataFile0.getPath)
 
   private val lock = new AnyRef {}
 
@@ -59,7 +61,11 @@ final class CookedReader(
   @volatile
   private var block: SoftReference[CookedBlockMetadata] = null
 
-  private def maybeBlock = if (block != null) block.get() else null
+  private def maybeBlock =
+    if (block != null)
+      block.get()
+    else
+      null
 
   private def read[A](file: File)(f: ReadableByteChannel => A): A = {
     val channel = new FileInputStream(file).getChannel()
@@ -120,7 +126,10 @@ final class CookedReader(
       metadata.valueOr(throw _).segments map {
         case (segId, file0) =>
           val file =
-            if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
+            if (file0.isAbsolute)
+              file0
+            else
+              new File(baseDir, file0.getPath)
           read(file) { channel =>
             segmentFormat.reader.readSegment(channel)
           }.valueOr(throw _)
@@ -172,8 +181,10 @@ final class CookedReader(
               .getOrElse(path, Nil)
               .map { file0 =>
                 val file =
-                  if (file0.isAbsolute) file0
-                  else new File(baseDir, file0.getPath)
+                  if (file0.isAbsolute)
+                    file0
+                  else
+                    new File(baseDir, file0.getPath)
                 read(file) { channel =>
                   segmentFormat.reader.readSegment(channel).toValidationNel
                 }

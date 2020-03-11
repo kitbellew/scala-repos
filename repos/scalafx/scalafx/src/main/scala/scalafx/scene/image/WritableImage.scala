@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 
 object WritableImage {
   implicit def sfxWritableImage2jfx(wi: WritableImage): jfxsi.WritableImage =
-    if (null == wi) null else wi.delegate
+    if (null == wi)
+      null
+    else
+      wi.delegate
 }
 
 /**

@@ -112,8 +112,8 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       } ~> check {
         inside(rejection) {
           case ValidationRejection(
-              "requirement failed",
-              Some(_: IllegalArgumentException)) ⇒
+                "requirement failed",
+                Some(_: IllegalArgumentException)) ⇒
         }
       }
     }

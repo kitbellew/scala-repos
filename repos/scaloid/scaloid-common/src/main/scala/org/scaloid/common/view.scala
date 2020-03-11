@@ -128,7 +128,8 @@ trait TraitView[This <: android.view.View]
   @inline def here[LP <: ViewGroupLayoutParams[_, _]](
       implicit defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
-    if (parent != null) parent += basis
+    if (parent != null)
+      parent += basis
     basis
   }
 
@@ -190,7 +191,10 @@ trait TraitView[This <: android.view.View]
       implicit
       defaultLayoutParam: This => LP = (v: This) => null): TraitViewGroup[_] = {
     val lp = defaultLayoutParam(basis)
-    if (lp == null) null else lp.parent
+    if (lp == null)
+      null
+    else
+      lp.parent
   }
 
   def <<[LP <: ViewGroupLayoutParams[_, _]](width: Int, height: Int)(
@@ -2399,9 +2403,11 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
 
   def applyStyle(v: View): View = {
     var viw = v
-    if (parentViewGroup != null) viw = parentViewGroup.applyStyle(viw)
+    if (parentViewGroup != null)
+      viw = parentViewGroup.applyStyle(viw)
     styles.foreach { st =>
-      if (st.isDefinedAt(viw)) viw = st(viw)
+      if (st.isDefinedAt(viw))
+        viw = st(viw)
     }
     viw
   }

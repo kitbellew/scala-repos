@@ -35,7 +35,8 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
         fqn,
         clazz.getResolveScope,
         ScalaPsiManager.ClassCategory.OBJECT)
-    if (suiteClazz == null) return false
+    if (suiteClazz == null)
+      return false
     ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClazz)
   }
 
@@ -99,6 +100,7 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
           .getConfigurationModule
           .getModule == configurationModule) && configuration.getTestClassPath == null && configuration.getTestName == null
       }
-    } else false
+    } else
+      false
   }
 }

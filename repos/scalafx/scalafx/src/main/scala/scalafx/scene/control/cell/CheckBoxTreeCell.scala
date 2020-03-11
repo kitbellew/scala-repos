@@ -58,7 +58,10 @@ object CheckBoxTreeCell {
     */
   implicit def sfxCheckBoxTreeCell2jfx[T](
       cell: CheckBoxTreeCell[T]): jfxsc.cell.CheckBoxTreeCell[T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   private[cell] implicit def selectedTreeItemPropertyToGetSelectedProperty[T](
       selectedProperty: TreeItem[T] => ObservableValue[

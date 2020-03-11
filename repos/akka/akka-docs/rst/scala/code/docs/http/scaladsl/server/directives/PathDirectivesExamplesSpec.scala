@@ -61,7 +61,11 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
             complete("/ball")
           } ~
             path(IntNumber) { int =>
-              complete(if (int % 2 == 0) "even ball" else "odd ball")
+              complete(
+                if (int % 2 == 0)
+                  "even ball"
+                else
+                  "odd ball")
             }
         }
 
@@ -140,7 +144,11 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
           complete("/ball")
         } ~
           path(IntNumber) { int =>
-            complete(if (int % 2 == 0) "even ball" else "odd ball")
+            complete(
+              if (int % 2 == 0)
+                "even ball"
+              else
+                "odd ball")
           }
       }
 
@@ -189,7 +197,11 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
             complete("/ball/")
           } ~
             path(IntNumber) { int =>
-              complete(if (int % 2 == 0) "even ball" else "odd ball")
+              complete(
+                if (int % 2 == 0)
+                  "even ball"
+                else
+                  "odd ball")
             }
         }
 

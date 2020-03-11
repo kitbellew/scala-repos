@@ -31,7 +31,9 @@ object Block {
             while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON) {
               builder.advanceLexer()
             }
-          case _ => if (builder.newlineBeforeCurrentToken) hasSemicolon = true
+          case _ =>
+            if (builder.newlineBeforeCurrentToken)
+              hasSemicolon = true
         }
       }
 
@@ -105,7 +107,10 @@ object Block {
       if (count > 1) {
         bm.done(ScalaElementTypes.BLOCK)
       } else {
-        if (!needNode) bm.drop() else bm.done(ScalaElementTypes.BLOCK)
+        if (!needNode)
+          bm.drop()
+        else
+          bm.done(ScalaElementTypes.BLOCK)
 //        bm.done(ScalaElementTypes.BLOCK)
       }
     }

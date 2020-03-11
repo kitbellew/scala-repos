@@ -52,7 +52,10 @@ import scalafx.scene.paint.Paint
 
 object Scene {
   implicit def sfxScene2jfx(v: Scene): jfxs.Scene =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

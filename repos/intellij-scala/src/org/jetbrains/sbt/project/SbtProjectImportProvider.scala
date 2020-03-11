@@ -39,7 +39,10 @@ object SbtProjectImportProvider {
 
   def projectRootOf(entry: VirtualFile): VirtualFile = {
     if (entry.isDirectory) {
-      if (entry.getName == Sbt.ProjectDirectory) entry.getParent else entry
+      if (entry.getName == Sbt.ProjectDirectory)
+        entry.getParent
+      else
+        entry
     } else {
       entry.getParent
     }

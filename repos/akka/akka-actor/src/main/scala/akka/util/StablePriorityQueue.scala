@@ -16,13 +16,17 @@ trait PriorityQueueStabilizer[E <: AnyRef] extends AbstractQueue[E] {
 
   override def peek(): E = {
     val wrappedElement = backingQueue.peek()
-    if (wrappedElement eq null) null.asInstanceOf[E] else wrappedElement.element
+    if (wrappedElement eq null)
+      null.asInstanceOf[E]
+    else
+      wrappedElement.element
   }
 
   override def size(): Int = backingQueue.size()
 
   override def offer(e: E): Boolean = {
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     val wrappedElement =
       new PriorityQueueStabilizer.WrappedElement(e, seqNum.incrementAndGet)
     backingQueue.offer(wrappedElement)
@@ -37,7 +41,10 @@ trait PriorityQueueStabilizer[E <: AnyRef] extends AbstractQueue[E] {
 
   override def poll(): E = {
     val wrappedElement = backingQueue.poll()
-    if (wrappedElement eq null) null.asInstanceOf[E] else wrappedElement.element
+    if (wrappedElement eq null)
+      null.asInstanceOf[E]
+    else
+      wrappedElement.element
   }
 }
 
@@ -47,7 +54,8 @@ object PriorityQueueStabilizer {
       extends Comparator[WrappedElement[E]] {
     def compare(e1: WrappedElement[E], e2: WrappedElement[E]): Int = {
       val baseComparison = cmp.compare(e1.element, e2.element)
-      if (baseComparison != 0) baseComparison
+      if (baseComparison != 0)
+        baseComparison
       else {
         val diff = e1.seqNum - e2.seqNum
         java.lang.Long.signum(diff)

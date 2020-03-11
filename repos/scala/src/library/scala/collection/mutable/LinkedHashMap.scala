@@ -63,13 +63,16 @@ class LinkedHashMap[A, B]
 
   def get(key: A): Option[B] = {
     val e = findEntry(key)
-    if (e == null) None
-    else Some(e.value)
+    if (e == null)
+      None
+    else
+      Some(e.value)
   }
 
   override def put(key: A, value: B): Option[B] = {
     val e = findOrAddEntry(key, value)
-    if (e eq null) None
+    if (e eq null)
+      None
     else {
       val v = e.value;
       e.value = value;
@@ -79,12 +82,17 @@ class LinkedHashMap[A, B]
 
   override def remove(key: A): Option[B] = {
     val e = removeEntry(key)
-    if (e eq null) None
+    if (e eq null)
+      None
     else {
-      if (e.earlier eq null) firstEntry = e.later
-      else e.earlier.later = e.later
-      if (e.later eq null) lastEntry = e.earlier
-      else e.later.earlier = e.earlier
+      if (e.earlier eq null)
+        firstEntry = e.later
+      else
+        e.earlier.later = e.later
+      if (e.later eq null)
+        lastEntry = e.earlier
+      else
+        e.later.earlier = e.earlier
       Some(e.value)
     }
   }
@@ -113,7 +121,8 @@ class LinkedHashMap[A, B]
         val res = (cur.key, cur.value);
         cur = cur.later;
         res
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   protected class FilteredKeys(p: A => Boolean) extends super.FilteredKeys(p) {
@@ -144,7 +153,8 @@ class LinkedHashMap[A, B]
         val res = cur.key;
         cur = cur.later;
         res
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   override def valuesIterator: Iterator[B] = new AbstractIterator[B] {
@@ -155,7 +165,8 @@ class LinkedHashMap[A, B]
         val res = cur.value;
         cur = cur.later;
         res
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   override def foreach[U](f: ((A, B)) => U) {
@@ -176,7 +187,8 @@ class LinkedHashMap[A, B]
 
   protected def createNewEntry[B1](key: A, value: B1): Entry = {
     val e = new Entry(key, value.asInstanceOf[B])
-    if (firstEntry eq null) firstEntry = e
+    if (firstEntry eq null)
+      firstEntry = e
     else {
       lastEntry.later = e;
       e.earlier = lastEntry

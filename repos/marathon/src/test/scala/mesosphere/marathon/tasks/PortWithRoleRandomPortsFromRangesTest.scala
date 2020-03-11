@@ -129,13 +129,15 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
     }
 
     // warm up
-    for (seed <- 1 to 100) performTest(seed)
+    for (seed <- 1 to 100)
+      performTest(seed)
 
     // real test
     val iterations = 100
     System.gc()
     val start = System.nanoTime()
-    for (seed <- 1 to iterations) performTest(seed)
+    for (seed <- 1 to iterations)
+      performTest(seed)
     val duration =
       FiniteDuration(System.nanoTime() - start, TimeUnit.NANOSECONDS)
 

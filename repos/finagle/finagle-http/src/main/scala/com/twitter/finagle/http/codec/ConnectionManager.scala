@@ -24,7 +24,8 @@ class ConnectionManager {
   def observeRequest(request: HttpRequest) = synchronized {
     isIdle = false
     isKeepAlive = HttpHeaders.isKeepAlive(request)
-    if (request.isChunked) chunks += 1
+    if (request.isChunked)
+      chunks += 1
   }
 
   def observeResponse(response: HttpResponse) = synchronized {
@@ -38,12 +39,14 @@ class ConnectionManager {
     // and hence idle.
     isIdle = !response.isChunked
 
-    if (response.isChunked) chunks += 1
+    if (response.isChunked)
+      chunks += 1
   }
 
   def observeChunk(chunk: HttpChunk) = synchronized {
     require(!isIdle)
-    if (chunk.isLast) chunks -= 1
+    if (chunk.isLast)
+      chunks -= 1
     isIdle = chunks == 0
   }
 

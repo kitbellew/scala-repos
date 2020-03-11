@@ -55,8 +55,10 @@ sealed trait Spool[+A] {
     * The first element of the spool if it is non-empty.
     */
   def headOption: Option[A] =
-    if (isEmpty) None
-    else Some(head)
+    if (isEmpty)
+      None
+    else
+      Some(head)
 
   /**
     * The (deferred) tail of the spool. Invalid for empty spools.
@@ -118,8 +120,10 @@ sealed trait Spool[+A] {
     * c.f. scala.collection.immutable.Stream#zip
     */
   def zip[B](that: Spool[B]): Spool[(A, B)] =
-    if (isEmpty) empty[(A, B)]
-    else if (that.isEmpty) empty[(A, B)]
+    if (isEmpty)
+      empty[(A, B)]
+    else if (that.isEmpty)
+      empty[(A, B)]
     else
       new LazyCons(
         (head, that.head),
@@ -137,7 +141,8 @@ sealed trait Spool[+A] {
     * filter.
     */
   def collect[B](f: PartialFunction[A, B]): Future[Spool[B]] =
-    if (isEmpty) Future.value(empty[B])
+    if (isEmpty)
+      Future.value(empty[B])
     else {
       def _tail = tail flatMap (_.collect(f))
 
@@ -168,7 +173,8 @@ sealed trait Spool[+A] {
     * spool is available.
     */
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
-    if (isEmpty) Future.value(empty[B])
+    if (isEmpty)
+      Future.value(empty[B])
     else {
       f(head) map { h =>
         new LazyCons(h, tail flatMap (_ mapFuture f))
@@ -209,7 +215,10 @@ sealed trait Spool[+A] {
     * Concatenates two spools.
     */
   def ++[B >: A](that: => Spool[B]): Spool[B] =
-    if (isEmpty) that else new LazyCons(head: B, tail map (_ ++ that))
+    if (isEmpty)
+      that
+    else
+      new LazyCons(head: B, tail map (_ ++ that))
 
   /**
     * @see operator ++
@@ -224,7 +233,10 @@ sealed trait Spool[+A] {
     * NB: this has space consumption O(N) of the number of distinct items
     */
   def distinctBy[B](fn: A => B): Spool[A] =
-    if (isEmpty) this else distinctByNonEmpty(fn)
+    if (isEmpty)
+      this
+    else
+      distinctByNonEmpty(fn)
 
   private[this] def distinctByNonEmpty[B](fn: A => B): Spool[A] = {
     val set = mutable.HashSet[B]()
@@ -250,8 +262,10 @@ sealed trait Spool[+A] {
     * Concatenates two spools.
     */
   def ++[B >: A](that: => Future[Spool[B]]): Future[Spool[B]] =
-    if (isEmpty) that
-    else Future.value(new LazyCons(head: B, tail flatMap (_ ++ that)))
+    if (isEmpty)
+      that
+    else
+      Future.value(new LazyCons(head: B, tail flatMap (_ ++ that)))
 
   /**
     * @see operator ++
@@ -263,8 +277,10 @@ sealed trait Spool[+A] {
     * flattening the result into a single spool.
     */
   def flatMap[B](f: A => Future[Spool[B]]): Future[Spool[B]] =
-    if (isEmpty) Future.value(empty[B])
-    else f(head).flatMap(headSpool => headSpool ++ tail.flatMap(_.flatMap(f)))
+    if (isEmpty)
+      Future.value(empty[B])
+    else
+      f(head).flatMap(headSpool => headSpool ++ tail.flatMap(_.flatMap(f)))
 
   /**
     * Fully buffer the spool to a {{Seq}}.  The returned future is
@@ -303,7 +319,12 @@ object Spool {
   case class Cons[A](head: A, tail: Future[Spool[A]]) extends Spool[A] {
     def isEmpty = false
     override def toString =
-      "Cons(%s, %c)".format(head, if (tail.isDefined) '*' else '?')
+      "Cons(%s, %c)".format(
+        head,
+        if (tail.isDefined)
+          '*'
+        else
+          '?')
   }
 
   private class LazyCons[A](val head: A, next: => Future[Spool[A]])
@@ -358,8 +379,10 @@ object Spool {
 
   object *:: {
     def unapply[A](s: Spool[A]): Option[(A, Future[Spool[A]])] = {
-      if (s.isEmpty) None
-      else Some((s.head, s.tail))
+      if (s.isEmpty)
+        None
+      else
+        Some((s.head, s.tail))
     }
   }
 
@@ -376,8 +399,10 @@ object Spool {
 
   object **:: {
     def unapply[A](s: Spool[A]): Option[(A, Spool[A])] = {
-      if (s.isEmpty) None
-      else Some((s.head, Await.result(s.tail)))
+      if (s.isEmpty)
+        None
+      else
+        Some((s.head, Await.result(s.tail)))
     }
   }
 
@@ -390,10 +415,15 @@ object Spool {
     */
   def fromSeq[A](seq: Seq[A]): Spool[A] = {
     def go(as: Seq[A]): Future[Spool[A]] =
-      if (as.isEmpty) Future.value(Spool.empty)
-      else Future.value(as.head *:: go(as.tail))
+      if (as.isEmpty)
+        Future.value(Spool.empty)
+      else
+        Future.value(as.head *:: go(as.tail))
 
-    if (seq.isEmpty) Spool.empty else seq.head *:: go(seq.tail)
+    if (seq.isEmpty)
+      Spool.empty
+    else
+      seq.head *:: go(seq.tail)
   }
 
   /**
@@ -414,7 +444,10 @@ object Spool {
     * the returned Spool when any of the Spools you're merging over fails.
     */
   def merge[A](spools: Seq[Future[Spool[A]]]): Future[Spool[A]] =
-    if (spools.isEmpty) Future.value(Spool.Empty) else mergeNonempty(spools)
+    if (spools.isEmpty)
+      Future.value(Spool.Empty)
+    else
+      mergeNonempty(spools)
 
   private[this] def mergeNonempty[A](
       spools: Seq[Future[Spool[A]]]): Future[Spool[A]] =

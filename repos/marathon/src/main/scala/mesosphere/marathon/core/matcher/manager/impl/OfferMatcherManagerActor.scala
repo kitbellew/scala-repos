@@ -241,8 +241,10 @@ private[impl] class OfferMatcherManagerActor private (
         dataWithTasks.nextMatcherOpt match {
           case Some((matcher, contData)) =>
             val contDataWithActiveMatcher =
-              if (addedOps.nonEmpty) contData.addMatcher(matcher)
-              else contData
+              if (addedOps.nonEmpty)
+                contData.addMatcher(matcher)
+              else
+                contData
             offerQueues += offerId -> contDataWithActiveMatcher
             contDataWithActiveMatcher
           case None =>
@@ -325,7 +327,11 @@ private[impl] class OfferMatcherManagerActor private (
     offerQueues -= data.offer.getId
     metrics.currentOffersGauge.setValue(offerQueues.size)
     //scalastyle:off magic.number
-    val maxRanges = if (log.isDebugEnabled) 1000 else 10
+    val maxRanges =
+      if (log.isDebugEnabled)
+        1000
+      else
+        10
     //scalastyle:on magic.number
     log.info(s"Finished processing ${data.offer.getId.getValue}. " +
       s"Matched ${data.ops.size} ops after ${data.matchPasses} passes. " +

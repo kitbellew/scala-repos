@@ -130,7 +130,8 @@ class DistributedSuite
       val thrown = intercept[SparkException] {
         // One of the tasks always fails.
         sc.parallelize(1 to 10, 2).foreach { x =>
-          if (x == 1) System.exit(42)
+          if (x == 1)
+            System.exit(42)
         }
       }
       assert(thrown.getClass === classOf[SparkException])

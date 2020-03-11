@@ -28,7 +28,10 @@ class TensorKeys[K, V, +This](
     })(implicit ev: This <:< Tensor[K, V]) {
   def size = tensor.size
   def iterator = {
-    if (active) tensor.activeKeysIterator else tensor.keysIterator
+    if (active)
+      tensor.activeKeysIterator
+    else
+      tensor.keysIterator
   }.filter(f)
 
   def foreach[U](fn: K => U) = iterator foreach fn

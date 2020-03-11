@@ -62,7 +62,8 @@ class ScTryStmtImpl(node: ASTNode)
                       Seq.empty)
                     processor.processType(tp, expr)
                     val candidates = processor.candidates
-                    if (candidates.length != 1) lifted
+                    if (candidates.length != 1)
+                      lifted
                     else {
                       candidates(0) match {
                         case ScalaResolveResult(fun: ScFunction, subst) =>

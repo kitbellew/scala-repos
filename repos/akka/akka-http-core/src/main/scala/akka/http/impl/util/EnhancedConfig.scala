@@ -34,7 +34,8 @@ private[http] class EnhancedConfig(val underlying: Config) extends AnyVal {
 
   def getIntBytes(path: String): Int = {
     val value: Long = underlying getBytes path
-    if (value <= Int.MaxValue) value.toInt
+    if (value <= Int.MaxValue)
+      value.toInt
     else
       throw new ConfigurationException(
         s"Config setting '$path' must not be larger than ${Int.MaxValue}")

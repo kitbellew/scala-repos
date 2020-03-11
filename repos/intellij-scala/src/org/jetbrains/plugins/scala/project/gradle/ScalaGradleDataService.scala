@@ -138,7 +138,8 @@ private object ScalaGradleDataService {
         val additionalOptions =
           if (options.getAdditionalParameters != null)
             options.getAdditionalParameters.asScala
-          else Seq.empty
+          else
+            Seq.empty
 
         presentations.flatMap((include _).tupled) ++ additionalOptions
       }
@@ -146,7 +147,10 @@ private object ScalaGradleDataService {
     private def isEmpty(s: String) = s == null || s.isEmpty
 
     private def include(b: Boolean, s: String): Seq[String] =
-      if (b) Seq(s) else Seq.empty
+      if (b)
+        Seq(s)
+      else
+        Seq.empty
 
     private def showWarning(message: String): Unit = {
       val notification = new NotificationData(

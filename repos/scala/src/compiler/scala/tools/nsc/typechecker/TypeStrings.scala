@@ -29,8 +29,10 @@ trait StructuredTypeStrings extends DestructureTypes {
       rdelim: String,
       labels: Boolean) {
     def join(elems: String*): String = (
-      if (elems.isEmpty) ""
-      else elems.mkString(ldelim, mdelim, rdelim)
+      if (elems.isEmpty)
+        ""
+      else
+        elems.mkString(ldelim, mdelim, rdelim)
     )
   }
   val NoGrouping = Grouping("", "", "", labels = false)
@@ -55,17 +57,23 @@ trait StructuredTypeStrings extends DestructureTypes {
 
     val try1 = str(level)(
       name + grouping.join(nodes map (_.show(0, grouping.labels)): _*))
-    if (try1.length < threshold) try1
-    else block(level, grouping)(name, nodes)
+    if (try1.length < threshold)
+      try1
+    else
+      block(level, grouping)(name, nodes)
   }
   private def shortClass(x: Any) = {
     if (settings.debug) {
       val name = (x.getClass.getName split '.').last
       val str =
-        if (TypeStrings.isAnonClass(x.getClass)) name else (name split '$').last
+        if (TypeStrings.isAnonClass(x.getClass))
+          name
+        else
+          (name split '$').last
 
       " // " + str
-    } else ""
+    } else
+      ""
   }
 
   sealed abstract class TypeNode {
@@ -84,7 +92,11 @@ trait StructuredTypeStrings extends DestructureTypes {
     def typeName = nameInfo.typeName
 
     protected def mkPrefix(showLabel: Boolean) = {
-      val pre = if (showLabel && label != "") label + " = " else ""
+      val pre =
+        if (showLabel && label != "")
+          label + " = "
+        else
+          ""
       pre + typeName
     }
     override def toString = show() // + "(toString)"
@@ -103,7 +115,11 @@ trait StructuredTypeStrings extends DestructureTypes {
   case class TypeProduct(nodes: List[TypeNode]) extends TypeNode {
     def grouping: Grouping = ProductGrouping
     def emptyTypeName = ""
-    override def typeName = if (nodes.isEmpty) emptyTypeName else super.typeName
+    override def typeName =
+      if (nodes.isEmpty)
+        emptyTypeName
+      else
+        super.typeName
   }
 
   /** For a NullaryMethod, in = TypeEmpty; for MethodType(Nil, _) in = TypeNil */
@@ -144,8 +160,10 @@ trait StructuredTypeStrings extends DestructureTypes {
     def wrapProduct(nodes: List[TypeNode]) = new TypeProduct(nodes)
     def wrapPoly(in: TypeNode, out: TypeNode) = new PolyFunction(in, out)
     def wrapMono(in: TypeNode, out: TypeNode) =
-      if (in == wrapEmpty) new NullaryFunction(out)
-      else new MonoFunction(in, out)
+      if (in == wrapEmpty)
+        new NullaryFunction(out)
+      else
+        new MonoFunction(in, out)
     def wrapAtom[U](value: U) = new TypeAtom(value)
   }
 
@@ -192,10 +210,14 @@ trait TypeStrings {
   }
 
   def scalaName(s: String): String = {
-    if (s endsWith MODULE_SUFFIX_STRING) s.init + ".type"
-    else if (s == "void") "scala.Unit"
-    else if (primitives(s)) "scala." + s.capitalize
-    else primitiveMap.getOrElse(s, NameTransformer.decode(s))
+    if (s endsWith MODULE_SUFFIX_STRING)
+      s.init + ".type"
+    else if (s == "void")
+      "scala.Unit"
+    else if (primitives(s))
+      "scala." + s.capitalize
+    else
+      primitiveMap.getOrElse(s, NameTransformer.decode(s))
   }
   // Trying to put humpty dumpty back together again.
   def scalaName(clazz: JClass): String = {
@@ -205,15 +227,23 @@ trait TypeStrings {
     def enclMatch = name startsWith enclPre
 
     scalaName(
-      if (enclClass == null || isAnonClass(clazz) || !enclMatch) name
-      else enclClass.getName + "." + (name stripPrefix enclPre)
+      if (enclClass == null || isAnonClass(clazz) || !enclMatch)
+        name
+      else
+        enclClass.getName + "." + (name stripPrefix enclPre)
     )
   }
-  def anyClass(x: Any): JClass = if (x == null) null else x.getClass
+  def anyClass(x: Any): JClass =
+    if (x == null)
+      null
+    else
+      x.getClass
 
   private def brackets(tps: String*): String =
-    if (tps.isEmpty) ""
-    else tps.mkString("[", ", ", "]")
+    if (tps.isEmpty)
+      ""
+    else
+      tps.mkString("[", ", ", "]")
 
   private def tvarString(tvar: TypeVariable[_]): String =
     tvarString(tvar.getBounds.toList)
@@ -221,8 +251,10 @@ trait TypeStrings {
     val xs = bounds filterNot (_ == ObjectClass) collect {
       case x: JClass => x
     }
-    if (xs.isEmpty) "_"
-    else scalaName(xs.head)
+    if (xs.isEmpty)
+      "_"
+    else
+      scalaName(xs.head)
   }
   private def tparamString(clazz: JClass): String = {
     brackets(clazz.getTypeParameters map tvarString: _*)
@@ -246,7 +278,10 @@ trait TypeStrings {
     *  representation of the type.
     */
   def fromValue(value: Any): String =
-    if (value == null) "Null" else fromClazz(anyClass(value))
+    if (value == null)
+      "Null"
+    else
+      fromClazz(anyClass(value))
   def fromClazz(clazz: JClass): String = scalaName(clazz) + tparamString(clazz)
   def fromTag[T: ru.TypeTag: ClassTag]: String =
     scalaName(classTag[T].runtimeClass) + tparamString[T]

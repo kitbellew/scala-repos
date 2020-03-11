@@ -26,7 +26,10 @@ object totalfloat {
     override def lteqv(x: Float, y: Float): Boolean =
       java.lang.Float.compare(x, y) >= 0
     override def min(x: Float, y: Float): Float =
-      if (java.lang.Float.compare(x, y) < 0) x else y
+      if (java.lang.Float.compare(x, y) < 0)
+        x
+      else
+        y
     override def max(x: Float, y: Float): Float = Math.max(x, y)
     def compare(x: Float, y: Float): Int = java.lang.Float.compare(x, y)
   }
@@ -46,7 +49,10 @@ object totalfloat {
     override def lteqv(x: Double, y: Double): Boolean =
       java.lang.Double.compare(x, y) >= 0
     override def min(x: Double, y: Double): Double =
-      if (java.lang.Double.compare(x, y) < 0) x else y
+      if (java.lang.Double.compare(x, y) < 0)
+        x
+      else
+        y
     override def max(x: Double, y: Double): Double = Math.max(x, y)
     def compare(x: Double, y: Double): Int = java.lang.Double.compare(x, y)
   }

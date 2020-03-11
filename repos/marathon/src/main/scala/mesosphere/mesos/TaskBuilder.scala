@@ -41,7 +41,10 @@ class TaskBuilder(
 
     def logInsufficientResources(): Unit = {
       val appHostPorts =
-        if (app.requirePorts) app.portNumbers else app.portNumbers.map(_ => 0)
+        if (app.requirePorts)
+          app.portNumbers
+        else
+          app.portNumbers.map(_ => 0)
       val containerHostPorts: Option[Seq[Int]] = app.containerHostPorts
       val hostPorts = containerHostPorts.getOrElse(appHostPorts)
       val staticHostPorts = hostPorts.filter(_ != 0)
@@ -74,7 +77,8 @@ class TaskBuilder(
       case Some(resourceMatch) =>
         build(offer, resourceMatch, volumeMatchOpt)
       case _ =>
-        if (log.isInfoEnabled) logInsufficientResources()
+        if (log.isInfoEnabled)
+          logInsufficientResources()
         None
     }
   }
@@ -86,7 +90,8 @@ class TaskBuilder(
     val acceptedResourceRoles: Set[String] = {
       val roles = app.acceptedResourceRoles.getOrElse(
         config.defaultAcceptedResourceRolesSet)
-      if (log.isDebugEnabled) log.debug(s"acceptedResourceRoles $roles")
+      if (log.isDebugEnabled)
+        log.debug(s"acceptedResourceRoles $roles")
       roles
     }
 
@@ -238,7 +243,8 @@ class TaskBuilder(
   }
 
   protected def computeContainerInfo(ports: Seq[Int]): Option[ContainerInfo] = {
-    if (app.container.isEmpty && app.ipAddress.isEmpty) None
+    if (app.container.isEmpty && app.ipAddress.isEmpty)
+      None
     else {
       val builder = ContainerInfo.newBuilder
 
@@ -325,7 +331,8 @@ object TaskBuilder {
       ports: Seq[Int],
       envPrefix: Option[String]): CommandInfo = {
     val containerPorts =
-      for (pms <- app.portMappings) yield pms.map(_.containerPort)
+      for (pms <- app.portMappings)
+        yield pms.map(_.containerPort)
     val declaredPorts = containerPorts.getOrElse(app.portNumbers)
     val envMap: Map[String, String] =
       taskContextEnv(app, taskId) ++
@@ -350,7 +357,8 @@ object TaskBuilder {
       builder.setShell(false)
       builder.addAllArguments(argv.asJava)
       //mesos command executor expects cmd and arguments
-      if (app.container.isEmpty) builder.setValue(argv.head)
+      if (app.container.isEmpty)
+        builder.setValue(argv.head)
     }
 
     if (app.fetch.nonEmpty) {

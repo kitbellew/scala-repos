@@ -66,15 +66,18 @@ class Mediator(winSz: Int) {
     if (v != v) {
       // observing na
       sawNa(naIdx) = true
-      if (!oldNa) nanCt += 1
+      if (!oldNa)
+        nanCt += 1
     } else {
       // observing real value
       sawNa(naIdx) = false
-      if (oldNa) nanCt -= 1
+      if (oldNa)
+        nanCt -= 1
 
       insert(v)
 
-      if (totCt < winSz) totCt += 1
+      if (totCt < winSz)
+        totCt += 1
     }
 
     if (totCt + nanCt > winSz) {
@@ -97,13 +100,15 @@ class Mediator(winSz: Int) {
         swap(p, minCt)
         minCt -= 1
         minSortDown(p)
-        if (minCt < maxCt - 1) maxToMin()
+        if (minCt < maxCt - 1)
+          maxToMin()
       } else if (p < 0) {
         // item is in maxheap
         swap(-maxCt, p)
         maxCt -= 1
         maxSortDown(p)
-        if (maxCt < minCt) minToMax()
+        if (maxCt < minCt)
+          minToMax()
       } else {
         // item is mid
         if (maxCt > minCt) {
@@ -150,7 +155,8 @@ class Mediator(winSz: Int) {
     if (isless(i, j)) {
       swap(i, j)
       true
-    } else false
+    } else
+      false
   }
 
   // maintains minheap property for all items below i in heap
@@ -185,7 +191,8 @@ class Mediator(winSz: Int) {
   // returns true if median changed
   private def minSortUp(iIn: Int): Boolean = {
     var i = iIn
-    while (i > 0 && cas(i, i / 2)) i /= 2
+    while (i > 0 && cas(i, i / 2))
+      i /= 2
     i == 0
   }
 
@@ -193,7 +200,8 @@ class Mediator(winSz: Int) {
   // returns true if median changed
   private def maxSortUp(iIn: Int): Boolean = {
     var i = iIn
-    while (i < 0 && cas(i / 2, i)) i /= 2
+    while (i < 0 && cas(i / 2, i))
+      i /= 2
     i == 0
   }
 
@@ -334,8 +342,16 @@ class Mediator(winSz: Int) {
     println("  i |       DATA |       HEAP |         LOC | sawNA |")
     println("-----------------------------------------------------")
     for (i <- 0 until winSz) {
-      val star1 = if (i == idx) "*" else " "
-      val star2 = if (i == naIdx) " *" else "  "
+      val star1 =
+        if (i == idx)
+          "*"
+        else
+          " "
+      val star2 =
+        if (i == naIdx)
+          " *"
+        else
+          "  "
       println(
         "%s%3d|%12.6f|%12d|%12d |%5s%s|" format (star1, i, data(i), heap(
           i), loc(i), sawNa(i), star2))

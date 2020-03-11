@@ -162,10 +162,12 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   def typeArguments: List[OptManifest[_]] = List()
 
   protected def argString =
-    if (typeArguments.nonEmpty) typeArguments.mkString("[", ", ", "]")
+    if (typeArguments.nonEmpty)
+      typeArguments.mkString("[", ", ", "]")
     else if (runtimeClass.isArray)
       "[" + ClassManifest.fromClass(runtimeClass.getComponentType) + "]"
-    else ""
+    else
+      ""
 }
 
 /** `ClassManifestFactory` defines factory methods for manifests.
@@ -283,7 +285,13 @@ private class ClassTypeManifest[T](
     override val typeArguments: List[OptManifest[_]])
     extends ClassManifest[T] {
   override def toString =
-    (if (prefix.isEmpty) "" else prefix.get.toString + "#") +
-      (if (runtimeClass.isArray) "Array" else runtimeClass.getName) +
+    (if (prefix.isEmpty)
+       ""
+     else
+       prefix.get.toString + "#") +
+      (if (runtimeClass.isArray)
+         "Array"
+       else
+         runtimeClass.getName) +
       argString
 }

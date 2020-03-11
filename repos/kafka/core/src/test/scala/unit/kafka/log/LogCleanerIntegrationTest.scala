@@ -129,11 +129,12 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
              Stream.cons(entry, Stream.empty).iterator
            else
              ByteBufferMessageSet.deepIterator(entry)
-         }) yield {
-      val key = TestUtils.readString(messageAndOffset.message.key).toInt
-      val value = TestUtils.readString(messageAndOffset.message.payload).toInt
-      key -> value
-    }
+         })
+      yield {
+        val key = TestUtils.readString(messageAndOffset.message.key).toInt
+        val value = TestUtils.readString(messageAndOffset.message.payload).toInt
+        key -> value
+      }
   }
 
   def writeDups(
@@ -142,17 +143,18 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
       log: Log,
       codec: CompressionCodec): Seq[(Int, Int)] = {
     for (dup <- 0 until numDups;
-         key <- 0 until numKeys) yield {
-      val count = counter
-      log.append(
-        TestUtils.singleMessageSet(
-          payload = counter.toString.getBytes,
-          codec = codec,
-          key = key.toString.getBytes),
-        assignOffsets = true)
-      counter += 1
-      (key, count)
-    }
+         key <- 0 until numKeys)
+      yield {
+        val count = counter
+        log.append(
+          TestUtils.singleMessageSet(
+            payload = counter.toString.getBytes,
+            codec = codec,
+            key = key.toString.getBytes),
+          assignOffsets = true)
+        counter += 1
+        (key, count)
+      }
   }
 
   @After

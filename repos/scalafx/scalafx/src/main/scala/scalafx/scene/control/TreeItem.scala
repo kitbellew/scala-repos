@@ -47,12 +47,18 @@ import scalafx.scene.Node
 
 object TreeItem {
   implicit def sfxTreeItemToJfx[T](v: TreeItem[T]): jfxsc.TreeItem[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object TreeModificationEvent {
     implicit def sfxTreeModificationEvent2jfx[T](
         v: TreeModificationEvent[T]): jfxsc.TreeItem.TreeModificationEvent[T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   class TreeModificationEvent[T](

@@ -14,7 +14,8 @@ import org.reactivestreams.Publisher
 class GroupByTest extends AkkaPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] =
-    if (elements == 0) EmptyPublisher[Int]
+    if (elements == 0)
+      EmptyPublisher[Int]
     else {
       val futureGroupSource =
         Source(iterable(elements))

@@ -57,8 +57,10 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       new UnresolvedPropertyVisitor(manager, isOnTheFly)
     file.accept(visitor)
     val problems: util.List[ProblemDescriptor] = visitor.getProblems
-    if (problems.isEmpty) null
-    else problems.toArray(new Array[ProblemDescriptor](problems.size))
+    if (problems.isEmpty)
+      null
+    else
+      problems.toArray(new Array[ProblemDescriptor](problems.size))
   }
 
   private object UnresolvedPropertyVisitor {
@@ -114,9 +116,11 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       onTheFly: Boolean)
       extends ScalaRecursiveElementVisitor {
     override def visitLiteral(expression: ScLiteral) {
-      if (expression.isInstanceOf[ScInterpolatedStringLiteral]) return
+      if (expression.isInstanceOf[ScInterpolatedStringLiteral])
+        return
       val value: AnyRef = expression.getValue
-      if (value == null || !value.isInstanceOf[String]) return
+      if (value == null || !value.isInstanceOf[String])
+        return
       val key: String = value.asInstanceOf[String]
       if (UnresolvedPropertyVisitor.isComputablePropertyExpression(expression))
         return
@@ -170,10 +174,12 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
             if (!ScalaI18nUtil.mustBePropertyKey(
                   myManager.getProject,
                   expression,
-                  annotationParams)) return
+                  annotationParams))
+              return
             val paramsCount: java.lang.Integer =
               ScalaI18nUtil.getPropertyValueParamsMaxCount(expression)
-            if (paramsCount == -1) return
+            if (paramsCount == -1)
+              return
             val methodCall: ScMethodCall =
               expressions.getParent.asInstanceOf[ScMethodCall]
             methodCall.getInvokedExpr match {

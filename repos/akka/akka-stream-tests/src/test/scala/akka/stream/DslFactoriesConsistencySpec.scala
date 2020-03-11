@@ -357,9 +357,12 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     }
 
   def typeMatch(p: (Class[_], Class[_])): Boolean =
-    if (p._1 == p._2) true
-    else if (`scala -> java types` contains p) true
-    else false
+    if (p._1 == p._2)
+      true
+    else if (`scala -> java types` contains p)
+      true
+    else
+      false
 
   private def provide = afterWord("provide")
 

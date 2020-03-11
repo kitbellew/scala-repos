@@ -51,12 +51,14 @@ class ScParametersImpl private (
       var break = false
       while (clausesIterator.hasNext && !break) {
         val clause = clausesIterator.next()
-        if (clause == lastParent) break = true
+        if (clause == lastParent)
+          break = true
         else {
           val paramsIterator = clause.parameters.iterator
           while (paramsIterator.hasNext) {
             val param = paramsIterator.next()
-            if (!processor.execute(param, state)) return false
+            if (!processor.execute(param, state))
+              return false
           }
         }
       }

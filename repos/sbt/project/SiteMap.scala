@@ -51,7 +51,8 @@ object SiteMap {
 
     def singleSiteMap(dir: File, files: PathFinder): Option[File] = {
       val es = entries(files)
-      if (es.isEmpty) None
+      if (es.isEmpty)
+        None
       else
         Some(
           writeXMLgz(

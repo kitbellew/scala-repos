@@ -37,7 +37,8 @@ object Volume {
     val persistent: Option[PersistentVolumeInfo] =
       if (proto.hasPersistent)
         Some(PersistentVolumeInfo(proto.getPersistent.getSize))
-      else None
+      else
+        None
 
     persistent match {
       case Some(persistentVolumeInfo) =>

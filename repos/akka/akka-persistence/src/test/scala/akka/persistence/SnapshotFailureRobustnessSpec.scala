@@ -78,7 +78,8 @@ object SnapshotFailureRobustnessSpec {
       if (metadata.sequenceNr == 2) {
         val bytes = "b0rk".getBytes("UTF-8")
         withOutputStream(metadata)(_.write(bytes))
-      } else super.save(metadata, snapshot)
+      } else
+        super.save(metadata, snapshot)
     }
   }
 
@@ -164,8 +165,8 @@ class SnapshotFailureRobustnessSpec
       p ! DeleteSnapshot(1)
       expectMsgPF() {
         case DeleteSnapshotFailure(
-            SnapshotMetadata(`persistenceId`, 1, timestamp),
-            cause) ⇒
+              SnapshotMetadata(`persistenceId`, 1, timestamp),
+              cause) ⇒
           // ok, expected failure
           cause.getMessage should include("Failed to delete")
       }

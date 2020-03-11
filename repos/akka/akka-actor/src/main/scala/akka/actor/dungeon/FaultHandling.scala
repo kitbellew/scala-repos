@@ -71,7 +71,10 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
         publish(Debug(self.path.toString, clazz(failedActor), "restarting"))
       if (failedActor ne null) {
         val optionalMessage =
-          if (currentMessage ne null) Some(currentMessage.message) else None
+          if (currentMessage ne null)
+            Some(currentMessage.message)
+          else
+            None
         try {
           // if the actor fails in preRestart, we can do nothing but log it: it’s best-effort
           if (failedActor.context ne null)
@@ -130,7 +133,8 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       // done always to keep that suspend counter balanced
       // must happen “atomically”
       try resumeNonRecursive()
-      finally if (causedByFailure != null) clearFailed()
+      finally if (causedByFailure != null)
+        clearFailed()
       resumeChildren(causedByFailure, perp)
     }
   }
@@ -203,41 +207,42 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       childrenNotToSuspend: immutable.Iterable[ActorRef],
       t: Throwable): Unit = {
     // prevent any further messages to be processed until the actor has been restarted
-    if (!isFailed) try {
-      suspendNonRecursive()
-      // suspend children
-      val skip: Set[ActorRef] = currentMessage match {
-        case Envelope(Failed(_, _, _), child) ⇒ {
-          setFailed(child);
-          Set(child)
+    if (!isFailed)
+      try {
+        suspendNonRecursive()
+        // suspend children
+        val skip: Set[ActorRef] = currentMessage match {
+          case Envelope(Failed(_, _, _), child) ⇒ {
+            setFailed(child);
+            Set(child)
+          }
+          case _ ⇒ {
+            setFailed(self);
+            Set.empty
+          }
         }
-        case _ ⇒ {
-          setFailed(self);
-          Set.empty
+        suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
+        t match {
+          // tell supervisor
+          case _: InterruptedException ⇒
+            // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+            parent.sendSystemMessage(
+              Failed(self, new ActorInterruptedException(t), uid))
+          case _ ⇒
+            // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+            parent.sendSystemMessage(Failed(self, t, uid))
         }
+      } catch handleNonFatalOrInterruptedException { e ⇒
+        publish(
+          Error(
+            e,
+            self.path.toString,
+            clazz(actor),
+            "emergency stop: exception in failure handling for " + t.getClass + Logging
+              .stackTraceFor(t)))
+        try children foreach stop
+        finally finishTerminate()
       }
-      suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
-      t match {
-        // tell supervisor
-        case _: InterruptedException ⇒
-          // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-          parent.sendSystemMessage(
-            Failed(self, new ActorInterruptedException(t), uid))
-        case _ ⇒
-          // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-          parent.sendSystemMessage(Failed(self, t, uid))
-      }
-    } catch handleNonFatalOrInterruptedException { e ⇒
-      publish(
-        Error(
-          e,
-          self.path.toString,
-          clazz(actor),
-          "emergency stop: exception in failure handling for " + t.getClass + Logging
-            .stackTraceFor(t)))
-      try children foreach stop
-      finally finishTerminate()
-    }
   }
 
   private def finishTerminate() {
@@ -247,7 +252,8 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
      * Please note that if a parent is also a watcher then ChildTerminated and Terminated must be processed in this
      * specific order.
      */
-    try if (a ne null) a.aroundPostStop()
+    try if (a ne null)
+      a.aroundPostStop()
     catch handleNonFatalOrInterruptedException { e ⇒
       publish(Error(e, self.path.toString, clazz(a), e.getMessage))
     } finally try dispatcher.detach(this)
@@ -327,7 +333,8 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
               f.child,
               f.cause,
               stats,
-              getAllChildStats)) throw f.cause
+              getAllChildStats))
+          throw f.cause
       case Some(stats) ⇒
         publish(Debug(
           self.path.toString,

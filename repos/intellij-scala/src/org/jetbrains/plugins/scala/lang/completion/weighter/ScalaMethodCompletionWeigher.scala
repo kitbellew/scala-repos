@@ -18,10 +18,14 @@ class ScalaMethodCompletionWeigher extends CompletionWeigher {
       extends Comparable[MethodNameComparable] {
     def compareTo(o: MethodNameComparable): Int = {
       val i = name.compareTo(o.name)
-      if (i != 0) return 0
-      if (hasParameters == o.hasParameters) 0
-      else if (hasParameters && !o.hasParameters) 1
-      else -1
+      if (i != 0)
+        return 0
+      if (hasParameters == o.hasParameters)
+        0
+      else if (hasParameters && !o.hasParameters)
+        1
+      else
+        -1
     }
   }
 

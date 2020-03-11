@@ -96,7 +96,8 @@ class MatchToPartialFunctionInspection
       case _ childOf (x childOf (_: ScInfixExpr))        => x
       case _                                             => argExpr
     }
-    if (call == null || !call.argumentExpressions.contains(arg)) return true
+    if (call == null || !call.argumentExpressions.contains(arg))
+      return true
     val (refText, oldResolve) = call match {
       case ScInfixExpr(qual, r, _) =>
         (s"${qual.getText}.${r.refName}", r.resolve())
@@ -134,7 +135,8 @@ class MatchToPartialFunctionQuickFix(
     val fExpr = getSecondElement
     val matchStmtCopy = mStmt.copy.asInstanceOf[ScMatchStmt]
     val leftBrace = matchStmtCopy.findFirstChildByType(ScalaTokenTypes.tLBRACE)
-    if (leftBrace == null) return
+    if (leftBrace == null)
+      return
 
     addNamingPatterns(matchStmtCopy, needNamingPattern(mStmt))
     matchStmtCopy.deleteChildRange(
@@ -168,7 +170,8 @@ class MatchToPartialFunctionQuickFix(
     matchStmt match {
       case ScMatchStmt(expr: ScReferenceExpression, _) =>
         val arg = expr.resolve()
-        if (arg == null) return Nil
+        if (arg == null)
+          return Nil
         val refs = ReferencesSearch
           .search(arg, new LocalSearchScope(matchStmt))
           .findAll()
@@ -197,8 +200,10 @@ class MatchToPartialFunctionQuickFix(
             .createPatternFromText(name, matchStmt.getManager))
       case Some(p: ScPattern) =>
         val newPatternText =
-          if (needParentheses(p)) s"$name @ (${p.getText})"
-          else s"$name @ ${p.getText}"
+          if (needParentheses(p))
+            s"$name @ (${p.getText})"
+          else
+            s"$name @ ${p.getText}"
         p.replace(
           ScalaPsiElementFactory
             .createPatternFromText(newPatternText, matchStmt.getManager))

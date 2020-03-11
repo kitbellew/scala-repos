@@ -38,9 +38,14 @@ class ScGenericCallImpl(node: ASTNode)
     }
     val isUpdate = curr.getContext.isInstanceOf[ScAssignStmt] &&
       curr.getContext.asInstanceOf[ScAssignStmt].getLExpression == curr
-    val methodName = if (isUpdate) "update" else "apply"
+    val methodName =
+      if (isUpdate)
+        "update"
+      else
+        "apply"
     val args: List[Seq[ScExpression]] =
-      if (curr == this && !isUpdate) List.empty
+      if (curr == this && !isUpdate)
+        List.empty
       else {
         (curr match {
           case call: ScMethodCall => call.args.exprs
@@ -58,7 +63,8 @@ class ScGenericCallImpl(node: ASTNode)
                        )
                      ) //we can't to not add something => add Nothing expression
                  }
-               else Seq.empty) :: Nil
+               else
+                 Seq.empty) :: Nil
       }
     val typeArgs: Seq[ScTypeElement] = this.arguments
     import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.Expression._
@@ -72,7 +78,8 @@ class ScGenericCallImpl(node: ASTNode)
       enableTupling = true)
     processor.processType(tp, referencedExpr, ResolveState.initial)
     val candidates = processor.candidates
-    if (candidates.length != 1) types.Nothing
+    if (candidates.length != 1)
+      types.Nothing
     else {
       candidates(0) match {
         case ScalaResolveResult(fun: PsiMethod, s: ScSubstitutor) =>

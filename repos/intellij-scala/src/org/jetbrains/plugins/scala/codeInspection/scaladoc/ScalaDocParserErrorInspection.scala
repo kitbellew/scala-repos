@@ -29,7 +29,10 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
           child match {
             case a: PsiErrorElement =>
               val startElement: PsiElement =
-                if (a.getPrevSibling == null) a else a.getPrevSibling
+                if (a.getPrevSibling == null)
+                  a
+                else
+                  a.getPrevSibling
               val endElement: PsiElement = if (a.getPrevSibling != null) {
                 a
               } else if (a.getNextSibling != null) {

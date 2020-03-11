@@ -137,7 +137,8 @@ class CreateTableAsSelectSuite
 
     caseInsensitiveContext.dropTempTable("jsonTable")
     // Explicitly delete the data.
-    if (path.exists()) Utils.deleteRecursively(path)
+    if (path.exists())
+      Utils.deleteRecursively(path)
 
     sql(s"""
         |CREATE TEMPORARY TABLE jsonTable

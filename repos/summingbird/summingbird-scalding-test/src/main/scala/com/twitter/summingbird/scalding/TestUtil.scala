@@ -39,7 +39,8 @@ object TestUtil {
     val diffMap = Group.minus(inMemory, produced)
     val wrong = Monoid.isNonZero(diffMap)
     if (wrong) {
-      if (!name.isEmpty) println("%s is wrong".format(name))
+      if (!name.isEmpty)
+        println("%s is wrong".format(name))
       println("input: " + original)
       println("input size: " + original.size)
       println("input batches: " + batcher.batchOf(Timestamp(original.size)))
@@ -59,7 +60,8 @@ object TestUtil {
     val diffMap = Group.minus(inMemory, produced)
     val wrong = Monoid.isNonZero(diffMap)
     if (wrong) {
-      if (!name.isEmpty) println("%s is wrong".format(name))
+      if (!name.isEmpty)
+        println("%s is wrong".format(name))
       println("input: " + original)
       println("input size: " + original.size)
       println(
@@ -109,9 +111,12 @@ object TestUtil {
 
   val simpleBatcher = new Batcher {
     def batchOf(d: Timestamp) =
-      if (d == Timestamp.Max) BatchID(2)
-      else if (d.milliSinceEpoch >= 0L) BatchID(1)
-      else BatchID(0)
+      if (d == Timestamp.Max)
+        BatchID(2)
+      else if (d.milliSinceEpoch >= 0L)
+        BatchID(1)
+      else
+        BatchID(0)
 
     def earliestTimeOf(batch: BatchID) = batch.id match {
       case 0L => Timestamp.Min
@@ -125,7 +130,8 @@ object TestUtil {
   }
 
   def randomBatcher(items: Iterable[(Long, Any)]): Batcher = {
-    if (items.isEmpty) simpleBatcher
+    if (items.isEmpty)
+      simpleBatcher
     else
       randomBatcher(items.iterator.map(_._1).min, items.iterator.map(_._1).max)
   }

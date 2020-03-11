@@ -62,7 +62,8 @@ object SexpList {
   }
 
   def unapply(sexp: Sexp): Option[List[Sexp]] =
-    if (!sexp.isList) None
+    if (!sexp.isList)
+      None
     else {
       def rec(s: Sexp): List[Sexp] = s match {
         case SexpNil            => Nil
@@ -70,8 +71,10 @@ object SexpList {
         case _                  => throw new IllegalStateException("Not a list: " + s)
       }
       val res = rec(sexp)
-      if (res.isEmpty) None
-      else Some(res)
+      if (res.isEmpty)
+        None
+      else
+        Some(res)
     }
 }
 
@@ -109,7 +112,10 @@ object SexpData {
       }.foldLeft(ListMap.empty[SexpSymbol, Sexp]) {
         case (res, el) =>
           // in elisp, first entry wins
-          if (res.contains(el._1)) res else res + el
+          if (res.contains(el._1))
+            res
+          else
+            res + el
       }
       // props.size counts unique keys. We only create data when keys
       // are not duplicated or we could introduce losses

@@ -100,7 +100,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
 
     override def run(n: Node) = n match {
       case ProfileComputation(compiled, profile, _) =>
-        if (logger.isDebugEnabled) logDebug("Evaluating " + n)
+        if (logger.isDebugEnabled)
+          logDebug("Evaluating " + n)
         val idx = profiles.indexOf(profile)
         if (idx < 0)
           throw new SlickException("No session found for profile " + profile)
@@ -109,13 +110,15 @@ class DistributedProfile(val profiles: RelationalProfile*)
         val dv =
           profile.runSynchronousQuery[Any](compiled, param)(profileSession)
         val wr = wrapScalaValue(dv, n.nodeType)
-        if (logger.isDebugEnabled) logDebug("Wrapped value: " + wr)
+        if (logger.isDebugEnabled)
+          logDebug("Wrapped value: " + wr)
         wr
       case ResultSetMapping(
             gen,
             from,
             CompiledMapping(converter, tpe)) :@ CollectionType(cons, el) =>
-        if (logger.isDebugEnabled) logDebug("Evaluating " + n)
+        if (logger.isDebugEnabled)
+          logDebug("Evaluating " + n)
         val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
         val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
         b ++= fromV.map(v =>
@@ -202,7 +205,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
             compiled :@ substituteType,
             dr.head,
             substituteType)
-        } else n.mapChildren(transform)
+        } else
+          n.mapChildren(transform)
       }
       transform(tree)
     }

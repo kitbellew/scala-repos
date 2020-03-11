@@ -37,8 +37,10 @@ final case class EWMA(value: Double, alpha: Double) {
     */
   def :+(xn: Double): EWMA = {
     val newValue = (alpha * xn) + (1 - alpha) * value
-    if (newValue == value) this // no change
-    else copy(value = newValue)
+    if (newValue == value)
+      this // no change
+    else
+      copy(value = newValue)
   }
 
 }

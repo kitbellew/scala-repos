@@ -405,7 +405,8 @@ trait FSM[S, D] extends ListenerManagement {
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
     for (te ← transitionEvent) {
-      if (te.isDefinedAt(tuple)) te(tuple)
+      if (te.isDefinedAt(tuple))
+        te(tuple)
     }
   }
 
@@ -482,8 +483,10 @@ trait FSM[S, D] extends ListenerManagement {
   private def applyState(nextState: State) = {
     currentState = nextState
     val timeout =
-      if (currentState.timeout.isDefined) currentState.timeout
-      else stateTimeouts(currentState.stateName)
+      if (currentState.timeout.isDefined)
+        currentState.timeout
+      else
+        stateTimeouts(currentState.stateName)
     if (timeout.isDefined) {
       val t = timeout.get
       if (t.finite_? && t.length >= 0) {

@@ -22,7 +22,8 @@ class ScClassFileViewProvider(
       ScalaFileType.SCALA_FILE_TYPE.getLanguage) {
 
   override def getContents: CharSequence =
-    if (!isScalaFile) ""
+    if (!isScalaFile)
+      ""
     else
       DecompilerUtil
         .decompile(getVirtualFile, getVirtualFile.contentsToByteArray)
@@ -33,7 +34,8 @@ class ScClassFileViewProvider(
       project: Project,
       vFile: VirtualFile,
       fileType: FileType): PsiFile = {
-    if (!isScalaFile) null
+    if (!isScalaFile)
+      null
     else {
       val file = new ScalaFileImpl(this)
       val adj = file.asInstanceOf[CompiledFileAdjuster]

@@ -30,7 +30,8 @@ class ScalaMethodFilter(
   private val myDeclaringClassName = {
     val clazz =
       PsiTreeUtil.getParentOfType(function, classOf[ScTemplateDefinition])
-    if (clazz == null) JVMNameUtil.getJVMRawText(unknownName)
+    if (clazz == null)
+      JVMNameUtil.getJVMRawText(unknownName)
     else
       DebuggerUtil.getClassJVMName(
         clazz,
@@ -46,17 +47,20 @@ class ScalaMethodFilter(
       process: DebugProcessImpl,
       location: Location): Boolean = {
     val method = location.method()
-    if (!method.name.contains(funName)) return false
+    if (!method.name.contains(funName))
+      return false
 
     val className = myDeclaringClassName.getName(process)
-    if (className == unknownName) return false
+    if (className == unknownName)
+      return false
 
     val locationTypeName = location.declaringType().name()
 
     if (locationTypeName.endsWith("$class"))
       className == locationTypeName.stripSuffix("$class")
     else if (myTargetMethodSignature != null && method
-               .signature() != myTargetMethodSignature.getName(process)) false
+               .signature() != myTargetMethodSignature.getName(process))
+      false
     else {
       DebuggerUtilsEx.isAssignableFrom(
         locationTypeName,

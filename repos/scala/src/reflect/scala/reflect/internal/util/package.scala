@@ -13,7 +13,8 @@ package object util {
 
   // Shorten a name like Symbols$FooSymbol to FooSymbol.
   private def shortenName(name: String): String = {
-    if (name == "") return ""
+    if (name == "")
+      return ""
     val segments = (name split '$').toList
     val last = segments.last
 

@@ -41,7 +41,8 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
     }
     table(h) = x
     used += 1
-    if (used > (table.length >> 2)) growTable()
+    if (used > (table.length >> 2))
+      growTable()
     x
   }
 
@@ -59,13 +60,15 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
     var h = index(x.##)
     var entry = table(h)
     while (entry ne null) {
-      if (x == entry) return
+      if (x == entry)
+        return
       h = index(h + 1)
       entry = table(h)
     }
     table(h) = x
     used += 1
-    if (used > (table.length >> 2)) growTable()
+    if (used > (table.length >> 2))
+      growTable()
   }
   def addEntries(xs: TraversableOnce[T]) {
     xs foreach addEntry
@@ -74,14 +77,16 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
   def iterator = new Iterator[T] {
     private var i = 0
     def hasNext: Boolean = {
-      while (i < table.length && (table(i) eq null)) i += 1
+      while (i < table.length && (table(i) eq null))
+        i += 1
       i < table.length
     }
     def next(): T =
       if (hasNext) {
         i += 1;
         table(i - 1).asInstanceOf[T]
-      } else null
+      } else
+        null
   }
 
   private def addOldEntry(x: T) {
@@ -97,15 +102,19 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
   private def growTable() {
     val oldtable = table
     val growthFactor =
-      if (table.length <= initialCapacity) 8
-      else if (table.length <= (initialCapacity * 8)) 4
-      else 2
+      if (table.length <= initialCapacity)
+        8
+      else if (table.length <= (initialCapacity * 8))
+        4
+      else
+        2
 
     table = new Array[AnyRef](table.length * growthFactor)
     var i = 0
     while (i < oldtable.length) {
       val entry = oldtable(i)
-      if (entry ne null) addOldEntry(entry.asInstanceOf[T])
+      if (entry ne null)
+        addOldEntry(entry.asInstanceOf[T])
       i += 1
     }
   }

@@ -24,11 +24,14 @@ abstract class HttpVersion(
 
   def compare(that: HttpVersion): Int = {
     val v = protocolName.compareTo(that.protocolName)
-    if (v != 0) v
+    if (v != 0)
+      v
     else {
       val vv = majorVersion - that.majorVersion
-      if (vv != 0) vv
-      else minorVersion - that.minorVersion
+      if (vv != 0)
+        vv
+      else
+        minorVersion - that.minorVersion
     }
   }
 

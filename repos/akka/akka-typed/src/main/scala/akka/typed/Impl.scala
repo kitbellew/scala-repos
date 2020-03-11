@@ -33,7 +33,8 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
   }
 
   private def next(b: Behavior[T], msg: Any): Unit = {
-    if (isUnhandled(b)) unhandled(msg)
+    if (isUnhandled(b))
+      unhandled(msg)
     behavior = canonicalize(ctx, b, behavior)
     if (!isAlive(behavior)) {
       context.stop(self)

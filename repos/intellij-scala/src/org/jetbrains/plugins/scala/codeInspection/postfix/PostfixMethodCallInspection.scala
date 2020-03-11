@@ -28,9 +28,11 @@ class PostfixMethodCallInspection
         true //named arguments
       case _ =>
         val next = pexpr.getNextSiblingNotWhitespace
-        if (next == null) return false
+        if (next == null)
+          return false
         val nextNode = next.getNode
-        if (nextNode == null) return false
+        if (nextNode == null)
+          return false
         nextNode.getElementType == ScalaTokenTypes.tSEMICOLON
     }
   }

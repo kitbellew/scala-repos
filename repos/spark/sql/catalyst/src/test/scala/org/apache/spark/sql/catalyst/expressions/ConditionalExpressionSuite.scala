@@ -43,11 +43,20 @@ class ConditionalExpressionSuite
     def testIf(convert: (Integer => Any), dataType: DataType): Unit = {
       for ((predicate, trueValue, falseValue, expected) <- testcases) {
         val trueValueConverted =
-          if (trueValue == null) null else convert(trueValue)
+          if (trueValue == null)
+            null
+          else
+            convert(trueValue)
         val falseValueConverted =
-          if (falseValue == null) null else convert(falseValue)
+          if (falseValue == null)
+            null
+          else
+            convert(falseValue)
         val expectedConverted =
-          if (expected == null) null else convert(expected)
+          if (expected == null)
+            null
+          else
+            convert(expected)
 
         checkEvaluation(
           If(

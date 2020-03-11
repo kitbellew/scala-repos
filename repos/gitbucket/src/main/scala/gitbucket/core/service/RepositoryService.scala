@@ -696,7 +696,8 @@ object RepositoryService {
           s"ssh://${loginAccount.userName}@${x.host}:${x.port}/${owner}/${name}.git"
         }
       }
-    } else None
+    } else
+      None
   def openRepoUrl(openUrl: String)(implicit context: Context): String =
     s"github-${context.platform}://openRepo/${openUrl}"
 

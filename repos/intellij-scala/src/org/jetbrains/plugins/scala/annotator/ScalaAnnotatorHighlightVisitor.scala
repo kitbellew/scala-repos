@@ -55,7 +55,8 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
         val document: Document =
           PsiDocumentManager.getInstance(project).getDocument(file)
         val dirtyScope: TextRange =
-          if (document == null) file.getTextRange
+          if (document == null)
+            file.getTextRange
           else {
             DaemonCodeAnalyzer.getInstance(project) match {
               case analyzerImpl: DaemonCodeAnalyzerImpl =>

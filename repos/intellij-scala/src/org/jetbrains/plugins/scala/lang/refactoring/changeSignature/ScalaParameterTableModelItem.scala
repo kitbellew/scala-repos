@@ -50,9 +50,12 @@ class ScalaParameterTableModelItem(
 
     val funArrow = ScalaPsiUtil.functionArrow(typeCodeFragment.getProject)
     val arrow =
-      if (trimmed.startsWith("=>")) "=>"
-      else if (trimmed.startsWith(funArrow)) funArrow
-      else ""
+      if (trimmed.startsWith("=>"))
+        "=>"
+      else if (trimmed.startsWith(funArrow))
+        funArrow
+      else
+        ""
     if (arrow != "") {
       parameter.isByName = true
       trimmed = trimmed.drop(arrow.length).trim
@@ -78,8 +81,13 @@ class ScalaParameterTableModelItem(
     val arrow =
       if (parameter.isByName)
         ScalaPsiUtil.functionArrow(typeCodeFragment.getProject)
-      else ""
-    val star = if (parameter.isRepeatedParameter) "*" else ""
+      else
+        ""
+    val star =
+      if (parameter.isRepeatedParameter)
+        "*"
+      else
+        ""
     val text = Option(parameter.scType).map(_.presentableText)
     text.map(tpeText => s"$arrow $tpeText$star").getOrElse("")
   }

@@ -102,7 +102,8 @@ class ActorDSLSpec extends AkkaSpec {
       val i = inbox()
       system.eventStream.subscribe(testActor, classOf[Warning])
       try {
-        for (_ ← 1 to 1000) i.receiver ! 0
+        for (_ ← 1 to 1000)
+          i.receiver ! 0
         expectNoMsg(1 second)
         EventFilter.warning(
           start = "dropping message",
@@ -112,7 +113,9 @@ class ActorDSLSpec extends AkkaSpec {
         expectMsgType[Warning]
         i.receiver ! 42
         expectNoMsg(1 second)
-        val gotit = for (_ ← 1 to 1000) yield i.receive()
+        val gotit =
+          for (_ ← 1 to 1000)
+            yield i.receive()
         gotit should ===((1 to 1000) map (_ ⇒ 0))
         intercept[TimeoutException] {
           i.receive(1 second)

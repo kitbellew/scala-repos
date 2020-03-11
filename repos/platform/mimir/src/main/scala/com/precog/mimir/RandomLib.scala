@@ -67,8 +67,10 @@ trait RandomLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(implicitly[Monoid[Result]])
+          if (result.isEmpty)
+            None
+          else
+            result.suml(implicitly[Monoid[Result]])
         }
       }
 

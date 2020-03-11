@@ -101,8 +101,10 @@ sealed trait Stack[T] {
   def remove(target: Role): Stack[T] =
     this match {
       case Node(head, mk, next) =>
-        if (head.role == target) next.remove(target)
-        else Node(head, mk, next.remove(target))
+        if (head.role == target)
+          next.remove(target)
+        else
+          Node(head, mk, next.remove(target))
       case leaf @ Leaf(_, _) => leaf
     }
 

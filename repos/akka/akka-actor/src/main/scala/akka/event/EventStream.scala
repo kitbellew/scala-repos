@@ -49,8 +49,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
   protected def classify(event: AnyRef): Class[_] = event.getClass
 
   protected def publish(event: AnyRef, subscriber: ActorRef) = {
-    if (sys == null && subscriber.isTerminated) unsubscribe(subscriber)
-    else subscriber ! event
+    if (sys == null && subscriber.isTerminated)
+      unsubscribe(subscriber)
+    else
+      subscriber ! event
   }
 
   override def subscribe(subscriber: ActorRef, channel: Class[_]): Boolean = {
@@ -99,7 +101,8 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     */
   def startUnsubscriber(): Unit =
     // sys may be null for backwards compatibility reasons
-    if (sys ne null) EventStreamUnsubscriber.start(sys, this)
+    if (sys ne null)
+      EventStreamUnsubscriber.start(sys, this)
 
   /**
     * INTERNAL API
@@ -107,7 +110,8 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
   @tailrec
   final private[akka] def initUnsubscriber(unsubscriber: ActorRef): Boolean = {
     // sys may be null for backwards compatibility reasons
-    if (sys eq null) false
+    if (sys eq null)
+      false
     else
       initiallySubscribedOrUnsubscriber.get match {
         case value @ Left(subscribers) ⇒
@@ -144,15 +148,17 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
   @tailrec
   private def registerWithUnsubscriber(subscriber: ActorRef): Unit = {
     // sys may be null for backwards compatibility reasons
-    if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
-      case value @ Left(subscribers) ⇒
-        if (!initiallySubscribedOrUnsubscriber
-              .compareAndSet(value, Left(subscribers + subscriber)))
-          registerWithUnsubscriber(subscriber)
+    if (sys ne null)
+      initiallySubscribedOrUnsubscriber.get match {
+        case value @ Left(subscribers) ⇒
+          if (!initiallySubscribedOrUnsubscriber.compareAndSet(
+                value,
+                Left(subscribers + subscriber)))
+            registerWithUnsubscriber(subscriber)
 
-      case Right(unsubscriber) ⇒
-        unsubscriber ! EventStreamUnsubscriber.Register(subscriber)
-    }
+        case Right(unsubscriber) ⇒
+          unsubscriber ! EventStreamUnsubscriber.Register(subscriber)
+      }
   }
 
   /**
@@ -166,16 +172,18 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
   private def unregisterIfNoMoreSubscribedChannels(
       subscriber: ActorRef): Unit = {
     // sys may be null for backwards compatibility reasons
-    if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
-      case value @ Left(subscribers) ⇒
-        if (!initiallySubscribedOrUnsubscriber
-              .compareAndSet(value, Left(subscribers - subscriber)))
-          unregisterIfNoMoreSubscribedChannels(subscriber)
+    if (sys ne null)
+      initiallySubscribedOrUnsubscriber.get match {
+        case value @ Left(subscribers) ⇒
+          if (!initiallySubscribedOrUnsubscriber.compareAndSet(
+                value,
+                Left(subscribers - subscriber)))
+            unregisterIfNoMoreSubscribedChannels(subscriber)
 
-      case Right(unsubscriber) ⇒
-        unsubscriber ! EventStreamUnsubscriber
-          .UnregisterIfNoMoreSubscribedChannels(subscriber)
-    }
+        case Right(unsubscriber) ⇒
+          unsubscriber ! EventStreamUnsubscriber
+            .UnregisterIfNoMoreSubscribedChannels(subscriber)
+      }
   }
 
 }

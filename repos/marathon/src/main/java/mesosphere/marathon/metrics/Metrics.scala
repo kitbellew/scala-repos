@@ -67,8 +67,10 @@ class Metrics @Inject() (val registry: MetricRegistry) {
 
   private[metrics] def stripGuiceMarksFromClassName(clazz: Class[_]): String = {
     val name = clazz.getName
-    if (name.contains("$EnhancerByGuice$")) clazz.getSuperclass.getName
-    else name
+    if (name.contains("$EnhancerByGuice$"))
+      clazz.getSuperclass.getName
+    else
+      name
   }
 }
 

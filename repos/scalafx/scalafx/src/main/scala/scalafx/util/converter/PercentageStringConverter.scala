@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object PercentageStringConverter {
   implicit def sfxPercentageStringConverter2jfx(
       c: PercentageStringConverter): jfxuc.PercentageStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class PercentageStringConverter(

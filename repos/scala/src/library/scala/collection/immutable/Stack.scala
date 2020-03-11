@@ -104,8 +104,10 @@ class Stack[+A] protected (protected val elems: List[A])
     *  @return the top element.
     */
   def top: A =
-    if (!isEmpty) elems.head
-    else throw new NoSuchElementException("top of empty stack")
+    if (!isEmpty)
+      elems.head
+    else
+      throw new NoSuchElementException("top of empty stack")
 
   /** Removes the top element from the stack.
     *  Note: should return `(A, Stack[A])` as for queues (mics)
@@ -114,12 +116,16 @@ class Stack[+A] protected (protected val elems: List[A])
     *  @return the new stack without the former top element.
     */
   def pop: Stack[A] =
-    if (!isEmpty) new Stack(elems.tail)
-    else throw new NoSuchElementException("pop of empty stack")
+    if (!isEmpty)
+      new Stack(elems.tail)
+    else
+      throw new NoSuchElementException("pop of empty stack")
 
   def pop2: (A, Stack[A]) =
-    if (!isEmpty) (elems.head, new Stack(elems.tail))
-    else throw new NoSuchElementException("pop of empty stack")
+    if (!isEmpty)
+      (elems.head, new Stack(elems.tail))
+    else
+      throw new NoSuchElementException("pop of empty stack")
 
   override def reverse: Stack[A] = new Stack(elems.reverse)
 

@@ -11,16 +11,20 @@ class C {
   def f3(x: Boolean) = {
     var y = 0
     // cannot assign an object of type Nothing$ to Int
-    if (x) y = ???
-    else y = 1
+    if (x)
+      y = ???
+    else
+      y = 1
     y
   }
 
   def f4(x: Boolean) = {
     var y = 0
     // tests that whatever is emitted after the throw is valid (what? depends on opts, presence of stack map frames)
-    if (x) y = throw new Error("")
-    else y = 1
+    if (x)
+      y = throw new Error("")
+    else
+      y = 1
     y
   }
 
@@ -31,7 +35,8 @@ class C {
       if (x) {
         ???;
         10
-      } else 20
+      } else
+        20
     )
   }
 
@@ -40,21 +45,26 @@ class C {
       if (x) {
         throw new Error("");
         10
-      } else 20
+      } else
+        20
     )
   }
 
   def f7(x: Boolean) = {
     println(
-      if (x) throw new Error("")
-      else 20
+      if (x)
+        throw new Error("")
+      else
+        20
     )
   }
 
   def f8(x: Boolean) = {
     println(
-      if (x) throw new Error("")
-      else 20
+      if (x)
+        throw new Error("")
+      else
+        20
     )
   }
 }

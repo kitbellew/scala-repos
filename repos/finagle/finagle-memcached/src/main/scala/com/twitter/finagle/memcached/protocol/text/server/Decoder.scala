@@ -59,12 +59,15 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
       validateStorageCommand(tokens)
       val bytesNeeded = tokens(4).toInt
       bytesNeeded
-    } else -1
+    } else
+      -1
   }
 
   private[this] def validateStorageCommand(tokens: Seq[ChannelBuffer]) = {
-    if (tokens.size < 5) throw new ClientError("Too few arguments")
-    if (tokens.size > 6) throw new ClientError("Too many arguments")
+    if (tokens.size < 5)
+      throw new ClientError("Too few arguments")
+    if (tokens.size > 6)
+      throw new ClientError("Too many arguments")
     if (!ParserUtils.isDigits(tokens(4)))
       throw new ClientError("Bad frame length")
   }

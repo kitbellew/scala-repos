@@ -57,7 +57,10 @@ sealed abstract case class Uri(
     * is the effective port. Otherwise the default port for the current scheme is returned.
     */
   private[akka] def effectivePort: Int =
-    if (authority.port != 0) authority.port else defaultPorts(scheme)
+    if (authority.port != 0)
+      authority.port
+    else
+      defaultPorts(scheme)
 
   /**
     * Returns a copy of this Uri with the given components.
@@ -127,7 +130,11 @@ sealed abstract case class Uri(
     * Returns a copy of this Uri with the given query.
     */
   def withQuery(query: Query): Uri =
-    copy(rawQueryString = if (query.isEmpty) None else Some(query.toString))
+    copy(rawQueryString =
+      if (query.isEmpty)
+        None
+      else
+        Some(query.toString))
 
   /**
     * Returns a copy of this Uri with a Query created using the given query string.
@@ -182,7 +189,11 @@ sealed abstract case class Uri(
     */
   def toRelative =
     Uri(
-      path = if (path.isEmpty) Uri.Path./ else path,
+      path =
+        if (path.isEmpty)
+          Uri.Path./
+        else
+          path,
       queryString = rawQueryString,
       fragment = fragment)
 
@@ -197,7 +208,10 @@ sealed abstract case class Uri(
     create(
       "",
       Authority.Empty,
-      if (path.isEmpty) Uri.Path./ else path,
+      if (path.isEmpty)
+        Uri.Path./
+      else
+        path,
       rawQueryString,
       None)
 
@@ -274,7 +288,11 @@ object Uri {
     create(
       scheme = normalizeScheme(scheme),
       authority = authority.normalizedFor(scheme),
-      path = if (scheme.isEmpty) p else collapseDotSegments(p),
+      path =
+        if (scheme.isEmpty)
+          p
+        else
+          collapseDotSegments(p),
       queryString = queryString,
       fragment = fragment
     )
@@ -400,7 +418,10 @@ object Uri {
   }
 
   def httpScheme(securedConnection: Boolean = false) =
-    if (securedConnection) "https" else "http"
+    if (securedConnection)
+      "https"
+    else
+      "http"
 
   final case class Authority(host: Host, port: Int = 0, userinfo: String = "") {
     def isEmpty = equals(Authority.Empty)
@@ -409,7 +430,10 @@ object Uri {
       normalizedFor(httpScheme(encrypted))
     def normalizedFor(scheme: String): Authority = {
       val normalizedPort = normalizePort(port, scheme)
-      if (normalizedPort == port) this else copy(port = normalizedPort)
+      if (normalizedPort == port)
+        this
+      else
+        copy(port = normalizedPort)
     }
     override def toString =
       UriRendering.AuthorityRenderer.render(new StringRendering, this).get
@@ -452,8 +476,10 @@ object Uri {
         string: String,
         charset: Charset = UTF8,
         mode: Uri.ParsingMode = Uri.ParsingMode.Relaxed): Host =
-      if (!string.isEmpty) new UriParser(string, UTF8, mode).parseHost()
-      else Empty
+      if (!string.isEmpty)
+        new UriParser(string, UTF8, mode).parseHost()
+      else
+        Empty
 
     def apply(address: InetAddress): Host = address match {
       case ipv4: Inet4Address ⇒ apply(ipv4)
@@ -585,7 +611,8 @@ object Uri {
           segmentEnd: Int = 0): Path =
         if (ix >= 0)
           if (string.charAt(ix) == '/')
-            if (segmentEnd == 0) build(Slash(path), ix - 1)
+            if (segmentEnd == 0)
+              build(Slash(path), ix - 1)
             else
               build(
                 Slash(
@@ -593,10 +620,14 @@ object Uri {
                     string.substring(ix + 1, segmentEnd),
                     charset) :: path),
                 ix - 1)
-          else if (segmentEnd == 0) build(path, ix - 1, ix + 1)
-          else build(path, ix - 1, segmentEnd)
-        else if (segmentEnd == 0) path
-        else decode(string.substring(0, segmentEnd), charset) :: path
+          else if (segmentEnd == 0)
+            build(path, ix - 1, ix + 1)
+          else
+            build(path, ix - 1, segmentEnd)
+        else if (segmentEnd == 0)
+          path
+        else
+          decode(string.substring(0, segmentEnd), charset) :: path
       build()
     }
     def unapply(path: Path): Option[String] = Some(path.toString)
@@ -614,7 +645,10 @@ object Uri {
       def length = 0
       def charCount = 0
       def ::(segment: String) =
-        if (segment.isEmpty) this else Segment(segment, this)
+        if (segment.isEmpty)
+          this
+        else
+          Segment(segment, this)
       def ++(suffix: Path) = suffix
       def reverseAndPrependTo(prefix: Path) = prefix
       def startsWith(that: Path): Boolean = that.isEmpty
@@ -628,14 +662,20 @@ object Uri {
       def length: Int = tail.length + 1
       def charCount: Int = tail.charCount + 1
       def ::(segment: String) =
-        if (segment.isEmpty) this else Segment(segment, this)
+        if (segment.isEmpty)
+          this
+        else
+          Segment(segment, this)
       def ++(suffix: Path) = Slash(tail ++ suffix)
       def reverseAndPrependTo(prefix: Path) =
         tail.reverseAndPrependTo(Slash(prefix))
       def startsWith(that: Path): Boolean =
         that.isEmpty || that.startsWithSlash && tail.startsWith(that.tail)
       def dropChars(count: Int): Path =
-        if (count < 1) this else tail.dropChars(count - 1)
+        if (count < 1)
+          this
+        else
+          tail.dropChars(count - 1)
     }
     final case class Segment(head: String, tail: SlashOrEmpty) extends Path {
       if (head.isEmpty)
@@ -647,7 +687,10 @@ object Uri {
       def length: Int = tail.length + 1
       def charCount: Int = head.length + tail.charCount
       def ::(segment: String) =
-        if (segment.isEmpty) this else Segment(segment + head, tail)
+        if (segment.isEmpty)
+          this
+        else
+          Segment(segment + head, tail)
       def ++(suffix: Path) = head :: (tail ++ suffix)
       def reverseAndPrependTo(prefix: Path): Path =
         tail.reverseAndPrependTo(head :: prefix)
@@ -657,9 +700,12 @@ object Uri {
         case x ⇒ x.isEmpty
       }
       def dropChars(count: Int): Path =
-        if (count < 1) this
-        else if (count >= head.length) tail.dropChars(count - head.length)
-        else head.substring(count) :: tail
+        if (count < 1)
+          this
+        else if (count >= head.length)
+          tail.dropChars(count - head.length)
+        else
+          head.substring(count) :: tail
     }
     object ~ {
       def unapply(cons: Segment): Option[(String, Path)] =
@@ -676,32 +722,53 @@ object Uri {
     def +:(kvp: (String, String)) = Query.Cons(kvp._1, kvp._2, this)
     def get(key: String): Option[String] = {
       @tailrec def g(q: Query): Option[String] =
-        if (q.isEmpty) None else if (q.key == key) Some(q.value) else g(q.tail)
+        if (q.isEmpty)
+          None
+        else if (q.key == key)
+          Some(q.value)
+        else
+          g(q.tail)
       g(this)
     }
     def getOrElse(key: String, default: ⇒ String): String = {
       @tailrec def g(q: Query): String =
-        if (q.isEmpty) default else if (q.key == key) q.value else g(q.tail)
+        if (q.isEmpty)
+          default
+        else if (q.key == key)
+          q.value
+        else
+          g(q.tail)
       g(this)
     }
     def getAll(key: String): List[String] = {
       @tailrec def fetch(q: Query, result: List[String] = Nil): List[String] =
-        if (q.isEmpty) result
-        else fetch(q.tail, if (q.key == key) q.value :: result else result)
+        if (q.isEmpty)
+          result
+        else
+          fetch(
+            q.tail,
+            if (q.key == key)
+              q.value :: result
+            else
+              result)
       fetch(this)
     }
     def toMap: Map[String, String] = {
       @tailrec def append(
           map: Map[String, String],
           q: Query): Map[String, String] =
-        if (q.isEmpty) map else append(map.updated(q.key, q.value), q.tail)
+        if (q.isEmpty)
+          map
+        else
+          append(map.updated(q.key, q.value), q.tail)
       append(Map.empty, this)
     }
     def toMultiMap: Map[String, List[String]] = {
       @tailrec def append(
           map: Map[String, List[String]],
           q: Query): Map[String, List[String]] =
-        if (q.isEmpty) map
+        if (q.isEmpty)
+          map
         else
           append(
             map.updated(q.key, q.value :: map.getOrElse(q.key, Nil)),
@@ -822,12 +889,17 @@ object Uri {
     if (scheme.isEmpty)
       if (host.isEmpty)
         if (path.isEmpty) {
-          val q = if (query.isEmpty) base.rawQueryString else query
+          val q =
+            if (query.isEmpty)
+              base.rawQueryString
+            else
+              query
           create(base.scheme, base.authority, base.path, q, fragment)
         } else {
           // http://tools.ietf.org/html/rfc3986#section-5.2.3
           def mergePaths(base: Uri, path: Path): Path =
-            if (!base.authority.isEmpty && base.path.isEmpty) Path.Slash(path)
+            if (!base.authority.isEmpty && base.path.isEmpty)
+              Path.Slash(path)
             else {
               import Path._
               def replaceLastSegment(p: Path, replacement: Path): Path =
@@ -840,7 +912,11 @@ object Uri {
                 }
               replaceLastSegment(base.path, path)
             }
-          val p = if (path.startsWithSlash) path else mergePaths(base, path)
+          val p =
+            if (path.startsWithSlash)
+              path
+            else
+              mergePaths(base, path)
           create(
             base.scheme,
             base.authority,
@@ -870,55 +946,63 @@ object Uri {
 
   private[http] def decode(string: String, charset: Charset): String = {
     val ix = string.indexOf('%')
-    if (ix >= 0) decode(string, charset, ix)() else string
+    if (ix >= 0)
+      decode(string, charset, ix)()
+    else
+      string
   }
 
   @tailrec
   private[http] def decode(string: String, charset: Charset, ix: Int)(
       sb: JStringBuilder =
         new JStringBuilder(string.length).append(string, 0, ix)): String =
-    if (ix < string.length) string.charAt(ix) match {
-      case '%' ⇒
-        def intValueOfHexWord(i: Int) = {
-          def intValueOfHexChar(j: Int) = {
-            val c = string.charAt(j)
-            if (HEXDIG(c)) CharUtils.hexValue(c)
-            else
-              throw new IllegalArgumentException(
-                "Illegal percent-encoding at pos " + j)
-          }
-          intValueOfHexChar(i) * 16 + intValueOfHexChar(i + 1)
-        }
-
-        var lastPercentSignIndexPlus3 = ix + 3
-        while (lastPercentSignIndexPlus3 < string.length && string.charAt(
-                 lastPercentSignIndexPlus3) == '%')
-          lastPercentSignIndexPlus3 += 3
-        val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
-        val bytes = new Array[Byte](bytesCount)
-
-        @tailrec def decodeBytes(i: Int = 0, oredBytes: Int = 0): Int =
-          if (i < bytesCount) {
-            val byte = intValueOfHexWord(ix + 3 * i + 1)
-            bytes(i) = byte.toByte
-            decodeBytes(i + 1, oredBytes | byte)
-          } else oredBytes
-
-        // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
-        if (((decodeBytes() >> 7) == 0) && UriRendering.isAsciiCompatible(
-              charset)) {
-          @tailrec def appendBytes(i: Int = 0): Unit =
-            if (i < bytesCount) {
-              sb.append(bytes(i).toChar);
-              appendBytes(i + 1)
+    if (ix < string.length)
+      string.charAt(ix) match {
+        case '%' ⇒
+          def intValueOfHexWord(i: Int) = {
+            def intValueOfHexChar(j: Int) = {
+              val c = string.charAt(j)
+              if (HEXDIG(c))
+                CharUtils.hexValue(c)
+              else
+                throw new IllegalArgumentException(
+                  "Illegal percent-encoding at pos " + j)
             }
-          appendBytes()
-        } else sb.append(new String(bytes, charset))
-        decode(string, charset, lastPercentSignIndexPlus3)(sb)
+            intValueOfHexChar(i) * 16 + intValueOfHexChar(i + 1)
+          }
 
-      case x ⇒ decode(string, charset, ix + 1)(sb.append(x))
-    }
-    else sb.toString
+          var lastPercentSignIndexPlus3 = ix + 3
+          while (lastPercentSignIndexPlus3 < string.length && string.charAt(
+                   lastPercentSignIndexPlus3) == '%')
+            lastPercentSignIndexPlus3 += 3
+          val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
+          val bytes = new Array[Byte](bytesCount)
+
+          @tailrec def decodeBytes(i: Int = 0, oredBytes: Int = 0): Int =
+            if (i < bytesCount) {
+              val byte = intValueOfHexWord(ix + 3 * i + 1)
+              bytes(i) = byte.toByte
+              decodeBytes(i + 1, oredBytes | byte)
+            } else
+              oredBytes
+
+          // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
+          if (((decodeBytes() >> 7) == 0) && UriRendering.isAsciiCompatible(
+                charset)) {
+            @tailrec def appendBytes(i: Int = 0): Unit =
+              if (i < bytesCount) {
+                sb.append(bytes(i).toChar);
+                appendBytes(i + 1)
+              }
+            appendBytes()
+          } else
+            sb.append(new String(bytes, charset))
+          decode(string, charset, lastPercentSignIndexPlus3)(sb)
+
+        case x ⇒ decode(string, charset, ix + 1)(sb.append(x))
+      }
+    else
+      sb.toString
 
   private[http] def normalizeScheme(scheme: String): String = {
     @tailrec def verify(
@@ -929,9 +1013,12 @@ object Uri {
         val c = scheme.charAt(ix)
         if (allowed(c))
           verify(ix - 1, `scheme-char`, allLower && !UPPER_ALPHA(c))
-        else ix
-      } else if (allLower) -1
-      else -2
+        else
+          ix
+      } else if (allLower)
+        -1
+      else
+        -2
     verify() match {
       case -2 ⇒ scheme.toLowerCase
       case -1 ⇒ scheme
@@ -943,8 +1030,12 @@ object Uri {
 
   private[http] def normalizePort(port: Int, scheme: String): Int =
     if ((port >> 16) == 0)
-      if (port != 0 && defaultPorts(scheme) == port) 0 else port
-    else fail("Invalid port " + port)
+      if (port != 0 && defaultPorts(scheme) == port)
+        0
+      else
+        port
+    else
+      fail("Invalid port " + port)
 
   private[http] def verifyPath(path: Path, scheme: String, host: Host): Path = {
     if (host.isEmpty) {
@@ -970,20 +1061,36 @@ object Uri {
         case Path.Empty ⇒ output.reverse
         case Segment("." | "..", Slash(tail)) ⇒ process(tail, output)
         case Slash(Segment(".", tail)) ⇒
-          process(if (tail.isEmpty) Path./ else tail, output)
+          process(
+            if (tail.isEmpty)
+              Path./
+            else
+              tail,
+            output)
         case Slash(Segment("..", tail)) ⇒
           process(
-            input = if (tail.isEmpty) Path./ else tail,
+            input =
+              if (tail.isEmpty)
+                Path./
+              else
+                tail,
             output =
               if (output.startsWithSegment)
-                if (output.tail.startsWithSlash) output.tail.tail else tail
-              else output)
+                if (output.tail.startsWithSlash)
+                  output.tail.tail
+                else
+                  tail
+              else
+                output)
         case Segment("." | "..", tail) ⇒ process(tail, output)
         case Slash(tail) ⇒ process(tail, Slash(output))
         case Segment(string, tail) ⇒ process(tail, string :: output)
       }
     }
-    if (hasDotOrDotDotSegment(path)) process(path) else path
+    if (hasDotOrDotDotSegment(path))
+      process(path)
+    else
+      path
   }
 
   private[http] def fail(summary: String, detail: String = "") =
@@ -1069,7 +1176,8 @@ object UriRendering {
       value: Uri,
       charset: Charset): r.type = {
     import value._
-    if (isAbsolute) r ~~ scheme ~~ ':'
+    if (isAbsolute)
+      r ~~ scheme ~~ ':'
     renderAuthority(r, authority, path, scheme, charset)
     renderPath(r, path, charset, encodeFirstSegmentColons = isRelative)
     rawQueryString.foreach(r ~~ '?' ~~ _)
@@ -1095,12 +1203,18 @@ object UriRendering {
       if (!userinfo.isEmpty)
         encode(r, userinfo, charset, `userinfo-char`) ~~ '@'
       r ~~ host
-      if (port != 0) r ~~ ':' ~~ port else r
+      if (port != 0)
+        r ~~ ':' ~~ port
+      else
+        r
     } else
       scheme match {
         case "" | "mailto" ⇒ r
         case _ ⇒
-          if (path.isEmpty || path.startsWithSlash) r ~~ '/' ~~ '/' else r
+          if (path.isEmpty || path.startsWithSlash)
+            r ~~ '/' ~~ '/'
+          else
+            r
       }
 
   def renderPath[R <: Rendering](
@@ -1113,7 +1227,10 @@ object UriRendering {
       case Path.Slash(tail) ⇒ renderPath(r ~~ '/', tail, charset)
       case Path.Segment(head, tail) ⇒
         val keep =
-          if (encodeFirstSegmentColons) `pchar-base-nc` else `pchar-base`
+          if (encodeFirstSegmentColons)
+            `pchar-base-nc`
+          else
+            `pchar-base`
         renderPath(encode(r, head, charset, keep), tail, charset)
     }
 
@@ -1127,9 +1244,11 @@ object UriRendering {
       q match {
         case Query.Empty ⇒ r
         case Query.Cons(key, value, tail) ⇒
-          if (q ne query) r ~~ '&'
+          if (q ne query)
+            r ~~ '&'
           enc(key)
-          if (value ne Query.EmptyValue) r ~~ '='
+          if (value ne Query.EmptyValue)
+            r ~~ '='
           enc(value)
           append(tail)
       }
@@ -1172,7 +1291,8 @@ object UriRendering {
             }
         }
         rec(ix + charSize)
-      } else r
+      } else
+        r
     }
     rec(0)
   }

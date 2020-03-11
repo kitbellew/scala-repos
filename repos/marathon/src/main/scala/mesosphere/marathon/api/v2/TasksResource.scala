@@ -170,8 +170,10 @@ class TasksResource @Inject() (
           case (appId, tasks) => appId -> tasks
         }
 
-      if (scale) scaleAppWithKill(tasksByAppId)
-      else killTasks(tasksByAppId)
+      if (scale)
+        scaleAppWithKill(tasksByAppId)
+      else
+        killTasks(tasksByAppId)
   }
 
   private def toTaskState(state: String): Option[TaskState] =

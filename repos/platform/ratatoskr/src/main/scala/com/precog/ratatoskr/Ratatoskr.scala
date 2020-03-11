@@ -789,7 +789,8 @@ object ZookeeperTools extends Command {
         .flatMap(_.validated[EventRelayState])
 
     def setCheckpoint(path: String, data: YggCheckpoint) {
-      if (!client.exists(path)) client.createPersistent(path, true)
+      if (!client.exists(path))
+        client.createPersistent(path, true)
 
       val updater = new DataUpdater[Array[Byte]] {
         def update(cur: Array[Byte]): Array[Byte] =
@@ -801,7 +802,8 @@ object ZookeeperTools extends Command {
     }
 
     def setRelayState(path: String, data: EventRelayState) {
-      if (!client.exists(path)) client.createPersistent(path, true)
+      if (!client.exists(path))
+        client.createPersistent(path, true)
 
       val updater = new DataUpdater[Array[Byte]] {
         def update(cur: Array[Byte]): Array[Byte] =
@@ -1215,7 +1217,11 @@ object ImportTools extends Command with Logging {
           val n = ch.read(bb)
           bb.flip()
 
-          val input = if (n >= 0) More(bb) else Done
+          val input =
+            if (n >= 0)
+              More(bb)
+            else
+              Done
           val (AsyncParse(errors, results), parser) = p(input)
 
           if (!errors.isEmpty) {
@@ -1245,10 +1251,16 @@ object ImportTools extends Command with Logging {
             (vfsModule.projectionsActor ? update) flatMap { _ =>
               logger.info("Batch saved")
               bb.flip()
-              if (n >= 0) loop(offset + 1, parser) else Future(())
+              if (n >= 0)
+                loop(offset + 1, parser)
+              else
+                Future(())
             }
           } else {
-            if (n >= 0) loop(offset + 1, parser) else Future(())
+            if (n >= 0)
+              loop(offset + 1, parser)
+            else
+              Future(())
           }
         }
 
@@ -1475,15 +1487,17 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   }
 
   def list(apiKeyManager: APIKeyManager[Future]) = {
-    for (apiKeys <- apiKeyManager.listAPIKeys) yield {
-      apiKeys.foreach(printAPIKey)
-    }
+    for (apiKeys <- apiKeyManager.listAPIKeys)
+      yield {
+        apiKeys.foreach(printAPIKey)
+      }
   }
 
   def showRoot(apiKeyManager: APIKeyManager[Future]) = {
-    for (rootAPIKey <- apiKeyManager.rootAPIKey) yield {
-      println(rootAPIKey)
-    }
+    for (rootAPIKey <- apiKeyManager.rootAPIKey)
+      yield {
+        println(rootAPIKey)
+      }
   }
 
   def printAPIKey(t: APIKeyRecord): Unit = {
@@ -1554,7 +1568,10 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
 
     def mongoServers: String = {
       val s = servers.trim
-      if (s.startsWith("[") && s.endsWith("]")) s else "[" + s + "]"
+      if (s.startsWith("[") && s.endsWith("]"))
+        s
+      else
+        "[" + s + "]"
     }
   }
 }

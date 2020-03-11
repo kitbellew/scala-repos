@@ -131,7 +131,11 @@ object ZooKeeperReader {
     if (slash < 0)
       throw new IllegalArgumentException("Invalid prefix")
 
-    val path = if (slash == 0) "/" else pat.substring(0, slash)
+    val path =
+      if (slash == 0)
+        "/"
+      else
+        pat.substring(0, slash)
     val prefix = pat.substring(slash + 1, pat.length)
 
     (path, prefix)

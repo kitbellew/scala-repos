@@ -41,7 +41,8 @@ private[http] class HttpRequestParser(
     cursor = parseProtocol(input, cursor)
     if (byteChar(input, cursor) == '\r' && byteChar(input, cursor + 1) == '\n')
       parseHeaderLines(input, cursor + 2)
-    else badProtocol
+    else
+      badProtocol
   }
 
   def parseMethod(input: ByteString, cursor: Int): Int = {
@@ -76,10 +77,12 @@ private[http] class HttpRequestParser(
         if (byteChar(input, cursor + ix) == ' ') {
           method = meth
           cursor + ix + 1
-        } else parseCustomMethod()
+        } else
+          parseCustomMethod()
       else if (byteChar(input, cursor + ix) == meth.value.charAt(ix))
         parseMethod(meth, ix + 1)
-      else parseCustomMethod()
+      else
+        parseCustomMethod()
 
     import HttpMethods._
     byteChar(input, cursor) match {
@@ -105,9 +108,12 @@ private[http] class HttpRequestParser(
     val uriEndLimit = cursor + maxUriLength
 
     @tailrec def findUriEnd(ix: Int = cursor): Int =
-      if (ix == input.length) throw NotEnoughDataException
-      else if (CharacterClasses.WSPCRLF(input(ix).toChar)) ix
-      else if (ix < uriEndLimit) findUriEnd(ix + 1)
+      if (ix == input.length)
+        throw NotEnoughDataException
+      else if (CharacterClasses.WSPCRLF(input(ix).toChar))
+        ix
+      else if (ix < uriEndLimit)
+        findUriEnd(ix + 1)
       else
         throw new ParsingException(
           RequestUriTooLong,
@@ -150,7 +156,8 @@ private[http] class HttpRequestParser(
               new String(
                 uriBytes,
                 HttpCharsets.`US-ASCII`.nioCharset)) :: headers
-          else headers
+          else
+            headers
 
         val allHeaders =
           if (method == HttpMethods.GET) {
@@ -159,7 +166,8 @@ private[http] class HttpRequestParser(
               case Some(upgrade) ⇒ upgrade :: allHeaders0
               case None ⇒ allHeaders0
             }
-          } else allHeaders0
+          } else
+            allHeaders0
 
         emit(
           RequestStart(
@@ -230,5 +238,6 @@ private[http] class HttpRequestParser(
               hostHeaderPresent,
               closeAfterResponseCompletion)
       }
-    } else failMessageStart("Request is missing required `Host` header")
+    } else
+      failMessageStart("Request is missing required `Host` header")
 }

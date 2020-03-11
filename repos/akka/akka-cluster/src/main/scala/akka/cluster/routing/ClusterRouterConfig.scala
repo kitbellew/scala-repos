@@ -181,10 +181,12 @@ final case class ClusterRouterGroup(
     if (settings.allowLocalRoutees && settings.useRole.isDefined) {
       if (Cluster(system).selfRoles.contains(settings.useRole.get)) {
         settings.routeesPaths
-      } else Nil
+      } else
+        Nil
     } else if (settings.allowLocalRoutees && settings.useRole.isEmpty) {
       settings.routeesPaths
-    } else Nil
+    } else
+      Nil
 
   /**
     * INTERNAL API
@@ -246,10 +248,12 @@ final case class ClusterRouterPool(
     if (settings.allowLocalRoutees && settings.useRole.isDefined) {
       if (Cluster(sys).selfRoles.contains(settings.useRole.get)) {
         settings.maxInstancesPerNode
-      } else 0
+      } else
+        0
     } else if (settings.allowLocalRoutees && settings.useRole.isEmpty) {
       settings.maxInstancesPerNode
-    } else 0
+    } else
+      0
 
   override def resizer: Option[Resizer] = local.resizer
 
@@ -343,7 +347,10 @@ private[akka] class ClusterRouterPoolActor(
         }
 
       val (address, count) = numberOfRouteesPerNode.minBy(_._2)
-      if (count < settings.maxInstancesPerNode) Some(address) else None
+      if (count < settings.maxInstancesPerNode)
+        Some(address)
+      else
+        None
     }
   }
 
@@ -531,6 +538,7 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
       removeMember(m)
 
     case ReachableMember(m) ⇒
-      if (isAvailable(m)) addMember(m)
+      if (isAvailable(m))
+        addMember(m)
   }
 }

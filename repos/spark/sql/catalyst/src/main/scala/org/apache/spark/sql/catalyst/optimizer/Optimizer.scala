@@ -709,13 +709,15 @@ object InferFiltersFromConstraints
             additionalConstraints -- splitConjunctivePredicates(condition)
           if (newFilters.nonEmpty)
             Option(And(newFilters.reduce(And), condition))
-          else None
+          else
+            None
         case None =>
           additionalConstraints.reduceOption(And)
       }
       if (newConditionOpt.isDefined)
         Join(left, right, joinType, newConditionOpt)
-      else join
+      else
+        join
   }
 }
 
@@ -924,7 +926,10 @@ object EliminateSorts extends Rule[LogicalPlan] {
     case s @ Sort(orders, _, child)
         if orders.isEmpty || orders.exists(_.child.foldable) =>
       val newOrders = orders.filterNot(_.child.foldable)
-      if (newOrders.isEmpty) child else s.copy(order = newOrders)
+      if (newOrders.isEmpty)
+        child
+      else
+        s.copy(order = newOrders)
   }
 }
 
@@ -1040,8 +1045,10 @@ object PushPredicateThroughGenerate
           g.qualifier,
           g.generatorOutput,
           Filter(pushDownPredicate, g.child))
-        if (stayUp.isEmpty) newGenerate
-        else Filter(stayUp.reduce(And), newGenerate)
+        if (stayUp.isEmpty)
+          newGenerate
+        else
+          Filter(stayUp.reduce(And), newGenerate)
       } else {
         filter
       }
@@ -1082,8 +1089,10 @@ object PushPredicateThroughAggregate
           aggregate.copy(child = Filter(replaced, aggregate.child))
         // If there is no more filter to stay up, just eliminate the filter.
         // Otherwise, create "Filter(stayUp) <- Aggregate <- Filter(pushDownPredicate)".
-        if (stayUp.isEmpty) newAggregate
-        else Filter(stayUp.reduce(And), newAggregate)
+        if (stayUp.isEmpty)
+          newAggregate
+        else
+          Filter(stayUp.reduce(And), newAggregate)
       } else {
         filter
       }
@@ -1162,7 +1171,8 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
     * Returns whether the expression returns null or false when all inputs are nulls.
     */
   private def canFilterOutNull(e: Expression): Boolean = {
-    if (!e.deterministic) return false
+    if (!e.deterministic)
+      return false
     val attributes = e.references.toSeq
     val emptyRow = new GenericInternalRow(attributes.length)
     val v = BindReferences.bindReference(e, attributes).eval(emptyRow)
@@ -1203,8 +1213,10 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
           condition,
           j @ Join(_, _, RightOuter | LeftOuter | FullOuter, _)) =>
       val newJoinType = buildNewJoinType(f, j)
-      if (j.joinType == newJoinType) f
-      else Filter(condition, j.copy(joinType = newJoinType))
+      if (j.joinType == newJoinType)
+        f
+      else
+        Filter(condition, j.copy(joinType = newJoinType))
   }
 }
 
@@ -1409,18 +1421,18 @@ object DecimalAggregates extends Rule[LogicalPlan] {
 
   def apply(plan: LogicalPlan): LogicalPlan = plan transformAllExpressions {
     case AggregateExpression(
-        Sum(e @ DecimalType.Expression(prec, scale)),
-        mode,
-        isDistinct) if prec + 10 <= MAX_LONG_DIGITS =>
+          Sum(e @ DecimalType.Expression(prec, scale)),
+          mode,
+          isDistinct) if prec + 10 <= MAX_LONG_DIGITS =>
       MakeDecimal(
         AggregateExpression(Sum(UnscaledValue(e)), mode, isDistinct),
         prec + 10,
         scale)
 
     case AggregateExpression(
-        Average(e @ DecimalType.Expression(prec, scale)),
-        mode,
-        isDistinct) if prec + 4 <= MAX_DOUBLE_DIGITS =>
+          Average(e @ DecimalType.Expression(prec, scale)),
+          mode,
+          isDistinct) if prec + 4 <= MAX_DOUBLE_DIGITS =>
       val newAggExpr =
         AggregateExpression(Average(UnscaledValue(e)), mode, isDistinct)
       Cast(

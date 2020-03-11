@@ -33,11 +33,16 @@ class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
     myFixture.configureByText(ScalaFileType.SCALA_FILE_TYPE, input.get(0))
     val file: ScalaFile = myFixture.getFile.asInstanceOf[ScalaFile]
     val model: SelectionModel = myFixture.getEditor.getSelectionModel
-    val start: PsiElement =
-      file.findElementAt(if (model.hasSelection) model.getSelectionStart else 0)
+    val start: PsiElement = file.findElementAt(
+      if (model.hasSelection)
+        model.getSelectionStart
+      else
+        0)
     val end: PsiElement = file.findElementAt(
-      if (model.hasSelection) model.getSelectionEnd - 1
-      else file.getTextLength - 1)
+      if (model.hasSelection)
+        model.getSelectionEnd - 1
+      else
+        file.getTextLength - 1)
     val owner: ScControlFlowOwner = PsiTreeUtil.getParentOfType(
       PsiTreeUtil.findCommonParent(start, end),
       classOf[ScControlFlowOwner],

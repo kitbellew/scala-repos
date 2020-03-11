@@ -37,8 +37,10 @@ object Team extends LilaController {
 
   def home(page: Int) = Open { implicit ctx =>
     NotForKids {
-      if (ctx.me.??(api.hasTeams)) Redirect(routes.Team.mine).fuccess
-      else Redirect(routes.Team.all(page)).fuccess
+      if (ctx.me.??(api.hasTeams))
+        Redirect(routes.Team.mine).fuccess
+      else
+        Redirect(routes.Team.all(page)).fuccess
     }
   }
 

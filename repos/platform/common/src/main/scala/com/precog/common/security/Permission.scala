@@ -145,7 +145,10 @@ object Permission {
     val any: WriteAs = WriteAsAny
 
     private[Permission] def apply(accountIds: Set[AccountId]): WriteAs =
-      if (accountIds.isEmpty) WriteAsAny else WriteAsAll(accountIds)
+      if (accountIds.isEmpty)
+        WriteAsAny
+      else
+        WriteAsAll(accountIds)
 
     def apply(accountId: AccountId): WriteAs = apply(Set(accountId))
   }
@@ -208,7 +211,8 @@ object Permission {
           type l[a] = Validation[Error, a]
         })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
           case (path, accountIds) =>
-            if (accountIds.isEmpty) success(f(path, WrittenByAny))
+            if (accountIds.isEmpty)
+              success(f(path, WrittenByAny))
             else if (accountIds.size == 1)
               success(f(path, WrittenByAccount(accountIds.head)))
             else

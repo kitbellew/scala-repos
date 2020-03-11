@@ -79,13 +79,19 @@ trait IndexedSeqLike[+A, +Repr] extends Any with SeqLike[A, Repr] {
     }
 
     override def drop(n: Int): Iterator[A] =
-      if (n <= 0) new Elements(index, end)
-      else if (index + n >= end) new Elements(end, end)
-      else new Elements(index + n, end)
+      if (n <= 0)
+        new Elements(index, end)
+      else if (index + n >= end)
+        new Elements(end, end)
+      else
+        new Elements(index + n, end)
     override def take(n: Int): Iterator[A] =
-      if (n <= 0) Iterator.empty
-      else if (n <= available) new Elements(index, index + n)
-      else new Elements(index, end)
+      if (n <= 0)
+        Iterator.empty
+      else if (n <= available)
+        new Elements(index, index + n)
+      else
+        new Elements(index, end)
     override def slice(from: Int, until: Int): Iterator[A] =
       this take until drop from
   }

@@ -15,7 +15,10 @@ private[cluster] object Gossip {
   val empty: Gossip = new Gossip(Gossip.emptyMembers)
 
   def apply(members: immutable.SortedSet[Member]) =
-    if (members.isEmpty) empty else empty.copy(members = members)
+    if (members.isEmpty)
+      empty
+    else
+      empty.copy(members = members)
 
   private val leaderMemberStatus = Set[MemberStatus](Up, Leaving)
   private val convergenceMemberStatus = Set[MemberStatus](Up, Leaving)
@@ -66,7 +69,8 @@ private[cluster] final case class Gossip(
     overview: GossipOverview = GossipOverview(),
     version: VectorClock = VectorClock()) { // vector clock version
 
-  if (Cluster.isAssertInvariantsEnabled) assertInvariants()
+  if (Cluster.isAssertInvariantsEnabled)
+    assertInvariants()
 
   private def assertInvariants(): Unit = {
 
@@ -101,16 +105,20 @@ private[cluster] final case class Gossip(
     * Adds a member to the member node ring.
     */
   def :+(member: Member): Gossip = {
-    if (members contains member) this
-    else this copy (members = members + member)
+    if (members contains member)
+      this
+    else
+      this copy (members = members + member)
   }
 
   /**
     * Marks the gossip as seen by this node (address) by updating the address entry in the 'gossip.overview.seen'
     */
   def seen(node: UniqueAddress): Gossip = {
-    if (seenByNode(node)) this
-    else this copy (overview = overview copy (seen = overview.seen + node))
+    if (seenByNode(node))
+      this
+    else
+      this copy (overview = overview copy (seen = overview.seen + node))
   }
 
   /**
@@ -209,12 +217,14 @@ private[cluster] final case class Gossip(
       mbrs: immutable.SortedSet[Member],
       selfUniqueAddress: UniqueAddress): Option[UniqueAddress] = {
     val reachableMembers =
-      if (overview.reachability.isAllReachable) mbrs
+      if (overview.reachability.isAllReachable)
+        mbrs
       else
         mbrs.filter(m ⇒
           overview.reachability.isReachable(
             m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress)
-    if (reachableMembers.isEmpty) None
+    if (reachableMembers.isEmpty)
+      None
     else
       reachableMembers
         .find(m ⇒ Gossip.leaderMemberStatus(m.status))
@@ -237,13 +247,19 @@ private[cluster] final case class Gossip(
 
   def youngestMember: Member = {
     require(members.nonEmpty, "No youngest when no members")
-    members.maxBy(m ⇒ if (m.upNumber == Int.MaxValue) 0 else m.upNumber)
+    members.maxBy(m ⇒
+      if (m.upNumber == Int.MaxValue)
+        0
+      else
+        m.upNumber)
   }
 
   def prune(removedNode: VectorClock.Node): Gossip = {
     val newVersion = version.prune(removedNode)
-    if (newVersion eq version) this
-    else copy(version = newVersion)
+    if (newVersion eq version)
+      this
+    else
+      copy(version = newVersion)
   }
 
   override def toString =

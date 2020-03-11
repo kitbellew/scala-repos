@@ -66,8 +66,10 @@ object EnumeratorsSpec
         val e1 = Enumerator(1, 2, 3, 4).onDoneEnumerating(
           firstDone.success(Unit))(onDoneEC)
         val e2 = Enumerator.unfoldM[Boolean, Int](true) { first =>
-          if (first) firstDone.future.map(_ => Some((false, 5)))
-          else Future.successful(None)
+          if (first)
+            firstDone.future.map(_ => Some((false, 5)))
+          else
+            Future.successful(None)
         }(unfoldEC)
         val result = Await.result(
           (e1 interleave e2) |>>> Iteratee.getChunks[Int],
@@ -200,7 +202,11 @@ object EnumeratorsSpec
         val it = a.iterator
 
         val enumerator = Enumerator.generateM(
-          Future(if (it.hasNext) Some(it.next()) else None))(generateEC)
+          Future(
+            if (it.hasNext)
+              Some(it.next())
+            else
+              None))(generateEC)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),
@@ -214,8 +220,11 @@ object EnumeratorsSpec
         val it = a.iterator
 
         val enumerator = Enumerator.generateM(
-          Future(if (it.hasNext) Some(it.next()) else None))(
-          generateEC) >>> Enumerator(12)
+          Future(
+            if (it.hasNext)
+              Some(it.next())
+            else
+              None))(generateEC) >>> Enumerator(12)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),
@@ -270,7 +279,12 @@ object EnumeratorsSpec
         val completeDone = new CountDownLatch(1)
         val errorCount = new AtomicInteger(0)
         val enumerator = Enumerator.fromCallback1(
-          b => Future(if (it.hasNext) Some((b, it.next())) else None),
+          b =>
+            Future(
+              if (it.hasNext)
+                Some((b, it.next()))
+              else
+                None),
           () => {
             completeCount.incrementAndGet()
             completeDone.countDown()
@@ -364,8 +378,11 @@ object EnumeratorsSpec
     "Can be composed with another enumerator (doesn't send EOF)" in {
       mustExecute(12, 12) { (foldEC, unfoldEC) =>
         val enumerator = Enumerator.unfoldM[Int, Int](0)(s =>
-          Future(if (s > 10) None else Some((s + 1, s + 1))))(
-          unfoldEC) >>> Enumerator(12)
+          Future(
+            if (s > 10)
+              None
+            else
+              Some((s + 1, s + 1))))(unfoldEC) >>> Enumerator(12)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),
@@ -378,7 +395,10 @@ object EnumeratorsSpec
     "unfolds a value into input for an enumerator" in {
       mustExecute(5) { unfoldEC =>
         val enumerator = Enumerator.unfold[Int, Int](0)(s =>
-          if (s > 3) None else Some((s + 1, s)))(unfoldEC)
+          if (s > 3)
+            None
+          else
+            Some((s + 1, s)))(unfoldEC)
         mustEnumerateTo(0, 1, 2, 3)(enumerator)
       }
     }

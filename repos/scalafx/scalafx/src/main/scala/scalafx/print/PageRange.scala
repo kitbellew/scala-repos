@@ -45,7 +45,10 @@ object PageRange {
     * @return JavaFX PageRange
     */
   implicit def sfxPageRange2jfx(pr: PageRange): jfxp.PageRange =
-    if (pr != null) pr.delegate else null
+    if (pr != null)
+      pr.delegate
+    else
+      null
 
 }
 

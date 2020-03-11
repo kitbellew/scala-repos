@@ -20,7 +20,8 @@ class AddLToLongLiteralFix(literal: ScLiteral) extends IntentionAction {
     literal.isValid && literal.getManager.isInProject(file)
 
   def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
-    if (!literal.isValid) return
+    if (!literal.isValid)
+      return
     val psi = ScalaPsiElementFactory.createExpressionFromText(
       literal.getText + "L",
       literal.getManager)

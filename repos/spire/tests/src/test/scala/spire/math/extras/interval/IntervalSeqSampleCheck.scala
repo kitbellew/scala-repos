@@ -133,7 +133,10 @@ object IntervalSeqSampleCheck extends Properties("IntervalSeq.Sample") {
 
   property("equals/hashCode") = forAll {
     (a: IntervalSeq[Int], b: IntervalSeq[Int]) =>
-      if (a == b) a.hashCode == b.hashCode else true
+      if (a == b)
+        a.hashCode == b.hashCode
+      else
+        true
   }
 
   property("iterator") = forAll { a: IntervalSeq[Int] =>

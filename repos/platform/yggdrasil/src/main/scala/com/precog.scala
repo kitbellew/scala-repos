@@ -103,7 +103,8 @@ package object yggdrasil {
         val idComp = idOrder.order(x._1, y._1)
         if (idComp == EQ) {
           ord.order(x._2, y._2)
-        } else idComp
+        } else
+          idComp
       }
     }
 

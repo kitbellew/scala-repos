@@ -136,8 +136,10 @@ case class AhcWSRequest(
 
   def withHeaders(hdrs: (String, String)*): WSRequest = {
     val headers = hdrs.foldLeft(this.headers)((m, hdr) =>
-      if (m.contains(hdr._1)) m.updated(hdr._1, m(hdr._1) :+ hdr._2)
-      else m + (hdr._1 -> Seq(hdr._2)))
+      if (m.contains(hdr._1))
+        m.updated(hdr._1, m(hdr._1) :+ hdr._2)
+      else
+        m + (hdr._1 -> Seq(hdr._2)))
     copy(headers = headers)
   }
 
@@ -482,7 +484,10 @@ class AhcWSAPI @Inject() (
 private class AhcWSCookie(ahcCookie: AHCCookie) extends WSCookie {
 
   private def noneIfEmpty(value: String): Option[String] = {
-    if (value.isEmpty) None else Some(value)
+    if (value.isEmpty)
+      None
+    else
+      Some(value)
   }
 
   /**
@@ -514,7 +519,10 @@ private class AhcWSCookie(ahcCookie: AHCCookie) extends WSCookie {
     * The maximum age.
     */
   def maxAge: Option[Long] =
-    if (ahcCookie.getMaxAge <= -1) None else Some(ahcCookie.getMaxAge)
+    if (ahcCookie.getMaxAge <= -1)
+      None
+    else
+      Some(ahcCookie.getMaxAge)
 
   /**
     * If the cookie is secure.

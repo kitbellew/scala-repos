@@ -150,7 +150,11 @@ class TcpListenerSpec extends AkkaSpec("""
 
     private val parentRef = TestActorRef(new ListenerParent(pullMode))
 
-    registerCallReceiver.expectMsg(if (pullMode) 0 else OP_ACCEPT)
+    registerCallReceiver.expectMsg(
+      if (pullMode)
+        0
+      else
+        OP_ACCEPT)
 
     def bindListener() {
       listener ! new ChannelRegistration {

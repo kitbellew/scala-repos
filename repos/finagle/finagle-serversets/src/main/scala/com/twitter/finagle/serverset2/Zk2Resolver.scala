@@ -174,8 +174,14 @@ class Zk2Resolver(
             val endpoint = endpointOption.getOrElse(null)
             val subseq = eps collect {
               case (
-                  Endpoint(names, host, port, shard, Endpoint.Status.Alive, _),
-                  weight) if names.contains(endpoint) && host != null =>
+                    Endpoint(
+                      names,
+                      host,
+                      port,
+                      shard,
+                      Endpoint.Status.Alive,
+                      _),
+                    weight) if names.contains(endpoint) && host != null =>
                 val metadata =
                   ZkMetadata.toAddrMetadata(ZkMetadata(Some(shard)))
                 (host, port, metadata + (WeightedAddress.weightKey -> weight))
@@ -187,8 +193,10 @@ class Zk2Resolver(
                 subseq mkString ",")
             }
 
-            if (subseq.isEmpty) Var.value(Addr.Neg)
-            else inetResolver.bindHostPortsToAddr(subseq)
+            if (subseq.isEmpty)
+              Var.value(Addr.Neg)
+            else
+              inetResolver.bindHostPortsToAddr(subseq)
         }
 
         // The stabilizer ensures that we qualify changes by putting
@@ -236,7 +244,8 @@ class Zk2Resolver(
                       logger.info(
                         "ZkResolver reports unhealthy. resolution moving to Addr.Pending")
                       Addr.Pending
-                    } else addr
+                    } else
+                      addr
 
                   if (lastu != newAddr) {
                     lastu = newAddr

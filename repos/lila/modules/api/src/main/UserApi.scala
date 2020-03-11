@@ -56,12 +56,12 @@ private[api] final class UserApi(
             relationApi.fetchFollows(u.id, _)
           } map {
           case (
-              (
                 (
-                  (((gameOption, nbGamesWithMe), following), followers),
-                  followable),
-                relation),
-              isFollowed) =>
+                  (
+                    (((gameOption, nbGamesWithMe), following), followers),
+                    followable),
+                  relation),
+                isFollowed) =>
             jsonView(u) ++ {
               Json.obj(
                 "url" -> makeUrl(s"@/$username"),

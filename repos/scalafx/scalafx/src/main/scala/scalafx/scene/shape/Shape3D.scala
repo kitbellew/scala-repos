@@ -37,7 +37,10 @@ import scalafx.scene.paint.Material
 
 object Shape3D {
   implicit def sfxShape3D2jfx(v: Shape3D): jfxss.Shape3D =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /** Wraps [[http://docs.oracle.com/javafx/8/api/javafx/scene/shape/Shape3D.html]]. */

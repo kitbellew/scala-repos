@@ -86,8 +86,8 @@ class ScalaMalformedFormatStringInspection extends AbstractInspection {
           "No argument for a format specifier %s".format(format))
 
       case UnboundPositionalSpecifier(
-          Specifier(Span(element, start, end), format),
-          position) =>
+            Specifier(Span(element, start, end), format),
+            position) =>
         holder.registerProblem(
           element,
           new TextRange(start, end),

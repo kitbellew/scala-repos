@@ -50,7 +50,11 @@ case class Perfs(
     ps.foldLeft(none[(PerfType, Perf)]) {
       case (ro, p) if p._2.nb >= minNb =>
         ro.fold(p.some) { r =>
-          Some(if (p._2.intRating > r._2.intRating) p else r)
+          Some(
+            if (p._2.intRating > r._2.intRating)
+              p
+            else
+              r)
         }
       case (ro, _) => ro
     }
@@ -69,7 +73,11 @@ case class Perfs(
     ps.foldLeft(none[Int]) {
       case (ro, p) if p.nb >= minNb =>
         ro.fold(p.intRating.some) { r =>
-          Some(if (p.intRating > r) p.intRating else r)
+          Some(
+            if (p.intRating > r)
+              p.intRating
+            else
+              r)
         }
       case (ro, _) => ro
     } | Perf.default.intRating

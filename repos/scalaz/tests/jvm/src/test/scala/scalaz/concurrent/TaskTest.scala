@@ -358,13 +358,14 @@ object TaskTest extends SpecLite {
       val seenThreadNames = scala.collection.JavaConversions
         .asScalaSet(ju.Collections.synchronizedSet(new ju.HashSet[String]()))
       val t =
-        for (i <- 0 to 5) yield fork {
-          seenThreadNames += currentThread().getName()
-          //Prevent the execution scheduler from reusing threads. This will only
-          //proceed after all 6 threads reached this point.
-          barrier.await(1, TimeUnit.SECONDS)
-          now(('a' + i).toChar)
-        }
+        for (i <- 0 to 5)
+          yield fork {
+            seenThreadNames += currentThread().getName()
+            //Prevent the execution scheduler from reusing threads. This will only
+            //proceed after all 6 threads reached this point.
+            barrier.await(1, TimeUnit.SECONDS)
+            now(('a' + i).toChar)
+          }
 
       val r = Nondeterminism[Task].nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(
         List(_, _, _, _, _, _))

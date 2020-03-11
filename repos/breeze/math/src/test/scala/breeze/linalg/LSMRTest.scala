@@ -123,9 +123,16 @@ class LSMRTest extends FunSuite {
           assert(v2.length == n)
           val d = DenseVector.range(1, n + 1).map(_.toDouble)
           val y1 = (
-            DenseVector.tabulate(n + 1)(i => if (i < n) v2(i) * d(i) else 0.0)
+            DenseVector.tabulate(n + 1)(i =>
+              if (i < n)
+                v2(i) * d(i)
+              else
+                0.0)
               + DenseVector.tabulate(n + 1)(i =>
-                if (i > 0) v2(i - 1) * d(i - 1) else 0.0)
+                if (i > 0)
+                  v2(i - 1) * d(i - 1)
+                else
+                  0.0)
           )
 
           if (m <= n + 1) {
@@ -150,7 +157,10 @@ class LSMRTest extends FunSuite {
           val y1 = (
             (d :* v2)
               + DenseVector.tabulate(m)(i =>
-                if (i < m - 1) d(i) * v2(i + 1) else 0.0)
+                if (i < m - 1)
+                  d(i) * v2(i + 1)
+                else
+                  0.0)
           )
 
           if (m >= n) {

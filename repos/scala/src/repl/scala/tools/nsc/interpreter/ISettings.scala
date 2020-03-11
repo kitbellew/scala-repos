@@ -33,8 +33,10 @@ class ISettings(intp: IMain) {
   def deprecation_=(x: Boolean) = {
     val old = intp.settings.deprecation.value
     intp.settings.deprecation.value = x
-    if (!old && x) println("Enabled -deprecation output.")
-    else if (old && !x) println("Disabled -deprecation output.")
+    if (!old && x)
+      println("Enabled -deprecation output.")
+    else if (old && !x)
+      println("Disabled -deprecation output.")
   }
   def deprecation: Boolean = intp.settings.deprecation.value
 

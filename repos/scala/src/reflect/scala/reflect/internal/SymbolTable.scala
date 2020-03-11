@@ -60,7 +60,8 @@ abstract class SymbolTable
       System.nanoTime()) - start) + "ms"
 
   def informProgress(msg: String) =
-    if (settings.verbose) inform("[" + msg + "]")
+    if (settings.verbose)
+      inform("[" + msg + "]")
   def informTime(msg: String, start: Long) =
     informProgress(elapsedMessage(msg, start))
 
@@ -74,9 +75,12 @@ abstract class SymbolTable
   def debugwarn(msg: => String): Unit = devWarning(msg)
 
   /** Override with final implementation for inlining. */
-  def debuglog(msg: => String): Unit = if (settings.debug) log(msg)
+  def debuglog(msg: => String): Unit =
+    if (settings.debug)
+      log(msg)
   def devWarning(msg: => String): Unit =
-    if (isDeveloper) Console.err.println(msg)
+    if (isDeveloper)
+      Console.err.println(msg)
   def throwableAsString(t: Throwable): String = "" + t
   def throwableAsString(t: Throwable, maxFrames: Int): String =
     t.getStackTrace take maxFrames mkString "\n  at "
@@ -147,8 +151,10 @@ abstract class SymbolTable
 
   private object SimpleNameOrdering extends Ordering[Names#Name] {
     def compare(n1: Names#Name, n2: Names#Name) = (
-      if (n1 eq n2) 0
-      else n1.toString compareTo n2.toString
+      if (n1 eq n2)
+        0
+      else
+        n1.toString compareTo n2.toString
     )
   }
 
@@ -259,7 +265,10 @@ abstract class SymbolTable
     while (ph != NoPhase && ph.name != phaseName) {
       ph = ph.prev
     }
-    if (ph eq NoPhase) phase else ph
+    if (ph eq NoPhase)
+      phase
+    else
+      ph
   }
   final def enteringPhaseWithName[T](phaseName: String)(body: => T): T = {
     val phase = findPhaseWithName(phaseName)
@@ -267,8 +276,10 @@ abstract class SymbolTable
   }
 
   def slowButSafeEnteringPhase[T](ph: Phase)(op: => T): T = {
-    if (isCompilerUniverse) enteringPhase(ph)(op)
-    else op
+    if (isCompilerUniverse)
+      enteringPhase(ph)(op)
+    else
+      op
   }
 
   @inline final def exitingPhase[T](ph: Phase)(op: => T): T =
@@ -277,16 +288,24 @@ abstract class SymbolTable
     enteringPhase(phase.prev)(op)
 
   @inline final def enteringPhaseNotLaterThan[T](target: Phase)(op: => T): T =
-    if (isAtPhaseAfter(target)) enteringPhase(target)(op) else op
+    if (isAtPhaseAfter(target))
+      enteringPhase(target)(op)
+    else
+      op
 
   def slowButSafeEnteringPhaseNotLaterThan[T](target: Phase)(op: => T): T =
-    if (isCompilerUniverse) enteringPhaseNotLaterThan(target)(op) else op
+    if (isCompilerUniverse)
+      enteringPhaseNotLaterThan(target)(op)
+    else
+      op
 
   final def isValid(period: Period): Boolean =
     period != 0 && runId(period) == currentRunId && {
       val pid = phaseId(period)
-      if (phase.id > pid) infoTransformers.nextFrom(pid).pid >= phase.id
-      else infoTransformers.nextFrom(phase.id).pid >= pid
+      if (phase.id > pid)
+        infoTransformers.nextFrom(pid).pid >= phase.id
+      else
+        infoTransformers.nextFrom(phase.id).pid >= pid
     }
 
   final def isValidForBaseClasses(period: Period): Boolean = {
@@ -298,7 +317,8 @@ abstract class SymbolTable
       val pid = phaseId(period)
       if (phase.id > pid)
         noChangeInBaseClasses(infoTransformers.nextFrom(pid), phase.id)
-      else noChangeInBaseClasses(infoTransformers.nextFrom(phase.id), pid)
+      else
+        noChangeInBaseClasses(infoTransformers.nextFrom(phase.id), pid)
     }
   }
 

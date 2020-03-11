@@ -40,11 +40,13 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
     val implicitFirstPart =
       if (attrFirstPart == null)
         DefaultHighlighter.IMPLICIT_FIRST_PART.getDefaultAttributes.getForegroundColor
-      else attrFirstPart.getForegroundColor
+      else
+        attrFirstPart.getForegroundColor
     val implicitSecondPart =
       if (attrSecondPart == null)
         DefaultHighlighter.IMPLICIT_SECOND_PART.getDefaultAttributes.getForegroundColor
-      else attrSecondPart.getForegroundColor
+      else
+        attrSecondPart.getForegroundColor
     val tuple = value.asInstanceOf[Parameters]
     val item = tuple.getNewExpression
     val firstPart = tuple.getFirstPart
@@ -69,12 +71,16 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
 
         if (firstPart.contains(item)) {
           colored.setBackground(
-            if (isSelected) UIUtil.getListSelectionBackground
-            else implicitFirstPart)
+            if (isSelected)
+              UIUtil.getListSelectionBackground
+            else
+              implicitFirstPart)
         } else if (secondPart.contains(item)) {
           colored.setBackground(
-            if (isSelected) UIUtil.getListSelectionBackground
-            else implicitSecondPart)
+            if (isSelected)
+              UIUtil.getListSelectionBackground
+            else
+              implicitSecondPart)
         } else {
           throw new RuntimeException(
             "Implicit conversions list contains unknown value: " + item)

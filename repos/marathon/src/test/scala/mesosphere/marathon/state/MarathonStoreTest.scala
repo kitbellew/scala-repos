@@ -255,7 +255,9 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       }
     }
 
-    val results = for (_ <- 0 until 1000) yield plusOne()
+    val results =
+      for (_ <- 0 until 1000)
+        yield plusOne()
 
     implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
     val res = Future.sequence(results)

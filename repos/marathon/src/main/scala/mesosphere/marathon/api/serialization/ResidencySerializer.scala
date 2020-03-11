@@ -16,12 +16,14 @@ object ResidencySerializer {
     val relaunchEscalationTimeoutSeconds =
       if (proto.hasRelaunchEscalationTimeoutSeconds)
         proto.getRelaunchEscalationTimeoutSeconds
-      else Residency.defaultRelaunchEscalationTimeoutSeconds
+      else
+        Residency.defaultRelaunchEscalationTimeoutSeconds
 
     val taskLostBehavior =
       if (proto.hasTaskLostBehavior)
         proto.getTaskLostBehavior
-      else Residency.defaultTaskLostBehaviour
+      else
+        Residency.defaultTaskLostBehaviour
 
     Residency(relaunchEscalationTimeoutSeconds, taskLostBehavior)
   }

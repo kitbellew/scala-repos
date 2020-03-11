@@ -830,7 +830,11 @@ object KetamaClientKey {
       port: Int,
       weight: Int)
       extends KetamaClientKey {
-    val identifier = if (port == 11211) host else host + ":" + port
+    val identifier =
+      if (port == 11211)
+        host
+      else
+        host + ":" + port
   }
   private[memcached] case class CustomKey(identifier: String)
       extends KetamaClientKey
@@ -978,14 +982,16 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
   }
 
   override protected def didMarkDead() {
-    if (ejectFailedHost) healthBroker ! NodeMarkedDead(key)
+    if (ejectFailedHost)
+      healthBroker ! NodeMarkedDead(key)
   }
 
   // When host ejection is on, the host should be returned to the ring
   // immediately after it is woken, so it can satisfy a probe request
   override def startProbing() = synchronized {
     super.startProbing()
-    if (ejectFailedHost) healthBroker ! NodeRevived(key)
+    if (ejectFailedHost)
+      healthBroker ! NodeRevived(key)
   }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
@@ -1086,7 +1092,8 @@ private[finagle] class KetamaPartitionedClient(
 
   private[this] def buildDistributor(nodes: Seq[KetamaNode[Client]]) =
     synchronized {
-      if (nodes.isEmpty) shardNotAvailableDistributor
+      if (nodes.isEmpty)
+        shardNotAvailableDistributor
       else
         new KetamaDistributor(
           nodes,
@@ -1104,7 +1111,9 @@ private[finagle] class KetamaPartitionedClient(
   }
 
   private[this] def rebuildDistributor(): Unit = synchronized {
-    val liveNodes = for ((_, Node(node, NodeState.Live)) <- nodes) yield node
+    val liveNodes =
+      for ((_, Node(node, NodeState.Live)) <- nodes)
+        yield node
     currentDistributor = buildDistributor(liveNodes.toSeq)
     keyRingRedistributeCount.incr()
   }
@@ -1248,7 +1257,8 @@ case class KetamaClientBuilder private[memcached] (
   def dest(name: String): KetamaClientBuilder =
     if (LocalMemcached.enabled) {
       withLocalMemcached
-    } else dest(Resolver.eval(name))
+    } else
+      dest(Resolver.eval(name))
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def group(group: Group[CacheNode]): KetamaClientBuilder = {
@@ -1483,7 +1493,8 @@ case class PHPMemCacheClientBuilder(
               .hosts(hostname + ":" + port)
               .codec(text.Memcached())
               .build())
-          for (i <- (1 to weight)) yield client
+          for (i <- (1 to weight))
+            yield client
       }
       .flatten
       .toArray

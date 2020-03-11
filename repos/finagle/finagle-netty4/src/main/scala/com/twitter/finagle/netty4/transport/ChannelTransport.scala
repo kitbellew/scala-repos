@@ -106,12 +106,16 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
   }
 
   def status: Status =
-    if (failed.get || !ch.isOpen) Status.Closed
-    else if (!ch.isWritable) Status.Busy
-    else Status.Open
+    if (failed.get || !ch.isOpen)
+      Status.Closed
+    else if (!ch.isWritable)
+      Status.Busy
+    else
+      Status.Open
 
   def close(deadline: Time): Future[Unit] = {
-    if (ch.isOpen) ch.close()
+    if (ch.isOpen)
+      ch.close()
     closed.unit
   }
 

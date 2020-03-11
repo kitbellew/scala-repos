@@ -49,8 +49,10 @@ private[rhino] class LazyScalaJSScope(
     coreLib.load(globalScope, propNameToEncodedName(name))
 
   private def propNameToEncodedName(name: String): String = {
-    if (isStatics) name.split("__")(0)
-    else name
+    if (isStatics)
+      name.split("__")(0)
+    else
+      name
   }
 
   override def getClassName(): String = "LazyScalaJSScope"

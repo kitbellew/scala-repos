@@ -83,7 +83,8 @@ trait ScFun extends ScTypeParametersOwner {
   }
 
   def polymorphicType: ScType = {
-    if (typeParameters.isEmpty) methodType
+    if (typeParameters.isEmpty)
+      methodType
     else
       ScTypePolymorphicType(
         methodType,
@@ -200,8 +201,8 @@ trait ScFunction
             var typeParamSubst = ScSubstitutor.empty
             fun.typeParameters.zip(typeParameters).foreach {
               case (
-                  oldParam: ScSyntheticTypeParameter,
-                  newParam: ScTypeParam) =>
+                    oldParam: ScSyntheticTypeParameter,
+                    newParam: ScTypeParam) =>
                 typeParamSubst = typeParamSubst.bindT(
                   (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
                   new ScTypeParameterType(newParam, subst))
@@ -228,7 +229,8 @@ trait ScFunction
 
   override def getTextOffset: Int = nameId.getTextRange.getStartOffset
   def hasParameterClause: Boolean = {
-    if (effectiveParameterClauses.nonEmpty) return true
+    if (effectiveParameterClauses.nonEmpty)
+      return true
     superMethod match {
       case Some(fun: ScFunction) => fun.hasParameterClause
       case Some(psi: PsiMethod)  => true
@@ -246,7 +248,8 @@ trait ScFunction
       val paramsIterator = clause.parameters.iterator
       while (paramsIterator.hasNext) {
         val param = paramsIterator.next()
-        if (paramsIterator.hasNext && param.isRepeatedParameter) return true
+        if (paramsIterator.hasNext && param.isRepeatedParameter)
+          return true
       }
     }
     false
@@ -277,7 +280,8 @@ trait ScFunction
       case None    => returnType.getOrAny
       case Some(x) => x
     }
-    if (!hasParameterClause) return resultType
+    if (!hasParameterClause)
+      return resultType
     val res =
       if (clauses.nonEmpty)
         clauses.foldRight[ScType](resultType) {
@@ -297,7 +301,8 @@ trait ScFunction
     * Returns internal type with type parameters.
     */
   def polymorphicType(result: Option[ScType] = None): ScType = {
-    if (typeParameters.isEmpty) methodType(result)
+    if (typeParameters.isEmpty)
+      methodType(result)
     else
       ScTypePolymorphicType(
         methodType(result),
@@ -345,7 +350,8 @@ trait ScFunction
     if (importantOrderFunction()) {
       val parent = getParent
       val data = parent.getUserData(ScFunction.calculatedBlockKey)
-      if (data != null) returnTypeInner
+      if (data != null)
+        returnTypeInner
       else {
         val children = parent match {
           case stub: ScalaStubBasedElementImpl[_] if stub.getStub != null =>
@@ -364,7 +370,8 @@ trait ScFunction
           java.lang.Boolean.TRUE)
         returnTypeInner
       }
-    } else returnTypeInner
+    } else
+      returnTypeInner
   }
 
   def returnTypeInner: TypeResult[ScType]
@@ -387,7 +394,8 @@ trait ScFunction
     if (isConstructor) {
       containingClass match {
         case owner: ScTypeParametersOwner =>
-          if (hasImplicit) None
+          if (hasImplicit)
+            None
           else
             ScalaPsiUtil.syntheticParamClause(
               owner,
@@ -396,7 +404,8 @@ trait ScFunction
         case _ => None
       }
     } else {
-      if (hasImplicit) None
+      if (hasImplicit)
+        None
       else
         ScalaPsiUtil.syntheticParamClause(
           this,
@@ -448,7 +457,8 @@ trait ScFunction
           clazz.functions.find(_.name == name.substring(0, name.length - 2))
         } else if (!hasParameterClause) {
           clazz.functions.find(_.name == name + "_=")
-        } else None
+        } else
+          None
       case _ => None
     }
   }
@@ -493,7 +503,8 @@ trait ScFunction
 
   @tailrec
   private def isJavaVarargs: Boolean = {
-    if (hasAnnotation("scala.annotation.varargs").isDefined) true
+    if (hasAnnotation("scala.annotation.varargs").isDefined)
+      true
     else {
       superMethod match {
         case Some(f: ScFunction) => f.isJavaVarargs
@@ -578,7 +589,8 @@ trait ScFunction
         .map {
           _.info.asInstanceOf[PhysicalSignature].method
         }
-    else Seq.empty
+    else
+      Seq.empty
   }
 
   def superMethod: Option[PsiMethod] = superMethodAndSubstitutor.map(_._1)
@@ -592,20 +604,23 @@ trait ScFunction
         ._1
         .fastPhysicalSignatureGet(
           new PhysicalSignature(this, ScSubstitutor.empty))
-      if (option.isEmpty) return None
+      if (option.isEmpty)
+        return None
       option.get.primarySuper
         .filter(_.info.isInstanceOf[PhysicalSignature])
         .map(node =>
           (
             node.info.asInstanceOf[PhysicalSignature].method,
             node.info.substitutor))
-    } else None
+    } else
+      None
   }
 
   def superSignatures: Seq[Signature] = {
     val clazz = containingClass
     val s = new PhysicalSignature(this, ScSubstitutor.empty)
-    if (clazz == null) return Seq(s)
+    if (clazz == null)
+      return Seq(s)
     val t = TypeDefinitionMembers
       .getSignatures(clazz)
       .forName(ScalaPsiUtil.convertMemberName(name))
@@ -623,7 +638,8 @@ trait ScFunction
   def superSignaturesIncludingSelfType: Seq[Signature] = {
     val clazz = containingClass
     val s = new PhysicalSignature(this, ScSubstitutor.empty)
-    if (clazz == null) return Seq(s)
+    if (clazz == null)
+      return Seq(s)
     val withSelf = clazz.selfType.isDefined
     if (withSelf) {
       val signs = TypeDefinitionMembers
@@ -679,8 +695,10 @@ trait ScFunction
 
   def findDeepestSuperMethod: PsiMethod = {
     val s = superMethods
-    if (s.isEmpty) null
-    else s.last
+    if (s.isEmpty)
+      null
+    else
+      s.last
   }
 
   def getReturnTypeElement = null
@@ -777,7 +795,8 @@ trait ScFunction
         if (strictCheck)
           new PhysicalSignature(this, ScSubstitutor.empty)
             .paramTypesEquiv(new PhysicalSignature(f, ScSubstitutor.empty))
-        else true
+        else
+          true
       }
     case _ => false
   }
@@ -798,23 +817,31 @@ trait ScFunction
     val res =
       if (isConstructor && getContainingClass != null)
         getContainingClass.getName
-      else super.getName
-    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_mth" + res
-    else res
+      else
+        super.getName
+    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST))
+      "_mth" + res
+    else
+      res
   }
 
   override def setName(name: String): PsiElement = {
-    if (isConstructor) this
-    else super.setName(name)
+    if (isConstructor)
+      this
+    else
+      super.setName(name)
   }
 
   override def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
-    if (ccontainingClass == null) return this
+    if (ccontainingClass == null)
+      return this
     val originalClass: PsiClass =
       ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
-    if (ccontainingClass eq originalClass) return this
-    if (!originalClass.isInstanceOf[ScTypeDefinition]) return this
+    if (ccontainingClass eq originalClass)
+      return this
+    if (!originalClass.isInstanceOf[ScTypeDefinition])
+      return this
     val c = originalClass.asInstanceOf[ScTypeDefinition]
     val membersIterator = c.members.iterator
     val buf: ArrayBuffer[ScMember] = new ArrayBuffer[ScMember]
@@ -823,13 +850,17 @@ trait ScFunction
       if (isSimilarMemberForNavigation(member, strictCheck = false))
         buf += member
     }
-    if (buf.isEmpty) this
-    else if (buf.length == 1) buf(0)
+    if (buf.isEmpty)
+      this
+    else if (buf.length == 1)
+      buf(0)
     else {
       val filter =
         buf.filter(isSimilarMemberForNavigation(_, strictCheck = true))
-      if (filter.isEmpty) buf(0)
-      else filter(0)
+      if (filter.isEmpty)
+        buf(0)
+      else
+        filter(0)
     }
   }
 
@@ -859,7 +890,8 @@ trait ScFunction
       if (!cl.isImplicit) {
         val paramTypes: Seq[TypeResult[ScType]] =
           cl.parameters.map(_.getType(TypingContext.empty))
-        if (paramTypes.exists(_.isEmpty)) return None
+        if (paramTypes.exists(_.isEmpty))
+          return None
         res += paramTypes.map(_.get)
       }
       i = i - 1

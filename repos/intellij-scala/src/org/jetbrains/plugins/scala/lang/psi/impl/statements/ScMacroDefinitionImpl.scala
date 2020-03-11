@@ -49,7 +49,8 @@ class ScMacroDefinitionImpl private (
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     //do not process parameters for default parameters, only for function body
     //processing parameters for default parameters in ScParameters
@@ -63,7 +64,8 @@ class ScMacroDefinitionImpl private (
                 x.startOffsetInParent == lastParent.startOffsetInParent) =>
           for (p <- parameterIncludingSynthetic) {
             ProgressManager.checkCanceled()
-            if (!processor.execute(p, state)) return false
+            if (!processor.execute(p, state))
+              return false
           }
         case _ =>
       }
@@ -71,7 +73,8 @@ class ScMacroDefinitionImpl private (
       if (lastParent != null && lastParent.getContext != lastParent.getParent) {
         for (p <- parameterIncludingSynthetic) {
           ProgressManager.checkCanceled()
-          if (!processor.execute(p, state)) return false
+          if (!processor.execute(p, state))
+            return false
         }
       }
     }
@@ -90,8 +93,10 @@ class ScMacroDefinitionImpl private (
 
   def body: Option[ScExpression] = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScFunctionStub].getBodyExpression
-    else findChild(classOf[ScExpression])
+    if (stub != null)
+      stub.asInstanceOf[ScFunctionStub].getBodyExpression
+    else
+      findChild(classOf[ScExpression])
   }
 
   override def hasAssign: Boolean = true

@@ -67,7 +67,8 @@ private[server] class NettyModelConversion(
       val uri = new QueryStringDecoder(request.getUri)
       val parameters: Map[String, Seq[String]] = {
         val decodedParameters = uri.parameters()
-        if (decodedParameters.isEmpty) Map.empty
+        if (decodedParameters.isEmpty)
+          Map.empty
         else {
           decodedParameters.asScala.mapValues(_.asScala).toMap
         }
@@ -131,7 +132,10 @@ private[server] class NettyModelConversion(
         // path, and don't decode.
         val withoutHost = request.getUri.dropWhile(_ != '/')
         val withoutQueryString = withoutHost.split('?').head
-        if (withoutQueryString.isEmpty) "/" else withoutQueryString
+        if (withoutQueryString.isEmpty)
+          "/"
+        else
+          withoutQueryString
       }
       override def method = request.getMethod.name()
       override def version = request.getProtocolVersion.text()

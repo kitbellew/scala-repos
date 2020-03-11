@@ -23,7 +23,8 @@ class ScalaForStatementFixer extends ScalaFixer {
       psiElement: PsiElement): OperationPerformed = {
     val forStatement =
       PsiTreeUtil.getParentOfType(psiElement, classOf[ScForStatement], false)
-    if (forStatement == null) return NoOperation
+    if (forStatement == null)
+      return NoOperation
 
     val doc = editor.getDocument
     val leftParenthesis = forStatement.getLeftParenthesis.orNull

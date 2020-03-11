@@ -22,8 +22,10 @@ object ImplicitTest {
     }
 
     def sum[A](xs: List[A])(implicit m: Monoid[A]): A =
-      if (xs.isEmpty) m.unit
-      else m.add(xs.head, sum(xs.tail))
+      if (xs.isEmpty)
+        m.unit
+      else
+        m.add(xs.head, sum(xs.tail))
 
     println(sum( /*start*/ List(1, 2, 3)) /*end*/ )
   }

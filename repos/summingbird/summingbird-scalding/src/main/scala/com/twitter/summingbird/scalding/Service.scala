@@ -235,7 +235,10 @@ private[scalding] object InternalService {
       TypedPipe[(T, (K, (Option[U], U)))]) = {
 
     def sum(opt: Option[U], u: U): U =
-      if (opt.isDefined) Semigroup.plus(opt.get, u) else u
+      if (opt.isDefined)
+        Semigroup.plus(opt.get, u)
+      else
+        u
 
     /**
       * Make sure lookups happen before writes to the store IF the timestamp

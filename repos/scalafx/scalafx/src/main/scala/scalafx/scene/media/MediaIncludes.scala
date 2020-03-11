@@ -73,7 +73,10 @@ trait MediaIncludes {
     * @return $SFX $AUCL
     */
   implicit def jfxAudioClip2sfx(ac: jfxsm.AudioClip): AudioClip =
-    if (ac != null) new AudioClip(ac) else null
+    if (ac != null)
+      new AudioClip(ac)
+    else
+      null
 
   /**
     * $START$AUEQ.html $AUEQ$END
@@ -82,7 +85,10 @@ trait MediaIncludes {
     * @return $SFX $AUEQ
     */
   implicit def jfxAudioEqualizer2sfx(ae: jfxsm.AudioEqualizer): AudioEqualizer =
-    if (ae != null) new AudioEqualizer(ae) else null
+    if (ae != null)
+      new AudioEqualizer(ae)
+    else
+      null
 
   /**
     * $START$AUTR.html $AUTR$END
@@ -91,7 +97,10 @@ trait MediaIncludes {
     * @return $SFX $AUTR
     */
   implicit def jfxAudioTrack2sfx(at: jfxsm.AudioTrack): AudioTrack =
-    if (at != null) new AudioTrack(at) else null
+    if (at != null)
+      new AudioTrack(at)
+    else
+      null
 
   /**
     * $START$EQBD.html $EQBD$END
@@ -100,7 +109,10 @@ trait MediaIncludes {
     * @return $SFX $EQBD
     */
   implicit def jfxEqualizerBand2sfx(eb: jfxsm.EqualizerBand): EqualizerBand =
-    if (eb != null) new EqualizerBand(eb) else null
+    if (eb != null)
+      new EqualizerBand(eb)
+    else
+      null
 
   /**
     * $START$MEDI.html $MEDI$END
@@ -109,7 +121,10 @@ trait MediaIncludes {
     * @return $SFX $MEDI
     */
   implicit def jfxMedia2sfx(m: jfxsm.Media): Media =
-    if (m != null) new Media(m) else null
+    if (m != null)
+      new Media(m)
+    else
+      null
 
   /**
     * $START$MDEE.html $MDEE$END
@@ -119,7 +134,10 @@ trait MediaIncludes {
     */
   implicit def jfxMediaErrorEvent2sfx(
       mee: jfxsm.MediaErrorEvent): MediaErrorEvent =
-    if (mee != null) new MediaErrorEvent(mee) else null
+    if (mee != null)
+      new MediaErrorEvent(mee)
+    else
+      null
 
   /**
     * $START$MDEX.html $MDEX$END
@@ -128,7 +146,10 @@ trait MediaIncludes {
     * @return $SFX $MDEX
     */
   implicit def jfxMediaException2sfx(me: jfxsm.MediaException): MediaException =
-    if (me != null) new MediaException(me) else null
+    if (me != null)
+      new MediaException(me)
+    else
+      null
 
   /**
     * $START$MDET.html $MDET$END
@@ -147,7 +168,10 @@ trait MediaIncludes {
     */
   implicit def jfxMediaMarkerEvent2sfx(
       mme: jfxsm.MediaMarkerEvent): MediaMarkerEvent =
-    if (mme != null) new MediaMarkerEvent(mme) else null
+    if (mme != null)
+      new MediaMarkerEvent(mme)
+    else
+      null
 
   /**
     * $START$MDPL.html $MDPL$END
@@ -156,7 +180,10 @@ trait MediaIncludes {
     * @return $SFX $MDPL
     */
   implicit def jfxMediaPlayer2sfx(mp: jfxsm.MediaPlayer): MediaPlayer =
-    if (mp != null) new MediaPlayer(mp) else null
+    if (mp != null)
+      new MediaPlayer(mp)
+    else
+      null
 
   /**
     * $START$MPST.html $MPST$END
@@ -174,7 +201,10 @@ trait MediaIncludes {
     * @return $SFX $MDVW
     */
   implicit def jfxMediaView2sfx(mv: jfxsm.MediaView): MediaView =
-    if (mv != null) new MediaView(mv) else null
+    if (mv != null)
+      new MediaView(mv)
+    else
+      null
 
   /**
     * $START$SBTR.html $SBTR$END
@@ -183,7 +213,10 @@ trait MediaIncludes {
     * @return $SFX $SBTR
     */
   implicit def jfxSubtitleTrack2sfx(st: jfxsm.SubtitleTrack): SubtitleTrack =
-    if (st != null) new SubtitleTrack(st) else null
+    if (st != null)
+      new SubtitleTrack(st)
+    else
+      null
 
   /**
     * $START$TRAC.html $TRAC$END
@@ -192,8 +225,10 @@ trait MediaIncludes {
     * @return $SFX $TRAC
     */
   implicit def jfxTrack2sfx(t: jfxsm.Track): Track =
-    if (t != null) new Track(t) {}
-    else null
+    if (t != null)
+      new Track(t) {}
+    else
+      null
 
   /**
     * $START$VDTC.html $VDTC$END
@@ -202,5 +237,8 @@ trait MediaIncludes {
     * @return $SFX $VDTC
     */
   implicit def jfxVideoTrack2sfx(vt: jfxsm.VideoTrack): VideoTrack =
-    if (vt != null) new VideoTrack(vt) else null
+    if (vt != null)
+      new VideoTrack(vt)
+    else
+      null
 }

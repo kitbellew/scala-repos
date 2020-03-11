@@ -938,12 +938,16 @@ private[hive] trait HiveInspectors {
       null)
 
   private def getStringWritable(value: Any): hadoopIo.Text =
-    if (value == null) null
-    else new hadoopIo.Text(value.asInstanceOf[UTF8String].getBytes)
+    if (value == null)
+      null
+    else
+      new hadoopIo.Text(value.asInstanceOf[UTF8String].getBytes)
 
   private def getIntWritable(value: Any): hadoopIo.IntWritable =
-    if (value == null) null
-    else new hadoopIo.IntWritable(value.asInstanceOf[Int])
+    if (value == null)
+      null
+    else
+      new hadoopIo.IntWritable(value.asInstanceOf[Int])
 
   private def getDoubleWritable(value: Any): hiveIo.DoubleWritable =
     if (value == null) {
@@ -960,8 +964,10 @@ private[hive] trait HiveInspectors {
     }
 
   private def getLongWritable(value: Any): hadoopIo.LongWritable =
-    if (value == null) null
-    else new hadoopIo.LongWritable(value.asInstanceOf[Long])
+    if (value == null)
+      null
+    else
+      new hadoopIo.LongWritable(value.asInstanceOf[Long])
 
   private def getFloatWritable(value: Any): hadoopIo.FloatWritable =
     if (value == null) {
@@ -971,12 +977,16 @@ private[hive] trait HiveInspectors {
     }
 
   private def getShortWritable(value: Any): hiveIo.ShortWritable =
-    if (value == null) null
-    else new hiveIo.ShortWritable(value.asInstanceOf[Short])
+    if (value == null)
+      null
+    else
+      new hiveIo.ShortWritable(value.asInstanceOf[Short])
 
   private def getByteWritable(value: Any): hiveIo.ByteWritable =
-    if (value == null) null
-    else new hiveIo.ByteWritable(value.asInstanceOf[Byte])
+    if (value == null)
+      null
+    else
+      new hiveIo.ByteWritable(value.asInstanceOf[Byte])
 
   private def getBinaryWritable(value: Any): hadoopIo.BytesWritable =
     if (value == null) {
@@ -986,8 +996,10 @@ private[hive] trait HiveInspectors {
     }
 
   private def getDateWritable(value: Any): hiveIo.DateWritable =
-    if (value == null) null
-    else new hiveIo.DateWritable(value.asInstanceOf[Int])
+    if (value == null)
+      null
+    else
+      new hiveIo.DateWritable(value.asInstanceOf[Int])
 
   private def getTimestampWritable(value: Any): hiveIo.TimestampWritable =
     if (value == null) {

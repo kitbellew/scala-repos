@@ -33,7 +33,8 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
     extends InsertHandler[LookupElement] {
   def handleInsert(context: InsertionContext, item: LookupElement) {
     val abstracts = new mutable.HashSet[ScAbstractType]
-    for (param <- params) abstracts ++= param.collectAbstracts
+    for (param <- params)
+      abstracts ++= param.collectAbstracts
 
     val editor = context.getEditor
     val document = editor.getDocument

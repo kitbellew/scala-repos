@@ -46,7 +46,8 @@ case class IterableSource[+T](
   def fields = {
     if (inFields.isNone && set.arity > 0) {
       Dsl.intFields(0 until set.arity)
-    } else inFields
+    } else
+      inFields
   }
 
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)

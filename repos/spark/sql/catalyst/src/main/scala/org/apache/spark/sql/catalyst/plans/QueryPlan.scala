@@ -181,7 +181,10 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     val newArgs = productIterator.map(recursiveTransform).toArray
 
-    if (changed) makeCopy(newArgs).asInstanceOf[this.type] else this
+    if (changed)
+      makeCopy(newArgs).asInstanceOf[this.type]
+    else
+      this
   }
 
   /**
@@ -216,7 +219,10 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     val newArgs = productIterator.map(recursiveTransform).toArray
 
-    if (changed) makeCopy(newArgs).asInstanceOf[this.type] else this
+    if (changed)
+      makeCopy(newArgs).asInstanceOf[this.type]
+    else
+      this
   }
 
   /** Returns the result of running [[transformExpressions]] on this node
@@ -263,7 +269,10 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     * We use "!" to indicate an invalid plan, and "'" to indicate an unresolved plan.
     */
   protected def statePrefix =
-    if (missingInput.nonEmpty && children.nonEmpty) "!" else ""
+    if (missingInput.nonEmpty && children.nonEmpty)
+      "!"
+    else
+      ""
 
   override def simpleString: String = statePrefix + super.simpleString
 

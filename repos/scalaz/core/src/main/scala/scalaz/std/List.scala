@@ -32,7 +32,12 @@ trait ListInstances extends ListInstances0 {
         @tailrec def loop(a: List[A], x: Option[A]): Option[A] =
           a match {
             case h :: t =>
-              loop(t, if (f(h)) Some(h) else x)
+              loop(
+                t,
+                if (f(h))
+                  Some(h)
+                else
+                  x)
             case Nil =>
               x
           }
@@ -50,8 +55,10 @@ trait ListInstances extends ListInstances0 {
 
       def zip[A, B](a: => List[A], b: => List[B]) = {
         val _a = a
-        if (_a.isEmpty) Nil
-        else _a zip b
+        if (_a.isEmpty)
+          Nil
+        else
+          _a zip b
       }
       def unzip[A, B](a: List[(A, B)]) = a.unzip
       def alignWith[A, B, C](f: A \&/ B => C) = {
@@ -231,8 +238,10 @@ trait ListFunctions {
     case Nil => Monad[M].point(Nil)
     case h :: t =>
       Monad[M].bind(p(h))(b =>
-        if (b) Monad[M].map(takeWhileM(t)(p))((tt: List[A]) => h :: tt)
-        else Monad[M].point(Nil))
+        if (b)
+          Monad[M].map(takeWhileM(t)(p))((tt: List[A]) => h :: tt)
+        else
+          Monad[M].point(Nil))
   }
 
   /** Run `p(a)`s and collect `as` while `p` yields false.  Don't run
@@ -254,7 +263,10 @@ trait ListFunctions {
     case Nil => Monad[M].point(None: Option[A])
     case h :: t =>
       Monad[M].bind(p(h))(b =>
-        if (b) Monad[M].point(Some(h): Option[A]) else findM(t)(p))
+        if (b)
+          Monad[M].point(Some(h): Option[A])
+        else
+          findM(t)(p))
   }
 
   final def powerset[A](as: List[A]): List[List[A]] = {
@@ -269,7 +281,11 @@ trait ListFunctions {
     case Nil => F.point(Nil: List[A], Nil: List[A])
     case h :: t =>
       F.ap(partitionM(t)(p))(F.map(p(h))(b => {
-        case (x, y) => if (b) (h :: x, y) else (x, h :: y)
+        case (x, y) =>
+          if (b)
+            (h :: x, y)
+          else
+            (x, h :: y)
       }))
   }
 
@@ -283,7 +299,8 @@ trait ListFunctions {
         if (b)
           Monad[M].map(spanM(t)(p))((k: (List[A], List[A])) =>
             (h :: k._1, k._2))
-        else Monad[M].point(Nil, as))
+        else
+          Monad[M].point(Nil, as))
 
   }
 
@@ -318,8 +335,12 @@ trait ListFunctions {
       p: (A, A) => Boolean): List[NonEmptyList[A]] = {
     @tailrec
     def span1(xs: List[A], s: A, l: List[A]): (List[A], List[A]) = xs match {
-      case Nil    => (l, Nil)
-      case h :: t => if (p(s, h)) span1(t, h, h :: l) else (l, xs)
+      case Nil => (l, Nil)
+      case h :: t =>
+        if (p(s, h))
+          span1(t, h, h :: l)
+        else
+          (l, xs)
     }
     @tailrec
     def go(xs: List[A], acc: List[NonEmptyList[A]]): List[NonEmptyList[A]] =

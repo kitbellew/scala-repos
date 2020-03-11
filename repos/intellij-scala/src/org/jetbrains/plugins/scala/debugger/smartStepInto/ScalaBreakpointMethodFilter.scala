@@ -44,7 +44,8 @@ class ScalaBreakpointMethodFilter(
         case None          => return true
         case Some(jvmSign) => jvmSign.getName(process)
       }
-      if (expSign == method.signature) return true
+      if (expSign == method.signature)
+        return true
       val sameNameMethods =
         method.declaringType().methodsByName(method.name()).asScala
       sameNameMethods.exists { candidate =>
@@ -60,7 +61,10 @@ class ScalaBreakpointMethodFilter(
           "apply$") || ScalaPositionManager.isIndyLambda(method)
       case Some(m) =>
         val javaName = inReadAction(
-          if (m.isConstructor) "<init>" else ScalaNamesUtil.toJavaName(m.name))
+          if (m.isConstructor)
+            "<init>"
+          else
+            ScalaNamesUtil.toJavaName(m.name))
         javaName == method.name && signatureMatches(
           method) && !ScalaPositionManager.shouldSkip(location, process)
 

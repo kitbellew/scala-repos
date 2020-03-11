@@ -1,14 +1,19 @@
 object Test {
   import scala.collection.SeqLike
   def slowSearch[A](xs: Seq[A], ys: Seq[A], start: Int = 0): Int = {
-    if (xs startsWith ys) start
-    else if (xs.isEmpty) -1
-    else slowSearch(xs.tail, ys, start + 1)
+    if (xs startsWith ys)
+      start
+    else if (xs.isEmpty)
+      -1
+    else
+      slowSearch(xs.tail, ys, start + 1)
   }
   def bkwSlowSearch[A](xs: Seq[A], ys: Seq[A]) = {
     val i = slowSearch(xs.reverse, ys.reverse)
-    if (i < 0) i
-    else xs.length - ys.length - i
+    if (i < 0)
+      i
+    else
+      xs.length - ys.length - i
   }
   def main(args: Array[String]) {
     val rng = new scala.util.Random(java.lang.Integer.parseInt("kmp", 36))

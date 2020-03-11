@@ -34,7 +34,8 @@ object ActorTest extends SpecLite {
       if (i == latch.getCount) {
         latch.countDown()
         latch.countDown()
-        if (i != 0) actor2 ! i - 1
+        if (i != 0)
+          actor2 ! i - 1
       }
     }
     actor1 ! NumOfMessages
@@ -44,11 +45,12 @@ object ActorTest extends SpecLite {
   "actor handles messages in order of sending by each thread" in {
     val latch = new CountDownLatch(NumOfMessages)
     val actor = countingDownActor(latch)
-    for (j <- 1 to NumOfThreads) fork {
-      for (i <- 1 to NumOfMessagesPerThread) {
-        actor ! (j, i)
+    for (j <- 1 to NumOfThreads)
+      fork {
+        for (i <- 1 to NumOfMessagesPerThread) {
+          actor ! (j, i)
+        }
       }
-    }
     assertCountDown(latch, "Should process " + NumOfMessages + " messages")
   }
 

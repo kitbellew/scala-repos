@@ -63,9 +63,11 @@ trait FileAndResourceDirectives {
                         ActorAttributes.dispatcher(settings.fileIODispatcher)))
                 }
             }
-          } else complete(HttpEntity.Empty)
+          } else
+            complete(HttpEntity.Empty)
         }
-      else reject
+      else
+        reject
     }
 
   private def conditionalFor(length: Long, lastModified: Long): Directive0 =
@@ -76,7 +78,8 @@ trait FileAndResourceDirectives {
         val lastModifiedDateTime =
           DateTime(math.min(lastModified, System.currentTimeMillis))
         conditional(EntityTag(tag), lastModifiedDateTime)
-      } else pass)
+      } else
+        pass)
 
   /**
     * Completes GET requests with the content of the given class-path resource.
@@ -115,12 +118,14 @@ trait FileAndResourceDirectives {
                       ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                     }
                 }
-              } else complete(HttpEntity.Empty)
+              } else
+                complete(HttpEntity.Empty)
             }
           case _ ⇒ reject // not found or directory
         }
       }
-    else reject // don't serve the content of resource "directories"
+    else
+      reject // don't serve the content of resource "directories"
 
   /**
     * Completes GET requests with the content of a file underneath the given directory.
@@ -159,13 +164,17 @@ trait FileAndResourceDirectives {
             case "" ⇒ None
             case fileName ⇒
               val file = new File(fileName)
-              if (file.isDirectory && file.canRead) Some(file) else None
+              if (file.isDirectory && file.canRead)
+                Some(file)
+              else
+                None
           }
         }
         implicit val marshaller: ToEntityMarshaller[DirectoryListing] =
           renderer.marshaller(ctx.settings.renderVanityFooter)
 
-        if (dirs.isEmpty) reject
+        if (dirs.isEmpty)
+          reject
         else
           complete(
             DirectoryListing(
@@ -204,7 +213,10 @@ trait FileAndResourceDirectives {
       classLoader: ClassLoader = defaultClassLoader)(
       implicit resolver: ContentTypeResolver): Route = {
     val base =
-      if (directoryName.isEmpty) "" else withTrailingSlash(directoryName)
+      if (directoryName.isEmpty)
+        ""
+      else
+        withTrailingSlash(directoryName)
 
     extractUnmatchedPath { path ⇒
       extractLog { log ⇒
@@ -228,7 +240,10 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
       BasicDirectives.extractSettings
 
   private def withTrailingSlash(path: String): String =
-    if (path endsWith "/") path else path + '/'
+    if (path endsWith "/")
+      path
+    else
+      path + '/'
   private def fileSystemPath(
       base: String,
       path: Uri.Path,
@@ -250,17 +265,24 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
               path,
               head)
             ""
-          } else rec(tail, result.append(head))
+          } else
+            rec(tail, result.append(head))
       }
-    rec(if (path.startsWithSlash) path.tail else path)
+    rec(
+      if (path.startsWithSlash)
+        path.tail
+      else
+        path)
   }
 
   object ResourceFile {
     def apply(url: URL): Option[ResourceFile] = url.getProtocol match {
       case "file" ⇒
         val file = new File(url.toURI)
-        if (file.isDirectory) None
-        else Some(ResourceFile(url, file.length(), file.lastModified()))
+        if (file.isDirectory)
+          None
+        else
+          Some(ResourceFile(url, file.length(), file.lastModified()))
       case "jar" ⇒
         val path =
           new URI(
@@ -342,7 +364,8 @@ object ContentTypeResolver {
               }
             case ext ⇒ MediaTypes.forExtension(ext)
           }
-        } else MediaTypes.`application/octet-stream`
+        } else
+          MediaTypes.`application/octet-stream`
         ContentType(mediaType, () ⇒ charset)
       }
     }
@@ -381,12 +404,18 @@ object DirectoryListing {
         val filesAndNames = files.map(file ⇒ file -> file.getName).sortBy(_._2)
         val deduped = filesAndNames.zipWithIndex.flatMap {
           case (fan @ (file, name), ix) ⇒
-            if (ix == 0 || filesAndNames(ix - 1)._2 != name) Some(fan) else None
+            if (ix == 0 || filesAndNames(ix - 1)._2 != name)
+              Some(fan)
+            else
+              None
         }
         val (directoryFilesAndNames, fileFilesAndNames) =
           deduped.partition(_._1.isDirectory)
         def maxNameLength(seq: Seq[(File, String)]) =
-          if (seq.isEmpty) 0 else seq.map(_._2.length).max
+          if (seq.isEmpty)
+            0
+          else
+            seq.map(_._2.length).max
         val maxNameLen = math.max(
           maxNameLength(directoryFilesAndNames) + 1,
           maxNameLength(fileFilesAndNames))
@@ -425,9 +454,12 @@ object DirectoryListing {
             .append(size)
             .append('\n')
         }
-        for ((file, name) ← directoryFilesAndNames) renderDirectory(file, name)
-        for ((file, name) ← fileFilesAndNames) renderFile(file, name)
-        if (isRoot && files.isEmpty) sb.append("(no files)\n")
+        for ((file, name) ← directoryFilesAndNames)
+          renderDirectory(file, name)
+        for ((file, name) ← fileFilesAndNames)
+          renderFile(file, name)
+        if (isRoot && files.isEmpty)
+          sb.append("(no files)\n")
         sb.append(html(3))
         if (renderVanityFooter)
           sb.append(html(4))

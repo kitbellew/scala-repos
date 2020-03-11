@@ -53,7 +53,8 @@ object ScalaMacroDebuggingUtil {
   def saveCode(fileName: String, code: java.util.ArrayList[String]) {
     import scala.collection.JavaConversions._
 
-    if (!isEnabled) return
+    if (!isEnabled)
+      return
     val file = VfsUtil.findFileByIoFile(
       new File(fileName stripPrefix MACRO_SIGN_PREFIX),
       true)
@@ -75,13 +76,18 @@ object ScalaMacroDebuggingUtil {
     def createFile(): PsiFile = {
       val dataStream =
         SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file.getVirtualFile
-      if (dataStream == null) return null
+      if (dataStream == null)
+        return null
 
       var line = dataStream readUTF ()
       val linesRed = StringBuilder.newBuilder
 
       while (line != null && dataStream.available() > 0) {
-        linesRed ++= (line map (c => if (c == 0) ' ' else c)) ++= "\n"
+        linesRed ++= (line map (c =>
+          if (c == 0)
+            ' '
+          else
+            c)) ++= "\n"
         line = dataStream readUTF ()
       }
 
@@ -117,8 +123,10 @@ object ScalaMacroDebuggingUtil {
       synFile
     }
 
-    if (force || UPDATE_QUEUE.remove(canonicalPath)) createFile()
-    else SOURCE_CACHE get canonicalPath getOrElse createFile()
+    if (force || UPDATE_QUEUE.remove(canonicalPath))
+      createFile()
+    else
+      SOURCE_CACHE get canonicalPath getOrElse createFile()
   }
 
   def readPreimageName(file: PsiFile): Option[String] =

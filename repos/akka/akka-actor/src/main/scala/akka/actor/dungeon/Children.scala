@@ -80,7 +80,10 @@ private[akka] trait Children { this: ActorCell ⇒
       uid: Int = ActorCell.undefinedUid): InternalActorRef =
     functionRefs.getOrElse(name, Children.GetNobody()) match {
       case f: FunctionRef ⇒
-        if (uid == ActorCell.undefinedUid || f.path.uid == uid) f else Nobody
+        if (uid == ActorCell.undefinedUid || f.path.uid == uid)
+          f
+        else
+          Nobody
       case other ⇒
         other
     }
@@ -99,7 +102,8 @@ private[akka] trait Children { this: ActorCell ⇒
             this,
             AbstractActorCell.functionRefsOffset,
             old,
-            added)) rec()
+            added))
+        rec()
     }
     rec()
 
@@ -113,14 +117,16 @@ private[akka] trait Children { this: ActorCell ⇒
     val name = ref.path.name
     @tailrec def rec(): Boolean = {
       val old = functionRefs
-      if (!old.contains(name)) false
+      if (!old.contains(name))
+        false
       else {
         val removed = old - name
         if (!Unsafe.instance.compareAndSwapObject(
               this,
               AbstractActorCell.functionRefsOffset,
               old,
-              removed)) rec()
+              removed))
+          rec()
         else {
           ref.stop()
           true
@@ -159,7 +165,8 @@ private[akka] trait Children { this: ActorCell ⇒
       if (actor match {
             case r: RepointableRef ⇒ r.isStarted
             case _ ⇒ true
-          }) shallDie(actor)
+          })
+        shallDie(actor)
     }
     actor.asInstanceOf[InternalActorRef].stop()
   }
@@ -194,8 +201,10 @@ private[akka] trait Children { this: ActorCell ⇒
       case Some(ChildNameReserved) ⇒
         val crs = ChildRestartStats(ref)
         val name = ref.path.name
-        if (swapChildrenRefs(cc, cc.add(name, crs))) Some(crs)
-        else initChild(ref)
+        if (swapChildrenRefs(cc, cc.add(name, crs)))
+          Some(crs)
+        else
+          initChild(ref)
       case None ⇒ None
     }
   }
@@ -242,7 +251,11 @@ private[akka] trait Children { this: ActorCell ⇒
       perp: ActorRef): Unit =
     childrenRefs.stats foreach {
       case ChildRestartStats(child: InternalActorRef, _, _) ⇒
-        child.resume(if (perp == child) causedByFailure else null)
+        child.resume(
+          if (perp == child)
+            causedByFailure
+          else
+            null)
     }
 
   def getChildByName(name: String): Option[ChildStats] =
@@ -277,7 +290,10 @@ private[akka] trait Children { this: ActorCell ⇒
     @tailrec def removeChild(ref: ActorRef): ChildrenContainer = {
       val c = childrenRefs
       val n = c.remove(ref)
-      if (swapChildrenRefs(c, n)) n else removeChild(ref)
+      if (swapChildrenRefs(c, n))
+        n
+      else
+        removeChild(ref)
     }
 
     childrenRefs match { // The match must be performed BEFORE the removeChild
@@ -373,7 +389,9 @@ private[akka] trait Children { this: ActorCell ⇒
             throw e
         }
       // mailbox==null during RoutedActorCell constructor, where suspends are queued otherwise
-      if (mailbox ne null) for (_ ← 1 to mailbox.suspendCount) actor.suspend()
+      if (mailbox ne null)
+        for (_ ← 1 to mailbox.suspendCount)
+          actor.suspend()
       initChild(actor)
       actor.start()
       actor

@@ -88,7 +88,11 @@ private[spark] abstract class StreamBasedRecordReader[T](
       context: TaskAttemptContext): Unit = {}
   override def close(): Unit = {}
 
-  override def getProgress: Float = if (processed) 1.0f else 0.0f
+  override def getProgress: Float =
+    if (processed)
+      1.0f
+    else
+      0.0f
 
   override def getCurrentKey: String = key
 

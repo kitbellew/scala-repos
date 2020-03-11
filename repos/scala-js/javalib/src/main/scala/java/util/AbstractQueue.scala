@@ -5,16 +5,22 @@ abstract class AbstractQueue[E] protected ()
     with Queue[E] {
 
   override def add(e: E): Boolean =
-    if (offer(e)) true
-    else throw new IllegalStateException()
+    if (offer(e))
+      true
+    else
+      throw new IllegalStateException()
 
   def remove(): E =
-    if (!isEmpty()) poll()
-    else throw new NoSuchElementException()
+    if (!isEmpty())
+      poll()
+    else
+      throw new NoSuchElementException()
 
   def element(): E =
-    if (!isEmpty()) peek()
-    else throw new NoSuchElementException()
+    if (!isEmpty())
+      peek()
+    else
+      throw new NoSuchElementException()
 
   override def clear(): Unit = {
     while (poll() != null) {}

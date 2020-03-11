@@ -126,7 +126,8 @@ final class ArrayOps[@sp A](arr: Array[A]) {
   }
 
   def qmin(implicit ev: Order[A]): A = {
-    if (arr.length == 0) throw new UnsupportedOperationException("empty array")
+    if (arr.length == 0)
+      throw new UnsupportedOperationException("empty array")
     var result = arr(0)
     cfor(1)(_ < arr.length, _ + 1) { i =>
       result = result min arr(i)
@@ -135,7 +136,8 @@ final class ArrayOps[@sp A](arr: Array[A]) {
   }
 
   def qmax(implicit ev: Order[A]): A = {
-    if (arr.length == 0) throw new UnsupportedOperationException("empty array")
+    if (arr.length == 0)
+      throw new UnsupportedOperationException("empty array")
     var result = arr(0)
     cfor(1)(_ < arr.length, _ + 1) { i =>
       result = result max arr(i)
@@ -144,7 +146,8 @@ final class ArrayOps[@sp A](arr: Array[A]) {
   }
 
   def qmean(implicit ev: Field[A]): A = {
-    if (arr.length == 0) throw new UnsupportedOperationException("empty array")
+    if (arr.length == 0)
+      throw new UnsupportedOperationException("empty array")
     var result = ev.zero
     cfor(0)(_ < arr.length, _ + 1) { i =>
       result = (result * i / (i + 1)) + (arr(i) / (i + 1))
@@ -153,7 +156,8 @@ final class ArrayOps[@sp A](arr: Array[A]) {
   }
 
   def qmeanWith[@sp(Double) R](f: A => R)(implicit ev: Field[R]): R = {
-    if (arr.length == 0) throw new UnsupportedOperationException("empty array")
+    if (arr.length == 0)
+      throw new UnsupportedOperationException("empty array")
     var result: R = ev.zero
     cfor(0)(_ < arr.length, _ + 1) { i =>
       result = (result * i / (i + 1)) + (f(arr(i)) / (i + 1))
@@ -264,17 +268,20 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     Searching.minimalElements(as)(ev.reverse)
 
   def qmin(implicit ev: Order[A]): A = {
-    if (as.isEmpty) throw new UnsupportedOperationException("empty seq")
+    if (as.isEmpty)
+      throw new UnsupportedOperationException("empty seq")
     as.aggregate(as.head)(ev.min, ev.min)
   }
 
   def qmax(implicit ev: Order[A]): A = {
-    if (as.isEmpty) throw new UnsupportedOperationException("empty seq")
+    if (as.isEmpty)
+      throw new UnsupportedOperationException("empty seq")
     as.aggregate(as.head)(ev.max, ev.max)
   }
 
   def qmean(implicit ev: Field[A]): A = {
-    if (as.isEmpty) throw new UnsupportedOperationException("empty seq")
+    if (as.isEmpty)
+      throw new UnsupportedOperationException("empty seq")
     var mean = ev.zero
     var i = 0
     var j = 1
@@ -289,7 +296,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
   }
 
   def qmeanWith[R](f: A => R)(implicit ev: Field[R]): R = {
-    if (as.isEmpty) throw new UnsupportedOperationException("empty seq")
+    if (as.isEmpty)
+      throw new UnsupportedOperationException("empty seq")
     var mean = ev.zero
     var i = 0
     var j = 1

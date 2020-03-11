@@ -59,7 +59,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
             t)
         }
       }
-    } else Nil
+    } else
+      Nil
 
   override def runChildren(notifier: RunNotifier) = if (!children.isEmpty) {
     tdb.cleanUpBefore()
@@ -78,8 +79,10 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
         notifier.fireTestStarted(desc)
         try {
           val testObject =
-            if (previousTestObject ne null) previousTestObject
-            else preparedTestObject
+            if (previousTestObject ne null)
+              previousTestObject
+            else
+              preparedTestObject
           previousTestObject = null
           try ch.run(testObject)
           finally {
@@ -87,9 +90,12 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
               idx == last || (testObject.reuseInstance && (ch.cl eq is(
                 idx + 1)._1._1.cl))
             if (skipCleanup) {
-              if (idx == last) testObject.closeKeepAlive()
-              else previousTestObject = testObject
-            } else testObject.cleanup()
+              if (idx == last)
+                testObject.closeKeepAlive()
+              else
+                previousTestObject = testObject
+            } else
+              testObject.cleanup()
           }
         } catch {
           case t: Throwable => addFailure(t, notifier, desc)
@@ -118,7 +124,8 @@ case class TestMethod(
     val r = method.getReturnType
     testObject match {
       case testObject: TestkitTest[_] =>
-        if (r == Void.TYPE) method.invoke(testObject)
+        if (r == Void.TYPE)
+          method.invoke(testObject)
         else
           throw new RuntimeException(
             s"Illegal return type: '${r.getName}' in test method '$name' -- TestkitTest methods must return Unit")
@@ -167,7 +174,8 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
   }
 
   final def cleanup() = if (keepAliveSession ne null) {
-    try if (tdb.isPersistent) tdb.dropUserArtifacts(keepAliveSession)
+    try if (tdb.isPersistent)
+      tdb.dropUserArtifacts(keepAliveSession)
     finally {
       try db.close()
       finally closeKeepAlive()
@@ -175,7 +183,8 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
   }
 
   final def closeKeepAlive() = {
-    if (keepAliveSession ne null) keepAliveSession.close()
+    if (keepAliveSession ne null)
+      keepAliveSession.close()
   }
 
   implicit class StringContextExtensionMethods(s: StringContext) {
@@ -187,11 +196,17 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
 
   final def mark[T](id: String, f: => T): T = {
     def set(id: String): Unit =
-      if (id eq null) MDC.remove("debugId")
-      else MDC.put("debugId", id)
+      if (id eq null)
+        MDC.remove("debugId")
+      else
+        MDC.put("debugId", id)
     val old = MDC.get("debugId")
     try {
-      set(if (id eq null) id else s" [$id]")
+      set(
+        if (id eq null)
+          id
+        else
+          s" [$id]")
       f
     } finally set(old)
   }
@@ -236,9 +251,11 @@ abstract class TestkitTest[TDB >: Null <: TestDB](
   }
 
   def ifCap[T](caps: Capability*)(f: => T): Unit =
-    if (caps.forall(c => tdb.capabilities.contains(c))) f
+    if (caps.forall(c => tdb.capabilities.contains(c)))
+      f
   def ifNotCap[T](caps: Capability*)(f: => T): Unit =
-    if (!caps.forall(c => tdb.capabilities.contains(c))) f
+    if (!caps.forall(c => tdb.capabilities.contains(c)))
+      f
 
   def assertFail(f: => Unit) = {
     var succeeded = false
@@ -248,12 +265,14 @@ abstract class TestkitTest[TDB >: Null <: TestDB](
     } catch {
       case e: Exception if !scala.util.control.Exception.shouldRethrow(e) =>
     }
-    if (succeeded) Assert.fail("Exception expected")
+    if (succeeded)
+      Assert.fail("Exception expected")
   }
 
   def assertAllMatch[T](t: TraversableOnce[T])(f: PartialFunction[T, _]) =
     t.foreach { x =>
-      if (!f.isDefinedAt(x)) Assert.fail("Expected shape not matched by: " + x)
+      if (!f.isDefinedAt(x))
+        Assert.fail("Expected shape not matched by: " + x)
     }
 }
 
@@ -321,24 +340,32 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       f: => DBIOAction[R, NoStream, E]): DBIOAction[Unit, NoStream, E] =
     if (caps.forall(c => tdb.capabilities.contains(c)))
       f.andThen(DBIO.successful(()))
-    else DBIO.successful(())
+    else
+      DBIO.successful(())
   def ifNotCap[E <: Effect, R](caps: Capability*)(
       f: => DBIOAction[R, NoStream, E]): DBIOAction[Unit, NoStream, E] =
     if (!caps.forall(c => tdb.capabilities.contains(c)))
       f.andThen(DBIO.successful(()))
-    else DBIO.successful(())
+    else
+      DBIO.successful(())
 
   def ifCapF[R](caps: Capability*)(f: => Future[R]): Future[Unit] =
-    if (caps.forall(c => tdb.capabilities.contains(c))) f.map(_ => ())
-    else Future.successful(())
+    if (caps.forall(c => tdb.capabilities.contains(c)))
+      f.map(_ => ())
+    else
+      Future.successful(())
   def ifNotCapF[R](caps: Capability*)(f: => Future[R]): Future[Unit] =
-    if (!caps.forall(c => tdb.capabilities.contains(c))) f.map(_ => ())
-    else Future.successful(())
+    if (!caps.forall(c => tdb.capabilities.contains(c)))
+      f.map(_ => ())
+    else
+      Future.successful(())
 
   def ifCapU[T](caps: Capability*)(f: => T): Unit =
-    if (caps.forall(c => tdb.capabilities.contains(c))) f
+    if (caps.forall(c => tdb.capabilities.contains(c)))
+      f
   def ifNotCapU[T](caps: Capability*)(f: => T): Unit =
-    if (!caps.forall(c => tdb.capabilities.contains(c))) f
+    if (!caps.forall(c => tdb.capabilities.contains(c)))
+      f
 
   def seq[E <: Effect](
       actions: DBIOAction[_, NoStream, E]*): DBIOAction[Unit, NoStream, E] =
@@ -461,7 +488,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       } catch {
         case t: Throwable =>
       }
-      if (ok) fixStack(Assert.fail("Expected failure"))
+      if (ok)
+        fixStack(Assert.fail("Expected failure"))
     }
 
     def shouldBeA[T](implicit ct: ClassTag[T]): Unit = {

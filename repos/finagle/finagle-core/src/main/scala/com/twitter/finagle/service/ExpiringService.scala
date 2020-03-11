@@ -52,8 +52,16 @@ object ExpiringService {
         val ExpiringService.Param(idleTime, lifeTime) = _param
         val param.Stats(statsReceiver) = _stats
 
-        val idle = if (idleTime.isFinite) Some(idleTime) else None
-        val life = if (lifeTime.isFinite) Some(lifeTime) else None
+        val idle =
+          if (idleTime.isFinite)
+            Some(idleTime)
+          else
+            None
+        val life =
+          if (lifeTime.isFinite)
+            Some(lifeTime)
+          else
+            None
 
         (idle, life) match {
           case (None, None) => next
@@ -121,7 +129,8 @@ abstract class ExpiringService[Req, Rep](
   }
 
   private[this] def deactivate(): Boolean = synchronized {
-    if (!active) false
+    if (!active)
+      false
     else {
       active = false
       idleTask.cancel()
@@ -143,7 +152,8 @@ abstract class ExpiringService[Req, Rep](
 
   override def apply(req: Req): Future[Rep] = {
     val decrLatch = synchronized {
-      if (!active) false
+      if (!active)
+        false
       else {
         if (latch.incr() == 1) {
           idleTask.cancel()

@@ -54,20 +54,21 @@ trait Benchmark {
     *  the execution times in milliseconds in reverse order of the execution.
     */
   def runBenchmark(noTimes: Int): List[Long] =
-    for (i <- List.range(1, noTimes + 1)) yield {
-      setUp
-      val startTime = System.nanoTime
-      var i = 0;
-      while (i < multiplier) {
-        run()
-        i += 1
-      }
-      val stopTime = System.nanoTime
-      tearDown
-      Platform.collectGarbage
+    for (i <- List.range(1, noTimes + 1))
+      yield {
+        setUp
+        val startTime = System.nanoTime
+        var i = 0;
+        while (i < multiplier) {
+          run()
+          i += 1
+        }
+        val stopTime = System.nanoTime
+        tearDown
+        Platform.collectGarbage
 
-      (stopTime - startTime) / 1000000
-    }
+        (stopTime - startTime) / 1000000
+      }
 
   /** Prepare any data needed by the benchmark, but whose execution time
     *  should not be measured. This method is run before each call to the
@@ -99,7 +100,8 @@ trait Benchmark {
   def main(args: Array[String]) {
     if (args.length > 0) {
       val logFile = new java.io.OutputStreamWriter(System.out)
-      if (args.length > 1) multiplier = args(1).toInt
+      if (args.length > 1)
+        multiplier = args(1).toInt
       //logFile.write(prefix)
       val numbers: List[Long] = runBenchmark(args(0).toInt)
       if (enableOutput) {

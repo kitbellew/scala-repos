@@ -37,7 +37,7 @@ object ImportMembersUtil {
       case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
       case ScReferenceExpression.withQualifier(
-          qualRef: ScReferenceExpression) =>
+            qualRef: ScReferenceExpression) =>
         true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined
@@ -46,7 +46,8 @@ object ImportMembersUtil {
   }
 
   def resolvesToStablePath(ref: ScReferenceElement): Boolean = {
-    if (ref == null) return false
+    if (ref == null)
+      return false
 
     ref.resolve() match {
       case Both(member: PsiMember, named: PsiNamedElement) =>
@@ -161,7 +162,8 @@ object ImportMembersUtil {
       isQualifier: Boolean): Seq[PsiReference] = {
     def actuallyReplaced(ref: PsiReference): PsiElement = {
       val trueRef =
-        if (!isQualifier) ref
+        if (!isQualifier)
+          ref
         else
           ref match {
             case isQualifierFor(r) => r

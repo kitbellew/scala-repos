@@ -71,7 +71,10 @@ object Diff {
       case Nil =>
         Diff(
           JNothing,
-          if (yleft.isEmpty) JNothing else JObject(yleft),
+          if (yleft.isEmpty)
+            JNothing
+          else
+            JObject(yleft),
           JNothing)
       case x :: xs =>
         yleft find (_.name == x.name) match {
@@ -92,9 +95,21 @@ object Diff {
     def diffRec(xleft: List[JValue], yleft: List[JValue]): Diff =
       (xleft, yleft) match {
         case (xs, Nil) =>
-          Diff(JNothing, JNothing, if (xs.isEmpty) JNothing else JArray(xs))
+          Diff(
+            JNothing,
+            JNothing,
+            if (xs.isEmpty)
+              JNothing
+            else
+              JArray(xs))
         case (Nil, ys) =>
-          Diff(JNothing, if (ys.isEmpty) JNothing else JArray(ys), JNothing)
+          Diff(
+            JNothing,
+            if (ys.isEmpty)
+              JNothing
+            else
+              JArray(ys),
+            JNothing)
         case (x :: xs, y :: ys) =>
           val Diff(c1, a1, d1) = diff(x, y)
           val Diff(c2, a2, d2) = diffRec(xs, ys)

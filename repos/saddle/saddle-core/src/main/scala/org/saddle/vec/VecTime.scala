@@ -44,9 +44,15 @@ class VecTime(
   @transient lazy private val lmf = scalar.ScalarTagLong
 
   private def l2t(l: Long) =
-    if (lmf.isMissing(l)) scalarTag.missing else new DateTime(l, chrono)
+    if (lmf.isMissing(l))
+      scalarTag.missing
+    else
+      new DateTime(l, chrono)
   private def t2l(t: DateTime) =
-    if (scalarTag.isMissing(t)) lmf.missing else t.getMillis
+    if (scalarTag.isMissing(t))
+      lmf.missing
+    else
+      t.getMillis
   private def vl2vt(l: Vec[Long]) = new VecTime(l, tzone)
 
   def length = times.length
@@ -141,7 +147,11 @@ object VecTime {
     var i = 0
     while (i < millis.length) {
       val t = times(i)
-      millis(i) = if (sm.isMissing(t)) sl.missing else t.getMillis
+      millis(i) =
+        if (sm.isMissing(t))
+          sl.missing
+        else
+          t.getMillis
       i += 1
     }
     new VecTime(Vec(millis))
@@ -156,7 +166,11 @@ object VecTime {
     var i = 0
     while (i < millis.length) {
       val t = times(i)
-      millis(i) = if (sm.isMissing(t)) sl.missing else t.getMillis
+      millis(i) =
+        if (sm.isMissing(t))
+          sl.missing
+        else
+          t.getMillis
       i += 1
     }
     new VecTime(Vec(millis))

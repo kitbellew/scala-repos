@@ -18,7 +18,8 @@ object IteratorSpec extends Spec {
 
     def nonEmptyIteratorCheck(sz: Int) {
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct.put(new Wrap(i), i)
+      for (i <- 0 until sz)
+        ct.put(new Wrap(i), i)
 
       val it = ct.iterator
       val tracker = mutable.Map[Wrap, Int]()
@@ -85,7 +86,8 @@ object IteratorSpec extends Spec {
 
     def nonEmptyCollideCheck(sz: Int) {
       val ct = new TrieMap[DumbHash, Int]
-      for (i <- 0 until sz) ct.put(new DumbHash(i), i)
+      for (i <- 0 until sz)
+        ct.put(new DumbHash(i), i)
 
       val it = ct.iterator
       val tracker = mutable.Map[DumbHash, Int]()
@@ -147,14 +149,16 @@ object IteratorSpec extends Spec {
       val S = 5
       val checks = 5
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct.put(new Wrap(i), i)
+      for (i <- 0 until sz)
+        ct.put(new Wrap(i), i)
 
       class Modifier extends Thread {
         override def run() {
-          for (i <- 0 until sz) ct.putIfAbsent(new Wrap(i), i) match {
-            case Some(_) => ct.remove(new Wrap(i))
-            case None    =>
-          }
+          for (i <- 0 until sz)
+            ct.putIfAbsent(new Wrap(i), i) match {
+              case Some(_) => ct.remove(new Wrap(i))
+              case None    =>
+            }
         }
       }
 
@@ -163,7 +167,8 @@ object IteratorSpec extends Spec {
           override def run() {
             val snap = ct.readOnlySnapshot()
             val initial = mutable.Map[Wrap, Int]()
-            for (kv <- snap) initial += kv
+            for (kv <- snap)
+              initial += kv
 
             for (i <- 0 until checks) {
               assertEqual(snap.iterator.toMap, initial)
@@ -176,9 +181,12 @@ object IteratorSpec extends Spec {
         iter.join()
       }
 
-      val threads = for (_ <- 0 until W) yield new Modifier
+      val threads =
+        for (_ <- 0 until W)
+          yield new Modifier
       threads.foreach(_.start())
-      for (_ <- 0 until S) consistentIteration(ct, checks)
+      for (_ <- 0 until S)
+        consistentIteration(ct, checks)
       threads.foreach(_.join())
     }
 
@@ -188,7 +196,8 @@ object IteratorSpec extends Spec {
       val sgroupnum = 5
       val removerslowdown = 50
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct.put(new Wrap(i), i)
+      for (i <- 0 until sz)
+        ct.put(new Wrap(i), i)
 
       class Remover extends Thread {
         override def run() {
@@ -218,7 +227,8 @@ object IteratorSpec extends Spec {
       remover.start()
       for (_ <- 0 until sgroupnum) {
         val iters =
-          for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
+          for (_ <- 0 until sgroupsize)
+            yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }
@@ -261,7 +271,8 @@ object IteratorSpec extends Spec {
       inserter.start()
       for (_ <- 0 until sgroupnum) {
         val iters =
-          for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
+          for (_ <- 0 until sgroupsize)
+            yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }
@@ -272,12 +283,14 @@ object IteratorSpec extends Spec {
     "work on a yet unevaluated snapshot" in {
       val sz = 50000
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct.update(new Wrap(i), i)
+      for (i <- 0 until sz)
+        ct.update(new Wrap(i), i)
 
       val snap = ct.snapshot()
       val it = snap.iterator
 
-      while (it.hasNext) it.next()
+      while (it.hasNext)
+        it.next()
     }
 
     "be duplicated" in {
@@ -285,7 +298,8 @@ object IteratorSpec extends Spec {
       val ct = collection.parallel.mutable
         .ParTrieMap((0 until sz) zip (0 until sz): _*)
       val it = ct.splitter
-      for (_ <- 0 until (sz / 2)) it.next()
+      for (_ <- 0 until (sz / 2))
+        it.next()
       val dupit = it.dup
 
       it.toList shouldEqual dupit.toList

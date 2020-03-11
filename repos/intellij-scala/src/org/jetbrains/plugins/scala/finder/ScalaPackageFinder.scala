@@ -18,7 +18,8 @@ class ScalaPackageFinder(project: Project) extends PsiElementFinder {
       scope: GlobalSearchScope): Array[PsiClass] = PsiClass.EMPTY_ARRAY
 
   override def findPackage(qName: String): PsiPackage = {
-    if (DumbService.isDumb(project)) return null
+    if (DumbService.isDumb(project))
+      return null
     ScalaPsiManager.instance(project).syntheticPackage(qName)
   }
 }

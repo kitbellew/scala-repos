@@ -20,7 +20,8 @@ object NightlyPlugin extends AutoPlugin {
             specs2 % Test,
             junit % Test
           )
-        else Seq()
+        else
+          Seq()
     }
   }
 

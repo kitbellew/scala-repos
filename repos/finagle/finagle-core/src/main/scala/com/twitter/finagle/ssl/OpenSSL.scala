@@ -88,7 +88,8 @@ object OpenSSL {
       useCache: Boolean = true): Option[Engine] = {
     try {
       synchronized {
-        if (null == linker) linker = new Linker()
+        if (null == linker)
+          linker = new Linker()
       }
     } catch {
       case e: Exception =>

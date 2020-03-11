@@ -48,7 +48,10 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
     mapActiveValues(
       params,
       { (v: Double) =>
-        if (v == 0.0) 0.0 else new Gamma(v, 1).draw()
+        if (v == 0.0)
+          0.0
+        else
+          new Gamma(v, 1).draw()
       })
   }
 
@@ -59,7 +62,10 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
     val x = mapActiveValues(
       params,
       { (v: Double) =>
-        if (v == 0.0) 0.0 else new Gamma(v, 1).logDraw()
+        if (v == 0.0)
+          0.0
+        else
+          new Gamma(v, 1).logDraw()
       })
     val m = softmax(x.activeValuesIterator)
     assert(!m.isInfinite, x)
@@ -72,7 +78,8 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
     */
   override def unnormalizedLogPdf(m: T) = {
     val parts =
-      for ((k, v) <- params.activeIterator) yield (v - 1) * math.log(m(k))
+      for ((k, v) <- params.activeIterator)
+        yield (v - 1) * math.log(m(k))
     parts.sum
   }
 
@@ -139,8 +146,10 @@ object Dirichlet {
       def calculate(x: T) = {
         val lp = -stats.n * (-lbeta(x) + ((x - 1.0) dot p))
         val grad: T = (digamma(x) - digamma(sum(x)) - p) * (stats.n)
-        if (lp.isNaN) (Double.PositiveInfinity, grad)
-        else (lp, grad)
+        if (lp.isNaN)
+          (Double.PositiveInfinity, grad)
+        else
+          (lp, grad)
       }
     }
 

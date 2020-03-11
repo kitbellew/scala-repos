@@ -67,8 +67,10 @@ final class FpFilter[A](
   // Avoid using this.
   override def equals(that: Any): Boolean = that match {
     case that: FpFilter[_] =>
-      if (this.error == 0 && that.error == 0) this.apx == that.apx
-      else this.exact == that.exact
+      if (this.error == 0 && that.error == 0)
+        this.apx == that.apx
+      else
+        this.exact == that.exact
     case _ =>
       false
   }

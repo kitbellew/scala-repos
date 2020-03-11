@@ -43,7 +43,8 @@ object MTable {
         types.map(_.toArray).orNull)) { r =>
       if (r.numColumns > 5)
         MTable(MQName.from(r), r.<<, r.<<, MQName.optionalFrom(r), r.<<, r.<<)
-      else MTable(MQName.from(r), r.<<, r.<<, None, None, None)
+      else
+        MTable(MQName.from(r), r.<<, r.<<, None, None, None)
     }
   def getTables(namePattern: String)
       : BasicStreamingAction[Vector[MTable], MTable, Effect.Read] =

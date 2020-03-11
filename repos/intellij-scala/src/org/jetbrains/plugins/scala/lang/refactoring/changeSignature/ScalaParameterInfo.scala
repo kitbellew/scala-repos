@@ -58,7 +58,8 @@ class ScalaParameterInfo(
     false //overriders in java of method with repeated parameters are not varargs
 
   protected def psiType: PsiType = {
-    if (scType == null) return null
+    if (scType == null)
+      return null
 
     val allScope = GlobalSearchScope.allScope(project)
     if (isByName) {
@@ -68,14 +69,16 @@ class ScalaParameterInfo(
       val seqType =
         ScDesignatorType.fromClassFqn("scala.collection.Seq", project, allScope)
       ScType.toPsi(ScParameterizedType(seqType, Seq(scType)), project, allScope)
-    } else ScType.toPsi(scType, project, allScope)
+    } else
+      ScType.toPsi(scType, project, allScope)
   }
 
   override def createType(context: PsiElement, manager: PsiManager): PsiType =
     psiType
 
   override def getValue(expr: PsiCallExpression): PsiExpression = {
-    if (defaultForJava.isEmpty) return null
+    if (defaultForJava.isEmpty)
+      return null
     val defaultText =
       if (defaultForJava.contains("$default$")) {
         val qual = expr match {
@@ -88,7 +91,8 @@ class ScalaParameterInfo(
           case _ => ""
         }
         qual + defaultForJava
-      } else defaultForJava
+      } else
+        defaultForJava
 
     val expression = JavaPsiFacade
       .getElementFactory(project)
@@ -100,17 +104,26 @@ class ScalaParameterInfo(
   }
 
   override def getTypeWrapper: CanonicalTypes.Type = {
-    if (scType != null) CanonicalTypes.createTypeWrapper(psiType) else null
+    if (scType != null)
+      CanonicalTypes.createTypeWrapper(psiType)
+    else
+      null
   }
 
   override def getTypeText: String =
-    if (scType != null) getTypeWrapper.getTypeText else null
+    if (scType != null)
+      getTypeWrapper.getTypeText
+    else
+      null
 
   def typeText = {
     val baseText = Option(scType).fold("")(_.presentableText)
-    if (isRepeatedParameter) baseText + "*"
-    else if (isByName) " => " + baseText
-    else baseText
+    if (isRepeatedParameter)
+      baseText + "*"
+    else if (isByName)
+      " => " + baseText
+    else
+      baseText
   }
 }
 

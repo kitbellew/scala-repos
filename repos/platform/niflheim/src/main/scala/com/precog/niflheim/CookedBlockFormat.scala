@@ -34,10 +34,12 @@ case class CookedBlockMetadata(
     segments: Array[(SegmentId, File)]) {
   override def equals(that: Any): Boolean = that match {
     case CookedBlockMetadata(`blockid`, `length`, segments2) =>
-      if (segments.length != segments2.length) return false
+      if (segments.length != segments2.length)
+        return false
       var i = 0
       while (i < segments.length) {
-        if (segments(i) != segments2(i)) return false
+        if (segments(i) != segments2(i))
+          return false
         i += 1
       }
       true

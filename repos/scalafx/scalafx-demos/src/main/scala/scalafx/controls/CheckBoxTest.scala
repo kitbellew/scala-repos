@@ -79,7 +79,10 @@ class CheckBoxControls(check: CheckBox)
   }
   check.onAction = (event: ActionEvent) => {
     lblSelected.text =
-      if (check.indeterminate()) "Indeterminate" else check.selected().toString
+      if (check.indeterminate())
+        "Indeterminate"
+      else
+        check.selected().toString
   }
 
   val btnAllowIndeterminate = new ToggleButton {

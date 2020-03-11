@@ -235,7 +235,15 @@ object clip extends UFunc {
     new Impl3[T, V, V, T] {
       import ordering.mkOrderingOps
       def apply(v: T, v2: V, v3: V): T = {
-        cmv(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
+        cmv(
+          v,
+          x =>
+            if (x < v2)
+              v2
+            else if (x > v3)
+              v3
+            else
+              x)
       }
     }
   }
@@ -246,7 +254,15 @@ object clip extends UFunc {
     import ordering.mkOrderingOps
     new InPlaceImpl3[T, V, V] {
       def apply(v: T, v2: V, v3: V): Unit = {
-        cmv.transform(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
+        cmv.transform(
+          v,
+          x =>
+            if (x < v2)
+              v2
+            else if (x > v3)
+              v3
+            else
+              x)
       }
     }
   }
@@ -256,7 +272,15 @@ object clip extends UFunc {
       cmv: CanTransformValues[Vec, T]): InPlaceImpl3[Vec, T, T] = {
     new InPlaceImpl3[Vec, T, T] {
       def apply(v: Vec, v2: T, v3: T): Unit = {
-        cmv.transform(v, x => if (x < v2) v2 else if (x > v3) v3 else x)
+        cmv.transform(
+          v,
+          x =>
+            if (x < v2)
+              v2
+            else if (x > v3)
+              v3
+            else
+              x)
       }
     }
   }

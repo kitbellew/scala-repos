@@ -21,16 +21,21 @@ object PartestUtil {
     private def equiv(f1: File, f2: File) =
       f1.getCanonicalFile == f2.getCanonicalFile
     def parentChain(f: File): Iterator[File] =
-      if (f == null || !f.exists) Iterator()
+      if (f == null || !f.exists)
+        Iterator()
       else
-        Iterator(f) ++ (if (f.getParentFile == null) Nil
-                        else parentChain(f.getParentFile))
+        Iterator(f) ++ (if (f.getParentFile == null)
+                          Nil
+                        else
+                          parentChain(f.getParentFile))
     def isParentOf(parent: File, f2: File, maxDepth: Int) =
       parentChain(f2).take(maxDepth).exists(p1 => equiv(p1, parent))
     def isTestCase(f: File) = {
       val grandParent =
-        if (f != null && f.getParentFile != null) f.getParentFile.getParentFile
-        else null
+        if (f != null && f.getParentFile != null)
+          f.getParentFile.getParentFile
+        else
+          null
       grandParent != null && equiv(
         grandParent,
         testBase / srcPath) && testCaseFilter.accept(f)
@@ -97,8 +102,10 @@ object PartestUtil {
                 val assocFiles =
                   List(".check", ".flags").map(testFile.getParentFile / _)
                 val sourceFiles =
-                  if (testFile.isFile) List(testFile)
-                  else testFile.**(AllPassFilter).get.toList
+                  if (testFile.isFile)
+                    List(testFile)
+                  else
+                    testFile.**(AllPassFilter).get.toList
                 val allFiles = testFile :: assocFiles ::: sourceFiles
                 allFiles.exists { f =>
                   f.exists && f.isFile && Pattern

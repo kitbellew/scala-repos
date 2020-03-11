@@ -38,8 +38,10 @@ case class FixedScale(denom: Int) {
   */
 class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def unary_-(): FixedPoint =
-    if (long != Long.MinValue) new FixedPoint(-long)
-    else throw new FixedPointOverflow(long)
+    if (long != Long.MinValue)
+      new FixedPoint(-long)
+    else
+      throw new FixedPointOverflow(long)
 
   def ===(rhs: FixedPoint): Boolean = lhs.long == rhs.long
 
@@ -48,15 +50,23 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def !=(rhs: FixedPoint): Boolean = lhs.long != rhs.long
 
   def abs: FixedPoint =
-    if (long >= 0L) this
-    else if (long != Long.MinValue) new FixedPoint(-long)
-    else throw new FixedPointOverflow(long)
+    if (long >= 0L)
+      this
+    else if (long != Long.MinValue)
+      new FixedPoint(-long)
+    else
+      throw new FixedPointOverflow(long)
 
   def signum: Int =
     java.lang.Long.signum(long)
 
   def compare(rhs: FixedPoint): Int =
-    if (lhs.long < rhs.long) -1 else if (lhs.long == rhs.long) 0 else 1
+    if (lhs.long < rhs.long)
+      -1
+    else if (lhs.long == rhs.long)
+      0
+    else
+      1
 
   def <(rhs: FixedPoint): Boolean = lhs.long < rhs.long
   def <=(rhs: FixedPoint): Boolean = lhs.long <= rhs.long
@@ -104,7 +114,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   }
 
   def *(rhs: FixedPoint)(implicit scale: FixedScale): FixedPoint = {
-    if (lhs.long < rhs.long) return rhs * lhs
+    if (lhs.long < rhs.long)
+      return rhs * lhs
     val d = scale.denom
     val q = lhs.long / d
     val r = lhs.long % d
@@ -177,14 +188,20 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     long % scale.denom == 0L
 
   def floor(implicit scale: FixedScale): FixedPoint =
-    if (long % scale.denom == 0L) this
-    else if (long > 0L) FixedPoint(long / scale.denom)
-    else FixedPoint(long / scale.denom - 1L)
+    if (long % scale.denom == 0L)
+      this
+    else if (long > 0L)
+      FixedPoint(long / scale.denom)
+    else
+      FixedPoint(long / scale.denom - 1L)
 
   def ceil(implicit scale: FixedScale): FixedPoint =
-    if (long % scale.denom == 0L) this
-    else if (long > 0L) FixedPoint(long / scale.denom + 1L)
-    else FixedPoint(long / scale.denom)
+    if (long % scale.denom == 0L)
+      this
+    else if (long > 0L)
+      FixedPoint(long / scale.denom + 1L)
+    else
+      FixedPoint(long / scale.denom)
 
   def round(implicit scale: FixedScale): FixedPoint = {
     val d = scale.denom
@@ -192,10 +209,16 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
       this
     } else if (long > 0) {
       val m = (long % d)
-      if (m >= (d - m)) FixedPoint(long / d + 1L) else FixedPoint(long / d)
+      if (m >= (d - m))
+        FixedPoint(long / d + 1L)
+      else
+        FixedPoint(long / d)
     } else {
       val m = -(long % d)
-      if (m >= (d - m)) FixedPoint(long / d - 1L) else FixedPoint(long / d)
+      if (m >= (d - m))
+        FixedPoint(long / d - 1L)
+      else
+        FixedPoint(long / d)
     }
   }
 

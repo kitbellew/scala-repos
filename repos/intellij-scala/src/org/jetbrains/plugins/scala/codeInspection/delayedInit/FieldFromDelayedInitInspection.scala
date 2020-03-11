@@ -50,14 +50,16 @@ class FieldFromDelayedInitInspection
       ScalaPsiUtil.nameContext(srr.getElement) match {
         case LazyVal(_) => None
         case Both(
-            (_: ScPatternDefinition | _: ScVariableDefinition),
-            ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
+              (_: ScPatternDefinition | _: ScVariableDefinition),
+              ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
           if (srr.fromType.exists(
                 InspectionsUtil.conformsToTypeFromClass(
                   _,
                   "scala.DelayedInit",
-                  clazz.getProject))) Some(clazz)
-          else None
+                  clazz.getProject)))
+            Some(clazz)
+          else
+            None
         case _ => None
       }
     }

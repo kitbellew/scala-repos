@@ -108,7 +108,8 @@ object InfixType {
       if (assoc == 1) {
         infixTypeMarker.drop()
       } else {
-        for (x: PsiBuilder.Marker <- markerList) x.drop()
+        for (x: PsiBuilder.Marker <- markerList)
+          x.drop()
       }
     }
     true

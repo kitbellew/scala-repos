@@ -426,7 +426,10 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
     private def updateStyleClasses() {
       val closeVsOpen =
-        if (openAboveClose) "open-above-close" else "close-above-open"
+        if (openAboveClose)
+          "open-above-close"
+        else
+          "close-above-open"
 
       styleClass = Seq("candlestick-candle", seriesStyleClass, dataStyleClass)
       highLowLine.styleClass =

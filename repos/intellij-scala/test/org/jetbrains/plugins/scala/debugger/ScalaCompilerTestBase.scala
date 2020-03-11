@@ -58,7 +58,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
   protected def addRoots() {
     def getOrCreateChildDir(name: String) = {
       val file = new File(getBaseDir.getCanonicalPath, name)
-      if (!file.exists()) file.mkdir()
+      if (!file.exists())
+        file.mkdir()
       LocalFileSystem.getInstance.refreshAndFindFileByPath(
         file.getCanonicalPath)
     }
@@ -104,7 +105,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     scalaLibraryLoader.clean()
     super.tearDown()
 
-    if (deleteProjectAtTearDown) VfsTestUtil.deleteFile(baseDir)
+    if (deleteProjectAtTearDown)
+      VfsTestUtil.deleteFile(baseDir)
   }
 
   protected def make(): List[String] = {
@@ -176,7 +178,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     def hasError = myError != null
 
     def throwException() {
-      if (myError != null) throw new RuntimeException(myError)
+      if (myError != null)
+        throw new RuntimeException(myError)
     }
 
     def getMessages: List[String] = myMessages.toList

@@ -40,8 +40,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private lazy val transportInformation: Option[Serialization.Information] = {
     val address = system.provider.getDefaultAddress
-    if (address.hasLocalScope) None
-    else Some(Serialization.Information(address, system))
+    if (address.hasLocalScope)
+      None
+    else
+      Some(Serialization.Information(address, system))
   }
 
   /**
@@ -142,7 +144,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         Some(
           Duration(persistentStateChange.getTimeout)
             .asInstanceOf[duration.FiniteDuration])
-      else None
+      else
+        None
     )
   }
 
@@ -213,16 +216,26 @@ class MessageSerializer(val system: ExtendedActorSystem)
     PersistentRepr(
       payload(persistentMessage.getPayload),
       persistentMessage.getSequenceNr,
-      if (persistentMessage.hasPersistenceId) persistentMessage.getPersistenceId
-      else Undefined,
-      if (persistentMessage.hasManifest) persistentMessage.getManifest
-      else Undefined,
-      if (persistentMessage.hasDeleted) persistentMessage.getDeleted else false,
+      if (persistentMessage.hasPersistenceId)
+        persistentMessage.getPersistenceId
+      else
+        Undefined,
+      if (persistentMessage.hasManifest)
+        persistentMessage.getManifest
+      else
+        Undefined,
+      if (persistentMessage.hasDeleted)
+        persistentMessage.getDeleted
+      else
+        false,
       if (persistentMessage.hasSender)
         system.provider.resolveActorRef(persistentMessage.getSender)
-      else Actor.noSender,
-      if (persistentMessage.hasWriterUuid) persistentMessage.getWriterUuid
-      else Undefined
+      else
+        Actor.noSender,
+      if (persistentMessage.hasWriterUuid)
+        persistentMessage.getWriterUuid
+      else
+        Undefined
     )
   }
 
@@ -236,7 +249,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val manifest =
       if (persistentPayload.hasPayloadManifest)
         persistentPayload.getPayloadManifest.toStringUtf8
-      else ""
+      else
+        ""
 
     serialization
       .deserialize(

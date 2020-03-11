@@ -72,8 +72,10 @@ object Reader {
   implicit def option[T: Reader]: Reader[Option[T]] = new Reader[Option[T]] {
     val r = implicitly[Reader[T]]
     def read(is: InputStream) =
-      if (is.readByte == (0: Byte)) None
-      else Some(r.read(is))
+      if (is.readByte == (0: Byte))
+        None
+      else
+        Some(r.read(is))
   }
 
   implicit def either[L: Reader, R: Reader]: Reader[Either[L, R]] =
@@ -81,8 +83,10 @@ object Reader {
       val lRead = implicitly[Reader[L]]
       val rRead = implicitly[Reader[R]]
       def read(is: InputStream) =
-        if (is.readByte == (0: Byte)) Left(lRead.read(is))
-        else Right(rRead.read(is))
+        if (is.readByte == (0: Byte))
+          Left(lRead.read(is))
+        else
+          Right(rRead.read(is))
     }
 
   implicit def tuple2[T1: Reader, T2: Reader]: Reader[(T1, T2)] =
@@ -107,7 +111,8 @@ object Reader {
         val res = new Array[T](size)
         @annotation.tailrec
         def go(p: Int): Unit =
-          if (p == size) ()
+          if (p == size)
+            ()
           else {
             res(p) = readerT.read(is)
             go(p + 1)
@@ -127,7 +132,8 @@ object Reader {
       builder.sizeHint(size)
       @annotation.tailrec
       def go(idx: Int): Unit =
-        if (idx == size) ()
+        if (idx == size)
+          ()
         else {
           builder += readerT.read(is)
           go(idx + 1)

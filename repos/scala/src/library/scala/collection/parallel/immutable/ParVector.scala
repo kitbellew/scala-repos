@@ -65,8 +65,10 @@ class ParVector[+T](private[this] val vector: Vector[T])
     def dup: SeqSplitter[T] = (new ParVector(remainingVector)).splitter
     def split: Seq[ParVectorIterator] = {
       val rem = remaining
-      if (rem >= 2) psplit(rem / 2, rem - rem / 2)
-      else Seq(this)
+      if (rem >= 2)
+        psplit(rem / 2, rem - rem / 2)
+      else
+        Seq(this)
     }
     def psplit(sizes: Int*): Seq[ParVectorIterator] = {
       var remvector = remainingVector
@@ -124,7 +126,8 @@ private[immutable] class LazyParVectorCombiner[T]
   }
 
   def combine[U <: T, NewTo >: ParVector[T]](other: Combiner[U, NewTo]) =
-    if (other eq this) this
+    if (other eq this)
+      this
     else {
       val that = other.asInstanceOf[LazyParVectorCombiner[T]]
       sz += that.sz

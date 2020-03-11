@@ -54,11 +54,13 @@ class JavaCopyPastePostProcessor
       editor: Editor,
       startOffsets: Array[Int],
       endOffsets: Array[Int]): TextBlockTransferableData = {
-    if (DumbService.getInstance(file.getProject).isDumb) return null
+    if (DumbService.getInstance(file.getProject).isDumb)
+      return null
     if (!ScalaProjectSettings
           .getInstance(file.getProject)
           .isEnableJavaToScalaConversion ||
-        !file.isInstanceOf[PsiJavaFile]) return null
+        !file.isInstanceOf[PsiJavaFile])
+      return null
 
     sealed trait Part
     case class ElementPart(elem: PsiElement) extends Part
@@ -70,13 +72,16 @@ class JavaCopyPastePostProcessor
         for ((startOffset, endOffset) <- startOffsets.zip(endOffsets)) {
           @tailrec
           def findElem(offset: Int): PsiElement = {
-            if (offset > endOffset) return null
+            if (offset > endOffset)
+              return null
             val elem = file.findElementAt(offset)
-            if (elem == null) return null
+            if (elem == null)
+              return null
             if (elem.getParent.getTextRange.getEndOffset > endOffset ||
                 elem.getParent.getTextRange.getStartOffset < startOffset)
               findElem(elem.getTextRange.getEndOffset + 1)
-            else elem
+            else
+              elem
           }
           var elem: PsiElement = findElem(startOffset)
           if (elem != null) {
@@ -113,8 +118,10 @@ class JavaCopyPastePostProcessor
             editor,
             startOffsets,
             endOffsets)
-          if (data.isEmpty) null
-          else data.get(0).asInstanceOf[ReferenceTransferableData]
+          if (data.isEmpty)
+            null
+          else
+            data.get(0).asInstanceOf[ReferenceTransferableData]
         }
         val shift = startOffsets.headOption.getOrElse(0)
         if (refs != null)
@@ -125,7 +132,8 @@ class JavaCopyPastePostProcessor
               it.qClassName,
               it.staticMemberName)
           }
-        else Seq.empty
+        else
+          Seq.empty
       }
 
       val associationsHelper = new ListBuffer[AssociationHelper]()
@@ -199,17 +207,21 @@ class JavaCopyPastePostProcessor
       value: TextBlockTransferableData) {
     if (!ScalaProjectSettings
           .getInstance(project)
-          .isEnableJavaToScalaConversion) return
-    if (value == null) return
+          .isEnableJavaToScalaConversion)
+      return
+    if (value == null)
+      return
     val file =
       PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
     val dialog = new ScalaPasteFromJavaDialog(project)
     val (text, associations) = value match {
       case code: ConvertedCode => (code.data, code.associations)
       case _                   => ("", Array.empty[Association])
     }
-    if (text == "") return //copy as usually
+    if (text == "")
+      return //copy as usually
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)
       dialog.show()
     if (ScalaProjectSettings
@@ -292,7 +304,8 @@ class JavaCopyPastePostProcessor
     val isInsideStringLiteral = hasQuoteAt(start - 1) && hasQuoteAt(end)
     if (isInsideStringLiteral && text.startsWith("\"") && text.endsWith("\""))
       document.replaceString(start - 1, end + 1, text)
-    else document.replaceString(start, end, text)
+    else
+      document.replaceString(start, end, text)
   }
 
   class ConvertedCode(val data: String, val associations: Array[Association])

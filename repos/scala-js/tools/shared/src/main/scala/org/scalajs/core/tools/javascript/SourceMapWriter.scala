@@ -159,8 +159,10 @@ class SourceMapWriter(
       originalPos: Position,
       optOriginalName: Option[String]): Unit = {
     val originalName =
-      if (optOriginalName.isDefined) optOriginalName.get
-      else null
+      if (optOriginalName.isDefined)
+        optOriginalName.get
+      else
+        null
     nodePosStack.push(originalPos, originalName)
     startSegment(column, originalPos, originalName)
   }
@@ -193,8 +195,10 @@ class SourceMapWriter(
       return
 
     // Segments of a line are separated by ','
-    if (firstSegmentOfLine) firstSegmentOfLine = false
-    else out.write(',')
+    if (firstSegmentOfLine)
+      firstSegmentOfLine = false
+    else
+      out.write(',')
 
     // Generated column field
     writeBase64VLQ(pendingColumnInGenerated - lastColumnInGenerated)

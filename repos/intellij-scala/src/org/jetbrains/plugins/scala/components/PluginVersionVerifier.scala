@@ -35,7 +35,10 @@ object ScalaPluginVersionVerifier {
         .compare((major, minor, build), (that.major, that.minor, that.build))
 
     val presentation: String =
-      if (major == Int.MaxValue) "SNAPSHOT" else s"$major.$minor.$build"
+      if (major == Int.MaxValue)
+        "SNAPSHOT"
+      else
+        s"$major.$minor.$build"
 
     def isSnapshot = presentation == "SNAPSHOT"
 

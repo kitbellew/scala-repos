@@ -438,7 +438,11 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
     left.dataType match {
       case StringType if right.foldable =>
         val sdf = classOf[SimpleDateFormat].getName
-        val fString = if (constFormat == null) null else constFormat.toString
+        val fString =
+          if (constFormat == null)
+            null
+          else
+            constFormat.toString
         val formatter = ctx.freshName("formatter")
         if (fString == null) {
           s"""

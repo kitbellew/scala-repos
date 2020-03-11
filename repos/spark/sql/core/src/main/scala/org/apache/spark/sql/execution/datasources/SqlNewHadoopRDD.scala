@@ -191,7 +191,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           reader = parquetReader.asInstanceOf[RecordReader[Void, V]]
           parquetReader.resultBatch()
           // Whole stage codegen (PhysicalRDD) is able to deal with batches directly
-          if (enableWholestageCodegen) parquetReader.enableReturningBatches()
+          if (enableWholestageCodegen)
+            parquetReader.enableReturningBatches()
         }
       }
 
@@ -324,7 +325,10 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
       extends RDD[U](prev) {
 
     override val partitioner =
-      if (preservesPartitioning) firstParent[T].partitioner else None
+      if (preservesPartitioning)
+        firstParent[T].partitioner
+      else
+        None
 
     override def getPartitions: Array[SparkPartition] =
       firstParent[T].partitions

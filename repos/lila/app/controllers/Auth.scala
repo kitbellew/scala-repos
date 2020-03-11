@@ -150,7 +150,8 @@ object Auth extends LilaController {
                         if (env.emailConfirm.effective)
                           Redirect(
                             routes.Auth.checkYourEmail(user.username)).fuccess
-                        else saveAuthAndRedirect(user)
+                        else
+                          saveAuthAndRedirect(user)
                       }
                   }
             }

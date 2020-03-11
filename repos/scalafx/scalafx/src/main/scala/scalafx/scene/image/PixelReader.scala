@@ -36,7 +36,10 @@ import scalafx.scene.paint.Color
 
 object PixelReader {
   implicit def sfxPixelReader2jfx(pr: PixelReader): jfxsi.PixelReader =
-    if (pr != null) pr.delegate else null
+    if (pr != null)
+      pr.delegate
+    else
+      null
 }
 
 /**

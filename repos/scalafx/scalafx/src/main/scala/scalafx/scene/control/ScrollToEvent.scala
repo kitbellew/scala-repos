@@ -48,7 +48,10 @@ object ScrollToEvent {
     */
   implicit def sfxScrollToEvent2jfx[T](
       event: ScrollToEvent[T]): jfxsc.ScrollToEvent[T] =
-    if (event != null) event.delegate else null
+    if (event != null)
+      event.delegate
+    else
+      null
 
   /**
     * Common supertype for all scroll-to event types.

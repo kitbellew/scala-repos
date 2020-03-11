@@ -59,7 +59,11 @@ class ScAccessModifierElementType[Func <: ScAccessModifier]
     val isPrivate = dataStream.readBoolean
     val isThis = dataStream.readBoolean
     val hasId = dataStream.readBoolean
-    val idText = if (hasId) Some(dataStream.readName) else None
+    val idText =
+      if (hasId)
+        Some(dataStream.readName)
+      else
+        None
     new ScAccessModifierStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this,

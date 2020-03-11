@@ -280,7 +280,10 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
 
   private def nextPowerOf2(n: Int): Int = {
     val highBit = Integer.highestOneBit(n)
-    if (highBit == n) n else highBit << 1
+    if (highBit == n)
+      n
+    else
+      highBit << 1
   }
 }
 

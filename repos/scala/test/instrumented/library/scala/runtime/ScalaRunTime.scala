@@ -60,8 +60,10 @@ object ScalaRunTime {
     */
   def arrayClass(clazz: jClass[_]): jClass[_] = {
     // newInstance throws an exception if the erasure is Void.TYPE. see SI-5680
-    if (clazz == java.lang.Void.TYPE) classOf[Array[Unit]]
-    else java.lang.reflect.Array.newInstance(clazz, 0).getClass
+    if (clazz == java.lang.Void.TYPE)
+      classOf[Array[Unit]]
+    else
+      java.lang.reflect.Array.newInstance(clazz, 0).getClass
   }
 
   /** Return the class object representing elements in arrays described by a given schematic.
@@ -185,7 +187,10 @@ object ScalaRunTime {
   }
 
   def checkInitialized[T <: AnyRef](x: T): T =
-    if (x == null) throw new UninitializedError else x
+    if (x == null)
+      throw new UninitializedError
+    else
+      x
 
   def _toString(x: Product): String =
     x.productIterator.mkString(x.productPrefix + "(", ",", ")")
@@ -209,13 +214,16 @@ object ScalaRunTime {
   /** Fast path equality method for inlining; used when -optimise is set.
     */
   @inline def inlinedEquals(x: Object, y: Object): Boolean =
-    if (x eq y) true
-    else if (x eq null) false
+    if (x eq y)
+      true
+    else if (x eq null)
+      false
     else if (x.isInstanceOf[java.lang.Number])
       BoxesRunTime.equalsNumObject(x.asInstanceOf[java.lang.Number], y)
     else if (x.isInstanceOf[java.lang.Character])
       BoxesRunTime.equalsCharObject(x.asInstanceOf[java.lang.Character], y)
-    else x.equals(y)
+    else
+      x.equals(y)
 
   def _equals(x: Product, y: Any): Boolean = y match {
     case y: Product if x.productArity == y.productArity =>
@@ -229,28 +237,38 @@ object ScalaRunTime {
   // must not call ## themselves.
 
   def hash(x: Any): Int =
-    if (x == null) 0
+    if (x == null)
+      0
     else if (x.isInstanceOf[java.lang.Number])
       BoxesRunTime.hashFromNumber(x.asInstanceOf[java.lang.Number])
-    else x.hashCode
+    else
+      x.hashCode
 
   def hash(dv: Double): Int = {
     val iv = dv.toInt
-    if (iv == dv) return iv
+    if (iv == dv)
+      return iv
 
     val lv = dv.toLong
-    if (lv == dv) return lv.hashCode
+    if (lv == dv)
+      return lv.hashCode
 
     val fv = dv.toFloat
-    if (fv == dv) fv.hashCode else dv.hashCode
+    if (fv == dv)
+      fv.hashCode
+    else
+      dv.hashCode
   }
   def hash(fv: Float): Int = {
     val iv = fv.toInt
-    if (iv == fv) return iv
+    if (iv == fv)
+      return iv
 
     val lv = fv.toLong
-    if (lv == fv) return hash(lv)
-    else fv.hashCode
+    if (lv == fv)
+      return hash(lv)
+    else
+      fv.hashCode
   }
   def hash(lv: Long): Int = {
     val low = lv.toInt
@@ -266,7 +284,11 @@ object ScalaRunTime {
   def hash(x: Short): Int = x.toInt
   def hash(x: Byte): Int = x.toInt
   def hash(x: Char): Int = x.toInt
-  def hash(x: Boolean): Int = if (x) true.hashCode else false.hashCode
+  def hash(x: Boolean): Int =
+    if (x)
+      true.hashCode
+    else
+      false.hashCode
   def hash(x: Unit): Int = 0
 
   /** A helper method for constructing case class equality methods,
@@ -344,7 +366,10 @@ object ScalaRunTime {
       case null => "null"
       case ""   => "\"\""
       case x: String =>
-        if (x.head.isWhitespace || x.last.isWhitespace) "\"" + x + "\"" else x
+        if (x.head.isWhitespace || x.last.isWhitespace)
+          "\"" + x + "\""
+        else
+          x
       case x if useOwnToString(x)  => x.toString
       case x: AnyRef if isArray(x) => arrayToString(x)
       case x: scala.collection.Map[_, _] =>
@@ -373,7 +398,11 @@ object ScalaRunTime {
   /** stringOf formatted for use in a repl result. */
   def replStringOf(arg: Any, maxElements: Int): String = {
     val s = stringOf(arg, maxElements)
-    val nl = if (s contains "\n") "\n" else ""
+    val nl =
+      if (s contains "\n")
+        "\n"
+      else
+        ""
 
     nl + s + "\n"
   }

@@ -35,16 +35,21 @@ private[http] object StreamUtils {
           element: ByteString,
           ctx: Context[ByteString]): SyncDirective = {
         val data = f(element)
-        if (data.nonEmpty) ctx.push(data)
-        else ctx.pull()
+        if (data.nonEmpty)
+          ctx.push(data)
+        else
+          ctx.pull()
       }
 
       override def onPull(ctx: Context[ByteString]): SyncDirective =
         if (ctx.isFinishing) {
           val data = finish()
-          if (data.nonEmpty) ctx.pushAndFinish(data)
-          else ctx.finish()
-        } else ctx.pull()
+          if (data.nonEmpty)
+            ctx.pushAndFinish(data)
+          else
+            ctx.finish()
+        } else
+          ctx.pull()
 
       override def onUpstreamFinish(
           ctx: Context[ByteString]): TerminationDirective =
@@ -119,12 +124,18 @@ private[http] object StreamUtils {
             ctx: Context[ByteString]): SyncDirective = {
           val data = element.take(math.min(remaining, Int.MaxValue).toInt)
           remaining -= data.size
-          if (remaining <= 0) ctx.pushAndFinish(data)
-          else ctx.push(data)
+          if (remaining <= 0)
+            ctx.pushAndFinish(data)
+          else
+            ctx.push(data)
         }
       }
 
-      override def initial: State = if (start > 0) skipping else taking(length)
+      override def initial: State =
+        if (start > 0)
+          skipping
+        else
+          taking(length)
     }
     Flow[ByteString].transform(() ⇒ transformer).named("sliceBytes")
   }
@@ -151,7 +162,8 @@ private[http] object StreamUtils {
           case object WaitingForData extends InHandler with OutHandler {
             override def onPush(): Unit = {
               val elem = grab(in)
-              if (elem.size <= maxBytesPerChunk) push(out, elem)
+              if (elem.size <= maxBytesPerChunk)
+                push(out, elem)
               else {
                 splitAndPush(elem)
                 setHandlers(in, out, DeliveringData)
@@ -167,12 +179,17 @@ private[http] object StreamUtils {
             override def onPull(): Unit = {
               splitAndPush(remaining)
               if (remaining.isEmpty) {
-                if (finishing) completeStage()
-                else setHandlers(in, out, WaitingForData)
+                if (finishing)
+                  completeStage()
+                else
+                  setHandlers(in, out, WaitingForData)
               }
             }
             override def onUpstreamFinish(): Unit =
-              if (remaining.isEmpty) completeStage() else finishing = true
+              if (remaining.isEmpty)
+                completeStage()
+              else
+                finishing = true
           }
 
           override def toString = "limitByteChunksStage"
@@ -300,7 +317,8 @@ private[http] object StreamUtils {
         if (pf isDefinedAt cause) {
           recovery = Some(pf(cause))
           ctx.absorbTermination()
-        } else super.onUpstreamFailure(cause, ctx)
+        } else
+          super.onUpstreamFailure(cause, ctx)
     }
     () ⇒ stage
   }

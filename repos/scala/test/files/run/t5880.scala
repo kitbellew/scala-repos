@@ -18,7 +18,9 @@ object Test {
     }
     def expected = tests / groups
     def Dstat = {
-      val diffs = for (i <- 0 until groups) yield math.abs(hits(i) - expected)
+      val diffs =
+        for (i <- 0 until groups)
+          yield math.abs(hits(i) - expected)
       diffs.sum.toDouble / expected
     }
     def ChiSquare = {

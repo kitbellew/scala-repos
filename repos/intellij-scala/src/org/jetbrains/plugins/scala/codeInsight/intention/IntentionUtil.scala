@@ -18,8 +18,10 @@ object IntentionUtil {
       element: PsiElement,
       onElementLine: Boolean = false): CommentsAroundElement = {
     def hasLineBreaks(whiteSpace: PsiElement): Boolean = {
-      if (!onElementLine) false
-      else StringUtil.containsLineBreak(whiteSpace.getText)
+      if (!onElementLine)
+        false
+      else
+        StringUtil.containsLineBreak(whiteSpace.getText)
     }
 
     def getElements(it: Iterator[PsiElement]) = {
@@ -53,7 +55,8 @@ object IntentionUtil {
       commentsAroundElement: CommentsAroundElement,
       parent: PsiElement,
       anchor: PsiElement): Unit = {
-    if ((parent == null) || (anchor == null)) return
+    if ((parent == null) || (anchor == null))
+      return
 
     val before = commentsAroundElement.before
     val after = commentsAroundElement.after
@@ -64,7 +67,8 @@ object IntentionUtil {
     after.foreach(c =>
       if (anchor.getNextSibling != null)
         parent.getNode.addChild(c.getNode, anchor.getNextSibling.getNode)
-      else parent.getNode.addChild(c.getNode))
+      else
+        parent.getNode.addChild(c.getNode))
     before.foreach(c => parent.getNode.addChild(c.getNode, anchor.getNode))
   }
 

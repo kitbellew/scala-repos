@@ -37,7 +37,10 @@ import scalafx.geometry.VPos
 
 object RowConstraints {
   implicit def sfxRowConstraints2jfx(v: RowConstraints): jfxsl.RowConstraints =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class RowConstraints(

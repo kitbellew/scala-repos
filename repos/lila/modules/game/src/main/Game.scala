@@ -129,7 +129,11 @@ case class Game(
     BinaryFormat.moveTime read binaryMoveTimes take playedTurns
 
   def moveTimes(color: Color): List[Int] = {
-    val pivot = if (color == startColor) 0 else 1
+    val pivot =
+      if (color == startColor)
+        0
+      else
+        1
     moveTimes.toList.zipWithIndex.collect {
       case (e, i) if (i % 2) == pivot => e
     }
@@ -142,7 +146,11 @@ case class Game(
   def openingPgnMoves(nb: Int): PgnMoves = BinaryFormat.pgn.read(binaryPgn, nb)
 
   def pgnMoves(color: Color): PgnMoves = {
-    val pivot = if (color == startColor) 0 else 1
+    val pivot =
+      if (color == startColor)
+        0
+      else
+        1
     pgnMoves.zipWithIndex.collect {
       case (e, i) if (i % 2) == pivot => e
     }
@@ -350,8 +358,16 @@ case class Game(
 
   def withPlayer(color: Color, f: Player => Player) =
     copy(
-      whitePlayer = if (color.white) f(whitePlayer) else whitePlayer,
-      blackPlayer = if (color.black) f(blackPlayer) else blackPlayer)
+      whitePlayer =
+        if (color.white)
+          f(whitePlayer)
+        else
+          whitePlayer,
+      blackPlayer =
+        if (color.black)
+          f(blackPlayer)
+        else
+          blackPlayer)
 
   def resignable = playable && !abortable
   def drawable = playable && !abortable
@@ -384,7 +400,8 @@ case class Game(
   def ratingVariant =
     if (isTournament && variant == chess.variant.FromPosition)
       chess.variant.Standard
-    else variant
+    else
+      variant
 
   def fromPosition =
     variant == chess.variant.FromPosition || source.??(Source.Position ==)
@@ -454,8 +471,10 @@ case class Game(
   def startColor = Color(startedAtTurn % 2 == 0)
 
   def playerMoves(color: Color): Int =
-    if (color == startColor) (playedTurns + 1) / 2
-    else playedTurns / 2
+    if (color == startColor)
+      (playedTurns + 1) / 2
+    else
+      playedTurns / 2
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
@@ -508,8 +527,10 @@ case class Game(
   def resetTurns = copy(turns = 0, startedAtTurn = 0)
 
   lazy val opening: Option[FullOpening.AtPly] =
-    if (fromPosition || !Variant.openingSensibleVariants(variant)) none
-    else FullOpeningDB search pgnMoves
+    if (fromPosition || !Variant.openingSensibleVariants(variant))
+      none
+    else
+      FullOpeningDB search pgnMoves
 
   def synthetic = id == "synthetic"
 
@@ -568,8 +589,10 @@ object Game {
       whitePlayer = whitePlayer,
       blackPlayer = blackPlayer,
       binaryPieces =
-        if (game.isStandardInit) BinaryFormat.piece.standard
-        else BinaryFormat.piece write game.board.pieces,
+        if (game.isStandardInit)
+          BinaryFormat.piece.standard
+        else
+          BinaryFormat.piece write game.board.pieces,
       binaryPgn = ByteArray.empty,
       status = Status.Created,
       turns = game.turns,

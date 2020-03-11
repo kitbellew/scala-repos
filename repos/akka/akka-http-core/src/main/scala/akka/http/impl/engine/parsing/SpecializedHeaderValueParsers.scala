@@ -31,11 +31,14 @@ private object SpecializedHeaderValueParsers {
         if (result < 0)
           fail(
             "`Content-Length` header value must not exceed 63-bit integer range")
-        else if (DIGIT(c)) recurse(ix + 1, result * 10 + c - '0')
-        else if (WSP(c)) recurse(ix + 1, result)
+        else if (DIGIT(c))
+          recurse(ix + 1, result * 10 + c - '0')
+        else if (WSP(c))
+          recurse(ix + 1, result)
         else if (c == '\r' && byteChar(input, ix + 1) == '\n')
           (`Content-Length`(result), ix + 2)
-        else fail("Illegal `Content-Length` header value")
+        else
+          fail("Illegal `Content-Length` header value")
       }
       recurse()
     }

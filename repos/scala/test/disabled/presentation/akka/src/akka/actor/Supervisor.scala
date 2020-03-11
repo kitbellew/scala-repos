@@ -145,8 +145,10 @@ sealed class Supervisor(
             val className = actorRef.actor.getClass.getName
             val currentActors = {
               val list = _childActors.get(className)
-              if (list eq null) List[ActorRef]()
-              else list
+              if (list eq null)
+                List[ActorRef]()
+              else
+                list
             }
             _childActors.put(className, actorRef :: currentActors)
             actorRef.lifeCycle = lifeCycle

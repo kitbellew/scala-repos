@@ -42,8 +42,10 @@ object Main {
       val eventHandler = (event: Event) => {
         val encode = Base64Converter.encode(event.toBytes)
         out.write(
-          (if (standalone && !encode.endsWith("=")) encode + "="
-           else encode).getBytes)
+          (if (standalone && !encode.endsWith("="))
+             encode + "="
+           else
+             encode).getBytes)
       }
       new EventGeneratingClient(eventHandler, out.checkError) {
         override def error(
@@ -61,7 +63,8 @@ object Main {
             source: Option[File],
             line: Option[Long],
             column: Option[Long]) {
-          if (kind == Kind.ERROR) hasErrors = true
+          if (kind == Kind.ERROR)
+            hasErrors = true
           super.message(kind, text, source, line, column)
         }
       }
@@ -75,7 +78,10 @@ object Main {
       val args = {
         val strings = arguments.map { arg =>
           val s = new String(Base64Converter.decode(arg.getBytes), "UTF-8")
-          if (s == "#STUB#") "" else s
+          if (s == "#STUB#")
+            ""
+          else
+            s
         }
         Arguments.from(strings)
       }
@@ -97,7 +103,8 @@ object Main {
   }
 
   private def cancelShutdown() = {
-    if (shutdownTimer != null) shutdownTimer.cancel()
+    if (shutdownTimer != null)
+      shutdownTimer.cancel()
   }
 
   private def resetShutdownTimer(context: NGContext) {

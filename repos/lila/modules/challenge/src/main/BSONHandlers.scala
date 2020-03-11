@@ -75,8 +75,10 @@ private object BSONHandlers {
   }
   implicit val EitherChallengerBSONHandler = new BSON[EitherChallenger] {
     def reads(r: Reader) =
-      if (r contains "id") Right(RegisteredBSONHandler reads r)
-      else Left(AnonymousBSONHandler reads r)
+      if (r contains "id")
+        Right(RegisteredBSONHandler reads r)
+      else
+        Left(AnonymousBSONHandler reads r)
     def writes(w: Writer, c: EitherChallenger) =
       c.fold(
         a => AnonymousBSONHandler.writes(w, a),

@@ -107,7 +107,8 @@ class DefaultPromiseTest {
             }
           assertEquals(expectedCounts, fireCounts)
         case MaybeIllegalThrown =>
-          if (result.isFailure) assertIllegalResult
+          if (result.isFailure)
+            assertIllegalResult
           assertEquals(Map.empty, fireCounts)
         case IllegalThrown =>
           assertIllegalResult
@@ -272,7 +273,8 @@ class DefaultPromiseTest {
     val ps = (0 until count).toList
     val pPairs =
       for (a <- ps;
-           b <- ps) yield (a, b)
+           b <- ps)
+        yield (a, b)
 
     var allActions = ps.map(Complete(_)) ++ pPairs.map {
       case (a, b) => Link(a, b)

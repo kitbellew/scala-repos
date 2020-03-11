@@ -328,10 +328,12 @@ private[tournament] final class TournamentApi(
       withStanding: Boolean): Fu[Option[MiniStanding]] =
     TournamentRepo byId tourId flatMap {
       _ ?? { tour =>
-        if (withStanding) miniStandingCache(tour.id) map { rps =>
-          MiniStanding(tour, rps.some).some
-        }
-        else fuccess(MiniStanding(tour, none).some)
+        if (withStanding)
+          miniStandingCache(tour.id) map { rps =>
+            MiniStanding(tour, rps.some).some
+          }
+        else
+          fuccess(MiniStanding(tour, none).some)
       }
     }
 

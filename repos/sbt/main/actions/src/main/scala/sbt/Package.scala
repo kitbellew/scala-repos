@@ -44,7 +44,8 @@ object Package {
       extends PackageOption
   def ManifestAttributes(attributes: (String, String)*): ManifestAttributes = {
     val converted =
-      for ((name, value) <- attributes) yield (new Attributes.Name(name), value)
+      for ((name, value) <- attributes)
+        yield (new Attributes.Name(name), value)
     new ManifestAttributes(converted: _*)
   }
 

@@ -16,10 +16,12 @@ object Intrinsics {
     private[this] val uberSet = CharBitSet(chars)
     def parseRec(cfg: ParseCtx, index: Int) = {
       val input = cfg.input
-      if (index >= input.length) fail(cfg.failure, index)
+      if (index >= input.length)
+        fail(cfg.failure, index)
       else if (uberSet(input(index)))
         success(cfg.success, (), index + 1, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
   }
 
@@ -49,9 +51,12 @@ object Intrinsics {
     def parseRec(cfg: ParseCtx, index: Int) = {
       var curr = index
       val input = cfg.input
-      while (curr < input.length && uberSet(input(curr))) curr += 1
-      if (curr - index < min) fail(cfg.failure, curr)
-      else success(cfg.success, (), curr, Set.empty, false)
+      while (curr < input.length && uberSet(input(curr)))
+        curr += 1
+      if (curr - index < min)
+        fail(cfg.failure, curr)
+      else
+        success(cfg.success, (), curr, Set.empty, false)
     }
   }
 
@@ -68,7 +73,8 @@ object Intrinsics {
       val length = trie.query(cfg.input, index)
       if (length != -1)
         success(cfg.success, (), index + length + 1, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
     override def toString = {
       s"StringIn(${strings.map(literalize(_)).mkString(", ")})"

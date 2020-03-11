@@ -38,7 +38,10 @@ import scalafx.geometry.HPos
 object ColumnConstraints {
   implicit def sfxColumnConstraints2jfx(
       v: ColumnConstraints): jfxsl.ColumnConstraints =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class ColumnConstraints(

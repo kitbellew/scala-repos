@@ -31,7 +31,8 @@ class FactorHeapCheck
       h.size shouldBe ns.length
 
       var result = List.empty[SafeLong]
-      while (h.nonEmpty) result = h.dequeue.next :: result
+      while (h.nonEmpty)
+        result = h.dequeue.next :: result
 
       result shouldBe sorted
     }

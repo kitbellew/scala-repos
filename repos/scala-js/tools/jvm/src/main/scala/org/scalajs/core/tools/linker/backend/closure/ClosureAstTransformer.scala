@@ -214,7 +214,10 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       case Null() =>
         new Node(Token.NULL)
       case BooleanLiteral(value) =>
-        if (value) new Node(Token.TRUE) else new Node(Token.FALSE)
+        if (value)
+          new Node(Token.TRUE)
+        else
+          new Node(Token.FALSE)
       case IntLiteral(value) =>
         Node.newNumber(value)
       case DoubleLiteral(value) =>
@@ -272,7 +275,11 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   }
 
   def transformBlock(tree: Tree)(implicit parentPos: Position): Node = {
-    val pos = if (tree.pos.isDefined) tree.pos else parentPos
+    val pos =
+      if (tree.pos.isDefined)
+        tree.pos
+      else
+        parentPos
     wrapTransform(tree) {
       case Block(stats) =>
         transformBlock(stats, pos)
@@ -303,8 +310,10 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
         if (nextIsCtor) {
           // The @constructor must be propagated through an ExprResult node
           val trg =
-            if (node.isExprResult()) node.getChildAtIndex(0)
-            else node
+            if (node.isExprResult())
+              node.getChildAtIndex(0)
+            else
+              node
 
           trg.setJSDocInfo(ctorDoc(trg))
         }

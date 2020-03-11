@@ -68,7 +68,8 @@ case class Pref(
   }
   def set(name: String, value: String): Option[Pref] = name match {
     case "bg" =>
-      if (value == "transp") copy(dark = true, transp = true).some
+      if (value == "transp")
+        copy(dark = true, transp = true).some
       else
         Pref.bgs get value map { b =>
           copy(dark = b, transp = false)

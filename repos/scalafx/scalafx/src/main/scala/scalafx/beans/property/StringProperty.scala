@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object StringProperty {
   implicit def sfxStringProperty2jfx(sp: StringProperty): jfxbp.StringProperty =
-    if (sp != null) sp.delegate else null
+    if (sp != null)
+      sp.delegate
+    else
+      null
 
   /**
     * Creates a new StringProperty instance using the SimpleStringProperty as the target observable.

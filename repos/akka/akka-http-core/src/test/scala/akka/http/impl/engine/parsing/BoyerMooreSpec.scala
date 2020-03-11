@@ -88,9 +88,13 @@ class BoyerMooreSpec extends WordSpec with Matchers {
         }
       if (ix >= 0)
         rec(
-          if (skipFindsThatStartInFinds) ix + needle.length else ix + 1,
+          if (skipFindsThatStartInFinds)
+            ix + needle.length
+          else
+            ix + 1,
           result :+ ix)
-      else result
+      else
+        result
     }
     rec(0, Seq.empty)
   }

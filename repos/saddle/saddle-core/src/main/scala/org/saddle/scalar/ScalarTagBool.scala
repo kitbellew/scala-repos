@@ -32,9 +32,16 @@ object ScalarTagBool extends ScalarTag[Boolean] {
   def notMissing(v: Boolean): Boolean = true
 
   def compare(x: Boolean, y: Boolean)(implicit ev: ORD[Boolean]) =
-    if (x > y) 1 else 0
+    if (x > y)
+      1
+    else
+      0
 
-  def toDouble(t: Boolean)(implicit ev: NUM[Boolean]) = if (t) 1.0 else 0.0
+  def toDouble(t: Boolean)(implicit ev: NUM[Boolean]) =
+    if (t)
+      1.0
+    else
+      0.0
 
   def zero(implicit ev: NUM[Boolean]) = false
   def one(implicit ev: NUM[Boolean]) = true

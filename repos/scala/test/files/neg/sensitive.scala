@@ -6,8 +6,10 @@ class SecurityViolationException extends Exception
 
 object Sensitive {
   def makeSensitive(credentials: Certificate): Sensitive =
-    if (credentials == Admin) new Sensitive()
-    else throw new SecurityViolationException
+    if (credentials == Admin)
+      new Sensitive()
+    else
+      throw new SecurityViolationException
 }
 class Sensitive private () {}
 

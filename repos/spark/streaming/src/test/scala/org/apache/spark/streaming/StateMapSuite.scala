@@ -473,6 +473,9 @@ private[streaming] final class KryoState(var state: String)
   }
 
   override def hashCode(): Int = {
-    if (state == null) 0 else state.hashCode()
+    if (state == null)
+      0
+    else
+      state.hashCode()
   }
 }

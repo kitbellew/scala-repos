@@ -114,9 +114,11 @@ object ScalaOverridingMemberSearcher {
       }
     member match {
       case _: ScFunction | _: ScTypeAlias =>
-        if (!inTemplateBodyOrEarlyDef(member)) return Array[PsiNamedElement]()
+        if (!inTemplateBodyOrEarlyDef(member))
+          return Array[PsiNamedElement]()
       case td: ScTypeDefinition if !td.isObject =>
-        if (!inTemplateBodyOrEarlyDef(member)) return Array[PsiNamedElement]()
+        if (!inTemplateBodyOrEarlyDef(member))
+          return Array[PsiNamedElement]()
       case cp: ScClassParameter if cp.isEffectiveVal =>
       case x: PsiNamedElement =>
         val nameContext = ScalaPsiUtil.nameContext(x)
@@ -138,12 +140,14 @@ object ScalaOverridingMemberSearcher {
           case inheritor: ScTypeDefinition =>
             for (aliass <- inheritor.aliases if name == aliass.name) {
               buffer += aliass
-              if (!deep) return false
+              if (!deep)
+                return false
             }
             for (td <- inheritor.typeDefinitions
                  if !td.isObject && name == td.name) {
               buffer += td
-              if (!deep) return false
+              if (!deep)
+                return false
             }
           case _ =>
         }
@@ -154,15 +158,18 @@ object ScalaOverridingMemberSearcher {
         member match {
           case alias: ScTypeAlias =>
             val continue = inheritorsOfType(alias.name)
-            if (!continue) return false
+            if (!continue)
+              return false
           case td: ScTypeDefinition if !td.isObject =>
             val continue = inheritorsOfType(td.name)
-            if (!continue) return false
+            if (!continue)
+              return false
           case _: PsiNamedElement =>
             val signatures =
               if (withSelfType)
                 TypeDefinitionMembers.getSelfTypeSignatures(inheritor)
-              else TypeDefinitionMembers.getSignatures(inheritor)
+              else
+                TypeDefinitionMembers.getSignatures(inheritor)
             val signsIterator = signatures.forName(member.name)._1.iterator
             while (signsIterator.hasNext) {
               val (

@@ -136,8 +136,12 @@ object Serializers {
           key,
           { b =>
             b.hintTag(intOptPickler.tag)
-            intOptPickler
-              .pickle(if (value == null) None else Some(value.intValue), b)
+            intOptPickler.pickle(
+              if (value == null)
+                None
+              else
+                Some(value.intValue),
+              b)
           })
       }
       def writeStringField(key: String, value: String): Unit = {
@@ -172,7 +176,8 @@ object Serializers {
       writeStringField("id", picklee.id)
       writeStringField("title", picklee.title)
       writeStringField("description", picklee.description)
-      if (picklee.cause != null) writeThrowableField("cause", picklee.cause)
+      if (picklee.cause != null)
+        writeThrowableField("cause", picklee.cause)
       picklee match {
         case x: PlayException.ExceptionSource =>
           writeIntOptField("line", x.line)

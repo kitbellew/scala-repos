@@ -173,6 +173,7 @@ trait Config[T] extends (() => T) {
     */
   def validate() {
     val missing = missingValues
-    if (!missing.isEmpty) throw new RequiredValuesMissing(missing)
+    if (!missing.isEmpty)
+      throw new RequiredValuesMissing(missing)
   }
 }

@@ -351,7 +351,11 @@ private[history] class ApplicationCache(
       parts.length == 1 || parts.length == 2,
       s"Invalid app key $appAndAttempt")
     val appId = parts(0)
-    val attemptId = if (parts.length > 1) Some(parts(1)) else None
+    val attemptId =
+      if (parts.length > 1)
+        Some(parts(1))
+      else
+        None
     (appId, attemptId)
   }
 

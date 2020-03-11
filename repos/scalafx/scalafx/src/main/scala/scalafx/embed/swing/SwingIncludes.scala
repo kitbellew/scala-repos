@@ -58,7 +58,10 @@ trait SwingIncludes {
     * @return $SPN
     */
   implicit def jfxPanel2sfx(p: jfxes.JFXPanel): SFXPanel =
-    if (p != null) new SFXPanel(p) else null
+    if (p != null)
+      new SFXPanel(p)
+    else
+      null
 
   /**
     * $START$SND$.html $SND$END
@@ -67,6 +70,9 @@ trait SwingIncludes {
     * @return $SFX $SND
     */
   implicit def jfxSwingNode2sfx(n: jfxes.SwingNode): SwingNode =
-    if (n != null) new SwingNode(n) else null
+    if (n != null)
+      new SwingNode(n)
+    else
+      null
 
 }

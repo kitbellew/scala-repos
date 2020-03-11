@@ -73,7 +73,8 @@ class ScalaFieldNameAdjuster extends NodeDescriptorNameAdjuster {
           name.takeWhile(_ != '$')
         else if (nameStartsWithFqn || isFieldFromTrait)
           lastPart(name)
-        else name
+        else
+          name
     }
   }
 

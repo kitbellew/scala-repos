@@ -38,7 +38,8 @@ abstract class ScalaMemberInfoBase[Member <: PsiElement](member: Member)
           overrides =
             if (!m.hasModifierProperty(PsiModifier.ABSTRACT))
               java.lang.Boolean.TRUE
-            else java.lang.Boolean.FALSE
+            else
+              java.lang.Boolean.FALSE
         case _ => overrides = null
       }
       isStatic = containingClass match {

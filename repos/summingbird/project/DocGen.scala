@@ -40,7 +40,11 @@ object DocGen {
       scalacOptions in doc <++= (
         version,
         baseDirectory in LocalProject(aggregateName)).map { (v, rootBase) =>
-        val tagOrBranch = if (v.endsWith("-SNAPSHOT")) "develop" else v
+        val tagOrBranch =
+          if (v.endsWith("-SNAPSHOT"))
+            "develop"
+          else
+            v
         val docSourceUrl =
           "https://github.com/twitter/" + aggregateName + "/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
         Seq(

@@ -87,7 +87,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |}
       """.stripMargin)) {
       case List(
-          Error("something", "Value 'something' needs override modifier")) =>
+            Error("something", "Value 'something' needs override modifier")) =>
     }
   }
 
@@ -211,10 +211,10 @@ class OverridingAnnotatorTest extends SimpleTestCase {
     """.stripMargin
     assertMatches(messages(code)) {
       case List(
-          Error("foo", "method foo needs to be a stable, immutable value"),
-          Error("bar", "method bar cannot override a mutable variable"),
-          Error("oof", "method oof needs to be a stable, immutable value"),
-          Error("rab", "method rab cannot override a mutable variable")) =>
+            Error("foo", "method foo needs to be a stable, immutable value"),
+            Error("bar", "method bar cannot override a mutable variable"),
+            Error("oof", "method oof needs to be a stable, immutable value"),
+            Error("rab", "method rab cannot override a mutable variable")) =>
     }
   }
 

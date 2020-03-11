@@ -55,7 +55,8 @@ object Pack {
       bb.getInt()
     } else {
       var n = 0
-      while (bb.remaining > 0) n = (n << 8) | bb.get
+      while (bb.remaining > 0)
+        n = (n << 8) | bb.get
       n
     }
 
@@ -69,7 +70,8 @@ object Pack {
       out(i) = bb.getInt();
       i += 1
     }
-    if (i < n && bb.remaining > 0) out(i) = intFromByteBuffer(bb)
+    if (i < n && bb.remaining > 0)
+      out(i) = intFromByteBuffer(bb)
     out
   }
 
@@ -133,7 +135,8 @@ object Pack {
       bb.getLong()
     } else {
       var n = 0L
-      while (bb.remaining > 0) n = (n << 8) | bb.get
+      while (bb.remaining > 0)
+        n = (n << 8) | bb.get
       n
     }
 
@@ -147,7 +150,8 @@ object Pack {
       out(i) = bb.getLong();
       i += 1
     }
-    if (i < n && bb.remaining > 0) out(i) = longFromByteBuffer(bb)
+    if (i < n && bb.remaining > 0)
+      out(i) = longFromByteBuffer(bb)
     out
   }
 

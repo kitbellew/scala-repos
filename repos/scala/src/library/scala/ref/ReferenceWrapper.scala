@@ -16,7 +16,8 @@ trait ReferenceWrapper[+T <: AnyRef] extends Reference[T] with Proxy {
   override def get = Option(underlying.get)
   def apply() = {
     val ret = underlying.get
-    if (ret eq null) throw new NoSuchElementException
+    if (ret eq null)
+      throw new NoSuchElementException
     ret
   }
   def clear() = underlying.clear()

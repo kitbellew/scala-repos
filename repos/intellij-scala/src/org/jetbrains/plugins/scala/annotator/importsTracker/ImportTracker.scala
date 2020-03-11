@@ -29,7 +29,8 @@ class ImportTracker {
       def run() {
         while (iter.nonEmpty) {
           val used = iter.next()
-          if (refHolder.isRedundant(used)) buff += used
+          if (refHolder.isRedundant(used))
+            buff += used
         }
       }
     }

@@ -146,8 +146,10 @@ class Project(
     // mixed mode query
     case TypecheckFilesReq(files) =>
       val (javas, scalas) = files.partition(_.file.isJava)
-      if (javas.nonEmpty) javac forward TypecheckFilesReq(javas)
-      if (scalas.nonEmpty) scalac forward TypecheckFilesReq(scalas)
+      if (javas.nonEmpty)
+        javac forward TypecheckFilesReq(javas)
+      if (scalas.nonEmpty)
+        scalac forward TypecheckFilesReq(scalas)
 
     case m: RpcAnalyserRequest => scalac forward m
     case m: RpcDebuggerRequest => debugger forward m

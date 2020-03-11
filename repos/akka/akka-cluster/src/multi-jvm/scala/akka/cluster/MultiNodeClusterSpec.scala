@@ -33,8 +33,10 @@ object MultiNodeClusterSpec {
       .withFallback(clusterConfig)
 
   def clusterConfig(failureDetectorPuppet: Boolean): Config =
-    if (failureDetectorPuppet) clusterConfigWithFailureDetectorPuppet
-    else clusterConfig
+    if (failureDetectorPuppet)
+      clusterConfigWithFailureDetectorPuppet
+    else
+      clusterConfig
 
   def clusterConfig: Config =
     ConfigFactory.parseString(

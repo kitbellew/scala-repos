@@ -73,7 +73,10 @@ package record {
       val lTpes = unpackHListTpe(lTpe).zipWithIndex.flatMap {
         case (fTpe, i) =>
           val (k, v) = unpackFieldType(fTpe)
-          if (k =:= kTpe) Some((v, i)) else None
+          if (k =:= kTpe)
+            Some((v, i))
+          else
+            None
       }
       lTpes.headOption match {
         case Some((vTpe, i)) =>
@@ -162,8 +165,10 @@ package record {
       val lTpes = unpackHListTpe(lTpe)
       val (uTpes, i) = {
         val i0 = lTpes.indexWhere(_ =:= fTpe)
-        if (i0 < 0) (lTpes :+ fTpe, lTpes.length)
-        else (lTpes.updated(i0, fTpe), i0)
+        if (i0 < 0)
+          (lTpes :+ fTpe, lTpes.length)
+        else
+          (lTpes.updated(i0, fTpe), i0)
       }
       val uTpe = mkHListTpe(uTpes)
       q"""

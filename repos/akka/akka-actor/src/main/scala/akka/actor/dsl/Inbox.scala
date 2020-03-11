@@ -78,7 +78,8 @@ trait Inbox { this: ActorDSL.type ⇒
     }
 
     def enqueueMessage(msg: Any) {
-      if (messages.size < size) messages enqueue msg
+      if (messages.size < size)
+        messages enqueue msg
       else {
         if (!printedWarning) {
           log.warning(
@@ -104,10 +105,13 @@ trait Inbox { this: ActorDSL.type ⇒
     def receive =
       ({
         case g: Get ⇒
-          if (messages.isEmpty) enqueueQuery(g)
-          else sender() ! messages.dequeue()
+          if (messages.isEmpty)
+            enqueueQuery(g)
+          else
+            sender() ! messages.dequeue()
         case s @ Select(_, predicate, _) ⇒
-          if (messages.isEmpty) enqueueQuery(s)
+          if (messages.isEmpty)
+            enqueueQuery(s)
           else {
             currentSelect = s
             messages.dequeueFirst(messagePredicate) match {
@@ -129,7 +133,8 @@ trait Inbox { this: ActorDSL.type ⇒
           clients = clients.filterNot(pred)
           clientsByTimeout = clientsByTimeout.from(Get(now))
         case msg ⇒
-          if (clients.isEmpty) enqueueMessage(msg)
+          if (clients.isEmpty)
+            enqueueMessage(msg)
           else {
             currentMsg = msg
             clients.dequeueFirst(clientPredicate) match {

@@ -144,10 +144,16 @@ private[akka] object ChildrenContainer {
       }
 
     override def children: immutable.Iterable[ActorRef] =
-      if (c.isEmpty) EmptyImmutableSeq else new ChildrenIterable(c)
+      if (c.isEmpty)
+        EmptyImmutableSeq
+      else
+        new ChildrenIterable(c)
 
     override def stats: immutable.Iterable[ChildRestartStats] =
-      if (c.isEmpty) EmptyImmutableSeq else new ChildRestartsIterable(c)
+      if (c.isEmpty)
+        EmptyImmutableSeq
+      else
+        new ChildRestartsIterable(c)
 
     override def shallDie(actor: ActorRef): ChildrenContainer =
       TerminatingChildrenContainer(c, Set(actor), UserRequest)
@@ -156,7 +162,8 @@ private[akka] object ChildrenContainer {
       if (c contains name)
         throw new InvalidActorNameException(
           s"actor name [$name] is not unique!")
-      else new NormalChildrenContainer(c.updated(name, ChildNameReserved))
+      else
+        new NormalChildrenContainer(c.updated(name, ChildNameReserved))
 
     override def unreserve(name: String): ChildrenContainer =
       c.get(name) match {
@@ -165,14 +172,18 @@ private[akka] object ChildrenContainer {
       }
 
     override def toString =
-      if (c.size > 20) c.size + " children"
-      else c.mkString("children:\n    ", "\n    ", "")
+      if (c.size > 20)
+        c.size + " children"
+      else
+        c.mkString("children:\n    ", "\n    ", "")
   }
 
   object NormalChildrenContainer {
     def apply(c: immutable.TreeMap[String, ChildStats]): ChildrenContainer =
-      if (c.isEmpty) EmptyChildrenContainer
-      else new NormalChildrenContainer(c)
+      if (c.isEmpty)
+        EmptyChildrenContainer
+      else
+        new NormalChildrenContainer(c)
   }
 
   /**
@@ -198,11 +209,13 @@ private[akka] object ChildrenContainer {
 
     override def remove(child: ActorRef): ChildrenContainer = {
       val t = toDie - child
-      if (t.isEmpty) reason match {
-        case Termination ⇒ TerminatedChildrenContainer
-        case _ ⇒ NormalChildrenContainer(c - child.path.name)
-      }
-      else copy(c - child.path.name, t)
+      if (t.isEmpty)
+        reason match {
+          case Termination ⇒ TerminatedChildrenContainer
+          case _ ⇒ NormalChildrenContainer(c - child.path.name)
+        }
+      else
+        copy(c - child.path.name, t)
     }
 
     override def getByName(name: String): Option[ChildStats] = c.get(name)
@@ -215,10 +228,16 @@ private[akka] object ChildrenContainer {
       }
 
     override def children: immutable.Iterable[ActorRef] =
-      if (c.isEmpty) EmptyImmutableSeq else new ChildrenIterable(c)
+      if (c.isEmpty)
+        EmptyImmutableSeq
+      else
+        new ChildrenIterable(c)
 
     override def stats: immutable.Iterable[ChildRestartStats] =
-      if (c.isEmpty) EmptyImmutableSeq else new ChildRestartsIterable(c)
+      if (c.isEmpty)
+        EmptyImmutableSeq
+      else
+        new ChildRestartsIterable(c)
 
     override def shallDie(actor: ActorRef): ChildrenContainer =
       copy(toDie = toDie + actor)
@@ -231,7 +250,8 @@ private[akka] object ChildrenContainer {
         if (c contains name)
           throw new InvalidActorNameException(
             s"actor name [$name] is not unique!")
-        else copy(c = c.updated(name, ChildNameReserved))
+        else
+          copy(c = c.updated(name, ChildNameReserved))
     }
 
     override def unreserve(name: String): ChildrenContainer =
@@ -244,7 +264,8 @@ private[akka] object ChildrenContainer {
     override def isNormal: Boolean = reason == UserRequest
 
     override def toString =
-      if (c.size > 20) c.size + " children"
+      if (c.size > 20)
+        c.size + " children"
       else
         c.mkString(
           "children (" + toDie.size + " terminating):\n    ",

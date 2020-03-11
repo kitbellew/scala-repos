@@ -74,7 +74,8 @@ case class BRange(
     extends StrictKeyCommand {
   def command = Commands.BRANGE
   val request: Seq[ChannelBuffer] =
-    if (startField.isEmpty && endField.isEmpty) Seq(key)
+    if (startField.isEmpty && endField.isEmpty)
+      Seq(key)
     else if (!startField.isEmpty && endField.isEmpty)
       Seq(key, StringToChannelBuffer("start"), startField.get)
     else if (startField.isEmpty && !endField.isEmpty)

@@ -304,7 +304,11 @@ package com.twitter.scalding {
         val (k, v) = innerIter.next
         val oldVOpt: Option[V] = mutable.get(k)
         // sorry for the micro optimization here: avoiding a closure
-        val newV: V = if (oldVOpt.isEmpty) v else Semigroup.plus(oldVOpt.get, v)
+        val newV: V =
+          if (oldVOpt.isEmpty)
+            v
+          else
+            Semigroup.plus(oldVOpt.get, v)
         mutable.update(k, newV)
       }
       new CollectionBackedMap(mutable)

@@ -82,7 +82,12 @@ object ConsoleProducer {
 
     props.put("metadata.broker.list", config.brokerList)
     props.put("compression.codec", config.compressionCodec)
-    props.put("producer.type", if (config.sync) "sync" else "async")
+    props.put(
+      "producer.type",
+      if (config.sync)
+        "sync"
+      else
+        "async")
     props.put("batch.num.messages", config.batchSize.toString)
     props.put("message.send.max.retries", config.messageSendMaxRetries.toString)
     props.put("retry.backoff.ms", config.retryBackoffMs.toString)
@@ -106,7 +111,8 @@ object ConsoleProducer {
     val props =
       if (config.options.has(config.producerConfigOpt))
         Utils.loadProps(config.options.valueOf(config.producerConfigOpt))
-      else new Properties
+      else
+        new Properties
     props.putAll(config.extraProducerProps)
     props
   }
@@ -349,8 +355,10 @@ object ConsoleProducer {
       if (options.has(compressionCodecOpt))
         if (compressionCodecOptionValue == null || compressionCodecOptionValue.isEmpty)
           DefaultCompressionCodec.name
-        else compressionCodecOptionValue
-      else NoCompressionCodec.name
+        else
+          compressionCodecOptionValue
+      else
+        NoCompressionCodec.name
     val batchSize = options.valueOf(batchSizeOpt)
     val sendTimeout = options.valueOf(sendTimeoutOpt)
     val queueSize = options.valueOf(queueSizeOpt)
@@ -402,13 +410,16 @@ object ConsoleProducer {
         case (line, true) =>
           line.indexOf(keySeparator) match {
             case -1 =>
-              if (ignoreError) new ProducerRecord(topic, line.getBytes)
+              if (ignoreError)
+                new ProducerRecord(topic, line.getBytes)
               else
                 throw new KafkaException(
                   s"No key found on line ${lineNumber}: $line")
             case n =>
-              val value = (if (n + keySeparator.size > line.size) ""
-                           else line.substring(n + keySeparator.size)).getBytes
+              val value = (if (n + keySeparator.size > line.size)
+                             ""
+                           else
+                             line.substring(n + keySeparator.size)).getBytes
               new ProducerRecord(topic, line.substring(0, n).getBytes, value)
           }
         case (line, false) =>

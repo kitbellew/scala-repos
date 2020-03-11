@@ -32,9 +32,12 @@ case class Tournament(
   def isFinished = status == Status.Finished
 
   def fullName =
-    if (isMarathonOrUnique) name
-    else if (scheduled && clock.hasIncrement) s"$name Inc $system"
-    else s"$name $system"
+    if (isMarathonOrUnique)
+      name
+    else if (scheduled && clock.hasIncrement)
+      s"$name Inc $system"
+    else
+      s"$name $system"
 
   def isMarathon = schedule.map(_.freq) exists {
     case Schedule.Freq.ExperimentalMarathon | Schedule.Freq.Marathon => true
@@ -81,10 +84,13 @@ case class Tournament(
   def perfLens = PerfPicker.mainOrDefault(speed, variant, none)
 
   def durationString =
-    if (minutes < 60) s"${minutes}m"
+    if (minutes < 60)
+      s"${minutes}m"
     else
-      s"${minutes / 60}h" + (if (minutes % 60 != 0) s" ${(minutes % 60)}m"
-                             else "")
+      s"${minutes / 60}h" + (if (minutes % 60 != 0)
+                               s" ${(minutes % 60)}m"
+                             else
+                               "")
 
   def berserkable = system.berserkable && clock.chessClock.berserkable
 
@@ -123,7 +129,10 @@ object Tournament {
     Tournament(
       id = Random nextStringUppercase 8,
       name =
-        if (position.initial) GreatPlayer.randomName else position.shortName,
+        if (position.initial)
+          GreatPlayer.randomName
+        else
+          position.shortName,
       status = Status.Created,
       system = system,
       clock = clock,

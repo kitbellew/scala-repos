@@ -77,7 +77,8 @@ private[hashing] class MurmurHash3 {
       h = mix(h, data)
       i += 2
     }
-    if (i < str.length) h = mixLast(h, str.charAt(i).toInt)
+    if (i < str.length)
+      h = mixLast(h, str.charAt(i).toInt)
     finalizeHash(h, str.length)
   }
 
@@ -92,7 +93,8 @@ private[hashing] class MurmurHash3 {
       val h = x.##
       a += h
       b ^= h
-      if (h != 0) c *= h
+      if (h != 0)
+        c *= h
       n += 1
     }
     var h = seed
@@ -149,8 +151,10 @@ private[hashing] class MurmurHash3 {
 
     // Tail
     var k = 0
-    if (len == 3) k ^= (data(i + 2) & 0xFF) << 16
-    if (len >= 2) k ^= (data(i + 1) & 0xFF) << 8
+    if (len == 3)
+      k ^= (data(i + 2) & 0xFF) << 16
+    if (len >= 2)
+      k ^= (data(i + 1) & 0xFF) << 8
     if (len >= 1) {
       k ^= (data(i + 0) & 0xFF)
       h = mixLast(h, k)

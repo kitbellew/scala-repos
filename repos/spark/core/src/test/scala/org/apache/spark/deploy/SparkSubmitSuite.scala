@@ -77,7 +77,9 @@ class SparkSubmitSuite
         } catch {
           // If exceptions occur after the "exit" has happened, fine to ignore them.
           // These represent code paths not reachable during normal execution.
-          case e: Exception => if (!exitedCleanly) throw e
+          case e: Exception =>
+            if (!exitedCleanly)
+              throw e
         }
     }
     thread.start()
@@ -751,7 +753,8 @@ class SparkSubmitSuite
     val writer = new OutputStreamWriter(
       new FileOutputStream(defaultsConf),
       StandardCharsets.UTF_8)
-    for ((key, value) <- defaults) writer.write(s"$key $value\n")
+    for ((key, value) <- defaults)
+      writer.write(s"$key $value\n")
 
     writer.close()
 

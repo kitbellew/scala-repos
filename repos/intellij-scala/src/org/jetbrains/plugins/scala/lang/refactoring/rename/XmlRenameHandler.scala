@@ -29,10 +29,12 @@ class XmlRenameHandler extends RenameHandler {
       return false
 
     val file = CommonDataKeys.PSI_FILE.getData(dataContext)
-    if (file == null) return false
+    if (file == null)
+      return false
     val element = file.findElementAt(editor.getCaretModel.getOffset)
 
-    if (element == null) return false
+    if (element == null)
+      return false
 
     element.getParent match {
       case _: ScXmlPairedTag => true
@@ -48,10 +50,12 @@ class XmlRenameHandler extends RenameHandler {
       editor: Editor,
       file: PsiFile,
       dataContext: DataContext) {
-    if (!isRenaming(dataContext)) return
+    if (!isRenaming(dataContext))
+      return
     val element = file.findElementAt(editor.getCaretModel.getOffset)
 
-    if (element != null) invoke(project, Array(element), dataContext)
+    if (element != null)
+      invoke(project, Array(element), dataContext)
   }
 
   def invoke(
@@ -65,7 +69,8 @@ class XmlRenameHandler extends RenameHandler {
 
     val element =
       if (elements(0) == null || !elements(0).getParent
-            .isInstanceOf[ScXmlPairedTag]) return
+            .isInstanceOf[ScXmlPairedTag])
+        return
       else
         elements(0).getParent.asInstanceOf[ScXmlPairedTag]
     if (element.getMatchedTag == null || element.getTagNameElement == null || element.getMatchedTag.getTagNameElement == null)

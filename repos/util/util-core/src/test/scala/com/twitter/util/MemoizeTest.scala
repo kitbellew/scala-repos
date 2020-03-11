@@ -80,7 +80,10 @@ class MemoizeTest extends FunSuite {
       // This effect should happen once per exception plus once for
       // all successes
       val n = callCount.incrementAndGet()
-      if (n == 1) throw TheException else i + 1
+      if (n == 1)
+        throw TheException
+      else
+        i + 1
     }
 
     val ConcurrencyLevel = 5

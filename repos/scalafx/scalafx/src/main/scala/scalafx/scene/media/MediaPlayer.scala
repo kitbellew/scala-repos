@@ -45,7 +45,10 @@ import scalafx.util.Duration
 
 object MediaPlayer {
   implicit def sfxMediaPlayer2jfx(mp: MediaPlayer): jfxsm.MediaPlayer =
-    if (mp != null) mp.delegate else null
+    if (mp != null)
+      mp.delegate
+    else
+      null
 
   object Status
       extends SFXEnumDelegateCompanion[jfxsm.MediaPlayer.Status, Status] {

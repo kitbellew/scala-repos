@@ -23,7 +23,8 @@ trait Encoder {
           Encoder.isContentEncodingHeader))
       encodeData(message).withHeaders(
         `Content-Encoding`(encoding) +: message.headers)
-    else message.self
+    else
+      message.self
 
   def encodeData[T](t: T)(implicit mapper: DataMapper[T]): T =
     mapper.transformDataBytes(

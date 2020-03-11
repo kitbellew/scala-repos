@@ -46,7 +46,8 @@ class BundleDelegatingClassLoader(
 
   override def findClass(name: String): Class[_] = {
     @tailrec def find(remaining: List[Bundle]): Class[_] = {
-      if (remaining.isEmpty) throw new ClassNotFoundException(name)
+      if (remaining.isEmpty)
+        throw new ClassNotFoundException(name)
       else
         Try {
           remaining.head.loadClass(name)
@@ -60,7 +61,8 @@ class BundleDelegatingClassLoader(
 
   override def findResource(name: String): URL = {
     @tailrec def find(remaining: List[Bundle]): URL = {
-      if (remaining.isEmpty) getParent.getResource(name)
+      if (remaining.isEmpty)
+        getParent.getResource(name)
       else
         Option {
           remaining.head.getResource(name)
@@ -96,7 +98,8 @@ class BundleDelegatingClassLoader(
         } else {
           val wiring = b.adapt(classOf[BundleWiring])
           val direct: Set[Bundle] =
-            if (wiring == null) Set.empty
+            if (wiring == null)
+              Set.empty
             else {
               val requiredWires: List[BundleWire] =
                 wiring

@@ -48,9 +48,10 @@ class WindowedByteCounterTest
 
         prev = counter.passCount
 
-        if (!closed) eventually {
-          assert(counter.getState == Thread.State.TIMED_WAITING)
-        }
+        if (!closed)
+          eventually {
+            assert(counter.getState == Thread.State.TIMED_WAITING)
+          }
       }
 
       fn(counter, nextPeriod)

@@ -4,7 +4,12 @@ object AbstractTypes {
     case h :: t => {
       println(h.toList)
       /*start*/
-      process(if (false) its else t) /*end*/
+      process(
+        if (false)
+          its
+        else
+          t
+      ) /*end*/
     }
   }
 }

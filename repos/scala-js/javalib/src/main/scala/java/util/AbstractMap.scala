@@ -15,11 +15,15 @@ object AbstractMap {
 
   private def entryHashCode[K, V](entry: Map.Entry[K, V]): Int = {
     val keyHash =
-      if (entry.getKey == null) 0
-      else entry.getKey.hashCode
+      if (entry.getKey == null)
+        0
+      else
+        entry.getKey.hashCode
     val valueHash =
-      if (entry.getValue == null) 0
-      else entry.getValue.hashCode
+      if (entry.getValue == null)
+        0
+      else
+        entry.getValue.hashCode
 
     keyHash ^ valueHash
   }
@@ -163,7 +167,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def entrySet(): Set[Map.Entry[K, V]]
 
   override def equals(o: Any): Boolean = {
-    if (o.asInstanceOf[AnyRef] eq this) true
+    if (o.asInstanceOf[AnyRef] eq this)
+      true
     else {
       o match {
         case m: Map[_, _] =>

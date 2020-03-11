@@ -14,7 +14,11 @@ object Test {
 
   val a = new A {}
   val b = new B {}
-  val y = if (true) a else b
+  val y =
+    if (true)
+      a
+    else
+      b
 
   // lub of y should allow for this
   println(y.x.x)

@@ -50,7 +50,8 @@ class SetupJdkNotificationProvider(
 
     if (jdk.exists(_ == null))
       createPanel(project, PsiManager.getInstance(project).findFile(file))
-    else null
+    else
+      null
   }
 }
 

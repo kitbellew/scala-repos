@@ -35,8 +35,10 @@ trait HasCdfTestBase extends FunSuite with Checkers {
     check(Prop.forAll { (distr: Distr) =>
       val samples = distr.sample(10000)
       val (low, high) = {
-        if (samples(0) < samples(1)) (samples(0), samples(1))
-        else (samples(1), samples(0))
+        if (samples(0) < samples(1))
+          (samples(0), samples(1))
+        else
+          (samples(1), samples(0))
       }
 
       val inRange =

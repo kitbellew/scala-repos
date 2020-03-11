@@ -69,8 +69,10 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * @return `None`, if the input is empty.
     */
   def chooseAny[A](a: Seq[F[A]]): Option[F[(A, Seq[F[A]])]] =
-    if (a.isEmpty) None
-    else Some(chooseAny(a.head, a.tail))
+    if (a.isEmpty)
+      None
+    else
+      Some(chooseAny(a.head, a.tail))
 
   def chooseAny[A](head: F[A], tail: Seq[F[A]]): F[(A, Seq[F[A]])]
 
@@ -158,7 +160,8 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * results come back in a sequence of calls to `chooseAny`.
     */
   def reduceUnordered[A, M](fs: Seq[F[A]])(implicit R: Reducer[A, M]): F[M] =
-    if (fs.isEmpty) point(R.zero)
+    if (fs.isEmpty)
+      point(R.zero)
     else
       bind(chooseAny(fs.head, fs.tail)) {
         case (a, residuals) =>

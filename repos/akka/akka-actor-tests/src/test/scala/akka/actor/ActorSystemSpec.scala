@@ -59,11 +59,12 @@ object ActorSystemSpec {
     def receive = {
       case n: Int ⇒
         master = sender()
-        terminaters = Set() ++ (for (i ← 1 to n) yield {
-          val man = context.watch(context.system.actorOf(Props[Terminater]))
-          man ! "run"
-          man
-        })
+        terminaters = Set() ++ (for (i ← 1 to n)
+          yield {
+            val man = context.watch(context.system.actorOf(Props[Terminater]))
+            man ! "run"
+            man
+          })
       case Terminated(child) if terminaters contains child ⇒
         terminaters -= child
         if (terminaters.isEmpty) {
@@ -184,9 +185,10 @@ class ActorSystemSpec
              "hallo#welt",
              "hallo$welt",
              "hallo%welt",
-             "hallo/welt")) intercept[IllegalArgumentException] {
-        ActorSystem(n)
-      }
+             "hallo/welt"))
+        intercept[IllegalArgumentException] {
+          ActorSystem(n)
+        }
     }
 
     "allow valid names" in {
@@ -248,7 +250,8 @@ class ActorSystemSpec
       system2.terminate()
       Await.ready(latch, 5 seconds)
 
-      val expected = (for (i ← 1 to count) yield i).reverse
+      val expected = (for (i ← 1 to count)
+        yield i).reverse
 
       immutableSeq(result) should ===(expected)
     }

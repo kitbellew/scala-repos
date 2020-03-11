@@ -171,19 +171,33 @@ package object extensions {
     def toOption: Option[T] = Option(v)
 
     def asOptionOf[E: ClassTag]: Option[E] = {
-      if (classTag[E].runtimeClass.isInstance(v)) Some(v.asInstanceOf[E])
-      else None
+      if (classTag[E].runtimeClass.isInstance(v))
+        Some(v.asInstanceOf[E])
+      else
+        None
     }
 
-    def getOrElse[H >: T](default: H): H = if (v == null) default else v
+    def getOrElse[H >: T](default: H): H =
+      if (v == null)
+        default
+      else
+        v
 
     def collectOption[B](pf: scala.PartialFunction[T, B]) = Some(v).collect(pf)
   }
 
   implicit class BooleanExt(val b: Boolean) extends AnyVal {
-    def ifTrue[T](value: => T) = if (b) Some(value) else None
+    def ifTrue[T](value: => T) =
+      if (b)
+        Some(value)
+      else
+        None
 
-    def toInt: Int = if (b) 1 else 0
+    def toInt: Int =
+      if (b)
+        1
+      else
+        0
   }
 
   implicit class StringExt(val s: String) extends AnyVal {
@@ -192,7 +206,10 @@ package object extensions {
     def endsWith(c: Char) = !s.isEmpty && s.charAt(s.length - 1) == c
 
     def parenthesisedIf(condition: Boolean) =
-      if (condition) "(" + s + ")" else s
+      if (condition)
+        "(" + s + ")"
+      else
+        s
   }
 
   implicit class PsiElementExt(override val repr: PsiElement)
@@ -255,7 +272,8 @@ package object extensions {
         processName: String => Unit = _ => ()): Unit = {
 
       def concreteClassFor(typedDef: ScTypedDefinition): Option[PsiClass] = {
-        if (typedDef.isAbstractMember) return None
+        if (typedDef.isAbstractMember)
+          return None
         clazz match {
           case wrapper: PsiClassWrapper
               if wrapper.definition.isInstanceOf[ScObject] =>
@@ -276,7 +294,8 @@ package object extensions {
                 var index = linearization.indexWhere(_ == t)
                 while (index >= 0) {
                   val cl = linearization(index)
-                  if (!cl.isInterface) return Some(cl)
+                  if (!cl.isInterface)
+                    return Some(cl)
                   index -= 1
                 }
                 Some(clazz)
@@ -609,7 +628,8 @@ package object extensions {
     try {
       block(resource)
     } finally {
-      if (resource != null) resource.close()
+      if (resource != null)
+        resource.close()
     }
   }
 

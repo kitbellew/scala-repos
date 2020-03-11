@@ -57,7 +57,10 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
   /** Returns Some(i) if the object has been indexed, or None. */
   def indexOpt(t: T): Option[Int] = {
     val i = apply(t)
-    if (i >= 0) Some(i) else None
+    if (i >= 0)
+      Some(i)
+    else
+      None
   }
 
   /** Override Iterable's linear-scan indexOf to use our apply method. */
@@ -165,7 +168,10 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
     indices.getOrElse(t, -1)
 
   override def unapply(pos: Int): Option[T] =
-    if (pos >= 0 && pos < objects.length) Some(objects(pos)) else None
+    if (pos >= 0 && pos < objects.length)
+      Some(objects(pos))
+    else
+      None
 
   override def contains(t: T) =
     indices contains t
@@ -208,17 +214,31 @@ class DenseIntIndex(beg: Int, end: Int) extends Index[Int] {
 
   override def size = end - beg
 
-  override def apply(t: Int) = if (contains(t)) t - beg else -1
+  override def apply(t: Int) =
+    if (contains(t))
+      t - beg
+    else
+      -1
 
-  override def unapply(i: Int) = if (i < size) Some(i + beg) else None
+  override def unapply(i: Int) =
+    if (i < size)
+      Some(i + beg)
+    else
+      None
 
   override def contains(t: Int) = t < end - beg && t >= 0
 
   override def indexOpt(t: Int) =
-    if (contains(t)) Some(t) else None
+    if (contains(t))
+      Some(t)
+    else
+      None
 
   override def get(i: Int) =
-    if (contains(i)) i else throw new IndexOutOfBoundsException()
+    if (contains(i))
+      i
+    else
+      throw new IndexOutOfBoundsException()
 
   override def iterator = (beg until end).iterator
 
@@ -293,9 +313,12 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
   def rightOffset = left.size
 
   def unapply(i: Int) = {
-    if (i < 0 || i >= size) None
-    else if (i < left.size) Some(Left(left.get(i)))
-    else Some(Right(right.get(i - left.size)))
+    if (i < 0 || i >= size)
+      None
+    else if (i < left.size)
+      Some(Left(left.get(i)))
+    else
+      Some(Right(right.get(i - left.size)))
   }
 
   def pairs =
@@ -327,15 +350,21 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   }
 
   def unapply(i: Int) = {
-    if (i < 0 || i >= size) None
-    else if (i < inner.size) Some(Some(inner.get(i))) // sic!
-    else Some(None) // sic!
+    if (i < 0 || i >= size)
+      None
+    else if (i < inner.size)
+      Some(Some(inner.get(i))) // sic!
+    else
+      Some(None) // sic!
   }
 
   override def get(i: Int): Option[T] = {
-    if (i < 0 || i >= size) throw new IndexOutOfBoundsException()
-    else if (i < inner.size) Some(inner.get(i))
-    else None
+    if (i < 0 || i >= size)
+      throw new IndexOutOfBoundsException()
+    else if (i < inner.size)
+      Some(inner.get(i))
+    else
+      None
   }
 
   def pairs =
@@ -368,24 +397,30 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
     */
   @inline
   def mapIndex(component: Int, uIndex: Int) = {
-    if (uIndex < 0) -1
-    else offsets(component) + uIndex
+    if (uIndex < 0)
+      -1
+    else
+      offsets(component) + uIndex
   }
 
   def apply(t: (Int, U)) = {
-    if (t._1 >= indices.length || t._1 < 0) -1
+    if (t._1 >= indices.length || t._1 < 0)
+      -1
     else {
       indices(t._1).asInstanceOf[Index[U]](t._2) + offsets(t._1)
     }
   }
 
   def unapply(i: Int) = {
-    if (i < 0 || i >= size) None
+    if (i < 0 || i >= size)
+      None
     else {
       val index = {
         val res = Arrays.binarySearch(offsets, i)
-        if (res >= 0) res
-        else -(res + 2)
+        if (res >= 0)
+          res
+        else
+          -(res + 2)
       }
 
       Some(index -> indices(index).get(i - offsets(index)))
@@ -428,7 +463,8 @@ object EnumerationIndex {
 
     /** Returns the indexed items along with their indicies */
     def pairs: Iterator[(t.Value, Int)] =
-      for (v <- t.values.iterator) yield v -> v.id
+      for (v <- t.values.iterator)
+        yield v -> v.id
 
     def iterator: Iterator[t.Value] = t.values.iterator
 

@@ -29,8 +29,13 @@ final class RoundRobinRoutingLogic extends RoutingLogic {
     if (routees.nonEmpty) {
       val size = routees.size
       val index = (next.getAndIncrement % size).asInstanceOf[Int]
-      routees(if (index < 0) size + index - 1 else index)
-    } else NoRoutee
+      routees(
+        if (index < 0)
+          size + index - 1
+        else
+          index)
+    } else
+      NoRoutee
 
 }
 

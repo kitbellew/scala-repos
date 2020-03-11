@@ -124,9 +124,12 @@ sealed abstract class List[+A]
     *    {{{List(1, 2) ::: List(3, 4) = List(3, 4).:::(List(1, 2)) = List(1, 2, 3, 4)}}}
     */
   def :::[B >: A](prefix: List[B]): List[B] =
-    if (isEmpty) prefix
-    else if (prefix.isEmpty) this
-    else (new ListBuffer[B] ++= prefix).prependToList(this)
+    if (isEmpty)
+      prefix
+    else if (prefix.isEmpty)
+      this
+    else
+      (new ListBuffer[B] ++= prefix).prependToList(this)
 
   /** Adds the elements of a given list in reverse order in front of this list.
     *  `xs reverse_::: ys` is equivalent to
@@ -169,8 +172,10 @@ sealed abstract class List[+A]
         unchanged: List[A],
         pending: List[A]): List[B] =
       if (pending.isEmpty) {
-        if (mapped eq null) unchanged
-        else mapped.prependToList(unchanged)
+        if (mapped eq null)
+          unchanged
+        else
+          mapped.prependToList(unchanged)
       } else {
         val head0 = pending.head
         val head1 = f(head0)
@@ -178,7 +183,11 @@ sealed abstract class List[+A]
         if (head1 eq head0.asInstanceOf[AnyRef])
           loop(mapped, unchanged, pending.tail)
         else {
-          val b = if (mapped eq null) new ListBuffer[B] else mapped
+          val b =
+            if (mapped eq null)
+              new ListBuffer[B]
+            else
+              mapped
           var xc = unchanged
           while (xc ne pending) {
             b += xc.head
@@ -196,8 +205,10 @@ sealed abstract class List[+A]
 
   override def ++[B >: A, That](that: GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That =
-    if (bf eq List.ReusableCBF) (this ::: that.seq.toList).asInstanceOf[That]
-    else super.++(that)
+    if (bf eq List.ReusableCBF)
+      (this ::: that.seq.toList).asInstanceOf[That]
+    else
+      super.++(that)
 
   override def +:[B >: A, That](elem: B)(
       implicit bf: CanBuildFrom[List[A], B, That]): That = bf match {
@@ -208,14 +219,16 @@ sealed abstract class List[+A]
   override def toList: List[A] = this
 
   override def take(n: Int): List[A] =
-    if (isEmpty || n <= 0) Nil
+    if (isEmpty || n <= 0)
+      Nil
     else {
       val h = new ::(head, Nil)
       var t = h
       var rest = tail
       var i = 1
       while ({
-        if (rest.isEmpty) return this;
+        if (rest.isEmpty)
+          return this;
         i < n
       }) {
         i += 1
@@ -249,8 +262,10 @@ sealed abstract class List[+A]
     */
   override def slice(from: Int, until: Int): List[A] = {
     val lo = scala.math.max(from, 0)
-    if (until <= lo || isEmpty) Nil
-    else this drop lo take (until - lo)
+    if (until <= lo || isEmpty)
+      Nil
+    else
+      this drop lo take (until - lo)
   }
 
   override def takeRight(n: Int): List[A] = {
@@ -279,7 +294,8 @@ sealed abstract class List[+A]
   final override def map[B, That](f: A => B)(
       implicit bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
-      if (this eq Nil) Nil.asInstanceOf[That]
+      if (this eq Nil)
+        Nil.asInstanceOf[That]
       else {
         val h = new ::[B](f(head), Nil)
         var t: ::[B] = h
@@ -292,13 +308,15 @@ sealed abstract class List[+A]
         }
         h.asInstanceOf[That]
       }
-    } else super.map(f)
+    } else
+      super.map(f)
   }
 
   final override def collect[B, That](pf: PartialFunction[A, B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
-      if (this eq Nil) Nil.asInstanceOf[That]
+      if (this eq Nil)
+        Nil.asInstanceOf[That]
       else {
         var rest = this
         var h: ::[B] = null
@@ -308,7 +326,11 @@ sealed abstract class List[+A]
           if (x.asInstanceOf[AnyRef] ne List.partialNotApplied)
             h = new ::(x.asInstanceOf[B], Nil)
           rest = rest.tail
-          if (rest eq Nil) return (if (h eq null) Nil else h).asInstanceOf[That]
+          if (rest eq Nil)
+            return (if (h eq null)
+                      Nil
+                    else
+                      h).asInstanceOf[That]
         } while (h eq null)
         var t = h
         // Remaining elements
@@ -323,13 +345,15 @@ sealed abstract class List[+A]
         } while (rest ne Nil)
         h.asInstanceOf[That]
       }
-    } else super.collect(pf)
+    } else
+      super.collect(pf)
   }
 
   final override def flatMap[B, That](f: A => GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
-      if (this eq Nil) Nil.asInstanceOf[That]
+      if (this eq Nil)
+        Nil.asInstanceOf[That]
       else {
         var rest = this
         var found = false
@@ -349,9 +373,13 @@ sealed abstract class List[+A]
           }
           rest = rest.tail
         }
-        (if (!found) Nil else h).asInstanceOf[That]
+        (if (!found)
+           Nil
+         else
+           h).asInstanceOf[That]
       }
-    } else super.flatMap(f)
+    } else
+      super.flatMap(f)
   }
 
   @inline final override def takeWhile(p: A => Boolean): List[A] = {
@@ -367,8 +395,10 @@ sealed abstract class List[+A]
   @inline final override def dropWhile(p: A => Boolean): List[A] = {
     @tailrec
     def loop(xs: List[A]): List[A] =
-      if (xs.isEmpty || !p(xs.head)) xs
-      else loop(xs.tail)
+      if (xs.isEmpty || !p(xs.head))
+        xs
+      else
+        loop(xs.tail)
 
     loop(this)
   }
@@ -409,8 +439,10 @@ sealed abstract class List[+A]
   override def stringPrefix = "List"
 
   override def toStream: Stream[A] =
-    if (isEmpty) Stream.Empty
-    else new Stream.Cons(head, tail.toStream)
+    if (isEmpty)
+      Stream.Empty
+    else
+      new Stream.Cons(head, tail.toStream)
 
   // Create a proxy for Java serialization that allows us to avoid mutation
   // during de-serialization.  This is the Serialization Proxy Pattern.
@@ -493,13 +525,14 @@ object List extends SeqFactory[List] {
     private def readObject(in: ObjectInputStream) {
       in.defaultReadObject()
       val builder = List.newBuilder[A]
-      while (true) in.readObject match {
-        case ListSerializeEnd =>
-          orig = builder.result()
-          return
-        case a =>
-          builder += a.asInstanceOf[A]
-      }
+      while (true)
+        in.readObject match {
+          case ListSerializeEnd =>
+            orig = builder.result()
+            return
+          case a =>
+            builder += a.asInstanceOf[A]
+        }
     }
 
     // Provide the result stored in `orig` for Java serialization

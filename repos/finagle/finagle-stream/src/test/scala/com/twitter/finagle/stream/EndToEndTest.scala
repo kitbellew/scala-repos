@@ -164,7 +164,8 @@ class EndToEndTest extends FunSuite {
                     case _: WriteCompletionEvent => false
                     case _                       => true
                   }
-                  if (keep) recvd ! e
+                  if (keep)
+                    recvd ! e
                 }
               }
             )

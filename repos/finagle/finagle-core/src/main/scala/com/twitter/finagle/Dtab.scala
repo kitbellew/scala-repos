@@ -60,8 +60,10 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * Construct a new Dtab with the given dtab appended.
     */
   def ++(dtab: Dtab): Dtab = {
-    if (dtab.isEmpty) this
-    else Dtab(dentries0 ++ dtab.dentries0)
+    if (dtab.isEmpty)
+      this
+    else
+      Dtab(dentries0 ++ dtab.dentries0)
   }
 
   /**
@@ -73,9 +75,12 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * Efficiently removes prefix `prefix` from `dtab`.
     */
   def stripPrefix(prefix: Dtab): Dtab = {
-    if (this eq prefix) return Dtab.empty
-    if (isEmpty) return this
-    if (size < prefix.size) return this
+    if (this eq prefix)
+      return Dtab.empty
+    if (isEmpty)
+      return this
+    if (size < prefix.size)
+      return this
 
     var i = 0
     while (i < prefix.size) {

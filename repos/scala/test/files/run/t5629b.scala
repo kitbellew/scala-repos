@@ -4,7 +4,10 @@ object Test extends App {
     def isDefinedAt(x: A): Boolean
     def applyOrElse[A1 <: A](x: A1, default: A1 => Unit): Unit = {
       println("MyPF.applyOrElse entered...")
-      if (isDefinedAt(x)) apply(x) else default(x)
+      if (isDefinedAt(x))
+        apply(x)
+      else
+        default(x)
     }
   }
 

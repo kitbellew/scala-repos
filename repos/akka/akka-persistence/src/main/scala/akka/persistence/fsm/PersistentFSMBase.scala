@@ -226,8 +226,10 @@ trait PersistentFSMBase[S, D, E]
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (if (repeat) "repeating "
-                      else "") + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " + (if (repeat)
+                        "repeating "
+                      else
+                        "") + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }
@@ -425,7 +427,8 @@ trait PersistentFSMBase[S, D, E]
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
     for (te ← transitionEvent) {
-      if (te.isDefinedAt(tuple)) te(tuple)
+      if (te.isDefinedAt(tuple))
+        te(tuple)
     }
   }
 
@@ -530,8 +533,10 @@ trait PersistentFSMBase[S, D, E]
       }
       currentState = nextState
       val timeout =
-        if (currentState.timeout.isDefined) currentState.timeout
-        else stateTimeouts(currentState.stateName)
+        if (currentState.timeout.isDefined)
+          currentState.timeout
+        else
+          stateTimeouts(currentState.stateName)
       if (timeout.isDefined) {
         val t = timeout.get
         if (t.isFinite && t.length >= 0) {
@@ -565,7 +570,8 @@ trait PersistentFSMBase[S, D, E]
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
-      for (timer ← timers.values) timer.cancel()
+      for (timer ← timers.values)
+        timer.cancel()
       timers.clear()
       currentState = nextState
 

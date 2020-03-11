@@ -600,7 +600,8 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       if (oneMore) {
         oneMore = false
         ctx.push(lastElem)
-      } else ctx.pull()
+      } else
+        ctx.pull()
     }
   }
 
@@ -615,7 +616,8 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     override def onPull(ctx: Context[T]): SyncDirective = {
       if (ctx.isFinishing) {
         ctx.push(lastElem)
-      } else ctx.pull()
+      } else
+        ctx.pull()
     }
 
     override def onUpstreamFinish(ctx: Context[T]): TerminationDirective =

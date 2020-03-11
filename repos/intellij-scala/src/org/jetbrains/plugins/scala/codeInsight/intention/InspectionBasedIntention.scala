@@ -51,6 +51,9 @@ class InspectionBasedIntention(
       e = e.getParent
     } while (holder.getResultCount == 0 && e != null && !e
       .isInstanceOf[ScBlockExpr])
-    if (holder.getResultCount > 0) Some(holder.getResults.get(0)) else None
+    if (holder.getResultCount > 0)
+      Some(holder.getResults.get(0))
+    else
+      None
   }
 }

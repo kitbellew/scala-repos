@@ -19,11 +19,16 @@ class SelectionBenchmarks extends MyBenchmark {
     new Order[Complex[Double]] {
       override def eqv(a: Complex[Double], b: Complex[Double]) = a == b
       def compare(a: Complex[Double], b: Complex[Double]): Int = {
-        if (a.real < b.real) -1
-        else if (a.real > b.real) 1
-        else if (a.imag < b.imag) -1
-        else if (a.imag > b.imag) 1
-        else 0
+        if (a.real < b.real)
+          -1
+        else if (a.real > b.real)
+          1
+        else if (a.imag < b.imag)
+          -1
+        else if (a.imag > b.imag)
+          1
+        else
+          0
       }
     }
 
@@ -51,22 +56,48 @@ class SelectionBenchmarks extends MyBenchmark {
       data(i) = init;
       i += 1
     }
-    if (layout == "random") return data
+    if (layout == "random")
+      return data
     spire.math.Sorting.sort(data)
-    if (layout == "sorted") data else data.reverse
+    if (layout == "sorted")
+      data
+    else
+      data.reverse
   }
 
   override protected def setUp(): Unit = {
     val size = spire.math.pow(2, pow).toInt
 
-    is = if (typ == "int") mkarray(size, layout)(nextInt) else null
-    js = if (typ == "long") mkarray(size, layout)(nextLong) else null
-    fs = if (typ == "float") mkarray(size, layout)(nextFloat) else null
-    ds = if (typ == "double") mkarray(size, layout)(nextDouble) else null
-    cs = if (typ == "complex") mkarray(size, layout)(nextComplex) else null
+    is =
+      if (typ == "int")
+        mkarray(size, layout)(nextInt)
+      else
+        null
+    js =
+      if (typ == "long")
+        mkarray(size, layout)(nextLong)
+      else
+        null
+    fs =
+      if (typ == "float")
+        mkarray(size, layout)(nextFloat)
+      else
+        null
+    ds =
+      if (typ == "double")
+        mkarray(size, layout)(nextDouble)
+      else
+        null
+    cs =
+      if (typ == "complex")
+        mkarray(size, layout)(nextComplex)
+      else
+        null
     cs2 =
-      if (typ == "complex") cs.map(c => new FakeComplex(c.real, c.imag))
-      else null
+      if (typ == "complex")
+        cs.map(c => new FakeComplex(c.real, c.imag))
+      else
+        null
   }
 
   def timeSpireQuickSelect(reps: Int) = run(reps) {

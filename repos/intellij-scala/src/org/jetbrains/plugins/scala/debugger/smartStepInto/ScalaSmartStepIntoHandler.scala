@@ -138,7 +138,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
     override def visitNewTemplateDefinition(
         templ: ScNewTemplateDefinition): Unit = {
-      if (!elementFilter(templ)) return
+      if (!elementFilter(templ))
+        return
 
       val extBl = templ.extendsBlock
       var label = ""
@@ -201,7 +202,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
     }
 
     override def visitExpression(expr: ScExpression) {
-      if (!elementFilter(expr)) return
+      if (!elementFilter(expr))
+        return
 
       val implicits = expr.getImplicitConversions()._2
       implicits match {
@@ -247,7 +249,11 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
                 if cl.getModifierList.hasModifierProperty("implicit") =>
               val isActuallyImplicit =
                 ref.qualifier.exists(_.getImplicitConversions()._2.nonEmpty)
-              val prefix = if (isActuallyImplicit) "implicit " else null
+              val prefix =
+                if (isActuallyImplicit)
+                  "implicit "
+                else
+                  null
               result += new MethodSmartStepTarget(
                 f,
                 prefix,
@@ -269,7 +275,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
     }
 
     override def visitPattern(pat: ScPattern): Unit = {
-      if (!elementFilter(pat)) return
+      if (!elementFilter(pat))
+        return
 
       val ref = pat match {
         case cp: ScConstructorPattern => Some(cp.ref)

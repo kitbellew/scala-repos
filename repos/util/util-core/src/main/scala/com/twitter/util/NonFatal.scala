@@ -43,5 +43,9 @@ object NonFatal {
     * }
     * }}}
     */
-  def unapply(t: Throwable): Option[Throwable] = if (apply(t)) Some(t) else None
+  def unapply(t: Throwable): Option[Throwable] =
+    if (apply(t))
+      Some(t)
+    else
+      None
 }

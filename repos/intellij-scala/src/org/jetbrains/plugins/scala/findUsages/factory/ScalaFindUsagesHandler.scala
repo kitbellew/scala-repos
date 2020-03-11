@@ -168,8 +168,10 @@ class ScalaFindUsagesHandler(
       searchScope: GlobalSearchScope): Boolean = {
     val nonScalaTextProcessor = new Processor[UsageInfo] {
       override def process(t: UsageInfo): Boolean = {
-        if (t.getFile.getFileType == ScalaFileType.SCALA_FILE_TYPE) true
-        else processor.process(t)
+        if (t.getFile.getFileType == ScalaFileType.SCALA_FILE_TYPE)
+          true
+        else
+          processor.process(t)
       }
     }
     super.processUsagesInText(element, nonScalaTextProcessor, searchScope)
@@ -179,7 +181,8 @@ class ScalaFindUsagesHandler(
       element: PsiElement,
       processor: Processor[UsageInfo],
       options: FindUsagesOptions): Boolean = {
-    if (!super.processElementUsages(element, processor, options)) return false
+    if (!super.processElementUsages(element, processor, options))
+      return false
     options match {
       case s: ScalaTypeDefinitionFindUsagesOptions
           if element.isInstanceOf[ScTypeDefinition] =>
@@ -247,7 +250,8 @@ class ScalaFindUsagesHandler(
             })
           res.foreach { c =>
             val processed = inReadAction(processor.process(new UsageInfo(c)))
-            if (!processed) return false
+            if (!processed)
+              return false
           }
         }
       case _ =>
@@ -260,7 +264,8 @@ class ScalaFindUsagesHandler(
                  function,
                  deep = true)) {
             val processed = super.processElementUsages(elem, processor, options)
-            if (!processed) return false
+            if (!processed)
+              return false
           }
         case _ =>
       }

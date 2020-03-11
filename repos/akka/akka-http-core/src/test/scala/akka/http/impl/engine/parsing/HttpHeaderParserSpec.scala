@@ -292,7 +292,10 @@ class HttpHeaderParserSpec
       val p = HttpHeaderParser.unprimed(
         settings = ParserSettings(system),
         warnOnIllegalHeader = info ⇒ system.log.warning(info.formatPretty))
-      if (primed) HttpHeaderParser.prime(p) else p
+      if (primed)
+        HttpHeaderParser.prime(p)
+      else
+        p
     }
     def insert(line: String, value: AnyRef): Unit =
       if (parser.isEmpty)
@@ -300,7 +303,8 @@ class HttpHeaderParserSpec
           parser,
           ByteString(line),
           value)
-      else HttpHeaderParser.insert(parser, ByteString(line), value)
+      else
+        HttpHeaderParser.insert(parser, ByteString(line), value)
 
     def parseLine(line: String) =
       parser.parseHeaderLine(ByteString(line))() -> parser.resultHeader
@@ -319,7 +323,10 @@ class HttpHeaderParserSpec
       headerA shouldEqual header
       headerB shouldEqual header
       ixA shouldEqual ixB
-      if (headerA eq headerB) 1 else 0
+      if (headerA eq headerB)
+        1
+      else
+        0
     }
 
     private[this] val random = new Random(42)
@@ -327,13 +334,18 @@ class HttpHeaderParserSpec
     def nextRandomInt(min: Int, max: Int) = random.nextInt(max - min) + min
     @tailrec final def nextRandomAlphaNumChar(): Char = {
       val c = nextRandomPrintableChar()
-      if (CharacterClasses.ALPHANUM(c)) c else nextRandomAlphaNumChar()
+      if (CharacterClasses.ALPHANUM(c))
+        c
+      else
+        nextRandomAlphaNumChar()
     }
     @tailrec final def nextRandomString(
         charGen: () ⇒ Char,
         len: Int,
         sb: JStringBuilder = new JStringBuilder): String =
-      if (sb.length < len) nextRandomString(charGen, len, sb.append(charGen()))
-      else sb.toString
+      if (sb.length < len)
+        nextRandomString(charGen, len, sb.append(charGen()))
+      else
+        sb.toString
   }
 }

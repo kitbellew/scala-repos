@@ -74,7 +74,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     }
 
     val sources = collectSources(context, chunk, dirtyFilesHolder)
-    if (sources.isEmpty) return ExitCode.NOTHING_DONE
+    if (sources.isEmpty)
+      return ExitCode.NOTHING_DONE
 
     if (hasBuildModules(chunk))
       return ExitCode.NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
@@ -110,7 +111,10 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     val successfullyCompiled = mutable.Set[File]()
 
     val compilerName =
-      if (modules.exists(CompilerData.isDottyModule)) "dotc" else "scalac"
+      if (modules.exists(CompilerData.isDottyModule))
+        "dotc"
+      else
+        "scalac"
 
     val client = new IdeClientIdea(
       compilerName,
@@ -214,8 +218,10 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     }
 
     //if no scala files to compile, return empty seq
-    if (!result.exists(_.getName.endsWith(".scala"))) Seq.empty
-    else result.toSeq
+    if (!result.exists(_.getName.endsWith(".scala")))
+      Seq.empty
+    else
+      result.toSeq
   }
 
 }

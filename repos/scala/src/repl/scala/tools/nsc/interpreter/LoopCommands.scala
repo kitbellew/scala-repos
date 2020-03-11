@@ -36,7 +36,10 @@ trait LoopCommands {
       extends (String => Result) {
     def usage: String = ""
     def usageMsg: String = ":" + name + (
-      if (usage == "") "" else " " + usage
+      if (usage == "")
+        ""
+      else
+        " " + usage
     )
     def apply(line: String): Result
 
@@ -55,8 +58,10 @@ trait LoopCommands {
         usage: String,
         help: String,
         f: String => Result): LoopCommand =
-      if (usage == "") new NullaryCmd(name, help, f)
-      else new LineCmd(name, usage, help, f)
+      if (usage == "")
+        new NullaryCmd(name, help, f)
+      else
+        new LineCmd(name, usage, help, f)
   }
 
   class NullaryCmd(name: String, help: String, f: String => Result)

@@ -38,7 +38,10 @@ import scalafx.scene.Node._
 
 object Menu {
   implicit def sfxMenu2jfx(cb: Menu): jfxsc.Menu =
-    if (cb != null) cb.delegate else null
+    if (cb != null)
+      cb.delegate
+    else
+      null
 }
 
 /**

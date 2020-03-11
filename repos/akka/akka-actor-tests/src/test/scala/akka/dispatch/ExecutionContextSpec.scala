@@ -60,7 +60,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
             if (callingThreadLock.get != 0)
               p.tryFailure(
                 new IllegalStateException("Batch was executed inline!"))
-            else if (count.incrementAndGet == 100) p.trySuccess(()) //Done
+            else if (count.incrementAndGet == 100)
+              p.trySuccess(()) //Done
             else if (lock.compareAndSet(0, 1)) {
               try Thread.sleep(10)
               finally lock.compareAndSet(1, 0)
@@ -273,7 +274,11 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       }
 
       1 to total foreach { i ⇒
-        perform(c ⇒ if (c == (i - 1)) c + 1 else c)
+        perform(c ⇒
+          if (c == (i - 1))
+            c + 1
+          else
+            c)
       }
       awaitCond(counter.get == total)
       sec.isEmpty should ===(true)

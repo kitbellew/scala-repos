@@ -11,7 +11,11 @@ object Test {
   //def freeMBytes = Runtime.getRuntime.freeMemory / 1048576
   def totalMBytes = Runtime.getRuntime.totalMemory / 1048576
 
-  val N = if (totalMBytes > 1000) 10000 else 4000
+  val N =
+    if (totalMBytes > 1000)
+      10000
+    else
+      4000
   val M = N / 10
 
   def ticketExample {

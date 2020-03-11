@@ -54,8 +54,10 @@ object Test {
   def tr[T](m: => T): String =
     try {
       val r = m
-      if (r == null) "null"
-      else r.toString
+      if (r == null)
+        "null"
+      else
+        r.toString
     } catch {
       case e: InternalError => e.getMessage
     }
@@ -148,8 +150,10 @@ object Test {
         // within those categories, sort lexically.
         // this makes the check file smaller: it differs for anonymous functions between -Ydelambdafy:inline/method.
         // the other classes are the same.
-        if (isAnonFunClassName(a)) !isAnonFunClassName(b) || a < b
-        else !isAnonFunClassName(b) && a < b
+        if (isAnonFunClassName(a))
+          !isAnonFunClassName(b) || a < b
+        else
+          !isAnonFunClassName(b) && a < b
       })
 
     classfiles foreach showClass

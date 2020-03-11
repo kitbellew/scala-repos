@@ -67,8 +67,10 @@ object IO {
 
   def classLocation(cl: Class[_]): URL = {
     val codeSource = cl.getProtectionDomain.getCodeSource
-    if (codeSource == null) sys.error("No class location for " + cl)
-    else codeSource.getLocation
+    if (codeSource == null)
+      sys.error("No class location for " + cl)
+    else
+      codeSource.getLocation
   }
   def classLocationFile(cl: Class[_]): File = toFile(classLocation(cl))
   def classLocation[T](implicit mf: Manifest[T]): URL =

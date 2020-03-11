@@ -312,14 +312,17 @@ object ScalaElementTypes {
       import com.intellij.psi.tree.IErrorCounterReparseableElementType._
       val lexer: Lexer = new ScalaLexer
       lexer.start(seq)
-      if (lexer.getTokenType != ScalaTokenTypes.tLBRACE) return FATAL_ERROR
+      if (lexer.getTokenType != ScalaTokenTypes.tLBRACE)
+        return FATAL_ERROR
       lexer.advance()
       var balance: Int = 1
       var flag = false
       while (!flag) {
         val tp: IElementType = lexer.getTokenType
-        if (tp == null) flag = true
-        else if (balance == 0) return FATAL_ERROR
+        if (tp == null)
+          flag = true
+        else if (balance == 0)
+          return FATAL_ERROR
         else if (tp == ScalaTokenTypes.tLBRACE) {
           balance += 1
         } else if (tp == ScalaTokenTypes.tRBRACE) {

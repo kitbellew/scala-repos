@@ -233,7 +233,8 @@ abstract class AbstractFetcherThread(
             topicAndPartition,
             if (PartitionTopicInfo.isOffsetInvalid(offset))
               new PartitionFetchState(handleOffsetOutOfRange(topicAndPartition))
-            else new PartitionFetchState(offset)
+            else
+              new PartitionFetchState(offset)
           )
       }
       partitionMapCond.signalAll()

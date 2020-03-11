@@ -58,7 +58,8 @@ object Test extends App {
     }
 
     val evals =
-      for ((Some(eval), _) <- parsed if eval != None) yield (eval: Tree)
+      for ((Some(eval), _) <- parsed if eval != None)
+        yield (eval: Tree)
     val prints =
       for ((_, ref) <- parsed)
         yield Apply(

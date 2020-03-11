@@ -52,9 +52,15 @@ private[annotator] object ModifierChecker {
         withPrivate: Boolean): Boolean = {
       val illegalCombinations = Array[(String, String)](
         ("final", "sealed"),
-        if (withPrivate) ("final", "private") else ("", ""),
+        if (withPrivate)
+          ("final", "private")
+        else
+          ("", ""),
         ("private", "protected"),
-        if (withPrivate) ("private", "override") else ("", "")
+        if (withPrivate)
+          ("private", "override")
+        else
+          ("", "")
       )
       for ((bad1, bad2) <- illegalCombinations
            if (bad1 == text && owner.hasModifierPropertyScala(bad2)) ||
@@ -283,14 +289,17 @@ private[annotator] object ModifierChecker {
                         clazz.constructor match {
                           case Some(constr) =>
                             val clauses = constr.parameterList.clauses
-                            if (clauses.isEmpty) errorResult()
+                            if (clauses.isEmpty)
+                              errorResult()
                             else {
                               val parameters = clauses.head.parameters
-                              if (parameters.length != 1) errorResult()
+                              if (parameters.length != 1)
+                                errorResult()
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
                               else if (clauses.length > 2 || (clauses.length == 2 && !clauses(
-                                         1).isImplicit)) errorResult()
+                                         1).isImplicit))
+                                errorResult()
                             }
                           case _ => errorResult()
                         }

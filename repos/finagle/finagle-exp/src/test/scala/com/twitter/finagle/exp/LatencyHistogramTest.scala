@@ -24,7 +24,11 @@ class LatencyHistogramTest extends FunSuite with Matchers {
     for (d <- input)
       histo.add(d)
 
-    val epsilon = if (err == 0.0) 0 else range * err / 2
+    val epsilon =
+      if (err == 0.0)
+        0
+      else
+        range * err / 2
     val sorted = input.sorted
     for (q <- 0 until 100) {
       withClue(s"quantile $q: ") {
@@ -96,10 +100,12 @@ class LatencyHistogramTest extends FunSuite with Matchers {
         history = 4000,
         slices = LatencyHistogram.DefaultSlices,
         now = Stopwatch.timeMillis)
-      for (_ <- 0 until 100) histo.add(30)
+      for (_ <- 0 until 100)
+        histo.add(30)
       tc.advance(1.second)
 
-      for (_ <- 0 until 100) histo.add(10)
+      for (_ <- 0 until 100)
+        histo.add(10)
       assert(histo.quantile(99) == 30)
 
       tc.advance(1.second)

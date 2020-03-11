@@ -93,7 +93,8 @@ object SystemEventIdSequence {
     def current = nextSequenceId.get
     def isEmpty = current > block.lastSequenceId
     def next() =
-      if (isEmpty) sys.error("Next on empty sequence is invalid.")
+      if (isEmpty)
+        sys.error("Next on empty sequence is invalid.")
       else
         EventId(block.producerId, nextSequenceId.getAndIncrement)
   }

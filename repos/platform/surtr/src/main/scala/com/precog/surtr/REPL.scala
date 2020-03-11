@@ -153,7 +153,9 @@ trait REPL
       bindRoot(oldTree, oldTree)
 
       val tree = shakeTree(oldTree)
-      val strs = for (error <- tree.errors) yield showError(error)
+      val strs =
+        for (error <- tree.errors)
+          yield showError(error)
 
       if (!tree.errors.isEmpty) {
         out.println(color.red(strs mkString "\n"))

@@ -31,7 +31,10 @@ object AppliedType {
 
       (
         AppliedType(typename, typeArgs),
-        if (remaining.startsWith("]")) remaining.substring(1) else remaining)
+        if (remaining.startsWith("]"))
+          remaining.substring(1)
+        else
+          remaining)
     }
   }
 
@@ -42,8 +45,10 @@ object AppliedType {
    */
   def parseFull(s: String): Option[AppliedType] = {
     val (result, remaining) = parse(s)
-    if (remaining.isEmpty) Some(result)
-    else None
+    if (remaining.isEmpty)
+      Some(result)
+    else
+      None
   }
 
 }
@@ -53,5 +58,8 @@ object AppliedType {
   */
 case class AppliedType(typename: String, typeargs: List[AppliedType]) {
   override def toString =
-    typename + (if (typeargs.isEmpty) "" else typeargs.mkString("[", ",", "]"))
+    typename + (if (typeargs.isEmpty)
+                  ""
+                else
+                  typeargs.mkString("[", ",", "]"))
 }

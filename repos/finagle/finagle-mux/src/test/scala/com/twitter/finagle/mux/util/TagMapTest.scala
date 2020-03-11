@@ -22,8 +22,10 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll { set: TagSet =>
       val range = set.range
       val ints = TagMap[java.lang.Integer](set)
-      for (i <- range) assert(ints.map(-i) == Some(i))
-      for (i <- range) assert(ints.unmap(i) == Some(-i))
+      for (i <- range)
+        assert(ints.map(-i) == Some(i))
+      for (i <- range)
+        assert(ints.unmap(i) == Some(-i))
     }
   }
 
@@ -43,7 +45,8 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val range = set.range
       val ints = TagMap[java.lang.Integer](set)
 
-      for (i <- range) assert(ints.map(-i) == Some(i))
+      for (i <- range)
+        assert(ints.map(-i) == Some(i))
 
       assert(ints.sameElements(range.map { i =>
         (i, -i)

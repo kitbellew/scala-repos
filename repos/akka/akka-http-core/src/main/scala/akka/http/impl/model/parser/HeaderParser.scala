@@ -48,7 +48,8 @@ private[http] class HeaderParser(
           run {
             fwsStart = cursor
           } ~ FWS ~ &(`field-value-char`) ~ run {
-            if (cursor > fwsStart) sb.append(' ')
+            if (cursor > fwsStart)
+              sb.append(' ')
           }
         }
     }

@@ -52,12 +52,17 @@ object ScalaDSL {
     private def postProcess(
         ctx: ActorContext[U],
         behv: Behavior[T]): Behavior[U] =
-      if (isUnhandled(behv)) Unhandled
+      if (isUnhandled(behv))
+        Unhandled
       else if (isAlive(behv)) {
         val next =
           canonicalize(ctx.asInstanceOf[ActorContext[T]], behv, behavior)
-        if (next eq behavior) Same else Widened(next, matcher)
-      } else Stopped
+        if (next eq behavior)
+          Same
+        else
+          Widened(next, matcher)
+      } else
+        Stopped
 
     override def management(ctx: ActorContext[U], msg: Signal): Behavior[U] =
       postProcess(
@@ -69,7 +74,8 @@ object ScalaDSL {
         postProcess(
           ctx,
           behavior.message(ctx.asInstanceOf[ActorContext[T]], matcher(msg)))
-      else Unhandled
+      else
+        Unhandled
 
     override def toString: String =
       s"${behavior.toString}.widen(${LineNumbers(matcher)})"
@@ -240,10 +246,14 @@ object ScalaDSL {
       behavior: Behavior[T])
       extends Behavior[T] {
     private def canonical(behv: Behavior[T]): Behavior[T] =
-      if (isUnhandled(behv)) Unhandled
-      else if (behv eq sameBehavior) Same
-      else if (isAlive(behv)) Tap(f, behv)
-      else Stopped
+      if (isUnhandled(behv))
+        Unhandled
+      else if (behv eq sameBehavior)
+        Same
+      else if (isAlive(behv))
+        Tap(f, behv)
+      else
+        Stopped
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] = {
       f.applyOrElse(Sig(ctx, msg), unitFunction)
       canonical(behavior.management(ctx, msg))
@@ -304,10 +314,14 @@ object ScalaDSL {
         ctx: ActorContext[T],
         next: Behavior[T]): Behavior[T] = {
       setBehavior(ctx, next)
-      if (inbox.hasMessages) run(ctx, behavior.message(ctx, inbox.receiveMsg()))
-      else if (isUnhandled(next)) Unhandled
-      else if (isAlive(next)) this
-      else Stopped
+      if (inbox.hasMessages)
+        run(ctx, behavior.message(ctx, inbox.receiveMsg()))
+      else if (isUnhandled(next))
+        Unhandled
+      else if (isAlive(next))
+        this
+      else
+        Stopped
     }
 
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] =
@@ -331,34 +345,44 @@ object ScalaDSL {
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] = {
       val l = left.management(ctx, msg)
       val r = right.management(ctx, msg)
-      if (isUnhandled(l) && isUnhandled(r)) Unhandled
+      if (isUnhandled(l) && isUnhandled(r))
+        Unhandled
       else {
         val nextLeft = canonicalize(ctx, l, left)
         val nextRight = canonicalize(ctx, r, right)
         val leftAlive = isAlive(nextLeft)
         val rightAlive = isAlive(nextRight)
 
-        if (leftAlive && rightAlive) And(nextLeft, nextRight)
-        else if (leftAlive) nextLeft
-        else if (rightAlive) nextRight
-        else Stopped
+        if (leftAlive && rightAlive)
+          And(nextLeft, nextRight)
+        else if (leftAlive)
+          nextLeft
+        else if (rightAlive)
+          nextRight
+        else
+          Stopped
       }
     }
 
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] = {
       val l = left.message(ctx, msg)
       val r = right.message(ctx, msg)
-      if (isUnhandled(l) && isUnhandled(r)) Unhandled
+      if (isUnhandled(l) && isUnhandled(r))
+        Unhandled
       else {
         val nextLeft = canonicalize(ctx, l, left)
         val nextRight = canonicalize(ctx, r, right)
         val leftAlive = isAlive(nextLeft)
         val rightAlive = isAlive(nextRight)
 
-        if (leftAlive && rightAlive) And(nextLeft, nextRight)
-        else if (leftAlive) nextLeft
-        else if (rightAlive) nextRight
-        else Stopped
+        if (leftAlive && rightAlive)
+          And(nextLeft, nextRight)
+        else if (leftAlive)
+          nextLeft
+        else if (rightAlive)
+          nextRight
+        else
+          Stopped
       }
     }
   }
@@ -379,28 +403,42 @@ object ScalaDSL {
       left.management(ctx, msg) match {
         case b if isUnhandled(b) ⇒
           val r = right.management(ctx, msg)
-          if (isUnhandled(r)) Unhandled
+          if (isUnhandled(r))
+            Unhandled
           else {
             val nr = canonicalize(ctx, r, right)
-            if (isAlive(nr)) Or(left, nr) else left
+            if (isAlive(nr))
+              Or(left, nr)
+            else
+              left
           }
         case nl ⇒
           val next = canonicalize(ctx, nl, left)
-          if (isAlive(next)) Or(next, right) else right
+          if (isAlive(next))
+            Or(next, right)
+          else
+            right
       }
 
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       left.message(ctx, msg) match {
         case b if isUnhandled(b) ⇒
           val r = right.message(ctx, msg)
-          if (isUnhandled(r)) Unhandled
+          if (isUnhandled(r))
+            Unhandled
           else {
             val nr = canonicalize(ctx, r, right)
-            if (isAlive(nr)) Or(left, nr) else left
+            if (isAlive(nr))
+              Or(left, nr)
+            else
+              left
           }
         case nl ⇒
           val next = canonicalize(ctx, nl, left)
-          if (isAlive(next)) Or(next, right) else right
+          if (isAlive(next))
+            Or(next, right)
+          else
+            right
       }
   }
 

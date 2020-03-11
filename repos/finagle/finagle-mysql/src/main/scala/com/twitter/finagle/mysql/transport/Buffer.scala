@@ -25,7 +25,14 @@ object Buffer {
     * binary.
     */
   def sizeOfLen(l: Long) =
-    if (l < 251) 1 else if (l < 65536) 3 else if (l < 16777216) 4 else 9
+    if (l < 251)
+      1
+    else if (l < 65536)
+      3
+    else if (l < 16777216)
+      4
+    else
+      9
 
   def apply(bytes: Array[Byte]): Buffer = new Buffer {
     // a wrappedBuffer should avoid copying the arrays.
@@ -51,7 +58,10 @@ object Buffer {
 sealed trait Buffer {
   val underlying: ChannelBuffer
   def headOption: Option[Byte] =
-    if (capacity >= 1) Some(underlying.getByte(0)) else None
+    if (capacity >= 1)
+      Some(underlying.getByte(0))
+    else
+      None
   def capacity: Int = underlying.capacity
 }
 
@@ -381,7 +391,10 @@ object BufferWriter {
     def writable(width: Int = 1): Boolean = underlying.writableBytes >= width
 
     def writeBoolean(b: Boolean): BufferWriter =
-      if (b) writeByte(1) else writeByte(0)
+      if (b)
+        writeByte(1)
+      else
+        writeByte(0)
 
     def writeByte(n: Int): BufferWriter = {
       underlying.writeByte(n)

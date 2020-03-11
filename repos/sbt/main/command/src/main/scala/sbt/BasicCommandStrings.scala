@@ -76,7 +76,10 @@ ${runEarly(level.toString)}
 
   def runEarly(command: String) = {
     val sep =
-      if (command.isEmpty || Character.isLetter(command.charAt(0))) "" else " "
+      if (command.isEmpty || Character.isLetter(command.charAt(0)))
+        ""
+      else
+        " "
     s"$EarlyCommand$sep$command"
   }
   private[sbt] def isEarlyCommand(s: String): Boolean = {

@@ -30,8 +30,10 @@ trait Helpers {
         name.asInstanceOf[st.Name] match {
           case FreshName(prefix) =>
             Some(
-              (if (name.isTermName) TermName(prefix) else TypeName(prefix))
-                .asInstanceOf[T])
+              (if (name.isTermName)
+                 TermName(prefix)
+               else
+                 TypeName(prefix)).asInstanceOf[T])
         }
     }
 
@@ -114,9 +116,16 @@ trait Helpers {
 
   def fails(msg: String, block: String) = {
     def result(ok: Boolean, description: String = "") = {
-      val status = if (ok) Prop.Proof else Prop.False
+      val status =
+        if (ok)
+          Prop.Proof
+        else
+          Prop.False
       val labels =
-        if (description != "") Set(description) else Set.empty[String]
+        if (description != "")
+          Set(description)
+        else
+          Set.empty[String]
       Prop {
         new Prop.Result(status, Nil, Set.empty, labels)
       }

@@ -35,8 +35,12 @@ class ScWhileStmtImpl(node: ASTNode)
     val c =
       if (rpar != null)
         PsiTreeUtil.getPrevSiblingOfType(rpar, classOf[ScExpression])
-      else null
-    if (c == null) None else Some(c)
+      else
+        null
+    if (c == null)
+      None
+    else
+      Some(c)
   }
 
   def body = {
@@ -44,20 +48,30 @@ class ScWhileStmtImpl(node: ASTNode)
     val c =
       if (rpar != null)
         PsiTreeUtil.getNextSiblingOfType(rpar, classOf[ScExpression])
-      else null
-    if (c == null) None else Some(c)
+      else
+        null
+    if (c == null)
+      None
+    else
+      Some(c)
   }
 
   def getLeftParenthesis = {
     val leftParenthesis =
       findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
-    if (leftParenthesis == null) None else Some(leftParenthesis)
+    if (leftParenthesis == null)
+      None
+    else
+      Some(leftParenthesis)
   }
 
   def getRightParenthesis = {
     val rightParenthesis =
       findChildByType[PsiElement](ScalaTokenTypes.tRPARENTHESIS)
-    if (rightParenthesis == null) None else Some(rightParenthesis)
+    if (rightParenthesis == null)
+      None
+    else
+      Some(rightParenthesis)
   }
 
   protected override def innerType(ctx: TypingContext) =

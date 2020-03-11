@@ -20,6 +20,9 @@ class ScalaTypeAliasItemPresentation(
       myElement.asInstanceOf[ScTypeAlias])
 
   override def getTextAttributesKey: TextAttributesKey = {
-    if (isInherited) CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES else null
+    if (isInherited)
+      CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES
+    else
+      null
   }
 }

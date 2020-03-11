@@ -7,7 +7,10 @@ sealed trait MarathonTaskStatus {
 
   def mesosStatus: Option[TaskStatus]
   def mesosHealth: Option[Boolean] = mesosStatus.flatMap { status =>
-    if (status.hasHealthy) Some(status.getHealthy) else None
+    if (status.hasHealthy)
+      Some(status.getHealthy)
+    else
+      None
   }
 }
 

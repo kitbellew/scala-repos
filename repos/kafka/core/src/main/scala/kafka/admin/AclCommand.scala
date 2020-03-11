@@ -123,7 +123,8 @@ object AclCommand {
       val resources = getResource(opts, dieIfNoResourceFound = false)
 
       val resourceToAcls: Iterable[(Resource, Set[Acl])] =
-        if (resources.isEmpty) authorizer.getAcls()
+        if (resources.isEmpty)
+          authorizer.getAcls()
         else
           resources.map(resource => (resource -> authorizer.getAcls(resource)))
 

@@ -13,19 +13,20 @@ abstract class Quasiquotes
   import c.universe._
 
   def debug(msg: => String): Unit =
-    if (settings.Yquasiquotedebug.value) println(msg)
+    if (settings.Yquasiquotedebug.value)
+      println(msg)
 
   lazy val (universe: Tree, args, parts, parse, reify, method) =
     c.macroApplication match {
       case Apply(
-          build.SyntacticTypeApplied(
-            Select(
+            build.SyntacticTypeApplied(
               Select(
-                Apply(Select(universe0, _), List(Apply(_, parts0))),
-                interpolator0),
-              method0),
-            _),
-          args0) =>
+                Select(
+                  Apply(Select(universe0, _), List(Apply(_, parts0))),
+                  interpolator0),
+                method0),
+              _),
+            args0) =>
         debug(
           s"parse prefix:\nuniverse=$universe0\nparts=$parts0\ninterpolator=$interpolator0\nmethod=$method0\nargs=$args0\n")
         val parts1 = parts0.map {

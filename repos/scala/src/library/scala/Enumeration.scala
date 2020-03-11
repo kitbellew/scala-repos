@@ -102,7 +102,10 @@ abstract class Enumeration(initial: Int) extends Serializable {
   protected var nextName: Iterator[String] = _
 
   private def nextNameOrNull =
-    if (nextName != null && nextName.hasNext) nextName.next() else null
+    if (nextName != null && nextName.hasNext)
+      nextName.next()
+    else
+      null
 
   /** The highest integer amongst those used to identify values in this
     * enumeration. */
@@ -110,7 +113,11 @@ abstract class Enumeration(initial: Int) extends Serializable {
 
   /** The lowest integer amongst those used to identify values in this
     * enumeration, but no higher than 0. */
-  private var bottomId = if (initial < 0) initial else 0
+  private var bottomId =
+    if (initial < 0)
+      initial
+    else
+      0
 
   /** The one higher than the highest integer amongst those used to identify
     *  values in this enumeration. */
@@ -208,9 +215,12 @@ abstract class Enumeration(initial: Int) extends Serializable {
     private[Enumeration] val outerEnum = thisenum
 
     override def compare(that: Value): Int =
-      if (this.id < that.id) -1
-      else if (this.id == that.id) 0
-      else 1
+      if (this.id < that.id)
+        -1
+      else if (this.id == that.id)
+        0
+      else
+        1
     override def equals(other: Any) = other match {
       case that: Enumeration#Value =>
         (outerEnum eq that.outerEnum) && (id == that.id)
@@ -236,11 +246,14 @@ abstract class Enumeration(initial: Int) extends Serializable {
     vmap(i) = this
     vsetDefined = false
     nextId = i + 1
-    if (nextId > topId) topId = nextId
-    if (i < bottomId) bottomId = i
+    if (nextId > topId)
+      topId = nextId
+    if (i < bottomId)
+      bottomId = i
     def id = i
     override def toString() =
-      if (name != null) name
+      if (name != null)
+        name
       else
         try thisenum.nameOf(i)
         catch {
@@ -250,8 +263,10 @@ abstract class Enumeration(initial: Int) extends Serializable {
 
     protected def readResolve(): AnyRef = {
       val enum = thisenum.readResolve().asInstanceOf[Enumeration]
-      if (enum.vmap == null) this
-      else enum.vmap(i)
+      if (enum.vmap == null)
+        this
+      else
+        enum.vmap(i)
     }
   }
 

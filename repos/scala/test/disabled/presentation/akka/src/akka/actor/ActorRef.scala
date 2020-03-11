@@ -333,8 +333,10 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
         throw new ActorTimeoutException(
           "Message [" + message +
             "]\n\tsent to [" + actorClassName +
-            "]\n\tfrom [" + (if (sender ne null) sender.actorClassName
-                             else "nowhere") +
+            "]\n\tfrom [" + (if (sender ne null)
+                               sender.actorClassName
+                             else
+                               "nowhere") +
             "]\n\twith timeout [" + timeout +
             "]\n\ttimed out."))
       .asInstanceOf[AnyRef]
@@ -383,7 +385,8 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     if (sender eq null)
       throw new IllegalArgumentException(
         "The 'sender' argument to 'forward' can't be null")
-    else forward(message)(Some(sender))
+    else
+      forward(message)(Some(sender))
 
   /**
     * Akka Java API. <p/>
@@ -579,7 +582,8 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
         val client = sender.get
         def !(msg: Any) = client.!(msg)(someSelf)
       }
-    } else throw new IllegalActorStateException("No channel available")
+    } else
+      throw new IllegalActorStateException("No channel available")
   }
 
   /**
@@ -667,7 +671,8 @@ class LocalActorRef private[akka] (
   }
 
   //If it was started inside "newActor", initialize it
-  if (isRunning) initializeActorInstance
+  if (isRunning)
+    initializeActorInstance
 
   // used only for deserialization
   private[akka] def this(
@@ -722,7 +727,8 @@ class LocalActorRef private[akka] (
     */
   def dispatcher_=(md: MessageDispatcher): Unit = guard.withGuard {
     if (!isBeingRestarted) {
-      if (!isRunning) _dispatcher = md
+      if (!isRunning)
+        _dispatcher = md
       else
         throw new ActorInitializationException(
           "Can not swap dispatcher for " + toString + " after it has been started")
@@ -948,14 +954,17 @@ class LocalActorRef private[akka] (
         None,
         ActorType.ScalaActor,
         None)
-      if (future.isDefined) future.get
+      if (future.isDefined)
+        future.get
       else
         throw new IllegalActorStateException(
           "Expected a future from remote call to actor " + toString)
     } else {
       val future =
-        if (senderFuture.isDefined) senderFuture
-        else Some(new DefaultCompletableFuture[T](timeout))
+        if (senderFuture.isDefined)
+          senderFuture
+        else
+          Some(new DefaultCompletableFuture[T](timeout))
       dispatcher dispatchMessage new MessageInvocation(
         this,
         message,
@@ -1012,7 +1021,8 @@ class LocalActorRef private[akka] (
       case _ =>
         if (_supervisor.isDefined)
           notifySupervisorWithMessage(Exit(this, reason))
-        else dead.stop()
+        else
+          dead.stop()
     }
   }
 
@@ -1032,8 +1042,10 @@ class LocalActorRef private[akka] (
         val retries = maxNrOfRetriesCount
         //We are within the time window if it isn't the first restart, or if the window hasn't closed
         val insideWindow =
-          if (windowStart == 0) false
-          else (now - windowStart) <= withinTimeRange.get
+          if (windowStart == 0)
+            false
+          else
+            (now - windowStart) <= withinTimeRange.get
 
         //The actor is dead if it dies X times within the window of restart
         val unrestartable =
@@ -1131,8 +1143,10 @@ class LocalActorRef private[akka] (
           true // done
         }
 
-      if (success) () // alles gut
-      else attemptRestart()
+      if (success)
+        () // alles gut
+      else
+        attemptRestart()
     }
 
     attemptRestart() // recur
@@ -1157,9 +1171,11 @@ class LocalActorRef private[akka] (
     guard.withGuard {
       ensureRemotingEnabled
       if (_supervisor.isDefined) {
-        if (homeAddress.isDefined) Actor.remote.registerSupervisorForActor(this)
+        if (homeAddress.isDefined)
+          Actor.remote.registerSupervisorForActor(this)
         Some(_supervisor.get.uuid)
-      } else None
+      } else
+        None
     }
 
   def linkedActors: JMap[Uuid, ActorRef] =
@@ -1184,7 +1200,8 @@ class LocalActorRef private[akka] (
     temporaryActor.stop()
     _linkedActors.remove(temporaryActor.uuid) // remove the temporary actor
     // if last temporary actor is gone, then unlink me from supervisor
-    if (_linkedActors.isEmpty) notifySupervisorWithMessage(UnlinkAndStop(this))
+    if (_linkedActors.isEmpty)
+      notifySupervisorWithMessage(UnlinkAndStop(this))
     true
   }
 
@@ -1196,7 +1213,8 @@ class LocalActorRef private[akka] (
 
     senderFuture.foreach(_.completeWithException(reason))
 
-    if (supervisor.isDefined) notifySupervisorWithMessage(Exit(this, reason))
+    if (supervisor.isDefined)
+      notifySupervisorWithMessage(Exit(this, reason))
     else {
       lifeCycle match {
         case Temporary => shutDownTemporaryActor(this)
@@ -1219,7 +1237,8 @@ class LocalActorRef private[akka] (
         }
         //Stop the actor itself
         stop
-      } else sup ! notification // else notify supervisor
+      } else
+        sup ! notification // else notify supervisor
     }
   }
 
@@ -1237,13 +1256,19 @@ class LocalActorRef private[akka] (
           selfField.setAccessible(true)
           someSelfField.setAccessible(true)
           selfField.set(actor, value)
-          someSelfField.set(actor, if (value ne null) Some(value) else null)
+          someSelfField.set(
+            actor,
+            if (value ne null)
+              Some(value)
+            else
+              null)
           true
         } catch {
           case e: NoSuchFieldException => false
         }
 
-      if (success) true
+      if (success)
+        true
       else {
         val parent = clazz.getSuperclass
         if (parent eq null)
@@ -1349,7 +1374,8 @@ private[akka] case class RemoteActorRef private[akka] (
       None,
       actorType,
       loader)
-    if (future.isDefined) future.get
+    if (future.isDefined)
+      future.get
     else
       throw new IllegalActorStateException(
         "Expected a future from remote call to actor " + toString)
@@ -1483,8 +1509,10 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     */
   def sender: Option[ActorRef] = {
     val msg = currentMessage
-    if (msg eq null) None
-    else msg.sender
+    if (msg eq null)
+      None
+    else
+      msg.sender
   }
 
   /**
@@ -1493,8 +1521,10 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     */
   def senderFuture(): Option[CompletableFuture[Any]] = {
     val msg = currentMessage
-    if (msg eq null) None
-    else msg.senderFuture
+    if (msg eq null)
+      None
+    else
+      msg.senderFuture
   }
 
   /**
@@ -1512,7 +1542,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     * <p/>
     */
   def !(message: Any)(implicit sender: Option[ActorRef] = None): Unit = {
-    if (isRunning) postMessageToMailbox(message, sender)
+    if (isRunning)
+      postMessageToMailbox(message, sender)
     else
       throw new ActorInitializationException(
         "Actor has not been started, you need to invoke 'actor.start()' before using it")
@@ -1541,7 +1572,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
       val isMessageJoinPoint =
         if (isTypedActorEnabled)
           TypedActorModule.resolveFutureIfMessageIsJoinPoint(message, future)
-        else false
+        else
+          false
       try {
         future.await
       } catch {
@@ -1549,7 +1581,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
           if (isMessageJoinPoint) {
             EventHandler.error(e, this, e.getMessage)
             throw e
-          } else None
+          } else
+            None
       }
       future.resultOrException
     } else
@@ -1628,7 +1661,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
       //TODO: optimize away this allocation, perhaps by having implicit self: Option[ActorRef] in signature
       sender.get.!(message)(Some(this))
       true
-    } else false
+    } else
+      false
   }
 
   /**

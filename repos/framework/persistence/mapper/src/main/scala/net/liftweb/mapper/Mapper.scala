@@ -73,7 +73,8 @@ trait Mapper[A <: Mapper[A]]
   private def calcDbId =
     if (dbCalculateConnectionIdentifier.isDefinedAt(this))
       dbCalculateConnectionIdentifier(this)
-    else getSingleton.dbDefaultConnectionIdentifier
+    else
+      getSingleton.dbDefaultConnectionIdentifier
 
   /**
     * Append a function to perform after the commit happens
@@ -156,7 +157,8 @@ trait Mapper[A <: Mapper[A]]
     * Delete the model from the RDBMS
     */
   def delete_! : Boolean = {
-    if (!db_can_delete_?) false
+    if (!db_can_delete_?)
+      false
     else
       runSafe {
         was_deleted_? = getSingleton.delete_!(this)

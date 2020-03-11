@@ -51,7 +51,8 @@ trait BaseParsers extends RegexParsers {
     * returns the matched whitespace
     */
   def ows: Parser[String] = Parser { in =>
-    if (in.atEnd) Success("test", in)
+    if (in.atEnd)
+      Success("test", in)
     else {
       var i = in.offset
       val s = in.source
@@ -92,8 +93,10 @@ trait BaseParsers extends RegexParsers {
     * This differs from "elem" as it returns a string consisting of that char.
     */
   def any: Parser[String] = Parser { in =>
-    if (in.atEnd) Failure("End of input reached", in)
-    else Success(in.first.toString, in.rest)
+    if (in.atEnd)
+      Failure("End of input reached", in)
+    else
+      Success(in.first.toString, in.rest)
   }
 
   /**
@@ -101,7 +104,8 @@ trait BaseParsers extends RegexParsers {
     * Returns a string with the matched char.
     */
   def oneOf(lookup: Set[Char]): Parser[String] = Parser { in =>
-    if (lookup.contains(in.first)) Success(in.first.toString, in.rest)
+    if (lookup.contains(in.first))
+      Success(in.first.toString, in.rest)
     else
       Failure("Expected one of " + lookup + " but found '" + in.first + "'", in)
   }
@@ -111,7 +115,8 @@ trait BaseParsers extends RegexParsers {
     * Returns the string value for the matched char in the given map.
     */
   def oneOf(lookup: Map[Char, String]): Parser[String] = Parser { in =>
-    if (lookup.contains(in.first)) Success(lookup(in.first), in.rest)
+    if (lookup.contains(in.first))
+      Success(lookup(in.first), in.rest)
     else
       Failure(
         "Expected one of " + lookup.keys + " but found '" + in.first + "'",
@@ -148,7 +153,8 @@ trait BaseParsers extends RegexParsers {
     */
   def range(begin: Char, end: Char): Parser[Char] = Parser { in =>
     val c = in.first
-    if (begin <= c && c <= end) Success(c, in.rest)
+    if (begin <= c && c <= end)
+      Success(c, in.rest)
     else
       Failure(
         verboseString(c) + " not in range " +
@@ -157,16 +163,19 @@ trait BaseParsers extends RegexParsers {
   }
 
   def ranges(rs: SortedMap[Char, Char]): Parser[Char] = Parser { in =>
-    if (in.atEnd) Failure("End of input.", in)
+    if (in.atEnd)
+      Failure("End of input.", in)
     else {
       val c = in.first
       val lower: SortedMap[Char, Char] = rs.to(c)
       val (begin: Char, end: Char) =
         if (lower.isEmpty)
           ('\u0001', '\u0000') //this invalid pair always causes failure
-        else lower.last
+        else
+          lower.last
 
-      if (begin <= c && c <= end) Success(c, in.rest)
+      if (begin <= c && c <= end)
+        Success(c, in.rest)
       else
         Failure(
           verboseString(c) + " not in range " +
@@ -211,8 +220,10 @@ trait BaseParsers extends RegexParsers {
   def escapeForXml(c: Char): String = {
     //looks horrible but massively faster than using a proper map and Option[String]
     val escaped: String = escapeFastForXml(c)
-    if (escaped == null) Character.toString(c)
-    else escaped
+    if (escaped == null)
+      Character.toString(c)
+    else
+      escaped
   }
 
   /**
@@ -222,8 +233,10 @@ trait BaseParsers extends RegexParsers {
     * that it is a noticeable difference if we use Option here.
     */
   def escapeFastForXml(c: Char) =
-    if (c < escapedXmlChars.length) escapedXmlChars(c)
-    else null
+    if (c < escapedXmlChars.length)
+      escapedXmlChars(c)
+    else
+      null
 
   /* A single char. If it is one of the chars that have to be escaped in XML it is returned as the xml escape code
    * i.e. parsing '<' returns "&lt;"

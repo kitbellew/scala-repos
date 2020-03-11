@@ -12,12 +12,15 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
   */
 class ScalaRenamePackageQuickFix(myFile: ScalaFile, name: String)
     extends AbstractFixOnPsiElement(
-      if (name == null || name.isEmpty) "Remove package statement"
-      else s"Rename Package to $name",
+      if (name == null || name.isEmpty)
+        "Remove package statement"
+      else
+        s"Rename Package to $name",
       myFile) {
   def doApplyFix(project: Project): Unit = {
     val file = getElement
-    if (!file.isValid) return
+    if (!file.isValid)
+      return
     ScalaUtils.runWriteAction(
       new Runnable {
         def run(): Unit = {

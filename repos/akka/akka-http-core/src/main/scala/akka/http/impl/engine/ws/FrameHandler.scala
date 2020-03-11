@@ -69,9 +69,11 @@ private[http] object FrameHandler {
             || start.header.opcode == Opcode.Continuation) { // further ones continuations
           expectFirstHeader = false
 
-          if (start.header.fin) finSeen = true
+          if (start.header.fin)
+            finSeen = true
           publish(start)
-        } else protocolError()
+        } else
+          protocolError()
       }
       override def handleFrameData(data: FrameData)(
           implicit ctx: Ctx): SyncDirective = publish(data)
@@ -93,8 +95,10 @@ private[http] object FrameHandler {
 
       def handleFrameData(data: FrameData)(implicit ctx: Ctx): SyncDirective = {
         this.data ++= data.data
-        if (data.lastPart) handleControlFrame(opcode, this.data, nextState)
-        else ctx.pull()
+        if (data.lastPart)
+          handleControlFrame(opcode, this.data, nextState)
+        else
+          ctx.pull()
       }
     }
 
@@ -147,8 +151,10 @@ private[http] object FrameHandler {
 
     private def publishMessagePart(part: MessageDataPart)(
         implicit ctx: Ctx): SyncDirective =
-      if (part.last) emit(Iterator(part, MessageEnd), ctx, Idle)
-      else ctx.push(part)
+      if (part.last)
+        emit(Iterator(part, MessageEnd), ctx, Idle)
+      else
+        ctx.push(part)
     private def publishDirectResponse(frame: FrameStart)(
         implicit ctx: Ctx): SyncDirective =
       ctx.push(DirectAnswer(frame))
@@ -169,8 +175,8 @@ private[http] object FrameHandler {
       def onPush(elem: FrameEventOrError, ctx: Context[Output]): SyncDirective =
         elem match {
           case FrameStart(
-              FrameHeader(Opcode.Close, _, length, _, _, _, _),
-              data) ⇒
+                FrameHeader(Opcode.Close, _, length, _, _, _, _),
+                data) ⇒
             become(WaitForPeerTcpClose)
             ctx.push(PeerClosed.parse(data))
           case _ ⇒ ctx.pull() // ignore all other data
@@ -192,8 +198,10 @@ private[http] object FrameHandler {
           if (start.header.opcode.isControl)
             if (start.isFullMessage)
               handleControlFrame(start.header.opcode, start.data, this)
-            else collectControlFrame(start, this)
-          else handleRegularFrameStart(start)
+            else
+              collectControlFrame(start, this)
+          else
+            handleRegularFrameStart(start)
         }
     }
     private abstract class BetweenFrameState extends ImplicitContextState {

@@ -243,10 +243,16 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       extends AbstractMap[A, B]
       with DefaultMap[A, B] {
     override def foreach[U](f: ((A, B)) => U): Unit =
-      for (kv <- self) if (p(kv._1)) f(kv)
+      for (kv <- self)
+        if (p(kv._1))
+          f(kv)
     def iterator = self.iterator.filter(kv => p(kv._1))
     override def contains(key: A) = p(key) && self.contains(key)
-    def get(key: A) = if (!p(key)) None else self.get(key)
+    def get(key: A) =
+      if (!p(key))
+        None
+      else
+        self.get(key)
   }
 
   /** Filters this map by retaining only keys satisfying a predicate.
@@ -264,8 +270,11 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       extends AbstractMap[A, C]
       with DefaultMap[A, C] {
     override def foreach[U](g: ((A, C)) => U): Unit =
-      for ((k, v) <- self) g((k, f(v)))
-    def iterator = for ((k, v) <- self.iterator) yield (k, f(v))
+      for ((k, v) <- self)
+        g((k, f(v)))
+    def iterator =
+      for ((k, v) <- self.iterator)
+        yield (k, f(v))
     override def size = self.size
     override def contains(key: A) = self.contains(key)
     def get(key: A) = self.get(key).map(f)
@@ -344,7 +353,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
   }
 
   override def toSeq: Seq[(A, B)] = {
-    if (isEmpty) Vector.empty[(A, B)]
+    if (isEmpty)
+      Vector.empty[(A, B)]
     else {
       // Default appropriate for immutable collections; mutable collections override this
       val vb = Vector.newBuilder[(A, B)]

@@ -28,32 +28,39 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null) return false
+    if (ifStmt == null)
+      return false
 
     val offset = editor.getCaretModel.getOffset
     val thenBranch = ifStmt.thenBranch.orNull
     val elseBranch = ifStmt.elseBranch.orNull
-    if (thenBranch == null || elseBranch != null) return false
+    if (thenBranch == null || elseBranch != null)
+      return false
 
     val condition = ifStmt.condition.orNull
-    if (condition == null) return false
+    if (condition == null)
+      return false
 
     if (!(ifStmt.getTextRange.getStartOffset <= offset &&
-          offset <= condition.getTextRange.getStartOffset - 1)) return false
+          offset <= condition.getTextRange.getStartOffset - 1))
+      return false
 
     thenBranch match {
       case branch: ScBlockExpr =>
         val exprs = branch.exprs
-        if (exprs.size != 1 || !exprs(0).isInstanceOf[ScIfStmt]) return false
+        if (exprs.size != 1 || !exprs(0).isInstanceOf[ScIfStmt])
+          return false
 
         val innerIfStmt = exprs(0).asInstanceOf[ScIfStmt]
         val innerElseBranch = innerIfStmt.elseBranch.orNull
-        if (innerElseBranch != null) return false
+        if (innerElseBranch != null)
+          return false
         true
 
       case branch: ScIfStmt =>
         val innerElseBranch = branch.elseBranch.orNull
-        if (innerElseBranch != null) return false
+        if (innerElseBranch != null)
+          return false
         true
 
       case _ => false
@@ -63,7 +70,8 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null || !ifStmt.isValid) return
+    if (ifStmt == null || !ifStmt.isValid)
+      return
 
     val expr = new StringBuilder
     val outerCondition = ifStmt.condition.get.getText

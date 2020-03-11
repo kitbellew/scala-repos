@@ -54,7 +54,11 @@ final case class Binding[T](
   def eagerly(): Binding[T] = copy(eager = true)
 
   override def toString = {
-    val eagerDesc = if (eager) " eagerly" else ""
+    val eagerDesc =
+      if (eager)
+        " eagerly"
+      else
+        ""
     s"$source:\nBinding($key to ${target.getOrElse("self")}${scope.fold("")(
       " in " + _)}$eagerDesc)"
   }

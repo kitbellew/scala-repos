@@ -76,8 +76,10 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
       sym,
       gen.mkTemplate(
         sym.info.parents map TypeTree,
-        if (sym.thisSym == sym || phase.erasedTypes) noSelfType
-        else ValDef(sym.thisSym),
+        if (sym.thisSym == sym || phase.erasedTypes)
+          noSelfType
+        else
+          ValDef(sym.thisSym),
         constrMods,
         vparamss,
         body,
@@ -207,7 +209,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
   object resetPos extends Traverser {
     override def traverse(t: Tree) {
-      if (t != EmptyTree) t.setPos(NoPosition)
+      if (t != EmptyTree)
+        t.setPos(NoPosition)
       super.traverse(t)
     }
   }
@@ -262,7 +265,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
     val orderedLocals = scala.collection.mutable.ListBuffer[Symbol]()
     def registerLocal(sym: Symbol) {
       if (sym != null && sym != NoSymbol) {
-        if (debug && !(locals contains sym)) orderedLocals append sym
+        if (debug && !(locals contains sym))
+          orderedLocals append sym
         locals addEntry sym
       }
     }
@@ -352,7 +356,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                   val vetoScope =
                     !brutally && !(locals contains sym) && !(locals contains sym.deSkolemize)
                   val vetoThis = dupl.isInstanceOf[This] && sym.isPackageClass
-                  if (!(vetoScope || vetoThis)) dupl.symbol = NoSymbol
+                  if (!(vetoScope || vetoThis))
+                    dupl.symbol = NoSymbol
                 }
                 dupl.clearType()
             }

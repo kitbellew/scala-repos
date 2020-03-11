@@ -71,7 +71,8 @@ trait App extends DelayedInit {
     */
   def main(args: Array[String]) = {
     this._args = args
-    for (proc <- initCode) proc()
+    for (proc <- initCode)
+      proc()
 
     /* DELETED for Scala.js
     if (util.Properties.propIsSet("scala.time")) {

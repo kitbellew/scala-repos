@@ -44,7 +44,8 @@ class BitVector(
 
   def activeKeysIterator: Iterator[Int] = {
     val firstBit = data.nextSetBit(0)
-    if (firstBit < 0) return Iterator.empty
+    if (firstBit < 0)
+      return Iterator.empty
 
     new Iterator[Int] {
       var nextReady = true
@@ -60,7 +61,8 @@ class BitVector(
       def next(): Int = {
         if (!nextReady) {
           hasNext
-          if (!nextReady) throw new NoSuchElementException
+          if (!nextReady)
+            throw new NoSuchElementException
         }
         nextReady = false
         _next
@@ -77,7 +79,8 @@ class BitVector(
     activeKeysIterator.map(_ -> true)
 
   def lengthsMatch(other: Vector[_]) = {
-    if (!enforceLength) true
+    if (!enforceLength)
+      true
     else
       other match {
         case x: BitVector => !x.enforceLength || x.length == length
@@ -126,7 +129,8 @@ object BitVector extends BitVectorOps {
 
     /** Traverses all values from the given collection. */
     def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit = {
-      for (i <- from.valuesIterator) fn.visit(i)
+      for (i <- from.valuesIterator)
+        fn.visit(i)
     }
 
     def isTraversableAgain(from: BitVector): Boolean = true

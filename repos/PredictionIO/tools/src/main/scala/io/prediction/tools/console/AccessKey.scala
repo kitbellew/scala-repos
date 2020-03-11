@@ -60,7 +60,10 @@ object AccessKey extends Logging {
     info(f"$title%64s | App ID | Allowed Event(s)")
     keys.sortBy(k => k.appid) foreach { k =>
       val events =
-        if (k.events.size > 0) k.events.sorted.mkString(",") else "(all)"
+        if (k.events.size > 0)
+          k.events.sorted.mkString(",")
+        else
+          "(all)"
       info(f"${k.key}%64s | ${k.appid}%6d | $events%s")
     }
     info(s"Finished listing ${keys.size} access key(s).")

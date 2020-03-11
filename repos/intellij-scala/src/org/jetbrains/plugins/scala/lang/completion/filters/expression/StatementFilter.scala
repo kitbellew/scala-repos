@@ -18,7 +18,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScTemplateBod
   */
 class StatementFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent

@@ -136,7 +136,8 @@ final case class DeploymentPlan(
             case (stepsString, index) => s"step ${index + 1}:\n$stepsString"
           }
           .mkString("\n", "\n", "")
-      } else " NO STEPS"
+      } else
+        " NO STEPS"
     s"DeploymentPlan $version$stepString\n"
   }
 
@@ -209,8 +210,10 @@ object DeploymentPlan {
         g: DirectedGraph[V, DefaultEdge],
         vertex: V): Seq[V] = {
       val outgoingEdges: Set[DefaultEdge] =
-        if (g.containsVertex(vertex)) g.outgoingEdgesOf(vertex).asScala.toSet
-        else Set[DefaultEdge]()
+        if (g.containsVertex(vertex))
+          g.outgoingEdgesOf(vertex).asScala.toSet
+        else
+          Set[DefaultEdge]()
 
       if (outgoingEdges.isEmpty)
         Seq(vertex)

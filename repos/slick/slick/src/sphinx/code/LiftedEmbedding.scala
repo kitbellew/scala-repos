@@ -537,10 +537,16 @@ object LiftedEmbedding extends App {
       // And a ColumnType that maps it to Int values 1 and 0
       implicit val boolColumnType = MappedColumnType.base[Bool, Int](
         { b =>
-          if (b == True) 1 else 0
+          if (b == True)
+            1
+          else
+            0
         }, // map Bool to Int
         { i =>
-          if (i == 1) True else False
+          if (i == 1)
+            True
+          else
+            False
         } // map Int to Bool
       )
 

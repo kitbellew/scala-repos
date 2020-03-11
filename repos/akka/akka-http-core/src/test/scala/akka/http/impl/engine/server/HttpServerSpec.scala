@@ -581,11 +581,11 @@ class HttpServerSpec
              |""")
       inside(expectRequest()) {
         case HttpRequest(
-            POST,
-            _,
-            _,
-            Default(ContentType(`application/octet-stream`, None), 16, data),
-            _) ⇒
+              POST,
+              _,
+              _,
+              Default(ContentType(`application/octet-stream`, None), 16, data),
+              _) ⇒
           val dataProbe = TestSubscriber.manualProbe[ByteString]
           data.to(Sink.fromSubscriber(dataProbe)).run()
           val dataSub = dataProbe.expectSubscription()
@@ -621,11 +621,11 @@ class HttpServerSpec
              |""")
       inside(expectRequest()) {
         case HttpRequest(
-            POST,
-            _,
-            _,
-            Chunked(ContentType(`application/octet-stream`, None), data),
-            _) ⇒
+              POST,
+              _,
+              _,
+              Chunked(ContentType(`application/octet-stream`, None), data),
+              _) ⇒
           val dataProbe = TestSubscriber.manualProbe[ChunkStreamPart]
           data.to(Sink.fromSubscriber(dataProbe)).run()
           val dataSub = dataProbe.expectSubscription()
@@ -666,11 +666,11 @@ class HttpServerSpec
              |""")
       inside(expectRequest()) {
         case HttpRequest(
-            POST,
-            _,
-            _,
-            Default(ContentType(`application/octet-stream`, None), 16, data),
-            _) ⇒
+              POST,
+              _,
+              _,
+              Default(ContentType(`application/octet-stream`, None), 16, data),
+              _) ⇒
           responses.sendNext(HttpResponse(entity = "Yeah"))
           expectResponseWithWipedDate("""HTTP/1.1 200 OK
               |Server: akka-http/test
@@ -962,11 +962,11 @@ class HttpServerSpec
           def expectDefaultEntityWithSizeError(limit: Int, actualSize: Int) =
             inside(request) {
               case HttpRequest(
-                  POST,
-                  _,
-                  _,
-                  entity @ HttpEntity.Default(_, `actualSize`, _),
-                  _) ⇒
+                    POST,
+                    _,
+                    _,
+                    entity @ HttpEntity.Default(_, `actualSize`, _),
+                    _) ⇒
                 val error = the[Exception]
                   .thrownBy(
                     entity.dataBytes
@@ -1157,7 +1157,8 @@ class HttpServerSpec
 
     override def settings = {
       val s = super.settings
-      if (maxContentLength < 0) s
+      if (maxContentLength < 0)
+        s
       else
         s.withParserSettings(
           s.parserSettings.withMaxContentLength(maxContentLength))

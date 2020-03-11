@@ -58,7 +58,8 @@ abstract class ScalaRenameTestBase
           val subst = RenamePsiElementProcessor
             .forElement(element)
             .substituteElementToRename(element, getEditorAdapter)
-          if (subst == null) return
+          if (subst == null)
+            return
           new RenameProcessor(
             getProjectAdapter,
             subst,

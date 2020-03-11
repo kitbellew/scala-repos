@@ -110,7 +110,8 @@ class ScalaIntroduceFieldFromExpressionHandler
     val possiblePlace = ScalaRefactoringUtil.checkCanBeIntroduced(
       ifc.element,
       showErrorMessage(_, ifc.project, ifc.editor))
-    if (!possiblePlace) return
+    if (!possiblePlace)
+      return
 
     def runWithDialog() {
       val settings = new IntroduceFieldSettings(ifc)
@@ -137,7 +138,10 @@ class ScalaIntroduceFieldFromExpressionHandler
     val mainOcc = ifc.occurrences.filter(
       _.getStartOffset == ifc.editor.getSelectionModel.getSelectionStart)
     val occurrencesToReplace =
-      if (settings.replaceAll) ifc.occurrences else mainOcc
+      if (settings.replaceAll)
+        ifc.occurrences
+      else
+        mainOcc
     val aClass = ifc.aClass
     val checkAnchor: PsiElement =
       anchorForNewDeclaration(expression, occurrencesToReplace, aClass)
@@ -219,7 +223,8 @@ class ScalaIntroduceFieldFromExpressionHandler
           elem != null && (elem.isInstanceOf[ScBlockStatement] || elem
             .isInstanceOf[ScMember])
         var declaration = createdDeclaration.getText
-        if (isBlockStmtOrMember(anchor)) declaration += "; "
+        if (isBlockStmtOrMember(anchor))
+          declaration += "; "
         if (isBlockStmtOrMember(anchor.getPrevSibling))
           declaration = "; " + declaration
         document.insertString(anchor.getTextRange.getStartOffset, declaration)

@@ -20,8 +20,10 @@ object ScalaDirUtil {
     val buffer: StringBuilder = StringBuilderSpinAllocator.alloc()
     def readPackage(firstTime: Boolean) {
       skipWhiteSpaceAndComments(lexer)
-      if (lexer.getTokenType != ScalaTokenTypes.kPACKAGE) return
-      if (!firstTime) buffer.append('.')
+      if (lexer.getTokenType != ScalaTokenTypes.kPACKAGE)
+        return
+      if (!firstTime)
+        buffer.append('.')
       lexer.advance()
       skipWhiteSpaceAndComments(lexer)
       if (lexer.getTokenType == ScalaTokenTypes.kOBJECT) {
@@ -33,11 +35,13 @@ object ScalaDirUtil {
       }
       def appendPackageStatement() {
         while (true) {
-          if (lexer.getTokenType != ScalaTokenTypes.tIDENTIFIER) return
+          if (lexer.getTokenType != ScalaTokenTypes.tIDENTIFIER)
+            return
           buffer.append(text, lexer.getTokenStart, lexer.getTokenEnd)
           lexer.advance()
           skipWhiteSpaceAndComments(lexer)
-          if (lexer.getTokenType != ScalaTokenTypes.tDOT) return
+          if (lexer.getTokenType != ScalaTokenTypes.tDOT)
+            return
           buffer.append('.')
           lexer.advance()
           skipWhiteSpaceAndComments(lexer)

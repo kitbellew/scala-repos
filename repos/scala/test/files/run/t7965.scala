@@ -40,7 +40,8 @@ object Test {
 
 """
   def main(args: Array[String]): Unit = {
-    if (util.Properties.isJavaAtLeast("1.7")) test()
+    if (util.Properties.isJavaAtLeast("1.7"))
+      test()
   }
 
   def test() {

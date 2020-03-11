@@ -6,12 +6,15 @@ import scala.reflect.internal.util.Collections._
 object Test extends Properties("reflect.internal.util.Collections") {
   def map2ConserveOld[A <: AnyRef, B](xs: List[A], ys: List[B])(
       f: (A, B) => A): List[A] =
-    if (xs.isEmpty || ys.isEmpty) xs
+    if (xs.isEmpty || ys.isEmpty)
+      xs
     else {
       val x1 = f(xs.head, ys.head)
       val xs1 = map2Conserve(xs.tail, ys.tail)(f)
-      if ((x1 eq xs.head) && (xs1 eq xs.tail)) xs
-      else x1 :: xs1
+      if ((x1 eq xs.head) && (xs1 eq xs.tail))
+        xs
+      else
+        x1 :: xs1
     }
 
   val testfun: (String, Int) => String = {

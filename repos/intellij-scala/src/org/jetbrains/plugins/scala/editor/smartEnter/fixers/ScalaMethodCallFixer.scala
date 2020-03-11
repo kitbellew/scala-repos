@@ -39,7 +39,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
           funDef.clauses match {
             case Some(clauses) =>
               val cl = clauses.clauses
-              if (cl.length < 2) return NoOperation
+              if (cl.length < 2)
+                return NoOperation
 
               val rightArgs = {
                 var currentPsi = psiElement.getContainingFile.findElementAt(
@@ -103,7 +104,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
       child = child.getNextSibling
     }
 
-    if (endOffset == -1) endOffset = args.getTextRange.getEndOffset
+    if (endOffset == -1)
+      endOffset = args.getTextRange.getEndOffset
 
     val params = args.exprs
     if (params.nonEmpty && startLine(editor, args) != startLine(

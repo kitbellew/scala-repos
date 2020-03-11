@@ -216,7 +216,8 @@ private[sql] case class DataSourceScan(
 
   override def simpleString: String = {
     val metadataEntries =
-      for ((key, value) <- metadata.toSeq.sorted) yield s"$key: $value"
+      for ((key, value) <- metadata.toSeq.sorted)
+        yield s"$key: $value"
     s"Scan $nodeName${output
       .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
@@ -283,7 +284,11 @@ private[sql] case class DataSourceScan(
     ctx.INPUT_ROW = row
     ctx.currentVars = null
     val columns2 = exprs.map(_.gen(ctx))
-    val inputRow = if (outputUnsafeRows) row else null
+    val inputRow =
+      if (outputUnsafeRows)
+        row
+      else
+        null
     val scanRows = ctx.freshName("processRows")
     ctx.addNewFunction(
       scanRows,

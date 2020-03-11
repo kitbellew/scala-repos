@@ -33,7 +33,8 @@ final case class Bits(elements: Seq[Bits.BitElement]) {
         byteIdx: Int,
         bitIdx: Int,
         remaining: Seq[Bits.BitElement]): Unit =
-      if (bitIdx >= 8) rec(byteIdx + 1, bitIdx - 8, remaining)
+      if (bitIdx >= 8)
+        rec(byteIdx + 1, bitIdx - 8, remaining)
       else
         remaining match {
           case Zero +: rest ⇒

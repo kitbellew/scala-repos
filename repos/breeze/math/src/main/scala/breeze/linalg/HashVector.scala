@@ -93,7 +93,8 @@ object HashVector
     implicit val man =
       ClassTag[V](values.getClass.getComponentType.asInstanceOf[Class[V]])
     val oah = new OpenAddressHashArray[V](values.length)
-    for ((v, i) <- values.zipWithIndex) oah(i) = v
+    for ((v, i) <- values.zipWithIndex)
+      oah(i) = v
     new HashVector(oah)
   }
 

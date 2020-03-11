@@ -81,9 +81,11 @@ object NonBlockingMutexSpec extends Specification {
       def percentageOfRunsWithOrderingErrors(
           runSize: Int,
           tester: Tester): Int = {
-        val results: Seq[Future[Int]] = for (i <- 0 until 9) yield {
-          countOrderingErrors(runSize, tester)
-        }
+        val results: Seq[Future[Int]] =
+          for (i <- 0 until 9)
+            yield {
+              countOrderingErrors(runSize, tester)
+            }
         Await.result(Future.sequence(results), waitTime).filter(_ > 0).size * 10
       }
 

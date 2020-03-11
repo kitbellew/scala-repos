@@ -68,7 +68,8 @@ object CloseableIterator {
       if (more) {
         more = false;
         item
-      } else noNext
+      } else
+        noNext
     def close {}
   }
 

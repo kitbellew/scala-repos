@@ -120,8 +120,10 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
           </a>
         }
         val detail =
-          if (info.state == ExecutionState.FAILED) info.detail
-          else info.executePlan
+          if (info.state == ExecutionState.FAILED)
+            info.detail
+          else
+            info.executePlan
         <tr>
           <td>{
           info.userName

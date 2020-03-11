@@ -25,6 +25,7 @@ private[pickling] class ExternalizablePickling extends PicklingAlgorithm {
           pickle = PickleEntry(Seq(PickleExternalizable(tpe))),
           unpickle = UnpickleExternalizable(tpe)
         ))
-    } else AlgorithmFailure(s"$tpe does not extend java.io.Externalizable")
+    } else
+      AlgorithmFailure(s"$tpe does not extend java.io.Externalizable")
   }
 }

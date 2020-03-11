@@ -25,7 +25,8 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
     val res = new ArrayBuffer[PsiClass]
 
     def iterateClasses(suffix: String)(fun: PsiClass => Unit) {
-      if (!qualifiedName.endsWith(suffix)) return
+      if (!qualifiedName.endsWith(suffix))
+        return
       val nameWithoutDollar =
         qualifiedName.substring(0, qualifiedName.length() - suffix.length)
       val classes = ScalaShortNamesCacheManager
@@ -37,8 +38,10 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
            ScalaShortNamesCacheManager
              .getInstance(project)
              .getClassesByFQName(converted, scope)
-         else classes
-       } else classes).foreach(fun)
+         else
+           classes
+       } else
+         classes).foreach(fun)
     }
 
     iterateClasses("") {
@@ -69,8 +72,10 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
 
   def findClass(qualifiedName: String, scope: GlobalSearchScope): PsiClass = {
     val classes = findClasses(qualifiedName, scope)
-    if (classes.length > 0) classes(0)
-    else null
+    if (classes.length > 0)
+      classes(0)
+    else
+      null
   }
 
   override def findPackage(qName: String): PsiPackage = null

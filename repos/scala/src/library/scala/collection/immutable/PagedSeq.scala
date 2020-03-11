@@ -34,7 +34,10 @@ object PagedSeq {
         data(start + i) = source.next()
         i += 1
       }
-      if (i == 0) -1 else i
+      if (i == 0)
+        -1
+      else
+        i
     })
 
   /** Constructs a paged sequence from an iterable */
@@ -49,12 +52,15 @@ object PagedSeq {
         val cnt = current.length min len
         current.getChars(0, cnt, data, start)
         current = current.substring(cnt)
-        if (cnt == len) cnt
-        else (more(data, start + cnt, len - cnt) max 0) + cnt
+        if (cnt == len)
+          cnt
+        else
+          (more(data, start + cnt, len - cnt) max 0) + cnt
       } else if (source.hasNext) {
         current = source.next()
         more(data, start, len)
-      } else -1
+      } else
+        -1
     new PagedSeq(more(_: Array[Char], _: Int, _: Int))
   }
 
@@ -72,7 +78,8 @@ object PagedSeq {
       if (isFirst) {
         isFirst = false
         line
-      } else "\n" + line
+      } else
+        "\n" + line
     })
   }
 
@@ -159,15 +166,18 @@ class PagedSeq[T: ClassTag] protected (
     *  @note Calling this method will force the entire sequence to be read.
     */
   def length: Int = {
-    while (!latest.isLast && latest.end < end) addMore()
+    while (!latest.isLast && latest.end < end)
+      addMore()
     (latest.end min end) - start
   }
 
   /** The element at position `index`.
     */
   def apply(index: Int) =
-    if (isDefinedAt(index)) page(index + start)(index + start)
-    else throw new IndexOutOfBoundsException(index.toString)
+    if (isDefinedAt(index))
+      page(index + start)(index + start)
+    else
+      throw new IndexOutOfBoundsException(index.toString)
 
   /** Predicate method to check if an element is defined
     *  at position `index` of the current sequence.
@@ -188,11 +198,17 @@ class PagedSeq[T: ClassTag] protected (
   override def slice(_start: Int, _end: Int): PagedSeq[T] = {
     page(start)
     val s = start + _start
-    val e = if (_end == UndeterminedEnd) _end else start + _end
+    val e =
+      if (_end == UndeterminedEnd)
+        _end
+      else
+        start + _end
     var f = first1
     while (f.end <= s && !f.isLast) {
-      if (f.next eq null) f = f.addMore(more)
-      else f = f.next
+      if (f.next eq null)
+        f = f.addMore(more)
+      else
+        f = f.next
     }
     // Warning -- not refining `more` means that slices can freely request and obtain
     // data outside of their slice.  This is part of the design of PagedSeq
@@ -208,7 +224,8 @@ class PagedSeq[T: ClassTag] protected (
   /** Convert sequence to string */
   override def toString = {
     val buf = new StringBuilder
-    for (ch <- PagedSeq.this.iterator) buf append ch
+    for (ch <- PagedSeq.this.iterator)
+      buf append ch
     buf.toString
   }
 }
@@ -245,7 +262,8 @@ private class Page[T: ClassTag](val num: Int) {
   /** The last page as currently present in the sequence; This can change as more
     *  elements get appended to the sequence.  */
   final def latest: Page[T] = {
-    if (later.next != null) later = later.next.latest
+    if (later.next != null)
+      later = later.next.latest
     later
   }
 
@@ -266,8 +284,10 @@ private class Page[T: ClassTag](val num: Int) {
       next.addMore(more)
     } else {
       val count = more(data, filled, PageSize - filled)
-      if (count < 0) isLast = true
-      else filled += count
+      if (count < 0)
+        isLast = true
+      else
+        filled += count
       this
     }
 }

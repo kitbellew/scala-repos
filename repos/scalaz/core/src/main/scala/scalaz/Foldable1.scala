@@ -83,7 +83,11 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
 
   /** The greatest element of `fa`. */
   def maximum1[A: Order](fa: F[A]): A =
-    foldLeft1(fa)((x, y) => if (Order[A].order(x, y) == GT) x else y)
+    foldLeft1(fa)((x, y) =>
+      if (Order[A].order(x, y) == GT)
+        x
+      else
+        y)
 
   /** The greatest value of `f(a)` for each element `a` of `fa`. */
   def maximumOf1[A, B: Order](fa: F[A])(f: A => B): B =
@@ -95,7 +99,11 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
 
   /** The smallest element of `fa`. */
   def minimum1[A: Order](fa: F[A]): A =
-    foldLeft1(fa)((x, y) => if (Order[A].order(x, y) == LT) x else y)
+    foldLeft1(fa)((x, y) =>
+      if (Order[A].order(x, y) == LT)
+        x
+      else
+        y)
 
   /** The smallest value of `f(a)` for each element `a` of `fa`. */
   def minimumOf1[A, B: Order](fa: F[A])(f: A => B): B =
@@ -123,7 +131,8 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
       case ((seen, acc), a) =>
         if (seen.notMember(a))
           (seen.insert(a), a <:: acc)
-        else (seen, acc)
+        else
+          (seen, acc)
     }._2.reverse
 
   /** ``O(n^2^)`` complexity */
@@ -132,7 +141,8 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
       case (seen, a) =>
         if (!NonEmptyList.nonEmptyList.element(seen, a))
           a <:: seen
-        else seen
+        else
+          seen
     }.reverse
 
   def sumr1[A](fa: F[A])(implicit A: Semigroup[A]): A =

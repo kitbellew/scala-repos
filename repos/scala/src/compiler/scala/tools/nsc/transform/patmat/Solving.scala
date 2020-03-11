@@ -445,7 +445,8 @@ trait Solving extends Logic {
               clauses :+ negated,
               solution :: models,
               recursionDepthAllowed - 1)
-          } else models
+          } else
+            models
         }
 
       val tseitinSolutions = findAllModels(solvable.cnf, Nil)
@@ -454,7 +455,10 @@ trait Solving extends Logic {
     }
 
     private def withLit(res: TseitinModel, l: Lit): TseitinModel = {
-      if (res eq NoTseitinModel) NoTseitinModel else res + l
+      if (res eq NoTseitinModel)
+        NoTseitinModel
+      else
+        res + l
     }
 
     /** Drop trivially true clauses, simplify others by dropping negation of `unitLit`.
@@ -483,16 +487,24 @@ trait Solving extends Logic {
 
     def findTseitinModelFor(clauses: Array[Clause]): TseitinModel = {
       @inline def orElse(a: TseitinModel, b: => TseitinModel) =
-        if (a ne NoTseitinModel) a else b
+        if (a ne NoTseitinModel)
+          a
+        else
+          b
 
       debug.patmat(s"DPLL\n${cnfString(clauses)}")
 
       val start =
-        if (Statistics.canEnable) Statistics.startTimer(patmatAnaDPLL) else null
+        if (Statistics.canEnable)
+          Statistics.startTimer(patmatAnaDPLL)
+        else
+          null
 
       val satisfiableWithModel: TseitinModel =
-        if (clauses isEmpty) EmptyTseitinModel
-        else if (clauses exists (_.isEmpty)) NoTseitinModel
+        if (clauses isEmpty)
+          EmptyTseitinModel
+        else if (clauses exists (_.isEmpty))
+          NoTseitinModel
         else
           clauses.find(_.size == 1) match {
             case Some(unitClause) =>
@@ -503,7 +515,10 @@ trait Solving extends Logic {
               val pos = new mutable.HashSet[Int]()
               val neg = new mutable.HashSet[Int]()
               mforeach(clauses)(lit =>
-                if (lit.positive) pos += lit.variable else neg += lit.variable)
+                if (lit.positive)
+                  pos += lit.variable
+                else
+                  neg += lit.variable)
 
               // appearing in both positive and negative
               val impures = pos intersect neg
@@ -515,7 +530,11 @@ trait Solving extends Logic {
                 // turn it back into a literal
                 // (since equality on literals is in terms of equality
                 //  of the underlying symbol and its positivity, simply construct a new Lit)
-                val pureLit = Lit(if (neg(pureVar)) -pureVar else pureVar)
+                val pureLit = Lit(
+                  if (neg(pureVar))
+                    -pureVar
+                  else
+                    pureVar)
                 // debug.patmat("pure: "+ pureLit +" pures: "+ pures +" impures: "+ impures)
                 val simplified = clauses.filterNot(_.contains(pureLit))
                 withLit(findTseitinModelFor(simplified), pureLit)
@@ -528,15 +547,18 @@ trait Solving extends Logic {
               }
           }
 
-      if (Statistics.canEnable) Statistics.stopTimer(patmatAnaDPLL, start)
+      if (Statistics.canEnable)
+        Statistics.stopTimer(patmatAnaDPLL, start)
       satisfiableWithModel
     }
 
     private def projectToModel(
         model: TseitinModel,
         symForVar: Map[Int, Sym]): Model =
-      if (model == NoTseitinModel) NoModel
-      else if (model == EmptyTseitinModel) EmptyModel
+      if (model == NoTseitinModel)
+        NoModel
+      else if (model == EmptyTseitinModel)
+        EmptyModel
       else {
         val mappedModels = model.toList collect {
           case lit if symForVar isDefinedAt lit.variable =>

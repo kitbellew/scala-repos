@@ -31,7 +31,11 @@ case class NonFoldableLiteral(value: Any, dataType: DataType)
   override def foldable: Boolean = false
   override def nullable: Boolean = true
 
-  override def toString: String = if (value != null) value.toString else "null"
+  override def toString: String =
+    if (value != null)
+      value.toString
+    else
+      "null"
 
   override def eval(input: InternalRow): Any = value
 

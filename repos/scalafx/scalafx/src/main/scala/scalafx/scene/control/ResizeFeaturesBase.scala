@@ -48,7 +48,10 @@ object ResizeFeaturesBase {
     */
   implicit def sfxResizeFeaturesBase2jfx[S](
       rfb: ResizeFeaturesBase[S]): jfxsc.ResizeFeaturesBase[S] =
-    if (rfb != null) rfb.delegate else null
+    if (rfb != null)
+      rfb.delegate
+    else
+      null
 
 }
 

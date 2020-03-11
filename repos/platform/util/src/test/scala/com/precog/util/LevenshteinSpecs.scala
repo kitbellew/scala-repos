@@ -51,7 +51,10 @@ object LevenshteinSpecs extends Specification with ScalaCheck {
 
     "be 0 iff s == t" in check { (s: String, t: String) =>
       val d = Levenshtein.distance(s, t)
-      if (s == t) d mustEqual 0 else d mustNotEqual 0
+      if (s == t)
+        d mustEqual 0
+      else
+        d mustNotEqual 0
     }
 
     "be at least |len(s) - len(t)|" in check { (s: String, t: String) =>
@@ -70,12 +73,18 @@ object LevenshteinSpecs extends Specification with ScalaCheck {
         val x = u.length - v.length
         val p = " " * abs(x)
         val (s, t) =
-          if (x == 0) (u, v) else if (x > 0) (u, v + p) else (u + p, v)
+          if (x == 0)
+            (u, v)
+          else if (x > 0)
+            (u, v + p)
+          else
+            (u + p, v)
 
         // find hammming distance
         var h = 0
         for (i <- 0 until s.length) {
-          if (s.charAt(i) != t.charAt(i)) h += 1
+          if (s.charAt(i) != t.charAt(i))
+            h += 1
         }
         Levenshtein.distance(s, t) must beLessThanOrEqualTo(h)
     }

@@ -19,8 +19,10 @@ class ConfigParser(
 
   def createPrefix = {
     prefix =
-      if (sections.isEmpty) ""
-      else sections.toList.reverse.mkString("", ".", ".")
+      if (sections.isEmpty)
+        ""
+      else
+        sections.toList.reverse.mkString("", ".", ".")
   }
 
   override val whiteSpace = """(\s+|#[^\n]*\n)+""".r

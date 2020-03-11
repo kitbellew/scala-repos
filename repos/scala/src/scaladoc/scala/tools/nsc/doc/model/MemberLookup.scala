@@ -53,7 +53,8 @@ trait MemberLookup extends base.MemberLookupBase {
       else if (sym.hasPackageFlag)
         /* Get package object which has associatedFile ne null */
         sym.info.member(newTermName("package"))
-      else sym
+      else
+        sym
     Option(sym1.associatedFile) flatMap (_.underlyingSource) flatMap { src =>
       val path = src.canonicalPath
       settings.extUrlMapping get path map { url =>

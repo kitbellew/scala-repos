@@ -87,7 +87,10 @@ abstract class Parser(
     */
   def charAtRC(offset: Int): Char = {
     val ix = _cursor + offset
-    if (0 <= ix && ix < input.length) input.charAt(ix) else EOI
+    if (0 <= ix && ix < input.length)
+      input.charAt(ix)
+    else
+      EOI
   }
 
   /**
@@ -132,7 +135,8 @@ abstract class Parser(
     _cursor = other._cursor - offset
     _valueStack = other._valueStack
     phase = other.phase
-    if (phase ne null) phase.applyOffset(offset)
+    if (phase ne null)
+      phase.applyOffset(offset)
   }
 
   /**
@@ -205,7 +209,8 @@ abstract class Parser(
         val reportedErrorPos =
           if (reportedErrorIndex != principalErrorIndex)
             Position(reportedErrorIndex, input)
-          else principalErrorPos
+          else
+            principalErrorPos
         ParseError(reportedErrorPos, principalErrorPos, traces.result())
       }
       if (phase3.traceNr < errorTraceCollectionLimit) {
@@ -217,7 +222,8 @@ abstract class Parser(
           } catch {
             case e: TracingBubbleException ⇒ e.trace
           }
-        if (trace eq null) done
+        if (trace eq null)
+          done
         else
           phase4_collectRuleTraces(
             reportedErrorIndex,
@@ -228,7 +234,8 @@ abstract class Parser(
               reportQuiet,
               phase3.traceNr + 1),
             traces += trace)
-      } else done
+      } else
+        done
     }
 
     try {
@@ -268,7 +275,11 @@ abstract class Parser(
     if (c < max) {
       c += 1
       _cursor = c
-      _cursorChar = if (c == max) EOI else input charAt c
+      _cursorChar =
+        if (c == max)
+          EOI
+        else
+          input charAt c
     }
     true
   }
@@ -279,7 +290,8 @@ abstract class Parser(
   def __updateMaxCursor(): Boolean = {
     phase match {
       case x: EstablishingPrincipalErrorIndex ⇒
-        if (_cursor > x.maxCursor) x.maxCursor = _cursor
+        if (_cursor > x.maxCursor)
+          x.maxCursor = _cursor
       case _ ⇒ // nothing to do
     }
     true
@@ -347,7 +359,8 @@ abstract class Parser(
   def __enterQuiet(): Int =
     phase match {
       case x: DetermineReportQuiet ⇒
-        if (x.inQuiet) -1
+        if (x.inQuiet)
+          -1
         else {
           x.inQuiet = true
           0
@@ -380,15 +393,18 @@ abstract class Parser(
       case null | _: EstablishingPrincipalErrorIndex ⇒ // nothing to do
       case x: CollectingRuleTraces ⇒
         if (_cursor >= x.minErrorIndex) {
-          if (x.errorMismatches == x.traceNr) throw Parser.StartTracingException
-          else x.errorMismatches += 1
+          if (x.errorMismatches == x.traceNr)
+            throw Parser.StartTracingException
+          else
+            x.errorMismatches += 1
         }
       case x: EstablishingReportedErrorIndex ⇒
         if (x.currentAtomicStart > x.maxAtomicErrorStart)
           x.maxAtomicErrorStart = x.currentAtomicStart
       case x: DetermineReportQuiet ⇒
         // stop this run early because we just learned that reporting quiet traces is unnecessary
-        if (_cursor >= x.minErrorIndex & !x.inQuiet) throw UnquietMismatch
+        if (_cursor >= x.minErrorIndex & !x.inQuiet)
+          throw UnquietMismatch
     }
     false
   }
@@ -427,8 +443,10 @@ abstract class Parser(
       if (_cursorChar == string.charAt(ix)) {
         __advance()
         __matchString(string, ix + 1)
-      } else false
-    else true
+      } else
+        false
+    else
+      true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -451,7 +469,8 @@ abstract class Parser(
               CharMatch(string charAt ix))
         }
       }
-    else true
+    else
+      true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -463,8 +482,10 @@ abstract class Parser(
       if (Character.toLowerCase(_cursorChar) == string.charAt(ix)) {
         __advance()
         __matchIgnoreCaseString(string, ix + 1)
-      } else false
-    else true
+      } else
+        false
+    else
+      true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -487,16 +508,20 @@ abstract class Parser(
               IgnoreCaseChar(string charAt ix))
         }
       }
-    else true
+    else
+      true
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
   @tailrec final def __matchAnyOf(string: String, ix: Int = 0): Boolean =
     if (ix < string.length)
-      if (string.charAt(ix) == _cursorChar) __advance()
-      else __matchAnyOf(string, ix + 1)
-    else false
+      if (string.charAt(ix) == _cursorChar)
+        __advance()
+      else
+        __matchAnyOf(string, ix + 1)
+    else
+      false
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -506,7 +531,8 @@ abstract class Parser(
       _cursorChar != EOI && string.charAt(ix) != _cursorChar && __matchNoneOf(
         string,
         ix + 1)
-    else __advance()
+    else
+      __advance()
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -519,7 +545,8 @@ abstract class Parser(
       if (__matchString(key)) {
         __push(m(key))
         return true
-      } else __restoreState(mark)
+      } else
+        __restoreState(mark)
     }
     false
   }
@@ -537,7 +564,8 @@ abstract class Parser(
         if (__matchStringWrapped(key)) {
           __push(m(key))
           return true
-        } else __restoreState(mark)
+        } else
+          __restoreState(mark)
       }
       false
     } catch {
@@ -667,12 +695,16 @@ object Parser {
       var maxAtomicErrorStart: Int = Int.MinValue)
       extends ErrorAnalysisPhase {
     def reportedErrorIndex =
-      if (maxAtomicErrorStart >= 0) maxAtomicErrorStart
-      else _principalErrorIndex
+      if (maxAtomicErrorStart >= 0)
+        maxAtomicErrorStart
+      else
+        _principalErrorIndex
     def applyOffset(offset: Int) = {
       _principalErrorIndex -= offset
-      if (currentAtomicStart != Int.MinValue) currentAtomicStart -= offset
-      if (maxAtomicErrorStart != Int.MinValue) maxAtomicErrorStart -= offset
+      if (currentAtomicStart != Int.MinValue)
+        currentAtomicStart -= offset
+      if (maxAtomicErrorStart != Int.MinValue)
+        maxAtomicErrorStart -= offset
     }
   }
 

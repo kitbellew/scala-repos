@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Toggle {
   implicit def sfxToggle2jfx(t: Toggle): jfxsc.Toggle =
-    if (t != null) t.delegate else null
+    if (t != null)
+      t.delegate
+    else
+      null
 }
 
 /**

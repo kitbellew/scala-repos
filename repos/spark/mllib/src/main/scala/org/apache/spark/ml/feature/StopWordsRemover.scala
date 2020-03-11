@@ -419,7 +419,11 @@ class StopWordsRemover(override val uid: String)
         terms.filter(s => !stopWordsSet.contains(s))
       }
     } else {
-      val toLower = (s: String) => if (s != null) s.toLowerCase else s
+      val toLower = (s: String) =>
+        if (s != null)
+          s.toLowerCase
+        else
+          s
       val lowerStopWords = $(stopWords).map(toLower(_)).toSet
       udf { terms: Seq[String] =>
         terms.filter(s => !lowerStopWords.contains(toLower(s)))

@@ -52,7 +52,8 @@ private[util] trait StackTracing extends Any {
     def unseen(t: Throwable) = {
       def inSeen = seen exists (_ eq t)
       val interesting = (t != null) && !inSeen
-      if (interesting) seen += t
+      if (interesting)
+        seen += t
       interesting
     }
 
@@ -69,7 +70,8 @@ private[util] trait StackTracing extends Any {
             val trimmed =
               trace.reverse dropWhile (spare.hasNext && spare.next == _)
             trimmed.reverse
-          } else trace
+          } else
+            trace
         )
       val prefix = frames takeWhile p
       val margin = indent * indents

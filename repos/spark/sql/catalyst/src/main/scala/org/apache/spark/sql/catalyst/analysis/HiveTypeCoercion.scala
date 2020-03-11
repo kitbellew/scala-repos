@@ -280,7 +280,8 @@ object HiveTypeCoercion {
         attrIndex: Int,
         castedTypes: mutable.Queue[DataType]): Seq[DataType] = {
       // Return the result after the widen data types have been found for all the children
-      if (attrIndex >= children.head.output.length) return castedTypes.toSeq
+      if (attrIndex >= children.head.output.length)
+        return castedTypes.toSeq
 
       // For the attrIndex-th attribute, find the widest type
       findWiderCommonType(children.map(_.output(attrIndex).dataType)) match {
@@ -589,7 +590,10 @@ object HiveTypeCoercion {
                 Cast(value, commonType)
               }
             }
-            if (changed) CaseWhen(newBranches, newElseValue) else c
+            if (changed)
+              CaseWhen(newBranches, newElseValue)
+            else
+              c
           }
           .getOrElse(c)
     }
@@ -606,10 +610,15 @@ object HiveTypeCoercion {
         findWiderTypeForTwo(left.dataType, right.dataType)
           .map { widestType =>
             val newLeft =
-              if (left.dataType == widestType) left else Cast(left, widestType)
+              if (left.dataType == widestType)
+                left
+              else
+                Cast(left, widestType)
             val newRight =
-              if (right.dataType == widestType) right
-              else Cast(right, widestType)
+              if (right.dataType == widestType)
+                right
+              else
+                Cast(right, widestType)
             If(pred, newLeft, newRight)
           }
           .getOrElse(
@@ -660,11 +669,15 @@ object HiveTypeCoercion {
             if (b.inputType.acceptsType(commonType)) {
               // If the expression accepts the tightest common type, cast to that.
               val newLeft =
-                if (left.dataType == commonType) left
-                else Cast(left, commonType)
+                if (left.dataType == commonType)
+                  left
+                else
+                  Cast(left, commonType)
               val newRight =
-                if (right.dataType == commonType) right
-                else Cast(right, commonType)
+                if (right.dataType == commonType)
+                  right
+                else
+                  Cast(right, commonType)
               b.withNewChildren(Seq(newLeft, newRight))
             } else {
               // Otherwise, don't do anything with the expression.

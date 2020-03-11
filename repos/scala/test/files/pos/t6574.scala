@@ -20,5 +20,9 @@ class Bad[X, Y](val v: Int) extends AnyVal {
 }
 
 class HK[M[_]](val v: Int) extends AnyVal {
-  def hk[N[_]]: Unit = if (false) hk[M] else ()
+  def hk[N[_]]: Unit =
+    if (false)
+      hk[M]
+    else
+      ()
 }

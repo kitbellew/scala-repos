@@ -22,7 +22,10 @@ sealed trait AssociationEvent extends RemotingLifecycleEvent {
   final def getLocalAddress: Address = localAddress
   final def isInbound: Boolean = inbound
   override def toString: String =
-    s"$eventName [$localAddress]${if (inbound) " <- " else " -> "}[$remoteAddress]"
+    s"$eventName [$localAddress]${if (inbound)
+      " <- "
+    else
+      " -> "}[$remoteAddress]"
 }
 
 @SerialVersionUID(1L)
@@ -120,6 +123,7 @@ private[remote] class EventPublisher(
     logLevel: Logging.LogLevel) {
   def notifyListeners(message: RemotingLifecycleEvent): Unit = {
     system.eventStream.publish(message)
-    if (message.logLevel <= logLevel) log.log(message.logLevel, "{}", message)
+    if (message.logLevel <= logLevel)
+      log.log(message.logLevel, "{}", message)
   }
 }

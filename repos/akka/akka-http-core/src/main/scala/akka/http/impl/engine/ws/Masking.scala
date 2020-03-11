@@ -35,11 +35,14 @@ private[http] object Masking {
           case f: FrameEvent ⇒ f
           case FrameError(ex) ⇒ throw ex
         }
-    else Flow[FrameEvent]
+    else
+      Flow[FrameEvent]
   def unmaskIf(
       condition: Boolean): Flow[FrameEvent, FrameEventOrError, NotUsed] =
-    if (condition) Flow[FrameEvent].transform(() ⇒ new Unmasking())
-    else Flow[FrameEvent]
+    if (condition)
+      Flow[FrameEvent].transform(() ⇒ new Unmasking())
+    else
+      Flow[FrameEvent]
 
   private class Masking(random: Random) extends Masker {
     def extractMask(header: FrameHeader): Int = random.nextInt()
@@ -95,7 +98,8 @@ private[http] object Masking {
       def onPush(
           part: FrameEvent,
           ctx: Context[FrameEventOrError]): SyncDirective = {
-        if (part.lastPart) become(Idle)
+        if (part.lastPart)
+          become(Idle)
 
         val (masked, newMask) = FrameEventParser.mask(part.data, mask)
         mask = newMask

@@ -18,5 +18,6 @@ object Test extends App {
     val x = sig.asInstanceOf[MethodType].params.head
     println(x.info)
   }
-  for (i <- 1 to 8) test(i)
+  for (i <- 1 to 8)
+    test(i)
 }

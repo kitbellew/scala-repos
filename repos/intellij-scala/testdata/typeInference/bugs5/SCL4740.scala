@@ -35,9 +35,14 @@ object PhoneCode {
         if (canFallBackToDigit)
           List(
             copy(translated + " " + notMatched.head, notMatched.tail, original))
-        else Nil
+        else
+          Nil
       def format = original + ": " + translated.trim
-      def ifFinished = if (remaining.isEmpty) Some(List(this)) else None
+      def ifFinished =
+        if (remaining.isEmpty)
+          Some(List(this))
+        else
+          None
     }
     val result = phoneEntries
       .flatMap(phoneNumber => {
@@ -55,7 +60,8 @@ object PhoneCode {
                        e -> matchAgainst.drop(e.count(_.isLetter))))
                   yield (current
                     .copy(current.translated + " " + translated, remaining))
-              else current.asFallback(matchAgainst)
+              else
+                current.asFallback(matchAgainst)
             }
             allMatches(current.remaining).flatMap(collectPossibleTranslations)
           })

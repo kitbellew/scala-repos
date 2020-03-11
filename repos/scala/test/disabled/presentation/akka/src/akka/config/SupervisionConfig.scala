@@ -82,8 +82,14 @@ object Supervision {
         withinTimeRange: Int): AllForOneStrategy =
       new AllForOneStrategy(
         trapExit,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
   }
 
   case class AllForOneStrategy(
@@ -97,8 +103,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
 
     def this(
         trapExit: Array[Class[_ <: Throwable]],
@@ -106,8 +118,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit.toList,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
 
     def this(
         trapExit: java.util.List[Class[_ <: Throwable]],
@@ -115,8 +133,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit.toArray.toList.asInstanceOf[List[Class[_ <: Throwable]]],
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
   }
 
   object OneForOneStrategy {
@@ -126,8 +150,14 @@ object Supervision {
         withinTimeRange: Int): OneForOneStrategy =
       new OneForOneStrategy(
         trapExit,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
   }
 
   case class OneForOneStrategy(
@@ -141,8 +171,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
 
     def this(
         trapExit: Array[Class[_ <: Throwable]],
@@ -150,8 +186,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit.toList,
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
 
     def this(
         trapExit: java.util.List[Class[_ <: Throwable]],
@@ -159,8 +201,14 @@ object Supervision {
         withinTimeRange: Int) =
       this(
         trapExit.toArray.toList.asInstanceOf[List[Class[_ <: Throwable]]],
-        if (maxNrOfRetries < 0) None else Some(maxNrOfRetries),
-        if (withinTimeRange < 0) None else Some(withinTimeRange))
+        if (maxNrOfRetries < 0)
+          None
+        else
+          Some(maxNrOfRetries),
+        if (withinTimeRange < 0)
+          None
+        else
+          Some(withinTimeRange))
   }
 
   case object NoFaultHandlingStrategy extends FaultHandlingStrategy(Nil)

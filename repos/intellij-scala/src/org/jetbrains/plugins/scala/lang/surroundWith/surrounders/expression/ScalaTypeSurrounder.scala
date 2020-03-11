@@ -23,7 +23,8 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateDescription: String = "(expr: Type)"
 
   override def isApplicable(elements: Array[PsiElement]): Boolean = {
-    if (elements.length != 1) return false
+    if (elements.length != 1)
+      return false
     elements(0) match {
       case x: ScExpression => true
       case _               => return false

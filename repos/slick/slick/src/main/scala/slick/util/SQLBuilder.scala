@@ -29,7 +29,10 @@ final class SQLBuilder { self =>
   def sep[T](sequence: Traversable[T], separator: String)(f: T => Unit) {
     var first = true
     for (x <- sequence) {
-      if (first) first = false else self += separator
+      if (first)
+        first = false
+      else
+        self += separator
       f(x)
     }
   }
@@ -37,7 +40,8 @@ final class SQLBuilder { self =>
   def sep[T](sequence: ConstArray[T], separator: String)(f: T => Unit) {
     var i = 0
     while (i < sequence.length) {
-      if (i != 0) self += separator
+      if (i != 0)
+        self += separator
       f(sequence(i))
       i += 1
     }
@@ -65,7 +69,10 @@ final class SQLBuilder { self =>
   }
 
   def newLineOrSpace(): Unit =
-    if (GlobalConfig.sqlIndent) newLine() else this += " "
+    if (GlobalConfig.sqlIndent)
+      newLine()
+    else
+      this += " "
 
   private def newLine(): Unit = if (GlobalConfig.sqlIndent) {
     this += "\n"

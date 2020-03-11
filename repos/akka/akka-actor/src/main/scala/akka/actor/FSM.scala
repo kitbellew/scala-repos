@@ -100,8 +100,10 @@ object FSM {
 
     def schedule(actor: ActorRef, timeout: FiniteDuration): Unit =
       ref = Some(
-        if (repeat) scheduler.schedule(timeout, timeout, actor, this)
-        else scheduler.scheduleOnce(timeout, actor, this))
+        if (repeat)
+          scheduler.schedule(timeout, timeout, actor, this)
+        else
+          scheduler.scheduleOnce(timeout, actor, this))
 
     def cancel(): Unit =
       if (ref.isDefined) {
@@ -469,8 +471,10 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (if (repeat) "repeating "
-                      else "") + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " + (if (repeat)
+                        "repeating "
+                      else
+                        "") + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }
@@ -663,7 +667,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
     for (te ← transitionEvent) {
-      if (te.isDefinedAt(tuple)) te(tuple)
+      if (te.isDefinedAt(tuple))
+        te(tuple)
     }
   }
 
@@ -771,7 +776,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
           timeoutFuture = scheduleTimeout(d)
         case _ ⇒
           val timeout = stateTimeouts(currentState.stateName)
-          if (timeout.isDefined) timeoutFuture = scheduleTimeout(timeout.get)
+          if (timeout.isDefined)
+            timeoutFuture = scheduleTimeout(timeout.get)
       }
     }
   }
@@ -797,7 +803,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
-      for (timer ← timers.values) timer.cancel()
+      for (timer ← timers.values)
+        timer.cancel()
       timers.clear()
       timeoutFuture.foreach {
         _.cancel()

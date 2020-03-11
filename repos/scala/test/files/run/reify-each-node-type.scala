@@ -71,7 +71,8 @@ object s {
       val x = 0 /* TypeTree */
     })
     act(reify {
-      if (true) () /* If */
+      if (true)
+        () /* If */
     })
     act(reify {
       def f {} /* DefDef */

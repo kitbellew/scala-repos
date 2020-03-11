@@ -30,15 +30,17 @@ class AlgorithmChecker(
   private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
   private val signatureConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- signatureConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- signatureConstraints.iterator)
+      yield {
+        c.algorithm -> c
+      }
   }.toMap
 
   private val keyConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- keyConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- keyConstraints.iterator)
+      yield {
+        c.algorithm -> c
+      }
   }.toMap
 
   def isForwardCheckingSupported: Boolean = false

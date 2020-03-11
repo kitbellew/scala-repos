@@ -89,7 +89,11 @@ class ScImportStmtImpl private (
           case _             => return true
         }
         val nameHint = processor.getHint(NameHint.KEY)
-        val name = if (nameHint == null) "" else nameHint.getName(state)
+        val name =
+          if (nameHint == null)
+            ""
+          else
+            nameHint.getName(state)
         if (name != "" && !importExpr.singleWildcard) {
           val decodedName = ScalaPsiUtil.convertMemberName(name)
           importExpr.selectorSet match {
@@ -104,7 +108,8 @@ class ScImportStmtImpl private (
         }
         val checkWildcardImports = processor match {
           case r: ResolveProcessor =>
-            if (!r.checkImports()) return false
+            if (!r.checkImports())
+              return false
             r.checkWildcardImports()
           case _ => true
         }
@@ -172,7 +177,8 @@ class ScImportStmtImpl private (
                 case Some(po) =>
                   if (checkPo) {
                     po.getType(TypingContext.empty)
-                  } else Failure("no failure", Some(this))
+                  } else
+                    Failure("no failure", Some(this))
                 case _ => Failure("no failure", Some(this))
               }
             case _ => exprQualRefType()
@@ -226,8 +232,10 @@ class ScImportStmtImpl private (
               }
               val wildcard = names.contains("_")
               def isOK(name: String): Boolean = {
-                if (wildcard) !excludeNames.contains(name)
-                else names.contains(name)
+                if (wildcard)
+                  !excludeNames.contains(name)
+                else
+                  names.contains(name)
               }
               val newImportsUsed =
                 Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
@@ -272,14 +280,16 @@ class ScImportStmtImpl private (
                 newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
               }
               if (importExpr.singleWildcard) {
-                if (!checkWildcardImports) return true
+                if (!checkWildcardImports)
+                  return true
                 (elem, processor) match {
                   case (cl: PsiClass, processor: BaseProcessor)
                       if !cl.isInstanceOf[ScTemplateDefinition] =>
                     if (!processor.processType(
                           new ScDesignatorType(cl, true),
                           place,
-                          newState)) return false
+                          newState))
+                      return false
                   case (_, processor: BaseProcessor) if refType.isDefined =>
                     if (!processor.processType(refType.get, place, newState))
                       return false
@@ -288,9 +298,11 @@ class ScImportStmtImpl private (
                           processor,
                           newState,
                           this,
-                          place)) return false
+                          place))
+                      return false
                 }
-              } else if (!processor.execute(elem, newState)) return false
+              } else if (!processor.execute(elem, newState))
+                return false
             case Some(set) =>
               val shadowed: mutable.HashSet[(ScImportSelector, PsiElement)] =
                 mutable.HashSet.empty
@@ -325,7 +337,8 @@ class ScImportStmtImpl private (
               // There is total import from stable id
               // import a.b.c.{d=>e, f=>_, _}
               if (set.hasWildcard) {
-                if (!checkWildcardImports) return true
+                if (!checkWildcardImports)
+                  return true
                 processor match {
                   case bp: BaseProcessor =>
                     ProgressManager.checkCanceled()
@@ -353,7 +366,8 @@ class ScImportStmtImpl private (
                           state: ResolveState): Boolean = {
                         if (shadowed.exists(p =>
                               ScEquivalenceUtil
-                                .smartEquivalence(element, p._2))) return true
+                                .smartEquivalence(element, p._2)))
+                          return true
 
                         var newState = state.put(ScSubstitutor.key, subst)
 
@@ -392,14 +406,16 @@ class ScImportStmtImpl private (
                         if (!processor.processType(
                               new ScDesignatorType(cl, true),
                               place,
-                              newState)) return false
+                              newState))
+                          return false
                       case _ =>
                         if (!elem.processDeclarations(
                               p1,
                               // In this case import optimizer should check for used selectors
                               newState,
                               this,
-                              place)) return false
+                              place))
+                          return false
                     }
                   case _ => true
                 }
@@ -436,7 +452,8 @@ class ScImportStmtImpl private (
         }
         true
       }
-      if (!workWithImportExpr) return false
+      if (!workWithImportExpr)
+        return false
     }
     true
   }

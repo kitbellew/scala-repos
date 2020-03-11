@@ -42,7 +42,8 @@ case class ParseError(
       val commonPrefixLen = RuleTrace.commonNonAtomicPrefixLength(traces)
       if (commonPrefixLen > 0)
         t ⇒ t.copy(prefix = t.prefix.drop(commonPrefixLen)).dropUnreportedPrefix
-      else _.dropUnreportedPrefix
+      else
+        _.dropUnreportedPrefix
     }
 }
 
@@ -58,10 +59,12 @@ case class Position(index: Int, line: Int, column: Int)
 object Position {
   def apply(index: Int, input: ParserInput): Position = {
     @tailrec def rec(ix: Int, line: Int, col: Int): Position =
-      if (ix >= index) Position(index, line, col)
+      if (ix >= index)
+        Position(index, line, col)
       else if (ix >= input.length || input.charAt(ix) != '\n')
         rec(ix + 1, line, col + 1)
-      else rec(ix + 1, line + 1, 1)
+      else
+        rec(ix + 1, line + 1, 1)
     rec(ix = 0, line = 1, col = 1)
   }
 }
@@ -82,28 +85,50 @@ case class RuleTrace(
         named: List[NonTerminal]): List[NonTerminal] =
       current match {
         case NonTerminal(Named(_), _) :: tail ⇒
-          rec(tail, if (named.isEmpty) current else named)
+          rec(
+            tail,
+            if (named.isEmpty)
+              current
+            else
+              named)
         case NonTerminal(RuleCall, _) :: tail ⇒
           rec(
             tail,
             named
           ) // RuleCall elements allow the name to be carried over
-        case NonTerminal(Atomic, _) :: tail ⇒ if (named.isEmpty) tail else named
+        case NonTerminal(Atomic, _) :: tail ⇒
+          if (named.isEmpty)
+            tail
+          else
+            named
         case x :: tail ⇒
-          if (x.offset >= 0 && named.nonEmpty) named else rec(tail, Nil)
+          if (x.offset >= 0 && named.nonEmpty)
+            named
+          else
+            rec(tail, Nil)
         case Nil ⇒ named
       }
     val newPrefix = rec(prefix, Nil)
-    if (newPrefix ne prefix) copy(prefix = newPrefix) else this
+    if (newPrefix ne prefix)
+      copy(prefix = newPrefix)
+    else
+      this
   }
 
   /**
     * Wraps this trace with a [[RuleTrace.Named]] wrapper if the given name is non-empty.
     */
   def named(name: String): RuleTrace = {
-    val newHead =
-      NonTerminal(Named(name), if (prefix.isEmpty) 0 else prefix.head.offset)
-    if (name.isEmpty) this else copy(prefix = newHead :: prefix)
+    val newHead = NonTerminal(
+      Named(name),
+      if (prefix.isEmpty)
+        0
+      else
+        prefix.head.offset)
+    if (name.isEmpty)
+      this
+    else
+      copy(prefix = newHead :: prefix)
   }
 }
 
@@ -122,7 +147,13 @@ object RuleTrace {
           case head :: tail if tracesTail forall hasElem(ix, head) ⇒
             head.key match {
               case Named(_) ⇒
-                rec(tail, if (namedIx >= 0) namedIx else ix, ix + 1)
+                rec(
+                  tail,
+                  if (namedIx >= 0)
+                    namedIx
+                  else
+                    ix,
+                  ix + 1)
               case RuleCall ⇒
                 rec(
                   tail,
@@ -130,15 +161,22 @@ object RuleTrace {
                   ix + 1
                 ) // RuleCall elements allow the name to be carried over
               case Atomic ⇒
-                if (namedIx >= 0) namedIx
-                else ix // Atomic elements always terminate a common prefix
+                if (namedIx >= 0)
+                  namedIx
+                else
+                  ix // Atomic elements always terminate a common prefix
               case _ ⇒
                 rec(tail, -1, ix + 1) // otherwise the name chain is broken
             }
-          case _ ⇒ if (namedIx >= 0) namedIx else ix
+          case _ ⇒
+            if (namedIx >= 0)
+              namedIx
+            else
+              ix
         }
       rec(traces.head.prefix, namedIx = -1, ix = 0)
-    } else 0
+    } else
+      0
 
   // offset: the number of characters before the reported error index that the rule corresponding
   // to this trace head started matching.

@@ -79,7 +79,10 @@ class CommandToEncoding extends OneToOneEncoder {
   private[this] val ZeroBuf = Buf.Utf8("0")
 
   private[this] def intToUtf8(i: Int): Buf =
-    if (i == 0) ZeroBuf else Buf.Utf8(i.toString)
+    if (i == 0)
+      ZeroBuf
+    else
+      Buf.Utf8(i.toString)
 
   def encode(
       ctx: ChannelHandlerContext,

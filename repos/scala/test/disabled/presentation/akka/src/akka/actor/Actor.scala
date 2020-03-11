@@ -494,7 +494,8 @@ trait Actor {
     *  If "discardOld" is true, an unbecome will be issued prior to pushing the new behavior to the stack
     */
   def become(behavior: Receive, discardOld: Boolean = true) {
-    if (discardOld) unbecome()
+    if (discardOld)
+      unbecome()
     self.hotswap = self.hotswap.push(behavior)
   }
 
@@ -502,7 +503,8 @@ trait Actor {
     */
   def unbecome(): Unit = {
     val h = self.hotswap
-    if (h.nonEmpty) self.hotswap = h.pop
+    if (h.nonEmpty)
+      self.hotswap = h.pop
   }
 
   // =========================================

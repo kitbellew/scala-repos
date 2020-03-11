@@ -171,7 +171,10 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       if (a.status != Status.Open || b.status != Status.Open)
         sawDown = true
 
-      if (a.load < b.load) a else b
+      if (a.load < b.load)
+        a
+      else
+        b
     }
 
     def needsRebuild: Boolean =

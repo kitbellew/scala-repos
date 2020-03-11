@@ -189,7 +189,8 @@ private[hive] class HadoopTableReader(
             // convert  /demo/data/year/month/day  to  /demo/data/*/*/*/
             def getPathPatternByPath(parNum: Int, tempPath: Path): String = {
               var path = tempPath
-              for (i <- (1 to parNum)) path = path.getParent
+              for (i <- (1 to parNum))
+                path = path.getParent
               val tails = (1 to parNum).map(_ => "*").mkString("/", "/", "/")
               path.toString + tails
             }

@@ -196,7 +196,10 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     }
 
     val form = renderHtml()
-    if (ajaxForms_?) wrapInDiv(form) else form
+    if (ajaxForms_?)
+      wrapInDiv(form)
+    else
+      form
   }
 
   protected def submitOrAjax(id: String): String =
@@ -231,7 +234,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
               ("onclick" -> submitOrAjax(nextId))))
 
     val prevButton: Box[Elem] =
-      if (OnFirstScreen) Empty
+      if (OnFirstScreen)
+        Empty
       else
         Full(theScreen.prevButton % ("onclick" -> submitOrAjax(prevId)))
 
@@ -253,7 +257,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
           field.displayHtml,
           Empty,
           Full(field.asHtml))
-      } else Nil
+      } else
+        Nil
 
     renderAll(
       CurrentScreen.is.map(s =>
@@ -267,7 +272,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         theScreen.screenFields.flatMap(f =>
           if (f.show_?)
             List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
-          else Nil), //fields: List[ScreenFieldInfo],
+          else
+            Nil), //fields: List[ScreenFieldInfo],
       prevButton, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       nextButton, // next: Box[Elem],
@@ -476,7 +482,11 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     (for {
       snapshot <- PrevSnapshot.is
     } yield {
-      val cur = if (CurrentScreen.set_?) CurrentScreen.get else Empty
+      val cur =
+        if (CurrentScreen.set_?)
+          CurrentScreen.get
+        else
+          Empty
       snapshot.restore()
 
       if (CurrentScreen.set_?) {

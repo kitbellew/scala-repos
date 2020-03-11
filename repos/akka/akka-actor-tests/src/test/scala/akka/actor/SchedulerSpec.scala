@@ -99,7 +99,8 @@ trait SchedulerSpec
       collectCancellable(system.scheduler.schedule(0 milliseconds, 20.millis) {
         val c = count.incrementAndGet()
         testActor ! c
-        if (c == 3) throw new RuntimeException("TEST") with NoStackTrace
+        if (c == 3)
+          throw new RuntimeException("TEST") with NoStackTrace
       })
       expectMsg(1)
       expectMsg(2)
@@ -400,20 +401,27 @@ class LightArrayRevolverSchedulerSpec
       import system.dispatcher
       val r = ThreadLocalRandom.current
       val N = 1000000
-      val tasks = for (_ ← 1 to N) yield {
-        val next = r.nextInt(3000)
-        val now = System.nanoTime
-        system.scheduler.scheduleOnce(next.millis) {
-          val stop = System.nanoTime
-          testActor ! (stop - now - next * 1000000L)
-        }
-      }
+      val tasks =
+        for (_ ← 1 to N)
+          yield {
+            val next = r.nextInt(3000)
+            val now = System.nanoTime
+            system.scheduler.scheduleOnce(next.millis) {
+              val stop = System.nanoTime
+              testActor ! (stop - now - next * 1000000L)
+            }
+          }
       // get somewhat into the middle of things
       Thread.sleep(500)
-      val cancellations = for (t ← tasks) yield {
-        t.cancel()
-        if (t.isCancelled) 1 else 0
-      }
+      val cancellations =
+        for (t ← tasks)
+          yield {
+            t.cancel()
+            if (t.isCancelled)
+              1
+            else
+              0
+          }
       val cancelled = cancellations.sum
       println(cancelled)
       val latencies = within(10.seconds) {
@@ -450,7 +458,10 @@ class LightArrayRevolverSchedulerSpec
             rounds
           }
           def delay =
-            if (ThreadLocalRandom.current.nextBoolean) step * 2 else step
+            if (ThreadLocalRandom.current.nextBoolean)
+              step * 2
+            else
+              step
           val N = 1000000
           (1 to N) foreach (_ ⇒
             sched.scheduleOnce(delay)(counter.incrementAndGet()))

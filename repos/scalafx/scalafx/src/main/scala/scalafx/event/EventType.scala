@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object EventType {
   implicit def sfxEventType2jfx[T <: jfxe.Event](
       et: EventType[T]): jfxe.EventType[T] =
-    if (et != null) et.delegate else null
+    if (et != null)
+      et.delegate
+    else
+      null
 
   /**
     * The root event type. All other event types are either direct or indirect sub types of it.

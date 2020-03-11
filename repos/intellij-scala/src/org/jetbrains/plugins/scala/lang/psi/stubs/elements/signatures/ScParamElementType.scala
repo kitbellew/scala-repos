@@ -90,11 +90,15 @@ abstract class ScParamElementType[Param <: ScParameter](debugName: String)
     val isVar = dataStream.readBoolean
     val isCallByName = dataStream.readBoolean()
     val defaultExpr =
-      if (dataStream.readBoolean()) Some(dataStream.readName().toString)
-      else None
+      if (dataStream.readBoolean())
+        Some(dataStream.readName().toString)
+      else
+        None
     val deprecatedName =
-      if (dataStream.readBoolean()) Some(dataStream.readName().toString)
-      else None
+      if (dataStream.readBoolean())
+        Some(dataStream.readName().toString)
+      else
+        None
     new ScParameterStubImpl(
       parent,
       this,

@@ -67,7 +67,8 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
           positionFromParameters(parameters).getContext.getContext.getContext
 
         if (!scope.isInstanceOf[ScVariableDeclaration] && !scope
-              .isInstanceOf[ScValueDeclaration]) return
+              .isInstanceOf[ScValueDeclaration])
+          return
 
         addCompletions0(parameters, result, typed = false) { (text, element) =>
           val declaration = createValueDeclarationFrom(text, element)
@@ -87,12 +88,14 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
     val element = positionFromParameters(parameters)
     val settings = ScalaProjectSettings.getInstance(element.getProject)
 
-    if (!settings.isAotCompletion) return
+    if (!settings.isAotCompletion)
+      return
 
     val text = element.getText
     val prefix = result.getPrefixMatcher.getPrefix
 
-    if (!isSuitableIdentifier(prefix)) return
+    if (!isSuitableIdentifier(prefix))
+      return
 
     val identifier = factory(prefix + ": " + capitalize(text), element)
 
@@ -123,7 +126,10 @@ private object ScalaAotCompletionContributor {
       .get
 
   def capitalize(s: String): String =
-    if (s.length == 0) s else s.substring(0, 1).toUpperCase + s.substring(1)
+    if (s.length == 0)
+      s
+    else
+      s.substring(0, 1).toUpperCase + s.substring(1)
 
   def createParameterFrom(text: String, original: PsiElement): ScParameter = {
     val clauses = ScalaPsiElementFactory.createParamClausesWithContext(
@@ -174,12 +180,19 @@ private class MyConsumer(
 private object MyConsumer {
   def suggestNameFor(prefix: String, entity: String): String = {
     val i = entity.indexOf(capitalize(prefix.takeWhile(_.isLower)))
-    val name = if (i >= 0) entity.substring(i) else entity
+    val name =
+      if (i >= 0)
+        entity.substring(i)
+      else
+        entity
     decapitalize(name)
   }
 
   def decapitalize(s: String): String =
-    if (s.length == 0) s else s.substring(0, 1).toLowerCase + s.substring(1)
+    if (s.length == 0)
+      s
+    else
+      s.substring(0, 1).toLowerCase + s.substring(1)
 }
 
 private class MyElementRenderer(name: String, typed: Boolean)
@@ -189,7 +202,11 @@ private class MyElementRenderer(name: String, typed: Boolean)
       presentation: LookupElementPresentation) = {
     element.getDelegate.renderElement(presentation)
 
-    val text = if (typed) name + ": " + presentation.getItemText else name
+    val text =
+      if (typed)
+        name + ": " + presentation.getItemText
+      else
+        name
     presentation.setItemText(text)
 
     if (!typed) {
@@ -208,7 +225,11 @@ private class MyInsertHandler(name: String, typed: Boolean)
     val document = context.getDocument
     val text = document.getText(TextRange.create(begin, end))
 
-    val replacement = if (typed) name + ": " + text else name
+    val replacement =
+      if (typed)
+        name + ": " + text
+      else
+        name
     document.replaceString(begin, end, replacement)
     context.commitDocument()
 

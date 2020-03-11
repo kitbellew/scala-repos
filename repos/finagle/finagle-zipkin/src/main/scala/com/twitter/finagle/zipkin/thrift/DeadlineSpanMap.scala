@@ -41,7 +41,10 @@ private class DeadlineSpanMap(
       } else {
         val newSpan = new MutableSpan(traceId, Time.now)
         val prev = spanMap.putIfAbsent(traceId, newSpan)
-        if (prev == null) newSpan else prev
+        if (prev == null)
+          newSpan
+        else
+          prev
       }
     }
 
@@ -73,8 +76,10 @@ private class DeadlineSpanMap(
       }
     }
 
-    if (ss.isEmpty) Future.Done
-    else logSpans(ss)
+    if (ss.isEmpty)
+      Future.Done
+    else
+      logSpans(ss)
   }
 
   /**
@@ -114,7 +119,8 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
           ann.value.equals(Constants.CLIENT_RECV) ||
           ann.value.equals(Constants.SERVER_SEND) ||
           ann.value.equals(TimeoutFilter.TimeoutAnnotation)
-        )) _isComplete = true
+        ))
+      _isComplete = true
 
     annotations.append(ann)
     this

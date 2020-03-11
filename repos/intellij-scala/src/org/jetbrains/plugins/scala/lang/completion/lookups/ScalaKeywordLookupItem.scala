@@ -45,7 +45,8 @@ object ScalaKeywordLookupItem {
               val seq = context.getDocument.getCharsSequence
                 .subSequence(docStart, offset)
 
-              if (seq.length() == 1 && seq.charAt(0) == '@') return
+              if (seq.length() == 1 && seq.charAt(0) == '@')
+                return
             }
 
             context.setAddCompletionChar(addCompletionChar)
@@ -65,7 +66,8 @@ object ScalaKeywordLookupItem {
                 case FOR   => settings.SPACE_BEFORE_FOR_PARENTHESES
                 case WHILE => settings.SPACE_BEFORE_WHILE_PARENTHESES
               }
-              if (add) addSpace(addCompletionChar = true)
+              if (add)
+                addSpace(addCompletionChar = true)
             case '{' if braces.contains(keyword) =>
               val add = keyword match {
                 case CATCH    => settings.SPACE_BEFORE_CATCH_LBRACE
@@ -79,7 +81,8 @@ object ScalaKeywordLookupItem {
                 case DO       => settings.SPACE_BEFORE_DO_LBRACE
                 case YIELD    => settings.SPACE_BEFORE_FOR_LBRACE
               }
-              if (add) addSpace(addCompletionChar = true)
+              if (add)
+                addSpace(addCompletionChar = true)
             case '[' =>
               keyword match {
                 case PRIVATE | PROTECTED => //do nothing
@@ -91,7 +94,8 @@ object ScalaKeywordLookupItem {
             val manager = PsiDocumentManager.getInstance(context.getProject)
             manager.commitDocument(document)
             val file = manager.getPsiFile(document)
-            if (file == null) return
+            if (file == null)
+              return
             CodeStyleManager
               .getInstance(context.getProject)
               .adjustLineIndent(

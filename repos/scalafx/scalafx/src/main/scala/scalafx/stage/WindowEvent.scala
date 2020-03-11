@@ -35,7 +35,10 @@ import scalafx.event.{Event, EventType}
 
 object WindowEvent {
   implicit def sfxWindowEvent2jfx(v: WindowEvent): jfxs.WindowEvent =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Common supertype for all window event types.

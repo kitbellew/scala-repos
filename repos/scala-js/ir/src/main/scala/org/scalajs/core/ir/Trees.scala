@@ -934,12 +934,16 @@ object Trees {
     def noinline: Boolean = (bits & NoinlineMask) != 0
 
     def withInline(value: Boolean): OptimizerHints =
-      if (value) new OptimizerHints(bits | InlineMask)
-      else new OptimizerHints(bits & ~InlineMask)
+      if (value)
+        new OptimizerHints(bits | InlineMask)
+      else
+        new OptimizerHints(bits & ~InlineMask)
 
     def withNoinline(value: Boolean): OptimizerHints =
-      if (value) new OptimizerHints(bits | NoinlineMask)
-      else new OptimizerHints(bits & ~NoinlineMask)
+      if (value)
+        new OptimizerHints(bits | NoinlineMask)
+      else
+        new OptimizerHints(bits & ~NoinlineMask)
 
     override def toString(): String =
       s"OptimizerHints($bits)"

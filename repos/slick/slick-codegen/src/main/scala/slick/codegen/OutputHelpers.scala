@@ -34,7 +34,8 @@ trait OutputHelpers {
     val fw = new FileWriter(file.getAbsoluteFile());
     val bw = new BufferedWriter(fw);
     bw.write(content);
-    if (!content.endsWith("\n")) bw.write("\n");
+    if (!content.endsWith("\n"))
+      bw.write("\n");
     bw.close();
   }
 

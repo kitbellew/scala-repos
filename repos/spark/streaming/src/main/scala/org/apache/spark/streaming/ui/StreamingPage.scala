@@ -121,11 +121,18 @@ private[ui] class MillisecondsStatUIData(data: Seq[(Long, Long)]) {
     data.map(x => UIUtils.convertToTimeUnit(x._2, unit))
 
   val avg: Option[Long] =
-    if (data.isEmpty) None else Some(data.map(_._2).sum / data.size)
+    if (data.isEmpty)
+      None
+    else
+      Some(data.map(_._2).sum / data.size)
 
   val formattedAvg: String = StreamingPage.formatDurationOption(avg)
 
-  val max: Option[Long] = if (data.isEmpty) None else Some(data.map(_._2).max)
+  val max: Option[Long] =
+    if (data.isEmpty)
+      None
+    else
+      Some(data.map(_._2).max)
 }
 
 /**
@@ -137,11 +144,18 @@ private[ui] class MillisecondsStatUIData(data: Seq[(Long, Long)]) {
 private[ui] class EventRateUIData(val data: Seq[(Long, Double)]) {
 
   val avg: Option[Double] =
-    if (data.isEmpty) None else Some(data.map(_._2).sum / data.size)
+    if (data.isEmpty)
+      None
+    else
+      Some(data.map(_._2).sum / data.size)
 
   val formattedAvg: String = avg.map(_.formatted("%.2f")).getOrElse("-")
 
-  val max: Option[Double] = if (data.isEmpty) None else Some(data.map(_._2).max)
+  val max: Option[Double] =
+    if (data.isEmpty)
+      None
+    else
+      Some(data.map(_._2).max)
 }
 
 /** Page for Spark Web UI that shows statistics of a streaming job */
@@ -248,8 +262,16 @@ private[ui] class StreamingPage(parent: StreamingTab)
     val batches = listener.retainedBatches
 
     val batchTimes = batches.map(_.batchTime.milliseconds)
-    val minBatchTime = if (batchTimes.isEmpty) startTime else batchTimes.min
-    val maxBatchTime = if (batchTimes.isEmpty) startTime else batchTimes.max
+    val minBatchTime =
+      if (batchTimes.isEmpty)
+        startTime
+      else
+        batchTimes.min
+    val maxBatchTime =
+      if (batchTimes.isEmpty)
+        startTime
+      else
+        batchTimes.max
 
     val eventRateForAllStreams = new EventRateUIData(batches.map { batchInfo =>
       (
@@ -274,7 +296,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
     val _maxTime =
       (for (m1 <- schedulingDelay.max;
             m2 <- processingTime.max;
-            m3 <- totalDelay.max) yield m1 max m2 max m3).getOrElse(0L)
+            m3 <- totalDelay.max)
+        yield m1 max m2 max m3).getOrElse(0L)
     // Should start at 0
     val minTime = 0L
     val (maxTime, normalizedUnit) = UIUtils.normalizeDuration(_maxTime)
@@ -551,27 +574,42 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .getOrElse(s"Stream-$streamId")
     val receiverActive = receiverInfo
       .map { info =>
-        if (info.active) "ACTIVE" else "INACTIVE"
+        if (info.active)
+          "ACTIVE"
+        else
+          "INACTIVE"
       }
       .getOrElse(emptyCell)
     val receiverLocation = receiverInfo
       .map { info =>
         val executorId =
-          if (info.executorId.isEmpty) emptyCell else info.executorId
-        val location = if (info.location.isEmpty) emptyCell else info.location
+          if (info.executorId.isEmpty)
+            emptyCell
+          else
+            info.executorId
+        val location =
+          if (info.location.isEmpty)
+            emptyCell
+          else
+            info.location
         s"$executorId / $location"
       }
       .getOrElse(emptyCell)
     val receiverLastError = receiverInfo
       .map { info =>
         val msg = s"${info.lastErrorMessage} - ${info.lastError}"
-        if (msg.length > 100) msg.take(97) + "..." else msg
+        if (msg.length > 100)
+          msg.take(97) + "..."
+        else
+          msg
       }
       .getOrElse(emptyCell)
     val receiverLastErrorTime = receiverInfo
       .map { r =>
-        if (r.lastErrorTime < 0) "-"
-        else SparkUIUtils.formatDate(r.lastErrorTime)
+        if (r.lastErrorTime < 0)
+          "-"
+        else
+          SparkUIUtils.formatDate(r.lastErrorTime)
       }
       .getOrElse(emptyCell)
     val receivedRecords = new EventRateUIData(eventRates)

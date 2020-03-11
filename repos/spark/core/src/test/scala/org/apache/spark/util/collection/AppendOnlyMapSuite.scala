@@ -180,8 +180,16 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
     val it = map.destructiveSortedIterator(new Comparator[String] {
       def compare(key1: String, key2: String): Int = {
-        val x = if (key1 != null) key1.toInt else Int.MinValue
-        val y = if (key2 != null) key2.toInt else Int.MinValue
+        val x =
+          if (key1 != null)
+            key1.toInt
+          else
+            Int.MinValue
+        val y =
+          if (key2 != null)
+            key2.toInt
+          else
+            Int.MinValue
         x.compareTo(y)
       }
     })

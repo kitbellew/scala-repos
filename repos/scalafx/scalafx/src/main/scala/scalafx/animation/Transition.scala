@@ -48,7 +48,10 @@ object Transition extends AnimationStatics {
     * @return JavaFX $TR extracted from `v`.
     */
   implicit def sfxTransition2jfx(v: Transition): jfxa.Transition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

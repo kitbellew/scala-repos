@@ -53,8 +53,10 @@ object BasicIO {
       def next(): Stream[T] = q.take match {
         case Left(0) => Stream.empty
         case Left(code) =>
-          if (nonzeroException) scala.sys.error("Nonzero exit code: " + code)
-          else Stream.empty
+          if (nonzeroException)
+            scala.sys.error("Nonzero exit code: " + code)
+          else
+            Stream.empty
         case Right(s) => Stream.cons(s, next())
       }
       new Streamed(
@@ -73,9 +75,15 @@ object BasicIO {
     def apply(out: OutputStream): OutputStream =
       new FilterOutputStream(out) with Uncloseable {}
     def protect(in: InputStream): InputStream =
-      if (in eq stdin) Uncloseable(in) else in
+      if (in eq stdin)
+        Uncloseable(in)
+      else
+        in
     def protect(out: OutputStream): OutputStream =
-      if ((out eq stdout) || (out eq stderr)) Uncloseable(out) else out
+      if ((out eq stdout) || (out eq stderr))
+        Uncloseable(out)
+      else
+        out
   }
 
   /** Creates a `ProcessIO` from a function `String => Unit`. It can attach the
@@ -223,7 +231,8 @@ object BasicIO {
     * [[scala.sys.process.ProcessIO]].
     */
   def input(connect: Boolean): OutputStream => Unit = { outputToProcess =>
-    if (connect) connectToIn(outputToProcess)
+    if (connect)
+      connectToIn(outputToProcess)
     outputToProcess.close()
   }
 
@@ -270,7 +279,8 @@ object BasicIO {
           } catch {
             case _: IOException => false
           }
-        if (available) loop()
+        if (available)
+          loop()
       }
     }
     loop()

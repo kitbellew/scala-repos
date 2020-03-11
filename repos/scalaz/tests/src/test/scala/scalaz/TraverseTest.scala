@@ -28,8 +28,11 @@ object TraverseTest extends SpecLite {
     }
 
     "traverse through option effect" in {
-      val s: Option[List[Int]] =
-        List(1, 2, 3).traverseU((x: Int) => if (x < 3) some(x) else none)
+      val s: Option[List[Int]] = List(1, 2, 3).traverseU((x: Int) =>
+        if (x < 3)
+          some(x)
+        else
+          none)
       s must_=== (none[List[Int]])
     }
 
@@ -76,8 +79,11 @@ object TraverseTest extends SpecLite {
     // Nothing
     "allow partial traversal" in {
       val stream = Stream.from(1)
-      val s: Option[Stream[Int]] =
-        stream.traverseU((x: Int) => if (x < 3) some(x) else none)
+      val s: Option[Stream[Int]] = stream.traverseU((x: Int) =>
+        if (x < 3)
+          some(x)
+        else
+          none)
       s must_=== (none)
     }
   }

@@ -72,12 +72,23 @@ sealed abstract class Node {
   def isClassNode =
     if (tpl.isDefined)
       (tpl.get.isClass || tpl.get.qualifiedName == "scala.AnyRef")
-    else false
-  def isTraitNode = if (tpl.isDefined) tpl.get.isTrait else false
-  def isObjectNode = if (tpl.isDefined) tpl.get.isObject else false
+    else
+      false
+  def isTraitNode =
+    if (tpl.isDefined)
+      tpl.get.isTrait
+    else
+      false
+  def isObjectNode =
+    if (tpl.isDefined)
+      tpl.get.isObject
+    else
+      false
   def isTypeNode =
-    if (doctpl.isDefined) doctpl.get.isAbstractType || doctpl.get.isAliasType
-    else false
+    if (doctpl.isDefined)
+      doctpl.get.isAbstractType || doctpl.get.isAliasType
+    else
+      false
   def isOtherNode = !(isClassNode || isTraitNode || isObjectNode || isTypeNode)
   def isImplicitNode = false
   def isOutsideNode = false
@@ -102,27 +113,45 @@ object Node {
 }
 object ClassNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isClassNode) Some((n.tpe, n.tpl)) else None
+    if (n.isClassNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 object TraitNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isTraitNode) Some((n.tpe, n.tpl)) else None
+    if (n.isTraitNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 object TypeNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isTypeNode) Some((n.tpe, n.tpl)) else None
+    if (n.isTypeNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 object ObjectNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isObjectNode) Some((n.tpe, n.tpl)) else None
+    if (n.isObjectNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 object OutsideNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isOutsideNode) Some((n.tpe, n.tpl)) else None
+    if (n.isOutsideNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 object OtherNode {
   def unapply(n: Node): Option[(TypeEntity, Option[TemplateEntity])] =
-    if (n.isOtherNode) Some((n.tpe, n.tpl)) else None
+    if (n.isOtherNode)
+      Some((n.tpe, n.tpl))
+    else
+      None
 }
 
 /** The node for the current class */
@@ -186,7 +215,8 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
       if (depth != _nodeDepth.getOrElse(node, -1)) {
         _nodeDepth += (node -> depth)
         newSeedNodes ++= invertedEdges(node)
-        if (depth > _maxDepth) _maxDepth = depth
+        if (depth > _maxDepth)
+          _maxDepth = depth
       }
     }
     seedNodes = newSeedNodes

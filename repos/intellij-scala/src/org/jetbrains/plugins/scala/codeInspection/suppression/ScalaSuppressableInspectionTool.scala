@@ -16,7 +16,8 @@ object ScalaSuppressableInspectionTool {
   def findElementToolSuppressedIn(
       element: PsiElement,
       toolId: String): Option[PsiElement] = {
-    if (element == null) return None
+    if (element == null)
+      return None
 
     def commentWithSuppression(elem: PsiElement): Option[PsiComment] = {
       for (comment <- commentsFor(elem)) {
@@ -35,8 +36,10 @@ object ScalaSuppressableInspectionTool {
     extensions.inReadAction {
       val iterator = (Iterator(element) ++ element.parentsInFile)
         .flatMap(commentWithSuppression)
-      if (iterator.hasNext) Some(iterator.next())
-      else None
+      if (iterator.hasNext)
+        Some(iterator.next())
+      else
+        None
     }
   }
 
@@ -53,8 +56,10 @@ object ScalaSuppressableInspectionTool {
   def suppressActions(toolShortName: String): Array[SuppressQuickFix] = {
     val displayKey: HighlightDisplayKey =
       HighlightDisplayKey.find(toolShortName)
-    if (displayKey != null) allFixesForKey(displayKey)
-    else Array.empty
+    if (displayKey != null)
+      allFixesForKey(displayKey)
+    else
+      Array.empty
   }
 
   def allFixesForKey(key: HighlightDisplayKey): Array[SuppressQuickFix] = Array(

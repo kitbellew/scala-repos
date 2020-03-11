@@ -130,7 +130,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
-        if (a eq b) return
+        if (a eq b)
+          return
         a.clear()
         a.reserve(b.activeSize)
         var i = 0
@@ -146,7 +147,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
-        if (a eq b) return
+        if (a eq b)
+          return
         a.clear()
         a.reserve(b.activeSize)
         var i = 0

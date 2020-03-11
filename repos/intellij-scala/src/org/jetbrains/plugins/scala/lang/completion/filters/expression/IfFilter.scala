@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScCaseClause
   */
 class IfFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       var parent = leaf.getParent
@@ -33,13 +34,15 @@ class IfFilter extends ElementFilter {
         }
         parent match {
           case clause: ScCaseClause =>
-            if (clause.guard.isDefined) return false
+            if (clause.guard.isDefined)
+              return false
             var position = clause.funType match {
               case Some(elem) => elem.getStartOffsetInParent
               case None       => clause.getTextLength
             }
             val text = clause.getText
-            while (text(position - 1).isWhitespace) position -= 1
+            while (text(position - 1).isWhitespace)
+              position -= 1
             return leaf.getTextRange.getEndOffset == clause.getTextRange.getStartOffset + position
           case _ =>
         }

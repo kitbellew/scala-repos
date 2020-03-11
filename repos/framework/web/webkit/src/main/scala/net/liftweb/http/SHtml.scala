@@ -740,7 +740,11 @@ trait SHtml extends Loggable {
       kids: Elem): NodeSeq = {
     fmapFunc((func)) { funcName =>
       val (nk, id) = findOrAddId(kids)
-      val rnk = if (visible) nk else nk % ("style" -> "display: none")
+      val rnk =
+        if (visible)
+          nk
+        else
+          nk % ("style" -> "display: none")
       val nh = head %
         ("onclick" -> (LiftRules.jsArtifacts.toggle(id).cmd & makeAjaxCall(
           JsRaw("'" + funcName + "=true'")).cmd))
@@ -773,7 +777,10 @@ trait SHtml extends Loggable {
       }
     }/>)(_ % _)) %
       ("onkeypress" -> """liftUtils.lift_blurIfReturn(event)""") %
-      (if (ignoreBlur) Null else ("onblur" -> (json(JE.JsRaw("this.value")))))
+      (if (ignoreBlur)
+         Null
+       else
+         ("onblur" -> (json(JE.JsRaw("this.value")))))
 
   /**
     * This function does not really submit a JSON request to the server. Instead, json is a function
@@ -861,7 +868,8 @@ trait SHtml extends Loggable {
         value
       }/>)(_ % _)) %
         ("onkeypress" -> """liftUtils.lift_blurIfReturn(event)""") %
-        (if (ignoreBlur) Null
+        (if (ignoreBlur)
+           Null
          else
            ("onblur" -> (jsFunc match {
              case Full(f) =>
@@ -1268,8 +1276,10 @@ trait SHtml extends Loggable {
       case BasicElemAttr(name, value) if name == "id" => value
     } getOrElse nextFuncName
     val attributes =
-      if (attrs.contains(BasicElemAttr("id", id))) attrs
-      else BasicElemAttr("id", id) +: attrs
+      if (attrs.contains(BasicElemAttr("id", id)))
+        attrs
+      else
+        BasicElemAttr("id", id) +: attrs
     val textOpt = nextFuncName
     val options = opts :+ SelectableOption(textOpt, "New Element")
     var _options = options
@@ -1281,7 +1291,8 @@ trait SHtml extends Loggable {
       }
       if (select == textOpt)
         Replace(id, ajaxText("", text(_), attributes: _*)) & Focus(id)
-      else f(select)
+      else
+        f(select)
     }
 
     ajaxSelect(options, deflt, func, attributes: _*)
@@ -1453,7 +1464,10 @@ trait SHtml extends Loggable {
         case null => ""
         case s    => s
       }),
-      Null) % (if (ignoreBlur) Null else buildOnBlur(ajaxTest))
+      Null) % (if (ignoreBlur)
+                 Null
+               else
+                 buildOnBlur(ajaxTest))
 
   def text_*(
       value: String,
@@ -2603,7 +2617,10 @@ trait SHtml extends Loggable {
   }
 
   private def selected(in: Boolean) =
-    if (in) new UnprefixedAttribute("selected", "selected", Null) else Null
+    if (in)
+      new UnprefixedAttribute("selected", "selected", Null)
+    else
+      Null
 
   def multiSelect(
       opts: Seq[SelectableOption[String]],
@@ -2865,7 +2882,9 @@ trait SHtml extends Loggable {
     * </pre>
     */
   def fileUpload(func: FileParamHolder => Any, attrs: ElemAttr*): Elem = {
-    val f2: FileParamHolder => Any = fp => if (fp.length > 0) func(fp)
+    val f2: FileParamHolder => Any = fp =>
+      if (fp.length > 0)
+        func(fp)
     fmapFunc(BinFuncHolder(f2)) { name =>
       attrs.foldLeft(<input type="file" name={
         name
@@ -2912,7 +2931,10 @@ trait SHtml extends Loggable {
   }
 
   private def checked(in: Boolean) =
-    if (in) new UnprefixedAttribute("checked", "checked", Null) else Null
+    if (in)
+      new UnprefixedAttribute("checked", "checked", Null)
+    else
+      Null
 
   private def setId(in: Box[String]) = in match {
     case Full(id) => new UnprefixedAttribute("id", Text(id), Null);

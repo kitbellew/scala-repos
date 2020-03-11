@@ -54,7 +54,8 @@ class SbtDependencyAnnotator extends Annotator {
         Option(ScalaPsiUtil.fileContext(element)))
       val indexManager = SbtResolverIndexesManager()
       val indexes = resolversToUse.flatMap(indexManager.find).toSet
-      if (indexes.isEmpty) return
+      if (indexes.isEmpty)
+        return
 
       val isInRepo = {
         if (isDynamicVersion(info.version))

@@ -113,8 +113,10 @@ trait RandomCompanion[G <: Generator] { self =>
 
     def foldLeftOfSize[B](n: Int)(init: => B)(f: (B, A) => B): Random[B, G] = {
       def loop(n: Int, ma: Op[A]): Op[B] =
-        if (n <= 0) Const(init)
-        else More(() => loop(n - 1, ma)).flatMap(b => ma.map(a => f(b, a)))
+        if (n <= 0)
+          Const(init)
+        else
+          More(() => loop(n - 1, ma)).flatMap(b => ma.map(a => f(b, a)))
       spawn(loop(n, More(() => lhs.op)))
     }
 
@@ -175,10 +177,18 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
   def right: Random[Right[Nothing, A], G] = map(Right(_))
 
   def option: Random[Option[A], G] =
-    companion.boolean.flatMap(b => if (b) some else companion.constant(None))
+    companion.boolean.flatMap(b =>
+      if (b)
+        some
+      else
+        companion.constant(None))
 
   def or[B](that: Random[B, G]): Random[Either[A, B], G] =
-    companion.boolean.flatMap(b => if (b) left else that.right)
+    companion.boolean.flatMap(b =>
+      if (b)
+        left
+      else
+        that.right)
 
   def and[B](that: Random[B, G]): Random[(A, B), G] =
     for {

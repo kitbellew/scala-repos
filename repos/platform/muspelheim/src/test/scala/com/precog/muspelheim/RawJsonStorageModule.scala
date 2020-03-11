@@ -59,7 +59,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
   implicit def M: Monad[M]
 
   protected def projectionData(path: Path) = {
-    if (!projections.contains(path)) load(path)
+    if (!projections.contains(path))
+      load(path)
     projections(path)
   }
 
@@ -207,9 +208,10 @@ trait RawJsonColumnarTableStorageModule[M[+_]]
         }
       }
 
-      for (paths <- pathsM) yield {
-        fromJson(paths.toList.map(projectionData).flatten.toStream)
-      }
+      for (paths <- pathsM)
+        yield {
+          fromJson(paths.toList.map(projectionData).flatten.toStream)
+        }
     }
   }
 }

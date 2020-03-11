@@ -1393,7 +1393,8 @@ trait SparseVectorOps { this: SparseVector.type =>
           var max: Double = 0.0
           activeValuesIterator foreach (v => {
             val nn = f.sNorm(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {
@@ -1429,7 +1430,8 @@ trait SparseVectorOps { this: SparseVector.type =>
           var max: Double = 0.0
           activeValuesIterator foreach (v => {
             val nn = v.abs.toDouble;
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {

@@ -213,7 +213,8 @@ trait LEvents {
           case (k, v) =>
             required.get.map(v.contains(_)).reduce(_ && _)
         }
-      } else dm
+      } else
+        dm
     }
   }
 

@@ -17,8 +17,10 @@ package object internal {
 
   private[this] def initDefaultRuntime = {
     // TODO - Figure out some way to configure the default runtime at startup.
-    if (true) new DefaultRuntime()
-    else new NoReflectionRuntime()
+    if (true)
+      new DefaultRuntime()
+    else
+      new NoReflectionRuntime()
   }
   private[this] var currentRuntimeVar =
     new AtomicReference[spi.PicklingRuntime](initDefaultRuntime)
@@ -41,7 +43,8 @@ package object internal {
   private val debugEnabled: Boolean =
     System.getProperty("pickling.debug", "false").toBoolean
   private[pickling] def debug(output: => String) =
-    if (debugEnabled) println(output)
+    if (debugEnabled)
+      println(output)
 
   // ----- internal extension methods for symbols -----
   private[pickling] implicit class RichSymbol(
@@ -62,7 +65,8 @@ package object internal {
     scala.collection.concurrent.TrieMap[String, Type]()
   private[pickling] def typeFromString(mirror: Mirror, stpe: String): Type = {
     // TODO: find out why typeFromString is called repeatedly for scala.Predef.String (at least in the evactor1 bench)
-    if (typeFromStringCache.contains(stpe)) typeFromStringCache(stpe)
+    if (typeFromStringCache.contains(stpe))
+      typeFromStringCache(stpe)
     else {
       val result =
         AppliedType.parseFull(stpe) match {
@@ -75,7 +79,8 @@ package object internal {
               try {
                 if (typename.endsWith(".type"))
                   mirror.staticModule(typename.stripSuffix(".type")).moduleClass
-                else mirror.staticClass(typename)
+                else
+                  mirror.staticClass(typename)
               } catch {
                 case _: ScalaReflectionException =>
                   sys.error(errorMsg)
@@ -106,9 +111,14 @@ package object internal {
           TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
-            (if (sym.isModuleClass) ".type" else "") +
-            (if (targs.isEmpty) ""
-             else targs.map(_.key).mkString("[", ",", "]"))
+            (if (sym.isModuleClass)
+               ".type"
+             else
+               "") +
+            (if (targs.isEmpty)
+               ""
+             else
+               targs.map(_.key).mkString("[", ",", "]"))
         case _ =>
           tpe.toString
       }

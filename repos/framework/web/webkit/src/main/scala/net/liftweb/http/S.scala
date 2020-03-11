@@ -605,7 +605,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     for (templateName <- attr("template") ?~ "Template Attribute missing";
          tmplList = templateName.roboSplit("/");
          template <- Templates(tmplList) ?~
-           "couldn't find template") yield template
+           "couldn't find template")
+      yield template
 
   /**
     * Returns the Locale for this request based on the LiftRules.localeCalculator
@@ -1468,7 +1469,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param f Function to execute within the scope of the request and session
     */
   def init[B](request: Box[Req], session: LiftSession)(f: => B): B = {
-    if (inS.value) f
+    if (inS.value)
+      f
     else {
       if (request.map(_.stateless_?).openOr(false)) {
         session.doAsStateless(_init(request, session)(() => f))
@@ -1888,7 +1890,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def getCookies(request: Box[HTTPRequest]): List[HTTPCookie] =
     for (r <- (request).toList;
          ca <- Box.legacyNullTest(r.cookies).toList;
-         c <- ca) yield c
+         c <- ca)
+      yield c
 
   private def _init[B](request: Box[Req], session: LiftSession)(
       f: () => B): B = {
@@ -2314,8 +2317,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param f A function to execute within the scope of the session
     */
   def initIfUninitted[B](session: LiftSession)(f: => B): B = {
-    if (inS.value) f
-    else init(Empty, session)(f)
+    if (inS.value)
+      f
+    else
+      init(Empty, session)(f)
   }
 
   /**
@@ -2571,8 +2576,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def locateSnippet(name: String): Box[NodeSeq => NodeSeq] = {
     val snippet =
-      if (name.indexOf(".") != -1) name.roboSplit("\\.")
-      else name.roboSplit(":")
+      if (name.indexOf(".") != -1)
+        name.roboSplit("\\.")
+      else
+        name.roboSplit(":")
     NamedPF.applyBox(snippet, LiftRules.snippets.toList)
   }
 
@@ -3017,7 +3024,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     def doRender(session: LiftSession): NodeSeq =
       session.processSurroundAndInclude("external render", xhtml)
 
-    if (inS.value) doRender(session.openOrThrowException("legacy code"))
+    if (inS.value)
+      doRender(session.openOrThrowException("legacy code"))
     else {
       val req = Req(
         httpRequest,

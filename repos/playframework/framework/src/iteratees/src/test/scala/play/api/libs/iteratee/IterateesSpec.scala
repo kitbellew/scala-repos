@@ -246,7 +246,10 @@ object IterateesSpec
       // on the current Java runtime.
       def overflows(n: Int): Boolean = {
         def recurseTimes(n: Int): Unit = {
-          if (n == 0) () else identity(recurseTimes(n - 1))
+          if (n == 0)
+            ()
+          else
+            identity(recurseTimes(n - 1))
         }
         try {
           recurseTimes(n)

@@ -34,7 +34,10 @@ trait JavaHelpers {
       Cookie(
         c.name,
         c.value,
-        if (c.maxAge == null) None else Some(c.maxAge),
+        if (c.maxAge == null)
+          None
+        else
+          Some(c.maxAge),
         c.path,
         Option(c.domain),
         c.secure,
@@ -226,7 +229,8 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
   def getQueryString(key: String): String = {
     if (queryString().containsKey(key) && queryString().get(key).length > 0)
       queryString().get(key)(0)
-    else null
+    else
+      null
   }
 
   def cookie(name: String): JCookie = {
@@ -235,7 +239,10 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
 
   def getHeader(headerName: String): String = {
     val header: Array[String] = headers.get(headerName)
-    if (header == null) null else header(0)
+    if (header == null)
+      null
+    else
+      header(0)
   }
 
   def hasHeader(headerName: String): Boolean = {

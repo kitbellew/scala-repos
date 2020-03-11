@@ -35,7 +35,11 @@ import scalafx.delegate.SFXDelegate
 
 object SkinBase {
   implicit def sfxSkinBase2jfx[C <: jfxsc.Control](
-      v: SkinBase[C]): jfxsc.SkinBase[C] = if (v != null) v.delegate else null
+      v: SkinBase[C]): jfxsc.SkinBase[C] =
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def classCssMetaData = jfxsc.SkinBase.getClassCssMetaData
 }

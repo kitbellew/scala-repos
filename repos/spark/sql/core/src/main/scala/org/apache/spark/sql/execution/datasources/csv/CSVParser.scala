@@ -54,7 +54,8 @@ private[sql] abstract class CsvReader(
     settings.setMaxColumns(params.maxColumns)
     settings.setNullValue(params.nullValue)
     settings.setMaxCharsPerColumn(params.maxCharsPerColumn)
-    if (headers != null) settings.setHeaders(headers: _*)
+    if (headers != null)
+      settings.setHeaders(headers: _*)
 
     new CsvParser(settings)
   }
@@ -195,7 +196,10 @@ private class StringIteratorReader(val iter: Iterator[String])
     } else {
       val cur = next - start
       next += 1
-      if (cur == str.length) '\n' else str.charAt(cur.toInt)
+      if (cur == str.length)
+        '\n'
+      else
+        str.charAt(cur.toInt)
     }
   }
 
@@ -239,7 +243,8 @@ private class StringIteratorReader(val iter: Iterator[String])
               off + n,
               len - n
             ) // have more space, fetch more input from iter
-          if (m != -1) n += m
+          if (m != -1)
+            n += m
         }
       }
     }

@@ -119,7 +119,8 @@ class ActorWithBoundedStashSpec
 
     stasher ! PoisonPill
     // stashed messages are sent to deadletters when stasher is stopped
-    for (n ← 2 to 11) expectMsg(DeadLetter("hello" + n, testActor, stasher))
+    for (n ← 2 to 11)
+      expectMsg(DeadLetter("hello" + n, testActor, stasher))
   }
 
   def testStashOverflowException(stasher: ActorRef): Unit = {
@@ -133,7 +134,8 @@ class ActorWithBoundedStashSpec
     expectMsg("STASHOVERFLOW")
 
     // stashed messages are sent to deadletters when stasher is stopped,
-    for (n ← 1 to 20) expectMsg(DeadLetter("hello" + n, testActor, stasher))
+    for (n ← 1 to 20)
+      expectMsg(DeadLetter("hello" + n, testActor, stasher))
   }
 
   "An Actor with Stash" must {

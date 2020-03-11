@@ -102,9 +102,12 @@ object Sheet {
         .map(_.trim.toLowerCase)
         .toList
         .filter(_.nonEmpty) ::: {
-        if (targets contains 1) List("beginner")
-        else if (targets contains 3) List("advanced")
-        else Nil
+        if (targets contains 1)
+          List("beginner")
+        else if (targets contains 3)
+          List("advanced")
+        else
+          Nil
       }
     def lang = `gsx$language`.toString.trim
     def ads = `gsx$ads`.toString.trim == "yes"

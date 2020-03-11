@@ -22,7 +22,8 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
   override def isApplicable(context: SuspendContext): Boolean = {
     val debugProcess = context.getDebugProcess
     val frameProxy = context.getFrameProxy
-    if (debugProcess == null || frameProxy == null) return false
+    if (debugProcess == null || frameProxy == null)
+      return false
 
     val location = frameProxy.location()
     isSynthetic(location, debugProcess)
@@ -44,12 +45,14 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
     if (name.endsWith("$lzycompute"))
       return false //should step into the body of a lazy val
 
-    if (positionManager.shouldSkip(location)) return true
+    if (positionManager.shouldSkip(location))
+      return true
 
     if (name.startsWith("apply") || ScalaPositionManager.isIndyLambda(method))
       return false
 
-    if (method.isConstructor) return false
+    if (method.isConstructor)
+      return false
 
     inReadAction {
       positionManager.findElementByReferenceType(

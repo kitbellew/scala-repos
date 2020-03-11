@@ -289,7 +289,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
         }
       }
 
-      if (!debug) TstRecord.drop
+      if (!debug)
+        TstRecord.drop
     }
 
     success
@@ -509,7 +510,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
 
     md1.delete_!
 
-    if (!debug) MapDoc.drop
+    if (!debug)
+      MapDoc.drop
 
     success
   }
@@ -535,7 +537,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
       od2FromDB.stringbox.valueBox must_== od2.stringbox.valueBox
     }
 
-    if (!debug) OptionalDoc.drop
+    if (!debug)
+      OptionalDoc.drop
 
     success
   }
@@ -555,7 +558,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     sd2.name("sd2")
     sd2.save(true) must_== sd2
 
-    if (!debug) StrictDoc.drop
+    if (!debug)
+      StrictDoc.drop
 
     success
   }

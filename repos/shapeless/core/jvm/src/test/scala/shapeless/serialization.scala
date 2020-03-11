@@ -65,7 +65,8 @@ object SerializationTestDefns {
         false
     } finally {
       oos.close()
-      if (ois != null) ois.close()
+      if (ois != null)
+        ois.close()
     }
   }
 
@@ -84,13 +85,23 @@ object SerializationTestDefns {
   object combineL extends Poly2 {
     implicit def ci = at[Int, Int]((acc, i) => acc + i)
     implicit def cs = at[Int, String]((acc, s) => acc + s.length)
-    implicit def cb = at[Int, Boolean]((acc, b) => acc + (if (b) 1 else 0))
+    implicit def cb =
+      at[Int, Boolean]((acc, b) =>
+        acc + (if (b)
+                 1
+               else
+                 0))
   }
 
   object combineR extends Poly2 {
     implicit def ci = at[Int, Int]((i, acc) => acc + i)
     implicit def cs = at[String, Int]((s, acc) => acc + s.length)
-    implicit def cb = at[Boolean, Int]((b, acc) => acc + (if (b) 1 else 0))
+    implicit def cb =
+      at[Boolean, Int]((b, acc) =>
+        acc + (if (b)
+                 1
+               else
+                 0))
   }
 
   object selInt extends Poly1 {

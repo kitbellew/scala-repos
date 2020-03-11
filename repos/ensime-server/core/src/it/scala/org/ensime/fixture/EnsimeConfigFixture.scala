@@ -120,8 +120,10 @@ object EnsimeConfigFixture {
     }
 
     def renameAndCopyTarget(from: File): File =
-      if (copyTargets) renameAndCopy(from)
-      else rename(from)
+      if (copyTargets)
+        renameAndCopy(from)
+      else
+        rename(from)
 
     // I tried using shapeless everywhere here, but it OOMd the compiler :-(
 

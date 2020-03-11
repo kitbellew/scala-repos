@@ -136,7 +136,8 @@ abstract class RemoteReDeploymentMultiJvmSpec
             expectMsg("PostStop")
             expectNoMsg()
           }
-        else expectNoMsg(sleepAfterKill)
+        else
+          expectNoMsg(sleepAfterKill)
         awaitAssert(node(second), 10.seconds, 100.millis)
       }
 
@@ -161,8 +162,10 @@ abstract class RemoteReDeploymentMultiJvmSpec
 
       runOn(first) {
         within(15.seconds) {
-          if (expectQuarantine) expectMsg("PreStart")
-          else expectMsgAllOf("PostStop", "PreStart")
+          if (expectQuarantine)
+            expectMsg("PreStart")
+          else
+            expectMsgAllOf("PostStop", "PreStart")
         }
       }
 

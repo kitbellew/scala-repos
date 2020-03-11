@@ -342,7 +342,10 @@ trait EvaluatorModule
             loopForJoin(env, restrict)(right),
             right.provenance) {
             case (JArray(JBool(pred) :: left :: Nil), right) =>
-              if (pred) left else right
+              if (pred)
+                left
+              else
+                right
           }
         }
 

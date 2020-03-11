@@ -182,13 +182,13 @@ class ScImplicitlyConvertible(
 
     buffer.foreach {
       case ImplicitMapResult(
-          _,
-          r,
-          tp,
-          retTp,
-          newSubst,
-          uSubst,
-          implicitDepSusbt) =>
+            _,
+            r,
+            tp,
+            retTp,
+            newSubst,
+            uSubst,
+            implicitDepSusbt) =>
         r.element match {
           case f: ScFunction if f.hasTypeParameters =>
             uSubst.getSubstitutor match {
@@ -261,23 +261,29 @@ class ScImplicitlyConvertible(
 
     // Collect implicit conversions from bottom to up
     def treeWalkUp(p: PsiElement, lastParent: PsiElement) {
-      if (p == null) return
+      if (p == null)
+        return
       if (!p.processDeclarations(
             processor,
             ResolveState.initial,
             lastParent,
-            place)) return
+            place))
+        return
       p match {
         case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-        case _                                       => if (!processor.changedLevel) return
+        case _ =>
+          if (!processor.changedLevel)
+            return
       }
       treeWalkUp(p.getContext, p)
     }
     treeWalkUp(place, null)
 
     val result = new ArrayBuffer[ImplicitMapResult]
-    if (typez == types.Nothing) return result
-    if (typez.isInstanceOf[ScUndefinedType]) return result
+    if (typez == types.Nothing)
+      return result
+    if (typez.isInstanceOf[ScUndefinedType])
+      return result
 
     val sigsFound = processor.candidatesS.map(forMap(_, typez))
 
@@ -458,7 +464,8 @@ class ScImplicitlyConvertible(
                               (new Parameter(param), typez)
                           }
                           .toMap
-                      } else Map.empty
+                      } else
+                        Map.empty
                     })
 
                     def probablyHasDepententMethodTypes: Boolean = {
@@ -508,8 +515,10 @@ class ScImplicitlyConvertible(
                                     .get)
                             }
                             .toMap
-                        } else Map.empty
-                      } else Map.empty
+                        } else
+                          Map.empty
+                      } else
+                        Map.empty
                     })
 
                     //todo: pass implicit parameters
@@ -562,7 +571,8 @@ class ScImplicitlyConvertible(
               ScSubstitutor.empty)
         }
       } //possible true
-    } else default
+    } else
+      default
   }
 
   class CollectImplicitsProcessor(withoutPrecedence: Boolean)
@@ -601,10 +611,12 @@ class ScImplicitlyConvertible(
             case f: ScFunction
                 if f.hasModifierProperty("implicit") && !isConformsMethod(f) =>
               if (!ScImplicitlyConvertible.checkFucntionIsEligible(f, place) ||
-                  !ResolveUtils.isAccessible(f, getPlace)) return true
+                  !ResolveUtils.isAccessible(f, getPlace))
+                return true
               val clauses = f.paramClauses.clauses
               //filtered cases
-              if (clauses.length > 2) return true
+              if (clauses.length > 2)
+                return true
               if (clauses.length == 2) {
                 if (!clauses(1).isImplicit) {
                   return true
@@ -631,7 +643,8 @@ class ScImplicitlyConvertible(
               }
               if (clauses.isEmpty) {
                 val rt = subst.subst(f.returnType.getOrElse(return true))
-                if (funType == null || !rt.conforms(funType)) return true
+                if (funType == null || !rt.conforms(funType))
+                  return true
               } else if (clauses.head.parameters.length != 1 || clauses.head.isImplicit)
                 return true
               addResult(new ScalaResolveResult(f, subst, getImports(state)))
@@ -644,28 +657,34 @@ class ScImplicitlyConvertible(
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils.isAccessible(
                         d.asInstanceOf[ScMember],
-                        getPlace)) return true
+                        getPlace))
+                    return true
                   val tp = subst.subst(
                     b.getType(TypingContext.empty).getOrElse(return true))
-                  if (funType == null || !tp.conforms(funType)) return true
+                  if (funType == null || !tp.conforms(funType))
+                    return true
                   addResult(new ScalaResolveResult(b, subst, getImports(state)))
                 case _ => return true
               }
             case param: ScParameter if param.isImplicitParameter =>
               param match {
                 case c: ScClassParameter =>
-                  if (!ResolveUtils.isAccessible(c, getPlace)) return true
+                  if (!ResolveUtils.isAccessible(c, getPlace))
+                    return true
                 case _ =>
               }
               val tp = subst.subst(
                 param.getType(TypingContext.empty).getOrElse(return true))
-              if (funType == null || !tp.conforms(funType)) return true
+              if (funType == null || !tp.conforms(funType))
+                return true
               addResult(new ScalaResolveResult(param, subst, getImports(state)))
             case obj: ScObject if obj.hasModifierProperty("implicit") =>
-              if (!ResolveUtils.isAccessible(obj, getPlace)) return true
+              if (!ResolveUtils.isAccessible(obj, getPlace))
+                return true
               val tp = subst.subst(
                 obj.getType(TypingContext.empty).getOrElse(return true))
-              if (funType == null || !tp.conforms(funType)) return true
+              if (funType == null || !tp.conforms(funType))
+                return true
               addResult(new ScalaResolveResult(obj, subst, getImports(state)))
             case _ =>
           }
@@ -730,7 +749,8 @@ object ScImplicitlyConvertible {
         val commonContext = PsiTreeUtil.findCommonContext(function, place)
         if (place == commonContext)
           return true //weird case, it covers situation, when function comes from object, not treeWalkUp
-        if (function == commonContext) return false
+        if (function == commonContext)
+          return false
         else {
           var functionContext: PsiElement = function
           while (functionContext.getContext != commonContext)
@@ -740,8 +760,8 @@ object ScImplicitlyConvertible {
             placeContext = placeContext.getContext
           (functionContext, placeContext) match {
             case (
-                functionContext: ScalaPsiElement,
-                placeContext: ScalaPsiElement) =>
+                  functionContext: ScalaPsiElement,
+                  placeContext: ScalaPsiElement) =>
               val funElem = functionContext.getDeepSameElementInContext
               val conElem = placeContext.getDeepSameElementInContext
               val children = commonContext match {
@@ -750,7 +770,8 @@ object ScImplicitlyConvertible {
                   import scala.collection.JavaConverters._
                   if (stub != null)
                     stub.getChildrenStubs.asScala.map(_.getPsi).toArray
-                  else stubPsi.getChildren
+                  else
+                    stubPsi.getChildren
                 case _ => commonContext.getChildren
               }
               children.find(elem => elem == funElem || elem == conElem) match {

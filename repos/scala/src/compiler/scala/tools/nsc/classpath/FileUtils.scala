@@ -30,7 +30,10 @@ object FileUtils {
       * and returning given default value in other case
       */
     def toURLs(default: => Seq[URL] = Seq.empty): Seq[URL] =
-      if (file.file == null) default else Seq(file.toURL)
+      if (file.file == null)
+        default
+      else
+        Seq(file.toURL)
   }
 
   implicit class FileOps(val file: JFile) extends AnyVal {
@@ -40,9 +43,12 @@ object FileUtils {
   }
 
   def stripSourceExtension(fileName: String): String = {
-    if (endsScala(fileName)) stripClassExtension(fileName)
-    else if (endsJava(fileName)) stripJavaExtension(fileName)
-    else throw new FatalError("Unexpected source file ending: " + fileName)
+    if (endsScala(fileName))
+      stripClassExtension(fileName)
+    else if (endsJava(fileName))
+      stripJavaExtension(fileName)
+    else
+      throw new FatalError("Unexpected source file ending: " + fileName)
   }
 
   def dirPath(forPackage: String) = forPackage.replace('.', '/')

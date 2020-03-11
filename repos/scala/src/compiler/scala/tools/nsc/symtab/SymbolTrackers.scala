@@ -48,7 +48,8 @@ trait SymbolTrackers {
       sym.ownerChain exists (_ hasFlag Flags.SPECIALIZED)
 
     def symbolSnapshot(unit: CompilationUnit): Map[Symbol, Set[Tree]] = {
-      if (unit.body == null) Map()
+      if (unit.body == null)
+        Map()
       else
         unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
     }
@@ -101,11 +102,18 @@ trait SymbolTrackers {
         extends Hierarchy {
       def masked = root.flags & flagsMask
       def indicatorString =
-        if (isAdded(root)) "* "
+        if (isAdded(root))
+          "* "
         else
           List(
-            if (isFlagsChange(root)) "F" else "",
-            if (isOwnerChange(root)) "O" else "",
+            if (isFlagsChange(root))
+              "F"
+            else
+              "",
+            if (isOwnerChange(root))
+              "O"
+            else
+              "",
             "  "
           ).mkString take 2
 
@@ -122,24 +130,35 @@ trait SymbolTrackers {
             val flag = 1L << bit
             val prefix =
               (
-                if ((added & flag) != 0L) "+"
-                else if ((removed & flag) != 0L) "-"
-                else ""
+                if ((added & flag) != 0L)
+                  "+"
+                else if ((removed & flag) != 0L)
+                  "-"
+                else
+                  ""
               )
-            if ((all & flag) == 0L) ""
-            else prefix + Flags.flagToString(flag)
+            if ((all & flag) == 0L)
+              ""
+            else
+              prefix + Flags.flagToString(flag)
           }
 
           " " + strs.filterNot(_ == "").mkString("[", " ", "]")
         case _ =>
-          if (masked == 0L) ""
-          else " (" + Flags.flagsToString(masked) + ")"
+          if (masked == 0L)
+            ""
+          else
+            " (" + Flags.flagsToString(masked) + ")"
       }
       def symString(sym: Symbol) = (
         if (settings.debug && sym.hasCompleteInfo) {
           val s = sym.defString take 240
-          if (s.length == 240) s + "..." else s
-        } else sym + changedOwnerString + flagSummaryString
+          if (s.length == 240)
+            s + "..."
+          else
+            s
+        } else
+          sym + changedOwnerString + flagSummaryString
       )
 
       def flatten = children.foldLeft(Set(root))(_ ++ _.flatten)
@@ -148,7 +167,8 @@ trait SymbolTrackers {
           children map (c => c.indentString(indent)) mkString "\n"
         else {
           indicatorString + indent + symString(root) + (
-            if (children.isEmpty) ""
+            if (children.isEmpty)
+              ""
             else
               children map (c =>
                 c.indentString(indent + "    ")) mkString ("\n", "\n", "")
@@ -170,11 +190,13 @@ trait SymbolTrackers {
 
       val owners = ({
         for (sym <- steady;
-             old <- changedOwner(sym)) yield (sym, old)
+             old <- changedOwner(sym))
+          yield (sym, old)
       }).toMap
       val flags = ({
         for (sym <- steady;
-             old <- changedFlags(sym)) yield (sym, old)
+             old <- changedFlags(sym))
+          yield (sym, old)
       }).toMap
 
       val change = Change(added, removed, prevMap, owners, flags)
@@ -190,7 +212,11 @@ trait SymbolTrackers {
       def detailString(sym: Symbol) = {
         val ownerString = sym.ownerChain splitAt 3 match {
           case (front, back) =>
-            val xs = if (back.isEmpty) front else front :+ "..."
+            val xs =
+              if (back.isEmpty)
+                front
+              else
+                front :+ "..."
             xs mkString " -> "
         }
         val treeStrings = symMap(sym) map { t =>
@@ -205,7 +231,8 @@ trait SymbolTrackers {
         } mkString "\n"
 
       "" + hierarchy + (
-        if (removed.isEmpty) ""
+        if (removed.isEmpty)
+          ""
         else
           "\n\n!!! " + label + ", " + removed.size + " symbols vanished:\n" + removedString
       )

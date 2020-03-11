@@ -747,8 +747,10 @@ class BlockManagerSuite
       getAsBytes: Boolean): Unit = {
     store = makeBlockManager(12000)
     val accessMethod =
-      if (getAsBytes) store.getLocalBytesAndReleaseLock
-      else store.getSingleAndReleaseLock
+      if (getAsBytes)
+        store.getLocalBytesAndReleaseLock
+      else
+        store.getSingleAndReleaseLock
     val a1 = new Array[Byte](4000)
     val a2 = new Array[Byte](4000)
     val a3 = new Array[Byte](4000)

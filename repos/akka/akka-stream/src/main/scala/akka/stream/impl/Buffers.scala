@@ -39,8 +39,10 @@ private[akka] object Buffer {
     }
 
   def apply[T](size: Int, max: Int): Buffer[T] =
-    if (size < FixedQueueSize || size < max) FixedSizeBuffer(size)
-    else new BoundedBuffer(size)
+    if (size < FixedQueueSize || size < max)
+      FixedSizeBuffer(size)
+    else
+      new BoundedBuffer(size)
 }
 
 /**
@@ -58,9 +60,12 @@ private[akka] object FixedSizeBuffer {
     * Returns a specialized instance for power-of-two sized buffers.
     */
   def apply[T](size: Int): FixedSizeBuffer[T] =
-    if (size < 1) throw new IllegalArgumentException("size must be positive")
-    else if (((size - 1) & size) == 0) new PowerOfTwoFixedSizeBuffer(size)
-    else new ModuloFixedSizeBuffer(size)
+    if (size < 1)
+      throw new IllegalArgumentException("size must be positive")
+    else if (((size - 1) & size) == 0)
+      new PowerOfTwoFixedSizeBuffer(size)
+    else
+      new ModuloFixedSizeBuffer(size)
 
   sealed abstract class FixedSizeBuffer[T](val capacity: Int)
       extends Buffer[T] {
@@ -196,8 +201,10 @@ private[akka] final class BoundedBuffer[T](val capacity: Int)
     }
 
     override def peek(): T =
-      if (tail == head) null.asInstanceOf[T]
-      else queue(head & FixedQueueMask).asInstanceOf[T]
+      if (tail == head)
+        null.asInstanceOf[T]
+      else
+        queue(head & FixedQueueMask).asInstanceOf[T]
     override def clear(): Unit =
       while (nonEmpty) {
         dequeue()

@@ -73,8 +73,10 @@ private[akka] object FanIn {
       (states(index) & flag) != 0
     private[this] final def setState(index: Int, flag: Int, on: Boolean): Unit =
       states(index) =
-        if (on) (states(index) | flag).toByte
-        else (states(index) & ~flag).toByte
+        if (on)
+          (states(index) | flag).toByte
+        else
+          (states(index) & ~flag).toByte
 
     private[this] final def cancelled(index: Int): Boolean =
       hasState(index, Cancelled)
@@ -142,8 +144,10 @@ private[akka] object FanIn {
 
     def markInput(input: Int): Unit = {
       if (!marked(input)) {
-        if (depleted(input)) markedDepleted += 1
-        if (pending(input)) markedPending += 1
+        if (depleted(input))
+          markedDepleted += 1
+        if (pending(input))
+          markedPending += 1
         marked(input, on = true)
         markCount += 1
       }
@@ -151,8 +155,10 @@ private[akka] object FanIn {
 
     def unmarkInput(input: Int): Unit = {
       if (marked(input)) {
-        if (depleted(input)) markedDepleted -= 1
-        if (pending(input)) markedPending -= 1
+        if (depleted(input))
+          markedDepleted -= 1
+        if (pending(input))
+          markedPending -= 1
         marked(input, on = false)
         markCount -= 1
       }
@@ -186,7 +192,8 @@ private[akka] object FanIn {
       var id = preferredId
       while (!(marked(id) && pending(id))) {
         id += 1
-        if (id == inputCount) id = 0
+        if (id == inputCount)
+          id = 0
         require(
           id != preferredId,
           "Tried to dequeue without waiting for any input")
@@ -201,11 +208,13 @@ private[akka] object FanIn {
       val input = inputs(id)
       val elem = input.dequeueInputElement()
       if (!input.inputsAvailable) {
-        if (marked(id)) markedPending -= 1
+        if (marked(id))
+          markedPending -= 1
         pending(id, on = false)
       }
       if (input.inputsDepleted) {
-        if (marked(id)) markedDepleted += 1
+        if (marked(id))
+          markedDepleted += 1
         depleted(id, on = true)
         onDepleted(id)
       }
@@ -217,7 +226,8 @@ private[akka] object FanIn {
 
     def dequeueAndYield(id: Int): Any = {
       preferredId = id + 1
-      if (preferredId == inputCount) preferredId = 0
+      if (preferredId == inputCount)
+        preferredId = 0
       dequeue(id)
     }
 
@@ -255,19 +265,22 @@ private[akka] object FanIn {
         case OnSubscribe(id, subscription) ⇒
           inputs(id).subreceive(ActorSubscriber.OnSubscribe(subscription))
         case OnNext(id, elem) ⇒
-          if (marked(id) && !pending(id)) markedPending += 1
+          if (marked(id) && !pending(id))
+            markedPending += 1
           pending(id, on = true)
           receivedInput = true
           inputs(id).subreceive(ActorSubscriberMessage.OnNext(elem))
         case OnComplete(id) ⇒
           if (!pending(id)) {
-            if (marked(id) && !depleted(id)) markedDepleted += 1
+            if (marked(id) && !depleted(id))
+              markedDepleted += 1
             depleted(id, on = true)
             onDepleted(id)
           }
           registerCompleted(id)
           inputs(id).subreceive(ActorSubscriberMessage.OnComplete)
-          if (!receivedInput && isAllCompleted) onCompleteWhenNoInput()
+          if (!receivedInput && isAllCompleted)
+            onCompleteWhenNoInput()
         case OnError(id, e) ⇒
           onError(id, e)
       })

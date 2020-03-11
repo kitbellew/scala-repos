@@ -44,7 +44,10 @@ object PrettyDuration {
             Locale.ROOT,
             value,
             abbreviate(unit),
-            if (includeNanos) s" ($nanos ns)" else "")
+            if (includeNanos)
+              s" ($nanos ns)"
+            else
+              "")
 
         case Duration.MinusInf ⇒ s"-∞ (minus infinity)"
         case Duration.Inf ⇒ s"∞ (infinity)"
@@ -55,13 +58,20 @@ object PrettyDuration {
     def chooseUnit(nanos: Long): TimeUnit = {
       val d = nanos.nanos
 
-      if (d.toDays > 0) DAYS
-      else if (d.toHours > 0) HOURS
-      else if (d.toMinutes > 0) MINUTES
-      else if (d.toSeconds > 0) SECONDS
-      else if (d.toMillis > 0) MILLISECONDS
-      else if (d.toMicros > 0) MICROSECONDS
-      else NANOSECONDS
+      if (d.toDays > 0)
+        DAYS
+      else if (d.toHours > 0)
+        HOURS
+      else if (d.toMinutes > 0)
+        MINUTES
+      else if (d.toSeconds > 0)
+        SECONDS
+      else if (d.toMillis > 0)
+        MILLISECONDS
+      else if (d.toMicros > 0)
+        MICROSECONDS
+      else
+        NANOSECONDS
     }
 
     def abbreviate(unit: TimeUnit): String = unit match {

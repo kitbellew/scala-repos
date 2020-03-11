@@ -30,7 +30,8 @@ private[akka] abstract class SourceModule[+Out, +Mat](
     if (s != shape)
       throw new UnsupportedOperationException(
         "cannot replace the shape of a Source, you need to wrap it in a Graph for that")
-    else this
+    else
+      this
 
   // This is okay since the only caller of this method is right below.
   protected def newInstance(
@@ -43,8 +44,10 @@ private[akka] abstract class SourceModule[+Out, +Mat](
     val thisN = attributes.nameOrDefault(null)
     val thatN = attr.nameOrDefault(null)
 
-    if ((thatN eq null) || thisN == thatN) shape
-    else shape.copy(out = Outlet(thatN + ".out"))
+    if ((thatN eq null) || thisN == thatN)
+      shape
+    else
+      shape.copy(out = Outlet(thatN + ".out"))
   }
 }
 

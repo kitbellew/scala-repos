@@ -41,7 +41,10 @@ class SVDPlusPlusSuite extends SparkFunSuite with LocalSparkContext {
       val err = graph.vertices
         .map {
           case (vid, vd) =>
-            if (vid % 2 == 1) vd._4 else 0.0
+            if (vid % 2 == 1)
+              vd._4
+            else
+              0.0
         }
         .reduce(_ + _) / graph.numEdges
       assert(err <= svdppErr)

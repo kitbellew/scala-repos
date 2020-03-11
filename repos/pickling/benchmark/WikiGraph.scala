@@ -99,24 +99,28 @@ object GraphReader extends RegexParsers {
       val firstVertex =
         if (firstVertexOpt.isEmpty)
           graph.addVertex(new Vertex(names(firstLabel), List()))
-        else firstVertexOpt.get
+        else
+          firstVertexOpt.get
       vertices.put(firstLabel, firstVertex)
 
-      val targetVertices = for (targetLabel <- labels.tail) yield {
-        val vertexOpt = vertices.get(targetLabel)
+      val targetVertices =
+        for (targetLabel <- labels.tail)
+          yield {
+            val vertexOpt = vertices.get(targetLabel)
 
-        if (vertexOpt.isEmpty) {
-          val newVertex =
-            graph.addVertex(new Vertex(names(targetLabel), List()))
-          vertices.put(targetLabel, newVertex)
-          newVertex
-        } else {
-          vertexOpt.get
-        }
-      }
+            if (vertexOpt.isEmpty) {
+              val newVertex =
+                graph.addVertex(new Vertex(names(targetLabel), List()))
+              vertices.put(targetLabel, newVertex)
+              newVertex
+            } else {
+              vertexOpt.get
+            }
+          }
 
       firstVertex.neighbors = targetVertices
-      if (graph.vertices.length > size) return graph
+      if (graph.vertices.length > size)
+        return graph
     }
 
     graph

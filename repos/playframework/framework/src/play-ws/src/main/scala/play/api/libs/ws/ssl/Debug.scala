@@ -36,7 +36,8 @@ class JavaSecurityDebugBuilder(c: SSLDebugConfig) {
 class JavaxNetDebugBuilder(c: SSLDebugConfig) {
 
   def build(): String = {
-    if (c.all) return "all"
+    if (c.all)
+      return "all"
     buildSSL(c)
   }
 

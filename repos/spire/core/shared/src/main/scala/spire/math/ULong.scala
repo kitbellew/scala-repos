@@ -12,8 +12,10 @@ object ULong extends ULongInstances {
   final def fromLong(n: Long): ULong = new ULong(n)
 
   final def fromBigInt(n: BigInt): ULong =
-    if (n < 0) throw new IllegalArgumentException(s"$n < 0")
-    else new ULong(n.toLong)
+    if (n < 0)
+      throw new IllegalArgumentException(s"$n < 0")
+    else
+      new ULong(n.toLong)
 
   implicit def ulongToBigInt(n: ULong): BigInt = n.toBigInt
 
@@ -21,13 +23,19 @@ object ULong extends ULongInstances {
   @inline final val MaxValue = ULong(-1L)
 
   @tailrec final private[math] def pow(t: Long, b: Long, e: Long): ULong = {
-    if (e == 0L) new ULong(t)
-    else if ((e & 1L) == 1L) pow(t * b, b * b, e >>> 1L)
-    else pow(t, b * b, e >>> 1L)
+    if (e == 0L)
+      new ULong(t)
+    else if ((e & 1L) == 1L)
+      pow(t * b, b * b, e >>> 1L)
+    else
+      pow(t, b * b, e >>> 1L)
   }
 
   @tailrec final private[math] def gcd(a: ULong, b: ULong): ULong = {
-    if (b == new ULong(0L)) a else gcd(b, a % b)
+    if (b == new ULong(0L))
+      a
+    else
+      gcd(b, a % b)
   }
 
   private[spire] final val LimitAsDouble: Double =
@@ -45,8 +53,10 @@ class ULong(val signed: Long) extends AnyVal {
   final def toLong: Long = signed
 
   final def toFloat: Float = {
-    if (signed < 0) (ULong.LimitAsDouble + signed.toDouble).toFloat
-    else signed.toFloat
+    if (signed < 0)
+      (ULong.LimitAsDouble + signed.toDouble).toFloat
+    else
+      signed.toFloat
   }
 
   // FIXME: it would be nice to write some "real" floating-point code
@@ -55,13 +65,17 @@ class ULong(val signed: Long) extends AnyVal {
     toBigInt.toDouble
 
   final def toBigInt: BigInt =
-    if (signed < 0) ULong.LimitAsBigInt + signed
-    else BigInt(signed)
+    if (signed < 0)
+      ULong.LimitAsBigInt + signed
+    else
+      BigInt(signed)
 
   // FIXME: it would be nice to avoid converting to BigInt here
   override final def toString: String =
-    if (signed >= 0L) signed.toString
-    else (ULong.LimitAsBigInt + signed).toString
+    if (signed >= 0L)
+      signed.toString
+    else
+      (ULong.LimitAsBigInt + signed).toString
 
   // TODO: replace these with `===` and `=!=`? Don't we get `==` and `!=` for free with value classes?
   final def ==(that: ULong): Boolean = this.signed == that.signed
@@ -98,7 +112,11 @@ class ULong(val signed: Long) extends AnyVal {
     if (d == 0) {
       throw new java.lang.ArithmeticException("/ by zero")
     } else if (d < 0) {
-      ULong(if (n >= 0 || n < d) 0 else 1)
+      ULong(
+        if (n >= 0 || n < d)
+          0
+        else
+          1)
     } else if (n >= 0) {
       ULong(n / d)
     } else {
@@ -159,7 +177,13 @@ private[math] trait ULongOrder extends Order[ULong] {
   override def gteqv(x: ULong, y: ULong): Boolean = x >= y
   override def lt(x: ULong, y: ULong): Boolean = x < y
   override def lteqv(x: ULong, y: ULong): Boolean = x <= y
-  def compare(x: ULong, y: ULong): Int = if (x < y) -1 else if (x > y) 1 else 0
+  def compare(x: ULong, y: ULong): Int =
+    if (x < y)
+      -1
+    else if (x > y)
+      1
+    else
+      0
 }
 
 @SerialVersionUID(0L)

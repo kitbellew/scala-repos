@@ -37,7 +37,8 @@ object MultilineStringUtil {
   }
 
   def inMultilineString(element: PsiElement): Boolean = {
-    if (element == null) return false
+    if (element == null)
+      return false
     element.getNode.getElementType match {
       case ScalaTokenTypes.tMULTILINE_STRING |
           ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
@@ -61,15 +62,19 @@ object MultilineStringUtil {
     do {
       parent match {
         case ref: ScReferenceElement => //if (ref.nameId.getText == methodName) return false
-        case l: ScLiteral            => if (!l.isMultiLineString) return false
+        case l: ScLiteral =>
+          if (!l.isMultiLineString)
+            return false
         case i: ScInfixExpr =>
-          if (i.operation.getText == methodName) return false
+          if (i.operation.getText == methodName)
+            return false
         case call: ScMethodCall =>
           if (Option(call.getEffectiveInvokedExpr).forall {
                 case expr: ScExpression =>
                   expr.getText endsWith "." + methodName
                 case _ => false
-              }) return false
+              })
+            return false
         case _: ScParenthesisedExpr =>
         case _                      => return true
       }
@@ -118,8 +123,10 @@ object MultilineStringUtil {
     if (needAddStripMargin(literal, "" + marginChar)) {
       document.insertString(
         literal.getTextRange.getEndOffset,
-        if (marginChar == '|') ".stripMargin"
-        else ".stripMargin(\'" + marginChar + "\')")
+        if (marginChar == '|')
+          ".stripMargin"
+        else
+          ".stripMargin(\'" + marginChar + "\')")
     }
   }
 
@@ -131,7 +138,8 @@ object MultilineStringUtil {
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
       .MARGIN_CHAR
 
-    if (calls.isEmpty) return defaultMargin
+    if (calls.isEmpty)
+      return defaultMargin
 
     calls.apply(0).headOption match {
       case Some(ScLiteral(c: Character)) => c
@@ -151,10 +159,13 @@ object MultilineStringUtil {
 
     do {
       parent match {
-        case lit: ScLiteral => if (!lit.isMultiLineString) return Array.empty
+        case lit: ScLiteral =>
+          if (!lit.isMultiLineString)
+            return Array.empty
         case inf: ScInfixExpr =>
           if (inf.operation.getText == methodName) {
-            if (prevParent != parent.getFirstChild) return callsArray
+            if (prevParent != parent.getFirstChild)
+              return callsArray
             calls += Array(inf.rOp)
           }
         case call: ScMethodCall =>
@@ -210,7 +221,8 @@ object MultilineStringUtil {
       val argsString = arg.map(_.getText).sorted
 
       if (myArgs.sameElements(argsString) || myArgs.reverse.sameElements(
-            argsString)) return true
+            argsString))
+        return true
     }
 
     false
@@ -255,7 +267,8 @@ object MultilineStringUtil {
         val marginChar = getMarginChar(literal)
 
         extensions.inWriteAction {
-          if (multipleLines) insertStripMargin(document, literal, marginChar)
+          if (multipleLines)
+            insertStripMargin(document, literal, marginChar)
           if (!needNewLineBefore) {
             val quotesIndent = settings.getSmartLength(
               document.getText.substring(startLineOffset, literalStart))
@@ -316,8 +329,10 @@ class MultilineStringSettings(project: Project) {
     }
 
   def getSmartLength(line: String) =
-    if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
-    else line.length
+    if (useTabs)
+      line.length + line.count(_ == '\t') * (tabSize - 1)
+    else
+      line.length
 
   def prefixLength(line: String) =
     if (useTabs) {

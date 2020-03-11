@@ -23,7 +23,8 @@ trait JacksonJsonSupport
       stream: InputStream,
       charset: String): JValue = {
     val rdr = new InputStreamReader(stream, charset)
-    if (rdr.ready()) mapper.readValue(rdr, classOf[JValue])
+    if (rdr.ready())
+      mapper.readValue(rdr, classOf[JValue])
     else {
       rdr.close()
       JNothing
@@ -31,8 +32,10 @@ trait JacksonJsonSupport
   }
 
   protected def readJsonFromBody(bd: String): JValue = {
-    if (bd.nonBlank) mapper.readValue(bd, classOf[JValue])
-    else JNothing
+    if (bd.nonBlank)
+      mapper.readValue(bd, classOf[JValue])
+    else
+      JNothing
   }
 }
 
@@ -42,6 +45,7 @@ trait JacksonJsonValueReaderProperty extends JsonValueReaderProperty[JValue] {
 
 trait JacksonJsonOutput extends JsonOutput[JValue] with jackson.JsonMethods {
   protected def writeJson(json: JValue, writer: Writer) {
-    if (json != JNothing) mapper.writeValue(writer, json)
+    if (json != JNothing)
+      mapper.writeValue(writer, json)
   }
 }

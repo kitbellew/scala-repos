@@ -23,17 +23,24 @@ class BoundedStack[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * Gets the element from the specified index in constant time.
     */
   def apply(i: Int): A = {
-    if (i >= count_) throw new IndexOutOfBoundsException(i.toString)
-    else array((top + i) % maxSize)
+    if (i >= count_)
+      throw new IndexOutOfBoundsException(i.toString)
+    else
+      array((top + i) % maxSize)
   }
 
   /**
     * Pushes an element, possibly forcing out the oldest element in the stack.
     */
   def +=(elem: A) {
-    top = if (top == 0) maxSize - 1 else top - 1
+    top =
+      if (top == 0)
+        maxSize - 1
+      else
+        top - 1
     array(top) = elem
-    if (count_ < maxSize) count_ += 1
+    if (count_ < maxSize)
+      count_ += 1
   }
 
   /**
@@ -42,8 +49,10 @@ class BoundedStack[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * as elements need to be shifted around.
     */
   def insert(i: Int, elem: A) {
-    if (i == 0) this += elem
-    else if (i > count_) throw new IndexOutOfBoundsException(i.toString)
+    if (i == 0)
+      this += elem
+    else if (i > count_)
+      throw new IndexOutOfBoundsException(i.toString)
     else if (i == count_) {
       array((top + i) % maxSize) = elem
       count_ += 1
@@ -68,14 +77,16 @@ class BoundedStack[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * the stack.
     */
   def ++=(iter: Iterable[A]) {
-    for (elem <- iter) this += elem
+    for (elem <- iter)
+      this += elem
   }
 
   /**
     * Removes the top element in the stack.
     */
   def pop: A = {
-    if (count_ == 0) throw new NoSuchElementException
+    if (count_ == 0)
+      throw new NoSuchElementException
     else {
       val res = array(top)
       top = (top + 1) % maxSize

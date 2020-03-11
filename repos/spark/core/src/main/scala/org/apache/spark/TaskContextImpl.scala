@@ -74,7 +74,8 @@ private[spark] class TaskContextImpl(
   /** Marks the task as failed and triggers the failure listeners. */
   private[spark] def markTaskFailed(error: Throwable): Unit = {
     // failure callbacks should only be called once
-    if (failed) return
+    if (failed)
+      return
     failed = true
     val errorMsgs = new ArrayBuffer[String](2)
     // Process failure callbacks in the reverse order of registration

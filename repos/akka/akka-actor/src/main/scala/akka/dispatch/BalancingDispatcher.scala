@@ -98,7 +98,8 @@ class BalancingDispatcher(
       receiver: ActorCell,
       invocation: Envelope) = {
     messageQueue.enqueue(receiver.self, invocation)
-    if (!registerForExecution(receiver.mailbox, false, false)) teamWork()
+    if (!registerForExecution(receiver.mailbox, false, false))
+      teamWork()
   }
 
   protected def teamWork(): Unit =

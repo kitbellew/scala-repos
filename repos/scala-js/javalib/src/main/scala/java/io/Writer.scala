@@ -25,12 +25,20 @@ abstract class Writer private[this] (_lock: Option[Object])
     write(str.toCharArray, off, len)
 
   def append(csq: CharSequence): Writer = {
-    write(if (csq == null) "null" else csq.toString)
+    write(
+      if (csq == null)
+        "null"
+      else
+        csq.toString)
     this
   }
 
   def append(csq: CharSequence, start: Int, end: Int): Writer = {
-    val csq1 = if (csq == null) "null" else csq
+    val csq1 =
+      if (csq == null)
+        "null"
+      else
+        csq
     write(csq1.subSequence(start, end).toString)
     this
   }

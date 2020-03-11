@@ -104,7 +104,10 @@ object CharEncoding {
           Left(result)
         } else {
           val remaining =
-            if (result.isError) bytes.drop(byteBuffer.position) else empty
+            if (result.isError)
+              bytes.drop(byteBuffer.position)
+            else
+              empty
           Right((out.toString, remaining))
         }
       }
@@ -152,7 +155,10 @@ object CharEncoding {
           Left(result)
         } else {
           val remaining =
-            if (result.isError) chars.drop(charBuffer.position) else ""
+            if (result.isError)
+              chars.drop(charBuffer.position)
+            else
+              ""
           val bytes = out.toByteArray
           val bytesWithoutBom =
             if (charset.name.startsWith("UTF-") && bytes.length >= 2 && bytes(

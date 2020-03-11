@@ -423,8 +423,10 @@ class KafkaApis(
         val defaultExpireTimestamp = offsetRetention + currentTimestamp
         val partitionData = authorizedRequestInfo.mapValues { partitionData =>
           val metadata =
-            if (partitionData.metadata == null) OffsetMetadata.NoMetadata
-            else partitionData.metadata;
+            if (partitionData.metadata == null)
+              OffsetMetadata.NoMetadata
+            else
+              partitionData.metadata;
           new OffsetAndMetadata(
             offsetMetadata = OffsetMetadata(partitionData.offset, metadata),
             commitTimestamp = currentTimestamp,
@@ -634,11 +636,13 @@ class KafkaApis(
                     data.messages
                       .asInstanceOf[FileMessageSet]
                       .toMessageFormat(Message.MagicValue_V0))
-                } else data
+                } else
+                  data
 
               tp -> convertedData
           }
-        } else responsePartitionData
+        } else
+          responsePartitionData
 
       val mergedPartitionData =
         convertedPartitionData ++ unauthorizedPartitionData

@@ -46,7 +46,8 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
 
     @inline
     def add(clz: PsiClass): Unit = {
-      if (res == null) res = new ArrayBuffer[PsiClass]()
+      if (res == null)
+        res = new ArrayBuffer[PsiClass]()
       res += clz
       size += 1
       lastClass = clz
@@ -101,9 +102,12 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
       }
     }
 
-    if (size == 0) PsiClass.EMPTY_ARRAY
-    else if (size == 1) Array[PsiClass](lastClass)
-    else res.toArray
+    if (size == 0)
+      PsiClass.EMPTY_ARRAY
+    else if (size == 1)
+      Array[PsiClass](lastClass)
+    else
+      res.toArray
   }
 
   def processMethodsWithName(

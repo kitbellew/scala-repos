@@ -83,7 +83,10 @@ class StreamTest {
     var shouldThrow = true
 
     val wf = Stream.from(1).take(10).withFilter { n =>
-      if (shouldThrow && n == 5) throw new RuntimeException("n == 5") else n > 5
+      if (shouldThrow && n == 5)
+        throw new RuntimeException("n == 5")
+      else
+        n > 5
     }
 
     assertTrue(Try {

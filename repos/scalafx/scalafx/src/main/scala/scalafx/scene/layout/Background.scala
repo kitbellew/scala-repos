@@ -36,7 +36,10 @@ import scalafx.geometry.Insets
 
 object Background {
   implicit def sfxBackground2jfx(v: Background): jfxsl.Background =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** An empty Background, useful to use instead of null. */
   val Empty = jfxsl.Background.EMPTY

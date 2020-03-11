@@ -829,7 +829,8 @@ class RichPipe(val pipe: Pipe)
     Iterator
       .iterate(Seq(pipe))(pipes =>
         for (p <- pipes;
-             prev <- p.getPrevious) yield prev)
+             prev <- p.getPrevious)
+          yield prev)
       .takeWhile(_.length > 0)
       .flatten
       .toSet
@@ -842,13 +843,16 @@ class RichPipe(val pipe: Pipe)
   private[scalding] def applyFlowConfigProperties(flowDef: FlowDef): Pipe = {
     case class ToVisit[T](queue: Queue[T], inQueue: Set[T]) {
       def maybeAdd(t: T): ToVisit[T] =
-        if (inQueue(t)) this
+        if (inQueue(t))
+          this
         else {
           ToVisit(queue :+ t, inQueue + t)
         }
       def next: Option[(T, ToVisit[T])] =
-        if (inQueue.isEmpty) None
-        else Some((queue.head, ToVisit(queue.tail, inQueue - queue.head)))
+        if (inQueue.isEmpty)
+          None
+        else
+          Some((queue.head, ToVisit(queue.tail, inQueue - queue.head)))
     }
 
     @annotation.tailrec

@@ -243,8 +243,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       val env = env0.withParams(params)
 
       val withReturn =
-        if (isStat) body
-        else Return(body)
+        if (isStat)
+          body
+        else
+          Return(body)
 
       val translateRestParam = outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -254,11 +256,16 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       }
 
       val extractRestParam =
-        if (translateRestParam) makeExtractRestParam(params)
-        else js.Skip()
+        if (translateRestParam)
+          makeExtractRestParam(params)
+        else
+          js.Skip()
 
       val newParams =
-        (if (translateRestParam) params.init else params).map(transformParamDef)
+        (if (translateRestParam)
+           params.init
+         else
+           params).map(transformParamDef)
 
       val newBody = transformStat(withReturn)(env) match {
         case js.Block(stats :+ js.Return(js.Undefined())) => js.Block(stats)
@@ -597,7 +604,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     private object RecordVarRef {
       def unapply(tree: Tree): Option[VarRef] = {
-        if (!tree.tpe.isInstanceOf[RecordType]) None
+        if (!tree.tpe.isInstanceOf[RecordType])
+          None
         else {
           tree match {
             case tree: VarRef => Some(tree)
@@ -647,7 +655,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       */
     def unnest(args: List[Tree])(makeStat: (List[Tree], Env) => js.Tree)(
         implicit env: Env): js.Tree = {
-      if (args forall isExpression) makeStat(args, env)
+      if (args forall isExpression)
+        makeStat(args, env)
       else {
         val extractedStatements =
           new scala.collection.mutable.ListBuffer[js.Tree]
@@ -669,7 +678,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         def rec(arg: Tree)(implicit env: Env): Tree = {
           def noExtractYet = extractedStatements.isEmpty
 
-          if (if (noExtractYet) isExpression(arg) else isPureExpression(arg)) {
+          if (if (noExtractYet)
+                isExpression(arg)
+              else
+                isPureExpression(arg)) {
             arg
           } else {
             implicit val pos = arg.pos
@@ -878,8 +890,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           true
 
         // JavaScript expressions that can always have side-effects
@@ -1063,8 +1075,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case _ if isExpression(rhs) =>
             (lhs: @unchecked) match {
               case EmptyTree =>
-                if (isSideEffectFreeExpression(rhs)) js.Skip()
-                else transformExpr(rhs)
+                if (isSideEffectFreeExpression(rhs))
+                  js.Skip()
+                else
+                  transformExpr(rhs)
               case VarDef(name, tpe, mutable, _) =>
                 doVarDef(name, tpe, mutable, rhs)
               case Assign(lhs, _) =>
@@ -1151,11 +1165,15 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               val newBlock =
                 pushLhsInto(newLhs, block)
               val newHandler =
-                if (handler == EmptyTree) js.EmptyTree
-                else pushLhsInto(newLhs, handler)
+                if (handler == EmptyTree)
+                  js.EmptyTree
+                else
+                  pushLhsInto(newLhs, handler)
               val newFinalizer =
-                if (finalizer == EmptyTree) js.EmptyTree
-                else transformStat(finalizer)
+                if (finalizer == EmptyTree)
+                  js.EmptyTree
+                else
+                  transformStat(finalizer)
 
               if (newHandler != js.EmptyTree && newFinalizer != js.EmptyTree) {
                 /* The Google Closure Compiler wrongly eliminates finally blocks, if
@@ -1215,8 +1233,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   }
                 }
                 val newDefault =
-                  if (default == EmptyTree) js.EmptyTree
-                  else pushLhsInto(newLhs, default)
+                  if (default == EmptyTree)
+                    js.EmptyTree
+                  else
+                    pushLhsInto(newLhs, default)
                 js.Switch(transformExpr(newSelector), newCases, newDefault)
               }
             }
@@ -1809,8 +1829,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         case AsInstanceOf(expr, cls) =>
           val newExpr = transformExpr(expr)
-          if (semantics.asInstanceOfs == Unchecked) newExpr
-          else genAsInstanceOf(newExpr, cls)
+          if (semantics.asInstanceOfs == Unchecked)
+            newExpr
+          else
+            genAsInstanceOf(newExpr, cls)
 
         case Unbox(expr, charCode) =>
           val newExpr = transformExpr(expr)
@@ -1859,8 +1881,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         // JavaScript expressions
 
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           // Shortcut for this field which is heavily used
           envField("g")
 
@@ -2196,8 +2218,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     cls match {
       case ClassType(className0) =>
         val className =
-          if (className0 == BoxedLongClass) LongImpl.RuntimeLongClass
-          else className0
+          if (className0 == BoxedLongClass)
+            LongImpl.RuntimeLongClass
+          else
+            className0
 
         if (HijackedBoxedClasses.contains(className)) {
           if (test) {
@@ -2222,12 +2246,24 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
           }
         } else {
-          js.Apply(envField(if (test) "is" else "as", className), List(expr))
+          js.Apply(
+            envField(
+              if (test)
+                "is"
+              else
+                "as",
+              className),
+            List(expr))
         }
 
       case ArrayType(base, depth) =>
         js.Apply(
-          envField(if (test) "isArrayOf" else "asArrayOf", base),
+          envField(
+            if (test)
+              "isArrayOf"
+            else
+              "asArrayOf",
+            base),
           List(expr, js.IntLiteral(depth)))
     }
   }

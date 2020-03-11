@@ -34,7 +34,10 @@ import scalafx.scene.Node
 
 object ToggleButton {
   implicit def sfxToggleButton2jfx(v: ToggleButton): jfxsc.ToggleButton =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class ToggleButton(

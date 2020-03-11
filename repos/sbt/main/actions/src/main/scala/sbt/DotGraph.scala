@@ -26,9 +26,14 @@ object DotGraph {
       sourceRoots: Iterable[File]): Unit = {
     val packageOnly = (path: String) => {
       val last = path.lastIndexOf(File.separatorChar)
-      val packagePath = (if (last > 0) path.substring(0, last) else path).trim
-      if (packagePath.isEmpty) ""
-      else packagePath.replace(File.separatorChar, '.')
+      val packagePath = (if (last > 0)
+                           path.substring(0, last)
+                         else
+                           path).trim
+      if (packagePath.isEmpty)
+        ""
+      else
+        packagePath.replace(File.separatorChar, '.')
     }
     val toString = packageOnly compose fToString(sourceRoots)
     apply(relations, outputDirectory, toString, toString)

@@ -46,8 +46,10 @@ object CascadingTokenUpdater {
 
   // Given the map of already assigned tokens, what is the next available one
   private def firstAvailableToken(m: Map[Int, String]): Int =
-    if (m.isEmpty) lowestAllowed
-    else scala.math.max(m.keys.max + 1, lowestAllowed)
+    if (m.isEmpty)
+      lowestAllowed
+    else
+      scala.math.max(m.keys.max + 1, lowestAllowed)
 
   // Given the first free token spot
   // assign each of the class names given to al the subsequent

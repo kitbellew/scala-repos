@@ -261,7 +261,10 @@ final class GBTClassificationModel private[ml] (
     val treePredictions =
       _trees.map(_.rootNode.predictImpl(features).prediction)
     val prediction = blas.ddot(numTrees, treePredictions, 1, _treeWeights, 1)
-    if (prediction > 0.0) 1.0 else 0.0
+    if (prediction > 0.0)
+      1.0
+    else
+      0.0
   }
 
   @Since("1.4.0")
@@ -299,7 +302,11 @@ private[ml] object GBTClassificationModel {
       // parent for each tree is null since there is no good way to set this.
       DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
     }
-    val uid = if (parent != null) parent.uid else Identifiable.randomUID("gbtc")
+    val uid =
+      if (parent != null)
+        parent.uid
+      else
+        Identifiable.randomUID("gbtc")
     new GBTClassificationModel(
       parent.uid,
       newTrees,

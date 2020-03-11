@@ -238,8 +238,10 @@ class ScalaInlineHandler extends InlineHandler {
           occurrenceHighlighters.foreach(_.dispose())
           occurrenceHighlighters = Seq.empty
           InlineHandler.Settings.CANNOT_INLINE_SETTINGS
-        } else settings
-      } else settings
+        } else
+          settings
+      } else
+        settings
     }
 
     def isSimpleTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean = {
@@ -314,8 +316,10 @@ class ScalaInlineHandler extends InlineHandler {
           "method")
       case funDef: ScFunctionDefinition
           if funDef.body.isDefined && funDef.parameters.isEmpty =>
-        if (funDef.isLocal) getSettings(funDef, "Method", "local method")
-        else getSettings(funDef, "Method", "method")
+        if (funDef.isLocal)
+          getSettings(funDef, "Method", "local method")
+        else
+          getSettings(funDef, "Method", "method")
       case typeAlias: ScTypeAliasDefinition
           if isParametrizedTypeAlias(typeAlias) || !isSimpleTypeAlias(
             typeAlias) =>

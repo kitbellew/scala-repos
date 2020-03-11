@@ -43,7 +43,8 @@ private[http] class FrameOutHandler(
           val closeFrame = FrameEvent.closeFrame(
             code.getOrElse(Protocol.CloseCodes.Regular),
             reason)
-          if (serverSide) ctx.pushAndFinish(closeFrame)
+          if (serverSide)
+            ctx.pushAndFinish(closeFrame)
           else {
             become(new WaitingForTransportClose)
             ctx.push(closeFrame)
@@ -93,7 +94,8 @@ private[http] class FrameOutHandler(
       }
 
     def sendOutLastFrame(ctx: Context[FrameStart]): SyncDirective =
-      if (serverSide) ctx.pushAndFinish(closeFrame)
+      if (serverSide)
+        ctx.pushAndFinish(closeFrame)
       else {
         become(new WaitingForTransportClose())
         ctx.push(closeFrame)
@@ -112,10 +114,13 @@ private[http] class FrameOutHandler(
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
         case Tick ⇒
-          if (timeout.isPast) ctx.finish()
-          else ctx.pull()
+          if (timeout.isPast)
+            ctx.finish()
+          else
+            ctx.pull()
         case PeerClosed(code, reason) ⇒
-          if (serverSide) ctx.finish()
+          if (serverSide)
+            ctx.finish()
           else {
             become(new WaitingForTransportClose())
             ctx.pull()
@@ -135,8 +140,10 @@ private[http] class FrameOutHandler(
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
         case Tick ⇒
-          if (timeout.isPast) ctx.finish()
-          else ctx.pull()
+          if (timeout.isPast)
+            ctx.finish()
+          else
+            ctx.pull()
         case _ ⇒ ctx.pull() // ignore
       }
 

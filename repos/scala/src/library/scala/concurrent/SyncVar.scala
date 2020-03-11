@@ -28,7 +28,8 @@ class SyncVar[A] {
     * @return value that is held in this container
     */
   def get: A = synchronized {
-    while (!isDefined) wait()
+    while (!isDefined)
+      wait()
     value
   }
 
@@ -36,14 +37,18 @@ class SyncVar[A] {
     * It never returns negative results.
     */
   private def waitMeasuringElapsed(timeout: Long): Long =
-    if (timeout <= 0) 0
+    if (timeout <= 0)
+      0
     else {
       val start = System.nanoTime()
       wait(timeout)
       val elapsed = System.nanoTime() - start
       // nanoTime should be monotonic, but it's not possible to rely on that.
       // See http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6458294.
-      if (elapsed < 0) 0 else TimeUnit.NANOSECONDS.toMillis(elapsed)
+      if (elapsed < 0)
+        0
+      else
+        TimeUnit.NANOSECONDS.toMillis(elapsed)
     }
 
   /** Wait at least `timeout` milliseconds (possibly more) for this `SyncVar`
@@ -62,7 +67,10 @@ class SyncVar[A] {
       val elapsed = waitMeasuringElapsed(rest)
       rest -= elapsed
     }
-    if (isDefined) Some(value) else None
+    if (isDefined)
+      Some(value)
+    else
+      None
   }
 
   /**
@@ -102,7 +110,8 @@ class SyncVar[A] {
   /** Place a value in the SyncVar. If the SyncVar already has a stored value,
     * wait until another thread takes it. */
   def put(x: A): Unit = synchronized {
-    while (isDefined) wait()
+    while (isDefined)
+      wait()
     setVal(x)
   }
 

@@ -39,7 +39,8 @@ private[streams] abstract class CheckingPublisher[T] extends Publisher[T] {
           handle :: oldSubscriptions
         if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions)) {
           handle.start()
-        } else addSubscription()
+        } else
+          addSubscription()
       }
     }
     addSubscription()
@@ -50,8 +51,10 @@ private[streams] abstract class CheckingPublisher[T] extends Publisher[T] {
     val oldSubscriptions = subscriptions.get
     val newSubscriptions =
       oldSubscriptions.filterNot(_.subscriber eq subscription.subscriber)
-    if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions)) ()
-    else removeSubscription(subscription)
+    if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions))
+      ()
+    else
+      removeSubscription(subscription)
   }
 
 }

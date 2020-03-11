@@ -181,8 +181,15 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
 
   private def getCmd(permissionType: PermissionType): Array[String] = {
     val principalCmd =
-      if (permissionType == Allow) "--allow-principal" else "--deny-principal"
-    val cmd = if (permissionType == Allow) AllowHostCommand else DenyHostCommand
+      if (permissionType == Allow)
+        "--allow-principal"
+      else
+        "--deny-principal"
+    val cmd =
+      if (permissionType == Allow)
+        AllowHostCommand
+      else
+        DenyHostCommand
 
     Users.foldLeft(cmd)((cmd, user) =>
       cmd ++ Array(principalCmd, user.toString))

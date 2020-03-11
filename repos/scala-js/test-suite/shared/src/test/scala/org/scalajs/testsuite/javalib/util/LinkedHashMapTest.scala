@@ -81,7 +81,11 @@ abstract class LinkedHashMapTest extends HashMapTest {
     def expectedValue(index: Int): String =
       s"elem ${expectedKey(index)}"
 
-    val expectedSize = if (withSizeLimit.isDefined) 33 else 66
+    val expectedSize =
+      if (withSizeLimit.isDefined)
+        33
+      else
+        66
 
     assertEquals(expectedSize, lhm.entrySet.size)
     for ((entry, index) <- lhm.entrySet.zipWithIndex) {
@@ -115,8 +119,10 @@ abstract class LinkedHashMapTest extends HashMapTest {
           List(99, 0, 100, 42, 52, 1, 98)
         keys.takeRight(withSizeLimit.getOrElse(keys.length))
       } else {
-        if (withSizeLimit.isDefined) (55 until 100) ++ List(0, 100, 42, 52, 1)
-        else 0 to 100
+        if (withSizeLimit.isDefined)
+          (55 until 100) ++ List(0, 100, 42, 52, 1)
+        else
+          0 to 100
       }
     }.toArray
 
@@ -158,21 +164,31 @@ abstract class LinkedHashMapTest extends HashMapTest {
       if (accessOrder) {
         // elements ordered by insertion order except for those accessed
         if (withSizeLimit.isEmpty) {
-          if (index < 5) index // no elements removed in this range
-          else if (index + 1 < 42) index + 1 // shifted by 1 removed element
-          else if (index + 2 < 52) index + 2 // shifted by 2 removed element
-          else if (index < 97) index + 3 // shifted by 3 removed element
+          if (index < 5)
+            index // no elements removed in this range
+          else if (index + 1 < 42)
+            index + 1 // shifted by 1 removed element
+          else if (index + 2 < 52)
+            index + 2 // shifted by 2 removed element
+          else if (index < 97)
+            index + 3 // shifted by 3 removed element
           // elements reordered by accesses
-          else if (index == 97) 42
-          else if (index == 98) 52
-          else 5
+          else if (index == 97)
+            42
+          else if (index == 98)
+            52
+          else
+            5
         } else {
           // note that 5 and 42 are not accessed because they where dropped
           // due to the size limit
-          if (index < 2) index + 50 // no elements removed in this range
-          else if (index < 49) index + 51 // shifted by 1 removed element
+          if (index < 2)
+            index + 50 // no elements removed in this range
+          else if (index < 49)
+            index + 51 // shifted by 1 removed element
           // element reordered by accesses
-          else 52
+          else
+            52
         }
       } else {
         // accesses shouldn't modify the order
@@ -217,8 +233,10 @@ class LinkedHashMapFactory(
     val withSizeLimit: Option[Int])
     extends HashMapFactory {
   def orderName: String =
-    if (accessOrder) "access-order"
-    else "insertion-order"
+    if (accessOrder)
+      "access-order"
+    else
+      "insertion-order"
 
   override def implementationName: String = {
     val sizeLimitSting = withSizeLimit.fold("")(", maxSize=" + _)

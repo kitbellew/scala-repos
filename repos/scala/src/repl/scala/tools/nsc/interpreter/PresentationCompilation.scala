@@ -23,7 +23,8 @@ trait PresentationCompilation {
     */
   private[scala] def presentationCompile(
       line: String): Either[IR.Result, PresentationCompileResult] = {
-    if (global == null) Left(IR.Error)
+    if (global == null)
+      Left(IR.Error)
     else {
       // special case for:
       //
@@ -33,7 +34,8 @@ trait PresentationCompilation {
       // and for multi-line input.
       val line1 = partialInput + (if (Completion.looksLikeInvocation(line)) {
                                     self.mostRecentVar + line
-                                  } else line)
+                                  } else
+                                    line)
       val compiler = newPresentationCompiler()
       val trees = compiler.newUnitParser(line1).parseStats()
       val importer = global.mkImporter(compiler)

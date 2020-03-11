@@ -49,7 +49,8 @@ object IntroduceImplicitParameterIntention {
         }
       }
       fun.accept(visitor)
-      if (clearMap) map.clear()
+      if (clearMap)
+        map.clear()
       map
     }
 
@@ -131,7 +132,8 @@ class IntroduceImplicitParameterIntention
       element: PsiElement): Boolean = {
     val expr: ScFunctionExpr =
       PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
-    if (expr == null) return false
+    if (expr == null)
+      return false
 
     val range: TextRange = expr.params.getTextRange
     val offset = editor.getCaretModel.getOffset
@@ -145,12 +147,14 @@ class IntroduceImplicitParameterIntention
     def showErrorHint(hint: String) {
       if (ApplicationManager.getApplication.isUnitTestMode)
         throw new RuntimeException(hint)
-      else HintManager.getInstance().showErrorHint(editor, hint)
+      else
+        HintManager.getInstance().showErrorHint(editor, hint)
     }
 
     val expr: ScFunctionExpr =
       PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
-    if (expr == null || !expr.isValid) return
+    if (expr == null || !expr.isValid)
+      return
 
     val startOffset = expr.getTextRange.getStartOffset
 

@@ -71,7 +71,10 @@ object CheckBoxTreeTableCell {
     */
   implicit def sfxCheckBoxTreeTableCell2jfx[S, T](
       cell: CheckBoxTreeTableCell[S, T]): jfxscc.CheckBoxTreeTableCell[S, T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   type JBoolean = java.lang.Boolean
   type JCallIntToBool = jfxu.Callback[Integer, jfxbv.ObservableValue[JBoolean]]

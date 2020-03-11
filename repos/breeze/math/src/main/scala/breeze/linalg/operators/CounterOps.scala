@@ -311,7 +311,8 @@ trait CounterOps {
           var max = 0.0
           activeValuesIterator foreach (v => {
             val nn = norm(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {

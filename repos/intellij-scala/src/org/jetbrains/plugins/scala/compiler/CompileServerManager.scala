@@ -43,7 +43,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
   def disposeComponent() {}
 
   def projectOpened() {
-    if (ApplicationManager.getApplication.isUnitTestMode) return
+    if (ApplicationManager.getApplication.isUnitTestMode)
+      return
 
     project.scalaEvents.addScalaProjectListener(ScalaListener)
     configureWidget()
@@ -52,7 +53,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
   }
 
   def projectClosed() {
-    if (ApplicationManager.getApplication.isUnitTestMode) return
+    if (ApplicationManager.getApplication.isUnitTestMode)
+      return
 
     project.scalaEvents.removeScalaProjectListener(ScalaListener)
     configureWidget()
@@ -62,7 +64,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
   def getComponentName = getClass.getSimpleName
 
   def configureWidget() {
-    if (ApplicationManager.getApplication.isUnitTestMode) return
+    if (ApplicationManager.getApplication.isUnitTestMode)
+      return
 
     (applicable, installed) match {
       case (true, true) => // do nothing
@@ -109,7 +112,11 @@ class CompileServerManager(project: Project) extends ProjectComponent {
     def dispose() {}
 
     object Presentation extends StatusBarWidget.IconPresentation {
-      def getIcon = if (running) IconRunning else IconStopped
+      def getIcon =
+        if (running)
+          IconRunning
+        else
+          IconStopped
 
       def getClickConsumer = ClickConsumer
 
@@ -135,7 +142,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
     val actions =
       if (addActions.nonEmpty)
         (baseActions :+ Separator.getInstance()) ++ addActions
-      else baseActions
+      else
+        baseActions
 
     val group = new DefaultActionGroup(actions: _*)
 
@@ -202,7 +210,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
     def actionPerformed(e: ActionEvent) {
       val nowRunning = running
 
-      if (installed || nowRunning) updateWidget()
+      if (installed || nowRunning)
+        updateWidget()
 
       wasRunning -> nowRunning match {
         case (Some(false), true) =>

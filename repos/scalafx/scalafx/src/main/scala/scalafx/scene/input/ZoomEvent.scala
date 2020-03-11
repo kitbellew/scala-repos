@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object ZoomEvent {
   implicit def sfxZoomEvent2jfx(ze: ZoomEvent): jfxsi.ZoomEvent =
-    if (ze != null) ze.delegate else null
+    if (ze != null)
+      ze.delegate
+    else
+      null
 
   /**
     * Common supertype for all Zoom event types.

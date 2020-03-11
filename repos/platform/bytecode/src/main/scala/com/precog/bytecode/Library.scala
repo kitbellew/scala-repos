@@ -70,7 +70,10 @@ trait FunctionLike {
   val rowLevel: Boolean
   val deprecation: Option[String] = None
   lazy val fqn =
-    if (namespace.isEmpty) name else namespace.mkString("", "::", "::") + name
+    if (namespace.isEmpty)
+      name
+    else
+      namespace.mkString("", "::", "::") + name
   override def toString = "[0x%06x]".format(opcode) + fqn
 }
 

@@ -21,8 +21,10 @@ abstract class ConnectHttp {
 
   final def effectiveConnectionContext(
       fallbackContext: ConnectionContext): ConnectionContext =
-    if (connectionContext.isPresent) connectionContext.get()
-    else fallbackContext
+    if (connectionContext.isPresent)
+      connectionContext.get()
+    else
+      fallbackContext
 
   override def toString =
     s"ConnectHttp($host,$port,$isHttps,$connectionContext)"
@@ -42,13 +44,19 @@ object ConnectHttp {
   }
 
   def toHost(host: String): ConnectHttp = {
-    if (isHttpOrHttps(host)) toHost(Uri.create(host))
-    else toHost(Uri.create(s"http://$host"))
+    if (isHttpOrHttps(host))
+      toHost(Uri.create(host))
+    else
+      toHost(Uri.create(s"http://$host"))
   }
 
   def toHost(host: String, port: Int): ConnectHttp = {
     require(port > 0, "port must be > 0")
-    val start = if (isHttpOrHttps(host)) host else s"http://$host"
+    val start =
+      if (isHttpOrHttps(host))
+        host
+      else
+        s"http://$host"
     toHost(Uri.create(start).port(port))
   }
 
@@ -75,7 +83,11 @@ object ConnectHttp {
   @throws(classOf[IllegalArgumentException])
   def toHostHttps(host: String, port: Int): ConnectWithHttps = {
     require(port > 0, "port must be > 0")
-    val start = if (isHttpOrHttps(host)) host else s"https://$host"
+    val start =
+      if (isHttpOrHttps(host))
+        host
+      else
+        s"https://$host"
     toHostHttps(Uri.create(s"$start").port(port))
   }
 
@@ -89,9 +101,12 @@ object ConnectHttp {
 
   private def effectivePort(scheme: String, port: Int): Int = {
     val s = scheme.toLowerCase(Locale.ROOT)
-    if (port > 0) port
-    else if (s == "https" || s == "wss") 443
-    else if (s == "http" || s == "ws") 80
+    if (port > 0)
+      port
+    else if (s == "https" || s == "wss")
+      443
+    else if (s == "http" || s == "ws")
+      80
     else
       throw new IllegalArgumentException(
         "Scheme is not http/https/ws/wss and no port given!")

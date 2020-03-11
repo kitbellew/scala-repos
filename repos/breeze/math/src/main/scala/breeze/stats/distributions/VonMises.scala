@@ -55,7 +55,10 @@ case class VonMises(mu: Double, k: Double)(implicit rand: RandBasis = Rand)
     accept = v < (c * (2.0 - c)) || v <= c * exp(1.0 - c)
     if accept
     choice <- rand.uniform
-    theta = if (choice > 0.5) mu + acos(w) else mu - acos(w)
+    theta = if (choice > 0.5)
+      mu + acos(w)
+    else
+      mu - acos(w)
   } yield theta
 
   def draw = {
@@ -106,18 +109,24 @@ object VonMises extends ExponentialFamily[VonMises, Double] {
     val muPart =
       signum(cosineSum) * signum(sineSum) * atan(abs(sineSum / cosineSum))
     val mu = (muPart + {
-      if (cosineSum < 0) Pi
-      else if (cosineSum > 0 && sineSum < 0) 2 * Pi
-      else 0.0
+      if (cosineSum < 0)
+        Pi
+      else if (cosineSum > 0 && sineSum < 0)
+        2 * Pi
+      else
+        0.0
     }) % (2 * Pi)
 
     val t = sqrt(pow(cosineSum / stats.n, 2) + pow(sineSum / stats.n, 2))
     val k = (1.28 - 0.53 * pow(t, 2)) * tan(Pi / 2 * t)
 
     val kx = {
-      if (t < 0.53) t * (2 + t * t * (1 + 5 * t * t / 6))
-      else if (t < 0.85) -0.4 + 1.39 * t + (0.43) / (1 - t)
-      else 1 / (t * (3 + t * (-4 + t)))
+      if (t < 0.53)
+        t * (2 + t * t * (1 + 5 * t * t / 6))
+      else if (t < 0.85)
+        -0.4 + 1.39 * t + (0.43) / (1 - t)
+      else
+        1 / (t * (3 + t * (-4 + t)))
     }
     val result = minimize(lensed, DenseVector(mu, kx))
     val res @ (a, b) = (result(0), result(1))

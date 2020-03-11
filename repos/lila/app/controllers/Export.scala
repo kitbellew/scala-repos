@@ -78,12 +78,17 @@ object Export extends LilaController {
 
   private def OnlyHumans(result: => Fu[Result])(
       implicit ctx: lila.api.Context) =
-    if (HTTPRequest isBot ctx.req) fuccess(NotFound)
-    else result
+    if (HTTPRequest isBot ctx.req)
+      fuccess(NotFound)
+    else
+      result
 
   private def OnlyHumansAndFacebook(result: => Fu[Result])(
       implicit ctx: lila.api.Context) =
-    if (HTTPRequest isFacebookBot ctx.req) result
-    else if (HTTPRequest isBot ctx.req) fuccess(NotFound)
-    else result
+    if (HTTPRequest isFacebookBot ctx.req)
+      result
+    else if (HTTPRequest isBot ctx.req)
+      fuccess(NotFound)
+    else
+      result
 }

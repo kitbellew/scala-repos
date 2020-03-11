@@ -51,7 +51,10 @@ private[streaming] object MasterFailureTest extends Logging {
     val directory = args(0)
     val numBatches = args(1).toInt
     val batchDuration =
-      if (args.size > 2) Milliseconds(args(2).toInt) else Seconds(1)
+      if (args.size > 2)
+        Milliseconds(args(2).toInt)
+      else
+        Seconds(1)
 
     println(
       "\n\n========================= MAP TEST =========================\n\n")
@@ -360,7 +363,11 @@ private[streaming] class KillingThread(
   override def run() {
     try {
       // If it is the first killing, then allow the first checkpoint to be created
-      var minKillWaitTime = if (MasterFailureTest.killCount == 0) 5000 else 2000
+      var minKillWaitTime =
+        if (MasterFailureTest.killCount == 0)
+          5000
+        else
+          2000
       val killWaitTime =
         minKillWaitTime + math.abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)

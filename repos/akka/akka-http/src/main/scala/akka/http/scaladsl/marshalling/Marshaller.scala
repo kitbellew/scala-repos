@@ -46,29 +46,29 @@ sealed abstract class Marshaller[-A, +B] {
             case (WithFixedContentType(_, marshal), newMT: MediaType.Binary) ⇒
               WithFixedContentType(newMT, () ⇒ cto(marshal(), newMT))
             case (
-                WithFixedContentType(oldCT: ContentType.Binary, marshal),
-                newMT: MediaType.WithFixedCharset) ⇒
+                  WithFixedContentType(oldCT: ContentType.Binary, marshal),
+                  newMT: MediaType.WithFixedCharset) ⇒
               WithFixedContentType(newMT, () ⇒ cto(marshal(), newMT))
             case (
-                WithFixedContentType(oldCT: ContentType.NonBinary, marshal),
-                newMT: MediaType.WithFixedCharset)
+                  WithFixedContentType(oldCT: ContentType.NonBinary, marshal),
+                  newMT: MediaType.WithFixedCharset)
                 if oldCT.charset == newMT.charset ⇒
               WithFixedContentType(newMT, () ⇒ cto(marshal(), newMT))
             case (
-                WithFixedContentType(oldCT: ContentType.NonBinary, marshal),
-                newMT: MediaType.WithOpenCharset) ⇒
+                  WithFixedContentType(oldCT: ContentType.NonBinary, marshal),
+                  newMT: MediaType.WithOpenCharset) ⇒
               val newCT = newMT withCharset oldCT.charset
               WithFixedContentType(newCT, () ⇒ cto(marshal(), newCT))
 
             case (
-                WithOpenCharset(oldMT, marshal),
-                newMT: MediaType.WithOpenCharset) ⇒
+                  WithOpenCharset(oldMT, marshal),
+                  newMT: MediaType.WithOpenCharset) ⇒
               WithOpenCharset(
                 newMT,
                 cs ⇒ cto(marshal(cs), newMT withCharset cs))
             case (
-                WithOpenCharset(oldMT, marshal),
-                newMT: MediaType.WithFixedCharset) ⇒
+                  WithOpenCharset(oldMT, marshal),
+                  newMT: MediaType.WithFixedCharset) ⇒
               WithFixedContentType(
                 newMT,
                 () ⇒ cto(marshal(newMT.charset), newMT))

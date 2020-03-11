@@ -66,10 +66,12 @@ trait OverridingAnnotator {
       element: PsiElement,
       supers: Seq[Any],
       isInSources: Boolean): Unit = {
-    if (!isInSources) return
+    if (!isInSources)
+      return
     element.getParent match {
       case ref: ScRefinement =>
-        if (supers.isEmpty) UsageTrigger.trigger("scala.structural.type")
+        if (supers.isEmpty)
+          UsageTrigger.trigger("scala.structural.type")
       case _ =>
     }
   }
@@ -194,7 +196,8 @@ trait OverridingAnnotator {
     } else if (isConcreteElement(ScalaPsiUtil.nameContext(member))) {
       var isConcretes = false
       for (signature <- superSignatures
-           if !isConcretes && isConcrete(signature)) isConcretes = true
+           if !isConcretes && isConcrete(signature))
+        isConcretes = true
       if (isConcretes && !owner.hasModifierProperty("override")) {
         val annotation: Annotation = holder.createErrorAnnotation(
           member.nameId,

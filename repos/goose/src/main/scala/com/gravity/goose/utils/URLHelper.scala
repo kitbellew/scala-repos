@@ -41,7 +41,8 @@ object URLHelper extends Logging {
     val finalURL =
       if (urlToCrawl.contains("#!"))
         ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(urlToCrawl)
-      else urlToCrawl
+      else
+        urlToCrawl
 
     try {
       val url = new URL(finalURL)

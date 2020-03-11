@@ -78,7 +78,10 @@ abstract class ClassfileParser {
   private var sawPrivateConstructor = false
 
   private def ownerForFlags(jflags: JavaAccFlags) =
-    if (jflags.isStatic) moduleClass else clazz
+    if (jflags.isStatic)
+      moduleClass
+    else
+      clazz
 
   def srcfile = srcfile0
 
@@ -111,11 +114,13 @@ abstract class ClassfileParser {
   }
 
   private def handleMissing(e: MissingRequirementError) = {
-    if (settings.debug) e.printStackTrace
+    if (settings.debug)
+      e.printStackTrace
     throw new IOException(s"Missing dependency '${e.req}', required by $file")
   }
   private def handleError(e: Exception) = {
-    if (settings.debug) e.printStackTrace()
+    if (settings.debug)
+      e.printStackTrace()
     throw new IOException(
       s"class file '$file' is broken\n(${e.getClass}/${e.getMessage})")
   }
@@ -152,11 +157,19 @@ abstract class ClassfileParser {
     this.file = file
     pushBusy(root) {
       this.in = new AbstractFileReader(file)
-      this.clazz = if (root.isModule) root.companionClass else root
+      this.clazz =
+        if (root.isModule)
+          root.companionClass
+        else
+          root
       // WARNING! do no use clazz.companionModule to find staticModule.
       // In a situation where root can be defined, but its companionClass not,
       // this would give incorrect results (see SI-5031 in separate compilation scenario)
-      this.staticModule = if (root.isModule) root else root.companionModule
+      this.staticModule =
+        if (root.isModule)
+          root
+        else
+          root.companionModule
       this.isScala = false
 
       parseHeader()
@@ -218,13 +231,16 @@ abstract class ClassfileParser {
     def firstExpecting(index: Int, expected: Int): Int = {
       val start = starts(index)
       val first = in.buf(start).toInt
-      if (first == expected) start + 1
-      else this errorBadTag start
+      if (first == expected)
+        start + 1
+      else
+        this errorBadTag start
     }
 
     /** Return the name found at given index. */
     def getName(index: Int): Name = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       else
         values(index) match {
           case name: Name => name
@@ -248,7 +264,8 @@ abstract class ClassfileParser {
     }
 
     def getClassSymbol(index: Int): Symbol = {
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       values(index) match {
         case sym: Symbol => sym
         case _ =>
@@ -276,7 +293,8 @@ abstract class ClassfileParser {
       *  type.
       */
     protected def getNameAndType(index: Int, ownerTpe: Type): (Name, Type) = {
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       values(index) match {
         case p: ((Name @unchecked, Type @unchecked)) => p
         case _ =>
@@ -301,7 +319,8 @@ abstract class ClassfileParser {
       *  appear as entries in 'newarray' or 'cast' opcodes.
       */
     def getClassOrArrayType(index: Int): Type = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       else
         values(index) match {
           case tp: Type    => tp
@@ -319,7 +338,8 @@ abstract class ClassfileParser {
     def getType(sym: Symbol, index: Int): Type =
       sigToType(sym, getExternalName(index))
     def getSuperClass(index: Int): Symbol =
-      if (index == 0) AnyClass
+      if (index == 0)
+        AnyClass
       else
         getClassSymbol(
           index
@@ -341,7 +361,8 @@ abstract class ClassfileParser {
     }
     def getConstant(index: Char): Constant = getConstant(index.toInt)
     def getConstant(index: Int): Constant = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       else
         values(index) match {
           case const: Constant => const
@@ -359,7 +380,8 @@ abstract class ClassfileParser {
     }
 
     def getBytes(index: Int): Array[Byte] = (
-      if (index <= 0 || len <= index) errorBadIndex(index)
+      if (index <= 0 || len <= index)
+        errorBadIndex(index)
       else
         values(index) match {
           case xs: Array[Byte] => xs
@@ -407,7 +429,8 @@ abstract class ClassfileParser {
       //   - better owner than `NoSymbol`
       //   - remove eager warning
       val msg = s"Class $name not found - continuing with a stub."
-      if (!settings.isScaladoc) warning(msg)
+      if (!settings.isScaladoc)
+        warning(msg)
       return NoSymbol.newStubSymbol(name.toTypeName, msg)
     }
     val completer = new loaders.ClassfileLoader(file)
@@ -479,12 +502,14 @@ abstract class ClassfileParser {
           val superType = if (jflags.isAnnotation) {
             u2;
             AnnotationClass.tpe
-          } else pool.getSuperClass(u2).tpe_*
+          } else
+            pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
             for (i <- List.range(0, ifaceCount))
               yield pool.getSuperClass(u2).tpe_*
-          if (jflags.isAnnotation) ifaces ::= ClassfileAnnotationClass.tpe
+          if (jflags.isAnnotation)
+            ifaces ::= ClassfileAnnotationClass.tpe
           superType :: ifaces
         }
     }
@@ -492,11 +517,17 @@ abstract class ClassfileParser {
     val isTopLevel =
       !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
 
-    val c = if (isTopLevel) pool.getClassSymbol(nameIdx) else clazz
+    val c =
+      if (isTopLevel)
+        pool.getClassSymbol(nameIdx)
+      else
+        clazz
     if (isTopLevel) {
       if (c != clazz) {
-        if ((clazz eq NoSymbol) && (c ne NoSymbol)) clazz = c
-        else mismatchError(c)
+        if ((clazz eq NoSymbol) && (c ne NoSymbol))
+          clazz = c
+        else
+          mismatchError(c)
       }
     }
 
@@ -583,8 +614,10 @@ abstract class ClassfileParser {
       // Note: the info may be overwritten later with a generic signature
       // parsed from SignatureATTR
       sym setInfo {
-        if (jflags.isEnum) ConstantType(Constant(sym))
-        else info
+        if (jflags.isEnum)
+          ConstantType(Constant(sym))
+        else
+          info
       }
       propagatePackageBoundary(jflags, sym)
       parseAttributes(sym, info)
@@ -724,8 +757,10 @@ abstract class ClassfileParser {
                           val tp = sig2type(tparams, skiptvs)
                           // sig2type seems to return AnyClass regardless of the situation:
                           // we don't want Any as a LOWER bound.
-                          if (tp.typeSymbol == AnyClass) TypeBounds.empty
-                          else TypeBounds.lower(tp)
+                          if (tp.typeSymbol == AnyClass)
+                            TypeBounds.empty
+                          else
+                            TypeBounds.lower(tp)
                         case '*' => TypeBounds.empty
                       }
                       val newtparam = sym.newExistential(
@@ -815,8 +850,10 @@ abstract class ClassfileParser {
         case 'T' =>
           val n = subName(';'.==).toTypeName
           index += 1
-          if (skiptvs) AnyTpe
-          else tparams(n).typeConstructor
+          if (skiptvs)
+            AnyTpe
+          else
+            tparams(n).typeConstructor
       }
     } // sig2type(tparams, skiptvs)
 
@@ -889,7 +926,8 @@ abstract class ClassfileParser {
             val sig = pool.getExternalName(u2)
             val newType = sigToType(sym, sig)
             sym.setInfo(newType)
-          } else in.skip(attrLen)
+          } else
+            in.skip(attrLen)
         case tpnme.SyntheticATTR =>
           sym.setFlag(SYNTHETIC | ARTIFACT)
           in.skip(attrLen)
@@ -904,8 +942,10 @@ abstract class ClassfileParser {
         case tpnme.ConstantValueATTR =>
           val c = pool.getConstant(u2)
           val c1 = convertTo(c, symtype)
-          if (c1 ne null) sym.setInfo(ConstantType(c1))
-          else devWarning(s"failure to convert $c to $symtype")
+          if (c1 ne null)
+            sym.setInfo(ConstantType(c1))
+          else
+            devWarning(s"failure to convert $c to $symtype")
         case tpnme.MethodParametersATTR =>
           def readParamNames(): Unit = {
             import tools.asm.Opcodes.ACC_SYNTHETIC
@@ -1013,7 +1053,8 @@ abstract class ClassfileParser {
           val n = readName()
           val module = t.typeSymbol.companionModule
           val s = module.info.decls.lookup(n)
-          if (s != NoSymbol) Some(LiteralAnnotArg(Constant(s)))
+          if (s != NoSymbol)
+            Some(LiteralAnnotArg(Constant(s)))
           else {
             warning(
               s"""While parsing annotations in ${in.file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
@@ -1028,8 +1069,10 @@ abstract class ClassfileParser {
               case Some(c) => arr += c
               case None    => hasError = true
             }
-          if (hasError) None
-          else Some(ArrayAnnotArg(arr.toArray))
+          if (hasError)
+            None
+          else
+            Some(ArrayAnnotArg(arr.toArray))
         case ANNOTATION_TAG =>
           parseAnnotation(index) map (NestedAnnotArg(_))
       }
@@ -1046,11 +1089,12 @@ abstract class ClassfileParser {
       assert(tag == ARRAY_TAG, tag)
       val stringCount = u2
       val entries =
-        for (i <- 0 until stringCount) yield {
-          val stag = u1
-          assert(stag == STRING_TAG, stag)
-          u2
-        }
+        for (i <- 0 until stringCount)
+          yield {
+            val stag = u1
+            assert(stag == STRING_TAG, stag)
+            u2
+          }
       Some(ScalaSigBytes(pool.getBytes(entries.toList)))
     }
 
@@ -1085,8 +1129,10 @@ abstract class ClassfileParser {
               case None    => hasError = true
             }
         }
-        if (hasError) None
-        else Some(AnnotationInfo(attrType, List(), nvpairs.toList))
+        if (hasError)
+          None
+        else
+          Some(AnnotationInfo(attrType, List(), nvpairs.toList))
       } catch {
         case f: FatalError =>
           throw f // don't eat fatal errors, they mean a class was not found
@@ -1099,7 +1145,8 @@ abstract class ClassfileParser {
           // with a `FatalError` exception, handled above. Here you'd end up after a NPE (for example),
           // and that should never be swallowed silently.
           warning(s"Caught: $ex while parsing annotations in ${in.file}")
-          if (settings.debug) ex.printStackTrace()
+          if (settings.debug)
+            ex.printStackTrace()
 
           None // ignore malformed annotations
       }
@@ -1141,7 +1188,8 @@ abstract class ClassfileParser {
     }
 
     // begin parseAttributes
-    for (i <- 0 until u2) parseAttribute()
+    for (i <- 0 until u2)
+      parseAttribute()
   }
 
   /** Enter own inner classes in the right scope. It needs the scopes to be set up,
@@ -1255,15 +1303,25 @@ abstract class ClassfileParser {
     def outerName = pool getClassName outer
     def originalName = pool getName name
     def isModule = originalName.isTermName
-    def scope = if (jflags.isStatic) staticScope else instanceScope
-    def enclosing = if (jflags.isStatic) enclModule else enclClass
+    def scope =
+      if (jflags.isStatic)
+        staticScope
+      else
+        instanceScope
+    def enclosing =
+      if (jflags.isStatic)
+        enclModule
+      else
+        enclClass
 
     // The name of the outer class, without its trailing $ if it has one.
     private def strippedOuter = outerName.dropModule
     private def isInner = innerClasses contains strippedOuter
     private def enclClass =
-      if (isInner) innerClasses innerSymbol strippedOuter
-      else classNameToSymbol(strippedOuter)
+      if (isInner)
+        innerClasses innerSymbol strippedOuter
+      else
+        classNameToSymbol(strippedOuter)
     private def enclModule = enclClass.companionModule
   }
 
@@ -1295,8 +1353,10 @@ abstract class ClassfileParser {
       val enclosing = entry.enclosing
       val member =
         (
-          if (enclosing == clazz) entry.scope lookup name
-          else lookupMemberAtTyperPhaseIfPossible(enclosing, name)
+          if (enclosing == clazz)
+            entry.scope lookup name
+          else
+            lookupMemberAtTyperPhaseIfPossible(enclosing, name)
         )
       def newStub =
         enclosing.newStubSymbol(
@@ -1348,5 +1408,8 @@ abstract class ClassfileParser {
   }
 
   protected def getScope(flags: JavaAccFlags): Scope =
-    if (flags.isStatic) staticScope else instanceScope
+    if (flags.isStatic)
+      staticScope
+    else
+      instanceScope
 }

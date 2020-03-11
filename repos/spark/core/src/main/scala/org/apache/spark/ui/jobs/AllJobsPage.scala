@@ -78,7 +78,10 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
         val (jobName, jobDescription) =
           getLastStageNameAndDescription(jobUIData)
         val displayJobDescription =
-          if (jobDescription.isEmpty) jobName else jobDescription
+          if (jobDescription.isEmpty)
+            jobName
+          else
+            jobDescription
         val submissionTime = jobUIData.submissionTime.get
         val completionTimeOpt = jobUIData.completionTime
         val completionTime =
@@ -223,7 +226,10 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
 
     val columns: Seq[Node] = {
       <th>{
-        if (someJobHasJobGroup) "Job Id (Job Group)" else "Job Id"
+        if (someJobHasJobGroup)
+          "Job Id (Job Group)"
+        else
+          "Job Id"
       }</th>
       <th>Description</th>
       <th>Submitted</th>
@@ -291,10 +297,12 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
         job.stageIds.size - job.numSkippedStages
       }
           {
-        if (job.numFailedStages > 0) s"(${job.numFailedStages} failed)"
+        if (job.numFailedStages > 0)
+          s"(${job.numFailedStages} failed)"
       }
           {
-        if (job.numSkippedStages > 0) s"(${job.numSkippedStages} skipped)"
+        if (job.numSkippedStages > 0)
+          s"(${job.numSkippedStages} skipped)"
       }
         </td>
         <td class="progress-cell">

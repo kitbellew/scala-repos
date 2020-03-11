@@ -793,7 +793,8 @@ class BasicOperationsSuite extends TestSuiteBase {
           .dependencies
           .head
           .asInstanceOf[DStream[T]]
-      if (rememberDuration != null) ssc.remember(rememberDuration)
+      if (rememberDuration != null)
+        ssc.remember(rememberDuration)
       val output =
         runStreams[(Int, Int)](ssc, cleanupTestInput.size, numExpectedOutput)
       val clock = ssc.scheduler.clock.asInstanceOf[Clock]

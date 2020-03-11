@@ -15,10 +15,18 @@ object ValidationExample extends Specification {
 
   "Validation" should {
     def min(x: Int): Int => Result[Int] =
-      (y: Int) => if (y < x) Fail("min", y + " < " + x) else y.success
+      (y: Int) =>
+        if (y < x)
+          Fail("min", y + " < " + x)
+        else
+          y.success
 
     def max(x: Int): Int => Result[Int] =
-      (y: Int) => if (y > x) Fail("max", y + " > " + x) else y.success
+      (y: Int) =>
+        if (y > x)
+          Fail("max", y + " > " + x)
+        else
+          y.success
 
     val json = JsonParser.parse(""" {"name":"joe","age":17} """)
 

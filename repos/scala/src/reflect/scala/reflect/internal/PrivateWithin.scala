@@ -21,7 +21,9 @@ trait PrivateWithin {
   // See ticket #1687 for an example of when the enclosing top level class is NoSymbol;
   // it apparently occurs when processing v45.3 bytecode.
   def setPackageAccessBoundary(sym: Symbol): Symbol = (
-    if (sym.enclosingTopLevelClass eq NoSymbol) sym
-    else sym setPrivateWithin sym.enclosingTopLevelClass.owner
+    if (sym.enclosingTopLevelClass eq NoSymbol)
+      sym
+    else
+      sym setPrivateWithin sym.enclosingTopLevelClass.owner
   )
 }

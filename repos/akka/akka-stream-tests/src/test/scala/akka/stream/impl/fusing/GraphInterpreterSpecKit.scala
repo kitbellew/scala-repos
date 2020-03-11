@@ -182,19 +182,22 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       )
 
       def onNext(elem: T, eventLimit: Int = Int.MaxValue): Unit = {
-        if (GraphInterpreter.Debug) println(s"----- NEXT: $this $elem")
+        if (GraphInterpreter.Debug)
+          println(s"----- NEXT: $this $elem")
         push(out, elem)
         interpreter.execute(eventLimit)
       }
 
       def onComplete(eventLimit: Int = Int.MaxValue): Unit = {
-        if (GraphInterpreter.Debug) println(s"----- COMPLETE $this")
+        if (GraphInterpreter.Debug)
+          println(s"----- COMPLETE $this")
         complete(out)
         interpreter.execute(eventLimit)
       }
 
       def onFailure(eventLimit: Int = Int.MaxValue, ex: Throwable): Unit = {
-        if (GraphInterpreter.Debug) println(s"----- FAIL $this")
+        if (GraphInterpreter.Debug)
+          println(s"----- FAIL $this")
         fail(out, ex)
         interpreter.execute(eventLimit)
       }
@@ -218,13 +221,15 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       )
 
       def requestOne(eventLimit: Int = Int.MaxValue): Unit = {
-        if (GraphInterpreter.Debug) println(s"----- REQ $this")
+        if (GraphInterpreter.Debug)
+          println(s"----- REQ $this")
         pull(in)
         interpreter.execute(eventLimit)
       }
 
       def cancel(eventLimit: Int = Int.MaxValue): Unit = {
-        if (GraphInterpreter.Debug) println(s"----- CANCEL $this")
+        if (GraphInterpreter.Debug)
+          println(s"----- CANCEL $this")
         cancel(in)
         interpreter.execute(eventLimit)
       }
@@ -313,7 +318,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     // to make tests a bit more readable
     lazy val stage: GraphStageLogic = new GraphStageLogic(stageshape) {
       private def mayFail(task: ⇒ Unit): Unit = {
-        if (!_failOnNextEvent) task
+        if (!_failOnNextEvent)
+          task
         else {
           _failOnNextEvent = false
           throw testException
@@ -339,8 +345,10 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
 
       override def preStart(): Unit = mayFail(lastEvent += PreStart(stage))
       override def postStop(): Unit =
-        if (!_failOnPostStop) lastEvent += PostStop(stage)
-        else throw testException
+        if (!_failOnPostStop)
+          lastEvent += PostStop(stage)
+        else
+          throw testException
 
       override def toString = "stage"
     }
@@ -452,8 +460,10 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
         out,
         new OutHandler {
           override def onPull(): Unit = {
-            if (lastEvent.contains(RequestOne)) lastEvent += RequestAnother
-            else lastEvent += RequestOne
+            if (lastEvent.contains(RequestOne))
+              lastEvent += RequestAnother
+            else
+              lastEvent += RequestOne
           }
 
           override def onDownstreamFinish(): Unit = lastEvent += Cancel

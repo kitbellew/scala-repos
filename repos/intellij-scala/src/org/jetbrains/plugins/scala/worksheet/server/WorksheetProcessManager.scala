@@ -26,7 +26,8 @@ object WorksheetProcessManager {
 
   def stop(file: VirtualFile) {
     val p = processes.get(file)
-    if (p != null) p.stop()
+    if (p != null)
+      p.stop()
   }
 
   def running(file: VirtualFile) = processes containsKey file

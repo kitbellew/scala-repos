@@ -85,7 +85,8 @@ import slick.test.codegen.CustomTyping
 type SimpleA = CustomTyping.SimpleA
 val  SimpleA = CustomTyping.SimpleA
                   """.trim) ++ super.code
-                } else super.code
+                } else
+                  super.code
               }
               override def Column = new Column(_) {
                 override def rawType = model.name match {

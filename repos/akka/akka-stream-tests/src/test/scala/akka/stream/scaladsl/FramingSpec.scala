@@ -43,8 +43,10 @@ class FramingSpec extends AkkaSpec {
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective = {
-      if (rechunkBuffer.isEmpty) ctx.finish()
-      else ctx.absorbTermination()
+      if (rechunkBuffer.isEmpty)
+        ctx.finish()
+      else
+        ctx.absorbTermination()
     }
 
     private def rechunk(ctx: Context[ByteString]): SyncDirective = {
@@ -52,13 +54,16 @@ class FramingSpec extends AkkaSpec {
         ctx.pull()
       else {
         val nextChunkSize =
-          if (rechunkBuffer.isEmpty) 0
-          else ThreadLocalRandom.current().nextInt(0, rechunkBuffer.size + 1)
+          if (rechunkBuffer.isEmpty)
+            0
+          else
+            ThreadLocalRandom.current().nextInt(0, rechunkBuffer.size + 1)
         val newChunk = rechunkBuffer.take(nextChunkSize)
         rechunkBuffer = rechunkBuffer.drop(nextChunkSize)
         if (ctx.isFinishing && rechunkBuffer.isEmpty)
           ctx.pushAndFinish(newChunk)
-        else ctx.push(newChunk)
+        else
+          ctx.push(newChunk)
       }
     }
   }

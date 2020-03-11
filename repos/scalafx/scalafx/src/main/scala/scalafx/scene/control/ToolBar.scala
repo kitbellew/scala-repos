@@ -39,7 +39,10 @@ import scalafx.scene.Node
 
 object ToolBar {
   implicit def sfxToolBarToJfx(v: ToolBar): jfxsc.ToolBar =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

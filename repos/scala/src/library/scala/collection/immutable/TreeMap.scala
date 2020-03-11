@@ -82,33 +82,51 @@ class TreeMap[A, +B] private (tree: RB.Tree[A, B])(
     val smallest = RB.smallest(tree)
     (smallest.key, smallest.value)
   }
-  override def headOption = if (RB.isEmpty(tree)) None else Some(head)
+  override def headOption =
+    if (RB.isEmpty(tree))
+      None
+    else
+      Some(head)
   override def last = {
     val greatest = RB.greatest(tree)
     (greatest.key, greatest.value)
   }
-  override def lastOption = if (RB.isEmpty(tree)) None else Some(last)
+  override def lastOption =
+    if (RB.isEmpty(tree))
+      None
+    else
+      Some(last)
 
   override def tail = new TreeMap(RB.delete(tree, firstKey))
   override def init = new TreeMap(RB.delete(tree, lastKey))
 
   override def drop(n: Int) = {
-    if (n <= 0) this
-    else if (n >= size) empty
-    else new TreeMap(RB.drop(tree, n))
+    if (n <= 0)
+      this
+    else if (n >= size)
+      empty
+    else
+      new TreeMap(RB.drop(tree, n))
   }
 
   override def take(n: Int) = {
-    if (n <= 0) empty
-    else if (n >= size) this
-    else new TreeMap(RB.take(tree, n))
+    if (n <= 0)
+      empty
+    else if (n >= size)
+      this
+    else
+      new TreeMap(RB.take(tree, n))
   }
 
   override def slice(from: Int, until: Int) = {
-    if (until <= from) empty
-    else if (from <= 0) take(until)
-    else if (until >= size) drop(from)
-    else new TreeMap(RB.slice(tree, from, until))
+    if (until <= from)
+      empty
+    else if (from <= 0)
+      take(until)
+    else if (until >= size)
+      drop(from)
+    else
+      new TreeMap(RB.slice(tree, from, until))
   }
 
   override def dropRight(n: Int) = take(size - math.max(n, 0))
@@ -118,7 +136,8 @@ class TreeMap[A, +B] private (tree: RB.Tree[A, B])(
   private[this] def countWhile(p: ((A, B)) => Boolean): Int = {
     var result = 0
     val it = iterator
-    while (it.hasNext && p(it.next())) result += 1
+    while (it.hasNext && p(it.next()))
+      result += 1
     result
   }
   override def dropWhile(p: ((A, B)) => Boolean) = drop(countWhile(p))
@@ -186,8 +205,10 @@ class TreeMap[A, +B] private (tree: RB.Tree[A, B])(
   }
 
   def -(key: A): TreeMap[A, B] =
-    if (!RB.contains(tree, key)) this
-    else new TreeMap(RB.delete(tree, key))
+    if (!RB.contains(tree, key))
+      this
+    else
+      new TreeMap(RB.delete(tree, key))
 
   /** Check if this map maps `key` to a value and return the
     *  value if it exists.

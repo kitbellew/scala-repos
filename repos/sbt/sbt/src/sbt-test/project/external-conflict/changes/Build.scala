@@ -6,8 +6,15 @@ object B extends Build {
   override def projectDefinitions(f: File) = Seq(makeProject(f))
 
   def makeProject(f: File) = {
-    val addBin = if (isBinary(f)) binaryDep(baseProject) else baseProject
-    if (isSource(f)) sourceDep(addBin) else addBin
+    val addBin =
+      if (isBinary(f))
+        binaryDep(baseProject)
+      else
+        baseProject
+    if (isSource(f))
+      sourceDep(addBin)
+    else
+      addBin
   }
 
   def isBinary(f: File) = f / "binary" exists;

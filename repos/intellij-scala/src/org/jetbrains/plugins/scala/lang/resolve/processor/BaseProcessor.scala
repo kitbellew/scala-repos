@@ -96,7 +96,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     val set = candidatesS
     val size = set.size
     val res = JavaArrayFactoryUtil.ResolveResultFactory.create(size)
-    if (size == 0) return res
+    if (size == 0)
+      return res
     val iter = set.iterator
     var count = 0
     while (iter.hasNext) {
@@ -111,7 +112,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     val set = candidatesS
     val size = set.size
     val res = JavaArrayFactoryUtil.ScalaResolveResultFactory.create(size)
-    if (size == 0) return res
+    if (size == 0)
+      return res
     val iter = set.iterator
     var count = 0
     while (iter.hasNext) {
@@ -186,7 +188,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           if clazz.qualifiedName == "java.lang.String" =>
         val plusMethod: ScType => ScSyntheticFunction =
           SyntheticClasses.get(place.getProject).stringPlusMethod
-        if (plusMethod != null) execute(plusMethod(t), state) //add + method
+        if (plusMethod != null)
+          execute(plusMethod(t), state) //add + method
       case _ =>
     }
 
@@ -249,17 +252,21 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         var break = true
         for (method <- e.getMethods
              if break && method.hasModifierProperty("static")) {
-          if (!execute(method, state)) break = false
+          if (!execute(method, state))
+            break = false
         }
         for (cl <- e.getInnerClasses
              if break && cl.hasModifierProperty("static")) {
-          if (!execute(cl, state)) break = false
+          if (!execute(cl, state))
+            break = false
         }
         for (field <- e.getFields
              if break && field.hasModifierProperty("static")) {
-          if (!execute(field, state)) break = false
+          if (!execute(field, state))
+            break = false
         }
-        if (!break) return false
+        if (!break)
+          return false
         TypeDefinitionMembers.processEnum(e, execute(_, state))
       case ScDesignatorType(o: ScObject) =>
         processElement(
@@ -314,7 +321,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case p @ ScParameterizedType(des, typeArgs) =>
         p.designator match {
           case tpt @ ScTypeParameterType(_, _, _, upper, _) =>
-            if (visitedTypeParameter.contains(tpt)) return true
+            if (visitedTypeParameter.contains(tpt))
+              return true
             processType(
               p.substitutor.subst(upper.v),
               place,
@@ -353,7 +361,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               Map.empty,
               Map.empty,
               Some(proj)) followed proj.actualSubst
-          else proj.actualSubst
+          else
+            proj.actualSubst
         processElement(
           proj.actualElement,
           s,
@@ -373,7 +382,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
                       visitedAliases = visitedAliases,
                       visitedTypeParameter = visitedTypeParameter)
                   case _ => true
-                })) return false
+                }))
+              return false
           case None => //nothing to do
         }
 
@@ -388,7 +398,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           while (methods.hasNext) {
             val method = methods.next()
             if (name == "AnyRef" || namesSet.contains(method.name)) {
-              if (!execute(method, state)) return false
+              if (!execute(method, state))
+                return false
             }
           }
         }
@@ -434,11 +445,16 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     val newSubst =
       compound match {
         case Some(_) => subst
-        case _       => if (subst != null) subst followed s else s
+        case _ =>
+          if (subst != null)
+            subst followed s
+          else
+            s
       }
     e match {
       case ta: ScTypeAlias =>
-        if (visitedAliases.contains(ta)) return true
+        if (visitedAliases.contains(ta))
+          return true
         processType(
           s.subst(ta.upperBound.getOrAny),
           place,
@@ -489,12 +505,18 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
 
   protected def getSubst(state: ResolveState) = {
     val subst: ScSubstitutor = state.get(ScSubstitutor.key)
-    if (subst == null) ScSubstitutor.empty else subst
+    if (subst == null)
+      ScSubstitutor.empty
+    else
+      subst
   }
 
   protected def getImports(state: ResolveState): Set[ImportUsed] = {
     val used = state.get(ImportUsed.key)
-    if (used == null) Set[ImportUsed]() else used
+    if (used == null)
+      Set[ImportUsed]()
+    else
+      used
   }
 
   protected def getBoundClass(state: ResolveState): PsiClass = {
@@ -507,7 +529,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
 
   protected def isForwardReference(state: ResolveState): Boolean = {
     val res: java.lang.Boolean = state.get(BaseProcessor.FORWARD_REFERENCE_KEY)
-    if (res != null) res
-    else false
+    if (res != null)
+      res
+    else
+      false
   }
 }

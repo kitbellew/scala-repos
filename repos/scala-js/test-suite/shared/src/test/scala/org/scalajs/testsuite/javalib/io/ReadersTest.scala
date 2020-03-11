@@ -226,11 +226,14 @@ class InputStreamReaderTest {
       val buf = new Array[Char](str.length)
       @tailrec
       def readAll(readSoFar: Int): Int = {
-        if (readSoFar == buf.length) readSoFar
+        if (readSoFar == buf.length)
+          readSoFar
         else {
           val newlyRead = r.read(buf, readSoFar, buf.length - readSoFar)
-          if (newlyRead == -1) readSoFar
-          else readAll(readSoFar + newlyRead)
+          if (newlyRead == -1)
+            readSoFar
+          else
+            readAll(readSoFar + newlyRead)
         }
       }
       assertEquals(str.length, readAll(0))

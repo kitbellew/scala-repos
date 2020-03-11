@@ -37,8 +37,12 @@ object Test extends Properties("reflection extractors") {
     for (flag <- genFlag;
          privateWithin <- genName)
       yield Modifiers(flag, privateWithin, Nil)
-  val genTermName = for (name <- arbitrary[String]) yield TermName(name)
-  val genTypeName = for (name <- arbitrary[String]) yield TypeName(name)
+  val genTermName =
+    for (name <- arbitrary[String])
+      yield TermName(name)
+  val genTypeName =
+    for (name <- arbitrary[String])
+      yield TypeName(name)
   val genName = oneOf(genTermName, genTypeName)
 
   implicit val arbTermName: Arbitrary[TermName] = Arbitrary(genTermName)

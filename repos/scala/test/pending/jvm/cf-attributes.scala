@@ -79,7 +79,11 @@ trait Test1 {
   def printInnerClasses(cls: Class[_]) {
     for (c <- cls.getDeclaredClasses) {
       mods = AccessFlags.asString(c.getModifiers)
-      kind = if (c.isInterface) "interface" else "class"
+      kind =
+        if (c.isInterface)
+          "interface"
+        else
+          "class"
       println(
         "  " + mods + kind + " " + c.getName +
           " of class " + c.getEnclosingClass.getName)
@@ -130,11 +134,16 @@ object AccessFlags {
 
   def asString(accessFlags: Int): String = {
     val buf = new StringBuilder()
-    if ((accessFlags & ACC_PUBLIC) != 0) buf.append("public ")
-    else if ((accessFlags & ACC_PROTECTED) != 0) buf.append("protected ")
-    else if ((accessFlags & ACC_PRIVATE) != 0) buf.append("private ")
-    if ((accessFlags & ACC_ABSTRACT) != 0) buf.append("abstract ")
-    else if ((accessFlags & ACC_FINAL) != 0) buf.append("final ")
+    if ((accessFlags & ACC_PUBLIC) != 0)
+      buf.append("public ")
+    else if ((accessFlags & ACC_PROTECTED) != 0)
+      buf.append("protected ")
+    else if ((accessFlags & ACC_PRIVATE) != 0)
+      buf.append("private ")
+    if ((accessFlags & ACC_ABSTRACT) != 0)
+      buf.append("abstract ")
+    else if ((accessFlags & ACC_FINAL) != 0)
+      buf.append("final ")
     buf.toString
   }
 }

@@ -14,7 +14,8 @@ class OperationOnCollectionQuickFix(expr: ScExpression, simpl: Simplification)
     extends AbstractFixOnPsiElement(simpl.hint, expr) {
   def doApplyFix(project: Project) {
     val toReplace = simpl.exprToReplace.getElement
-    if (!toReplace.isValid) return
+    if (!toReplace.isValid)
+      return
     val newExpr = ScalaPsiElementFactory.createExpressionFromText(
       simpl.replacementText,
       toReplace.getManager)

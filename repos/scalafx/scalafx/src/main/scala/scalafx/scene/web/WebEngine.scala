@@ -50,7 +50,10 @@ object WebEngine {
     * @return JavaFX WebEngine
     */
   implicit def sfxWebEngine2jfx(we: WebEngine): jfxsw.WebEngine =
-    if (we != null) we.delegate else null
+    if (we != null)
+      we.delegate
+    else
+      null
 }
 
 /**

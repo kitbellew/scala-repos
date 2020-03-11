@@ -45,7 +45,10 @@ import scalafx.scene.text.Font.sfxFont2jfx
 
 object Text {
   implicit def sfxText2jfx(v: Text): jfxs.text.Text =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

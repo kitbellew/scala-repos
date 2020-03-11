@@ -81,7 +81,10 @@ object NameTransformer {
       }
       i += 1
     }
-    if (buf eq null) name else buf.toString()
+    if (buf eq null)
+      name
+    else
+      buf.toString()
   }
 
   /** Replace `\$opname` by corresponding operator symbol.
@@ -94,7 +97,8 @@ object NameTransformer {
     val name =
       if (name0.endsWith("<init>"))
         name0.substring(0, name0.length() - ("<init>").length()) + "this"
-      else name0;
+      else
+        name0;
     var buf: StringBuilder = null
     val len = name.length()
     var i = 0
@@ -154,6 +158,9 @@ object NameTransformer {
       }
     }
     //System.out.println("= " + (if (buf == null) name else buf.toString()));//DEBUG
-    if (buf eq null) name else buf.toString()
+    if (buf eq null)
+      name
+    else
+      buf.toString()
   }
 }

@@ -97,7 +97,8 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     if (chunked) {
       req.headers.set(Fields.TransferEncoding, "chunked")
       req.setChunked(chunked)
-    } else req.contentString = body
+    } else
+      req.contentString = body
     (req, body)
   }
 

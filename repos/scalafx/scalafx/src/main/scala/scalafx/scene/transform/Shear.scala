@@ -35,7 +35,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object Shear {
   implicit def sfxShear2jfx(v: Shear): jfxst.Shear =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

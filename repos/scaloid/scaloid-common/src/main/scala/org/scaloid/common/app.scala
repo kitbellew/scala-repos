@@ -284,8 +284,10 @@ class AlertDialogBuilder(
     _title: CharSequence = null,
     _message: CharSequence = null)(implicit context: Context)
     extends AlertDialog.Builder(context) {
-  if (_title != null) setTitle(_title)
-  if (_message != null) setMessage(_message)
+  if (_title != null)
+    setTitle(_title)
+  if (_message != null)
+    setMessage(_message)
 
   @inline def positiveButton(
       name: CharSequence = android.R.string.yes,

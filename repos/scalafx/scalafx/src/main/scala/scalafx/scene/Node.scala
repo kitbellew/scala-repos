@@ -65,7 +65,10 @@ object Node {
     * @return JavaFX Node
     */
   implicit def sfxNode2jfx(v: Node): jfxs.Node =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**
@@ -752,8 +755,16 @@ abstract class Node protected (override val delegate: jfxs.Node)
   def alignmentInParent_=(p: Pos) {
     val delegateProperties = delegate.getProperties
     delegateProperties.put("alignment", delegateOrNull(p))
-    delegateProperties("halignment") = if (p != null) p.hpos.delegate else null
-    delegateProperties("valignment") = if (p != null) p.vpos.delegate else null
+    delegateProperties("halignment") =
+      if (p != null)
+        p.hpos.delegate
+      else
+        null
+    delegateProperties("valignment") =
+      if (p != null)
+        p.vpos.delegate
+      else
+        null
     // for compatibility with layouts, which all use different keys
     jfxsl.BorderPane.setAlignment(delegate, p)
     jfxsl.GridPane.setHalignment(delegate, p.hpos)

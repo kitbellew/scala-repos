@@ -9,7 +9,11 @@ object JavaScriptRouterGenerator extends App {
 
   import controllers.routes.javascript._
 
-  val host = if (args.length > 1) args(1) else "localhost"
+  val host =
+    if (args.length > 1)
+      args(1)
+    else
+      "localhost"
 
   val jsFile = play.api.routing
     .JavaScriptReverseRouter(

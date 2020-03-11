@@ -33,7 +33,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object LineTo {
   implicit def sfxLineTo2jfx(v: LineTo): jfxss.LineTo =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(x: Double, y: Double) = new LineTo(new jfxss.LineTo(x, y))
 }

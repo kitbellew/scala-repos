@@ -51,7 +51,8 @@ trait PrecedenceHelper[T] {
   protected def compareWithIgnoredSet(
       set: mutable.HashSet[ScalaResolveResult]): Boolean = {
     import scala.collection.JavaConversions._
-    if (ignoredSet.nonEmpty && set.isEmpty) return false
+    if (ignoredSet.nonEmpty && set.isEmpty)
+      return false
     ignoredSet.forall { result =>
       set.forall { otherResult =>
         if (!ScEquivalenceUtil.smartEquivalence(
@@ -64,7 +65,8 @@ trait PrecedenceHelper[T] {
               ta.isExactAliasFor(cls)
             case _ => false
           }
-        } else true
+        } else
+          true
       }
     }
   }
@@ -88,7 +90,8 @@ trait PrecedenceHelper[T] {
 
   protected def addChangedLevelToHistory(): Unit = {
     if (isUpdateHistory && !fromHistory && history.lastOption != Some(
-          ChangedLevel)) history += ChangedLevel
+          ChangedLevel))
+      history += ChangedLevel
   }
 
   protected def getQualifiedName(result: ScalaResolveResult): T
@@ -121,7 +124,8 @@ trait PrecedenceHelper[T] {
           suspiciousPackages.contains(o.qualifiedName)
         case _ => false
       }
-    } else false
+    } else
+      false
   }
 
   /**
@@ -150,13 +154,16 @@ trait PrecedenceHelper[T] {
   protected def addResult(result: ScalaResolveResult): Boolean =
     addResults(Seq(result))
   protected def addResults(results: Seq[ScalaResolveResult]): Boolean = {
-    if (isUpdateHistory && !fromHistory) history += AddResult(results)
-    if (results.isEmpty) return true
+    if (isUpdateHistory && !fromHistory)
+      history += AddResult(results)
+    if (results.isEmpty)
+      return true
     val result: ScalaResolveResult = results.head
     lazy val qualifiedName: T = getQualifiedName(result)
     lazy val levelSet = getLevelSet(result)
     def addResults() {
-      if (qualifiedName != null) levelQualifiedNamesSet.add(qualifiedName)
+      if (qualifiedName != null)
+        levelQualifiedNamesSet.add(qualifiedName)
       val iterator = results.iterator
       while (iterator.hasNext) {
         levelSet.add(iterator.next())
@@ -164,7 +171,8 @@ trait PrecedenceHelper[T] {
     }
     val currentPrecedence = getPrecedence(result)
     val topPrecedence = getTopPrecedence(result)
-    if (currentPrecedence < topPrecedence) return false
+    if (currentPrecedence < topPrecedence)
+      return false
     else if (currentPrecedence == topPrecedence && levelSet.isEmpty)
       return false
     else if (currentPrecedence == topPrecedence) {
@@ -173,10 +181,12 @@ trait PrecedenceHelper[T] {
           qualifiedNamesSet.contains(qualifiedName))) {
         return false
       } else if (qualifiedName != null && qualifiedNamesSet.contains(
-                   qualifiedName)) return false
+                   qualifiedName))
+        return false
       if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
         results.foreach(ignoredSet.add)
-      } else addResults()
+      } else
+        addResults()
     } else {
       if (qualifiedName != null && qualifiedNamesSet.contains(qualifiedName)) {
         return false

@@ -49,7 +49,10 @@ class ScLiteralValueExtractor[T](literalTypes: IElementType*)(f: AnyRef => T) {
 
   def unapply(literal: ScLiteral): Option[T] = {
     val literalType = literal.getFirstChild.getNode.getElementType
-    if (types.contains(literalType)) Some(f(literal.getValue)) else None
+    if (types.contains(literalType))
+      Some(f(literal.getValue))
+    else
+      None
   }
 }
 

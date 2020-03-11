@@ -231,7 +231,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   override def toDebugString(): String = {
     val tabs = if (deltaChainLength > 0) {
       ("    " * (deltaChainLength - 1)) + "+--- "
-    } else ""
+    } else
+      ""
     parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
       tabs,
       "\n" + tabs,
@@ -263,7 +264,11 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // compaction (if needed)
     val doCompaction = shouldCompact
     val newParentSessionStore = if (doCompaction) {
-      val initCapacity = if (approxSize > 0) approxSize else 64
+      val initCapacity =
+        if (approxSize > 0)
+          approxSize
+        else
+          64
       new OpenHashMapBasedStateMap[K, S](
         initialCapacity = initCapacity,
         deltaChainThreshold)

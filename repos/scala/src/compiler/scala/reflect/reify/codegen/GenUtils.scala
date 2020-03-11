@@ -16,7 +16,8 @@ trait GenUtils {
     // reflection would be more robust, but, hey, this is a hot path
     if (prefix.startsWith("Tuple"))
       scalaFactoryCall(prefix, (elements map reify).toList: _*)
-    else mirrorCall(TermName(prefix), (elements map reify): _*)
+    else
+      mirrorCall(TermName(prefix), (elements map reify): _*)
   }
 
   // helper functions
@@ -75,7 +76,8 @@ trait GenUtils {
     val parts = fullname split "\\."
     val prefixParts = parts.init
     val lastName = mkName(parts.last)
-    if (prefixParts.isEmpty) Ident(lastName)
+    if (prefixParts.isEmpty)
+      Ident(lastName)
     else {
       val prefixTree =
         ((Ident(prefixParts.head): Tree) /: prefixParts.tail)(Select(_, _))
@@ -114,13 +116,15 @@ trait GenUtils {
 
   def origin(sym: Symbol) = {
     var origin = ""
-    if (sym.owner != NoSymbol) origin += "defined by %s".format(sym.owner.name)
+    if (sym.owner != NoSymbol)
+      origin += "defined by %s".format(sym.owner.name)
     if (sym.pos != NoPosition)
       origin += " in %s:%s:%s".format(
         sym.pos.source.file.name,
         sym.pos.line,
         sym.pos.column)
-    if (origin == "") origin = "of unknown origin"
+    if (origin == "")
+      origin = "of unknown origin"
     origin
   }
 }

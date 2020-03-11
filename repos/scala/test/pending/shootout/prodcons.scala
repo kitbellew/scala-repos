@@ -41,7 +41,10 @@ object prodcons {
       } catch {
         case _ => 1
       }
-    if (i > 0) i; else 1;
+    if (i > 0)
+      i;
+    else
+      1;
   }
 }
 
@@ -50,7 +53,8 @@ private class SharedBuffer() {
   var available = false;
 
   def get = synchronized {
-    while (available == false) wait();
+    while (available == false)
+      wait();
     available = false;
     // Console println("\t" + "get " + contents);
     notifyAll();
@@ -58,7 +62,8 @@ private class SharedBuffer() {
   }
 
   def put(value: Int) = synchronized {
-    while (available == true) wait();
+    while (available == true)
+      wait();
     contents = value;
     available = true;
     // Console println("put " + value);

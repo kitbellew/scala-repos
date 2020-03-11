@@ -17,7 +17,10 @@ trait IntermediateTreeVisitor {
   val printer: PrettyPrinter
 
   def escapeKeyword(name: String): String =
-    if (ScalaNamesUtil.isKeyword(name)) "`" + name + "`" else name
+    if (ScalaNamesUtil.isKeyword(name))
+      "`" + name + "`"
+    else
+      name
 
   def stringResult = printer.toString
 

@@ -67,14 +67,23 @@ object InstructionStackEffect {
       insn.getOpcode != INVOKESTATIC && insn.getOpcode != INVOKEDYNAMIC
     if (forClassfile) {
       val sizes = Type.getArgumentsAndReturnSizes(methodDesc)
-      val cons = (sizes >> 2) - (if (consumesReceiver) 0 else 1)
+      val cons = (sizes >> 2) - (if (consumesReceiver)
+                                   0
+                                 else
+                                   1)
       val prod = sizes & 0x03
       t(cons, prod)
     } else {
       val cons =
-        Type.getArgumentTypes(methodDesc).length + (if (consumesReceiver) 1
-                                                    else 0)
-      val prod = if (Type.getReturnType(methodDesc) == Type.VOID_TYPE) 0 else 1
+        Type.getArgumentTypes(methodDesc).length + (if (consumesReceiver)
+                                                      1
+                                                    else
+                                                      0)
+      val prod =
+        if (Type.getReturnType(methodDesc) == Type.VOID_TYPE)
+          0
+        else
+          1
       t(cons, prod)
     }
   }
@@ -102,36 +111,57 @@ object InstructionStackEffect {
         t(0, 1)
 
       case LDC =>
-        if (forClassfile) insn.asInstanceOf[LdcInsnNode].cst match {
-          case _: java.lang.Long | _: java.lang.Double => t(0, 2)
-          case _                                       => t(0, 1)
-        }
+        if (forClassfile)
+          insn.asInstanceOf[LdcInsnNode].cst match {
+            case _: java.lang.Long | _: java.lang.Double => t(0, 2)
+            case _                                       => t(0, 1)
+          }
         else
           t(0, 1)
 
       case LCONST_0 | LCONST_1 | DCONST_0 | DCONST_1 | LLOAD | DLOAD =>
-        if (forClassfile) t(0, 2) else t(0, 1)
+        if (forClassfile)
+          t(0, 2)
+        else
+          t(0, 1)
 
       case IALOAD | FALOAD | AALOAD | BALOAD | CALOAD | SALOAD => t(2, 1)
 
-      case LALOAD | DALOAD => if (forClassfile) t(2, 2) else t(2, 1)
+      case LALOAD | DALOAD =>
+        if (forClassfile)
+          t(2, 2)
+        else
+          t(2, 1)
 
       case ISTORE | FSTORE | ASTORE => t(1, 0)
 
-      case LSTORE | DSTORE => if (forClassfile) t(2, 0) else t(1, 0)
+      case LSTORE | DSTORE =>
+        if (forClassfile)
+          t(2, 0)
+        else
+          t(1, 0)
 
       case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE => t(3, 0)
 
-      case LASTORE | DASTORE => if (forClassfile) t(4, 0) else t(3, 0)
+      case LASTORE | DASTORE =>
+        if (forClassfile)
+          t(4, 0)
+        else
+          t(3, 0)
 
       case POP => t(1, 0)
 
       case POP2 =>
-        if (forClassfile) t(2, 0)
-        else if (conservative) t(1, 0)
+        if (forClassfile)
+          t(2, 0)
+        else if (conservative)
+          t(1, 0)
         else {
           val isSize2 = peekStack(0).getSize == 2
-          if (isSize2) t(1, 0) else t(2, 0)
+          if (isSize2)
+            t(1, 0)
+          else
+            t(2, 0)
         }
 
       case DUP => t(1, 2)
@@ -139,36 +169,55 @@ object InstructionStackEffect {
       case DUP_X1 => t(2, 3)
 
       case DUP_X2 =>
-        if (forClassfile || conservative) t(3, 4)
+        if (forClassfile || conservative)
+          t(3, 4)
         else {
           val isSize2 = peekStack(1).getSize == 2
-          if (isSize2) t(2, 3) else t(3, 4)
+          if (isSize2)
+            t(2, 3)
+          else
+            t(3, 4)
         }
 
       case DUP2 =>
-        if (forClassfile || conservative) t(2, 4)
+        if (forClassfile || conservative)
+          t(2, 4)
         else {
           val isSize2 = peekStack(0).getSize == 2
-          if (isSize2) t(1, 2) else t(2, 4)
+          if (isSize2)
+            t(1, 2)
+          else
+            t(2, 4)
         }
 
       case DUP2_X1 =>
-        if (forClassfile || conservative) t(3, 5)
+        if (forClassfile || conservative)
+          t(3, 5)
         else {
           val isSize2 = peekStack(0).getSize == 2
-          if (isSize2) t(2, 3) else t(3, 5)
+          if (isSize2)
+            t(2, 3)
+          else
+            t(3, 5)
         }
 
       case DUP2_X2 =>
-        if (forClassfile || conservative) t(4, 6)
+        if (forClassfile || conservative)
+          t(4, 6)
         else {
           val v1isSize2 = peekStack(0).getSize == 2
           if (v1isSize2) {
             val v2isSize2 = peekStack(1).getSize == 2
-            if (v2isSize2) t(2, 3) else t(3, 4)
+            if (v2isSize2)
+              t(2, 3)
+            else
+              t(3, 4)
           } else {
             val v3isSize2 = peekStack(2).getSize == 2
-            if (v3isSize2) t(3, 5) else t(4, 6)
+            if (v3isSize2)
+              t(3, 5)
+            else
+              t(4, 6)
           }
         }
 
@@ -180,31 +229,62 @@ object InstructionStackEffect {
 
       case LADD | DADD | LSUB | DSUB | LMUL | DMUL | LDIV | DDIV | LREM |
           DREM =>
-        if (forClassfile) t(4, 2) else t(2, 1)
+        if (forClassfile)
+          t(4, 2)
+        else
+          t(2, 1)
 
       case INEG | FNEG => t(1, 1)
 
-      case LNEG | DNEG => if (forClassfile) t(2, 2) else t(1, 1)
+      case LNEG | DNEG =>
+        if (forClassfile)
+          t(2, 2)
+        else
+          t(1, 1)
 
       case ISHL | ISHR | IUSHR | IAND | IOR | IXOR => t(2, 1)
 
-      case LSHL | LSHR | LUSHR => if (forClassfile) t(3, 2) else t(2, 1)
+      case LSHL | LSHR | LUSHR =>
+        if (forClassfile)
+          t(3, 2)
+        else
+          t(2, 1)
 
-      case LAND | LOR | LXOR => if (forClassfile) t(4, 2) else t(2, 1)
+      case LAND | LOR | LXOR =>
+        if (forClassfile)
+          t(4, 2)
+        else
+          t(2, 1)
 
       case IINC => t(0, 0)
 
       case I2F | F2I | I2B | I2C | I2S => t(1, 1)
 
-      case I2L | I2D | F2L | F2D => if (forClassfile) t(1, 2) else t(1, 1)
+      case I2L | I2D | F2L | F2D =>
+        if (forClassfile)
+          t(1, 2)
+        else
+          t(1, 1)
 
-      case L2I | L2F | D2I | D2F => if (forClassfile) t(2, 1) else t(1, 1)
+      case L2I | L2F | D2I | D2F =>
+        if (forClassfile)
+          t(2, 1)
+        else
+          t(1, 1)
 
-      case L2D | D2L => if (forClassfile) t(2, 2) else t(1, 1)
+      case L2D | D2L =>
+        if (forClassfile)
+          t(2, 2)
+        else
+          t(1, 1)
 
       case FCMPL | FCMPG => t(2, 1)
 
-      case LCMP | DCMPL | DCMPG => if (forClassfile) t(4, 1) else t(2, 1)
+      case LCMP | DCMPL | DCMPG =>
+        if (forClassfile)
+          t(4, 1)
+        else
+          t(2, 1)
 
       case IFEQ | IFNE | IFLT | IFGE | IFGT | IFLE => t(1, 0)
 
@@ -223,24 +303,44 @@ object InstructionStackEffect {
       case IRETURN | FRETURN | ARETURN =>
         t(1, 0) // Frame.execute consumes one stack value
 
-      case LRETURN | DRETURN => if (forClassfile) t(2, 0) else t(1, 0)
+      case LRETURN | DRETURN =>
+        if (forClassfile)
+          t(2, 0)
+        else
+          t(1, 0)
 
       case RETURN => t(0, 0) // Frame.execute does not change the stack
 
       case GETSTATIC =>
-        val prod = if (forClassfile && fieldInsnIsLongOrDouble(insn)) 2 else 1
+        val prod =
+          if (forClassfile && fieldInsnIsLongOrDouble(insn))
+            2
+          else
+            1
         t(0, prod)
 
       case PUTSTATIC =>
-        val cons = if (forClassfile && fieldInsnIsLongOrDouble(insn)) 2 else 1
+        val cons =
+          if (forClassfile && fieldInsnIsLongOrDouble(insn))
+            2
+          else
+            1
         t(cons, 0)
 
       case GETFIELD =>
-        val prod = if (forClassfile && fieldInsnIsLongOrDouble(insn)) 2 else 1
+        val prod =
+          if (forClassfile && fieldInsnIsLongOrDouble(insn))
+            2
+          else
+            1
         t(1, prod)
 
       case PUTFIELD =>
-        val cons = if (forClassfile && fieldInsnIsLongOrDouble(insn)) 3 else 2
+        val cons =
+          if (forClassfile && fieldInsnIsLongOrDouble(insn))
+            3
+          else
+            2
         t(cons, 0)
 
       case INVOKEVIRTUAL | INVOKESPECIAL | INVOKESTATIC | INVOKEINTERFACE =>

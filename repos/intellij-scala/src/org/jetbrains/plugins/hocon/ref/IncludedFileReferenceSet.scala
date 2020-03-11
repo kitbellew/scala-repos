@@ -52,8 +52,10 @@ class IncludedFileReferenceSet(
     forcedAbsolute || super.isAbsolutePathReference
 
   override def couldBeConvertedTo(relative: Boolean): Boolean =
-    if (relative) !forcedAbsolute
-    else fromClasspath
+    if (relative)
+      !forcedAbsolute
+    else
+      fromClasspath
 
   override def createFileReference(
       range: TextRange,
@@ -75,17 +77,20 @@ class IncludedFileReferenceSet(
     def single(fsi: PsiFileSystemItem) = ju.Collections.singletonList(fsi)
 
     val cf = getContainingFile
-    if (cf == null) return empty
+    if (cf == null)
+      return empty
 
     val containingFile =
       Option(cf.getContext).map(_.getContainingFile).getOrElse(cf)
 
     val proj = containingFile.getProject
     val vfile = containingFile.getOriginalFile.getVirtualFile
-    if (vfile == null) return empty
+    if (vfile == null)
+      return empty
 
     val parent = vfile.getParent
-    if (parent == null) return empty
+    if (parent == null)
+      return empty
 
     val psiManager = PsiManager.getInstance(proj)
 
@@ -94,10 +99,13 @@ class IncludedFileReferenceSet(
 
       val pfi = ProjectRootManager.getInstance(proj).getFileIndex
       val pkgName =
-        if (isAbsolutePathReference) ""
-        else pfi.getPackageNameByDirectory(parent)
+        if (isAbsolutePathReference)
+          ""
+        else
+          pfi.getPackageNameByDirectory(parent)
 
-      if (pkgName == null) return empty
+      if (pkgName == null)
+        return empty
 
       val allScopes =
         pfi.getOrderEntriesForFile(parent).iterator.asScala.collect {
@@ -150,10 +158,14 @@ object IncludedFileReference {
     rr.getElement match {
       case file: PsiFile =>
         val name = file.getName
-        if (name.endsWith(ConfExt)) 0
-        else if (name.endsWith(JsonExt)) 1
-        else if (name.endsWith(PropsExt)) 2
-        else 3
+        if (name.endsWith(ConfExt))
+          0
+        else if (name.endsWith(JsonExt))
+          1
+        else if (name.endsWith(PropsExt))
+          2
+        else
+          3
       case _ =>
         3
     }

@@ -50,7 +50,11 @@ object M1 {
 
 object M2 {
   class Rational(x: Int, y: Int) {
-    private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b);
+    private def gcd(a: Int, b: Int): Int =
+      if (b == 0)
+        a
+      else
+        gcd(b, a % b);
     private val g = gcd(x, y);
     def numer = x / g;
     def denom = y / g;
@@ -79,12 +83,20 @@ object M2 {
 
 object M3 {
   class Rational(x: Int, y: Int) {
-    private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b);
+    private def gcd(a: Int, b: Int): Int =
+      if (b == 0)
+        a
+      else
+        gcd(b, a % b);
     def numer = x / gcd(x, y);
     def denom = y / gcd(x, y);
     def less(that: Rational) =
       this.numer * that.denom < that.numer * this.denom;
-    def max(that: Rational) = if (this.less(that)) that else this;
+    def max(that: Rational) =
+      if (this.less(that))
+        that
+      else
+        this;
     override def toString() = numer + "/" + denom;
   }
 
@@ -101,7 +113,11 @@ object M3 {
 
 object M4 {
   class Rational(x: Int, y: Int) {
-    private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b);
+    private def gcd(a: Int, b: Int): Int =
+      if (b == 0)
+        a
+      else
+        gcd(b, a % b);
     private val g = gcd(x, y);
     def numer = x / g;
     def denom = y / g;
@@ -137,13 +153,19 @@ object M5 {
 
   class NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
     def contains(x: Int): Boolean =
-      if (x < elem) left contains x
-      else if (x > elem) right contains x
-      else true;
+      if (x < elem)
+        left contains x
+      else if (x > elem)
+        right contains x
+      else
+        true;
     def incl(x: Int): IntSet =
-      if (x < elem) new NonEmpty(elem, left incl x, right)
-      else if (x > elem) new NonEmpty(elem, left, right incl x)
-      else this;
+      if (x < elem)
+        new NonEmpty(elem, left incl x, right)
+      else if (x > elem)
+        new NonEmpty(elem, left, right incl x)
+      else
+        this;
   }
 
   val x = new Empty incl 1 incl 2;
@@ -239,14 +261,20 @@ object M8 {
 
   class NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
     def contains(x: Int): Boolean =
-      if (x < elem) left contains x
-      else if (x > elem) right contains x
-      else true;
+      if (x < elem)
+        left contains x
+      else if (x > elem)
+        right contains x
+      else
+        true;
 
     def incl(x: Int): IntSet =
-      if (x < elem) new NonEmpty(elem, left incl x, right)
-      else if (x > elem) new NonEmpty(elem, left, right incl x)
-      else this;
+      if (x < elem)
+        new NonEmpty(elem, left incl x, right)
+      else if (x > elem)
+        new NonEmpty(elem, left, right incl x)
+      else
+        this;
 
     def map(f: Int => Int): IntSet = {
       val lset = left.map(f);
@@ -265,10 +293,20 @@ object M8 {
         that,
         left.intersect0(
           that,
-          if (that.contains(elem)) accu.incl(elem) else accu));
+          if (that.contains(elem))
+            accu.incl(elem)
+          else
+            accu));
 
     def filter0(f: Int => Boolean, accu: IntSet): IntSet =
-      right.filter0(f, left.filter0(f, if (f(elem)) accu.incl(elem) else accu));
+      right.filter0(
+        f,
+        left.filter0(
+          f,
+          if (f(elem))
+            accu.incl(elem)
+          else
+            accu));
   }
 
   def test = {
@@ -323,7 +361,11 @@ object M8 {
 
 object M9 {
   class Rational(x: Int, y: Int) {
-    private def gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b);
+    private def gcd(a: Int, b: Int): Int =
+      if (b == 0)
+        a
+      else
+        gcd(b, a % b);
     private val g = gcd(x, y);
     def numer = x / g;
     def denom = y / g;

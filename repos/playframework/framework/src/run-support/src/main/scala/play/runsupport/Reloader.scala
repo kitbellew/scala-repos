@@ -363,7 +363,10 @@ object Reloader {
         }
         // Convert play-server exceptions to our to our ServerStartException
         def getRootCause(t: Throwable): Throwable =
-          if (t.getCause == null) t else getRootCause(t.getCause)
+          if (t.getCause == null)
+            t
+          else
+            getRootCause(t.getCause)
         if (getRootCause(
               e).getClass.getName == "play.core.server.ServerListenException") {
           throw new ServerStartException(e)

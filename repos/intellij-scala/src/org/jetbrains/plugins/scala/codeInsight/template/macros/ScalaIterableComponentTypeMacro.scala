@@ -15,7 +15,8 @@ class ScalaIterableComponentTypeMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    if (params.length != 1) return null
+    if (params.length != 1)
+      return null
     Option(params(0).calculateResult(context))
       .flatMap(MacroUtil.resultToScExpr(_, context))
       .flatMap(_.getType().toOption.flatMap { exprType =>

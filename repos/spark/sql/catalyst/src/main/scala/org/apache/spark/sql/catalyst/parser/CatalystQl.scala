@@ -148,8 +148,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       DescribeFunction(cleanIdentifier(functionName), isExtended.nonEmpty)
 
     case Token(
-        "TOK_QUERY",
-        queryArgs @ Token("TOK_CTE" | "TOK_FROM" | "TOK_INSERT", _) :: _) =>
+          "TOK_QUERY",
+          queryArgs @ Token("TOK_CTE" | "TOK_FROM" | "TOK_INSERT", _) :: _) =>
       val (fromClause: Option[ASTNode], insertClauses, cteRelations) =
         queryArgs match {
           case Token("TOK_CTE", ctes) :: Token("TOK_FROM", from) :: inserts =>
@@ -295,8 +295,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
           // Handle SELECT DISTINCT
           val withDistinct =
-            if (selectDistinctClause.isDefined) Distinct(withHaving)
-            else withHaving
+            if (selectDistinctClause.isDefined)
+              Distinct(withHaving)
+            else
+              withHaving
 
           // Handle ORDER BY, SORT BY, DISTRIBUTE BY, and CLUSTER BY clause.
           val withSort =
@@ -320,10 +322,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                   partitionExprs.children.map(nodeToExpr),
                   withDistinct)
               case (
-                  None,
-                  Some(perPartitionOrdering),
-                  Some(partitionExprs),
-                  None) =>
+                    None,
+                    Some(perPartitionOrdering),
+                    Some(partitionExprs),
+                    None) =>
                 Sort(
                   perPartitionOrdering.children.map(nodeToSortOrder),
                   global = false,
@@ -354,10 +356,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           // Collect all window specifications defined in the WINDOW clause.
           val windowDefinitions = windowClause.map(_.children.collect {
             case Token(
-                "TOK_WINDOWDEF",
-                Token(windowName, Nil) :: Token(
-                  "TOK_WINDOWSPEC",
-                  spec) :: Nil) =>
+                  "TOK_WINDOWDEF",
+                  Token(windowName, Nil) :: Token(
+                    "TOK_WINDOWSPEC",
+                    spec) :: Nil) =>
               windowName -> nodesToWindowSpecification(spec)
           }.toMap)
           // Handle cases like
@@ -389,7 +391,11 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       }
 
       // If there are multiple INSERTS just UNION them together into one query.
-      val query = if (queries.length == 1) queries.head else Union(queries)
+      val query =
+        if (queries.length == 1)
+          queries.head
+        else
+          Union(queries)
 
       // return With plan if there is CTE
       cteRelations.map(With(query, _)).getOrElse(query)
@@ -415,8 +421,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         SubqueryAlias(cleanIdentifier(alias), nodeToPlan(query))
 
       case Token(
-          laterViewToken(isOuter),
-          selectClause :: relationClause :: Nil) =>
+            laterViewToken(isOuter),
+            selectClause :: relationClause :: Nil) =>
         nodeToGenerate(
           selectClause,
           outer = isOuter.nonEmpty,
@@ -450,12 +456,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         (bucketSampleClause orElse splitSampleClause)
           .map {
             case Token(
-                "TOK_TABLESPLITSAMPLE",
-                Token("TOK_ROWCOUNT", Nil) :: Token(count, Nil) :: Nil) =>
+                  "TOK_TABLESPLITSAMPLE",
+                  Token("TOK_ROWCOUNT", Nil) :: Token(count, Nil) :: Nil) =>
               Limit(Literal(count.toInt), relation)
             case Token(
-                "TOK_TABLESPLITSAMPLE",
-                Token("TOK_PERCENT", Nil) :: Token(fraction, Nil) :: Nil) =>
+                  "TOK_TABLESPLITSAMPLE",
+                  Token("TOK_PERCENT", Nil) :: Token(fraction, Nil) :: Nil) =>
               // The range of fraction accepted by Sample is [0, 1]. Because Hive's block sampling
               // function takes X PERCENT as the input and the range of X is [0, 100], we need to
               // adjust the fraction.
@@ -471,8 +477,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 (math.random * 1000).toInt,
                 relation)(isTableSample = true)
             case Token(
-                "TOK_TABLEBUCKETSAMPLE",
-                Token(numerator, Nil) ::
+                  "TOK_TABLEBUCKETSAMPLE",
+                  Token(numerator, Nil) ::
                   Token(denominator, Nil) :: Nil) =>
               val fraction = numerator.toDouble / denominator.toDouble
               Sample(
@@ -548,8 +554,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       query: LogicalPlan,
       overwrite: Boolean): LogicalPlan = node match {
     case Token(
-        destinationToken(),
-        Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) =>
+          destinationToken(),
+          Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) =>
       query
 
     case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
@@ -562,8 +568,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         .map(_.children.map {
           // Parse partitions. We also make keys case insensitive.
           case Token(
-              "TOK_PARTVAL",
-              Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                "TOK_PARTVAL",
+                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
             cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
           case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
             cleanIdentifier(key.toLowerCase) -> None
@@ -578,8 +584,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         ifNotExists = false)
 
     case Token(
-        destinationToken(),
-        Token("TOK_TAB", tableArgs) ::
+          destinationToken(),
+          Token("TOK_TAB", tableArgs) ::
           Token("TOK_IFNOTEXISTS", ifNotExists) :: Nil) =>
       val Some(tableNameParts) :: partitionClause :: Nil =
         getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
@@ -590,8 +596,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         .map(_.children.map {
           // Parse partitions. We also make keys case insensitive.
           case Token(
-              "TOK_PARTVAL",
-              Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                "TOK_PARTVAL",
+                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
             cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
           case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
             cleanIdentifier(key.toLowerCase) -> None
@@ -681,8 +687,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           UnresolvedExtractValue(other, Literal(cleanIdentifier(attr)))
       }
     case Token(
-        "TOK_SUBQUERY_EXPR",
-        Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) =>
+          "TOK_SUBQUERY_EXPR",
+          Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) =>
       ScalarSubquery(nodeToPlan(subquery))
 
     /* Stars (*) */
@@ -723,12 +729,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     case Token("TOK_FUNCTION", Token("TOK_BOOLEAN", Nil) :: arg :: Nil) =>
       Cast(nodeToExpr(arg), BooleanType)
     case Token(
-        "TOK_FUNCTION",
-        Token("TOK_DECIMAL", precision :: scale :: nil) :: arg :: Nil) =>
+          "TOK_FUNCTION",
+          Token("TOK_DECIMAL", precision :: scale :: nil) :: arg :: Nil) =>
       Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, scale.text.toInt))
     case Token(
-        "TOK_FUNCTION",
-        Token("TOK_DECIMAL", precision :: Nil) :: arg :: Nil) =>
+          "TOK_FUNCTION",
+          Token("TOK_DECIMAL", precision :: Nil) :: arg :: Nil) =>
       Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, 0))
     case Token("TOK_FUNCTION", Token("TOK_DECIMAL", Nil) :: arg :: Nil) =>
       Cast(nodeToExpr(arg), DecimalType.USER_DEFAULT)
@@ -792,8 +798,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     case Token("TOK_FUNCTION", Token(IN(), Nil) :: value :: list) =>
       In(nodeToExpr(value), list.map(nodeToExpr))
     case Token(
-        "TOK_FUNCTION",
-        Token(BETWEEN(), Nil) ::
+          "TOK_FUNCTION",
+          Token(BETWEEN(), Nil) ::
           kw ::
           target ::
           minValue ::

@@ -53,7 +53,8 @@ object BackendReporting {
     def withFilter(f: B => Boolean)(implicit empty: A): Either[A, B] = v match {
       case Left(_) => v
       case Right(e) =>
-        if (f(e)) v
+        if (f(e))
+          v
         else
           Left(empty) // scalaz.\/ requires an implicit Monoid m to get m.empty
     }
@@ -113,17 +114,19 @@ object BackendReporting {
         s"The classfile for $internalName could not be found on the compilation classpath." + {
           if (definedInJavaSource)
             "\nThe class is defined in a Java source file that is being compiled (mixed compilation), therefore no bytecode is available."
-          else ""
+          else
+            ""
         }
 
       case MethodNotFound(
-          name,
-          descriptor,
-          ownerInternalName,
-          missingClasses) =>
+            name,
+            descriptor,
+            ownerInternalName,
+            missingClasses) =>
         val (javaDef, others) = missingClasses.partition(_.definedInJavaSource)
         s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
-          (if (others.isEmpty) ""
+          (if (others.isEmpty)
+             ""
            else
              others
                .map(_.internalName)
@@ -131,7 +134,8 @@ object BackendReporting {
                  "\nNote that the following parent classes could not be found on the classpath: ",
                  ", ",
                  "")) +
-          (if (javaDef.isEmpty) ""
+          (if (javaDef.isEmpty)
+             ""
            else
              javaDef
                .map(_.internalName)
@@ -147,11 +151,14 @@ object BackendReporting {
 
     def emitWarning(settings: ScalaSettings): Boolean = this match {
       case ClassNotFound(_, javaDefined) =>
-        if (javaDefined) settings.YoptWarningNoInlineMixed
-        else settings.YoptWarningNoInlineMissingBytecode
+        if (javaDefined)
+          settings.YoptWarningNoInlineMixed
+        else
+          settings.YoptWarningNoInlineMissingBytecode
 
       case m @ MethodNotFound(_, _, _, missing) =>
-        if (m.isArrayMethod) false
+        if (m.isArrayMethod)
+          false
         else
           settings.YoptWarningNoInlineMissingBytecode || missing.exists(
             _.emitWarning(settings))
@@ -283,22 +290,22 @@ object BackendReporting {
           s"\nthat would cause an IllegalAccessError when inlined into class $callsiteClass."
 
       case IllegalAccessCheckFailed(
-          _,
-          _,
-          _,
-          callsiteClass,
-          instruction,
-          cause) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            instruction,
+            cause) =>
         s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils
           .textify(instruction)} failed:\n" + cause
 
       case MethodWithHandlerCalledOnNonEmptyStack(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The operand stack at the callsite in ${BackendReporting
              .methodSignature(
                callsiteClass,
@@ -311,12 +318,12 @@ object BackendReporting {
         s"Method $calleeMethodSig cannot be inlined because it is synchronized."
 
       case StrictfpMismatch(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The callsite method ${BackendReporting.methodSignature(
              callsiteClass,
              callsiteName,
@@ -325,12 +332,12 @@ object BackendReporting {
          """.stripMargin
 
       case ResultingMethodTooLarge(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The size of the callsite method ${BackendReporting
              .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.

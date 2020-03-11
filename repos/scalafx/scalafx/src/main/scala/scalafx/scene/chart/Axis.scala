@@ -44,12 +44,18 @@ import scalafx.scene.text.Font
 
 object Axis {
   implicit def sfxAxis2jfx[T](v: Axis[T]): jfxsc.Axis[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object TickMark {
     implicit def sfxTickMark2jfx[T](
         v: Axis.TickMark[T]): jfxsc.Axis.TickMark[T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   class TickMark[T](

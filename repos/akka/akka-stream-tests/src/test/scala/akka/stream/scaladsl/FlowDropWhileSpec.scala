@@ -42,7 +42,11 @@ class FlowDropWhileSpec extends AkkaSpec {
     "continue if error" in assertAllStagesStopped {
       val testException = new Exception("test") with NoStackTrace
       Source(1 to 4)
-        .dropWhile(a ⇒ if (a < 3) true else throw testException)
+        .dropWhile(a ⇒
+          if (a < 3)
+            true
+          else
+            throw testException)
         .withAttributes(supervisionStrategy(resumingDecider))
         .runWith(TestSink.probe[Int])
         .request(1)

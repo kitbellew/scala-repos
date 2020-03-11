@@ -172,8 +172,10 @@ trait TransSpecableModule[M[+_]]
             node: Join)(parent: N[S], value: RValue, invert: Boolean) =
           parent.flatMap(leftMap(_) { target =>
             val inner = trans.Equal(target, transRValue(value, target))
-            if (invert) op1ForUnOp(Comp).spec(MorphContext(ctx, node))(inner)
-            else inner
+            if (invert)
+              op1ForUnOp(Comp).spec(MorphContext(ctx, node))(inner)
+            else
+              inner
           })
 
         def WrapObject(node: Join)(parent: N[S], field: String) =
@@ -260,8 +262,10 @@ trait TransSpecableModule[M[+_]]
             (l, al) = get(pl)
             pr <- rightParent
             (r, ar) = get(pr)
-            result <- if (al == ar) set(pl, (trans.Filter(l, r), al))
-            else init(Leaf(Source), node)
+            result <- if (al == ar)
+              set(pl, (trans.Filter(l, r), al))
+            else
+              init(Leaf(Source), node)
           } yield result
 
         def WrapArray(node: Operate)(parent: N[S]) =

@@ -90,7 +90,8 @@ object Searching {
     @tailrec
     private def binarySearch[B >: A](elem: B, from: Int, to: Int)(
         implicit ord: Ordering[B]): SearchResult = {
-      if (to == from) InsertionPoint(from)
+      if (to == from)
+        InsertionPoint(from)
       else {
         val idx = from + (to - from - 1) / 2
         math.signum(ord.compare(elem, coll(idx))) match {
@@ -107,8 +108,10 @@ object Searching {
       val it = c.iterator
       while (it.hasNext) {
         val cur = it.next()
-        if (ord.equiv(elem, cur)) return Found(idx)
-        else if (ord.lt(elem, cur)) return InsertionPoint(idx)
+        if (ord.equiv(elem, cur))
+          return Found(idx)
+        else if (ord.lt(elem, cur))
+          return InsertionPoint(idx)
         idx += 1
       }
       InsertionPoint(idx)

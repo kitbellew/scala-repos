@@ -43,8 +43,10 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
     val scalaOptions =
       classpathOption(classpath) ::: mainClass :: options.toList
     val configLogged =
-      if (config.outputStrategy.isDefined) config
-      else config.copy(outputStrategy = Some(LoggedOutput(log)))
+      if (config.outputStrategy.isDefined)
+        config
+      else
+        config.copy(outputStrategy = Some(LoggedOutput(log)))
     // fork with Java because Scala introduces an extra class loader (#702)
     val process = Fork.java.fork(configLogged, scalaOptions)
     def cancel() = {
@@ -95,7 +97,10 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
           Some(e.toString)
       }
 
-    if (trapExit) Run.executeTrapExit(execute(), log) else directExecute()
+    if (trapExit)
+      Run.executeTrapExit(execute(), log)
+    else
+      directExecute()
   }
   private def run0(
       mainClassName: String,

@@ -62,7 +62,13 @@ case class UnresolvedAttribute(nameParts: Seq[String])
     with Unevaluable {
 
   def name: String =
-    nameParts.map(n => if (n.contains(".")) s"`$n`" else n).mkString(".")
+    nameParts
+      .map(n =>
+        if (n.contains("."))
+          s"`$n`"
+        else
+          n)
+      .mkString(".")
 
   override def exprId: ExprId = throw new UnresolvedException(this, "exprId")
   override def dataType: DataType =
@@ -126,16 +132,19 @@ object UnresolvedAttribute {
       if (inBacktick) {
         if (char == '`') {
           inBacktick = false
-          if (i + 1 < name.length && name(i + 1) != '.') throw e
+          if (i + 1 < name.length && name(i + 1) != '.')
+            throw e
         } else {
           tmp += char
         }
       } else {
         if (char == '`') {
-          if (tmp.nonEmpty) throw e
+          if (tmp.nonEmpty)
+            throw e
           inBacktick = true
         } else if (char == '.') {
-          if (name(i - 1) == '.' || i == name.length - 1) throw e
+          if (name(i - 1) == '.' || i == name.length - 1)
+            throw e
           nameParts += tmp.mkString
           tmp.clear()
         } else {
@@ -144,7 +153,8 @@ object UnresolvedAttribute {
       }
       i += 1
     }
-    if (inBacktick) throw e
+    if (inBacktick)
+      throw e
     nameParts += tmp.mkString
     nameParts.toSeq
   }
@@ -223,7 +233,8 @@ case class UnresolvedStar(target: Option[Seq[String]])
           List()
         }
     }
-    if (expandedAttributes.nonEmpty) return expandedAttributes
+    if (expandedAttributes.nonEmpty)
+      return expandedAttributes
 
     // Try to resolve it as a struct expansion. If there is a conflict and both are possible,
     // (i.e. [name].* is both a table and a struct), the struct path can always be qualified.

@@ -37,7 +37,10 @@ import scalafx.event.EventType
 
 object TouchEvent {
   implicit def sfxTouchEvent2jfx(se: TouchEvent): jfxsi.TouchEvent =
-    if (se != null) se.delegate else null
+    if (se != null)
+      se.delegate
+    else
+      null
 
   /**
     * Common supertype for all touch event types.

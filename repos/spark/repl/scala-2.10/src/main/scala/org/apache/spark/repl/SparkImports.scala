@@ -202,8 +202,10 @@ private[repl] trait SparkImports {
           code append (x.member + "\n")
 
           // give wildcard imports a import wrapper all to their own
-          if (x.importsWildcard) addWrapper()
-          else currentImps ++= x.importedNames
+          if (x.importsWildcard)
+            addWrapper()
+          else
+            currentImps ++= x.importedNames
 
         // For other requests, import each defined name.
         // import them explicitly instead of with _, so that
@@ -224,7 +226,8 @@ private[repl] trait SparkImports {
 
         case x =>
           for (imv <- x.definedNames) {
-            if (currentImps contains imv) addWrapper()
+            if (currentImps contains imv)
+              addWrapper()
             val objName = req.lineRep.readPath
             val valName = "$VAL" + newValId()
 

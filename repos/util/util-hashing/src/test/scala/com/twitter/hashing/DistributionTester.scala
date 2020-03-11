@@ -13,7 +13,8 @@ class DistributionTester[A](distributor: Distributor[A]) {
     keys map {
       distributor.nodeForHash(_)
     } foreach { key =>
-      if (!keysPerNode.contains(key)) keysPerNode(key) = 0
+      if (!keysPerNode.contains(key))
+        keysPerNode(key) = 0
       keysPerNode(key) += 1
     }
     var frequencies = keysPerNode.values.toList

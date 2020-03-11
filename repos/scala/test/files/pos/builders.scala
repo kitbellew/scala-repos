@@ -44,12 +44,15 @@ object builders {
    */
   class Iter[A, C](elems: List[A]) {
     def ++[B >: A, D](xs: Iterable[B])(implicit b: Builder[C, D, B]): D = {
-      for (x <- elems) b += x
-      for (x <- xs) b += x
+      for (x <- elems)
+        b += x
+      for (x <- xs)
+        b += x
       b.result
     }
     def map[B, D](f: A => B)(implicit b: Builder[C, D, B]): D = {
-      for (x <- elems) b += f(x)
+      for (x <- elems)
+        b += f(x)
       b.result
     }
   }

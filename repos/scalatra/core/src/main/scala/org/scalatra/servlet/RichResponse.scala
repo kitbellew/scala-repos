@@ -49,11 +49,14 @@ case class RichResponse(res: HttpServletResponse) {
     import cookie._
 
     val sCookie = new ServletCookie(name, value)
-    if (options.domain.nonBlank) sCookie.setDomain(options.domain)
-    if (options.path.nonBlank) sCookie.setPath(options.path)
+    if (options.domain.nonBlank)
+      sCookie.setDomain(options.domain)
+    if (options.path.nonBlank)
+      sCookie.setPath(options.path)
     sCookie.setMaxAge(options.maxAge)
     sCookie.setSecure(options.secure)
-    if (options.comment.nonBlank) sCookie.setComment(options.comment)
+    if (options.comment.nonBlank)
+      sCookie.setComment(options.comment)
     sCookie.setHttpOnly(options.httpOnly)
     sCookie.setVersion(options.version)
     res.addCookie(sCookie)

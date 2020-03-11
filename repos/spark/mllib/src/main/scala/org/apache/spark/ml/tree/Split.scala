@@ -146,13 +146,21 @@ final class CategoricalSplit private[ml] (
 
   /** Get sorted categories which split to the left */
   def leftCategories: Array[Double] = {
-    val cats = if (isLeft) categories else setComplement(categories)
+    val cats =
+      if (isLeft)
+        categories
+      else
+        setComplement(categories)
     cats.toArray.sorted
   }
 
   /** Get sorted categories which split to the right */
   def rightCategories: Array[Double] = {
-    val cats = if (isLeft) setComplement(categories) else categories
+    val cats =
+      if (isLeft)
+        setComplement(categories)
+      else
+        categories
     cats.toArray.sorted
   }
 

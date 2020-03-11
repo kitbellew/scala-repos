@@ -114,12 +114,25 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] = Full(JsonAST.JBool(get))
 
   def real_convertToJDBCFriendly(value: Boolean): Object =
-    new java.lang.Integer(if (value) 1 else 0)
+    new java.lang.Integer(
+      if (value)
+        1
+      else
+        0)
 
   def jdbcFriendly(field: String) =
-    data.map(v => new java.lang.Integer(if (v) 1 else 0)) openOr null
+    data.map(v =>
+      new java.lang.Integer(
+        if (v)
+          1
+        else
+          0)) openOr null
 
-  def asJsExp: JsExp = if (get) JE.JsTrue else JE.JsFalse
+  def asJsExp: JsExp =
+    if (get)
+      JE.JsTrue
+    else
+      JE.JsFalse
 
   override def setFromAny(in: Any): Boolean = {
     in match {
@@ -173,7 +186,11 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case tv: MappedBoolean[T] =>
-            tv.allSet(if (isNull) Empty else Full(v != 0L))
+            tv.allSet(
+              if (isNull)
+                Empty
+              else
+                Full(v != 0L))
         })
 
   def buildSetStringValue(
@@ -185,7 +202,11 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case tv: MappedBoolean[T] =>
-            tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
+            tv.allSet(
+              if (v == null)
+                Empty
+              else
+                Full(toBoolean(v)))
         })
 
   def buildSetDateValue(
@@ -197,7 +218,11 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case tv: MappedBoolean[T] =>
-            tv.allSet(if (v == null) Empty else Full(true))
+            tv.allSet(
+              if (v == null)
+                Empty
+              else
+                Full(true))
         })
 
   def buildSetBooleanValue(
@@ -208,7 +233,12 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case tv: MappedBoolean[T] => tv.allSet(if (isNull) Empty else Full(v))
+          case tv: MappedBoolean[T] =>
+            tv.allSet(
+              if (isNull)
+                Empty
+              else
+                Full(v))
         })
 
   /**

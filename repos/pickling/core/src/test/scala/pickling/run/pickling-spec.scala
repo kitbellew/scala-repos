@@ -39,23 +39,24 @@ object PicklingSpec {
   case class Person(name: String, age: Int)
 
   lazy val randomDates =
-    for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield {
-      def randBetween(start: Int, end: Int): Int = {
-        start + scala.util.Random.nextInt(end - start)
-      }
+    for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE))
+      yield {
+        def randBetween(start: Int, end: Int): Int = {
+          start + scala.util.Random.nextInt(end - start)
+        }
 
-      val gc = new GregorianCalendar()
-      gc.set(Calendar.YEAR, randBetween(1900, 3000))
-      gc.set(Calendar.MONTH, randBetween(1, 12))
-      gc.set(
-        Calendar.DAY_OF_YEAR,
-        randBetween(1, gc.getActualMaximum(Calendar.DAY_OF_YEAR)))
-      gc.set(Calendar.HOUR_OF_DAY, randBetween(0, 24))
-      gc.set(Calendar.MINUTE, randBetween(0, 59))
-      gc.set(Calendar.SECOND, randBetween(0, 99))
-      gc.set(Calendar.MILLISECOND, randBetween(0, 999))
-      gc.getTime()
-    }
+        val gc = new GregorianCalendar()
+        gc.set(Calendar.YEAR, randBetween(1900, 3000))
+        gc.set(Calendar.MONTH, randBetween(1, 12))
+        gc.set(
+          Calendar.DAY_OF_YEAR,
+          randBetween(1, gc.getActualMaximum(Calendar.DAY_OF_YEAR)))
+        gc.set(Calendar.HOUR_OF_DAY, randBetween(0, 24))
+        gc.set(Calendar.MINUTE, randBetween(0, 59))
+        gc.set(Calendar.SECOND, randBetween(0, 99))
+        gc.set(Calendar.MILLISECOND, randBetween(0, 999))
+        gc.getTime()
+      }
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -90,7 +91,8 @@ object PicklingJsonSpec extends Properties("pickling-json") {
   /* The following two tests subsume test tuple2-primitive.scala */
 
   property("(String, Int)") = Prop forAll { (p: (String, Int)) =>
-    if (emptyOrUnicode(p._1)) true //FIXME
+    if (emptyOrUnicode(p._1))
+      true //FIXME
     else {
       val pickle: JSONPickle = p.pickle
       val p1 = pickle.unpickle[(String, Int)]
@@ -100,7 +102,8 @@ object PicklingJsonSpec extends Properties("pickling-json") {
 
   property("(String, Int, String)") = Prop forAll {
     (t: (String, Int, String)) =>
-      if (emptyOrUnicode(t._1) || emptyOrUnicode(t._3)) true //FIXME
+      if (emptyOrUnicode(t._1) || emptyOrUnicode(t._3))
+        true //FIXME
       else {
         val pickle: JSONPickle = t.pickle
         val t1 = pickle.unpickle[(String, Int, String)]
@@ -110,7 +113,8 @@ object PicklingJsonSpec extends Properties("pickling-json") {
 
   property("(Int, (String, Int), Int)") = Prop forAll {
     (t: (Int, (String, Int), Int)) =>
-      if (emptyOrUnicode(t._2._1)) true //FIXME
+      if (emptyOrUnicode(t._2._1))
+        true //FIXME
       else {
         val pickle: JSONPickle = t.pickle
         val t1 = pickle.unpickle[(Int, (String, Int), Int)]
@@ -133,7 +137,8 @@ object PicklingJsonSpec extends Properties("pickling-json") {
 
   property("(Option[String], String)") = Prop forAll {
     (t: (Option[String], String)) =>
-      if (emptyOrUnicode(t._2)) true //FIXME
+      if (emptyOrUnicode(t._2))
+        true //FIXME
       else {
         val pickle: JSONPickle = t.pickle
         val t1 = pickle.unpickle[(Option[String], String)]
@@ -338,7 +343,8 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
   /* The following two tests subsume test tuple2-primitive.scala */
 
   property("(String, Int)") = Prop forAll { (p: (String, Int)) =>
-    if (emptyOrUnicode(p._1)) true //FIXME
+    if (emptyOrUnicode(p._1))
+      true //FIXME
     else {
       val pickle: BinaryPickle = p.pickle
       val p1 = pickle.unpickle[(String, Int)]
@@ -348,7 +354,8 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
 
   property("(String, Int, String)") = Prop forAll {
     (t: (String, Int, String)) =>
-      if (emptyOrUnicode(t._1) || emptyOrUnicode(t._3)) true //FIXME
+      if (emptyOrUnicode(t._1) || emptyOrUnicode(t._3))
+        true //FIXME
       else {
         val pickle: BinaryPickle = t.pickle
         val t1 = pickle.unpickle[(String, Int, String)]
@@ -358,7 +365,8 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
 
   property("(Int, (String, Int), Int)") = Prop forAll {
     (t: (Int, (String, Int), Int)) =>
-      if (emptyOrUnicode(t._2._1)) true //FIXME
+      if (emptyOrUnicode(t._2._1))
+        true //FIXME
       else {
         val pickle: BinaryPickle = t.pickle
         val t1 = pickle.unpickle[(Int, (String, Int), Int)]
@@ -381,7 +389,8 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
 
   property("(Option[String], String)") = Prop forAll {
     (t: (Option[String], String)) =>
-      if (emptyOrUnicode(t._2)) true //FIXME
+      if (emptyOrUnicode(t._2))
+        true //FIXME
       else {
         val pickle: BinaryPickle = t.pickle
         val t1 = pickle.unpickle[(Option[String], String)]

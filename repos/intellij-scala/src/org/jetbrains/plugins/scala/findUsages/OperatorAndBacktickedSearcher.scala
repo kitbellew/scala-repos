@@ -43,8 +43,10 @@ class OperatorAndBacktickedSearcher
       element match {
         case e if !e.isValid => Nil
         case ScalaNamesUtil.isBackticked(name) =>
-          if (name != "") Seq((element, name), (element, s"`$name`"))
-          else Seq((element, "``"))
+          if (name != "")
+            Seq((element, name), (element, s"`$name`"))
+          else
+            Seq((element, "``"))
         case named: ScNamedElement
             if named.name.exists(ScalaNamesUtil.isOpCharacter) =>
           Seq((named, named.name))
@@ -60,7 +62,8 @@ class OperatorAndBacktickedSearcher
                  if ref.getRangeInElement.contains(offsetInElement)) {
               inReadAction {
                 if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
-                  if (!consumer.process(ref)) return false
+                  if (!consumer.process(ref))
+                    return false
                 }
               }
             }
@@ -92,7 +95,8 @@ class OperatorAndBacktickedSearcher
         text: String,
         processor: Processor[VirtualFile]): Boolean = {
       val entries = getWordEntries(text, caseSensitively)
-      if (entries.isEmpty) return true
+      if (entries.isEmpty)
+        return true
       val collectProcessor: CommonProcessors.CollectProcessor[VirtualFile] =
         new CommonProcessors.CollectProcessor[VirtualFile]
       val checker = new Condition[Integer] {

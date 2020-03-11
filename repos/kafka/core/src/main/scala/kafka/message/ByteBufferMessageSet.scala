@@ -105,12 +105,15 @@ object ByteBufferMessageSet {
       val MessageAndOffset(wrapperMessage, wrapperMessageOffset) =
         wrapperMessageAndOffset
       val wrapperMessageTimestampOpt: Option[Long] =
-        if (wrapperMessage.magic > MagicValue_V0) Some(wrapperMessage.timestamp)
-        else None
+        if (wrapperMessage.magic > MagicValue_V0)
+          Some(wrapperMessage.timestamp)
+        else
+          None
       val wrapperMessageTimestampTypeOpt: Option[TimestampType] =
         if (wrapperMessage.magic > MagicValue_V0)
           Some(wrapperMessage.timestampType)
-        else None
+        else
+          None
       if (wrapperMessage.payload == null)
         throw new KafkaException(s"Message payload is null: $wrapperMessage")
       val inputStream = new ByteBufferBackedInputStream(wrapperMessage.payload)
@@ -131,7 +134,8 @@ object ByteBufferMessageSet {
               throw new KafkaException(ioe)
           }
           Some(innerMessageAndOffsets)
-        } else None
+        } else
+          None
 
       private def readMessageFromStream(): MessageAndOffset = {
         val innerOffset = compressed.readLong()

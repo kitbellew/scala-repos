@@ -28,7 +28,8 @@ final class Api(
 
   def saveAuthentication(userId: String, apiVersion: Option[Int])(
       implicit req: RequestHeader): Fu[String] =
-    if (tor isExitNode req.remoteAddress) fufail(Api.AuthFromTorExitNode)
+    if (tor isExitNode req.remoteAddress)
+      fufail(Api.AuthFromTorExitNode)
     else
       UserRepo mustConfirmEmail userId flatMap {
         case true => fufail(Api MustConfirmEmail userId)

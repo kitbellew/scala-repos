@@ -65,7 +65,8 @@ object ScriptedPlugin extends Plugin {
     def nameP(group: String) = token("*".id | id.examples(pairMap(group)))
     val testID =
       for (group <- groupP;
-           name <- nameP(group)) yield (group, name)
+           name <- nameP(group))
+        yield (group, name)
     (token(Space) ~> matched(testID)).*
   }
 

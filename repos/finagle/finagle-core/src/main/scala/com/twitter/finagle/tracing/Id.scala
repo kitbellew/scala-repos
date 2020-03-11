@@ -20,11 +20,16 @@ object SpanId {
   // StringBuilder.appendAll(char..) seems to be faster than
   // StringBuilder.append(string..)
   private val lut: Array[Array[Char]] = (
-    for (b <- Byte.MinValue to Byte.MaxValue) yield {
-      val bb = if (b < 0) b + 256 else b
-      val s = "%02x".format(bb)
-      Array(s(0), s(1))
-    }
+    for (b <- Byte.MinValue to Byte.MaxValue)
+      yield {
+        val bb =
+          if (b < 0)
+            b + 256
+          else
+            b
+        val s = "%02x".format(bb)
+        Array(s(0), s(1))
+      }
   ).toArray
 
   private def byteToChars(b: Byte): Array[Char] = lut(b + 128)
@@ -102,11 +107,18 @@ object TraceId {
       val flags = Flags(flags64)
       val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
         Some(flags.isFlagSet(Flags.Sampled))
-      } else None
+      } else
+        None
 
       val traceId = TraceId(
-        if (trace64 == parent64) None else Some(SpanId(trace64)),
-        if (parent64 == span64) None else Some(SpanId(parent64)),
+        if (trace64 == parent64)
+          None
+        else
+          Some(SpanId(trace64)),
+        if (parent64 == span64)
+          None
+        else
+          Some(SpanId(parent64)),
         SpanId(span64),
         sampled,
         flags)
@@ -142,7 +154,11 @@ final case class TraceId(
   }
 
   // debug flag overrides sampled to be true
-  lazy val sampled = if (flags.isDebug) Some(true) else _sampled
+  lazy val sampled =
+    if (flags.isDebug)
+      Some(true)
+    else
+      _sampled
 
   private[TraceId] def ids = (traceId, parentId, spanId)
 

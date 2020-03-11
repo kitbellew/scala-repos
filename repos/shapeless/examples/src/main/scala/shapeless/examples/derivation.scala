@@ -168,7 +168,10 @@ object TypeClassesDemoAux {
         def show(p: FieldType[K, V] :: T): String = {
           val head = s"${key.value.name} = ${sv.value.show(p.head)}"
           val tail = st.value.show(p.tail)
-          if (tail.isEmpty) head else s"$head, $tail"
+          if (tail.isEmpty)
+            head
+          else
+            s"$head, $tail"
         }
       }
 
@@ -220,7 +223,10 @@ object TypeClassesDemoAux {
         def show2(p: H :: T): String = {
           val head = sv.value.show2(p.head)
           val tail = st.value.show2(p.tail)
-          if (tail.isEmpty) head else s"$head, $tail"
+          if (tail.isEmpty)
+            head
+          else
+            s"$head, $tail"
         }
       }
 

@@ -55,7 +55,10 @@ class IsotonicRegressionModel @Since("1.3.0") (
     with Saveable {
 
   private val predictionOrd =
-    if (isotonic) Ordering[Double] else Ordering[Double].reverse
+    if (isotonic)
+      Ordering[Double]
+    else
+      Ordering[Double].reverse
 
   require(boundaries.length == predictions.length)
   assertOrdered(boundaries)
@@ -319,7 +322,11 @@ class IsotonicRegression private (private var isotonic: Boolean)
 
     val pooled = parallelPoolAdjacentViolators(preprocessedInput)
 
-    val predictions = if (isotonic) pooled.map(_._1) else pooled.map(-_._1)
+    val predictions =
+      if (isotonic)
+        pooled.map(_._1)
+      else
+        pooled.map(-_._1)
     val boundaries = pooled.map(_._2)
 
     new IsotonicRegressionModel(boundaries, predictions, isotonic)

@@ -44,7 +44,11 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
       } else {
         val outRemaining = out.remaining
         val overflow = outRemaining < inRemaining
-        val rem = if (overflow) outRemaining else inRemaining
+        val rem =
+          if (overflow)
+            outRemaining
+          else
+            inRemaining
 
         if (in.hasArray && out.hasArray) {
           val inArr = in.array
@@ -91,8 +95,10 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           }
         }
 
-        if (overflow) CoderResult.OVERFLOW
-        else CoderResult.UNDERFLOW
+        if (overflow)
+          CoderResult.OVERFLOW
+        else
+          CoderResult.UNDERFLOW
       }
       // scalastyle:on return
     }
@@ -111,7 +117,11 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
         if (in.hasArray && out.hasArray) {
           val outRemaining = out.remaining
           val overflow = outRemaining < inRemaining
-          val rem = if (overflow) outRemaining else inRemaining
+          val rem =
+            if (overflow)
+              outRemaining
+            else
+              inRemaining
 
           val inArr = in.array
           val inOffset = in.arrayOffset
@@ -134,8 +144,10 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
 
             if (inPos == inEnd) {
               finalize {
-                if (overflow) CoderResult.OVERFLOW
-                else CoderResult.UNDERFLOW
+                if (overflow)
+                  CoderResult.OVERFLOW
+                else
+                  CoderResult.UNDERFLOW
               }
             } else {
               val c = inArr(inPos)

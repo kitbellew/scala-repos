@@ -177,7 +177,8 @@ class ScalaMoveClassesOrPackagesHandler
     } yield companion
     if (companions.nonEmpty) {
       val result = new JPanel(new BorderLayout())
-      if (panel != null) result.add(panel, BorderLayout.NORTH)
+      if (panel != null)
+        result.add(panel, BorderLayout.NORTH)
       val chbMoveCompanion = new JCheckBox(
         ScalaBundle.message("move.with.companion"))
       chbMoveCompanion.setSelected(
@@ -191,6 +192,7 @@ class ScalaMoveClassesOrPackagesHandler
       chbMoveCompanion.setMnemonic('t')
       result.add(chbMoveCompanion, BorderLayout.WEST)
       result
-    } else panel
+    } else
+      panel
   }
 }

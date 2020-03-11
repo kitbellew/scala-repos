@@ -844,7 +844,8 @@ class SparkContext(config: SparkConf)
             } else {
               number > safePartitionEnd
             }
-          } else false
+          } else
+            false
 
         override def next() = {
           val ret = number
@@ -2510,8 +2511,10 @@ object SparkContext extends Logging {
     */
   private[spark] def numDriverCores(master: String): Int = {
     def convertToInt(threads: String): Int = {
-      if (threads == "*") Runtime.getRuntime.availableProcessors()
-      else threads.toInt
+      if (threads == "*")
+        Runtime.getRuntime.availableProcessors()
+      else
+        threads.toInt
     }
     master match {
       case "local"                                 => 1
@@ -2547,7 +2550,11 @@ object SparkContext extends Logging {
       case LOCAL_N_REGEX(threads) =>
         def localCpuCount: Int = Runtime.getRuntime.availableProcessors()
         // local[*] estimates the number of cores on the machine; local[N] uses exactly N threads.
-        val threadCount = if (threads == "*") localCpuCount else threads.toInt
+        val threadCount =
+          if (threads == "*")
+            localCpuCount
+          else
+            threads.toInt
         if (threadCount <= 0) {
           throw new SparkException(
             s"Asked to run locally with $threadCount threads")
@@ -2562,7 +2569,11 @@ object SparkContext extends Logging {
         def localCpuCount: Int = Runtime.getRuntime.availableProcessors()
         // local[*, M] means the number of cores on the computer with M failures
         // local[N, M] means exactly N threads with M failures
-        val threadCount = if (threads == "*") localCpuCount else threads.toInt
+        val threadCount =
+          if (threads == "*")
+            localCpuCount
+          else
+            threads.toInt
         val scheduler =
           new TaskSchedulerImpl(sc, maxFailures.toInt, isLocal = true)
         val backend = new LocalBackend(sc.getConf, scheduler, threadCount)

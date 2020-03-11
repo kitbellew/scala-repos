@@ -195,7 +195,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         _,
         utfs => DateTimeUtils.stringToTimestamp(utfs).orNull)
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1L else 0)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1L
+          else
+            0)
     case LongType =>
       buildCast[Long](_, l => longToTimestamp(l))
     case IntegerType =>
@@ -221,7 +227,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     (d.toBigDecimal * 1000000L).longValue()
   }
   private[this] def doubleToTimestamp(d: Double): Any = {
-    if (d.isNaN || d.isInfinite) null else (d * 1000000L).toLong
+    if (d.isNaN || d.isInfinite)
+      null
+    else
+      (d * 1000000L).toLong
   }
 
   // converting seconds to us
@@ -267,7 +276,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1L else 0L)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1L
+          else
+            0L)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -287,7 +302,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1 else 0)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1
+          else
+            0)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -307,7 +328,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1.toShort else 0.toShort)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1.toShort
+          else
+            0.toShort)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -327,7 +354,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1.toByte else 0.toByte)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1.toByte
+          else
+            0.toByte)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -345,8 +378,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   private[this] def changePrecision(
       value: Decimal,
       decimalType: DecimalType): Decimal = {
-    if (value.changePrecision(decimalType.precision, decimalType.scale)) value
-    else null
+    if (value.changePrecision(decimalType.precision, decimalType.scale))
+      value
+    else
+      null
   }
 
   private[this] def castToDecimal(
@@ -364,7 +399,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     case BooleanType =>
       buildCast[Boolean](
         _,
-        b => changePrecision(if (b) Decimal.ONE else Decimal.ZERO, target))
+        b =>
+          changePrecision(
+            if (b)
+              Decimal.ONE
+            else
+              Decimal.ZERO,
+            target))
     case DateType =>
       buildCast[Int](_, d => null) // date can't cast to decimal in Hive
     case TimestampType =>
@@ -401,7 +442,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1d else 0d)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1d
+          else
+            0d)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -421,7 +468,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             case _: NumberFormatException => null
           })
     case BooleanType =>
-      buildCast[Boolean](_, b => if (b) 1f else 0f)
+      buildCast[Boolean](
+        _,
+        b =>
+          if (b)
+            1f
+          else
+            0f)
     case DateType =>
       buildCast[Int](_, d => null)
     case TimestampType =>
@@ -479,8 +532,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         while (i < row.numFields) {
           newRow.update(
             i,
-            if (row.isNullAt(i)) null
-            else castFuncs(i)(row.get(i, from.apply(i).dataType)))
+            if (row.isNullAt(i))
+              null
+            else
+              castFuncs(i)(row.get(i, from.apply(i).dataType)))
           i += 1
         }
         newRow.copy()

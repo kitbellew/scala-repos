@@ -50,7 +50,8 @@ trait MemberLookupBase {
       | - you can use any number of matching square brackets to avoid interference with the signature
       | - you can use \\. to escape dots in prefixes (don't forget to use * at the end to match the signature!)
       | - you can use \\# to escape hashes, otherwise they will be considered as delimiters, like dots.""".stripMargin
-    } else ""
+    } else
+      ""
 
   def memberLookup(pos: Position, query: String, site: Symbol): LinkTo = {
     val members = breakMembers(query)
@@ -76,8 +77,13 @@ trait MemberLookupBase {
               def nameString(s: Symbol) =
                 s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
                                   "$"
-                                else "")
-              val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
+                                else
+                                  "")
+              val packageSuffix =
+                if (sym.hasPackageFlag)
+                  ".package"
+                else
+                  ""
 
               sym.ownerChain.reverse
                 .filterNot(isRoot(_))
@@ -109,7 +115,10 @@ trait MemberLookupBase {
         val chosen = chooseLink(links)
         def linkToString(link: LinkTo) = {
           val chosenInfo =
-            if (link == chosen) " [chosen]" else ""
+            if (link == chosen)
+              " [chosen]"
+            else
+              ""
           toString(link) + chosenInfo + "\n"
         }
         if (warnNoLink) {

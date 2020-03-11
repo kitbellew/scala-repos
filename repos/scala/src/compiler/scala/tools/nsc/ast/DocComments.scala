@@ -50,8 +50,10 @@ trait DocComments { self: Global =>
     *  since r23926.
     */
   private def allInheritedOverriddenSymbols(sym: Symbol): List[Symbol] = {
-    if (!sym.owner.isClass) Nil
-    else sym.owner.ancestors map (sym overriddenSymbol _) filter (_ != NoSymbol)
+    if (!sym.owner.isClass)
+      Nil
+    else
+      sym.owner.ancestors map (sym overriddenSymbol _) filter (_ != NoSymbol)
   }
 
   def fillDocComment(sym: Symbol, comment: DocComment) {
@@ -74,7 +76,8 @@ trait DocComments { self: Global =>
         var ownComment =
           if (docStr.length == 0)
             docComments get sym map (_.template) getOrElse ""
-          else DocComment(docStr).template
+          else
+            DocComment(docStr).template
         ownComment = replaceInheritDocToInheritdoc(ownComment)
 
         superComment(sym) match {
@@ -88,8 +91,10 @@ trait DocComments { self: Global =>
               "@inheritdoc",
               "<invalid inheritdoc annotation>")
           case Some(sc) =>
-            if (ownComment == "") sc
-            else expandInheritdoc(sc, merge(sc, ownComment, sym), sym)
+            if (ownComment == "")
+              sc
+            else
+              expandInheritdoc(sc, merge(sc, ownComment, sym), sym)
         }
       }
     )
@@ -108,8 +113,10 @@ trait DocComments { self: Global =>
       docStr: String = ""): String = {
     // when parsing a top level class or module, use the (module-)class itself to look up variable definitions
     val site1 =
-      if ((sym.isModule || sym.isClass) && site.hasPackageFlag) sym
-      else site
+      if ((sym.isModule || sym.isClass) && site.hasPackageFlag)
+        sym
+      else
+        site
     expandVariables(cookedDocComment(sym, docStr), sym, site1)
   }
 
@@ -127,20 +134,21 @@ trait DocComments { self: Global =>
     def getUseCases(dc: DocComment) = {
       val fullSigComment = cookedDocComment(sym)
       for (uc <- dc.useCases;
-           defn <- uc.expandedDefs(sym, site)) yield {
-        // use cases comments go through a series of transformations:
-        // 1 - filling in missing sections from the full signature
-        // 2 - expanding explicit inheritance @inheritdoc tags
-        // 3 - expanding variables like $COLL
-        val useCaseCommentRaw = uc.comment.raw
-        val useCaseCommentMerged =
-          merge(fullSigComment, useCaseCommentRaw, defn)
-        val useCaseCommentInheritdoc =
-          expandInheritdoc(fullSigComment, useCaseCommentMerged, sym)
-        val useCaseCommentVariables =
-          expandVariables(useCaseCommentInheritdoc, sym, site)
-        (defn, useCaseCommentVariables, uc.pos)
-      }
+           defn <- uc.expandedDefs(sym, site))
+        yield {
+          // use cases comments go through a series of transformations:
+          // 1 - filling in missing sections from the full signature
+          // 2 - expanding explicit inheritance @inheritdoc tags
+          // 3 - expanding variables like $COLL
+          val useCaseCommentRaw = uc.comment.raw
+          val useCaseCommentMerged =
+            merge(fullSigComment, useCaseCommentRaw, defn)
+          val useCaseCommentInheritdoc =
+            expandInheritdoc(fullSigComment, useCaseCommentMerged, sym)
+          val useCaseCommentVariables =
+            expandVariables(useCaseCommentInheritdoc, sym, site)
+          (defn, useCaseCommentVariables, uc.pos)
+        }
     }
     getDocComment(sym) map getUseCases getOrElse List()
   }
@@ -194,7 +202,8 @@ trait DocComments { self: Global =>
     def mergeSection(srcSec: Option[(Int, Int)], dstSec: Option[(Int, Int)]) =
       dstSec match {
         case Some((start, end)) =>
-          if (end > tocopy) tocopy = end
+          if (end > tocopy)
+            tocopy = end
         case None =>
           srcSec match {
             case Some((start1, end1)) => {
@@ -219,7 +228,8 @@ trait DocComments { self: Global =>
     mergeSection(returnDoc(src, srcSections), returnDoc(dst, dstSections))
     mergeSection(groupDoc(src, srcSections), groupDoc(dst, dstSections))
 
-    if (out.length == 0) dst
+    if (out.length == 0)
+      dst
     else {
       out append dst.substring(copied)
       out.toString
@@ -338,8 +348,10 @@ trait DocComments { self: Global =>
     case NoSymbol => None
     case _ =>
       val searchList =
-        if (site.isModule) site :: site.info.baseClasses
-        else site.info.baseClasses
+        if (site.isModule)
+          site :: site.info.baseClasses
+        else
+          site.info.baseClasses
 
       searchList collectFirst {
         case x if defs(x) contains vble => defs(x)(vble)
@@ -389,7 +401,8 @@ trait DocComments { self: Global =>
                 val superSections = tagIndex(sc)
                 replaceWith(sc.substring(3, startTag(sc, superSections)))
                 for (sec @ (start, end) <- superSections)
-                  if (!isMovable(sc, sec)) out append sc.substring(start, end)
+                  if (!isMovable(sc, sec))
+                    out append sc.substring(start, end)
               }
             case "" => idx += 1
             case vname =>
@@ -405,7 +418,8 @@ trait DocComments { self: Global =>
           }
         }
       }
-      if (out.length == 0) str
+      if (out.length == 0)
+        str
       else {
         out append str.substring(copied)
         expandInternal(out.toString, depth + 1)
@@ -441,7 +455,10 @@ trait DocComments { self: Global =>
       val end = startTag(raw, (defines ::: usecases).sortBy(_._1))
 
       (
-        if (end == raw.length - 2) raw else raw.substring(0, end) + "*/",
+        if (end == raw.length - 2)
+          raw
+        else
+          raw.substring(0, end) + "*/",
         defines map {
           case (start, end) => raw.substring(start, end)
         },
@@ -463,7 +480,8 @@ trait DocComments { self: Global =>
     }
 
     private def subPos(start: Int, end: Int) =
-      if (pos == NoPosition) NoPosition
+      if (pos == NoPosition)
+        NoPosition
       else {
         val start1 = pos.start + start
         val end1 = pos.end + end
@@ -494,9 +512,12 @@ trait DocComments { self: Global =>
 
       def select(site: Type, name: Name, orElse: => Type): Type = {
         val member = site.nonPrivateMember(name)
-        if (member.isTerm) singleType(site, member)
-        else if (member.isType) site.memberType(member)
-        else orElse
+        if (member.isTerm)
+          singleType(site, member)
+        else if (member.isType)
+          site.memberType(member)
+        else
+          orElse
       }
 
       def getSite(name: Name): Type = {
@@ -516,11 +537,14 @@ trait DocComments { self: Global =>
       def getType(str: String, variable: String): Type = {
         def getParts(start: Int): List[String] = {
           val end = skipIdent(str, start)
-          if (end == start) List()
+          if (end == start)
+            List()
           else
             str.substring(start, end) :: {
-              if (end < str.length && (str charAt end) == '.') getParts(end + 1)
-              else List()
+              if (end < str.length && (str charAt end) == '.')
+                getParts(end + 1)
+              else
+                List()
             }
         }
         val parts = getParts(0)
@@ -574,7 +598,8 @@ trait DocComments { self: Global =>
             case Some(repl) =>
               val repl2 = cleanupVariable(repl)
               val tpe = getType(repl2, alias.name.toString)
-              if (tpe != NoType) (tpe, true)
+              if (tpe != NoType)
+                (tpe, true)
               else {
                 val alias1 = alias.cloneSymbol(
                   rootMirror.RootClass,
@@ -590,9 +615,12 @@ trait DocComments { self: Global =>
           sym: Symbol,
           from: List[Symbol],
           to: List[(Type, Boolean)]): (Type, Boolean) =
-        if (from.isEmpty) (sym.tpe, false)
-        else if (from.head == sym) to.head
-        else subst(sym, from.tail, to.tail)
+        if (from.isEmpty)
+          (sym.tpe, false)
+        else if (from.head == sym)
+          to.head
+        else
+          subst(sym, from.tail, to.tail)
 
       val substAliases = new TypeMap {
         def apply(tp: Type) = mapOver(tp) match {
@@ -601,7 +629,10 @@ trait DocComments { self: Global =>
             subst(sym, aliases, aliasExpansions) match {
               case (TypeRef(pre1, sym1, _), canNormalize) =>
                 val tpe = typeRef(pre1, sym1, args)
-                if (canNormalize) tpe.normalize else tpe
+                if (canNormalize)
+                  tpe.normalize
+                else
+                  tpe
               case _ =>
                 tp1
             }
@@ -610,10 +641,11 @@ trait DocComments { self: Global =>
         }
       }
 
-      for (defn <- defined) yield {
-        defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo (
-          info => substAliases(info).asSeenFrom(site.thisType, sym.owner))
-      }
+      for (defn <- defined)
+        yield {
+          defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo (
+            info => substAliases(info).asSeenFrom(site.thisType, sym.owner))
+        }
     }
   }
 

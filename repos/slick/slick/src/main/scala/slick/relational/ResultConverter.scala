@@ -29,8 +29,10 @@ trait ResultConverter[M <: ResultConverterDomain, @specialized T]
     val cln = DumpInfo.simpleNameFor(getClass)
     val sep = cln.indexOf("$mc")
     val name =
-      if (sep == -1) cln
-      else cln.substring(0, sep) + DumpInfo.highlight(cln.substring(sep))
+      if (sep == -1)
+        cln
+      else
+        cln.substring(0, sep) + DumpInfo.highlight(cln.substring(sep))
     DumpInfo(name)
   }
 }
@@ -101,7 +103,8 @@ final case class CompoundResultConverter[
   def read(pr: Reader) = {
     if (len == 0)
       throw new SlickException("Cannot read from empty CompoundResultConverter")
-    else cha(0).read(pr)
+    else
+      cha(0).read(pr)
   }
   def update(value: T, pr: Updater) = {
     var i = 0
@@ -120,7 +123,13 @@ final case class CompoundResultConverter[
 
   override def getDumpInfo =
     super.getDumpInfo.copy(children = childConverters.zipWithIndex.map {
-      case (ch, i) => (if (i == 0) "*" else "-", ch)
+      case (ch, i) =>
+        (
+          if (i == 0)
+            "*"
+          else
+            "-",
+          ch)
     })
 }
 
@@ -181,7 +190,10 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
     data: ResultConverter[M, T])
     extends ResultConverter[M, Option[T]] {
   def read(pr: Reader): Option[T] =
-    if (discriminator.read(pr)) Some(data.read(pr)) else None
+    if (discriminator.read(pr))
+      Some(data.read(pr))
+    else
+      None
   def update(value: Option[T], pr: Updater) =
     throw new SlickException("Cannot insert/update non-primitive Option value")
   def set(value: Option[T], pp: Writer) =

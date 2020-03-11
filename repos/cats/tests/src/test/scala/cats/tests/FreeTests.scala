@@ -56,7 +56,10 @@ class FreeTests extends CatsSuite {
     def a(i: Int): FTest[Int] =
       for {
         j <- tb(i)
-        z <- if (j < 10000) a(j) else Free.pure[FTestApi, Int](j)
+        z <- if (j < 10000)
+          a(j)
+        else
+          Free.pure[FTestApi, Int](j)
       } yield z
 
     def runner: FTestApi ~> Id = new (FTestApi ~> Id) {
@@ -102,8 +105,10 @@ sealed trait FreeTestsInstances {
         freeFA <- freeGen[F, A](freeDepth)
       } yield freeFA.flatMap(f)
 
-    if (maxDepth <= 1) noGosub
-    else Gen.oneOf(noGosub, withGosub)
+    if (maxDepth <= 1)
+      noGosub
+    else
+      Gen.oneOf(noGosub, withGosub)
   }
 
   implicit def freeArbitrary[F[_], A](implicit

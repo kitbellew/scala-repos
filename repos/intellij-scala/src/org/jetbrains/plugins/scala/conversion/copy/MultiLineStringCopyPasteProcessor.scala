@@ -50,7 +50,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
     val element = file.findElementAt(offset)
 
     if (checkElement(element) ||
-        offset < element.getTextOffset + 3) return text
+        offset < element.getTextOffset + 3)
+      return text
 
     val marginChar = getMarginChar(element)
     val textRange = new TextRange(
@@ -61,7 +62,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
            .trim()
            .length == 0 || text.trim.charAt(0) != marginChar))
        marginChar
-     else "") + text.replace("\n", "\n " + marginChar)
+     else
+       "") + text.replace("\n", "\n " + marginChar)
   }
 
   private def getMarginChar(element: PsiElement): Char =

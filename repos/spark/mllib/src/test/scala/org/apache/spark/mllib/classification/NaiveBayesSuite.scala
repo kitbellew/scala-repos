@@ -40,7 +40,8 @@ object NaiveBayesSuite {
     var sum = 0.0
     for (j <- 0 until pi.length) {
       sum += pi(j)
-      if (p < sum) return j
+      if (p < sum)
+        return j
     }
     -1
   }
@@ -58,27 +59,31 @@ object NaiveBayesSuite {
     val _pi = pi.map(math.pow(math.E, _))
     val _theta = theta.map(row => row.map(math.pow(math.E, _)))
 
-    for (i <- 0 until nPoints) yield {
-      val y = calcLabel(rnd.nextDouble(), _pi)
-      val xi = modelType match {
-        case Bernoulli =>
-          Array.tabulate[Double](D) { j =>
-            if (rnd.nextDouble() < _theta(y)(j)) 1 else 0
-          }
-        case Multinomial =>
-          val mult = BrzMultinomial(BDV(_theta(y)))
-          val emptyMap = (0 until D).map(x => (x, 0.0)).toMap
-          val counts = emptyMap ++ mult.sample(sample).groupBy(x => x).map {
-            case (index, reps) => (index, reps.size.toDouble)
-          }
-          counts.toArray.sortBy(_._1).map(_._2)
-        case _ =>
-          // This should never happen.
-          throw new UnknownError(s"Invalid modelType: $modelType.")
-      }
+    for (i <- 0 until nPoints)
+      yield {
+        val y = calcLabel(rnd.nextDouble(), _pi)
+        val xi = modelType match {
+          case Bernoulli =>
+            Array.tabulate[Double](D) { j =>
+              if (rnd.nextDouble() < _theta(y)(j))
+                1
+              else
+                0
+            }
+          case Multinomial =>
+            val mult = BrzMultinomial(BDV(_theta(y)))
+            val emptyMap = (0 until D).map(x => (x, 0.0)).toMap
+            val counts = emptyMap ++ mult.sample(sample).groupBy(x => x).map {
+              case (index, reps) => (index, reps.size.toDouble)
+            }
+            counts.toArray.sortBy(_._1).map(_._2)
+          case _ =>
+            // This should never happen.
+            throw new UnknownError(s"Invalid modelType: $modelType.")
+        }
 
-      LabeledPoint(y, Vectors.dense(xi))
-    }
+        LabeledPoint(y, Vectors.dense(xi))
+      }
   }
 
   /** Bernoulli NaiveBayes with binary labels, 3 features */

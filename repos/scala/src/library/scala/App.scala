@@ -73,7 +73,8 @@ trait App extends DelayedInit {
   @deprecatedOverriding("main should not be overridden", "2.11.0")
   def main(args: Array[String]) = {
     this._args = args
-    for (proc <- initCode) proc()
+    for (proc <- initCode)
+      proc()
     if (util.Properties.propIsSet("scala.time")) {
       val total = currentTime - executionStart
       Console.println("[total " + total + "ms]")

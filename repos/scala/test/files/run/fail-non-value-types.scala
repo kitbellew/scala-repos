@@ -43,6 +43,7 @@ object Test {
     println(map.info)
     println(map.infoIn(cil))
     println(distinct.info)
-    if (failed) sys.exit(1)
+    if (failed)
+      sys.exit(1)
   }
 }

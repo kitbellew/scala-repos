@@ -210,7 +210,10 @@ Syntax summary
   def moreAvailableMessage(label: String, search: Boolean) =
     "More %s may be %s by increasing verbosity.  See '%s %s'.\n".format(
       label,
-      if (search) "searched" else "viewed",
+      if (search)
+        "searched"
+      else
+        "viewed",
       BasicCommandStrings.HelpCommand,
       label)
 

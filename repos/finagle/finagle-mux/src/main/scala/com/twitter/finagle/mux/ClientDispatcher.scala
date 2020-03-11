@@ -189,7 +189,8 @@ private class ReqRepFilter
       }
     }
 
-    if (couldDispatch != CanDispatch.Unknown) svc(msg).transform(reply)
+    if (couldDispatch != CanDispatch.Unknown)
+      svc(msg).transform(reply)
     else
       svc(msg).transform {
         case Throw(ServerError(_)) =>

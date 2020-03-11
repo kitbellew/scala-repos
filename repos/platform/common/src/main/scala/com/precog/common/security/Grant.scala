@@ -144,7 +144,8 @@ object Grant extends Logging {
       grants: Set[Grant],
       perms: Set[Permission],
       at: Option[DateTime] = None): Set[Grant] = {
-    if (!implies(grants, perms, at)) Set.empty[Grant]
+    if (!implies(grants, perms, at))
+      Set.empty[Grant]
     else {
       def tsort(grants: List[Grant]): List[Grant] =
         grants.find(g1 =>

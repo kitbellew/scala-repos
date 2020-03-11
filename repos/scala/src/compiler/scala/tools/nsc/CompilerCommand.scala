@@ -17,8 +17,10 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
   type Setting = Settings#Setting
 
   private val processArgumentsResult =
-    if (shouldProcessArguments) processArguments
-    else (true, Nil)
+    if (shouldProcessArguments)
+      processArguments
+    else
+      (true, Nil)
   def ok = processArgumentsResult._1
   def files = processArgumentsResult._2
 
@@ -62,7 +64,10 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     val theRest = baseList filterNot (debugs.toSet ++ deprecateds)
 
     def sstring(msg: String, xs: List[Setting]) =
-      if (xs.isEmpty) None else Some(msg :: xs.map(helpStr) mkString "\n  ")
+      if (xs.isEmpty)
+        None
+      else
+        Some(msg :: xs.map(helpStr) mkString "\n  ")
 
     List(
       sstring("", theRest),
@@ -104,14 +109,22 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     def versionFor(command: String) =
       f"Scala $command $versionString -- $copyrightString"
 
-    if (version) versionFor(cmdDesc)
-    else if (help) usageMsg + global.pluginOptionsHelp
-    else if (Xhelp) xusageMsg
-    else if (Yhelp) yusageMsg
-    else if (showPlugins) global.pluginDescriptions
+    if (version)
+      versionFor(cmdDesc)
+    else if (help)
+      usageMsg + global.pluginOptionsHelp
+    else if (Xhelp)
+      xusageMsg
+    else if (Yhelp)
+      yusageMsg
+    else if (showPlugins)
+      global.pluginDescriptions
     else if (showPhases)
       global.phaseDescriptions + (
-        if (debug) "\n" + global.phaseFlagDescriptions else ""
+        if (debug)
+          "\n" + global.phaseFlagDescriptions
+        else
+          ""
       )
     else if (genPhaseGraph.isSetByUser) {
       val components =

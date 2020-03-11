@@ -110,7 +110,8 @@ abstract class Queue[T] {
   def poll: Option[T] = {
     val res = pollNonBlocking
     // This is for performance sensitive code. Prefering if to match defensively
-    if (res.isDefined) count.decrementAndGet
+    if (res.isDefined)
+      count.decrementAndGet
     res
   }
 
@@ -161,7 +162,8 @@ abstract class Queue[T] {
           case Some(item) =>
             loop(count.decrementAndGet, item :: acc)
         }
-      } else acc.reverse
+      } else
+        acc.reverse
     }
     loop(count.get)
   }

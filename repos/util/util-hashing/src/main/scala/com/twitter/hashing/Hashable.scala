@@ -330,22 +330,35 @@ object Hashable extends LowPriorityHashable {
       val remaining = key.length - (numBlocks * 12)
       val offset = numBlocks * 12
 
-      if (remaining > 0) a += key(offset)
-      if (remaining > 1) a += key(offset + 1) << 8
-      if (remaining > 2) a += key(offset + 2) << 16
-      if (remaining > 3) a += key(offset + 3) << 24
+      if (remaining > 0)
+        a += key(offset)
+      if (remaining > 1)
+        a += key(offset + 1) << 8
+      if (remaining > 2)
+        a += key(offset + 2) << 16
+      if (remaining > 3)
+        a += key(offset + 3) << 24
 
-      if (remaining > 4) b += key(offset + 4)
-      if (remaining > 5) b += key(offset + 5) << 8
-      if (remaining > 6) b += key(offset + 6) << 16
-      if (remaining > 7) b += key(offset + 7) << 24
+      if (remaining > 4)
+        b += key(offset + 4)
+      if (remaining > 5)
+        b += key(offset + 5) << 8
+      if (remaining > 6)
+        b += key(offset + 6) << 16
+      if (remaining > 7)
+        b += key(offset + 7) << 24
 
-      if (remaining > 8) c += key(offset + 8)
-      if (remaining > 9) c += key(offset + 9) << 8
-      if (remaining > 10) c += key(offset + 10) << 16
-      if (remaining > 11) c += key(offset + 11) << 24
+      if (remaining > 8)
+        c += key(offset + 8)
+      if (remaining > 9)
+        c += key(offset + 9) << 8
+      if (remaining > 10)
+        c += key(offset + 10) << 16
+      if (remaining > 11)
+        c += key(offset + 11) << 24
 
-      if (key.length > 0) fin()
+      if (key.length > 0)
+        fin()
 
       (b.toLong << 32) + c.toLong
     }

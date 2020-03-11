@@ -39,7 +39,8 @@ private[ui] class StageTableBase(
     <th>Stage Id</th> ++ {
       if (isFairScheduler) {
         <th>Pool Name</th>
-      } else Seq.empty
+      } else
+        Seq.empty
     } ++
       <th>Description</th>
     <th>Submitted</th>
@@ -169,7 +170,8 @@ private[ui] class StageTableBase(
     }</td> ++ {
       if (isFairScheduler) {
         <td>-</td>
-      } else Seq.empty
+      } else
+        Seq.empty
     } ++
       <td>No data available for this stage</td> ++ // Description
       <td></td> ++ // Submitted
@@ -214,16 +216,28 @@ private[ui] class StageTableBase(
 
     val inputRead = stageData.inputBytes
     val inputReadWithUnit =
-      if (inputRead > 0) Utils.bytesToString(inputRead) else ""
+      if (inputRead > 0)
+        Utils.bytesToString(inputRead)
+      else
+        ""
     val outputWrite = stageData.outputBytes
     val outputWriteWithUnit =
-      if (outputWrite > 0) Utils.bytesToString(outputWrite) else ""
+      if (outputWrite > 0)
+        Utils.bytesToString(outputWrite)
+      else
+        ""
     val shuffleRead = stageData.shuffleReadTotalBytes
     val shuffleReadWithUnit =
-      if (shuffleRead > 0) Utils.bytesToString(shuffleRead) else ""
+      if (shuffleRead > 0)
+        Utils.bytesToString(shuffleRead)
+      else
+        ""
     val shuffleWrite = stageData.shuffleWriteBytes
     val shuffleWriteWithUnit =
-      if (shuffleWrite > 0) Utils.bytesToString(shuffleWrite) else ""
+      if (shuffleWrite > 0)
+        Utils.bytesToString(shuffleWrite)
+      else
+        ""
 
     {
       if (s.attemptId > 0) {

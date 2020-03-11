@@ -9,9 +9,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.imports.ScImportExpr
 
 class ScalaCharFilter extends CharFilter {
   def acceptChar(c: Char, prefixLength: Int, lookup: Lookup): Result = {
-    if (lookup == null || lookup.getPsiElement == null) return null
+    if (lookup == null || lookup.getPsiElement == null)
+      return null
     val file = lookup.getPsiFile
-    if (!file.isInstanceOf[ScalaFile]) return null
+    if (!file.isInstanceOf[ScalaFile])
+      return null
     if (c == '[' || c == '{' || c == ')' || c == ']' || c == '}') {
       lookup.getPsiElement match {
         case Parent(importExpr: ScImportExpr) =>
@@ -21,8 +23,10 @@ class ScalaCharFilter extends CharFilter {
           return Result.SELECT_ITEM_AND_FINISH_LOOKUP
       }
     }
-    if (c == '`') return Result.ADD_TO_PREFIX
-    if (c == ':') return Result.HIDE_LOOKUP
+    if (c == '`')
+      return Result.ADD_TO_PREFIX
+    if (c == ':')
+      return Result.HIDE_LOOKUP
     null
   }
 }

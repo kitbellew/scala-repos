@@ -60,7 +60,10 @@ object SbtOpts {
       .flatMap {
         case (k, x) =>
           val v = opt.replace(k, "").trim
-          if (v.isEmpty) None else Some(x + v)
+          if (v.isEmpty)
+            None
+          else
+            Some(x + v)
       }
   }
 }

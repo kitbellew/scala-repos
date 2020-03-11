@@ -96,9 +96,11 @@ abstract class EventFilter(occurrences: Int) {
 
   final def apply(event: LogEvent): Boolean = {
     if (matches(event)) {
-      if (todo != Int.MaxValue) todo -= 1
+      if (todo != Int.MaxValue)
+        todo -= 1
       true
-    } else false
+    } else
+      false
   }
 
   def awaitDone(max: Duration): Boolean = {
@@ -114,8 +116,10 @@ abstract class EventFilter(occurrences: Int) {
   def assertDone(max: Duration): Unit =
     assert(
       awaitDone(max),
-      if (todo > 0) s"$todo messages outstanding on $this"
-      else s"received ${-todo} excess messages on $this")
+      if (todo > 0)
+        s"$todo messages outstanding on $this"
+      else
+        s"received ${-todo} excess messages on $this")
 
   /**
     * Apply this filter while executing the given code block. Care is taken to
@@ -148,10 +152,18 @@ abstract class EventFilter(occurrences: Int) {
     * internal implementation helper, no guaranteed API
     */
   protected def doMatch(src: String, msg: Any) = {
-    val msgstr = if (msg != null) msg.toString else "null"
+    val msgstr =
+      if (msg != null)
+        msg.toString
+      else
+        "null"
     (source.isDefined && source.get == src || source.isEmpty) &&
     (message match {
-      case Left(s) ⇒ if (complete) msgstr == s else msgstr.startsWith(s)
+      case Left(s) ⇒
+        if (complete)
+          msgstr == s
+        else
+          msgstr.startsWith(s)
       case Right(p) ⇒ p.findFirstIn(msgstr).isDefined
     })
   }
@@ -200,8 +212,10 @@ object EventFilter {
     ErrorFilter(
       implicitly[ClassTag[A]].runtimeClass,
       Option(source),
-      if (message ne null) Left(message)
-      else Option(pattern) map (new Regex(_)) toRight start,
+      if (message ne null)
+        Left(message)
+      else
+        Option(pattern) map (new Regex(_)) toRight start,
       message ne null)(occurrences)
 
   /**
@@ -217,8 +231,10 @@ object EventFilter {
     ErrorFilter(
       Logging.Error.NoCause.getClass,
       Option(source),
-      if (message ne null) Left(message)
-      else Option(pattern) map (new Regex(_)) toRight start,
+      if (message ne null)
+        Left(message)
+      else
+        Option(pattern) map (new Regex(_)) toRight start,
       message ne null)(occurrences)
 
   /**
@@ -243,8 +259,10 @@ object EventFilter {
       occurrences: Int = Int.MaxValue): EventFilter =
     WarningFilter(
       Option(source),
-      if (message ne null) Left(message)
-      else Option(pattern) map (new Regex(_)) toRight start,
+      if (message ne null)
+        Left(message)
+      else
+        Option(pattern) map (new Regex(_)) toRight start,
       message ne null)(occurrences)
 
   /**
@@ -269,8 +287,10 @@ object EventFilter {
       occurrences: Int = Int.MaxValue): EventFilter =
     InfoFilter(
       Option(source),
-      if (message ne null) Left(message)
-      else Option(pattern) map (new Regex(_)) toRight start,
+      if (message ne null)
+        Left(message)
+      else
+        Option(pattern) map (new Regex(_)) toRight start,
       message ne null)(occurrences)
 
   /**
@@ -295,8 +315,10 @@ object EventFilter {
       occurrences: Int = Int.MaxValue): EventFilter =
     DebugFilter(
       Option(source),
-      if (message ne null) Left(message)
-      else Option(pattern) map (new Regex(_)) toRight start,
+      if (message ne null)
+        Left(message)
+      else
+        Option(pattern) map (new Regex(_)) toRight start,
       message ne null)(occurrences)
 
   /**
@@ -371,9 +393,12 @@ final case class ErrorFilter(
     this(
       throwable,
       Option(source),
-      if (message eq null) Left("")
-      else if (pattern) Right(new Regex(message))
-      else Left(message),
+      if (message eq null)
+        Left("")
+      else if (pattern)
+        Right(new Regex(message))
+      else
+        Left(message),
       complete)(occurrences)
 
   /**
@@ -428,9 +453,12 @@ final case class WarningFilter(
       occurrences: Int) =
     this(
       Option(source),
-      if (message eq null) Left("")
-      else if (pattern) Right(new Regex(message))
-      else Left(message),
+      if (message eq null)
+        Left("")
+      else if (pattern)
+        Right(new Regex(message))
+      else
+        Left(message),
       complete)(occurrences)
 }
 
@@ -478,9 +506,12 @@ final case class InfoFilter(
       occurrences: Int) =
     this(
       Option(source),
-      if (message eq null) Left("")
-      else if (pattern) Right(new Regex(message))
-      else Left(message),
+      if (message eq null)
+        Left("")
+      else if (pattern)
+        Right(new Regex(message))
+      else
+        Left(message),
       complete)(occurrences)
 }
 
@@ -528,9 +559,12 @@ final case class DebugFilter(
       occurrences: Int) =
     this(
       Option(source),
-      if (message eq null) Left("")
-      else if (pattern) Right(new Regex(message))
-      else Left(message),
+      if (message eq null)
+        Left("")
+      else if (pattern)
+        Right(new Regex(message))
+      else
+        Left(message),
       complete)(occurrences)
 }
 
@@ -595,7 +629,9 @@ class TestEventListener extends Logging.DefaultLogger {
       sender() ! LoggerInitialized
     case Mute(filters) ⇒ filters foreach addFilter
     case UnMute(filters) ⇒ filters foreach removeFilter
-    case event: LogEvent ⇒ if (!filter(event)) print(event)
+    case event: LogEvent ⇒
+      if (!filter(event))
+        print(event)
     case DeadLetter(msg, snd, rcp) ⇒
       if (!msg.isInstanceOf[Terminate]) {
         val event = Warning(rcp.path.toString, rcp.getClass, msg)
@@ -603,9 +639,11 @@ class TestEventListener extends Logging.DefaultLogger {
           val msgStr =
             if (msg.isInstanceOf[SystemMessage])
               "received dead system message: " + msg
-            else "received dead letter from " + snd + ": " + msg
+            else
+              "received dead letter from " + snd + ": " + msg
           val event2 = Warning(rcp.path.toString, rcp.getClass, msgStr)
-          if (!filter(event2)) print(event2)
+          if (!filter(event2))
+            print(event2)
         }
       }
     case UnhandledMessage(msg, sender, rcp) ⇒
@@ -613,7 +651,8 @@ class TestEventListener extends Logging.DefaultLogger {
         rcp.path.toString,
         rcp.getClass,
         "unhandled message from " + sender + ": " + msg)
-      if (!filter(event)) print(event)
+      if (!filter(event))
+        print(event)
     case m ⇒ print(Debug(context.system.name, this.getClass, m))
   }
 

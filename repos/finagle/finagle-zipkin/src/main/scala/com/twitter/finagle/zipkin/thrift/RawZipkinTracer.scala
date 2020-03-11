@@ -278,7 +278,10 @@ private[thrift] class RawZipkinTracer(
         binaryAnnotation(
           record,
           key,
-          (if (value) TrueBB else FalseBB).duplicate(),
+          (if (value)
+             TrueBB
+           else
+             FalseBB).duplicate(),
           thrift.AnnotationType.BOOL)
       case tracing.Annotation
             .BinaryAnnotation(key: String, value: Array[Byte]) =>

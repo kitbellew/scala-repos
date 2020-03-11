@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object LongProperty {
   implicit def sfxLongProperty2jfx(lp: LongProperty): jfxbp.LongProperty =
-    if (lp != null) lp.delegate else null
+    if (lp != null)
+      lp.delegate
+    else
+      null
 
   /**
     * Creates a new LongProperty instance using the SimpleLongProperty as the target.

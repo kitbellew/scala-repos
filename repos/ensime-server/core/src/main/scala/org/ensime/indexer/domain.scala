@@ -14,10 +14,14 @@ case object Private extends Access
 
 object Access {
   def apply(code: Int): Access =
-    if ((ACC_PUBLIC & code) > 0) Public
-    else if ((ACC_PROTECTED & code) > 0) Protected
-    else if ((ACC_PRIVATE & code) > 0) Private
-    else Default
+    if ((ACC_PUBLIC & code) > 0)
+      Public
+    else if ((ACC_PROTECTED & code) > 0)
+      Protected
+    else if ((ACC_PRIVATE & code) > 0)
+      Private
+    else
+      Default
 }
 
 sealed trait FullyQualifiedName {
@@ -46,12 +50,16 @@ case class ClassName(pack: PackageName, name: String)
   }
 
   def fqnString =
-    if (pack.path.isEmpty) name
-    else ClassName.cleanupPackage(pack.fqnString + "." + name)
+    if (pack.path.isEmpty)
+      name
+    else
+      ClassName.cleanupPackage(pack.fqnString + "." + name)
 
   def internalString =
-    "L" + (if (pack.path.isEmpty) name
-           else pack.path.mkString("/") + "/" + name) + ";"
+    "L" + (if (pack.path.isEmpty)
+             name
+           else
+             pack.path.mkString("/") + "/" + name) + ";"
 }
 
 object ClassName {

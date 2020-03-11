@@ -18,7 +18,11 @@ class TableDef[T](_cols: Column[T]*) {
   // Below this point should all be considered private/internal.
   private var cols: List[Column[T]] = _cols.toList
 
-  def defaultSep(index: Int) = if (index > (cols.size - 2)) "" else " "
+  def defaultSep(index: Int) =
+    if (index > (cols.size - 2))
+      ""
+    else
+      " "
   def sepAfter(i: Int): String = defaultSep(i)
   def sepWidths = cols.indices map (i => sepAfter(i).length)
 
@@ -71,11 +75,19 @@ object TableDef {
     def maxWidth(elems: Seq[T]): Int =
       name +: (elems map f) map (_.toString.length) max
     def formatSpec(elems: Seq[T]): String = {
-      val justify = if (left) "-" else ""
+      val justify =
+        if (left)
+          "-"
+        else
+          ""
       "%" + justify + maxWidth(elems) + "s"
     }
     override def toString = {
-      val justify = if (left) "<<" else ">>"
+      val justify =
+        if (left)
+          "<<"
+        else
+          ">>"
       justify + "(" + name + ")"
     }
   }

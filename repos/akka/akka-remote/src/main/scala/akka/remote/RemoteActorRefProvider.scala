@@ -100,11 +100,13 @@ private[akka] object RemoteActorRefProvider {
         case Send(m, senderOption, _, seqOpt) ⇒
           // else ignore: it is a reliably delivered message that might be retried later, and it has not yet deserved
           // the dead letter status
-          if (seqOpt.isEmpty) super.!(m)(senderOption.orNull)
+          if (seqOpt.isEmpty)
+            super.!(m)(senderOption.orNull)
         case DeadLetter(Send(m, senderOption, recipient, seqOpt), _, _) ⇒
           // else ignore: it is a reliably delivered message that might be retried later, and it has not yet deserved
           // the dead letter status
-          if (seqOpt.isEmpty) super.!(m)(senderOption.orNull)
+          if (seqOpt.isEmpty)
+            super.!(m)(senderOption.orNull)
         case _ ⇒ super.!(message)(sender)
       }
 
@@ -319,7 +321,8 @@ private[akka] class RemoteActorRefProvider(
             case "remote" ⇒ lookupRemotes(elems)
             case _ ⇒ None
           }
-        else None
+        else
+          None
 
       val deployment = {
         deploy.toList ::: lookup.toList match {
@@ -390,7 +393,8 @@ private[akka] class RemoteActorRefProvider(
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(path: ActorPath): InternalActorRef = {
-    if (hasAddress(path.address)) actorFor(rootGuardian, path.elements)
+    if (hasAddress(path.address))
+      actorFor(rootGuardian, path.elements)
     else
       try {
         new RemoteActorRef(
@@ -412,7 +416,8 @@ private[akka] class RemoteActorRefProvider(
       ref: InternalActorRef,
       path: String): InternalActorRef = path match {
     case ActorPathExtractor(address, elems) ⇒
-      if (hasAddress(address)) actorFor(rootGuardian, elems)
+      if (hasAddress(address))
+        actorFor(rootGuardian, elems)
       else {
         val rootPath = RootActorPath(address) / elems
         try {
@@ -440,7 +445,8 @@ private[akka] class RemoteActorRefProvider(
     local.actorFor(ref, path)
 
   def rootGuardianAt(address: Address): ActorRef =
-    if (hasAddress(address)) rootGuardian
+    if (hasAddress(address))
+      rootGuardian
     else
       new RemoteActorRef(
         transport,
@@ -459,7 +465,8 @@ private[akka] class RemoteActorRefProvider(
       localAddress: Address): InternalActorRef = {
     path match {
       case ActorPathExtractor(address, elems) ⇒
-        if (hasAddress(address)) local.resolveActorRef(rootGuardian, elems)
+        if (hasAddress(address))
+          local.resolveActorRef(rootGuardian, elems)
         else
           new RemoteActorRef(
             transport,
@@ -476,7 +483,8 @@ private[akka] class RemoteActorRefProvider(
 
   def resolveActorRef(path: String): ActorRef = path match {
     case ActorPathExtractor(address, elems) ⇒
-      if (hasAddress(address)) local.resolveActorRef(rootGuardian, elems)
+      if (hasAddress(address))
+        local.resolveActorRef(rootGuardian, elems)
       else {
         val rootPath = RootActorPath(address) / elems
         try {
@@ -653,7 +661,8 @@ private[akka] class RemoteActorRef private[akka] (
 
   override def !(message: Any)(
       implicit sender: ActorRef = Actor.noSender): Unit = {
-    if (message == null) throw new InvalidMessageException("Message is null")
+    if (message == null)
+      throw new InvalidMessageException("Message is null")
     try remote.send(message, Option(sender), this)
     catch handleException
   }

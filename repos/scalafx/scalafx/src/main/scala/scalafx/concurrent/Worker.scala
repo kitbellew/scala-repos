@@ -35,7 +35,10 @@ import scalafx.delegate.{SFXDelegate, SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 object Worker {
   implicit def sfxWorker2jfx[T](w: Worker[T]): jfxc.Worker[T] =
-    if (w != null) w.delegate else null
+    if (w != null)
+      w.delegate
+    else
+      null
 
   object State extends SFXEnumDelegateCompanion[jfxc.Worker.State, State] {
 

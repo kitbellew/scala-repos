@@ -20,7 +20,8 @@ class AtomicLong(private[this] var value: Long)
   }
 
   final def compareAndSet(expect: Long, update: Long): Boolean = {
-    if (expect != value) false
+    if (expect != value)
+      false
     else {
       value = update
       true

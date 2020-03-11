@@ -206,7 +206,8 @@ object TestFramework {
       mapped: Map[String, TestFunction],
       inputs: Seq[TestDefinition]): Seq[(String, TestFunction)] =
     for (d <- inputs;
-         act <- mapped.get(d.name)) yield (d.name, act)
+         act <- mapped.get(d.name))
+      yield (d.name, act)
 
   private[this] def testMap(
       frameworks: Seq[Framework],
@@ -222,7 +223,8 @@ object TestFramework {
         map.getOrElseUpdate(framework, new HashSet[TestDefinition]) += test
     }
     if (frameworks.nonEmpty)
-      for (test <- tests) assignTest(test)
+      for (test <- tests)
+        assignTest(test)
     map.toMap.mapValues(_.toSet)
   }
 
@@ -250,12 +252,13 @@ object TestFramework {
           val testTasks = withContextLoader(loader) {
             runner.tasks(testDefinitions)
           }
-          for (testTask <- testTasks) yield {
-            val taskDef = testTask.taskDef
-            (
-              taskDef.fullyQualifiedName,
-              createTestFunction(loader, taskDef, runner, testTask))
-          }
+          for (testTask <- testTasks)
+            yield {
+              val taskDef = testTask.taskDef
+              (
+                taskDef.fullyQualifiedName,
+                createTestFunction(loader, taskDef, runner, testTask))
+            }
       }
 
     val endTask = (result: TestResult.Value) =>
@@ -292,8 +295,10 @@ object TestFramework {
     // TODO - There's actually an issue with the classpath facility such that unmanagedScalaInstances are not added
     // to the classpath correctly.  We have a temporary workaround here.
     val cp: Seq[File] =
-      if (scalaInstance.isManagedVersion) interfaceJar +: classpath
-      else scalaInstance.allJars ++ (interfaceJar +: classpath)
+      if (scalaInstance.isManagedVersion)
+        interfaceJar +: classpath
+      else
+        scalaInstance.allJars ++ (interfaceJar +: classpath)
     ClasspathUtilities.filterByClasspath(cp, main)
   }
   def createTestFunction(

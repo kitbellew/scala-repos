@@ -220,7 +220,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
         val tmp = subOp(y, m)
         x + coef * tmp * tmp * tmp
       }
-    } else sd.missing
+    } else
+      sd.missing
   }
 
   protected def _kurt(r: Vec[A], subOp: (A, Double) => Double): Double = {
@@ -238,7 +239,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
       val coef1 = (c * (c + 1)) / ((c - 1) * (c - 2) * (c - 3))
       val coef2 = (c - 1) * (c - 1) / ((c - 2) * (c - 3))
       (coef1 * acacc - 3.0 * coef2)
-    } else sd.missing
+    } else
+      sd.missing
   }
 
   protected def _demeaned(
@@ -303,8 +305,10 @@ trait VecStats[@spec(Int, Long, Double) A] {
       var i = l
       var j = m
       while (i <= j) {
-        while (a(i) < x) i += 1
-        while (a(j) > x) j -= 1
+        while (a(i) < x)
+          i += 1
+        while (a(j) > x)
+          j -= 1
         if (i <= j) {
           val t = a(i)
           a(i) = a(j)
@@ -313,8 +317,10 @@ trait VecStats[@spec(Int, Long, Double) A] {
           j -= 1
         }
       }
-      if (j < k) l = i
-      if (k < i) m = j
+      if (j < k)
+        l = i
+      if (k < i)
+        m = j
     }
     a(k)
   }
@@ -327,12 +333,16 @@ trait VecStats[@spec(Int, Long, Double) A] {
     val sd = ScalarTagDouble
 
     val nan =
-      if (ascending) Double.PositiveInfinity else Double.NegativeInfinity
+      if (ascending)
+        Double.PositiveInfinity
+      else
+        Double.NegativeInfinity
     val len = v.length
 
     var k = 0
     while (k < len) {
-      if (sd.isMissing(v(k))) v(k) = nan
+      if (sd.isMissing(v(k)))
+        v(k) = nan
       k += 1
     }
 
@@ -405,7 +415,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
       sd.missing
     else {
       val c = vf.length
-      if (c == 1) vf(0)
+      if (c == 1)
+        vf(0)
       else {
         val n = method match {
           case PctMethod.Excel => (tile / 100.0) * (c - 1.0) + 1.0
@@ -414,9 +425,12 @@ trait VecStats[@spec(Int, Long, Double) A] {
         val s = vf.sorted
         val k = math.floor(n).toInt
         val d = n - k
-        if (k <= 0) s(0)
-        else if (k >= c) s.last
-        else s(k - 1) + d * (s(k) - s(k - 1))
+        if (k <= 0)
+          s(0)
+        else if (k >= c)
+          s.last
+        else
+          s(k - 1) + d * (s(k) - s(k - 1))
       }
     }
   }
@@ -434,7 +448,10 @@ class DoubleStats(r: Vec[Double]) extends VecStats[Double] {
     else {
       val res =
         r.filterFoldLeft(sd.notMissing)(sd.inf)((x: Double, y: Double) =>
-          if (x < y) x else y)
+          if (x < y)
+            x
+          else
+            y)
       Some(res)
     }
 
@@ -444,7 +461,10 @@ class DoubleStats(r: Vec[Double]) extends VecStats[Double] {
     else {
       val res: Double =
         r.filterFoldLeft(sd.notMissing)(sd.negInf)((x: Double, y: Double) =>
-          if (x > y) x else y)
+          if (x > y)
+            x
+          else
+            y)
       Some(res)
     }
 
@@ -474,19 +494,27 @@ class IntStats(r: Vec[Int]) extends VecStats[Int] {
   val si = ScalarTagInt
 
   def min: Option[Int] =
-    if (r.count == 0) None
+    if (r.count == 0)
+      None
     else {
       val res: Int = r.filterFoldLeft(si.notMissing)(si.inf)((x: Int, y: Int) =>
-        if (x < y) x else y)
+        if (x < y)
+          x
+        else
+          y)
       Some(res)
     }
 
   def max: Option[Int] =
-    if (r.count == 0) None
+    if (r.count == 0)
+      None
     else {
       val res: Int =
         r.filterFoldLeft(si.notMissing)(si.negInf)((x: Int, y: Int) =>
-          if (x > y) x else y)
+          if (x > y)
+            x
+          else
+            y)
       Some(res)
     }
 
@@ -519,20 +547,28 @@ class LongStats(r: Vec[Long]) extends VecStats[Long] {
   val sl = ScalarTagLong
 
   def min: Option[Long] =
-    if (r.count == 0) None
+    if (r.count == 0)
+      None
     else {
       val res: Long =
         r.filterFoldLeft(sl.notMissing)(sl.inf)((x: Long, y: Long) =>
-          if (x < y) x else y)
+          if (x < y)
+            x
+          else
+            y)
       Some(res)
     }
 
   def max: Option[Long] =
-    if (r.count == 0) None
+    if (r.count == 0)
+      None
     else {
       val res: Long =
         r.filterFoldLeft(sl.notMissing)(sl.negInf)((x: Long, y: Long) =>
-          if (x > y) x else y)
+          if (x > y)
+            x
+          else
+            y)
       Some(res)
     }
 

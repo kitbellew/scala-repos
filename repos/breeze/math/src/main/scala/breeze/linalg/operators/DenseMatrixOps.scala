@@ -56,7 +56,10 @@ trait DenseMatrixMultiplyStuff
 
   // for BLAS.dgemm/dgemv
   private def transposeString(a: DenseMatrix[Double]): String =
-    if (a.isTranspose) "T" else "N"
+    if (a.isTranspose)
+      "T"
+    else
+      "N"
 
   implicit object implOpMulMatrix_DMD_DMD_eq_DMD
       extends OpMulMatrix.Impl2[
@@ -77,13 +80,25 @@ trait DenseMatrixMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Double] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
-        else _a
+        if (_a.majorStride < math.max(
+              if (_a.isTranspose)
+                _a.cols
+              else
+                _a.rows,
+              1))
+          _a.copy
+        else
+          _a
       val b: DenseMatrix[Double] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
-        else _b
+        if (_b.majorStride < math.max(
+              if (_b.isTranspose)
+                _b.cols
+              else
+                _b.rows,
+              1))
+          _b.copy
+        else
+          _b
 
       blas.dgemm(
         transposeString(a),
@@ -135,8 +150,14 @@ trait DenseMatrixMultiplyStuff
 
       blas.dgemv(
         transposeString(a),
-        if (a.isTranspose) a.cols else a.rows,
-        if (a.isTranspose) a.rows else a.cols,
+        if (a.isTranspose)
+          a.cols
+        else
+          a.rows,
+        if (a.isTranspose)
+          a.rows
+        else
+          a.cols,
         1.0,
         a.data,
         a.offset,
@@ -278,7 +299,11 @@ trait DenseMatrixMultiplyStuff
 
       // allocate temporary solution matrix
       val Xtmp = DenseMatrix.zeros[Double](math.max(A.rows, A.cols), nrhs)
-      val M: Int = if (!transpose) A.rows else A.cols
+      val M: Int =
+        if (!transpose)
+          A.rows
+        else
+          A.cols
       Xtmp(0 until M, 0 until nrhs) := V(0 until M, 0 until nrhs)
 
       val newData: Array[Double] = A.data.clone()
@@ -287,7 +312,10 @@ trait DenseMatrixMultiplyStuff
       val queryWork = new Array[Double](1)
       val queryInfo = new intW(0)
       lapack.dgels(
-        if (!transpose) "N" else "T",
+        if (!transpose)
+          "N"
+        else
+          "T",
         A.rows,
         A.cols,
         nrhs,
@@ -316,7 +344,10 @@ trait DenseMatrixMultiplyStuff
       // compute factorization
       val info = new intW(0)
       lapack.dgels(
-        if (!transpose) "N" else "T",
+        if (!transpose)
+          "N"
+        else
+          "T",
         A.rows,
         A.cols,
         nrhs,
@@ -332,7 +363,11 @@ trait DenseMatrixMultiplyStuff
         throw new IllegalArgumentException
 
       // extract solution
-      val N = if (!transpose) A.cols else A.rows
+      val N =
+        if (!transpose)
+          A.cols
+        else
+          A.rows
       X(0 until N, 0 until nrhs) := Xtmp(0 until N, 0 until nrhs)
 
       X
@@ -381,13 +416,25 @@ trait DenseMatrixFloatMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Float] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
-        else _a
+        if (_a.majorStride < math.max(
+              if (_a.isTranspose)
+                _a.cols
+              else
+                _a.rows,
+              1))
+          _a.copy
+        else
+          _a
       val b: DenseMatrix[Float] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
-        else _b
+        if (_b.majorStride < math.max(
+              if (_b.isTranspose)
+                _b.cols
+              else
+                _b.rows,
+              1))
+          _b.copy
+        else
+          _b
 
       blas.sgemm(
         transposeString(a),
@@ -421,7 +468,10 @@ trait DenseMatrixFloatMultiplyStuff
   }
 
   private def transposeString(a: DenseMatrix[Float]): String = {
-    if (a.isTranspose) "T" else "N"
+    if (a.isTranspose)
+      "T"
+    else
+      "N"
   }
 
   implicit object implOpMulMatrix_DMF_DVF_eq_DVF
@@ -437,8 +487,14 @@ trait DenseMatrixFloatMultiplyStuff
       val rv = DenseVector.zeros[Float](a.rows)
       blas.sgemv(
         transposeString(a),
-        if (a.isTranspose) a.cols else a.rows,
-        if (a.isTranspose) a.rows else a.cols,
+        if (a.isTranspose)
+          a.cols
+        else
+          a.rows,
+        if (a.isTranspose)
+          a.rows
+        else
+          a.cols,
         1.0f,
         a.data,
         a.offset,
@@ -578,7 +634,11 @@ trait DenseMatrixFloatMultiplyStuff
 
       // allocate temporary solution matrix
       val Xtmp = DenseMatrix.zeros[Float](math.max(A.rows, A.cols), nrhs)
-      val M = if (!transpose) A.rows else A.cols
+      val M =
+        if (!transpose)
+          A.rows
+        else
+          A.cols
       Xtmp(0 until M, 0 until nrhs) := V(0 until M, 0 until nrhs)
 
       val newData: Array[Float] = A.data.clone()
@@ -587,7 +647,10 @@ trait DenseMatrixFloatMultiplyStuff
       val queryWork = new Array[Float](1)
       val queryInfo = new intW(0)
       lapack.sgels(
-        if (!transpose) "N" else "T",
+        if (!transpose)
+          "N"
+        else
+          "T",
         A.rows,
         A.cols,
         nrhs,
@@ -616,7 +679,10 @@ trait DenseMatrixFloatMultiplyStuff
       // compute factorization
       val info = new intW(0)
       lapack.sgels(
-        if (!transpose) "N" else "T",
+        if (!transpose)
+          "N"
+        else
+          "T",
         A.rows,
         A.cols,
         nrhs,
@@ -632,7 +698,11 @@ trait DenseMatrixFloatMultiplyStuff
         throw new IllegalArgumentException
 
       // extract solution
-      val N = if (!transpose) A.cols else A.rows
+      val N =
+        if (!transpose)
+          A.cols
+        else
+          A.rows
       X(0 until N, 0 until nrhs) := Xtmp(0 until N, 0 until nrhs)
 
       X

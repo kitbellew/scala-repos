@@ -45,7 +45,11 @@ class NumberPropertiesTest
 
   property("Number.apply(Rational)") {
     forAll { (n: BigInt, d0: BigInt) =>
-      val d = if (d0 == 0) BigInt(1) else d0
+      val d =
+        if (d0 == 0)
+          BigInt(1)
+        else
+          d0
       val r = Rational(n, d)
       Number(r) shouldBe r
     }

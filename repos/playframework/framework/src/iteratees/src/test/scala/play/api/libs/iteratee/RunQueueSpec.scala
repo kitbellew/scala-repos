@@ -63,9 +63,11 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       def percentageOfRunsWithOrderingErrors(
           runSize: Int,
           queueTester: QueueTester): Int = {
-        val results: Seq[Future[Int]] = for (i <- 0 until 9) yield {
-          countOrderingErrors(runSize, queueTester)
-        }
+        val results: Seq[Future[Int]] =
+          for (i <- 0 until 9)
+            yield {
+              countOrderingErrors(runSize, queueTester)
+            }
         Await.result(Future.sequence(results), waitTime).filter(_ > 0).size * 10
       }
 

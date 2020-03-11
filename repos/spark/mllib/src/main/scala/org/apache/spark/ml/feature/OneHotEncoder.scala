@@ -157,7 +157,10 @@ class OneHotEncoder(override val uid: String)
         .toInt + 1
       val outputAttrNames = Array.tabulate(numAttrs)(_.toString)
       val filtered =
-        if (shouldDropLast) outputAttrNames.dropRight(1) else outputAttrNames
+        if (shouldDropLast)
+          outputAttrNames.dropRight(1)
+        else
+          outputAttrNames
       val outputAttrs: Array[Attribute] =
         filtered.map(name => BinaryAttribute.defaultAttr.withName(name))
       outputAttrGroup = new AttributeGroup(outputColName, outputAttrs)

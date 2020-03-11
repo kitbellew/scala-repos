@@ -72,7 +72,8 @@ private object Json {
   }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type =
-    if (m.typeArguments.isEmpty) m.runtimeClass
+    if (m.typeArguments.isEmpty)
+      m.runtimeClass
     else
       new ParameterizedType {
         def getRawType = m.runtimeClass

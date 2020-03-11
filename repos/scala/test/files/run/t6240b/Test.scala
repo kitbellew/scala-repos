@@ -12,8 +12,10 @@ object Test extends App {
   val fullTestClassesClasspath =
     testClassesDir + prop("path.separator") + prop("java.class.path")
   val javaBinary =
-    if (new File(prop("javacmd")).isAbsolute) prop("javacmd")
-    else prop("java.home") + "/bin/" + prop("javacmd")
+    if (new File(prop("javacmd")).isAbsolute)
+      prop("javacmd")
+    else
+      prop("java.home") + "/bin/" + prop("javacmd")
   List(
     javaBinary,
     "-cp",

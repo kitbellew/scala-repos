@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object GaussianBlur {
   implicit def sfxGaussianBlur2jfx(gb: GaussianBlur): jfxse.GaussianBlur =
-    if (gb != null) gb.delegate else null
+    if (gb != null)
+      gb.delegate
+    else
+      null
 }
 
 class GaussianBlur(

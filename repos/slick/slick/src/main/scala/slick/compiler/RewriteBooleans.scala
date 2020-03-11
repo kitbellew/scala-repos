@@ -24,7 +24,8 @@ class RewriteBooleans extends Phase {
   def rewriteRec(n: Node): Node = {
     val n2 = n.mapChildren(rewriteRec, true)
     val n3 = rewrite(n2)
-    if (n3 ne n2) logger.debug(s"Rewriting $n2 to $n3")
+    if (n3 ne n2)
+      logger.debug(s"Rewriting $n2 to $n3")
     n3
   }
 

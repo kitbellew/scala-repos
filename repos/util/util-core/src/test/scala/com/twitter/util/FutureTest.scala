@@ -1866,7 +1866,11 @@ class FutureTest
         val f = Future.select(ps)
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
-        val t = if (fail) Throw(e) else Return(i)
+        val t =
+          if (fail)
+            Throw(e)
+          else
+            Return(i)
         ps(i).update(t)
         assert(f.isDefined)
         val (ft, fps) = Await.result(f)
@@ -1901,7 +1905,11 @@ class FutureTest
         assert(ps.map(_.waitqLength).sum == n)
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
-        val t = if (fail) Throw(e) else Return(i)
+        val t =
+          if (fail)
+            Throw(e)
+          else
+            Return(i)
         f respond { _ =>
           ()
         }
@@ -1941,7 +1949,11 @@ class FutureTest
         val f = Future.selectIndex(ps)
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
-        val t = if (fail) Throw(e) else Return(i)
+        val t =
+          if (fail)
+            Throw(e)
+          else
+            Return(i)
         ps(i).update(t)
         assert(f.isDefined)
         assert(Await.result(f) == i)
@@ -1965,7 +1977,11 @@ class FutureTest
         assert(ps.map(_.waitqLength).sum == n)
         val i = Random.nextInt(ps.length)
         val e = new Exception("sad panda")
-        val t = if (fail) Throw(e) else Return(i)
+        val t =
+          if (fail)
+            Throw(e)
+          else
+            Return(i)
         f respond { _ =>
           ()
         }
@@ -2007,7 +2023,8 @@ class FutureTest
     "evaluate next one time per iteration" in {
       var i, j = 0
       def next() =
-        if (i == 10) Future.exception(new Exception)
+        if (i == 10)
+          Future.exception(new Exception)
         else {
           i += 1
           Future.value(i)

@@ -173,7 +173,11 @@ object qr extends UFunc {
     lapack.dgeqrf(m, n, A.data, m, tau, work, -1, info)
 
     // do QR
-    val lwork = if (info.`val` != 0) n else work(0).toInt
+    val lwork =
+      if (info.`val` != 0)
+        n
+      else
+        work(0).toInt
     var workspace = new Array[Double](lwork)
 
     lapack.dgeqrf(m, n, A.data, m, tau, workspace, lwork, info)
@@ -185,19 +189,30 @@ object qr extends UFunc {
       throw new IllegalArgumentException()
 
     // Handle mode that don't return Q
-    if (skipQ) (null, upperTriangular(A(0 until mn, ::)))
+    if (skipQ)
+      (null, upperTriangular(A(0 until mn, ::)))
     else {
       val Q =
-        if (mode == CompleteQR && m > n) DenseMatrix.zeros[Double](m, m)
-        else DenseMatrix.zeros[Double](m, n)
+        if (mode == CompleteQR && m > n)
+          DenseMatrix.zeros[Double](m, m)
+        else
+          DenseMatrix.zeros[Double](m, n)
 
-      val mc = if (mode == CompleteQR && m > n) m else mn
+      val mc =
+        if (mode == CompleteQR && m > n)
+          m
+        else
+          mn
 
       Q(::, 0 until n) := A
 
       // Calculate optimal size of workspace
       lapack.dorgqr(m, mc, mn, Q.data, m, tau, work, -1, info)
-      val lwork1 = if (info.`val` != 0) n else work(0).toInt
+      val lwork1 =
+        if (info.`val` != 0)
+          n
+        else
+          work(0).toInt
       workspace = new Array[Double](lwork1)
       // Compute Q
       lapack.dorgqr(m, mc, mn, Q.data, m, tau, workspace, lwork1, info)
@@ -236,7 +251,11 @@ object qr extends UFunc {
     lapack.sgeqrf(m, n, A.data, m, tau, work, -1, info)
 
     // do QR
-    val lwork = if (info.`val` != 0) n else work(0).toInt
+    val lwork =
+      if (info.`val` != 0)
+        n
+      else
+        work(0).toInt
     var workspace = new Array[Float](lwork)
 
     lapack.sgeqrf(m, n, A.data, m, tau, workspace, lwork, info)
@@ -248,19 +267,30 @@ object qr extends UFunc {
       throw new IllegalArgumentException()
 
     // Handle mode that don't return Q
-    if (skipQ) (null, upperTriangular(A(0 until mn, ::)))
+    if (skipQ)
+      (null, upperTriangular(A(0 until mn, ::)))
     else {
       val Q =
-        if (mode == CompleteQR && m > n) DenseMatrix.zeros[Float](m, m)
-        else DenseMatrix.zeros[Float](m, n)
+        if (mode == CompleteQR && m > n)
+          DenseMatrix.zeros[Float](m, m)
+        else
+          DenseMatrix.zeros[Float](m, n)
 
-      val mc = if (mode == CompleteQR && m > n) m else mn
+      val mc =
+        if (mode == CompleteQR && m > n)
+          m
+        else
+          mn
 
       Q(::, 0 until n) := A
 
       // Calculate optimal size of workspace
       lapack.sorgqr(m, mc, mn, Q.data, m, tau, work, -1, info)
-      val lwork1 = if (info.`val` != 0) n else work(0).toInt
+      val lwork1 =
+        if (info.`val` != 0)
+          n
+        else
+          work(0).toInt
       workspace = new Array[Float](lwork1)
       // Compute Q
       lapack.sorgqr(m, mc, mn, Q.data, m, tau, workspace, lwork1, info)
@@ -312,7 +342,11 @@ object qrp extends UFunc {
       val scratch, work = new Array[Double](1)
       var info = new intW(0)
       lapack.dgeqrf(m, n, scratch, m, scratch, work, -1, info)
-      val lwork1 = if (info.`val` != 0) n else work(0).toInt
+      val lwork1 =
+        if (info.`val` != 0)
+          n
+        else
+          work(0).toInt
       lapack.dorgqr(
         m,
         m,
@@ -323,7 +357,11 @@ object qrp extends UFunc {
         work,
         -1,
         info)
-      val lwork2 = if (info.`val` != 0) n else work(0).toInt
+      val lwork2 =
+        if (info.`val` != 0)
+          n
+        else
+          work(0).toInt
       //allocate workspace mem. as max of lwork1 and lwork3
       val workspace = new Array[Double](scala.math.max(lwork1, lwork2))
 

@@ -45,8 +45,10 @@ private[round] final class Round(
     var black = 0
     def get(c: Color) = c.fold(white, black)
     def set(c: Color, v: Int) {
-      if (c.white) white = v
-      else black = v
+      if (c.white)
+        white = v
+      else
+        black = v
     }
   }
 
@@ -60,7 +62,8 @@ private[round] final class Round(
     case p: HumanPlay =>
       lila.mon.since(_.round.move.segment.queue)(p.atNanos)
       handle(p.playerId) { pov =>
-        if (pov.game outoftime lags.get) outOfTime(pov.game)
+        if (pov.game outoftime lags.get)
+          outOfTime(pov.game)
         else {
           lags.set(pov.color, p.lag.toMillis.toInt)
           reportNetworkLag(pov)
@@ -136,8 +139,10 @@ private[round] final class Round(
       fuccess {
         GameRepo game gameId foreach { gameOption =>
           gameOption filter (_.abandoned) foreach { game =>
-            if (game.abortable) finisher.other(game, _.Aborted)
-            else finisher.other(game, _.Resign, Some(!game.player.color))
+            if (game.abortable)
+              finisher.other(game, _.Aborted)
+            else
+              finisher.other(game, _.Resign, Some(!game.player.color))
             self ! PoisonPill
           }
         }
@@ -239,7 +244,8 @@ private[round] final class Round(
   private def reportNetworkLag(pov: Pov) =
     if (pov.game.turns == 20 || pov.game.turns == 21)
       List(lags.white, lags.black).foreach { lag =>
-        if (lag > 0) lila.mon.round.move.networkLag(lag)
+        if (lag > 0)
+          lila.mon.round.move.networkLag(lag)
       }
 
   private def outOfTime(game: Game) =
@@ -265,7 +271,10 @@ private[round] final class Round(
   private def handlePov(pov: Fu[Option[Pov]])(op: Pov => Fu[Events]): Funit =
     publish {
       pov flatten "pov not found" flatMap { p =>
-        if (p.player.isAi) fufail("player can't play AI") else op(p)
+        if (p.player.isAi)
+          fufail("player can't play AI")
+        else
+          op(p)
       }
     } recover errorHandler("handlePov")
 
@@ -277,11 +286,13 @@ private[round] final class Round(
 
   private def publish[A](op: Fu[Events]): Funit =
     op.addEffect { events =>
-      if (events.nonEmpty) socketHub ! Tell(gameId, EventList(events))
+      if (events.nonEmpty)
+        socketHub ! Tell(gameId, EventList(events))
       if (events exists {
             case e: Event.Move => e.threefold
             case _             => false
-          }) self ! Threefold
+          })
+        self ! Threefold
     }.void recover errorHandler("publish")
 
   private def errorHandler(name: String): PartialFunction[Throwable, Unit] = {

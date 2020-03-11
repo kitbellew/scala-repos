@@ -122,10 +122,16 @@ object CertificateGenerator {
     info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn))
     info.set(
       X509CertInfo.SUBJECT,
-      if (justName) owner else new CertificateSubjectName(owner))
+      if (justName)
+        owner
+      else
+        new CertificateSubjectName(owner))
     info.set(
       X509CertInfo.ISSUER,
-      if (justName) owner else new CertificateIssuerName(owner))
+      if (justName)
+        owner
+      else
+        new CertificateIssuerName(owner))
     info.set(X509CertInfo.KEY, new CertificateX509Key(pair.getPublic))
     info.set(
       X509CertInfo.VERSION,

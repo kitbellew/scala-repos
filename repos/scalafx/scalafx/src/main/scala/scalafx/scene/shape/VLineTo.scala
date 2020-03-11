@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object VLineTo {
   implicit def sfxVLineTo2jfx(v: VLineTo): jfxss.VLineTo =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(y: Double) = new VLineTo(new jfxss.VLineTo(y))
 }

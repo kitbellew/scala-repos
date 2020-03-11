@@ -74,7 +74,10 @@ trait TimeLikeOps[This <: TimeLike[This]] {
     */
   object Nanoseconds {
     def unapply(x: This): Option[Long] =
-      if (x.isFinite) Some(x.inNanoseconds) else None
+      if (x.isFinite)
+        Some(x.inNanoseconds)
+      else
+        None
   }
 
   /**
@@ -88,7 +91,10 @@ trait TimeLikeOps[This <: TimeLike[This]] {
     */
   object Finite {
     def unapply(x: This): Option[This] =
-      if (x.isFinite) Some(x) else None
+      if (x.isFinite)
+        Some(x)
+      else
+        None
   }
 
   /** Make a new `This` from the given number of nanoseconds */
@@ -106,14 +112,20 @@ trait TimeLikeOps[This <: TimeLike[This]] {
     fromNanoseconds((1000L * 1000L * 1000L * seconds).toLong)
 
   def fromMilliseconds(millis: Long): This =
-    if (millis > 9223372036854L) Top
-    else if (millis < -9223372036854L) Bottom
-    else fromNanoseconds(TimeUnit.MILLISECONDS.toNanos(millis))
+    if (millis > 9223372036854L)
+      Top
+    else if (millis < -9223372036854L)
+      Bottom
+    else
+      fromNanoseconds(TimeUnit.MILLISECONDS.toNanos(millis))
 
   def fromMicroseconds(micros: Long): This =
-    if (micros > 9223372036854775L) Top
-    else if (micros < -9223372036854775L) Bottom
-    else fromNanoseconds(TimeUnit.MICROSECONDS.toNanos(micros))
+    if (micros > 9223372036854775L)
+      Top
+    else if (micros < -9223372036854775L)
+      Bottom
+    else
+      fromNanoseconds(TimeUnit.MICROSECONDS.toNanos(micros))
 }
 
 /**
@@ -146,9 +158,12 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
   def inMilliseconds: Long = inNanoseconds / Duration.NanosPerMillisecond
   def inLongSeconds: Long = inNanoseconds / Duration.NanosPerSecond
   def inSeconds: Int =
-    if (inLongSeconds > Int.MaxValue) Int.MaxValue
-    else if (inLongSeconds < Int.MinValue) Int.MinValue
-    else inLongSeconds.toInt
+    if (inLongSeconds > Int.MaxValue)
+      Int.MaxValue
+    else if (inLongSeconds < Int.MinValue)
+      Int.MinValue
+    else
+      inLongSeconds.toInt
   // Units larger than seconds safely fit into 32-bits when converting from a 64-bit nanosecond basis
   def inMinutes: Int = (inNanoseconds / Duration.NanosPerMinute).toInt
   def inHours: Int = (inNanoseconds / Duration.NanosPerHour).toInt
@@ -182,8 +197,12 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     def addNanos(a: Long, b: Long): This = {
       val c = a + b
       if (((a ^ c) & (b ^ c)) < 0)
-        if (b < 0) Bottom else Top
-      else fromNanoseconds(c)
+        if (b < 0)
+          Bottom
+        else
+          Top
+      else
+        fromNanoseconds(c)
     }
 
     delta match {
@@ -210,7 +229,10 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     */
   def ceil(increment: Duration): This = {
     val floored = floor(increment)
-    if (this == floored) floored else floored + increment
+    if (this == floored)
+      floored
+    else
+      floored + increment
   }
 
   /**
@@ -222,7 +244,10 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
   def floor(increment: Duration): This = (this, increment) match {
     case (Nanoseconds(0), Duration.Nanoseconds(0)) => Undefined
     case (Nanoseconds(num), Duration.Nanoseconds(0)) =>
-      if (num < 0) Bottom else Top
+      if (num < 0)
+        Bottom
+      else
+        Top
     case (Nanoseconds(num), Duration.Nanoseconds(denom)) =>
       fromNanoseconds((num / denom) * denom)
     case (self, Duration.Nanoseconds(_)) => self
@@ -230,17 +255,28 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
   }
 
   def max(that: This): This =
-    if ((this compare that) < 0) that else this
+    if ((this compare that) < 0)
+      that
+    else
+      this
 
   def min(that: This): This =
-    if ((this compare that) < 0) this else that
+    if ((this compare that) < 0)
+      this
+    else
+      that
 
   def compare(that: This): Int =
-    if ((that eq Top) || (that eq Undefined)) -1
-    else if (that eq Bottom) 1
-    else if (inNanoseconds < that.inNanoseconds) -1
-    else if (inNanoseconds > that.inNanoseconds) 1
-    else 0
+    if ((that eq Top) || (that eq Undefined))
+      -1
+    else if (that eq Bottom)
+      1
+    else if (inNanoseconds < that.inNanoseconds)
+      -1
+    else if (inNanoseconds > that.inNanoseconds)
+      1
+    else
+      0
 
   /** Equality within `maxDelta` */
   def moreOrLessEquals(other: This, maxDelta: Duration): Boolean =
@@ -301,9 +337,12 @@ object Time extends TimeLikeOps[Time] {
     override def toString = "Time.Top"
 
     override def compare(that: Time) =
-      if (that eq Undefined) -1
-      else if (that eq Top) 0
-      else 1
+      if (that eq Undefined)
+        -1
+      else if (that eq Top)
+        0
+      else
+        1
 
     override def equals(other: Any) = other match {
       case t: Time => t eq this
@@ -333,7 +372,11 @@ object Time extends TimeLikeOps[Time] {
   val Bottom: Time = new Time(Long.MinValue) {
     override def toString = "Time.Bottom"
 
-    override def compare(that: Time) = if (this eq that) 0 else -1
+    override def compare(that: Time) =
+      if (this eq that)
+        0
+      else
+        -1
 
     override def equals(other: Any) = other match {
       case t: Time => t eq this
@@ -363,7 +406,11 @@ object Time extends TimeLikeOps[Time] {
       case _       => false
     }
 
-    override def compare(that: Time) = if (this eq that) 0 else 1
+    override def compare(that: Time) =
+      if (this eq that)
+        0
+      else
+        1
     override def +(delta: Duration) = this
     override def diff(that: Time) = Duration.Undefined
     override def isFinite = false
@@ -591,8 +638,12 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     def subNanos(a: Long, b: Long): Duration = {
       val c = a - b
       if (((a ^ c) & (-b ^ c)) < 0)
-        if (b < 0) Duration.Top else Duration.Bottom
-      else Duration.fromNanoseconds(c)
+        if (b < 0)
+          Duration.Top
+        else
+          Duration.Bottom
+      else
+        Duration.fromNanoseconds(c)
     }
 
     that match {

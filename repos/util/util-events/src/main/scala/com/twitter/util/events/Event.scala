@@ -42,8 +42,16 @@ object Event {
     protected def serializeTrace(
         traceId: Long,
         spanId: Long): (Option[Long], Option[Long]) = {
-      val sid = if (spanId == NoSpanId) None else Some(spanId)
-      val tid = if (traceId == NoTraceId) None else Some(traceId)
+      val sid =
+        if (spanId == NoSpanId)
+          None
+        else
+          Some(spanId)
+      val tid =
+        if (traceId == NoTraceId)
+          None
+        else
+          Some(traceId)
       (tid, sid)
     }
 
@@ -78,17 +86,32 @@ case class Event(
     spanIdVal: Long = Event.NoSpanId) {
 
   def getLong: Option[Long] =
-    if (Event.NoLong == longVal) None else Some(longVal)
+    if (Event.NoLong == longVal)
+      None
+    else
+      Some(longVal)
 
   def getObject: Option[AnyRef] =
-    if (Event.NoObject == objectVal) None else Some(objectVal)
+    if (Event.NoObject == objectVal)
+      None
+    else
+      Some(objectVal)
 
   def getDouble: Option[Double] =
-    if (Event.NoDouble == doubleVal) None else Some(doubleVal)
+    if (Event.NoDouble == doubleVal)
+      None
+    else
+      Some(doubleVal)
 
   def getTraceId: Option[Long] =
-    if (Event.NoTraceId == traceIdVal) None else Some(traceIdVal)
+    if (Event.NoTraceId == traceIdVal)
+      None
+    else
+      Some(traceIdVal)
 
   def getSpanId: Option[Long] =
-    if (Event.NoSpanId == spanIdVal) None else Some(spanIdVal)
+    if (Event.NoSpanId == spanIdVal)
+      None
+    else
+      Some(spanIdVal)
 }

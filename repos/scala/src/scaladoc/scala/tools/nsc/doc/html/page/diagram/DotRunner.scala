@@ -110,7 +110,8 @@ class DotProcess(settings: doc.Settings) {
       inputString.put(input)
       var result =
         outputString.take(settings.docDiagramsDotTimeout.value * 1000L)
-      if (error) result = null
+      if (error)
+        result = null
 
       result
 
@@ -118,8 +119,10 @@ class DotProcess(settings: doc.Settings) {
       case exc: Throwable =>
         errorBuffer.append(
           "  Main thread in " + templateName + ": " +
-            (if (exc.isInstanceOf[NoSuchElementException]) "Timeout"
-             else "Exception: " + exc))
+            (if (exc.isInstanceOf[NoSuchElementException])
+               "Timeout"
+             else
+               "Exception: " + exc))
         error = true
         return null
     }
@@ -132,14 +135,17 @@ class DotProcess(settings: doc.Settings) {
 
     if (process != null) {
       // if there's no error, this should exit cleanly
-      if (!error) feedToDot("<finish>", "<finishing>")
+      if (!error)
+        feedToDot("<finish>", "<finishing>")
 
       // just in case there's any thread hanging, this will take it out of the loop
       error = true
       process.destroy()
       // we'll need to unblock the input again
-      if (!inputString.isSet) inputString.put("")
-      if (outputString.isSet) outputString.take()
+      if (!inputString.isSet)
+        inputString.put("")
+      if (outputString.isSet)
+        outputString.take()
     }
 
     if (_error) {
@@ -190,7 +196,8 @@ class DotProcess(settings: doc.Settings) {
           writer.flush()
         }
 
-        if (!error) input = inputString.take()
+        if (!error)
+          input = inputString.take()
       }
       stdin.close()
     } catch {

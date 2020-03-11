@@ -51,7 +51,10 @@ object PrinterHelper {
       } mkString s"$LF"}
       |}"""
 
-      if (wrap) context.trim() else source.trim
+      if (wrap)
+        context.trim()
+      else
+        source.trim
     }
 
     val parsedTree = toolboxTree(toolbox.parse(wrapCode(code)))
@@ -89,7 +92,8 @@ object PrinterHelper {
       wrapCode: Boolean = false) = {
     if (checkTypedTree)
       assertResultCode(source)(source, source, wrapCode)
-    else assertResultCode(source)(parsedCode = source, wrap = wrapCode)
+    else
+      assertResultCode(source)(parsedCode = source, wrap = wrapCode)
   }
 
   implicit class StrContextStripMarginOps(val stringContext: StringContext)

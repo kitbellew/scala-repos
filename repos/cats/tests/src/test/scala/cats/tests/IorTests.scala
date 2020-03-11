@@ -119,8 +119,10 @@ class IorTests extends CatsSuite {
       i.foreach { _ =>
         count += 1
       }
-      if (i.isRight || i.isBoth) count should ===(1)
-      else count should ===(0)
+      if (i.isRight || i.isBoth)
+        count should ===(1)
+      else
+        count should ===(0)
     }
   }
 

@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object ScheduledService {
   implicit def sfxScheduledService2jfx[T](
       s: ScheduledService[T]): jfxc.ScheduledService[T] =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 
   /**
     * A Callback implementation for the <code>backoffStrategy</code> property which

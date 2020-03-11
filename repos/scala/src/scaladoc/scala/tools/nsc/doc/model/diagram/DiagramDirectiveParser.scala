@@ -83,8 +83,10 @@ trait DiagramDirectiveParser {
   /** Main entry point into this trait: generate the filter for content diagrams */
   def makeContentDiagramFilter(template: DocTemplateImpl): DiagramFilter = {
     val defaultFilter =
-      if (template.isPackage || template.isObject) FullDiagram
-      else NoDiagramAtAll
+      if (template.isPackage || template.isObject)
+        FullDiagram
+      else
+        NoDiagramAtAll
     if (template.comment.isDefined)
       makeDiagramFilter(
         template,
@@ -202,8 +204,10 @@ trait DiagramDirectiveParser {
       def warning(message: String) = {
         // we need the position from the package object (well, ideally its comment, but yeah ...)
         val sym =
-          if (template.sym.hasPackageFlag) template.sym.packageObject
-          else template.sym
+          if (template.sym.hasPackageFlag)
+            template.sym.packageObject
+          else
+            template.sym
         assert(
           (sym != global.NoSymbol) || (sym == global.rootMirror.RootPackage))
         global.reporter.warning(sym.pos, message)

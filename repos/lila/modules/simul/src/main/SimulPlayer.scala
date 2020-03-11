@@ -24,8 +24,10 @@ private[simul] object SimulPlayer {
         if (user.perfs.classical.nb >= 20 ||
             user.perfs.classical.nb > user.perfs.blitz.nb)
           user.perfs.classical
-        else user.perfs.blitz
-      } else Perfs.variantLens(variant).fold(user.perfs.standard)(_(user.perfs))
+        else
+          user.perfs.blitz
+      } else
+        Perfs.variantLens(variant).fold(user.perfs.standard)(_(user.perfs))
 
     new SimulPlayer(
       user = user.id,

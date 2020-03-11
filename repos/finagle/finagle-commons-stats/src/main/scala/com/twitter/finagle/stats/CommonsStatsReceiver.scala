@@ -30,38 +30,40 @@ class CommonsStatsReceiver extends StatsReceiverWithCumulativeGauges {
   }
 
   def counter(name: String*): Counter = {
-    if (!counters.contains(name)) synchronized {
-      if (!counters.contains(name)) {
-        val counter = new Counter {
-          private[this] val underlying = Stats.exportLong(variableName(name))
-          def incr(delta: Int) {
-            underlying.addAndGet(delta)
+    if (!counters.contains(name))
+      synchronized {
+        if (!counters.contains(name)) {
+          val counter = new Counter {
+            private[this] val underlying = Stats.exportLong(variableName(name))
+            def incr(delta: Int) {
+              underlying.addAndGet(delta)
+            }
           }
-        }
 
-        counters += (name -> counter)
+          counters += (name -> counter)
+        }
       }
-    }
 
     counters(name)
   }
 
   def stat(name: String*): Stat = {
-    if (!stats.contains(name)) synchronized {
-      if (!stats.contains(name)) {
-        val stat = new Stat {
-          val percentile = new Percentile[java.lang.Float](
-            variableName(name),
-            100.0f,
-            50,
-            95,
-            99)
-          def add(value: Float): Unit = percentile.record(value)
-        }
+    if (!stats.contains(name))
+      synchronized {
+        if (!stats.contains(name)) {
+          val stat = new Stat {
+            val percentile = new Percentile[java.lang.Float](
+              variableName(name),
+              100.0f,
+              50,
+              95,
+              99)
+            def add(value: Float): Unit = percentile.record(value)
+          }
 
-        stats += (name -> stat)
+          stats += (name -> stat)
+        }
       }
-    }
 
     stats(name)
   }

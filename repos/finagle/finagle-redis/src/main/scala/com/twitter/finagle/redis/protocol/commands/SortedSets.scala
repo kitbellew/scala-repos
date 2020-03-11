@@ -730,9 +730,19 @@ trait ZScoredRangeCompanion { self =>
   protected def doParse(args: Seq[String]): (ScoreOrLimit, Seq[String]) = {
     args.head match {
       case WithScores(s) =>
-        (Left(WithScores), if (args.length > 1) args.drop(1) else Nil)
+        (
+          Left(WithScores),
+          if (args.length > 1)
+            args.drop(1)
+          else
+            Nil)
       case _ =>
-        (Right(Limit(args.take(3))), if (args.length > 3) args.drop(3) else Nil)
+        (
+          Right(Limit(args.take(3))),
+          if (args.length > 3)
+            args.drop(3)
+          else
+            Nil)
     }
   }
   protected def findScore(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =

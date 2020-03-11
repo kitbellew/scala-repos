@@ -56,7 +56,11 @@ trait ShortOrder extends Order[Short] {
 
 trait ShortIsSigned extends Signed[Short] {
   def signum(a: Short): Int = a
-  def abs(a: Short): Short = (if (a < 0) -a else a).toShort
+  def abs(a: Short): Short =
+    (if (a < 0)
+       -a
+     else
+       a).toShort
 }
 
 trait ShortIsReal extends IsIntegral[Short] with ShortOrder with ShortIsSigned {
@@ -85,7 +89,10 @@ class ShortIsBitString extends BitString[Short] with Serializable {
   def numberOfLeadingZeros(n: Short): Int =
     Integer.numberOfLeadingZeros(n & 0xffff) - 16
   def numberOfTrailingZeros(n: Short): Int =
-    if (n == 0) 16 else Integer.numberOfTrailingZeros(n & 0xffff)
+    if (n == 0)
+      16
+    else
+      Integer.numberOfTrailingZeros(n & 0xffff)
 
   def leftShift(n: Short, i: Int): Short =
     (((n & 0xffff) << (i & 15)) & 0xffff).toShort

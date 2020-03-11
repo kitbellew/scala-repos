@@ -17,7 +17,8 @@ private[akka] final class SinkholeSubscriber[T](whenComplete: Promise[Done])
 
   override def onSubscribe(sub: Subscription): Unit = {
     ReactiveStreamsCompliance.requireNonNullSubscription(sub)
-    if (running) sub.cancel()
+    if (running)
+      sub.cancel()
     else {
       running = true
       sub.request(Long.MaxValue)

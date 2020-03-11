@@ -30,7 +30,8 @@ trait Reporting { self: Positions =>
     /** Have we already supplemented the error message of a compiler crash? */
     private[this] var supplementedError = false
     def supplementErrorMessage(errorMessage: String): String =
-      if (supplementedError) errorMessage
+      if (supplementedError)
+        errorMessage
       else {
         supplementedError = true
         supplementTyperState(errorMessage)

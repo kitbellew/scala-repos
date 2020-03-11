@@ -63,7 +63,8 @@ class MethodResolveProcessor(
     extends ResolveProcessor(kinds, ref, refName) {
 
   private def isUpdate: Boolean = {
-    if (ref == null) return false
+    if (ref == null)
+      return false
     ref.getContext match {
       case call: ScMethodCall => call.isUpdateCall
       case _                  => false
@@ -90,7 +91,8 @@ class MethodResolveProcessor(
     def forwardReference: Boolean = isForwardReference(state)
     if (nameAndKindMatch(named, state) || constructorResolve) {
       val accessible = isNamedParameter || isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
 
       val s = fromType match {
         case Some(tp) => getSubst(state).followUpdateThisType(tp)
@@ -116,7 +118,11 @@ class MethodResolveProcessor(
         case obj: ScObject
             if ref.getParent.isInstanceOf[ScMethodCall] || ref.getParent
               .isInstanceOf[ScGenericCall] =>
-          val functionName = if (isUpdate) "update" else "apply"
+          val functionName =
+            if (isUpdate)
+              "update"
+            else
+              "apply"
           val typeResult = getFromType(state) match {
             case Some(tp) =>
               Success(
@@ -151,7 +157,8 @@ class MethodResolveProcessor(
             .filter {
               case r => !accessibility || r.isAccessible
             }
-          if (seq.nonEmpty) addResults(seq)
+          if (seq.nonEmpty)
+            addResults(seq)
           else
             addResult(
               new ScalaResolveResult(
@@ -226,7 +233,8 @@ class MethodResolveProcessor(
 
   private def collectCandidates(
       input: Set[ScalaResolveResult]): Set[ScalaResolveResult] = {
-    if (input.isEmpty) return input
+    if (input.isEmpty)
+      return input
     if (!isShapeResolve && enableTupling && argumentClauses.nonEmpty) {
       isShapeResolve = true
       val cand1 = MethodResolveProcessor.candidates(this, input)
@@ -528,7 +536,8 @@ object MethodResolveProcessor {
           result.copy(problems)
         }
       case _ =>
-        if (typeArgElements.nonEmpty) problems += DoesNotTakeTypeParameters
+        if (typeArgElements.nonEmpty)
+          problems += DoesNotTakeTypeParameters
         addExpectedTypeProblems()
         ConformanceExtResult(problems)
     }
@@ -587,7 +596,8 @@ object MethodResolveProcessor {
             case _       => result.copy(problems = Seq(WrongTypeParameterInferred))
           }
       }
-    } else result
+    } else
+      result
   }
 
   // TODO clean this up
@@ -596,7 +606,8 @@ object MethodResolveProcessor {
       s: ScSubstitutor,
       proc: MethodResolveProcessor): ScSubstitutor = {
     import proc.typeArgElements
-    if (proc.selfConstructorResolve) return ScSubstitutor.empty
+    if (proc.selfConstructorResolve)
+      return ScSubstitutor.empty
 
     //todo: it's always None, if you have constructor => actual element is class of type alias
     val constructorTypeParameters = element match {
@@ -691,7 +702,8 @@ object MethodResolveProcessor {
             b.nameContext match {
               case m: ScMember =>
                 val clazz1: ScTemplateDefinition = m.containingClass
-                if (clazz1 == null) true
+                if (clazz1 == null)
+                  true
                 else {
                   _input.forall {
                     case r2: ScalaResolveResult =>
@@ -702,9 +714,11 @@ object MethodResolveProcessor {
                             case m2: ScMember =>
                               val clazz2: ScTemplateDefinition =
                                 m2.containingClass
-                              if (clazz2 == null) true
+                              if (clazz2 == null)
+                                true
                               else {
-                                if (clazz1 == clazz2) true
+                                if (clazz1 == clazz2)
+                                  true
                                 else {
                                   ScalaPsiUtil.cachedDeepIsInheritor(
                                     clazz1,
@@ -797,7 +811,8 @@ object MethodResolveProcessor {
             case Some(rr) => r.copy(problems = rr.problems)
             case _        => r
           }
-        } else r
+        } else
+          r
       })
     }
 
@@ -833,15 +848,22 @@ object MethodResolveProcessor {
           return filtered2
         }
         return input.map(r => r.copy(notCheckedResolveResult = true))
-      } else return filtered
+      } else
+        return filtered
     }
 
     if (filtered.isEmpty && mapped.isEmpty)
       input.map(r => r.copy(notCheckedResolveResult = true))
-    else if (filtered.isEmpty) mapped
+    else if (filtered.isEmpty)
+      mapped
     else {
-      val len = if (argumentClauses.isEmpty) 0 else argumentClauses.head.length
-      if (filtered.size == 1) return filtered
+      val len =
+        if (argumentClauses.isEmpty)
+          0
+        else
+          argumentClauses.head.length
+      if (filtered.size == 1)
+        return filtered
       MostSpecificUtil(ref, len).mostSpecificForResolveResult(
         filtered,
         hasTypeParametersCall = typeArgElements.nonEmpty) match {

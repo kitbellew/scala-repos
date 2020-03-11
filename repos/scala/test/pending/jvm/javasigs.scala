@@ -22,7 +22,9 @@ object Scalatest {
   class Slurp(in: BufferedReader) extends Thread("slurper") {
     var done = false
     override def run() {
-      while (!done) if (in.ready) println(in.readLine())
+      while (!done)
+        if (in.ready)
+          println(in.readLine())
     }
   }
 

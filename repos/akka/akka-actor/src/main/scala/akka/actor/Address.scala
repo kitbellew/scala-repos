@@ -60,8 +60,10 @@ final case class Address private (
     val sb =
       (new java.lang.StringBuilder(protocol)).append("://").append(system)
 
-    if (host.isDefined) sb.append('@').append(host.get)
-    if (port.isDefined) sb.append(':').append(port.get)
+    if (host.isDefined)
+      sb.append('@').append(host.get)
+    if (port.isDefined)
+      sb.append(':').append(port.get)
 
     sb.toString
   }
@@ -95,9 +97,14 @@ private[akka] trait PathUtils {
       val from = s.lastIndexOf('/', pos - 1)
       val sub = s.substring(from + 1, pos)
       val l =
-        if ((fragment ne null) && acc.isEmpty) sub + "#" + fragment :: acc
-        else sub :: acc
-      if (from == -1) l else rec(from, l)
+        if ((fragment ne null) && acc.isEmpty)
+          sub + "#" + fragment :: acc
+        else
+          sub :: acc
+      if (from == -1)
+        l
+      else
+        rec(from, l)
     }
     rec(s.length, Nil)
   }
@@ -114,8 +121,10 @@ object RelativeActorPath extends PathUtils {
   def unapply(addr: String): Option[immutable.Seq[String]] = {
     try {
       val uri = new URI(addr)
-      if (uri.isAbsolute) None
-      else Some(split(uri.getRawPath, uri.getRawFragment))
+      if (uri.isAbsolute)
+        None
+      else
+        Some(split(uri.getRawPath, uri.getRawFragment))
     } catch {
       case _: URISyntaxException ⇒ None
     }
@@ -133,17 +142,22 @@ object AddressFromURIString {
     }
 
   def unapply(uri: URI): Option[Address] =
-    if (uri eq null) None
+    if (uri eq null)
+      None
     else if (uri.getScheme == null || (uri.getUserInfo == null && uri.getHost == null))
       None
     else if (uri.getUserInfo == null) { // case 1: “akka://system”
-      if (uri.getPort != -1) None
-      else Some(Address(uri.getScheme, uri.getHost))
+      if (uri.getPort != -1)
+        None
+      else
+        Some(Address(uri.getScheme, uri.getHost))
     } else { // case 2: “akka://system@host:port”
-      if (uri.getHost == null || uri.getPort == -1) None
+      if (uri.getHost == null || uri.getPort == -1)
+        None
       else
         Some(
-          if (uri.getUserInfo == null) Address(uri.getScheme, uri.getHost)
+          if (uri.getUserInfo == null)
+            Address(uri.getScheme, uri.getHost)
           else
             Address(uri.getScheme, uri.getUserInfo, uri.getHost, uri.getPort))
     }

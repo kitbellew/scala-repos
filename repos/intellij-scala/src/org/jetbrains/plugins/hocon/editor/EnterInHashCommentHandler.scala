@@ -55,9 +55,12 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
                 caretOffsetRef.set(offset)
               }
               Result.Default
-            } else Result.Continue
-          } else Result.Continue
-        } else Result.Continue
+            } else
+              Result.Continue
+          } else
+            Result.Continue
+        } else
+          Result.Continue
       case _ => Result.Continue
     }
 
@@ -83,7 +86,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
 
           caretModel.moveToOffset(caretOffset + 2)
           Result.Default
-        } else Result.Continue
+        } else
+          Result.Continue
       case _ =>
         Result.Continue
     }

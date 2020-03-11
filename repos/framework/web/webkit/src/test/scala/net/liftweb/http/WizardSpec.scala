@@ -49,7 +49,11 @@ object WizardSpec extends Specification {
         minVal(5, S ? "Too young"),
         maxVal(120, S ? "You should be dead"))
 
-      override def nextScreen = if (age.is < 18) parentName else favoritePet
+      override def nextScreen =
+        if (age.is < 18)
+          parentName
+        else
+          favoritePet
     }
     class ParentNameScreen extends Screen {
       val parentName = field(

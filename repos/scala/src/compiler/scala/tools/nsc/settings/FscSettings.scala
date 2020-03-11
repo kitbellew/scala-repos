@@ -89,7 +89,8 @@ class FscSettings(error: String => Unit) extends Settings(error) {
           absolutizePath(p.value))
       case p: PathSetting => p.value = ClassPath.map(p.value, absolutizePath)
       case p: StringSetting =>
-        if (holdsPath(p)) p.value = absolutizePath(p.value)
+        if (holdsPath(p))
+          p.value = absolutizePath(p.value)
       case _ => ()
     }
   }

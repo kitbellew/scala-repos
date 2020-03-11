@@ -192,7 +192,10 @@ class ConsumerConfig private (val props: VerifiableProperties)
     * the new jar that commits offsets to the broker (instead of directly to ZooKeeper). */
   val dualCommitEnabled = props.getBoolean(
     "dual.commit.enabled",
-    if (offsetsStorage == "kafka") true else false)
+    if (offsetsStorage == "kafka")
+      true
+    else
+      false)
 
   /* what to do if an offset is out of range.
      smallest : automatically reset the offset to the smallest offset

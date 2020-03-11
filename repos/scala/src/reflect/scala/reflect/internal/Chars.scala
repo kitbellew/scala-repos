@@ -30,12 +30,19 @@ trait Chars {
   def digit2int(ch: Char, base: Int): Int = {
     val num =
       (
-        if (ch <= '9') ch - '0'
-        else if ('a' <= ch && ch <= 'z') ch - 'a' + 10
-        else if ('A' <= ch && ch <= 'Z') ch - 'A' + 10
-        else -1
+        if (ch <= '9')
+          ch - '0'
+        else if ('a' <= ch && ch <= 'z')
+          ch - 'a' + 10
+        else if ('A' <= ch && ch <= 'Z')
+          ch - 'A' + 10
+        else
+          -1
       )
-    if (0 <= num && num < base) num else -1
+    if (0 <= num && num < base)
+      num
+    else
+      -1
   }
 
   /** Buffer for creating '\ u XXXX' strings. */
@@ -44,7 +51,10 @@ trait Chars {
   /** Convert a character to a backslash-u escape */
   def char2uescape(c: Char): String = {
     @inline def hexChar(ch: Int): Char =
-      (if (ch < 10) '0' else 'A' - 10) + ch toChar
+      (if (ch < 10)
+         '0'
+       else
+         'A' - 10) + ch toChar
 
     char2uescapeArray(2) = hexChar((c >> 12))
     char2uescapeArray(3) = hexChar((c >> 8) % 16)

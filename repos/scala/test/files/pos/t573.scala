@@ -23,9 +23,16 @@ abstract class Linked {
     var next: Node = _;
     var prev: Node = _;
 
-    def get(dir: Dir) = if (dir == BEFORE) prev; else next;
+    def get(dir: Dir) =
+      if (dir == BEFORE)
+        prev;
+      else
+        next;
     private def set(dir: Dir, node: Node) =
-      if (dir == BEFORE) prev = node; else next = node;
+      if (dir == BEFORE)
+        prev = node;
+      else
+        next = node;
 
     def link(dir: Dir, node: Node) = {
       assert(get(dir) == null);
@@ -35,8 +42,10 @@ abstract class Linked {
     }
 
     def end(dir: Dir): Node = {
-      if (get(dir) == null) this;
-      else get(dir).end(dir);
+      if (get(dir) == null)
+        this;
+      else
+        get(dir).end(dir);
     }
   }
 }

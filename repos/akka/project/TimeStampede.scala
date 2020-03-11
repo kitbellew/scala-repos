@@ -24,7 +24,8 @@ object TimeStampede extends AutoPlugin {
   def stamp(version: String): String = {
     if (version endsWith Snapshot)
       (version stripSuffix Snapshot) + "-" + timestamp(System.currentTimeMillis)
-    else version
+    else
+      version
   }
 
   def timestamp(time: Long): String = {

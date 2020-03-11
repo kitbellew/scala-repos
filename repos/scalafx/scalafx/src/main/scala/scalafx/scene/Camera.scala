@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Camera {
   implicit def sfxCamera2jfx(c: Camera): jfxs.Camera =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 abstract class Camera(override val delegate: jfxs.Camera)

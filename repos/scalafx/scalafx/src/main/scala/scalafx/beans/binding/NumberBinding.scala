@@ -33,7 +33,10 @@ import scalafx.beans.value.ObservableValue
 
 object NumberBinding {
   implicit def sfxNumberBinding2jfx(nb: NumberBinding): jfxbb.NumberBinding =
-    if (nb != null) nb.delegate else null
+    if (nb != null)
+      nb.delegate
+    else
+      null
 }
 
 class NumberBinding(override val delegate: jfxbb.NumberBinding)

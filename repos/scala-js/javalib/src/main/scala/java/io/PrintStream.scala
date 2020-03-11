@@ -56,8 +56,10 @@ class PrintStream private (
 
   private lazy val encoder = {
     val c =
-      if (charset == null) Charset.defaultCharset
-      else charset
+      if (charset == null)
+        Charset.defaultCharset
+      else
+        charset
     /* We pass `this` as the output stream for the encoding writer so that
      * we can apply auto-flushing. Note that this will flush() more often
      * than required by the spec. It appears to be consistent with how the
@@ -146,7 +148,12 @@ class PrintStream private (
   def print(l: Long): Unit = printString(String.valueOf(l))
   def print(f: Float): Unit = printString(String.valueOf(f))
   def print(d: Double): Unit = printString(String.valueOf(d))
-  def print(s: String): Unit = printString(if (s == null) "null" else s)
+  def print(s: String): Unit =
+    printString(
+      if (s == null)
+        "null"
+      else
+        s)
   def print(obj: AnyRef): Unit = printString(String.valueOf(obj))
 
   private def printString(s: String): Unit = ensureOpenAndTrapIOExceptions {
@@ -218,12 +225,20 @@ class PrintStream private (
   //def format(l: java.util.Locale, fmt: String, args: Array[Object]): PrintStream = ???
 
   def append(csq: CharSequence): PrintStream = {
-    print(if (csq == null) "null" else csq.toString)
+    print(
+      if (csq == null)
+        "null"
+      else
+        csq.toString)
     this
   }
 
   def append(csq: CharSequence, start: Int, end: Int): PrintStream = {
-    val csq1 = if (csq == null) "null" else csq
+    val csq1 =
+      if (csq == null)
+        "null"
+      else
+        csq
     print(csq1.subSequence(start, end).toString)
     this
   }
@@ -243,8 +258,10 @@ class PrintStream private (
 
   @inline private[this] def ensureOpenAndTrapIOExceptions(
       body: => Unit): Unit = {
-    if (closed) setError()
-    else trapIOExceptions(body)
+    if (closed)
+      setError()
+    else
+      trapIOExceptions(body)
   }
 
 }

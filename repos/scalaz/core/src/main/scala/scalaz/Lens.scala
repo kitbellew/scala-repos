@@ -303,7 +303,10 @@ trait LensFamilyFunctions {
           case \/-(r) => Store(_ => false, r)
         }, {
           val x = q.pos
-          if (q put x) -\/(x) else \/-(x)
+          if (q put x)
+            -\/(x)
+          else
+            \/-(x)
         }))
 
   def factorLensFamily[A1, A2, B1, B2, C1, C2]: LensFamily[
@@ -410,13 +413,29 @@ trait LensFunctions extends LensFamilyFunctions {
 
   /** Specify whether a value is in a Set */
   def setMembershipLens[A](a: A): Set[A] @> Boolean =
-    lensg(s => b => if (b) s + a else s - a, _.contains(a))
+    lensg(
+      s =>
+        b =>
+          if (b)
+            s + a
+          else
+            s - a,
+      _.contains(a))
 
   def applyLens[A, B](k: B => A)(implicit e: Equal[A]): Store[A, B] @> B =
     lens(q => {
       lazy val x = q.pos
       lazy val y = q put x
-      Store(b => Store(w => if (e equal (x, w)) b else y, x), y)
+      Store(
+        b =>
+          Store(
+            w =>
+              if (e equal (x, w))
+                b
+              else
+                y,
+            x),
+        y)
     })
 
   def predicateLens[A]: Store[A, Boolean] @> (A \/ A) =
@@ -427,7 +446,10 @@ trait LensFunctions extends LensFamilyFunctions {
           case \/-(r) => Store(_ => false, r)
         }, {
           val x = q.pos
-          if (q put x) -\/(x) else \/-(x)
+          if (q put x)
+            -\/(x)
+          else
+            \/-(x)
         }))
 
   def factorLens[A, B, C]: ((A, B) \/ (A, C)) @> (A, B \/ C) =
@@ -504,7 +526,15 @@ abstract class LensInstances extends LensInstances0 {
 
     /** Setting the value of this lens will change whether or not it is present in the set */
     def contains(key: K) = lensFamilyg[S1, S2, Boolean, Boolean](
-      s => b => lens.mod(m => if (b) m + key else m - key, s): Id[S2],
+      s =>
+        b =>
+          lens.mod(
+            m =>
+              if (b)
+                m + key
+              else
+                m - key,
+            s): Id[S2],
       s => lens.get(s).contains(key)
     )
 

@@ -84,7 +84,8 @@ case class ServerThread(socket: Socket) extends Thread("ServerThread") {
         do {
           val x = rand.nextInt(1000);
           succeeded = filter(x);
-          if (succeeded) out.writeInt(x)
+          if (succeeded)
+            out.writeInt(x)
         } while (!succeeded);
         Thread.sleep(100)
       }

@@ -139,11 +139,16 @@ class ScSyntheticClass(
     processor match {
       case p: ResolveProcessor =>
         val nameSet = state.get(ResolverEnv.nameKey)
-        val name = if (nameSet == null) p.name else nameSet
+        val name =
+          if (nameSet == null)
+            p.name
+          else
+            nameSet
         methods.get(name) match {
           case Some(ms) =>
             for (method <- ms) {
-              if (!processor.execute(method, state)) return false
+              if (!processor.execute(method, state))
+                return false
             }
           case None =>
         }
@@ -152,7 +157,8 @@ class ScSyntheticClass(
         //method toString and hashCode exists in java.lang.Object
         for (p <- methods;
              method <- p._2) {
-          if (!processor.execute(method, state)) return false
+          if (!processor.execute(method, state))
+            return false
         }
       case _ => //do not execute synthetic methods to not Scala processors.
     }
@@ -185,7 +191,8 @@ class ScSyntheticFunction(
     extends SyntheticNamedElement(manager, name)
     with ScFun {
   def isStringPlusMethod: Boolean = {
-    if (name != "+") return false
+    if (name != "+")
+      return false
     ScType.extractClass(retType, Some(manager.getProject)) match {
       case Some(clazz) => clazz.qualifiedName == "java.lang.String"
       case _           => false
@@ -226,7 +233,8 @@ class ScSyntheticFunction(
       clazz: Class[T]): T = {
     var cur: PsiElement = getFirstChild
     while (cur != null) {
-      if (clazz.isInstance(cur)) return cur.asInstanceOf[T]
+      if (clazz.isInstance(cur))
+        return cur.asInstanceOf[T]
       cur = cur.getNextSibling
     }
     null
@@ -617,7 +625,8 @@ object Unit
       }
     }
     for (obj <- syntheticObjects) {
-      if (obj.qualifiedName == qName) return obj
+      if (obj.qualifiedName == qName)
+        return obj
     }
     null
   }
@@ -625,9 +634,11 @@ object Unit
   def findClasses(qName: String, scope: GlobalSearchScope): Array[PsiClass] = {
     val res: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]
     val c = findClass(qName, scope)
-    if (c != null) res += c
+    if (c != null)
+      res += c
     for (obj <- syntheticObjects) {
-      if (obj.qualifiedName == qName) res += obj
+      if (obj.qualifiedName == qName)
+        res += obj
     }
     res.toArray
   }

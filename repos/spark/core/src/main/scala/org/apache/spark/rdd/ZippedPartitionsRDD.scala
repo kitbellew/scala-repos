@@ -55,7 +55,10 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
     extends RDD[V](sc, rdds.map(x => new OneToOneDependency(x))) {
 
   override val partitioner =
-    if (preservesPartitioning) firstParent[Any].partitioner else None
+    if (preservesPartitioning)
+      firstParent[Any].partitioner
+    else
+      None
 
   override def getPartitions: Array[Partition] = {
     val numParts = rdds.head.partitions.length
@@ -68,8 +71,10 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
       // Check whether there are any hosts that match all RDDs; otherwise return the union
       val exactMatchLocations = prefs.reduce((x, y) => x.intersect(y))
       val locs =
-        if (!exactMatchLocations.isEmpty) exactMatchLocations
-        else prefs.flatten.distinct
+        if (!exactMatchLocations.isEmpty)
+          exactMatchLocations
+        else
+          prefs.flatten.distinct
       new ZippedPartitionsPartition(i, rdds, locs)
     }
   }

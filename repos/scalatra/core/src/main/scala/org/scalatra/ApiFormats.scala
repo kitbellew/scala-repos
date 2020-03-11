@@ -145,7 +145,8 @@ trait ApiFormats extends ScalatraBase {
             .find(isValidQPair)
             .getOrElse(Array("q", "0"))
           (pars(1).toDouble * 10).ceil.toInt
-        } else 10
+        } else
+          10
         acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
       }
       accepted.toList
@@ -190,8 +191,10 @@ trait ApiFormats extends ScalatraBase {
 
   protected def acceptedFormats(accepted: Symbol*): Boolean = {
     val conditions: List[String] = {
-      if (accepted.isEmpty) defaultAcceptedFormats.map(_.name)
-      else accepted.map(_.name).toList
+      if (accepted.isEmpty)
+        defaultAcceptedFormats.map(_.name)
+      else
+        accepted.map(_.name).toList
     }
     conditions.isEmpty || (conditions filter { s =>
       formats.get(s).isDefined
@@ -212,7 +215,10 @@ trait ApiFormats extends ScalatraBase {
       matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
         case (key, values) =>
           key -> values.map(s =>
-            if (s.nonBlank) UriDecoder.secondStep(s) else s)
+            if (s.nonBlank)
+              UriDecoder.secondStep(s)
+            else
+              s)
       }
     }
     if (routeParams.contains("format")) {

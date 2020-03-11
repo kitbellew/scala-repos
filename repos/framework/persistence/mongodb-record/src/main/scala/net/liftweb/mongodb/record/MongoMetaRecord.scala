@@ -257,10 +257,12 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Find all documents with the given ids
     */
   def findAllByList[T](ids: List[T]): List[BaseRecord] =
-    if (ids.isEmpty) Nil
+    if (ids.isEmpty)
+      Nil
     else {
       val list = new java.util.ArrayList[T]()
-      for (id <- ids.distinct) list.add(id)
+      for (id <- ids.distinct)
+        list.add(id)
       val query = QueryBuilder.start("_id").in(list).get()
       findAll(query)
     }

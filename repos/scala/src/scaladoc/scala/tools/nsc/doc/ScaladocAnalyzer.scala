@@ -135,7 +135,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
     /** add the given character to the documentation buffer
       */
     protected def putDocChar(c: Char) {
-      if (docBuffer ne null) docBuffer.append(c)
+      if (docBuffer ne null)
+        docBuffer.append(c)
     }
 
     override protected def skipComment(): Boolean = {
@@ -162,8 +163,10 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
             putDocChar(in.ch)
           }
         } while (in.ch != '/' && in.ch != SU)
-        if (in.ch == '/') in.next
-        else incompleteInputError("unclosed comment")
+        if (in.ch == '/')
+          in.next
+        else
+          incompleteInputError("unclosed comment")
         true
       } else {
         false
@@ -290,11 +293,13 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         joined.find(_.pos.isOpaqueRange) foreach { main =>
           val mains = List(main)
           joined foreach { t =>
-            if (t ne main) ensureNonOverlapping(t, mains)
+            if (t ne main)
+              ensureNonOverlapping(t, mains)
           }
         }
         joined
-      } else trees
+      } else
+        trees
     }
   }
 }

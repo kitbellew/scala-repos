@@ -97,7 +97,8 @@ trait ScriptedTest extends Matchers {
           outputCursor = outputCursor + 1,
           outputEndCursor,
           completed = true)
-      else fail("received onComplete prematurely")
+      else
+        fail("received onComplete prematurely")
     }
 
     def finished: Boolean = outputCursor == expectedOutputs.size
@@ -191,9 +192,14 @@ trait ScriptedTest extends Matchers {
     def run(): Unit = {
 
       @tailrec def doRun(idleRounds: Int): Unit = {
-        if (idleRounds > 250) fail("too many idle rounds")
+        if (idleRounds > 250)
+          fail("too many idle rounds")
         if (!currentScript.completed) {
-          val nextIdle = if (shakeIt()) 0 else idleRounds + 1
+          val nextIdle =
+            if (shakeIt())
+              0
+            else
+              idleRounds + 1
 
           val tieBreak = ThreadLocalRandom.current().nextBoolean()
           if (mayProvideInput && (!mayRequestMore || tieBreak)) {

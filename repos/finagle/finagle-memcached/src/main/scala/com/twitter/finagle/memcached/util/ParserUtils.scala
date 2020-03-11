@@ -38,7 +38,8 @@ object ParserUtils {
     * @return true iff the Buf is non empty and every byte in the Buf is a digit.
     */
   def isDigits(buf: Buf): Boolean =
-    if (buf.isEmpty) false
+    if (buf.isEmpty)
+      false
     else {
       val Buf.ByteArray.Owned(bytes, begin, end) = Buf.ByteArray.coerce(buf)
       var i = begin

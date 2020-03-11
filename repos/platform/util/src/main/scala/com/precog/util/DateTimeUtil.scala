@@ -43,7 +43,11 @@ object DateTimeUtil {
       basicParser
     }
 
-    val p = if (withOffset) parser.withOffsetParsed else parser
+    val p =
+      if (withOffset)
+        parser.withOffsetParsed
+      else
+        parser
     p.parseDateTime(value)
   }
 

@@ -53,14 +53,16 @@ object ScalaCompletionUtil {
       prefixMatcher: PrefixMatcher,
       checkInvocationCount: Boolean = true,
       lookingForAnnotations: Boolean = false): Boolean = {
-    if (checkInvocationCount && parameters.getInvocationCount < 2) return false
+    if (checkInvocationCount && parameters.getInvocationCount < 2)
+      return false
     if (dummyPosition.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
       dummyPosition.getParent match {
         case ref: ScReferenceElement if ref.qualifier.isDefined => return false
         case _                                                  =>
       }
     }
-    if (checkInvocationCount && parameters.getInvocationCount >= 2) return true
+    if (checkInvocationCount && parameters.getInvocationCount >= 2)
+      return true
     val prefix = prefixMatcher.getPrefix
     val capitalized =
       prefix.length() > 0 && prefix.substring(0, 1).capitalize == prefix
@@ -75,7 +77,8 @@ object ScalaCompletionUtil {
       withoutEnd: Boolean = false,
       arrowText: String = "=>"): String = {
     val text = new StringBuilder()
-    if (braceArgs) text.append("case ")
+    if (braceArgs)
+      text.append("case ")
     val paramNamesWithTypes = new ArrayBuffer[(String, ScType)]
     def contains(name: String): Boolean = {
       paramNamesWithTypes.exists {
@@ -84,7 +87,11 @@ object ScalaCompletionUtil {
     }
     for (param <- params) {
       val names = NameSuggester.suggestNamesByType(param)
-      var name = if (names.length == 0) "x" else names(0)
+      var name =
+        if (names.length == 0)
+          "x"
+        else
+          names(0)
       if (contains(name)) {
         var count = 0
         var newName = name + count
@@ -100,14 +107,17 @@ object ScalaCompletionUtil {
       case (s, tp) =>
         s + ": " + (if (canonical) {
                       ScType.canonicalText(tp)
-                    } else ScType.presentableText(tp))
+                    } else
+                      ScType.presentableText(tp))
     }
     val paramsString =
       if (paramNamesWithTypes.size != 1 || !braceArgs)
         iter.mkString("(", ", ", ")")
-      else iter.head
+      else
+        iter.head
     text.append(paramsString)
-    if (!withoutEnd) text.append(" ").append(arrowText)
+    if (!withoutEnd)
+      text.append(" ").append(arrowText)
     text.toString()
   }
 
@@ -116,10 +126,12 @@ object ScalaCompletionUtil {
       return null
     }
     var candidate: PsiElement = element.getContainingFile
-    if (candidate == null || candidate.getNode == null) return null
+    if (candidate == null || candidate.getNode == null)
+      return null
     while (candidate.getNode.getChildren(null).nonEmpty) {
       candidate = candidate.findElementAt(offset)
-      if (candidate == null || candidate.getNode == null) return null
+      if (candidate == null || candidate.getNode == null)
+        return null
     }
     candidate
   }
@@ -140,7 +152,8 @@ object ScalaCompletionUtil {
     parent match {
       case _: ScalaFile | _: ScPackaging =>
         var node = leaf.getPrevSibling
-        if (node.isInstanceOf[PsiWhiteSpace]) node = node.getPrevSibling
+        if (node.isInstanceOf[PsiWhiteSpace])
+          node = node.getPrevSibling
         node match {
           case x: PsiErrorElement =>
             val s = ErrMsg("wrong.top.statment.declaration")
@@ -277,7 +290,8 @@ object ScalaCompletionUtil {
   def replaceDummy(text: String, to: String): String = {
     if (text.indexOf(DUMMY_IDENTIFIER) != -1) {
       text.replaceAll("\\w*" + DUMMY_IDENTIFIER, to)
-    } else text
+    } else
+      text
   }
 
   def checkNewWith(
@@ -303,7 +317,8 @@ object ScalaCompletionUtil {
       manager: PsiManager): Boolean = {
     val typeText = elem.getText
     var text = "class a { " + typeText + "}"
-    if (text.indexOf(DUMMY_IDENTIFIER) == -1) return false
+    if (text.indexOf(DUMMY_IDENTIFIER) == -1)
+      return false
     text = replaceDummy(text, " " + additionText + " ")
     val DUMMY = "dummy."
     val dummyFile = PsiFileFactory
@@ -324,7 +339,8 @@ object ScalaCompletionUtil {
     val iterator = elem.getChildren.iterator
     while (iterator.hasNext) {
       val child = iterator.next()
-      if (checkErrors(child)) return true
+      if (checkErrors(child))
+        return true
     }
     false
   }
@@ -364,7 +380,10 @@ object ScalaCompletionUtil {
             text.substring(offset - ref.getTextRange.getStartOffset + 1)
           case ref: PsiReference =>
             val from = offset - ref.getElement.getTextRange.getStartOffset + 1
-            if (from < text.length && from >= 0) text.substring(from) else ""
+            if (from < text.length && from >= 0)
+              text.substring(from)
+            else
+              ""
         }
         if (ScalaNamesUtil.isKeyword(rest)) {
           CompletionUtil.DUMMY_IDENTIFIER
@@ -377,7 +396,8 @@ object ScalaCompletionUtil {
           ref.getElement.getPrevSibling != null &&
           ref.getElement.getPrevSibling.getNode.getElementType == ScalaTokenTypes.tSTUB)
         id + "`"
-      else id
+      else
+        id
     } else {
       if (element != null && element.getNode.getElementType == ScalaTokenTypes.tSTUB) {
         CompletionUtil.DUMMY_IDENTIFIER_TRIMMED + "`"
@@ -409,7 +429,8 @@ object ScalaCompletionUtil {
                 parameters.getOriginalFile),
               parameters.getOffset - owner.getTextRange.getStartOffset)
             .getOrElse(parameters.getPosition)
-        } else parameters.getPosition
+        } else
+          parameters.getPosition
       case _ => inner(element.getContext)
     }
     inner(parameters.getOriginalPosition)

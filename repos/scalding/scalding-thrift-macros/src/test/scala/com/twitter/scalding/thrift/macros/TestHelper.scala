@@ -80,8 +80,10 @@ object TestHelper extends Matchers {
     val r = (0 until 20).map { _ =>
       orderedBuffer.compareBinary(bufA, bufB)
     }
-    if (r.distinct.size == 1) r.head
-    else sys.error("Results are inconsistent.." + r)
+    if (r.distinct.size == 1)
+      r.head
+    else
+      sys.error("Results are inconsistent.." + r)
   }
 
 }

@@ -101,8 +101,10 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
               builder.restoreNewlinesState
               newMarker = simpleMarker.precede
               simpleMarker.done(
-                if (isTuple) ScalaElementTypes.TUPLE
-                else ScalaElementTypes.PARENT_EXPR)
+                if (isTuple)
+                  ScalaElementTypes.TUPLE
+                else
+                  ScalaElementTypes.PARENT_EXPR)
             }
         }
       case _ =>

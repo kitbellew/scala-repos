@@ -62,7 +62,10 @@ private[spark] class ClientArguments(
 
   // Additional memory to allocate to containers
   val amMemoryOverheadEntry =
-    if (isClusterMode) DRIVER_MEMORY_OVERHEAD else AM_MEMORY_OVERHEAD
+    if (isClusterMode)
+      DRIVER_MEMORY_OVERHEAD
+    else
+      AM_MEMORY_OVERHEAD
   val amMemoryOverhead = sparkConf
     .get(amMemoryOverheadEntry)
     .getOrElse(
@@ -259,8 +262,10 @@ private[spark] class ClientArguments(
 
   private def getUsageMessage(unknownParam: List[String] = null): String = {
     val message =
-      if (unknownParam != null) s"Unknown/unsupported param $unknownParam\n"
-      else ""
+      if (unknownParam != null)
+        s"Unknown/unsupported param $unknownParam\n"
+      else
+        ""
     val mem_mb = Utils.DEFAULT_DRIVER_MEM_MB
     message +
       s"""

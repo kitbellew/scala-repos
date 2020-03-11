@@ -181,7 +181,10 @@ class ParquetAvroCompatibilitySuite
         (0 until 10).map { i =>
           Row(
             Seq.tabulate(3)(i => s"val_$i"),
-            if (i % 3 == 0) null else Seq.tabulate(3)(identity))
+            if (i % 3 == 0)
+              null
+            else
+              Seq.tabulate(3)(identity))
         })
     }
   }

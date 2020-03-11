@@ -157,11 +157,15 @@ object RetryBudget {
     // if you only have minRetries, everything costs 1 but you
     // get no credit for requests. all credits come via time.
     val depositAmount =
-      if (percentCanRetry == 0.0) 0
-      else TokenRetryBudget.ScaleFactor.toInt
+      if (percentCanRetry == 0.0)
+        0
+      else
+        TokenRetryBudget.ScaleFactor.toInt
     val withdrawalAmount =
-      if (percentCanRetry == 0.0) 1
-      else (TokenRetryBudget.ScaleFactor / percentCanRetry).toInt
+      if (percentCanRetry == 0.0)
+        1
+      else
+        (TokenRetryBudget.ScaleFactor / percentCanRetry).toInt
 
     // compute the reserve by scaling minRetriesPerSec by ttl and retry cost
     // to allow for clients that've just started or have low rps

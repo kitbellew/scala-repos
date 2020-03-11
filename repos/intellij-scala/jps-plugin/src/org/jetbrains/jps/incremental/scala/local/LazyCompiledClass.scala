@@ -25,7 +25,8 @@ private class LazyCompiledClass(
   private var contentIsSet = false
 
   override def getContent = {
-    if (contentIsSet) super.getContent
+    if (contentIsSet)
+      super.getContent
     else
       loadedContent.getOrElse {
         val content = new BinaryContent(FileUtil.loadFileBytes(outputFile))

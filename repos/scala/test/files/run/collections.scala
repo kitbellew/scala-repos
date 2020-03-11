@@ -11,7 +11,8 @@ object Test extends App {
   def time(op: => Unit) {
     val start = currentTime
     op
-    if (printTime) println("  time = " + (currentTime - start) + "ms")
+    if (printTime)
+      println("  time = " + (currentTime - start) + "ms")
   }
 
   def test(msg: String, s0: collection.immutable.Set[Int], iters: Int) = {
@@ -27,7 +28,8 @@ object Test extends App {
     time {
       var x = 0
       for (i <- 0 to 10000)
-        if (s contains i) x += i
+        if (s contains i)
+          x += i
       println("test3: " + x)
     }
   }
@@ -45,7 +47,8 @@ object Test extends App {
     time {
       var x = 0
       for (i <- 0 to 10000)
-        if (s contains i) x += i
+        if (s contains i)
+          x += i
       println("test3: " + x)
     }
   }

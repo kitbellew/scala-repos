@@ -22,8 +22,15 @@ object ResourceUtil {
   private[this] object ResourceMatchKey {
     def apply(resource: MesosProtos.Resource): ResourceMatchKey = {
       val reservation =
-        if (resource.hasReservation) Some(resource.getReservation) else None
-      val disk = if (resource.hasDisk) Some(resource.getDisk) else None
+        if (resource.hasReservation)
+          Some(resource.getReservation)
+        else
+          None
+      val disk =
+        if (resource.hasDisk)
+          Some(resource.getDisk)
+        else
+          None
       ResourceMatchKey(resource.getRole, resource.getName, reservation, disk)
     }
   }

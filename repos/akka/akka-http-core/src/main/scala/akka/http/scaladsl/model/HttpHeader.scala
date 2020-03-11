@@ -87,7 +87,8 @@ object HttpHeader {
           ParsingResult.Error(
             info.left.get.withSummaryPrepended(s"Illegal HTTP header value"))
       }
-    } else ParsingResult.Error(ErrorInfo(s"Illegal HTTP header name", name))
+    } else
+      ParsingResult.Error(ErrorInfo(s"Illegal HTTP header name", name))
 
   sealed trait ParsingResult {
     def errors: List[ErrorInfo]

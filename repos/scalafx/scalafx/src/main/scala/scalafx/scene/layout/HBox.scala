@@ -40,7 +40,10 @@ import scalafx.scene.Node._
 
 object HBox {
   implicit def sfxHBox2jfx(v: HBox): jfxsl.HBox =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all hbox constraints from the child node.

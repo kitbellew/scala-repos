@@ -50,7 +50,8 @@ object GlobifierProperties extends Properties("Globifier Properties") {
     }
 
   implicit val richDateArb: Arbitrary[RichDate] = Arbitrary {
-    for (v <- choose(0L, 1L << 32)) yield RichDate(v)
+    for (v <- choose(0L, 1L << 32))
+      yield RichDate(v)
   }
 
   lazy val globifierOps = GlobifierOps()

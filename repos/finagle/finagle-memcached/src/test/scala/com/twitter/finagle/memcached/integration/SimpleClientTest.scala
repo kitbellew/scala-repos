@@ -46,7 +46,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
   }
 
   override def withFixture(test: NoArgTest): Outcome = {
-    if (testServer.isDefined) test()
+    if (testServer.isDefined)
+      test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()

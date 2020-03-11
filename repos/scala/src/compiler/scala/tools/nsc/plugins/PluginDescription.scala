@@ -41,8 +41,10 @@ case class PluginDescription(name: String, classname: String) {
   */
 object PluginDescription {
   private def text(ns: org.w3c.dom.NodeList): String =
-    if (ns.getLength == 1) ns.item(0).getTextContent.trim
-    else throw new RuntimeException("Bad plugin descriptor.")
+    if (ns.getLength == 1)
+      ns.item(0).getTextContent.trim
+    else
+      throw new RuntimeException("Bad plugin descriptor.")
 
   def fromXML(xml: java.io.InputStream): PluginDescription = {
     import javax.xml.parsers.DocumentBuilderFactory

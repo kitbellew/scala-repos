@@ -18,7 +18,8 @@ object RichFileObject {
       val uri = fo.getName.getURI
       if (uri.startsWith("jar") || uri.startsWith("zip"))
         Some(fo.getName.getRoot.getRelativeName(fo.getName))
-      else None
+      else
+        None
     }
 
     // assumes it is a local file

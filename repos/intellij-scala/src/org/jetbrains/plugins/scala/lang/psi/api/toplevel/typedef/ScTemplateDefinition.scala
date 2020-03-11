@@ -90,7 +90,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             yield asPsi.asInstanceOf[PsiClassType]).toArray[PsiClassType]
         case _ => PsiClassType.EMPTY_ARRAY
       }
-    } else PsiClassType.EMPTY_ARRAY
+    } else
+      PsiClassType.EMPTY_ARRAY
   }
 
   def showAsInheritor: Boolean = {
@@ -206,7 +207,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   def selfTypeElement: Option[ScSelfTypeElement] = {
     val qual = qualifiedName
-    if (qual != null && (qual == "scala.Predef" || qual == "scala")) return None
+    if (qual != null && (qual == "scala.Predef" || qual == "scala"))
+      return None
     extendsBlock.selfTypeElement
   }
 
@@ -401,7 +403,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         PsiTreeUtil.isContextAncestor(
           extendsBlock.templateBody.get,
           place,
-          false) && lastParent != null) return true
+          false) && lastParent != null)
+      return true
     processDeclarationsForTemplateBody(processor, oldState, lastParent, place)
   }
 
@@ -410,7 +413,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       oldState: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (DumbService.getInstance(getProject).isDumb) return true
+    if (DumbService.getInstance(getProject).isDumb)
+      return true
     var state = oldState
     //exception cases
     this match {
@@ -426,13 +430,16 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     // Process selftype reference
     selfTypeElement match {
       case Some(se) if se.name != "_" =>
-        if (!processor.execute(se, state)) return false
+        if (!processor.execute(se, state))
+          return false
       case _ =>
     }
     state = state.put(
       BaseProcessor.FROM_TYPE_KEY,
-      if (ScalaPsiUtil.isPlaceTdAncestor(this, place)) ScThisType(this)
-      else ScType.designator(this))
+      if (ScalaPsiUtil.isPlaceTdAncestor(this, place))
+        ScThisType(this)
+      else
+        ScType.designator(this))
     val eb = extendsBlock
     eb.templateParents match {
       case Some(p) if PsiTreeUtil.isContextAncestor(p, place, false) =>
@@ -444,12 +451,14 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                 case _var: ScVariable =>
                   for (declared <- _var.declaredElements) {
                     ProgressManager.checkCanceled()
-                    if (!processor.execute(declared, state)) return false
+                    if (!processor.execute(declared, state))
+                      return false
                   }
                 case _val: ScValue =>
                   for (declared <- _val.declaredElements) {
                     ProgressManager.checkCanceled()
-                    if (!processor.execute(declared, state)) return false
+                    if (!processor.execute(declared, state))
+                      return false
                   }
               }
             }
@@ -503,7 +512,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                             processor,
                             state,
                             lastParent,
-                            place)) return false
+                            place))
+                        return false
                   }
                 }
               case _ =>
@@ -565,7 +575,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   }
 
   override def isInheritor(baseClass: PsiClass, deep: Boolean): Boolean = {
-    if (baseClass == null) return false
+    if (baseClass == null)
+      return false
 
     val visited: util.Set[PsiClass] = new util.HashSet[PsiClass]
     val baseQualifiedName = baseClass.qualifiedName
@@ -591,7 +602,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               }
               if (value && c.name == baseName && c.qualifiedName == baseQualifiedName && value)
                 return true
-              if (deep && isInheritorInner(base, c, deep)) return true
+              if (deep && isInheritorInner(base, c, deep))
+                return true
             }
           case _ =>
             val supers = drv.getSuperTypes
@@ -602,7 +614,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               if (c != null) {
                 if (c.name == baseName && c.qualifiedName == baseQualifiedName)
                   return true
-                if (deep && isInheritorInner(base, c, deep)) return true
+                if (deep && isInheritorInner(base, c, deep))
+                  return true
               }
             }
         }
@@ -611,10 +624,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     }
     if (baseClass == null || DumbService
           .getInstance(baseClass.getProject)
-          .isDumb) return false //to prevent failing during indexes
+          .isDumb)
+      return false //to prevent failing during indexes
 
     // This doesn't appear in the superTypes at the moment, so special case required.
-    if (baseQualifiedName == "java.lang.Object") return true
+    if (baseQualifiedName == "java.lang.Object")
+      return true
     if (baseQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated)
       return true
 

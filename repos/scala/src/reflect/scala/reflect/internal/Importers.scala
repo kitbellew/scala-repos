@@ -197,23 +197,31 @@ trait Importers { to: SymbolTable =>
           var theirscope =
             if (their.owner.isClass && !their.owner.isRefinementClass)
               their.owner.info
-            else from.NoType
+            else
+              from.NoType
           val theirexisting =
-            if (isModuleClass) theirscope.decl(their.name).moduleClass
-            else theirscope.decl(their.name)
-          if (!theirexisting.exists) theirscope = from.NoType
+            if (isModuleClass)
+              theirscope.decl(their.name).moduleClass
+            else
+              theirscope.decl(their.name)
+          if (!theirexisting.exists)
+            theirscope = from.NoType
 
           val myname = importName(their.name)
           val myowner = importSymbol(their.owner)
           val myscope =
             if (theirscope != from.NoType && !(myowner hasFlag Flags.LOCKED))
               myowner.info
-            else NoType
+            else
+              NoType
           val myexisting = {
-            if (isModuleClass) importSymbol(their.sourceModule).moduleClass
+            if (isModuleClass)
+              importSymbol(their.sourceModule).moduleClass
             else if (isTparam)
-              (if (myowner hasFlag Flags.LOCKED) NoSymbol
-               else myowner.typeParams(their.paramPos))
+              (if (myowner hasFlag Flags.LOCKED)
+                 NoSymbol
+               else
+                 myowner.typeParams(their.paramPos))
             else if (isOverloaded)
               myowner.newOverloaded(
                 myowner.thisType,
@@ -236,9 +244,14 @@ trait Importers { to: SymbolTable =>
               }
 
               val myexisting =
-                if (myscope != NoType) myscope.decl(myname) else NoSymbol
-              if (myexisting.isOverloaded) disambiguate(myexisting)
-              else myexisting
+                if (myscope != NoType)
+                  myscope.decl(myname)
+                else
+                  NoSymbol
+              if (myexisting.isOverloaded)
+                disambiguate(myexisting)
+              else
+                myexisting
             }
           }
 
@@ -297,7 +310,10 @@ trait Importers { to: SymbolTable =>
       case from.ClassInfoType(parents, decls, clazz) =>
         val myclazz = importSymbol(clazz)
         val myscope =
-          if (myclazz.isPackageClass) newPackageScope(myclazz) else newScope
+          if (myclazz.isPackageClass)
+            newPackageScope(myclazz)
+          else
+            newScope
         val myclazzTpe = ClassInfoType(parents map importType, myscope, myclazz)
         myclazz setInfo GenPolyType(
           myclazz.typeParams,
@@ -362,12 +378,15 @@ trait Importers { to: SymbolTable =>
 
     def recreatedTreeCompleter(their: from.Tree, my: to.Tree): Unit = {
       if (their.canHaveAttrs) {
-        if (my.hasSymbolField) my.symbol = importSymbol(their.symbol)
+        if (my.hasSymbolField)
+          my.symbol = importSymbol(their.symbol)
         my.pos = importPosition(their.pos)
         (their, my) match {
           case (their: from.TypeTree, my: to.TypeTree) =>
-            if (their.wasEmpty) my.defineType(importType(their.tpe))
-            else my.setType(importType(their.tpe))
+            if (their.wasEmpty)
+              my.defineType(importType(their.tpe))
+            else
+              my.setType(importType(their.tpe))
           case (_, _) =>
             my.setType(importType(their.tpe))
         }
@@ -572,8 +591,10 @@ trait Importers { to: SymbolTable =>
       newScopeWith(decls.toList map importSymbol: _*)
 
     def importName(name: from.Name): Name =
-      if (name.isTypeName) newTypeName(name.toString)
-      else newTermName(name.toString)
+      if (name.isTypeName)
+        newTypeName(name.toString)
+      else
+        newTermName(name.toString)
 
     def importModifiers(mods: from.Modifiers): Modifiers =
       new Modifiers(
@@ -585,7 +606,10 @@ trait Importers { to: SymbolTable =>
       new ImportSelector(
         importName(sel.name),
         sel.namePos,
-        if (sel.rename != null) importName(sel.rename) else null,
+        if (sel.rename != null)
+          importName(sel.rename)
+        else
+          null,
         sel.renamePos)
     def importValDef(tree: from.ValDef): ValDef =
       importTree(tree).asInstanceOf[ValDef]

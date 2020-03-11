@@ -112,7 +112,8 @@ object ParquetReadBenchmark {
                 val numRows = batch.numRows()
                 var i = 0
                 while (i < numRows) {
-                  if (!col.getIsNull(i)) sum += col.getInt(i)
+                  if (!col.getIsNull(i))
+                    sum += col.getInt(i)
                   i += 1
                 }
               }
@@ -135,7 +136,8 @@ object ParquetReadBenchmark {
                   val it = batch.rowIterator()
                   while (it.hasNext) {
                     val record = it.next()
-                    if (!record.isNullAt(0)) sum += record.getInt(0)
+                    if (!record.isNullAt(0))
+                      sum += record.getInt(0)
                   }
                 }
               } finally {

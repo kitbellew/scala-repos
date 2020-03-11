@@ -153,9 +153,15 @@ case class NaNvl(left: Expression, right: Expression)
     } else {
       left.dataType match {
         case DoubleType =>
-          if (!value.asInstanceOf[Double].isNaN) value else right.eval(input)
+          if (!value.asInstanceOf[Double].isNaN)
+            value
+          else
+            right.eval(input)
         case FloatType =>
-          if (!value.asInstanceOf[Float].isNaN) value else right.eval(input)
+          if (!value.asInstanceOf[Float].isNaN)
+            value
+          else
+            right.eval(input)
       }
     }
   }
@@ -247,9 +253,11 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
       if (evalC != null) {
         childrenArray(i).dataType match {
           case DoubleType =>
-            if (!evalC.asInstanceOf[Double].isNaN) numNonNulls += 1
+            if (!evalC.asInstanceOf[Double].isNaN)
+              numNonNulls += 1
           case FloatType =>
-            if (!evalC.asInstanceOf[Float].isNaN) numNonNulls += 1
+            if (!evalC.asInstanceOf[Float].isNaN)
+              numNonNulls += 1
           case _ => numNonNulls += 1
         }
       }

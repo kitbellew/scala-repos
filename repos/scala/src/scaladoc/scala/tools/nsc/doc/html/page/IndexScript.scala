@@ -117,7 +117,11 @@ class IndexScript(universe: doc.Universe) extends Page {
       */
     def memberKindToString(mbr: MemberEntity): String = {
       val kind = mbr.flags.map(_.text.asInstanceOf[Text].text).mkString(" ")
-      val space = if (kind == "") "" else " "
+      val space =
+        if (kind == "")
+          ""
+        else
+          " "
 
       kind + space + kindToString(mbr)
     }

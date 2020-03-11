@@ -41,7 +41,10 @@ import scalafx.scene.image.ImageIncludes.jfxImage2sfx
 object ClipboardContent {
   implicit def sfxClipboardContent2jfx(
       c: ClipboardContent): jfxsi.ClipboardContent =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 
   def apply[T <: AnyRef](arg: Map[DataFormat, T]): ClipboardContent = {
     val c = new jfxsi.ClipboardContent()

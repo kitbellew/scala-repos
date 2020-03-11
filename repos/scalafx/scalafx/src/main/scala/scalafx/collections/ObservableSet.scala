@@ -55,7 +55,10 @@ object ObservableSet extends MutableSetFactory[ObservableSet] {
     */
   implicit def sfxObservableSet2sfxObservableSet[T](
       os: ObservableSet[T]): jfxc.ObservableSet[T] =
-    if (os != null) os.delegate else null
+    if (os != null)
+      os.delegate
+    else
+      null
 
   // CHANGING INDICATORS - BEGIN
 

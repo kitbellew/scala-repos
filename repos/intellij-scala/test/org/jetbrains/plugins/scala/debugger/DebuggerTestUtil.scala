@@ -73,8 +73,10 @@ object DebuggerTestUtil {
     }
     def inJvm(path: String, suffix: String) = {
       val postfix =
-        if (path.startsWith("/Library")) "/Contents/Home"
-        else "" // mac workaround
+        if (path.startsWith("/Library"))
+          "/Contents/Home"
+        else
+          "" // mac workaround
       Option(new File(path))
         .filter(_.exists())
         .flatMap(

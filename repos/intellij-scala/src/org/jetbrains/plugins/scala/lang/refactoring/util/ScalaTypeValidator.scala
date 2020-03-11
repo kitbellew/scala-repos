@@ -55,7 +55,8 @@ class ScalaTypeValidator(
       allOcc: Boolean): Array[(PsiNamedElement, String)] = {
     //returns declaration and message
     val container = enclosingContainer(allOcc)
-    if (container == null) return Array()
+    if (container == null)
+      return Array()
     val buf = new ArrayBuffer[(PsiNamedElement, String)]
 
     buf ++= getForbiddenNames(container, name)

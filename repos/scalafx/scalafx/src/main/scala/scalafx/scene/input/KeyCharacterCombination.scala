@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object KeyCharacterCombination {
   implicit def sfxKeyCharacterCombination2jfx(
       kcc: KeyCharacterCombination): jfxsi.KeyCharacterCombination =
-    if (kcc != null) kcc.delegate else null
+    if (kcc != null)
+      kcc.delegate
+    else
+      null
 }
 
 class KeyCharacterCombination(

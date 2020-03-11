@@ -102,10 +102,13 @@ object Swagger {
         tpe.typeArgs.toSet)
     else if (tpe.isCollection || tpe.isOption) {
       val ntpe = tpe.typeArgs.head
-      if (!known.contains(ntpe)) collectModels(ntpe, alreadyKnown, known + ntpe)
-      else Set.empty
+      if (!known.contains(ntpe))
+        collectModels(ntpe, alreadyKnown, known + ntpe)
+      else
+        Set.empty
     } else {
-      if (alreadyKnown.map(_.id).contains(tpe.simpleName)) Set.empty
+      if (alreadyKnown.map(_.id).contains(tpe.simpleName))
+        Set.empty
       else {
         val descr = Reflector.describe(tpe)
         descr match {
@@ -148,14 +151,19 @@ object Swagger {
     val ctorParam =
       if (!prop.returnType.isOption)
         descr.mostComprehensive.find(_.name == prop.name)
-      else None
+      else
+        None
     //    if (descr.simpleName == "Pet") println("converting property: " + prop)
     val mp = ModelProperty(
       DataType.fromScalaType(
-        if (prop.returnType.isOption) prop.returnType.typeArgs.head
-        else prop.returnType),
-      if (position.isDefined && position.forall(_ >= 0)) position.get
-      else ctorParam.map(_.argIndex).getOrElse(position.getOrElse(0)),
+        if (prop.returnType.isOption)
+          prop.returnType.typeArgs.head
+        else
+          prop.returnType),
+      if (position.isDefined && position.forall(_ >= 0))
+        position.get
+      else
+        ctorParam.map(_.argIndex).getOrElse(position.getOrElse(0)),
       required = required && !prop.returnType.isOption,
       description = description.flatMap(_.blankOption),
       allowableValues = convertToAllowableValues(allowableValues)
@@ -166,7 +174,8 @@ object Swagger {
   def modelToSwagger(klass: ScalaType): Option[Model] = {
     if (Reflector.isPrimitive(klass.erasure) || Reflector.isExcluded(
           klass.erasure,
-          excludes.toSeq)) None
+          excludes.toSeq))
+      None
     else {
       val name = klass.simpleName
 
@@ -260,8 +269,10 @@ object Swagger {
     }
     val allowableValues =
       AllowableValues.AllowableRangeValues(
-        if (inclusive) Range.inclusive(min.toInt, max.toInt)
-        else Range(min.toInt, max.toInt))
+        if (inclusive)
+          Range.inclusive(min.toInt, max.toInt)
+        else
+          Range(min.toInt, max.toInt))
     allowableValues
   }
 
@@ -455,22 +466,34 @@ object DataType {
     fromScalaType(Reflector.scalaTypeOf(klass))
   private[swagger] def fromScalaType(st: ScalaType): DataType = {
     val klass =
-      if (st.isOption && st.typeArgs.size > 0) st.typeArgs.head.erasure
-      else st.erasure
+      if (st.isOption && st.typeArgs.size > 0)
+        st.typeArgs.head.erasure
+      else
+        st.erasure
     if (classOf[Unit].isAssignableFrom(klass) || classOf[Void].isAssignableFrom(
-          klass)) this.Void
-    else if (isString(klass)) this.String
+          klass))
+      this.Void
+    else if (isString(klass))
+      this.String
     else if (classOf[Byte].isAssignableFrom(klass) || classOf[java.lang.Byte]
-               .isAssignableFrom(klass)) this.Byte
+               .isAssignableFrom(klass))
+      this.Byte
     else if (classOf[Long].isAssignableFrom(klass) || classOf[java.lang.Long]
-               .isAssignableFrom(klass)) this.Long
-    else if (isInt(klass)) this.Int
+               .isAssignableFrom(klass))
+      this.Long
+    else if (isInt(klass))
+      this.Int
     else if (classOf[Float].isAssignableFrom(klass) || classOf[java.lang.Float]
-               .isAssignableFrom(klass)) this.Float
-    else if (isDecimal(klass)) this.Double
-    else if (isDate(klass)) this.Date
-    else if (isDateTime(klass)) this.DateTime
-    else if (isBool(klass)) this.Boolean
+               .isAssignableFrom(klass))
+      this.Float
+    else if (isDecimal(klass))
+      this.Double
+    else if (isDate(klass))
+      this.Date
+    else if (isDateTime(klass))
+      this.DateTime
+    else if (isBool(klass))
+      this.Boolean
     //    else if (classOf[java.lang.Enum[_]].isAssignableFrom(klass)) this.Enum
     //    else if (isMap(klass)) {
     //      if (st.typeArgs.size == 2) {
@@ -480,18 +503,28 @@ object DataType {
     //    }
     else if (classOf[scala.collection.Set[_]].isAssignableFrom(
                klass) || classOf[java.util.Set[_]].isAssignableFrom(klass)) {
-      if (st.typeArgs.nonEmpty) GenSet(fromScalaType(st.typeArgs.head))
-      else GenSet()
+      if (st.typeArgs.nonEmpty)
+        GenSet(fromScalaType(st.typeArgs.head))
+      else
+        GenSet()
     } else if (classOf[collection.Seq[_]]
                  .isAssignableFrom(klass) || classOf[java.util.List[_]]
                  .isAssignableFrom(klass)) {
-      if (st.typeArgs.nonEmpty) GenList(fromScalaType(st.typeArgs.head))
-      else GenList()
+      if (st.typeArgs.nonEmpty)
+        GenList(fromScalaType(st.typeArgs.head))
+      else
+        GenList()
     } else if (st.isArray || isCollection(klass)) {
-      if (st.typeArgs.nonEmpty) GenArray(fromScalaType(st.typeArgs.head))
-      else GenArray()
+      if (st.typeArgs.nonEmpty)
+        GenArray(fromScalaType(st.typeArgs.head))
+      else
+        GenArray()
     } else {
-      val stt = if (st.isOption) st.typeArgs.head else st
+      val stt =
+        if (st.isOption)
+          st.typeArgs.head
+        else
+          st
       new ValueDataType(stt.simpleName, qualifiedName = Option(stt.fullName))
     }
   }

@@ -155,10 +155,16 @@ object DefaultTracer extends Tracer with Proxy {
   @volatile var self: Tracer = BroadcastTracer(tracers)
 
   def record(record: Record): Unit =
-    if (self == null) () else self.record(record)
+    if (self == null)
+      ()
+    else
+      self.record(record)
 
   def sampleTrace(traceId: TraceId): Option[Boolean] =
-    if (self == null) None else self.sampleTrace(traceId)
+    if (self == null)
+      None
+    else
+      self.sampleTrace(traceId)
 
   val get = this
 }

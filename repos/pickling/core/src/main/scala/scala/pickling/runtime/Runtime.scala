@@ -32,12 +32,22 @@ abstract class PicklerRuntime(
   import compat._
 
   val clazz =
-    if (preclazz != null) Runtime.toUnboxed.getOrElse(preclazz, preclazz)
-    else null
+    if (preclazz != null)
+      Runtime.toUnboxed.getOrElse(preclazz, preclazz)
+    else
+      null
   val mirror = runtimeMirror(classLoader)
-  val sym = if (clazz != null) mirror.classSymbol(clazz) else NullClass
+  val sym =
+    if (clazz != null)
+      mirror.classSymbol(clazz)
+    else
+      NullClass
   val tpe = {
-    val elType = if (clazz != null) clazz.getComponentType() else null
+    val elType =
+      if (clazz != null)
+        clazz.getComponentType()
+      else
+        null
     if (elType != null) {
       // TODO: correctly convert elType
       appliedType(
@@ -119,7 +129,11 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                 val fldValue: Any = fldMirror.get
                 // debug("pickling field value: " + fldValue)
 
-                val fldClass = if (fldValue != null) fldValue.getClass else null
+                val fldClass =
+                  if (fldValue != null)
+                    fldValue.getClass
+                  else
+                    null
                 // by using only the class we convert Int to Integer
                 // therefore we pass fir.tpe (as pretpe) in addition to the class and use it for the is primitive check
                 //val fldRuntime = new InterpretedPicklerRuntime(classLoader, fldClass)
@@ -139,7 +153,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                       if (subPicklee == null || subPicklee.getClass == mirror
                             .runtimeClass(fir.tpe.erasure))
                         b.hintElidedType(fldTag)
-                      else ()
+                      else
+                        ()
                       pickleInto(fir.tpe, subPicklee, b, fldPickler)
                     }
                   }
@@ -218,7 +233,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
             c.getField("MODULE$").get(c)
           } else {
             val pendingFields =
-              if (tagKey.contains("anonfun$")) List[FieldIR]()
+              if (tagKey.contains("anonfun$"))
+                List[FieldIR]()
               else
                 cir.fields.filter(fir =>
                   fir.hasGetter || {

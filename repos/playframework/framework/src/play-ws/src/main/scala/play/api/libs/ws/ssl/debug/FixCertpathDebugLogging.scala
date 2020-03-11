@@ -41,8 +41,10 @@ object FixCertpathDebugLogging {
       * @return true if this class should be returned in the set of findClasses, false otherwise.
       */
     def isValidClass(className: String): Boolean = {
-      if (className.startsWith("java.security.cert")) return true
-      if (className.startsWith("sun.security.provider.certpath")) return true
+      if (className.startsWith("java.security.cert"))
+        return true
+      if (className.startsWith("sun.security.provider.certpath"))
+        return true
       if (className.equals("sun.security.x509.InhibitAnyPolicyExtension"))
         return true
       false
@@ -62,7 +64,11 @@ object FixCertpathDebugLogging {
 
       logger.debug(s"run: debugType = $debugType")
 
-      val debugValue = if (isUsingDebug) newDebug else null
+      val debugValue =
+        if (isUsingDebug)
+          newDebug
+        else
+          null
       var isPatched = false
       for (debugClass <- findClasses;
            debugField <- debugClass.getDeclaredFields) {

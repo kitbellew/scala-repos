@@ -108,8 +108,16 @@ sealed trait Number extends ScalaNumericConversions with Serializable {
   def =!=(rhs: Number): Boolean = !(this === rhs)
 
   def compare(rhs: Number): Int
-  def min(rhs: Number): Number = if (this < rhs) this else rhs
-  def max(rhs: Number): Number = if (this > rhs) this else rhs
+  def min(rhs: Number): Number =
+    if (this < rhs)
+      this
+    else
+      rhs
+  def max(rhs: Number): Number =
+    if (this > rhs)
+      this
+    else
+      rhs
 
   final def <(rhs: Number): Boolean = compare(rhs) < 0
   final def <=(rhs: Number): Boolean = compare(rhs) <= 0

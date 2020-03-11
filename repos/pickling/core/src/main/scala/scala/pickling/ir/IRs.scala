@@ -37,11 +37,19 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     def getter =
       accessor
         .map(_.getter)
-        .flatMap(sym => if (sym != NoSymbol) Some(sym) else None)
+        .flatMap(sym =>
+          if (sym != NoSymbol)
+            Some(sym)
+          else
+            None)
     def setter =
       accessor
         .map(_.setter)
-        .flatMap(sym => if (sym != NoSymbol) Some(sym) else None)
+        .flatMap(sym =>
+          if (sym != NoSymbol)
+            Some(sym)
+          else
+            None)
     def isParam = param.map(_.owner.name == nme.CONSTRUCTOR).getOrElse(false)
 
     def isPublic = param.nonEmpty || accessor.map(_.isPublic).getOrElse(false)
@@ -179,8 +187,10 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       allAccessors.partition(notMarkedTransient)
 
     val primaryCtorParamsOpt =
-      if (primaryCtor.isMethod) Some(primaryCtor.asMethod.paramss.flatten)
-      else None
+      if (primaryCtor.isMethod)
+        Some(primaryCtor.asMethod.paramss.flatten)
+      else
+        None
 
     val canCallCtor =
       primaryCtor != NoSymbol &&
@@ -200,7 +210,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
                 // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
                 (isVal && sym.asTerm.isPublic) || (getterExists && sym.asTerm.getter.isPublic)
             }
-          } else false
+          } else
+            false
 
           // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
           // notTransient && isMethod && getterExists && getterIsMetod
@@ -219,7 +230,11 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       // (a) all ctor params
       val ctorFieldIRs = primaryCtorParamsOpt.get.map { s =>
         val sym = s.asTerm // already tested
-        val baseSym = if (sym.isVal) sym else sym.getter.asMethod
+        val baseSym =
+          if (sym.isVal)
+            sym
+          else
+            sym.getter.asMethod
 
         val baseSymTpe =
           baseSym.typeSignature.asSeenFrom(rawTpe, rawTpe.typeSymbol.asClass)
@@ -234,8 +249,14 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         FieldIR(
           sym.name.toString,
           symTpe,
-          if (sym.isVal) Some(sym) else None,
-          if (sym.isVal) None else Some(sym.getter.asMethod))
+          if (sym.isVal)
+            Some(sym)
+          else
+            None,
+          if (sym.isVal)
+            None
+          else
+            Some(sym.getter.asMethod))
       }
 
       // (b) non-abstract vars (also private ones)
@@ -281,7 +302,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
               val acc = allAccessors.find(_.name == s.name)
               acc.isEmpty
             }
-          } else List()
+          } else
+            List()
         }
 
         reflectionGetters.map { sym =>
@@ -323,7 +345,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
           val mods = methodOpt.get.getModifiers
           Modifier.isStatic(mods) && Modifier.isPublic(mods)
         }
-      } else false
+      } else
+        false
 
     val cir = ClassIR(tpe, null, fieldIRs, useGetInstance)
     cir.canCallCtor = canCallCtor
@@ -361,12 +384,16 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       allAccessors.partition(notMarkedTransient)
 
     val ctorParams =
-      if (ctor != NoSymbol) ctor.asMethod.paramss.flatten.flatMap { sym =>
-        if (transientAccessors.exists(acc =>
-              acc.name.toString == sym.name.toString)) List()
-        else List(sym.asTerm)
-      }
-      else Nil
+      if (ctor != NoSymbol)
+        ctor.asMethod.paramss.flatten.flatMap { sym =>
+          if (transientAccessors.exists(acc =>
+                acc.name.toString == sym.name.toString))
+            List()
+          else
+            List(sym.asTerm)
+        }
+      else
+        Nil
 
     val (paramAccessors, otherAccessors) =
       allAccessors.partition(_.isParamAccessor)
@@ -417,7 +444,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
   private val flatten: C => C = (c: C) =>
     if (c.parent != null)
       ClassIR(c.tpe, c.parent, f1(c.fields, flatten(c.parent).fields))
-    else c
+    else
+      c
 
   def flattenedClassIR(tpe: Type) = flatten(compose(ClassIR(tpe, null, Nil)))
 }

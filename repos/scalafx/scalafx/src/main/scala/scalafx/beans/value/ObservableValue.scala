@@ -37,7 +37,10 @@ import scalafx.event.subscriptions.Subscription
 object ObservableValue {
   implicit def sfxObservableValue2jfx[T, J](
       ov: ObservableValue[T, J]): jfxbv.ObservableValue[J] =
-    if (ov != null) ov.delegate else null
+    if (ov != null)
+      ov.delegate
+    else
+      null
 
   // Conversions to JavaFX Marker classes (no need for these in scala, due to specialized classes)
   implicit def sfxObservableValue2jfxIntegerValue(

@@ -20,7 +20,8 @@ case class PerfStat(
   def id = _id
 
   def agg(pov: Pov) =
-    if (!pov.game.finished) this
+    if (!pov.game.finished)
+      this
     else {
       val thisYear = pov.game.createdAt isAfter DateTime.now.minusYears(1)
       copy(
@@ -70,8 +71,10 @@ case class PlayStreak(nb: Streaks, time: Streaks, lastDate: Option[DateTime]) {
       lastDate = pov.game.updatedAtOrCreatedAt.some)
   }
   def checkCurrent =
-    if (isContinued(DateTime.now)) this
-    else copy(nb = nb.reset, time = time.reset)
+    if (isContinued(DateTime.now))
+      this
+    else
+      copy(nb = nb.reset, time = time.reset)
   private def isContinued(at: DateTime) = lastDate.fold(true) { ld =>
     at.isBefore(ld plusMinutes PlayStreak.expirationMinutes)
   }
@@ -86,7 +89,12 @@ case class Streaks(cur: Streak, max: Streak) {
       cur = cur(cont, pov)(v)
     ).setMax
   def reset = copy(cur = Streak.init)
-  private def setMax = copy(max = if (cur.v >= max.v) cur else max)
+  private def setMax =
+    copy(max =
+      if (cur.v >= max.v)
+        cur
+      else
+        max)
 }
 object Streaks {
   val init = Streaks(Streak.init, Streak.init)

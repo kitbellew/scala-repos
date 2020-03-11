@@ -52,7 +52,10 @@ object FillTransition extends AnimationStatics {
     * @return Delegated JavaFX $FT extracted from `v`.
     */
   implicit def sfxFillTransition2jfx(v: FillTransition): jfxa.FillTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

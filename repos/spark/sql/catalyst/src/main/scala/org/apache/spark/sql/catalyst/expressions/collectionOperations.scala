@@ -130,8 +130,12 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
     val elementType = base.dataType.asInstanceOf[ArrayType].elementType
     val data = array.asInstanceOf[ArrayData].toArray[AnyRef](elementType)
     if (elementType != NullType) {
-      java.util.Arrays
-        .sort(data, if (ascending.asInstanceOf[Boolean]) lt else gt)
+      java.util.Arrays.sort(
+        data,
+        if (ascending.asInstanceOf[Boolean])
+          lt
+        else
+          gt)
     }
     new GenericArrayData(data.asInstanceOf[Array[Any]])
   }

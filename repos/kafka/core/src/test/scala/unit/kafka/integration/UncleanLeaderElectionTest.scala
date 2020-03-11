@@ -205,7 +205,11 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
       leaderId == brokerId1 || leaderId == brokerId2)
 
     // the non-leader broker is the follower
-    val followerId = if (leaderId == brokerId1) brokerId2 else brokerId1
+    val followerId =
+      if (leaderId == brokerId1)
+        brokerId2
+      else
+        brokerId1
     debug("Follower for " + topic + " is: %s".format(followerId))
 
     produceMessage(servers, topic, "first")
@@ -253,7 +257,11 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
       leaderId == brokerId1 || leaderId == brokerId2)
 
     // the non-leader broker is the follower
-    val followerId = if (leaderId == brokerId1) brokerId2 else brokerId1
+    val followerId =
+      if (leaderId == brokerId1)
+        brokerId2
+      else
+        brokerId1
     debug("Follower for " + topic + " is: %s".format(followerId))
 
     produceMessage(servers, topic, "first")

@@ -67,7 +67,8 @@ class Marshal[A](val value: A) {
                   () ⇒ marshal(bestCS)
               }
           }
-        } else None
+        } else
+          None
       } orElse {
         marshallings collectFirst {
           case Marshalling.Opaque(marshal) ⇒ marshal

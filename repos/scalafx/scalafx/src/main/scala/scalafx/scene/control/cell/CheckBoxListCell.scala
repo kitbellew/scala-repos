@@ -54,7 +54,10 @@ object CheckBoxListCell {
     */
   implicit def sfxCheckBoxListCell2jfx[T](
       cell: CheckBoxListCell[T]): jfxscc.CheckBoxListCell[T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * Creates a cell factory for use in ListView controls.

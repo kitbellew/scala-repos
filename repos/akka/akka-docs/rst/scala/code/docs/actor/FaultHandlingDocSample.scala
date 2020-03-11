@@ -177,7 +177,8 @@ class CounterService extends Actor {
       // Tell the counter to use current storage
       c ! UseStorage(storage)
       // and send the buffered backlog to the counter
-      for ((replyTo, msg) <- backlog) c.tell(msg, sender = replyTo)
+      for ((replyTo, msg) <- backlog)
+        c.tell(msg, sender = replyTo)
       backlog = IndexedSeq.empty
 
     case msg: Increment => forwardOrPlaceInBacklog(msg)

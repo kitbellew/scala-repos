@@ -37,7 +37,11 @@ class DelayedLazyVal[T](f: () => T, body: => Unit)(
     *
     *  @return the current value
     */
-  def apply(): T = if (isDone) complete else f()
+  def apply(): T =
+    if (isDone)
+      complete
+    else
+      f()
 
   exec.execute(new Runnable {
     def run = {

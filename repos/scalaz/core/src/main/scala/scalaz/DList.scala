@@ -89,7 +89,11 @@ object DList extends DListInstances {
 
   def replicate[A](n: Int, a: A): DList[A] =
     DL(xs => {
-      def go(m: Int): IList[A] = if (m <= 0) xs else a :: go(m - 1)
+      def go(m: Int): IList[A] =
+        if (m <= 0)
+          xs
+        else
+          a :: go(m - 1)
       go(n)
     })
   def unfoldr[A, B](b: B, f: B => Option[(A, B)]): DList[A] = {

@@ -29,8 +29,10 @@ private[controllers] trait ForumController extends forum.Granter {
 
   protected def CategGrantWrite[A <: Result](categSlug: String)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
-    if (isGrantedWrite(categSlug)) a
-    else fuccess(Forbidden("You cannot post to this category"))
+    if (isGrantedWrite(categSlug))
+      a
+    else
+      fuccess(Forbidden("You cannot post to this category"))
 
   protected def CategGrantMod[A <: Result](categSlug: String)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =

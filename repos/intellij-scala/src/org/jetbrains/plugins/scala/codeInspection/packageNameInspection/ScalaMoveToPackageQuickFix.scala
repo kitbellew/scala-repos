@@ -30,8 +30,10 @@ class ScalaMoveToPackageQuickFix(myFile: ScalaFile, packQualName: String)
       myFile) {
   def doApplyFix(project: Project): Unit = {
     val file = getElement
-    if (!file.isValid) return
-    if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+    if (!file.isValid)
+      return
+    if (!FileModificationService.getInstance.prepareFileForWrite(file))
+      return
     val packageName = packQualName
     val fileIndex: ProjectFileIndex =
       ProjectRootManager.getInstance(project).getFileIndex

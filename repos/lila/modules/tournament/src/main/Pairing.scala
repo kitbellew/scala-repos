@@ -25,9 +25,12 @@ case class Pairing(
   def notContains(user: String) = !contains(user)
 
   def opponentOf(userId: String) =
-    if (userId == user1) user2.some
-    else if (userId == user2) user1.some
-    else none
+    if (userId == user1)
+      user2.some
+    else if (userId == user2)
+      user1.some
+    else
+      none
 
   def finished = status >= chess.Status.Mate
   def playing = !finished
@@ -41,14 +44,20 @@ case class Pairing(
   def draw: Boolean = finished && winner.isEmpty
 
   def colorOf(userId: String): Option[Color] =
-    if (userId == user1) Color.White.some
-    else if (userId == user2) Color.Black.some
-    else none
+    if (userId == user1)
+      Color.White.some
+    else if (userId == user2)
+      Color.Black.some
+    else
+      none
 
   def berserkOf(userId: String): Int =
-    if (userId == user1) berserk1
-    else if (userId == user2) berserk2
-    else 0
+    if (userId == user1)
+      berserk1
+    else if (userId == user2)
+      berserk2
+    else
+      0
 
   def validBerserkOf(userId: String): Int =
     notSoQuickFinish ?? berserkOf(userId)
@@ -79,8 +88,10 @@ private[tournament] object Pairing {
 
   case class Prep(tourId: String, user1: String, user2: String) {
     def toPairing(firstGetsWhite: Boolean) =
-      if (firstGetsWhite) Pairing(tourId, user1, user2)
-      else Pairing(tourId, user2, user1)
+      if (firstGetsWhite)
+        Pairing(tourId, user1, user2)
+      else
+        Pairing(tourId, user2, user1)
   }
 
   def prep(tour: Tournament, ps: (Player, Player)) =

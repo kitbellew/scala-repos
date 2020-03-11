@@ -102,8 +102,8 @@ private[log] class LogCleanerManager(
         }
         .map {
           case (
-              topicAndPartition,
-              log
+                topicAndPartition,
+                log
               ) => // create a LogToClean instance for each
             // if the log segments are abnormally truncated and hence the checkpointed offset
             // is no longer valid, reset to the log starting offset and log the error event
@@ -125,7 +125,10 @@ private[log] class LogCleanerManager(
         .filter(ltc => ltc.totalBytes > 0) // skip any empty logs
 
       this.dirtiestLogCleanableRatio =
-        if (!dirtyLogs.isEmpty) dirtyLogs.max.cleanableRatio else 0
+        if (!dirtyLogs.isEmpty)
+          dirtyLogs.max.cleanableRatio
+        else
+          0
       // and must meet the minimum threshold for dirty byte ratio
       val cleanableLogs = dirtyLogs.filter(ltc =>
         ltc.cleanableRatio > ltc.log.config.minCleanableRatio)

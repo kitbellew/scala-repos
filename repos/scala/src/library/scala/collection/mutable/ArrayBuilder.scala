@@ -78,7 +78,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[T] = {
       val newelems = new Array[T](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -88,13 +89,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -125,7 +132,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -148,7 +156,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Byte] = {
       val newelems = new Array[Byte](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -158,13 +167,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -194,7 +209,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -217,7 +233,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Short] = {
       val newelems = new Array[Short](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -227,13 +244,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -263,7 +286,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -286,7 +310,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Char] = {
       val newelems = new Array[Char](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -296,13 +321,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -332,7 +363,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -355,7 +387,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Int] = {
       val newelems = new Array[Int](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -365,13 +398,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -401,7 +440,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -424,7 +464,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Long] = {
       val newelems = new Array[Long](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -434,13 +475,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -470,7 +517,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -493,7 +541,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Float] = {
       val newelems = new Array[Float](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -503,13 +552,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -539,7 +594,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -562,7 +618,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Double] = {
       val newelems = new Array[Double](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -572,13 +629,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -608,7 +671,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -628,7 +692,8 @@ object ArrayBuilder {
 
     private def mkArray(size: Int): Array[Boolean] = {
       val newelems = new Array[Boolean](size)
-      if (this.size > 0) Array.copy(elems, 0, newelems, 0, this.size)
+      if (this.size > 0)
+        Array.copy(elems, 0, newelems, 0, this.size)
       newelems
     }
 
@@ -638,13 +703,19 @@ object ArrayBuilder {
     }
 
     override def sizeHint(size: Int) {
-      if (capacity < size) resize(size)
+      if (capacity < size)
+        resize(size)
     }
 
     private def ensureSize(size: Int) {
       if (capacity < size || capacity == 0) {
-        var newsize = if (capacity == 0) 16 else capacity * 2
-        while (newsize < size) newsize *= 2
+        var newsize =
+          if (capacity == 0)
+            16
+          else
+            capacity * 2
+        while (newsize < size)
+          newsize *= 2
         resize(newsize)
       }
     }
@@ -674,7 +745,8 @@ object ArrayBuilder {
       if (capacity != 0 && capacity == size) {
         capacity = 0
         elems
-      } else mkArray(size)
+      } else
+        mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {

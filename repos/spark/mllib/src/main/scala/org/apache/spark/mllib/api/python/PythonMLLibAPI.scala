@@ -379,7 +379,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setInitializationSteps(initializationSteps)
       .setEpsilon(epsilon)
 
-    if (seed != null) kMeansAlg.setSeed(seed)
+    if (seed != null)
+      kMeansAlg.setSeed(seed)
     if (!initialModel.isEmpty())
       kMeansAlg.setInitialModel(new KMeansModel(initialModel))
 
@@ -432,7 +433,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       gmmAlg.setInitialModel(initialModel)
     }
 
-    if (seed != null) gmmAlg.setSeed(seed)
+    if (seed != null)
+      gmmAlg.setSeed(seed)
 
     try {
       new GaussianMixtureModelWrapper(
@@ -510,7 +512,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setBlocks(blocks)
       .setNonnegative(nonnegative)
 
-    if (seed != null) als.setSeed(seed)
+    if (seed != null)
+      als.setSeed(seed)
 
     val model = als.run(ratingsJRDD.rdd)
     new MatrixFactorizationModelWrapper(model)
@@ -541,7 +544,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setAlpha(alpha)
       .setNonnegative(nonnegative)
 
-    if (seed != null) als.setSeed(seed)
+    if (seed != null)
+      als.setSeed(seed)
 
     val model = als.run(ratingsJRDD.rdd)
     new MatrixFactorizationModelWrapper(model)
@@ -567,7 +571,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setCheckpointInterval(checkpointInterval)
       .setOptimizer(optimizer)
 
-    if (seed != null) algo.setSeed(seed)
+    if (seed != null)
+      algo.setSeed(seed)
 
     val documents = data.rdd.map(_.asScala.toArray).map { r =>
       r(0) match {
@@ -909,12 +914,18 @@ private[python] class PythonMLLibAPI extends Serializable {
 
   // used by the corr methods to retrieve the name of the correlation method passed in via pyspark
   private def getCorrNameOrDefault(method: String) = {
-    if (method == null) CorrelationNames.defaultCorrName else method
+    if (method == null)
+      CorrelationNames.defaultCorrName
+    else
+      method
   }
 
   // Used by the *RDD methods to get default seed if not passed in from pyspark
   private def getSeedOrDefault(seed: java.lang.Long): Long = {
-    if (seed == null) Utils.random.nextLong else seed
+    if (seed == null)
+      Utils.random.nextLong
+    else
+      seed
   }
 
   // Used by *RDD methods to get default numPartitions if not passed in from pyspark
@@ -1251,8 +1262,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     // ((blockRowIndex, blockColIndex), sub-matrix) tuple.
     val blockTuples = blocks.rdd.map {
       case Row(
-          Row(blockRowIndex: Long, blockColIndex: Long),
-          subMatrix: Matrix) =>
+            Row(blockRowIndex: Long, blockColIndex: Long),
+            subMatrix: Matrix) =>
         ((blockRowIndex.toInt, blockColIndex.toInt), subMatrix)
     }
     new BlockMatrix(blockTuples, rowsPerBlock, colsPerBlock, numRows, numCols)
@@ -1398,7 +1409,11 @@ private[spark] object SerDe extends Serializable {
       val m: DenseMatrix = obj.asInstanceOf[DenseMatrix]
       val bytes = new Array[Byte](8 * m.values.length)
       val order = ByteOrder.nativeOrder()
-      val isTransposed = if (m.isTransposed) 1 else 0
+      val isTransposed =
+        if (m.isTransposed)
+          1
+        else
+          0
       ByteBuffer.wrap(bytes).order(order).asDoubleBuffer().put(m.values)
 
       out.write(Opcodes.MARK)
@@ -1442,7 +1457,11 @@ private[spark] object SerDe extends Serializable {
       val colPtrsBytes = new Array[Byte](4 * s.colPtrs.length)
       val indicesBytes = new Array[Byte](4 * s.rowIndices.length)
       val valuesBytes = new Array[Byte](8 * s.values.length)
-      val isTransposed = if (s.isTransposed) 1 else 0
+      val isTransposed =
+        if (s.isTransposed)
+          1
+        else
+          0
       ByteBuffer.wrap(colPtrsBytes).order(order).asIntBuffer().put(s.colPtrs)
       ByteBuffer.wrap(indicesBytes).order(order).asIntBuffer().put(s.rowIndices)
       ByteBuffer.wrap(valuesBytes).order(order).asDoubleBuffer().put(s.values)

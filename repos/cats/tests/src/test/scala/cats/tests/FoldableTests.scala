@@ -48,7 +48,10 @@ class FoldableTestsAdditional extends CatsSuite {
   // exists method written in terms of foldRight
   def contains[F[_]: Foldable, A: Eq](as: F[A], goal: A): Eval[Boolean] =
     as.foldRight(Now(false)) { (a, lb) =>
-      if (a === goal) Now(true) else lb
+      if (a === goal)
+        Now(true)
+      else
+        lb
     }
 
   test("Foldable[List]") {
@@ -69,8 +72,10 @@ class FoldableTestsAdditional extends CatsSuite {
     }
     assert(sumM == Some("AaronBettyCalvinDeirdra"))
     val notCalvin = F.foldM(names, "") { (acc, x) =>
-      if (x == "Calvin") (None: Option[String])
-      else (Some(acc + x): Option[String])
+      if (x == "Calvin")
+        (None: Option[String])
+      else
+        (Some(acc + x): Option[String])
     }
     assert(notCalvin == None)
 
@@ -86,7 +91,10 @@ class FoldableTestsAdditional extends CatsSuite {
 
   test("Foldable[List].foldM stack safety") {
     def nonzero(acc: Long, x: Long): Option[Long] =
-      if (x == 0) None else Some(acc + x)
+      if (x == 0)
+        None
+      else
+        Some(acc + x)
 
     val n = 100000L
     val expected = n * (n + 1) / 2
@@ -111,7 +119,10 @@ class FoldableTestsAdditional extends CatsSuite {
     // "end" of the fold.
     val trap = Eval.later(bomb[Boolean])
     val result = F.foldRight(1 #:: 2 #:: Stream.empty, trap) { (n, lb) =>
-      if (n == 2) Now(true) else lb
+      if (n == 2)
+        Now(true)
+      else
+        lb
     }
     assert(result.value)
 

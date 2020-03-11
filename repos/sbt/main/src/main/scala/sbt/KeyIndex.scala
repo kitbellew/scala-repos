@@ -28,10 +28,12 @@ object KeyIndex {
     }
   private[this] def base(
       projects: Map[URI, Set[String]]): ExtendableKeyIndex = {
-    val data = for ((uri, ids) <- projects) yield {
-      val data = ids.map(id => Option(id) -> new ConfigIndex(Map.empty))
-      Option(uri) -> new ProjectIndex(data.toMap)
-    }
+    val data =
+      for ((uri, ids) <- projects)
+        yield {
+          val data = ids.map(id => Option(id) -> new ConfigIndex(Map.empty))
+          Option(uri) -> new ProjectIndex(data.toMap)
+        }
     new KeyIndex0(new BuildIndex(data.toMap))
   }
 
@@ -202,7 +204,10 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
       this
 
   def add(scoped: ScopedKey[_]): ExtendableKeyIndex =
-    if (validID(scoped.key.label)) add0(scoped) else this
+    if (validID(scoped.key.label))
+      add0(scoped)
+    else
+      this
   private[this] def add0(scoped: ScopedKey[_]): ExtendableKeyIndex = {
     val (build, project) = parts(scoped.scope.project.toOption)
     add1(build, project, scoped.scope.config, scoped.scope.task, scoped.key)

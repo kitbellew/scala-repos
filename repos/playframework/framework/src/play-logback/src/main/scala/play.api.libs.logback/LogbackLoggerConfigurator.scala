@@ -19,8 +19,10 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
   def init(rootPath: java.io.File, mode: Mode.Mode): Unit = {
     val properties = Map("application.home" -> rootPath.getAbsolutePath)
     val resourceName =
-      if (mode == Mode.Dev) "logback-play-dev.xml"
-      else "logback-play-default.xml"
+      if (mode == Mode.Dev)
+        "logback-play-dev.xml"
+      else
+        "logback-play-default.xml"
     val resourceUrl = Option(
       this.getClass.getClassLoader.getResource(resourceName))
     configure(properties, resourceUrl)
@@ -59,8 +61,10 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
         .resource("logback.xml")
         .orElse(
           env.resource(
-            if (env.mode == Mode.Dev) "logback-play-dev.xml"
-            else "logback-play-default.xml"
+            if (env.mode == Mode.Dev)
+              "logback-play-dev.xml"
+            else
+              "logback-play-default.xml"
           ))
 
     val configUrl =

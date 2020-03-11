@@ -22,35 +22,60 @@ class LocatorBool extends Locator[Boolean] {
   val map = Array.fill[Int](2)(-1)
   val cts = Array.ofDim[Int](2)
 
-  def get(key: Boolean): Int = if (key) map(1) else map(0)
+  def get(key: Boolean): Int =
+    if (key)
+      map(1)
+    else
+      map(0)
 
   def put(key: Boolean, value: Int) {
-    val idx = if (key) 1 else 0
+    val idx =
+      if (key)
+        1
+      else
+        0
     map(idx) = value
   }
 
   def contains(key: Boolean) = get(key) != -1
 
   def size =
-    if (contains(false) && contains(true)) 2
-    else if (contains(true)) 1
-    else if (contains(false)) 1
-    else 0
+    if (contains(false) && contains(true))
+      2
+    else if (contains(true))
+      1
+    else if (contains(false))
+      1
+    else
+      0
 
   def keys() =
-    if (contains(false) && contains(true)) Array(false, true)
-    else if (contains(true)) Array(true)
-    else if (contains(false)) Array(false)
-    else Array.empty[Boolean]
+    if (contains(false) && contains(true))
+      Array(false, true)
+    else if (contains(true))
+      Array(true)
+    else if (contains(false))
+      Array(false)
+    else
+      Array.empty[Boolean]
 
   def counts() = cts
 
   def inc(key: Boolean): Int = {
-    val idx = if (key) 1 else 0
+    val idx =
+      if (key)
+        1
+      else
+        0
     val tmp = cts(idx)
     cts(idx) += 1
     tmp
   }
 
-  def count(key: Boolean) = cts(if (key) 1 else 0)
+  def count(key: Boolean) =
+    cts(
+      if (key)
+        1
+      else
+        0)
 }

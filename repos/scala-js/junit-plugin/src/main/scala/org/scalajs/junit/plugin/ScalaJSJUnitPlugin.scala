@@ -158,7 +158,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                 case mtdSym: MethodSymbol => hasAnnotation(mtdSym, TestClass)
                 case _                    => false
               }
-              if (hasAnnotationInClass) true
+              if (hasAnnotationInClass)
+                true
               else
                 sym.parentSymbols.headOption
                   .fold(false)(isClassWithJUnitAnnotation)
@@ -408,7 +409,11 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           // Collect lifted representations of the JUnit annotations
           annotations.collect {
             case ann if annotationWhiteList.contains(ann.tpe.typeSymbol) =>
-              val args = if (ann.args != null) ann.args else Nil
+              val args =
+                if (ann.args != null)
+                  ann.args
+                else
+                  Nil
               mkNewInstance(TypeTree(ann.tpe), args)
           }
         }

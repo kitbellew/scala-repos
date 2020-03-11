@@ -132,7 +132,11 @@ class RowMatrix @Since("1.0.0") (
     checkNumColumns(n)
     // Computes n*(n+1)/2, avoiding overflow in the multiplication.
     // This succeeds when n <= 65535, which is checked above
-    val nt: Int = if (n % 2 == 0) ((n / 2) * (n + 1)) else (n * ((n + 1) / 2))
+    val nt: Int =
+      if (n % 2 == 0)
+        ((n / 2) * (n + 1))
+      else
+        (n * ((n + 1) / 2))
 
     // Compute the upper triangular part of the gram matrix.
     val GU = rows.treeAggregate(new BDV[Double](new Array[Double](nt)))(
@@ -647,7 +651,11 @@ class RowMatrix @Since("1.0.0") (
     val sg = math.sqrt(gamma) // sqrt(gamma) used many times
 
     // Don't divide by zero for those columns with zero magnitude
-    val colMagsCorrected = colMags.map(x => if (x == 0) 1.0 else x)
+    val colMagsCorrected = colMags.map(x =>
+      if (x == 0)
+        1.0
+      else
+        x)
 
     val sc = rows.context
     val pBV = sc.broadcast(colMagsCorrected.map(c => sg / c))

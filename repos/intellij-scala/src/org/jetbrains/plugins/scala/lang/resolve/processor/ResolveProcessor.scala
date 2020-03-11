@@ -43,7 +43,8 @@ object ResolveProcessor {
       if (t.getParent
             .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
-      } else null
+      } else
+        null
     }
 
     result.getActualElement match {
@@ -139,9 +140,12 @@ class ResolveProcessor(
       levelQualifiedNamesSet.clear()
       false
     }
-    if (levelSet.isEmpty) true
-    else if (precedence == OTHER_MEMBERS) update
-    else !update
+    if (levelSet.isEmpty)
+      true
+    else if (precedence == OTHER_MEMBERS)
+      update
+    else
+      !update
   }
 
   def isAccessible(named: PsiNamedElement, place: PsiElement): Boolean = {
@@ -164,7 +168,8 @@ class ResolveProcessor(
 
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
       named match {
         case o: ScObject
             if o.isPackageObject && JavaPsiFacade
@@ -216,10 +221,13 @@ class ResolveProcessor(
     val nameSet = state.get(ResolverEnv.nameKey)
     val elName = if (nameSet == null) {
       val name = named.name
-      if (name == null) return false
-      if (name == "") return false
+      if (name == null)
+        return false
+      if (name == "")
+        return false
       name
-    } else nameSet
+    } else
+      nameSet
     val nameMatches = ScalaPsiUtil.memberNamesEquals(elName, name)
     nameMatches && kindMatches(named)
   }
@@ -267,10 +275,10 @@ class ResolveProcessor(
         res.foldLeft(true) {
           case (false, _) => false
           case (
-              true,
-              rr @ ScalaResolveResult(
-                _: ScTypeAlias | _: ScClass | _: ScTrait,
-                _)) =>
+                true,
+                rr @ ScalaResolveResult(
+                  _: ScTypeAlias | _: ScClass | _: ScTrait,
+                  _)) =>
             rr.element.name != r.element.name ||
               ScalaPsiUtil
                 .superTypeMembers(rr.element)
@@ -284,10 +292,16 @@ class ResolveProcessor(
   object ScalaNameHint extends NameHint {
     def getName(state: ResolveState) = {
       val stateName = state.get(ResolverEnv.nameKey)
-      val result = if (stateName == null) name else stateName
+      val result =
+        if (stateName == null)
+          name
+        else
+          stateName
       if (result != null && result.startsWith("`") && result.endsWith(
-            "`") && result.length > 1) result.substring(1, result.length - 1)
-      else result
+            "`") && result.length > 1)
+        result.substring(1, result.length - 1)
+      else
+        result
     }
   }
 }

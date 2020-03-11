@@ -147,14 +147,18 @@ trait ModelFactoryTypeSupport {
             if (!settings.docNoPrefixes && needsPrefix && (bSym != AnyRefClass /* which we normalize */ )) {
               if (!owner.isRefinementClass) {
                 val qName = makeQualifiedName(owner, Some(inTpl.sym))
-                if (qName != "") qName + "." else ""
+                if (qName != "")
+                  qName + "."
+                else
+                  ""
               } else {
                 nameBuffer append "("
                 appendType0(pre)
                 nameBuffer append ")#"
                 "" // we already appended the prefix
               }
-            } else ""
+            } else
+              ""
 
           //DEBUGGING:
           //if (makeQualifiedName(bSym) == "pack1.A") println("needsPrefix(" + bSym + ", " + owner + ", " + inTpl.qualifiedName + ") => " + needsPrefix + "  and prefix=" + prefix)
@@ -197,7 +201,8 @@ trait ModelFactoryTypeSupport {
         case PolyType(tparams, result) =>
           assert(tparams.nonEmpty)
           def typeParamsToString(tps: List[Symbol]): String =
-            if (tps.isEmpty) ""
+            if (tps.isEmpty)
+              ""
             else
               tps
                 .map { tparam =>
@@ -237,7 +242,8 @@ trait ModelFactoryTypeSupport {
             for (sym <- quantified) {
               if (!first) {
                 nameBuffer append ", "
-              } else first = false
+              } else
+                first = false
               if (sym.isSingletonExistential) {
                 nameBuffer append "val "
                 nameBuffer append tpnme.dropSingletonName(sym.name)
@@ -246,7 +252,8 @@ trait ModelFactoryTypeSupport {
               } else {
                 if (sym.flagString != "")
                   nameBuffer append (sym.flagString + " ")
-                if (sym.keyString != "") nameBuffer append (sym.keyString + " ")
+                if (sym.keyString != "")
+                  nameBuffer append (sym.keyString + " ")
                 nameBuffer append sym.varianceString
                 nameBuffer append sym.nameString
                 appendInfoStringReduced(sym, sym.info)
@@ -264,7 +271,8 @@ trait ModelFactoryTypeSupport {
               for (arg <- args) {
                 if (!first) {
                   nameBuffer append ", "
-                } else first = false
+                } else
+                  first = false
                 arg match {
                   case TypeRef(_, sym, _) if (qset contains sym) =>
                     nameBuffer append "_"
@@ -327,6 +335,7 @@ trait ModelFactoryTypeSupport {
     // same type based on the template the type is shown in.
     if (settings.docNoPrefixes)
       typeCache.getOrElseUpdate(aType, createTypeEntity)
-    else createTypeEntity
+    else
+      createTypeEntity
   }
 }

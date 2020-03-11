@@ -72,8 +72,10 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                 if ((calleeAnnotatedInline && bTypes.compilerSettings.YoptWarningEmitAtInlineFailed) || w
                       .emitWarning(compilerSettings)) {
                   val annotWarn =
-                    if (calleeAnnotatedInline) " is annotated @inline but"
-                    else ""
+                    if (calleeAnnotatedInline)
+                      " is annotated @inline but"
+                    else
+                      ""
                   val msg =
                     s"${BackendReporting.methodSignature(calleeDeclClass.internalName, callee)}$annotWarn could not be inlined:\n$w"
                   backendReporting
@@ -145,13 +147,16 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
 
     compilerSettings.YoptInlineHeuristics.value match {
       case "everything" =>
-        if (callee.safeToInline) Some(requestIfCanInline(callsite))
-        else None
+        if (callee.safeToInline)
+          Some(requestIfCanInline(callsite))
+        else
+          None
 
       case "at-inline-annotated" =>
         if (callee.safeToInline && callee.annotatedInline)
           Some(requestIfCanInline(callsite))
-        else None
+        else
+          None
 
       case "default" =>
         if (callee.safeToInline && !callee.annotatedNoInline && !callsite.annotatedNoInline) {
@@ -161,8 +166,10 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
             })
           if (callee.annotatedInline || callsite.annotatedInline || shouldInlineHO)
             Some(requestIfCanInline(callsite))
-          else None
-        } else None
+          else
+            None
+        } else
+          None
     }
   }
 

@@ -40,7 +40,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
 
   private def prefixLengthImpl(p: A => Boolean, expectTrue: Boolean): Int = {
     var i = 0
-    while (i < length && p(apply(i)) == expectTrue) i += 1
+    while (i < length && p(apply(i)) == expectTrue)
+      i += 1
     i
   }
 
@@ -55,18 +56,25 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   override /*IterableLike*/
   def find(p: A => Boolean): Option[A] = {
     val i = prefixLength(!p(_))
-    if (i < length) Some(this(i)) else None
+    if (i < length)
+      Some(this(i))
+    else
+      None
   }
 
   @tailrec
   private def foldl[B](start: Int, end: Int, z: B, op: (B, A) => B): B =
-    if (start == end) z
-    else foldl(start + 1, end, op(z, this(start)), op)
+    if (start == end)
+      z
+    else
+      foldl(start + 1, end, op(z, this(start)), op)
 
   @tailrec
   private def foldr[B](start: Int, end: Int, z: B, op: (A, B) => B): B =
-    if (start == end) z
-    else foldr(start, end - 1, op(this(end - 1), z), op)
+    if (start == end)
+      z
+    else
+      foldr(start, end - 1, op(this(end - 1), z), op)
 
   override /*TraversableLike*/
   def foldLeft[B](z: B)(op: (B, A) => B): B =
@@ -78,12 +86,17 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
 
   override /*TraversableLike*/
   def reduceLeft[B >: A](op: (B, A) => B): B =
-    if (length > 0) foldl(1, length, this(0), op) else super.reduceLeft(op)
+    if (length > 0)
+      foldl(1, length, this(0), op)
+    else
+      super.reduceLeft(op)
 
   override /*IterableLike*/
   def reduceRight[B >: A](op: (A, B) => B): B =
-    if (length > 0) foldr(0, length - 1, this(length - 1), op)
-    else super.reduceRight(op)
+    if (length > 0)
+      foldr(0, length - 1, this(length - 1), op)
+    else
+      super.reduceRight(op)
 
   override /*IterableLike*/
   def zip[A1 >: A, B, That](that: GenIterable[B])(
@@ -133,16 +146,32 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   }
 
   override /*IterableLike*/
-  def head: A = if (isEmpty) super.head else this(0)
+  def head: A =
+    if (isEmpty)
+      super.head
+    else
+      this(0)
 
   override /*TraversableLike*/
-  def tail: Repr = if (isEmpty) super.tail else slice(1, length)
+  def tail: Repr =
+    if (isEmpty)
+      super.tail
+    else
+      slice(1, length)
 
   override /*TraversableLike*/
-  def last: A = if (length > 0) this(length - 1) else super.last
+  def last: A =
+    if (length > 0)
+      this(length - 1)
+    else
+      super.last
 
   override /*IterableLike*/
-  def init: Repr = if (length > 0) slice(0, length - 1) else super.init
+  def init: Repr =
+    if (length > 0)
+      slice(0, length - 1)
+    else
+      super.init
 
   override /*TraversableLike*/
   def take(n: Int): Repr = slice(0, n)
@@ -174,7 +203,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
       val len = length
       len == that.length && {
         var i = 0
-        while (i < len && this(i) == that(i)) i += 1
+        while (i < len && this(i) == that(i))
+          i += 1
         i == len
       }
     case _ =>
@@ -202,11 +232,16 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   def segmentLength(p: A => Boolean, from: Int): Int = {
     val len = length
     var i = from
-    while (i < len && p(this(i))) i += 1
+    while (i < len && p(this(i)))
+      i += 1
     i - from
   }
 
-  private def negLength(n: Int) = if (n >= length) -1 else n
+  private def negLength(n: Int) =
+    if (n >= length)
+      -1
+    else
+      n
 
   override /*SeqLike*/
   def indexWhere(p: A => Boolean, from: Int): Int = {
@@ -217,7 +252,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   override /*SeqLike*/
   def lastIndexWhere(p: A => Boolean, end: Int): Int = {
     var i = math.min(end, length - 1)
-    while (i >= 0 && !p(this(i))) i -= 1
+    while (i >= 0 && !p(this(i)))
+      i -= 1
     i
   }
 
@@ -241,7 +277,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
       if (0 < i) {
         i -= 1
         self(i)
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   override /*SeqLike*/

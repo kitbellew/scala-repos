@@ -33,12 +33,16 @@ final class ArrayCharSequence(val xs: Array[Char], start: Int, end: Int)
   def charAt(index: Int): Char = {
     if (0 <= index && index < length)
       xs(start + index)
-    else throw new ArrayIndexOutOfBoundsException(index)
+    else
+      throw new ArrayIndexOutOfBoundsException(index)
   }
   def subSequence(start0: Int, end0: Int): CharSequence = {
-    if (start0 < 0) throw new ArrayIndexOutOfBoundsException(start0)
-    else if (end0 > length) throw new ArrayIndexOutOfBoundsException(end0)
-    else if (end0 <= start0) new ArrayCharSequence(xs, 0, 0)
+    if (start0 < 0)
+      throw new ArrayIndexOutOfBoundsException(start0)
+    else if (end0 > length)
+      throw new ArrayIndexOutOfBoundsException(end0)
+    else if (end0 <= start0)
+      new ArrayCharSequence(xs, 0, 0)
     else {
       val newlen = end0 - start0
       val start1 = start + start0
@@ -49,6 +53,9 @@ final class ArrayCharSequence(val xs: Array[Char], start: Int, end: Int)
     val start = math.max(this.start, 0)
     val end = math.min(xs.length, start + length)
 
-    if (start >= end) "" else new String(xs, start, end - start)
+    if (start >= end)
+      ""
+    else
+      new String(xs, start, end - start)
   }
 }

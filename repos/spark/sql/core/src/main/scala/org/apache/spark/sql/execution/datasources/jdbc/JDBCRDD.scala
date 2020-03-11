@@ -120,7 +120,8 @@ private[sql] object JDBCRDD extends Logging {
       // scalastyle:on
     }
 
-    if (answer == null) throw new SQLException("Unsupported type " + sqlType)
+    if (answer == null)
+      throw new SQLException("Unsupported type " + sqlType)
     answer
   }
 
@@ -214,7 +215,10 @@ private[sql] object JDBCRDD extends Logging {
   }
 
   private def escapeSql(value: String): String =
-    if (value == null) null else StringUtils.replace(value, "'", "''")
+    if (value == null)
+      null
+    else
+      StringUtils.replace(value, "'", "''")
 
   /**
     * Turns a single Filter into a String representing a SQL expression.
@@ -325,7 +329,10 @@ private[sql] class JDBCRDD(
   private val columnList: String = {
     val sb = new StringBuilder()
     columns.foreach(x => sb.append(",").append(x))
-    if (sb.length == 0) "1" else sb.substring(1)
+    if (sb.length == 0)
+      "1"
+    else
+      sb.substring(1)
   }
 
   /**
@@ -385,8 +392,10 @@ private[sql] class JDBCRDD(
       case FloatType               => FloatConversion
       case IntegerType             => IntegerConversion
       case LongType =>
-        if (metadata.contains("binarylong")) BinaryLongConversion
-        else LongConversion
+        if (metadata.contains("binarylong"))
+          BinaryLongConversion
+        else
+          LongConversion
       case StringType       => StringConversion
       case TimestampType    => TimestampConversion
       case BinaryType       => BinaryConversion
@@ -532,7 +541,8 @@ private[sql] class JDBCRDD(
                   mutableRow.update(i, null)
                 }
             }
-            if (rs.wasNull) mutableRow.setNullAt(i)
+            if (rs.wasNull)
+              mutableRow.setNullAt(i)
             i = i + 1
           }
           mutableRow
@@ -543,7 +553,8 @@ private[sql] class JDBCRDD(
       }
 
       def close() {
-        if (closed) return
+        if (closed)
+          return
         try {
           if (null != rs) {
             rs.close()

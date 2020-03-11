@@ -17,7 +17,8 @@ class RemoveBracesForSingleImportQuickFix(importExpr: ScImportExpr)
       importExpr) {
   def doApplyFix(project: Project) {
     val iExpr = getElement
-    if (!iExpr.isValid) return
+    if (!iExpr.isValid)
+      return
 
     val buf = new StringBuilder
     buf.append(iExpr.qualifier.getText).append(".")

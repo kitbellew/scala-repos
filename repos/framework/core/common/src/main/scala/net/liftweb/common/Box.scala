@@ -176,7 +176,10 @@ sealed trait BoxTrait {
     */
   def apply[InType, OutType](pf: PartialFunction[InType, OutType])(
       value: InType): Box[OutType] =
-    if (pf.isDefinedAt(value)) Full(pf(value)) else Empty
+    if (pf.isDefinedAt(value))
+      Full(pf(value))
+    else
+      Empty
 
   /**
     * Apply the specified `PartialFunction` to the specified `value` and return
@@ -190,7 +193,10 @@ sealed trait BoxTrait {
     */
   def apply[InType, OutType](value: InType)(
       pf: PartialFunction[InType, OutType]): Box[OutType] =
-    if (pf.isDefinedAt(value)) Full(pf(value)) else Empty
+    if (pf.isDefinedAt(value))
+      Full(pf(value))
+    else
+      Empty
 
   /**
     * This implicit transformation allows one to use a `Box` as an `Iterable` of
@@ -783,8 +789,10 @@ sealed abstract class Box[+A] extends Product with Serializable {
     */
   final def collect[B](pf: PartialFunction[A, B]): Box[B] = {
     flatMap(value =>
-      if (pf.isDefinedAt(value)) Full(pf(value))
-      else Empty)
+      if (pf.isDefinedAt(value))
+        Full(pf(value))
+      else
+        Empty)
   }
 
   /**
@@ -814,7 +822,11 @@ final case class Full[+A](value: A) extends Box[A] {
 
   override def forall(func: A => Boolean): Boolean = func(value)
 
-  override def filter(p: A => Boolean): Box[A] = if (p(value)) this else Empty
+  override def filter(p: A => Boolean): Box[A] =
+    if (p(value))
+      this
+    else
+      Empty
 
   override def foreach[U](f: A => U): Unit = f(value)
 
@@ -843,8 +855,10 @@ final case class Full[+A](value: A) extends Box[A] {
         case _       => clsOrg
       }
 
-      if (cls.isAssignableFrom(value.getClass)) Full(value.asInstanceOf[B])
-      else Empty
+      if (cls.isAssignableFrom(value.getClass))
+        Full(value.asInstanceOf[B])
+      else
+        Empty
     case _ => Empty
   }
 
@@ -1122,7 +1136,10 @@ final case class BoxedBoxOrRaw[T](box: Box[T]) extends BoxOrRaw[T]
   */
 final case class RawBoxOrRaw[T](raw: T) extends BoxOrRaw[T] {
   def box: Box[T] =
-    if (raw.asInstanceOf[Object] ne null) Full(raw) else Empty
+    if (raw.asInstanceOf[Object] ne null)
+      Full(raw)
+    else
+      Empty
 }
 
 // vim: set ts=2 sw=2 et:

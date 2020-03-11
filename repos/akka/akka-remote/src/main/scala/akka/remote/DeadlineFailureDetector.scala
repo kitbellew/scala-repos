@@ -64,7 +64,8 @@ class DeadlineFailureDetector(
   override def isAvailable: Boolean = isAvailable(clock())
 
   private def isAvailable(timestamp: Long): Boolean =
-    if (active) (heartbeatTimestamp + deadlineMillis) > timestamp
+    if (active)
+      (heartbeatTimestamp + deadlineMillis) > timestamp
     else
       true // treat unmanaged connections, e.g. with zero heartbeats, as healthy connections
 

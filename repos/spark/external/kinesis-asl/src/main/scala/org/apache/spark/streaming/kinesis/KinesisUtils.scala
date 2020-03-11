@@ -496,7 +496,8 @@ object KinesisUtils {
   }
 
   private[kinesis] def defaultMessageHandler(record: Record): Array[Byte] = {
-    if (record == null) return null
+    if (record == null)
+      return null
     val byteBuffer = record.getData()
     val byteArray = new Array[Byte](byteBuffer.remaining())
     byteBuffer.get(byteArray)

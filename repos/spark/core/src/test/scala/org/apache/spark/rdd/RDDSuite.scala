@@ -103,7 +103,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       math.abs(est - size) / size.toDouble
 
     val size = 1000
-    val uniformDistro = for (i <- 1 to 5000) yield i % size
+    val uniformDistro =
+      for (i <- 1 to 5000)
+        yield i % size
     val simpleRdd = sc.makeRDD(uniformDistro, 10)
     assert(error(simpleRdd.countApproxDistinct(8, 0), size) < 0.2)
     assert(error(simpleRdd.countApproxDistinct(12, 0), size) < 0.1)
@@ -493,7 +495,13 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt // = 492
 
     val blocks = (1 to initialPartitions).map { i =>
-      (i, List(if (i > couponCount) "m2" else "m1"))
+      (
+        i,
+        List(
+          if (i > couponCount)
+            "m2"
+          else
+            "m1"))
     }
     val data = sc.makeRDD(blocks)
     val coalesced = data.coalesce(targetLen)

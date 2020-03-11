@@ -27,8 +27,10 @@ private[immutable] object LongMapUtils extends BitOperations.Long {
       t2: LongMap[T]): LongMap[T] = {
     val m = branchMask(p1, p2)
     val p = mask(p1, m)
-    if (zero(p1, m)) LongMap.Bin(p, m, t1, t2)
-    else LongMap.Bin(p, m, t2, t1)
+    if (zero(p1, m))
+      LongMap.Bin(p, m, t1, t2)
+    else
+      LongMap.Bin(p, m, t2, t1)
   }
 
   def bin[T](
@@ -81,7 +83,8 @@ object LongMap {
     def withValue[S](s: S) =
       if (s.asInstanceOf[AnyRef] eq value.asInstanceOf[AnyRef])
         this.asInstanceOf[LongMap.Tip[S]]
-      else LongMap.Tip(key, s)
+      else
+        LongMap.Tip(key, s)
   }
   private[immutable] case class Bin[+T](
       prefix: Long,
@@ -92,7 +95,8 @@ object LongMap {
     def bin[S](left: LongMap[S], right: LongMap[S]): LongMap[S] = {
       if ((this.left eq left) && (this.right eq right))
         this.asInstanceOf[LongMap.Bin[S]]
-      else LongMap.Bin[S](prefix, mask, left, right)
+      else
+        LongMap.Bin[S](prefix, mask, left, right)
     }
   }
 }
@@ -255,12 +259,16 @@ sealed abstract class LongMap[+T]
   override def filter(f: ((Long, T)) => Boolean): LongMap[T] = this match {
     case LongMap.Bin(prefix, mask, left, right) => {
       val (newleft, newright) = (left.filter(f), right.filter(f))
-      if ((left eq newleft) && (right eq newright)) this
-      else bin(prefix, mask, newleft, newright)
+      if ((left eq newleft) && (right eq newright))
+        this
+      else
+        bin(prefix, mask, newleft, newright)
     }
     case LongMap.Tip(key, value) =>
-      if (f((key, value))) this
-      else LongMap.Nil
+      if (f((key, value)))
+        this
+      else
+        LongMap.Nil
     case LongMap.Nil => LongMap.Nil
   }
 
@@ -279,25 +287,44 @@ sealed abstract class LongMap[+T]
 
   final def get(key: Long): Option[T] = this match {
     case LongMap.Bin(prefix, mask, left, right) =>
-      if (zero(key, mask)) left.get(key) else right.get(key)
-    case LongMap.Tip(key2, value) => if (key == key2) Some(value) else None
-    case LongMap.Nil              => None
+      if (zero(key, mask))
+        left.get(key)
+      else
+        right.get(key)
+    case LongMap.Tip(key2, value) =>
+      if (key == key2)
+        Some(value)
+      else
+        None
+    case LongMap.Nil => None
   }
 
   final override def getOrElse[S >: T](key: Long, default: => S): S =
     this match {
-      case LongMap.Nil              => default
-      case LongMap.Tip(key2, value) => if (key == key2) value else default
+      case LongMap.Nil => default
+      case LongMap.Tip(key2, value) =>
+        if (key == key2)
+          value
+        else
+          default
       case LongMap.Bin(prefix, mask, left, right) =>
-        if (zero(key, mask)) left.getOrElse(key, default)
-        else right.getOrElse(key, default)
+        if (zero(key, mask))
+          left.getOrElse(key, default)
+        else
+          right.getOrElse(key, default)
     }
 
   final override def apply(key: Long): T = this match {
     case LongMap.Bin(prefix, mask, left, right) =>
-      if (zero(key, mask)) left(key) else right(key)
+      if (zero(key, mask))
+        left(key)
+      else
+        right(key)
     case LongMap.Tip(key2, value) =>
-      if (key == key2) value else sys.error("Key not found")
+      if (key == key2)
+        value
+      else
+        sys.error("Key not found")
     case LongMap.Nil => sys.error("key not found")
   }
 
@@ -309,10 +336,13 @@ sealed abstract class LongMap[+T]
         join(key, LongMap.Tip(key, value), prefix, this)
       else if (zero(key, mask))
         LongMap.Bin(prefix, mask, left.updated(key, value), right)
-      else LongMap.Bin(prefix, mask, left, right.updated(key, value))
+      else
+        LongMap.Bin(prefix, mask, left, right.updated(key, value))
     case LongMap.Tip(key2, value2) =>
-      if (key == key2) LongMap.Tip(key, value)
-      else join(key, LongMap.Tip(key, value), key2, this)
+      if (key == key2)
+        LongMap.Tip(key, value)
+      else
+        join(key, LongMap.Tip(key, value), key2, this)
     case LongMap.Nil => LongMap.Tip(key, value)
   }
 
@@ -340,21 +370,29 @@ sealed abstract class LongMap[+T]
           join(key, LongMap.Tip(key, value), prefix, this)
         else if (zero(key, mask))
           LongMap.Bin(prefix, mask, left.updateWith(key, value, f), right)
-        else LongMap.Bin(prefix, mask, left, right.updateWith(key, value, f))
+        else
+          LongMap.Bin(prefix, mask, left, right.updateWith(key, value, f))
       case LongMap.Tip(key2, value2) =>
-        if (key == key2) LongMap.Tip(key, f(value2, value))
-        else join(key, LongMap.Tip(key, value), key2, this)
+        if (key == key2)
+          LongMap.Tip(key, f(value2, value))
+        else
+          join(key, LongMap.Tip(key, value), key2, this)
       case LongMap.Nil => LongMap.Tip(key, value)
     }
 
   def -(key: Long): LongMap[T] = this match {
     case LongMap.Bin(prefix, mask, left, right) =>
-      if (!hasMatch(key, prefix, mask)) this
-      else if (zero(key, mask)) bin(prefix, mask, left - key, right)
-      else bin(prefix, mask, left, right - key)
+      if (!hasMatch(key, prefix, mask))
+        this
+      else if (zero(key, mask))
+        bin(prefix, mask, left - key, right)
+      else
+        bin(prefix, mask, left, right - key)
     case LongMap.Tip(key2, _) =>
-      if (key == key2) LongMap.Nil
-      else this
+      if (key == key2)
+        LongMap.Nil
+      else
+        this
     case LongMap.Nil => LongMap.Nil
   }
 
@@ -373,7 +411,8 @@ sealed abstract class LongMap[+T]
       val newright = right.modifyOrRemove(f)
       if ((left eq newleft) && (right eq newright))
         this.asInstanceOf[LongMap[S]]
-      else bin(prefix, mask, newleft, newright)
+      else
+        bin(prefix, mask, newleft, newright)
     }
     case LongMap.Tip(key, value) =>
       f(key, value) match {
@@ -382,7 +421,8 @@ sealed abstract class LongMap[+T]
           //hack to preserve sharing
           if (value.asInstanceOf[AnyRef] eq value2.asInstanceOf[AnyRef])
             this.asInstanceOf[LongMap[S]]
-          else LongMap.Tip(key, value2)
+          else
+            LongMap.Tip(key, value2)
       }
     case LongMap.Nil => LongMap.Nil
   }
@@ -398,8 +438,8 @@ sealed abstract class LongMap[+T]
   def unionWith[S >: T](that: LongMap[S], f: (Long, S, S) => S): LongMap[S] =
     (this, that) match {
       case (
-          LongMap.Bin(p1, m1, l1, r1),
-          that @ (LongMap.Bin(p2, m2, l2, r2))) =>
+            LongMap.Bin(p1, m1, l1, r1),
+            that @ (LongMap.Bin(p2, m2, l2, r2))) =>
         if (shorter(m1, m2)) {
           if (!hasMatch(p2, p1, m1))
             join[S](
@@ -408,8 +448,10 @@ sealed abstract class LongMap[+T]
               p2,
               that
             ) // TODO: remove [S] when SI-5548 is fixed
-          else if (zero(p2, m1)) LongMap.Bin(p1, m1, l1.unionWith(that, f), r1)
-          else LongMap.Bin(p1, m1, l1, r1.unionWith(that, f))
+          else if (zero(p2, m1))
+            LongMap.Bin(p1, m1, l1.unionWith(that, f), r1)
+          else
+            LongMap.Bin(p1, m1, l1, r1.unionWith(that, f))
         } else if (shorter(m2, m1)) {
           if (!hasMatch(p1, p2, m2))
             join[S](
@@ -418,8 +460,10 @@ sealed abstract class LongMap[+T]
               p2,
               that
             ) // TODO: remove [S] when SI-5548 is fixed
-          else if (zero(p1, m2)) LongMap.Bin(p2, m2, this.unionWith(l2, f), r2)
-          else LongMap.Bin(p2, m2, l2, this.unionWith(r2, f))
+          else if (zero(p1, m2))
+            LongMap.Bin(p2, m2, this.unionWith(l2, f), r2)
+          else
+            LongMap.Bin(p2, m2, l2, this.unionWith(r2, f))
         } else {
           if (p1 == p2)
             LongMap.Bin(p1, m1, l1.unionWith(l2, f), r1.unionWith(r2, f))
@@ -459,15 +503,21 @@ sealed abstract class LongMap[+T]
       f: (Long, T, S) => R): LongMap[R] = (this, that) match {
     case (LongMap.Bin(p1, m1, l1, r1), that @ LongMap.Bin(p2, m2, l2, r2)) =>
       if (shorter(m1, m2)) {
-        if (!hasMatch(p2, p1, m1)) LongMap.Nil
-        else if (zero(p2, m1)) l1.intersectionWith(that, f)
-        else r1.intersectionWith(that, f)
+        if (!hasMatch(p2, p1, m1))
+          LongMap.Nil
+        else if (zero(p2, m1))
+          l1.intersectionWith(that, f)
+        else
+          r1.intersectionWith(that, f)
       } else if (m1 == m2)
         bin(p1, m1, l1.intersectionWith(l2, f), r1.intersectionWith(r2, f))
       else {
-        if (!hasMatch(p1, p2, m2)) LongMap.Nil
-        else if (zero(p1, m2)) this.intersectionWith(l2, f)
-        else this.intersectionWith(r2, f)
+        if (!hasMatch(p1, p2, m2))
+          LongMap.Nil
+        else if (zero(p1, m2))
+          this.intersectionWith(l2, f)
+        else
+          this.intersectionWith(r2, f)
       }
     case (LongMap.Tip(key, value), that) =>
       that.get(key) match {

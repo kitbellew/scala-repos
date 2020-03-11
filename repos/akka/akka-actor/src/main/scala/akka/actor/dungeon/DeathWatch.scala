@@ -75,7 +75,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
         terminatedQueuedFor(actor)
       }
     }
-    if (childrenRefs.getByRef(actor).isDefined) handleChildTerminated(actor)
+    if (childrenRefs.getByRef(actor).isDefined)
+      handleChildTerminated(actor)
   }
 
   private[akka] def terminatedQueuedFor(subject: ActorRef): Unit =
@@ -94,7 +95,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
       set: Set[ActorRef]): Set[ActorRef] =
     if (subject.path.uid != ActorCell.undefinedUid)
       (set - subject) - new UndefinedUidActorRef(subject)
-    else set filterNot (_.path == subject.path)
+    else
+      set filterNot (_.path == subject.path)
 
   protected def tellWatchersWeDied(): Unit =
     if (!watchedBy.isEmpty) {
@@ -204,7 +206,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
   protected def addressTerminated(address: Address): Unit = {
     // cleanup watchedBy since we know they are dead
     maintainAddressTerminatedSubscription() {
-      for (a ← watchedBy; if a.path.address == address) watchedBy -= a
+      for (a ← watchedBy; if a.path.address == address)
+        watchedBy -= a
     }
 
     // send DeathWatchNotification to self for all matching subjects
@@ -242,8 +245,10 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
       val had = hasNonLocalAddress
       val result = block
       val has = hasNonLocalAddress
-      if (had && !has) unsubscribeAddressTerminated()
-      else if (!had && has) subscribeAddressTerminated()
+      if (had && !has)
+        unsubscribeAddressTerminated()
+      else if (!had && has)
+        subscribeAddressTerminated()
       result
     } else {
       block

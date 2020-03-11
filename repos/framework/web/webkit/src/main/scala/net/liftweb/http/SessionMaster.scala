@@ -86,7 +86,8 @@ object SessionMaster extends LiftActor with Loggable {
   def getSession(req: Req, otherId: Box[String]): Box[LiftSession] = {
     val dead = otherId.map(killedSessions.containsKey(_)) openOr false
 
-    if (dead) Failure("dead session", Empty, Empty)
+    if (dead)
+      Failure("dead session", Empty, Empty)
     else {
       val ret = this.synchronized {
         otherId.flatMap(a => Box !! nsessions.get(a)) match {
@@ -223,7 +224,8 @@ object SessionMaster extends LiftActor with Loggable {
 
     while (true) {
       val s2 = lockRead(nsessions)
-      if (s2.size == 0) return
+      if (s2.size == 0)
+        return
       Thread.sleep(50)
     }
   }
@@ -309,11 +311,13 @@ object SessionMaster extends LiftActor with Loggable {
   }
 
   private[http] def sendMsg(in: Any): Unit =
-    if (!Props.inGAE) this ! in
+    if (!Props.inGAE)
+      this ! in
     else {
       lockWrite {
         tryo {
-          if (reaction.isDefinedAt(in)) reaction.apply(in)
+          if (reaction.isDefinedAt(in))
+            reaction.apply(in)
         }
       }
     }

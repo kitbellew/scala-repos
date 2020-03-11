@@ -104,7 +104,10 @@ object LazyEither extends LazyEitherInstances {
     */
   def condLazyEither[A, B](
       cond: Boolean)(ifTrue: => A, ifFalse: => B): LazyEither[A, B] =
-    if (cond) lazyLeft(ifTrue) else lazyRight(ifFalse)
+    if (cond)
+      lazyLeft(ifTrue)
+    else
+      lazyRight(ifFalse)
 
   sealed abstract class LazyLeftConstruct[B] {
     def apply[A](a: => A): LazyEither[A, B]

@@ -331,7 +331,10 @@ object ShardRegion {
   private final case class RestartShard(shardId: ShardId)
 
   private def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 
   /**
     * INTERNAL API. Sends stopMessage (e.g. `PoisonPill`) to the entities and when all of
@@ -533,8 +536,10 @@ class ShardRegion(
       if (regionByShard.contains(shard)) {
         val regionRef = regionByShard(shard)
         val updatedShards = regions(regionRef) - shard
-        if (updatedShards.isEmpty) regions -= regionRef
-        else regions = regions.updated(regionRef, updatedShards)
+        if (updatedShards.isEmpty)
+          regions -= regionRef
+        else
+          regions = regions.updated(regionRef, updatedShards)
         regionByShard -= shard
       }
       sender() ! BeginHandOffAck(shard)
@@ -684,7 +689,10 @@ class ShardRegion(
   }
 
   def registrationMessage: Any =
-    if (entityProps.isDefined) Register(self) else RegisterProxy(self)
+    if (entityProps.isDefined)
+      Register(self)
+    else
+      RegisterProxy(self)
 
   def requestShardBufferHomes(): Unit = {
     shardBuffers.foreach {

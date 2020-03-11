@@ -470,7 +470,8 @@ class ServerActor[Q, P](
     } else {
       true
     }
-  } else false
+  } else
+    false
 
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
@@ -582,7 +583,10 @@ class ServerActor[Q, P](
                   val newPrId = prediction match {
                     case id: WithPrId =>
                       val org = id.prId
-                      if (org.isEmpty) genPrId else org
+                      if (org.isEmpty)
+                        genPrId
+                      else
+                        org
                     case _ => genPrId
                   }
 
@@ -637,7 +641,8 @@ class ServerActor[Q, P](
                   } else {
                     predictionJValue
                   }
-                } else predictionJValue
+                } else
+                  predictionJValue
 
                 val pluginResult =
                   pluginContext.outputBlockers.values.foldLeft(result) {

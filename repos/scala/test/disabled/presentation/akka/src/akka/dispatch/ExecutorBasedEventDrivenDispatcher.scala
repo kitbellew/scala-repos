@@ -257,7 +257,8 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
             if (isDeadlineEnabled)
               System.nanoTime + TimeUnit.MILLISECONDS.toNanos(
                 dispatcher.throughputDeadlineTime)
-            else 0
+            else
+              0
           do {
             nextMessage.invoke
             nextMessage = if (self.suspended.locked) {
@@ -266,7 +267,8 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
               processedMessages += 1
               if ((processedMessages >= dispatcher.throughput) || (isDeadlineEnabled && System.nanoTime >= deadlineNs)) // If we're throttled, break out
                 null //We reached our boundaries, abort
-              else self.dequeue //Dequeue the next message
+              else
+                self.dequeue //Dequeue the next message
             }
           } while (nextMessage ne null)
         }

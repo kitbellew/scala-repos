@@ -133,7 +133,8 @@ trait Parsers { self: Quasiquotes =>
               in.token == COMMA || in.token == RPAREN
             }) {
           ParamPlaceholder(implicitmod, ident())
-        } else super.param(owner, implicitmod, caseParam)
+        } else
+          super.param(owner, implicitmod, caseParam)
 
       // q"($x) => ..." && q"class X { selfie => }
       override def convertToParam(tree: Tree): ValDef = tree match {
@@ -147,7 +148,8 @@ trait Parsers { self: Quasiquotes =>
               in.token == CASE || in.token == RBRACE || in.token == SEMI
             }) {
           val c = CasePlaceholder(ident())
-          while (in.token == SEMI) in.nextToken()
+          while (in.token == SEMI)
+            in.nextToken()
           c
         } else
           super.caseClause()
@@ -191,8 +193,10 @@ trait Parsers { self: Quasiquotes =>
         token == EOF || super.isStatSep(token)
 
       override def expectedMsg(token: Int): String =
-        if (isHole) expectedMsgTemplate(token2string(token), "unquotee")
-        else super.expectedMsg(token)
+        if (isHole)
+          expectedMsgTemplate(token2string(token), "unquotee")
+        else
+          super.expectedMsg(token)
 
       // $mods def foo
       // $mods T
@@ -215,7 +219,8 @@ trait Parsers { self: Quasiquotes =>
           val result = RefineStatPlaceholder(in.name) :: Nil
           in.nextToken()
           result
-        } else super.refineStat()
+        } else
+          super.refineStat()
 
       override def ensureEarlyDef(tree: Tree) = tree match {
         case Ident(name: TermName) if isHole(name) => EarlyDefPlaceholder(name)
@@ -242,7 +247,8 @@ trait Parsers { self: Quasiquotes =>
           val res = ForEnumPlaceholder(in.name) :: Nil
           in.nextToken()
           res
-        } else super.enumerator(isFirst, allowNestedIf)
+        } else
+          super.enumerator(isFirst, allowNestedIf)
     }
   }
 

@@ -59,7 +59,8 @@ package object sbt {
     def endsWith(parts: String*): Boolean = endsWith0(file, parts.reverse)
 
     private def endsWith0(file: File, parts: Seq[String]): Boolean =
-      if (parts.isEmpty) true
+      if (parts.isEmpty)
+        true
       else
         parts.head == file.getName && Option(file.getParentFile)
           .exists(endsWith0(_, parts.tail))
@@ -86,7 +87,10 @@ package object sbt {
   private object RichFile {
     @tailrec
     def parent(file: File, level: Int): File =
-      if (level > 0) parent(file.getParentFile, level - 1) else file
+      if (level > 0)
+        parent(file.getParentFile, level - 1)
+      else
+        file
   }
 
   implicit class RichVirtualFile(val entry: VirtualFile) extends AnyVal {
@@ -109,12 +113,23 @@ package object sbt {
   }
 
   implicit class RichBoolean(val b: Boolean) extends AnyVal {
-    def option[A](a: => A): Option[A] = if (b) Some(a) else None
+    def option[A](a: => A): Option[A] =
+      if (b)
+        Some(a)
+      else
+        None
 
     def either[A, B](right: => B)(left: => A): Either[A, B] =
-      if (b) Right(right) else Left(left)
+      if (b)
+        Right(right)
+      else
+        Left(left)
 
-    def seq[A](a: A*): Seq[A] = if (b) Seq(a: _*) else Seq.empty
+    def seq[A](a: A*): Seq[A] =
+      if (b)
+        Seq(a: _*)
+      else
+        Seq.empty
   }
 
   implicit class RichSeq[T](val xs: Seq[T]) extends AnyVal {
@@ -122,7 +137,10 @@ package object sbt {
       val (_, ys) = xs.foldLeft((Set.empty[A], Vector.empty[T])) {
         case ((set, acc), x) =>
           val v = f(x)
-          if (set.contains(v)) (set, acc) else (set + v, acc :+ x)
+          if (set.contains(v))
+            (set, acc)
+          else
+            (set + v, acc :+ x)
       }
       ys
     }
@@ -131,7 +149,10 @@ package object sbt {
   implicit class RichOption[T](val opt: Option[T]) extends AnyVal {
     // Use for safely checking for null in chained calls
     @inline def safeMap[A](f: T => A): Option[A] =
-      if (opt.isEmpty) None else Option(f(opt.get))
+      if (opt.isEmpty)
+        None
+      else
+        Option(f(opt.get))
   }
 
   def jarWith[T: ClassTag]: File = {
@@ -165,7 +186,10 @@ package object sbt {
           var eof = false
           while (!eof) {
             val b = in.read()
-            if (b == -1) eof = true else out.write(b)
+            if (b == -1)
+              eof = true
+            else
+              out.write(b)
           }
           out.flush()
       }

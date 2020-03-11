@@ -96,7 +96,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
 
   def reciprocal(): Real = {
     def findNonzero(i: Int): Int =
-      if (SafeLong.three <= x(i).abs) i else findNonzero(i + 1)
+      if (SafeLong.three <= x(i).abs)
+        i
+      else
+        findNonzero(i + 1)
 
     this match {
       case Exact(n) => Exact(n.reciprocal)
@@ -142,7 +145,13 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       if (k == 1)
         b * extra
       else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+        loop(
+          b * b,
+          k >>> 1,
+          if ((k & 1) == 1)
+            b * extra
+          else
+            extra)
 
     this match {
       case Exact(n) =>
@@ -168,7 +177,11 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       Real({ p =>
         val d = x / y
         val s = d(2)
-        val d2 = if (s >= 0) d.floor else d.ceil
+        val d2 =
+          if (s >= 0)
+            d.floor
+          else
+            d.ceil
         (x - d2 * y)(p)
       })
   }
@@ -179,7 +192,11 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       Real({ p =>
         val d = x / y
         val s = d(2)
-        val d2 = if (s >= 0) d.floor else d.ceil
+        val d2 =
+          if (s >= 0)
+            d.floor
+          else
+            d.ceil
         d2(p)
       })
   }
@@ -200,9 +217,12 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
         val n = x(p)
         val t = SafeLong.two.pow(p)
         val m = n % t
-        if (m == 0) n
-        else if (n.signum >= 0) n + t - m
-        else n - m
+        if (m == 0)
+          n
+        else if (n.signum >= 0)
+          n + t - m
+        else
+          n - m
       })
   }
 
@@ -213,7 +233,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
         val n = x(p)
         val t = SafeLong.two.pow(p)
         val m = n % t
-        if (n.signum >= 0) n - m else n - t - m
+        if (n.signum >= 0)
+          n - m
+        else
+          n - t - m
       })
   }
 
@@ -225,7 +248,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
         val t = SafeLong.two.pow(p)
         val h = t / 2
         val m = n % t
-        if (m < h) n - m else n - m + t
+        if (m < h)
+          n - m
+        else
+          n - m + t
       })
   }
 
@@ -319,20 +345,28 @@ object Real extends RealInstances {
   def log(x: Real): Real = {
     val t = x(2)
     val n = sizeInBase(t, 2) - 3
-    if (t < 0) throw new ArithmeticException("log of negative number")
-    else if (t < 4) -log(x.reciprocal)
-    else if (t < 8) logDr(x)
-    else logDr(div2n(x, n)) + Real(n) * log2
+    if (t < 0)
+      throw new ArithmeticException("log of negative number")
+    else if (t < 4)
+      -log(x.reciprocal)
+    else if (t < 8)
+      logDr(x)
+    else
+      logDr(div2n(x, n)) + Real(n) * log2
   }
 
   def exp(x: Real): Real = {
     val u = x / log2
     val n = u(0)
     val s = x - Real(n) * log2
-    if (!n.isValidInt) throw new ArithmeticException("invalid power in exp")
-    else if (n < 0) div2n(expDr(s), -n.toInt)
-    else if (n > 0) mul2n(expDr(s), n.toInt)
-    else expDr(s)
+    if (!n.isValidInt)
+      throw new ArithmeticException("invalid power in exp")
+    else if (n < 0)
+      div2n(expDr(s), -n.toInt)
+    else if (n > 0)
+      mul2n(expDr(s), n.toInt)
+    else
+      expDr(s)
   }
 
   def sin(x: Real): Real = {
@@ -340,7 +374,11 @@ object Real extends RealInstances {
     val s = roundUp(Rational(z(2), 4))
     val y = x - piBy4 * Real(s)
     val m = (s % 8).toInt
-    val n = if (m < 0) m + 8 else m
+    val n =
+      if (m < 0)
+        m + 8
+      else
+        m
     n match {
       case 0 => sinDr(y)
       case 1 => sqrt1By2 * (cosDr(y) + sinDr(y))
@@ -358,7 +396,11 @@ object Real extends RealInstances {
     val s = roundUp(Rational(z(2), 4))
     val y = x - piBy4 * Real(s)
     val m = (s % 8).toInt
-    val n = if (m < 0) m + 8 else m
+    val n =
+      if (m < 0)
+        m + 8
+      else
+        m
     n match {
       case 0 => cosDr(y)
       case 1 => sqrt1By2 * (cosDr(y) - sinDr(y))
@@ -377,11 +419,16 @@ object Real extends RealInstances {
     val t = x(2)
     val xp1 = x + Real.one
     val xm1 = x - Real.one
-    if (t < -5) atanDr(-x.reciprocal) - piBy2
-    else if (t == -4) -piBy4 - atanDr(xp1 / xm1)
-    else if (t < 4) atanDr(x)
-    else if (t == 4) piBy4 + atanDr(xm1 / xp1)
-    else piBy2 - atanDr(x.reciprocal)
+    if (t < -5)
+      atanDr(-x.reciprocal) - piBy2
+    else if (t == -4)
+      -piBy4 - atanDr(xp1 / xm1)
+    else if (t < 4)
+      atanDr(x)
+    else if (t == 4)
+      piBy4 + atanDr(xm1 / xp1)
+    else
+      piBy2 - atanDr(x.reciprocal)
   }
 
   def atan2(y: Real, x: Real): Real =
@@ -454,7 +501,10 @@ object Real extends RealInstances {
 
   def sizeInBase(n: SafeLong, base: Int): Int = {
     def loop(n: SafeLong, acc: Int): Int =
-      if (n <= 1) acc + 1 else loop(n / base, acc + 1)
+      if (n <= 1)
+        acc + 1
+      else
+        loop(n / base, acc + 1)
     loop(n.abs, 0)
   }
 
@@ -462,7 +512,10 @@ object Real extends RealInstances {
 
   def div2n(x: Real, n: Int): Real =
     Real(p =>
-      if (p >= n) x(p - n) else roundUp(Rational(x(p), SafeLong.two.pow(n))))
+      if (p >= n)
+        x(p - n)
+      else
+        roundUp(Rational(x(p), SafeLong.two.pow(n))))
 
   def mul2n(x: Real, n: Int): Real =
     Real(p => x(p + n))
@@ -484,7 +537,10 @@ object Real extends RealInstances {
       case (Stream.Empty, _) => sys.error("nooooo")
       case (x #:: xs, c #:: cs) =>
         val t = roundUp(c * Rational(x))
-        if (t == 0) total else accumulate(total + t, xs, cs)
+        if (t == 0)
+          total
+        else
+          accumulate(total + t, xs, cs)
     }
   }
 
@@ -498,7 +554,8 @@ object Real extends RealInstances {
       val p2 = p + l2t
       val xr = x(p2)
       val xn = SafeLong.two.pow(p2)
-      if (xn == 0) sys.error("oh no")
+      if (xn == 0)
+        sys.error("oh no")
       def g(yn: SafeLong): SafeLong = roundUp(Rational(yn * xr, xn))
       val num = accumulate(SafeLong.zero, Stream.iterate(xn)(g), ps.take(t))
       val denom = SafeLong.two.pow(l2t)

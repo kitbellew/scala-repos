@@ -149,18 +149,23 @@ private[html] object SyntaxHigh {
       while (i < buf.length && j < l) {
         val bch = buf(i)
         val kch = key charAt j
-        if (bch < kch) return -1
-        else if (bch > kch) return 1
+        if (bch < kch)
+          return -1
+        else if (bch > kch)
+          return 1
         i += 1
         j += 1
       }
-      if (j < l) -1
+      if (j < l)
+        -1
       else if (i < buf.length &&
                ('A' <= buf(i) && buf(i) <= 'Z' ||
                'a' <= buf(i) && buf(i) <= 'z' ||
                '0' <= buf(i) && buf(i) <= '9' ||
-               buf(i) == '_')) 1
-      else 0
+               buf(i) == '_'))
+        1
+      else
+        0
     }
 
     def lookup(a: Array[String], i: Int): Int = {
@@ -169,9 +174,12 @@ private[html] object SyntaxHigh {
       while (lo <= hi) {
         val m = (hi + lo) / 2
         val d = compare(i, a(m))
-        if (d < 0) hi = m - 1
-        else if (d > 0) lo = m + 1
-        else return m
+        if (d < 0)
+          hi = m - 1
+        else if (d > 0)
+          lo = m + 1
+        else
+          return m
       }
       -1
     }
@@ -179,31 +187,41 @@ private[html] object SyntaxHigh {
     def comment(i: Int): String = {
       val out = new StringBuilder("/")
       def line(i: Int): Int =
-        if (i == buf.length || buf(i) == '\n') i
+        if (i == buf.length || buf(i) == '\n')
+          i
         else {
           out append buf(i)
           line(i + 1)
         }
       var level = 0
       def multiline(i: Int, star: Boolean): Int = {
-        if (i == buf.length) return i
+        if (i == buf.length)
+          return i
         val ch = buf(i)
         out append ch
         ch match {
           case '*' =>
-            if (star) level += 1
+            if (star)
+              level += 1
             multiline(i + 1, !star)
           case '/' =>
             if (star) {
-              if (level > 0) level -= 1
-              if (level == 0) i else multiline(i + 1, star = true)
+              if (level > 0)
+                level -= 1
+              if (level == 0)
+                i
+              else
+                multiline(i + 1, star = true)
             } else
               multiline(i + 1, star = false)
           case _ =>
             multiline(i + 1, star = false)
         }
       }
-      if (buf(i) == '/') line(i) else multiline(i, star = true)
+      if (buf(i) == '/')
+        line(i)
+      else
+        multiline(i, star = true)
       out.toString
     }
 
@@ -211,7 +229,8 @@ private[html] object SyntaxHigh {
     def charlit(j: Int): String = {
       val out = new StringBuilder("'")
       def charlit0(i: Int, bslash: Boolean): Int = {
-        if (i == buf.length) i
+        if (i == buf.length)
+          i
         else if (i > j + 6) {
           out setLength 0;
           j
@@ -226,7 +245,8 @@ private[html] object SyntaxHigh {
             case _ =>
               if (bslash && '0' <= ch && ch <= '9')
                 charlit0(i + 1, bslash = true)
-              else charlit0(i + 1, bslash = false)
+              else
+                charlit0(i + 1, bslash = false)
           }
         }
       }
@@ -237,7 +257,8 @@ private[html] object SyntaxHigh {
     def strlit(i: Int): String = {
       val out = new StringBuilder("\"")
       def strlit0(i: Int, bslash: Boolean): Int = {
-        if (i == buf.length) return i
+        if (i == buf.length)
+          return i
         val ch = buf(i)
         out append ch
         ch match {
@@ -256,7 +277,8 @@ private[html] object SyntaxHigh {
     def numlit(i: Int): String = {
       val out = new StringBuilder
       def intg(i: Int): Int = {
-        if (i == buf.length) return i
+        if (i == buf.length)
+          return i
         val ch = buf(i)
         ch match {
           case '.' =>
@@ -266,11 +288,13 @@ private[html] object SyntaxHigh {
             if (Character.isDigit(ch)) {
               out append ch
               intg(i + 1)
-            } else i
+            } else
+              i
         }
       }
       def frac(i: Int): Int = {
-        if (i == buf.length) return i
+        if (i == buf.length)
+          return i
         val ch = buf(i)
         ch match {
           case 'e' | 'E' =>
@@ -280,11 +304,13 @@ private[html] object SyntaxHigh {
             if (Character.isDigit(ch)) {
               out append ch
               frac(i + 1)
-            } else i
+            } else
+              i
         }
       }
       def expo(i: Int, signed: Boolean): Int = {
-        if (i == buf.length) return i
+        if (i == buf.length)
+          return i
         val ch = buf(i)
         ch match {
           case '+' | '-' if !signed =>
@@ -294,7 +320,8 @@ private[html] object SyntaxHigh {
             if (Character.isDigit(ch)) {
               out append ch
               expo(i + 1, signed)
-            } else i
+            } else
+              i
         }
       }
       intg(i)
@@ -303,7 +330,8 @@ private[html] object SyntaxHigh {
 
     @tailrec def parse(pre: String, i: Int): Unit = {
       out append pre
-      if (i == buf.length) return
+      if (i == buf.length)
+        return
       buf(i) match {
         case '\n' =>
           parse("\n", i + 1)

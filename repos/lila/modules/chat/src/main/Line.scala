@@ -44,7 +44,10 @@ object Line {
     case _ => None
   }
   def userLineToStr(x: UserLine) =
-    s"${x.username}${if (x.troll) "!" else " "}${x.text}"
+    s"${x.username}${if (x.troll)
+      "!"
+    else
+      " "}${x.text}"
 
   def strToLine(str: String): Option[Line] = strToUserLine(str) orElse {
     str.headOption flatMap Color.apply map { color =>

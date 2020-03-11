@@ -172,12 +172,14 @@ private[http] object HttpServerBluePrint {
             val effectiveMethod =
               if (method == HttpMethods.HEAD && settings.transparentHeadRequests)
                 HttpMethods.GET
-              else method
+              else
+                method
             val effectiveHeaders =
               if (settings.remoteAddressHeader && remoteAddress.isDefined)
                 headers.`Remote-Address`(
                   RemoteAddress(remoteAddress.get)) +: hdrs
-              else hdrs
+              else
+                hdrs
 
             val entity = createEntity(
               entityCreator) withSizeLimit settings.parserSettings.maxContentLength
@@ -448,7 +450,8 @@ private[http] object HttpServerBluePrint {
 
     def clear(): Unit = // best effort timeout cancellation
       get.fast.foreach(setup ⇒
-        if (setup.scheduledTask ne null) setup.scheduledTask.cancel())
+        if (setup.scheduledTask ne null)
+          setup.scheduledTask.cancel())
 
     override def updateTimeout(timeout: Duration): Unit =
       update(timeout, null: HttpRequest ⇒ HttpResponse)
@@ -461,8 +464,16 @@ private[http] object HttpServerBluePrint {
       for (old ← getAndSet(promise.future).fast)
         promise.success {
           if ((old.scheduledTask eq null) || old.scheduledTask.cancel()) {
-            val newHandler = if (handler eq null) old.handler else handler
-            val newTimeout = if (timeout eq null) old.timeout else timeout
+            val newHandler =
+              if (handler eq null)
+                old.handler
+              else
+                handler
+            val newTimeout =
+              if (timeout eq null)
+                old.timeout
+              else
+                timeout
             val newScheduling = newTimeout match {
               case x: FiniteDuration ⇒
                 schedule(old.timeoutBase + x - Deadline.now, newHandler)
@@ -539,7 +550,8 @@ private[http] object HttpServerBluePrint {
                     oneHundredContinueResponsePending = true
                     r.copy(createEntity =
                       with100ContinueTrigger(r.createEntity))
-                  } else r
+                  } else
+                    r
                   push(requestPrepOut, rs)
                 case MessageEnd ⇒
                   messageEndPending = false
@@ -549,8 +561,10 @@ private[http] object HttpServerBluePrint {
                 case x ⇒ push(requestPrepOut, x)
               }
             override def onUpstreamFinish() =
-              if (openRequests.isEmpty) completeStage()
-              else complete(requestPrepOut)
+              if (openRequests.isEmpty)
+                completeStage()
+              else
+                complete(requestPrepOut)
           }
         )
 
@@ -558,8 +572,10 @@ private[http] object HttpServerBluePrint {
           requestPrepOut,
           new OutHandler {
             def onPull(): Unit =
-              if (oneHundredContinueResponsePending) pullSuppressed = true
-              else pull(requestParsingIn)
+              if (oneHundredContinueResponsePending)
+                pullSuppressed = true
+              else
+                pull(requestParsingIn)
             override def onDownstreamFinish() = cancel(requestParsingIn)
           }
         )
@@ -589,12 +605,14 @@ private[http] object HttpServerBluePrint {
                   requestStart.protocol,
                   close),
                 pullHttpResponseIn)
-              if (close) complete(responseCtxOut)
+              if (close)
+                complete(responseCtxOut)
             }
             override def onUpstreamFinish() =
               if (openRequests.isEmpty && isClosed(requestParsingIn))
                 completeStage()
-              else complete(responseCtxOut)
+              else
+                complete(responseCtxOut)
             override def onUpstreamFailure(ex: Throwable): Unit =
               ex match {
                 case EntityStreamException(errorInfo) ⇒
@@ -651,8 +669,10 @@ private[http] object HttpServerBluePrint {
             log,
             settings.parserSettings.errorLoggingVerbosity)
           val msg =
-            if (settings.verboseErrorMessages) info.formatPretty
-            else info.summary
+            if (settings.verboseErrorMessages)
+              info.formatPretty
+            else
+              info.summary
           emitErrorResponse(HttpResponse(status, entity = msg))
         }
 
@@ -820,20 +840,23 @@ private[http] object HttpServerBluePrint {
             .subscriptionTimeoutSettings
             .timeout
         private def addTimeout(s: SubscriptionTimeout): Unit = {
-          if (activeTimers == 0) setKeepGoing(true)
+          if (activeTimers == 0)
+            setKeepGoing(true)
           activeTimers += 1
           scheduleOnce(s, timeout)
         }
         private def cancelTimeout(s: SubscriptionTimeout): Unit =
           if (isTimerActive(s)) {
             activeTimers -= 1
-            if (activeTimers == 0) setKeepGoing(false)
+            if (activeTimers == 0)
+              setKeepGoing(false)
             cancelTimer(s)
           }
         override def onTimer(timerKey: Any): Unit = timerKey match {
           case SubscriptionTimeout(f) ⇒
             activeTimers -= 1
-            if (activeTimers == 0) setKeepGoing(false)
+            if (activeTimers == 0)
+              setKeepGoing(false)
             f()
         }
 
@@ -881,7 +904,8 @@ private[http] object HttpServerBluePrint {
 
             val timeoutKey = SubscriptionTimeout(() ⇒ {
               sourceOut.timeout(timeout)
-              if (sourceOut.isClosed) completeStage()
+              if (sourceOut.isClosed)
+                completeStage()
             })
             addTimeout(timeoutKey)
 
@@ -908,11 +932,13 @@ private[http] object HttpServerBluePrint {
             )
             sourceOut.setHandler(new OutHandler {
               override def onPull(): Unit = {
-                if (!hasBeenPulled(fromNet)) pull(fromNet)
+                if (!hasBeenPulled(fromNet))
+                  pull(fromNet)
                 cancelTimeout(timeoutKey)
                 sourceOut.setHandler(new OutHandler {
                   override def onPull(): Unit =
-                    if (!hasBeenPulled(fromNet)) pull(fromNet)
+                    if (!hasBeenPulled(fromNet))
+                      pull(fromNet)
                   override def onDownstreamFinish(): Unit = cancel(fromNet)
                 })
               }

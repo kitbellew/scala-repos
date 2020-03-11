@@ -84,14 +84,16 @@ class ActivatorProjectBuilder
     allTemplates.get(selected) match {
       case Some(info) =>
         val contentPath = getContentEntryPath
-        if (StringUtil isEmpty contentPath) return
+        if (StringUtil isEmpty contentPath)
+          return
 
         val contentRootDir = new File(contentPath)
         FileUtilRt createDirectory contentRootDir
 
         val vContentRootDir =
           LocalFileSystem.getInstance refreshAndFindFileByIoFile contentRootDir
-        if (vContentRootDir == null) return
+        if (vContentRootDir == null)
+          return
         //todo Looks like template name can't be set without some hack (activator itself can't do it)
 
         createStub(info.id, contentPath)
@@ -151,7 +153,8 @@ class ActivatorProjectBuilder
 
   private def createStub(id: String, path: String) {
     val moduleDir = new File(path)
-    if (!moduleDir.exists()) moduleDir.mkdirs()
+    if (!moduleDir.exists())
+      moduleDir.mkdirs()
 
     doWithProgress(
       repoProcessor.createTemplate(id, moduleDir, error),

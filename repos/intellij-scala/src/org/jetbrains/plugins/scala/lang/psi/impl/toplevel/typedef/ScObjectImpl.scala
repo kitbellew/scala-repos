@@ -93,18 +93,26 @@ class ScObjectImpl protected (
   }
 
   override def toString: String =
-    (if (isPackageObject) "ScPackageObject: " else "ScObject: ") + name
+    (if (isPackageObject)
+       "ScPackageObject: "
+     else
+       "ScObject: ") + name
 
   override def getIconInner =
-    if (isPackageObject) Icons.PACKAGE_OBJECT else Icons.OBJECT
+    if (isPackageObject)
+      Icons.PACKAGE_OBJECT
+    else
+      Icons.OBJECT
 
   override def getName: String = {
-    if (isPackageObject) return "package$"
+    if (isPackageObject)
+      return "package$"
     super.getName + "$"
   }
 
   override def hasModifierProperty(name: String): Boolean = {
-    if (name == "final") return true
+    if (name == "final")
+      return true
     super[ScTypeDefinitionImpl].hasModifierProperty(name)
   }
 
@@ -129,12 +137,14 @@ class ScObjectImpl protected (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (DumbService.getInstance(getProject).isDumb) return true
+    if (DumbService.getInstance(getProject).isDumb)
+      return true
     if (!super[ScTemplateDefinition].processDeclarationsForTemplateBody(
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
     if (isPackageObject && name != "`package`") {
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
@@ -183,7 +193,8 @@ class ScObjectImpl protected (
 
   override protected def syntheticMethodsWithOverrideImpl: Seq[PsiMethod] = {
     val res =
-      if (isSyntheticObject) Seq.empty
+      if (isSyntheticObject)
+        Seq.empty
       else
         ScalaPsiUtil.getCompanionModule(this) match {
           case Some(c: ScClass) if c.isCase =>
@@ -232,7 +243,8 @@ class ScObjectImpl protected (
   private def getModuleField: Option[PsiField] = {
     if (getQualifiedName
           .split('.')
-          .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
+          .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this))))
+      None
     else {
       val field: LightField = new LightField(
         getManager,
@@ -301,13 +313,17 @@ class ScObjectImpl protected (
     Array(new EmptyPrivateConstructor(this))
 
   override def isPhysical: Boolean = {
-    if (isSyntheticObject) false
-    else super.isPhysical
+    if (isSyntheticObject)
+      false
+    else
+      super.isPhysical
   }
 
   override def getTextRange: TextRange = {
-    if (isSyntheticObject) null
-    else super.getTextRange
+    if (isSyntheticObject)
+      null
+    else
+      super.getTextRange
   }
 
   override def getInterfaces: Array[PsiClass] = {

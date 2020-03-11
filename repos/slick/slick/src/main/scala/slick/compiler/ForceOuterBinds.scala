@@ -15,8 +15,10 @@ class ForceOuterBinds extends Phase {
   def apply(n: Node): Node = {
     val t = n.nodeType.structuralRec
     val n2 =
-      if (!t.isInstanceOf[CollectionType]) First(wrap(Pure(n)))
-      else wrap(n)
+      if (!t.isInstanceOf[CollectionType])
+        First(wrap(Pure(n)))
+      else
+        wrap(n)
     n2.infer()
   }
 
@@ -32,8 +34,10 @@ class ForceOuterBinds extends Phase {
   def wrap(n: Node): Node = n match {
     case b @ Bind(_, _, Pure(_, _)) =>
       b.mapChildren { ch =>
-        if ((ch eq b.from) || ch.isInstanceOf[Pure]) nowrap(ch)
-        else maybewrap(ch)
+        if ((ch eq b.from) || ch.isInstanceOf[Pure])
+          nowrap(ch)
+        else
+          maybewrap(ch)
       }
     case n => idBind(nowrap(n))
   }
@@ -43,13 +47,17 @@ class ForceOuterBinds extends Phase {
     case f: FilteredQuery =>
       f.mapChildren { ch =>
         if ((ch eq f.from) && !(ch.isInstanceOf[Join] || ch
-              .isInstanceOf[Distinct] || ch.isInstanceOf[Pure])) nowrap(ch)
-        else maybewrap(ch)
+              .isInstanceOf[Distinct] || ch.isInstanceOf[Pure]))
+          nowrap(ch)
+        else
+          maybewrap(ch)
       }
     case b: Bind =>
       b.mapChildren { ch =>
-        if ((ch eq b.from) || ch.isInstanceOf[Pure]) nowrap(ch)
-        else maybewrap(ch)
+        if ((ch eq b.from) || ch.isInstanceOf[Pure])
+          nowrap(ch)
+        else
+          maybewrap(ch)
       }
     case Path(path) => Path(path) // recreate untyped copy
     case n          => n.mapChildren(maybewrap)

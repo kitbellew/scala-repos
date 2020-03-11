@@ -71,7 +71,10 @@ object ChoiceBoxTreeTableCell {
   implicit def sfxChoiceBoxTreeTableCell2jfx[S, T](
       cell: ChoiceBoxTreeTableCell[S, T])
       : jfxsc.cell.ChoiceBoxTreeTableCell[S, T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FTTC

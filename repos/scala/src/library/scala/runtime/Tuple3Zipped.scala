@@ -91,7 +91,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
           b2 += el2
           b3 += el3
         }
-      } else return result
+      } else
+        return result
     }
 
     result
@@ -105,7 +106,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
       if (elems2.hasNext && elems3.hasNext) {
         if (p(el1, elems2.next(), elems3.next()))
           return true
-      } else return false
+      } else
+        return false
     }
     false
   }

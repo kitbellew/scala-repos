@@ -332,9 +332,15 @@ private[spark] class BlockManager(
   def getStatus(blockId: BlockId): Option[BlockStatus] = {
     blockInfoManager.get(blockId).map { info =>
       val memSize =
-        if (memoryStore.contains(blockId)) memoryStore.getSize(blockId) else 0L
+        if (memoryStore.contains(blockId))
+          memoryStore.getSize(blockId)
+        else
+          0L
       val diskSize =
-        if (diskStore.contains(blockId)) diskStore.getSize(blockId) else 0L
+        if (diskStore.contains(blockId))
+          diskStore.getSize(blockId)
+        else
+          0L
       BlockStatus(info.level, memSize = memSize, diskSize = diskSize)
     }
   }
@@ -417,12 +423,28 @@ private[spark] class BlockManager(
         case level =>
           val inMem = level.useMemory && memoryStore.contains(blockId)
           val onDisk = level.useDisk && diskStore.contains(blockId)
-          val deserialized = if (inMem) level.deserialized else false
-          val replication = if (inMem || onDisk) level.replication else 1
+          val deserialized =
+            if (inMem)
+              level.deserialized
+            else
+              false
+          val replication =
+            if (inMem || onDisk)
+              level.replication
+            else
+              1
           val storageLevel =
             StorageLevel(onDisk, inMem, deserialized, replication)
-          val memSize = if (inMem) memoryStore.getSize(blockId) else 0L
-          val diskSize = if (onDisk) diskStore.getSize(blockId) else 0L
+          val memSize =
+            if (inMem)
+              memoryStore.getSize(blockId)
+            else
+              0L
+          val diskSize =
+            if (onDisk)
+              diskStore.getSize(blockId)
+            else
+              0L
           BlockStatus(storageLevel, memSize, diskSize)
       }
     }
@@ -1295,7 +1317,10 @@ private[spark] class BlockManager(
 
     // Actually drop from memory store
     val droppedMemorySize =
-      if (memoryStore.contains(blockId)) memoryStore.getSize(blockId) else 0L
+      if (memoryStore.contains(blockId))
+        memoryStore.getSize(blockId)
+      else
+        0L
     val blockIsRemoved = memoryStore.remove(blockId)
     if (blockIsRemoved) {
       blockIsUpdated = true
@@ -1387,16 +1412,20 @@ private[spark] class BlockManager(
     * Wrap an output stream for compression if block compression is enabled for its block type
     */
   def wrapForCompression(blockId: BlockId, s: OutputStream): OutputStream = {
-    if (shouldCompress(blockId)) compressionCodec.compressedOutputStream(s)
-    else s
+    if (shouldCompress(blockId))
+      compressionCodec.compressedOutputStream(s)
+    else
+      s
   }
 
   /**
     * Wrap an input stream for compression if block compression is enabled for its block type
     */
   def wrapForCompression(blockId: BlockId, s: InputStream): InputStream = {
-    if (shouldCompress(blockId)) compressionCodec.compressedInputStream(s)
-    else s
+    if (shouldCompress(blockId))
+      compressionCodec.compressedInputStream(s)
+    else
+      s
   }
 
   /** Serializes into a stream. */

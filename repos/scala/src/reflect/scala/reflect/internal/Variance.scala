@@ -40,37 +40,60 @@ final class Variance private (val flags: Int) extends AnyVal {
   def isPositive = flags > 0 // covariant or bivariant
 
   def &(other: Variance): Variance = (
-    if (this == other) this
-    else if (this.isBivariant) other
-    else if (other.isBivariant) this
-    else Invariant
+    if (this == other)
+      this
+    else if (this.isBivariant)
+      other
+    else if (other.isBivariant)
+      this
+    else
+      Invariant
   )
 
   def *(other: Variance): Variance = (
-    if (other.isPositive) this
-    else if (other.isContravariant) this.flip
-    else this.cut
+    if (other.isPositive)
+      this
+    else if (other.isContravariant)
+      this.flip
+    else
+      this.cut
   )
 
   /** Flip between covariant and contravariant. I chose not to use unary_- because it doesn't stand out enough. */
   def flip =
-    if (isCovariant) Contravariant else if (isContravariant) Covariant else this
+    if (isCovariant)
+      Contravariant
+    else if (isContravariant)
+      Covariant
+    else
+      this
 
   /** Map everything below bivariant to invariant. */
-  def cut = if (isBivariant) this else Invariant
+  def cut =
+    if (isBivariant)
+      this
+    else
+      Invariant
 
   /** The symbolic annotation used to indicate the given kind of variance. */
   def symbolicString = (
-    if (isCovariant) "+"
-    else if (isContravariant) "-"
-    else ""
+    if (isCovariant)
+      "+"
+    else if (isContravariant)
+      "-"
+    else
+      ""
   )
 
   override def toString = (
-    if (isContravariant) "contravariant"
-    else if (isCovariant) "covariant"
-    else if (isInvariant) "invariant"
-    else "" // noisy to print bivariant on everything without type parameters
+    if (isContravariant)
+      "contravariant"
+    else if (isCovariant)
+      "covariant"
+    else if (isInvariant)
+      "invariant"
+    else
+      "" // noisy to print bivariant on everything without type parameters
   )
 }
 
@@ -81,8 +104,10 @@ object Variance {
   }
 
   def fold(variances: List[Variance]): Variance = (
-    if (variances.isEmpty) Bivariant
-    else variances reduceLeft (_ & _)
+    if (variances.isEmpty)
+      Bivariant
+    else
+      variances reduceLeft (_ & _)
   )
   val Bivariant = new Variance(2)
   val Covariant = new Variance(1)

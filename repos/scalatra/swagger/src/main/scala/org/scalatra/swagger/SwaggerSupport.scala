@@ -212,13 +212,18 @@ object SwaggerSupportSyntax {
 
     def allowableValues[V](values: V*): this.type = {
       _allowableValues =
-        if (values.isEmpty) AllowableValues.empty
-        else AllowableValues(values: _*)
+        if (values.isEmpty)
+          AllowableValues.empty
+        else
+          AllowableValues(values: _*)
       this
     }
     def allowableValues[V](values: List[V]): this.type = {
       _allowableValues =
-        if (values.isEmpty) AllowableValues.empty else AllowableValues(values)
+        if (values.isEmpty)
+          AllowableValues.empty
+        else
+          AllowableValues(values)
       this
     }
 
@@ -284,7 +289,8 @@ object SwaggerSupportSyntax {
     private[this] var _defaultValue: Option[String] = None
     override def defaultValue = _defaultValue
     def defaultValue(value: T): this.type = {
-      if (_required.isEmpty) optional
+      if (_required.isEmpty)
+        optional
       _defaultValue = allCatch.withApply(_ => None) {
         value.toString.blankOption
       }
@@ -433,8 +439,15 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
 
   private[this] def registerInSwagger(servPath: String) = {
     val resourcePath = {
-      val p = if (servPath.endsWith("/*")) servPath.dropRight(2) else servPath
-      if (p.startsWith("/")) p else "/" + p
+      val p =
+        if (servPath.endsWith("/*"))
+          servPath.dropRight(2)
+        else
+          servPath
+      if (p.startsWith("/"))
+        p
+      else
+        "/" + p
     }
     val listingPath = resourcePath.drop(1) // drop the leading slash
 
@@ -593,11 +606,14 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     val dt =
       if (liftCollection && (st.isCollection || st.isOption))
         DataType.fromScalaType(st.typeArgs.head)
-      else DataType[T]
+      else
+        DataType[T]
 
     val b = new ParameterBuilder[T](dt).name(name)
-    if (st.isOption) b.optional
-    if (st.isCollection) b.multiValued
+    if (st.isOption)
+      b.optional
+    if (st.isCollection)
+      b.multiValued
 
     Swagger.modelToSwagger[T] foreach { m =>
       b.description(m.description)
@@ -709,8 +725,16 @@ trait SwaggerSupport
     (swaggerEndpointEntries(extractOperation) groupBy (_.key)).toList map {
       case (name, entries) ⇒
         val desc = _description lift name getOrElse ""
-        val pth = if (basePath endsWith "/") basePath else basePath + "/"
-        val nm = if (name startsWith "/") name.substring(1) else name
+        val pth =
+          if (basePath endsWith "/")
+            basePath
+          else
+            basePath + "/"
+        val nm =
+          if (name startsWith "/")
+            name.substring(1)
+          else
+            name
         new Endpoint(pth + nm, desc.blankOption, entries.toList map (_.value))
     } sortBy (_.path)
 

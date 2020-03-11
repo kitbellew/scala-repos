@@ -44,7 +44,10 @@ object TransformationBuffer {
     */
   implicit def sfxTransformationBuffer2jfx[E, F](
       v: TransformationBuffer[E, F]): jfxct.TransformationList[E, F] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

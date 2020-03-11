@@ -49,14 +49,16 @@ object RangeUtil {
         if (col.isDefinedAt(i)) {
           f(i);
           seen(i + 1, limit)
-        } else unseen(i + 1, limit)
+        } else
+          unseen(i + 1, limit)
       } else {
         false
       }
 
     @tailrec def seen(i: Int, limit: Int): Boolean =
       if (i < limit) {
-        if (col.isDefinedAt(i)) f(i)
+        if (col.isDefinedAt(i))
+          f(i)
         seen(i + 1, limit)
       } else {
         true

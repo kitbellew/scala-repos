@@ -194,7 +194,8 @@ object FormSpec extends Specification {
         "foo" -> Forms.text.verifying(
           "isEmpty",
           s =>
-            if (s.isEmpty) true
+            if (s.isEmpty)
+              true
             else
               throw new AssertionError(
                 "Validation was run when it wasn't meant to"))

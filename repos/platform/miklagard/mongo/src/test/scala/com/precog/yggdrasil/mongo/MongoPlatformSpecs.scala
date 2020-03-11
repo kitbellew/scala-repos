@@ -61,7 +61,8 @@ object MongoPlatformSpecEngine extends Logging {
 
   Runtime.getRuntime.addShutdownHook(new Thread() {
     override def run() {
-      if (engine != null) engine.shutdown()
+      if (engine != null)
+        engine.shutdown()
     }
   })
 

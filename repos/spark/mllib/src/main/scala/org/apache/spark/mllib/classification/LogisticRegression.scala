@@ -131,8 +131,12 @@ class LogisticRegressionModel @Since("1.3.0") (
       val margin = dot(weightMatrix, dataMatrix) + intercept
       val score = 1.0 / (1.0 + math.exp(-margin))
       threshold match {
-        case Some(t) => if (score > t) 1.0 else 0.0
-        case None    => score
+        case Some(t) =>
+          if (score > t)
+            1.0
+          else
+            0.0
+        case None => score
       }
     } else {
 

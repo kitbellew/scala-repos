@@ -39,8 +39,10 @@ class BaseCharsetTest(val charset: Charset) {
       decoder.onUnmappableCharacter(unmappableAction)
 
       val inBuf =
-        if (readOnly) in.asReadOnlyBuffer()
-        else in.duplicate()
+        if (readOnly)
+          in.asReadOnlyBuffer()
+        else
+          in.duplicate()
       assert(inBuf.isReadOnly == readOnly)
       assert(inBuf.hasArray != readOnly)
 
@@ -82,13 +84,13 @@ class BaseCharsetTest(val charset: Charset) {
 
       (actualTry, expectedTry) match {
         case (
-            Failure(actualEx: MalformedInputException),
-            Failure(expectedEx: MalformedInputException)) =>
+              Failure(actualEx: MalformedInputException),
+              Failure(expectedEx: MalformedInputException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (
-            Failure(actualEx: UnmappableCharacterException),
-            Failure(expectedEx: UnmappableCharacterException)) =>
+              Failure(actualEx: UnmappableCharacterException),
+              Failure(expectedEx: UnmappableCharacterException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (Success(actualChars), Success(expectedChars)) =>
@@ -106,9 +108,14 @@ class BaseCharsetTest(val charset: Charset) {
     val hasAnyUnmappable = outParts.exists(_.isInstanceOf[Unmappable])
 
     for {
-      malformedAction <- if (hasAnyMalformed) AllErrorActions else ReportActions
-      unmappableAction <- if (hasAnyUnmappable) AllErrorActions
-      else ReportActions
+      malformedAction <- if (hasAnyMalformed)
+        AllErrorActions
+      else
+        ReportActions
+      unmappableAction <- if (hasAnyUnmappable)
+        AllErrorActions
+      else
+        ReportActions
       readOnly <- List(false, true)
     } {
       testOneConfig(malformedAction, unmappableAction, readOnly)
@@ -128,8 +135,10 @@ class BaseCharsetTest(val charset: Charset) {
       encoder.onUnmappableCharacter(unmappableAction)
 
       val inBuf =
-        if (readOnly) in.asReadOnlyBuffer()
-        else in.duplicate()
+        if (readOnly)
+          in.asReadOnlyBuffer()
+        else
+          in.duplicate()
       assertTrue(inBuf.isReadOnly == readOnly)
       assertTrue(inBuf.hasArray != readOnly)
 
@@ -171,13 +180,13 @@ class BaseCharsetTest(val charset: Charset) {
 
       (actualTry, expectedTry) match {
         case (
-            Failure(actualEx: MalformedInputException),
-            Failure(expectedEx: MalformedInputException)) =>
+              Failure(actualEx: MalformedInputException),
+              Failure(expectedEx: MalformedInputException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (
-            Failure(actualEx: UnmappableCharacterException),
-            Failure(expectedEx: UnmappableCharacterException)) =>
+              Failure(actualEx: UnmappableCharacterException),
+              Failure(expectedEx: UnmappableCharacterException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (Success(actualBytes), Success(expectedBytes)) =>
@@ -193,9 +202,14 @@ class BaseCharsetTest(val charset: Charset) {
     val hasAnyUnmappable = outParts.exists(_.isInstanceOf[Unmappable])
 
     for {
-      malformedAction <- if (hasAnyMalformed) AllErrorActions else ReportActions
-      unmappableAction <- if (hasAnyUnmappable) AllErrorActions
-      else ReportActions
+      malformedAction <- if (hasAnyMalformed)
+        AllErrorActions
+      else
+        ReportActions
+      unmappableAction <- if (hasAnyUnmappable)
+        AllErrorActions
+      else
+        ReportActions
       readOnly <- List(false, true)
     } {
       testOneConfig(malformedAction, unmappableAction, readOnly)

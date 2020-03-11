@@ -22,8 +22,10 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
       val c =
         Class.forName(fqcn, false, classLoader).asInstanceOf[Class[_ <: T]]
       val t = implicitly[ClassTag[T]].runtimeClass
-      if (t.isAssignableFrom(c)) c
-      else throw new ClassCastException(t + " is not assignable from " + c)
+      if (t.isAssignableFrom(c))
+        c
+      else
+        throw new ClassCastException(t + " is not assignable from " + c)
     })
 
   override def createInstanceFor[T: ClassTag](
@@ -36,7 +38,8 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
       constructor.setAccessible(true)
       val obj = constructor.newInstance(values: _*)
       val t = implicitly[ClassTag[T]].runtimeClass
-      if (t.isInstance(obj)) obj.asInstanceOf[T]
+      if (t.isInstance(obj))
+        obj.asInstanceOf[T]
       else
         throw new ClassCastException(
           clazz.getName + " is not a subtype of " + t)
@@ -54,7 +57,8 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
 
   override def getObjectFor[T: ClassTag](fqcn: String): Try[T] = {
     val classTry =
-      if (fqcn.endsWith("$")) getClassFor(fqcn)
+      if (fqcn.endsWith("$"))
+        getClassFor(fqcn)
       else
         getClassFor(fqcn + "$") recoverWith {
           case _ ⇒ getClassFor(fqcn)

@@ -37,7 +37,10 @@ import scalafx.scene.image.Image
 
 object ImageCursor {
   implicit def sfxImageCursor2jfx(c: ImageCursor): jfxs.ImageCursor =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 
   /**
     * Creates a custom image cursor from one of the specified images.

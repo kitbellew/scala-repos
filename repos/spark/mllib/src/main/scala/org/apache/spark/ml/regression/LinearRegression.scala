@@ -183,7 +183,11 @@ class LinearRegression @Since("1.3.0") (
         case Row(features: Vector) => features.size
       }
       .first()
-    val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
+    val w =
+      if ($(weightCol).isEmpty)
+        lit(1.0)
+      else
+        col($(weightCol))
 
     if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
         numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
@@ -233,7 +237,8 @@ class LinearRegression @Since("1.3.0") (
       }
 
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
+    if (handlePersistence)
+      instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val (featuresSummarizer, ySummarizer) = {
       val seqOp = (
@@ -271,7 +276,8 @@ class LinearRegression @Since("1.3.0") (
               s"zeros and the intercept will be the mean of the label; as a result, " +
               s"training is not needed.")
         }
-        if (handlePersistence) instances.unpersist()
+        if (handlePersistence)
+          instances.unpersist()
         val coefficients = Vectors.sparse(numFeatures, Seq())
         val intercept = yMean
 
@@ -302,7 +308,11 @@ class LinearRegression @Since("1.3.0") (
 
     // if y is constant (rawYStd is zero), then y cannot be scaled. In this case
     // setting yStd=1.0 ensures that y is not scaled anymore in l-bfgs algorithm.
-    val yStd = if (rawYStd > 0) rawYStd else math.abs(yMean)
+    val yStd =
+      if (rawYStd > 0)
+        rawYStd
+      else
+        math.abs(yMean)
     val featuresMean = featuresSummarizer.mean.toArray
     val featuresStd = featuresSummarizer.variance.toArray.map(math.sqrt)
 
@@ -337,7 +347,8 @@ class LinearRegression @Since("1.3.0") (
           // the training dataset is not standardized.
           if (featuresStd(index) != 0.0)
             effectiveL1RegParam / featuresStd(index)
-          else 0.0
+          else
+            0.0
         }
       }
       new BreezeOWLQN[Int, BDV[Double]](
@@ -381,7 +392,10 @@ class LinearRegression @Since("1.3.0") (
       val len = rawCoefficients.length
       while (i < len) {
         rawCoefficients(i) *= {
-          if (featuresStd(i) != 0.0) yStd / featuresStd(i) else 0.0
+          if (featuresStd(i) != 0.0)
+            yStd / featuresStd(i)
+          else
+            0.0
         }
         i += 1
       }
@@ -400,7 +414,8 @@ class LinearRegression @Since("1.3.0") (
       0.0
     }
 
-    if (handlePersistence) instances.unpersist()
+    if (handlePersistence)
+      instances.unpersist()
 
     val model = copyValues(
       new LinearRegressionModel(uid, coefficients, intercept))
@@ -514,7 +529,8 @@ class LinearRegressionModel private[ml] (
   override def copy(extra: ParamMap): LinearRegressionModel = {
     val newModel =
       copyValues(new LinearRegressionModel(uid, coefficients, intercept), extra)
-    if (trainingSummary.isDefined) newModel.setSummary(trainingSummary.get)
+    if (trainingSummary.isDefined)
+      newModel.setSummary(trainingSummary.get)
     newModel.setParent(parent)
   }
 
@@ -721,8 +737,10 @@ class LinearRegressionSummary private[regression] (
     */
   lazy val devianceResiduals: Array[Double] = {
     val weighted =
-      if (model.getWeightCol.isEmpty) lit(1.0)
-      else sqrt(col(model.getWeightCol))
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        sqrt(col(model.getWeightCol))
     val dr = predictions
       .select(
         col(model.getLabelCol)
@@ -923,7 +941,11 @@ private class LeastSquaresAggregator(
       }
       i += 1
     }
-    val offset = if (fitIntercept) labelMean / labelStd - sum else 0.0
+    val offset =
+      if (fitIntercept)
+        labelMean / labelStd - sum
+      else
+        0.0
     (coefficientsArray, offset, coefficientsArray.length)
   }
 
@@ -948,7 +970,8 @@ private class LeastSquaresAggregator(
             s" Expecting $dim but got ${features.size}.")
         require(weight >= 0.0, s"instance weight, ${weight} has to be >= 0.0")
 
-        if (weight == 0.0) return this
+        if (weight == 0.0)
+          return this
 
         val diff =
           dot(features, effectiveCoefficientsVector) - label / labelStd + offset

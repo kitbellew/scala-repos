@@ -194,7 +194,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     case p: Sort =>
       build(
         toSQL(p.child),
-        if (p.global) "ORDER BY" else "SORT BY",
+        if (p.global)
+          "ORDER BY"
+        else
+          "SORT BY",
         p.order.map(_.sql).mkString(", ")
       )
 
@@ -226,9 +229,15 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
   private def projectToSQL(plan: Project, isDistinct: Boolean): String = {
     build(
       "SELECT",
-      if (isDistinct) "DISTINCT" else "",
+      if (isDistinct)
+        "DISTINCT"
+      else
+        "",
       plan.projectList.map(_.sql).mkString(", "),
-      if (plan.child == OneRowRelation) "" else "FROM",
+      if (plan.child == OneRowRelation)
+        ""
+      else
+        "FROM",
       toSQL(plan.child)
     )
   }
@@ -255,7 +264,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       s"USING \'${plan.script}\'",
       "AS (" + outputSchema + ")",
       outputRowFormatSQL,
-      if (plan.child == OneRowRelation) "" else "FROM",
+      if (plan.child == OneRowRelation)
+        ""
+      else
+        "FROM",
       toSQL(plan.child)
     )
   }
@@ -265,9 +277,15 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     build(
       "SELECT",
       plan.aggregateExpressions.map(_.sql).mkString(", "),
-      if (plan.child == OneRowRelation) "" else "FROM",
+      if (plan.child == OneRowRelation)
+        ""
+      else
+        "FROM",
       toSQL(plan.child),
-      if (groupingSQL.isEmpty) "" else "GROUP BY",
+      if (groupingSQL.isEmpty)
+        ""
+      else
+        "GROUP BY",
       groupingSQL
     )
   }
@@ -300,7 +318,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     build(
       childSQL,
       "LATERAL VIEW",
-      if (g.outer) "OUTER" else "",
+      if (g.outer)
+        "OUTER"
+      else
+        "",
       g.generator.sql,
       newSubqueryName(),
       "AS",
@@ -395,7 +416,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     build(
       "SELECT",
       aggExprs.map(_.sql).mkString(", "),
-      if (agg.child == OneRowRelation) "" else "FROM",
+      if (agg.child == OneRowRelation)
+        ""
+      else
+        "FROM",
       toSQL(project.child),
       "GROUP BY",
       groupingSQL,
@@ -407,7 +431,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     build(
       "SELECT",
       (w.child.output ++ w.windowExpressions).map(_.sql).mkString(", "),
-      if (w.child == OneRowRelation) "" else "FROM",
+      if (w.child == OneRowRelation)
+        ""
+      else
+        "FROM",
       toSQL(w.child)
     )
   }

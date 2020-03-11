@@ -139,8 +139,10 @@ class FlatClassPathResolverTest {
       }
 
       val packageNameParts =
-        if (inPackage == FlatClassPath.RootPackage) Nil
-        else inPackage.split('.').toList
+        if (inPackage == FlatClassPath.RootPackage)
+          Nil
+        else
+          inPackage.split('.').toList
       val recursiveClassPathInPackage =
         traverseToPackage(packageNameParts, recursiveClassPath)
 

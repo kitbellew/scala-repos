@@ -60,7 +60,11 @@ object Tx {
   /**
     * Analog of `Option.apply()` for Java compatibility.
     */
-  def apply[T](msg: T): Tx[T] = if (msg == null) aborted else const(msg)
+  def apply[T](msg: T): Tx[T] =
+    if (msg == null)
+      aborted
+    else
+      const(msg)
 
   /**
     * A constant `Tx` with the value of `Unit`.

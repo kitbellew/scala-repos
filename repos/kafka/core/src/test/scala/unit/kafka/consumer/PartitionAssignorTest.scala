@@ -152,13 +152,19 @@ private object PartitionAssignorTest extends Logging {
         Map(
           "version" -> 1,
           "subscription" -> Map(regex -> streamCount),
-          "pattern" -> (if (isWhitelist) "white_list" else "black_list")))
+          "pattern" -> (if (isWhitelist)
+                          "white_list"
+                        else
+                          "black_list")))
 
     override def toString = {
       "\"%s\":%d (%s)".format(
         regex,
         streamCount,
-        if (isWhitelist) "whitelist" else "blacklist")
+        if (isWhitelist)
+          "whitelist"
+        else
+          "blacklist")
     }
   }
 

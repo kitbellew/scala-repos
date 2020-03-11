@@ -26,7 +26,8 @@ trait SprayJsonSupport {
       .forContentTypes(`application/json`)
       .mapWithCharset { (data, charset) ⇒
         val input =
-          if (charset == HttpCharsets.`UTF-8`) ParserInput(data.toArray)
+          if (charset == HttpCharsets.`UTF-8`)
+            ParserInput(data.toArray)
           else
             ParserInput(
               data.decodeString(charset.nioCharset.name)

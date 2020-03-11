@@ -46,7 +46,8 @@ class ScTypeAliasDeclarationImpl private (
 
   override def navigate(requestFocus: Boolean) {
     val descriptor = EditSourceUtil.getDescriptor(nameId)
-    if (descriptor != null) descriptor.navigate(requestFocus)
+    if (descriptor != null)
+      descriptor.navigate(requestFocus)
   }
 
   def nameId = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
@@ -86,7 +87,8 @@ class ScTypeAliasDeclarationImpl private (
         case null => None
         case te   => Some(te)
       }
-    } else None
+    } else
+      None
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
@@ -104,7 +106,8 @@ class ScTypeAliasDeclarationImpl private (
         case null => None
         case te   => Some(te)
       }
-    } else None
+    } else
+      None
   }
 
   override def getPresentation: ItemPresentation = {

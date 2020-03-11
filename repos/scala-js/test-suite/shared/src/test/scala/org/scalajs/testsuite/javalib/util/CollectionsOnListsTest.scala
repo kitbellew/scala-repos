@@ -220,8 +220,10 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       def testIfInOrder(reversed: Boolean): Unit = {
         for (i <- range) {
           val expected =
-            if (reversed) range.last - i
-            else i
+            if (reversed)
+              range.last - i
+            else
+              i
           assertEquals(toElem(expected), list(i))
         }
       }

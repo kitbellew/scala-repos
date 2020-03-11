@@ -53,7 +53,8 @@ trait ApplicationAnnotator {
             reference.getContext match {
               case genCall: ScGenericCall =>
                 val missing =
-                  for (MissedTypeParameter(p) <- r.problems) yield p.name
+                  for (MissedTypeParameter(p) <- r.problems)
+                    yield p.name
                 missing match {
                   case Seq() =>
                   case as =>
@@ -342,20 +343,31 @@ trait ApplicationAnnotator {
 
   private def signatureOf(f: PsiNamedElement): String = f match {
     case f: ScFunction =>
-      if (f.parameters.isEmpty) "" else formatParamClauses(f.paramClauses)
+      if (f.parameters.isEmpty)
+        ""
+      else
+        formatParamClauses(f.paramClauses)
     case m: PsiMethod =>
       val params: Array[PsiParameter] = m.getParameterList.getParameters
-      if (params.isEmpty) "" else formatJavaParams(params)
+      if (params.isEmpty)
+        ""
+      else
+        formatJavaParams(params)
     case syn: ScSyntheticFunction =>
-      if (syn.paramClauses.isEmpty) ""
-      else syn.paramClauses.map(formatSyntheticParams).mkString
+      if (syn.paramClauses.isEmpty)
+        ""
+      else
+        syn.paramClauses.map(formatSyntheticParams).mkString
   }
 
   private def formatParamClauses(paramClauses: ScParameters) = {
     def formatParams(parameters: Seq[ScParameter], types: Seq[ScType]) = {
       val parts = parameters.zip(types).map {
         case (p, t) =>
-          t.presentableText + (if (p.isRepeatedParameter) "*" else "")
+          t.presentableText + (if (p.isRepeatedParameter)
+                                 "*"
+                               else
+                                 "")
       }
       parenthesise(parts)
     }
@@ -367,14 +379,22 @@ trait ApplicationAnnotator {
   private def formatJavaParams(parameters: Seq[PsiParameter]): String = {
     val types = ScalaPsiUtil.mapToLazyTypesSeq(parameters)
     val parts = parameters.zip(types).map {
-      case (p, t) => t().presentableText + (if (p.isVarArgs) "*" else "")
+      case (p, t) =>
+        t().presentableText + (if (p.isVarArgs)
+                                 "*"
+                               else
+                                 "")
     }
     parenthesise(parts)
   }
 
   private def formatSyntheticParams(parameters: Seq[Parameter]) = {
     val parts = parameters.map {
-      case p => p.paramType.presentableText + (if (p.isRepeated) "*" else "")
+      case p =>
+        p.paramType.presentableText + (if (p.isRepeated)
+                                         "*"
+                                       else
+                                         "")
     }
     parenthesise(parts)
   }

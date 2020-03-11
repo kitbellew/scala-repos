@@ -33,7 +33,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
       context.system.scheduler.scheduleOnce(1 second) {
         lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
       }
-    else lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
+    else
+      lilaBus.publish(lila.socket.SocketHub.Open(self), 'socket)
   }
 
   override def postStop() {
@@ -98,7 +99,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   def broom {
     members.keys foreach { uid =>
-      if (!aliveUids.get(uid)) eject(uid)
+      if (!aliveUids.get(uid))
+        eject(uid)
     }
   }
 
@@ -170,8 +172,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
         }
     }
 
-    if (total == 0) JsNull
-    else if (userIds.size >= maxSpectatorUsers) Json.obj("nb" -> total)
+    if (total == 0)
+      JsNull
+    else if (userIds.size >= maxSpectatorUsers)
+      Json.obj("nb" -> total)
     else
       Json.obj(
         "nb" -> total,

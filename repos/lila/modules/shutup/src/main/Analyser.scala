@@ -8,8 +8,10 @@ object Analyser {
   )
 
   private def wordsRegexes: List[String] = Dictionary.en.map { word =>
-    if (word endsWith "s") word
-    else word + "s?"
+    if (word endsWith "s")
+      word
+    else
+      word + "s?"
   }
 
   private val bigRegex = {

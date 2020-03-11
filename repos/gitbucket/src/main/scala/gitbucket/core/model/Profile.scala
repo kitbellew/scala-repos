@@ -18,7 +18,10 @@ trait Profile {
     */
   implicit class RichColumn(c1: Column[Boolean]) {
     def &&(c2: => Column[Boolean], guard: => Boolean): Column[Boolean] =
-      if (guard) c1 && c2 else c1
+      if (guard)
+        c1 && c2
+      else
+        c1
   }
 
   /**

@@ -296,7 +296,11 @@ object Source {
         java.lang.Integer,
         _ <: Graph[UniformFanInShape[T, U], NotUsed]]): Source[U, NotUsed] = {
     import scala.collection.JavaConverters._
-    val seq = if (rest != null) rest.asScala.map(_.asScala) else Seq()
+    val seq =
+      if (rest != null)
+        rest.asScala.map(_.asScala)
+      else
+        Seq()
     new Source(
       scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num ⇒
         strategy.apply(num)))

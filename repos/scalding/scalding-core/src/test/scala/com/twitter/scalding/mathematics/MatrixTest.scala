@@ -192,12 +192,18 @@ class MatrixMapWithVal(args: Args) extends Job(args) {
 
   mat
     .mapWithIndex { (v, r, c) =>
-      if (r == c) v else 0
+      if (r == c)
+        v
+      else
+        0
     }
     .write(Tsv("diag"))
   row
     .mapWithIndex { (v, c) =>
-      if (c == 0) v else 0.0
+      if (c == 0)
+        v
+      else
+        0.0
     }
     .write(Tsv("first"))
 }

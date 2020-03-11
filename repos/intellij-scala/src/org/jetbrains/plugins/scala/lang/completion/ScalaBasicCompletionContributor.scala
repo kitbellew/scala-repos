@@ -106,9 +106,11 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             case ScalaTokenTypes.tINTERPOLATED_STRING |
                 ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
               val position = dummyPosition.getContext
-              if (!position.isInstanceOf[ScInterpolated]) return
+              if (!position.isInstanceOf[ScInterpolated])
+                return
               if (!parameters.getPosition.getParent
-                    .isInstanceOf[ScInterpolated]) return
+                    .isInstanceOf[ScInterpolated])
+                return
 
               val interpolated = position.asInstanceOf[ScInterpolated]
               val dummyInterpolated =
@@ -129,7 +131,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                   interpolated,
                   index,
                   offsetInString)
-              if (res.isEmpty) return
+              if (res.isEmpty)
+                return
               val (exprStartInString, endPoint) = res.get
               val stringText = interpolated.getText
               val newInterpolated =
@@ -154,7 +157,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
         val insertedElement: PsiElement = position
         if (!inString && !inInterpolatedString && !ScalaPsiUtil
               .fileContext(insertedElement)
-              .isInstanceOf[ScalaFile]) return
+              .isInstanceOf[ScalaFile])
+          return
         val lookingForAnnotations: Boolean =
           Option(
             insertedElement.getContainingFile findElementAt (insertedElement.getTextOffset - 1)) exists {
@@ -178,8 +182,10 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 addElement: LookupElement => Unit = addElement) {
               variant match {
                 case el: ScalaLookupItem =>
-                  if (inString) el.isInSimpleString = true
-                  if (inInterpolatedString) el.isInInterpolatedString = true
+                  if (inString)
+                    el.isInSimpleString = true
+                  if (inInterpolatedString)
+                    el.isInInterpolatedString = true
                   val elem = el.element
                   elem match {
                     case clazz: PsiClass =>
@@ -235,7 +241,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                               ResolveUtils.isAccessible(
                                 memb,
                                 position,
-                                forCompletion = true)) addElement(el)
+                                forCompletion = true))
+                            addElement(el)
                         case _ => addElement(el)
                       }
                     case memb: PsiMember =>
@@ -286,7 +293,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 case _ =>
               }
               val context = elem.getContext
-              if (context != null) addThisAndSuper(context)
+              if (context != null)
+                addThisAndSuper(context)
             }
 
             ref match {
@@ -371,7 +379,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
   )
 
   override def advertise(parameters: CompletionParameters): String = {
-    if (!parameters.getOriginalFile.isInstanceOf[ScalaFile]) return null
+    if (!parameters.getOriginalFile.isInstanceOf[ScalaFile])
+      return null
     val messages = Array[String](
       null
     )
@@ -393,11 +402,15 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
       parameters: CompletionParameters): ScType = {
     ref match {
       case refExpr: ScReferenceExpression =>
-        (for (qualifier <- refExpr.qualifier) yield {
-          val evaluator = refExpr.getContainingFile.getCopyableUserData(
-            ScalaRuntimeTypeEvaluator.KEY)
-          if (evaluator != null) evaluator(qualifier) else null
-        }).orNull
+        (for (qualifier <- refExpr.qualifier)
+          yield {
+            val evaluator = refExpr.getContainingFile.getCopyableUserData(
+              ScalaRuntimeTypeEvaluator.KEY)
+            if (evaluator != null)
+              evaluator(qualifier)
+            else
+              null
+          }).orNull
       case _ => null
     }
   }
@@ -461,14 +474,19 @@ object ScalaBasicCompletionContributor {
     val injections = interpolated.getInjections
     if (index != -1) {
       val expr = injections(index)
-      if (expr.isInstanceOf[ScBlock]) return None
+      if (expr.isInstanceOf[ScBlock])
+        return None
       val stringText = interpolated.getText
       val pointPosition =
         expr.getTextRange.getEndOffset - interpolated.getTextRange.getStartOffset
       if (stringText.charAt(pointPosition) == '.') {
         val restString = stringText.substring(pointPosition + 1)
         val lexer = new ScalaLexer()
-        val noQuotes = if (interpolated.isMultiLineString) 3 else 1
+        val noQuotes =
+          if (interpolated.isMultiLineString)
+            3
+          else
+            1
         lexer.start(restString, 0, restString.length - noQuotes)
         if (lexer.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
           val endPoint = lexer.getTokenEnd + pointPosition + 1
@@ -476,9 +494,13 @@ object ScalaBasicCompletionContributor {
             val exprStartInString =
               expr.getTextRange.getStartOffset - interpolated.getTextRange.getStartOffset
             Some(exprStartInString, endPoint)
-          } else None
-        } else None
-      } else None
-    } else None
+          } else
+            None
+        } else
+          None
+      } else
+        None
+    } else
+      None
   }
 }

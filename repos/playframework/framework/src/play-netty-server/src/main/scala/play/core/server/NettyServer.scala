@@ -239,7 +239,11 @@ class NettyServer(
   private val httpsChannel = config.sslPort.map(bindChannel(_, secure = true))
 
   private def bindChannel(port: Int, secure: Boolean): Channel = {
-    val protocolName = if (secure) "HTTPS" else "HTTP"
+    val protocolName =
+      if (secure)
+        "HTTPS"
+      else
+        "HTTP"
     val address = new InetSocketAddress(config.address, port)
     val (serverChannel, channelSource) = bind(address)
     channelSource.runWith(channelSink(secure = secure))

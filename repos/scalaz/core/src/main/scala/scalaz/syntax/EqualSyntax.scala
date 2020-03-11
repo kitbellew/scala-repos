@@ -14,7 +14,8 @@ final class EqualOps[F] private[syntax] (val self: F)(implicit val F: Equal[F])
 
   /** Raises an exception unless self === other. */
   final def assert_===[B](other: B)(implicit S: Show[F], ev: B <:< F) =
-    if (/==(other)) sys.error(S.shows(self) + " ≠ " + S.shows(ev(other)))
+    if (/==(other))
+      sys.error(S.shows(self) + " ≠ " + S.shows(ev(other)))
 
   ////
 }

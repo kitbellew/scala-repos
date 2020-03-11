@@ -56,7 +56,11 @@ case class Player(
   def goBerserk = copy(berserk = true)
 
   def finish(winner: Boolean) = copy(
-    isWinner = if (winner) Some(true) else None
+    isWinner =
+      if (winner)
+        Some(true)
+      else
+        None
   )
 
   def offerDraw(turn: Int) = copy(
@@ -144,7 +148,8 @@ object Player {
 
   private def safeRange(range: Range, name: String)(userId: Option[String])(
       v: Int): Option[Int] =
-    if (range contains v) Some(v)
+    if (range contains v)
+      Some(v)
     else {
       logger.warn(s"Player $userId $name=$v (range: ${range.min}-${range.max})")
       None

@@ -23,7 +23,8 @@ class DecompilerTest extends TestCase {
     val file = new File(new jFile(classFilePath))
     //facilitate working directory equal to 'scala-plugin' root directory as well
     val (bytes, expectedFilePath) =
-      if (file.exists) (file.toByteArray(), classFilePath + ".test")
+      if (file.exists)
+        (file.toByteArray(), classFilePath + ".test")
       else {
         val insidePath =
           s"testdata${separator}decompiler$separator$name$separator$fileName"

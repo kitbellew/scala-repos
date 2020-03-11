@@ -19,8 +19,10 @@ object Test {
     assert(tm("a") == "b")
     assert(tm("c") == "d")
 
-    for (i <- 0 until 1000) tm(i.toString) = i.toString
-    for (i <- 0 until 1000) assert(tm(i.toString) == i.toString)
+    for (i <- 0 until 1000)
+      tm(i.toString) = i.toString
+    for (i <- 0 until 1000)
+      assert(tm(i.toString) == i.toString)
   }
 
   def equality() {
@@ -36,10 +38,12 @@ object Test {
     assert(tm("a") == "d", tm)
     assert(tm("b") == "c", tm)
 
-    for (i <- 0 until 1000) tm(i.toString) = i.toString
+    for (i <- 0 until 1000)
+      tm(i.toString) = i.toString
     assert(tm.size == 12, tm)
     assert(tm("0") == "0", tm)
-    for (i <- 1 to 9) assert(tm(i.toString) == i.toString + "99", tm)
+    for (i <- 1 to 9)
+      assert(tm(i.toString) == i.toString + "99", tm)
   }
 
 }

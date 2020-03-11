@@ -83,7 +83,10 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         errorHandler(server.applicationProvider.current).onClientError(
           requestHeader,
           statusCode,
-          if (message == null) "" else message)
+          if (message == null)
+            ""
+          else
+            message)
       // If there's a problem in parsing the request, then we should close the connection, once done with it
       requestHeader -> Left(
         result.map(_.withHeaders(HeaderNames.CONNECTION -> "close")))
@@ -125,7 +128,11 @@ private[play] class PlayRequestHandler(val server: NettyServer)
             .exists(_.equalsIgnoreCase("websocket")) =>
         logger.trace("Serving this request with: " + ws)
 
-        val wsProtocol = if (requestHeader.secure) "wss" else "ws"
+        val wsProtocol =
+          if (requestHeader.secure)
+            "wss"
+          else
+            "ws"
         val wsUrl = s"$wsProtocol://${requestHeader.host}${requestHeader.path}"
         val bufferLimit = app.configuration
           .getBytes("play.websocket.buffer.limit")

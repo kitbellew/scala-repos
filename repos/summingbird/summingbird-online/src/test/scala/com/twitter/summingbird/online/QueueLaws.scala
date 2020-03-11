@@ -109,7 +109,8 @@ object QueueLaws extends Properties("Queue") {
             case None    => q.size == 0
             case Some(_) => q.size == (size - 1)
           }
-        } else true
+        } else
+          true
       }
       .forall(identity)
   }

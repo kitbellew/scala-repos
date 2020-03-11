@@ -67,7 +67,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       file: PsiFile,
       dataContext: DataContext) {
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     UsageTrigger.trigger(ScalaBundle.message("extract.method.id"))
 
@@ -95,7 +96,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         REFACTORING_NAME)
       return
     }
-    if (!editor.getSelectionModel.hasSelection) return
+    if (!editor.getSelectionModel.hasSelection)
+      return
     val elements: Seq[PsiElement] =
       ScalaRefactoringUtil.selectedElements(editor, file, trimComments = false)
 
@@ -104,7 +106,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       project,
       editor,
       REFACTORING_NAME)
-    if (hasWarnings) return
+    if (hasWarnings)
+      return
 
     def checkLastReturn(elem: PsiElement): Boolean = {
       elem match {
@@ -123,7 +126,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       val fun = PsiTreeUtil.getParentOfType(
         elements.head,
         classOf[ScFunctionDefinition])
-      if (fun == null) return None
+      if (fun == null)
+        return None
       var result: Option[ScType] = None
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitReturnStatement(ret: ScReturnStmt) {
@@ -207,7 +211,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       element: PsiElement,
       @Nullable stopAtScope: PsiElement): Array[PsiElement] = {
     def isParentOk(parent: PsiElement): Boolean = {
-      if (parent == null) return false
+      if (parent == null)
+        return false
       assert(
         parent.getTextRange != null,
         "TextRange is null: " + parent.getText)
@@ -249,8 +254,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           case primConstr: ScPrimaryConstructor =>
             primConstr.containingClass match {
               case clazz: ScClass =>
-                if (clazz.isLocal) clazz.parent
-                else clazz.containingClass.toOption
+                if (clazz.isLocal)
+                  clazz.parent
+                else
+                  clazz.containingClass.toOption
               case _ => None
             }
           case member: ScMember if !member.isLocal =>
@@ -333,7 +340,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           output.toArray,
           lastExprType)
         dialog.show()
-        if (!dialog.isOK) return
+        if (!dialog.isOK)
+          return
         dialog.getSettings
       } else {
         val innerClassSettings = {
@@ -393,8 +401,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
             local(s"var ${v.bindings.head.name}")
           case _: ScCaseClause => local("case clause")
           case ifStmt: ScIfStmt =>
-            if (ifStmt.thenBranch.contains(b)) local("if block")
-            else "Extract local method in else block"
+            if (ifStmt.thenBranch.contains(b))
+              local("if block")
+            else
+              "Extract local method in else block"
           case forStmt: ScForStatement if forStmt.body.contains(b) =>
             local("for statement")
           case whileStmt: ScWhileStmt if whileStmt.body.contains(b) =>
@@ -414,7 +424,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       settings: ScalaExtractMethodSettings,
       editor: Editor) {
     val method = ScalaExtractMethodUtils.createMethodFromSettings(settings)
-    if (method == null) return
+    if (method == null)
+      return
     val ics = settings.innerClassSettings
 
     def newLine = ScalaPsiElementFactory.createNewLine(method.getManager)
@@ -426,7 +437,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     def insertInnerClassBefore(anchorNext: PsiElement) {
-      if (!ics.needClass) return
+      if (!ics.needClass)
+        return
 
       val classText = ics.classText(canonTextForTypes = true)
       val clazz = ScalaPsiElementFactory.createTemplateDefinitionFromText(

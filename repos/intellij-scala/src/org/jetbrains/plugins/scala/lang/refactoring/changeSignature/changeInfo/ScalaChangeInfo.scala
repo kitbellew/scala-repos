@@ -38,7 +38,8 @@ case class ScalaChangeInfo(
   private def psiType = {
     if (newType != null)
       ScType.toPsi(newType, project, GlobalSearchScope.allScope(project))
-    else null
+    else
+      null
   }
 
   //used in introduce parameter refactoring
@@ -50,12 +51,17 @@ case class ScalaChangeInfo(
     getNewParameters()(i).getValue(callExpression)
 
   override def getNewReturnType: Type =
-    if (newType != null) CanonicalTypes.createTypeWrapper(psiType) else null
+    if (newType != null)
+      CanonicalTypes.createTypeWrapper(psiType)
+    else
+      null
 
   override val getOldName: String = function match {
     case fun: ScFunction =>
-      if (fun.isConstructor) fun.containingClass.name
-      else fun.name
+      if (fun.isConstructor)
+        fun.containingClass.name
+      else
+        fun.name
     case pc: ScPrimaryConstructor => pc.containingClass.name
     case _                        => newName
   }

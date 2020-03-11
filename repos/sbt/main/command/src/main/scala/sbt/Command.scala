@@ -151,8 +151,14 @@ object Command {
     "Not a valid " + label + ": " + value + similar(value, allowed)
   def similar(value: String, allowed: Iterable[String]): String = {
     val suggested =
-      if (value.length > 2) suggestions(value, allowed.toSeq) else Nil
-    if (suggested.isEmpty) "" else suggested.mkString(" (similar: ", ", ", ")")
+      if (value.length > 2)
+        suggestions(value, allowed.toSeq)
+      else
+        Nil
+    if (suggested.isEmpty)
+      ""
+    else
+      suggested.mkString(" (similar: ", ", ", ")")
   }
   def suggestions(
       a: String,

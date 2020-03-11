@@ -367,8 +367,7 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       assertTrue("Message set should have 1 message", messageSet1.hasNext)
       assertEquals(new Message("test".getBytes), messageSet1.next.message)
     } catch {
-      case e: Throwable =>
-      case e: Exception =>
+      case e: Throwable => case e: Exception =>
         producer.close;
         fail("Not expected", e)
     }

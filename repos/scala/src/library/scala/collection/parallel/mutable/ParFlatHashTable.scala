@@ -35,7 +35,8 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
     private[this] var traversed = 0
     private[this] val itertable = table
 
-    if (hasNext) scan()
+    if (hasNext)
+      scan()
 
     private[this] def scan() {
       while (itertable(idx) eq null) {
@@ -52,9 +53,11 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
         val r = entryToElem(itertable(idx))
         traversed += 1
         idx += 1
-        if (hasNext) scan()
+        if (hasNext)
+          scan()
         r
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
     def dup = newIterator(idx, until, totalsize)
     def split =
       if (remaining > 1) {
@@ -72,7 +75,8 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
         val sndit = newIterator(sndidx, snduntil, sndtotal)
 
         Seq(fstit, sndit)
-      } else Seq(this)
+      } else
+        Seq(this)
 
     override def debugInformation = buildString { append =>
       append("Parallel flat hash table iterator")
@@ -90,7 +94,8 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
       var count = 0
       var i = from
       while (i < until) {
-        if (itertable(i) ne null) count += 1
+        if (itertable(i) ne null)
+          count += 1
         i += 1
       }
       count

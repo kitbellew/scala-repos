@@ -22,7 +22,10 @@ class ScalaSourceFilterScope(myDelegate: GlobalSearchScope, project: Project)
   }
 
   def compare(file1: VirtualFile, file2: VirtualFile): Int = {
-    if (null != myDelegate) myDelegate.compare(file1, file2) else 0
+    if (null != myDelegate)
+      myDelegate.compare(file1, file2)
+    else
+      0
   }
 
   def isSearchInModuleContent(aModule: Module): Boolean = {
@@ -50,7 +53,10 @@ class SourceFilterScope(myDelegate: GlobalSearchScope, project: Project)
   }
 
   override def compare(file1: VirtualFile, file2: VirtualFile): Int = {
-    if (myDelegate == null) myDelegate.compare(file1, file2) else 0
+    if (myDelegate == null)
+      myDelegate.compare(file1, file2)
+    else
+      0
   }
 
   override def isSearchInModuleContent(aModule: Module): Boolean = {

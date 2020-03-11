@@ -32,13 +32,15 @@ abstract class ParallelVectorCheck[T](tp: String)
   def ofSize(vals: Seq[Gen[T]], sz: Int) = {
     val vb = new immutable.VectorBuilder[T]()
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) vb += sample(gen)
+    for (i <- 0 until sz)
+      vb += sample(gen)
     vb.result
   }
 
   def fromSeq(a: Seq[T]) = {
     val pc = ParVector.newCombiner[T]
-    for (elem <- a.toList) pc += elem
+    for (elem <- a.toList)
+      pc += elem
     val pv = pc.result
     pv.tasksupport = tasksupport
     pv

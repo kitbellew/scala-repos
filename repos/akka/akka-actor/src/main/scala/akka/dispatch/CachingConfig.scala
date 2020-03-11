@@ -104,8 +104,10 @@ private[akka] class CachingConfig(_config: Config) extends Config {
 
   def resolve(options: ConfigResolveOptions) = {
     val resolved = config.resolve(options)
-    if (resolved eq config) this
-    else new CachingConfig(resolved)
+    if (resolved eq config)
+      this
+    else
+      new CachingConfig(resolved)
   }
 
   def hasPath(path: String) = {

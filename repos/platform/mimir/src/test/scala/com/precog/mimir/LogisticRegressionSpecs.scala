@@ -81,8 +81,10 @@ trait LogisticRegressionTestSupport[M[+_]]
       (testSeqX zip deciders) map {
         case (xs, p) => {
           val product: Double = dotProduct(actualThetas, 1.0 +: xs)
-          if (sigmoid(product) > p) 1.0
-          else 0.0
+          if (sigmoid(product) > p)
+            1.0
+          else
+            0.0
         }
       }
     }

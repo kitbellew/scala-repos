@@ -22,7 +22,8 @@ class IsInstanceOf private (expectedClass: Class[_], matchableClass: Class[_])
     } else if (!matchableClass.isInstance(item)) {
       mismatch.appendValue(item).appendText(" is a " + item.getClass.getName)
       false
-    } else true
+    } else
+      true
   }
 
   override def describeTo(description: Description): Unit =

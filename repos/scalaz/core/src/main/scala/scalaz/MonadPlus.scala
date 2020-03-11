@@ -14,7 +14,11 @@ trait MonadPlus[F[_]] extends Monad[F] with ApplicativePlus[F] { self =>
     * for any `a` where `f(a)` returns false.
     */
   def filter[A](fa: F[A])(f: A => Boolean) =
-    bind(fa)(a => if (f(a)) point(a) else empty[A])
+    bind(fa)(a =>
+      if (f(a))
+        point(a)
+      else
+        empty[A])
 
   /** Generalized version of Haskell's `catMaybes` */
   def unite[T[_], A](value: F[T[A]])(implicit T: Foldable[T]): F[A] =

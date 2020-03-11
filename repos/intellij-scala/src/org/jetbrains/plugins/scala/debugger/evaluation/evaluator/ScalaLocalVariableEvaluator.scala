@@ -93,7 +93,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     def withDollar(frameProxy: StackFrameProxyImpl): Option[AnyRef] = {
       for (i <- 1 to 2) {
         val local = frameProxy.visibleVariableByName(myName + "$" + i)
-        if (local != null) return saveContextAndGetValue(frameProxy, local)
+        if (local != null)
+          return saveContextAndGetValue(frameProxy, local)
       }
       val locals = frameProxy.visibleVariables()
       import scala.collection.JavaConversions._
@@ -105,7 +106,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     }
 
     def parameterByIndex(frameProxy: StackFrameProxyImpl) = {
-      if (frameProxy == null || myParameterIndex < 0) None
+      if (frameProxy == null || myParameterIndex < 0)
+        None
       else {
         val frameMethodName = frameProxy.location().method().name()
         if ((myMethodName == null) || frameMethodName.startsWith(
@@ -121,7 +123,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
           } catch {
             case ignore: InternalException => None
           }
-        } else None
+        } else
+          None
       }
     }
 

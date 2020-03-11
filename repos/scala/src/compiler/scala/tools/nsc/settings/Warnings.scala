@@ -154,7 +154,11 @@ trait Warnings {
         s"-Ywarn-${w.name}", {
           w.help
         }) withPostSetHook { s =>
-        lint.add(if (s) w.name else s"-${w.name}")
+        lint.add(
+          if (s)
+            w.name
+          else
+            s"-${w.name}")
       } // withDeprecationMessage s"Enable -Xlint:${c._1}"
     case _ =>
   }

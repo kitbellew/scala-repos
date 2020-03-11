@@ -73,8 +73,10 @@ object SparkTransportConf {
     */
   private def defaultNumThreads(numUsableCores: Int): Int = {
     val availableCores =
-      if (numUsableCores > 0) numUsableCores
-      else Runtime.getRuntime.availableProcessors()
+      if (numUsableCores > 0)
+        numUsableCores
+      else
+        Runtime.getRuntime.availableProcessors()
     math.min(availableCores, MAX_DEFAULT_NETTY_THREADS)
   }
 }

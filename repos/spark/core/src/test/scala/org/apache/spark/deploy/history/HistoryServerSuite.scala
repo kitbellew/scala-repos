@@ -323,7 +323,10 @@ class HistoryServerSuite
     def listDir(dir: Path): Seq[FileStatus] = {
       val statuses = fs.listStatus(dir)
       statuses.flatMap(stat =>
-        if (stat.isDirectory) listDir(stat.getPath) else Seq(stat))
+        if (stat.isDirectory)
+          listDir(stat.getPath)
+        else
+          Seq(stat))
     }
 
     def dumpLogDir(msg: String = ""): Unit = {

@@ -16,7 +16,9 @@ object SimpleModuleBuildFileProvider extends BuildFileProvider {
     import org.jetbrains.sbt._
     val buildFile =
       module.getModuleFilePath.toFile.getParentFile / Sbt.BuildFile
-    if (buildFile.exists) Some(BuildFileEntry(buildFile, isModuleLocal = true))
-    else None
+    if (buildFile.exists)
+      Some(BuildFileEntry(buildFile, isModuleLocal = true))
+    else
+      None
   }
 }

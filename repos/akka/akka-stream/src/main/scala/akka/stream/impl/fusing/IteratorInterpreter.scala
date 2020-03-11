@@ -30,14 +30,16 @@ private[akka] object IteratorInterpreter {
       out,
       new OutHandler {
         override def onPull(): Unit = {
-          if (!hasNext) complete(out)
+          if (!hasNext)
+            complete(out)
           else {
             val elem = input.next()
             hasNext = input.hasNext
             if (!hasNext) {
               push(out, elem)
               complete(out)
-            } else push(out, elem)
+            } else
+              push(out, elem)
           }
         }
 
@@ -86,7 +88,8 @@ private[akka] object IteratorInterpreter {
     }
 
     override def hasNext: Boolean = {
-      if (!done) pullIfNeeded()
+      if (!done)
+        pullIfNeeded()
       !(done && needsPull) || (lastFailure ne null)
     }
 

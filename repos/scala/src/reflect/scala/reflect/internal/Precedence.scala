@@ -28,7 +28,11 @@ object Precedence extends (Int => Precedence) {
       case ':'             => 7
       case '+' | '-'       => 8
       case '*' | '/' | '%' => 9
-      case _               => if (isScalaLetter(ch)) 1 else 10
+      case _ =>
+        if (isScalaLetter(ch))
+          1
+        else
+          10
     })
 
   def apply(level: Int): Precedence = new Precedence(level)

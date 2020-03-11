@@ -38,20 +38,28 @@ object Bits {
   }
 
   private val arrayBuffer =
-    if (areTypedArraysSupported) new typedarray.ArrayBuffer(8)
-    else null
+    if (areTypedArraysSupported)
+      new typedarray.ArrayBuffer(8)
+    else
+      null
 
   private val int32Array =
-    if (areTypedArraysSupported) new typedarray.Int32Array(arrayBuffer, 0, 2)
-    else null
+    if (areTypedArraysSupported)
+      new typedarray.Int32Array(arrayBuffer, 0, 2)
+    else
+      null
 
   private val float32Array =
-    if (areTypedArraysSupported) new typedarray.Float32Array(arrayBuffer, 0, 2)
-    else null
+    if (areTypedArraysSupported)
+      new typedarray.Float32Array(arrayBuffer, 0, 2)
+    else
+      null
 
   private val float64Array =
-    if (areTypedArraysSupported) new typedarray.Float64Array(arrayBuffer, 0, 1)
-    else null
+    if (areTypedArraysSupported)
+      new typedarray.Float64Array(arrayBuffer, 0, 1)
+    else
+      null
 
   val areTypedArraysBigEndian = {
     if (areTypedArraysSupported) {
@@ -62,8 +70,16 @@ object Bits {
     }
   }
 
-  private val highOffset = if (areTypedArraysBigEndian) 0 else 1
-  private val lowOffset = if (areTypedArraysBigEndian) 1 else 0
+  private val highOffset =
+    if (areTypedArraysBigEndian)
+      0
+    else
+      1
+  private val lowOffset =
+    if (areTypedArraysBigEndian)
+      1
+    else
+      0
 
   /** Hash code of a number (excluding Longs).
     *
@@ -80,8 +96,10 @@ object Bits {
     */
   def numberHashCode(value: Double): Int = {
     val iv = rawToInt(value)
-    if (iv == value && 1.0 / value != Double.NegativeInfinity) iv
-    else doubleToLongBits(value).hashCode()
+    if (iv == value && 1.0 / value != Double.NegativeInfinity)
+      iv
+    else
+      doubleToLongBits(value).hashCode()
   }
 
   def intBitsToFloat(bits: Int): Float = {
@@ -147,7 +165,10 @@ object Bits {
     val ebits = 8
     val fbits = 23
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
-    (if (s) 0x80000000 else 0) | (e << fbits) | rawToInt(f)
+    (if (s)
+       0x80000000
+     else
+       0) | (e << fbits) | rawToInt(f)
   }
 
   private def longBitsToDoublePolyfill(bits: Long): Double = {
@@ -170,7 +191,10 @@ object Bits {
     val hifbits = fbits - 32
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
     val hif = rawToInt(f / 0x100000000L.toDouble)
-    val hi = (if (s) 0x80000000 else 0) | (e << hifbits) | hif
+    val hi = (if (s)
+                0x80000000
+              else
+                0) | (e << hifbits) | hif
     val lo = rawToInt(f)
     (hi.toLong << 32) | (lo.toLong & 0xFFFFFFFFL)
   }
@@ -188,20 +212,32 @@ object Bits {
 
     if (e == (1 << ebits) - 1) {
       // Special
-      if (f != 0.0) Double.NaN
-      else if (s) Double.NegativeInfinity
-      else Double.PositiveInfinity
+      if (f != 0.0)
+        Double.NaN
+      else if (s)
+        Double.NegativeInfinity
+      else
+        Double.PositiveInfinity
     } else if (e > 0) {
       // Normalized
       val x = pow(2, e - bias) * (1 + f / pow(2, fbits))
-      if (s) -x else x
+      if (s)
+        -x
+      else
+        x
     } else if (f != 0.0) {
       // Subnormal
       val x = pow(2, -(bias - 1)) * (f / pow(2, fbits))
-      if (s) -x else x
+      if (s)
+        -x
+      else
+        x
     } else {
       // Zero
-      if (s) -0.0 else 0.0
+      if (s)
+        -0.0
+      else
+        0.0
     }
   }
 
@@ -225,7 +261,11 @@ object Bits {
       val LN2 = 0.6931471805599453
 
       val s = v < 0
-      val av = if (s) -v else v
+      val av =
+        if (s)
+          -v
+        else
+          v
 
       if (av >= pow(2, 1 - bias)) {
         val twoPowFbits = pow(2, fbits)
@@ -259,10 +299,14 @@ object Bits {
   @inline private[runtime] def roundToEven(n: Double): Double = {
     val w = Math.floor(n)
     val f = n - w
-    if (f < 0.5) w
-    else if (f > 0.5) w + 1
-    else if (w % 2 != 0) w + 1
-    else w
+    if (f < 0.5)
+      w
+    else if (f > 0.5)
+      w + 1
+    else if (w % 2 != 0)
+      w + 1
+    else
+      w
   }
 
 }

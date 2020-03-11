@@ -33,7 +33,9 @@ object rank extends UFunc {
         travS.traverse(
           s,
           new ValuesVisitor[Double] {
-            def visit(a: Double): Unit = if (a > tol) n += 1
+            def visit(a: Double): Unit =
+              if (a > tol)
+                n += 1
 
             def zeros(numZero: Int, zeroValue: Double): Unit = ()
           })
@@ -56,7 +58,9 @@ object rank extends UFunc {
         travS.traverse(
           s,
           new ValuesVisitor[Double] {
-            def visit(a: Double): Unit = if (a > tol) n += 1
+            def visit(a: Double): Unit =
+              if (a > tol)
+                n += 1
 
             def zeros(numZero: Int, zeroValue: Double): Unit = ()
           })

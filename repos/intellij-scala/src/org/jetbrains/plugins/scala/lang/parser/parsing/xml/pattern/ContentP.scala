@@ -41,12 +41,14 @@ object ContentP {
           !PI.parse(builder) &&
           !Reference.parse(builder) &&
           !ScalaPatterns.parse(builder) &&
-          !XmlPattern.parse(builder)) isReturn = true
+          !XmlPattern.parse(builder))
+        isReturn = true
       builder.getTokenType match {
         case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
           builder.advanceLexer()
         case _ =>
-          if (isReturn) return
+          if (isReturn)
+            return
       }
       subparse()
     }

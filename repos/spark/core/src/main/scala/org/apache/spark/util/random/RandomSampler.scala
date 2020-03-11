@@ -115,7 +115,10 @@ class BernoulliCellSampler[T](
 
   override def sample(items: Iterator[T]): Iterator[T] = {
     if (ub - lb <= 0.0) {
-      if (complement) items else Iterator.empty
+      if (complement)
+        items
+      else
+        Iterator.empty
     } else {
       if (complement) {
         items.filter { item =>
@@ -208,7 +211,10 @@ class PoissonSampler[T: ClassTag](
   // PoissonDistribution throws an exception when fraction <= 0
   // If fraction is <= 0, Iterator.empty is used below, so we can use any placeholder value.
   private val rng = new PoissonDistribution(
-    if (fraction > 0.0) fraction else 1.0)
+    if (fraction > 0.0)
+      fraction
+    else
+      1.0)
   private val rngGap = RandomSampler.newDefaultRNG
 
   override def setSeed(seed: Long) {
@@ -229,7 +235,10 @@ class PoissonSampler[T: ClassTag](
     } else {
       items.flatMap { item =>
         val count = rng.sample()
-        if (count == 0) Iterator.empty else Iterator.fill(count)(item)
+        if (count == 0)
+          Iterator.empty
+        else
+          Iterator.fill(count)(item)
       }
     }
   }
@@ -341,7 +350,8 @@ private[spark] class GapSamplingReplacementIterator[T: ClassTag](
   override def next(): T = {
     val r = v
     rep -= 1
-    if (rep <= 0) advance()
+    if (rep <= 0)
+      advance()
     r
   }
 

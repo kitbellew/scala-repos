@@ -25,8 +25,10 @@ object Test extends App {
           gotException = true
           a
       }
-    if (gotException) assert(expectException, "Got unexpected exception")
-    else assert(!expectException, "Did not get expected exception")
+    if (gotException)
+      assert(expectException, "Got unexpected exception")
+    else
+      assert(!expectException, "Did not get expected exception")
 
     assert(result == action, s"Expected $action but got $result")
     println()

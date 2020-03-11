@@ -52,8 +52,10 @@ abstract class MappedTextarea[T <: Mapper[T]](owner: T, maxLen: Int)
 
   override def toString = {
     val v = get
-    if (v == null || v.length < 100) super.toString
-    else v.substring(0, 40) + " ... " + v.substring(v.length - 40)
+    if (v == null || v.length < 100)
+      super.toString
+    else
+      v.substring(0, 40) + " ... " + v.substring(v.length - 40)
   }
 
   def textareaRows = 8

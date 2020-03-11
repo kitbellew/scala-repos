@@ -48,8 +48,10 @@ trait ScTypePsiTypeBridge {
           case tp: PsiTypeParameter => ScalaPsiManager.typeVariable(tp)
           case clazz
               if clazz != null && clazz.qualifiedName == "java.lang.Object" =>
-            if (paramTopLevel && treatJavaObjectAsAny) types.Any
-            else types.AnyRef
+            if (paramTopLevel && treatJavaObjectAsAny)
+              types.Any
+            else
+              types.AnyRef
           case c if c != null =>
             val clazz = c match {
               case o: ScObject =>
@@ -69,7 +71,8 @@ trait ScTypePsiTypeBridge {
               }
               val containingClass: PsiClass = clazz.containingClass
               val res =
-                if (containingClass == null) ScDesignatorType(clazz)
+                if (containingClass == null)
+                  ScDesignatorType(clazz)
                 else {
                   ScProjectionType(
                     constructTypeForClass(
@@ -87,8 +90,10 @@ trait ScTypePsiTypeBridge {
                     res,
                     typeParameters.map(ptp =>
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-                } else res
-              } else res
+                } else
+                  res
+              } else
+                res
             }
             val des = constructTypeForClass(clazz)
             val substitutor = result.getSubstitutor
@@ -153,14 +158,16 @@ trait ScTypePsiTypeBridge {
                                 project,
                                 scope,
                                 visitedRawTypes)
-                            else types.Nothing,
+                            else
+                              types.Nothing,
                             if (wild.isExtends)
                               create(
                                 wild.getExtendsBound,
                                 project,
                                 scope,
                                 visitedRawTypes)
-                            else types.Any
+                            else
+                              types.Any
                           )
                         case capture: PsiCapturedWildcardType =>
                           val wild = capture.getWildcard
@@ -176,14 +183,16 @@ trait ScTypePsiTypeBridge {
                                 project,
                                 scope,
                                 visitedRawTypes)
-                            else types.Nothing,
+                            else
+                              types.Nothing,
                             if (wild.isExtends)
                               create(
                                 capture.getUpperBound,
                                 project,
                                 scope,
                                 visitedRawTypes)
-                            else types.Any
+                            else
+                              types.Any
                           )
                         case _ if psiType != null =>
                           ScType
@@ -214,10 +223,12 @@ trait ScTypePsiTypeBridge {
           Nil,
           if (wild.isSuper)
             create(wild.getSuperBound, project, scope, visitedRawTypes)
-          else types.Nothing,
+          else
+            types.Nothing,
           if (wild.isExtends)
             create(wild.getExtendsBound, project, scope, visitedRawTypes)
-          else types.Any
+          else
+            types.Any
         )
       case capture: PsiCapturedWildcardType =>
         val wild = capture.getWildcard
@@ -226,10 +237,12 @@ trait ScTypePsiTypeBridge {
           Nil,
           if (wild.isSuper)
             create(capture.getLowerBound, project, scope, visitedRawTypes)
-          else types.Nothing,
+          else
+            types.Nothing,
           if (wild.isExtends)
             create(capture.getUpperBound, project, scope, visitedRawTypes)
-          else types.Any
+          else
+            types.Any
         )
       case null                  => types.Any
       case d: PsiDisjunctionType => types.Any
@@ -244,8 +257,10 @@ trait ScTypePsiTypeBridge {
             paramTopLevel,
             treatJavaObjectAsAny)
         } else {
-          if (paramTopLevel && treatJavaObjectAsAny) types.Any
-          else types.AnyRef
+          if (paramTopLevel && treatJavaObjectAsAny)
+            types.Any
+          else
+            types.AnyRef
         }
       case p: PsiIntersectionType =>
         ScCompoundType(
@@ -289,8 +304,10 @@ trait ScTypePsiTypeBridge {
         .getInstance(project)
         .getElementFactory
         .createType(c, subst)
-      if (raw) psiType.rawType()
-      else psiType
+      if (raw)
+        psiType.rawType()
+      else
+        psiType
     }
 
     def createTypeByFqn(fqn: String): PsiType = {
@@ -310,17 +327,52 @@ trait ScTypePsiTypeBridge {
       case types.Unit =>
         if (noPrimitives) {
           val boxed = createTypeByFqn("scala.runtime.BoxedUnit")
-          if (boxed != null) boxed
-          else javaObj
-        } else PsiType.VOID
-      case types.Boolean                        => if (noPrimitives) javaObj else PsiType.BOOLEAN
-      case types.Char                           => if (noPrimitives) javaObj else PsiType.CHAR
-      case types.Int                            => if (noPrimitives) javaObj else PsiType.INT
-      case types.Long                           => if (noPrimitives) javaObj else PsiType.LONG
-      case types.Float                          => if (noPrimitives) javaObj else PsiType.FLOAT
-      case types.Double                         => if (noPrimitives) javaObj else PsiType.DOUBLE
-      case types.Byte                           => if (noPrimitives) javaObj else PsiType.BYTE
-      case types.Short                          => if (noPrimitives) javaObj else PsiType.SHORT
+          if (boxed != null)
+            boxed
+          else
+            javaObj
+        } else
+          PsiType.VOID
+      case types.Boolean =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.BOOLEAN
+      case types.Char =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.CHAR
+      case types.Int =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.INT
+      case types.Long =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.LONG
+      case types.Float =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.FLOAT
+      case types.Double =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.DOUBLE
+      case types.Byte =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.BYTE
+      case types.Short =>
+        if (noPrimitives)
+          javaObj
+        else
+          PsiType.SHORT
       case types.Null                           => javaObj
       case types.Nothing                        => javaObj
       case ScCompoundType(Seq(typez, _*), _, _) => toPsi(typez, project, scope)
@@ -422,13 +474,15 @@ trait ScTypePsiTypeBridge {
             PsiWildcardType.createUnbounded(PsiManager.getInstance(project))
           else {
             val sup: PsiType = toPsi(lower, project, scope)
-            if (sup.isInstanceOf[PsiWildcardType]) javaObj
+            if (sup.isInstanceOf[PsiWildcardType])
+              javaObj
             else
               PsiWildcardType.createSuper(PsiManager.getInstance(project), sup)
           }
         } else {
           val psi = toPsi(upper, project, scope)
-          if (psi.isInstanceOf[PsiWildcardType]) javaObj
+          if (psi.isInstanceOf[PsiWildcardType])
+            javaObj
           else
             PsiWildcardType.createExtends(PsiManager.getInstance(project), psi)
         }

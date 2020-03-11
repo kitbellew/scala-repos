@@ -416,7 +416,8 @@ class MarathonSchedulerService @Inject() (
         def run() {
           if (leader.get()) {
             schedulerActor ! ScaleApps
-          } else log.info("Not leader therefore not scaling apps")
+          } else
+            log.info("Not leader therefore not scaling apps")
         }
       },
       scaleAppsInitialDelay.toMillis,
@@ -429,7 +430,8 @@ class MarathonSchedulerService @Inject() (
           if (leader.get()) {
             schedulerActor ! ReconcileTasks
             schedulerActor ! ReconcileHealthChecks
-          } else log.info("Not leader therefore not reconciling tasks")
+          } else
+            log.info("Not leader therefore not reconciling tasks")
         }
       },
       reconciliationInitialDelay.toMillis,

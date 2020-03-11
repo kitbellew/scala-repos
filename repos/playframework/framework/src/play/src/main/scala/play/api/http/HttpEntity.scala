@@ -79,7 +79,10 @@ object HttpEntity {
     def isKnownEmpty = data.isEmpty
     def contentLength = Some(data.size)
     def dataStream =
-      if (data.isEmpty) Source.empty[ByteString] else Source.single(data)
+      if (data.isEmpty)
+        Source.empty[ByteString]
+      else
+        Source.single(data)
     override def consumeData(implicit mat: Materializer) =
       Future.successful(data)
     def asJava =

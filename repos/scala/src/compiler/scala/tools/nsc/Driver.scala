@@ -25,7 +25,8 @@ abstract class Driver {
     if (settings.version) {
       reporter echo versionMsg;
       false
-    } else !reporter.hasErrors
+    } else
+      !reporter.hasErrors
   }
 
   protected def newCompiler(): Global
@@ -67,9 +68,15 @@ abstract class Driver {
             case _               => throw ex // unexpected error, tell the outside world.
           }
       }
-    } else if (reporter.hasErrors) reporter.flush()
+    } else if (reporter.hasErrors)
+      reporter.flush()
     !reporter.hasErrors
   }
 
-  def main(args: Array[String]): Unit = sys.exit(if (process(args)) 0 else 1)
+  def main(args: Array[String]): Unit =
+    sys.exit(
+      if (process(args))
+        0
+      else
+        1)
 }

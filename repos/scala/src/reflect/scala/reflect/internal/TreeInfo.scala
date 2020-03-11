@@ -265,20 +265,26 @@ abstract class TreeInfo {
       false
     }
 
-    if (plen == alen) foreach2(params, args)(f)
-    else if (params.isEmpty) return fail()
+    if (plen == alen)
+      foreach2(params, args)(f)
+    else if (params.isEmpty)
+      return fail()
     else if (isVarArgsList(params)) {
       val plenInit = plen - 1
       if (alen == plenInit) {
-        if (alen == 0) Nil // avoid calling mismatched zip
-        else foreach2(params.init, args)(f)
-      } else if (alen < plenInit) return fail()
+        if (alen == 0)
+          Nil // avoid calling mismatched zip
+        else
+          foreach2(params.init, args)(f)
+      } else if (alen < plenInit)
+        return fail()
       else {
         foreach2(params.init, args take plenInit)(f)
         val remainingArgs = args drop plenInit
         foreach2(List.fill(remainingArgs.size)(params.last), remainingArgs)(f)
       }
-    } else return fail()
+    } else
+      return fail()
 
     true
   }
@@ -483,21 +489,28 @@ abstract class TreeInfo {
           val vdMods =
             (vmods &~ Flags.AccessFlags) | (dmods & Flags.AccessFlags).flags
           // for most cases lazy body should be taken from accessor DefDef
-          val vdRhs = if (vmods.isLazy) lazyValDefRhs(drhs) else vrhs
+          val vdRhs =
+            if (vmods.isLazy)
+              lazyValDefRhs(drhs)
+            else
+              vrhs
           copyValDef(vd)(mods = vdMods, name = dname, rhs = vdRhs)
         } getOrElse (vd)
       // for abstract and some lazy val/vars
       case dd @ DefDef(mods, name, _, _, tpt, rhs) if mods.hasAccessorFlag =>
         // transform getter mods to field
-        val vdMods = (if (!mods.hasStableFlag) mods | Flags.MUTABLE
-                      else mods &~ Flags.STABLE) &~ Flags.ACCESSOR
+        val vdMods = (if (!mods.hasStableFlag)
+                        mods | Flags.MUTABLE
+                      else
+                        mods &~ Flags.STABLE) &~ Flags.ACCESSOR
         ValDef(vdMods, name, tpt, rhs)
       case tr => tr
     }
 
     if (detectTypecheckedTree(tree)) {
       recoverBody(filterBody(tbody))
-    } else tbody
+    } else
+      tbody
   }
 
   /** The first constructor definitions in `stats` */
@@ -727,7 +740,11 @@ abstract class TreeInfo {
     t.symbol != null && isSynthCaseSymbol(t.symbol)
 
   def isTraitRef(tree: Tree): Boolean = {
-    val sym = if (tree.tpe != null) tree.tpe.typeSymbol else null
+    val sym =
+      if (tree.tpe != null)
+        tree.tpe.typeSymbol
+      else
+        null
     ((sym ne null) && sym.initialize.isTrait)
   }
 
@@ -860,9 +877,9 @@ abstract class TreeInfo {
     def unapply(tree: Tree): Option[Tree] = tree match {
       // SI-7868 Admit Select() to account for numeric widening, e.g. <unapplySelector>.toInt
       case Apply(
-          fun,
-          (Ident(nme.SELECTOR_DUMMY) |
-          Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
+            fun,
+            (Ident(nme.SELECTOR_DUMMY) |
+            Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
         Some(fun)
       case Apply(fun, _) => unapply(fun)
       case _             => None
@@ -930,8 +947,8 @@ abstract class TreeInfo {
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) = tree match {
       case Apply(
-          TypeApply(Select(qual, oper), _),
-          List(Literal(Constant(name)))) if nameTest(oper) =>
+            TypeApply(Select(qual, oper), _),
+            List(Literal(Constant(name)))) if nameTest(oper) =>
         Some((qual, name))
       case Apply(Select(qual, oper), List(Literal(Constant(name))))
           if nameTest(oper) =>
@@ -961,17 +978,26 @@ abstract class TreeInfo {
         val qual = ref.qualifier
         val isBundle = definitions.isMacroBundleType(qual.tpe)
         val isBlackbox =
-          if (isBundle) isBlackboxMacroBundleType(qual.tpe)
+          if (isBundle)
+            isBlackboxMacroBundleType(qual.tpe)
           else
             ref.symbol.paramss match {
               case (c :: Nil) :: _ if isWhiteboxContextType(c.info) => false
               case _                                                => true
             }
         val owner =
-          if (isBundle) qual.tpe.typeSymbol
+          if (isBundle)
+            qual.tpe.typeSymbol
           else {
-            val qualSym = if (qual.hasSymbolField) qual.symbol else NoSymbol
-            if (qualSym.isModule) qualSym.moduleClass else qualSym
+            val qualSym =
+              if (qual.hasSymbolField)
+                qual.symbol
+              else
+                NoSymbol
+            if (qualSym.isModule)
+              qualSym.moduleClass
+            else
+              qualSym
           }
         Some(
           (isBundle, isBlackbox, owner, ref.symbol, dissectApplied(tree).targs))

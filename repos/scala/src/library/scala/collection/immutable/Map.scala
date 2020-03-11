@@ -127,18 +127,28 @@ object Map extends ImmutableMapFactory[Map] {
       with Serializable {
     override def size = 1
     override def apply(key: A) =
-      if (key == key1) value1
-      else throw new NoSuchElementException("key not found: " + key)
+      if (key == key1)
+        value1
+      else
+        throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) = key == key1
     def get(key: A): Option[B] =
-      if (key == key1) Some(value1) else None
+      if (key == key1)
+        Some(value1)
+      else
+        None
     def iterator = Iterator((key1, value1))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
-      if (key == key1) new Map1(key1, value)
-      else new Map2(key1, value1, key, value)
+      if (key == key1)
+        new Map1(key1, value)
+      else
+        new Map2(key1, value1, key, value)
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
     def -(key: A): Map[A, B] =
-      if (key == key1) Map.empty else this
+      if (key == key1)
+        Map.empty
+      else
+        this
     override def foreach[U](f: ((A, B)) => U): Unit = {
       f((key1, value1))
     }
@@ -150,24 +160,36 @@ object Map extends ImmutableMapFactory[Map] {
       with Serializable {
     override def size = 2
     override def apply(key: A) =
-      if (key == key1) value1
-      else if (key == key2) value2
-      else throw new NoSuchElementException("key not found: " + key)
+      if (key == key1)
+        value1
+      else if (key == key2)
+        value2
+      else
+        throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) = (key == key1) || (key == key2)
     def get(key: A): Option[B] =
-      if (key == key1) Some(value1)
-      else if (key == key2) Some(value2)
-      else None
+      if (key == key1)
+        Some(value1)
+      else if (key == key2)
+        Some(value2)
+      else
+        None
     def iterator = Iterator((key1, value1), (key2, value2))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
-      if (key == key1) new Map2(key1, value, key2, value2)
-      else if (key == key2) new Map2(key1, value1, key2, value)
-      else new Map3(key1, value1, key2, value2, key, value)
+      if (key == key1)
+        new Map2(key1, value, key2, value2)
+      else if (key == key2)
+        new Map2(key1, value1, key2, value)
+      else
+        new Map3(key1, value1, key2, value2, key, value)
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
     def -(key: A): Map[A, B] =
-      if (key == key1) new Map1(key2, value2)
-      else if (key == key2) new Map1(key1, value1)
-      else this
+      if (key == key1)
+        new Map1(key2, value2)
+      else if (key == key2)
+        new Map1(key1, value1)
+      else
+        this
     override def foreach[U](f: ((A, B)) => U): Unit = {
       f((key1, value1));
       f((key2, value2))
@@ -180,29 +202,45 @@ object Map extends ImmutableMapFactory[Map] {
       with Serializable {
     override def size = 3
     override def apply(key: A) =
-      if (key == key1) value1
-      else if (key == key2) value2
-      else if (key == key3) value3
-      else throw new NoSuchElementException("key not found: " + key)
+      if (key == key1)
+        value1
+      else if (key == key2)
+        value2
+      else if (key == key3)
+        value3
+      else
+        throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) =
       (key == key1) || (key == key2) || (key == key3)
     def get(key: A): Option[B] =
-      if (key == key1) Some(value1)
-      else if (key == key2) Some(value2)
-      else if (key == key3) Some(value3)
-      else None
+      if (key == key1)
+        Some(value1)
+      else if (key == key2)
+        Some(value2)
+      else if (key == key3)
+        Some(value3)
+      else
+        None
     def iterator = Iterator((key1, value1), (key2, value2), (key3, value3))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
-      if (key == key1) new Map3(key1, value, key2, value2, key3, value3)
-      else if (key == key2) new Map3(key1, value1, key2, value, key3, value3)
-      else if (key == key3) new Map3(key1, value1, key2, value2, key3, value)
-      else new Map4(key1, value1, key2, value2, key3, value3, key, value)
+      if (key == key1)
+        new Map3(key1, value, key2, value2, key3, value3)
+      else if (key == key2)
+        new Map3(key1, value1, key2, value, key3, value3)
+      else if (key == key3)
+        new Map3(key1, value1, key2, value2, key3, value)
+      else
+        new Map4(key1, value1, key2, value2, key3, value3, key, value)
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
     def -(key: A): Map[A, B] =
-      if (key == key1) new Map2(key2, value2, key3, value3)
-      else if (key == key2) new Map2(key1, value1, key3, value3)
-      else if (key == key3) new Map2(key1, value1, key2, value2)
-      else this
+      if (key == key1)
+        new Map2(key2, value2, key3, value3)
+      else if (key == key2)
+        new Map2(key1, value1, key3, value3)
+      else if (key == key3)
+        new Map2(key1, value1, key2, value2)
+      else
+        this
     override def foreach[U](f: ((A, B)) => U): Unit = {
       f((key1, value1));
       f((key2, value2));
@@ -224,19 +262,29 @@ object Map extends ImmutableMapFactory[Map] {
       with Serializable {
     override def size = 4
     override def apply(key: A) =
-      if (key == key1) value1
-      else if (key == key2) value2
-      else if (key == key3) value3
-      else if (key == key4) value4
-      else throw new NoSuchElementException("key not found: " + key)
+      if (key == key1)
+        value1
+      else if (key == key2)
+        value2
+      else if (key == key3)
+        value3
+      else if (key == key4)
+        value4
+      else
+        throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) =
       (key == key1) || (key == key2) || (key == key3) || (key == key4)
     def get(key: A): Option[B] =
-      if (key == key1) Some(value1)
-      else if (key == key2) Some(value2)
-      else if (key == key3) Some(value3)
-      else if (key == key4) Some(value4)
-      else None
+      if (key == key1)
+        Some(value1)
+      else if (key == key2)
+        Some(value2)
+      else if (key == key3)
+        Some(value3)
+      else if (key == key4)
+        Some(value4)
+      else
+        None
     def iterator =
       Iterator((key1, value1), (key2, value2), (key3, value3), (key4, value4))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
@@ -254,11 +302,16 @@ object Map extends ImmutableMapFactory[Map] {
           value4), (key, value))
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
     def -(key: A): Map[A, B] =
-      if (key == key1) new Map3(key2, value2, key3, value3, key4, value4)
-      else if (key == key2) new Map3(key1, value1, key3, value3, key4, value4)
-      else if (key == key3) new Map3(key1, value1, key2, value2, key4, value4)
-      else if (key == key4) new Map3(key1, value1, key2, value2, key3, value3)
-      else this
+      if (key == key1)
+        new Map3(key2, value2, key3, value3, key4, value4)
+      else if (key == key2)
+        new Map3(key1, value1, key3, value3, key4, value4)
+      else if (key == key3)
+        new Map3(key1, value1, key2, value2, key4, value4)
+      else if (key == key4)
+        new Map3(key1, value1, key2, value2, key3, value3)
+      else
+        this
     override def foreach[U](f: ((A, B)) => U): Unit = {
       f((key1, value1));
       f((key2, value2));

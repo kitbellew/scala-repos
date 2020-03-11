@@ -33,12 +33,16 @@ object PortDefinitionSerializer {
         proto.getLabels.getLabelsList.asScala.map { p =>
           p.getKey -> p.getValue
         }.toMap
-      else Map.empty[String, String]
+      else
+        Map.empty[String, String]
 
     PortDefinition(
       proto.getNumber,
       proto.getProtocol,
-      if (proto.hasName) Some(proto.getName) else None,
+      if (proto.hasName)
+        Some(proto.getName)
+      else
+        None,
       labels
     )
   }

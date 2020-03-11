@@ -56,13 +56,15 @@ object ComparingUtil {
       tp1: ScType,
       tp2: ScType,
       sameType: Boolean = false): Boolean = {
-    if (tp2.weakConforms(tp1) || tp1.weakConforms(tp2)) return false
+    if (tp2.weakConforms(tp1) || tp1.weakConforms(tp2))
+      return false
 
     val Seq(clazzOpt1, clazzOpt2) =
       Seq(tp1, tp2)
         .map(t => ScType.extractDesignatorSingletonType(t).getOrElse(t))
         .map(ScType.extractClass(_))
-    if (clazzOpt1.isEmpty || clazzOpt2.isEmpty) return false
+    if (clazzOpt1.isEmpty || clazzOpt2.isEmpty)
+      return false
     val (clazz1, clazz2) = (clazzOpt1.get, clazzOpt2.get)
 
     def isNeverSameType(tp1: ScType, tp2: ScType) =
@@ -73,15 +75,21 @@ object ComparingUtil {
         tps2: Seq[ScType],
         tparams: Seq[PsiTypeParameter]): Boolean = {
       def isNeverSubArg(t1: ScType, t2: ScType, variance: Int) = {
-        if (variance > 0) isNeverSubType(t2, t1)
-        else if (variance < 0) isNeverSubType(t1, t2)
-        else isNeverSameType(t1, t2)
+        if (variance > 0)
+          isNeverSubType(t2, t1)
+        else if (variance < 0)
+          isNeverSubType(t1, t2)
+        else
+          isNeverSameType(t1, t2)
       }
       def getVariance(tp: PsiTypeParameter) = tp match {
         case scParam: ScTypeParam =>
-          if (scParam.isCovariant) 1
-          else if (scParam.isContravariant) -1
-          else 0
+          if (scParam.isCovariant)
+            1
+          else if (scParam.isContravariant)
+            -1
+          else
+            0
         case _ => 0
       }
       tps1.zip(tps2).zip(tparams.map(getVariance)) exists {

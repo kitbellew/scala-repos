@@ -87,10 +87,12 @@ class ScalaImportOptimizer extends ImportOptimizer {
 
     val progressManager: ProgressManager = ProgressManager.getInstance()
     val indicator: ProgressIndicator =
-      if (progressIndicator != null) progressIndicator
+      if (progressIndicator != null)
+        progressIndicator
       else if (progressManager.hasProgressIndicator)
         progressManager.getProgressIndicator
-      else null
+      else
+        null
     if (indicator != null)
       indicator.setText2(file.getName + ": analyzing imports usage")
 
@@ -174,7 +176,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
         val ranges: Seq[(TextRange, Seq[ImportInfo])] =
           if (document.getText != analyzingDocumentText) //something was changed...
             sameInfosWithUpdatedRanges()
-          else optimized
+          else
+            optimized
 
         for ((range, importInfos) <- ranges.reverseIterator) {
           replaceWithNewImportInfos(range, importInfos, settings, document)
@@ -213,18 +216,22 @@ class ScalaImportOptimizer extends ImportOptimizer {
 
     @tailrec
     def indentForOffset(index: Int, res: String = ""): String = {
-      if (index <= 0) res
+      if (index <= 0)
+        res
       else {
         val c = documentText.charAt(index - 1)
-        if (c == ' ' || c == '\t') indentForOffset(index - 1, s"$c$res")
-        else res
+        if (c == ' ' || c == '\t')
+          indentForOffset(index - 1, s"$c$res")
+        else
+          res
       }
     }
     val newLineWithIndent: String = "\n" + indentForOffset(range.getStartOffset)
 
     var prevGroupIndex = -1
     def groupSeparatorsBefore(info: ImportInfo, currentGroupIndex: Int) = {
-      if (currentGroupIndex <= prevGroupIndex || prevGroupIndex == -1) ""
+      if (currentGroupIndex <= prevGroupIndex || prevGroupIndex == -1)
+        ""
       else {
         def isBlankLine(i: Int) =
           importLayout(i) == ScalaCodeStyleSettings.BLANK_LINE
@@ -254,7 +261,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
           start = start - 1
         val end = range.getEndOffset
         new TextRange(start, end)
-      } else range
+      } else
+        range
 
     document.replaceString(newRange.getStartOffset, newRange.getEndOffset, text)
   }
@@ -351,10 +359,12 @@ object ScalaImportOptimizer {
     val topLevelFile =
       file.getViewProvider.getPsi(file.getViewProvider.getBaseLanguage)
     val optimizers = LanguageImportStatements.INSTANCE.forFile(topLevelFile)
-    if (optimizers.isEmpty) return None
+    if (optimizers.isEmpty)
+      return None
 
     if (topLevelFile.getViewProvider.getPsi(
-          ScalaFileType.SCALA_LANGUAGE) == null) return None
+          ScalaFileType.SCALA_LANGUAGE) == null)
+      return None
 
     val i = optimizers.iterator()
     while (i.hasNext) {
@@ -373,8 +383,10 @@ object ScalaImportOptimizer {
         PsiTreeUtil.getParentOfType(selector, classOf[ScImportExpr])
       case ImportWildcardSelectorUsed(e) => e
     }
-    if (expr == null) return false
-    if (expr.qualifier == null) return false
+    if (expr == null)
+      return false
+    if (expr.qualifier == null)
+      return false
     expr.qualifier.resolve() match {
       case o: ScObject =>
         o.qualifiedName.startsWith("scala.language") || o.qualifiedName
@@ -394,23 +406,38 @@ object ScalaImportOptimizer {
       val groupStrings = new ArrayBuffer[String]
 
       def addGroup(names: Iterable[String]) = {
-        if (sortLexicografically) groupStrings ++= names.toSeq.sorted
-        else groupStrings ++= names
+        if (sortLexicografically)
+          groupStrings ++= names.toSeq.sorted
+        else
+          groupStrings ++= names
       }
 
       val arrow =
-        if (isUnicodeArrow) ScalaTypedHandler.unicodeCaseArrow else "=>"
+        if (isUnicodeArrow)
+          ScalaTypedHandler.unicodeCaseArrow
+        else
+          "=>"
       addGroup(singleNames)
       addGroup(renames.map(pair => s"${pair._1} $arrow ${pair._2}"))
       addGroup(hiddenNames.map(_ + s" $arrow _"))
 
-      if (hasWildcard) groupStrings += "_"
-      val space = if (spacesInImports) " " else ""
-      val root = if (rootUsed) s"${_root_prefix}." else ""
+      if (hasWildcard)
+        groupStrings += "_"
+      val space =
+        if (spacesInImports)
+          " "
+        else
+          ""
+      val root =
+        if (rootUsed)
+          s"${_root_prefix}."
+        else
+          ""
       val postfix =
         if (groupStrings.length > 1 || renames.nonEmpty || hiddenNames.nonEmpty)
           groupStrings.mkString(s"{$space", ", ", s"$space}")
-        else groupStrings(0)
+        else
+          groupStrings(0)
       s"import $root${relative.getOrElse(prefixQualifier)}.$postfix"
     }
 
@@ -444,11 +471,14 @@ object ScalaImportOptimizer {
     else
       buffer ++= importInfos
 
-    if (sortImports) sortImportInfos(buffer, settings)
+    if (sortImports)
+      sortImportInfos(buffer, settings)
 
     val result =
-      if (collectImports) mergeImportInfos(buffer)
-      else buffer.flatMap(_.split)
+      if (collectImports)
+        mergeImportInfos(buffer)
+      else
+        buffer.flatMap(_.split)
 
     updateToWildcardImports(
       result,
@@ -489,7 +519,8 @@ object ScalaImportOptimizer {
           changed = true
         i = i + 1
       }
-      if (changed) iteration()
+      if (changed)
+        iteration()
     }
 
     iteration()
@@ -516,7 +547,8 @@ object ScalaImportOptimizer {
           case other  => other.allNames
         }.toSet -- explicitNames
         (info.allNamesForWildcard & usedImportedNames & (namesFromOtherWildcards ++ namesAtRangeStart)).isEmpty
-      } else false
+      } else
+        false
     }
 
     for ((info, i) <- infos.zipWithIndex) {
@@ -558,7 +590,8 @@ object ScalaImportOptimizer {
     }
 
     def withAliasedQualifier(info: ImportInfo): ImportInfo = {
-      if (addFullQualifiedImports) return info
+      if (addFullQualifiedImports)
+        return info
 
       for {
         oldInfo <- infos
@@ -625,7 +658,8 @@ object ScalaImportOptimizer {
     } else if (collectImports) {
       val merged = ImportInfo.merge(samePrefixInfos :+ actuallyInserted)
       replace(samePrefixInfos, merged.toSeq)
-    } else addLastAndMoveUpwards(actuallyInserted)
+    } else
+      addLastAndMoveUpwards(actuallyInserted)
   }
 
   private def swapWithNext(buffer: ArrayBuffer[ImportInfo], i: Int): Boolean = {
@@ -641,8 +675,10 @@ object ScalaImportOptimizer {
         buffer(i) = second
         buffer(i + 1) = t
         true
-      } else false
-    } else false
+      } else
+        false
+    } else
+      false
   }
 
   private def mergeImportInfos(
@@ -650,7 +686,8 @@ object ScalaImportOptimizer {
     def samePrefixAfter(i: Int): Int = {
       var j = i + 1
       while (j < buffer.length) {
-        if (buffer(j).prefixQualifier == buffer(i).prefixQualifier) return j
+        if (buffer(j).prefixQualifier == buffer(i).prefixQualifier)
+          return j
         j += 1
       }
       -1
@@ -668,7 +705,8 @@ object ScalaImportOptimizer {
             var j = i + 1
             var break = false
             while (!break && j != prefixIndex - 1) {
-              if (!swapWithNext(buffer, j)) break = true
+              if (!swapWithNext(buffer, j))
+                break = true
               j += 1
             }
             if (!break) {
@@ -676,9 +714,11 @@ object ScalaImportOptimizer {
               buffer(j) = merged
               buffer.remove(j + 1)
             }
-          } else i += 1
+          } else
+            i += 1
         }
-      } else i += 1
+      } else
+        i += 1
     }
     buffer
   }
@@ -686,12 +726,16 @@ object ScalaImportOptimizer {
   def getFirstId(s: String): String = {
     if (s.startsWith("`")) {
       val index: Int = s.indexOf('`', 1)
-      if (index == -1) s
-      else s.substring(0, index + 1)
+      if (index == -1)
+        s
+      else
+        s.substring(0, index + 1)
     } else {
       val index: Int = s.indexOf('.')
-      if (index == -1) s
-      else s.substring(0, index)
+      if (index == -1)
+        s
+      else
+        s.substring(0, index)
     }
   }
 
@@ -702,10 +746,14 @@ object ScalaImportOptimizer {
       info.startsWith(group))
     }
     val elem = suitable.tail.foldLeft(suitable.head) { (l, r) =>
-      if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) r
-      else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) l
-      else if (r.startsWith(l)) r
-      else l
+      if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+        r
+      else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+        l
+      else if (r.startsWith(l))
+        r
+      else
+        l
     }
 
     groups.indexOf(elem)
@@ -719,9 +767,12 @@ object ScalaImportOptimizer {
       settings: OptimizeImportSettings): Boolean = {
     val lIndex = findGroupIndex(lPrefix, settings)
     val rIndex = findGroupIndex(rPrefix, settings)
-    if (lIndex > rIndex) true
-    else if (rIndex > lIndex) false
-    else lText > rText
+    if (lIndex > rIndex)
+      true
+    else if (rIndex > lIndex)
+      false
+    else
+      lText > rText
   }
 
   def greater(
@@ -806,7 +857,8 @@ object ScalaImportOptimizer {
         if (p.getParentPackage != null && p.getParentPackage.getName != null)
           addName(p.getName)
       case ScalaResolveResult(o: ScObject, _) if o.isPackageObject =>
-        if (o.qualifiedName.contains(".")) addName(o.name)
+        if (o.qualifiedName.contains("."))
+          addName(o.name)
       case ScalaResolveResult(o: ScObject, _) =>
         o.getParent match {
           case file: ScalaFile =>

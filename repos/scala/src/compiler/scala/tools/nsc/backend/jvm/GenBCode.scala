@@ -121,9 +121,12 @@ abstract class GenBCode extends BCodeSyncAndTry {
     }
     private val i3comparator = new java.util.Comparator[Item3] {
       override def compare(a: Item3, b: Item3) = {
-        if (a.arrivalPos < b.arrivalPos) -1
-        else if (a.arrivalPos == b.arrivalPos) 0
-        else 1
+        if (a.arrivalPos < b.arrivalPos)
+          -1
+        else if (a.arrivalPos == b.arrivalPos)
+          0
+        else
+          1
       }
     }
     private val poison3 = Item3(Int.MaxValue, null, null, null, null)
@@ -193,14 +196,17 @@ abstract class GenBCode extends BCodeSyncAndTry {
                 s"No mirror class for module with linked class: ${claszSymbol.fullName}")
               null
             }
-          } else null
+          } else
+            null
 
         // -------------- "plain" class --------------
         val pcb = new PlainClassBuilder(cunit)
         pcb.genPlainClass(cd)
         val outF =
-          if (needsOutFolder) getOutFolder(claszSymbol, pcb.thisName, cunit)
-          else null
+          if (needsOutFolder)
+            getOutFolder(claszSymbol, pcb.thisName, cunit)
+          else
+            null
         val plainC = pcb.cnode
 
         // -------------- bean info class, if needed --------------
@@ -212,7 +218,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
               fieldSymbols(claszSymbol),
               methodSymbols(cd)
             )
-          } else null
+          } else
+            null
 
         // ----------- hand over to pipeline-2
 
@@ -237,19 +244,26 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         // add classes to the bytecode repo before building the call graph: the latter needs to
         // look up classes and methods in the code repo.
-        if (settings.YoptAddToBytecodeRepository) q2.asScala foreach {
-          case Item2(_, mirror, plain, bean, _) =>
-            if (mirror != null)
-              byteCodeRepository.add(mirror, ByteCodeRepository.CompilationUnit)
-            if (plain != null)
-              byteCodeRepository.add(plain, ByteCodeRepository.CompilationUnit)
-            if (bean != null)
-              byteCodeRepository.add(bean, ByteCodeRepository.CompilationUnit)
-        }
-        if (settings.YoptBuildCallGraph) q2.asScala foreach { item =>
-          // skip call graph for mirror / bean: wd don't inline into tem, and they are not used in the plain class
-          if (item.plain != null) callGraph.addClass(item.plain)
-        }
+        if (settings.YoptAddToBytecodeRepository)
+          q2.asScala foreach {
+            case Item2(_, mirror, plain, bean, _) =>
+              if (mirror != null)
+                byteCodeRepository.add(
+                  mirror,
+                  ByteCodeRepository.CompilationUnit)
+              if (plain != null)
+                byteCodeRepository.add(
+                  plain,
+                  ByteCodeRepository.CompilationUnit)
+              if (bean != null)
+                byteCodeRepository.add(bean, ByteCodeRepository.CompilationUnit)
+          }
+        if (settings.YoptBuildCallGraph)
+          q2.asScala foreach { item =>
+            // skip call graph for mirror / bean: wd don't inline into tem, and they are not used in the plain class
+            if (item.plain != null)
+              callGraph.addClass(item.plain)
+          }
         if (settings.YoptInlinerEnabled)
           bTypes.inliner.runInliner()
         if (settings.YoptClosureInvocations)
@@ -309,17 +323,24 @@ abstract class GenBCode extends BCodeSyncAndTry {
         val Item2(arrivalPos, mirror, plain, bean, outFolder) = item
 
         val mirrorC =
-          if (mirror == null) null
-          else SubItem3(mirror.name, getByteArray(mirror))
+          if (mirror == null)
+            null
+          else
+            SubItem3(mirror.name, getByteArray(mirror))
         val plainC = SubItem3(plain.name, getByteArray(plain))
         val beanC =
-          if (bean == null) null else SubItem3(bean.name, getByteArray(bean))
+          if (bean == null)
+            null
+          else
+            SubItem3(bean.name, getByteArray(bean))
 
         if (AsmUtils.traceSerializedClassEnabled && plain.name.contains(
               AsmUtils.traceSerializedClassPattern)) {
-          if (mirrorC != null) AsmUtils.traceClass(mirrorC.jclassBytes)
+          if (mirrorC != null)
+            AsmUtils.traceClass(mirrorC.jclassBytes)
           AsmUtils.traceClass(plainC.jclassBytes)
-          if (beanC != null) AsmUtils.traceClass(beanC.jclassBytes)
+          if (beanC != null)
+            AsmUtils.traceClass(beanC.jclassBytes)
         }
 
         q3 add Item3(arrivalPos, mirrorC, plainC, beanC, outFolder)
@@ -424,8 +445,10 @@ abstract class GenBCode extends BCodeSyncAndTry {
           val SubItem3(jclassName, jclassBytes) = cfr
           try {
             val outFile =
-              if (outFolder == null) null
-              else getFileForClassfile(outFolder, jclassName, ".class")
+              if (outFolder == null)
+                null
+              else
+                getFileForClassfile(outFolder, jclassName, ".class")
             bytecodeWriter.writeClass(
               jclassName,
               jclassName,

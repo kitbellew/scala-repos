@@ -56,7 +56,8 @@ class ScalaLineMarkerProvider(
 
   def getLineMarkerInfo(
       element: PsiElement): LineMarkerInfo[_ <: PsiElement] = {
-    if (!element.isValid) return null
+    if (!element.isValid)
+      return null
     val gator = getGatorInfo(element)
     if (daemonSettings.SHOW_METHOD_SEPARATORS && isSeparatorNeeded(element)) {
       if (gator == null) {
@@ -103,7 +104,8 @@ class ScalaLineMarkerProvider(
             true
           case _ => false
         }
-        while (e != null && !test(e)) e = e.getParent
+        while (e != null && !test(e))
+          e = e.getParent
         e
       }
       def marker(
@@ -120,7 +122,8 @@ class ScalaLineMarkerProvider(
           GutterIconRenderer.Alignment.LEFT)
 
       val parent = getParent
-      if (parent == null) return null
+      if (parent == null)
+        return null
 
       def containsNamedElement(holder: ScDeclaredElementsHolder) =
         holder.declaredElements.exists(
@@ -135,7 +138,8 @@ class ScalaLineMarkerProvider(
           val icon =
             if (GutterUtil.isOverrides(method, signatures))
               OVERRIDING_METHOD_ICON
-            else IMPLEMENTING_METHOD_ICON
+            else
+              IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
           if (signatures.nonEmpty) {
             return marker(method.nameId, icon, typez)
@@ -152,8 +156,10 @@ class ScalaLineMarkerProvider(
               z,
               withSelfType = true)
           val icon =
-            if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
-            else IMPLEMENTING_METHOD_ICON
+            if (GutterUtil.isOverrides(x, signatures))
+              OVERRIDING_METHOD_ICON
+            else
+              IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
           if (signatures.nonEmpty) {
             val token = x match {
@@ -166,8 +172,10 @@ class ScalaLineMarkerProvider(
           val signatures =
             ScalaPsiUtil.superValsSignatures(x, withSelfType = true)
           val icon =
-            if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
-            else IMPLEMENTING_METHOD_ICON
+            if (GutterUtil.isOverrides(x, signatures))
+              OVERRIDING_METHOD_ICON
+            else
+              IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
           if (signatures.nonEmpty) {
             return marker(x.getObjectToken, icon, typez)
@@ -256,7 +264,8 @@ private object GutterUtil {
   def collectInheritingClasses(
       clazz: ScTypeDefinition,
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
-    if ("scala.ScalaObject".equals(clazz.qualifiedName)) return
+    if ("scala.ScalaObject".equals(clazz.qualifiedName))
+      return
 
     val inheritor = ClassInheritorsSearch.search(clazz, false).findFirst
     if (inheritor != null) {
@@ -299,8 +308,10 @@ private object GutterUtil {
           withSelfType = true)
       if (overrides.nonEmpty) {
         val icon =
-          if (!GutterUtil.isAbstract(member)) OVERRIDEN_METHOD_MARKER_RENDERER
-          else IMPLEMENTED_INTERFACE_MARKER_RENDERER
+          if (!GutterUtil.isAbstract(member))
+            OVERRIDEN_METHOD_MARKER_RENDERER
+          else
+            IMPLEMENTED_INTERFACE_MARKER_RENDERER
         val typez = ScalaMarkerType.OVERRIDDEN_MEMBER
         val info = new LineMarkerInfo[PsiElement](
           member match {

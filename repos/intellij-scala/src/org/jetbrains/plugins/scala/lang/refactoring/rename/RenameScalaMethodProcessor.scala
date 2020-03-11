@@ -48,7 +48,8 @@ class RenameScalaMethodProcessor
       element: PsiElement,
       editor: Editor): PsiElement = {
     val guess = ScalaRenameUtil.findSubstituteElement(element)
-    if (guess != element) guess
+    if (guess != element)
+      guess
     else
       RenameSuperMembersUtil.chooseSuper(element.asInstanceOf[ScNamedElement])
   }
@@ -62,7 +63,8 @@ class RenameScalaMethodProcessor
       case _                     => return
     }
     val guess = ScalaRenameUtil.findSubstituteElement(element)
-    if (guess != element) renameCallback.pass(guess)
+    if (guess != element)
+      renameCallback.pass(guess)
     else
       RenameSuperMembersUtil.chooseAndProcessSuper(
         named,
@@ -144,7 +146,8 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
             newName + oldSuffix //user typed name without suffix for setter and chose to rename getter too
           else if (newSuffix != "" && oldSuffix == "")
             newName.stripSuffix(newSuffix) //for renaming getters
-          else newName
+          else
+            newName
         }
         import scala.collection.JavaConverters.asScalaSetConverter
         for (elem <- allRenames.keySet.asScala ++ buff) {

@@ -401,9 +401,12 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def sendGetContacts(): Unit = {
     val sendTo =
-      if (contacts.isEmpty) initialContactsSel
-      else if (contacts.size == 1) (initialContactsSel union contacts)
-      else contacts
+      if (contacts.isEmpty)
+        initialContactsSel
+      else if (contacts.size == 1)
+        (initialContactsSel union contacts)
+      else
+        contacts
     if (log.isDebugEnabled)
       log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
     sendTo.foreach {
@@ -571,7 +574,10 @@ object ClusterReceptionistSettings {
     * INTERNAL API
     */
   private[akka] def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 
 }
 
@@ -794,8 +800,10 @@ final class ClusterReceptionist(
           sender().path.toStringWithAddress(cluster.selfAddress))
         val slice = {
           val first = nodes.from(a).tail.take(numberOfContacts)
-          if (first.size == numberOfContacts) first
-          else first union nodes.take(numberOfContacts - first.size)
+          if (first.size == numberOfContacts)
+            first
+          else
+            first union nodes.take(numberOfContacts - first.size)
         }
         val contacts = Contacts(
           slice.map(a ⇒ self.path.toStringWithAddress(a))(collection.breakOut))

@@ -43,7 +43,11 @@ class FlowTakeWhileSpec extends AkkaSpec {
       val testException = new Exception("test") with NoStackTrace
 
       val p = Source(1 to 4)
-        .takeWhile(a ⇒ if (a == 3) throw testException else true)
+        .takeWhile(a ⇒
+          if (a == 3)
+            throw testException
+          else
+            true)
         .withAttributes(supervisionStrategy(resumingDecider))
         .runWith(TestSink.probe[Int])
         .request(4)

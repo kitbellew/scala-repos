@@ -258,7 +258,11 @@ trait JsMember {
   * sites/example/src/webapp/json.html
   */
 object JE {
-  def boolToJsExp(in: Boolean): JsExp = if (in) JsTrue else JsFalse
+  def boolToJsExp(in: Boolean): JsExp =
+    if (in)
+      JsTrue
+    else
+      JsFalse
 
   /**
     * The companion object to Num which has some helpful
@@ -310,7 +314,10 @@ object JE {
     */
   case class ElemById(id: String, thenStr: String*) extends JsExp {
     override def toJsCmd = "document.getElementById(" + id.encJs + ")" + (
-      if (thenStr.isEmpty) "" else thenStr.mkString(".", ".", "")
+      if (thenStr.isEmpty)
+        ""
+      else
+        thenStr.mkString(".", ".", "")
     )
   }
 
@@ -361,7 +368,8 @@ object JE {
         tables: (String, String)*): JsExp = new JsExp {
       def toJsCmd =
         "lift$.buildIndex(" + obj + ", " + indexName.encJs +
-          (if (tables.isEmpty) ""
+          (if (tables.isEmpty)
+             ""
            else
              ", " +
                tables
@@ -376,7 +384,8 @@ object JE {
       new JsExp {
         def toJsCmd =
           "lift$.buildIndex(" + obj.toJsCmd + ", " + indexName.encJs +
-            (if (tables.isEmpty) ""
+            (if (tables.isEmpty)
+               ""
              else
                ", " +
                  tables
@@ -513,8 +522,10 @@ object JE {
 
   case class JsVar(varName: String, andThen: String*) extends JsExp {
     def toJsCmd =
-      varName + (if (andThen.isEmpty) ""
-                 else andThen.mkString(".", ".", ""))
+      varName + (if (andThen.isEmpty)
+                   ""
+                 else
+                   andThen.mkString(".", ".", ""))
   }
 
   /**
@@ -706,7 +717,11 @@ trait HtmlFixer {
     def unapply(in: NodeSeq): Option[Elem] = in match {
       case e: Elem => {
         e.attribute("type").map(_.text).filter(_ == "text/javascript").flatMap {
-          a => if (e.attribute("src").isEmpty) Some(e) else None
+          a =>
+            if (e.attribute("src").isEmpty)
+              Some(e)
+            else
+              None
         }
       }
       case _ => None
@@ -869,7 +884,10 @@ object JsCmds {
       extends JsCmd {
     def toJsCmd =
       "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ")" + (
-        if (thenStr.isEmpty) "" else thenStr.mkString(".", ".", "")
+        if (thenStr.isEmpty)
+          ""
+        else
+          thenStr.mkString(".", ".", "")
       ) + " = " + right.toJsCmd + ";};"
   }
 
@@ -934,8 +952,10 @@ object JsCmds {
 
   case class JsTry(what: JsCmd, alert: Boolean) extends JsCmd {
     def toJsCmd =
-      "try { " + what.toJsCmd + " } catch (e) {" + (if (alert) "alert(e);"
-                                                    else "") + "}"
+      "try { " + what.toJsCmd + " } catch (e) {" + (if (alert)
+                                                      "alert(e);"
+                                                    else
+                                                      "") + "}"
   }
 
   /**
@@ -972,7 +992,8 @@ object JsCmds {
       if (where.startsWith("/") &&
           !LiftRules.excludePathFromContextPathRewriting.vend(where))
         (S.contextPath + where)
-      else where
+      else
+        where
 
     def toJsCmd = "window.location = " + S.encodeURL(where2).encJs + ";"
   }
@@ -1004,7 +1025,10 @@ object JsCmds {
               "y=document.createElement('option'); " +
                 "y.text = " + text.encJs + "; " +
                 "y.value = " + value.encJs + "; " +
-                (if (Full(value) == dflt) "y.selected = true; " else "") +
+                (if (Full(value) == dflt)
+                   "y.selected = true; "
+                 else
+                   "") +
                 " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
           }
           .mkString("\n") + "};"

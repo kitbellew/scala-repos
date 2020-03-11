@@ -28,7 +28,10 @@ class FlowTakeSpec extends AkkaSpec with ScriptedTest {
     "take" in {
       def script(d: Int) =
         Script(TestConfig.RandomTestRange map { n ⇒
-          Seq(n) -> (if (n > d) Nil else Seq(n))
+          Seq(n) -> (if (n > d)
+                       Nil
+                     else
+                       Seq(n))
         }: _*)
       TestConfig.RandomTestRange foreach { _ ⇒
         val d = Math.min(Math.max(random.nextInt(-10, 60), 0), 50)

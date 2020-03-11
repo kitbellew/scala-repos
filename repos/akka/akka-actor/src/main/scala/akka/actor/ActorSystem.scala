@@ -772,7 +772,8 @@ private[akka] class ActorSystemImpl(
           systemActorOf(Props[DeadLetterListener], "deadLetterListener"))
       eventStream.startUnsubscriber()
       loadExtensions()
-      if (LogConfigOnStart) logConfiguration()
+      if (LogConfigOnStart)
+        logConfiguration()
       this
     } catch {
       case NonFatal(e) ⇒
@@ -953,11 +954,17 @@ private[akka] class ActorSystemImpl(
       node match {
         case wc: ActorRefWithCell ⇒
           val cell = wc.underlying
-          (if (indent.isEmpty) "-> " else indent.dropRight(1) + "⌊-> ") +
+          (if (indent.isEmpty)
+             "-> "
+           else
+             indent.dropRight(1) + "⌊-> ") +
             node.path.name + " " + Logging.simpleName(node) + " " +
             (cell match {
               case real: ActorCell ⇒
-                if (real.actor ne null) real.actor.getClass else "null"
+                if (real.actor ne null)
+                  real.actor.getClass
+                else
+                  "null"
               case _ ⇒ Logging.simpleName(cell)
             }) +
             (cell match {
@@ -966,9 +973,9 @@ private[akka] class ActorSystemImpl(
             }) +
             " " + (cell.childrenRefs match {
             case ChildrenContainer.TerminatingChildrenContainer(
-                _,
-                toDie,
-                reason) ⇒
+                  _,
+                  toDie,
+                  reason) ⇒
               "Terminating(" + reason + ")" +
                 (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
             case x @ (ChildrenContainer.TerminatedChildrenContainer |
@@ -978,7 +985,10 @@ private[akka] class ActorSystemImpl(
               n.c.size + " children"
             case x ⇒ Logging.simpleName(x)
           }) +
-            (if (cell.childrenRefs.children.isEmpty) "" else "\n") +
+            (if (cell.childrenRefs.children.isEmpty)
+               ""
+             else
+               "\n") +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
               val bulk =

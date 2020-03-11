@@ -629,7 +629,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2(i))
       }
     }
 
@@ -640,7 +641,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2(i))
       }
     }
 
@@ -650,7 +652,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       : OpMulScalar.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpMulScalar.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2(i))
       }
     }
 
@@ -661,7 +664,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2(i))
       }
     }
 
@@ -672,7 +676,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2(i))
       }
     }
 
@@ -683,7 +688,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], T] = {
     new OpAdd.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2)
       }
     }
 
@@ -728,7 +734,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], T] = {
     new OpSub.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2)
       }
     }
 
@@ -739,7 +746,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[DenseVector[T], T] = {
     new OpMulScalar.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2)
       }
     }
   }
@@ -749,7 +757,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], T] = {
     new OpDiv.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2)
       }
     }
   }
@@ -759,7 +768,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], T] = {
     new OpPow.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2)
       }
     }
   }
@@ -894,11 +904,15 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
             a.length)
         } else {
           val boff =
-            if (b.stride >= 0) b.offset
-            else (b.offset + b.stride * (b.length - 1))
+            if (b.stride >= 0)
+              b.offset
+            else
+              (b.offset + b.stride * (b.length - 1))
           val aoff =
-            if (a.stride >= 0) a.offset
-            else (a.offset + a.stride * (a.length - 1))
+            if (a.stride >= 0)
+              a.offset
+            else
+              (a.offset + a.stride * (a.length - 1))
           blas.sdot(a.length, b.data, boff, b.stride, a.data, aoff, a.stride)
         }
       }
@@ -1198,7 +1212,8 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
           var max = 0.0
           foreach(v => {
             val nn = f.sNorm(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {

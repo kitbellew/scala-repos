@@ -70,12 +70,16 @@ object Test extends App {
       expectedLength: Int = 5) = {
     println("Checking ...")
     val replStr = scala.runtime.ScalaRunTime.replStringOf(lb, 100)
-    if (replStr == expectedString + "\n") println("String OK.")
-    else println("!!! replStringOf FAILED: " + replStr)
+    if (replStr == expectedString + "\n")
+      println("String OK.")
+    else
+      println("!!! replStringOf FAILED: " + replStr)
 
     val len = lb.length
-    if (len == expectedLength) println("Length OK.")
-    else println("!!! length FAILED: " + len)
+    if (len == expectedLength)
+      println("Length OK.")
+    else
+      println("!!! length FAILED: " + len)
     println()
   }
 }

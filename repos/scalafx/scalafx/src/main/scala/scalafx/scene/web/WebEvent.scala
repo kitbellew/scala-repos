@@ -45,7 +45,10 @@ object WebEvent {
     * @return JavaFX WebEvent
     */
   implicit def sfxWebEvent2jfx[T](we: WebEvent[T]): jfxsw.WebEvent[T] =
-    if (we != null) we.delegate else null
+    if (we != null)
+      we.delegate
+    else
+      null
 
   /**
     * This event occurs when a script calls the JavaScript alert function.

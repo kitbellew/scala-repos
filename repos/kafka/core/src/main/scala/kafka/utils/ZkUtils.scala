@@ -342,7 +342,11 @@ class ZkUtils(
     val brokerIdPath = BrokerIdsPath + "/" + id
     val timestamp = SystemTime.milliseconds.toString
 
-    val version = if (apiVersion >= KAFKA_0_10_0_IV0) 3 else 2
+    val version =
+      if (apiVersion >= KAFKA_0_10_0_IV0)
+        3
+      else
+        2
     var jsonMap = Map(
       "version" -> version,
       "host" -> host,
@@ -351,7 +355,9 @@ class ZkUtils(
       "jmx_port" -> jmxPort,
       "timestamp" -> timestamp
     )
-    rack.foreach(rack => if (version >= 3) jsonMap += ("rack" -> rack))
+    rack.foreach(rack =>
+      if (version >= 3)
+        jsonMap += ("rack" -> rack))
 
     val brokerInfo = Json.encode(jsonMap)
     registerBrokerInZk(brokerIdPath, brokerInfo)
@@ -415,7 +421,8 @@ class ZkUtils(
     //Consumer path is kept open as different consumers will write under this node.
     val acl = if (path == null || path.isEmpty || path.equals(ConsumersPath)) {
       ZooDefs.Ids.OPEN_ACL_UNSAFE
-    } else acls
+    } else
+      acls
 
     if (!zkClient.exists(path))
       ZkPath.createPersistent(
@@ -1010,7 +1017,8 @@ class ZkUtils(
 
   def getAllPartitions(): Set[TopicAndPartition] = {
     val topics = getChildrenParentMayNotExist(BrokerTopicsPath)
-    if (topics == null) Set.empty[TopicAndPartition]
+    if (topics == null)
+      Set.empty[TopicAndPartition]
     else {
       topics
         .map { topic =>
@@ -1034,12 +1042,15 @@ class ZkUtils(
 
   def getAllConsumerGroupsForTopic(topic: String): Set[String] = {
     val groups = getChildrenParentMayNotExist(ConsumersPath)
-    if (groups == null) Set.empty
+    if (groups == null)
+      Set.empty
     else {
       groups.foldLeft(Set.empty[String]) { (consumerGroupsForTopic, group) =>
         val topics = getChildren(new ZKGroupDirs(group).consumerGroupOffsetsDir)
-        if (topics.contains(topic)) consumerGroupsForTopic + group
-        else consumerGroupsForTopic
+        if (topics.contains(topic))
+          consumerGroupsForTopic + group
+        else
+          consumerGroupsForTopic
       }
     }
   }

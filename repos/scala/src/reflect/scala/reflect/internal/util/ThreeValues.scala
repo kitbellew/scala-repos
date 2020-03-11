@@ -10,6 +10,10 @@ object ThreeValues {
   final val NO = -1
   final val UNKNOWN = 0
 
-  def fromBoolean(b: Boolean): ThreeValue = if (b) YES else NO
+  def fromBoolean(b: Boolean): ThreeValue =
+    if (b)
+      YES
+    else
+      NO
   def toBoolean(x: ThreeValue): Boolean = x == YES
 }

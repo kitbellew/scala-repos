@@ -15,7 +15,8 @@ class FastArrayOutputTest extends FunSuite {
     val dummy = new FastByteArrayOutput
     val out = new FastByteArrayOutput
     val size = 10000
-    for (_ <- 1 to size) out.putByte(0x0f)
+    for (_ <- 1 to size)
+      out.putByte(0x0f)
     val result = out.result
     assert(result.length == size)
     assert(result.forall(_ == 0x0f))

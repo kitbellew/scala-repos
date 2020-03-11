@@ -17,7 +17,8 @@ final class Flood(duration: Duration) {
   private val messages = lila.memo.Builder.expiry[String, Messages](duration)
 
   def filterMessage[A](uid: String, text: String)(op: => Unit) {
-    if (allowMessage(uid, text)) op
+    if (allowMessage(uid, text))
+      op
   }
 
   def allowMessage(uid: String, text: String): Boolean = {

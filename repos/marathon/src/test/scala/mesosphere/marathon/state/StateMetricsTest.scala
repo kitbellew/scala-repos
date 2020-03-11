@@ -27,11 +27,20 @@ class StateMetricsTest
     When("doing the call (but the future is delayed)")
     val metrics = new TestableStateMetrics(0, 1.second.toNanos)
     val tested =
-      if (read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val untested =
-      if (!read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (!read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val timed =
-      if (read) metrics.timedRead[Unit](_) else metrics.timedWrite[Unit](_)
+      if (read)
+        metrics.timedRead[Unit](_)
+      else
+        metrics.timedWrite[Unit](_)
     val failure: RuntimeException = new scala.RuntimeException("failed")
     val attempt = Try(timed(throw failure))
 
@@ -75,11 +84,20 @@ class StateMetricsTest
     When("doing the call (but the future is delayed)")
     val metrics = new TestableStateMetrics(0, 1.second.toNanos)
     val tested =
-      if (read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val untested =
-      if (!read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (!read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val timed: Future[Unit] => Future[Unit] =
-      if (read) metrics.timedRead[Unit](_) else metrics.timedWrite[Unit](_)
+      if (read)
+        metrics.timedRead[Unit](_)
+      else
+        metrics.timedWrite[Unit](_)
 
     val promise = Promise[Unit]()
     val result = timed(promise.future)
@@ -151,11 +169,20 @@ class StateMetricsTest
     When("doing the call (but the future is delayed)")
     val metrics = new TestableStateMetrics(0, 1.second.toNanos)
     val tested =
-      if (read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val untested =
-      if (!read) metrics.readMetricsPublic else metrics.writeMetricsPublic
+      if (!read)
+        metrics.readMetricsPublic
+      else
+        metrics.writeMetricsPublic
     val timed =
-      if (read) metrics.timedRead[Unit](_) else metrics.timedWrite[Unit](_)
+      if (read)
+        metrics.timedRead[Unit](_)
+      else
+        metrics.timedWrite[Unit](_)
     val promise = Promise[Unit]()
     val result = timed(promise.future)
 

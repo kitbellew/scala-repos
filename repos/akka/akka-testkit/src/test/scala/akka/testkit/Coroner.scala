@@ -244,7 +244,8 @@ object Coroner {
       val locks = ti.getLockedSynchronizers
       if (locks.length > 0) {
         appendMsg("\n\tNumber of locked synchronizers = ", locks.length)
-        for (li ← locks) appendMsg("\t- ", li)
+        for (li ← locks)
+          appendMsg("\t- ", li)
       }
       sb.append('\n')
       sb.toString

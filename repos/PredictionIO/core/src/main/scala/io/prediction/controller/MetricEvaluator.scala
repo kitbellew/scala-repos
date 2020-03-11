@@ -239,7 +239,10 @@ class MetricEvaluator[EI, Q, P, A, R](
     // use max. take implicit from Metric.
     val ((bestEngineParams, bestScore), bestIdx) = evalResultList.zipWithIndex
       .reduce { (x, y) =>
-        if (metric.compare(x._1._2.score, y._1._2.score) >= 0) x else y
+        if (metric.compare(x._1._2.score, y._1._2.score) >= 0)
+          x
+        else
+          y
       }
 
     // save engine params if it is set.

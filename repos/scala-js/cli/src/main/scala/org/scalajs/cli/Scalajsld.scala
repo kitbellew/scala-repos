@@ -190,8 +190,10 @@ object Scalajsld {
       }
 
       val semantics =
-        if (options.fullOpt) options.semantics.optimized
-        else options.semantics
+        if (options.fullOpt)
+          options.semantics.optimized
+        else
+          options.semantics
 
       val frontendConfig = LinkerFrontend
         .Config()

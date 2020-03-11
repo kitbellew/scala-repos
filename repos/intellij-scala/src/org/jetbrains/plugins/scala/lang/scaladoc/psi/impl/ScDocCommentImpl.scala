@@ -40,7 +40,10 @@ class ScDocCommentImpl(text: CharSequence)
       .exists(
         _.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
 
-    if (firstLineIsEmpty) 1 else 2
+    if (firstLineIsEmpty)
+      1
+    else
+      2
   }
 
   def getOwner: PsiDocCommentOwner = getParent match {
@@ -74,7 +77,10 @@ class ScDocCommentImpl(text: CharSequence)
   def getDescriptionElements: Array[PsiElement] = PsiElement.EMPTY_ARRAY
 
   def findTagByName(name: String): PsiDocTag =
-    if (findTagsByName(name).length > 0) findTagsByName(name)(0) else null
+    if (findTagsByName(name).length > 0)
+      findTagsByName(name)(0)
+    else
+      null
 
   def findTagsByName(name: String): Array[PsiDocTag] =
     findTagsByName(a => a == name)
@@ -102,7 +108,8 @@ class ScDocCommentImpl(text: CharSequence)
     val result: util.List[T] = new util.ArrayList[T]
     var cur: PsiElement = getFirstChild
     while (cur != null) {
-      if (aClass.isInstance(cur)) result.add(cur.asInstanceOf[T])
+      if (aClass.isInstance(cur))
+        result.add(cur.asInstanceOf[T])
       cur = cur.getNextSibling
     }
     result.toArray[T](
@@ -115,7 +122,8 @@ class ScDocCommentImpl(text: CharSequence)
       aClass: Class[T]): T = {
     var cur: PsiElement = getFirstChild
     while (cur != null) {
-      if (aClass.isInstance(cur)) return cur.asInstanceOf[T]
+      if (aClass.isInstance(cur))
+        return cur.asInstanceOf[T]
       cur = cur.getNextSibling
     }
     null

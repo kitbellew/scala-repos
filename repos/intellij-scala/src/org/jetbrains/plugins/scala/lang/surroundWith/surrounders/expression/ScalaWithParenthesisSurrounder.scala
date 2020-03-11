@@ -16,9 +16,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
   */
 class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
   override def isApplicable(elements: Array[PsiElement]): Boolean = {
-    if (elements.length > 1) return false
+    if (elements.length > 1)
+      return false
     for (element <- elements)
-      if (!isApplicable(element)) return false
+      if (!isApplicable(element))
+        return false
     return true
   }
   override def isApplicable(element: PsiElement): Boolean = {

@@ -35,7 +35,10 @@ import scalafx.event.EventHandlerDelegate
 
 object Task {
   implicit def sfxTask2jfx[T](t: Task[T]): jfxc.Task[T] =
-    if (t != null) t.delegate else null
+    if (t != null)
+      t.delegate
+    else
+      null
 
   /**
     * Creates a new [[scalafx.concurrent.Task]] with a operation that actually performs the background thread logic.

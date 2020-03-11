@@ -113,8 +113,10 @@ object CanFirwin {
 
     val nyquistPass = (zeroPass != isOdd(omegas.length))
     var tempCutoff = (omegas / nyquist).toArray
-    if (zeroPass) tempCutoff = tempCutoff.+:(0d)
-    if (nyquistPass) tempCutoff = tempCutoff.:+(1d)
+    if (zeroPass)
+      tempCutoff = tempCutoff.+:(0d)
+    if (nyquistPass)
+      tempCutoff = tempCutoff.:+(1d)
     val scaledCutoff = DenseVector(tempCutoff)
 
     //ToDo: Is the following statement translated from numpy code correctly???
@@ -129,8 +131,10 @@ object CanFirwin {
 
     val h = DenseVector.zeros[Double](m.length)
     for (band <- scaledCutoff.toArray.zipWithIndex) {
-      if (isEven(band._2)) h -= sincpi(m :* band._1) :* band._1
-      else h += sincpi(m :* band._1) :* band._1
+      if (isEven(band._2))
+        h -= sincpi(m :* band._1) :* band._1
+      else
+        h += sincpi(m :* band._1) :* band._1
     }
 
     val win = optWindow match {
@@ -153,9 +157,12 @@ object CanFirwin {
 
     if (scale) {
       val scaleFrequency =
-        if (scaledCutoff(0) == 0d) 0d
-        else if (scaledCutoff(1) == 1d) 1d
-        else (scaledCutoff(0) + scaledCutoff(1)) / 2d
+        if (scaledCutoff(0) == 0d)
+          0d
+        else if (scaledCutoff(1) == 1d)
+          1d
+        else
+          (scaledCutoff(0) + scaledCutoff(1)) / 2d
       val c: DenseVector[Double] = cos(m :* (Pi * scaleFrequency))
       val s: Double = sum(h :* c)
       h /= s

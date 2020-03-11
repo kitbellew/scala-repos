@@ -119,7 +119,8 @@ case class SQLActionBuilder(
     val query =
       if (queryParts.length == 1 && queryParts(0).isInstanceOf[String])
         queryParts(0).asInstanceOf[String]
-      else queryParts.iterator.map(String.valueOf).mkString
+      else
+        queryParts.iterator.map(String.valueOf).mkString
     new StreamingInvokerAction[Vector[R], R, Effect] {
       def statements = List(query)
       protected[this] def createInvoker(statements: Iterable[String]) =

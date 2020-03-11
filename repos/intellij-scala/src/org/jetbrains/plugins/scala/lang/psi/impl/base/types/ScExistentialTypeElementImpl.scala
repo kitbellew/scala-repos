@@ -72,7 +72,9 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       buff.toList
     }
     q flatMap { t =>
-      val failures = for (f @ Failure(_, _) <- problems) yield f
+      val failures =
+        for (f @ Failure(_, _) <- problems)
+          yield f
       failures.foldLeft(Success(ScExistentialType(t, wildcards), Some(this)))(
         _.apply(_))
     }
@@ -92,10 +94,12 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       for (decl <- clause.declarations) {
         decl match {
           case alias: ScTypeAliasDeclaration =>
-            if (!processor.execute(alias, state)) return false
+            if (!processor.execute(alias, state))
+              return false
           case valDecl: ScValueDeclaration =>
             for (declared <- valDecl.declaredElements)
-              if (!processor.execute(declared, state)) return false
+              if (!processor.execute(declared, state))
+                return false
         }
       }
     }

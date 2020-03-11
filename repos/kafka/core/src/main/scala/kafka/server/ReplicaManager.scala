@@ -680,8 +680,8 @@ class ReplicaManager(
 
     readPartitionInfo.map {
       case (
-          TopicAndPartition(topic, partition),
-          PartitionFetchInfo(offset, fetchSize)) =>
+            TopicAndPartition(topic, partition),
+            PartitionFetchInfo(offset, fetchSize)) =>
         BrokerTopicStats.getBrokerTopicStats(topic).totalFetchRequestRate.mark()
         BrokerTopicStats.getBrokerAllTopicsStats().totalFetchRequestRate.mark()
 

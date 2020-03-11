@@ -38,7 +38,10 @@ trait Semigroup[F] { self =>
       case y if (y == 1)     => append(x, z)
       case _                 => go(append(x, x), (y - 1) >>> 1, append(x, z))
     }
-    if (n <= 0) value else go(value, n, value)
+    if (n <= 0)
+      value
+    else
+      go(value, n, value)
   }
 
   protected[this] trait SemigroupCompose extends Compose[λ[(α, β) => F]] {

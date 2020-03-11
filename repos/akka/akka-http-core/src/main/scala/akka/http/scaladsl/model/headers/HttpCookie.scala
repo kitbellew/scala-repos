@@ -92,12 +92,18 @@ final case class HttpCookie(
     r ~~ name ~~ '=' ~~ value
     if (expires.isDefined)
       expires.get.renderRfc1123DateTimeString(r ~~ "; Expires=")
-    if (maxAge.isDefined) r ~~ "; Max-Age=" ~~ maxAge.get
-    if (domain.isDefined) r ~~ "; Domain=" ~~ domain.get
-    if (path.isDefined) r ~~ "; Path=" ~~ path.get
-    if (secure) r ~~ "; Secure"
-    if (httpOnly) r ~~ "; HttpOnly"
-    if (extension.isDefined) r ~~ ';' ~~ ' ' ~~ extension.get
+    if (maxAge.isDefined)
+      r ~~ "; Max-Age=" ~~ maxAge.get
+    if (domain.isDefined)
+      r ~~ "; Domain=" ~~ domain.get
+    if (path.isDefined)
+      r ~~ "; Path=" ~~ path.get
+    if (secure)
+      r ~~ "; Secure"
+    if (httpOnly)
+      r ~~ "; HttpOnly"
+    if (extension.isDefined)
+      r ~~ ';' ~~ ' ' ~~ extension.get
     r
   }
 

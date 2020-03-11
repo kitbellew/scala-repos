@@ -60,7 +60,10 @@ abstract class ScPackageContainerElementType[TypeDef <: ScPackageContainer](
     val prefix = stub.prefix
     var ownNamePart = stub.ownNamePart
     def append(postfix: String) =
-      if (prefix.length > 0) prefix + "." + postfix else postfix
+      if (prefix.length > 0)
+        prefix + "." + postfix
+      else
+        postfix
     var i = 0
     do {
       sink.occurrence[ScPackageContainer, java.lang.Integer](

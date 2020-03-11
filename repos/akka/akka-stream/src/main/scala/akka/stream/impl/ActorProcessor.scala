@@ -97,7 +97,8 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
   override def cancel(): Unit = {
     if (!upstreamCompleted) {
       upstreamCompleted = true
-      if (upstream ne null) upstream.cancel()
+      if (upstream ne null)
+        upstream.cancel()
       clear()
     }
   }
@@ -119,7 +120,8 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
 
   protected def onSubscribe(subscription: Subscription): Unit = {
     require(subscription != null)
-    if (upstreamCompleted) subscription.cancel()
+    if (upstreamCompleted)
+      subscription.cancel()
     else {
       upstream = subscription
       // Prefetch
@@ -189,22 +191,26 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
   override def complete(): Unit = {
     if (!downstreamCompleted) {
       downstreamCompleted = true
-      if (exposedPublisher ne null) exposedPublisher.shutdown(None)
-      if (subscriber ne null) tryOnComplete(subscriber)
+      if (exposedPublisher ne null)
+        exposedPublisher.shutdown(None)
+      if (subscriber ne null)
+        tryOnComplete(subscriber)
     }
   }
 
   override def cancel(): Unit = {
     if (!downstreamCompleted) {
       downstreamCompleted = true
-      if (exposedPublisher ne null) exposedPublisher.shutdown(None)
+      if (exposedPublisher ne null)
+        exposedPublisher.shutdown(None)
     }
   }
 
   override def error(e: Throwable): Unit = {
     if (!downstreamCompleted) {
       downstreamCompleted = true
-      if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
+      if (exposedPublisher ne null)
+        exposedPublisher.shutdown(Some(e))
       if ((subscriber ne null) && !e.isInstanceOf[SpecViolation])
         tryOnError(subscriber, e)
     }

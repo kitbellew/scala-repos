@@ -87,7 +87,8 @@ trait ScParameter
 
   def getRealParameterType(
       ctx: TypingContext = TypingContext.empty): TypeResult[ScType] = {
-    if (!isRepeatedParameter) return getType(ctx)
+    if (!isRepeatedParameter)
+      return getType(ctx)
     getType(ctx) match {
       case f @ Success(tp: ScType, elem) =>
         val seq = ScalaPsiManager
@@ -98,7 +99,8 @@ trait ScParameter
             ScalaPsiManager.ClassCategory.TYPE)
         if (seq != null) {
           Success(ScParameterizedType(ScType.designator(seq), Seq(tp)), elem)
-        } else f
+        } else
+          f
       case f => f
     }
   }
@@ -124,7 +126,8 @@ trait ScParameter
 
   def isImplicitParameter: Boolean = {
     val clause = PsiTreeUtil.getParentOfType(this, classOf[ScParameterClause])
-    if (clause == null) return false
+    if (clause == null)
+      return false
     clause.isImplicit
   }
 
@@ -135,8 +138,10 @@ trait ScParameter
 
   override def getName: String = {
     val res = super.getName
-    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_" + res
-    else res
+    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST))
+      "_" + res
+    else
+      res
   }
 
   abstract override def getUseScope = {
@@ -187,13 +192,15 @@ trait ScParameter
                   if (result.isDefined) {
                     result = None
                     flag = true
-                  } else result = Some(params(i))
+                  } else
+                    result = Some(params(i))
                 case any if ScalaPsiUtil.isSAMEnabled(f) =>
                   //infer type if it's a Single Abstract Method
                   ScalaPsiUtil.toSAMType(any, f.getResolveScope) match {
                     case Some(ScFunctionType(_, params)) =>
                       val i = clause.parameters.indexOf(this)
-                      if (i < params.length) result = Some(params(i))
+                      if (i < params.length)
+                        result = Some(params(i))
                     case _ =>
                   }
                 case _ =>
@@ -216,8 +223,10 @@ trait ScParameter
   private def calcIsDefaultParam(
       param: ScParameter,
       visited: HashSet[ScParameter]): Boolean = {
-    if (param.baseDefaultParam) return true
-    if (visited.contains(param)) return false
+    if (param.baseDefaultParam)
+      return true
+    if (visited.contains(param))
+      return false
     getSuperParameter match {
       case Some(superParam) =>
         calcIsDefaultParam(superParam, visited + param)
@@ -229,7 +238,8 @@ trait ScParameter
     val res = getActualDefaultExpression
     if (res.isEmpty) {
       getSuperParameter.flatMap(_.getDefaultExpression)
-    } else res
+    } else
+      res
   }
 
   def getDefaultExpressionInSource: Option[ScExpression] = {
@@ -242,7 +252,8 @@ trait ScParameter
           if (file.isCompiled) {
             val containingMember =
               PsiTreeUtil.getContextOfType(this, true, classOf[ScMember])
-            if (containingMember == null) res
+            if (containingMember == null)
+              res
             else {
               def extractFromParameterOwner(
                   owner: ScParameterOwner): Option[ScExpression] = {
@@ -265,7 +276,8 @@ trait ScParameter
                 case _ => res
               }
             }
-          } else res
+          } else
+            res
         case _ => res
       }
     }
@@ -284,10 +296,12 @@ trait ScParameter
                   case Some(method: ScFunction) =>
                     val clauses: Seq[ScParameterClause] =
                       method.paramClauses.clauses
-                    if (j >= clauses.length) return None
+                    if (j >= clauses.length)
+                      return None
                     val parameters: Seq[ScParameter] =
                       clauses.apply(j).parameters
-                    if (i >= parameters.length) return None
+                    if (i >= parameters.length)
+                      return None
                     Some(parameters.apply(i))
                   case _ => None
                 }

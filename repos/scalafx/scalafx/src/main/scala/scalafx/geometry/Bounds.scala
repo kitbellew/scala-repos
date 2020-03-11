@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Bounds {
   implicit def sfxBounds2jfx(b: Bounds): jfxg.Bounds =
-    if (b != null) b.delegate else null
+    if (b != null)
+      b.delegate
+    else
+      null
 }
 
 abstract class Bounds protected (override val delegate: jfxg.Bounds)

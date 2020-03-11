@@ -161,7 +161,8 @@ object Constraints {
       "Can not kill more instances than running")
 
     //short circuit, if all tasks shall be killed
-    if (runningTasks.size == toKillCount) return runningTasks
+    if (runningTasks.size == toKillCount)
+      return runningTasks
 
     //currently, only the GROUP_BY operator is able to select tasks to kill
     val distributions =
@@ -180,7 +181,8 @@ object Constraints {
       }
 
     //short circuit, if there are no constraints to align with
-    if (distributions.isEmpty) return Set.empty
+    if (distributions.isEmpty)
+      return Set.empty
 
     var toKillTasks = Map.empty[Task.Id, Task]
     var flag = true
@@ -244,7 +246,8 @@ object Constraints {
 
     def tasksToKillIterator(without: Map[Task.Id, Task]): Iterator[Task] = {
       val updated = distribution.map(_ -- without.keys).groupBy(_.size)
-      if (updated.size == 1) /* even distributed */ Iterator.empty
+      if (updated.size == 1)
+        /* even distributed */ Iterator.empty
       else {
         updated.maxBy(_._1)._2.iterator.flatten.map {
           case (taskId, task) => task

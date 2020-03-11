@@ -38,7 +38,8 @@ private[finagle] object Handshake {
     val iter = headers.iterator
     while (iter.hasNext) {
       val (k, v) = iter.next()
-      if (k == key) return Some(v)
+      if (k == key)
+        return Some(v)
     }
     None
   }
@@ -209,8 +210,10 @@ private[finagle] object Handshake {
           Future.value(new TransportProxy(msgTrans) {
             private[this] val first = new AtomicBoolean(true)
             def read(): Future[Message] =
-              if (first.compareAndSet(true, false)) Future.value(msg)
-              else msgTrans.read()
+              if (first.compareAndSet(true, false))
+                Future.value(msg)
+              else
+                msgTrans.read()
             def write(req: Message): Future[Unit] = msgTrans.write(req)
           })
 

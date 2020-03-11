@@ -160,10 +160,14 @@ final class LWWRegister[A] private[akka] (
     new LWWRegister(node, value, clock(timestamp, value))
 
   override def merge(that: LWWRegister[A]): LWWRegister[A] =
-    if (that.timestamp > this.timestamp) that
-    else if (that.timestamp < this.timestamp) this
-    else if (that.node < this.node) that
-    else this
+    if (that.timestamp > this.timestamp)
+      that
+    else if (that.timestamp < this.timestamp)
+      this
+    else if (that.node < this.node)
+      that
+    else
+      this
 
   // this class cannot be a `case class` because we need different `unapply`
 

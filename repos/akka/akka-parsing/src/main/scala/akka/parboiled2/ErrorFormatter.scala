@@ -59,16 +59,20 @@ class ErrorFormatter(
       input: ParserInput): JStringBuilder = {
     formatProblem(sb, error, input)
     import error._
-    if (showExpected) formatExpected(sb, error)
+    if (showExpected)
+      formatExpected(sb, error)
     if (showPosition)
       sb.append(" (line ")
         .append(position.line)
         .append(", column ")
         .append(position.column)
         .append(')')
-    if (showLine) formatErrorLine(sb.append(':').append('\n'), error, input)
-    if (showTraces) sb.append('\n').append('\n').append(formatTraces(error))
-    else sb
+    if (showLine)
+      formatErrorLine(sb.append(':').append('\n'), error, input)
+    if (showTraces)
+      sb.append('\n').append('\n').append(formatTraces(error))
+    else
+      sb
   }
 
   /**
@@ -95,7 +99,8 @@ class ErrorFormatter(
         sb.append("Invalid input \"")
           .append(CharUtils.escape(input.sliceString(ix, ix + chars)))
           .append('"')
-    } else sb.append("Unexpected end of input")
+    } else
+      sb.append("Unexpected end of input")
   }
 
   /**
@@ -169,8 +174,10 @@ class ErrorFormatter(
     * Formats the given trace into an "expected" string.
     */
   def formatAsExpected(trace: RuleTrace): String =
-    if (trace.prefix.isEmpty) formatTerminal(trace.terminal)
-    else formatNonTerminal(trace.prefix.head, showFrameStartOffset = false)
+    if (trace.prefix.isEmpty)
+      formatTerminal(trace.terminal)
+    else
+      formatNonTerminal(trace.prefix.head, showFrameStartOffset = false)
 
   /**
     * Formats the input line in which the error occurred and underlines
@@ -191,7 +198,8 @@ class ErrorFormatter(
     val (expandedCol, expandedLine) =
       expandErrorLineTabs(input getLine line, column)
     sb.append(expandedLine).append('\n')
-    for (i ← 1 until expandedCol) sb.append(' ')
+    for (i ← 1 until expandedCol)
+      sb.append(' ')
     sb.append('^')
   }
 
@@ -203,7 +211,11 @@ class ErrorFormatter(
     val sb = new StringBuilder
     @tailrec def rec(inCol: Int, errorCol: Int): Int =
       if (inCol < line.length) {
-        val ec = if (inCol == errorColumn - 1) sb.length else errorCol
+        val ec =
+          if (inCol == errorColumn - 1)
+            sb.length
+          else
+            errorCol
         line.charAt(inCol) match {
           case '\t' ⇒
             sb.append(
@@ -212,9 +224,12 @@ class ErrorFormatter(
           case c ⇒ sb.append(c)
         }
         rec(inCol + 1, ec)
-      } else errorCol + 1
-    if (expandTabs >= 0) rec(0, 0) -> sb.toString()
-    else errorColumn -> line
+      } else
+        errorCol + 1
+    if (expandTabs >= 0)
+      rec(0, 0) -> sb.toString()
+    else
+      errorColumn -> line
   }
 
   /**
@@ -225,7 +240,10 @@ class ErrorFormatter(
     traces
       .map(formatTrace(_, position.index))
       .mkString(
-        traces.size + " rule" + (if (traces.size != 1) "s" else "") +
+        traces.size + " rule" + (if (traces.size != 1)
+                                   "s"
+                                 else
+                                   "") +
           " mismatched at error location:\n  ",
         "\n  ",
         "\n")
@@ -240,7 +258,10 @@ class ErrorFormatter(
     val doSep: String ⇒ JStringBuilder = sb.append
     val dontSep: String ⇒ JStringBuilder = _ ⇒ sb
     def render(names: List[String], sep: String = "") =
-      if (names.nonEmpty) names.reverse.mkString("", ":", sep) else ""
+      if (names.nonEmpty)
+        names.reverse.mkString("", ":", sep)
+      else
+        ""
     @tailrec def rec(
         remainingPrefix: List[RuleTrace.NonTerminal],
         names: List[String],
@@ -267,7 +288,8 @@ class ErrorFormatter(
     rec(trace.prefix, Nil, dontSep)
     if (sb.length > traceCutOff)
       "..." + sb.substring(math.max(sb.length - traceCutOff - 3, 0))
-    else sb.toString
+    else
+      sb.toString
   }
 
   /**
@@ -301,7 +323,8 @@ class ErrorFormatter(
     }
     if (nonTerminal.offset != 0 && showFrameStartOffset)
       keyString + ':' + nonTerminal.offset
-    else keyString
+    else
+      keyString
   }
 
   def formatTerminal(terminal: RuleTrace.Terminal): String = {

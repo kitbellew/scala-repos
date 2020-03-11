@@ -31,14 +31,20 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   @inline private def fld(idx: Int): js.UndefOr[String] = _fld(idx)
 
   @inline private def fld(absIdx: Int, relIdx: Int): js.UndefOr[String] =
-    if (_isAbsolute) _fld(absIdx) else _fld(relIdx)
+    if (_isAbsolute)
+      _fld(absIdx)
+    else
+      _fld(relIdx)
 
   private val _scheme = fld(AbsScheme)
 
   private val _schemeSpecificPart = {
-    if (!_isAbsolute) fld(RelSchemeSpecificPart)
-    else if (_isOpaque) fld(AbsOpaquePart)
-    else fld(AbsHierPart)
+    if (!_isAbsolute)
+      fld(RelSchemeSpecificPart)
+    else if (_isOpaque)
+      fld(AbsOpaquePart)
+    else
+      fld(AbsHierPart)
   }.get
 
   private val _authority = fld(AbsAuthority, RelAuthority).filter(_ != "")
@@ -102,31 +108,44 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   @inline
   private def internalCompare(that: URI)(cmp: (String, String) => Int): Int = {
     @inline def cmpOpt(x: js.UndefOr[String], y: js.UndefOr[String]): Int = {
-      if (x == y) 0
+      if (x == y)
+        0
       // Undefined components are considered less than defined components
-      else x.fold(-1)(s1 => y.fold(1)(s2 => cmp(s1, s2)))
+      else
+        x.fold(-1)(s1 => y.fold(1)(s2 => cmp(s1, s2)))
     }
 
     if (this._scheme != that._scheme)
       this._scheme.fold(-1)(s1 => that._scheme.fold(1)(s1.compareToIgnoreCase))
     else if (this._isOpaque != that._isOpaque)
       // A hierarchical URI is less than an opaque URI
-      if (this._isOpaque) 1 else -1
+      if (this._isOpaque)
+        1
+      else
+        -1
     else if (_isOpaque) {
       val ssp = cmp(this._schemeSpecificPart, that._schemeSpecificPart)
-      if (ssp != 0) ssp
-      else cmpOpt(this._fragment, that._fragment)
+      if (ssp != 0)
+        ssp
+      else
+        cmpOpt(this._fragment, that._fragment)
     } else if (this._authority != that._authority) {
       if (this._host.isDefined && that._host.isDefined) {
         val ui = cmpOpt(this._userInfo, that._userInfo)
-        if (ui != 0) ui
+        if (ui != 0)
+          ui
         else {
           val hst = this._host.get.compareToIgnoreCase(that._host.get)
-          if (hst != 0) hst
-          else if (this._port == that._port) 0
-          else if (this._port == -1) -1
-          else if (that._port == -1) 1
-          else this._port - that._port
+          if (hst != 0)
+            hst
+          else if (this._port == that._port)
+            0
+          else if (this._port == -1)
+            -1
+          else if (that._port == -1)
+            1
+          else
+            this._port - that._port
         }
       } else
         cmpOpt(this._authority, that._authority)
@@ -177,7 +196,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   def isOpaque(): Boolean = _isOpaque
 
   def normalize(): URI =
-    if (_isOpaque || _path.isEmpty) this
+    if (_isOpaque || _path.isEmpty)
+      this
     else {
       val origPath = _path.get
 
@@ -222,7 +242,11 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       val isAbsPath = segments0.nonEmpty && segments0.head == ""
       // Don't inject first empty segment into normalization loop, so we
       // won't need to special case it.
-      val segments1 = if (isAbsPath) segments0.tail else segments0
+      val segments1 =
+        if (isAbsPath)
+          segments0.tail
+        else
+          segments0
       val segments2 = loop(segments1, Nil)
 
       // Step 3: If path is relative and first segment contains ":", prepend "."
@@ -233,7 +257,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
           "" :: segments2
         else if (segments2.nonEmpty && segments2.head.contains(':'))
           "." :: segments2
-        else segments2
+        else
+          segments2
       }
 
       val newPath = segments3.mkString("/")
@@ -253,7 +278,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   def parseServerAuthority(): URI = {
     if (_authority.nonEmpty && _host.isEmpty)
       throw new URISyntaxException(origStr, "No Host in URI")
-    else this
+    else
+      this
   }
 
   def relativize(uri: URI): URI = {
@@ -262,7 +288,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
     }
 
     if (this.isOpaque || uri.isOpaque ||
-        this._scheme != uri._scheme || !authoritiesEqual) uri
+        this._scheme != uri._scheme || !authoritiesEqual)
+      uri
     else {
       val thisN = this.normalize()
       val uriN = uri.normalize()
@@ -278,14 +305,16 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
           path = newPath.stripPrefix("/"),
           query = uri.getQuery(),
           fragment = uri.getFragment())
-      } else uri
+      } else
+        uri
     }
   }
 
   def resolve(str: String): URI = resolve(URI.create(str))
 
   def resolve(uri: URI): URI = {
-    if (uri.isAbsolute() || this.isOpaque()) uri
+    if (uri.isAbsolute() || this.isOpaque())
+      uri
     else if (uri._scheme.isEmpty && uri._authority.isEmpty &&
              uri._path.get == "" && uri._query.isEmpty)
       // This is a special case for URIs like: "#foo". This allows to
@@ -315,8 +344,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       val relPath = uri._path.get
       val endIdx = basePath.lastIndexOf('/')
       val path =
-        if (endIdx == -1) relPath
-        else basePath.substring(0, endIdx + 1) + relPath
+        if (endIdx == -1)
+          relPath
+        else
+          basePath.substring(0, endIdx + 1) + relPath
       new URI(
         this.getScheme(),
         this.getAuthority(),
@@ -660,7 +691,8 @@ object URI {
 
   private def decodeComponent(str: String): String = {
     // Fast-track, if no encoded components
-    if (str.forall(_ != '%')) str
+    if (str.forall(_ != '%'))
+      str
     else {
       val inBuf = CharBuffer.wrap(str)
       val outBuf = CharBuffer.allocate(inBuf.capacity)
@@ -716,7 +748,10 @@ object URI {
     var res = ""
     while (buf.hasRemaining) {
       val c = buf.get & 0xff
-      res += (if (c <= 0xf) "%0" else "%") + Integer.toHexString(c).toUpperCase
+      res += (if (c <= 0xf)
+                "%0"
+              else
+                "%") + Integer.toHexString(c).toUpperCase
     }
 
     res
@@ -817,7 +852,8 @@ object URI {
         x.length - y.length
       else {
         val diff = x.charAt(i) - y.charAt(i)
-        if (diff != 0) diff
+        if (diff != 0)
+          diff
         else if (x.charAt(i) == '%') {
           // we need to do a CI compare for the next two characters
           assert(x.length > i + 2, "Invalid escape in URI")
@@ -825,9 +861,12 @@ object URI {
           val cmp =
             x.substring(i + 1, i + 3)
               .compareToIgnoreCase(y.substring(i + 1, i + 3))
-          if (cmp != 0) cmp
-          else loop(i + 3)
-        } else loop(i + 1)
+          if (cmp != 0)
+            cmp
+          else
+            loop(i + 3)
+        } else
+          loop(i + 1)
       }
     }
 

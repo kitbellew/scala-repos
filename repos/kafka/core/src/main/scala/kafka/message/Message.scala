@@ -160,14 +160,22 @@ class Message(
         Message.CrcLength +
           Message.MagicLength +
           Message.AttributesLength +
-          (if (magicValue == Message.MagicValue_V0) 0
-           else Message.TimestampLength) +
+          (if (magicValue == Message.MagicValue_V0)
+             0
+           else
+             Message.TimestampLength) +
           Message.KeySizeLength +
-          (if (key == null) 0 else key.length) +
+          (if (key == null)
+             0
+           else
+             key.length) +
           Message.ValueSizeLength +
-          (if (bytes == null) 0
-           else if (payloadSize >= 0) payloadSize
-           else bytes.length - payloadOffset)))
+          (if (bytes == null)
+             0
+           else if (payloadSize >= 0)
+             payloadSize
+           else
+             bytes.length - payloadOffset)))
     validateTimestampAndMagicValue(timestamp, magicValue)
     // skip crc, we will fill that in at the end
     buffer.position(MagicOffset)
@@ -176,7 +184,8 @@ class Message(
       if (codec.codec > 0)
         timestampType.updateAttributes(
           (CompressionCodeMask & codec.codec).toByte)
-      else 0
+      else
+        0
     buffer.put(attributes)
     // Only put timestamp when "magic" value is greater than 0
     if (magic > MagicValue_V0)
@@ -188,9 +197,12 @@ class Message(
       buffer.put(key, 0, key.length)
     }
     val size =
-      if (bytes == null) -1
-      else if (payloadSize >= 0) payloadSize
-      else bytes.length - payloadOffset
+      if (bytes == null)
+        -1
+      else if (payloadSize >= 0)
+        payloadSize
+      else
+        bytes.length - payloadOffset
     buffer.putInt(size)
     if (bytes != null)
       buffer.put(bytes, payloadOffset, size)
@@ -293,8 +305,10 @@ class Message(
     * The position where the key size is stored.
     */
   private def keySizeOffset = {
-    if (magic == MagicValue_V0) KeySizeOffset_V0
-    else KeySizeOffset_V1
+    if (magic == MagicValue_V0)
+      KeySizeOffset_V0
+    else
+      KeySizeOffset_V1
   }
 
   /**
@@ -311,8 +325,10 @@ class Message(
     * The position where the payload size is stored
     */
   private def payloadSizeOffset = {
-    if (magic == MagicValue_V0) KeyOffset_V0 + max(0, keySize)
-    else KeyOffset_V1 + max(0, keySize)
+    if (magic == MagicValue_V0)
+      KeyOffset_V0 + max(0, keySize)
+    else
+      KeyOffset_V1 + max(0, keySize)
   }
 
   /**

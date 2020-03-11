@@ -134,7 +134,11 @@ abstract class LazyVals
                 transform(rhs),
                 idx,
                 sym)
-              sym.resetFlag((if (lazyUnit(sym)) 0 else LAZY) | ACCESSOR)
+              sym.resetFlag(
+                (if (lazyUnit(sym))
+                   0
+                 else
+                   LAZY) | ACCESSOR)
               (rhs1, sDef)
             } else if (sym.hasAllFlags(MODULE | METHOD) && !sym.owner.isTrait) {
               rhs match {
@@ -164,13 +168,16 @@ abstract class LazyVals
             }
 
             val ddef1 = deriveDefDef(tree)(_ =>
-              if (LocalLazyValFinder.find(res)) typed(addBitmapDefs(sym, res))
-              else res)
+              if (LocalLazyValFinder.find(res))
+                typed(addBitmapDefs(sym, res))
+              else
+                res)
             if (slowPathDef != EmptyTree) {
               // The contents of this block are flattened into the enclosing statement sequence, see flattenThickets
               // This is a poor man's version of dotty's Thicket: https://github.com/lampepfl/dotty/blob/d5280358d1/src/dotty/tools/dotc/ast/Trees.scala#L707
               Block(slowPathDef, ddef1)
-            } else ddef1
+            } else
+              ddef1
           }
 
         case Template(_, _, body) =>
@@ -199,7 +206,8 @@ abstract class LazyVals
                   }
                 })
                 toAdd0
-              } else List()
+              } else
+                List()
             deriveTemplate(tree)(_ =>
               innerClassBitmaps ++ flattenThickets(stats))
           }
@@ -207,8 +215,10 @@ abstract class LazyVals
         case ValDef(_, _, _, _) if !sym.owner.isModule && !sym.owner.isClass =>
           deriveValDef(tree) { rhs0 =>
             val rhs = transform(rhs0)
-            if (LocalLazyValFinder.find(rhs)) typed(addBitmapDefs(sym, rhs))
-            else rhs
+            if (LocalLazyValFinder.find(rhs))
+              typed(addBitmapDefs(sym, rhs))
+            else
+              rhs
           }
 
         case l @ LabelDef(name0, params0, ifp0 @ If(_, _, _))
@@ -260,7 +270,8 @@ abstract class LazyVals
       def isMatch(params: List[Ident]) =
         (params.tail corresponds methSym.tpe.params)(_.tpe == _.tpe)
 
-      if (bmps.isEmpty) rhs
+      if (bmps.isEmpty)
+        rhs
       else
         rhs match {
           case Block(assign, l @ LabelDef(name, params, _))
@@ -353,8 +364,10 @@ abstract class LazyVals
       val bitmapSym = getBitmapFor(methOrClass, offset)
       val mask = LIT(1 << (offset % FLAGS_PER_BYTE))
       val bitmapRef =
-        if (methOrClass.isClass) Select(This(methOrClass), bitmapSym)
-        else Ident(bitmapSym)
+        if (methOrClass.isClass)
+          Select(This(methOrClass), bitmapSym)
+        else
+          Ident(bitmapSym)
 
       def mkBlock(stmt: Tree) =
         BLOCK(stmt, mkSetFlag(bitmapSym, mask, bitmapRef), UNIT)

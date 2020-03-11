@@ -105,7 +105,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       if (PsiTreeUtil.isAncestor(
             aClass.extendsBlock.templateBody.orNull,
             commonParent,
-            false)) null
+            false))
+        null
       else {
         aClass.extendsBlock match {
           case ScExtendsBlock.EarlyDefinitions(earlyDef) =>
@@ -132,7 +133,10 @@ object ScalaIntroduceFieldHandlerBase {
       ifc: IntroduceFieldContext[T],
       replaceAll: Boolean): Boolean = {
     val occurrences =
-      if (replaceAll) ifc.occurrences else Array(ifc.element.getTextRange)
+      if (replaceAll)
+        ifc.occurrences
+      else
+        Array(ifc.element.getTextRange)
     val parExpr: ScExpression = ScalaRefactoringUtil.findParentExpr(
       ScalaRefactoringUtil.commonParent(ifc.file, occurrences: _*))
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
@@ -141,7 +145,8 @@ object ScalaIntroduceFieldHandlerBase {
     val containerIsLocal =
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))
-    if (!containerIsLocal) false
+    if (!containerIsLocal)
+      false
     else {
       ifc.element match {
         case expr: ScExpression => checkForwardReferences(expr, parExpr)
@@ -157,7 +162,8 @@ object ScalaIntroduceFieldHandlerBase {
     val commonParent = ScalaRefactoringUtil.commonParent(file, occurences: _*)
 
     val parExpr = ScalaRefactoringUtil.findParentExpr(commonParent)
-    if (parExpr == null) return None
+    if (parExpr == null)
+      return None
     val container: PsiElement = ScalaRefactoringUtil.container(parExpr, file)
     val needBraces = !parExpr.isInstanceOf[ScBlock] && ScalaRefactoringUtil
       .needBraces(parExpr, ScalaRefactoringUtil.nextParent(parExpr, file))
@@ -169,9 +175,12 @@ object ScalaIntroduceFieldHandlerBase {
             "{" + parExpr.getText + "}",
             file.getManager),
           removeParenthesis = false)
-      } else container
-    if (parent == null) None
-    else parent.getChildren.find(_.getTextRange.contains(firstRange))
+      } else
+        container
+    if (parent == null)
+      None
+    else
+      parent.getChildren.find(_.getTextRange.contains(firstRange))
   }
 
 }

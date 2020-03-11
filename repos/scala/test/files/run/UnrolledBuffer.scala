@@ -41,12 +41,16 @@ object Test {
     assert(u1.size == 0)
     assert(u2.size == 0)
 
-    for (i <- 0 until 500) u1 += i
-    for (i <- 500 until 1000) u2 += i
+    for (i <- 0 until 500)
+      u1 += i
+    for (i <- 500 until 1000)
+      u2 += i
     assert(u1.size == 500)
     assert(u2.size == 500)
     assert(u1.iterator.toList == (0 until 500).toList)
-    assert((for (elem <- u1) yield elem) sameElements (0 until 500))
+    assert(
+      (for (elem <- u1)
+        yield elem) sameElements (0 until 500))
 
     u1 concat u2
     assert(u1.size == 1000)
@@ -112,9 +116,12 @@ object Test {
       store(i) = u1(i)
       u1(i) = sz - i
     }
-    for (i <- 0 until sz) assert(u1(i) == (sz - i))
-    for (i <- 0 until sz) u1(i) = store(i)
-    for (i <- 0 until sz) assert(store(i) == u1(i))
+    for (i <- 0 until sz)
+      assert(u1(i) == (sz - i))
+    for (i <- 0 until sz)
+      u1(i) = store(i)
+    for (i <- 0 until sz)
+      assert(store(i) == u1(i))
 
     assert((u1 map { x =>
       x

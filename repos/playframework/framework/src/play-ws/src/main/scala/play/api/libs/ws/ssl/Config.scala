@@ -291,7 +291,8 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
           val plaintext = config.get[Boolean]("plaintext")
           val packet = config.get[Boolean]("packet")
           Some(SSLDebugRecordOptions(plaintext = plaintext, packet = packet))
-        } else None
+        } else
+          None
 
       val handshake = if (config.get[Boolean]("handshake")) {
         val data = config.get[Boolean]("data")

@@ -41,7 +41,8 @@ class ScalaFileNameInspection extends LocalInspectionTool {
 
     val virtualFile = file.getVirtualFile
 
-    if (virtualFile == null) return Array.empty
+    if (virtualFile == null)
+      return Array.empty
 
     val name = virtualFile.getNameWithoutExtension
     val scalaFile = file.asInstanceOf[ScalaFile]
@@ -49,7 +50,8 @@ class ScalaFileNameInspection extends LocalInspectionTool {
       return Array.empty
     val definitions = scalaFile.typeDefinitions
 
-    if (definitions.length > 2) return Array.empty
+    if (definitions.length > 2)
+      return Array.empty
     if (definitions.length == 2 && definitions.head.name != definitions(1).name)
       return Array.empty //with companion
 

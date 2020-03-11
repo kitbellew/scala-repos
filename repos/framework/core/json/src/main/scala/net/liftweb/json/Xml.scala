@@ -99,7 +99,10 @@ object Xml {
     def directChildren(n: Node): NodeSeq =
       n.child.filter(c => c.isInstanceOf[Elem])
     def nameOf(n: Node) =
-      (if (n.prefix ne null) n.prefix + ":" else "") + n.label
+      (if (n.prefix ne null)
+         n.prefix + ":"
+       else
+         "") + n.label
     def buildAttrs(n: Node) =
       n.attributes.map((a: MetaData) => (a.key, XValue(a.value.text))).toList
 
@@ -137,7 +140,8 @@ object Xml {
 
     def buildNodes(xml: NodeSeq): List[XElem] = xml match {
       case n: Node =>
-        if (empty_?(n)) XLeaf((nameOf(n), XValue("")), buildAttrs(n)) :: Nil
+        if (empty_?(n))
+          XLeaf((nameOf(n), XValue("")), buildAttrs(n)) :: Nil
         else if (leaf_?(n))
           XLeaf((nameOf(n), XValue(n.text)), buildAttrs(n)) :: Nil
         else {
@@ -152,11 +156,14 @@ object Xml {
         val allLabels = nodes.map(_.label)
         if (array_?(allLabels)) {
           val arr = XArray(nodes.toList.flatMap { n =>
-            if (leaf_?(n) && n.attributes.length == 0) XValue(n.text) :: Nil
-            else buildNodes(n)
+            if (leaf_?(n) && n.attributes.length == 0)
+              XValue(n.text) :: Nil
+            else
+              buildNodes(n)
           })
           XLeaf((allLabels(0), arr), Nil) :: Nil
-        } else nodes.toList.flatMap(buildNodes)
+        } else
+          nodes.toList.flatMap(buildNodes)
     }
 
     buildNodes(xml) match {

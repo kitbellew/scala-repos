@@ -16,11 +16,15 @@ private[internal] trait CommonOwners {
     *  of types.
     */
   protected[internal] def commonOwner(tps: List[Type]): Symbol = {
-    if (tps.isEmpty) NoSymbol
+    if (tps.isEmpty)
+      NoSymbol
     else {
       commonOwnerMap.clear()
       tps foreach (commonOwnerMap traverse _)
-      if (commonOwnerMap.result ne null) commonOwnerMap.result else NoSymbol
+      if (commonOwnerMap.result ne null)
+        commonOwnerMap.result
+      else
+        NoSymbol
     }
   }
 

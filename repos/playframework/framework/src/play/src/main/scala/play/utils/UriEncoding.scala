@@ -164,7 +164,8 @@ object UriEncoding {
     // unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
     val alphaDigit =
       for ((min, max) <- Seq(('a', 'z'), ('A', 'Z'), ('0', '9'));
-           c <- min to max) yield c
+           c <- min to max)
+        yield c
     val unreserved = alphaDigit ++ Seq('-', '.', '_', '~')
 
     // RFC 3986, 2.2. Reserved Characters
@@ -192,7 +193,10 @@ object UriEncoding {
     */
   private def upperHex(x: Int): Int = {
     // Assume 0 <= x < 16
-    if (x < 10) (x + '0') else (x - 10 + 'A')
+    if (x < 10)
+      (x + '0')
+    else
+      (x - 10 + 'A')
   }
 
   /**

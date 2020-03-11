@@ -61,7 +61,10 @@ object RunConfig {
     def unapply(str: String): Option[Double] =
       try {
         val p = str.toDouble
-        if (p >= 0.0 && p < 0.5) Some(p) else None
+        if (p >= 0.0 && p < 0.5)
+          Some(p)
+        else
+          None
       } catch {
         case _: NumberFormatException =>
           None

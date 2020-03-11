@@ -26,8 +26,10 @@ object ArrayStack extends SeqFactory[ArrayStack] {
   def empty: ArrayStack[Nothing] = new ArrayStack()
   def apply[A: ClassTag](elems: A*): ArrayStack[A] = {
     val els: Array[AnyRef] = elems.reverseMap(_.asInstanceOf[AnyRef])(breakOut)
-    if (els.length == 0) new ArrayStack()
-    else new ArrayStack[A](els, els.length)
+    if (els.length == 0)
+      new ArrayStack()
+    else
+      new ArrayStack[A](els, els.length)
   }
 
   private[mutable] def growArray(x: Array[AnyRef]) = {
@@ -106,7 +108,8 @@ class ArrayStack[T] private (
     *  @param x The element to push
     */
   def push(x: T) {
-    if (index == table.length) table = ArrayStack.growArray(table)
+    if (index == table.length)
+      table = ArrayStack.growArray(table)
     table(index) = x.asInstanceOf[AnyRef]
     index += 1
   }
@@ -116,7 +119,8 @@ class ArrayStack[T] private (
     *  @return the element on top of the stack
     */
   def pop(): T = {
-    if (index == 0) sys.error("Stack empty")
+    if (index == 0)
+      sys.error("Stack empty")
     index -= 1
     val x = table(index).asInstanceOf[T]
     table(index) = null
@@ -151,7 +155,9 @@ class ArrayStack[T] private (
     *
     *  @param f The function to drain to.
     */
-  def drain(f: T => Unit) = while (!isEmpty) f(pop())
+  def drain(f: T => Unit) =
+    while (!isEmpty)
+      f(pop())
 
   /** Pushes all the provided elements in the traversable object onto the stack.
     *
@@ -204,7 +210,9 @@ class ArrayStack[T] private (
     *
     *  @param f   The function to apply repeatedly to topmost elements.
     */
-  def reduceWith(f: (T, T) => T): Unit = while (size > 1) combine(f)
+  def reduceWith(f: (T, T) => T): Unit =
+    while (size > 1)
+      combine(f)
 
   override def size = index
 

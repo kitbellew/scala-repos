@@ -71,20 +71,27 @@ object BitSetUtil {
 
     def min(): Int = {
       val n = bs.nextSetBit(0)
-      if (n < 0) sys.error("can't take min of empty set") else n
+      if (n < 0)
+        sys.error("can't take min of empty set")
+      else
+        n
     }
 
     def max(): Int = {
       @tailrec
       def findBit(i: Int, last: Int): Int = {
         val j = bs.nextSetBit(i)
-        if (j < 0) last else findBit(j + 1, j)
+        if (j < 0)
+          last
+        else
+          findBit(j + 1, j)
       }
 
       val ns = bs.getBits
       var i = ns.length - 1
       while (i >= 0) {
-        if (ns(i) != 0) return findBit(i * 64, -1)
+        if (ns(i) != 0)
+          return findBit(i * 64, -1)
         i -= 1
       }
       sys.error("can't find max of empty set")
@@ -138,7 +145,8 @@ object BitSetUtil {
     val len = bitset.length
     if (from <= 0) {
       val bits = bitset.copy()
-      if (to >= len) bits
+      if (to >= len)
+        bits
       else {
         bits.clear(to, len)
         bits
@@ -156,7 +164,9 @@ object BitSetUtil {
 
   def filteredRange(start: Int, end: Int)(pred: Int => Boolean): BitSet = {
     val bs = new BitSet()
-    Loop.range(start, end)(i => if (pred(i)) bs.set(i))
+    Loop.range(start, end)(i =>
+      if (pred(i))
+        bs.set(i))
     bs
   }
 
@@ -167,7 +177,8 @@ object BitSetUtil {
     val bs = new BitSet
     @inline @tailrec def loop(lst: List[A], i: Int): Unit = lst match {
       case h :: t =>
-        if (pred(h)) bs.set(i)
+        if (pred(h))
+          bs.set(i)
         loop(t, i + 1)
       case Nil =>
     }
@@ -179,7 +190,8 @@ object BitSetUtil {
     val bs = new BitSet
     @inline @tailrec def loop(lst: List[A], i: Int): Unit = lst match {
       case h :: t =>
-        if (pred(h)) bs.set(i)
+        if (pred(h))
+          bs.set(i)
         loop(t, i + 1)
       case Nil =>
     }

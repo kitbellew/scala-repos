@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object EventDispatchChain {
   implicit def sfxEventDispatchChain2jfx(
       v: EventDispatchChain): jfxe.EventDispatchChain =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

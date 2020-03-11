@@ -117,7 +117,8 @@ object FilesSpec extends Specification with After {
   }
 
   private def writeFile(file: File, content: String) = {
-    if (file.exists()) file.delete()
+    if (file.exists())
+      file.delete()
 
     file.getParentFile.mkdirs()
     java.nio.file.Files.write(file.toPath, content.getBytes(utf8))

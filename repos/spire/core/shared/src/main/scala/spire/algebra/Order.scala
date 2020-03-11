@@ -29,8 +29,16 @@ trait Order[@sp A] extends Any with PartialOrder[A] {
   override def gteqv(x: A, y: A): Boolean = compare(x, y) >= 0
   override def lteqv(x: A, y: A): Boolean = compare(x, y) <= 0
 
-  def min(x: A, y: A): A = if (lt(x, y)) x else y
-  def max(x: A, y: A): A = if (gt(x, y)) x else y
+  def min(x: A, y: A): A =
+    if (lt(x, y))
+      x
+    else
+      y
+  def max(x: A, y: A): A =
+    if (gt(x, y))
+      x
+    else
+      y
   def compare(x: A, y: A): Int
 
   /**

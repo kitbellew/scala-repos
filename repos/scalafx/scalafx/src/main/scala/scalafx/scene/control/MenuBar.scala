@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object MenuBar {
   implicit def sfxMenuBar2jfx(cb: MenuBar): jfxsc.MenuBar =
-    if (cb != null) cb.delegate else null
+    if (cb != null)
+      cb.delegate
+    else
+      null
 }
 
 class MenuBar(override val delegate: jfxsc.MenuBar = new jfxsc.MenuBar())

@@ -18,28 +18,40 @@ trait TestSuiteContext {
   def xit(title: String)(test: => Unit): Unit
 
   def when(tag: String): TestSuiteContext =
-    if (TestSuiteContext.hasTag(tag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (TestSuiteContext.hasTag(tag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 
   def whenAll(tags: String*): TestSuiteContext =
-    if (tags.forall(TestSuiteContext.hasTag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (tags.forall(TestSuiteContext.hasTag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 
   def whenAny(tags: String*): TestSuiteContext =
-    if (tags.exists(TestSuiteContext.hasTag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (tags.exists(TestSuiteContext.hasTag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 
   def unless(tag: String): TestSuiteContext =
-    if (!TestSuiteContext.hasTag(tag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (!TestSuiteContext.hasTag(tag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 
   def unlessAll(tags: String*): TestSuiteContext =
-    if (!tags.forall(TestSuiteContext.hasTag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (!tags.forall(TestSuiteContext.hasTag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 
   def unlessAny(tags: String*): TestSuiteContext =
-    if (!tags.exists(TestSuiteContext.hasTag)) this
-    else new TestSuiteContext.IgnoredContext(this)
+    if (!tags.exists(TestSuiteContext.hasTag))
+      this
+    else
+      new TestSuiteContext.IgnoredContext(this)
 }
 
 @JSExport

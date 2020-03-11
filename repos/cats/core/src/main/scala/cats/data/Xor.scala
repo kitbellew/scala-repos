@@ -59,7 +59,13 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
   def exists(f: B => Boolean): Boolean = fold(_ => false, f)
 
   def ensure[AA >: A](onFailure: => AA)(f: B => Boolean): AA Xor B =
-    fold(_ => this, b => if (f(b)) this else Xor.Left(onFailure))
+    fold(
+      _ => this,
+      b =>
+        if (f(b))
+          this
+        else
+          Xor.Left(onFailure))
 
   def toIor: A Ior B = fold(Ior.left, Ior.right)
 

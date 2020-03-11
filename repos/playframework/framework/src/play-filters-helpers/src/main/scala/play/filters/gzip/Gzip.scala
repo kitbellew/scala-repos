@@ -173,14 +173,18 @@ object Gzip {
           writeTrailer(state.buffer, state.pos)
           state.pos = state.pos + 8
           val buffer =
-            if (state.pos == bufferSize) state.buffer
-            else state.buffer.take(state.pos)
+            if (state.pos == bufferSize)
+              state.buffer
+            else
+              state.buffer.take(state.pos)
           Seq(buffer)
         } else {
           // Create a new buffer for the trailer
           val buffer =
-            if (state.pos == bufferSize) state.buffer
-            else state.buffer.take(state.pos)
+            if (state.pos == bufferSize)
+              state.buffer
+            else
+              state.buffer.take(state.pos)
           val trailer = new Bytes(8)
           writeTrailer(trailer, 0)
           Seq(buffer, trailer)
@@ -252,7 +256,10 @@ object Gzip {
       }
 
       def maybeEmpty(bytes: Bytes) =
-        if (bytes.isEmpty) Input.Empty else Input.El(bytes)
+        if (bytes.isEmpty)
+          Input.Empty
+        else
+          Input.El(bytes)
 
       def inflateUntilNeedsInput[A](
           state: State,
@@ -342,27 +349,39 @@ object Gzip {
                 .map(b => "%02X".format(b))
                 .mkString("(", ", ", ")"),
               Input.El(headerBytes))
-          else done()
+          else
+            done()
           _ <- if (header.compressionMethod != Deflater.DEFLATED)
             Error("Unsupported compression method", Input.El(headerBytes))
-          else done()
-          efLength <- if (header.hasExtraField) readShort(crc) else done(0)
+          else
+            done()
+          efLength <- if (header.hasExtraField)
+            readShort(crc)
+          else
+            done(0)
           _ <- if (header.hasExtraField)
             drop(efLength, "Not enough bytes for extra field", crc)
-          else done()
+          else
+            done()
           _ <- if (header.hasFilename)
             dropWhileIncluding(
               _ != 0x00,
               "EOF found in middle of file name",
               crc)
-          else done()
+          else
+            done()
           _ <- if (header.hasComment)
             dropWhileIncluding(_ != 0x00, "EOF found in middle of comment", crc)
-          else done()
-          headerCrc <- if (header.hasCrc) readShort(new CRC32) else done(0)
+          else
+            done()
+          headerCrc <- if (header.hasCrc)
+            readShort(new CRC32)
+          else
+            done(0)
           _ <- if (header.hasCrc && (crc.getValue & 0xffff) != headerCrc)
             Error[Bytes]("Header CRC failed", Input.Empty)
-          else done()
+          else
+            done()
         } yield new State()
       }
 
@@ -378,11 +397,13 @@ object Gzip {
               "CRC failed, was %X, expected %X"
                 .format(state.crc.getValue.asInstanceOf[Int], crc),
               Input.El(intToLittleEndian(crc)))
-          else done()
+          else
+            done()
           length <- readInt("Premature EOF before gzip total length", dummy)
           _ <- if (length != state.inflater.getTotalOut)
             Error("Length check failed", Input.El(intToLittleEndian(length)))
-          else done()
+          else
+            done()
         } yield {
           state.inflater.end()
           done()

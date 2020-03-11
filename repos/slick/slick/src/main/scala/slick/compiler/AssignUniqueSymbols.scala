@@ -29,7 +29,8 @@ class AssignUniqueSymbols extends Phase {
         case _: Distinct    => hasDistinct = true
         case _: TypeMapping => hasTypeMapping = true
         case n: Apply =>
-          if (n.sym.isInstanceOf[AggregateFunctionSymbol]) hasAggregate = true
+          if (n.sym.isInstanceOf[AggregateFunctionSymbol])
+            hasAggregate = true
         case (_: OptionFold | _: OptionApply | _: GetOrElse) =>
           hasNonPrimitiveOption = true
         case j: Join =>
@@ -42,7 +43,10 @@ class AssignUniqueSymbols extends Phase {
           case Select(in, s) => Select(tr(in), s) :@ n.nodeType
           case r @ Ref(a: AnonSymbol) =>
             val s = replace.getOrElse(a, a)
-            if (s eq a) r else Ref(s)
+            if (s eq a)
+              r
+            else
+              Ref(s)
           case t: TableNode =>
             t.copy(identity = new AnonTableIdentitySymbol)(t.profileTable)
           case Pure(value, _) => Pure(tr(value))
@@ -65,7 +69,10 @@ class AssignUniqueSymbols extends Phase {
             n.mapChildren(tr)
         }
         // Remove all NominalTypes (which might have changed)
-        if (n3.hasType && hasNominalType(n3.nodeType)) n3.untyped else n3
+        if (n3.hasType && hasNominalType(n3.nodeType))
+          n3.untyped
+        else
+          n3
       }
       tr(tree)
     }

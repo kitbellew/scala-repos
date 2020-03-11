@@ -23,7 +23,10 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "recover when there is a handler" in assertAllStagesStopped {
       Source(1 to 4)
         .map { a ⇒
-          if (a == 3) throw ex else a
+          if (a == 3)
+            throw ex
+          else
+            a
         }
         .recoverWith {
           case t: Throwable ⇒ Source(List(0, -1))
@@ -41,7 +44,10 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "cancel substream if parent is terminated when there is a handler" in assertAllStagesStopped {
       Source(1 to 4)
         .map { a ⇒
-          if (a == 3) throw ex else a
+          if (a == 3)
+            throw ex
+          else
+            a
         }
         .recoverWith {
           case t: Throwable ⇒ Source(List(0, -1))
@@ -57,7 +63,10 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "failed stream if handler is not for such exception type" in assertAllStagesStopped {
       Source(1 to 3)
         .map { a ⇒
-          if (a == 2) throw ex else a
+          if (a == 2)
+            throw ex
+          else
+            a
         }
         .recoverWith {
           case t: IndexOutOfBoundsException ⇒ Source.single(0)
@@ -71,7 +80,10 @@ class FlowRecoverWithSpec extends AkkaSpec {
 
     "be able to recover with th same unmaterialized source if configured" in assertAllStagesStopped {
       val src = Source(1 to 3).map { a ⇒
-        if (a == 3) throw ex else a
+        if (a == 3)
+          throw ex
+        else
+          a
       }
       src
         .recoverWith {
@@ -113,12 +125,18 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "switch the second time if alternative source throws exception" in assertAllStagesStopped {
       val k = Source(1 to 3)
         .map { a ⇒
-          if (a == 3) throw new IndexOutOfBoundsException() else a
+          if (a == 3)
+            throw new IndexOutOfBoundsException()
+          else
+            a
         }
         .recoverWith {
           case t: IndexOutOfBoundsException ⇒
             Source(List(11, 22)).map(m ⇒
-              if (m == 22) throw new IllegalArgumentException() else m)
+              if (m == 22)
+                throw new IllegalArgumentException()
+              else
+                m)
           case t: IllegalArgumentException ⇒ Source(List(33, 44))
         }
         .runWith(TestSink.probe[Int])
@@ -134,11 +152,18 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "terminate with exception if altrnative source failed" in assertAllStagesStopped {
       Source(1 to 3)
         .map { a ⇒
-          if (a == 3) throw new IndexOutOfBoundsException() else a
+          if (a == 3)
+            throw new IndexOutOfBoundsException()
+          else
+            a
         }
         .recoverWith {
           case t: IndexOutOfBoundsException ⇒
-            Source(List(11, 22)).map(m ⇒ if (m == 22) throw ex else m)
+            Source(List(11, 22)).map(m ⇒
+              if (m == 22)
+                throw ex
+              else
+                m)
         }
         .runWith(TestSink.probe[Int])
         .request(2)

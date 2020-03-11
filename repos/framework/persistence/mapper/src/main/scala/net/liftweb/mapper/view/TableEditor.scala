@@ -100,8 +100,8 @@ trait ItemsList[T <: Mapper[T]] {
             case (aval: Ordered[_], bval: Ordered[_]) =>
               aval.asInstanceOf[Ordered[Any]] < bval.asInstanceOf[Ordered[Any]]
             case (
-                aval: java.lang.Comparable[_],
-                bval: java.lang.Comparable[_]) =>
+                  aval: java.lang.Comparable[_],
+                  bval: java.lang.Comparable[_]) =>
               (aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
                 .asInstanceOf[java.lang.Comparable[Any]]) < 0
             case (null, _)    => sortNullFirst
@@ -109,7 +109,10 @@ trait ItemsList[T <: Mapper[T]] {
             case (aval, bval) => aval.toString < bval.toString
           }) match {
             case cmp =>
-              if (ascending) cmp else !cmp
+              if (ascending)
+                cmp
+              else
+                !cmp
           }
         }
     }
@@ -162,7 +165,8 @@ trait ItemsList[T <: Mapper[T]] {
     current = current.filterNot(successRemove.contains)
     removed = failRemove
 
-    for (c <- current if c.validate.isEmpty) c.save
+    for (c <- current if c.validate.isEmpty)
+      c.save
 
     current ++= successAdd
   }

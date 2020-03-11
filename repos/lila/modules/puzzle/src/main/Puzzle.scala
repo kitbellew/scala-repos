@@ -28,7 +28,11 @@ case class Puzzle(
 
   def withVote(f: Vote => Vote) = copy(vote = f(vote))
 
-  def winPercent = if (attempts == 0) 0 else wins * 100 / attempts
+  def winPercent =
+    if (attempts == 0)
+      0
+    else
+      wins * 100 / attempts
 
   def initialMove = history.last
 

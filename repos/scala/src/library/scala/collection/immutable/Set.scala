@@ -91,11 +91,15 @@ object Set extends ImmutableSetFactory[Set] {
     def contains(elem: A): Boolean =
       elem == elem1
     def +(elem: A): Set[A] =
-      if (contains(elem)) this
-      else new Set2(elem1, elem)
+      if (contains(elem))
+        this
+      else
+        new Set2(elem1, elem)
     def -(elem: A): Set[A] =
-      if (elem == elem1) Set.empty
-      else this
+      if (elem == elem1)
+        Set.empty
+      else
+        this
     def iterator: Iterator[A] =
       Iterator(elem1)
     override def foreach[U](f: A => U): Unit = {
@@ -108,8 +112,10 @@ object Set extends ImmutableSetFactory[Set] {
       p(elem1)
     }
     override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
-      if (p(elem1)) Some(elem1)
-      else None
+      if (p(elem1))
+        Some(elem1)
+      else
+        None
     }
     override def head: A = elem1
     override def tail: Set[A] = Set.empty
@@ -130,12 +136,17 @@ object Set extends ImmutableSetFactory[Set] {
     def contains(elem: A): Boolean =
       elem == elem1 || elem == elem2
     def +(elem: A): Set[A] =
-      if (contains(elem)) this
-      else new Set3(elem1, elem2, elem)
+      if (contains(elem))
+        this
+      else
+        new Set3(elem1, elem2, elem)
     def -(elem: A): Set[A] =
-      if (elem == elem1) new Set1(elem2)
-      else if (elem == elem2) new Set1(elem1)
-      else this
+      if (elem == elem1)
+        new Set1(elem2)
+      else if (elem == elem2)
+        new Set1(elem1)
+      else
+        this
     def iterator: Iterator[A] =
       Iterator(elem1, elem2)
     override def foreach[U](f: A => U): Unit = {
@@ -149,9 +160,12 @@ object Set extends ImmutableSetFactory[Set] {
       p(elem1) && p(elem2)
     }
     override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
-      if (p(elem1)) Some(elem1)
-      else if (p(elem2)) Some(elem2)
-      else None
+      if (p(elem1))
+        Some(elem1)
+      else if (p(elem2))
+        Some(elem2)
+      else
+        None
     }
     override def head: A = elem1
     override def tail: Set[A] = new Set1(elem2)
@@ -172,13 +186,19 @@ object Set extends ImmutableSetFactory[Set] {
     def contains(elem: A): Boolean =
       elem == elem1 || elem == elem2 || elem == elem3
     def +(elem: A): Set[A] =
-      if (contains(elem)) this
-      else new Set4(elem1, elem2, elem3, elem)
+      if (contains(elem))
+        this
+      else
+        new Set4(elem1, elem2, elem3, elem)
     def -(elem: A): Set[A] =
-      if (elem == elem1) new Set2(elem2, elem3)
-      else if (elem == elem2) new Set2(elem1, elem3)
-      else if (elem == elem3) new Set2(elem1, elem2)
-      else this
+      if (elem == elem1)
+        new Set2(elem2, elem3)
+      else if (elem == elem2)
+        new Set2(elem1, elem3)
+      else if (elem == elem3)
+        new Set2(elem1, elem2)
+      else
+        this
     def iterator: Iterator[A] =
       Iterator(elem1, elem2, elem3)
     override def foreach[U](f: A => U): Unit = {
@@ -193,10 +213,14 @@ object Set extends ImmutableSetFactory[Set] {
       p(elem1) && p(elem2) && p(elem3)
     }
     override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
-      if (p(elem1)) Some(elem1)
-      else if (p(elem2)) Some(elem2)
-      else if (p(elem3)) Some(elem3)
-      else None
+      if (p(elem1))
+        Some(elem1)
+      else if (p(elem2))
+        Some(elem2)
+      else if (p(elem3))
+        Some(elem3)
+      else
+        None
     }
     override def head: A = elem1
     override def tail: Set[A] = new Set2(elem2, elem3)
@@ -217,14 +241,21 @@ object Set extends ImmutableSetFactory[Set] {
     def contains(elem: A): Boolean =
       elem == elem1 || elem == elem2 || elem == elem3 || elem == elem4
     def +(elem: A): Set[A] =
-      if (contains(elem)) this
-      else new HashSet[A] + (elem1, elem2, elem3, elem4, elem)
+      if (contains(elem))
+        this
+      else
+        new HashSet[A] + (elem1, elem2, elem3, elem4, elem)
     def -(elem: A): Set[A] =
-      if (elem == elem1) new Set3(elem2, elem3, elem4)
-      else if (elem == elem2) new Set3(elem1, elem3, elem4)
-      else if (elem == elem3) new Set3(elem1, elem2, elem4)
-      else if (elem == elem4) new Set3(elem1, elem2, elem3)
-      else this
+      if (elem == elem1)
+        new Set3(elem2, elem3, elem4)
+      else if (elem == elem2)
+        new Set3(elem1, elem3, elem4)
+      else if (elem == elem3)
+        new Set3(elem1, elem2, elem4)
+      else if (elem == elem4)
+        new Set3(elem1, elem2, elem3)
+      else
+        this
     def iterator: Iterator[A] =
       Iterator(elem1, elem2, elem3, elem4)
     override def foreach[U](f: A => U): Unit = {
@@ -240,11 +271,16 @@ object Set extends ImmutableSetFactory[Set] {
       p(elem1) && p(elem2) && p(elem3) && p(elem4)
     }
     override def find(@deprecatedName('f) p: A => Boolean): Option[A] = {
-      if (p(elem1)) Some(elem1)
-      else if (p(elem2)) Some(elem2)
-      else if (p(elem3)) Some(elem3)
-      else if (p(elem4)) Some(elem4)
-      else None
+      if (p(elem1))
+        Some(elem1)
+      else if (p(elem2))
+        Some(elem2)
+      else if (p(elem3))
+        Some(elem3)
+      else if (p(elem4))
+        Some(elem4)
+      else
+        None
     }
     override def head: A = elem1
     override def tail: Set[A] = new Set3(elem2, elem3, elem4)

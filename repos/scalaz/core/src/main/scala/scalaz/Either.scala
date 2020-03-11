@@ -150,7 +150,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def filter[AA >: A](p: B => Boolean)(implicit M: Monoid[AA]): (AA \/ B) =
     this match {
       case -\/(_) => this
-      case \/-(b) => if (p(b)) this else -\/(M.zero)
+      case \/-(b) =>
+        if (p(b))
+          this
+        else
+          -\/(M.zero)
     }
 
   /** Return `true` if this disjunction is a right value satisfying the given predicate. */
@@ -257,7 +261,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
 
   /** Ensures that the right value of this disjunction satisfies the given predicate, or returns left with the given value. */
   def ensure[AA >: A](onLeft: => AA)(f: B => Boolean): (AA \/ B) = this match {
-    case \/-(b) => if (f(b)) this else -\/(onLeft)
+    case \/-(b) =>
+      if (f(b))
+        this
+      else
+        -\/(onLeft)
     case -\/(_) => this
   }
 

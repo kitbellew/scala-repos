@@ -23,7 +23,8 @@ object heapsort {
     var i = 0;
     var rra = 0.0d;
 
-    if (n < 2) return;
+    if (n < 2)
+      return;
     l = (n >> 1) + 1;
     ir = n;
     while (true) {
@@ -49,7 +50,8 @@ object heapsort {
           ra(i) = ra(j);
           i = j;
           j = j + i;
-        } else j = ir + 1;
+        } else
+          j = ir + 1;
       }
       ra(i) = rra;
     }
@@ -72,7 +74,10 @@ object heapsort {
       } catch {
         case _ => 1
       }
-    if (i > 0) i; else 1;
+    if (i > 0)
+      i;
+    else
+      1;
   }
 
 }

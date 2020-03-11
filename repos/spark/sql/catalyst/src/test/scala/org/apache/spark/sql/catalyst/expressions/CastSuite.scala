@@ -79,7 +79,8 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     numericTypes.foreach(dt => checkNullCast(DateType, dt))
     numericTypes.foreach(dt => checkNullCast(TimestampType, dt))
     for (from <- numericTypes;
-         to <- numericTypes) checkNullCast(from, to)
+         to <- numericTypes)
+      checkNullCast(from, to)
   }
 
   test("cast string to date") {

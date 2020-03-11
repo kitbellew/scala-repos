@@ -151,7 +151,8 @@ package OrphansTestDefns {
 
       def product[H, T <: HList](h: Eq[H], t: Eq[T]) = new Eq[H :: T] {
         override def toString(seen: Set[Eq[_]]) =
-          if (seen(this)) s"<loop>"
+          if (seen(this))
+            s"<loop>"
           else
             s"product(${h.toString(seen + this)}, ${t.toString(seen + this)})"
 
@@ -167,7 +168,8 @@ package OrphansTestDefns {
       def coproduct[L, R <: Coproduct](l: => Eq[L], r: => Eq[R]) =
         new Eq[L :+: R] {
           override def toString(seen: Set[Eq[_]]) =
-            if (seen(this)) s"<loop>"
+            if (seen(this))
+              s"<loop>"
             else
               s"coproduct(${l.toString(seen + this)}, ${r.toString(seen + this)})"
 
@@ -180,7 +182,10 @@ package OrphansTestDefns {
 
       def project[A, B](b: => Eq[B], ab: A => B, ba: B => A) = new Eq[A] {
         override def toString(seen: Set[Eq[_]]) =
-          if (seen(this)) s"<loop>" else s"project(${b.toString(seen + this)})"
+          if (seen(this))
+            s"<loop>"
+          else
+            s"project(${b.toString(seen + this)})"
 
         def eqv(x: A, y: A): Boolean = b.eqv(ab(x), ab(y))
       }

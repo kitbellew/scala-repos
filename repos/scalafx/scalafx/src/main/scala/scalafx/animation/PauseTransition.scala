@@ -50,7 +50,10 @@ object PauseTransition extends AnimationStatics {
     */
   implicit def sfxPauseTransition2jfx(
       v: PauseTransition): jfxa.PauseTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

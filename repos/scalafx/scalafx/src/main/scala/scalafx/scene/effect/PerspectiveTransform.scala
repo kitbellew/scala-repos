@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object PerspectiveTransform {
   implicit def sfxPerspectiveTransform2jfx(
       pt: PerspectiveTransform): jfxse.PerspectiveTransform =
-    if (pt != null) pt.delegate else null
+    if (pt != null)
+      pt.delegate
+    else
+      null
 }
 
 class PerspectiveTransform(

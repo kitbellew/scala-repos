@@ -220,11 +220,11 @@ final class PersistencePluginProxy(config: Config)
               persistentActor ! LoopMessageSuccess(r.payload, actorInstanceId)
           }
         case ReplayMessages(
-            fromSequenceNr,
-            toSequenceNr,
-            max,
-            persistenceId,
-            persistentActor) ⇒
+              fromSequenceNr,
+              toSequenceNr,
+              max,
+              persistenceId,
+              persistentActor) ⇒
           persistentActor ! ReplayMessagesFailure(timeoutException)
         case DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
           persistentActor ! DeleteMessagesFailure(

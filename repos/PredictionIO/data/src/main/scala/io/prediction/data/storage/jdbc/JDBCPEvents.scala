@@ -168,10 +168,14 @@ class JDBCPEvents(
           event.targetEntityId.orNull,
           if (!event.properties.isEmpty)
             Serialization.write(event.properties.toJObject)
-          else null,
+          else
+            null,
           new java.sql.Timestamp(event.eventTime.getMillis),
           event.eventTime.getZone.getID,
-          if (event.tags.nonEmpty) Some(event.tags.mkString(",")) else null,
+          if (event.tags.nonEmpty)
+            Some(event.tags.mkString(","))
+          else
+            null,
           event.prId,
           new java.sql.Timestamp(event.creationTime.getMillis),
           event.creationTime.getZone.getID)

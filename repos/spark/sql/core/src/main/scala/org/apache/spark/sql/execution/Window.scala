@@ -100,7 +100,8 @@ case class Window(
         "No Partition Defined for Window operation! Moving all data to a single "
           + "partition, this can cause serious performance degradation.")
       AllTuples :: Nil
-    } else ClusteredDistribution(partitionSpec) :: Nil
+    } else
+      ClusteredDistribution(partitionSpec) :: Nil
   }
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
@@ -440,7 +441,8 @@ case class Window(
 
             // Return the projection.
             result(join)
-          } else throw new NoSuchElementException
+          } else
+            throw new NoSuchElementException
         }
       }
     }

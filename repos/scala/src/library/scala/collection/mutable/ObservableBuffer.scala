@@ -40,7 +40,8 @@ trait ObservableBuffer[A]
   }
 
   abstract override def ++=(xs: TraversableOnce[A]): this.type = {
-    for (x <- xs) this += x
+    for (x <- xs)
+      this += x
     this
   }
 

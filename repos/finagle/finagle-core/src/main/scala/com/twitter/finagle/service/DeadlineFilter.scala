@@ -67,7 +67,8 @@ object DeadlineFilter {
         val Param(tolerance, maxRejectPercentage) = _param
         val param.Stats(statsReceiver) = _stats
 
-        if (maxRejectPercentage <= 0.0) next
+        if (maxRejectPercentage <= 0.0)
+          next
         else
           new DeadlineFilter(
             tolerance,
@@ -164,8 +165,10 @@ private[finagle] class DeadlineFilter[Req, Rep](
           rejectedStat.incr()
           service(request) // When turned on this will be Future.exception
         } else {
-          if (-remaining > tolerance) beyondToleranceStat.incr()
-          else if (remaining < Duration.Zero) exceededStat.incr()
+          if (-remaining > tolerance)
+            beyondToleranceStat.incr()
+          else if (remaining < Duration.Zero)
+            exceededStat.incr()
 
           rejectBucket.put(serviceDeposit)
           service(request)

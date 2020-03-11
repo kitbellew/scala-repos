@@ -89,14 +89,21 @@ class ScDocTagValueImpl(node: ASTNode)
   }
 
   override def getCanonicalText: String =
-    if (getFirstChild == null) null else getFirstChild.getText
+    if (getFirstChild == null)
+      null
+    else
+      getFirstChild.getText
 
   override def isReferenceTo(element: PsiElement) = {
-    if (resolve() == null || resolve() != element) false else true
+    if (resolve() == null || resolve() != element)
+      false
+    else
+      true
   }
 
   override def handleElementRename(newElementName: String): PsiElement = {
-    if (!ScalaNamesUtil.isIdentifier(newElementName)) return this
+    if (!ScalaNamesUtil.isIdentifier(newElementName))
+      return this
     val doc = FileDocumentManager
       .getInstance()
       .getDocument(getContainingFile.getVirtualFile)

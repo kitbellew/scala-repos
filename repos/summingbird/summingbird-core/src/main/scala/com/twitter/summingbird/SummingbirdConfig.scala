@@ -39,7 +39,8 @@ trait SummingbirdConfig { self =>
         val oldVal = get(k)
         if (oldVal != Some(v)) {
           Some((k, v))
-        } else None
+        } else
+          None
     }
     val newWithoutRemoved = removedKeys.foldLeft(self)(_.remove(_))
     changedOrAddedKeys.foldLeft(newWithoutRemoved) {

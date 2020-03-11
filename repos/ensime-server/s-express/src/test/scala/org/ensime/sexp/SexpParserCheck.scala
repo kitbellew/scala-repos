@@ -71,7 +71,8 @@ trait ArbitrarySexp {
 
   // our parser is soooo slow for deep trees
   def genSexp(level: Int): Gen[Sexp] =
-    if (level >= 4) genSexpAtom
+    if (level >= 4)
+      genSexpAtom
     else
       lzy {
         oneOf(

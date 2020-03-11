@@ -94,7 +94,9 @@ class DispatcherActorSpec
             sender() ! "OK";
             start.await
           }
-          case "ping" ⇒ if (works.get) latch.countDown()
+          case "ping" ⇒
+            if (works.get)
+              latch.countDown()
         }
       }).withDispatcher(throughputDispatcher))
 
@@ -122,7 +124,8 @@ class DispatcherActorSpec
       val fastOne = system.actorOf(Props(new Actor {
         def receive = {
           case "ping" ⇒
-            if (works.get) latch.countDown();
+            if (works.get)
+              latch.countDown();
             context.stop(self)
         }
       }).withDispatcher(throughputDispatcher))

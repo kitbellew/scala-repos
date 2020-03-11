@@ -24,7 +24,11 @@ trait Control {
       body: T = (),
       headers: Map[String, String] = Map.empty,
       reason: String = null): Nothing = {
-    val statusOpt = if (status == null) None else Some(status.intValue)
+    val statusOpt =
+      if (status == null)
+        None
+      else
+        Some(status.intValue)
     throw new HaltException(statusOpt, Some(reason), headers, body)
   }
 

@@ -18,15 +18,20 @@ object Namer {
     p.aiLevel.fold(p.userId.flatMap(lightUser).fold(lila.user.User.anonymous) { user =>
       if (withRating)
         s"${withTitle.fold(user.titleNameHtml, user.name)}&nbsp;(${ratingString(p)})"
-      else withTitle.fold(user.titleName, user.name)
+      else
+        withTitle.fold(user.titleName, user.name)
     }) { level =>
       s"A.I.&nbsp;level&nbsp;$level"
     }
   }
 
   private def ratingString(p: Player) = p.rating match {
-    case Some(rating) => s"$rating${if (p.provisional) "?" else ""}"
-    case _            => "?"
+    case Some(rating) =>
+      s"$rating${if (p.provisional)
+        "?"
+      else
+        ""}"
+    case _ => "?"
   }
 
   def playerString(

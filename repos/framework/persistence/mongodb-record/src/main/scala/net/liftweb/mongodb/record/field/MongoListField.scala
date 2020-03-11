@@ -129,8 +129,10 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
   }
 
   def toForm: Box[NodeSeq] =
-    if (options.length > 0) Full(elem)
-    else Empty
+    if (options.length > 0)
+      Full(elem)
+    else
+      Empty
 
   def asJValue: JValue =
     JArray(value.map(li =>

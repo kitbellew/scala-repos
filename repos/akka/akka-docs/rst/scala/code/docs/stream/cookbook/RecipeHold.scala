@@ -65,13 +65,15 @@ object HoldOps {
               currentValue = grab(in)
               if (waitingFirstValue) {
                 waitingFirstValue = false
-                if (isAvailable(out)) push(out, currentValue)
+                if (isAvailable(out))
+                  push(out, currentValue)
               }
               pull(in)
             }
 
             override def onPull(): Unit = {
-              if (!waitingFirstValue) push(out, currentValue)
+              if (!waitingFirstValue)
+                push(out, currentValue)
             }
           }
         )

@@ -169,7 +169,8 @@ class MongoQueryExecutor(
           case dbName :: Nil =>
             val db = Table.mongo.getDB(dbName)
             Success(
-              if (db == null) JArray(Nil)
+              if (db == null)
+                JArray(Nil)
               else
                 db.getCollectionNames.asScala
                   .map { d =>

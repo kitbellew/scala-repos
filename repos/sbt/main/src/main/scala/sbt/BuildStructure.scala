@@ -188,8 +188,10 @@ final class DetectedPlugins(
     autoPlugins
       .flatMap {
         case DetectedAutoPlugin(name, ap, hasAutoImport) =>
-          if (hasAutoImport) Some(name)
-          else None
+          if (hasAutoImport)
+            Some(name)
+          else
+            None
       }
       .partition(nonTopLevelPlugin)
 
@@ -274,8 +276,10 @@ final class BuildUnit(
     val definitions: LoadedDefinitions,
     val plugins: LoadedPlugins) {
   override def toString =
-    if (uri.getScheme == "file") localBase.toString
-    else (uri + " (locally: " + localBase + ")")
+    if (uri.getScheme == "file")
+      localBase.toString
+    else
+      (uri + " (locally: " + localBase + ")")
 }
 
 final class LoadedBuild(val root: URI, val units: Map[URI, LoadedBuildUnit]) {

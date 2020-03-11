@@ -93,7 +93,10 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote trees into type apply") = forAll {
     (fun: TreeIsTerm, types: List[Tree]) =>
-      q"$fun[..$types]" ≈ (if (types.nonEmpty) TypeApply(fun, types) else fun)
+      q"$fun[..$types]" ≈ (if (types.nonEmpty)
+                             TypeApply(fun, types)
+                           else
+                             fun)
   }
 
   property("unquote trees into while loop") = forAll {
@@ -216,7 +219,10 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     val baz = q"baz"
     assert(q"f(..${l1 ++ l2})" ≈ q"f(foo, bar)")
     assert(q"f(..${l1 ++ l2}, $baz)" ≈ q"f(foo, bar, baz)")
-    assert(q"f(${if (true) q"a" else q"b"})" ≈ q"f(a)")
+    assert(q"f(${if (true)
+      q"a"
+    else
+      q"b"})" ≈ q"f(a)")
   }
 
   property("unquote iterable of non-parametric type") = test {

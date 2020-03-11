@@ -153,8 +153,10 @@ class Dispatcher(
                 throw e
             }
         }
-      } else false
-    } else false
+      } else
+        false
+    } else
+      false
   }
 
   override val toString: String = Logging.simpleName(this) + "[" + id + "]"

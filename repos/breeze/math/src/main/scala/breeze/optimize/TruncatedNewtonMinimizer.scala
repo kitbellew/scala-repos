@@ -50,7 +50,11 @@ class TruncatedNewtonMinimizer[T, H](
     val adjgrad = grad + initial * l2Regularization
     val initDelta = norm(adjgrad)
     val adjfval = v + 0.5 * l2Regularization * (initial dot initial)
-    val f_too_small = if (adjfval < -1.0e+32) true else false
+    val f_too_small =
+      if (adjfval < -1.0e+32)
+        true
+      else
+        false
     State(
       0,
       initDelta,
@@ -101,11 +105,17 @@ class TruncatedNewtonMinimizer[T, H](
       val actualReduction = adjFval - adjNewV
 
       val stepNorm = norm(step)
-      var newDelta = if (iter == 1) delta min (stepNorm * 3) else delta
+      var newDelta =
+        if (iter == 1)
+          delta min (stepNorm * 3)
+        else
+          delta
 
       val alpha =
-        if (-actualReduction <= gs) sigma3
-        else sigma1 max (-0.5 * (gs / (-actualReduction - gs)))
+        if (-actualReduction <= gs)
+          sigma3
+        else
+          sigma1 max (-0.5 * (gs / (-actualReduction - gs)))
 
       newDelta = {
         if (actualReduction < eta0 * predictedReduction)
@@ -138,9 +148,14 @@ class TruncatedNewtonMinimizer[T, H](
               (math.abs(actualReduction) <= math.abs(adjNewV) * 1.0e-12
               && math.abs(predictedReduction) <= math.abs(adjNewV) * 1.0e-12))
             true
-          else false
+          else
+            false
         val newHistory = updateHistory(x_new, adjNewG, adjNewV, state)
-        val this_iter = if (state.accept == true) iter + 1 else iter
+        val this_iter =
+          if (state.accept == true)
+            iter + 1
+          else
+            iter
         State(
           this_iter,
           initialGNorm,
@@ -155,12 +170,18 @@ class TruncatedNewtonMinimizer[T, H](
           true,
           newHistory)
       } else {
-        val this_iter = if (state.accept == true) iter + 1 else iter
+        val this_iter =
+          if (state.accept == true)
+            iter + 1
+          else
+            iter
         val stop_cond =
           if (adjFval < -1.0e+32 ||
               (math.abs(actualReduction) <= math.abs(adjFval) * 1.0e-12 && math
-                .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12)) true
-          else false
+                .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12))
+            true
+          else
+            false
         logger.info(
           "Reject %d d=%.2f resNorm=%.2f pred=%.2f actual=%.2f".format(
             iter,
@@ -224,7 +245,8 @@ class TruncatedNewtonMinimizer[T, H](
   private def computeDiagScale(prevStep: T, prevGradStep: T): Double = {
     val sy = prevStep dot prevGradStep
     val yy = prevGradStep dot prevGradStep
-    if (sy < 0 || sy.isNaN) throw new NaNHistory
+    if (sy < 0 || sy.isNaN)
+      throw new NaNHistory
     sy / yy
   }
 

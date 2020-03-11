@@ -79,7 +79,8 @@ abstract class ScalaMemberSelectionTableBase[
         AllIcons.General.OverridingMethod
       else if (java.lang.Boolean.FALSE == memberInfo.getOverrides)
         AllIcons.General.ImplementingMethod
-      else AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
+      else
+        AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
     case _ => AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
   }
 }

@@ -66,7 +66,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
   }
 
   abstract override def shutdown() {
-    if (templateEngine != null) templateEngine.compiler.shutdown()
+    if (templateEngine != null)
+      templateEngine.compiler.shutdown()
     super.shutdown()
   }
 
@@ -179,8 +180,10 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
   override protected def renderUncaughtException(e: Throwable)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse) {
-    if (isScalateErrorPageEnabled) renderScalateErrorPage(e)
-    else super.renderUncaughtException(e)
+    if (isScalateErrorPageEnabled)
+      renderScalateErrorPage(e)
+    else
+      super.renderUncaughtException(e)
   }
 
   // Hack: Have to pass it the request and response, because we're outside the

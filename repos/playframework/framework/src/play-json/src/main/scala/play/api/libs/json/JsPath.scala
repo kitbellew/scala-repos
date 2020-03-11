@@ -37,7 +37,8 @@ case class RecursiveSearch(key: String) extends PathNode {
           if (k == this.key) {
             found = true
             k -> transform(v)
-          } else k -> set(v, transform)
+          } else
+            k -> set(v, transform)
       })
 
       o
@@ -48,8 +49,10 @@ case class RecursiveSearch(key: String) extends PathNode {
     case obj: JsObject =>
       obj.fields.toList.map {
         case (k, v) =>
-          if (k == this.key) Right(this -> v)
-          else Left(KeyPathNode(k) -> v)
+          if (k == this.key)
+            Right(this -> v)
+          else
+            Left(KeyPathNode(k) -> v)
       }
     case arr: JsArray =>
       arr.value.toList.zipWithIndex.map {
@@ -78,10 +81,13 @@ case class KeyPathNode(key: String) extends PathNode {
           if (k == this.key) {
             found = true
             k -> transform(v)
-          } else k -> v
+          } else
+            k -> v
       })
-      if (!found) o ++ Json.obj(this.key -> transform(Json.obj()))
-      else o
+      if (!found)
+        o ++ Json.obj(this.key -> transform(Json.obj()))
+      else
+        o
     case _ => transform(json)
   }
 
@@ -89,8 +95,10 @@ case class KeyPathNode(key: String) extends PathNode {
     case obj: JsObject =>
       obj.fields.toList.map {
         case (k, v) =>
-          if (k == this.key) Right(this -> v)
-          else Left(KeyPathNode(k) -> v)
+          if (k == this.key)
+            Right(this -> v)
+          else
+            Left(KeyPathNode(k) -> v)
       }
     case _ => List()
   }
@@ -112,7 +120,11 @@ case class IdxPathNode(idx: Int) extends PathNode {
   def set(json: JsValue, transform: JsValue => JsValue): JsValue = json match {
     case arr: JsArray =>
       JsArray(arr.value.zipWithIndex.map {
-        case (js, j) => if (j == idx) transform(js) else js
+        case (js, j) =>
+          if (j == idx)
+            transform(js)
+          else
+            js
       })
     case _ => transform(json)
   }
@@ -121,8 +133,10 @@ case class IdxPathNode(idx: Int) extends PathNode {
     case arr: JsArray =>
       arr.value.toList.zipWithIndex.map {
         case (js, j) =>
-          if (j == idx) Right(this -> js)
-          else Left(IdxPathNode(j) -> js)
+          if (j == idx)
+            Right(this -> js)
+          else
+            Left(IdxPathNode(j) -> js)
       }
     case _ => List()
   }

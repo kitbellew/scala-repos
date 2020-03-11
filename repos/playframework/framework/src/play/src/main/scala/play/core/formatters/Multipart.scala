@@ -62,9 +62,11 @@ object Multipart {
     if (length < 1 && length > 70)
       throw new IllegalArgumentException(
         "length can't be greater than 70 or less than 1")
-    val bytes: Seq[Byte] = for (byte <- 1 to length) yield {
-      alphabet(random.nextInt(alphabet.length))
-    }
+    val bytes: Seq[Byte] =
+      for (byte <- 1 to length)
+        yield {
+          alphabet(random.nextInt(alphabet.length))
+        }
     new String(bytes.toArray, US_ASCII)
   }
 
@@ -76,7 +78,8 @@ object Multipart {
         if (ix < string.length) {
           this ~~ string.charAt(ix)
           rec(ix + 1)
-        } else this
+        } else
+          this
       rec()
     }
 
@@ -96,7 +99,8 @@ object Multipart {
     }
 
     def ~~(char: Char): this.type = {
-      if (!charBuffer.hasRemaining) flushCharBuffer()
+      if (!charBuffer.hasRemaining)
+        flushCharBuffer()
       charBuffer.put(char)
       this
     }
@@ -173,10 +177,10 @@ object Multipart {
           case MultipartFormData.DataPart(innerKey, _) =>
             (innerKey, None, Option("text/plain"))
           case MultipartFormData.FilePart(
-              innerKey,
-              innerFilename,
-              innerContentType,
-              _) =>
+                innerKey,
+                innerFilename,
+                innerContentType,
+                _) =>
             (innerKey, Option(innerFilename), innerContentType)
           case _ => throw new UnsupportedOperationException()
         }
@@ -212,7 +216,8 @@ object Multipart {
       f: Formatter,
       boundary: String,
       suppressInitialCrLf: Boolean = false): Unit = {
-    if (!suppressInitialCrLf) f ~~ CrLf
+    if (!suppressInitialCrLf)
+      f ~~ CrLf
     f ~~ '-' ~~ '-' ~~ boundary ~~ CrLf
   }
 

@@ -352,7 +352,8 @@ private class GeneratedClass(
           if (blockStmt == null)
             throw EvaluationException(
               "Could not compile local class in this context")
-          else findAnchorAndParent(blockStmt)
+          else
+            findAnchorAndParent(blockStmt)
       }
 
     var (prevParent, parent) = findAnchorAndParent(context)
@@ -377,7 +378,8 @@ private class GeneratedClass(
             throw EvaluationException(
               "Could not compile local class in this context")
         }
-      } else prevParent
+      } else
+        prevParent
 
     val newInstance =
       ScalaPsiElementFactory.createExpressionWithContextFromText(

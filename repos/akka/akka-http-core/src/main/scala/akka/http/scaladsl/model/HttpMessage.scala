@@ -53,10 +53,14 @@ sealed trait HttpMessage extends jm.HttpMessage {
     */
   def withDefaultHeaders(defaultHeaders: immutable.Seq[HttpHeader]): Self =
     withHeaders {
-      if (headers.isEmpty) defaultHeaders
+      if (headers.isEmpty)
+        defaultHeaders
       else
         defaultHeaders.foldLeft(headers) { (acc, h) ⇒
-          if (headers.exists(_ is h.lowercaseName)) acc else h +: acc
+          if (headers.exists(_ is h.lowercaseName))
+            acc
+          else
+            h +: acc
         }
     }
 
@@ -212,7 +216,8 @@ final class HttpRequest(
     */
   def cookies: immutable.Seq[HttpCookiePair] =
     for (`Cookie`(cookies) ← headers;
-         cookie ← cookies) yield cookie
+         cookie ← cookies)
+      yield cookie
 
   /**
     * Determines whether this request can be safely retried, which is the case only of the request method is idempotent.
@@ -220,7 +225,10 @@ final class HttpRequest(
   def canBeRetried = method.isIdempotent
 
   override def withHeaders(headers: immutable.Seq[HttpHeader]): HttpRequest =
-    if (headers eq this.headers) this else copy(headers = headers)
+    if (headers eq this.headers)
+      this
+    else
+      copy(headers = headers)
 
   override def withHeadersAndEntity(
       headers: immutable.Seq[HttpHeader],
@@ -315,18 +323,23 @@ object HttpRequest {
           s"Cannot establish effective URI of request to `$uri`, request has a relative URI and $detail")
       val Host(host, port) = hostHeader match {
         case None ⇒
-          if (defaultHostHeader.isEmpty) fail("is missing a `Host` header")
-          else defaultHostHeader
+          if (defaultHostHeader.isEmpty)
+            fail("is missing a `Host` header")
+          else
+            defaultHostHeader
         case Some(x) if x.isEmpty ⇒
-          if (defaultHostHeader.isEmpty) fail("an empty `Host` header")
-          else defaultHostHeader
+          if (defaultHostHeader.isEmpty)
+            fail("an empty `Host` header")
+          else
+            defaultHostHeader
         case Some(x) ⇒ x
       }
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||
         hostHeader.get.host.equalsIgnoreCase(
-          uri.authority.host) && hostHeader.get.port == uri.authority.port) uri
+          uri.authority.host) && hostHeader.get.port == uri.authority.port)
+      uri
     else
       throw IllegalUriException(
         s"'Host' header value of request to `$uri` doesn't match request target authority",
@@ -394,7 +407,10 @@ final class HttpResponse(
   override def isResponse = true
 
   override def withHeaders(headers: immutable.Seq[HttpHeader]) =
-    if (headers eq this.headers) this else copy(headers = headers)
+    if (headers eq this.headers)
+      this
+    else
+      copy(headers = headers)
 
   override def withProtocol(protocol: akka.http.javadsl.model.HttpProtocol)
       : akka.http.javadsl.model.HttpResponse =

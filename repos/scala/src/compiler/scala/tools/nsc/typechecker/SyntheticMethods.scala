@@ -52,11 +52,16 @@ trait SyntheticMethods extends ast.TreeDSL {
   private lazy val caseObjectSymbols = Object_equals :: caseSymbols
   private def symbolsToSynthesize(clazz: Symbol): List[Symbol] = {
     if (clazz.isCase) {
-      if (clazz.isDerivedValueClass) caseValueSymbols
-      else if (clazz.isModuleClass) caseSymbols
-      else caseObjectSymbols
-    } else if (clazz.isDerivedValueClass) valueSymbols
-    else Nil
+      if (clazz.isDerivedValueClass)
+        caseValueSymbols
+      else if (clazz.isModuleClass)
+        caseSymbols
+      else
+        caseObjectSymbols
+    } else if (clazz.isDerivedValueClass)
+      valueSymbols
+    else
+      Nil
   }
   private lazy val renamedCaseAccessors =
     perRunCaches.newMap[Symbol, mutable.Map[TermName, TermName]]()
@@ -89,18 +94,25 @@ trait SyntheticMethods extends ast.TreeDSL {
 
     val synthesizer = new ClassMethodSynthesis(
       clazz0,
-      newTyper(if (reporter.hasErrors) context makeSilent false else context)
+      newTyper(
+        if (reporter.hasErrors)
+          context makeSilent false
+        else
+          context)
     )
     import synthesizer._
 
-    if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0)) return {
-      if ((clazz0.info member nme.getClass_).isDeferred) {
-        // XXX dummy implementation for now
-        val getClassMethod =
-          createMethod(nme.getClass_, getClassReturnType(clazz.tpe))(_ => NULL)
-        deriveTemplate(templ)(_ :+ getClassMethod)
-      } else templ
-    }
+    if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0))
+      return {
+        if ((clazz0.info member nme.getClass_).isDeferred) {
+          // XXX dummy implementation for now
+          val getClassMethod =
+            createMethod(nme.getClass_, getClassReturnType(clazz.tpe))(_ =>
+              NULL)
+          deriveTemplate(templ)(_ :+ getClassMethod)
+        } else
+          templ
+      }
 
     def accessors = clazz.caseFieldAccessors
     val arity = accessors.size
@@ -202,7 +214,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       val tests =
         if (clazz.isDerivedValueClass || clazz.isFinal && syntheticCanEqual)
           pairwise
-        else pairwise :+ canEq
+        else
+          pairwise :+ canEq
 
       thatTest(eqmeth) AND Block(
         ValDef(otherSym, thatCast(eqmeth)),
@@ -224,8 +237,10 @@ trait SyntheticMethods extends ast.TreeDSL {
     def equalsCaseClassMethod: Tree =
       createMethod(nme.equals_, List(AnyTpe), BooleanTpe) { m =>
         if (accessors.isEmpty)
-          if (clazz.isFinal) thatTest(m)
-          else thatTest(m) AND ((thatCast(m) DOT nme.canEqual_)(mkThis))
+          if (clazz.isFinal)
+            thatTest(m)
+          else
+            thatTest(m) AND ((thatCast(m) DOT nme.canEqual_)(mkThis))
         else
           (mkThis ANY_EQ Ident(m.firstParam)) OR equalsCore(m, accessors)
       }
@@ -360,11 +375,16 @@ trait SyntheticMethods extends ast.TreeDSL {
       val methods =
         (
           if (clazz.isCase)
-            if (clazz.isDerivedValueClass) valueCaseClassMethods
-            else if (clazz.isModuleClass) caseObjectMethods
-            else caseClassMethods
-          else if (clazz.isDerivedValueClass) valueClassMethods
-          else Nil
+            if (clazz.isDerivedValueClass)
+              valueCaseClassMethods
+            else if (clazz.isModuleClass)
+              caseObjectMethods
+            else
+              caseClassMethods
+          else if (clazz.isDerivedValueClass)
+            valueClassMethods
+          else
+            Nil
         )
 
       /* Always generate overrides for equals and hashCode in value classes,
@@ -388,7 +408,8 @@ trait SyntheticMethods extends ast.TreeDSL {
             }
           }
         }
-        for ((m, impl) <- methods; if shouldGenerate(m)) yield impl()
+        for ((m, impl) <- methods; if shouldGenerate(m))
+          yield impl()
       }
       def extras = {
         if (needsReadResolve) {
@@ -400,7 +421,8 @@ trait SyntheticMethods extends ast.TreeDSL {
             m setFlag PRIVATE;
             REF(clazz.sourceModule)
           }))
-        } else Nil
+        } else
+          Nil
       }
 
       try impls ++ extras
@@ -430,7 +452,11 @@ trait SyntheticMethods extends ast.TreeDSL {
         }
         def nameSuffixedByParamIndex =
           original.name.append(nme.CASE_ACCESSOR + "$" + i).toTermName
-        val newName = if (i < 0) freshAccessorName else nameSuffixedByParamIndex
+        val newName =
+          if (i < 0)
+            freshAccessorName
+          else
+            nameSuffixedByParamIndex
         val newAcc = deriveMethod(ddef.symbol, name => newName) { newAcc =>
           newAcc.makePublic
           newAcc resetFlag (ACCESSOR | PARAMACCESSOR | OVERRIDE)
@@ -450,7 +476,8 @@ trait SyntheticMethods extends ast.TreeDSL {
     }
 
     deriveTemplate(templ)(body =>
-      if (clazz.isCase) caseTemplateBody()
+      if (clazz.isCase)
+        caseTemplateBody()
       else
         synthesize() match {
           case Nil => body // avoiding unnecessary copy

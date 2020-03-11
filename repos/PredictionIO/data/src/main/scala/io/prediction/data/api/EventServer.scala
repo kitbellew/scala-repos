@@ -695,7 +695,8 @@ object EventServer {
         config),
       "EventServerActor"
     )
-    if (config.stats) system.actorOf(Props[StatsActor], "StatsActor")
+    if (config.stats)
+      system.actorOf(Props[StatsActor], "StatsActor")
     system.actorOf(Props[PluginsActor], "PluginsActor")
     serverActor ! StartServer(config.ip, config.port)
     system.awaitTermination()

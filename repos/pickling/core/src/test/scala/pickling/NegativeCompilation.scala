@@ -35,8 +35,10 @@ object NegativeCompilation {
       throw new Exception(s"Exception of type ${classTag[T]} was not thrown")
     } catch {
       case t: Throwable =>
-        if (classTag[T].runtimeClass != t.getClass) throw t
-        else t.asInstanceOf[T]
+        if (classTag[T].runtimeClass != t.getClass)
+          throw t
+        else
+          t.asInstanceOf[T]
     }
   }
 
@@ -81,8 +83,10 @@ object NegativeCompilation {
 
   def quasiquotesJar: String = {
     val dir = System.getProperty("user.dir")
-    if (scalaBinaryVersion == "2.10") s":$dir/quasiquotes_2.10-2.0.1.jar"
-    else ""
+    if (scalaBinaryVersion == "2.10")
+      s":$dir/quasiquotes_2.10-2.0.1.jar"
+    else
+      ""
   }
 
   def expectError(

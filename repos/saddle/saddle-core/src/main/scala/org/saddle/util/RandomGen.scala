@@ -133,7 +133,8 @@ import java.io.BufferedInputStream
 object Xor64 {
   def main(args: Array[String]) {
     val stream = new BufferedInputStream(RandomStream(XorShift(12345678910L)))
-    while (true) System.out.write(stream.read())
+    while (true)
+      System.out.write(stream.read())
   }
 }
 
@@ -173,7 +174,8 @@ object Xor64 {
 object LFib {
   def main(args: Array[String]) {
     val stream = new BufferedInputStream(RandomStream(LFib4(12345678910L)))
-    while (true) System.out.write(stream.read())
+    while (true)
+      System.out.write(stream.read())
   }
 }
 
@@ -213,6 +215,7 @@ object LFib {
 object Ziff {
   def main(args: Array[String]) {
     val stream = new BufferedInputStream(RandomStream(Ziff98(12345678910L)))
-    while (true) System.out.write(stream.read())
+    while (true)
+      System.out.write(stream.read())
   }
 }

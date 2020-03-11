@@ -152,7 +152,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def first(key: X): Scalar[T] = {
     val loc = index.getFirst(key)
-    if (loc == -1) NA else at(loc)
+    if (loc == -1)
+      NA
+    else
+      at(loc)
   }
 
   /**
@@ -162,7 +165,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def get(key: X): Scalar[T] = {
     val loc = index.getFirst(key)
-    if (loc == -1) NA else at(loc)
+    if (loc == -1)
+      NA
+    else
+      at(loc)
   }
 
   /**
@@ -176,7 +182,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def last(key: X): Scalar[T] = {
     val loc = index.getLast(key)
-    if (loc == -1) NA else at(loc)
+    if (loc == -1)
+      NA
+    else
+      at(loc)
   }
 
   // access index keys by location(s)
@@ -311,7 +320,11 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def sliceBy(from: X, to: X, inclusive: Boolean = true): Series[X, T] = {
     val start = index.lsearch(from)
-    val end = if (inclusive) index.rsearch(to) else index.lsearch(to)
+    val end =
+      if (inclusive)
+        index.rsearch(to)
+      else
+        index.lsearch(to)
     Series(values.slice(start, end), index.slice(start, end))
   }
 
@@ -488,7 +501,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def findOneKey(pred: T => Boolean): Scalar[X] = {
     val loc = findOne(pred)
-    if (loc == -1) NA else keyAt(loc)
+    if (loc == -1)
+      NA
+    else
+      keyAt(loc)
   }
 
   /**
@@ -591,7 +607,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * Create a new Series whose key/value entries are sorted according to the keys (index values).
     */
   def sortedIx: Series[X, T] =
-    if (index.isMonotonic) this else take(index.argSort)
+    if (index.isMonotonic)
+      this
+    else
+      take(index.argSort)
 
   /**
     * Create a new Series whose values and index keys are both in reversed order
@@ -638,7 +657,11 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       Series.empty[X, B]
     else {
       val len = values.length
-      val win = if (winSz > len) len else winSz
+      val win =
+        if (winSz > len)
+          len
+        else
+          winSz
       val buf = new Array[B](len - win + 1)
       var i = win
       while (i <= len) {
@@ -719,7 +742,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     val grps =
       grpr.groups // Group by pivot label. Each unique label will get its
     //  own column
-    if (length == 0) Frame.empty[O1, O2, T]
+    if (length == 0)
+      Frame.empty[O1, O2, T]
     else {
       var loc = 0
       val result = Array.ofDim[Vec[T]](cix.length) // accumulates result columns
@@ -856,7 +880,11 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
 
     this.fillNA { key =>
       val loc = proxy.index.getFirst(key)
-      val res: T = if (loc == -1) NA else proxy.raw(loc)
+      val res: T =
+        if (loc == -1)
+          NA
+        else
+          proxy.raw(loc)
       res
     }
   }
@@ -904,26 +932,31 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         vlHf.map(vsca.show(_)).foldLeft(2)((a, b) => math.max(a, b.length))
 
       def enumZip[A, B](a: List[A], b: List[B]): List[(Int, A, B)] =
-        for (v <- (a.zipWithIndex zip b)) yield (v._1._2, v._1._1, v._2)
+        for (v <- (a.zipWithIndex zip b))
+          yield (v._1._2, v._1._1, v._2)
 
       val sz = isca.strList(index.raw(0)).size
 
       val prevRowLabels = Array.fill(sz)("")
       def resetRowLabels(k: Int) {
-        for (i <- k until prevRowLabels.length) prevRowLabels(i) = ""
+        for (i <- k until prevRowLabels.length)
+          prevRowLabels(i) = ""
       }
 
       def createIx(r: Int) = {
         val vls = isca.strList(index.raw(r))
-        val lst = for ((i, l, v) <- enumZip(ilens, vls)) yield {
-          val fmt = "%" + l + "s"
-          val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-            resetRowLabels(i + 1)
-            v.formatted(fmt)
-          } else "".formatted(fmt)
-          prevRowLabels(i) = v
-          res
-        }
+        val lst =
+          for ((i, l, v) <- enumZip(ilens, vls))
+            yield {
+              val fmt = "%" + l + "s"
+              val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
+                resetRowLabels(i + 1)
+                v.formatted(fmt)
+              } else
+                "".formatted(fmt)
+              prevRowLabels(i) = v
+              res
+            }
         lst.mkString(" ")
       }
 

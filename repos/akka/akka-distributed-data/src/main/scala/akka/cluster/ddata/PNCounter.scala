@@ -91,9 +91,12 @@ final class PNCounter private[akka] (
   private[akka] def decrement(key: UniqueAddress): PNCounter = decrement(key, 1)
 
   private[akka] def change(key: UniqueAddress, delta: Long): PNCounter =
-    if (delta > 0) copy(increments = increments.increment(key, delta))
-    else if (delta < 0) copy(decrements = decrements.increment(key, -delta))
-    else this
+    if (delta > 0)
+      copy(increments = increments.increment(key, delta))
+    else if (delta < 0)
+      copy(decrements = decrements.increment(key, -delta))
+    else
+      this
 
   override def merge(that: PNCounter): PNCounter =
     copy(

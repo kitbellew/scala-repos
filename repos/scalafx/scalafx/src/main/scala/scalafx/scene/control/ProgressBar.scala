@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object ProgressBar {
   implicit def sfxProgressBar2jfx(v: ProgressBar): jfxsc.ProgressBar =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class ProgressBar(

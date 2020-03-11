@@ -367,18 +367,22 @@ object ProducerFeatureTest {
 
     override def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒
-          if (body == "err") throw new Exception("Crash!")
-          val upperMsg = body.toUpperCase
-          lastSender = Some(sender())
-          lastMessage = Some(upperMsg)
-        }
-        else msg
+        if (upper)
+          msg.mapBody { body: String ⇒
+            if (body == "err")
+              throw new Exception("Crash!")
+            val upperMsg = body.toUpperCase
+            lastSender = Some(sender())
+            lastMessage = Some(upperMsg)
+          }
+        else
+          msg
     }
 
     override def postStop() {
       for (msg ← lastMessage;
-           aref ← lastSender) context.parent ! ((aref, msg))
+           aref ← lastSender)
+        context.parent ! ((aref, msg))
       super.postStop()
     }
   }
@@ -395,10 +399,12 @@ object ProducerFeatureTest {
 
     override protected def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒
-          body.toUpperCase
-        }
-        else msg
+        if (upper)
+          msg.mapBody { body: String ⇒
+            body.toUpperCase
+          }
+        else
+          msg
     }
   }
 

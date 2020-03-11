@@ -57,9 +57,12 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   def lastIndexOf(e: E, index: Int): Int = {
     @tailrec
     def findIndex(iter: ListIterator[E]): Int = {
-      if (!iter.hasPrevious) -1
-      else if (iter.previous() === e) iter.nextIndex
-      else findIndex(iter)
+      if (!iter.hasPrevious)
+        -1
+      else if (iter.previous() === e)
+        iter.nextIndex
+      else
+        findIndex(iter)
     }
     findIndex(listIterator(size))
   }
@@ -73,8 +76,10 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   def toArray[T](a: Array[T]): Array[T] = {
     val componentType = a.getClass.getComponentType
     val toFill: Array[T] =
-      if (a.size >= size) a
-      else jlr.Array.newInstance(componentType, size).asInstanceOf[Array[T]]
+      if (a.size >= size)
+        a
+      else
+        jlr.Array.newInstance(componentType, size).asInstanceOf[Array[T]]
 
     val iter = iterator
     for (i <- 0 until size)
@@ -117,7 +122,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
 
   def remove(o: scala.Any): Boolean = {
     val index = indexOf(o)
-    if (index == -1) false
+    if (index == -1)
+      false
     else {
       remove(index)
       true
@@ -125,7 +131,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   }
 
   def addIfAbsent(e: E): Boolean = {
-    if (contains(e)) false
+    if (contains(e))
+      false
     else {
       copyIfNeeded()
       innerPush(e)
@@ -196,7 +203,10 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
 
   override def hashCode(): Int = {
     iterator().foldLeft(1) { (prev, elem) =>
-      31 * prev + (if (elem == null) 0 else elem.hashCode)
+      31 * prev + (if (elem == null)
+                     0
+                   else
+                     elem.hashCode)
     }
   }
 

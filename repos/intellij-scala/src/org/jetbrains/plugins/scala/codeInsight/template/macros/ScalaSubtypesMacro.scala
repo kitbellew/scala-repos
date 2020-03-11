@@ -28,7 +28,10 @@ class ScalaSubtypesMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result =
-    if (params.length != 1) null else params(0).calculateResult(context)
+    if (params.length != 1)
+      null
+    else
+      params(0).calculateResult(context)
 
   override def calculateQuickResult(
       params: Array[Expression],
@@ -37,7 +40,8 @@ class ScalaSubtypesMacro extends Macro {
   override def calculateLookupItems(
       params: Array[Expression],
       context: ExpressionContext): Array[LookupElement] = {
-    if (params.length != 1) return Array[LookupElement]()
+    if (params.length != 1)
+      return Array[LookupElement]()
     val project = context.getProject
     params(0).calculateResult(context) match {
       case scTypeRes: ScalaTypeResult =>

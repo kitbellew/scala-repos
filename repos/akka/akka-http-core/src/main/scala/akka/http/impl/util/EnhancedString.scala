@@ -57,13 +57,19 @@ private[http] class EnhancedString(val underlying: String) extends AnyVal {
     * Returns Some(String) if the underlying string is non-empty, None otherwise
     */
   def toOption: Option[String] =
-    if ((underlying eq null) || underlying.isEmpty) None else Some(underlying)
+    if ((underlying eq null) || underlying.isEmpty)
+      None
+    else
+      Some(underlying)
 
   /**
     * If the underlying string is null the method returns the empty string, otherwise the underlying string.
     */
   def nullAsEmpty: String =
-    if (underlying eq null) "" else underlying
+    if (underlying eq null)
+      ""
+    else
+      underlying
 
   /**
     * Returns the ASCII encoded bytes of this string. Truncates characters to 8-bit byte value.

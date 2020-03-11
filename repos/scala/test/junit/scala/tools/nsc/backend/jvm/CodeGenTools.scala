@@ -94,8 +94,10 @@ object CodeGenTools {
     def files(dir: AbstractFile): List[(String, Array[Byte])] = {
       val res = ListBuffer.empty[(String, Array[Byte])]
       for (f <- dir.iterator) {
-        if (!f.isDirectory) res += ((f.name, f.toByteArray))
-        else if (f.name != "." && f.name != "..") res ++= files(f)
+        if (!f.isDirectory)
+          res += ((f.name, f.toByteArray))
+        else if (f.name != "." && f.name != "..")
+          res ++= files(f)
       }
       res.toList
     }
@@ -312,11 +314,18 @@ object CodeGenTools {
     */
   def findInstr(method: MethodNode, query: String): List[AbstractInsnNode] = {
     val useNext = query(0) == '+'
-    val instrPart = if (useNext) query.drop(1) else query
+    val instrPart =
+      if (useNext)
+        query.drop(1)
+      else
+        query
     val insns = method.instructions.iterator.asScala
       .filter(i => textify(i) contains instrPart)
       .toList
-    if (useNext) insns.map(_.getNext) else insns
+    if (useNext)
+      insns.map(_.getNext)
+    else
+      insns
   }
 
   def assertHandlerLabelPostions(

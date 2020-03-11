@@ -192,7 +192,10 @@ object UnifiedMemoryManager {
       conf.getLong("spark.testing.memory", Runtime.getRuntime.maxMemory)
     val reservedMemory = conf.getLong(
       "spark.testing.reservedMemory",
-      if (conf.contains("spark.testing")) 0 else RESERVED_SYSTEM_MEMORY_BYTES)
+      if (conf.contains("spark.testing"))
+        0
+      else
+        RESERVED_SYSTEM_MEMORY_BYTES)
     val minSystemMemory = reservedMemory * 1.5
     if (systemMemory < minSystemMemory) {
       throw new IllegalArgumentException(

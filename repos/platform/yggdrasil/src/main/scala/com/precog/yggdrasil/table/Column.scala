@@ -51,7 +51,10 @@ sealed trait Column {
   def strValue(row: Int): String
 
   def toString(row: Int): String =
-    if (isDefinedAt(row)) strValue(row) else "(undefined)"
+    if (isDefinedAt(row))
+      strValue(row)
+    else
+      "(undefined)"
   def toString(range: Range): String =
     range.map(toString(_: Int)).mkString("(", ",", ")")
 
@@ -71,16 +74,20 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
   def apply(row: Int): Array[A]
 
   def rowEq(row1: Int, row2: Int): Boolean = {
-    if (!isDefinedAt(row1)) return !isDefinedAt(row2)
-    if (!isDefinedAt(row2)) return false
+    if (!isDefinedAt(row1))
+      return !isDefinedAt(row2)
+    if (!isDefinedAt(row2))
+      return false
 
     val a1 = apply(row1)
     val a2 = apply(row2)
-    if (a1.length != a2.length) return false
+    if (a1.length != a2.length)
+      return false
     val n = a1.length
     var i = 0
     while (i < n) {
-      if (a1(i) != a2(i)) return false
+      if (a1(i) != a2(i))
+        return false
       i += 1
     }
     true
@@ -388,15 +395,22 @@ object Column {
       if (col.isDefinedAt(i)) {
         if (col.isDefinedAt(j)) {
           col.rowCompare(i, j)
-        } else 1
-      } else if (col.isDefinedAt(j)) -1
-      else 0
+        } else
+          1
+      } else if (col.isDefinedAt(j))
+        -1
+      else
+        0
     }
 
     def eqv(i: Int, j: Int): Boolean = {
       if (col.isDefinedAt(i)) {
-        if (col.isDefinedAt(j)) col.rowEq(i, j) else false
-      } else !col.isDefinedAt(j)
+        if (col.isDefinedAt(j))
+          col.rowEq(i, j)
+        else
+          false
+      } else
+        !col.isDefinedAt(j)
     }
   }
   @inline def const(cv: CValue): Column = cv match {

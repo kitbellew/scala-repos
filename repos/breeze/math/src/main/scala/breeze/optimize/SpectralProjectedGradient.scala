@@ -74,10 +74,14 @@ class SpectralProjectedGradient[T](
     */
   protected def bbAlpha(s: T, y: T): Double = {
     var alpha =
-      if (bbType == 1) (s dot s) / (s dot y)
-      else (s dot y) / (y dot y)
-    if (alpha <= alphaMin || alpha > alphaMax) alpha = 1.0
-    if (alpha.isNaN) alpha = 1.0
+      if (bbType == 1)
+        (s dot s) / (s dot y)
+      else
+        (s dot y) / (y dot y)
+    if (alpha <= alphaMin || alpha > alphaMax)
+      alpha = 1.0
+    if (alpha.isNaN)
+      alpha = 1.0
     alpha
   }
 
@@ -101,8 +105,10 @@ class SpectralProjectedGradient[T](
   override protected def chooseDescentDirection(
       state: State,
       f: DiffFunction[T]): T = {
-    if (curvilinear) state.x - state.grad * state.history.alphaBB
-    else projection(state.x - state.grad * state.history.alphaBB) - state.x
+    if (curvilinear)
+      state.x - state.grad * state.history.alphaBB
+    else
+      projection(state.x - state.grad * state.history.alphaBB) - state.x
   }
 
   override protected def determineStepSize(
@@ -110,18 +116,23 @@ class SpectralProjectedGradient[T](
       f: DiffFunction[T],
       direction: T): Double = {
     val fb =
-      if (state.history.fvals.isEmpty) state.value
-      else state.value max state.history.fvals.max
+      if (state.history.fvals.isEmpty)
+        state.value
+      else
+        state.value max state.history.fvals.max
     val normGradInDir = state.grad dot direction
 
     var gamma =
-      if (state.iter == 0) scala.math.min(1.0, 1.0 / norm(state.grad))
-      else 1.0
+      if (state.iter == 0)
+        scala.math.min(1.0, 1.0 / norm(state.grad))
+      else
+        1.0
 
     val searchFun =
       if (curvilinear)
         functionFromSearchDirection(f, state.x, direction, projection)
-      else LineSearch.functionFromSearchDirection(f, state.x, direction)
+      else
+        LineSearch.functionFromSearchDirection(f, state.x, direction)
 
     //TO DO :
     // 1. Add cubic interpolation and see it's performance. Bisection did not work for L1 projection

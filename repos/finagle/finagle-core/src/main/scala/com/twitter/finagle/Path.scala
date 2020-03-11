@@ -21,8 +21,10 @@ case class Path(elems: Buf*) {
   def take(n: Int) = Path((elems take n): _*)
   def drop(n: Int) = Path((elems drop n): _*)
   def ++(that: Path) =
-    if (that.isEmpty) this
-    else Path((elems ++ that.elems): _*)
+    if (that.isEmpty)
+      this
+    else
+      Path((elems ++ that.elems): _*)
   def size = elems.size
   def isEmpty = elems.isEmpty
 

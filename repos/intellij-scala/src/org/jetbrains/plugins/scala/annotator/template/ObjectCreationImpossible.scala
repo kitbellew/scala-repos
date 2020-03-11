@@ -23,12 +23,14 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
       definition: ScTemplateDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (!typeAware) return
+    if (!typeAware)
+      return
 
     val isNew = definition.isInstanceOf[ScNewTemplateDefinition]
     val isObject = definition.isInstanceOf[ScObject]
 
-    if (!isNew && !isObject) return
+    if (!isNew && !isObject)
+      return
 
     val refs = definition.refs
 
@@ -53,8 +55,10 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
 
           if (undefined.nonEmpty) {
             val element =
-              if (isNew) refElement
-              else definition.asInstanceOf[ScObject].nameId
+              if (isNew)
+                refElement
+              else
+                definition.asInstanceOf[ScObject].nameId
             val annotation = holder.createErrorAnnotation(
               element,
               message(undefined.toSeq: _*))

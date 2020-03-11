@@ -118,7 +118,10 @@ class PermissionsFinder[M[+_]: Monad](
             val allOptions = perms collect {
               case \/-(Some(authorities)) => authorities
             }
-            if (allOptions.size == 1) allOptions.headOption else None
+            if (allOptions.size == 1)
+              allOptions.headOption
+            else
+              None
           }
       }
     }
@@ -174,8 +177,10 @@ class PermissionsFinder[M[+_]: Monad](
       // FIXME: Not comprehensive/exhaustive in terms of finding all possible data you could read
       permissions flatMap {
         case perm @ WrittenByPermission(p0, _) if p0.isEqualOrParentOf(path) =>
-          if (perm.path == Path.Root) accountPath.flatten.map(_.rootPath)
-          else Some(perm.path)
+          if (perm.path == Path.Root)
+            accountPath.flatten.map(_.rootPath)
+          else
+            Some(perm.path)
 
         case _ => None
       }

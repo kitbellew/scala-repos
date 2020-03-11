@@ -118,7 +118,10 @@ class UTF8StringPropertyCheckSuite
       while ((st < s.length) && (array(st) <= ' ')) {
         st += 1
       }
-      if (st > 0) s.substring(st, s.length) else s
+      if (st > 0)
+        s.substring(st, s.length)
+      else
+        s
     }
     def rTrim(s: String): String = {
       var len = s.length
@@ -126,7 +129,10 @@ class UTF8StringPropertyCheckSuite
       while ((len > 0) && (array(len - 1) <= ' ')) {
         len -= 1
       }
-      if (len < s.length) s.substring(0, len) else s
+      if (len < s.length)
+        s.substring(0, len)
+      else
+        s
     }
 
     forAll(
@@ -161,7 +167,10 @@ class UTF8StringPropertyCheckSuite
 
   test("repeat") {
     def repeat(str: String, times: Int): String = {
-      if (times > 0) str * times else ""
+      if (times > 0)
+        str * times
+      else
+        ""
     }
     // ScalaCheck always generating too large repeat times which might hang the test forever.
     forAll(randomString, randomInt) { (s: String, times: Int) =>
@@ -175,15 +184,22 @@ class UTF8StringPropertyCheckSuite
         pad: String,
         length: Int,
         isLPad: Boolean): String = {
-      if (length <= 0) return ""
+      if (length <= 0)
+        return ""
       if (length <= origin.length) {
-        if (length <= 0) "" else origin.substring(0, length)
+        if (length <= 0)
+          ""
+        else
+          origin.substring(0, length)
       } else {
-        if (pad.length == 0) return origin
+        if (pad.length == 0)
+          return origin
         val toPad = length - origin.length
         val partPad =
-          if (toPad % pad.length == 0) ""
-          else pad.substring(0, toPad % pad.length)
+          if (toPad % pad.length == 0)
+            ""
+          else
+            pad.substring(0, toPad % pad.length)
         if (isLPad) {
           pad * (toPad / pad.length) + partPad + origin
         } else {
@@ -210,7 +226,10 @@ class UTF8StringPropertyCheckSuite
 
   test("concat") {
     def concat(orgin: Seq[String]): String =
-      if (orgin.contains(null)) null else orgin.mkString
+      if (orgin.contains(null))
+        null
+      else
+        orgin.mkString
 
     forAll { (inputs: Seq[String]) =>
       assert(
@@ -224,7 +243,8 @@ class UTF8StringPropertyCheckSuite
 
   test("concatWs") {
     def concatWs(sep: String, inputs: Seq[String]): String = {
-      if (sep == null) return null
+      if (sep == null)
+        return null
       inputs.filter(_ != null).mkString(sep)
     }
 

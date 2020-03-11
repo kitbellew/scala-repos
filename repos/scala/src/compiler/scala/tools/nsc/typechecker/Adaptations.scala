@@ -32,19 +32,32 @@ trait Adaptations {
         case _                    => EmptyTree
       }
       def callString = (
-        (if (t.symbol.isConstructor) "new " else "") +
+        (if (t.symbol.isConstructor)
+           "new "
+         else
+           "") +
           (t.symbol.owner.decodedName) +
-          (if (t.symbol.isConstructor || t.symbol.name == nme.apply) ""
-           else "." + t.symbol.decodedName)
+          (if (t.symbol.isConstructor || t.symbol.name == nme.apply)
+             ""
+           else
+             "." + t.symbol.decodedName)
       )
       def sigString = t.symbol.owner.decodedName + (
-        if (t.symbol.isConstructor) t.symbol.signatureString
-        else "." + t.symbol.decodedName + t.symbol.signatureString
+        if (t.symbol.isConstructor)
+          t.symbol.signatureString
+        else
+          "." + t.symbol.decodedName + t.symbol.signatureString
       )
-      def givenString = if (args.isEmpty) "<none>" else args.mkString(", ")
+      def givenString =
+        if (args.isEmpty)
+          "<none>"
+        else
+          args.mkString(", ")
       def adaptedArgs =
-        if (args.isEmpty) "(): Unit"
-        else args.mkString("(", ", ", "): " + applyArg.tpe)
+        if (args.isEmpty)
+          "(): Unit"
+        else
+          args.mkString("(", ", ", "): " + applyArg.tpe)
 
       def adaptWarningMessage(msg: String, showAdaptation: Boolean = true) =
         msg +
@@ -52,7 +65,8 @@ trait Adaptations {
           "\n  given arguments: " + givenString +
           (if (showAdaptation)
              "\n after adaptation: " + callString + "(" + adaptedArgs + ")"
-           else "")
+           else
+             "")
 
       // A one-argument method accepting Object (which may look like "Any"
       // at this point if the class is java defined) is a "leaky target" for

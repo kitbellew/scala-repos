@@ -81,14 +81,16 @@ object TravPickler {
     val elementType = elementTagExtractor(tpe)
     // TODO - These any pickler.unpicklers should be passed in.
     val elemPickler =
-      if (elementType.key == ANY_TAG.key) AnyPickler
+      if (elementType.key == ANY_TAG.key)
+        AnyPickler
       else
         currentRuntime.picklers
           .lookupPickler(elementType.key)
           .getOrElse(throw new PicklingException(
             s"Cannnot generate a pickler/unpickler for $tpe, cannot find a pickler for $elementType"))
     val elemUnpickler =
-      if (elementType.key == ANY_TAG.key) AnyUnpickler
+      if (elementType.key == ANY_TAG.key)
+        AnyUnpickler
       else
         currentRuntime.picklers
           .lookupUnpickler(elementType.key)

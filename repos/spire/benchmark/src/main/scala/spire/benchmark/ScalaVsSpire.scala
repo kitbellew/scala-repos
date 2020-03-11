@@ -142,8 +142,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin)
+        zmin = z
+      else if (z > zmax)
+        zmax = z
       i += 1
     }
     (zmin, zmax)
@@ -159,8 +161,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin)
+        zmin = z
+      else if (z > zmax)
+        zmax = z
       i += 1
     }
     (zmin, zmax)
@@ -175,8 +179,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin)
+        zmin = z
+      else if (z > zmax)
+        zmax = z
       i += 1
     }
     (zmin, zmax)
@@ -186,7 +192,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     * Find GCD.
     */
   @tailrec final def gcdDirect(a: Int, b: Int): Int =
-    if (a % b == 0) b else gcdDirect(b, a % b)
+    if (a % b == 0)
+      b
+    else
+      gcdDirect(b, a % b)
 
   def doGcdDirect(as: Array[Int], bs: Array[Int], cs: Array[Int]) = {
     var i = 0
@@ -200,7 +209,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   import scala.math.{Integral => ScalaI}
   @tailrec final def gcdGeneric[A](a: A, b: A)(implicit ev: ScalaI[A]): A = {
     import ScalaI.Implicits._
-    if (a % b == ev.zero) b else gcdGeneric(b, a % b)
+    if (a % b == ev.zero)
+      b
+    else
+      gcdGeneric(b, a % b)
   }
 
   def doGcdGeneric[A: ScalaI](as: Array[A], bs: Array[A], cs: Array[A]) = {
@@ -216,7 +228,10 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
       ev1: EuclideanRing[A],
       ev2: Eq[A]): A = {
     import spire.implicits._
-    if (a % b === ev1.zero) b else gcdSpire(b, a % b)
+    if (a % b === ev1.zero)
+      b
+    else
+      gcdSpire(b, a % b)
   }
 
   def doGcdSpire[@sp(Int) A: EuclideanRing: Eq](

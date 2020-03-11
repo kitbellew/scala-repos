@@ -79,8 +79,10 @@ class CreateResultSetMapping extends Phase {
           // Option-lifted but we can still treat it as the base type when the discriminator matches.
           val sel = Select(ref, syms(curIdx - 1)).infer()
           val tSel = t.structuralRec
-          if (sel.nodeType.structuralRec == tSel) sel
-          else Library.SilentCast.typed(tSel, sel)
+          if (sel.nodeType.structuralRec == tSel)
+            sel
+          else
+            Library.SilentCast.typed(tSel, sel)
       }
     }
     f(tpe)
@@ -97,7 +99,8 @@ class RemoveMappedTypes extends Phase {
     if (state.get(Phase.assignUniqueSymbols).map(_.typeMapping).getOrElse(true))
       state.withNode(
         removeTypeMapping(state.tree)) + (this -> state.tree.nodeType)
-    else state + (this -> state.tree.nodeType)
+    else
+      state + (this -> state.tree.nodeType)
 
   /** Remove TypeMapping nodes and MappedTypes */
   def removeTypeMapping(n: Node): Node = n match {

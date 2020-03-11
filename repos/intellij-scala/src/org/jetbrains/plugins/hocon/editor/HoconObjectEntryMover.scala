@@ -73,7 +73,8 @@ class HoconObjectEntryMover extends LineMover {
     val offset = editor.getCaretModel.getOffset
     val element = file.findElementAt(offset)
 
-    if (element == null) return false
+    if (element == null)
+      return false
 
     val currentLine = document.getLineNumber(offset)
 
@@ -134,16 +135,24 @@ class HoconObjectEntryMover extends LineMover {
       new LineRange(line, line + 1)
 
     def adjacentMovableEntry(entry: HObjectEntry) =
-      if (down) entry.nextEntry.filter(canInsertAfter)
-      else entry.previousEntry.filter(canInsertBefore)
+      if (down)
+        entry.nextEntry.filter(canInsertAfter)
+      else
+        entry.previousEntry.filter(canInsertBefore)
 
     def fieldToAscendOutOf(
         field: HObjectField): Option[(HObjectField, List[String])] =
       if (isByEdge(field)) {
         def edgeLine(element: PsiElement) =
-          if (down) endLine(element) else firstNonCommentLine(element)
+          if (down)
+            endLine(element)
+          else
+            firstNonCommentLine(element)
         def canInsert(field: HObjectField) =
-          if (down) canInsertAfter(field) else canInsertBefore(field)
+          if (down)
+            canInsertAfter(field)
+          else
+            canInsertBefore(field)
 
         field.parent
           .flatMap(_.prefixingField)
@@ -153,12 +162,16 @@ class HoconObjectEntryMover extends LineMover {
               edgeLine(of) == edgeLine(pp)) && canInsert(of))
           .map(of =>
             (of, of.keyedField.fieldsInPathForward.map(keyString).toList))
-      } else None
+      } else
+        None
 
     def canInsertInto(field: HObjectField) =
       !inSingleLine(field) && {
         val lineToInsertAfter =
-          if (down) firstNonCommentLine(field) else endLine(field) - 1
+          if (down)
+            firstNonCommentLine(field)
+          else
+            endLine(field) - 1
         file
           .elementsAt(document.getLineEndOffset(lineToInsertAfter))
           .collectFirst {
@@ -169,7 +182,10 @@ class HoconObjectEntryMover extends LineMover {
       }
 
     def adjacentEntry(entry: HObjectEntry) =
-      if (down) entry.nextEntry else entry.previousEntry
+      if (down)
+        entry.nextEntry
+      else
+        entry.previousEntry
 
     def fieldToDescendInto(
         field: HObjectField): Option[(HObjectField, List[String])] =
@@ -190,7 +206,10 @@ class HoconObjectEntryMover extends LineMover {
             }
             .map(keyString)
             .toList
-          if (removablePrefix.startsWith(prefix)) Some(prefix) else None
+          if (removablePrefix.startsWith(prefix))
+            Some(prefix)
+          else
+            None
         }
       } yield (adjacentField, prefixToRemove)
 
@@ -202,7 +221,8 @@ class HoconObjectEntryMover extends LineMover {
           val targetRange =
             if (down)
               new LineRange(sourceRange.endLine, endLine(enclosingField) + 1)
-            else new LineRange(startLine(enclosingField), sourceRange.startLine)
+            else
+              new LineRange(startLine(enclosingField), sourceRange.startLine)
           val mod = PrefixModification(
             objField.getTextOffset,
             0,
@@ -216,7 +236,8 @@ class HoconObjectEntryMover extends LineMover {
               new LineRange(
                 sourceRange.endLine,
                 firstNonCommentLine(adjacentField) + 1)
-            else new LineRange(endLine(adjacentField), sourceRange.startLine)
+            else
+              new LineRange(endLine(adjacentField), sourceRange.startLine)
           val prefixStr = prefixToRemove.mkString("", ".", ".")
           val needsGuard = document.getCharsSequence
             .charAt(objField.getTextOffset + prefixStr.length)
@@ -224,7 +245,10 @@ class HoconObjectEntryMover extends LineMover {
           val mod = PrefixModification(
             objField.getTextOffset,
             prefixStr.length,
-            if (needsGuard) "\"\"" else "")
+            if (needsGuard)
+              "\"\""
+            else
+              "")
           (sourceRange, targetRange, Some(mod))
       }
     }
@@ -236,13 +260,20 @@ class HoconObjectEntryMover extends LineMover {
       } orElse {
         val maxLinePos = editor.offsetToLogicalPosition(document.getTextLength)
         val maxLine =
-          if (maxLinePos.column == 0) maxLinePos.line else maxLinePos.line + 1
+          if (maxLinePos.column == 0)
+            maxLinePos.line
+          else
+            maxLinePos.line + 1
         val nearLine =
-          if (down) sourceRange.endLine else sourceRange.startLine - 1
+          if (down)
+            sourceRange.endLine
+          else
+            sourceRange.startLine - 1
 
         if (nearLine >= 0 && nearLine < maxLine)
           Some((sourceRange, singleLineRange(nearLine), None))
-        else None
+        else
+          None
       }
     }
 

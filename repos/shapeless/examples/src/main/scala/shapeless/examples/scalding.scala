@@ -64,6 +64,7 @@ object ScaldingPoC extends App {
     )
 
   val lines = books.flatMap(book =>
-    for (word <- book("text").split("\\s+")) yield book + ("word" ->> word))
+    for (word <- book("text").split("\\s+"))
+      yield book + ("word" ->> word))
   lines foreach println
 }

@@ -13,9 +13,12 @@ object Test {
           }
         }
       })
-    for (t <- threads) t.start
-    for (t <- threads) t.join
-    if (failure != null) println("FAILURE: " + failure)
+    for (t <- threads)
+      t.start
+    for (t <- threads)
+      t.join
+    if (failure != null)
+      println("FAILURE: " + failure)
   }
 
   def testSet(initialSize: Int, numThreads: Int, passes: Int) {

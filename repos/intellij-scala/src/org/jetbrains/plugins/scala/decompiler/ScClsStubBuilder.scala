@@ -39,21 +39,25 @@ object ScClsStubBuilder {
   private def canBeProcessed(
       file: VirtualFile,
       bytes: => Array[Byte]): Boolean = {
-    if (DecompilerUtil.isScalaFile(file, bytes)) return true
+    if (DecompilerUtil.isScalaFile(file, bytes))
+      return true
     val fileName: String = file.getNameWithoutExtension
     val parent = file.getParent
 
     def split(str: String): Option[(String, String)] = {
       val index = str.indexOf('$')
-      if (index == -1) None
-      else Some(str.substring(0, index), str.substring(index + 1, str.length))
+      if (index == -1)
+        None
+      else
+        Some(str.substring(0, index), str.substring(index + 1, str.length))
     }
 
     @tailrec
     def go(prefix: String, suffix: String): Boolean = {
       if (!prefix.endsWith("$")) {
         val child = parent.findChild(prefix + ".class")
-        if (child != null && DecompilerUtil.isScalaFile(child)) return true
+        if (child != null && DecompilerUtil.isScalaFile(child))
+          return true
       }
       split(suffix) match {
         case Some((suffixPrefix, suffixSuffix)) =>
@@ -73,7 +77,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
   override def getStubVersion: Int = StubVersion.STUB_VERSION
 
   override def buildFileStub(content: FileContent): PsiFileStub[ScalaFile] = {
-    if (isInnerClass(content.getFile)) null
+    if (isInnerClass(content.getFile))
+      null
     else
       buildFileStub(
         content.getFile,
@@ -112,7 +117,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
   }
 
   private def isInnerClass(file: VirtualFile): Boolean = {
-    if (file.getExtension != "class") return false
+    if (file.getExtension != "class")
+      return false
     val name: String = file.getNameWithoutExtension
     val parent: VirtualFile = file.getParent
     isInner(name, new ParentDirectory(parent))
@@ -150,7 +156,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
 
   private class ParentDirectory(dir: VirtualFile) extends Directory {
     def contains(name: String): Boolean = {
-      if (dir == null) return false
+      if (dir == null)
+        return false
       !dir.getChildren.forall(child =>
         child.getExtension != "class" || NameTransformer.decode(
           child.getNameWithoutExtension) == name)

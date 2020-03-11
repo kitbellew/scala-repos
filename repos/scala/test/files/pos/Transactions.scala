@@ -78,23 +78,28 @@ trait Transactional {
   var writer: Transaction
 
   def currentWriter(): Transaction = null
-  if (writer == null) null
-  else if (writer.status == Transaction.Running) writer
+  if (writer == null)
+    null
+  else if (writer.status == Transaction.Running)
+    writer
   else {
-    if (writer.status != Transaction.Committed) rollBack();
+    if (writer.status != Transaction.Committed)
+      rollBack();
     writer = null;
     null
   }
 
   def getter(thisTrans: Transaction) {
-    if (writer == thisTrans) return
+    if (writer == thisTrans)
+      return
     var r = readers
     while (r != null && r.head.status != Transaction.Running) {
       r = r.next;
       readers = r
     }
     while (r != null) {
-      if (r.head == thisTrans) return
+      if (r.head == thisTrans)
+        return
       val last = r
       r = r.next
       while (r != null && r.head.status != Transaction.Running) {
@@ -103,36 +108,45 @@ trait Transactional {
       }
     }
     synchronized {
-      if (thisTrans.status == Transaction.Abortable) throw new AbortException
+      if (thisTrans.status == Transaction.Abortable)
+        throw new AbortException
       val w = currentWriter()
       if (w != null)
         if (thisTrans.id < w.id) {
           w.makeAbort();
           rollBack();
           writer = null
-        } else throw new AbortException
+        } else
+          throw new AbortException
       readers =
-        if (readers == null) thisTrans else new Transaction(thisTrans, readers)
+        if (readers == null)
+          thisTrans
+        else
+          new Transaction(thisTrans, readers)
     }
   }
 
   def setter(thisTrans: Transaction) {
-    if (writer == thisTrans) return
+    if (writer == thisTrans)
+      return
     synchronized {
       val w = currentWriter()
       if (w != null)
         if (thisTrans.id < w.id) {
           w.makeAbort();
           rollBack()
-        } else throw new AbortException
+        } else
+          throw new AbortException
       var r = readers
       while (r != null && r.head.status != Transaction.Running) {
         r = r.next;
         readers = r
       }
       while (r != null) {
-        if (r.id < thisTrans.id) throw new AbortException
-        else w.makeAbort()
+        if (r.id < thisTrans.id)
+          throw new AbortException
+        else
+          w.makeAbort()
         val last = r
         r = r.next
         while (r != null && r.head.status != Transaction.Running) {

@@ -235,7 +235,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     val deliveryId = nextDeliverySequenceNr()
     val now = if (recoveryRunning) {
       System.nanoTime() - redeliverInterval.toNanos
-    } else System.nanoTime()
+    } else
+      System.nanoTime()
     val d =
       Delivery(destination, deliveryIdToMessage(deliveryId), now, attempt = 0)
 
@@ -288,7 +289,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     if (unconfirmed.contains(deliveryId)) {
       unconfirmed -= deliveryId
       true
-    } else false
+    } else
+      false
   }
 
   /**

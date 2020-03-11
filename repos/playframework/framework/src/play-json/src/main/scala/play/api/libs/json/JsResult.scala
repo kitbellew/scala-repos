@@ -73,7 +73,10 @@ object JsError {
       obj ++ Json.obj(error._1.toJsonString -> error._2.foldLeft(Json.arr()) {
         (arr, err) =>
           arr :+ Json.obj(
-            "msg" -> (if (flat) err.message else Json.toJson(err.messages)),
+            "msg" -> (if (flat)
+                        err.message
+                      else
+                        Json.toJson(err.messages)),
             "args" -> Json.toJson(err.args)(argsWrite)
           )
       })
@@ -100,22 +103,34 @@ sealed trait JsResult[+A] { self =>
 
   def filterNot(error: JsError)(p: A => Boolean): JsResult[A] =
     this.flatMap { a =>
-      if (p(a)) error else JsSuccess(a)
+      if (p(a))
+        error
+      else
+        JsSuccess(a)
     }
 
   def filterNot(p: A => Boolean): JsResult[A] =
     this.flatMap { a =>
-      if (p(a)) JsError() else JsSuccess(a)
+      if (p(a))
+        JsError()
+      else
+        JsSuccess(a)
     }
 
   def filter(p: A => Boolean): JsResult[A] =
     this.flatMap { a =>
-      if (p(a)) JsSuccess(a) else JsError()
+      if (p(a))
+        JsSuccess(a)
+      else
+        JsError()
     }
 
   def filter(otherwise: JsError)(p: A => Boolean): JsResult[A] =
     this.flatMap { a =>
-      if (p(a)) JsSuccess(a) else otherwise
+      if (p(a))
+        JsSuccess(a)
+      else
+        otherwise
     }
 
   def collect[B](otherwise: ValidationError)(
@@ -139,14 +154,18 @@ sealed trait JsResult[+A] { self =>
   final class WithFilter(p: A => Boolean) {
     def map[B](f: A => B): JsResult[B] = self match {
       case JsSuccess(a, path) =>
-        if (p(a)) JsSuccess(f(a), path)
-        else JsError()
+        if (p(a))
+          JsSuccess(f(a), path)
+        else
+          JsError()
       case e: JsError => e
     }
     def flatMap[B](f: A => JsResult[B]): JsResult[B] = self match {
       case JsSuccess(a, path) =>
-        if (p(a)) f(a).repath(path)
-        else JsError()
+        if (p(a))
+          f(a).repath(path)
+        else
+          JsError()
       case e: JsError => e
     }
     def foreach(f: A => Unit): Unit = self match {
@@ -191,7 +210,10 @@ sealed trait JsResult[+A] { self =>
     this match {
       case JsSuccess(v, p) => JsSuccess(v, p)
       case e: JsError =>
-        if (errManager isDefinedAt e) JsSuccess(errManager(e)) else this
+        if (errManager isDefinedAt e)
+          JsSuccess(errManager(e))
+        else
+          this
     }
 
   def recoverTotal[AA >: A](errManager: JsError => AA): AA = this match {

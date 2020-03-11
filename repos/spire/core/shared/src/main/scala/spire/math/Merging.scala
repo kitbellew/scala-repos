@@ -28,7 +28,8 @@ abstract class BinaryMerge {
           binarySearch0(low, mid - 1)
         else
           mid
-      } else -(low + 1)
+      } else
+        -(low + 1)
     binarySearch0(b0, b1 - 1)
   }
 

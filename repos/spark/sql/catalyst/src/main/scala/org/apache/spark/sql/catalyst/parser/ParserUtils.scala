@@ -87,8 +87,10 @@ object ParserUtils {
     val clauses = clauseNames.map { clauseName =>
       val (matches, nonMatches) =
         remainingNodes.partition(_.text.toUpperCase == clauseName)
-      remainingNodes =
-        nonMatches ++ (if (matches.nonEmpty) matches.tail else Nil)
+      remainingNodes = nonMatches ++ (if (matches.nonEmpty)
+                                        matches.tail
+                                      else
+                                        Nil)
       matches.headOption
     }
 
@@ -168,8 +170,8 @@ object ParserUtils {
         nodeToDataType(dataType),
         nullable = true)
     case Token(
-        "TOK_TABCOL",
-        Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
+          "TOK_TABCOL",
+          Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
       val meta = new MetadataBuilder()
         .putString("comment", unquoteString(comment.text))
         .build()

@@ -89,8 +89,10 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     val nonNullBuffer = buildNonNulls()
     val encoder: Encoder[T] = {
       val candidate = compressionEncoders.minBy(_.compressionRatio)
-      if (isWorthCompressing(candidate)) candidate
-      else PassThrough.encoder(columnType)
+      if (isWorthCompressing(candidate))
+        candidate
+      else
+        PassThrough.encoder(columnType)
     }
 
     // Header = null count + null positions

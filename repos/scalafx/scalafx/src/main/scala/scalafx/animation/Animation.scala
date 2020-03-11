@@ -73,7 +73,10 @@ object Animation extends AnimationStatics {
     * @return Delegated JavaFX $AN extracted from `v`.
     */
   implicit def sfxAnimation2jfx(v: Animation): jfxa.Animation =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Companion Object for $ST, where its values are defined.

@@ -45,7 +45,10 @@ object HTMLEditor {
     * @return JavaFX HTMLEditor
     */
   implicit def sfxHTMLEditor2jfx(he: HTMLEditor): jfxsw.HTMLEditor =
-    if (he != null) he.delegate else null
+    if (he != null)
+      he.delegate
+    else
+      null
 
 }
 

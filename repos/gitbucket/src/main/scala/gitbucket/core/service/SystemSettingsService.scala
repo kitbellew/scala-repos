@@ -233,8 +233,10 @@ object SystemSettingsService {
       key: String,
       default: A): A =
     defining(props.getProperty(key)) { value =>
-      if (value == null || value.isEmpty) default
-      else convertType(value).asInstanceOf[A]
+      if (value == null || value.isEmpty)
+        default
+      else
+        convertType(value).asInstanceOf[A]
     }
 
   private def getOptionValue[A: ClassTag](
@@ -242,15 +244,20 @@ object SystemSettingsService {
       key: String,
       default: Option[A]): Option[A] =
     defining(props.getProperty(key)) { value =>
-      if (value == null || value.isEmpty) default
-      else Some(convertType(value)).asInstanceOf[Option[A]]
+      if (value == null || value.isEmpty)
+        default
+      else
+        Some(convertType(value)).asInstanceOf[Option[A]]
     }
 
   private def convertType[A: ClassTag](value: String) =
     defining(implicitly[ClassTag[A]].runtimeClass) { c =>
-      if (c == classOf[Boolean]) value.toBoolean
-      else if (c == classOf[Int]) value.toInt
-      else value
+      if (c == classOf[Boolean])
+        value.toBoolean
+      else if (c == classOf[Int])
+        value.toInt
+      else
+        value
     }
 
 }

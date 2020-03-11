@@ -108,7 +108,10 @@ final class Mode private (val bits: Int) extends AnyVal {
   def forFunMode =
     this & Mode.StickyModesForFun | FUNmode | POLYmode | BYVALmode
   def forTypeMode =
-    if (typingPatternOrTypePat) TYPEmode | TYPEPATmode else TYPEmode
+    if (typingPatternOrTypePat)
+      TYPEmode | TYPEPATmode
+    else
+      TYPEmode
 
   def inAll(required: Mode) = (this & required) == required
   def inAny(required: Mode) = (this & required) != NOmode
@@ -141,6 +144,8 @@ final class Mode private (val bits: Int) extends AnyVal {
   def typingPatternOrTypePat = inAny(PATTERNmode | TYPEPATmode)
 
   override def toString =
-    if (this == NOmode) "NOmode"
-    else (modeNameMap filterKeys inAll).values.toList.sorted mkString "-"
+    if (this == NOmode)
+      "NOmode"
+    else
+      (modeNameMap filterKeys inAll).values.toList.sorted mkString "-"
 }

@@ -565,8 +565,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             disassiciationInfo) ⇒
         keepQuarantinedOr(remoteAddress) {
           val causedBy =
-            if (reason.getCause == null) ""
-            else s"Caused by: [${reason.getCause.getMessage}]"
+            if (reason.getCause == null)
+              ""
+            else
+              s"Caused by: [${reason.getCause.getMessage}]"
           log.warning(
             "Tried to associate with unreachable remote address [{}]. " +
               "Address is now gated for {} ms, all messages to this address will be delivered to dead letters. " +
@@ -747,7 +749,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           writer -> associations.filter { assoc ⇒
             val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
             val drop = matchesQuarantine(handle)
-            if (drop) handle.disassociate()
+            if (drop)
+              handle.disassociate()
             !drop
           }
       }
@@ -784,7 +787,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         case Some(Gated(timeOfRelease)) ⇒
           if (timeOfRelease.isOverdue())
             createAndRegisterWritingEndpoint(refuseUid = None) ! s
-          else extendedSystem.deadLetters ! s
+          else
+            extendedSystem.deadLetters ! s
         case Some(Quarantined(uid, _)) ⇒
           // timeOfRelease is only used for garbage collection reasons, therefore it is ignored here. We still have
           // the Quarantined tombstone and we know what UID we don't want to accept, so use it.
@@ -942,53 +946,57 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
      * The transports variable contains only the heads of each chains (the AkkaProtocolTransport instances).
      */
     val transports: Seq[AkkaProtocolTransport] =
-      for ((fqn, adapters, config) ← settings.Transports) yield {
+      for ((fqn, adapters, config) ← settings.Transports)
+        yield {
 
-        val args = Seq(
-          classOf[ExtendedActorSystem] -> context.system,
-          classOf[Config] -> config)
+          val args = Seq(
+            classOf[ExtendedActorSystem] -> context.system,
+            classOf[Config] -> config)
 
-        // Loads the driver -- the bottom element of the chain.
-        // The chain at this point:
-        //   Driver
-        val driver = extendedSystem.dynamicAccess
-          .createInstanceFor[Transport](fqn, args)
-          .recover({
+          // Loads the driver -- the bottom element of the chain.
+          // The chain at this point:
+          //   Driver
+          val driver = extendedSystem.dynamicAccess
+            .createInstanceFor[Transport](fqn, args)
+            .recover({
 
-            case exception ⇒
-              throw new IllegalArgumentException(
-                s"Cannot instantiate transport [$fqn]. " +
-                  "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
-                  "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
-                exception)
+              case exception ⇒
+                throw new IllegalArgumentException(
+                  s"Cannot instantiate transport [$fqn]. " +
+                    "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
+                    "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
+                  exception)
 
-          })
-          .get
+            })
+            .get
 
-        // Iteratively decorates the bottom level driver with a list of adapters.
-        // The chain at this point:
-        //   Adapter <- ... <- Adapter <- Driver
-        val wrappedTransport =
-          adapters
-            .map {
-              TransportAdaptersExtension.get(context.system).getAdapterProvider
-            }
-            .foldLeft(driver) {
-              (t: Transport, provider: TransportAdapterProvider) ⇒
-                // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
-                provider
-                  .create(t, context.system.asInstanceOf[ExtendedActorSystem])
-            }
+          // Iteratively decorates the bottom level driver with a list of adapters.
+          // The chain at this point:
+          //   Adapter <- ... <- Adapter <- Driver
+          val wrappedTransport =
+            adapters
+              .map {
+                TransportAdaptersExtension
+                  .get(context.system)
+                  .getAdapterProvider
+              }
+              .foldLeft(driver) {
+                (t: Transport, provider: TransportAdapterProvider) ⇒
+                  // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
+                  provider.create(
+                    t,
+                    context.system.asInstanceOf[ExtendedActorSystem])
+              }
 
-        // Apply AkkaProtocolTransport wrapper to the end of the chain
-        // The chain at this point:
-        //   AkkaProtocolTransport <- Adapter <- ... <- Adapter <- Driver
-        new AkkaProtocolTransport(
-          wrappedTransport,
-          context.system,
-          new AkkaProtocolSettings(conf),
-          AkkaPduProtobufCodec)
-      }
+          // Apply AkkaProtocolTransport wrapper to the end of the chain
+          // The chain at this point:
+          //   AkkaProtocolTransport <- Adapter <- ... <- Adapter <- Driver
+          new AkkaProtocolTransport(
+            wrappedTransport,
+            context.system,
+            new AkkaProtocolSettings(conf),
+            AkkaPduProtobufCodec)
+        }
 
     // Collect all transports, listen addresses and listener promises in one future
     Future.sequence(transports.map { transport ⇒

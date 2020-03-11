@@ -38,7 +38,10 @@ import scalafx.stage.Window._
 
 object PopupWindow {
   implicit def sfxPopupWindow2jfx(v: PopupWindow): jfxs.PopupWindow =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** Anchor location constants for popup anchor point selection.
     * Wraps [[http://download.java.net/jdk8/jfxdocs/javafx/stage/PopupWindow.AnchorLocation.html AnchorLocation]]

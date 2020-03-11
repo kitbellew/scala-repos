@@ -46,7 +46,10 @@ object Styleable {
     * @return JavaFX Styleable
     */
   implicit def sfxStyleable2jfx(s: Styleable): jfxcss.Styleable =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 
 }
 

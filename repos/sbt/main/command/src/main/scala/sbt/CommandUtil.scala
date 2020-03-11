@@ -14,7 +14,10 @@ object CommandUtil {
     files flatMap (line => IO.readLines(line)) flatMap processLine
   def processLine(s: String) = {
     val trimmed = s.trim;
-    if (ignoreLine(trimmed)) None else Some(trimmed)
+    if (ignoreLine(trimmed))
+      None
+    else
+      Some(trimmed)
   }
   def ignoreLine(s: String) = s.isEmpty || s.startsWith("#")
 
@@ -34,7 +37,8 @@ object CommandUtil {
       pre: String,
       sep: String,
       in: Seq[(String, String)]): Seq[String] =
-    if (in.isEmpty) Nil
+    if (in.isEmpty)
+      Nil
     else {
       val width = in.map(_._1.length).max
       in.map {

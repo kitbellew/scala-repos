@@ -28,7 +28,8 @@ class KryoSerializer {
     (1, 1),
     Some(1),
     Array(new Object) /*, 1 :: Nil*/ )
-  for (obj <- toRegister) kryo.register(obj.getClass)
+  for (obj <- toRegister)
+    kryo.register(obj.getClass)
 
   // kryo.addDefaultSerializer(mf.erasure, new TraversableSerializer(List.newBuilder[Any]))
 

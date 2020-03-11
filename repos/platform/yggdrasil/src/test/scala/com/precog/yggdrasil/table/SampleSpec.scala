@@ -40,13 +40,28 @@ trait SampleSpec[M[+_]]
 
   val simpleData: Stream[JValue] = Stream.tabulate(100) { i =>
     JObject(
-      JField("id", if (i % 2 == 0) JString(i.toString) else JNum(i)) :: Nil)
+      JField(
+        "id",
+        if (i % 2 == 0)
+          JString(i.toString)
+        else
+          JNum(i)) :: Nil)
   }
 
   val simpleData2: Stream[JValue] = Stream.tabulate(100) { i =>
     JObject(
-      JField("id", if (i % 2 == 0) JString(i.toString) else JNum(i)) ::
-        JField("value", if (i % 2 == 0) JBool(true) else JNum(i)) ::
+      JField(
+        "id",
+        if (i % 2 == 0)
+          JString(i.toString)
+        else
+          JNum(i)) ::
+        JField(
+          "value",
+          if (i % 2 == 0)
+            JBool(true)
+          else
+            JNum(i)) ::
         Nil)
   }
 

@@ -38,7 +38,11 @@ object TraverseUsage extends App {
   // fa.traverse(f):
   val smallNumbers = List(1, 2, 3, 4, 5)
   val bigNumbers = List(10, 20, 30, 40, 50)
-  val doubleSmall: Int => Option[Int] = (x => if (x < 30) Some(x * 2) else None)
+  val doubleSmall: Int => Option[Int] = (x =>
+    if (x < 30)
+      Some(x * 2)
+    else
+      None)
 
   assert(smallNumbers.traverse(doubleSmall) === Some(List(2, 4, 6, 8, 10)))
   assert(
@@ -72,7 +76,10 @@ object TraverseUsage extends App {
   assert(result === NonEmptyList("failure2", "failure4").failure[Vector[Int]])
 
   val onlyEvenAllowed: Int => ValidationNel[String, Int] = x =>
-    if (x % 2 === 0) x.successNel else (x.toString + " is not even").failureNel
+    if (x % 2 === 0)
+      x.successNel
+    else
+      (x.toString + " is not even").failureNel
 
   val evens = IList(2, 4, 6, 8)
   val notAllEvens = List(1, 2, 3, 4)

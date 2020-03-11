@@ -10,7 +10,8 @@ trait PriorityTreeXXX extends BaseListXXX {
   trait BasicTreeNode extends BaseNode {
     def sibling: Node;
     def insert(dir: Int, node: Node) = {
-      if (true) sibling.insert(node);
+      if (true)
+        sibling.insert(node);
       //else insert(node);
 
     }

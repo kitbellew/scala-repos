@@ -30,8 +30,13 @@ private[reflect] trait SynchronizedTypes extends internal.Types {
     // therefore they should use vanilla uniques, which are faster
     if (!isCompilerUniverse) {
       val inCache = uniques get tp
-      val result = if (inCache.isDefined) inCache.get.get else null
-      if (result ne null) result.asInstanceOf[T]
+      val result =
+        if (inCache.isDefined)
+          inCache.get.get
+        else
+          null
+      if (result ne null)
+        result.asInstanceOf[T]
       else {
         uniques(tp) = new jWeakRef(tp)
         tp

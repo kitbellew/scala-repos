@@ -55,7 +55,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     */
   def foreach(f: (ActorRef) => Unit) = {
     val elements = actorsByUUID.elements
-    while (elements.hasMoreElements) f(elements.nextElement)
+    while (elements.hasMoreElements)
+      f(elements.nextElement)
   }
 
   /**
@@ -66,7 +67,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     val elements = actorsByUUID.elements
     while (elements.hasMoreElements) {
       val element = elements.nextElement
-      if (f isDefinedAt element) return Some(f(element))
+      if (f isDefinedAt element)
+        return Some(f(element))
     }
     None
   }
@@ -88,7 +90,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     val elements = actorsByUUID.elements
     while (elements.hasMoreElements) {
       val actorId = elements.nextElement
-      if (p(actorId)) all += actorId
+      if (p(actorId))
+        all += actorId
     }
     all.toArray
   }
@@ -137,7 +140,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     val elements = actorsByUUID.elements
     while (elements.hasMoreElements) {
       val proxy = typedActorFor(elements.nextElement)
-      if (proxy.isDefined) f(proxy.get)
+      if (proxy.isDefined)
+        f(proxy.get)
     }
   }
 
@@ -150,7 +154,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     val elements = actorsByUUID.elements
     while (elements.hasMoreElements) {
       val proxy = typedActorFor(elements.nextElement)
-      if (proxy.isDefined && (f isDefinedAt proxy)) return Some(f(proxy))
+      if (proxy.isDefined && (f isDefinedAt proxy))
+        return Some(f(proxy))
     }
     None
   }
@@ -164,7 +169,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     val elements = actorsByUUID.elements
     while (elements.hasMoreElements) {
       val proxy = typedActorFor(elements.nextElement)
-      if (proxy.isDefined && p(proxy.get)) all += proxy.get
+      if (proxy.isDefined && p(proxy.get))
+        all += proxy.get
     }
     all.toArray
   }
@@ -223,8 +229,10 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   def typedActorFor(uuid: Uuid): Option[AnyRef] = {
     TypedActorModule.ensureEnabled
     val actorRef = actorsByUUID get uuid
-    if (actorRef eq null) None
-    else typedActorFor(actorRef)
+    if (actorRef eq null)
+      None
+    else
+      typedActorFor(actorRef)
   }
 
   /**
@@ -273,9 +281,11 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
         val proxy = typedActorFor(actorRef)
         if (proxy.isDefined)
           TypedActorModule.typedActorObjectInstance.get.stop(proxy.get)
-        else actorRef.stop()
+        else
+          actorRef.stop()
       }
-    } else foreach(_.stop())
+    } else
+      foreach(_.stop())
     if (Remote.isEnabled) {
       Actor.remote.clear //TODO: REVISIT: Should this be here?
     }
@@ -334,11 +344,14 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
               retry = false
             }
           }
-        } else added = true
+        } else
+          added = true
       }
 
-      if (retry) spinPut(k, v)
-      else added
+      if (retry)
+        spinPut(k, v)
+      else
+        added
     }
 
     spinPut(key, value)
@@ -349,7 +362,11 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
     */
   def values(key: K): Array[V] = {
     val set: JSet[V] = container get key
-    val result = if (set ne null) set toArray Naught else Naught
+    val result =
+      if (set ne null)
+        set toArray Naught
+      else
+        Naught
     result.asInstanceOf[Array[V]]
   }
 
@@ -360,8 +377,10 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
   def findValue(key: K)(f: (V) => Boolean): Option[V] = {
     import scala.collection.JavaConversions._
     val set = container get key
-    if (set ne null) set.iterator.find(f)
-    else None
+    if (set ne null)
+      set.iterator.find(f)
+    else
+      None
   }
 
   /**
@@ -391,9 +410,11 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
             ) //We try to remove the key if it's mapped to an empty set
 
           true //Remove succeeded
-        } else false //Remove failed
+        } else
+          false //Remove failed
       }
-    } else false //Remove failed
+    } else
+      false //Remove failed
   }
 
   /**

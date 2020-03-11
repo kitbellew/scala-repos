@@ -47,9 +47,12 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
       def expand(s1: String) = {
         if (isExpandOption(s1)) {
           val s2 = spec expandArg s1
-          if (s2 == List(s1)) None
-          else Some(s2)
-        } else None
+          if (s2 == List(s1))
+            None
+          else
+            Some(s2)
+        } else
+          None
       }
 
       /* Assumes known options have all been ruled out already. */
@@ -68,18 +71,26 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
             errorFn(
               "Option '%s' requires argument, found EOF instead.".format(x))
 
-          if (isUnaryOption(x)) mapForUnary(x)
-          else if (isUnknown(x)) Map()
-          else residual(args)
+          if (isUnaryOption(x))
+            mapForUnary(x)
+          else if (isUnknown(x))
+            Map()
+          else
+            residual(args)
 
         case x1 :: x2 :: xs =>
           expand(x1) foreach (exp => return loop(exp ++ args.tail))
 
-          if (x2 == Terminator) mapForUnary(x1) ++ residual(xs)
-          else if (isUnaryOption(x1)) mapForUnary(x1) ++ loop(args.tail)
-          else if (isBinaryOption(x1)) Map(fromOpt(x1) -> x2) ++ loop(xs)
-          else if (isUnknown(x1)) loop(args.tail)
-          else residual(List(x1)) ++ loop(args.tail)
+          if (x2 == Terminator)
+            mapForUnary(x1) ++ residual(xs)
+          else if (isUnaryOption(x1))
+            mapForUnary(x1) ++ loop(args.tail)
+          else if (isBinaryOption(x1))
+            Map(fromOpt(x1) -> x2) ++ loop(xs)
+          else if (isUnknown(x1))
+            loop(args.tail)
+          else
+            residual(List(x1)) ++ loop(args.tail)
       }
     }
 
@@ -91,7 +102,10 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
   def isSet(arg: String) = argMap contains arg
 
   def getOrElse(arg: String, orElse: => String) =
-    if (isSet(arg)) apply(arg) else orElse
+    if (isSet(arg))
+      apply(arg)
+    else
+      orElse
 
   override def toString() = argMap.toString + " " + residualArgs.toString
 }

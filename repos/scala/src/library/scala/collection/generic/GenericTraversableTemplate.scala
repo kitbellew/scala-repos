@@ -226,7 +226,8 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
     for (xs <- sequential) {
       var i = 0
       for (x <- asTraversable(xs).seq) {
-        if (i >= headSize) fail
+        if (i >= headSize)
+          fail
         bs(i) += x
         i += 1
       }
@@ -234,7 +235,8 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
         fail
     }
     val bb = genericBuilder[CC[B]]
-    for (b <- bs) bb += b.result
+    for (b <- bs)
+      bb += b.result
     bb.result()
   }
 }

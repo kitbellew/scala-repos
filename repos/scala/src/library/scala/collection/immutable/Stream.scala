@@ -251,7 +251,10 @@ abstract class Stream[+A]
     *  @return       The stream containing elements of this stream and the traversable object.
     */
   def append[B >: A](rest: => TraversableOnce[B]): Stream[B] =
-    if (isEmpty) rest.toStream else cons(head, tail append rest)
+    if (isEmpty)
+      rest.toStream
+    else
+      cons(head, tail append rest)
 
   /** Forces evaluation of the whole stream and returns it.
     *
@@ -265,13 +268,17 @@ abstract class Stream[+A]
   def force: Stream[A] = {
     // Use standard 2x 1x iterator trick for cycle detection ("those" is slow one)
     var these, those = this
-    if (!these.isEmpty) these = these.tail
+    if (!these.isEmpty)
+      these = these.tail
     while (those ne these) {
-      if (these.isEmpty) return this
+      if (these.isEmpty)
+        return this
       these = these.tail
-      if (these.isEmpty) return this
+      if (these.isEmpty)
+        return this
       these = these.tail
-      if (these eq those) return this
+      if (these eq those)
+        return this
       those = those.tail
     }
     this
@@ -288,7 +295,8 @@ abstract class Stream[+A]
   def print(sep: String) {
     def loop(these: Stream[A], start: String) {
       Console.print(start)
-      if (these.isEmpty) Console.print("empty")
+      if (these.isEmpty)
+        Console.print("empty")
       else {
         Console.print(these.head)
         loop(these.tail, sep)
@@ -329,19 +337,25 @@ abstract class Stream[+A]
   override def toStream: Stream[A] = this
 
   override def hasDefiniteSize: Boolean = isEmpty || {
-    if (!tailDefined) false
+    if (!tailDefined)
+      false
     else {
       // Two-iterator trick (2x & 1x speed) for cycle detection.
       var those = this
       var these = tail
       while (those ne these) {
-        if (these.isEmpty) return true
-        if (!these.tailDefined) return false
+        if (these.isEmpty)
+          return true
+        if (!these.tailDefined)
+          return false
         these = these.tail
-        if (these.isEmpty) return true
-        if (!these.tailDefined) return false
+        if (these.isEmpty)
+          return true
+        if (!these.tailDefined)
+          return false
         these = these.tail
-        if (those eq these) return false
+        if (those eq these)
+          return false
         those = those.tail
       }
       false // Cycle detected
@@ -373,15 +387,20 @@ abstract class Stream[+A]
     // we assume there is no other builder factory on streams and therefore know that That = Stream[A]
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) that.toStream
-        else cons(head, asStream[A](tail ++ that))
+        if (isEmpty)
+          that.toStream
+        else
+          cons(head, asStream[A](tail ++ that))
       )
-    else super.++(that)(bf)
+    else
+      super.++(that)(bf)
 
   override def +:[B >: A, That](elem: B)(
       implicit bf: CanBuildFrom[Stream[A], B, That]): That =
-    if (isStreamBuilder(bf)) asThat(cons(elem, this))
-    else super.+:(elem)(bf)
+    if (isStreamBuilder(bf))
+      asThat(cons(elem, this))
+    else
+      super.+:(elem)(bf)
 
   /**
     * Create a new stream which contains all intermediate results of applying the
@@ -401,10 +420,13 @@ abstract class Stream[+A]
       implicit bf: CanBuildFrom[Stream[A], B, That]): That =
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) Stream(z)
-        else cons(z, asStream[B](tail.scanLeft(op(z, head))(op)))
+        if (isEmpty)
+          Stream(z)
+        else
+          cons(z, asStream[B](tail.scanLeft(op(z, head))(op)))
       )
-    else super.scanLeft(z)(op)(bf)
+    else
+      super.scanLeft(z)(op)(bf)
 
   /** Returns the stream resulting from applying the given function `f` to each
     * element of this stream.  This returns a lazy `Stream` such that it does not
@@ -424,15 +446,19 @@ abstract class Stream[+A]
       implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) Stream.Empty
-        else cons(f(head), asStream[B](tail map f))
+        if (isEmpty)
+          Stream.Empty
+        else
+          cons(f(head), asStream[B](tail map f))
       )
-    else super.map(f)(bf)
+    else
+      super.map(f)(bf)
   }
 
   override final def collect[B, That](pf: PartialFunction[A, B])(
       implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
-    if (!isStreamBuilder(bf)) super.collect(pf)(bf)
+    if (!isStreamBuilder(bf))
+      super.collect(pf)(bf)
     else {
       // this implementation avoids:
       // 1) stackoverflows (could be achieved with tailrec, too)
@@ -443,12 +469,15 @@ abstract class Stream[+A]
       var newHead: B = null.asInstanceOf[B]
       val runWith = pf.runWith((b: B) => newHead = b)
 
-      while (rest.nonEmpty && !runWith(rest.head)) rest = rest.tail
+      while (rest.nonEmpty && !runWith(rest.head))
+        rest = rest.tail
 
       //  without the call to the companion object, a thunk is created for the tail of the new stream,
       //  and the closure of the thunk will reference `this`
-      if (rest.isEmpty) Stream.Empty.asInstanceOf[That]
-      else Stream.collectedTail(newHead, rest, pf, bf).asInstanceOf[That]
+      if (rest.isEmpty)
+        Stream.Empty.asInstanceOf[That]
+      else
+        Stream.collectedTail(newHead, rest, pf, bf).asInstanceOf[That]
     }
   }
 
@@ -495,7 +524,8 @@ abstract class Stream[+A]
     // see tickets #153, #498, #2147, and corresponding tests in run/ (as well as run/stream_flatmap_odds.scala)
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) Stream.Empty
+        if (isEmpty)
+          Stream.Empty
         else {
           // establish !prefix.isEmpty || nonEmptyPrefix.isEmpty
           var nonEmptyPrefix = this
@@ -506,11 +536,14 @@ abstract class Stream[+A]
               prefix = f(nonEmptyPrefix.head).toStream
           }
 
-          if (nonEmptyPrefix.isEmpty) Stream.empty
-          else prefix append asStream[B](nonEmptyPrefix.tail flatMap f)
+          if (nonEmptyPrefix.isEmpty)
+            Stream.empty
+          else
+            prefix append asStream[B](nonEmptyPrefix.tail flatMap f)
         }
       )
-    else super.flatMap(f)(bf)
+    else
+      super.flatMap(f)(bf)
 
   override private[scala] def filterImpl(
       p: A => Boolean,
@@ -518,10 +551,13 @@ abstract class Stream[+A]
     // optimization: drop leading prefix of elems for which f returns false
     // var rest = this dropWhile (!p(_)) - forget DRY principle - GC can't collect otherwise
     var rest = this
-    while (!rest.isEmpty && p(rest.head) == isFlipped) rest = rest.tail
+    while (!rest.isEmpty && p(rest.head) == isFlipped)
+      rest = rest.tail
     // private utility func to avoid `this` on stack (would be needed for the lazy arg)
-    if (rest.nonEmpty) Stream.filteredTail(rest, p, isFlipped)
-    else Stream.Empty
+    if (rest.nonEmpty)
+      Stream.filteredTail(rest, p, isFlipped)
+    else
+      Stream.Empty
   }
 
   /** A FilterMonadic which allows GC of the head of stream during processing */
@@ -561,8 +597,10 @@ abstract class Stream[+A]
     */
   @tailrec
   override final def foldLeft[B](z: B)(op: (B, A) => B): B = {
-    if (this.isEmpty) z
-    else tail.foldLeft(op(z, head))(op)
+    if (this.isEmpty)
+      z
+    else
+      tail.foldLeft(op(z, head))(op)
   }
 
   /** Stream specialization of reduceLeft which allows GC to collect
@@ -644,13 +682,15 @@ abstract class Stream[+A]
     // we assume there is no other builder factory on streams and therefore know that That = Stream[(A1, B)]
     if (isStreamBuilder(bf))
       asThat(
-        if (this.isEmpty || that.isEmpty) Stream.Empty
+        if (this.isEmpty || that.isEmpty)
+          Stream.Empty
         else
           cons(
             (this.head, that.head),
             asStream[(A1, B)](this.tail zip that.tail))
       )
-    else super.zip(that)(bf)
+    else
+      super.zip(that)(bf)
 
   /** Zips this iterable with its indices. `s.zipWithIndex` is equivalent to `s
     * zip s.indices`.
@@ -721,7 +761,8 @@ abstract class Stream[+A]
               n += 1
               cursor = cursor.tail
               scout = scout.tail
-              if (scout.tailDefined) scout = scout.tail
+              if (scout.tailDefined)
+                scout = scout.tail
             }
           }
         }
@@ -773,8 +814,10 @@ abstract class Stream[+A]
       }
       if (!cursor.isEmpty) {
         // Either undefined or cyclic; we can check with tailDefined
-        if (!cursor.tailDefined) b append sep append "?"
-        else b append sep append "..."
+        if (!cursor.tailDefined)
+          b append sep append "?"
+        else
+          b append sep append "..."
       }
     }
     b append end
@@ -815,14 +858,19 @@ abstract class Stream[+A]
     // It prevents "tail" from being referenced (and its head being evaluated)
     // when obtaining the last element of the result. Such are the challenges
     // of working with a lazy-but-not-really sequence.
-    if (n <= 0 || isEmpty) Stream.empty
-    else if (n == 1) cons(head, Stream.empty)
-    else cons(head, tail take n - 1)
+    if (n <= 0 || isEmpty)
+      Stream.empty
+    else if (n == 1)
+      cons(head, Stream.empty)
+    else
+      cons(head, tail take n - 1)
   )
 
   @tailrec final override def drop(n: Int): Stream[A] =
-    if (n <= 0 || isEmpty) this
-    else tail drop n - 1
+    if (n <= 0 || isEmpty)
+      this
+    else
+      tail drop n - 1
 
   /** A substream starting at index `from` and extending up to (but not including)
     *  index `until`.  This returns a `Stream` that is lazily evaluated.
@@ -839,8 +887,10 @@ abstract class Stream[+A]
     */
   override def slice(from: Int, until: Int): Stream[A] = {
     val lo = from max 0
-    if (until <= lo || isEmpty) Stream.empty
-    else this drop lo take (until - lo)
+    if (until <= lo || isEmpty)
+      Stream.empty
+    else
+      this drop lo take (until - lo)
   }
 
   /** The stream without its last element.
@@ -851,9 +901,12 @@ abstract class Stream[+A]
     *  @throws UnsupportedOperationException if the stream is empty.
     */
   override def init: Stream[A] =
-    if (isEmpty) super.init
-    else if (tail.isEmpty) Stream.Empty
-    else cons(head, tail.init)
+    if (isEmpty)
+      super.init
+    else if (tail.isEmpty)
+      Stream.Empty
+    else
+      cons(head, tail.init)
 
   /** Returns the rightmost `n` elements from this iterable.
     *
@@ -884,12 +937,17 @@ abstract class Stream[+A]
     // rest is non-empty, we can feed elements off the buffer head.  When
     // the rest becomes empty, the full buffer is the dropped elements.
     def advance(stub0: List[A], stub1: List[A], rest: Stream[A]): Stream[A] = {
-      if (rest.isEmpty) Stream.empty
-      else if (stub0.isEmpty) advance(stub1.reverse, Nil, rest)
-      else cons(stub0.head, advance(stub0.tail, rest.head :: stub1, rest.tail))
+      if (rest.isEmpty)
+        Stream.empty
+      else if (stub0.isEmpty)
+        advance(stub1.reverse, Nil, rest)
+      else
+        cons(stub0.head, advance(stub0.tail, rest.head :: stub1, rest.tail))
     }
-    if (n <= 0) this
-    else advance((this take n).toList, Nil, this drop n)
+    if (n <= 0)
+      this
+    else
+      advance((this take n).toList, Nil, this drop n)
   }
 
   /** Returns the longest prefix of this `Stream` whose elements satisfy the
@@ -905,8 +963,10 @@ abstract class Stream[+A]
     * }}}
     */
   override def takeWhile(p: A => Boolean): Stream[A] =
-    if (!isEmpty && p(head)) cons(head, tail takeWhile p)
-    else Stream.Empty
+    if (!isEmpty && p(head))
+      cons(head, tail takeWhile p)
+    else
+      Stream.Empty
 
   /** Returns the a `Stream` representing the longest suffix of this iterable
     * whose first element does not satisfy the predicate `p`.
@@ -927,7 +987,8 @@ abstract class Stream[+A]
     */
   override def dropWhile(p: A => Boolean): Stream[A] = {
     var these: Stream[A] = this
-    while (!these.isEmpty && p(these.head)) these = these.tail
+    while (!these.isEmpty && p(these.head))
+      these = these.tail
     these
   }
 
@@ -950,9 +1011,12 @@ abstract class Stream[+A]
     // This should use max memory proportional to N, whereas
     // recursively calling distinct on the tail is N^2.
     def loop(seen: Set[A], rest: Stream[A]): Stream[A] = {
-      if (rest.isEmpty) rest
-      else if (seen(rest.head)) loop(seen, rest.tail)
-      else cons(rest.head, loop(seen + rest.head, rest.tail))
+      if (rest.isEmpty)
+        rest
+      else if (seen(rest.head))
+        loop(seen, rest.tail)
+      else
+        cons(rest.head, loop(seen + rest.head, rest.tail))
     }
     loop(Set(), this)
   }
@@ -986,11 +1050,15 @@ abstract class Stream[+A]
   override def padTo[B >: A, That](len: Int, elem: B)(
       implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
     def loop(len: Int, these: Stream[A]): Stream[B] =
-      if (these.isEmpty) Stream.fill(len)(elem)
-      else cons(these.head, loop(len - 1, these.tail))
+      if (these.isEmpty)
+        Stream.fill(len)(elem)
+      else
+        cons(these.head, loop(len - 1, these.tail))
 
-    if (isStreamBuilder(bf)) asThat(loop(len, this))
-    else super.padTo(len, elem)(bf)
+    if (isStreamBuilder(bf))
+      asThat(loop(len, this))
+    else
+      super.padTo(len, elem)(bf)
   }
 
   /** A list consisting of all elements of this list in reverse order.
@@ -1084,7 +1152,8 @@ final class StreamIterator[+A] private ()
 
   def hasNext: Boolean = these.v.nonEmpty
   def next(): A =
-    if (isEmpty) Iterator.empty.next()
+    if (isEmpty)
+      Iterator.empty.next()
     else {
       val cur = these.v
       val result = cur.head
@@ -1173,8 +1242,10 @@ object Stream extends SeqFactory[Stream] {
     */
   object #:: {
     def unapply[A](xs: Stream[A]): Option[(A, Stream[A])] =
-      if (xs.isEmpty) None
-      else Some((xs.head, xs.tail))
+      if (xs.isEmpty)
+        None
+      else
+        Some((xs.head, xs.tail))
   }
 
   /** An alternative way of building and matching Streams using Stream.cons(hd, tl).
@@ -1253,11 +1324,17 @@ object Stream extends SeqFactory[Stream] {
   def continually[A](elem: => A): Stream[A] = cons(elem, continually(elem))
 
   override def fill[A](n: Int)(elem: => A): Stream[A] =
-    if (n <= 0) Empty else cons(elem, fill(n - 1)(elem))
+    if (n <= 0)
+      Empty
+    else
+      cons(elem, fill(n - 1)(elem))
 
   override def tabulate[A](n: Int)(f: Int => A): Stream[A] = {
     def loop(i: Int): Stream[A] =
-      if (i >= n) Empty else cons(f(i), loop(i + 1))
+      if (i >= n)
+        Empty
+      else
+        cons(f(i), loop(i + 1))
     loop(0)
   }
 
@@ -1265,8 +1342,13 @@ object Stream extends SeqFactory[Stream] {
     val num = implicitly[Integral[T]]
     import num._
 
-    if (if (step < zero) start <= end else end <= start) Empty
-    else cons(start, range(start + step, end, step))
+    if (if (step < zero)
+          start <= end
+        else
+          end <= start)
+      Empty
+    else
+      cons(start, range(start + step, end, step))
   }
 
   private[immutable] def filteredTail[A](

@@ -58,12 +58,14 @@ trait DefaultMemoisable extends Memoisable {
       onSuccess(key, success);
       success
     case other =>
-      if (DefaultMemoisable.debug) println(key + " -> " + other)
+      if (DefaultMemoisable.debug)
+        println(key + " -> " + other)
       other
   }
 
   protected def onSuccess[S, T](key: AnyRef, result: Success[S, T]) {
     val Success(out, t) = result
-    if (DefaultMemoisable.debug) println(key + " -> " + t + " (" + out + ")")
+    if (DefaultMemoisable.debug)
+      println(key + " -> " + t + " (" + out + ")")
   }
 }

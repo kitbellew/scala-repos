@@ -112,7 +112,10 @@ class BaseReplicationClient(
       keys: Iterable[String],
       useRandomOrder: Boolean): Future[GetResult] = {
     val clientsInOrder =
-      if (useRandomOrder) Random.shuffle(clients) else clients
+      if (useRandomOrder)
+        Random.shuffle(clients)
+      else
+        clients
 
     def loopGet(
         clients: Seq[Client],

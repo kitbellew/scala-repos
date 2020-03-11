@@ -28,10 +28,15 @@ object LiteralTests extends Properties("Literal") {
     l match {
       case c @ ConstLit(_) => acc + c
       case u @ UnaryLit(prev, _) =>
-        if (acc(u)) acc else transitiveClosure(prev, acc + u)
+        if (acc(u))
+          acc
+        else
+          transitiveClosure(prev, acc + u)
       case b @ BinaryLit(p1, p2, _) =>
-        if (acc(b)) acc
-        else transitiveClosure(p2, transitiveClosure(p1, acc + b))
+        if (acc(b))
+          acc
+        else
+          transitiveClosure(p2, transitiveClosure(p1, acc + b))
     }
 
   def genBox: Gen[Box[Int]] =

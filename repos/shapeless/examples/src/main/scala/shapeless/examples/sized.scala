@@ -26,7 +26,10 @@ object SizedExamples extends App {
   import syntax.sized._
 
   def sequence[T](lo: List[Option[T]]) =
-    if (lo.exists(_.isEmpty)) None else Some(lo.map(_.get))
+    if (lo.exists(_.isEmpty))
+      None
+    else
+      Some(lo.map(_.get))
 
   def row(cols: Seq[String]) = cols.mkString("\"", "\", \"", "\"")
 

@@ -91,13 +91,19 @@ trait ClassTag[T]
   def unapply(x: Unit): Option[T] = unapply_impl(x)
 
   private def unapply_impl[U: ClassTag](x: U): Option[T] =
-    if (x == null) None
+    if (x == null)
+      None
     else {
       val staticClass = classTag[U].runtimeClass
       val conforms =
-        if (staticClass.isPrimitive) runtimeClass.isAssignableFrom(staticClass)
-        else runtimeClass.isInstance(x)
-      if (conforms) Some(x.asInstanceOf[T]) else None
+        if (staticClass.isPrimitive)
+          runtimeClass.isAssignableFrom(staticClass)
+        else
+          runtimeClass.isInstance(x)
+      if (conforms)
+        Some(x.asInstanceOf[T])
+      else
+        None
     }
 
   // case class accessories
@@ -109,7 +115,8 @@ trait ClassTag[T]
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =
-      if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
+      if (clazz.isArray)
+        s"Array[${prettyprint(arrayElementClass(clazz))}]"
       else
         clazz.getName
     prettyprint(runtimeClass)

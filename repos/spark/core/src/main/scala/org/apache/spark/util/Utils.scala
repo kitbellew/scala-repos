@@ -648,7 +648,11 @@ private[spark] object Utils extends Logging {
       case "file" =>
         // In the case of a local file, copy the local file to the target directory.
         // Note the difference between uri vs url.
-        val sourceFile = if (uri.isAbsolute) new File(uri) else new File(url)
+        val sourceFile =
+          if (uri.isAbsolute)
+            new File(uri)
+          else
+            new File(url)
         copyFile(url, sourceFile, targetFile, fileOverwrite)
       case _ =>
         val fs = getHadoopFileSystem(uri, hadoopConf)
@@ -866,7 +870,10 @@ private[spark] object Utils extends Logging {
         val activeNetworkIFs =
           NetworkInterface.getNetworkInterfaces.asScala.toSeq
         val reOrderedNetworkIFs =
-          if (isWindows) activeNetworkIFs else activeNetworkIFs.reverse
+          if (isWindows)
+            activeNetworkIFs
+          else
+            activeNetworkIFs.reverse
 
         for (ni <- reOrderedNetworkIFs) {
           val addresses = ni.getInetAddresses.asScala
@@ -1020,8 +1027,10 @@ private[spark] object Utils extends Logging {
     * Check to see if file is a symbolic link.
     */
   def isSymlink(file: File): Boolean = {
-    if (file == null) throw new NullPointerException("File must not be null")
-    if (isWindows) return false
+    if (file == null)
+      throw new NullPointerException("File must not be null")
+    if (isWindows)
+      return false
     val fileInCanonicalDir = if (file.getParent() == null) {
       file
     } else {
@@ -1629,7 +1638,10 @@ private[spark] object Utils extends Logging {
    */
   def nonNegativeMod(x: Int, mod: Int): Int = {
     val rawMod = x % mod
-    rawMod + (if (rawMod < 0) mod else 0)
+    rawMod + (if (rawMod < 0)
+                mod
+              else
+                0)
   }
 
   // Handles idiosyncrasies with hash (add more as required)
@@ -1638,11 +1650,16 @@ private[spark] object Utils extends Logging {
   def nonNegativeHash(obj: AnyRef): Int = {
 
     // Required ?
-    if (obj eq null) return 0
+    if (obj eq null)
+      return 0
 
     val hash = obj.hashCode
     // math.abs fails for Int.MinValue
-    val hashAbs = if (Int.MinValue != hash) math.abs(hash) else 0
+    val hashAbs =
+      if (Int.MinValue != hash)
+        math.abs(hash)
+      else
+        0
 
     // Nothing else to guard against ?
     hashAbs
@@ -1655,11 +1672,16 @@ private[spark] object Utils extends Logging {
   def nanSafeCompareDoubles(x: Double, y: Double): Int = {
     val xIsNan: Boolean = java.lang.Double.isNaN(x)
     val yIsNan: Boolean = java.lang.Double.isNaN(y)
-    if ((xIsNan && yIsNan) || (x == y)) 0
-    else if (xIsNan) 1
-    else if (yIsNan) -1
-    else if (x > y) 1
-    else -1
+    if ((xIsNan && yIsNan) || (x == y))
+      0
+    else if (xIsNan)
+      1
+    else if (yIsNan)
+      -1
+    else if (x > y)
+      1
+    else
+      -1
   }
 
   /**
@@ -1669,11 +1691,16 @@ private[spark] object Utils extends Logging {
   def nanSafeCompareFloats(x: Float, y: Float): Int = {
     val xIsNan: Boolean = java.lang.Float.isNaN(x)
     val yIsNan: Boolean = java.lang.Float.isNaN(y)
-    if ((xIsNan && yIsNan) || (x == y)) 0
-    else if (xIsNan) 1
-    else if (yIsNan) -1
-    else if (x > y) 1
-    else -1
+    if ((xIsNan && yIsNan) || (x == y))
+      0
+    else if (xIsNan)
+      1
+    else if (yIsNan)
+      -1
+    else if (x > y)
+      1
+    else
+      -1
   }
 
   /** Returns the system properties map that is thread-safe to iterator over. It gets the
@@ -2143,7 +2170,11 @@ private[spark] object Utils extends Logging {
       startPort == 0 || (1024 <= startPort && startPort < 65536),
       "startPort should be between 1024 and 65535 (inclusive), or 0 for a random free port.")
 
-    val serviceString = if (serviceName.isEmpty) "" else s" '$serviceName'"
+    val serviceString =
+      if (serviceName.isEmpty)
+        ""
+      else
+        s" '$serviceName'"
     val maxRetries = portMaxRetries(conf)
     for (offset <- 0 to maxRetries) {
       // Do not increment port if startPort is 0, which is treated as a special port
@@ -2504,7 +2535,11 @@ private[spark] class CircularBuffer(sizeInBytes: Int = 10240)
     val input = new java.io.InputStream {
       val iterator = (start ++ end).iterator
 
-      def read(): Int = if (iterator.hasNext) iterator.next() else -1
+      def read(): Int =
+        if (iterator.hasNext)
+          iterator.next()
+        else
+          -1
     }
     val reader = new BufferedReader(
       new InputStreamReader(input, StandardCharsets.UTF_8))

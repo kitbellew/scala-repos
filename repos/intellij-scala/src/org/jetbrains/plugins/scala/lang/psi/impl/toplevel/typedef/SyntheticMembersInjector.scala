@@ -162,7 +162,8 @@ object SyntheticMembersInjector {
   }
 
   def needsCompanion(source: ScTypeDefinition): Boolean = {
-    if (DumbService.getInstance(source.getProject).isDumb) return false
+    if (DumbService.getInstance(source.getProject).isDumb)
+      return false
     EP_NAME.getExtensions.exists(_.needsCompanionObject(source))
   }
 

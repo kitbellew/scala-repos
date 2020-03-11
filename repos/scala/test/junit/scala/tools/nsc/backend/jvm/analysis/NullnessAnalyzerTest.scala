@@ -61,22 +61,25 @@ class NullnessAnalyzerTest extends ClearAfterClass {
       method: MethodNode): String = {
     val instrLength =
       method.instructions.iterator.asScala.map(textify(_).length).max
-    val lines = for (i <- method.instructions.iterator.asScala) yield {
-      val f = analyzer.frameAt(i)
-      val frameString = {
-        if (f == null) "null"
-        else
-          (0 until (f.getLocals + f.getStackSize)).iterator
-            .map(f.getValue(_).toString)
-            .map(s => "%8s".format(s))
-            .zipWithIndex
-            .map({
-              case (s, i) => s"$i: $s"
-            })
-            .mkString(", ")
-      }
-      ("%" + instrLength + "s: %s").format(textify(i), frameString)
-    }
+    val lines =
+      for (i <- method.instructions.iterator.asScala)
+        yield {
+          val f = analyzer.frameAt(i)
+          val frameString = {
+            if (f == null)
+              "null"
+            else
+              (0 until (f.getLocals + f.getStackSize)).iterator
+                .map(f.getValue(_).toString)
+                .map(s => "%8s".format(s))
+                .zipWithIndex
+                .map({
+                  case (s, i) => s"$i: $s"
+                })
+                .mkString(", ")
+          }
+          ("%" + instrLength + "s: %s").format(textify(i), frameString)
+        }
     lines.mkString("\n")
   }
 
@@ -152,7 +155,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
              2,
              UnknownValue1
            ) // nullness of value returned by `toString` is Unknown
-         )) testNullness(a, m, insn, index, nullness)
+         ))
+      testNullness(a, m, insn, index, nullness)
   }
 
   @Test
@@ -164,7 +168,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
            ("+ACONST_NULL", 2, NullValue),
            ("+ASTORE 1", 1, NullValue),
            ("+ALOAD 1", 2, NullValue)
-         )) testNullness(a, m, insn, index, nullness)
+         ))
+      testNullness(a, m, insn, index, nullness)
   }
 
   @Test
@@ -251,7 +256,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
            (end, 3, NotNullValue), // b, receiver of toString
            (end, 4, UnknownValue1), // c, no change (not an alias of b)
            (end, 5, NullValue) // d, no change
-         )) testNullness(a, m, insn, index, nullness)
+         ))
+      testNullness(a, m, insn, index, nullness)
   }
 
   @Test
@@ -277,6 +283,7 @@ class NullnessAnalyzerTest extends ClearAfterClass {
            (tost, 1, NotNullValue),
            (tost, 2, NotNullValue),
            (trim, 3, NotNullValue) // receiver at `trim`
-         )) testNullness(a, m, insn, index, nullness)
+         ))
+      testNullness(a, m, insn, index, nullness)
   }
 }

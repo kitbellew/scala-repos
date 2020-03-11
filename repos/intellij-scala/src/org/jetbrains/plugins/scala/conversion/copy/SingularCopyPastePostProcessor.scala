@@ -34,7 +34,10 @@ abstract class SingularCopyPastePostProcessor[T <: TextBlockTransferableData]
     val result =
       collectTransferableData0(file, editor, startOffsets, endOffsets)
 
-    if (result == null) emptyList() else singletonList(result)
+    if (result == null)
+      emptyList()
+    else
+      singletonList(result)
   }
 
   @Nullable
@@ -48,7 +51,10 @@ abstract class SingularCopyPastePostProcessor[T <: TextBlockTransferableData]
   override final def extractTransferableData(content: Transferable) = {
     val result = extractTransferableData0(content)
 
-    if (result == null) emptyList() else singletonList(result)
+    if (result == null)
+      emptyList()
+    else
+      singletonList(result)
   }
 
   @Nullable

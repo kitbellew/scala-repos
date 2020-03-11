@@ -419,8 +419,10 @@ final class ActorMaterializerSettings private (
     * stream topology by using [[akka.stream.Attributes#dispatcher]].
     */
   def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
-    if (this.dispatcher == dispatcher) this
-    else copy(dispatcher = dispatcher)
+    if (this.dispatcher == dispatcher)
+      this
+    else
+      copy(dispatcher = dispatcher)
   }
 
   /**
@@ -430,8 +432,10 @@ final class ActorMaterializerSettings private (
     */
   def withSupervisionStrategy(
       decider: Supervision.Decider): ActorMaterializerSettings = {
-    if (decider eq this.supervisionDecider) this
-    else copy(supervisionDecider = decider)
+    if (decider eq this.supervisionDecider)
+      this
+    else
+      copy(supervisionDecider = decider)
   }
 
   /**
@@ -456,29 +460,37 @@ final class ActorMaterializerSettings private (
     * in FIFO order within a fused subgraph, but randomized.
     */
   def withFuzzing(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.fuzzingMode) this
-    else copy(fuzzingMode = enable)
+    if (enable == this.fuzzingMode)
+      this
+    else
+      copy(fuzzingMode = enable)
 
   /**
     * Maximum number of elements emitted in batch if downstream signals large demand.
     */
   def withOutputBurstLimit(limit: Int): ActorMaterializerSettings =
-    if (limit == this.outputBurstLimit) this
-    else copy(outputBurstLimit = limit)
+    if (limit == this.outputBurstLimit)
+      this
+    else
+      copy(outputBurstLimit = limit)
 
   /**
     * Limit for number of messages that can be processed synchronously in stream to substream communication
     */
   def withSyncProcessingLimit(limit: Int): ActorMaterializerSettings =
-    if (limit == this.syncProcessingLimit) this
-    else copy(syncProcessingLimit = limit)
+    if (limit == this.syncProcessingLimit)
+      this
+    else
+      copy(syncProcessingLimit = limit)
 
   /**
     * Enable to log all elements that are dropped due to failures (at DEBUG level).
     */
   def withDebugLogging(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.debugLogging) this
-    else copy(debugLogging = enable)
+    if (enable == this.debugLogging)
+      this
+    else
+      copy(debugLogging = enable)
 
   /**
     * Enable automatic fusing of all graphs that are run. For short-lived streams
@@ -486,8 +498,10 @@ final class ActorMaterializerSettings private (
     * desirable since it reduces the number of Actors that are created.
     */
   def withAutoFusing(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.autoFusing) this
-    else copy(autoFusing = enable)
+    if (enable == this.autoFusing)
+      this
+    else
+      copy(autoFusing = enable)
 
   /**
     * Configure the maximum buffer size for which a FixedSizeBuffer will be preallocated.
@@ -495,8 +509,10 @@ final class ActorMaterializerSettings private (
     * system memory is not sufficient to hold the buffer.
     */
   def withMaxFixedBufferSize(size: Int): ActorMaterializerSettings =
-    if (size == this.maxFixedBufferSize) this
-    else copy(maxFixedBufferSize = size)
+    if (size == this.maxFixedBufferSize)
+      this
+    else
+      copy(maxFixedBufferSize = size)
 
   /**
     * Leaked publishers and subscribers are cleaned up when they are not used within a given
@@ -504,8 +520,10 @@ final class ActorMaterializerSettings private (
     */
   def withSubscriptionTimeoutSettings(
       settings: StreamSubscriptionTimeoutSettings): ActorMaterializerSettings =
-    if (settings == this.subscriptionTimeoutSettings) this
-    else copy(subscriptionTimeoutSettings = settings)
+    if (settings == this.subscriptionTimeoutSettings)
+      this
+    else
+      copy(subscriptionTimeoutSettings = settings)
 
   private def requirePowerOfTwo(n: Integer, name: String): Unit = {
     require(n > 0, s"$name must be > 0")

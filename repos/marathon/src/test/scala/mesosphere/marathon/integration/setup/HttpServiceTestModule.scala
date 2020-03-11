@@ -108,6 +108,9 @@ class ApplicationHealthCheck @Inject() () {
       c.appId == appId && c.versionId == versionId && c.port == 0
     }
     val state = instance.orElse(definition).fold(true)(_.healthy)
-    if (state) Response.ok().build() else Response.serverError().build()
+    if (state)
+      Response.ok().build()
+    else
+      Response.serverError().build()
   }
 }

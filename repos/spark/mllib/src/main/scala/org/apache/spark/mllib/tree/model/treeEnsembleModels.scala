@@ -53,7 +53,11 @@ class RandomForestModel @Since("1.2.0") (
       algo,
       trees,
       Array.fill(trees.length)(1.0),
-      combiningStrategy = if (algo == Classification) Vote else Average)
+      combiningStrategy =
+        if (algo == Classification)
+          Vote
+        else
+          Average)
     with Saveable {
 
   require(trees.forall(_.algo == algo))
@@ -363,7 +367,10 @@ private[tree] sealed class TreeEnsembleModel(
       case (Classification, Sum) => // binary classification
         val prediction = predictBySumming(features)
         // TODO: predicted labels are +1 or -1 for GBT. Need a better way to store this info.
-        if (prediction > 0.0) 1.0 else 0.0
+        if (prediction > 0.0)
+          1.0
+        else
+          0.0
       case (Classification, Vote) =>
         predictByVoting(features)
       case _ =>

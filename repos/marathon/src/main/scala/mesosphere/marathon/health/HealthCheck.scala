@@ -50,7 +50,11 @@ case class HealthCheck(
 
   def mergeFromProto(proto: Protos.HealthCheckDefinition): HealthCheck =
     HealthCheck(
-      path = if (proto.hasPath) Some(proto.getPath) else None,
+      path =
+        if (proto.hasPath)
+          Some(proto.getPath)
+        else
+          None,
       protocol = proto.getProtocol,
       portIndex =
         if (proto.hasPortIndex)
@@ -62,14 +66,20 @@ case class HealthCheck(
         else
           None,
       command =
-        if (proto.hasCommand) Some(Command("").mergeFromProto(proto.getCommand))
-        else None,
+        if (proto.hasCommand)
+          Some(Command("").mergeFromProto(proto.getCommand))
+        else
+          None,
       gracePeriod = proto.getGracePeriodSeconds.seconds,
       timeout = proto.getTimeoutSeconds.seconds,
       interval = proto.getIntervalSeconds.seconds,
       maxConsecutiveFailures = proto.getMaxConsecutiveFailures,
       ignoreHttp1xx = proto.getIgnoreHttp1Xx,
-      port = if (proto.hasPort) Some(proto.getPort) else None
+      port =
+        if (proto.hasPort)
+          Some(proto.getPort)
+        else
+          None
     )
 
   def mergeFromProto(bytes: Array[Byte]): HealthCheck =
@@ -145,7 +155,8 @@ object HealthCheck {
               case Protocol.TCP =>
                 !hasCommand && !hasPath && eitherPortIndexOrPort
               case _ => true
-            }) Success
+            })
+          Success
         else
           Failure(
             Set(

@@ -66,7 +66,10 @@ object VectorClock extends VectorClockSerialization {
   implicit object order extends Order[VectorClock] {
     def order(c1: VectorClock, c2: VectorClock) =
       if (c2.isDominatedBy(c1)) {
-        if (c1.isDominatedBy(c2)) EQ else GT
+        if (c1.isDominatedBy(c2))
+          EQ
+        else
+          GT
       } else {
         LT
       }

@@ -48,7 +48,10 @@ trait ScNamedElement
   def nameId: PsiElement
 
   override def getNameIdentifier: PsiIdentifier =
-    if (nameId != null) new JavaIdentifier(nameId) else null
+    if (nameId != null)
+      new JavaIdentifier(nameId)
+    else
+      null
 
   override def setName(name: String): PsiElement = {
     val id = nameId.getNode

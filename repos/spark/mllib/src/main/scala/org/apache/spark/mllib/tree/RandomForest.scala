@@ -176,7 +176,11 @@ private class RandomForest(
     // Cache input RDD for speedup during multiple passes.
     val treeInput = TreePoint.convertToTreeRDD(retaggedInput, bins, metadata)
 
-    val withReplacement = if (numTrees > 1) true else false
+    val withReplacement =
+      if (numTrees > 1)
+        true
+      else
+        false
 
     val baggedInput = BaggedPoint
       .convertToBaggedRDD(

@@ -30,7 +30,8 @@ object SerializableLaws {
   // laws project.
 
   def serializable[A](a: A): Prop =
-    if (Platform.isJs) Prop(_ => Result(status = Proof))
+    if (Platform.isJs)
+      Prop(_ => Result(status = Proof))
     else
       Prop { _ =>
         import java.io.{
@@ -56,7 +57,8 @@ object SerializableLaws {
             Result(status = Exception(t))
         } finally {
           oos.close()
-          if (ois != null) ois.close()
+          if (ois != null)
+            ois.close()
         }
       }
 }

@@ -89,8 +89,10 @@ final case class Comprehension(
         CollectionType(
           f2.nodeType.asCollectionType.cons,
           s2.nodeType.asCollectionType.elementType)
-      else nodeType
-    if (same && newType == nodeType) this
+      else
+        nodeType
+    if (same && newType == nodeType)
+      this
     else {
       copy(
         from = f2,
@@ -98,7 +100,8 @@ final case class Comprehension(
         where = w2.orElse(where),
         groupBy = g2.orElse(groupBy),
         orderBy =
-          if (o2 eq o) orderBy
+          if (o2 eq o)
+            orderBy
           else
             orderBy.zip(o2).map {
               case ((_, o), n) => (n, o)

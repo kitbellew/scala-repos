@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object FloatProperty {
   implicit def sfxFloatProperty2jfx(fp: FloatProperty): jfxbp.FloatProperty =
-    if (fp != null) fp.delegate else null
+    if (fp != null)
+      fp.delegate
+    else
+      null
 
   /**
     * Creates a new FloatProperty instance using the SimpleFloatProperty as the target.

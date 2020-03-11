@@ -43,7 +43,10 @@ object HostServices {
     * @return JavaFX HostServices
     */
   implicit def sfxHostServices2jfx(v: HostServices): jfx.HostServices =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

@@ -81,9 +81,16 @@ class HttpMuxer(
     * - return "/" if path is "/" or "///" etc
     */
   private[this] def normalize(path: String) = {
-    val suffix = if (path.endsWith("/")) "/" else ""
+    val suffix =
+      if (path.endsWith("/"))
+        "/"
+      else
+        ""
     val p = path.split("/").filterNot(_.isEmpty).mkString("/")
-    if (p == "") suffix else "/" + p + suffix
+    if (p == "")
+      suffix
+    else
+      "/" + p + suffix
   }
 }
 

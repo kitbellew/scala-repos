@@ -58,17 +58,21 @@ trait AssignmentAnnotator {
             }
             ScalaPsiUtil.nameContext(r.element) match {
               case v: ScVariable =>
-                if (!advancedHighlighting) return
+                if (!advancedHighlighting)
+                  return
                 checkVariable()
               case c: ScClassParameter if c.isVar =>
-                if (!advancedHighlighting) return
+                if (!advancedHighlighting)
+                  return
                 checkVariable()
               case f: PsiField if !f.hasModifierProperty("final") =>
-                if (!advancedHighlighting) return
+                if (!advancedHighlighting)
+                  return
                 checkVariable()
               case fun: ScFunction
                   if ScalaPsiUtil.isViableForAssignmentFunction(fun) =>
-                if (!advancedHighlighting) return
+                if (!advancedHighlighting)
+                  return
                 assignment.resolveAssignment match {
                   case Some(ra) =>
                     ra.problems.foreach {

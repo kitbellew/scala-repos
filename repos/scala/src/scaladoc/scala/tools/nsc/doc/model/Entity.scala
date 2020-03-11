@@ -219,10 +219,14 @@ trait HigherKinded {
   * documentation is available. Only templates for which a source file is given are documented by Scaladoc. */
 trait NoDocTemplate extends TemplateEntity {
   def kind =
-    if (isClass) "class"
-    else if (isTrait) "trait"
-    else if (isObject) "object"
-    else ""
+    if (isClass)
+      "class"
+    else if (isTrait)
+      "trait"
+    else if (isObject)
+      "object"
+    else
+      ""
 }
 
 /** An inherited template that was not documented in its original owner - example:

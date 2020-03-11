@@ -112,16 +112,22 @@ case class Handshake(
     "max packet size can't exceed 1 gigabyte")
 
   private[this] val newClientCap =
-    if (database.isDefined) clientCap + ConnectWithDB
-    else clientCap - ConnectWithDB
+    if (database.isDefined)
+      clientCap + ConnectWithDB
+    else
+      clientCap - ConnectWithDB
 
   private[this] def isCompatibleVersion(init: HandshakeInit) =
-    if (init.serverCap.has(Capability.Protocol41)) Return(true)
-    else Throw(IncompatibleVersion)
+    if (init.serverCap.has(Capability.Protocol41))
+      Return(true)
+    else
+      Throw(IncompatibleVersion)
 
   private[this] def isCompatibleCharset(init: HandshakeInit) =
-    if (Charset.isCompatible(init.charset)) Return(true)
-    else Throw(IncompatibleCharset)
+    if (Charset.isCompatible(init.charset))
+      Return(true)
+    else
+      Throw(IncompatibleCharset)
 
   def apply(init: HandshakeInit) = {
     for {

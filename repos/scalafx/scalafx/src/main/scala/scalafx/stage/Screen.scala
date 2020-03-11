@@ -35,7 +35,10 @@ import scalafx.geometry.Rectangle2D
 
 object Screen {
   implicit def sfxScreen2jfx(v: Screen): jfxs.Screen =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * The primary Screen.

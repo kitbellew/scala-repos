@@ -46,19 +46,33 @@ package object plot {
 
       val dataset = XYDataset[Int](
         items = xv.domain(x),
-        name = if (name == null) defaultName(0) else name,
+        name =
+          if (name == null)
+            defaultName(0)
+          else
+            name,
         x = (k: K) => vv(xv(x, k)),
         y = (k: K) => vv(yv(y, k)),
-        label = (k: K) => if (labels != null) labels(k) else null,
-        tip = (k: K) => if (tips != null) tips(k) else null
+        label = (k: K) =>
+          if (labels != null)
+            labels(k)
+          else
+            null,
+        tip = (k: K) =>
+          if (tips != null)
+            tips(k)
+          else
+            null
       )
 
       // initialize the series renderer
       val renderer = new org.jfree.chart.renderer.xy.XYLineAndShapeRenderer()
 
       val color =
-        if (colorcode != null) PaintScale.convertToColor(colorcode)
-        else defaultColor(0)
+        if (colorcode != null)
+          PaintScale.convertToColor(colorcode)
+        else
+          defaultColor(0)
       renderer.setSeriesPaint(0, color)
       renderer.setSeriesFillPaint(0, color)
       renderer.setSeriesOutlinePaint(0, color)
@@ -158,12 +172,24 @@ package object plot {
       // initialize dataset
       val dataset = XYZDataset(
         items = items,
-        name = if (name == null) defaultName(0) else name,
+        name =
+          if (name == null)
+            defaultName(0)
+          else
+            name,
         x = (k: K) => vv(xv(x, k)),
         y = (k: K) => vv(yv(y, k)),
         z = (k: K) => size(k),
-        label = (k: K) => if (labels != null) labels(k) else null,
-        tip = (k: K) => if (tips != null) tips(k) else null
+        label = (k: K) =>
+          if (labels != null)
+            labels(k)
+          else
+            null,
+        tip = (k: K) =>
+          if (tips != null)
+            tips(k)
+          else
+            null
       )
 
       // initialize the series renderer
@@ -230,7 +256,11 @@ package object plot {
         defaultStroke: (Int) => Stroke): (xy.XYDataset, XYItemRenderer) = {
       val dataset = new org.jfree.data.xy.XYBarDataset(
         XYDataset(
-          name = if (name == null) defaultName(0) else name,
+          name =
+            if (name == null)
+              defaultName(0)
+            else
+              name,
           items = IndexedSeq.range(0, counts.length),
           x = (i: Int) =>
             if (i == binner.splits.length) {
@@ -295,14 +325,24 @@ package object plot {
         // initialize dataset
         val dataset = XYZDataset(
           items = items,
-          name = if (name == null) defaultName(0) else name,
+          name =
+            if (name == null)
+              defaultName(0)
+            else
+              name,
           x = (k: (Int, Int)) => k._2 + offset._2,
           y = (k: (Int, Int)) => k._1 + offset._1,
           z = (k: (Int, Int)) => mt(k._1, k._2),
           label = (k: (Int, Int)) =>
-            if (labels != null && labels.isDefinedAt(k)) labels(k) else null,
+            if (labels != null && labels.isDefinedAt(k))
+              labels(k)
+            else
+              null,
           tip = (k: (Int, Int)) =>
-            if (tips != null && tips.isDefinedAt(k)) tips(k) else null
+            if (tips != null && tips.isDefinedAt(k))
+              tips(k)
+            else
+              null
         )
 
         // initialize renderer

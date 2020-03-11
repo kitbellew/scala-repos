@@ -52,15 +52,21 @@ trait AdditiveSemigroup[@sp(Byte, Short, Int, Long, Float, Double) A]
     if (n <= 0)
       throw new IllegalArgumentException(
         "Repeated summation for semigroups must have repetitions > 0")
-    else if (n == 1) a
-    else sumnAboveOne(a, n)
+    else if (n == 1)
+      a
+    else
+      sumnAboveOne(a, n)
 
   protected def sumnAboveOne(a: A, n: Int): A = {
     @tailrec def loop(b: A, k: Int, extra: A): A =
       if (k == 1) {
         plus(b, extra)
       } else {
-        val x = if ((k & 1) == 1) plus(b, extra) else extra
+        val x =
+          if ((k & 1) == 1)
+            plus(b, extra)
+          else
+            extra
         loop(plus(b, b), k >>> 1, x)
       }
     loop(a, n - 1, a)
@@ -104,9 +110,12 @@ trait AdditiveMonoid[@sp(Byte, Short, Int, Long, Float, Double) A]
     if (n < 0)
       throw new IllegalArgumentException(
         "Repeated summation for monoids must have repetitions >= 0")
-    else if (n == 0) zero
-    else if (n == 1) a
-    else sumnAboveOne(a, n)
+    else if (n == 0)
+      zero
+    else if (n == 1)
+      a
+    else
+      sumnAboveOne(a, n)
 
   /**
     *  Given a sequence of `as`, sum them using the monoid and return the total.
@@ -140,11 +149,16 @@ trait AdditiveGroup[@sp(Byte, Short, Int, Long, Float, Double) A]
     * Return `a` added with itself `n` times.
     */
   override def sumn(a: A, n: Int): A =
-    if (n == Int.MinValue) plus(sumn(negate(a), Int.MaxValue), negate(a))
-    else if (n < 0) sumn(negate(a), -n)
-    else if (n == 0) zero
-    else if (n == 1) a
-    else sumnAboveOne(a, n)
+    if (n == Int.MinValue)
+      plus(sumn(negate(a), Int.MaxValue), negate(a))
+    else if (n < 0)
+      sumn(negate(a), -n)
+    else if (n == 0)
+      zero
+    else if (n == 1)
+      a
+    else
+      sumnAboveOne(a, n)
 }
 
 trait AdditiveAbGroup[@sp(Byte, Short, Int, Long, Float, Double) A]

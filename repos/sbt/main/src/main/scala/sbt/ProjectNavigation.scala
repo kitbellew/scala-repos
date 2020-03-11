@@ -14,8 +14,10 @@ import java.net.URI
 
 object ProjectNavigation {
   def command(s: State): Parser[() => State] =
-    if (s get sessionSettings isEmpty) failure("No project loaded")
-    else (new ProjectNavigation(s)).command
+    if (s get sessionSettings isEmpty)
+      failure("No project loaded")
+    else
+      (new ProjectNavigation(s)).command
 }
 final class ProjectNavigation(s: State) {
   val extracted = Project extract s
@@ -23,7 +25,10 @@ final class ProjectNavigation(s: State) {
 
   def setProject(nuri: URI, nid: String) = {
     val neval =
-      if (currentRef.build == nuri) session.currentEval else mkEval(nuri)
+      if (currentRef.build == nuri)
+        session.currentEval
+      else
+        mkEval(nuri)
     updateCurrent(s.put(sessionSettings, session.setCurrent(nuri, nid, neval)))
   }
   def mkEval(nuri: URI) = Load.lazyEval(structure.units(nuri).unit)

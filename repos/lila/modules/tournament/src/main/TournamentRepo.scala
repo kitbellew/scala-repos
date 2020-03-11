@@ -35,7 +35,8 @@ object TournamentRepo {
   private def variantSelect(variant: Variant) =
     if (variant.standard)
       BSONDocument("variant" -> BSONDocument("$exists" -> false))
-    else BSONDocument("variant" -> variant.id)
+    else
+      BSONDocument("variant" -> variant.id)
   private val nonEmptySelect = BSONDocument(
     "nbPlayers" -> BSONDocument("$ne" -> 0))
 

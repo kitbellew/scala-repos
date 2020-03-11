@@ -652,7 +652,8 @@ class Eval(target: Option[File]) {
         className: String,
         resetState: Boolean = true): Class[_] = {
       synchronized {
-        if (resetState) reset()
+        if (resetState)
+          reset()
         findClass(className).getOrElse {
           apply(code)
           findClass(className).get

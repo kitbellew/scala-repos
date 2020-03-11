@@ -145,7 +145,8 @@ trait TraversableLike[+A, +Repr]
   def ++[B >: A, That](that: GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
-    if (that.isInstanceOf[IndexedSeqLike[_, _]]) b.sizeHint(this, that.seq.size)
+    if (that.isInstanceOf[IndexedSeqLike[_, _]])
+      b.sizeHint(this, that.seq.size)
     b ++= thisCollection
     b ++= that.seq
     b.result
@@ -186,7 +187,8 @@ trait TraversableLike[+A, +Repr]
   def ++:[B >: A, That](that: TraversableOnce[B])(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
-    if (that.isInstanceOf[IndexedSeqLike[_, _]]) b.sizeHint(this, that.size)
+    if (that.isInstanceOf[IndexedSeqLike[_, _]])
+      b.sizeHint(this, that.size)
     b ++= that
     b ++= thisCollection
     b.result
@@ -237,7 +239,8 @@ trait TraversableLike[+A, +Repr]
       b
     }
     val b = builder
-    for (x <- this) b += f(x)
+    for (x <- this)
+      b += f(x)
     b.result
   }
 
@@ -248,14 +251,16 @@ trait TraversableLike[+A, +Repr]
         repr
       ) // extracted to keep method size under 35 bytes, so that it can be JIT-inlined
     val b = builder
-    for (x <- this) b ++= f(x).seq
+    for (x <- this)
+      b ++= f(x).seq
     b.result
   }
 
   private[scala] def filterImpl(p: A => Boolean, isFlipped: Boolean): Repr = {
     val b = newBuilder
     for (x <- this)
-      if (p(x) != isFlipped) b += x
+      if (p(x) != isFlipped)
+        b += x
 
     b.result
   }
@@ -321,7 +326,11 @@ trait TraversableLike[+A, +Repr]
     */
   def partition(p: A => Boolean): (Repr, Repr) = {
     val l, r = newBuilder
-    for (x <- this) (if (p(x)) l else r) += x
+    for (x <- this)
+      (if (p(x))
+         l
+       else
+         r) += x
     (l.result, r.result)
   }
 
@@ -411,7 +420,8 @@ trait TraversableLike[+A, +Repr]
       scanned ::= acc
     }
     val b = bf(repr)
-    for (elem <- scanned) b += elem
+    for (elem <- scanned)
+      b += elem
     b.result
   }
 
@@ -436,7 +446,11 @@ trait TraversableLike[+A, +Repr]
     *  @return  the first element of this $coll if it is nonempty,
     *           `None` if it is empty.
     */
-  def headOption: Option[A] = if (isEmpty) None else Some(head)
+  def headOption: Option[A] =
+    if (isEmpty)
+      None
+    else
+      Some(head)
 
   /** Selects all elements except the first.
     *  $orderDependent
@@ -445,7 +459,8 @@ trait TraversableLike[+A, +Repr]
     *  @throws `UnsupportedOperationException` if the $coll is empty.
     */
   override def tail: Repr = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.tail")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.tail")
     drop(1)
   }
 
@@ -466,7 +481,11 @@ trait TraversableLike[+A, +Repr]
     *  @return  the last element of this $coll$ if it is nonempty,
     *           `None` if it is empty.
     */
-  def lastOption: Option[A] = if (isEmpty) None else Some(last)
+  def lastOption: Option[A] =
+    if (isEmpty)
+      None
+    else
+      Some(last)
 
   /** Selects all elements except the last.
     *  $orderDependent
@@ -475,14 +494,17 @@ trait TraversableLike[+A, +Repr]
     *  @throws UnsupportedOperationException if the $coll is empty.
     */
   def init: Repr = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.init")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.init")
     var lst = head
     var follow = false
     val b = newBuilder
     b.sizeHint(this, -1)
     for (x <- this) {
-      if (follow) b += lst
-      else follow = true
+      if (follow)
+        b += lst
+      else
+        follow = true
       lst = x
     }
     b.result
@@ -495,7 +517,8 @@ trait TraversableLike[+A, +Repr]
       val b = newBuilder
       b.sizeHint(this)
       (b ++= thisCollection).result
-    } else sliceWithKnownDelta(n, Int.MaxValue, -n)
+    } else
+      sliceWithKnownDelta(n, Int.MaxValue, -n)
 
   def slice(from: Int, until: Int): Repr =
     sliceWithKnownBound(scala.math.max(from, 0), until)
@@ -508,9 +531,11 @@ trait TraversableLike[+A, +Repr]
     var i = 0
     breakable {
       for (x <- this) {
-        if (i >= from) b += x
+        if (i >= from)
+          b += x
         i += 1
-        if (i >= until) break
+        if (i >= until)
+          break
       }
     }
     b.result
@@ -521,7 +546,8 @@ trait TraversableLike[+A, +Repr]
       until: Int,
       delta: Int): Repr = {
     val b = newBuilder
-    if (until <= from) b.result
+    if (until <= from)
+      b.result
     else {
       b.sizeHint(this, delta)
       sliceInternal(from, until, b)
@@ -530,7 +556,8 @@ trait TraversableLike[+A, +Repr]
   // Precondition: from >= 0
   private[scala] def sliceWithKnownBound(from: Int, until: Int): Repr = {
     val b = newBuilder
-    if (until <= from) b.result
+    if (until <= from)
+      b.result
     else {
       b.sizeHintBounded(until - from, this)
       sliceInternal(from, until, b)
@@ -541,7 +568,8 @@ trait TraversableLike[+A, +Repr]
     val b = newBuilder
     breakable {
       for (x <- this) {
-        if (!p(x)) break
+        if (!p(x))
+          break
         b += x
       }
     }
@@ -552,8 +580,10 @@ trait TraversableLike[+A, +Repr]
     val b = newBuilder
     var go = false
     for (x <- this) {
-      if (!go && !p(x)) go = true
-      if (go) b += x
+      if (!go && !p(x))
+        go = true
+      if (go)
+        b += x
     }
     b.result
   }
@@ -563,7 +593,10 @@ trait TraversableLike[+A, +Repr]
     var toLeft = true
     for (x <- this) {
       toLeft = toLeft && p(x)
-      (if (toLeft) l else r) += x
+      (if (toLeft)
+         l
+       else
+         r) += x
     }
     (l.result, r.result)
   }
@@ -571,10 +604,14 @@ trait TraversableLike[+A, +Repr]
   def splitAt(n: Int): (Repr, Repr) = {
     val l, r = newBuilder
     l.sizeHintBounded(n, this)
-    if (n >= 0) r.sizeHint(this, -n)
+    if (n >= 0)
+      r.sizeHint(this, -n)
     var i = 0
     for (x <- this) {
-      (if (i < n) l else r) += x
+      (if (i < n)
+         l
+       else
+         r) += x
       i += 1
     }
     (l.result, r.result)
@@ -603,7 +640,8 @@ trait TraversableLike[+A, +Repr]
     val end = (start + len) min xs.length
     breakable {
       for (x <- this) {
-        if (i >= end) break
+        if (i >= end)
+          break
         xs(i) = x
         i += 1
       }
@@ -643,9 +681,11 @@ trait TraversableLike[+A, +Repr]
   def stringPrefix: String = {
     var string = repr.getClass.getName
     val idx1 = string.lastIndexOf('.': Int)
-    if (idx1 != -1) string = string.substring(idx1 + 1)
+    if (idx1 != -1)
+      string = string.substring(idx1 + 1)
     val idx2 = string.indexOf('$')
-    if (idx2 != -1) string = string.substring(0, idx2)
+    if (idx2 != -1)
+      string = string.substring(0, idx2)
     string
   }
 
@@ -717,7 +757,8 @@ trait TraversableLike[+A, +Repr]
         implicit bf: CanBuildFrom[Repr, B, That]): That = {
       val b = bf(repr)
       for (x <- self)
-        if (p(x)) b += f(x)
+        if (p(x))
+          b += f(x)
       b.result
     }
 
@@ -749,7 +790,8 @@ trait TraversableLike[+A, +Repr]
         implicit bf: CanBuildFrom[Repr, B, That]): That = {
       val b = bf(repr)
       for (x <- self)
-        if (p(x)) b ++= f(x).seq
+        if (p(x))
+          b ++= f(x).seq
       b.result
     }
 
@@ -768,7 +810,8 @@ trait TraversableLike[+A, +Repr]
       */
     def foreach[U](f: A => U): Unit =
       for (x <- self)
-        if (p(x)) f(x)
+        if (p(x))
+          f(x)
 
     /** Further refines the filter for this $coll.
       *

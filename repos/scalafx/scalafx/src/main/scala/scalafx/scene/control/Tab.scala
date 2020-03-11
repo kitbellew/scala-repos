@@ -46,7 +46,10 @@ import scalafx.scene.Node._
 object Tab {
 
   implicit def sfxTab2jfx(v: Tab): jfxsc.Tab =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

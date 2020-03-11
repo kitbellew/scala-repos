@@ -150,7 +150,8 @@ trait HeapBackend extends RelationalBackend with Logging {
             z andThen createUniquenessVerifier(
               "<unique column " + c.sym.name + ">",
               Vector(c.sym))
-          else z
+          else
+            z
       }
     }
 
@@ -165,7 +166,8 @@ trait HeapBackend extends RelationalBackend with Logging {
     }
 
     protected def createIndexVerifier(idx: Index) =
-      if (!idx.unique) Verifier.empty
+      if (!idx.unique)
+        Verifier.empty
       else
         createUniquenessVerifier(
           idx.name,
@@ -178,8 +180,10 @@ trait HeapBackend extends RelationalBackend with Logging {
         on: IndexedSeq[FieldSymbol]): Verifier = {
       val columns: IndexedSeq[Int] = on.map(columnIndexes)
       val extract: (Row => Any) =
-        if (columns.length == 1) (r: Row) => r(columns.head)
-        else (r: Row) => columns.map(r)
+        if (columns.length == 1)
+          (r: Row) => r(columns.head)
+        else
+          (r: Row) => columns.map(r)
       val hash = new HashSet[Any]()
       new Verifier {
         def verify(row: Row) {
@@ -203,8 +207,10 @@ trait HeapBackend extends RelationalBackend with Logging {
     def inserted(row: Row): Unit
 
     def andThen(other: Verifier): Verifier =
-      if (this eq Verifier.empty) other
-      else if (other eq Verifier.empty) this
+      if (this eq Verifier.empty)
+        other
+      else if (other eq Verifier.empty)
+        this
       else
         new Verifier {
           def verify(row: Row) {
@@ -242,8 +248,10 @@ object HeapBackend extends HeapBackend {
     def createDefault: Any = autoInc match {
       case Some(a) =>
         val i = a.incrementAndGet()
-        if (tpe == ScalaBaseType.longType) i
-        else if (tpe == ScalaBaseType.intType) i.toInt
+        if (tpe == ScalaBaseType.longType)
+          i
+        else if (tpe == ScalaBaseType.intType)
+          i.toInt
         else
           throw new SlickException(
             "Only Long and Int types are allowed for AutoInc columns")

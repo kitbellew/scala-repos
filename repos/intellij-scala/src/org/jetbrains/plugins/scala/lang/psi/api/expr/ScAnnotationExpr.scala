@@ -27,7 +27,8 @@ trait ScAnnotationExpr extends ScalaPsiElement {
 
   private def findArgExprs: Option[ScArgumentExprList] = {
     val constr = findChildByClassScala(classOf[ScConstructor])
-    if (constr == null) return None
+    if (constr == null)
+      return None
 
     val args = constr.findFirstChildByType(ScalaElementTypes.ARG_EXPRS)
     args match {

@@ -23,7 +23,8 @@ trait ScGenericCall extends ScExpression {
   def typeArgs = findChild(classOf[ScTypeArgs])
 
   def arguments: Seq[ScTypeElement] =
-    (for (t <- typeArgs) yield t.typeArgs) match {
+    (for (t <- typeArgs)
+      yield t.typeArgs) match {
       case Some(x) => x
       case _       => Nil
     }

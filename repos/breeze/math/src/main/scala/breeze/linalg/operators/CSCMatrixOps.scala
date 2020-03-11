@@ -106,7 +106,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         val rows = a.rows
         val cols = a.cols
 
-        if (cols == 0 || rows == 0) return
+        if (cols == 0 || rows == 0)
+          return
 
         val bldr =
           new CSCMatrix.Builder[T](rows, cols, max(a.activeSize, b.activeSize))
@@ -121,9 +122,15 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           bpStop = b.colPtrs(ci1)
           while (ap < apStop || bp < bpStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
-            val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
+            val bri =
+              if (bp < bpStop)
+                b.rowIndices(bp)
+              else
+                rows
             if (ari == bri) {
               // column and row match, this cell goes into result matrix
               bldr.add(ari, ci, a.data(ap) + (s * b.data(bp)))
@@ -238,7 +245,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[T](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[T](rows, cols)
 
         if (a.activeSize == 0)
           b.copy
@@ -260,9 +268,15 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 bldr.add(ari, ci, a.data(ap) + b.data(bp))
@@ -301,7 +315,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return
+        if (cols == 0 || rows == 0)
+          return
 
         b := (0: T)
 
@@ -313,8 +328,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
             b(ari, ci) = a.data(ap)
             ap += 1
           }
@@ -334,7 +351,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return
+        if (cols == 0 || rows == 0)
+          return
 
         var ci = 0 // column index [0 ... cols)
         var apStop = a.colPtrs(0) // pointer into row indices and data
@@ -344,8 +362,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
             b(ari, ci) += a.data(ap)
             ap += 1
           }
@@ -365,7 +385,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return
+        if (cols == 0 || rows == 0)
+          return
 
         var ci = 0 // column index [0 ... cols)
         var apStop = a.colPtrs(0) // pointer into row indices and data
@@ -375,8 +396,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
             b(ari, ci) -= a.data(ap)
             ap += 1
           }
@@ -449,7 +472,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return DenseMatrix.zeros[T](rows, cols)
+        if (cols == 0 || rows == 0)
+          return DenseMatrix.zeros[T](rows, cols)
 
         val res = b.copy
         var ci = 0 // column index [0 ... cols)
@@ -460,8 +484,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           apStop = a.colPtrs(ci1)
           while (ap < apStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
             res(ari, ci) = semi.+(res(ari, ci), a.data(ap))
             ap += 1
           }
@@ -487,7 +513,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(rows == b.rows, "Matrices must have same number of rows!")
         require(cols == b.cols, "Matrices must have same number of cols!")
 
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[T](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[T](rows, cols)
 
         if (a.activeSize == 0 || b.activeSize == 0)
           CSCMatrix.zeros[T](rows, cols)
@@ -507,9 +534,15 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 res.add(ari, ci, a.data(ap) * b.data(bp))
@@ -543,7 +576,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[T](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[T](rows, cols)
         if (a.activeSize == 0)
           -b
         else if (b.activeSize == 0)
@@ -564,9 +598,15 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 val v = a.data(ap) - b.data(bp)
@@ -746,7 +786,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       DenseMatrix[T]] {
       def apply(a: CSCMatrix[T], b: DenseMatrix[T]) = {
 
-        if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
+        if (a.cols != b.rows)
+          throw new RuntimeException("Dimension Mismatch!")
 
         val res = new DenseMatrix[T](a.rows, b.cols)
         var i = 0
@@ -783,7 +824,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       CSCMatrix[T],
       DenseMatrix[T]] {
       def apply(a: DenseMatrix[T], b: CSCMatrix[T]) = {
-        if (a.cols != b.rows) throw new RuntimeException("Dimension Mismatch!")
+        if (a.cols != b.rows)
+          throw new RuntimeException("Dimension Mismatch!")
 
         val res = new DenseMatrix[T](a.rows, b.cols)
         var i = 0
@@ -961,7 +1003,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         val rows = a.rows
         val cols = a.cols
 
-        if (cols == 0 || rows == 0) return
+        if (cols == 0 || rows == 0)
+          return
 
         val bldr =
           new CSCMatrix.Builder[T](rows, cols, max(a.activeSize, b.activeSize))
@@ -976,9 +1019,15 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           bpStop = b.colPtrs(ci1)
           while (ap < apStop || bp < bpStop) {
             val ari =
-              if (ap < apStop) a.rowIndices(ap)
-              else rows // row index [0 ... rows)
-            val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+              if (ap < apStop)
+                a.rowIndices(ap)
+              else
+                rows // row index [0 ... rows)
+            val bri =
+              if (bp < bpStop)
+                b.rowIndices(bp)
+              else
+                rows
             if (ari == bri) {
               // column and row match, this cell goes into result matrix
               bldr.add(ari, ci, ring.+(a.data(ap), ring.*(s, b.data(bp))))
@@ -1219,8 +1268,16 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             apStop = a.colPtrs(ci1)
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
-              val ar = if (ap < apStop) a.rowIndices(ap) else rows
-              val br = if (bp < bpStop) b.rowIndices(bp) else rows
+              val ar =
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows
+              val br =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
 
               if (ar == br) {
                 builder.add(ar, ci, fn(a.data(ap), b.data(bp)))
@@ -1292,7 +1349,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       val zero = s.zero
 
       override def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
-        if (v2 == zero) return copy(v)
+        if (v2 == zero)
+          return copy(v)
         val data = Array.fill[T](v.rows * v.cols)(v2)
         var c = 0
         while (c < v.cols) {
@@ -1319,7 +1377,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       val zero = s.zero
 
       def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
-        if (v2 == zero) return copy(v)
+        if (v2 == zero)
+          return copy(v)
         val data = Array.fill[T](v.rows * v.cols)(s.negate(v2))
         var c = 0
         while (c < v.cols) {
@@ -1394,7 +1453,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         require(rows == b.rows, "Matrices must have same number of rows!")
         require(cols == b.cols, "Matrices must have same number of cols!")
 
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[A](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[A](rows, cols)
 
         if (a.activeSize == 0 || b.activeSize == 0)
           CSCMatrix.zeros[A](rows, cols)
@@ -1414,9 +1474,15 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 res.add(ari, ci, ring.*(a.data(ap), b.data(bp)))
@@ -1447,7 +1513,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[A](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[A](rows, cols)
 
         if (a.activeSize == 0)
           b.copy
@@ -1469,9 +1536,15 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 bldr.add(ari, ci, ring.+(a.data(ap), b.data(bp)))
@@ -1505,7 +1578,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         require(a.cols == b.cols, "Matrix dimensions must match")
         val rows = a.rows
         val cols = a.cols
-        if (cols == 0 || rows == 0) return CSCMatrix.zeros[A](rows, cols)
+        if (cols == 0 || rows == 0)
+          return CSCMatrix.zeros[A](rows, cols)
         if (a.activeSize == 0)
           -b
         else if (b.activeSize == 0)
@@ -1526,9 +1600,15 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             bpStop = b.colPtrs(ci1)
             while (ap < apStop || bp < bpStop) {
               val ari =
-                if (ap < apStop) a.rowIndices(ap)
-                else rows // row index [0 ... rows)
-              val bri = if (bp < bpStop) b.rowIndices(bp) else rows
+                if (ap < apStop)
+                  a.rowIndices(ap)
+                else
+                  rows // row index [0 ... rows)
+              val bri =
+                if (bp < bpStop)
+                  b.rowIndices(bp)
+                else
+                  rows
               if (ari == bri) {
                 // column and row match, this cell goes into result matrix
                 val v = ring.-(a.data(ap), b.data(bp))

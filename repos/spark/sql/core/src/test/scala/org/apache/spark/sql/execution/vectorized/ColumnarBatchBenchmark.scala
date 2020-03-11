@@ -307,12 +307,14 @@ object ColumnarBatchBenchmark {
         for (n <- 0L until iters) {
           var i = 0
           while (i < count) {
-            if (i % 2 == 0) b.set(i)
+            if (i % 2 == 0)
+              b.set(i)
             i += 1
           }
           i = 0
           while (i < count) {
-            if (b.get(i)) sum += 1
+            if (b.get(i))
+              sum += 1
             i += 1
           }
         }
@@ -326,12 +328,14 @@ object ColumnarBatchBenchmark {
         for (n <- 0L until iters) {
           var i = 0
           while (i < count) {
-            if (i % 2 == 0) b(i) = 1;
+            if (i % 2 == 0)
+              b(i) = 1;
             i += 1
           }
           i = 0
           while (i < count) {
-            if (b(i) == 1) sum += 1
+            if (b(i) == 1)
+              sum += 1
             i += 1
           }
         }

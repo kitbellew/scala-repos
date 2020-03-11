@@ -18,7 +18,11 @@
 package org.apache.spark.partial
 
 class PartialResult[R](initialVal: R, isFinal: Boolean) {
-  private var finalValue: Option[R] = if (isFinal) Some(initialVal) else None
+  private var finalValue: Option[R] =
+    if (isFinal)
+      Some(initialVal)
+    else
+      None
   private var failure: Option[Exception] = None
   private var completionHandler: Option[R => Unit] = None
   private var failureHandler: Option[Exception => Unit] = None

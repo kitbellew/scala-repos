@@ -179,7 +179,8 @@ trait KMediansCoreSetClustering {
       var j = 0
       while (j < centers.length) {
         val dsq = distSq(points(i), centers(j))
-        if (dsq < minDistSq) minDistSq = dsq
+        if (dsq < minDistSq)
+          minDistSq = dsq
         j += 1
       }
       total += math.sqrt(minDistSq) * weights(i)
@@ -267,7 +268,8 @@ trait KMediansCoreSetClustering {
         var i = samples.length
         while (i < points.length) {
           val idx = scala.util.Random.nextInt(i + 1)
-          if (idx < samples.length) samples(idx) = points(i)
+          if (idx < samples.length)
+            samples(idx) = points(i)
           i += 1
         }
 
@@ -305,7 +307,8 @@ trait KMediansCoreSetClustering {
         var keepLength = 0
         i = 0
         while (i < assignments.length) {
-          if (isBad(i)) keepLength += 1
+          if (isBad(i))
+            keepLength += 1
           i += 1
         }
 
@@ -471,8 +474,10 @@ trait KMediansCoreSetClustering {
 
         val sideLength = sideLengths(j)
         val scaledPoint = {
-          if (sideLength == 0) (point - center)
-          else (point - center) :/ sideLength
+          if (sideLength == 0)
+            (point - center)
+          else
+            (point - center) :/ sideLength
         }
 
         var i = 0
@@ -532,7 +537,8 @@ trait KMediansCoreSetClustering {
     val len = math.min(x.length, y.length)
     while (i < len) {
       val dx = math.abs(x(i) - y(i))
-      if (dx < minx) minx = dx
+      if (dx < minx)
+        minx = dx
       i += 1
     }
     minx
@@ -557,12 +563,14 @@ trait KMediansCoreSetClustering {
 
     override def equals(that: Any): Boolean = that match {
       case GridPoint(
-          thatPoint
+            thatPoint
           ) => //Eq[Array[Double]].eqv(this.point, thatPoint)
-        if (this.point.length != thatPoint.length) return false
+        if (this.point.length != thatPoint.length)
+          return false
         var i = 0
         while (i < this.point.length) {
-          if (this.point(i) != thatPoint(i)) return false
+          if (this.point(i) != thatPoint(i))
+            return false
           i += 1
         }
         true

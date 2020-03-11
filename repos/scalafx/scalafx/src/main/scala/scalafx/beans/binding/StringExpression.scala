@@ -34,7 +34,10 @@ import scala.language.implicitConversions
 object StringExpression {
   implicit def sfxStringExpression2jfx(
       se: StringExpression): jfxbb.StringExpression =
-    if (se != null) se.delegate else null
+    if (se != null)
+      se.delegate
+    else
+      null
 }
 
 class StringExpression(val delegate: jfxbb.StringExpression) {

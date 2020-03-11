@@ -137,22 +137,30 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
       classes.iterator
         .map { cl =>
           val n = cl.getName
-          if (n.startsWith("slick.") && n.endsWith("Profile")) Some(n) else None
+          if (n.startsWith("slick.") && n.endsWith("Profile"))
+            Some(n)
+          else
+            None
         }
         .find(_.isDefined)
         .getOrElse {
           val parents = classes.flatMap { cl =>
             Option(cl.getSuperclass) ++: cl.getInterfaces.toVector
           }
-          if (parents.isEmpty) None else findConfigName(parents)
+          if (parents.isEmpty)
+            None
+          else
+            findConfigName(parents)
         }
     GlobalConfig.profileConfig(findConfigName(Vector(getClass)).get)
   }
 
   override def toString = {
     val n = getClass.getName
-    if (n.startsWith("slick.") && n.endsWith("Profile$")) n
-    else super.toString
+    if (n.startsWith("slick.") && n.endsWith("Profile$"))
+      n
+    else
+      super.toString
   }
 }
 

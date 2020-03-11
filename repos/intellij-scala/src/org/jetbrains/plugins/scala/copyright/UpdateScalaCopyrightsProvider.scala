@@ -28,9 +28,11 @@ class UpdateScalaCopyrightsProvider extends UpdateCopyrightsProvider {
 
       override def getPackageStatement: PsiElement = {
         val file = getFile.asInstanceOf[ScalaFile]
-        if (file.isScriptFile()) return file.getFirstChild
+        if (file.isScriptFile())
+          return file.getFirstChild
         val packs = file.packagings
-        if (packs.isEmpty) return null
+        if (packs.isEmpty)
+          return null
         packs.head
       }
 
@@ -38,7 +40,10 @@ class UpdateScalaCopyrightsProvider extends UpdateCopyrightsProvider {
         val file = getFile.asInstanceOf[ScalaFile]
 
         val arr: Array[PsiElement] = file.importStatementsInHeader.toArray
-        if (arr.length == 0) null else arr
+        if (arr.length == 0)
+          null
+        else
+          arr
       }
     }
   }

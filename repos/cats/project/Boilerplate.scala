@@ -33,11 +33,13 @@ object Boilerplate {
     "// auto-generated boilerplate" // TODO: put something meaningful here?
 
   /** Returns a seq of the generated files.  As a side-effect, it actually generates them... */
-  def gen(dir: File) = for (t <- templates) yield {
-    val tgtFile = t.filename(dir)
-    IO.write(tgtFile, t.body)
-    tgtFile
-  }
+  def gen(dir: File) =
+    for (t <- templates)
+      yield {
+        val tgtFile = t.filename(dir)
+        IO.write(tgtFile, t.body)
+        tgtFile
+      }
 
   val maxArity = 22
 
@@ -51,12 +53,20 @@ object Boilerplate {
     val `a..n` = synVals.mkString(", ")
     val `_.._` = Seq.fill(arity)("_").mkString(", ")
     val `(A..N)` =
-      if (arity == 1) "Tuple1[A]" else synTypes.mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1[A]"
+      else
+        synTypes.mkString("(", ", ", ")")
     val `(_.._)` =
-      if (arity == 1) "Tuple1[_]"
-      else Seq.fill(arity)("_").mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1[_]"
+      else
+        Seq.fill(arity)("_").mkString("(", ", ", ")")
     val `(a..n)` =
-      if (arity == 1) "Tuple1(a)" else synVals.mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1(a)"
+      else
+        synVals.mkString("(", ", ", ")")
     val `a:A..n:N` = synTypedVals mkString ", "
   }
 

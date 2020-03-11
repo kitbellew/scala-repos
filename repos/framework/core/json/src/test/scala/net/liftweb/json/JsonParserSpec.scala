@@ -92,7 +92,8 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
     class StingyReader(s: String) extends java.io.StringReader(s) {
       override def read(cbuf: Array[Char], off: Int, len: Int): Int = {
         val c = read()
-        if (c == -1) -1
+        if (c == -1)
+          -1
         else {
           cbuf(off) = c.toChar
           1

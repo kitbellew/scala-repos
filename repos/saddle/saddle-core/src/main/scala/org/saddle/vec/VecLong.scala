@@ -85,7 +85,8 @@ class VecLong(values: Array[Long]) extends Vec[Long] { self =>
     val b = math.max(from, 0)
     val e = math.min(until, self.length)
 
-    if (e <= b) Vec.empty
+    if (e <= b)
+      Vec.empty
     else
       new VecLong(values) {
         private val ub = math.min(self.length, e)

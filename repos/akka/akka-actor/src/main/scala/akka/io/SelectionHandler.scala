@@ -130,7 +130,8 @@ private[io] object SelectionHandler {
           } catch {
             case NonFatal(_) ⇒
           }
-        } else super.logFailure(context, child, cause, decision)
+        } else
+          super.logFailure(context, child, cause, decision)
     }
 
   private class ChannelRegistryImpl(
@@ -232,7 +233,8 @@ private[io] object SelectionHandler {
           def tryRun(): Unit = {
             val currentOps = key.interestOps
             val newOps = currentOps | ops
-            if (newOps != currentOps) key.interestOps(newOps)
+            if (newOps != currentOps)
+              key.interestOps(newOps)
           }
         }
       }
@@ -243,7 +245,8 @@ private[io] object SelectionHandler {
           def tryRun(): Unit = {
             val currentOps = key.interestOps
             val newOps = currentOps & ~ops
-            if (newOps != currentOps) key.interestOps(newOps)
+            if (newOps != currentOps)
+              key.interestOps(newOps)
           }
         }
       }
@@ -338,7 +341,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
   def spawnChildWithCapacityProtection(
       cmd: WorkerForCommand,
       retriesLeft: Int): Unit = {
-    if (TraceLogging) log.debug("Executing [{}]", cmd)
+    if (TraceLogging)
+      log.debug("Executing [{}]", cmd)
     if (MaxChannelsPerSelector == -1 || childCount < MaxChannelsPerSelector) {
       val newName = sequenceNumber.toString
       sequenceNumber += 1

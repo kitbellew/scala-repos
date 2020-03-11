@@ -169,11 +169,20 @@ object Test {
 
   def flagsString(m: java.lang.reflect.Method) = {
     val str = List(
-      if (m.isBridge) "<bridge>" else "",
-      if (m.isSynthetic) "<synthetic>" else ""
+      if (m.isBridge)
+        "<bridge>"
+      else
+        "",
+      if (m.isSynthetic)
+        "<synthetic>"
+      else
+        ""
     ) filterNot (_ == "") mkString " "
 
-    if (str == "") "" else " " + str
+    if (str == "")
+      ""
+    else
+      " " + str
     //
     // val flags = scala.reflect.internal.ClassfileConstants.toScalaMethodFlags(m.getModifiers())
     // scala.tools.nsc.symtab.Flags.flagsToString(flags)

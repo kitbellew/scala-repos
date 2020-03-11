@@ -30,7 +30,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val infixExpr: ScInfixExpr =
       PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
-    if (infixExpr == null) return false
+    if (infixExpr == null)
+      return false
 
     val oper = infixExpr.operation.nameId.getText
 
@@ -59,7 +60,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val infixExpr: ScInfixExpr =
       PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
-    if (infixExpr == null || !infixExpr.isValid) return
+    if (infixExpr == null || !infixExpr.isValid)
+      return
 
     val start = infixExpr.getTextRange.getStartOffset
     val diff =

@@ -341,7 +341,10 @@ class ReceivedBlockTrackerSuite
       recoverFromWriteAheadLog: Boolean = false,
       clock: Clock = new SystemClock): ReceivedBlockTracker = {
     val cpDirOption =
-      if (setCheckpointDir) Some(checkpointDirectory.toString) else None
+      if (setCheckpointDir)
+        Some(checkpointDirectory.toString)
+      else
+        None
     val tracker = new ReceivedBlockTracker(
       conf,
       hadoopConf,

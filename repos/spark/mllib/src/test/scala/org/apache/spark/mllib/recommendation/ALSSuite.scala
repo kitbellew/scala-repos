@@ -48,7 +48,10 @@ object ALSSuite {
     (
       sampledRatings.asJava,
       trueRatings.toArray,
-      if (truePrefs == null) null else truePrefs.toArray)
+      if (truePrefs == null)
+        null
+      else
+        truePrefs.toArray)
   }
 
   def generateRatings(
@@ -80,9 +83,19 @@ object ALSSuite {
           users,
           products,
           Array.fill(users * products)(
-            (if (negativeWeights) -2 else 0) + rand.nextInt(10).toDouble))
+            (if (negativeWeights)
+               -2
+             else
+               0) + rand.nextInt(10).toDouble))
         val prefs =
-          new BDM(users, products, raw.data.map(v => if (v > 0) 1.0 else 0.0))
+          new BDM(
+            users,
+            products,
+            raw.data.map(v =>
+              if (v > 0)
+                1.0
+              else
+                0.0))
         (raw, prefs)
       } else {
         (userMatrix * productMatrix, null)
@@ -90,8 +103,7 @@ object ALSSuite {
 
     val sampledRatings = {
       for (u <- 0 until users;
-           p <- 0 until products
-           if rand.nextDouble() < samplingRate)
+           p <- 0 until products if rand.nextDouble() < samplingRate)
         yield Rating(u, p, trueRatings(u, p))
     }
 
@@ -275,7 +287,8 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
         val allRatings = new BDM[Double](users, products)
         val usersProducts =
           for (u <- 0 until users;
-               p <- 0 until products) yield (u, p)
+               p <- 0 until products)
+            yield (u, p)
         val userProductsRDD = sc.parallelize(usersProducts)
         model.predict(userProductsRDD).collect().foreach { elem =>
           allRatings(elem.user, elem.product) = elem.rating

@@ -137,8 +137,10 @@ class MarathonHealthCheckManager @Inject() (
         currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
       }
 
-      if (newHealthChecksForApp.isEmpty) ahcs -= appId
-      else ahcs += (appId -> newHealthChecksForApp)
+      if (newHealthChecksForApp.isEmpty)
+        ahcs -= appId
+      else
+        ahcs += (appId -> newHealthChecksForApp)
     }
 
   override def removeAll(): Unit =
@@ -215,8 +217,10 @@ class MarathonHealthCheckManager @Inject() (
           log.info(
             s"Received status for $taskId with version [$version] and healthy [$healthy]")
           Some(
-            if (healthy) Healthy(taskId, version)
-            else Unhealthy(taskId, version, ""))
+            if (healthy)
+              Healthy(taskId, version)
+            else
+              Unhealthy(taskId, version, ""))
         } else {
           log.debug(s"Ignoring status for $taskId with no health information")
           None

@@ -18,7 +18,8 @@ object NettyHeadersWrapperSpec extends Specification {
       "b" -> "b2",
       "B" -> "b3",
       "c" -> "c1")
-    for ((k, v) <- headersToAdd) nettyHeaders.add(k, v)
+    for ((k, v) <- headersToAdd)
+      nettyHeaders.add(k, v)
     new NettyHeadersWrapper(nettyHeaders)
   }
 

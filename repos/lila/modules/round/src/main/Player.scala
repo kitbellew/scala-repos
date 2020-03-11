@@ -97,7 +97,8 @@ private[round] final class Player(
       else
         requestFishnet(game) >> fufail(
           FishnetError("Invalid AI move current FEN"))
-    } else fufail(FishnetError("Not AI turn"))
+    } else
+      fufail(FishnetError("Not AI turn"))
 
   private def applyUci(
       game: Game,

@@ -77,14 +77,18 @@ private final class Monitor(
 
   private[fishnet] def move(work: Work.Move, client: Client) = {
     success(work, client)
-    if (work.level == 8) work.acquiredAt foreach { acquiredAt =>
-      lila.mon.fishnet.move
-        .time(client.userId.value)(nowMillis - acquiredAt.getMillis)
-    }
+    if (work.level == 8)
+      work.acquiredAt foreach { acquiredAt =>
+        lila.mon.fishnet.move
+          .time(client.userId.value)(nowMillis - acquiredAt.getMillis)
+      }
   }
 
   private def sample[A](elems: List[A], n: Int) =
-    if (elems.size <= n) elems else scala.util.Random shuffle elems take n
+    if (elems.size <= n)
+      elems
+    else
+      scala.util.Random shuffle elems take n
 
   private def success(work: Work, client: Client) = {
 

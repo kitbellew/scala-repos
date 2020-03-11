@@ -13,7 +13,8 @@ class StatusBenchmark extends StdBenchAnnotations {
 
   val combinations: Array[(Status, Status)] =
     for (l <- all;
-         r <- all) yield (l, r)
+         r <- all)
+      yield (l, r)
 
   @Benchmark
   def best(hole: Blackhole): Unit = {

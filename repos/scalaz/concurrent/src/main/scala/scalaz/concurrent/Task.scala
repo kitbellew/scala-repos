@@ -301,7 +301,11 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     def help(
         ds: Seq[Duration],
         es: => Stream[Throwable]): Future[Throwable \/ (A, List[Throwable])] = {
-      def acc = if (accumulateErrors) es.toList else Nil
+      def acc =
+        if (accumulateErrors)
+          es.toList
+        else
+          Nil
       ds match {
         case Seq() => get map (_.map(_ -> acc))
         case Seq(t, ts @ _*) =>
@@ -319,7 +323,11 @@ class Task[+A](val get: Future[Throwable \/ A]) {
 
   /** Ensures that the result of this Task satisfies the given predicate, or fails with the given value. */
   def ensure(failure: => Throwable)(f: A => Boolean): Task[A] =
-    flatMap(a => if (f(a)) Task.now(a) else Task.fail(failure))
+    flatMap(a =>
+      if (f(a))
+        Task.now(a)
+      else
+        Task.fail(failure))
 
   /**
     * Delays the execution of this `Task` by the duration `t`.
@@ -448,7 +456,8 @@ object Task {
   def reduceUnordered[A, M](
       tasks: Seq[Task[A]],
       exceptionCancels: Boolean = false)(implicit R: Reducer[A, M]): Task[M] =
-    if (!exceptionCancels) taskInstance.reduceUnordered(tasks)
+    if (!exceptionCancels)
+      taskInstance.reduceUnordered(tasks)
     else
       tasks match {
         // Unfortunately we cannot reuse the future's combinator
@@ -487,9 +496,12 @@ object Task {
                     def firstFailure: Boolean = {
                       val current = togo.get
                       if (current > 0) {
-                        if (togo.compareAndSet(current, 0)) true
-                        else firstFailure
-                      } else false
+                        if (togo.compareAndSet(current, 0))
+                          true
+                        else
+                          firstFailure
+                      } else
+                        false
                     }
 
                     if (firstFailure) // invoke `cb`, then cancel any computation not running yet

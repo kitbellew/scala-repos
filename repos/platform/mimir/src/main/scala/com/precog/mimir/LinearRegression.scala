@@ -109,8 +109,10 @@ trait LinearRegressionLibModule[M[+_]]
       implicit def coeffMonoid = new Monoid[CoeffAcc] {
         def zero = CoeffAcc(Array.empty[Double], 0, Set.empty[Int])
         def append(r1: CoeffAcc, r2: => CoeffAcc) = {
-          if (r1.beta isEmpty) r2
-          else if (r2.beta isEmpty) r1
+          if (r1.beta isEmpty)
+            r2
+          else if (r2.beta isEmpty)
+            r1
           //columns are only `removed` if they are not present in *all* slices seen so far
           //this semantic ensures that stdErr computing knows which columns to consider
           else
@@ -186,7 +188,8 @@ trait LinearRegressionLibModule[M[+_]]
               if (bitset(i)) {
                 j += 1;
                 zero
-              } else values(i - j)
+              } else
+                values(i - j)
             }
             acc(i) = idx
             i += 1
@@ -241,8 +244,10 @@ trait LinearRegressionLibModule[M[+_]]
         }
 
         val arrays = {
-          if (values.isEmpty) None
-          else values.suml(betaMonoid)
+          if (values.isEmpty)
+            None
+          else
+            values.suml(betaMonoid)
         }
 
         val xs = arrays collect {
@@ -275,7 +280,8 @@ trait LinearRegressionLibModule[M[+_]]
           val count = {
             var countAcc = 0L
             RangeUtil.loop(range) { i =>
-              if (Column.isDefinedAt(features.toArray, i)) countAcc += 1L
+              if (Column.isDefinedAt(features.toArray, i))
+                countAcc += 1L
             }
             countAcc
           }
@@ -517,8 +523,10 @@ trait LinearRegressionLibModule[M[+_]]
           trans.WrapObject(Leaf(Source), "residualStandardError"))
 
         val rSquared = {
-          if (errors.tss == 0) 1
-          else 1 - (errors.rss / errors.tss)
+          if (errors.tss == 0)
+            1
+          else
+            1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
         val rSquaredTable =

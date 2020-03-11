@@ -155,7 +155,10 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     */
   def first: Scalar[T] = {
     implicit val st = scalarTag
-    if (length > 0) apply(0) else NA
+    if (length > 0)
+      apply(0)
+    else
+      NA
   }
 
   /**
@@ -163,7 +166,10 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     */
   def last: Scalar[T] = {
     implicit val st = scalarTag
-    if (length > 0) apply(length - 1) else NA
+    if (length > 0)
+      apply(length - 1)
+    else
+      NA
   }
 
   // ----------
@@ -538,7 +544,10 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
 
       def createRow(r: Int): String =
         ("%" + {
-          if (vlen > 0) vlen else 1
+          if (vlen > 0)
+            vlen
+          else
+            1
         } + "s\n").format(scalarTag.show(apply(r)))
       buf append util.buildStr(len, length, createRow, " ... \n")
     }

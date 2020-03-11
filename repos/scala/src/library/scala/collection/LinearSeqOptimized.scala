@@ -61,7 +61,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
     */
   def apply(n: Int): A = {
     val rest = drop(n)
-    if (n < 0 || rest.isEmpty) throw new IndexOutOfBoundsException("" + n)
+    if (n < 0 || rest.isEmpty)
+      throw new IndexOutOfBoundsException("" + n)
     rest.head
   }
 
@@ -78,7 +79,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def forall(p: A => Boolean): Boolean = {
     var these = this
     while (!these.isEmpty) {
-      if (!p(these.head)) return false
+      if (!p(these.head))
+        return false
       these = these.tail
     }
     true
@@ -88,7 +90,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def exists(p: A => Boolean): Boolean = {
     var these = this
     while (!these.isEmpty) {
-      if (p(these.head)) return true
+      if (p(these.head))
+        return true
       these = these.tail
     }
     false
@@ -98,7 +101,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def contains[A1 >: A](elem: A1): Boolean = {
     var these = this
     while (!these.isEmpty) {
-      if (these.head == elem) return true
+      if (these.head == elem)
+        return true
       these = these.tail
     }
     false
@@ -108,7 +112,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def find(p: A => Boolean): Option[A] = {
     var these = this
     while (!these.isEmpty) {
-      if (p(these.head)) return Some(these.head)
+      if (p(these.head))
+        return Some(these.head)
       these = these.tail
     }
     None
@@ -127,23 +132,31 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
 
   override /*IterableLike*/
   def foldRight[B](z: B)(@deprecatedName('f) op: (A, B) => B): B =
-    if (this.isEmpty) z
-    else op(head, tail.foldRight(z)(op))
+    if (this.isEmpty)
+      z
+    else
+      op(head, tail.foldRight(z)(op))
 
   override /*TraversableLike*/
   def reduceLeft[B >: A](@deprecatedName('f) op: (B, A) => B): B =
-    if (isEmpty) throw new UnsupportedOperationException("empty.reduceLeft")
-    else tail.foldLeft[B](head)(op)
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.reduceLeft")
+    else
+      tail.foldLeft[B](head)(op)
 
   override /*IterableLike*/
   def reduceRight[B >: A](op: (A, B) => B): B =
-    if (isEmpty) throw new UnsupportedOperationException("Nil.reduceRight")
-    else if (tail.isEmpty) head
-    else op(head, tail.reduceRight(op))
+    if (isEmpty)
+      throw new UnsupportedOperationException("Nil.reduceRight")
+    else if (tail.isEmpty)
+      head
+    else
+      op(head, tail.reduceRight(op))
 
   override /*TraversableLike*/
   def last: A = {
-    if (isEmpty) throw new NoSuchElementException
+    if (isEmpty)
+      throw new NoSuchElementException
     var these = this
     var nx = these.tail
     while (!nx.isEmpty) {
@@ -265,14 +278,19 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def lengthCompare(len: Int): Int = {
     @tailrec def loop(i: Int, xs: Repr): Int = {
       if (i == len)
-        if (xs.isEmpty) 0 else 1
+        if (xs.isEmpty)
+          0
+        else
+          1
       else if (xs.isEmpty)
         -1
       else
         loop(i + 1, xs.tail)
     }
-    if (len < 0) 1
-    else loop(0, this)
+    if (len < 0)
+      1
+    else
+      loop(0, this)
   }
 
   override /*SeqLike*/
@@ -309,7 +327,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
     var these = this
     var last = -1
     while (!these.isEmpty && i <= end) {
-      if (p(these.head)) last = i
+      if (p(these.head))
+        last = i
       these = these.tail
       i += 1
     }

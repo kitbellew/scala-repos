@@ -65,7 +65,10 @@ abstract class SyntaxAnalyzer
       val start = pos.focusStart.line
       val end = pos.focusEnd.line
 
-      if (start == end) "" + start else s"$start,$end"
+      if (start == end)
+        "" + start
+      else
+        s"$start,$end"
     }
     def outputForSed(md: MemberDef): String = {
       val pos_s = "%-12s" format outputPos(md) + "p"
@@ -92,9 +95,12 @@ abstract class SyntaxAnalyzer
   }
 
   private def initialUnitBody(unit: CompilationUnit): Tree = {
-    if (unit.isJava) new JavaUnitParser(unit).parse()
-    else if (currentRun.parsing.incompleteHandled) newUnitParser(unit).parse()
-    else newUnitParser(unit).smartParse()
+    if (unit.isJava)
+      new JavaUnitParser(unit).parse()
+    else if (currentRun.parsing.incompleteHandled)
+      newUnitParser(unit).parse()
+    else
+      newUnitParser(unit).smartParse()
   }
 
   class ParserPhase(prev: Phase) extends StdPhase(prev) {

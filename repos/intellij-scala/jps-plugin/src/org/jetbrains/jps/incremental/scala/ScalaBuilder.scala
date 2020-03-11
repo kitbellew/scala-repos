@@ -62,7 +62,8 @@ object ScalaBuilder {
         context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
       if (projectDir != null)
         Some(new File(projectDir, "incrementalType.dat"))
-      else None
+      else
+        None
     }
 
     def getPreviousIncrementalType: Option[IncrementalityType] = {
@@ -78,7 +79,8 @@ object ScalaBuilder {
               None
           }
         }
-        if (result.isEmpty) file.delete()
+        if (result.isEmpty)
+          file.delete()
         result
       }
     }
@@ -86,7 +88,8 @@ object ScalaBuilder {
     def setPreviousIncrementalType(incrType: IncrementalityType) {
       storageFile.foreach { file =>
         val parentDir = file.getParentFile
-        if (!parentDir.exists()) parentDir.mkdirs()
+        if (!parentDir.exists())
+          parentDir.mkdirs()
         using(
           new DataOutputStream(
             new BufferedOutputStream(new FileOutputStream(file)))) {
@@ -168,7 +171,8 @@ object ScalaBuilder {
           .asScala
         target <- chunk.getTargets.asScala
       } {
-        if (!context.getScope.isAffected(target)) return false
+        if (!context.getScope.isAffected(target))
+          return false
       }
       true
     }

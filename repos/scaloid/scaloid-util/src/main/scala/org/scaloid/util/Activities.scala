@@ -13,7 +13,8 @@ import android.view.WindowManager.LayoutParams._
 trait FollowParentBackButton extends SActivity {
   override def onBackPressed() {
     val p = getParent
-    if (p != null) p.onBackPressed()
+    if (p != null)
+      p.onBackPressed()
   }
 }
 
@@ -34,8 +35,10 @@ trait ScreenOnActivity extends SActivity {
 trait PreventRotateActivity extends SActivity {
   onResume {
     setRequestedOrientation(
-      if (Configuration.portrait) SCREEN_ORIENTATION_PORTRAIT
-      else SCREEN_ORIENTATION_LANDSCAPE)
+      if (Configuration.portrait)
+        SCREEN_ORIENTATION_PORTRAIT
+      else
+        SCREEN_ORIENTATION_LANDSCAPE)
   }
 
   onPause {

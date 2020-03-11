@@ -31,7 +31,11 @@ case class PolySparse[@sp(Double) C] private[spire] (
       f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit =
     foreach(f)
 
-  def degree: Int = if (isZero) 0 else exp(exp.length - 1)
+  def degree: Int =
+    if (isZero)
+      0
+    else
+      exp(exp.length - 1)
 
   def termsIterator: Iterator[Term[C]] =
     new TermIterator
@@ -39,7 +43,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
   class TermIterator extends Iterator[Term[C]] {
     private[this] var i: Int = 0
     private[this] def findNext(): Unit =
-      while (i < exp.length && coeff(i) == 0) i += 1
+      while (i < exp.length && coeff(i) == 0)
+        i += 1
     findNext()
     def hasNext: Boolean = i < exp.length
     def next: Term[C] = {
@@ -66,18 +71,25 @@ case class PolySparse[@sp(Double) C] private[spire] (
 
   def nth(n: Int)(implicit ring: Semiring[C]): C = {
     val i = java.util.Arrays.binarySearch(exp, n)
-    if (i >= 0) coeff(i) else ring.zero
+    if (i >= 0)
+      coeff(i)
+    else
+      ring.zero
   }
 
   def maxOrderTermCoeff(implicit ring: Semiring[C]): C =
-    if (isZero) ring.zero else coeff(coeff.length - 1)
+    if (isZero)
+      ring.zero
+    else
+      coeff(coeff.length - 1)
 
   def reductum(implicit
       e: Eq[C],
       ring: Semiring[C],
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeff.length - 2
-    while (i >= 0 && coeff(i) === ring.zero) i -= 1
+    while (i >= 0 && coeff(i) === ring.zero)
+      i -= 1
     if (i < 0) {
       new PolySparse(new Array[Int](0), new Array[C](0))
     } else {
@@ -95,7 +107,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
     bits(0) = x
     // we use pow(2) here for the benefit of Interval[_], where
     // x.pow(2) has better error bounds than than (x * x).
-    if (bits.length > 1) bits(1) = x.pow(2)
+    if (bits.length > 1)
+      bits(1) = x.pow(2)
     cfor(2)(_ < bits.length, _ + 1) { i =>
       val prev = bits(i - 1)
       bits(i) = prev * prev
@@ -106,7 +119,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
   @tailrec
   private final def fastExp(bits: Array[C], e: Int, i: Int, acc: C)(
       implicit ring: Semiring[C]): C = {
-    if (e == 0) acc
+    if (e == 0)
+      acc
     else {
       val lb = numberOfTrailingZeros(e) + 1
       val j = i + lb
@@ -127,13 +141,20 @@ case class PolySparse[@sp(Double) C] private[spire] (
     if (isZero) {
       ring.zero
     } else if (exp.length == 1) {
-      if (exp(0) != 0) coeff(0) * (x pow exp(0)) else coeff(0)
+      if (exp(0) != 0)
+        coeff(0) * (x pow exp(0))
+      else
+        coeff(0)
     } else {
       // TODO: Rewrite this to be more like PolyDense.
       val bits = expBits(x)
       val e0 = exp(0)
       val c0 = coeff(0)
-      var sum = if (e0 == 0) c0 else c0 * fastExp(bits, e0)
+      var sum =
+        if (e0 == 0)
+          c0
+        else
+          c0 * fastExp(bits, e0)
       cfor(1)(_ < exp.length, _ + 1) { i =>
         sum += coeff(i) * fastExp(bits, exp(i))
       }
@@ -141,7 +162,11 @@ case class PolySparse[@sp(Double) C] private[spire] (
     }
 
   def derivative(implicit ring: Ring[C], eq: Eq[C]): Polynomial[C] = {
-    val i0 = if (exp(0) == 0) 1 else 0
+    val i0 =
+      if (exp(0) == 0)
+        1
+      else
+        0
     val es = new Array[Int](exp.length - i0)
     val cs = new Array[C](es.length)
 
@@ -248,7 +273,8 @@ object PolySparse {
           } else {
             loop(i + 1, j)
           }
-        } else new PolySparse(es, cs)
+        } else
+          new PolySparse(es, cs)
       loop(0, 0)
     }
   }
@@ -335,9 +361,12 @@ object PolySparse {
     def loop(i: Int, j: Int, count: Int): Int =
       if (i < lexp.length && j < rexp.length) {
         val cmp = lexp(i) + lOffset - rexp(j) - rOffset
-        if (cmp == 0) loop(i + 1, j + 1, count + 1)
-        else if (cmp < 0) loop(i + 1, j, count + 1)
-        else loop(i, j + 1, count + 1)
+        if (cmp == 0)
+          loop(i + 1, j + 1, count + 1)
+        else if (cmp < 0)
+          loop(i + 1, j, count + 1)
+        else
+          loop(i, j + 1, count + 1)
       } else {
         count + (lexp.length - i) + (rexp.length - j)
       }

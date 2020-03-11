@@ -52,7 +52,8 @@ class ScParameterClauseImpl private (
   private val SYNTH_LOCK = new Object()
 
   override def effectiveParameters: Seq[ScParameter] = {
-    if (!isImplicit) return parameters
+    if (!isImplicit)
+      return parameters
     //getParent is sufficient (not getContext), for synthetic clause, getParent will return other PSI,
     //which is ok, it will not add anything more
     getParent match {
@@ -69,9 +70,11 @@ class ScParameterClauseImpl private (
           }
         def syntheticClause(): Option[ScParameterClause] = {
           val modCount = getManager.getModificationTracker.getModificationCount
-          if (synthClauseModCount == modCount) return synthClause
+          if (synthClauseModCount == modCount)
+            return synthClause
           SYNTH_LOCK synchronized { //it's important for all calculations to have the same psi here
-            if (synthClauseModCount == modCount) return synthClause
+            if (synthClauseModCount == modCount)
+              return synthClause
             synthClause = ScalaPsiUtil.syntheticParamClause(
               typeParametersOwner,
               clauses,
@@ -96,16 +99,22 @@ class ScParameterClauseImpl private (
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScParamClauseStub].isImplicit
-    } else getNode.findChildByType(ScalaTokenTypes.kIMPLICIT) != null
+    } else
+      getNode.findChildByType(ScalaTokenTypes.kIMPLICIT) != null
   }
 
   def addParameter(param: ScParameter): ScParameterClause = {
     val params = parameters
     val vararg =
-      if (params.length == 0) false
-      else params(params.length - 1).isRepeatedParameter
+      if (params.length == 0)
+        false
+      else
+        params(params.length - 1).isRepeatedParameter
     val rParen =
-      if (vararg) params(params.length - 1).getNode else getLastChild.getNode
+      if (vararg)
+        params(params.length - 1).getNode
+      else
+        getLastChild.getNode
     val node = getNode
     if (params.length > 0 && !vararg) {
       val comma = ScalaPsiElementFactory.createComma(getManager).getNode

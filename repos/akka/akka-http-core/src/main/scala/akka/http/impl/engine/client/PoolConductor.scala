@@ -183,7 +183,8 @@ private object PoolConductor {
         setHandler(out, eagerTerminateOutput)
 
         val tryPullCtx = () ⇒
-          if (nextSlot != -1 && !hasBeenPulled(ctxIn)) pull(ctxIn)
+          if (nextSlot != -1 && !hasBeenPulled(ctxIn))
+            pull(ctxIn)
 
         override def preStart(): Unit = {
           pull(ctxIn)
@@ -195,9 +196,15 @@ private object PoolConductor {
             method: HttpMethod): SlotState =
           slotState match {
             case Unconnected | Idle ⇒
-              if (method.isIdempotent) Loaded(1) else Busy(1)
+              if (method.isIdempotent)
+                Loaded(1)
+              else
+                Busy(1)
             case Loaded(n) ⇒
-              if (method.isIdempotent) Loaded(n + 1) else Busy(n + 1)
+              if (method.isIdempotent)
+                Loaded(n + 1)
+              else
+                Busy(n + 1)
             case Busy(_) ⇒
               throw new IllegalStateException(
                 "Request scheduled onto busy connection?")
@@ -252,7 +259,8 @@ private object PoolConductor {
               case (x @ Loaded(a), Busy) if a < pl ⇒ bestSlot(ix + 1, ix, x)
               case _ ⇒ bestSlot(ix + 1, bestIx, bestState)
             }
-          } else bestIx
+          } else
+            bestIx
       }
   }
 

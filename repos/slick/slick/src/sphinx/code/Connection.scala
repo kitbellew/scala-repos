@@ -71,7 +71,9 @@ object Connection extends App {
     def println(s: Any) = lines += s;
     {
       //#materialize
-      val q = for (c <- coffees) yield c.name
+      val q =
+        for (c <- coffees)
+          yield c.name
       val a = q.result
       val f: Future[Seq[String]] = db.run(a)
 
@@ -83,7 +85,9 @@ object Connection extends App {
     };
     {
       //#stream
-      val q = for (c <- coffees) yield c.name
+      val q =
+        for (c <- coffees)
+          yield c.name
       val a = q.result
       val p: DatabasePublisher[String] = db.stream(a)
 
@@ -100,7 +104,9 @@ object Connection extends App {
     };
     {
       //#streamblob
-      val q = for (c <- coffees) yield c.image
+      val q =
+        for (c <- coffees)
+          yield c.image
       val a = q.result
       val p1: DatabasePublisher[Blob] = db.stream(a)
       val p2: DatabasePublisher[Array[Byte]] = p1.mapResult { b =>

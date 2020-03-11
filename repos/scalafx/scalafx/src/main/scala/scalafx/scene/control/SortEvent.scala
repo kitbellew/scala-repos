@@ -49,7 +49,10 @@ object SortEvent {
     * @return JavaFX SortEvent
     */
   implicit def sfxSortEvent2jfx[C](se: SortEvent[C]): jfxsc.SortEvent[C] =
-    if (se != null) se.delegate else null
+    if (se != null)
+      se.delegate
+    else
+      null
 
   /**
     * Common supertype for all sort event types.

@@ -211,7 +211,8 @@ class ResizerSpec
           Thread.sleep(20.millis.dilated.toMillis)
         }
         within((d * loops / resizer.lowerBound) + 2.seconds.dilated) {
-          for (m ← 0 until loops) expectMsg("done")
+          for (m ← 0 until loops)
+            expectMsg("done")
         }
       }
 

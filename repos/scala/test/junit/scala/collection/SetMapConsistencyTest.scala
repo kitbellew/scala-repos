@@ -55,7 +55,11 @@ class SetMapConsistencyTest {
     def getters: Int = 3
     def get(n: Int, a: A) = n match {
       case 0 => m.get(a).getOrElse(-1)
-      case 1 => if (m contains a) m(a) else -1
+      case 1 =>
+        if (m contains a)
+          m(a)
+        else
+          -1
       case 2 => m.getOrElse(a, -1)
       case _ => oor("get", n)
     }
@@ -103,7 +107,10 @@ class SetMapConsistencyTest {
         case 2 => m.getOrElse(a, -1)
         case 3 =>
           val x = arm.getOrNull(a);
-          if (x == 0 && !(arm contains a)) -1 else x
+          if (x == 0 && !(arm contains a))
+            -1
+          else
+            x
         case _ => oor("get", n)
       }
       override def fiddlers = 2
@@ -130,7 +137,10 @@ class SetMapConsistencyTest {
         case 2 => m.getOrElse(a, -1)
         case 3 =>
           val x = lm.getOrNull(a);
-          if (x == 0 && !(lm contains a)) -1 else x
+          if (x == 0 && !(lm contains a))
+            -1
+          else
+            x
         case _ => oor("get", n)
       }
       override def fiddlers = 2
@@ -176,7 +186,11 @@ class SetMapConsistencyTest {
     def getters: Int = 3
     def get(n: Int, a: A) = n match {
       case 0 => m.get(a).getOrElse(-1)
-      case 1 => if (m contains a) m(a) else -1
+      case 1 =>
+        if (m contains a)
+          m(a)
+        else
+          -1
       case 2 => m.getOrElse(a, -1)
       case _ => oor("get", n)
     }
@@ -241,7 +255,11 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 1
-    def get(n: Int, a: A) = if (m(a)) 0 else -1
+    def get(n: Int, a: A) =
+      if (m(a))
+        0
+      else
+        -1
     def fiddlers: Int = 0
     def fiddle(n: Int) {
       oor("fiddle", n)
@@ -291,7 +309,11 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 1
-    def get(n: Int, a: A) = if (m(a)) 0 else -1
+    def get(n: Int, a: A) =
+      if (m(a))
+        0
+      else
+        -1
     def fiddlers: Int = 0
     def fiddle(n: Int) {
       oor("fiddle", n)
@@ -351,16 +373,18 @@ class SetMapConsistencyTest {
       what ++= " (%d) ".format(i)
       if (rn.nextInt(10) == 0) {
 
-        if (map1.fiddlers > 0) map1.fiddle({
-          val n = rn.nextInt(map1.fiddlers)
-          what ++= ("f" + n)
-          n
-        })
-        if (map2.fiddlers > 0) map2.fiddle({
-          val n = rn.nextInt(map2.fiddlers)
-          what ++= ("F" + n)
-          n
-        })
+        if (map1.fiddlers > 0)
+          map1.fiddle({
+            val n = rn.nextInt(map1.fiddlers)
+            what ++= ("f" + n)
+            n
+          })
+        if (map2.fiddlers > 0)
+          map2.fiddle({
+            val n = rn.nextInt(map2.fiddlers)
+            what ++= ("F" + n)
+            n
+          })
       }
       if (rn.nextBoolean) {
         val idx = rn.nextInt(keys.length)
@@ -537,7 +561,8 @@ class SetMapConsistencyTest {
 
     assert {
       val lm2 = new LongMap[Unit](2000000)
-      for (i <- 0 until 1000000) lm2(i) = ()
+      for (i <- 0 until 1000000)
+        lm2(i) = ()
 
       lm2.size == 1000000 &&
       (0 to 1100000 by 100000).forall(i => (lm2 contains i) == i < 1000000)
@@ -558,7 +583,8 @@ class SetMapConsistencyTest {
     assert {
       val m2 = lm.mapValuesNow(_ + 2)
       lm.transformValues(_ + 2)
-      m2 == lm && !(m2 eq lm) && (for ((_, v) <- lm) yield v).sum == 33L
+      m2 == lm && !(m2 eq lm) && (for ((_, v) <- lm)
+        yield v).sum == 33L
     }
 
     assert {
@@ -583,13 +609,18 @@ class SetMapConsistencyTest {
 
     assert {
       arm.map {
-        case (k, v) => (if (k == null) "" else k + k) -> v.toString
+        case (k, v) =>
+          (if (k == null)
+             ""
+           else
+             k + k) -> v.toString
       }.getClass == arm.getClass
     }
 
     assert {
       val arm2 = new AnyRefMap[java.lang.Integer, Unit](2000000)
-      for (i <- 0 until 1000000) arm2(java.lang.Integer.valueOf(i)) = ()
+      for (i <- 0 until 1000000)
+        arm2(java.lang.Integer.valueOf(i)) = ()
       arm2.size == 1000000 &&
       (0 to 1100000 by 100000)
         .map(java.lang.Integer.valueOf)
@@ -616,12 +647,16 @@ class SetMapConsistencyTest {
     assert {
       val m2 = arm.mapValuesNow(_ + 2)
       arm.transformValues(_ + 2)
-      m2 == arm && !(m2 eq arm) && (for ((_, v) <- arm) yield v).sum == 33L
+      m2 == arm && !(m2 eq arm) && (for ((_, v) <- arm)
+        yield v).sum == 33L
     }
 
     assert {
-      val arm2 =
-        new AnyRefMap[String, String](x => if (x == null) "null" else x)
+      val arm2 = new AnyRefMap[String, String](x =>
+        if (x == null)
+          "null"
+        else
+          x)
       arm2 += ("cod" -> "fish", "Rarity" -> "unicorn")
       val hm2 = (new HashMap[String, String]) ++= arm2
       List(null, "cod", "sparrow", "Rarity").forall(i =>
@@ -629,7 +664,11 @@ class SetMapConsistencyTest {
           arm2.getOrElse(i, "") == hm2.getOrElse(i, "") &&
           arm2(i) == hm2
             .get(i)
-            .getOrElse(if (i == null) "null" else i.toString) &&
+            .getOrElse(
+              if (i == null)
+                "null"
+              else
+                i.toString) &&
           arm2.getOrNull(i) == hm2.get(i).orNull)
     }
   }
@@ -662,7 +701,8 @@ class SetMapConsistencyTest {
           val density = densities(rn.nextInt(densities.length))
           val keep = pick(ms.head, density)
           ms = ms.map(_.filter(keep contains _._1))
-          if (!ms.sliding(2).forall(s => s(0) == s(1))) return false
+          if (!ms.sliding(2).forall(s => s(0) == s(1)))
+            return false
         } while (repeat)
       }
       true
@@ -673,7 +713,8 @@ class SetMapConsistencyTest {
   @Test
   def testSI8213() {
     val am = new scala.collection.mutable.AnyRefMap[String, Int]
-    for (i <- 0 until 1024) am += i.toString -> i
+    for (i <- 0 until 1024)
+      am += i.toString -> i
     am.getOrElseUpdate(
       "1024", {
         am.clear;
@@ -681,7 +722,8 @@ class SetMapConsistencyTest {
       })
     assert(am == scala.collection.mutable.AnyRefMap("1024" -> -1))
     val lm = new scala.collection.mutable.LongMap[Int]
-    for (i <- 0 until 1024) lm += i.toLong -> i
+    for (i <- 0 until 1024)
+      lm += i.toLong -> i
     lm.getOrElseUpdate(
       1024, {
         lm.clear;
@@ -700,8 +742,10 @@ class SetMapConsistencyTest {
       it.hasNext
       xs.clear()
 
-      if (it.hasNext) Some(it.next)
-      else None
+      if (it.hasNext)
+        Some(it.next)
+      else
+        None
     }
     assert(f() match {
       case Some((a, b)) if (a == null || b == null) => false
@@ -737,7 +781,11 @@ class SetMapConsistencyTest {
     import scala.tools.testing.AssertUtil._
     type NSEE = NoSuchElementException
     val map = Map(0 -> "zero", 1 -> "one")
-    val m = map.filterKeys(i => if (map contains i) true else throw new NSEE)
+    val m = map.filterKeys(i =>
+      if (map contains i)
+        true
+      else
+        throw new NSEE)
     assert {
       (m contains 0) && (m get 0).nonEmpty
     }

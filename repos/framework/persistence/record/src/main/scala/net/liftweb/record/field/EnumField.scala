@@ -71,7 +71,10 @@ trait EnumTypedField[EnumType <: Enumeration]
     */
   def buildDisplayList: List[(Box[EnumType#Value], String)] = {
     val options = enum.values.toList.map(a => (Full(a), a.toString))
-    if (optional_?) (Empty, emptyOptionLabel) :: options else options
+    if (optional_?)
+      (Empty, emptyOptionLabel) :: options
+    else
+      options
   }
 
   private def elem =

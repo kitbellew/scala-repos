@@ -52,11 +52,13 @@ class EnsemblePagination extends EnsembleExample {
   def getContent = {
 
     // Images to load pages
-    val images = for (i <- 0 until 7) yield {
-      val ipStream = this.getClass.getResourceAsStream(
-        "/scalafx/ensemble/images/animals-200x200/animal" + (i + 1) + ".jpg")
-      new Image(ipStream)
-    }
+    val images =
+      for (i <- 0 until 7)
+        yield {
+          val ipStream = this.getClass.getResourceAsStream(
+            "/scalafx/ensemble/images/animals-200x200/animal" + (i + 1) + ".jpg")
+          new Image(ipStream)
+        }
 
     // Factory function for creating page content
     val createAnimalPage = (index: Int) =>

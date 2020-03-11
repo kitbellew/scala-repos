@@ -42,13 +42,15 @@ object revcomp {
         }
         desc = line
       } else {
-        if (c != ';') lines += line.getBytes
+        if (c != ';')
+          lines += line.getBytes
       }
       line = r.readLine
     }
     r.close
 
-    if (desc.length > 0) complementReverseWrite(desc, lines, w)
+    if (desc.length > 0)
+      complementReverseWrite(desc, lines, w)
     w.close
   }
 
@@ -67,7 +69,8 @@ object revcomp {
         i = i + 1
         j = j - 1
       }
-      if (i == j) b(i) = IUB(b(i))
+      if (i == j)
+        b(i) = IUB(b(i))
     }
 
     val nl = '\n'.toByte
@@ -75,7 +78,11 @@ object revcomp {
     w.write(nl)
 
     val n = 60
-    val k = if (lines.isEmpty) 0 else lines.top.length
+    val k =
+      if (lines.isEmpty)
+        0
+      else
+        lines.top.length
     val isSplitLine = k < n
     var isFirstLine = true
 
@@ -97,7 +104,8 @@ object revcomp {
         w.write(nl)
       }
     }
-    if (isSplitLine && !isFirstLine) w.write(nl)
+    if (isSplitLine && !isFirstLine)
+      w.write(nl)
   }
 
 }

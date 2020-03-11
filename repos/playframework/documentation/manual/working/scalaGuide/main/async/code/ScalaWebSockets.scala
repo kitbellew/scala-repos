@@ -28,7 +28,8 @@ object ScalaWebSockets extends PlaySpecification {
         // handle this and close the WebSocket, but here, that won't happen, so we redeem the future when we receive
         // enough.
         val promise = Promise[List[Message]]()
-        if (expectOut == 0) promise.success(Nil)
+        if (expectOut == 0)
+          promise.success(Nil)
         val flowResult = in via flow runWith Sink
           .fold[(List[Message], Int), Message]((Nil, expectOut)) {
             (state, out) =>

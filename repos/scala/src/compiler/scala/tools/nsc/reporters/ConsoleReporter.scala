@@ -35,7 +35,10 @@ class ConsoleReporter(
 
   protected def clabel(severity: Severity): String = {
     val label0 = label(severity)
-    if (label0 eq null) "" else label0 + ": "
+    if (label0 eq null)
+      ""
+    else
+      label0 + ": "
   }
 
   /** Returns the number of errors issued totally as a string.
@@ -66,8 +69,10 @@ class ConsoleReporter(
 
   /** Prints the number of errors and warnings if their are non-zero. */
   def printSummary() {
-    if (WARNING.count > 0) printMessage(getCountString(WARNING) + " found")
-    if (ERROR.count > 0) printMessage(getCountString(ERROR) + " found")
+    if (WARNING.count > 0)
+      printMessage(getCountString(WARNING) + " found")
+    if (ERROR.count > 0)
+      printMessage(getCountString(ERROR) + " found")
   }
 
   def display(pos: Position, msg: String, severity: Severity) {

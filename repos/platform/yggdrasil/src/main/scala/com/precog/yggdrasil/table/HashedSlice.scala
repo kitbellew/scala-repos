@@ -44,7 +44,8 @@ final class HashedSlice private (
         { (f: Int => Unit) =>
           val matches = rowMap get hasher.hash(lrow) getOrElse IntNil
           matches foreach { rrow =>
-            if (rowComparator.compare(lrow, rrow) == scalaz.Ordering.EQ) f(rrow)
+            if (rowComparator.compare(lrow, rrow) == scalaz.Ordering.EQ)
+              f(rrow)
           }
         }
     }
@@ -78,7 +79,8 @@ private final class SliceHasher(slice: Slice) {
   }
 
   @tailrec private final def hashOf(row: Int, i: Int = 0, hc: Int = 0): Int = {
-    if (i >= hashers.length) hc
+    if (i >= hashers.length)
+      hc
     else {
       hashOf(row, i + 1, hc ^ hashers(i).hash(row))
     }
@@ -97,7 +99,10 @@ private sealed trait ColumnHasher {
   def column: Column
 
   final def hash(row: Int): Int =
-    if (column isDefinedAt row) hashImpl(row) else 0
+    if (column isDefinedAt row)
+      hashImpl(row)
+    else
+      0
 
   protected def hashImpl(row: Int): Int
 }
@@ -117,7 +122,10 @@ private final case class BoolColumnHasher(
     extends ColumnHasher {
   private val pathHash = columnRef.selector.hashCode
   protected final def hashImpl(row: Int): Int =
-    5 * pathHash + 457 * (if (column(row)) 42 else 21)
+    5 * pathHash + 457 * (if (column(row))
+                            42
+                          else
+                            21)
 }
 
 private final case class DateColumnHasher(

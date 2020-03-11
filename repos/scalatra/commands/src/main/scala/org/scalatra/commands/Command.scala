@@ -92,7 +92,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
           .asInstanceOf[FieldDescriptor[Option[_]]]
           .withDefaultValue(None)
           .asInstanceOf[FieldDescriptor[T]]
-      } else field
+      } else
+        field
     val b = Binding(f)
     bindings += b.name -> b
     f

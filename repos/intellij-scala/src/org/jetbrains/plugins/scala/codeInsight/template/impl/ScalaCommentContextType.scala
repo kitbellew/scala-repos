@@ -20,7 +20,8 @@ class ScalaCommentContextType
 
 object ScalaCommentContextType {
   def isInContext(file: PsiFile, offset: Int): Boolean = {
-    if (!file.isInstanceOf[ScalaFile]) return false
+    if (!file.isInstanceOf[ScalaFile])
+      return false
     val element = file.findElementAt(offset) match {
       case elem: PsiWhiteSpace if offset > 0 => file.findElementAt(offset - 1)
       case elem                              => elem

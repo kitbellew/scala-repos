@@ -66,7 +66,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
   private var eventLoop: EventLoop[JobSchedulerEvent] = null
 
   def start(): Unit = synchronized {
-    if (eventLoop != null) return // scheduler has already been started
+    if (eventLoop != null)
+      return // scheduler has already been started
 
     logDebug("Starting JobScheduler")
     eventLoop = new EventLoop[JobSchedulerEvent]("JobScheduler") {
@@ -93,7 +94,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
   }
 
   def stop(processAllReceivedData: Boolean): Unit = synchronized {
-    if (eventLoop == null) return // scheduler has already been stopped
+    if (eventLoop == null)
+      return // scheduler has already been stopped
     logDebug("Stopping JobScheduler")
 
     if (receiverTracker != null) {

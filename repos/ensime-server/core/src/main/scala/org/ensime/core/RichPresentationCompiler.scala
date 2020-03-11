@@ -149,7 +149,8 @@ trait RichCompilerControl
             syms.find(_.tpe != NoType).map { sym =>
               TypeInfo(sym.tpe)
             }
-          }) yield infos).flatten
+          })
+      yield infos).flatten
   }
 
   def askPackageByPath(path: String): Option[PackageInfo] =
@@ -482,7 +483,11 @@ class RichPresentationCompiler(
       memberName
         .flatMap { rawName =>
           val module = rawName.endsWith("$")
-          val nm = if (module) rawName.dropRight(1) else rawName
+          val nm =
+            if (module)
+              rawName.dropRight(1)
+            else
+              rawName
           val candidates = owner.info.members.filter { s =>
             s.nameString == nm && ((module && s.isModule) || (!module && (!s.isModule || s.hasPackageFlag)))
           }
@@ -526,8 +531,10 @@ class RichPresentationCompiler(
             @annotation.tailrec
             def locate(p: Position, inExpr: Tree): Symbol = inExpr match {
               case Select(qualifier, name) =>
-                if (qualifier.pos.includes(p)) locate(p, qualifier)
-                else inExpr.symbol
+                if (qualifier.pos.includes(p))
+                  locate(p, qualifier)
+                else
+                  inExpr.symbol
               case tree => tree.symbol
             }
             List(locate(pos, expr))

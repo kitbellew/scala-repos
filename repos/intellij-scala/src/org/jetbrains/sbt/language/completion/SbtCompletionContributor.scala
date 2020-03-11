@@ -56,7 +56,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           parameters: CompletionParameters,
           context: ProcessingContext,
           result: CompletionResultSet) {
-        if (parameters.getOriginalFile.getFileType.getName != Sbt.Name) return
+        if (parameters.getOriginalFile.getFileType.getName != Sbt.Name)
+          return
 
         val place = positionFromParameters(parameters)
         val infixExpr = place.getContext.getContext.asInstanceOf[ScInfixExpr]
@@ -67,14 +68,16 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
         }
 
         // Check if we're on the right side of expression
-        if (parentRef != place.getContext) return
+        if (parentRef != place.getContext)
+          return
 
         def qualifiedName(t: ScType) =
           ScType.extractClass(t).map(_.qualifiedName).getOrElse("")
 
         // In expression `setting += ???` extracts type T of `setting: Setting[Seq[T]]`
         def extractSeqType: Option[ScType] = {
-          if (operator.getText != "+=") return None
+          if (operator.getText != "+=")
+            return None
           operator.getType() match {
             case Success(ScParameterizedType(_, typeArgs), _) =>
               typeArgs.last match {
@@ -97,13 +100,17 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
         }
 
         def getScopeType: Option[ScType] = {
-          if (operator.getText != "in") return None
+          if (operator.getText != "in")
+            return None
           val manager = ScalaPsiManager.instance(place.getProject)
           val scopeClass = manager.getCachedClass(
             "sbt.Scope",
             place.getResolveScope,
             ClassCategory.TYPE)
-          if (scopeClass != null) Some(ScDesignatorType(scopeClass)) else None
+          if (scopeClass != null)
+            Some(ScDesignatorType(scopeClass))
+          else
+            None
         }
 
         val expectedTypes = Seq(
@@ -175,9 +182,9 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           case Some(clazz: ScTypeDefinition) =>
             expectedType match {
               case ScProjectionType(
-                  proj,
-                  _: ScTypeAlias | _: ScClass | _: ScTrait,
-                  _) =>
+                    proj,
+                    _: ScTypeAlias | _: ScClass | _: ScTrait,
+                    _) =>
                 ScType.extractClass(proj) foreach collectAndApplyVariants
               case _ => // do nothing
             }

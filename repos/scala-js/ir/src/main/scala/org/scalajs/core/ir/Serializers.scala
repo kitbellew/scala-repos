@@ -692,7 +692,11 @@ object Serializers {
             readIdent(),
             readType(),
             readBoolean(),
-            rest = if (useHacks060) false else readBoolean())
+            rest =
+              if (useHacks060)
+                false
+              else
+                readBoolean())
 
         case TagSkip    => Skip()
         case TagBlock   => Block(readTrees())
@@ -901,15 +905,22 @@ object Serializers {
       implicit val pos = readPosition()
       val name = readString()
       val originalName = readString()
-      Ident(name, if (originalName.isEmpty) None else Some(originalName))
+      Ident(
+        name,
+        if (originalName.isEmpty)
+          None
+        else
+          Some(originalName))
     }
 
     def readIdents(): List[Ident] =
       List.fill(input.readInt())(readIdent())
 
     def readOptIdent(): Option[Ident] = {
-      if (input.readBoolean()) Some(readIdent())
-      else None
+      if (input.readBoolean())
+        Some(readIdent())
+      else
+        None
     }
 
     def readType(): Type = {
@@ -938,7 +949,10 @@ object Serializers {
             val mutable = input.readBoolean()
             RecordType.Field(
               name,
-              if (originalName.isEmpty) None else Some(originalName),
+              if (originalName.isEmpty)
+                None
+              else
+                Some(originalName),
               tpe,
               mutable)
           })
@@ -955,8 +969,10 @@ object Serializers {
       readType().asInstanceOf[ReferenceType]
 
     def readPropertyName(): PropertyName = {
-      if (input.readBoolean()) readIdent()
-      else readTree().asInstanceOf[StringLiteral]
+      if (input.readBoolean())
+        readIdent()
+      else
+        readTree().asInstanceOf[StringLiteral]
     }
 
     def readPosition(): Position = {
@@ -1017,7 +1033,8 @@ object Serializers {
         input.readFully(treeHash)
         input.readFully(posHash)
         Some(new TreeHash(treeHash, posHash))
-      } else None
+      } else
+        None
     }
 
     def readString(): String = {
@@ -1073,8 +1090,10 @@ object Serializers {
         paramToIndex
           .get(name)
           .fold {
-            if (name == "arguments") argumentsRef
-            else tree
+            if (name == "arguments")
+              argumentsRef
+            else
+              tree
           } { paramIndex =>
             JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
           }

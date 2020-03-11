@@ -212,7 +212,10 @@ class ByteBoundedBlockingQueue[E](
     // There is a potential race where after an element is put into the queue and before the size is added to
     // currentByteSize, it was taken out of the queue and the size was deducted from the currentByteSize,
     // in that case, currentByteSize would become negative, in that case, just put the queue size to be 0.
-    if (currSize > 0) currSize else 0
+    if (currSize > 0)
+      currSize
+    else
+      0
   }
 
   /**

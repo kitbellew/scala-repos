@@ -79,7 +79,11 @@ object Erf {
 
   def erf(x: Double): Double = {
     // Save the sign of x
-    val sign = if (x < 0) -1 else 1
+    val sign =
+      if (x < 0)
+        -1
+      else
+        1
     val absx = abs(x)
 
     // A&S formula 7.1.26, rational approximation of error function

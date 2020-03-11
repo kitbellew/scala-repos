@@ -329,7 +329,8 @@ trait Future[+T] extends Awaitable[T] {
   def filter(@deprecatedName('pred) p: T => Boolean)(
       implicit executor: ExecutionContext): Future[T] =
     map { r =>
-      if (p(r)) r
+      if (p(r))
+        r
       else
         throw new NoSuchElementException(
           "Future.filter predicate is not satisfied")
@@ -478,7 +479,8 @@ trait Future[+T] extends Awaitable[T] {
     *  @return       a `Future` with the successful result of this or that `Future` or the failure of this `Future` if both fail
     */
   def fallbackTo[U >: T](that: Future[U]): Future[U] =
-    if (this eq that) this
+    if (this eq that)
+      this
     else {
       implicit val ec = internalExecutor
       recoverWith {
@@ -499,7 +501,10 @@ trait Future[+T] extends Awaitable[T] {
     implicit val ec = internalExecutor
     val boxedClass = {
       val c = tag.runtimeClass
-      if (c.isPrimitive) Future.toBoxed(c) else c
+      if (c.isPrimitive)
+        Future.toBoxed(c)
+      else
+        c
     }
     require(boxedClass ne null)
     map(s => boxedClass.cast(s).asInstanceOf[S])
@@ -688,7 +693,8 @@ object Future {
       executor: ExecutionContext): Future[M[A]] = {
     in.foldLeft(successful(cbf(in))) { (fr, fa) =>
         for (r <- fr;
-             a <- fa) yield (r += a)
+             a <- fa)
+          yield (r += a)
       }
       .map(_.result())(InternalCallbackExecutor)
   }
@@ -726,7 +732,8 @@ object Future {
       @deprecatedName('predicate) p: T => Boolean)(
       implicit executor: ExecutionContext): Future[Option[T]] = {
     val futuresBuffer = futures.toBuffer
-    if (futuresBuffer.isEmpty) successful[Option[T]](None)
+    if (futuresBuffer.isEmpty)
+      successful[Option[T]](None)
     else {
       val result = Promise[Option[T]]()
       val ref = new AtomicInteger(futuresBuffer.size)
@@ -760,7 +767,8 @@ object Future {
       p: T => Boolean)(
       implicit executor: ExecutionContext): Future[Option[T]] = {
     def searchNext(i: Iterator[Future[T]]): Future[Option[T]] =
-      if (!i.hasNext) successful[Option[T]](None)
+      if (!i.hasNext)
+        successful[Option[T]](None)
       else {
         i.next().transformWith {
           case Success(r) if p(r) => successful(Some(r))
@@ -797,7 +805,8 @@ object Future {
       i: Iterator[Future[T]],
       prevValue: R,
       op: (R, T) => R)(implicit executor: ExecutionContext): Future[R] =
-    if (!i.hasNext) successful(prevValue)
+    if (!i.hasNext)
+      successful(prevValue)
     else
       i.next().flatMap { value =>
         foldNext(i, op(prevValue, value), op)
@@ -824,8 +833,10 @@ object Future {
   def fold[T, R](futures: TraversableOnce[Future[T]])(zero: R)(
       @deprecatedName('foldFun) op: (R, T) => R)(
       implicit executor: ExecutionContext): Future[R] = {
-    if (futures.isEmpty) successful(zero)
-    else sequence(futures).map(_.foldLeft(zero)(op))
+    if (futures.isEmpty)
+      successful(zero)
+    else
+      sequence(futures).map(_.foldLeft(zero)(op))
   }
 
   /** Initiates a non-blocking, asynchronous, fold over the supplied futures
@@ -846,7 +857,8 @@ object Future {
       implicit executor: ExecutionContext): Future[R] = {
     if (futures.isEmpty)
       failed(new NoSuchElementException("reduce attempted on empty collection"))
-    else sequence(futures).map(_ reduceLeft op)
+    else
+      sequence(futures).map(_ reduceLeft op)
   }
 
   /** Initiates a non-blocking, asynchronous, left reduction over the supplied futures
@@ -897,7 +909,8 @@ object Future {
     in.foldLeft(successful(cbf(in))) { (fr, a) =>
         val fb = fn(a)
         for (r <- fr;
-             b <- fb) yield (r += b)
+             b <- fb)
+          yield (r += b)
       }
       .map(_.result())
 

@@ -59,7 +59,8 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
             context.eq(
               getPsi) || (context.getContext != null && context.getContext.eq(
               getPsi))
-          }) return typeElements
+          })
+        return typeElements
     }
     val res: Seq[ScTypeElement] =
       constructor

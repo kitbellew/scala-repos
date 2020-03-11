@@ -30,9 +30,15 @@ trait ReplConfig {
         Console.println("Assertion error printing debugging output: " + x)
     }
 
-  private[nsc] def repldbg(msg: => String) = if (isReplDebug) echo(msg)
-  private[nsc] def repltrace(msg: => String) = if (isReplTrace) echo(msg)
-  private[nsc] def replinfo(msg: => String) = if (isReplInfo) echo(msg)
+  private[nsc] def repldbg(msg: => String) =
+    if (isReplDebug)
+      echo(msg)
+  private[nsc] def repltrace(msg: => String) =
+    if (isReplTrace)
+      echo(msg)
+  private[nsc] def replinfo(msg: => String) =
+    if (isReplInfo)
+      echo(msg)
 
   private[nsc] def logAndDiscard[T](
       label: String,

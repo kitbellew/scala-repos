@@ -87,8 +87,10 @@ abstract class TreeGen {
       case NoPrefix =>
         EmptyTree
       case ThisType(clazz) =>
-        if (clazz.isEffectiveRoot) EmptyTree
-        else mkAttributedThis(clazz)
+        if (clazz.isEffectiveRoot)
+          EmptyTree
+        else
+          mkAttributedThis(clazz)
       case SingleType(pre, sym) =>
         mkApplyIfNeeded(mkAttributedStableRef(pre, sym))
       case TypeRef(pre, sym, args) =>
@@ -176,8 +178,10 @@ abstract class TreeGen {
         assert(ownerModule != NoSymbol, sym.owner)
         mkAttributedSelect(mkAttributedRef(sym.owner.sourceModule), sym)
       }
-    } else if (sym.owner.isClass) mkAttributedRef(sym.owner.thisType, sym)
-    else mkAttributedIdent(sym)
+    } else if (sym.owner.isClass)
+      mkAttributedRef(sym.owner.thisType, sym)
+    else
+      mkAttributedIdent(sym)
 
   def mkUnattributedRef(sym: Symbol): RefTree =
     mkUnattributedRef(sym.fullNameAsName('.'))
@@ -196,7 +200,8 @@ abstract class TreeGen {
 
   /** Computes stable type for a tree if possible */
   def stableTypeFor(tree: Tree): Type = (
-    if (!treeInfo.admitsTypeSelection(tree)) NoType
+    if (!treeInfo.admitsTypeSelection(tree))
+      NoType
     else
       tree match {
         case This(_)         => ThisType(tree.symbol)
@@ -231,9 +236,12 @@ abstract class TreeGen {
       // the Typers method "isInPackageObject", used in typedIdent.
       val qualsym =
         (
-          if (qual.tpe ne null) qual.tpe.typeSymbol
-          else if (qual.symbol ne null) qual.symbol
-          else NoSymbol
+          if (qual.tpe ne null)
+            qual.tpe.typeSymbol
+          else if (qual.symbol ne null)
+            qual.symbol
+          else
+            NoSymbol
         )
       val needsPackageQualifier = (
         (sym ne null)
@@ -246,19 +254,28 @@ abstract class TreeGen {
           Select(
             qual,
             nme.PACKAGE) setSymbol packageObject setType packageObject.typeOfThis
-        } else qual
+        } else
+          qual
 
       val tree = Select(pkgQualifier, sym)
-      if (pkgQualifier.tpe == null) tree
-      else tree setType (qual.tpe memberType sym)
+      if (pkgQualifier.tpe == null)
+        tree
+      else
+        tree setType (qual.tpe memberType sym)
     }
   }
 
   /** Builds a type application node if args.nonEmpty, returns fun otherwise. */
   def mkTypeApply(fun: Tree, targs: List[Tree]): Tree =
-    if (targs.isEmpty) fun else TypeApply(fun, targs)
+    if (targs.isEmpty)
+      fun
+    else
+      TypeApply(fun, targs)
   def mkAppliedTypeTree(fun: Tree, targs: List[Tree]): Tree =
-    if (targs.isEmpty) fun else AppliedTypeTree(fun, targs)
+    if (targs.isEmpty)
+      fun
+    else
+      AppliedTypeTree(fun, targs)
   def mkAttributedTypeApply(
       target: Tree,
       method: Symbol,
@@ -271,12 +288,21 @@ abstract class TreeGen {
       what: Symbol,
       wrapInApply: Boolean) = {
     val tapp = mkAttributedTypeApply(value, what, tpe.dealias :: Nil)
-    if (wrapInApply) Apply(tapp, Nil) else tapp
+    if (wrapInApply)
+      Apply(tapp, Nil)
+    else
+      tapp
   }
   private def typeTestSymbol(any: Boolean) =
-    if (any) Any_isInstanceOf else Object_isInstanceOf
+    if (any)
+      Any_isInstanceOf
+    else
+      Object_isInstanceOf
   private def typeCastSymbol(any: Boolean) =
-    if (any) Any_asInstanceOf else Object_asInstanceOf
+    if (any)
+      Any_asInstanceOf
+    else
+      Object_asInstanceOf
 
   /** Builds an instance test with given value and type. */
   def mkIsInstanceOf(
@@ -300,7 +326,8 @@ abstract class TreeGen {
       pt: Type,
       tpe: Type,
       beforeRefChecks: Boolean = false): Tree =
-    if ((pt == UnitTpe) || (tpe <:< pt)) tree
+    if ((pt == UnitTpe) || (tpe <:< pt))
+      tree
     else
       atPos(tree.pos)(
         mkAsInstanceOf(tree, pt, any = true, wrapInApply = !beforeRefChecks))
@@ -453,7 +480,8 @@ abstract class TreeGen {
 
     val constr = {
       if (constrMods.isTrait) {
-        if (body forall treeInfo.isInterfaceMember) None
+        if (body forall treeInfo.isInterfaceMember)
+          None
         else
           Some(
             atPos(wrappingPos(superPos, lvdefs))(
@@ -515,8 +543,10 @@ abstract class TreeGen {
       parentPos: Position = NoPosition) =
     if (ownerMods.isCase)
       parents ::: List(scalaDot(tpnme.Product), scalaDot(tpnme.Serializable))
-    else if (parents.isEmpty) atPos(parentPos)(scalaAnyRefConstr) :: Nil
-    else parents
+    else if (parents.isEmpty)
+      atPos(parentPos)(scalaAnyRefConstr) :: Nil
+    else
+      parents
 
   def mkClassDef(
       mods: Modifiers,
@@ -525,7 +555,11 @@ abstract class TreeGen {
       templ: Template): ClassDef = {
     val isInterface =
       mods.isTrait && (templ.body forall treeInfo.isInterfaceMember)
-    val mods1 = if (isInterface) (mods | Flags.INTERFACE) else mods
+    val mods1 =
+      if (isInterface)
+        (mods | Flags.INTERFACE)
+      else
+        mods
     ClassDef(mods1, name, tparams, templ)
   }
 
@@ -584,10 +618,14 @@ abstract class TreeGen {
 
   /** Create block of statements `stats`  */
   def mkBlock(stats: List[Tree], doFlatten: Boolean = true): Tree =
-    if (stats.isEmpty) mkSyntheticUnit()
-    else if (!stats.last.isTerm) Block(stats, mkSyntheticUnit())
-    else if (stats.length == 1 && doFlatten) stats.head
-    else Block(stats.init, stats.last)
+    if (stats.isEmpty)
+      mkSyntheticUnit()
+    else if (!stats.last.isTerm)
+      Block(stats, mkSyntheticUnit())
+    else if (stats.length == 1 && doFlatten)
+      stats.head
+    else
+      Block(stats.init, stats.last)
 
   /** Create a block that wraps multiple statements but don't
     *  do any wrapping if there is just one statement. Used by
@@ -749,8 +787,10 @@ abstract class TreeGen {
     def makeClosure(pos: Position, pat: Tree, body: Tree): Tree = {
       def wrapped = wrappingPos(List(pat, body))
       def splitpos =
-        (if (pos != NoPosition) wrapped.withPoint(pos.point)
-         else pos).makeTransparent
+        (if (pos != NoPosition)
+           wrapped.withPoint(pos.point)
+         else
+           pos).makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
           Function(
@@ -794,7 +834,8 @@ abstract class TreeGen {
 
     /* The position of the closure that starts with generator at position `genpos`. */
     def closurePos(genpos: Position) =
-      if (genpos == NoPosition) NoPosition
+      if (genpos == NoPosition)
+        NoPosition
       else {
         val end = body.pos match {
           case NoPosition => genpos.point
@@ -850,8 +891,10 @@ abstract class TreeGen {
               }) setPos wrappingPos(pdefs)))
         val allpats = (pat :: pats) map (_.duplicate)
         val pos1 =
-          if (t.pos == NoPosition) NoPosition
-          else rangePos(t.pos.source, t.pos.start, t.pos.point, rhs1.pos.end)
+          if (t.pos == NoPosition)
+            NoPosition
+          else
+            rangePos(t.pos.source, t.pos.start, t.pos.point, rhs1.pos.end)
         val vfrom1 = ValFrom(
           atPos(wrappingPos(allpats)) {
             mkTuple(allpats)
@@ -900,8 +943,10 @@ abstract class TreeGen {
           // move the Typed ascription to the rhs
           case Typed(expr, tpt) if !expr.isInstanceOf[Ident] =>
             val rhsTypedUnchecked =
-              if (tpt.isEmpty) rhsUnchecked
-              else Typed(rhsUnchecked, tpt) setPos (rhs.pos union tpt.pos)
+              if (tpt.isEmpty)
+                rhsUnchecked
+              else
+                Typed(rhsUnchecked, tpt) setPos (rhs.pos union tpt.pos)
             (expr, rhsTypedUnchecked)
           case ok =>
             (ok, rhsUnchecked)
@@ -936,14 +981,16 @@ abstract class TreeGen {
                   matchExpr)
               }
             var cnt = 0
-            val restDefs = for ((vname, tpt, pos) <- vars) yield atPos(pos) {
-              cnt += 1
-              ValDef(
-                mods,
-                vname.toTermName,
-                tpt,
-                Select(Ident(tmp), newTermName("_" + cnt)))
-            }
+            val restDefs =
+              for ((vname, tpt, pos) <- vars)
+                yield atPos(pos) {
+                  cnt += 1
+                  ValDef(
+                    mods,
+                    vname.toTermName,
+                    tpt,
+                    Select(Ident(tmp), newTermName("_" + cnt)))
+                }
             firstDef :: restDefs
         }
     }
@@ -952,13 +999,16 @@ abstract class TreeGen {
   def mkGenerator(pos: Position, pat: Tree, valeq: Boolean, rhs: Tree)(
       implicit fresh: FreshNameCreator): Tree = {
     val pat1 = patvarTransformer.transform(pat)
-    if (valeq) ValEq(pat1, rhs).setPos(pos)
-    else ValFrom(pat1, mkCheckIfRefutable(pat1, rhs)).setPos(pos)
+    if (valeq)
+      ValEq(pat1, rhs).setPos(pos)
+    else
+      ValFrom(pat1, mkCheckIfRefutable(pat1, rhs)).setPos(pos)
   }
 
   def mkCheckIfRefutable(pat: Tree, rhs: Tree)(
       implicit fresh: FreshNameCreator) =
-    if (treeInfo.isVarPatternDeep(pat)) rhs
+    if (treeInfo.isVarPatternDeep(pat))
+      rhs
     else {
       val cases = List(
         CaseDef(pat.duplicate, EmptyTree, Literal(Constant(true))),
@@ -992,7 +1042,11 @@ abstract class TreeGen {
       prefix: String = "x$")(implicit fresh: FreshNameCreator): Tree = {
     val x = freshTermName(prefix)
     val id = Ident(x)
-    val sel = if (checkExhaustive) id else mkUnchecked(id)
+    val sel =
+      if (checkExhaustive)
+        id
+      else
+        mkUnchecked(id)
     Function(List(mkSyntheticParam(x)), Match(sel, cases))
   }
 
@@ -1004,7 +1058,8 @@ abstract class TreeGen {
     val buf = new ListBuffer[(Name, Tree, Position)]
 
     def namePos(tree: Tree, name: Name): Position =
-      if (!tree.pos.isRange || name.containsName(nme.raw.DOLLAR)) tree.pos.focus
+      if (!tree.pos.isRange || name.containsName(nme.raw.DOLLAR))
+        tree.pos.focus
       else {
         val start = tree.pos.start
         val end = start + name.decode.length
@@ -1014,7 +1069,8 @@ abstract class TreeGen {
     override def traverse(tree: Tree): Unit = {
       def seenName(name: Name) = buf exists (_._1 == name)
       def add(name: Name, t: Tree) =
-        if (!seenName(name)) buf += ((name, t, namePos(tree, name)))
+        if (!seenName(name))
+          buf += ((name, t, namePos(tree, name)))
       val bl = buf.length
 
       tree match {
@@ -1023,7 +1079,10 @@ abstract class TreeGen {
 
         case Bind(name, Typed(tree1, tpt)) =>
           val newTree =
-            if (treeInfo.mayBeTypePat(tpt)) TypeTree() else tpt.duplicate
+            if (treeInfo.mayBeTypePat(tpt))
+              TypeTree()
+            else
+              tpt.duplicate
           add(name, newTree)
           traverse(tree1)
 

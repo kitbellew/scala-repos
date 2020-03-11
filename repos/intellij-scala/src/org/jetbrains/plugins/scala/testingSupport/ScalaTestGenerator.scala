@@ -280,7 +280,8 @@ object ScalaTestGenerator {
       generateAfter: Boolean,
       typeDef: ScTypeDefinition,
       project: Project) {
-    if (!(generateBefore || generateAfter)) return
+    if (!(generateBefore || generateAfter))
+      return
     typeDef.extendsBlock.templateBody match {
       case Some(body) =>
         Option(
@@ -322,7 +323,8 @@ object ScalaTestGenerator {
       generateAfter: Boolean,
       typeDef: ScTypeDefinition,
       project: Project) {
-    if (!(generateBefore || generateAfter)) return
+    if (!(generateBefore || generateAfter))
+      return
     typeDef.extendsBlock.templateBody match {
       case Some(body) =>
         val closingBrace = body.getLastChild
@@ -519,7 +521,8 @@ object ScalaTestGenerator {
           .fold(
             "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
             _ + "\n" + _)
-      else ""
+      else
+        ""
     val closingBrace = templateBody.getLastChild
     templateBody.addBefore(
       ScalaPsiElementFactory.createMethodFromText(
@@ -563,7 +566,8 @@ object ScalaTestGenerator {
               .fold(
                 "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
                 _ + "\n" + _)
-          else ""
+          else
+            ""
         templateBody.addBefore(
           ScalaPsiElementFactory.createMethodFromText(
             "def is = s2\"\"\"" + checkMethodsString +

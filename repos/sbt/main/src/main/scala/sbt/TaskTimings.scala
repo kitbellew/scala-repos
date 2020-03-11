@@ -22,7 +22,8 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
       allDeps: Iterable[Task[_]],
       pendingDeps: Iterable[Task[_]]) = {
     pendingDeps foreach { t =>
-      if (transformNode(t).isEmpty) anonOwners.put(t, task)
+      if (transformNode(t).isEmpty)
+        anonOwners.put(t, task)
     }
   }
   def ready(state: Unit, task: Task[_]) = ()

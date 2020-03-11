@@ -124,14 +124,16 @@ abstract class ClusterShardingFailureSpec(
   override protected def atStartup() {
     runOn(controller) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(controller) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 

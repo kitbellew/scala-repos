@@ -108,7 +108,10 @@ object Template extends Logging {
       val proxyUri = new URI(p)
       (
         Option(proxyUri.getHost),
-        if (proxyUri.getPort == -1) None else Some(proxyUri.getPort))
+        if (proxyUri.getPort == -1)
+          None
+        else
+          Some(proxyUri.getPort))
     } getOrElse {
       (
         sys.props.get("http.proxyHost"),

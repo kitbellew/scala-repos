@@ -63,7 +63,11 @@ class HoconFormatter(settings: CodeStyleSettings) {
       getMaxBlankLines(parent.getElementType, rightChild.getElementType)
 
     def dependentLFSpacing(shouldBeSpace: Boolean) = {
-      val spaces = if (shouldBeSpace) 1 else 0
+      val spaces =
+        if (shouldBeSpace)
+          1
+        else
+          0
       Spacing.createDependentLFSpacing(
         spaces,
         spaces,
@@ -73,7 +77,11 @@ class HoconFormatter(settings: CodeStyleSettings) {
     }
 
     def normalSpacing(shouldBeSpace: Boolean) = {
-      val spaces = if (shouldBeSpace) 1 else 0
+      val spaces =
+        if (shouldBeSpace)
+          1
+        else
+          0
       Spacing.createSpacing(spaces, spaces, 0, keepLineBreaks, maxBlankLines)
     }
 
@@ -99,8 +107,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
             normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
 
         case (
-            Include | KeyedField.extractor(),
-            Include | KeyedField.extractor()) =>
+              Include | KeyedField.extractor(),
+              Include | KeyedField.extractor()) =>
           lineBreakEnsuringSpacing
 
         case (Include | KeyedField.extractor(), Comma) =>
@@ -218,7 +226,10 @@ class HoconFormatter(settings: CodeStyleSettings) {
     }
 
     val fieldValueWrap =
-      if (keyValueSeparatorWrap == null) fieldInnerWrap else null
+      if (keyValueSeparatorWrap == null)
+        fieldInnerWrap
+      else
+        null
 
     val includeInnerWrap =
       Wrap.createWrap(customSettings.INCLUDED_RESOURCE_WRAP, true)
@@ -227,12 +238,16 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
   class AlignmentCache {
     val objectEntryAlignment =
-      if (customSettings.OBJECTS_ALIGN_WHEN_MULTILINE) Alignment.createAlignment
-      else null
+      if (customSettings.OBJECTS_ALIGN_WHEN_MULTILINE)
+        Alignment.createAlignment
+      else
+        null
 
     val arrayValueAlignment =
-      if (customSettings.LISTS_ALIGN_WHEN_MULTILINE) Alignment.createAlignment
-      else null
+      if (customSettings.LISTS_ALIGN_WHEN_MULTILINE)
+        Alignment.createAlignment
+      else
+        null
   }
 
   def getWrap(wrapCache: WrapCache, parent: ASTNode, child: ASTNode) =

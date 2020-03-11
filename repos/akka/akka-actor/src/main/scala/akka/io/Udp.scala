@@ -211,7 +211,10 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
     val ManagementDispatcher: String = getString("management-dispatcher")
 
     override val MaxChannelsPerSelector: Int =
-      if (MaxChannels == -1) -1 else math.max(MaxChannels / NrOfSelectors, 1)
+      if (MaxChannels == -1)
+        -1
+      else
+        math.max(MaxChannels / NrOfSelectors, 1)
 
     private[this] def getIntBytes(path: String): Int = {
       val size = getBytes(path)

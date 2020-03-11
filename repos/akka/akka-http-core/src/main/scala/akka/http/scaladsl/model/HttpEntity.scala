@@ -205,24 +205,31 @@ object HttpEntity {
   def apply(
       contentType: ContentType.NonBinary,
       string: String): HttpEntity.Strict =
-    if (string.isEmpty) empty(contentType)
+    if (string.isEmpty)
+      empty(contentType)
     else
       apply(
         contentType,
         ByteString(string.getBytes(contentType.charset.nioCharset)))
   def apply(contentType: ContentType, bytes: Array[Byte]): HttpEntity.Strict =
-    if (bytes.length == 0) empty(contentType)
-    else apply(contentType, ByteString(bytes))
+    if (bytes.length == 0)
+      empty(contentType)
+    else
+      apply(contentType, ByteString(bytes))
   def apply(contentType: ContentType, data: ByteString): HttpEntity.Strict =
-    if (data.isEmpty) empty(contentType)
-    else HttpEntity.Strict(contentType, data)
+    if (data.isEmpty)
+      empty(contentType)
+    else
+      HttpEntity.Strict(contentType, data)
 
   def apply(
       contentType: ContentType,
       contentLength: Long,
       data: Source[ByteString, Any]): UniversalEntity =
-    if (contentLength == 0) empty(contentType)
-    else HttpEntity.Default(contentType, contentLength, data)
+    if (contentLength == 0)
+      empty(contentType)
+    else
+      HttpEntity.Default(contentType, contentLength, data)
   def apply(
       contentType: ContentType,
       data: Source[ByteString, Any]): HttpEntity.Chunked =
@@ -244,17 +251,22 @@ object HttpEntity {
       HttpEntity.Default(
         contentType,
         fileLength,
-        if (chunkSize > 0) FileIO.fromFile(file, chunkSize)
-        else FileIO.fromFile(file))
-    else empty(contentType)
+        if (chunkSize > 0)
+          FileIO.fromFile(file, chunkSize)
+        else
+          FileIO.fromFile(file))
+    else
+      empty(contentType)
   }
 
   val Empty: HttpEntity.Strict =
     HttpEntity.Strict(ContentTypes.NoContentType, data = ByteString.empty)
 
   def empty(contentType: ContentType): HttpEntity.Strict =
-    if (contentType == Empty.contentType) Empty
-    else HttpEntity.Strict(contentType, data = ByteString.empty)
+    if (contentType == Empty.contentType)
+      Empty
+    else
+      HttpEntity.Strict(contentType, data = ByteString.empty)
 
   // TODO: re-establish serializability
   // TODO: equal/hashcode ?
@@ -289,11 +301,14 @@ object HttpEntity {
         Source.single(data) via transformer)
 
     override def withContentType(contentType: ContentType): HttpEntity.Strict =
-      if (contentType == this.contentType) this
-      else copy(contentType = contentType)
+      if (contentType == this.contentType)
+        this
+      else
+        copy(contentType = contentType)
 
     override def withSizeLimit(maxBytes: Long): UniversalEntity =
-      if (data.length <= maxBytes || isKnownEmpty) this
+      if (data.length <= maxBytes || isKnownEmpty)
+        this
       else
         HttpEntity.Default(
           contentType,
@@ -358,8 +373,10 @@ object HttpEntity {
       HttpEntity.Default(contentType, newContentLength, data via transformer)
 
     def withContentType(contentType: ContentType): HttpEntity.Default =
-      if (contentType == this.contentType) this
-      else copy(contentType = contentType)
+      if (contentType == this.contentType)
+        this
+      else
+        copy(contentType = contentType)
 
     override def withSizeLimit(maxBytes: Long): HttpEntity.Default =
       copy(data = data withAttributes Attributes(
@@ -416,8 +433,10 @@ object HttpEntity {
     override def isCloseDelimited: Boolean = true
     override def withContentType(
         contentType: ContentType): HttpEntity.CloseDelimited =
-      if (contentType == this.contentType) this
-      else copy(contentType = contentType)
+      if (contentType == this.contentType)
+        this
+      else
+        copy(contentType = contentType)
 
     override def withData(
         data: Source[ByteString, Any]): HttpEntity.CloseDelimited =
@@ -441,8 +460,10 @@ object HttpEntity {
     override def isIndefiniteLength: Boolean = true
     override def withContentType(
         contentType: ContentType): HttpEntity.IndefiniteLength =
-      if (contentType == this.contentType) this
-      else copy(contentType = contentType)
+      if (contentType == this.contentType)
+        this
+      else
+        copy(contentType = contentType)
 
     override def withData(
         data: Source[ByteString, Any]): HttpEntity.IndefiniteLength =
@@ -489,8 +510,10 @@ object HttpEntity {
     }
 
     def withContentType(contentType: ContentType): HttpEntity.Chunked =
-      if (contentType == this.contentType) this
-      else copy(contentType = contentType)
+      if (contentType == this.contentType)
+        this
+      else
+        copy(contentType = contentType)
 
     override def productPrefix = "HttpEntity.Chunked"
 
@@ -618,8 +641,10 @@ object HttpEntity {
                 elem: Out,
                 ctx: stage.Context[Out]): stage.SyncDirective = {
               bytesLeft -= sizeOf(elem)
-              if (bytesLeft >= 0) ctx.push(elem)
-              else ctx.fail(EntityStreamSizeException(maxBytes))
+              if (bytesLeft >= 0)
+                ctx.push(elem)
+              else
+                ctx.fail(EntityStreamSizeException(maxBytes))
             }
           }
         }

@@ -41,15 +41,23 @@ trait DoubleIsField extends Field[Double] {
       val exp = (exp0 - shift).toLong
       // If exp is 0, then the value is actually just the mantissa * 2^−126,
       // so we need to adjust the *shift* accordingly.
-      val shift0 = if (exp == 0) shift - 1 else shift
+      val shift0 =
+        if (exp == 0)
+          shift - 1
+        else
+          shift
       val mantissa = (n << shift0) & 0x000FFFFFFFFFFFFFL
       // If exp < 0, then we have underflowed; not much we can do but return 0.
-      if (exp < 0) 0.0
-      else longBitsToDouble((exp << 52) | mantissa)
+      if (exp < 0)
+        0.0
+      else
+        longBitsToDouble((exp << 52) | mantissa)
     }
 
-    if (a == 0d) b
-    else if (b == 0d) a
+    if (a == 0d)
+      b
+    else if (b == 0d)
+      a
     else {
       val aBits = doubleToLongBits(a)
       val aVal = value(aBits)
@@ -59,8 +67,10 @@ trait DoubleIsField extends Field[Double] {
       val bVal = value(bBits)
       val bExp = exp(bBits)
 
-      if (aExp < bExp) gcd0(aVal, aExp, bVal, bExp)
-      else gcd0(bVal, bExp, aVal, aExp)
+      if (aExp < bExp)
+        gcd0(aVal, aExp, bVal, bExp)
+      else
+        gcd0(bVal, bExp, aVal, aExp)
     }
   }
 
@@ -114,7 +124,11 @@ trait DoubleOrder extends Order[Double] {
 
 trait DoubleIsSigned extends Signed[Double] {
   def signum(a: Double): Int = Math.signum(a).toInt
-  def abs(a: Double): Double = if (a < 0.0) -a else a
+  def abs(a: Double): Double =
+    if (a < 0.0)
+      -a
+    else
+      a
 }
 
 trait DoubleIsReal

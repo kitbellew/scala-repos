@@ -117,11 +117,13 @@ private[parser] trait SimpleHeaders {
         case Some(p) ⇒ p
       }
       `Cookie` {
-        if (validPairs.nonEmpty) validPairs
+        if (validPairs.nonEmpty)
+          validPairs
         // Parsing infrastructure requires to return an HttpHeader value here but it is not possible
         // to create a Cookie header without elements, so we throw here. This will 1) log a warning
         // provide the complete content of the header as a RawHeader
-        else throw HeaderParser.EmptyCookieException
+        else
+          throw HeaderParser.EmptyCookieException
       }
     }
   }

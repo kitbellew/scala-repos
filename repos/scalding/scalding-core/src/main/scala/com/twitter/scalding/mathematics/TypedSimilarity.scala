@@ -156,7 +156,8 @@ object TypedSimilarity extends Serializable {
           case ((node1, deg1), (node2, deg2)) =>
             if (smallpred(node1) && bigpred(node2))
               Some(((node1, node2), (1, deg1, deg2)))
-            else None
+            else
+              None
         }
         .group,
       g.reducers

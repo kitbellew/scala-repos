@@ -212,10 +212,26 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
       }
 
       def apply(r: Row): NodeData = {
-        val split = if (r.isNullAt(5)) None else Some(SplitData(r.getStruct(5)))
-        val leftNodeId = if (r.isNullAt(6)) None else Some(r.getInt(6))
-        val rightNodeId = if (r.isNullAt(7)) None else Some(r.getInt(7))
-        val infoGain = if (r.isNullAt(8)) None else Some(r.getDouble(8))
+        val split =
+          if (r.isNullAt(5))
+            None
+          else
+            Some(SplitData(r.getStruct(5)))
+        val leftNodeId =
+          if (r.isNullAt(6))
+            None
+          else
+            Some(r.getInt(6))
+        val rightNodeId =
+          if (r.isNullAt(7))
+            None
+          else
+            Some(r.getInt(7))
+        val infoGain =
+          if (r.isNullAt(8))
+            None
+          else
+            Some(r.getDouble(8))
         NodeData(
           r.getInt(0),
           r.getInt(1),

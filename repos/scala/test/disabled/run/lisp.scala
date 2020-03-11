@@ -9,17 +9,20 @@ class LispTokenizer(s: String) extends Iterator[String] {
   private var i = 0;
   private def isDelimiter(ch: Char) = ch <= ' ' || ch == '(' || ch == ')'
   def hasNext: Boolean = {
-    while (i < s.length() && s.charAt(i) <= ' ') i += 1
+    while (i < s.length() && s.charAt(i) <= ' ')
+      i += 1
     i < s.length()
   }
   def next: String =
     if (hasNext) {
       val start = i
-      if (isDelimiter(s charAt i)) i += 1
+      if (isDelimiter(s charAt i))
+        i += 1
       else
         do i = i + 1 while (!isDelimiter(s charAt i))
       s.substring(start, i)
-    } else sys.error("premature end of string")
+    } else
+      sys.error("premature end of string")
 }
 
 //############################################################################
@@ -139,7 +142,10 @@ object LispCaseClasses extends Lisp {
     def extendRec(name: String, expr: Environment => Data) =
       new Environment {
         def lookup(n: String): Data =
-          if (n == name) expr(this) else Environment.this.lookup(n);
+          if (n == name)
+            expr(this)
+          else
+            Environment.this.lookup(n);
       }
     def extend(name: String, v: Data) = extendRec(name, (env1 => v));
   }
@@ -160,8 +166,8 @@ object LispCaseClasses extends Lisp {
 
   def normalize(x: Data): Data = x match {
     case CONS(
-        SYM("def"),
-        CONS(CONS(SYM(name), args), CONS(body, CONS(expr, NIL())))) =>
+          SYM("def"),
+          CONS(CONS(SYM(name), args), CONS(body, CONS(expr, NIL())))) =>
       normalize(
         list(SYM("def"), SYM(name), list(SYM("lambda"), args, body), expr))
     case CONS(SYM("cond"), CONS(CONS(SYM("else"), CONS(expr, NIL())), NIL())) =>
@@ -176,14 +182,16 @@ object LispCaseClasses extends Lisp {
     val prevexp = curexp;
     curexp = x;
     if (trace) {
-      for (x <- range(1, indent)) Console.print(" ");
+      for (x <- range(1, indent))
+        Console.print(" ");
       Console.println("===> " + x);
       indent = indent + 1;
     }
     val result = eval1(x, env);
     if (trace) {
       indent = indent - 1;
-      for (x <- range(1, indent)) Console.print(" ");
+      for (x <- range(1, indent))
+        Console.print(" ");
       Console.println("<=== " + result);
     }
     curexp = prevexp;
@@ -200,7 +208,10 @@ object LispCaseClasses extends Lisp {
     case CONS(SYM("lambda"), CONS(params, CONS(y, NIL()))) =>
       mkLambda(params, y, env)
     case CONS(SYM("if"), CONS(c, CONS(t, CONS(e, NIL())))) =>
-      if (toBoolean(eval(c, env))) eval(t, env) else eval(e, env)
+      if (toBoolean(eval(c, env)))
+        eval(t, env)
+      else
+        eval(e, env)
     case CONS(SYM("quote"), CONS(x, NIL())) =>
       x
     case CONS(y, xs) =>
@@ -244,8 +255,18 @@ object LispCaseClasses extends Lisp {
     .extend(
       "=",
       FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
-        case List(STR(arg1), STR(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
+        case List(NUM(arg1), NUM(arg2)) =>
+          NUM(
+            if (arg1 == arg2)
+              1
+            else
+              0)
+        case List(STR(arg1), STR(arg2)) =>
+          NUM(
+            if (arg1 == arg2)
+              1
+            else
+              0)
       }))
     .extend(
       "+",
@@ -296,18 +317,24 @@ object LispCaseClasses extends Lisp {
   def string2lisp(s: String): Data = {
     val it = new LispTokenizer(s);
     def parseExpr(token: String): Data = {
-      if (token == "(") parseList
-      else if (token == ")") sys.error("unbalanced parentheses")
+      if (token == "(")
+        parseList
+      else if (token == ")")
+        sys.error("unbalanced parentheses")
       else if ('0' <= token.charAt(0) && token.charAt(0) <= '9')
         NUM(token.toInt)
       else if (token.charAt(0) == '\"' && token.charAt(
                  token.length() - 1) == '\"')
         STR(token.substring(1, token.length() - 1))
-      else SYM(token)
+      else
+        SYM(token)
     }
     def parseList: Data = {
       val token = it.next;
-      if (token == ")") NIL() else CONS(parseExpr(token), parseList)
+      if (token == ")")
+        NIL()
+      else
+        CONS(parseExpr(token), parseList)
     }
     parseExpr(it.next)
   }
@@ -338,7 +365,10 @@ object LispAny extends Lisp {
     def extendRec(name: String, expr: Environment => Data) =
       new Environment {
         def lookup(n: String): Data =
-          if (n == name) expr(this) else Environment.this.lookup(n);
+          if (n == name)
+            expr(this)
+          else
+            Environment.this.lookup(n);
       }
     def extend(name: String, v: Data) = extendRec(name, (env1 => v));
   }
@@ -386,14 +416,16 @@ object LispAny extends Lisp {
     val prevexp = curexp;
     curexp = x;
     if (trace) {
-      for (x <- range(1, indent)) Console.print(" ");
+      for (x <- range(1, indent))
+        Console.print(" ");
       Console.println("===> " + x);
       indent += 1;
     }
     val result = eval1(x, env);
     if (trace) {
       indent -= 1;
-      for (x <- range(1, indent)) Console.print(" ");
+      for (x <- range(1, indent))
+        Console.print(" ");
       Console.println("<=== " + result);
     }
     curexp = prevexp;
@@ -410,7 +442,10 @@ object LispAny extends Lisp {
     case 'lambda :: params :: y :: Nil =>
       mkLambda(params, y, env)
     case 'if :: c :: y :: z :: Nil =>
-      if (asBoolean(eval(c, env))) eval(y, env) else eval(z, env)
+      if (asBoolean(eval(c, env)))
+        eval(y, env)
+      else
+        eval(z, env)
     case 'quote :: y :: Nil =>
       y
     case y :: z =>
@@ -430,7 +465,11 @@ object LispAny extends Lisp {
         case y :: ys => " " + lisp2string(y) + list2string(ys)
       }
       "(" + lisp2string(y) + list2string(ys) + ")"
-    case _ => if (x.isInstanceOf[String]) "\"" + x + "\""; else x.toString()
+    case _ =>
+      if (x.isInstanceOf[String])
+        "\"" + x + "\"";
+      else
+        x.toString()
   }
 
   def apply(fn: Data, args: List[Data]): Data = fn match {
@@ -465,7 +504,11 @@ object LispAny extends Lisp {
     .extend(
       "=",
       Lambda {
-        case List(arg1, arg2) => if (arg1 == arg2) 1 else 0
+        case List(arg1, arg2) =>
+          if (arg1 == arg2)
+            1
+          else
+            0
       })
     .extend(
       "+",
@@ -517,19 +560,25 @@ object LispAny extends Lisp {
   def string2lisp(s: String): Data = {
     val it = new LispTokenizer(s);
     def parseExpr(token: String): Data = {
-      if (token == "(") parseList
-      else if (token == ")") sys.error("unbalanced parentheses")
+      if (token == "(")
+        parseList
+      else if (token == ")")
+        sys.error("unbalanced parentheses")
       //else if (Character.isDigit(token.charAt(0)))
       else if (token.charAt(0).isDigit)
         token.toInt
       else if (token.charAt(0) == '\"' && token.charAt(
                  token.length() - 1) == '\"')
         token.substring(1, token.length() - 1)
-      else Symbol(token)
+      else
+        Symbol(token)
     }
     def parseList: List[Data] = {
       val token = it.next;
-      if (token == ")") Nil else parseExpr(token) :: parseList
+      if (token == ")")
+        Nil
+      else
+        parseExpr(token) :: parseList
     }
     parseExpr(it.next)
   }

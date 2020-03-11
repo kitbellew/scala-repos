@@ -185,7 +185,8 @@ object Scalding {
             findEnd(low, mid)
         }
 
-      if (isGood(end.timestamp)) Some(desired)
+      if (isGood(end.timestamp))
+        Some(desired)
       else
         Some(
           DateRange(
@@ -243,7 +244,10 @@ object Scalding {
                   .flatMap { t =>
                     fn(t).flatMap { mapped =>
                       val time = Timestamp(timeOf(mapped))
-                      if (newIntr(time)) Some((time, mapped)) else None
+                      if (newIntr(time))
+                        Some((time, mapped))
+                      else
+                        None
                     }
                   }
               })
@@ -273,7 +277,10 @@ object Scalding {
                 .from(mappable)
                 .flatMap { t =>
                   val time = Timestamp(timeOf(t))
-                  if (timeSpan(time)) Some((time, t)) else None
+                  if (timeSpan(time))
+                    Some((time, t))
+                  else
+                    None
                 }
             })
         }
@@ -769,7 +776,8 @@ object Scalding {
         case (((ts, m), flowDefMutator)) =>
           if (ts != timeSpan)
             Left(List("Could not load all of %s, only %s".format(ts, timeSpan)))
-          else Right(flowDefMutator((flowDef, m)))
+          else
+            Right(flowDefMutator((flowDef, m)))
       }
   }
 }

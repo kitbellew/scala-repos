@@ -57,20 +57,21 @@ object SbtWatcherMain {
         val argsTail = decoded.tail.tail
 
         def delegate =
-          if (cm == START) new MessageConsumer {
-            override def consume(message: String) {
-              try {
-                val sc = new Socket(InetAddress.getByName(null), port)
-                val writer = new BufferedWriter(
-                  new OutputStreamWriter(sc.getOutputStream))
-                writer.write(message)
-                writer.flush()
-                writer.close()
-              } catch {
-                case ex: Exception =>
+          if (cm == START)
+            new MessageConsumer {
+              override def consume(message: String) {
+                try {
+                  val sc = new Socket(InetAddress.getByName(null), port)
+                  val writer = new BufferedWriter(
+                    new OutputStreamWriter(sc.getOutputStream))
+                  writer.write(message)
+                  writer.flush()
+                  writer.close()
+                } catch {
+                  case ex: Exception =>
+                }
               }
             }
-          }
           else
             new MessageConsumer {
               override def consume(message: String) {

@@ -118,7 +118,8 @@ object Gaussian
         val (mu, sigma2) = x
         val SufficientStatistic(n, mean, _) = stats
         val variance = stats.variance
-        if (sigma2 <= 0) (Double.PositiveInfinity, (Double.NaN, Double.NaN))
+        if (sigma2 <= 0)
+          (Double.PositiveInfinity, (Double.NaN, Double.NaN))
         else {
           val objective = n * ((variance + mean * mean) / sigma2 / 2
             - mean * mu / sigma2

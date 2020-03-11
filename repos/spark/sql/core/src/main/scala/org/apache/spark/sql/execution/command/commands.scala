@@ -168,9 +168,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
         (keyValueOutput, runFunc)
 
       case Some(
-          (
-            SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
-            Some(value))) =>
+            (
+              SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
+              Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
           logWarning(
             s"Property ${SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED} is " +
@@ -263,7 +263,10 @@ case class ExplainCommand(
       // TODO in Hive, the "extended" ExplainCommand prints the AST as well, and detailed properties.
       val queryExecution = sqlContext.executePlan(logicalPlan)
       val outputString =
-        if (extended) queryExecution.toString else queryExecution.simpleString
+        if (extended)
+          queryExecution.toString
+        else
+          queryExecution.simpleString
 
       outputString.split("\n").map(Row(_))
     } catch {
@@ -333,8 +336,10 @@ case class DescribeCommand(
     relation.schema.fields.map { field =>
       val cmtKey = "comment"
       val comment =
-        if (field.metadata.contains(cmtKey)) field.metadata.getString(cmtKey)
-        else ""
+        if (field.metadata.contains(cmtKey))
+          field.metadata.getString(cmtKey)
+        else
+          ""
       Row(field.name, field.dataType.simpleString, comment)
     }
   }

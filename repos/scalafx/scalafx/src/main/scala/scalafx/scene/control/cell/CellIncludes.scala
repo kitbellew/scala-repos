@@ -73,7 +73,10 @@ trait CellIncludes {
     */
   implicit def jfxCheckBoxListCell2sfx[T](
       cell: jfxscc.CheckBoxListCell[T]): CheckBoxListCell[T] =
-    if (cell != null) new CheckBoxListCell[T](cell) else null
+    if (cell != null)
+      new CheckBoxListCell[T](cell)
+    else
+      null
 
   /**
     * $START$CHBTC.html $CHBTC$END
@@ -85,7 +88,10 @@ trait CellIncludes {
     */
   implicit def jfxCheckBoxTableCell2sfx[S, T](
       cell: jfxscc.CheckBoxTableCell[S, T]): CheckBoxTableCell[S, T] =
-    if (cell != null) new CheckBoxTableCell[S, T](cell) else null
+    if (cell != null)
+      new CheckBoxTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$CHBRC.html $CHBRC$END
@@ -96,7 +102,10 @@ trait CellIncludes {
     */
   implicit def jfxCheckBoxTreeCell2sfx[T](
       cell: jfxscc.CheckBoxTreeCell[T]): CheckBoxTreeCell[T] =
-    if (cell != null) new CheckBoxTreeCell[T](cell) else null
+    if (cell != null)
+      new CheckBoxTreeCell[T](cell)
+    else
+      null
 
   /**
     * $START$CBTTC.html $CBTTC$END
@@ -108,7 +117,10 @@ trait CellIncludes {
     */
   implicit def jfxCheckBoxTreeTableCell2sfx[S, T](
       cell: jfxscc.CheckBoxTreeTableCell[S, T]): CheckBoxTreeTableCell[S, T] =
-    if (cell != null) new CheckBoxTreeTableCell[S, T](cell) else null
+    if (cell != null)
+      new CheckBoxTreeTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$XOBLC.html $XOBLC$END
@@ -119,7 +131,10 @@ trait CellIncludes {
     */
   implicit def jfxChoiceBoxListCell2sfx[T](
       cell: jfxscc.ChoiceBoxListCell[T]): ChoiceBoxListCell[T] =
-    if (cell != null) new ChoiceBoxListCell[T](cell) else null
+    if (cell != null)
+      new ChoiceBoxListCell[T](cell)
+    else
+      null
 
   /**
     * $START$XOBTC.html $XOBTC$END
@@ -131,7 +146,10 @@ trait CellIncludes {
     */
   implicit def jfxChoiceBoxTableCell2sfx[S, T](
       cell: jfxscc.ChoiceBoxTableCell[S, T]): ChoiceBoxTableCell[S, T] =
-    if (cell != null) new ChoiceBoxTableCell[S, T](cell) else null
+    if (cell != null)
+      new ChoiceBoxTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$XOBRC.html $XOBRC$END
@@ -142,7 +160,10 @@ trait CellIncludes {
     */
   implicit def jfxChoiceBoxTreeCell2sfx[T](
       cell: jfxscc.ChoiceBoxTreeCell[T]): ChoiceBoxTreeCell[T] =
-    if (cell != null) new ChoiceBoxTreeCell[T](cell) else null
+    if (cell != null)
+      new ChoiceBoxTreeCell[T](cell)
+    else
+      null
 
   /**
     * $START$XOTTC.html $XOTTC$END
@@ -153,7 +174,10 @@ trait CellIncludes {
     */
   implicit def jfxChoiceBoxTreeTableCell2sfx[S, T](
       cell: jfxscc.ChoiceBoxTreeTableCell[S, T]): ChoiceBoxTreeTableCell[S, T] =
-    if (cell != null) new ChoiceBoxTreeTableCell[S, T](cell) else null
+    if (cell != null)
+      new ChoiceBoxTreeTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$CMBLC.html $CMBLC$END
@@ -164,7 +188,10 @@ trait CellIncludes {
     */
   implicit def jfxComboBoxListCell2sfx[T](
       cell: jfxscc.ComboBoxListCell[T]): ComboBoxListCell[T] =
-    if (cell != null) new ComboBoxListCell[T](cell) else null
+    if (cell != null)
+      new ComboBoxListCell[T](cell)
+    else
+      null
 
   /**
     * $START$CMBTC.html $CMBTC$END
@@ -176,7 +203,10 @@ trait CellIncludes {
     */
   implicit def jfxComboBoxTableCell2sfx[S, T](
       cell: jfxscc.ComboBoxTableCell[S, T]): ComboBoxTableCell[S, T] =
-    if (cell != null) new ComboBoxTableCell[S, T](cell) else null
+    if (cell != null)
+      new ComboBoxTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$CMBRC.html $CMBRC$END
@@ -187,7 +217,10 @@ trait CellIncludes {
     */
   implicit def jfxComboBoxTreeCell2sfx[T](
       cell: jfxscc.ComboBoxTreeCell[T]): ComboBoxTreeCell[T] =
-    if (cell != null) new ComboBoxTreeCell[T](cell) else null
+    if (cell != null)
+      new ComboBoxTreeCell[T](cell)
+    else
+      null
 
   /**
     * $START$CMBRC.html $CMBRC$END
@@ -198,7 +231,10 @@ trait CellIncludes {
     */
   implicit def jfxComboBoxTreeTableCell2sfx[S, T](
       cell: jfxscc.ComboBoxTreeTableCell[S, T]): ComboBoxTreeTableCell[S, T] =
-    if (cell != null) new ComboBoxTreeTableCell[S, T](cell) else null
+    if (cell != null)
+      new ComboBoxTreeTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$PRBTC.html $PRBTC$END
@@ -209,7 +245,10 @@ trait CellIncludes {
     */
   implicit def jfxProgressBarTableCell2sfx[S](
       cell: jfxscc.ProgressBarTableCell[S]): ProgressBarTableCell[S] =
-    if (cell != null) new ProgressBarTableCell[S](cell) else null
+    if (cell != null)
+      new ProgressBarTableCell[S](cell)
+    else
+      null
 
   /**
     * $START$TXFLC.html $TXFLC$END
@@ -220,7 +259,10 @@ trait CellIncludes {
     */
   implicit def jfxTextFieldListCell2sfx[T](
       cell: jfxscc.TextFieldListCell[T]): TextFieldListCell[T] =
-    if (cell != null) new TextFieldListCell[T](cell) else null
+    if (cell != null)
+      new TextFieldListCell[T](cell)
+    else
+      null
 
   /**
     * $START$TXFTC.html $TXFTC$END
@@ -232,7 +274,10 @@ trait CellIncludes {
     */
   implicit def jfxTextFieldTableCell2sfx[S, T](
       cell: jfxscc.TextFieldTableCell[S, T]): TextFieldTableCell[S, T] =
-    if (cell != null) new TextFieldTableCell[S, T](cell) else null
+    if (cell != null)
+      new TextFieldTableCell[S, T](cell)
+    else
+      null
 
   /**
     * $START$TXFRC.html $TXFRC$END
@@ -243,7 +288,10 @@ trait CellIncludes {
     */
   implicit def jfxTextFieldTreeCell2sfx[T](
       cell: jfxscc.TextFieldTreeCell[T]): TextFieldTreeCell[T] =
-    if (cell != null) new TextFieldTreeCell[T](cell) else null
+    if (cell != null)
+      new TextFieldTreeCell[T](cell)
+    else
+      null
 
   /**
     * $START$TXTTC.html $TXTTC$END
@@ -254,6 +302,9 @@ trait CellIncludes {
     */
   implicit def jfxTextFieldTreeTableCell2sfx[S, T](
       cell: jfxscc.TextFieldTreeTableCell[S, T]): TextFieldTreeTableCell[S, T] =
-    if (cell != null) new TextFieldTreeTableCell[S, T](cell) else null
+    if (cell != null)
+      new TextFieldTreeTableCell[S, T](cell)
+    else
+      null
 
 }

@@ -33,7 +33,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       element: PsiElement): Boolean = {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null) return false
+    if (methodCallExpr == null)
+      return false
 
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
@@ -42,7 +43,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       .asInstanceOf[ScReferenceExpression]
       .nameId
       .getText
-    if (oper != "equals" && oper != "==") return false
+    if (oper != "equals" && oper != "==")
+      return false
 
     val range: TextRange = methodCallExpr.getInvokedExpr
       .asInstanceOf[ScReferenceExpression]
@@ -57,7 +59,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
 
     if (methodCallExpr.getInvokedExpr
           .asInstanceOf[ScReferenceExpression]
-          .isQualified) return true
+          .isQualified)
+      return true
 
     false
   }
@@ -65,7 +68,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null || !methodCallExpr.isValid) return
+    if (methodCallExpr == null || !methodCallExpr.isValid)
+      return
 
     val start = methodCallExpr.getTextRange.getStartOffset
 

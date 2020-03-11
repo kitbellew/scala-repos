@@ -124,9 +124,12 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   object Flag extends PermissibleValue {
     val values = List("yes", "no", "on", "off", "true", "false")
     def toBoolean(flag: String) =
-      if (flag == "yes" || flag == "on" || flag == "true") Some(true)
-      else if (flag == "no" || flag == "off" || flag == "false") Some(false)
-      else None
+      if (flag == "yes" || flag == "on" || flag == "true")
+        Some(true)
+      else if (flag == "no" || flag == "off" || flag == "false")
+        Some(false)
+      else
+        None
   }
 
   /** The directories that contain source files to compile. */
@@ -235,8 +238,16 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     getter().get.createPath()
   }
 
-  private def plural(xs: List[Any]) = if (xs.size > 1) "s" else ""
-  private def plural(x: Int) = if (x > 1) "s" else ""
+  private def plural(xs: List[Any]) =
+    if (xs.size > 1)
+      "s"
+    else
+      ""
+  private def plural(x: Int) =
+    if (x > 1)
+      "s"
+    else
+      ""
 
   /*============================================================================*\
 **                             Properties setters                             **
@@ -365,8 +376,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Sets the `target` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `target`. */
   def setTarget(input: String): Unit =
-    if (Target.isPermissible(input)) backend = Some(input)
-    else buildError("Unknown target '" + input + "'")
+    if (Target.isPermissible(input))
+      backend = Some(input)
+    else
+      buildError("Unknown target '" + input + "'")
 
   /** Sets the `force` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `force`. */
@@ -391,8 +404,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Sets the logging level attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `logging`. */
   def setLogging(input: String) {
-    if (LoggingLevel.isPermissible(input)) logging = Some(input)
-    else buildError("Logging level '" + input + "' does not exist.")
+    if (LoggingLevel.isPermissible(input))
+      logging = Some(input)
+    else
+      buildError("Logging level '" + input + "' does not exist.")
   }
 
   /** Sets the `logphase` attribute. Used by [[http://ant.apache.org Ant]].
@@ -401,7 +416,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     logPhase = input.split(",").toList.flatMap { s: String =>
       val st = s.trim()
       if (CompilerPhase.isPermissible(st))
-        (if (input != "") List(st) else Nil)
+        (if (input != "")
+           List(st)
+         else
+           Nil)
       else {
         buildError("Phase " + st + " in log does not exist.")
       }
@@ -509,8 +527,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     *  Scala-friendly form.
     *  @return The destination as a file. */
   protected def getDestination: File =
-    if (destination.isEmpty) buildError("Member 'destination' is empty.")
-    else existing(getProject resolveFile destination.get.toString)
+    if (destination.isEmpty)
+      buildError("Member 'destination' is empty.")
+    else
+      existing(getProject resolveFile destination.get.toString)
 
   /** Gets the value of the `sourcepath` attribute in a
     *  Scala-friendly form.
@@ -590,10 +610,12 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       log("Base directory is `%s`".format(SPath("").normalize))
 
     // Tests if all mandatory attributes are set and valid.
-    if (origin.isEmpty) buildError("Attribute 'srcdir' is not set.")
+    if (origin.isEmpty)
+      buildError("Attribute 'srcdir' is not set.")
     if (!destination.isEmpty && !destination.get.isDirectory())
       buildError("Attribute 'destdir' does not refer to an existing directory.")
-    if (destination.isEmpty) destination = Some(getOrigin.head)
+    if (destination.isEmpty)
+      destination = Some(getOrigin.head)
 
     val mapper = new GlobPatternMapper()
     mapper setTo "*.class"
@@ -606,7 +628,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val javaFiles = includedFiles filter (_ endsWith ".java")
       val scalaFiles = {
         val xs = includedFiles filter (_ endsWith ".scala")
-        if (force) xs
+        if (force)
+          xs
         else
           new SourceFileScanner(this)
             .restrict(xs, originDir, destination.get, mapper)
@@ -631,7 +654,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
               scalaFiles.length,
               javaFiles.length)
         log("Compiling %s to %s".format(str, getDestination.toString))
-      } else log("No files selected for compilation", Project.MSG_VERBOSE)
+      } else
+        log("No files selected for compilation", Project.MSG_VERBOSE)
 
       list
     }
@@ -659,31 +683,45 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       settings.sourcepath.value = origin.get.list()(0)
     if (!bootclasspath.isEmpty)
       settings.bootclasspath.value = asString(getBootclasspath)
-    if (!extdirs.isEmpty) settings.extdirs.value = asString(getExtdirs)
+    if (!extdirs.isEmpty)
+      settings.extdirs.value = asString(getExtdirs)
     if (!dependencyfile.isEmpty)
       settings.dependencyfile.value = asString(dependencyfile.get)
-    if (!encoding.isEmpty) settings.encoding.value = encoding.get
-    if (!backend.isEmpty) settings.target.value = backend.get
+    if (!encoding.isEmpty)
+      settings.encoding.value = encoding.get
+    if (!backend.isEmpty)
+      settings.target.value = backend.get
     if (!logging.isEmpty && logging.get == "verbose")
       settings.verbose.value = true
     else if (!logging.isEmpty && logging.get == "debug") {
       settings.verbose.value = true
       settings.debug.value = true
     }
-    if (!logPhase.isEmpty) settings.log.value = logPhase
-    if (!debugInfo.isEmpty) settings.debuginfo.value = debugInfo.get
-    if (!explaintypes.isEmpty) settings.explaintypes.value = explaintypes.get
-    if (!deprecation.isEmpty) settings.deprecation.value = deprecation.get
-    if (!nobootcp.isEmpty) settings.nobootcp.value = nobootcp.get
-    if (!nowarn.isEmpty) settings.nowarn.value = nowarn.get
-    if (!optimise.isEmpty) settings.optimise.value = optimise.get
-    if (!unchecked.isEmpty) settings.unchecked.value = unchecked.get
-    if (!usejavacp.isEmpty) settings.usejavacp.value = usejavacp.get
+    if (!logPhase.isEmpty)
+      settings.log.value = logPhase
+    if (!debugInfo.isEmpty)
+      settings.debuginfo.value = debugInfo.get
+    if (!explaintypes.isEmpty)
+      settings.explaintypes.value = explaintypes.get
+    if (!deprecation.isEmpty)
+      settings.deprecation.value = deprecation.get
+    if (!nobootcp.isEmpty)
+      settings.nobootcp.value = nobootcp.get
+    if (!nowarn.isEmpty)
+      settings.nowarn.value = nowarn.get
+    if (!optimise.isEmpty)
+      settings.optimise.value = optimise.get
+    if (!unchecked.isEmpty)
+      settings.unchecked.value = unchecked.get
+    if (!usejavacp.isEmpty)
+      settings.usejavacp.value = usejavacp.get
 
     val jvmargs = scalacCompilerArgs.getArgs filter (_ startsWith "-J")
-    if (!jvmargs.isEmpty) settings.jvmargs.value = jvmargs.toList
+    if (!jvmargs.isEmpty)
+      settings.jvmargs.value = jvmargs.toList
     val defines = scalacCompilerArgs.getArgs filter (_ startsWith "-D")
-    if (!defines.isEmpty) settings.defines.value = defines.toList
+    if (!defines.isEmpty)
+      settings.defines.value = defines.toList
 
     log("Scalac params = '" + addParams + "'", Project.MSG_DEBUG)
 
@@ -709,8 +747,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     if (sourceFiles.isEmpty || javaOnly)
       return
 
-    if (fork) executeFork(settings, sourceFiles) // TODO - Error
-    else executeInternal(settings, sourceFiles)
+    if (fork)
+      executeFork(settings, sourceFiles) // TODO - Error
+    else
+      executeInternal(settings, sourceFiles)
   }
 
   protected def executeFork(settings: Settings, sourceFiles: List[File]) {
@@ -725,7 +765,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     // TODO - Allow user to override the compiler classpath
     val scalacPath: Path = {
       val path = new Path(getProject)
-      if (compilerPath.isDefined) path add compilerPath.get
+      if (compilerPath.isDefined)
+        path add compilerPath.get
       else
         getClass.getClassLoader match {
           case cl: AntClassLoader =>
@@ -743,7 +784,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     // Write all settings to a temporary file
     def writeSettings(): File = {
       def escapeArgument(arg: String) =
-        if (arg matches ".*\\s.*") '"' + arg + '"' else arg
+        if (arg matches ".*\\s.*")
+          '"' + arg + '"'
+        else
+          arg
       val file = File.createTempFile("scalac-ant-", ".args")
       file.deleteOnExit()
       val out = new PrintWriter(new BufferedWriter(new FileWriter(file)))
@@ -775,8 +819,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       case ex: Throwable =>
         ex.printStackTrace()
         val msg =
-          if (ex.getMessage == null) "no error message provided"
-          else ex.getMessage
+          if (ex.getMessage == null)
+            "no error message provided"
+          else
+            ex.getMessage
         buildError(
           "Compile failed because of an internal compiler error (" + msg + "); see the error output for details.")
     }
@@ -786,7 +832,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val msg =
         "Compile failed with %d error%s; see the compiler error output for details."
           .format(reporter.ERROR.count, plural(reporter.ERROR.count))
-      if (failonerror) buildError(msg) else log(msg)
+      if (failonerror)
+        buildError(msg)
+      else
+        log(msg)
     } else if (reporter.WARNING.count > 0)
       log(
         "Compile succeeded with %d warning%s; see the compiler output for details."

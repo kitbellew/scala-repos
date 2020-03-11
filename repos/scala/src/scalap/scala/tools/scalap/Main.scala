@@ -172,7 +172,8 @@ object Main extends Main {
 
   def main(args: Array[String]): Unit =
     // print usage information if there is no command-line argument
-    if (args.isEmpty) usage()
+    if (args.isEmpty)
+      usage()
     else {
       val arguments = parseArguments(args)
 

@@ -26,7 +26,8 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
       val start = i;
       var ch = s.charAt(i);
       i = i + 1;
-      if (isDelimiter(ch)) ch.toString()
+      if (isDelimiter(ch))
+        ch.toString()
       else {
         while (i < s.length() &&
                s.charAt(i) > ' ' &&
@@ -35,7 +36,8 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
         }
         s.substring(start, i)
       }
-    } else "";
+    } else
+      "";
 
 }
 
@@ -59,8 +61,12 @@ object Terms {
   type Subst = List[Binding];
 
   def lookup(s: Subst, name: String): Option[Term] = s match {
-    case List()  => None
-    case b :: s1 => if (name == b.name) Some(b.term) else lookup(s1, name)
+    case List() => None
+    case b :: s1 =>
+      if (name == b.name)
+        Some(b.term)
+      else
+        lookup(s1, name)
   }
 
   case class Var(a: String) extends Term {
@@ -74,7 +80,10 @@ object Terms {
 
   case class Con(a: String, ts: List[Term]) extends Term {
     override def toString() =
-      a + (if (ts.isEmpty) "" else ts.mkString("(", ",", ")"));
+      a + (if (ts.isEmpty)
+             ""
+           else
+             ts.mkString("(", ",", ")"));
     def map(s: Subst): Term = Con(a, ts map (t => t map s));
     def tyvars = (ts flatMap (t => t.tyvars)).distinct;
   }
@@ -93,12 +102,20 @@ object Terms {
     case (Var(a), _) =>
       lookup(s, a) match {
         case Some(x1) => unify(x1, y, s)
-        case None     => if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
+        case None =>
+          if (y.tyvars contains a)
+            None
+          else
+            Some(Binding(a, y) :: s)
       }
     case (_, Var(b)) =>
       lookup(s, b) match {
         case Some(y1) => unify(x, y1, s)
-        case None     => if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
+        case None =>
+          if (x.tyvars contains b)
+            None
+          else
+            Some(Binding(b, x) :: s)
       }
     case (Con(a, xs), Con(b, ys)) if (a == b) =>
       unify(xs, ys, s)
@@ -107,7 +124,8 @@ object Terms {
 
   def unify(x: Term, y: Term, s: Subst): Option[Subst] = {
     val ss = unify1(x, y, s);
-    if (debug) Console.println("unify " + x + " with " + y + " = " + ss);
+    if (debug)
+      Console.println("unify " + x + " with " + y + " = " + ss);
     ss
   }
 
@@ -156,22 +174,27 @@ object Programs {
       case List() =>
         Stream.cons(s, Stream.empty)
       case Con("not", qs) :: query1 =>
-        if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
-        else Stream.empty
+        if (solve1(qs, s).isEmpty)
+          Stream.cons(s, Stream.empty)
+        else
+          Stream.empty
       case q :: query1 =>
         for (clause <- list2stream(clauses);
              s1 <- tryClause(clause.newInstance, q, s);
-             s2 <- solve1(query1, s1)) yield s2
+             s2 <- solve1(query1, s1))
+          yield s2
     }
 
     def solve1(query: List[Term], s: Subst): Stream[Subst] = {
       val ss = solve2(query, s);
-      if (debug) Console.println("solved " + query + " = " + ss);
+      if (debug)
+        Console.println("solved " + query + " = " + ss);
       ss
     }
 
     def tryClause(c: Clause, q: Term, s: Subst): Stream[Subst] = {
-      if (debug) Console.println("trying " + c);
+      if (debug)
+        Console.println("trying " + c);
       for (s1 <- option2stream(unify(q, c.lhs, s));
            s2 <- solve1(c.rhs, s1))
         yield s2;
@@ -196,7 +219,8 @@ class Parser(s: String) {
     if (token == ",") {
       token = it.next;
       t :: rep(p)
-    } else List(t)
+    } else
+      List(t)
   }
 
   def constructor: Term = {
@@ -206,10 +230,18 @@ class Parser(s: String) {
       a,
       if (token equals "(") {
         token = it.next;
-        val ts: List[Term] = if (token equals ")") List() else rep(term);
-        if (token equals ")") token = it.next else syntaxError("`)' expected");
+        val ts: List[Term] =
+          if (token equals ")")
+            List()
+          else
+            rep(term);
+        if (token equals ")")
+          token = it.next
+        else
+          syntaxError("`)' expected");
         ts
-      } else List()
+      } else
+        List()
     )
   }
 
@@ -222,7 +254,8 @@ class Parser(s: String) {
     } else if (it.isDelimiter(ch)) {
       syntaxError("term expected");
       null
-    } else constructor
+    } else
+      constructor
   }
 
   def line: Clause = {
@@ -236,13 +269,21 @@ class Parser(s: String) {
           if (token equals ":-") {
             token = it.next;
             rep(constructor)
-          } else List())
+          } else
+            List())
       }
-    if (token equals ".") token = it.next else syntaxError("`.' expected");
+    if (token equals ".")
+      token = it.next
+    else
+      syntaxError("`.' expected");
     result
   }
 
-  def all: List[Clause] = if (token equals "") List() else line :: all;
+  def all: List[Clause] =
+    if (token equals "")
+      List()
+    else
+      line :: all;
 }
 
 object Prolog {
@@ -268,8 +309,10 @@ object Prolog {
               .filter(b => tvs contains b.name)
               .map(b => Binding(b.name, b.term map solutions.head))
               .reverse;
-            if (s.isEmpty) Console.println("yes")
-            else Console.println(s);
+            if (s.isEmpty)
+              Console.println("yes")
+            else
+              Console.println(s);
           }
         } else {
           program = program ::: List(c);

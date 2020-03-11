@@ -185,8 +185,10 @@ class ConnectionPoolSpec
 
       override def mapServerSideOutboundRawBytes(
           bytes: ByteString): ByteString =
-        if (bytes.utf8String.contains("/crash")) sys.error("CRASH BOOM BANG")
-        else bytes
+        if (bytes.utf8String.contains("/crash"))
+          sys.error("CRASH BOOM BANG")
+        else
+          bytes
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
@@ -213,7 +215,8 @@ class ConnectionPoolSpec
         if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
               .decrementAndGet() >= 0)
           sys.error("CRASH BOOM BANG")
-        else bytes
+        else
+          bytes
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
@@ -240,7 +243,8 @@ class ConnectionPoolSpec
         if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
               .decrementAndGet() >= 0)
           sys.error("CRASH BOOM BANG")
-        else bytes
+        else
+          bytes
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
@@ -397,8 +401,10 @@ class ConnectionPoolSpec
         Flow[ByteString].map(SessionBytes(null, _))
       )
       val sink =
-        if (autoAccept) Sink.foreach[Http.IncomingConnection](handleConnection)
-        else Sink.fromSubscriber(incomingConnections)
+        if (autoAccept)
+          Sink.foreach[Http.IncomingConnection](handleConnection)
+        else
+          Sink.fromSubscriber(incomingConnections)
       Tcp()
         .bind(
           serverEndpoint.getHostString,
@@ -412,7 +418,10 @@ class ConnectionPoolSpec
             layer atop rawBytesInjection join c.flow)
         }
         .runWith(sink)
-      if (autoAccept) null else incomingConnections.expectSubscription()
+      if (autoAccept)
+        null
+      else
+        incomingConnections.expectSubscription()
     }
 
     def acceptIncomingConnection(): Unit = {

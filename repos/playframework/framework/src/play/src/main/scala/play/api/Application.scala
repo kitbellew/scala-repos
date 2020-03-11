@@ -98,7 +98,8 @@ trait Application {
     "2.4.0")
   def routes: Router = {
     // Use a cached value because the injector might be slow
-    if (cachedRoutes != null) cachedRoutes
+    if (cachedRoutes != null)
+      cachedRoutes
     else {
       cachedRoutes = injector.instanceOf[Router]
       cachedRoutes

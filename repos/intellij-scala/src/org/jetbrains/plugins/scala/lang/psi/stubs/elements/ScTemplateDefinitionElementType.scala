@@ -40,7 +40,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     val fileName =
       if (file != null && file.getVirtualFile != null)
         file.getVirtualFile.getName
-      else null
+      else
+        null
     val signs = psi.functions.map(_.name).toArray
     val isPO = psi match {
       case td: ScTypeDefinition => td.isPackageObject
@@ -111,14 +112,16 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     dataStream.writeName(stub.sourceFileName)
     val methodNames = stub.methodNames
     dataStream.writeInt(methodNames.length)
-    for (name <- methodNames) dataStream.writeName(name)
+    for (name <- methodNames)
+      dataStream.writeName(name)
     dataStream.writeBoolean(stub.isDeprecated)
     dataStream.writeBoolean(stub.isImplicitObject)
     dataStream.writeBoolean(stub.isImplicitClass)
     dataStream.writeName(stub.javaName)
     val additionalNames = stub.additionalJavaNames
     dataStream.writeInt(additionalNames.length)
-    for (name <- additionalNames) dataStream.writeName(name)
+    for (name <- additionalNames)
+      dataStream.writeName(name)
     dataStream.writeBoolean(stub.isLocal)
     dataStream.writeBoolean(stub.isVisibleInJava)
   }
@@ -134,7 +137,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     val fileName = dataStream.readName
     val length = dataStream.readInt
     val methodNames = new Array[StringRef](length)
-    for (i <- 0 until length) methodNames(i) = dataStream.readName
+    for (i <- 0 until length)
+      methodNames(i) = dataStream.readName
     val parent = parentStub.asInstanceOf[StubElement[PsiElement]]
     val isDepr = dataStream.readBoolean
     val isImplcitObject = dataStream.readBoolean
@@ -142,7 +146,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     val javaName = dataStream.readName()
     val lengthA = dataStream.readInt()
     val additionalNames = new Array[StringRef](lengthA)
-    for (i <- 0 until lengthA) additionalNames(i) = dataStream.readName()
+    for (i <- 0 until lengthA)
+      additionalNames(i) = dataStream.readName()
     val isLocal = dataStream.readBoolean()
     val visibleInJava = dataStream.readBoolean()
     new ScTemplateDefinitionStubImpl(
@@ -165,7 +170,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
   }
 
   def indexStub(stub: ScTemplateDefinitionStub, sink: IndexSink) {
-    if (stub.isScriptFileClass) return
+    if (stub.isScriptFileClass)
+      return
     val name = stub.getName
     if (name != null) {
       sink.occurrence(ScalaIndexKeys.SHORT_NAME_KEY, name)
@@ -187,8 +193,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
         javaFqn.hashCode)
       val i = javaFqn.lastIndexOf(".")
       val pack =
-        if (i == -1) ""
-        else javaFqn.substring(0, i)
+        if (i == -1)
+          ""
+        else
+          javaFqn.substring(0, i)
       sink.occurrence(ScalaIndexKeys.JAVA_CLASS_NAME_IN_PACKAGE_KEY, pack)
     }
     val fqn = stub.qualName
@@ -198,8 +206,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
         fqn.hashCode)
       val i = fqn.lastIndexOf(".")
       val pack =
-        if (i == -1) ""
-        else fqn.substring(0, i)
+        if (i == -1)
+          ""
+        else
+          fqn.substring(0, i)
       sink.occurrence(ScalaIndexKeys.CLASS_NAME_IN_PACKAGE_KEY, pack)
       if (stub.isImplicitObject) {
         sink.occurrence(ScalaIndexKeys.IMPLICIT_OBJECT_KEY, pack)
@@ -212,8 +222,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       val packageName = fqn.stripSuffix(".`package`")
       val shortName = {
         val index = packageName.lastIndexOf('.')
-        if (index < 0) packageName
-        else packageName.substring(index + 1, packageName.size)
+        if (index < 0)
+          packageName
+        else
+          packageName.substring(index + 1, packageName.size)
       }
       sink.occurrence[PsiClass, java.lang.Integer](
         ScalaIndexKeys.PACKAGE_OBJECT_KEY,

@@ -29,8 +29,10 @@ object Macros {
       upper: BigInt): Either[String, BigInt] =
     try {
       val n = BigInt(s)
-      if (n < lower || n > upper) Left("illegal constant: %s" format s)
-      else Right(n)
+      if (n < lower || n > upper)
+        Left("illegal constant: %s" format s)
+      else
+        Right(n)
     } catch {
       case _: Exception => Left("illegal constant: %s" format s)
     }
@@ -103,7 +105,8 @@ object Macros {
     import c.universe._
     val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
       c.prefix.tree
-    if (!s.matches(regex)) c.error(c.enclosingPosition, "invalid whole number")
+    if (!s.matches(regex))
+      c.error(c.enclosingPosition, "invalid whole number")
     s.replace(sep, "")
   }
 

@@ -32,7 +32,10 @@ private[evaluation] class BinaryLabelCounter(
   def +=(label: Double): BinaryLabelCounter = {
     // Though we assume 1.0 for positive and 0.0 for negative, the following check will handle
     // -1.0 for negative as well.
-    if (label > 0.5) numPositives += 1L else numNegatives += 1L
+    if (label > 0.5)
+      numPositives += 1L
+    else
+      numNegatives += 1L
     this
   }
 

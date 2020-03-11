@@ -24,14 +24,21 @@ trait AssetHelper { self: I18nHelper =>
     cssAt("vendor/" + name, staticDomain)
 
   def cssAt(path: String, staticDomain: Boolean = true) = Html {
-    val href = if (staticDomain) staticUrl(path) else routes.Assets.at(path)
+    val href =
+      if (staticDomain)
+        staticUrl(path)
+      else
+        routes.Assets.at(path)
     s"""<link href="$href?v=$assetVersion" type="text/css" rel="stylesheet"/>"""
   }
 
   def jsTag(name: String) = jsAt("javascripts/" + name)
 
   def jsTagCompiled(name: String) =
-    if (isProd) jsAt("compiled/" + name) else jsTag(name)
+    if (isProd)
+      jsAt("compiled/" + name)
+    else
+      jsTag(name)
 
   val jQueryTag = cdnOrLocal(
     cdn = "//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js",

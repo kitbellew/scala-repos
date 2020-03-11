@@ -13,14 +13,16 @@ class VoicesContentExtractor extends ContentExtractor {
   override def getTitle(article: Article): String = {
     try {
       val titleElem = article.doc.getElementsByTag("title")
-      if (titleElem == null || titleElem.isEmpty) return string.empty
+      if (titleElem == null || titleElem.isEmpty)
+        return string.empty
 
       titleElem.first().text() match {
         case mt if (string.isNullOrEmpty(mt)) => string.empty
         case titleText => {
           val pieces = DASH_SPLITTER.split(titleText)
           val titlePiece = pieces(0)
-          if (string.isNullOrEmpty(titlePiece)) return string.empty
+          if (string.isNullOrEmpty(titlePiece))
+            return string.empty
           TITLE_REPLACEMENTS.replaceAll(titlePiece)
         }
       }

@@ -357,10 +357,12 @@ trait ActorRefFactory {
     */
   def actorSelection(path: String): ActorSelection = path match {
     case RelativeActorPath(elems) ⇒
-      if (elems.isEmpty) ActorSelection(provider.deadLetters, "")
+      if (elems.isEmpty)
+        ActorSelection(provider.deadLetters, "")
       else if (elems.head.isEmpty)
         ActorSelection(provider.rootGuardian, elems.tail)
-      else ActorSelection(lookupRoot, elems)
+      else
+        ActorSelection(lookupRoot, elems)
     case ActorPathExtractor(address, elems) ⇒
       ActorSelection(provider.rootGuardianAt(address), elems)
     case _ ⇒
@@ -666,8 +668,10 @@ private[akka] class LocalActorRefProvider private[akka] (
     }
 
   override def rootGuardianAt(address: Address): ActorRef =
-    if (address == rootPath.address) rootGuardian
-    else deadLetters
+    if (address == rootPath.address)
+      rootGuardian
+    else
+      deadLetters
 
   override lazy val guardian: LocalActorRef = {
     val cell = rootGuardian.underlying
@@ -739,8 +743,10 @@ private[akka] class LocalActorRefProvider private[akka] (
           "look-up of empty path string [{}] fails (per definition)",
           path)
         deadLetters
-      } else if (elems.head.isEmpty) actorFor(rootGuardian, elems.tail)
-      else actorFor(ref, elems)
+      } else if (elems.head.isEmpty)
+        actorFor(rootGuardian, elems.tail)
+      else
+        actorFor(ref, elems)
     case ActorPathExtractor(address, elems) if address == rootPath.address ⇒
       actorFor(rootGuardian, elems)
     case _ ⇒
@@ -750,7 +756,8 @@ private[akka] class LocalActorRefProvider private[akka] (
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
   private[akka] override def actorFor(path: ActorPath): InternalActorRef =
-    if (path.root == rootPath) actorFor(rootGuardian, path.elements)
+    if (path.root == rootPath)
+      actorFor(rootGuardian, path.elements)
     else {
       log.debug("look-up of foreign ActorPath [{}] failed", path)
       deadLetters
@@ -780,7 +787,8 @@ private[akka] class LocalActorRefProvider private[akka] (
   }
 
   def resolveActorRef(path: ActorPath): ActorRef = {
-    if (path.root == rootPath) resolveActorRef(rootGuardian, path.elements)
+    if (path.root == rootPath)
+      resolveActorRef(rootGuardian, path.elements)
     else {
       log.debug("resolve of foreign ActorPath [{}] failed", path)
       deadLetters
@@ -831,7 +839,10 @@ private[akka] class LocalActorRefProvider private[akka] (
 
         val props2 =
           // mailbox and dispatcher defined in deploy should override props
-          (if (lookupDeploy) deployer.lookup(path) else deploy) match {
+          (if (lookupDeploy)
+             deployer.lookup(path)
+           else
+             deploy) match {
             case Some(d) ⇒
               (d.dispatcher, d.mailbox) match {
                 case (Deploy.NoDispatcherGiven, Deploy.NoMailboxGiven) ⇒ props
@@ -875,7 +886,11 @@ private[akka] class LocalActorRefProvider private[akka] (
         }
 
       case router ⇒
-        val lookup = if (lookupDeploy) deployer.lookup(path) else None
+        val lookup =
+          if (lookupDeploy)
+            deployer.lookup(path)
+          else
+            None
         val r = router :: deploy.map(_.routerConfig).toList ::: lookup
           .map(_.routerConfig)
           .toList reduce ((a, b) ⇒ b withFallback a)
@@ -925,7 +940,10 @@ private[akka] class LocalActorRefProvider private[akka] (
   }
 
   def getExternalAddressFor(addr: Address): Option[Address] =
-    if (addr == rootPath.address) Some(addr) else None
+    if (addr == rootPath.address)
+      Some(addr)
+    else
+      None
 
   def getDefaultAddress: Address = rootPath.address
 }

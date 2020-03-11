@@ -51,7 +51,10 @@ object TranslateTransition extends AnimationStatics {
     */
   implicit def sfxTranslateTransition2jfx(
       v: TranslateTransition): jfxa.TranslateTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

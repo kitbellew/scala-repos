@@ -46,8 +46,10 @@ object DecompilerUtil {
         .getOpenProjects
         .find(!_.isDisposed)
         .orNull
-      if (testProject != null) Array(testProject)
-      else Array.empty
+      if (testProject != null)
+        Array(testProject)
+      else
+        Array.empty
     } else {
       manager.getOpenProjects.filter(!_.isDisposed)
     }
@@ -56,8 +58,10 @@ object DecompilerUtil {
   def obtainProject: Project = {
     val manager = ProjectManager.getInstance
     val projects = openedNotDisposedProjects
-    if (projects.length == 0) manager.getDefaultProject
-    else projects(0)
+    if (projects.length == 0)
+      manager.getDefaultProject
+    else
+      projects(0)
   }
 
   // Underlying VFS implementation may not support attributes (e.g. Upsource's file system).
@@ -73,15 +77,21 @@ object DecompilerUtil {
   def decompile(
       file: VirtualFile,
       bytes: => Array[Byte]): DecompilationResult = {
-    if (!file.isInstanceOf[VirtualFileWithId]) return DecompilationResult.empty
+    if (!file.isInstanceOf[VirtualFileWithId])
+      return DecompilationResult.empty
     val timeStamp = file.getTimeStamp
     var data = file.getUserData(SCALA_DECOMPILER_KEY)
-    var res: DecompilationResult = if (data == null) null else data.get()
+    var res: DecompilationResult =
+      if (data == null)
+        null
+      else
+        data.get()
     if (res == null || res.timeStamp != timeStamp) {
       val readAttribute =
         if (attributesSupported)
           SCALA_DECOMPILER_FILE_ATTRIBUTE.readAttribute(file)
-        else null
+        else
+          null
       def updateAttributeAndData() {
         val decompilationResult = decompileInner(file, bytes)
         if (attributesSupported) {
@@ -103,7 +113,8 @@ object DecompilerUtil {
           val isScala = readAttribute.readBoolean()
           val sourceName = readAttribute.readUTF()
           val attributeTimeStamp = readAttribute.readLong()
-          if (attributeTimeStamp != timeStamp) updateAttributeAndData()
+          if (attributeTimeStamp != timeStamp)
+            updateAttributeAndData()
           else
             res =
               new DecompilationResult(isScala, sourceName, attributeTimeStamp) {
@@ -114,7 +125,8 @@ object DecompilerUtil {
         } catch {
           case e: IOException => updateAttributeAndData()
         }
-      } else updateAttributeAndData()
+      } else
+        updateAttributeAndData()
       data = new SoftReference[DecompilationResult](res)
       file.putUserData(SCALA_DECOMPILER_KEY, data)
     }

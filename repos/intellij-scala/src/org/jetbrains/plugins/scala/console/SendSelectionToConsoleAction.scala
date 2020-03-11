@@ -71,10 +71,12 @@ class SendSelectionToConsoleAction extends AnAction {
     val editor = CommonDataKeys.EDITOR.getData(context)
     val project = CommonDataKeys.PROJECT.getData(context)
 
-    if (editor == null || project == null) return
+    if (editor == null || project == null)
+      return
     val selectedText = editor.getSelectionModel.getSelectedText
     val console = ScalaConsoleInfo.getConsole(project)
-    if (console != null) sendSelection(console, selectedText)
+    if (console != null)
+      sendSelection(console, selectedText)
   }
 
   def sendSelection(console: ScalaLanguageConsole, text: String) {

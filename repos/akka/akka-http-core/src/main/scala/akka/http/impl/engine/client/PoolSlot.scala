@@ -270,7 +270,8 @@ private object PoolSlot {
       }
       inflightRequests = immutable.Queue.empty
       onNext(SlotEvent.Disconnected(slotIx, results.size) :: results)
-      if (canceled) onComplete()
+      if (canceled)
+        onComplete()
 
       context.become(unconnected)
     }

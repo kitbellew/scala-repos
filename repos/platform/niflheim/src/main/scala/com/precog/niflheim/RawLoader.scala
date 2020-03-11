@@ -94,7 +94,8 @@ private[niflheim] object RawLoader {
         ok = false
       }
     }
-    if (!ok) recover1(id, f, rows, events)
+    if (!ok)
+      recover1(id, f, rows, events)
     (rows, events.map(_._1), ok)
   }
 

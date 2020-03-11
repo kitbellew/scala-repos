@@ -357,8 +357,10 @@ case class ShapedValue[T, U](
     extends Rep[U] {
   def encodeRef(path: Node): ShapedValue[T, U] = {
     val fv = shape.encodeRef(value, path).asInstanceOf[T]
-    if (fv.asInstanceOf[AnyRef] eq value.asInstanceOf[AnyRef]) this
-    else new ShapedValue(fv, shape)
+    if (fv.asInstanceOf[AnyRef] eq value.asInstanceOf[AnyRef])
+      this
+    else
+      new ShapedValue(fv, shape)
   }
   def toNode = shape.toNode(value)
   def packedValue[R](

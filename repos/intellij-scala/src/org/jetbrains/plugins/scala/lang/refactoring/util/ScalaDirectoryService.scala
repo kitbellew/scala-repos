@@ -33,7 +33,8 @@ object ScalaDirectoryService {
     val template =
       if (ApplicationManager.getApplication.isUnitTestMode)
         templateForUnitTest(templateName, name)
-      else FileTemplateManager.getInstance.getInternalTemplate(templateName)
+      else
+        FileTemplateManager.getInstance.getInternalTemplate(templateName)
     val defaultProperties = FileTemplateManager.getInstance.getDefaultProperties
     val properties = new Properties(defaultProperties)
     properties.setProperty(FileTemplate.ATTRIBUTE_NAME, name)

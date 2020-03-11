@@ -52,7 +52,8 @@ class LocalActorRefProviderSpec
           case "lookup" ⇒
             if (childName == child.path.name)
               sender() ! context.actorFor(childName)
-            else sender() ! s"$childName is not ${child.path.name}!"
+            else
+              sender() ! s"$childName is not ${child.path.name}!"
         }
       }))
       a.tell("lookup", testActor)

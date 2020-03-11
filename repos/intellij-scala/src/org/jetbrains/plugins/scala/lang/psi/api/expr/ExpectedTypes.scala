@@ -202,9 +202,9 @@ private[expr] object ExpectedTypes {
                 ) /* See SCL-3512, SCL-3525, SCL-4809, SCL-6785 */ =>
             ref.bind() match {
               case Some(
-                  ScalaResolveResult(
-                    named: PsiNamedElement,
-                    subst: ScSubstitutor)) =>
+                    ScalaResolveResult(
+                      named: PsiNamedElement,
+                      subst: ScSubstitutor)) =>
                 ScalaPsiUtil.nameContext(named) match {
                   case v: ScValue =>
                     Array(
@@ -261,7 +261,11 @@ private[expr] object ExpectedTypes {
         val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
         val exprs: Seq[ScExpression] = tuple.exprs
         val actExpr = expr.getDeepSameElementInContext
-        val i = if (actExpr == null) 0 else exprs.indexWhere(_ == actExpr)
+        val i =
+          if (actExpr == null)
+            0
+          else
+            exprs.indexWhere(_ == actExpr)
         val callExpression =
           tuple.getContext.asInstanceOf[ScInfixExpr].operation
         if (callExpression != null) {
@@ -269,7 +273,8 @@ private[expr] object ExpectedTypes {
             case ref: ScReferenceExpression =>
               if (!withResolvedFunction)
                 mapResolves(ref.shapeResolve, ref.shapeMultiType)
-              else mapResolves(ref.multiResolve(false), ref.multiType)
+              else
+                mapResolves(ref.multiResolve(false), ref.multiType)
             case _ =>
               Array(
                 (callExpression.getNonValueType(TypingContext.empty), false))
@@ -312,7 +317,8 @@ private[expr] object ExpectedTypes {
         var tps =
           if (!withResolvedFunction)
             mapResolves(op.shapeResolve, op.shapeMultiType)
-          else mapResolves(op.multiResolve(false), op.multiType)
+          else
+            mapResolves(op.multiResolve(false), op.multiType)
         tps = tps.map {
           case (tp, isDynamicNamed) =>
             (infix.updateAccordingToExpectedType(tp), isDynamicNamed)
@@ -365,7 +371,8 @@ private[expr] object ExpectedTypes {
       case ret: ScReturnStmt =>
         val fun: ScFunction =
           PsiTreeUtil.getContextOfType(ret, true, classOf[ScFunction])
-        if (fun == null) return Array.empty
+        if (fun == null)
+          return Array.empty
         fun.returnTypeElement match {
           case Some(rte: ScTypeElement) =>
             fun.returnType match {
@@ -378,14 +385,19 @@ private[expr] object ExpectedTypes {
         val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
         val exprs: Seq[ScExpression] = args.exprs
         val actExpr = expr.getDeepSameElementInContext
-        val i = if (actExpr == null) 0 else exprs.indexWhere(_ == actExpr)
+        val i =
+          if (actExpr == null)
+            0
+          else
+            exprs.indexWhere(_ == actExpr)
         val callExpression = args.callExpression
         if (callExpression != null) {
           var tps: Array[(TypeResult[ScType], Boolean)] = callExpression match {
             case ref: ScReferenceExpression =>
               if (!withResolvedFunction)
                 mapResolves(ref.shapeResolve, ref.shapeMultiType)
-              else mapResolves(ref.multiResolve(false), ref.multiType)
+              else
+                mapResolves(ref.multiResolve(false), ref.multiType)
             case gen: ScGenericCall =>
               if (!withResolvedFunction) {
                 val multiType = gen.shapeMultiType
@@ -428,8 +440,10 @@ private[expr] object ExpectedTypes {
             case constr: ScConstructor =>
               val j = constr.arguments.indexOf(args)
               val tps =
-                if (!withResolvedFunction) constr.shapeMultiType(j)
-                else constr.multiType(j)
+                if (!withResolvedFunction)
+                  constr.shapeMultiType(j)
+                else
+                  constr.multiType(j)
               tps.foreach(processArgsExpected(res, expr, i, _, exprs))
             case s: ScSelfInvocation =>
               val j = s.arguments.indexOf(args)
@@ -477,7 +491,8 @@ private[expr] object ExpectedTypes {
         }
       }
       res.toArray
-    } else result
+    } else
+      result
   }
 
   private def processArgsExpected(
@@ -495,8 +510,10 @@ private[expr] object ExpectedTypes {
           (
             params.last.paramType,
             params.last.paramInCode.flatMap(_.typeElement))
-        else if (i >= params.length) (Nothing, None)
-        else (params(i).paramType, params(i).paramInCode.flatMap(_.typeElement))
+        else if (i >= params.length)
+          (Nothing, None)
+        else
+          (params(i).paramType, params(i).paramInCode.flatMap(_.typeElement))
       expr match {
         case assign: ScAssignStmt =>
           if (isDynamicNamed) {
@@ -554,10 +571,11 @@ private[expr] object ExpectedTypes {
               })
             case _ =>
           }
-        } else applyForParams(params)
+        } else
+          applyForParams(params)
       case Success(
-          t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
-          _) =>
+            t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
+            _) =>
         val subst = t.abstractTypeSubstitutor
         val newParams =
           params.map(p => p.copy(paramType = subst.subst(p.paramType)))
@@ -570,7 +588,8 @@ private[expr] object ExpectedTypes {
               })
             case _ =>
           }
-        } else applyForParams(newParams)
+        } else
+          applyForParams(newParams)
       case Success(t @ ScTypePolymorphicType(anotherType, typeParams), _)
           if !forApply =>
         val cand = call
@@ -584,7 +603,8 @@ private[expr] object ExpectedTypes {
               def update(tp: ScType): ScType = {
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)
-                else tp
+                else
+                  tp
               }
               var polyType: TypeResult[ScType] = Success(
                 s.subst(fun.polymorphicType()) match {
@@ -620,7 +640,8 @@ private[expr] object ExpectedTypes {
               def update(tp: ScType): ScType = {
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)
-                else tp
+                else
+                  tp
               }
               var polyType: TypeResult[ScType] =
                 Success(update(subst.subst(fun.polymorphicType())), Some(expr))

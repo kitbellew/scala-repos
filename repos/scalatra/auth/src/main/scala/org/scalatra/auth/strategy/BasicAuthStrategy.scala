@@ -16,7 +16,11 @@ trait RemoteAddress { self: ScentryStrategy[_] =>
 
   protected def remoteAddress(implicit request: HttpServletRequest) = {
     val proxied = request.getHeader("X-FORWARDED-FOR")
-    val res = if (proxied.nonBlank) proxied else request.getRemoteAddr
+    val res =
+      if (proxied.nonBlank)
+        proxied
+      else
+        request.getRemoteAddr
     res
   }
 }
@@ -80,7 +84,10 @@ object BasicAuthStrategy {
           (null.asInstanceOf[(String, String)] /: new String(
             Base64.decode(p),
             Codec.UTF8.charSet).split(":", 2)) { (t, l) =>
-            if (t == null) (l, null) else (t._1, l)
+            if (t == null)
+              (l, null)
+            else
+              (t._1, l)
           }
         }
       _credentials

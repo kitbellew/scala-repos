@@ -26,7 +26,8 @@ class Figure(
   def subplot(i: Int) = selectPlot(i)
 
   def clearPlot(i: Int) {
-    if (i < plots.length) plots(i) = None
+    if (i < plots.length)
+      plots(i) = None
     refresh()
   }
 
@@ -152,7 +153,8 @@ class Figure(
         case None => {}
       }
       px = (px + 1) % cols
-      if (px == 0) py = (py + 1) % rows
+      if (px == 0)
+        py = (py + 1) % rows
     }
   }
 

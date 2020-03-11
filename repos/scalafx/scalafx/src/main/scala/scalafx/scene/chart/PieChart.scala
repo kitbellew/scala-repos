@@ -43,11 +43,17 @@ import scalafx.delegate.SFXDelegate
 
 object PieChart {
   implicit def sfxPieChart2jfx(v: PieChart): jfxsc.PieChart =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object Data {
     implicit def sfxPieChartData2jfx(v: PieChart.Data): jfxsc.PieChart.Data =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
 
     def apply(name: String, value: Double) =
       new jfxsc.PieChart.Data(name, value)

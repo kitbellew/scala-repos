@@ -108,15 +108,18 @@ object Opt {
     def --? = parsed isSet opt
     def -->(body: => Unit) = {
       val isSet = parsed isSet opt;
-      if (isSet) body;
+      if (isSet)
+        body;
       isSet
     }
     def --| = parsed get opt
     def --^[T: FromString] = {
       val fs = implicitly[FromString[T]]
       --| map { arg =>
-        if (fs isDefinedAt arg) fs(arg)
-        else failOption(arg, "not a " + fs.targetString)
+        if (fs isDefinedAt arg)
+          fs(arg)
+        else
+          failOption(arg, "not a " + fs.targetString)
       }
     }
 
@@ -126,8 +129,10 @@ object Opt {
 
     def choiceOf[T: FromString](choices: T*) = {
       --^[T] map { arg =>
-        if (choices contains arg) arg
-        else failOption(arg.toString, "not a valid choice from " + choices)
+        if (choices contains arg)
+          arg
+        else
+          failOption(arg.toString, "not a valid choice from " + choices)
       }
     }
 

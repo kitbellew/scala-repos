@@ -54,7 +54,8 @@ class ScImportSelectorStubImpl[ParentPsi <: PsiElement](
         return myReference.get
     }
     val res =
-      if (referenceText == StringRef.fromString("")) null
+      if (referenceText == StringRef.fromString(""))
+        null
       else
         ScalaPsiElementFactory.createReferenceFromText(
           StringRef.toString(referenceText),

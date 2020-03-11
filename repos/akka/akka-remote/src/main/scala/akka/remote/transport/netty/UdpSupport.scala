@@ -120,7 +120,8 @@ private[remote] class UdpAssociationHandle(
     if (channel.isWritable && channel.isOpen) {
       channel.write(ChannelBuffers.wrappedBuffer(payload.asByteBuffer))
       true
-    } else false
+    } else
+      false
   }
 
   override def disassociate(): Unit =

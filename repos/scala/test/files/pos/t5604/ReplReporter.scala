@@ -21,12 +21,16 @@ class ReplReporter(intp: IMain)
       if (intp.totalSilence) {
         if (isReplTrace)
           super.printMessage("[silent] " + msg)
-      } else super.printMessage(msg)
-    } else Console.println("[init] " + msg)
+      } else
+        super.printMessage(msg)
+    } else
+      Console.println("[init] " + msg)
   }
 
   override def displayPrompt() {
-    if (intp.totalSilence) ()
-    else super.displayPrompt()
+    if (intp.totalSilence)
+      ()
+    else
+      super.displayPrompt()
   }
 }

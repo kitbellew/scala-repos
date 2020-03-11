@@ -262,11 +262,11 @@ class TraceTest
           val currentId = Trace.id
           assert(currentId match {
             case TraceId(
-                Some(_traceId),
-                Some(_parentId),
-                _,
-                Some(_sampled),
-                Flags(0))
+                  Some(_traceId),
+                  Some(_parentId),
+                  _,
+                  Some(_sampled),
+                  Flags(0))
                 if (_traceId == parentId.traceId) && (_parentId == parentId.spanId) &&
                   (_sampled == parentId.sampled.get) =>
               true

@@ -95,7 +95,8 @@ private[akka] class FileSubscriber(
       // close the channel/file before completing the promise, allowing the
       // file to be deleted, which would not work (on some systems) if the
       // file is still open for writing
-      if (chan ne null) chan.close()
+      if (chan ne null)
+        chan.close()
       completionPromise.trySuccess(result)
     } catch {
       case ex: Exception ⇒

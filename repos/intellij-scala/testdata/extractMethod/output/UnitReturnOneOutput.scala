@@ -1,7 +1,8 @@
 class UnitReturnOneOutput {
   def foo(i: Int) {
     /*start*/
-    if (true) return
+    if (true)
+      return
     val x = 0
     println(i)
     /*end*/

@@ -85,9 +85,18 @@ object BundleBuilder {
             }
 
           def points(i: EntryInfo): Int = {
-            (if (i.lang == lang) 4 else 0) +
-              (if (i.country == country) 2 else 0) +
-              (if (i.default) 1 else 0)
+            (if (i.lang == lang)
+               4
+             else
+               0) +
+              (if (i.country == country)
+                 2
+               else
+                 0) +
+              (if (i.default)
+                 1
+               else
+                 0)
           }
 
           def choose(lst: List[(EntryInfo, NodeSeq)]): NodeSeq =
@@ -99,8 +108,10 @@ object BundleBuilder {
                   a
                 } else if (bp > ap) {
                   b
-                } else if (a._1.default) a
-                else b
+                } else if (a._1.default)
+                  a
+                else
+                  b
               }
             }._2
 

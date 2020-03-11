@@ -157,12 +157,18 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     }
     "define a 'flatMap' method transforming its value in another Box. If the value is transformed in a Full can, the total result is a Full can" in {
       Full(1) flatMap { x: Int =>
-        if (x > 0) Full("full") else Empty
+        if (x > 0)
+          Full("full")
+        else
+          Empty
       } must_== Full("full")
     }
     "define a 'flatMap' method transforming its value in another Box. If the value is transformed in an Empty can, the total result is an Empty can" in {
       Full(0) flatMap { x: Int =>
-        if (x > 0) Full("full") else Empty
+        if (x > 0)
+          Full("full")
+        else
+          Empty
       } must beEmpty
     }
     "define an 'elements' method returning an iterator containing its value" in {

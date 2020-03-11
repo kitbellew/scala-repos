@@ -72,7 +72,8 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
     else {
       if (next.isEmpty) {
         next = that
-        if (that.nonEmpty) that.prev = repr
+        if (that.nonEmpty)
+          that.prev = repr
       } else {
         next.append(that)
       }
@@ -82,7 +83,8 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
   // cannot be called on empty lists
   override def insert(that: This): Unit = {
     super.insert(that)
-    if (that.nonEmpty) that.prev = repr
+    if (that.nonEmpty)
+      that.prev = repr
   }
 
   /** Removes the current node from the double linked list.
@@ -100,18 +102,21 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
     "2.9.0")
   def remove(): Unit = if (nonEmpty) {
     next.prev = prev
-    if (prev ne null) prev.next = next // because this could be the first node
+    if (prev ne null)
+      prev.next = next // because this could be the first node
   }
 
   private def atLocation[T](n: Int)(f: This => T)(onOutOfBounds: => T) =
-    if (isEmpty) onOutOfBounds
+    if (isEmpty)
+      onOutOfBounds
     else {
       var loc = repr
       var left = n
       while (left > 0) {
         loc = loc.next
         left -= 1
-        if (loc.isEmpty) onOutOfBounds
+        if (loc.isEmpty)
+          onOutOfBounds
       }
       f(loc)
     }

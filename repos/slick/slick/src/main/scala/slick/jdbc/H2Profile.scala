@@ -108,7 +108,10 @@ trait H2Profile extends JdbcProfile {
       val size =
         sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
       size.fold("VARCHAR")(l =>
-        if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
+        if (l.varying)
+          s"VARCHAR(${l.length})"
+        else
+          s"CHAR(${l.length})")
     case _ => super.defaultSqlTypeName(tmd, sym)
   }
 

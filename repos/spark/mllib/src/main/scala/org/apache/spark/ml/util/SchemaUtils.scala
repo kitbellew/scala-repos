@@ -37,7 +37,11 @@ private[spark] object SchemaUtils {
       dataType: DataType,
       msg: String = ""): Unit = {
     val actualDataType = schema(colName).dataType
-    val message = if (msg != null && msg.trim.length > 0) " " + msg else ""
+    val message =
+      if (msg != null && msg.trim.length > 0)
+        " " + msg
+      else
+        ""
     require(
       actualDataType.equals(dataType),
       s"Column $colName must be of type $dataType but was actually $actualDataType.$message")
@@ -54,7 +58,11 @@ private[spark] object SchemaUtils {
       dataTypes: Seq[DataType],
       msg: String = ""): Unit = {
     val actualDataType = schema(colName).dataType
-    val message = if (msg != null && msg.trim.length > 0) " " + msg else ""
+    val message =
+      if (msg != null && msg.trim.length > 0)
+        " " + msg
+      else
+        ""
     require(
       dataTypes.exists(actualDataType.equals),
       s"Column $colName must be of type equal to one of the following types: " +
@@ -75,7 +83,8 @@ private[spark] object SchemaUtils {
       colName: String,
       dataType: DataType,
       nullable: Boolean = false): StructType = {
-    if (colName.isEmpty) return schema
+    if (colName.isEmpty)
+      return schema
     appendColumn(schema, StructField(colName, dataType, nullable))
   }
 

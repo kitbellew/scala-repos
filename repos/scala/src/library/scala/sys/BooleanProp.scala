@@ -46,7 +46,11 @@ object BooleanProp {
       }
     def enable() = this setValue true
     def disable() = this.clear()
-    def toggle() = if (value) disable() else enable()
+    def toggle() =
+      if (value)
+        disable()
+      else
+        enable()
   }
   private[sys] class ConstantImpl(val key: String, val value: Boolean)
       extends BooleanProp {
@@ -55,7 +59,11 @@ object BooleanProp {
     def setValue[T1 >: Boolean](newValue: T1): Boolean = value
     def get: String = "" + value
     val clear, enable, disable, toggle = ()
-    def option = if (isSet) Some(value) else None
+    def option =
+      if (isSet)
+        Some(value)
+      else
+        None
     //def or[T1 >: Boolean](alt: => T1): T1 = if (value) true else alt
 
     protected def zero = false

@@ -46,7 +46,10 @@ import scalafx.scene.transform.Affine
 object GraphicsContext {
   implicit def sfxGraphicsContext2jfx(
       gc: GraphicsContext): jfxsc.GraphicsContext =
-    if (gc != null) gc.delegate else null
+    if (gc != null)
+      gc.delegate
+    else
+      null
 }
 
 /**

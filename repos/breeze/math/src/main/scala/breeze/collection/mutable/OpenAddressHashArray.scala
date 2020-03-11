@@ -90,9 +90,12 @@ final class OpenAddressHashArray[
   def allVisitableIndicesActive = false
 
   final def apply(i: Int) = {
-    if (i < 0 || i >= size) throw new IndexOutOfBoundsException()
-    if (index.length == 0) default.value
-    else data(locate(i))
+    if (i < 0 || i >= size)
+      throw new IndexOutOfBoundsException()
+    if (index.length == 0)
+      default.value
+    else
+      data(locate(i))
   }
 
   final def update(i: Int, v: V) {
@@ -119,7 +122,8 @@ final class OpenAddressHashArray[
   private def locate(i: Int) = {
     if (i >= size)
       throw new IndexOutOfBoundsException(i + " greater than size of " + size)
-    if (i < 0) throw new IndexOutOfBoundsException(i + " less than 0")
+    if (i < 0)
+      throw new IndexOutOfBoundsException(i + " less than 0")
     val index = this.index
     val len = index.length
     var hash = hashCodeFor(i) & (len - 1)
@@ -220,8 +224,10 @@ object OpenAddressHashArray {
   }
 
   private def calculateSize(size: Int): Int = {
-    if (size < 4) 4
-    else nextPowerOfTwo(size - 1)
+    if (size < 4)
+      4
+    else
+      nextPowerOfTwo(size - 1)
   }
 
   private def nextPowerOfTwo(size: Int): Int = {

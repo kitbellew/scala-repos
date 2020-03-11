@@ -88,5 +88,6 @@ case class Last(child: Expression, ignoreNullsExpr: Expression)
   override lazy val evaluateExpression: AttributeReference = last
 
   override def toString: String =
-    s"last($child)${if (ignoreNulls) " ignore nulls"}"
+    s"last($child)${if (ignoreNulls)
+      " ignore nulls"}"
 }

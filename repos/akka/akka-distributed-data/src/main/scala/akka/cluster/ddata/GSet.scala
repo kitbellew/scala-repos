@@ -60,8 +60,10 @@ final case class GSet[A](elements: Set[A])
   def add(element: A): GSet[A] = assignAncestor(copy(elements + element))
 
   override def merge(that: GSet[A]): GSet[A] =
-    if ((this eq that) || that.isAncestorOf(this)) this.clearAncestor()
-    else if (this.isAncestorOf(that)) that.clearAncestor()
+    if ((this eq that) || that.isAncestorOf(this))
+      this.clearAncestor()
+    else if (this.isAncestorOf(that))
+      that.clearAncestor()
     else {
       clearAncestor()
       copy(elements union that.elements)

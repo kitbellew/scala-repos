@@ -62,8 +62,10 @@ trait Definitions extends api.StandardDefinitions {
     val msym = owner.newMethod(name.encode, NoPosition, flags)
     val params = msym.newSyntheticValueParams(formals)
     val info =
-      if (owner.isJavaDefined) JavaMethodType(params, restpe)
-      else MethodType(params, restpe)
+      if (owner.isJavaDefined)
+        JavaMethodType(params, restpe)
+      else
+        MethodType(params, restpe)
     msym setInfo info markAllCompleted
   }
   private def enterNewMethod(
@@ -302,7 +304,8 @@ trait Definitions extends api.StandardDefinitions {
 
     private def fixupAsAnyTrait(tpe: Type): Type = tpe match {
       case ClassInfoType(parents, decls, clazz) =>
-        if (parents.head.typeSymbol == AnyClass) tpe
+        if (parents.head.typeSymbol == AnyClass)
+          tpe
         else {
           assert(parents.head.typeSymbol == ObjectClass, parents)
           ClassInfoType(AnyTpe :: parents.tail, decls, clazz)
@@ -515,7 +518,8 @@ trait Definitions extends api.StandardDefinitions {
         elementExtract(JavaRepeatedParamClass, tp) orElse tp
       else if (isScalaRepeatedParamType(tp))
         elementExtract(RepeatedParamClass, tp) orElse tp
-      else tp
+      else
+        tp
     )
     def repeatedToSingle(tp: Type): Type =
       elementExtract(RepeatedParamClass, tp) orElse elementExtract(
@@ -671,7 +675,8 @@ trait Definitions extends api.StandardDefinitions {
     ) // defined in scala-reflect.jar, so we need to be careful
 
     private def Context_210 =
-      if (settings.isScala211) NoSymbol
+      if (settings.isScala211)
+        NoSymbol
       else
         getClassIfDefined(
           "scala.reflect.macros.Context"
@@ -707,18 +712,23 @@ trait Definitions extends api.StandardDefinitions {
     lazy val QuasiquoteClass =
       if (ApiUniverseClass != NoSymbol)
         getMemberIfDefined(ApiUniverseClass, tpnme.Quasiquote)
-      else NoSymbol
+      else
+        NoSymbol
     lazy val QuasiquoteClass_api =
-      if (QuasiquoteClass != NoSymbol) getMember(QuasiquoteClass, tpnme.api)
-      else NoSymbol
+      if (QuasiquoteClass != NoSymbol)
+        getMember(QuasiquoteClass, tpnme.api)
+      else
+        NoSymbol
     lazy val QuasiquoteClass_api_apply =
       if (QuasiquoteClass_api != NoSymbol)
         getMember(QuasiquoteClass_api, nme.apply)
-      else NoSymbol
+      else
+        NoSymbol
     lazy val QuasiquoteClass_api_unapply =
       if (QuasiquoteClass_api != NoSymbol)
         getMember(QuasiquoteClass_api, nme.unapply)
-      else NoSymbol
+      else
+        NoSymbol
 
     lazy val ScalaSignatureAnnotation =
       requiredClass[scala.reflect.ScalaSignature]
@@ -761,11 +771,17 @@ trait Definitions extends api.StandardDefinitions {
       val seq: IndexedSeq[ClassSymbol] = (init ++: countFrom.to(maxArity).map {
         i => getRequiredClass("scala." + name + i)
       }).toVector
-      def apply(i: Int) = if (isDefinedAt(i)) seq(i - offset) else NoSymbol
+      def apply(i: Int) =
+        if (isDefinedAt(i))
+          seq(i - offset)
+        else
+          NoSymbol
       def specificType(args: List[Type], others: Type*): Type = {
         val arity = args.length
-        if (!isDefinedAt(arity)) NoType
-        else appliedType(apply(arity), args ++ others: _*)
+        if (!isDefinedAt(arity))
+          NoType
+        else
+          appliedType(apply(arity), args ++ others: _*)
       }
     }
     // would be created synthetically for the default args. We call all objects in this method from the generated code
@@ -805,7 +821,8 @@ trait Definitions extends api.StandardDefinitions {
       case _ =>
         if ((elemtp <:< AnyRefTpe) && !isPhantomClass(elemtp.typeSymbol))
           nme.wrapRefArray
-        else nme.genericWrapArray
+        else
+          nme.genericWrapArray
     }
 
     def isTupleSymbol(sym: Symbol) =
@@ -821,7 +838,8 @@ trait Definitions extends api.StandardDefinitions {
         val genericName = nme.unspecializedName(sym.name)
         val member = sym.owner.info.decl(genericName.toTypeName)
         member
-      } else sym
+      } else
+        sym
     }
     def unspecializedTypeArgs(tp: Type): List[Type] =
       (tp baseType unspecializedSymbol(tp.typeSymbolDirect)).typeArgs
@@ -856,7 +874,10 @@ trait Definitions extends api.StandardDefinitions {
           val isContextCompatible =
             sym.isNonBottomSubClass(BlackboxContextClass) || sym
               .isNonBottomSubClass(WhiteboxContextClass)
-          if (isContextCompatible) c.info else NoType
+          if (isContextCompatible)
+            c.info
+          else
+            NoType
         case _ =>
           NoType
       }
@@ -1052,7 +1073,10 @@ trait Definitions extends api.StandardDefinitions {
       * has a public no-arg primary constructor.
       */
     def samOf(tp: Type): Symbol =
-      if (!settings.Xexperimental) NoSymbol else findSam(tp)
+      if (!settings.Xexperimental)
+        NoSymbol
+      else
+        findSam(tp)
 
     def findSam(tp: Type): Symbol = {
       // if tp has a constructor, it must be public and must not take any arguments
@@ -1087,8 +1111,10 @@ trait Definitions extends api.StandardDefinitions {
             deferredMembers.head.typeParams.isEmpty &&
             deferredMembers.head.info.paramSectionCount == 1)
           deferredMembers.head
-        else NoSymbol
-      } else NoSymbol
+        else
+          NoSymbol
+      } else
+        NoSymbol
     }
 
     def arrayType(arg: Type) = appliedType(ArrayClass, arg)
@@ -1114,8 +1140,10 @@ trait Definitions extends api.StandardDefinitions {
       typeArgOfBaseTypeOr(tp, SeqClass)(
         resultOfMatchingMethod(tp, nme.drop)(IntTpe))
     def typesOfSelectors(tp: Type) =
-      if (isTupleType(tp)) tupleComponents(tp)
-      else getterMemberTypes(tp, productSelectors(tp))
+      if (isTupleType(tp))
+        tupleComponents(tp)
+      else
+        getterMemberTypes(tp, productSelectors(tp))
 
     // SI-8128 Still using the type argument of the base type at Seq/Option if this is an old-style (2.10 compatible)
     //         extractor to limit exposure to regressions like the reported problem with existentials.
@@ -1146,7 +1174,10 @@ trait Definitions extends api.StandardDefinitions {
       }
       // Since ErrorType always returns a symbol from a call to member, we
       // had better not start looking for _1, _2, etc. expecting it to run out.
-      if (tpe.isErroneous) Nil else loop(1)
+      if (tpe.isErroneous)
+        Nil
+      else
+        loop(1)
     }
 
     /** If `tp` has a term member `name`, the first parameter list of which
@@ -1169,7 +1200,10 @@ trait Definitions extends api.StandardDefinitions {
     }
 
     def ClassType(arg: Type) =
-      if (phase.erasedTypes) ClassClass.tpe else appliedType(ClassClass, arg)
+      if (phase.erasedTypes)
+        ClassClass.tpe
+      else
+        appliedType(ClassClass, arg)
 
     /** Can we tell by inspecting the symbol that it will never
       *  at any phase have type parameters?
@@ -1271,16 +1305,21 @@ trait Definitions extends api.StandardDefinitions {
     def getClassReturnType(tp: Type): Type = {
       val sym = tp.typeSymbol
 
-      if (phase.erasedTypes) ClassClass.tpe
-      else if (isPrimitiveValueClass(sym)) ClassType(tp.widen)
+      if (phase.erasedTypes)
+        ClassClass.tpe
+      else if (isPrimitiveValueClass(sym))
+        ClassType(tp.widen)
       else {
         val eparams =
           typeParamsToExistentials(ClassClass, ClassClass.typeParams)
         val upperBound =
           (
-            if (isPhantomClass(sym)) AnyTpe
-            else if (sym.isLocalClass) erasure.intersectionDominator(tp.parents)
-            else tp.widen
+            if (isPhantomClass(sym))
+              AnyTpe
+            else if (sym.isLocalClass)
+              erasure.intersectionDominator(tp.parents)
+            else
+              tp.widen
           )
 
         existentialAbstraction(
@@ -1535,12 +1574,16 @@ trait Definitions extends api.StandardDefinitions {
 
     def findNamedMember(fullName: Name, root: Symbol): Symbol = {
       val segs = nme.segments(fullName.toString, fullName.isTermName)
-      if (segs.isEmpty || segs.head != root.simpleName) NoSymbol
-      else findNamedMember(segs.tail, root)
+      if (segs.isEmpty || segs.head != root.simpleName)
+        NoSymbol
+      else
+        findNamedMember(segs.tail, root)
     }
     def findNamedMember(segs: List[Name], root: Symbol): Symbol =
-      if (segs.isEmpty) root
-      else findNamedMember(segs.tail, root.info member segs.head)
+      if (segs.isEmpty)
+        root
+      else
+        findNamedMember(segs.tail, root.info member segs.head)
 
     def getMember(owner: Symbol, name: Name): Symbol = {
       getMemberIfDefined(owner, name) orElse {
@@ -1548,7 +1591,8 @@ trait Definitions extends api.StandardDefinitions {
           val pkg = owner.owner
           val flatname = tpnme.flattenedName(owner.name, name)
           getMember(pkg, flatname)
-        } else fatalMissingSymbol(owner, name)
+        } else
+          fatalMissingSymbol(owner, name)
       }
     }
     def getMemberValue(owner: Symbol, name: Name): TermSymbol = {
@@ -1731,8 +1775,10 @@ trait Definitions extends api.StandardDefinitions {
       *  value class.  Otherwise, NoSymbol.
       */
     def unboxedValueClass(sym: Symbol): Symbol =
-      if (isPrimitiveValueClass(sym)) sym
-      else if (sym == BoxedUnitClass) UnitClass
+      if (isPrimitiveValueClass(sym))
+        sym
+      else if (sym == BoxedUnitClass)
+        UnitClass
       else
         boxedClass.map(kvp => (kvp._2: Symbol, kvp._1)).getOrElse(sym, NoSymbol)
 
@@ -1752,7 +1798,8 @@ trait Definitions extends api.StandardDefinitions {
       def flatNameString(sym: Symbol, separator: Char): String =
         if (sym == NoSymbol)
           "" // be more resistant to error conditions, e.g. neg/t3222.scala
-        else if (sym.isTopLevel) sym.javaClassName
+        else if (sym.isTopLevel)
+          sym.javaClassName
         else
           flatNameString(
             sym.owner,
@@ -1762,16 +1809,20 @@ trait Definitions extends api.StandardDefinitions {
           "[" + signature1(erasure(etp.dealiasWiden.typeArgs.head))
         else if (isPrimitiveValueClass(etp.typeSymbol))
           abbrvTag(etp.typeSymbol).toString()
-        else "L" + flatNameString(etp.typeSymbol, '/') + ";"
+        else
+          "L" + flatNameString(etp.typeSymbol, '/') + ";"
       }
       val etp = erasure(tp)
-      if (etp.typeSymbol == ArrayClass) signature1(etp)
-      else flatNameString(etp.typeSymbol, '.')
+      if (etp.typeSymbol == ArrayClass)
+        signature1(etp)
+      else
+        flatNameString(etp.typeSymbol, '.')
     }
 
     // documented in JavaUniverse.init
     def init() {
-      if (isInitialized) return
+      if (isInitialized)
+        return
       ObjectClass.initialize
       ScalaPackageClass.initialize
       symbolsNotPresentInBytecode
@@ -1846,8 +1897,10 @@ trait Definitions extends api.StandardDefinitions {
       def isListApply(sym: Symbol) =
         sym.isInitialized && ListModule.hasCompleteInfo && sym == List_apply
       def isPredefClassOf(sym: Symbol) =
-        if (PredefModule.hasCompleteInfo) sym == Predef_classOf
-        else isPredefMemberNamed(sym, nme.classOf)
+        if (PredefModule.hasCompleteInfo)
+          sym == Predef_classOf
+        else
+          isPredefMemberNamed(sym, nme.classOf)
 
       lazy val TagMaterializers = Map[Symbol, Symbol](
         ClassTagClass -> materializeClassTag,

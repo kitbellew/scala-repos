@@ -25,7 +25,8 @@ class ScModifiersElementType(debugName: String)
   def serialize(stub: ScModifiersStub, dataStream: StubOutputStream) {
     dataStream.writeBoolean(stub.hasExplicitModifiers)
     dataStream.writeInt(stub.getModifiers.length)
-    for (modifier <- stub.getModifiers) dataStream.writeName(modifier)
+    for (modifier <- stub.getModifiers)
+      dataStream.writeName(modifier)
   }
 
   def createPsi(stub: ScModifiersStub): ScModifierList = {
@@ -39,7 +40,10 @@ class ScModifiersElementType(debugName: String)
     new ScModifiersStubImpl(
       parentStub,
       this,
-      if (modifiers.isEmpty) ArrayUtil.EMPTY_STRING_ARRAY else modifiers,
+      if (modifiers.isEmpty)
+        ArrayUtil.EMPTY_STRING_ARRAY
+      else
+        modifiers,
       psi.hasExplicitModifiers)
   }
 
@@ -49,10 +53,12 @@ class ScModifiersElementType(debugName: String)
     val explicitModifiers = dataStream.readBoolean()
     val num = dataStream.readInt
     val modifiers =
-      if (num == 0) ArrayUtil.EMPTY_STRING_ARRAY
+      if (num == 0)
+        ArrayUtil.EMPTY_STRING_ARRAY
       else {
         val mods = new Array[String](num)
-        for (i <- 0 until num) mods(i) = dataStream.readName.toString
+        for (i <- 0 until num)
+          mods(i) = dataStream.readName.toString
         mods
       }
     new ScModifiersStubImpl(

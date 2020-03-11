@@ -71,7 +71,11 @@ abstract class IngestProducer(args: Array[String])
   lazy val delay = config.getProperty("delay", "100").toInt
   lazy val threadCount = config.getProperty("threads", "1").toInt
   lazy val rawRepeats = config.getProperty("repeats", "1").toInt
-  lazy val repeats = if (rawRepeats < 1) Int.MaxValue - 2 else rawRepeats
+  lazy val repeats =
+    if (rawRepeats < 1)
+      Int.MaxValue - 2
+    else
+      rawRepeats
   lazy val verbose = config.getProperty("verbose", "true").toBoolean
 
   def run() {
@@ -154,12 +158,14 @@ abstract class IngestProducer(args: Array[String])
   }
 
   def loadConfig(args: Array[String]): Properties = {
-    if (args.length != 1) usage()
+    if (args.length != 1)
+      usage()
 
     val config = new Properties()
     val file = new File(args(0))
 
-    if (!file.exists) usage()
+    if (!file.exists)
+      usage()
 
     config.load(new FileReader(file))
     config

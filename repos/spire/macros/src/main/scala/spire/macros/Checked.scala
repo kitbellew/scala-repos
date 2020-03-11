@@ -115,7 +115,10 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
       val f = IntRewriter(transform _) orElse LongRewriter(transform _)
 
       override def transform(tree: Tree): Tree =
-        if (f.isDefinedAt(tree)) f(tree) else super.transform(tree)
+        if (f.isDefinedAt(tree))
+          f(tree)
+        else
+          super.transform(tree)
     }
   }
 
@@ -149,7 +152,8 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
       }
 
     def runWithX(rewrite: Tree => Tree, sub: Tree)(f: Tree => Tree): Tree =
-      if (isSimple(sub)) q"""{ ${f(sub)} }"""
+      if (isSimple(sub))
+        q"""{ ${f(sub)} }"""
       else {
         val x = freshTermName(c)("x$")
         q"""{ val $x = ${rewrite(sub)}; ${f(q"$x")} }"""

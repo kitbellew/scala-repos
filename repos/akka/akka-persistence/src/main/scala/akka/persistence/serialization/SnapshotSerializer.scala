@@ -38,8 +38,10 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
 
   private lazy val transportInformation: Option[Serialization.Information] = {
     val address = system.provider.getDefaultAddress
-    if (address.hasLocalScope) None
-    else Some(Serialization.Information(address, system))
+    if (address.hasLocalScope)
+      None
+    else
+      Some(Serialization.Information(address, system))
   }
 
   /**
@@ -111,13 +113,18 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     def patch(b: Array[Byte]): Array[Byte] = {
       import SnapshotSerializer._
       def find(pos: Int, offset: Int): Int = {
-        if (pos == b.length) -1
-        else if (offset == key.length) pos
-        else if (b(pos + offset) == key(offset)) find(pos, offset + 1)
-        else find(pos + 1, 0)
+        if (pos == b.length)
+          -1
+        else if (offset == key.length)
+          pos
+        else if (b(pos + offset) == key(offset))
+          find(pos, offset + 1)
+        else
+          find(pos + 1, 0)
       }
       val found = find(0, 0)
-      if (found == -1) b
+      if (found == -1)
+        b
       else {
         val n = new Array[Byte](b.length)
         val start = found + offset
@@ -135,16 +142,21 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     val oldHeader =
       if (readShort(in) == 0xedac) { // Java Serialization magic value with swapped bytes
         val b =
-          if (SnapshotSerializer.doPatch) patch(headerBytes) else headerBytes
+          if (SnapshotSerializer.doPatch)
+            patch(headerBytes)
+          else
+            headerBytes
         serialization.deserialize(b, classOf[SnapshotHeader]).toOption
-      } else None
+      } else
+        None
 
     val header = oldHeader.getOrElse {
       val headerIn = new ByteArrayInputStream(headerBytes)
       val serializerId = readInt(headerIn)
       val remaining = headerIn.available
       val manifest =
-        if (remaining == 0) None
+        if (remaining == 0)
+          None
         else {
           val manifestBytes = Array.ofDim[Byte](remaining)
           headerIn.read(manifestBytes)
@@ -223,7 +235,9 @@ object SnapshotSerializer {
         System.arraycopy(key, offset, replacement, 0, len)
         System.arraycopy(tmp, 0, key, offset, len)
         true
-      } else false
-    } else false
+      } else
+        false
+    } else
+      false
   }
 }

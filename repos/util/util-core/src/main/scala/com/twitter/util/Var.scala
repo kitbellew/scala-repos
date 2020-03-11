@@ -247,8 +247,10 @@ object Var {
     val vs = vars.toArray
 
     def tree(begin: Int, end: Int): Var[Seq[T]] =
-      if (begin == end) Var(Seq.empty)
-      else if (begin == end - 1) vs(begin).map(t => Seq(t))
+      if (begin == end)
+        Var(Seq.empty)
+      else if (begin == end - 1)
+        vs(begin).map(t => Seq(t))
       else {
         val n = (end - begin) / 2
 
@@ -367,7 +369,8 @@ private object UpdatableVar {
     // only from the same counter.
     def compare(a: Party[T], b: Party[T]): Int = {
       val c1 = a.depth compare b.depth
-      if (c1 != 0) return c1
+      if (c1 != 0)
+        return c1
       a.n compare b.n
     }
   }
@@ -388,7 +391,10 @@ private[util] class UpdatableVar[T](init: T)
   private[this] def cas(next: State[T] => State[T]): State[T] = {
     val from = state.get
     val to = next(from)
-    if (state.compareAndSet(from, to)) to else cas(next)
+    if (state.compareAndSet(from, to))
+      to
+    else
+      cas(next)
   }
 
   def apply(): T = state.get.value

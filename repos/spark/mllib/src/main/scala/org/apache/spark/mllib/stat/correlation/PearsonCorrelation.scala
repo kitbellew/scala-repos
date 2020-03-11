@@ -63,7 +63,11 @@ private[stat] object PearsonCorrelation extends Correlation with Logging {
     var i = 0
     while (i < n) {
       // TODO remove once covariance numerical issue resolved.
-      cov(i, i) = if (closeToZero(cov(i, i))) 0.0 else math.sqrt(cov(i, i))
+      cov(i, i) =
+        if (closeToZero(cov(i, i)))
+          0.0
+        else
+          math.sqrt(cov(i, i))
       i += 1
     }
 

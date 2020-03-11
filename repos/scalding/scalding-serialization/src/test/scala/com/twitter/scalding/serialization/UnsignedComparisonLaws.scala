@@ -29,7 +29,13 @@ object UnsignedComparisonLaws extends Properties("UnsignedComparisonLaws") {
     }
   }
   property("UnsignedByteCompare works") = forAll { (l1: Byte, l2: Byte) =>
-    def clamp(i: Int) = if (i > 0) 1 else if (i < 0) -1 else 0
+    def clamp(i: Int) =
+      if (i > 0)
+        1
+      else if (i < 0)
+        -1
+      else
+        0
     val cmp = clamp(UnsignedComparisons.unsignedByteCompare(l1, l2))
     (l1 >= 0, l2 >= 0) match {
       case (true, true)  => cmp == clamp(java.lang.Byte.compare(l1, l2))

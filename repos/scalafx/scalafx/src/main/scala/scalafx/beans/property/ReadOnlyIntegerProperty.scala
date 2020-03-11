@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyIntegerProperty {
   implicit def sfxReadOnlyIntegerProperty2jfx(
       roip: ReadOnlyIntegerProperty): jfxbp.ReadOnlyIntegerProperty =
-    if (roip != null) roip.delegate else null
+    if (roip != null)
+      roip.delegate
+    else
+      null
 }
 
 class ReadOnlyIntegerProperty(

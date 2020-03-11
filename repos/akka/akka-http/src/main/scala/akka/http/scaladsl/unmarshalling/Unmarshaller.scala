@@ -124,7 +124,8 @@ object Unmarshaller
               _ matches entity.contentType)) {
           underlying(entity).fast.recover[A](
             barkAtUnsupportedContentTypeException(ranges, entity.contentType))
-        } else FastFuture.failed(UnsupportedContentTypeException(ranges: _*))
+        } else
+          FastFuture.failed(UnsupportedContentTypeException(ranges: _*))
       }
 
     // TODO: move back into the [[EnhancedFromEntityUnmarshaller]] value class after the upgrade to Scala 2.11,

@@ -56,18 +56,26 @@ object Sorting {
   def quickSort[K: Ordering](a: Array[K]): Unit = {
     // Must have iN >= i0 or math will fail.  Also, i0 >= 0.
     def inner(a: Array[K], i0: Int, iN: Int, ord: Ordering[K]): Unit = {
-      if (iN - i0 < qsortThreshold) insertionSort(a, i0, iN, ord)
+      if (iN - i0 < qsortThreshold)
+        insertionSort(a, i0, iN, ord)
       else {
         val iK = (i0 + iN) >>> 1 // Unsigned div by 2
         // Find index of median of first, central, and last elements
         var pL =
           if (ord.compare(a(i0), a(iN - 1)) <= 0)
             if (ord.compare(a(i0), a(iK)) < 0)
-              if (ord.compare(a(iN - 1), a(iK)) < 0) iN - 1 else iK
-            else i0
-          else if (ord.compare(a(i0), a(iK)) < 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
-          else iK
+              if (ord.compare(a(iN - 1), a(iK)) < 0)
+                iN - 1
+              else
+                iK
+            else
+              i0
+          else if (ord.compare(a(i0), a(iK)) < 0)
+            i0
+          else if (ord.compare(a(iN - 1), a(iK)) <= 0)
+            iN - 1
+          else
+            iK
         val pivot = a(pL)
         // pL is the start of the pivot block; move it into the middle if needed
         if (pL != iK) {
@@ -153,7 +161,8 @@ object Sorting {
       iN: Int,
       ord: Ordering[T]): Unit = {
     val n = iN - i0
-    if (n < 2) return
+    if (n < 2)
+      return
     if (ord.compare(a(i0), a(i0 + 1)) > 0) {
       val temp = a(i0)
       a(i0) = a(i0 + 1)
@@ -168,10 +177,15 @@ object Sorting {
         var iB = i0 + m - 1
         while (iB - iA > 1) {
           val ix = (iA + iB) >>> 1 // Use bit shift to get unsigned div by 2
-          if (ord.compare(next, a(ix)) < 0) iB = ix
-          else iA = ix
+          if (ord.compare(next, a(ix)) < 0)
+            iB = ix
+          else
+            iA = ix
         }
-        val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
+        val ix = iA + (if (ord.compare(next, a(iA)) < 0)
+                         0
+                       else
+                         1)
         var i = i0 + m
         while (i > ix) {
           a(i) = a(i - 1)
@@ -190,11 +204,16 @@ object Sorting {
       iN: Int,
       ord: Ordering[T],
       scratch: Array[T] = null): Unit = {
-    if (iN - i0 < mergeThreshold) insertionSort(a, i0, iN, ord)
+    if (iN - i0 < mergeThreshold)
+      insertionSort(a, i0, iN, ord)
     else {
       val iK =
         (i0 + iN) >>> 1 // Bit shift equivalent to unsigned math, no overflow
-      val sc = if (scratch eq null) new Array[T](iK - i0) else scratch
+      val sc =
+        if (scratch eq null)
+          new Array[T](iK - i0)
+        else
+          scratch
       mergeSort(a, i0, iK, ord, sc)
       mergeSort(a, iK, iN, ord, sc)
       mergeSorted(a, i0, iK, iN, ord, sc)
@@ -245,7 +264,8 @@ object Sorting {
     var i = 0
     var n = 0
     while (i < a.length) {
-      if (!a(i)) n += 1
+      if (!a(i))
+        n += 1
       i += 1
     }
     i = 0
@@ -268,8 +288,10 @@ object Sorting {
         throw new NullPointerException("Ordering")
       java.util.Arrays.sort(a, ord)
     case a: Array[Int] =>
-      if (ord eq Ordering.Int) java.util.Arrays.sort(a)
-      else mergeSort[Int](a, 0, a.length, ord)
+      if (ord eq Ordering.Int)
+        java.util.Arrays.sort(a)
+      else
+        mergeSort[Int](a, 0, a.length, ord)
     case a: Array[Double] =>
       mergeSort[Double](
         a,
@@ -278,8 +300,10 @@ object Sorting {
         ord
       ) // Because not all NaNs are identical, stability is meaningful!
     case a: Array[Long] =>
-      if (ord eq Ordering.Long) java.util.Arrays.sort(a)
-      else mergeSort[Long](a, 0, a.length, ord)
+      if (ord eq Ordering.Long)
+        java.util.Arrays.sort(a)
+      else
+        mergeSort[Long](a, 0, a.length, ord)
     case a: Array[Float] =>
       mergeSort[Float](
         a,
@@ -288,17 +312,25 @@ object Sorting {
         ord
       ) // Because not all NaNs are identical, stability is meaningful!
     case a: Array[Char] =>
-      if (ord eq Ordering.Char) java.util.Arrays.sort(a)
-      else mergeSort[Char](a, 0, a.length, ord)
+      if (ord eq Ordering.Char)
+        java.util.Arrays.sort(a)
+      else
+        mergeSort[Char](a, 0, a.length, ord)
     case a: Array[Byte] =>
-      if (ord eq Ordering.Byte) java.util.Arrays.sort(a)
-      else mergeSort[Byte](a, 0, a.length, ord)
+      if (ord eq Ordering.Byte)
+        java.util.Arrays.sort(a)
+      else
+        mergeSort[Byte](a, 0, a.length, ord)
     case a: Array[Short] =>
-      if (ord eq Ordering.Short) java.util.Arrays.sort(a)
-      else mergeSort[Short](a, 0, a.length, ord)
+      if (ord eq Ordering.Short)
+        java.util.Arrays.sort(a)
+      else
+        mergeSort[Short](a, 0, a.length, ord)
     case a: Array[Boolean] =>
-      if (ord eq Ordering.Boolean) booleanSort(a)
-      else mergeSort[Boolean](a, 0, a.length, ord)
+      if (ord eq Ordering.Boolean)
+        booleanSort(a)
+      else
+        mergeSort[Boolean](a, 0, a.length, ord)
     // Array[Unit] is matched as an Array[AnyRef] due to covariance in runtime matching.  Not worth catching it as a special case.
     case null => throw new NullPointerException
   }

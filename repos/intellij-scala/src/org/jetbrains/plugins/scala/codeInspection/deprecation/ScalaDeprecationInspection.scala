@@ -63,10 +63,13 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
           doc match {
             case _: ScPrimaryConstructor         =>
             case f: PsiMethod if f.isConstructor =>
-            case _                               => if (!doc.isDeprecated) return
+            case _ =>
+              if (!doc.isDeprecated)
+                return
           }
           if (!doc.isDeprecated && !Option(doc.containingClass).exists(
-                _.isDeprecated)) return
+                _.isDeprecated))
+            return
         case _ => return
       }
       val message = for {
@@ -93,7 +96,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
       }
 
       override def visitReference(ref: ScReferenceElement) {
-        if (!ref.isValid) return
+        if (!ref.isValid)
+          return
         checkDeprecated(ref.bind(), ref.nameId, ref.refName)
       }
 

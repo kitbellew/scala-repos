@@ -38,7 +38,8 @@ object MutablizingAdaptor {
     if (vs.isInstanceOf[MutableVectorSpace[_, _]])
       IdentityWrapper[MutableVectorSpace, V, S](
         vs.asInstanceOf[MutableVectorSpace[V, S]])
-    else VectorSpaceAdaptor(vs)
+    else
+      VectorSpaceAdaptor(vs)
   }
 
   def ensureMutable[V, S](
@@ -50,7 +51,8 @@ object MutablizingAdaptor {
     if (vs.isInstanceOf[MutableInnerProductVectorSpace[_, _]])
       IdentityWrapper[MutableInnerProductVectorSpace, V, S](
         vs.asInstanceOf[MutableInnerProductVectorSpace[V, S]])
-    else InnerProductSpaceAdaptor(vs)
+    else
+      InnerProductSpaceAdaptor(vs)
   }
 
   def ensureMutable[V, S](vs: VectorField[V, S])(implicit
@@ -61,7 +63,8 @@ object MutablizingAdaptor {
     if (vs.isInstanceOf[MutableVectorField[_, _]])
       IdentityWrapper[MutableVectorField, V, S](
         vs.asInstanceOf[MutableVectorField[V, S]])
-    else VectorFieldAdaptor(vs)
+    else
+      VectorFieldAdaptor(vs)
   }
 
   def ensureMutable[V, S](vs: VectorRing[V, S])(implicit
@@ -72,7 +75,8 @@ object MutablizingAdaptor {
     if (vs.isInstanceOf[MutableVectorRing[_, _]])
       IdentityWrapper[MutableVectorRing, V, S](
         vs.asInstanceOf[MutableVectorRing[V, S]])
-    else VectorRingAdaptor(vs)
+    else
+      VectorRingAdaptor(vs)
   }
 
   def ensureMutable[V, S](vs: CoordinateField[V, S])(implicit
@@ -83,7 +87,8 @@ object MutablizingAdaptor {
     if (vs.isInstanceOf[MutableCoordinateField[_, _]])
       IdentityWrapper[MutableCoordinateField, V, S](
         vs.asInstanceOf[MutableCoordinateField[V, S]])
-    else CoordinateFieldAdaptor(vs)
+    else
+      CoordinateFieldAdaptor(vs)
   }
 
   trait Lambda2[Fun[_, _, _], Second] {

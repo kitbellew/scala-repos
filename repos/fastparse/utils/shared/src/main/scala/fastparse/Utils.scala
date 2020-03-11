@@ -53,7 +53,8 @@ object Utils {
         case c =>
           if (c < ' ' || (c > '~' && unicode))
             sb.append("\\u%04x" format c.toInt)
-          else sb.append(c)
+          else
+            sb.append(c)
       }
       i += 1
     }
@@ -83,10 +84,12 @@ object Utils {
     }
 
     def ints2Hex(ints: Array[Int]): String = {
-      val res = for (int <- ints) yield {
-        val s = Integer.toHexString(int)
-        "0" * (8 - s.length) + s
-      }
+      val res =
+        for (int <- ints)
+          yield {
+            val s = Integer.toHexString(int)
+            "0" * (8 - s.length) + s
+          }
       res.mkString
     }
     def compute(chars: Seq[Char]) = {
@@ -94,12 +97,14 @@ object Utils {
       val last = chars.max
       val span = last - first
       val array = new Array[Int](span / 32 + 1)
-      for (c <- chars) array((c - first) >> 5) |= 1 << ((c - first) & 31)
+      for (c <- chars)
+        array((c - first) >> 5) |= 1 << ((c - first) & 31)
       (first, last, array)
     }
     def apply(chars: Seq[Char]) = {
       val (first, last, array) = compute(chars)
-      for (c <- chars) array((c - first) >> 5) |= 1 << ((c - first) & 31)
+      for (c <- chars)
+        array((c - first) >> 5) |= 1 << ((c - first) & 31)
       new CharBitSet(array, first, last)
     }
   }
@@ -115,7 +120,8 @@ object Utils {
   final class CharBitSet(array: Array[Int], first: Int, last: Int)
       extends (Char => Boolean) {
     def apply(c: Char) = {
-      if (c > last || c < first) false
+      if (c > last || c < first)
+        false
       else {
         val offset = c - first
         (array(offset >> 5) & 1 << (offset & 31)) != 0
@@ -136,19 +142,23 @@ object Utils {
         .map {
           case (k, ss) => k -> new TrieNode(ss.map(_.tail))
         }
-      if (children.size == 0) (0.toChar, 0.toChar, new Array[TrieNode](0))
+      if (children.size == 0)
+        (0.toChar, 0.toChar, new Array[TrieNode](0))
       else {
         val min = children.keysIterator.min
         val max = children.keysIterator.max
         val arr = new Array[TrieNode](max - min + 1)
-        for ((k, v) <- children) arr(k - min) = v
+        for ((k, v) <- children)
+          arr(k - min) = v
         (min, max, arr)
       }
     }
     val word: Boolean = strings.exists(_.isEmpty) || arr.isEmpty
     def apply(c: Char): TrieNode = {
-      if (c > max || c < min) null
-      else arr(c - min)
+      if (c > max || c < min)
+        null
+      else
+        arr(c - min)
     }
 
     /**
@@ -159,17 +169,21 @@ object Utils {
           offset: Int,
           currentNode: TrieNode,
           currentRes: Int): Int = {
-        if (index + offset >= input.length) currentRes
+        if (index + offset >= input.length)
+          currentRes
         else {
           val char = input(index + offset)
           val next = currentNode(char)
-          if (next == null) currentRes
+          if (next == null)
+            currentRes
           else
             rec(
               offset + 1,
               next,
-              if (next.word) offset
-              else currentRes
+              if (next.word)
+                offset
+              else
+                currentRes
             )
         }
       }

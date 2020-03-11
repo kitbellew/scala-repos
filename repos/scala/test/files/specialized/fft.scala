@@ -116,8 +116,10 @@ object Test {
 
   def inputFileName = {
     val cwd = System.getProperty("partest.cwd")
-    if (cwd ne null) cwd + java.io.File.separator + "input2.txt"
-    else "input2.txt"
+    if (cwd ne null)
+      cwd + java.io.File.separator + "input2.txt"
+    else
+      "input2.txt"
   }
 
   def setUp {

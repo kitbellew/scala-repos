@@ -80,8 +80,10 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
     //just return the mapped pipe
     if (!getHashJoinAutoForceRight(mode) || isSafeToSkipForceToDisk(
           mappedPipe,
-          mode)) mappedPipe
-    else mappedPipe.forceToDisk
+          mode))
+      mappedPipe
+    else
+      mappedPipe.forceToDisk
   }
 
   /**
@@ -99,7 +101,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
           //need to recurse down to see if parent pipe is ok
           getPreviousPipe(eachPipe).exists(prevPipe =>
             isSafeToSkipForceToDisk(prevPipe, mode))
-        } else false
+        } else
+          false
       case _: Checkpoint        => true
       case _: GroupBy           => true
       case _: CoGroup           => true
@@ -146,7 +149,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
   private def getPreviousPipe(p: Pipe): Option[Pipe] = {
     if (p.getPrevious != null && p.getPrevious.length == 1)
       p.getPrevious.headOption
-    else None
+    else
+      None
   }
 
   /**

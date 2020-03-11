@@ -11,7 +11,8 @@ object Test extends BytecodeTest {
     // to Foo_1.flags
     for (methodNode <- classNode.methods.asScala) {
       val got = count(methodNode.instructions, asm.Opcodes.NOP)
-      if (got != 0) println(s"Found $got NOP(s) in ${methodNode.name}")
+      if (got != 0)
+        println(s"Found $got NOP(s) in ${methodNode.name}")
     }
   }
 

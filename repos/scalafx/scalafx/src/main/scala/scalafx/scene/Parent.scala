@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object Parent {
   implicit def sfxParent2jfx(v: Parent): jfxs.Parent =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

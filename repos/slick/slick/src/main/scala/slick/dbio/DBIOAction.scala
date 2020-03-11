@@ -124,8 +124,10 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   def withFilter(p: R => Boolean)(
       implicit executor: ExecutionContext): DBIOAction[R, NoStream, E] =
     flatMap(v =>
-      if (p(v)) SuccessAction(v)
-      else throw new NoSuchElementException("Action.withFilter failed"))
+      if (p(v))
+        SuccessAction(v)
+      else
+        throw new NoSuchElementException("Action.withFilter failed"))
 
   /** Transform the result of a successful execution of this action, if the given partial function is defined at that value,
     * otherwise, the result DBIOAction will fail with a `NoSuchElementException`.
@@ -191,15 +193,20 @@ object DBIOAction {
     val total = Vector.newBuilder[Vector[DBIOAction[R, NoStream, E]]]
     (in: TraversableOnce[Any]).foreach { a =>
       val msgState =
-        if (a.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) 1 else 2
+        if (a.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
+          1
+        else
+          2
       if (msgState != state) {
-        if (state != 0) total += current.result()
+        if (state != 0)
+          total += current.result()
         current = Vector.newBuilder
         state = msgState
       }
       current += a.asInstanceOf[DBIOAction[R, NoStream, E]]
     }
-    if (state != 0) total += current.result()
+    if (state != 0)
+      total += current.result()
     total.result()
   }
 
@@ -225,7 +232,8 @@ object DBIOAction {
           }
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
         }
-      } else SequenceAction[R, M[R], E](g)
+      } else
+        SequenceAction[R, M[R], E](g)
     }
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[Seq[R], NoStream, E] = {
@@ -248,7 +256,8 @@ object DBIOAction {
                 .run(context) :: Nil
             override def nonFusedEquivalentAction = g.head.map(_ :: Nil)
           }
-        } else g.head.map(_ :: Nil)
+        } else
+          g.head.map(_ :: Nil)
       } else {
         if (g.head.isInstanceOf[
               SynchronousDatabaseAction[
@@ -273,7 +282,8 @@ object DBIOAction {
             override def nonFusedEquivalentAction =
               SequenceAction[R, Seq[R], E](g)
           }
-        } else SequenceAction[R, Seq[R], E](g)
+        } else
+          SequenceAction[R, Seq[R], E](g)
       }
     }
     val grouped = groupBySynchronicity[R, E](
@@ -288,7 +298,8 @@ object DBIOAction {
             NoStream,
             E]) { (ar, g) =>
           for (r <- ar;
-               ge <- sequenceGroupAsSeq(g)) yield r ++= ge
+               ge <- sequenceGroupAsSeq(g))
+            yield r ++= ge
         } map (_.result)
     }
   }
@@ -301,12 +312,14 @@ object DBIOAction {
     def sequenceGroup(
         g: Vector[DBIOAction[Any, NoStream, E]],
         forceUnit: Boolean): DBIOAction[Any, NoStream, E] = {
-      if (g.length == 1 && !forceUnit) g.head
+      if (g.length == 1 && !forceUnit)
+        g.head
       else if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
         sequenceSync(g)
       else if (forceUnit)
         AndThenAction[Any, NoStream, E](g :+ DBIO.successful(()))
-      else AndThenAction[Any, NoStream, E](g)
+      else
+        AndThenAction[Any, NoStream, E](g)
     }
     def sequenceSync(g: Vector[DBIOAction[Any, NoStream, E]])
         : DBIOAction[Unit, NoStream, E] = {
@@ -321,7 +334,8 @@ object DBIOAction {
           AndThenAction[Unit, NoStream, E](g)
       }
     }
-    if (actions.isEmpty) DBIO.successful(())
+    if (actions.isEmpty)
+      DBIO.successful(())
     else {
       val grouped = groupBySynchronicity[Any, E](actions :+ DBIO.successful(()))
       grouped.length match {
@@ -383,7 +397,8 @@ object DBIOAction {
             case _ => r = null
           }
         }
-        if (err ne null) throw err
+        if (err ne null)
+          throw err
       } finally trampoline.set(null)
     }
 
@@ -745,10 +760,10 @@ object SynchronousDatabaseAction {
         }
 
       case CleanUpAction(
-          base: SynchronousDatabaseAction[_, _, _, _],
-          f,
-          keepFailure,
-          ec) if ec eq DBIO.sameThreadExecutionContext =>
+            base: SynchronousDatabaseAction[_, _, _, _],
+            f,
+            keepFailure,
+            ec) if ec eq DBIO.sameThreadExecutionContext =>
         new SynchronousDatabaseAction.Fused[R, S, BasicBackend, E] {
           def run(context: BasicBackend#Context): R = {
             val res =

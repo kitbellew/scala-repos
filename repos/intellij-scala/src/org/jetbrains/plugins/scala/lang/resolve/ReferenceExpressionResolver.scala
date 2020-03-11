@@ -53,7 +53,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         ContextInfo(None, () => section.expectedType(), isUnderscore = true)
       case inf: ScInfixExpr if ref == inf.operation =>
         ContextInfo(
-          if (ref.rightAssoc) Some(Seq(inf.lOp))
+          if (ref.rightAssoc)
+            Some(Seq(inf.lOp))
           else
             inf.rOp match {
               case tuple: ScTuple   => Some(tuple.exprs) // See SCL-2001
@@ -104,13 +105,16 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       reference: ResolvableReferenceExpression,
       incomplete: Boolean): Array[ResolveResult] = {
     val name =
-      if (reference.isUnaryOperator) "unary_" + reference.refName
-      else reference.refName
+      if (reference.isUnaryOperator)
+        "unary_" + reference.refName
+      else
+        reference.refName
 
     if (name == ScImplicitlyConvertible.IMPLICIT_REFERENCE_NAME) {
       val data =
         reference.getUserData(ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
-      if (data != null) return Array(data)
+      if (data != null)
+        return Array(data)
     }
 
     val info = getContextInfo(reference, reference)
@@ -137,7 +141,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           shapesOnly,
           enableTupling = true) {
           override def candidatesS: Set[ScalaResolveResult] = {
-            if (!smartProcessor) super.candidatesS
+            if (!smartProcessor)
+              super.candidatesS
             else {
               val iterator = reference.shapeResolve
                 .map(_.asInstanceOf[ScalaResolveResult])

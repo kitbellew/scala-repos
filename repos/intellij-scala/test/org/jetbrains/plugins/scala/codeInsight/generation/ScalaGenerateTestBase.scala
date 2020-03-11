@@ -45,8 +45,10 @@ abstract class ScalaGenerateTestBase
     myFixture.getEditor.getCaretModel.moveToOffset(caretIndex)
 
     val file: PsiFile = myFixture.getFile
-    val message =
-      s"Generate action is${if (assumedResult) " not" else ""} available"
+    val message = s"Generate action is${if (assumedResult)
+      " not"
+    else
+      ""} available"
     assert(
       handler.isValidFor(myFixture.getEditor, file) == assumedResult,
       message)

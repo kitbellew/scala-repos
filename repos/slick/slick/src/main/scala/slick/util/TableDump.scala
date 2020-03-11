@@ -8,7 +8,8 @@ class TableDump(maxColumnWidth: Int = 20) {
   protected[this] val box: IndexedSeq[String] =
     (if (GlobalConfig.unicodeDump)
        "\u2501\u250f\u2533\u2513\u2523\u254b\u252b\u2517\u253b\u251b\u2503"
-     else "-/+\\|+|\\+/|").map(_.toString)
+     else
+       "-/+\\|+|\\+/|").map(_.toString)
 
   protected[this] val dashes =
     Iterator.fill(maxColumnWidth + 2)(box(0)).mkString
@@ -16,9 +17,15 @@ class TableDump(maxColumnWidth: Int = 20) {
 
   protected[this] def formatLine(line: IndexedSeq[Any]): IndexedSeq[String] =
     line.map { v =>
-      val s = if (v == null) "NULL" else v.toString
-      if (s == null) "NULL"
-      else s.replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t")
+      val s =
+        if (v == null)
+          "NULL"
+        else
+          v.toString
+      if (s == null)
+        "NULL"
+      else
+        s.replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t")
     }
 
   def apply(
@@ -36,14 +43,21 @@ class TableDump(maxColumnWidth: Int = 20) {
     def pad(s: String, len: Int): String = {
       val slen = s.codePointCount(0, s.length)
       if (slen > maxColumnWidth) {
-        if (slen == s.length) s.substring(0, maxColumnWidth - 3)
-        else limitCodepoints(s, maxColumnWidth - 3)
+        if (slen == s.length)
+          s.substring(0, maxColumnWidth - 3)
+        else
+          limitCodepoints(s, maxColumnWidth - 3)
       } + cCyan + "..."
-      else s + spaces.substring(0, len - slen)
+      else
+        s + spaces.substring(0, len - slen)
     }
     for ((line, lno) <- texts.zipWithIndex) {
       if (lno < headers.length) {
-        val color = if (lno % 2 == 0) cYellow else cGreen
+        val color =
+          if (lno % 2 == 0)
+            cYellow
+          else
+            cGreen
         buf += (line, widths).zipped
           .map((s, len) => color + " " + pad(s, len) + " ")
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)

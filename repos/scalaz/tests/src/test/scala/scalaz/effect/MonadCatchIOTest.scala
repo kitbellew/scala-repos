@@ -29,7 +29,10 @@ object MonadCatchIOTest extends SpecLite {
 
   // Used by the catchSome* tests below
   def catch1(t: Throwable): Option[String] =
-    if (t == err1) Some(t.getMessage) else None
+    if (t == err1)
+      Some(t.getMessage)
+    else
+      None
 
   "MonadCatchIO.catchSome" should {
     val test = mkTest[Int, Int](

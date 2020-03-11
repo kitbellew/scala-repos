@@ -317,7 +317,11 @@ object DecisionTreeRegressionModel
         s" DecisionTreeRegressionModel (new API).  Algo is: ${oldModel.algo}"
     )
     val rootNode = Node.fromOld(oldModel.topNode, categoricalFeatures)
-    val uid = if (parent != null) parent.uid else Identifiable.randomUID("dtr")
+    val uid =
+      if (parent != null)
+        parent.uid
+      else
+        Identifiable.randomUID("dtr")
     new DecisionTreeRegressionModel(uid, rootNode, numFeatures)
   }
 }

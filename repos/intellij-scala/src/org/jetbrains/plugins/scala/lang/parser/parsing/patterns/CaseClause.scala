@@ -27,7 +27,8 @@ object CaseClause {
         caseClauseMarker.drop()
         return false
     }
-    if (!Pattern.parse(builder)) builder error ErrMsg("pattern.expected")
+    if (!Pattern.parse(builder))
+      builder error ErrMsg("pattern.expected")
     builder.getTokenType match {
       case ScalaTokenTypes.kIF =>
         Guard parse builder

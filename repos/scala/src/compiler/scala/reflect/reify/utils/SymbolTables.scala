@@ -88,7 +88,10 @@ trait SymbolTables {
         case SymDef(_, name, _, _)     => name
       }
       val newSymtab =
-        if (!(symtab contains sym)) symtab + (sym -> symDef) else symtab
+        if (!(symtab contains sym))
+          symtab + (sym -> symDef)
+        else
+          symtab
       val newAliases = aliases :+ (sym -> name)
       new SymbolTable(newSymtab, newAliases)
     }
@@ -133,7 +136,8 @@ trait SymbolTables {
             if (!(newAliases contains ((sym, primaryName)))) {
               val primaryName1 = newAliases.find(_._1 == sym).get._2
               ValDef(mods, primaryName1, tpt, rhs).copyAttrs(tree)
-            } else tree
+            } else
+              tree
           (sym, tree1)
       }
       new SymbolTable(newSymtab, newAliases)
@@ -152,13 +156,18 @@ trait SymbolTables {
         .mkString(", ")
       s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original.isDefined)
         ", has original"
-      else ""}"""
+      else
+        ""}"""
     }
 
     def debugString: String = {
       val buf = new StringBuilder
       buf
-        .append("symbol table = " + (if (syms.length == 0) "<empty>" else ""))
+        .append(
+          "symbol table = " + (if (syms.length == 0)
+                                 "<empty>"
+                               else
+                                 ""))
         .append(EOL)
       syms foreach (sym => buf.append(symDef(sym)).append(EOL))
       buf.delete(buf.length - EOL.length, buf.length)
@@ -188,7 +197,8 @@ trait SymbolTables {
     private[SymbolTable] def encode(symtab0: SymbolTable): List[Tree] = {
       if (symtab0.original.isDefined)
         return symtab0.original.get.map(_.duplicate)
-      else assert(hasReifier, "encoding a symbol table requires a reifier")
+      else
+        assert(hasReifier, "encoding a symbol table requires a reifier")
       // during `encode` we might need to do some reifications
       // these reifications might lead to changes in `reifier.symtab`
       // reifier is mutable, symtab is immutable. this is a tough friendship
@@ -208,10 +218,14 @@ trait SymbolTables {
           // SI-6204 don't reify signatures for incomplete symbols, because this might lead to cyclic reference errors
           val signature =
             if (sym.isInitialized) {
-              if (sym.isCapturedVariable) capturedVariableType(sym)
-              else if (isFreeTerm) sym.tpe
-              else sym.info
-            } else NoType
+              if (sym.isCapturedVariable)
+                capturedVariableType(sym)
+              else if (isFreeTerm)
+                sym.tpe
+              else
+                sym.info
+            } else
+              NoType
           val rset = reifier.mirrorBuildCall(
             nme.setInfo,
             currtab.symRef(sym),
@@ -219,7 +233,8 @@ trait SymbolTables {
           // `Symbol.annotations` doesn't initialize the symbol, so we don't need to do anything special here
           // also since we call `sym.info` a few lines above, by now the symbol will be initialized (if possible)
           // so the annotations will be filled in and will be waiting to be reified (unless symbol initialization is prohibited as described above)
-          if (sym.annotations.isEmpty) rset
+          if (sym.annotations.isEmpty)
+            rset
           else
             reifier.mirrorBuildCall(
               nme.setAnnotations,

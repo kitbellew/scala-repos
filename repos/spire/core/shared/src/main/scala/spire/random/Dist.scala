@@ -41,7 +41,10 @@ trait Dist[@sp A] extends Any { self =>
     new Dist[A] {
       @tailrec final def apply(gen: Generator): A = {
         val a = self(gen)
-        if (pred(a)) a else apply(gen)
+        if (pred(a))
+          a
+        else
+          apply(gen)
       }
     }
 
@@ -51,20 +54,29 @@ trait Dist[@sp A] extends Any { self =>
   def until(pred: A => Boolean): Dist[Seq[A]] = {
     @tailrec def loop(gen: Generator, a: A, buf: ArrayBuffer[A]): Seq[A] = {
       buf.append(a)
-      if (pred(a)) buf else loop(gen, self(gen), buf)
+      if (pred(a))
+        buf
+      else
+        loop(gen, self(gen), buf)
     }
     new DistFromGen(g => loop(g, self(g), ArrayBuffer.empty[A]))
   }
 
   def foldn[B](init: B, n: Int)(f: (B, A) => B): Dist[B] = {
     @tailrec def loop(gen: Generator, i: Int, b: B): B =
-      if (i == 0) b else loop(gen, i - 1, f(b, self(gen)))
+      if (i == 0)
+        b
+      else
+        loop(gen, i - 1, f(b, self(gen)))
     new DistFromGen(g => loop(g, n, init))
   }
 
   def unfold[B](init: B)(f: (B, A) => B)(pred: B => Boolean): Dist[B] = {
     @tailrec def loop(gen: Generator, b: B): B =
-      if (pred(b)) b else loop(gen, f(b, self(gen)))
+      if (pred(b))
+        b
+      else
+        loop(gen, f(b, self(gen)))
     new DistFromGen(g => loop(g, init))
   }
 
@@ -97,11 +109,17 @@ trait Dist[@sp A] extends Any { self =>
     }
 
   def iterate(n: Int, f: A => Dist[A]): Dist[A] =
-    if (n == 0) this else flatMap(f).iterate(n - 1, f)
+    if (n == 0)
+      this
+    else
+      flatMap(f).iterate(n - 1, f)
 
   def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] = new Dist[A] {
     @tailrec def loop(gen: Generator, a: A): A =
-      if (pred(a)) a else loop(gen, f(a)(gen))
+      if (pred(a))
+        a
+      else
+        loop(gen, f(a)(gen))
 
     def apply(gen: Generator): A = loop(gen, self(gen))
   }
@@ -135,7 +153,15 @@ trait Dist[@sp A] extends Any { self =>
 
   final def count(pred: A => Boolean, n: Int)(implicit gen: Generator): Int = {
     @tailrec def loop(num: Int, i: Int): Int =
-      if (i == 0) num else loop(num + (if (pred(self(gen))) 1 else 0), i - 1)
+      if (i == 0)
+        num
+      else
+        loop(
+          num + (if (pred(self(gen)))
+                   1
+                 else
+                   0),
+          i - 1)
     loop(0, n)
   }
 
@@ -144,7 +170,10 @@ trait Dist[@sp A] extends Any { self =>
 
   def sum(n: Int)(implicit gen: Generator, alg: Rig[A]): A = {
     @tailrec def loop(total: A, i: Int): A =
-      if (i == 0) total else loop(alg.plus(total, self(gen)), i - 1)
+      if (i == 0)
+        total
+      else
+        loop(alg.plus(total, self(gen)), i - 1)
     loop(alg.zero, n)
   }
 
@@ -304,7 +333,8 @@ object Dist extends DistInstances8 {
     new DistFromGen({ g =>
       val w = g.nextDouble(total)
       var i = 0
-      while (ws(i) < w) i += 1
+      while (ws(i) < w)
+        i += 1
       ds(i).apply(g)
     })
   }
@@ -334,18 +364,30 @@ object Dist extends DistInstances8 {
       na: Dist[A],
       order: Order[A],
       r: AdditiveMonoid[A]): Dist[Interval[A]] =
-    Dist((x: A, y: A) => if (order.lt(x, y)) Interval(x, y) else Interval(y, x))
+    Dist((x: A, y: A) =>
+      if (order.lt(x, y))
+        Interval(x, y)
+      else
+        Interval(y, x))
 
   implicit def option[A](implicit
       no: Dist[Boolean],
       na: Dist[A]): Dist[Option[A]] =
-    new DistFromGen(g => if (no(g)) Some(na(g)) else None)
+    new DistFromGen(g =>
+      if (no(g))
+        Some(na(g))
+      else
+        None)
 
   implicit def either[A, B](implicit
       no: Dist[Boolean],
       na: Dist[A],
       nb: Dist[B]): Dist[Either[A, B]] =
-    new DistFromGen[Either[A, B]](g => if (no(g)) Right(nb(g)) else Left(na(g)))
+    new DistFromGen[Either[A, B]](g =>
+      if (no(g))
+        Right(nb(g))
+      else
+        Left(na(g)))
 
   implicit def tuple2[A: Dist, B: Dist]: Dist[(A, B)] =
     Dist((_: A, _: B))
@@ -358,7 +400,10 @@ object Dist extends DistInstances8 {
   def natural(maxDigits: Int): Dist[Natural] = new Dist[Natural] {
     @tailrec
     private def loop(g: Generator, i: Int, size: Int, n: Natural): Natural =
-      if (i < size) loop(g, i + 1, size, Natural.Digit(g.next[UInt], n)) else n
+      if (i < size)
+        loop(g, i + 1, size, Natural.Digit(g.next[UInt], n))
+      else
+        n
 
     def apply(gen: Generator): Natural =
       loop(gen, 1, gen.nextInt(maxDigits) + 1, Natural.End(gen.next[UInt]))
@@ -414,7 +459,10 @@ object Dist extends DistInstances8 {
     new Dist[List[A]] {
       private val d = maxSize - minSize + 1
       private def loop(g: Generator, n: Int, sofar: List[A]): List[A] =
-        if (n > 0) loop(g, n - 1, g.next[A] :: sofar) else sofar
+        if (n > 0)
+          loop(g, n - 1, g.next[A] :: sofar)
+        else
+          sofar
 
       def apply(gen: Generator): List[A] =
         loop(gen, gen.nextInt(d) + minSize, Nil)

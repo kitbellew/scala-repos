@@ -190,7 +190,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
-        } else SourceShape(c.out)
+        } else
+          SourceShape(c.out)
 
       combineRest(2, rest.iterator)
     })
@@ -465,7 +466,8 @@ object Source {
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
-        } else SourceShape(c.out)
+        } else
+          SourceShape(c.out)
 
       combineRest(2, rest.iterator)
     })

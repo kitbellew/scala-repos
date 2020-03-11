@@ -109,7 +109,8 @@ object DataFlow {
       * Sets the value of this variable (if unset) with the value of the supplied variable.
       */
     def <<(ref: DataFlowVariable[T]) {
-      if (this.value.get.isEmpty) in ! Set(ref())
+      if (this.value.get.isEmpty)
+        in ! Set(ref())
       else
         throw new DataFlowVariableException(
           "Attempt to change data flow variable (from [" + this.value.get + "] to [" + ref() + "])")
@@ -127,7 +128,8 @@ object DataFlow {
       * Sets the value of this variable (if unset).
       */
     def <<(value: T) {
-      if (this.value.get.isEmpty) in ! Set(value)
+      if (this.value.get.isEmpty)
+        in ! Set(value)
       else
         throw new DataFlowVariableException(
           "Attempt to change data flow variable (from [" + this.value.get + "] to [" + value + "])")

@@ -84,7 +84,8 @@ class TestStore[K, V](
             initStore.map {
               tset(_)
             }.toBuffer)
-        else (batches(b), Buffer.empty[Tuple])
+        else
+          (batches(b), Buffer.empty[Tuple])
       }
       .toMap
 

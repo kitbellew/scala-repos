@@ -102,7 +102,8 @@ class QueueingHandler(
     // stack and filling in the class and method names if they have not
     // already been set. See the description of inferClassNames for why
     // we might do this here.
-    if (inferClassNames) record.getSourceClassName
+    if (inferClassNames)
+      record.getSourceClassName
 
     DefaultFuturePool {
       // We run this in a FuturePool to avoid satisfying pollers

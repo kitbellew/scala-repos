@@ -161,6 +161,9 @@ object AsmUtils {
       dumpNonErroneous,
       pw)
     val res = sw.toString
-    if (res.isEmpty) None else Some(res)
+    if (res.isEmpty)
+      None
+    else
+      Some(res)
   }
 }

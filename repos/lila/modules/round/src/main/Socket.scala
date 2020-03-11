@@ -51,7 +51,8 @@ private[round] final class Socket(
       isGone foreach {
         _ ?? notifyGone(color, false)
       }
-      if (bye > 0) bye = bye - 1
+      if (bye > 0)
+        bye = bye - 1
       time = nowMillis
     }
     def setBye {
@@ -69,7 +70,8 @@ private[round] final class Socket(
             .fold(ragequitTimeout, disconnectTimeout)
             .toMillis))
         isHostingSimul map (!_)
-      else fuccess(false)
+      else
+        fuccess(false)
   }
 
   private val whitePlayer = new Player(White)
@@ -126,12 +128,14 @@ private[round] final class Socket(
 
     case Broom =>
       broom
-      if (timeBomb.boom) self ! PoisonPill
-      else if (!hasAi) Color.all foreach { c =>
-        playerGet(c, _.isGone) foreach {
-          _ ?? notifyGone(c, true)
+      if (timeBomb.boom)
+        self ! PoisonPill
+      else if (!hasAi)
+        Color.all foreach { c =>
+          playerGet(c, _.isGone) foreach {
+            _ ?? notifyGone(c, true)
+          }
         }
-      }
 
     case GetVersion => sender ! history.getVersion
 
@@ -157,7 +161,8 @@ private[round] final class Socket(
       notifyCrowd
       playerDo(color, _.ping)
       sender ! Connected(enumerator, member)
-      if (member.userTv.isDefined) refreshSubscriptions
+      if (member.userTv.isDefined)
+        refreshSubscriptions
       if (member.owner)
         lilaBus.publish(
           lila.hub.actorApi.round.SocketEvent.OwnerJoin(gameId, color, ip),
@@ -178,7 +183,8 @@ private[round] final class Socket(
       members get uid foreach { member =>
         quit(uid)
         notifyCrowd
-        if (member.userTv.isDefined) refreshSubscriptions
+        if (member.userTv.isDefined)
+          refreshSubscriptions
       }
 
     case ChangeFeatured(_, msg) => watchers.foreach(_ push msg)

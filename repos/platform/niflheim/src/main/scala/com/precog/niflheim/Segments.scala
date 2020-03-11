@@ -133,7 +133,8 @@ case class Segments(
   }
 
   def detectDateTime(s: String): DateTime = {
-    if (!DateTimeUtil.looksLikeIso8601(s)) return null
+    if (!DateTimeUtil.looksLikeIso8601(s))
+      return null
     try {
       DateTimeUtil.parseDateTime(s, true)
     } catch {

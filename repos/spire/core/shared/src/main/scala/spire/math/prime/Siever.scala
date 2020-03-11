@@ -51,7 +51,8 @@ case class Siever(chunkSize: Int, cutoff: SafeLong) {
   def largestBelow(n: SafeLong): SafeLong = {
     if (n < 3)
       throw new IllegalArgumentException("invalid argument: %s" format n)
-    if (n == 3) return SafeLong(2)
+    if (n == 3)
+      return SafeLong(2)
 
     var i = 3
     var k = n - 1
@@ -63,14 +64,17 @@ case class Siever(chunkSize: Int, cutoff: SafeLong) {
         var i = 1
         val goal = (n - start).toInt
         while (i < goal) {
-          if (primes(i)) last = start + i
+          if (primes(i))
+            last = start + i
           i += 2
         }
         return last
       } else {
         var i = len - 1
-        while (1 <= i && !primes(i)) i -= 2
-        if (1 <= i) last = start + i
+        while (1 <= i && !primes(i))
+          i -= 2
+        if (1 <= i)
+          last = start + i
       }
       initNextSieve()
       i = 1
@@ -79,7 +83,8 @@ case class Siever(chunkSize: Int, cutoff: SafeLong) {
   }
 
   def nth(n: Long): SafeLong = {
-    if (n == 1) return SafeLong(2)
+    if (n == 1)
+      return SafeLong(2)
     var i = 3
     var k = n - 1
     while (true) {
@@ -88,7 +93,8 @@ case class Siever(chunkSize: Int, cutoff: SafeLong) {
       while (i < len) {
         if (primes(i)) {
           k -= 1
-          if (k < 1) return sieve.start + i
+          if (k < 1)
+            return sieve.start + i
         }
         i += 2
       }

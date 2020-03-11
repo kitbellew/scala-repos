@@ -78,7 +78,10 @@ class Partition(
     "UnderReplicated",
     new Gauge[Int] {
       def value = {
-        if (isUnderReplicated) 1 else 0
+        if (isUnderReplicated)
+          1
+        else
+          0
       }
     },
     tags)

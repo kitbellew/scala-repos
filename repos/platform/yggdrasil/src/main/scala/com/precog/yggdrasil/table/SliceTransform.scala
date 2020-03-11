@@ -298,9 +298,9 @@ trait SliceTransforms[M[+_]]
                     }
 
                   case Right((left, right)) =>
-                    val tests: Array[BoolColumn] =
-                      (for (l <- left;
-                            r <- right) yield {
+                    val tests: Array[BoolColumn] = (for (l <- left;
+                                                         r <- right)
+                      yield {
                         new FuzzyEqColumn(l, r)
                       }).toArray
                     new OrLotsColumn(tests)
@@ -377,7 +377,8 @@ trait SliceTransforms[M[+_]]
                   ColumnRef(CPath.Identity, CBoolean) -> (if (invert)
                                                             complement(
                                                               aggregate)
-                                                          else aggregate))
+                                                          else
+                                                            aggregate))
               }
             }
           }
@@ -871,12 +872,13 @@ trait SliceTransforms[M[+_]]
             {
               case ((a0, b0), s0) =>
                 for (ares <- sta.f(a0, s0);
-                     bres <- stb.f(b0, s0)) yield {
-                  val (a, sa) = ares
-                  val (b, sb) = bres
-                  assert(sa.size == sb.size)
-                  ((a, b), combine(sa, sb))
-                }
+                     bres <- stb.f(b0, s0))
+                  yield {
+                    val (a, sa) = ares
+                    val (b, sb) = bres
+                    assert(sa.size == sb.size)
+                    ((a, b), combine(sa, sb))
+                  }
             }
           )
       }
@@ -890,9 +892,9 @@ trait SliceTransforms[M[+_]]
 
       (this, t, t2) match {
         case (
-            sta: SliceTransform1S[_],
-            stb: SliceTransform1S[_],
-            stc: SliceTransform1S[_]) =>
+              sta: SliceTransform1S[_],
+              stb: SliceTransform1S[_],
+              stc: SliceTransform1S[_]) =>
           SliceTransform1S(
             (sta.initial, stb.initial, stc.initial),
             {
@@ -1084,8 +1086,8 @@ trait SliceTransforms[M[+_]]
             })
 
         case (
-            SliceTransform1SMS(sta, stb, stc),
-            SliceTransform1SMS(std, ste, stf)) =>
+              SliceTransform1SMS(sta, stb, stc),
+              SliceTransform1SMS(std, ste, stf)) =>
           val st = SliceTransform1SMS(
             sta,
             stb andThen stc andThen std andThen ste,
@@ -1259,9 +1261,9 @@ trait SliceTransforms[M[+_]]
 
       (this, t, t2) match {
         case (
-            sta: SliceTransform2S[_],
-            stb: SliceTransform2S[_],
-            stc: SliceTransform2S[_]) =>
+              sta: SliceTransform2S[_],
+              stb: SliceTransform2S[_],
+              stc: SliceTransform2S[_]) =>
           SliceTransform2S(
             (sta.initial, stb.initial, stc.initial),
             {
@@ -1584,7 +1586,11 @@ trait ArrayConcatHelpers extends ConcatHelpers {
     val leftIndices = collectIndices(left)
     val rightIndices = collectIndices(right)
 
-    val maxId = if (leftIndices.isEmpty) -1 else leftIndices.map(_._1).max
+    val maxId =
+      if (leftIndices.isEmpty)
+        -1
+      else
+        leftIndices.map(_._1).max
     val newCols = (leftIndices map {
       case (_, _, ref, col) => ref -> col
     }) ++
@@ -1622,7 +1628,8 @@ trait ObjectConcatHelpers extends ConcatHelpers {
     (filterFields(leftColumns), filterFields(rightColumns))
 
   def buildEmptyObjects(emptyBits: BitSet) = {
-    if (emptyBits.isEmpty) Map.empty[ColumnRef, Column]
+    if (emptyBits.isEmpty)
+      Map.empty[ColumnRef, Column]
     else
       Map(
         ColumnRef(CPath.Identity, CEmptyObject) -> EmptyObjectColumn(emptyBits))

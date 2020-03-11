@@ -87,7 +87,8 @@ class TlsEndpointVerificationSpec
           "No subject alternative DNS name matching www.howsmyssl.com found"
 
         var e: Throwable = ex
-        while (e.getCause != null) e = e.getCause
+        while (e.getCause != null)
+          e = e.getCause
 
         info("TLS failure cause: " + e.getMessage)
         e.getMessage should include(expectedMsg)

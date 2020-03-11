@@ -213,10 +213,11 @@ trait SetTest extends CollectionTest {
 
     val iter = hs.iterator()
     val result = {
-      for (i <- 0 until 3) yield {
-        assertTrue(iter.hasNext())
-        iter.next()
-      }
+      for (i <- 0 until 3)
+        yield {
+          assertTrue(iter.hasNext())
+          iter.next()
+        }
     }
     assertFalse(iter.hasNext())
     assertTrue(result.containsAll(l))

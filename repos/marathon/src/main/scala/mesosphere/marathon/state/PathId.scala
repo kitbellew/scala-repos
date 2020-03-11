@@ -30,7 +30,8 @@ case class PathId(path: List[String], absolute: Boolean = true)
   }
 
   def allParents: List[PathId] =
-    if (isRoot) Nil
+    if (isRoot)
+      Nil
     else {
       val p = parent
       p :: p.allParents
@@ -48,10 +49,12 @@ case class PathId(path: List[String], absolute: Boolean = true)
     def in(
         currentPath: List[String],
         parentPath: List[String]): List[String] = {
-      if (currentPath.isEmpty) Nil
+      if (currentPath.isEmpty)
+        Nil
       else if (parentPath.isEmpty || currentPath.head != parentPath.head)
         currentPath
-      else in(currentPath.tail, parentPath.tail)
+      else
+        in(currentPath.tail, parentPath.tail)
     }
     PathId(in(path, parent.path), absolute)
   }
@@ -64,11 +67,19 @@ case class PathId(path: List[String], absolute: Boolean = true)
       remaining match {
         case head :: tail if head == "." => in(tail, result)
         case head :: tail if head == ".." =>
-          in(tail, if (result.nonEmpty) result.tail else Nil)
+          in(
+            tail,
+            if (result.nonEmpty)
+              result.tail
+            else
+              Nil)
         case head :: tail => in(tail, head :: result)
         case Nil          => result.reverse
       }
-    if (absolute) PathId(in(path)) else PathId(in(base.path ::: path))
+    if (absolute)
+      PathId(in(path))
+    else
+      PathId(in(base.path ::: path))
   }
 
   def safePath: String = {
@@ -80,7 +91,8 @@ case class PathId(path: List[String], absolute: Boolean = true)
 
   def includes(definition: plugin.PathId): Boolean = {
     //scalastyle:off return
-    if (path.size < definition.path.size) return false
+    if (path.size < definition.path.size)
+      return false
     path.zip(definition.path).forall {
       case (left, right) => left == right
     }
@@ -88,7 +100,13 @@ case class PathId(path: List[String], absolute: Boolean = true)
 
   override def toString: String = toString("/")
   private def toString(delimiter: String): String =
-    path.mkString(if (absolute) delimiter else "", delimiter, "")
+    path.mkString(
+      if (absolute)
+        delimiter
+      else
+        "",
+      delimiter,
+      "")
 
   override def compare(that: PathId): Int = {
     import Ordering.Implicits._

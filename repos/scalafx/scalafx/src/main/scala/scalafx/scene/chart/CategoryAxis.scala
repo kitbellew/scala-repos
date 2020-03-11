@@ -40,7 +40,10 @@ import scalafx.delegate.SFXDelegate
 
 object CategoryAxis {
   implicit def sfxCategoryAxis2jfx(v: CategoryAxis): jfxsc.CategoryAxis =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply() = new CategoryAxis()
 

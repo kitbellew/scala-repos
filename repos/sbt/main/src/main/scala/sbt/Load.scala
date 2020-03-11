@@ -71,8 +71,10 @@ object Load {
       defaultPreGlobal(state, base, definesClass.get, globalBase, log)
     val config0 = defaultWithGlobal(state, base, rawConfig, globalBase, log)
     val config =
-      if (isPlugin) enableSbtPlugin(config0)
-      else config0.copy(extraBuilds = topLevelExtras)
+      if (isPlugin)
+        enableSbtPlugin(config0)
+      else
+        config0.copy(extraBuilds = topLevelExtras)
     val result = apply(base, state, config)
     definesClass.clear()
     result
@@ -156,8 +158,10 @@ object Load {
       files: Seq[File],
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration = {
     val compiled: ClassLoader => Seq[Setting[_]] =
-      if (files.isEmpty || base == globalBase) const(Nil)
-      else buildGlobalSettings(globalBase, files, config)
+      if (files.isEmpty || base == globalBase)
+        const(Nil)
+      else
+        buildGlobalSettings(globalBase, files, config)
     config.copy(injectSettings =
       config.injectSettings.copy(projectLoaded = compiled))
   }
@@ -282,7 +286,8 @@ object Load {
           ScopedKey(
             Scope.fillTaskAxis(Scope.replaceThis(to.scope)(key.scope), to.key),
             key.key)
-        else key
+        else
+          key
     }
     def setDefining[T] =
       (key: ScopedKey[T], value: T) =>
@@ -304,8 +309,10 @@ object Load {
         s.key) mapInit setDefining)
   }
   def setDefinitionKey[T](tk: Task[T], key: ScopedKey[_]): Task[T] =
-    if (isDummy(tk)) tk
-    else Task(tk.info.set(Keys.taskDefinitionKey, key), tk.work)
+    if (isDummy(tk))
+      tk
+    else
+      Task(tk.info.set(Keys.taskDefinitionKey, key), tk.work)
 
   def structureIndex(
       data: Settings[Scope],
@@ -473,8 +480,10 @@ object Load {
       srcs: Seq[File],
       eval: () => Eval,
       imports: Seq[String]): ClassLoader => LoadedSbtFile =
-    if (srcs.isEmpty) const(LoadedSbtFile.empty)
-    else EvaluateConfigurations(eval(), srcs, imports)
+    if (srcs.isEmpty)
+      const(LoadedSbtFile.empty)
+    else
+      EvaluateConfigurations(eval(), srcs, imports)
 
   def load(
       file: File,
@@ -530,14 +539,17 @@ object Load {
         val resolver = (x /: xs) {
           _ | _
         }
-        if (isRoot) loaders.setRoot(resolver)
-        else loaders.addNonRoot(unit.uri, resolver)
+        if (isRoot)
+          loaders.setRoot(resolver)
+        else
+          loaders.addNonRoot(unit.uri, resolver)
     }
 
   def loaded(
       unit: sbt.BuildUnit): (sbt.PartBuildUnit, List[ProjectReference]) = {
     val defined = projects(unit)
-    if (defined.isEmpty) sys.error("No projects defined in build unit " + unit)
+    if (defined.isEmpty)
+      sys.error("No projects defined in build unit " + unit)
 
     // since base directories are resolved at this point (after 'projects'),
     //   we can compare Files instead of converting to URIs
@@ -546,9 +558,15 @@ object Load {
     val externals = referenced(defined).toList
     val explicitRoots = unit.definitions.builds.flatMap(_.rootProject)
     val projectsInRoot =
-      if (explicitRoots.isEmpty) defined.filter(isRoot) else explicitRoots
+      if (explicitRoots.isEmpty)
+        defined.filter(isRoot)
+      else
+        explicitRoots
     val rootProjects =
-      if (projectsInRoot.isEmpty) defined.head :: Nil else projectsInRoot
+      if (projectsInRoot.isEmpty)
+        defined.head :: Nil
+      else
+        projectsInRoot
     (
       new sbt.PartBuildUnit(
         unit,
@@ -783,7 +801,11 @@ object Load {
     // TODO - this may cause issues with multiple sbt clients, but that should be deprecated pending sbt-server anyway
     cleanEvalClasses(defDir, keepClassFiles)
 
-    val defs = if (defsScala.isEmpty) defaultBuildIfNone :: Nil else defsScala
+    val defs =
+      if (defsScala.isEmpty)
+        defaultBuildIfNone :: Nil
+      else
+        defsScala
     // HERE we pull out the defined vals from memoSettings and unify them all so
     // we can use them later.
     val valDefinitions = memoSettings.values.foldLeft(DefinedSbtValues.empty) {
@@ -809,16 +831,24 @@ object Load {
       case Left(msg) => sys.error(autoIDError(f, msg))
     }
     def nthParentName(f: File, i: Int): String =
-      if (f eq null) Build.defaultID(localBase)
-      else if (i <= 0) normalizeID(f)
-      else nthParentName(f.getParentFile, i - 1)
+      if (f eq null)
+        Build.defaultID(localBase)
+      else if (i <= 0)
+        normalizeID(f)
+      else
+        nthParentName(f.getParentFile, i - 1)
     val pluginDepth = context.pluginProjectDepth
     val postfix = "-build" * pluginDepth
     val idBase =
-      if (context.globalPluginProject) "global-plugins"
-      else nthParentName(localBase, pluginDepth)
+      if (context.globalPluginProject)
+        "global-plugins"
+      else
+        nthParentName(localBase, pluginDepth)
     val tryID = idBase + postfix
-    if (existingIDs.contains(tryID)) Build.defaultID(localBase) else tryID
+    if (existingIDs.contains(tryID))
+      Build.defaultID(localBase)
+    else
+      tryID
   }
 
   private[this] def autoIDError(base: File, reason: String): String =
@@ -1284,7 +1314,8 @@ object Load {
     def addToLoader() = pm.loader add Path.toURLs(data(depcp))
 
     val parentLoader =
-      if (depcp.isEmpty) pm.initialLoader
+      if (depcp.isEmpty)
+        pm.initialLoader
       else {
         addToLoader();
         pm.loader
@@ -1496,8 +1527,10 @@ final case class LoadBuildConfiguration(
   lazy val (globalPluginClasspath, globalPluginLoader) =
     Load.pluginDefinitionLoader(this, Load.globalPluginClasspath(globalPlugin))
   lazy val globalPluginNames =
-    if (globalPluginClasspath.isEmpty) Nil
-    else Load.getPluginNames(globalPluginClasspath, globalPluginLoader)
+    if (globalPluginClasspath.isEmpty)
+      Nil
+    else
+      Load.getPluginNames(globalPluginClasspath, globalPluginLoader)
 
   private[sbt] lazy val globalPluginDefs = {
     val pluginData = globalPlugin match {

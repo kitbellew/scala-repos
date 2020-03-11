@@ -27,7 +27,8 @@ class TestActorRef[T <: Actor](
     _props.withDispatcher(
       if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven)
         CallingThreadDispatcher.Id
-      else _props.dispatcher)
+      else
+        _props.dispatcher)
   val dispatcher = _system.dispatchers.lookup(props.dispatcher)
   private val disregard = _supervisor match {
     case l: LocalActorRef ⇒ l.underlying.reserveChild(name)
@@ -93,7 +94,10 @@ class TestActorRef[T <: Actor](
     try {
       underlying.currentMessage = Envelope(
         o,
-        if (sender eq null) underlying.system.deadLetters else sender,
+        if (sender eq null)
+          underlying.system.deadLetters
+        else
+          sender,
         underlying.system)
       underlying.receiveMessage(o)
     } finally underlying.currentMessage = null

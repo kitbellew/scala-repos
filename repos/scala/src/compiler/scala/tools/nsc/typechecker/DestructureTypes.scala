@@ -38,7 +38,10 @@ trait DestructureTypes {
     private val openSymbols = scala.collection.mutable.Set[Symbol]()
 
     private def nodeList[T](elems: List[T], mkNode: T => Node): Node =
-      if (elems.isEmpty) wrapEmpty else list(elems map mkNode)
+      if (elems.isEmpty)
+        wrapEmpty
+      else
+        list(elems map mkNode)
 
     private def scopeMemberList(elems: List[Symbol]): Node =
       nodeList(elems, wrapAtom)
@@ -51,7 +54,8 @@ trait DestructureTypes {
 
     private def assocsNode(ann: AnnotationInfo): Node = {
       val (names, args) = ann.assocs.toIndexedSeq.unzip
-      if (names.isEmpty) wrapEmpty
+      if (names.isEmpty)
+        wrapEmpty
       else
         node(
           "assocs",
@@ -73,7 +77,8 @@ trait DestructureTypes {
       tree.productPrefix
     )
     def wrapSymbolInfo(sym: Symbol): Node = {
-      if ((sym eq NoSymbol) || openSymbols(sym)) wrapEmpty
+      if ((sym eq NoSymbol) || openSymbols(sym))
+        wrapEmpty
       else {
         openSymbols += sym
         try product(symbolType(sym), wrapAtom(sym.defString))
@@ -116,11 +121,15 @@ trait DestructureTypes {
     }
     def typeBounds(lo0: Type, hi0: Type): Node = {
       val lo =
-        if ((lo0 eq WildcardType) || (lo0.typeSymbol eq NothingClass)) wrapEmpty
-        else this("lo", lo0)
+        if ((lo0 eq WildcardType) || (lo0.typeSymbol eq NothingClass))
+          wrapEmpty
+        else
+          this("lo", lo0)
       val hi =
-        if ((hi0 eq WildcardType) || (hi0.typeSymbol eq AnyClass)) wrapEmpty
-        else this("hi", hi0)
+        if ((hi0 eq WildcardType) || (hi0.typeSymbol eq AnyClass))
+          wrapEmpty
+        else
+          this("hi", hi0)
 
       product("TypeBounds", lo, hi)
     }
@@ -160,31 +169,53 @@ trait DestructureTypes {
       // Filtered down to elements with "interesting" content
       product(
         tp,
-        if (sym.isDefinedInPackage) wrapEmpty else prefix(pre),
+        if (sym.isDefinedInPackage)
+          wrapEmpty
+        else
+          prefix(pre),
         wrapSymbolInfo(sym),
         typeArgs(args),
-        if (tp ne tp.normalize) this("normalize", tp.normalize) else wrapEmpty
+        if (tp ne tp.normalize)
+          this("normalize", tp.normalize)
+        else
+          wrapEmpty
       )
     }
 
     def symbolType(sym: Symbol) = (
-      if (sym.isRefinementClass) "Refinement"
-      else if (sym.isAliasType) "Alias"
-      else if (sym.isTypeSkolem) "TypeSkolem"
-      else if (sym.isTypeParameter) "TypeParam"
-      else if (sym.isAbstractType) "AbstractType"
-      else if (sym.isType) "TypeSymbol"
-      else "TermSymbol"
+      if (sym.isRefinementClass)
+        "Refinement"
+      else if (sym.isAliasType)
+        "Alias"
+      else if (sym.isTypeSkolem)
+        "TypeSkolem"
+      else if (sym.isTypeParameter)
+        "TypeParam"
+      else if (sym.isAbstractType)
+        "AbstractType"
+      else if (sym.isType)
+        "TypeSymbol"
+      else
+        "TermSymbol"
     )
     def typeRefType(sym: Symbol) =
       (
-        if (sym.isRefinementClass) "RefinementTypeRef"
-        else if (sym.isAliasType) "AliasTypeRef"
-        else if (sym.isTypeSkolem) "SkolemTypeRef"
-        else if (sym.isTypeParameter) "TypeParamTypeRef"
-        else if (sym.isAbstractType) "AbstractTypeRef"
-        else "TypeRef"
-      ) + (if (sym.isFBounded) "(F-Bounded)" else "")
+        if (sym.isRefinementClass)
+          "RefinementTypeRef"
+        else if (sym.isAliasType)
+          "AliasTypeRef"
+        else if (sym.isTypeSkolem)
+          "SkolemTypeRef"
+        else if (sym.isTypeParameter)
+          "TypeParamTypeRef"
+        else if (sym.isAbstractType)
+          "AbstractTypeRef"
+        else
+          "TypeRef"
+      ) + (if (sym.isFBounded)
+             "(F-Bounded)"
+           else
+             "")
 
     def node(label: String, node: Node): Node = withLabel(node, label)
     def apply(label: String, tp: Type): Node = withLabel(this(tp), label)

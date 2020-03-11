@@ -173,7 +173,8 @@ private[serverset2] class ServiceDiscoverer(
                 // if we have *any* results or no-failure, we consider it a success
                 if (seenFailures && seq.isEmpty)
                   u() = Activity.Failed(EntryLookupFailureException)
-                else u() = Activity.Ok(seq)
+                else
+                  u() = Activity.Ok(seq)
               }
               .ensure {
                 if (seenFailures) {

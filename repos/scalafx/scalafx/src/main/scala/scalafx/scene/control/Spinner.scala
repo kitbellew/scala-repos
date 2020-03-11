@@ -42,7 +42,10 @@ import scalafx.delegate.SFXDelegate
 object Spinner {
 
   implicit def sfxSpinner2jfx[T](v: Spinner[T]): jfxsc.Spinner[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** The arrows are placed on the right of the Spinner, pointing horizontally (i.e. left and right). */
   val StyleClassArrowsOnRightHorizontal =

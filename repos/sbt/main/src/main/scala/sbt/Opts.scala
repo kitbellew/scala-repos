@@ -27,7 +27,8 @@ object Opts {
     def title(t: String): Seq[String] = Seq("-doc-title", t)
     def version(v: String): Seq[String] = Seq("-doc-version", v)
     def externalAPI(mappings: Iterable[(File, URL)]): Seq[String] =
-      if (mappings.isEmpty) Nil
+      if (mappings.isEmpty)
+        Nil
       else
         mappings
           .map {
@@ -62,13 +63,16 @@ object DefaultOptions {
     doc.title(name) ++ doc.version(version)
 
   def resolvers(snapshot: Boolean): Seq[Resolver] = {
-    if (snapshot) Seq(Classpaths.typesafeSnapshots, resolver.sonatypeSnapshots)
-    else Nil
+    if (snapshot)
+      Seq(Classpaths.typesafeSnapshots, resolver.sonatypeSnapshots)
+    else
+      Nil
   }
   def pluginResolvers(plugin: Boolean, snapshot: Boolean): Seq[Resolver] = {
     if (plugin && snapshot)
       Seq(Classpaths.typesafeSnapshots, Classpaths.sbtPluginSnapshots)
-    else Nil
+    else
+      Nil
   }
   def addResolvers: Setting[_] =
     Keys.resolvers <++= Keys.isSnapshot apply resolvers

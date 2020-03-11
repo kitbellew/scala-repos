@@ -134,7 +134,8 @@ trait ScImportsHolder extends ScalaPsiElement {
   def addImportForClass(clazz: PsiClass, ref: PsiElement = null) {
     ref match {
       case ref: ScReferenceElement =>
-        if (!ref.isValid || ref.isReferenceTo(clazz)) return
+        if (!ref.isValid || ref.isReferenceTo(clazz))
+          return
         ref.bind() match {
           case Some(ScalaResolveResult(t: ScTypeAliasDefinition, subst))
               if t.typeParameters.isEmpty =>
@@ -234,8 +235,10 @@ trait ScImportsHolder extends ScalaPsiElement {
       optimizer.collectImportRanges(this, namesAtRangeStart, createInfo(_))
 
     val needToInsertFirst =
-      if (importRanges.isEmpty) true
-      else refsContainer == null && hasCodeBeforeImports
+      if (importRanges.isEmpty)
+        true
+      else
+        refsContainer == null && hasCodeBeforeImports
 
     if (needToInsertFirst) {
       val dummyImport = ScalaPsiElementFactory.createImportFromText(
@@ -262,11 +265,12 @@ trait ScImportsHolder extends ScalaPsiElement {
               .isAddImportMostCloseToReference)
           sortedRanges.reverse.find(
             _._1.getEndOffset < refsContainer.getTextRange.getStartOffset)
-        else sortedRanges.headOption
+        else
+          sortedRanges.headOption
 
       selectedRange match {
         case Some(
-            (range, RangeInfo(names, importInfos, usedImportedNames, _))) =>
+              (range, RangeInfo(names, importInfos, usedImportedNames, _))) =>
           val buffer = importInfos.to[ArrayBuffer]
 
           importInfosToAdd.foreach { infoToAdd =>
@@ -326,7 +330,8 @@ trait ScImportsHolder extends ScalaPsiElement {
   }
 
   def addImportAfter(element: PsiElement, anchor: PsiElement): PsiElement = {
-    if (anchor.getNode == getNode.getLastChildNode) return addImport(element)
+    if (anchor.getNode == getNode.getLastChildNode)
+      return addImport(element)
     addImportBefore(element, anchor.getNode.getTreeNext.getPsi)
   }
 
@@ -341,7 +346,8 @@ trait ScImportsHolder extends ScalaPsiElement {
   def deleteImportStmt(stmt: ScImportStmt) {
     def remove(node: ASTNode) = getNode.removeChild(node)
     def shortenWhitespace(node: ASTNode) {
-      if (node == null) return
+      if (node == null)
+        return
       if (node.getText.count(_ == '\n') >= 2) {
         val nl = ScalaPsiElementFactory.createNewLine(
           getManager,
@@ -350,18 +356,23 @@ trait ScImportsHolder extends ScalaPsiElement {
       }
     }
     def removeWhitespace(node: ASTNode) {
-      if (node == null) return
+      if (node == null)
+        return
       if (node.getPsi.isInstanceOf[PsiWhiteSpace]) {
-        if (node.getText.count(_ == '\n') < 2) remove(node)
-        else shortenWhitespace(node)
+        if (node.getText.count(_ == '\n') < 2)
+          remove(node)
+        else
+          shortenWhitespace(node)
       }
     }
     def removeSemicolonAndWhitespace(node: ASTNode) {
-      if (node == null) return
+      if (node == null)
+        return
       if (node.getElementType == ScalaTokenTypes.tSEMICOLON) {
         removeWhitespace(node.getTreeNext)
         remove(node)
-      } else removeWhitespace(node)
+      } else
+        removeWhitespace(node)
     }
 
     val node = stmt.getNode

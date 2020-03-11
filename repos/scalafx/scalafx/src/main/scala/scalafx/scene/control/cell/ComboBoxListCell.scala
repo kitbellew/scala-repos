@@ -58,7 +58,10 @@ object ComboBoxListCell {
     */
   implicit def sfxComboBoxListCell2jfx[T](
       cell: ComboBoxListCell[T]): jfxscc.ComboBoxListCell[T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FLVINIT

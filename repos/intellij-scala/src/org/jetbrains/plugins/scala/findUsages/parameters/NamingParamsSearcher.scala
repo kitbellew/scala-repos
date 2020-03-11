@@ -51,13 +51,15 @@ class NamingParamsSearcher
                             assign.getParent.isInstanceOf[ScArgumentExprList] =>
                         Option(refElement.resolve()) match {
                           case Some(`parameter`) =>
-                            if (!consumer.process(ref)) return false
+                            if (!consumer.process(ref))
+                              return false
                           case Some(x: ScParameter) =>
                             ScalaPsiUtil.parameterForSyntheticParameter(
                               x) match {
                               case Some(realParam) =>
                                 if (realParam == parameter && !consumer.process(
-                                      ref)) return false
+                                      ref))
+                                  return false
                               case None =>
                             }
                           case _ =>

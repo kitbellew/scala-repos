@@ -427,9 +427,12 @@ sealed abstract class ==>>[A, B] {
       case (l, Tip()) =>
         l
       case (l @ Bin(kx, x, lx, rx), r @ Bin(ky, y, ly, ry)) =>
-        if (delta * l.size <= r.size) balance(ky, y, l.merge(ly), ry)
-        else if (delta * r.size <= l.size) balance(kx, x, lx, rx.merge(r))
-        else glue(l, r)
+        if (delta * l.size <= r.size)
+          balance(ky, y, l.merge(ly), ry)
+        else if (delta * r.size <= l.size)
+          balance(kx, x, lx, rx.merge(r))
+        else
+          glue(l, r)
     }
 
   private def glue(l: A ==>> B, r: A ==>> B): A ==>> B =
@@ -939,9 +942,12 @@ sealed abstract class ==>>[A, B] {
       case (l, Tip()) =>
         l.insertMax(kx, x)
       case (l @ Bin(ky, y, ly, ry), r @ Bin(kz, z, lz, rz)) =>
-        if (delta * l.size <= r.size) balance(kz, z, l.join(kx, x, lz), rz)
-        else if (delta * r.size <= l.size) balance(ky, y, ly, ry.join(kx, x, r))
-        else Bin(kx, x, l, r)
+        if (delta * l.size <= r.size)
+          balance(kz, z, l.join(kx, x, lz), rz)
+        else if (delta * r.size <= l.size)
+          balance(ky, y, ly, ry.join(kx, x, r))
+        else
+          Bin(kx, x, l, r)
     }
 
   private def insertMax(kx: A, x: B): A ==>> B =
@@ -1001,15 +1007,19 @@ sealed abstract class MapInstances0 {
 
       def zip[A, B](a: => (S ==>> A), b: => (S ==>> B)) = {
         val a0 = a
-        if (a0.isEmpty) ==>>.empty
-        else a0.intersectionWith(b)(Tuple2.apply)
+        if (a0.isEmpty)
+          ==>>.empty
+        else
+          a0.intersectionWith(b)(Tuple2.apply)
       }
 
       override def zipWith[A, B, C](a: => (S ==>> A), b: => (S ==>> B))(
           f: (A, B) => C)(implicit F: Functor[S ==>> ?]) = {
         val a0 = a
-        if (a0.isEmpty) ==>>.empty
-        else a0.intersectionWith(b)(f)
+        if (a0.isEmpty)
+          ==>>.empty
+        else
+          a0.intersectionWith(b)(f)
       }
     }
 }
@@ -1251,8 +1261,10 @@ object ==>> extends MapInstances {
   private def rotateL[A, B](k: A, x: B, l: A ==>> B, r: A ==>> B): A ==>> B =
     r match {
       case r @ Bin(_, _, ly, ry) =>
-        if (ly.size < ratio * ry.size) singleL(k, x, l, r)
-        else doubleL(k, x, l, r)
+        if (ly.size < ratio * ry.size)
+          singleL(k, x, l, r)
+        else
+          doubleL(k, x, l, r)
       case Tip() =>
         sys.error("rotateL Tip")
     }
@@ -1283,8 +1295,10 @@ object ==>> extends MapInstances {
   private def rotateR[A, B](k: A, x: B, l: A ==>> B, r: A ==>> B): A ==>> B =
     l match {
       case l @ Bin(_, _, ly, ry) =>
-        if (ry.size < ratio * ly.size) singleR(k, x, l, r)
-        else doubleR(k, x, l, r)
+        if (ry.size < ratio * ly.size)
+          singleR(k, x, l, r)
+        else
+          doubleR(k, x, l, r)
       case Tip() =>
         sys.error("rotateR Tip")
     }

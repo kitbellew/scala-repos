@@ -87,7 +87,10 @@ trait SexpPrinter extends (Sexp => String) {
       f: A => Unit): Unit = {
     var first = true
     iterable.foreach { a =>
-      if (first) first = false else printSeparator
+      if (first)
+        first = false
+      else
+        printSeparator
       f(a)
     }
   }

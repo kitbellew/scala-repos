@@ -87,7 +87,10 @@ package scala.collection.mutable {
       entries.foreach {
         case (k, v) => RB.insert(tree, k, v)
       }
-      RB.min(tree) == (if (entries.isEmpty) None else Some(entries.toMap.min))
+      RB.min(tree) == (if (entries.isEmpty)
+                         None
+                       else
+                         Some(entries.toMap.min))
     }
 
     property("max") = forAll { (entries: Seq[(K, V)]) =>
@@ -95,7 +98,10 @@ package scala.collection.mutable {
       entries.foreach {
         case (k, v) => RB.insert(tree, k, v)
       }
-      RB.max(tree) == (if (entries.isEmpty) None else Some(entries.toMap.max))
+      RB.max(tree) == (if (entries.isEmpty)
+                         None
+                       else
+                         Some(entries.toMap.max))
     }
   }
 
@@ -127,7 +133,11 @@ package scala.collection.mutable {
     property("+=") = forAll { (map: mutable.TreeMap[K, V], k: K, v: V) =>
       val oldSize = map.size
       val containedKeyBefore = map.contains(k)
-      val newExpectedSize = if (containedKeyBefore) oldSize else oldSize + 1
+      val newExpectedSize =
+        if (containedKeyBefore)
+          oldSize
+        else
+          oldSize + 1
 
       map += (k -> v)
       map.contains(k) && map.get(k) == Some(v) && map.size == newExpectedSize
@@ -145,7 +155,11 @@ package scala.collection.mutable {
     property("-=") = forAll { (map: mutable.TreeMap[K, V], k: K) =>
       val oldSize = map.size
       val containedKeyBefore = map.contains(k)
-      val newExpectedSize = if (containedKeyBefore) oldSize - 1 else oldSize
+      val newExpectedSize =
+        if (containedKeyBefore)
+          oldSize - 1
+        else
+          oldSize
 
       map -= k
       !map.contains(k) && map.get(k) == None && map.size == newExpectedSize
@@ -156,7 +170,11 @@ package scala.collection.mutable {
       map --= ks
       val deletedElems = ks.toSet
       oldElems.forall {
-        case (k, v) => map.get(k) == (if (deletedElems(k)) None else Some(v))
+        case (k, v) =>
+          map.get(k) == (if (deletedElems(k))
+                           None
+                         else
+                           Some(v))
       }
     }
 
@@ -266,8 +284,10 @@ package scala.collection.mutable {
           case (k, v) =>
             mapView
               .contains(k) == (in(k, from, until) && entries.contains(k)) &&
-              mapView.get(k) == (if (in(k, from, until)) entries.get(k)
-                                 else None)
+              mapView.get(k) == (if (in(k, from, until))
+                                   entries.get(k)
+                                 else
+                                   None)
         }
     }
 
@@ -292,7 +312,11 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val oldSize = map.size
         val containedKeyBefore = map.contains(k)
-        val newExpectedSize = if (containedKeyBefore) oldSize else oldSize + 1
+        val newExpectedSize =
+          if (containedKeyBefore)
+            oldSize
+          else
+            oldSize + 1
         val isInRange = in(k, from, until)
 
         val mapView = map.rangeImpl(from, until)
@@ -301,7 +325,10 @@ package scala.collection.mutable {
         map.contains(k) && map.get(k) == Some(
           v) && map.size == newExpectedSize &&
         mapView.contains(k) == isInRange &&
-        mapView.get(k) == (if (isInRange) Some(v) else None)
+        mapView.get(k) == (if (isInRange)
+                             Some(v)
+                           else
+                             None)
     }
 
     property("++=") = forAll {
@@ -315,7 +342,10 @@ package scala.collection.mutable {
         entries.toMap.forall {
           case (k, v) =>
             map.get(k) == Some(v) &&
-              mapView.get(k) == (if (in(k, from, until)) Some(v) else None)
+              mapView.get(k) == (if (in(k, from, until))
+                                   Some(v)
+                                 else
+                                   None)
         }
     }
 
@@ -323,7 +353,11 @@ package scala.collection.mutable {
       (map: mutable.TreeMap[K, V], k: K, from: Option[K], until: Option[K]) =>
         val oldSize = map.size
         val containedKeyBefore = map.contains(k)
-        val newExpectedSize = if (containedKeyBefore) oldSize - 1 else oldSize
+        val newExpectedSize =
+          if (containedKeyBefore)
+            oldSize - 1
+          else
+            oldSize
 
         val mapView = map.rangeImpl(from, until)
         mapView -= k

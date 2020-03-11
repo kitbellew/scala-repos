@@ -44,7 +44,8 @@ object PovToEntry {
       game: Game,
       userId: String,
       provisional: Boolean): Fu[Option[RichPov]] =
-    if (removeWrongAnalysis(game)) fuccess(none)
+    if (removeWrongAnalysis(game))
+      fuccess(none)
     else
       lila.game.Pov.ofUserId(game, userId) ?? { pov =>
         lila.game.GameRepo.initialFen(game) zip
@@ -99,7 +100,11 @@ object PovToEntry {
     val movetimes = from.movetimes.list
     val roles = from.pov.game.pgnMoves(from.pov.color) map pgnMoveToRole
     val boards = {
-      val pivot = if (from.pov.color == from.pov.game.startColor) 0 else 1
+      val pivot =
+        if (from.pov.color == from.pov.game.startColor)
+          0
+        else
+          1
       from.boards.list.zipWithIndex.collect {
         case (e, i) if (i % 2) == pivot => e
       }

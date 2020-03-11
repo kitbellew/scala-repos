@@ -35,8 +35,10 @@ object BinaryFormat {
 
     private def findClose(v: MT, in: List[(MT, Int)]): Option[Int] = in match {
       case (a, b) :: (c, d) :: rest =>
-        if (math.abs(a - v) <= math.abs(c - v)) Some(b)
-        else findClose(v, (c, d) :: rest)
+        if (math.abs(a - v) <= math.abs(c - v))
+          Some(b)
+        else
+          findClose(v, (c, d) :: rest)
       case (a, b) :: rest => Some(b)
       case _              => None
     }
@@ -123,7 +125,10 @@ object BinaryFormat {
     }
     private def readTimer(b1: Int, b2: Int, b3: Int, b4: Int) = {
       val l = (b1 << 24) + (b2 << 16) + (b3 << 8) + b4
-      if (l == 0) 0 else l + decay
+      if (l == 0)
+        0
+      else
+        l + decay
     }
 
     private def writeClockLimit(limit: Int) = {
@@ -134,11 +139,17 @@ object BinaryFormat {
       // So, for the limits where limit % 30 == 0, we can use the space
       // from 181-255, where 181 represents 0.5, 182 represents 0.75 and
       // 185 represents 1.5.
-      if (limit % 60 == 0) limit / 60 else (limit - 15) / 15 + 181
+      if (limit % 60 == 0)
+        limit / 60
+      else
+        (limit - 15) / 15 + 181
     }
 
     private def readClockLimit(b: Int) = {
-      if (b < 181) b * 60 else (b - 181) * 15 + 15
+      if (b < 181)
+        b * 60
+      else
+        (b - 181) * 15 + 15
     }
   }
 
@@ -268,11 +279,18 @@ object BinaryFormat {
   private val int23Max = math.pow(2, 23).toInt
   def writeSignedInt24(int: Int) = {
     val i = math.abs(math.min(int23Max, int))
-    val j = if (int < 0) i + int23Max else i
+    val j =
+      if (int < 0)
+        i + int23Max
+      else
+        i
     Array(j >> 16, (j >> 8) & 255, j & 255)
   }
   def readSignedInt24(b1: Int, b2: Int, b3: Int) = {
     val i = (b1 << 16) + (b2 << 8) + b3
-    if (i > int23Max) int23Max - i else i
+    if (i > int23Max)
+      int23Max - i
+    else
+      i
   }
 }

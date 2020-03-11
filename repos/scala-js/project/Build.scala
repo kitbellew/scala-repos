@@ -233,15 +233,19 @@ object Build extends sbt.Build {
           }
       }(docPaths.keySet + additionalStylesFile)
 
-      if (errorsSeen.size > 0) sys.error("ScalaDoc patching had errors")
-      else outDir
+      if (errorsSeen.size > 0)
+        sys.error("ScalaDoc patching had errors")
+      else
+        outDir
     }
   ) ++ mimaDefaultSettings
 
   val noClassFilesSettings: Setting[_] = (
     scalacOptions in (Compile, compile) ++= {
-      if (isGeneratingEclipse) Seq()
-      else Seq("-Yskip:cleanup,icode,jvm")
+      if (isGeneratingEclipse)
+        Seq()
+      else
+        Seq("-Yskip:cleanup,icode,jvm")
     }
   )
 
@@ -296,8 +300,10 @@ object Build extends sbt.Build {
       val fatalInDoc =
         javaVersion.value >= 7 && scalaBinaryVersion.value != "2.10"
 
-      if (fatalInDoc) baseOptions
-      else baseOptions.filterNot(_ == "-Xfatal-warnings")
+      if (fatalInDoc)
+        baseOptions
+      else
+        baseOptions.filterNot(_ == "-Xfatal-warnings")
     }
   )
 
@@ -306,7 +312,10 @@ object Build extends sbt.Build {
       Seq("PUBLISH_USER", "PUBLISH_PASS").map(Properties.envOrNone) match {
         case Seq(Some(user), Some(pass)) =>
           val snapshotsOrReleases =
-            if (scalaJSIsSnapshotVersion) "snapshots" else "releases"
+            if (scalaJSIsSnapshotVersion)
+              "snapshots"
+            else
+              "releases"
           Some(
             Resolver.sftp(
               s"scala-js-$snapshotsOrReleases",
@@ -343,8 +352,10 @@ object Build extends sbt.Build {
       TestFramework("org.scalajs.jasminetest.JasmineFramework"),
     // Link source maps
     scalacOptions ++= {
-      if (isGeneratingEclipse) Seq()
-      else if (scalaJSIsSnapshotVersion) Seq()
+      if (isGeneratingEclipse)
+        Seq()
+      else if (scalaJSIsSnapshotVersion)
+        Seq()
       else
         Seq(
           // Link source maps to github sources
@@ -359,8 +370,10 @@ object Build extends sbt.Build {
 
     /** Uses the Scala.js compiler plugin. */
     def withScalaJSCompiler: Project =
-      if (isGeneratingEclipse) project
-      else project.dependsOn(compiler % "plugin")
+      if (isGeneratingEclipse)
+        project
+      else
+        project.dependsOn(compiler % "plugin")
 
     /** Depends on library as if (exportJars in library) was set to false. */
     def dependsOnLibraryNoJar: Project = {
@@ -681,9 +694,12 @@ object Build extends sbt.Build {
   ).dependsOn(tools, jsEnvs, testAdapter)
 
   lazy val delambdafySetting = {
-    scalacOptions ++= (if (isGeneratingEclipse) Seq()
-                       else if (scalaBinaryVersion.value == "2.10") Seq()
-                       else Seq("-Ydelambdafy:method"))
+    scalacOptions ++= (if (isGeneratingEclipse)
+                         Seq()
+                       else if (scalaBinaryVersion.value == "2.10")
+                         Seq()
+                       else
+                         Seq("-Ydelambdafy:method"))
   }
 
   private def serializeHardcodedIR(
@@ -818,7 +834,10 @@ object Build extends sbt.Build {
           ver.substring(0, len)
         }
         def dirStr(v: String) =
-          if (v.isEmpty) "overrides" else s"overrides-$v"
+          if (v.isEmpty)
+            "overrides"
+          else
+            s"overrides-$v"
         val dirs = verList.map(base / dirStr(_)).filter(_.exists)
         dirs.toSeq // most specific shadow less specific
       },
@@ -1100,8 +1119,10 @@ object Build extends sbt.Build {
         def envTagsFor(env: JSEnv): Seq[String] = env match {
           case env: RhinoJSEnv =>
             val baseArgs = Seq("rhino")
-            if (env.sourceMap) baseArgs :+ "source-maps"
-            else baseArgs
+            if (env.sourceMap)
+              baseArgs :+ "source-maps"
+            else
+              baseArgs
 
           case env: NodeJSEnv =>
             val baseArgs = Seq("nodejs", "typedarray")
@@ -1151,11 +1172,15 @@ object Build extends sbt.Build {
           else
             Seq()
         ) ++ (
-          if (sems.strictFloats) Seq("strict-floats")
-          else Seq()
+          if (sems.strictFloats)
+            Seq("strict-floats")
+          else
+            Seq()
         ) ++ (
-          if (sems.productionMode) Seq("production-mode")
-          else Seq("development-mode")
+          if (sems.productionMode)
+            Seq("production-mode")
+          else
+            Seq("development-mode")
         )
 
         val stageTag = stage match {
@@ -1190,8 +1215,10 @@ object Build extends sbt.Build {
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
     unmanagedSourceDirectories in Test ++= {
       def includeIf(testDir: File, condition: Boolean): List[File] =
-        if (condition) List(testDir)
-        else Nil
+        if (condition)
+          List(testDir)
+        else
+          Nil
 
       val testDir = (sourceDirectory in Test).value
       val sharedTestDir =
@@ -1375,7 +1402,8 @@ object Build extends sbt.Build {
             "io.apigee" % "rhino" % "1.7R5pre4",
             "com.googlecode.json-simple" % "json-simple" % "1.1.1" exclude ("junit", "junit")
           )
-        else Seq()
+        else
+          Seq()
       },
       sources in Compile := {
         if (shouldPartest.value) {
@@ -1396,7 +1424,8 @@ object Build extends sbt.Build {
             files.get
           }
           toolSrcs ++ baseSrcs ++ jsenvSrcs
-        } else Seq()
+        } else
+          Seq()
       }
     )
   ).dependsOn(compiler)
@@ -1413,24 +1442,26 @@ object Build extends sbt.Build {
       testFrameworks ++= {
         if (shouldPartest.value)
           Seq(new TestFramework("scala.tools.partest.scalajs.Framework"))
-        else Seq()
+        else
+          Seq()
       },
       definedTests in Test <++= Def.taskDyn[Seq[sbt.TestDefinition]] {
-        if (shouldPartest.value) Def.task {
-          val _ = (fetchScalaSource in partest).value
-          Seq(
-            new sbt.TestDefinition(
-              s"partest-${scalaVersion.value}",
-              // marker fingerprint since there are no test classes
-              // to be discovered by sbt:
-              new sbt.testing.AnnotatedFingerprint {
-                def isModule = true
-                def annotationName = "partest"
-              },
-              true,
-              Array()
-            ))
-        }
+        if (shouldPartest.value)
+          Def.task {
+            val _ = (fetchScalaSource in partest).value
+            Seq(
+              new sbt.TestDefinition(
+                s"partest-${scalaVersion.value}",
+                // marker fingerprint since there are no test classes
+                // to be discovered by sbt:
+                new sbt.testing.AnnotatedFingerprint {
+                  def isModule = true
+                  def annotationName = "partest"
+                },
+                true,
+                Array()
+              ))
+          }
         else {
           Def.task(Seq())
         }

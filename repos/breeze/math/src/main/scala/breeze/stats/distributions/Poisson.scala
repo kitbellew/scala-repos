@@ -36,7 +36,8 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
 
   // impl from winrand
   def draw(): Int = {
-    if (mean == 0) 0
+    if (mean == 0)
+      0
     else if (mean < 10.0) { // small
       var t = ell
       var k = 0
@@ -52,7 +53,8 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
       val k_start = mean.toInt
       val u = rand.uniform.get
       var t1 = exp(k_start * log(mean) - mean - lgamma(k_start.toDouble + 1))
-      if (t1 > u) k_start
+      if (t1 > u)
+        k_start
       else {
         var k1 = k_start
         var k2 = k_start
@@ -62,12 +64,14 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
           k1 += 1
           t1 *= mean / k1;
           s += t1
-          if (s > u) return k1
+          if (s > u)
+            return k1
           if (k2 > 0) {
             t2 *= k2 / mean
             k2 -= 1
             s += t2
-            if (s > u) return k2
+            if (s > u)
+              return k2
           }
         }
         sys.error("wtf")

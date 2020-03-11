@@ -43,6 +43,7 @@ private object ClosureAstBuilder {
     def getSourceFile(): SourceFile =
       root.getStaticSourceFile().asInstanceOf[SourceFile]
     def setSourceFile(file: SourceFile): Unit =
-      if (getSourceFile() ne file) throw new IllegalStateException
+      if (getSourceFile() ne file)
+        throw new IllegalStateException
   }
 }

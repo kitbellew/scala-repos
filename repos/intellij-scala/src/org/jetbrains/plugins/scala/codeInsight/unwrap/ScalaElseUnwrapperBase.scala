@@ -23,7 +23,8 @@ abstract class ScalaElseUnwrapperBase extends ScalaUnwrapper {
     }
 
   protected def elseBranch(e: PsiElement): Option[(ScIfStmt, ScExpression)] = {
-    if (e.isInstanceOf[ScIfStmt]) return None
+    if (e.isInstanceOf[ScIfStmt])
+      return None
 
     e.getParent match {
       case ifSt @ ScIfStmt(_, Some(expr), _) childOf (parentIf @ ScIfStmt(
@@ -34,7 +35,8 @@ abstract class ScalaElseUnwrapperBase extends ScalaUnwrapper {
       case ifStmt @ ScIfStmt(_, _, Some(elseBr)) =>
         if (e.getNode.getElementType == ScalaTokenTypes.kELSE || elseBr == e)
           Some((ifStmt, elseBr))
-        else None
+        else
+          None
       case _ => None
     }
   }

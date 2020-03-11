@@ -180,10 +180,10 @@ trait SingletonTypeUtils extends ReprTypes {
     def unapply(t: Type): Option[String] =
       t match {
         case RefinedType(
-            List(
-              SymTpe,
-              TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
-            _) =>
+              List(
+                SymTpe,
+                TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
+              _) =>
           Some(s)
         case _ => None
       }
@@ -359,7 +359,10 @@ class SingletonTypeMacros(val c: whitebox.Context)
             tree.symbol) =>
         val sym = tree.symbol.asTerm
         val pre =
-          if (sym.owner.isClass) c.internal.thisType(sym.owner) else NoPrefix
+          if (sym.owner.isClass)
+            c.internal.thisType(sym.owner)
+          else
+            NoPrefix
         val symTpe = c.internal.singleType(pre, sym)
         mkResult(symTpe, q"$sym.asInstanceOf[$symTpe]")
 

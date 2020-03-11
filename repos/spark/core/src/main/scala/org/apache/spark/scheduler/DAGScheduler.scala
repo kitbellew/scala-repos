@@ -1654,7 +1654,8 @@ private[spark] class DAGScheduler(
     var ableToCancelStages = true
 
     val shouldInterruptThread =
-      if (job.properties == null) false
+      if (job.properties == null)
+        false
       else
         job.properties
           .getProperty(SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL, "false")
@@ -1837,13 +1838,13 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
 
   private def doOnReceive(event: DAGSchedulerEvent): Unit = event match {
     case JobSubmitted(
-        jobId,
-        rdd,
-        func,
-        partitions,
-        callSite,
-        listener,
-        properties) =>
+          jobId,
+          rdd,
+          func,
+          partitions,
+          callSite,
+          listener,
+          properties) =>
       dagScheduler.handleJobSubmitted(
         jobId,
         rdd,

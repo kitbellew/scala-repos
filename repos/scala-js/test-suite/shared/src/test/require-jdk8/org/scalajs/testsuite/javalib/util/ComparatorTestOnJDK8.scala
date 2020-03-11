@@ -21,9 +21,12 @@ class ComparatorTestOnJDK8 {
          * use the naive implementation of negating the original comparator's
          * result.
          */
-        if (a == b) 0
-        else if (a < b) Int.MinValue
-        else Int.MaxValue
+        if (a == b)
+          0
+        else if (a < b)
+          Int.MinValue
+        else
+          Int.MaxValue
       }
     }
 

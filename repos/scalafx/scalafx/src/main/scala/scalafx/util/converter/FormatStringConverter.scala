@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object FormatStringConverter {
   implicit def sfxFormatStringConverter2jfx[T <: AnyRef](
       c: FormatStringConverter[T]): jfxuc.FormatStringConverter[T] =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 /**

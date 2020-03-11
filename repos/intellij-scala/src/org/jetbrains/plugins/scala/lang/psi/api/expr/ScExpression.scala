@@ -169,7 +169,8 @@ trait ScExpression
                       case _ => defaultResult
                     }
                 }
-              } else defaultResult
+              } else
+                defaultResult
             case _ => defaultResult
           }
         }
@@ -194,8 +195,10 @@ trait ScExpression
                 if etaExpansionHappened && retTp.equiv(Unit) =>
               val newTp =
                 ScFunctionType(Unit, params)(getProject, getResolveScope)
-              if (newTp.conforms(methodType)) expectedResult
-              else None
+              if (newTp.conforms(methodType))
+                expectedResult
+              else
+                None
             case _ => None
           }
         case _ => None
@@ -251,8 +254,10 @@ trait ScExpression
               checkExpectedType,
               fullInfo = false)
             res = tuple._1
-            if (fromUnderscore) implicitParametersFromUnder = tuple._2
-            else implicitParameters = tuple._2
+            if (fromUnderscore)
+              implicitParametersFromUnder = tuple._2
+            else
+              implicitParameters = tuple._2
           }
         }
 
@@ -319,7 +324,8 @@ trait ScExpression
 
         val valType = res.inferValueType.unpackedType
 
-        if (ignoreBaseTypes) Success(valType, Some(ScExpression.this))
+        if (ignoreBaseTypes)
+          Success(valType, Some(ScExpression.this))
         else {
           expectedType(fromUnderscore) match {
             case Some(expected) =>
@@ -349,7 +355,11 @@ trait ScExpression
                         case _          => scala.Int.MaxValue
                       }
                     case p: ScPrefixExpr =>
-                      val mult = if (p.operation.getText == "-") -1 else 1
+                      val mult =
+                        if (p.operation.getText == "-")
+                          -1
+                        else
+                          1
                       p.operand match {
                         case l: ScLiteral =>
                           l.getValue match {
@@ -379,8 +389,13 @@ trait ScExpression
                 None
               }
 
-              val check = if (needsNarrowing) checkNarrowing else None
-              if (check.isDefined) check.get
+              val check =
+                if (needsNarrowing)
+                  checkNarrowing
+                else
+                  None
+              if (check.isDefined)
+                check.get
               else {
                 //numeric widening
                 def checkWidening(
@@ -430,7 +445,8 @@ trait ScExpression
       case ref: ScReferenceExpression
           if ref.refName == ScImplicitlyConvertible.IMPLICIT_EXPRESSION_NAME =>
         val data = getUserData(ScImplicitlyConvertible.FAKE_EXPRESSION_TYPE_KEY)
-        if (data != null) return Success(data, Some(this))
+        if (data != null)
+          return Success(data, Some(this))
       case _ =>
     }
     getTypeAfterImplicitConversion().tr
@@ -509,10 +525,12 @@ trait ScExpression
   private def getNonValueTypeImpl(
       ignoreBaseType: Boolean,
       fromUnderscore: Boolean): TypeResult[ScType] = {
-    if (fromUnderscore) innerType(TypingContext.empty)
+    if (fromUnderscore)
+      innerType(TypingContext.empty)
     else {
       val unders = ScUnderScoreSectionUtil.underscores(ScExpression.this)
-      if (unders.isEmpty) innerType(TypingContext.empty)
+      if (unders.isEmpty)
+        innerType(TypingContext.empty)
       else {
         val params = unders.zipWithIndex.map {
           case (u, index) =>
@@ -545,7 +563,8 @@ trait ScExpression
       expr: ScExpression,
       removeParenthesis: Boolean): ScExpression = {
     val oldParent = getParent
-    if (oldParent == null) throw new PsiInvalidElementAccessException(this)
+    if (oldParent == null)
+      throw new PsiInvalidElementAccessException(this)
     if (removeParenthesis && oldParent.isInstanceOf[ScParenthesisedExpr]) {
       return oldParent
         .asInstanceOf[ScExpression]
@@ -555,7 +574,8 @@ trait ScExpression
       ScalaPsiElementFactory.createExpressionFromText(
         "(" + expr.getText + ")",
         getManager)
-    } else expr
+    } else
+      expr
     val parentNode = oldParent.getNode
     val newNode = newExpr.copy.getNode
     parentNode.replaceChild(this.getNode, newNode)
@@ -567,7 +587,8 @@ trait ScExpression
       case ref: ScMethodCall
           if ref.getText == ScImplicitlyConvertible.IMPLICIT_CALL_TEXT =>
         val data = getUserData(ScImplicitlyConvertible.FAKE_EXPECTED_TYPE_KEY)
-        if (data != null) return data
+        if (data != null)
+          return data
       case _ =>
     }
     expectedTypeEx(fromUnderscore).map(_._1)
@@ -637,13 +658,15 @@ trait ScExpression
         val resolve = ref.multiResolve(false)
         if (resolve.length == 1) {
           resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
-        } else None
+        } else
+          None
       case inf: ScInfixExpr
           if (inf.isLeftAssoc && this == inf.rOp) || (!inf.isLeftAssoc && this == inf.lOp) =>
         val resolve = inf.operation.multiResolve(false)
         if (resolve.length == 1) {
           resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
-        } else None
+        } else
+          None
       case call: ScMethodCall => call.getImplicitFunction
       case gen: ScGenerator =>
         gen.getParent match {
@@ -700,7 +723,9 @@ trait ScExpression
             if withBooleanInfix && (op == "&&" || op == "||") =>
           calculateReturns0(right)
         //TODO "!contains" is a quick fix, function needs unit testing to validate its behavior
-        case _ => if (!res.contains(el)) res += el
+        case _ =>
+          if (!res.contains(el))
+            res += el
       }
     }
     calculateReturns0(this)

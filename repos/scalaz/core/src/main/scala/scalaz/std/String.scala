@@ -29,10 +29,13 @@ trait StringFunctions {
     * is appended.
     */
   def plural(s: String, n: Long): String =
-    if (n == 1L) s
+    if (n == 1L)
+      s
     else if ((s endsWith "y") && (List("ay", "ey", "iy", "oy", "uy") forall (!s
-               .endsWith(_)))) s.take(s.length - 1) + "ies"
-    else s + "s"
+               .endsWith(_))))
+      s.take(s.length - 1) + "ies"
+    else
+      s + "s"
 
   /**
     * Constructs a non-empty list with the value if it is not empty, otherwise, throws an error.

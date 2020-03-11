@@ -8,7 +8,8 @@ object Test {
 
     def updateM[M[_]](ms: M[A], update: (M[A], A) => M[A]): M[A] = {
       var is = ms
-      for (i <- 0 until num) is = update(is, i)
+      for (i <- 0 until num)
+        is = update(is, i)
       is
     }
 
@@ -41,7 +42,8 @@ object Test {
   } // BenchmarkA
 
   def comparison(num: Int): Unit = {
-    for (i <- 1 until 5) benchmarkA(num * i)
+    for (i <- 1 until 5)
+      benchmarkA(num * i)
     println(">> comparison done, num: " + num);
   }
 

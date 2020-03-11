@@ -22,8 +22,10 @@ object Macros {
       }
       def showCtor(sym: Symbol): String = {
         fullyInitializeSymbol(sym)
-        if (sym == NoSymbol) "NoSymbol"
-        else s"${defString(sym)} => ${sym.asMethod.isPrimaryConstructor}"
+        if (sym == NoSymbol)
+          "NoSymbol"
+        else
+          s"${defString(sym)} => ${sym.asMethod.isPrimaryConstructor}"
       }
       sym.info
       println(sym.toString)

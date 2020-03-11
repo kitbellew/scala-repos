@@ -65,8 +65,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         * important *when* the substitution happens (can't accumulate and do at once after the full matcher has been constructed)
         */
       def substitution: Substitution =
-        if (currSub eq null) localSubstitution
-        else currSub
+        if (currSub eq null)
+          localSubstitution
+        else
+          currSub
 
       protected def localSubstitution: Substitution
 
@@ -80,7 +82,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 currSub,
                 outerSubst)))
           Thread.dumpStack()
-        } else currSub = outerSubst >> substitution
+        } else
+          currSub = outerSubst >> substitution
       }
       private[this] var currSub: Substitution = null
 
@@ -170,8 +173,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       // sub patterns bound to wildcard (_) are never stored as they can't be referenced
       // dirty debuggers will have to get dirty to see the wildcards
       lazy val storedBinders: Set[Symbol] =
-        (if (debugInfoEmitVars) subPatBinders.toSet
-         else Set.empty) ++ extraStoredBinders -- ignoredSubPatBinders
+        (if (debugInfoEmitVars)
+           subPatBinders.toSet
+         else
+           Set.empty) ++ extraStoredBinders -- ignoredSubPatBinders
 
       // e.g., mutable fields of a case class in ProductExtractorTreeMaker
       def extraStoredBinders: Set[Symbol]
@@ -184,7 +189,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         }
 
       protected lazy val localSubstitution: Substitution =
-        if (!emitVars) Substitution(subPatBinders, subPatRefs)
+        if (!emitVars)
+          Substitution(subPatBinders, subPatRefs)
         else {
           val (subPatBindersSubstituted, subPatRefsSubstituted) = substed.unzip
           Substitution(
@@ -203,14 +209,16 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           subPatRefs) >> super.subPatternsAsSubstitution
 
       def bindSubPats(in: Tree): Tree =
-        if (!emitVars) in
+        if (!emitVars)
+          in
         else {
           // binders in `subPatBindersStored` that are referenced by tree `in`
           val usedBinders = new mutable.HashSet[Symbol]()
           // all potentially stored subpat binders
           val potentiallyStoredBinders = stored.unzip._1.toSet
           def ref(sym: Symbol) =
-            if (potentiallyStoredBinders(sym)) usedBinders += sym
+            if (potentiallyStoredBinders(sym))
+              usedBinders += sym
           // compute intersection of all symbols in the tree `in` and all potentially stored subpat binders
           in.foreach {
             case tt: TypeTree =>
@@ -221,7 +229,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             case t => ref(t.symbol)
           }
 
-          if (usedBinders.isEmpty) in
+          if (usedBinders.isEmpty)
+            in
           else {
             // only store binders actually used
             val (subPatBindersStored, subPatRefsStored) = stored.filter {
@@ -284,7 +293,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         atPos(extractor.pos)(
           if (extractorReturnsBoolean)
             casegen.flatMapCond(extractor, CODE.UNIT, nextBinder, condAndNext)
-          else casegen.flatMap(extractor, nextBinder, condAndNext)
+          else
+            casegen.flatMap(extractor, nextBinder, condAndNext)
         )
       }
 
@@ -333,7 +343,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       def chainBefore(next: Tree)(casegen: Casegen): Tree = {
         val nullCheck = REF(prevBinder) OBJ_NE NULL
         val cond =
-          if (binderKnownNonNull) extraCond
+          if (binderKnownNonNull)
+            extraCond
           else
             (extraCond map (nullCheck AND _)
               orElse Some(nullCheck))
@@ -413,14 +424,17 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             def isStatic(tp: Type): Boolean =
               if (tp == NoType || tp.typeSymbol.isPackageClass || tp == NoPrefix)
                 true
-              else if (tp.typeSymbol.isModuleClass) isStatic(tp.prefix)
-              else false
+              else if (tp.typeSymbol.isModuleClass)
+                isStatic(tp.prefix)
+              else
+                false
             tp.typeSymbol.owner == tp.prefix.typeSymbol && isStatic(tp.prefix)
           }
 
           if ((expectedPrefix eq NoPrefix)
               || definedInStaticLocation(expectedTp)
-              || testedPrefix =:= expectedPrefix) orig
+              || testedPrefix =:= expectedPrefix)
+            orig
           else
             gen.mkAttributedQualifierIfPossible(expectedPrefix) match {
               case None                   => orig
@@ -544,11 +558,14 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         // If we do not conform to expected type:
         //   have to test type and outer (non-null is implied by successful type test)
         def mkDefault = (
-          if (isExpectedPrimitiveType) tru
+          if (isExpectedPrimitiveType)
+            tru
           else
             addOuterTest(
-              if (isExpectedReferenceType) mkNullTest
-              else mkTypeTest
+              if (isExpectedReferenceType)
+                mkNullTest
+              else
+                mkTypeTest
             )
         )
 
@@ -558,7 +575,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         // I think it's okay:
         //  - the isInstanceOf test includes a test for the element type
         //  - Scala's arrays are invariant (so we don't drop type tests unsoundly)
-        if (extractorArgTypeTest) mkDefault
+        if (extractorArgTypeTest)
+          mkDefault
         else
           expectedTp match {
             case SingleType(_, sym) =>
@@ -707,7 +725,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             .mkString("{", "\n", "}")))
 
         val (suppression, requireSwitch): (Suppression, Boolean) =
-          if (settings.XnoPatmatAnalysis) (Suppression.FullSuppression, false)
+          if (settings.XnoPatmatAnalysis)
+            (Suppression.FullSuppression, false)
           else
             scrut match {
               case Typed(tree, tpt) =>
@@ -768,8 +787,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     val nonTrivLast = casesNoSubstOnly.last
                     nonTrivLast.nonEmpty && nonTrivLast.head
                       .isInstanceOf[BodyTreeMaker]
-                  }) None
-              else matchFailGen
+                  })
+                None
+              else
+                matchFailGen
 
             analyzeCases(scrutSym, casesNoSubstOnly, pt, suppression)
 
@@ -779,7 +800,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               cases map combineExtractors,
               synthCatchAll)
 
-            if (toHoist isEmpty) matchRes else Block(toHoist, matchRes)
+            if (toHoist isEmpty)
+              matchRes
+            else
+              Block(toHoist, matchRes)
           } else {
             codegen.matcher(scrut, scrutSym, pt)(Nil, matchFailGen)
           }

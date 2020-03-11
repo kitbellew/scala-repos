@@ -103,8 +103,10 @@ abstract class BasicDirectives extends BasicDirectivesBase {
     val saExtractions = extractions.collect {
       case sa: StandaloneExtractionImpl[_] ⇒ sa
     }
-    if (saExtractions.isEmpty) route
-    else extractHere(saExtractions: _*).route(route)
+    if (saExtractions.isEmpty)
+      route
+    else
+      extractHere(saExtractions: _*).route(route)
   }
 
   /**
@@ -200,7 +202,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           ctx.completeWith(v.asInstanceOf[Future[RouteResult]].toJava)
         else if (returnsCompletionStage(method))(ctx, v) =>
           ctx.completeWith(v.asInstanceOf[CompletionStage[RouteResult]])
-        else (_, v) ⇒ v.asInstanceOf[RouteResult]
+        else
+          (_, v) ⇒ v.asInstanceOf[RouteResult]
 
       val IdentityAdaptor: (RequestContext, Seq[Any]) ⇒ Seq[Any] = (_, ps) ⇒ ps
       def methodInvocator(
@@ -208,7 +211,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           adaptParams: (RequestContext, Seq[Any]) ⇒ Seq[Any])
           : (RequestContext, Seq[Any]) ⇒ RouteResult = {
         val resultAdaptor = adaptResult(method)
-        if (!method.isAccessible) method.setAccessible(true)
+        if (!method.isAccessible)
+          method.setAccessible(true)
         if (adaptParams == IdentityAdaptor)(ctx, params) ⇒
           resultAdaptor(
             ctx,

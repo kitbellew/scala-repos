@@ -13,11 +13,17 @@ trait ArbitraryTreesAndNames {
   def shortIdent(len: Int) =
     for (name <- identifier)
       yield
-        if (name.length <= len) name
-        else name.substring(0, len - 1)
+        if (name.length <= len)
+          name
+        else
+          name.substring(0, len - 1)
 
-  def genTermName = for (name <- shortIdent(8)) yield TermName(name)
-  def genTypeName = for (name <- shortIdent(8)) yield TypeName(name)
+  def genTermName =
+    for (name <- shortIdent(8))
+      yield TermName(name)
+  def genTypeName =
+    for (name <- shortIdent(8))
+      yield TypeName(name)
   def genName = oneOf(genTermName, genTypeName)
 
   def genFlagSet = oneOf(
@@ -46,7 +52,9 @@ trait ArbitraryTreesAndNames {
     DEFAULTINIT
   )
 
-  def genModifiers = for (flagset <- genFlagSet) yield Modifiers(flagset)
+  def genModifiers =
+    for (flagset <- genFlagSet)
+      yield Modifiers(flagset)
 
   def genConstant =
     for (value <- oneOf(
@@ -140,7 +148,8 @@ trait ArbitraryTreesAndNames {
       yield Function(vparams, body)
 
   def genIdent(nameGen: Gen[Name] = genName) =
-    for (name <- nameGen) yield Ident(name)
+    for (name <- nameGen)
+      yield Ident(name)
 
   def genIf(size: Int) =
     for (cond <- genTree(size - 1);
@@ -173,7 +182,8 @@ trait ArbitraryTreesAndNames {
       yield LabelDef(name, params, rhs)
 
   def genLiteral =
-    for (const <- genConstant) yield Literal(const)
+    for (const <- genConstant)
+      yield Literal(const)
 
   def genMatch(size: Int) =
     for (selector <- genTree(size - 1);
@@ -303,7 +313,8 @@ trait ArbitraryTreesAndNames {
       )
 
   def genTreeIsTerm(size: Int): Gen[Tree] =
-    if (size <= 1) oneOf(genLiteral, genIdent(genTermName))
+    if (size <= 1)
+      oneOf(genLiteral, genIdent(genTermName))
     else
       oneOf(
         genTreeIsTerm(1),
@@ -332,7 +343,8 @@ trait ArbitraryTreesAndNames {
       )
 
   def genTreeIsType(size: Int): Gen[Tree] =
-    if (size <= 1) genIdent(genTypeName)
+    if (size <= 1)
+      genIdent(genTypeName)
     else
       oneOf(
         genTreeIsType(1),
@@ -361,10 +373,12 @@ trait ArbitraryTreesAndNames {
   }
 
   def genTreeIsTermWrapped(size: Int) =
-    for (tit <- genTreeIsTerm(size)) yield TreeIsTerm(tit)
+    for (tit <- genTreeIsTerm(size))
+      yield TreeIsTerm(tit)
 
   def genTreeIsTypeWrapped(size: Int) =
-    for (tit <- genTreeIsType(size)) yield TreeIsType(tit)
+    for (tit <- genTreeIsType(size))
+      yield TreeIsType(tit)
 
   implicit val liftTreeIsTerm = Liftable[TreeIsTerm] {
     _.tree

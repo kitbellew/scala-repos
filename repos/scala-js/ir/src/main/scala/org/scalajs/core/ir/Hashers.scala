@@ -11,7 +11,8 @@ import Tags._
 object Hashers {
 
   def hashMethodDef(methodDef: MethodDef): MethodDef = {
-    if (methodDef.hash.isDefined) methodDef
+    if (methodDef.hash.isDefined)
+      methodDef
     else {
       val hasher = new TreeHasher()
       val MethodDef(static, name, args, resultType, body) = methodDef
@@ -51,7 +52,10 @@ object Hashers {
 
   def hashAsVersion(hash: TreeHash, considerPos: Boolean): String = {
     // 2 chars per byte, 20 bytes per hash
-    val size = 2 * (if (considerPos) 2 else 1) * 20
+    val size = 2 * (if (considerPos)
+                      2
+                    else
+                      1) * 20
     val builder = new StringBuilder(size)
 
     def hexDigit(digit: Int): Char = Character.forDigit(digit, 16)

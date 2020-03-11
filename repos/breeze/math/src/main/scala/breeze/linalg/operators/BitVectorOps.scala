@@ -190,7 +190,8 @@ trait BitVectorOps {
       T] {
       def apply(a: BitVector, b: SparseVector[T]): T = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
-        if (b.activeSize == 0) return zero
+        if (b.activeSize == 0)
+          return zero
 
         val ad = a.data
         var boff = 0

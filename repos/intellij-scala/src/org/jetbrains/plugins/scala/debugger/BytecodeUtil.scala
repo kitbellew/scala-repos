@@ -57,7 +57,8 @@ private[debugger] object BytecodeUtil {
   }
 
   def readIstore(codeIndex: Int, bytecodes: Array[Byte]): Seq[Byte] = {
-    if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
+    if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
+      return Nil
     bytecodes(codeIndex) match {
       case c @ (`istore_0` | `istore_1` | `istore_2` | `istore_3`) => Seq(c)
       case `istore`                                                => Seq(istore, bytecodes(codeIndex + 1))
@@ -66,7 +67,8 @@ private[debugger] object BytecodeUtil {
   }
 
   def readIload(codeIndex: Int, bytecodes: Array[Byte]): Seq[Byte] = {
-    if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
+    if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
+      return Nil
     bytecodes(codeIndex) match {
       case c @ (`iload_0` | `iload_1` | `iload_2` | `iload_3`) => Seq(c)
       case `iload`                                             => Seq(iload, bytecodes(codeIndex + 1))
@@ -75,23 +77,29 @@ private[debugger] object BytecodeUtil {
   }
 
   def readStoreCode(codeIndex: Int, bytecodes: Array[Byte]): Seq[Byte] = {
-    if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
+    if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
+      return Nil
 
     val bytecode = bytecodes(codeIndex)
-    if (oneByteStoreCodes contains bytecode) Seq(bytecode)
+    if (oneByteStoreCodes contains bytecode)
+      Seq(bytecode)
     else if (twoBytesStoreCodes contains bytecode)
       Seq(bytecode, bytecodes(codeIndex + 1))
-    else Nil
+    else
+      Nil
   }
 
   def readLoadCode(codeIndex: Int, bytecodes: Array[Byte]): Seq[Byte] = {
-    if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
+    if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
+      return Nil
 
     val bytecode = bytecodes(codeIndex)
-    if (oneByteLoadCodes contains bytecode) Seq(bytecode)
+    if (oneByteLoadCodes contains bytecode)
+      Seq(bytecode)
     else if (twoBytesLoadCodes contains bytecode)
       Seq(bytecode, bytecodes(codeIndex + 1))
-    else Nil
+    else
+      Nil
   }
 
   def loadCode(storeCode: Seq[Byte]): Seq[Byte] = {
@@ -104,7 +112,9 @@ private[debugger] object BytecodeUtil {
   }
 
   def isIconst_0(codeIndex: Int, bytecodes: Array[Byte]) = {
-    if (codeIndex < 0 || codeIndex > bytecodes.length - 1) false
-    else bytecodes(codeIndex) == iconst_0
+    if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
+      false
+    else
+      bytecodes(codeIndex) == iconst_0
   }
 }

@@ -39,8 +39,10 @@ private object AnalysisBuilder {
                       if (analysis.emptyRatio >= 1d / 10)
                         fufail(
                           s"Analysis $debug has ${analysis.nbEmptyInfos} empty infos out of ${analysis.infos.size}")
-                      else fuccess(analysis)
-                    } else fufail(s"[analysis] Analysis $debug is empty")
+                      else
+                        fuccess(analysis)
+                    } else
+                      fufail(s"[analysis] Analysis $debug is empty")
                 }
             )
         }
@@ -66,7 +68,10 @@ private object AnalysisBuilder {
           mate = after.score.mate,
           variation = variation,
           best = best)
-        if (info.ply % 2 == 1) info.invert else info
+        if (info.ply % 2 == 1)
+          info.invert
+        else
+          info
       }
     }
 

@@ -25,12 +25,18 @@ object HttpEncodingRange {
   case class `*`(qValue: Float) extends HttpEncodingRange {
     require(0.0f <= qValue && qValue <= 1.0f, "qValue must be >= 0 and <= 1.0")
     final def render[R <: Rendering](r: R): r.type =
-      if (qValue < 1.0f) r ~~ "*;q=" ~~ qValue else r ~~ '*'
+      if (qValue < 1.0f)
+        r ~~ "*;q=" ~~ qValue
+      else
+        r ~~ '*'
     def matches(encoding: HttpEncoding) = true
     def withQValue(qValue: Float) =
-      if (qValue == 1.0f) `*`
-      else if (qValue != this.qValue) `*`(qValue.toFloat)
-      else this
+      if (qValue == 1.0f)
+        `*`
+      else if (qValue != this.qValue)
+        `*`(qValue.toFloat)
+      else
+        this
   }
   object `*` extends `*`(1.0f)
 
@@ -41,7 +47,10 @@ object HttpEncodingRange {
       this.encoding.value.equalsIgnoreCase(encoding.value)
     def withQValue(qValue: Float) = One(encoding, qValue)
     def render[R <: Rendering](r: R): r.type =
-      if (qValue < 1.0f) r ~~ encoding ~~ ";q=" ~~ qValue else r ~~ encoding
+      if (qValue < 1.0f)
+        r ~~ encoding ~~ ";q=" ~~ qValue
+      else
+        r ~~ encoding
   }
 
   implicit def apply(encoding: HttpEncoding): HttpEncodingRange =

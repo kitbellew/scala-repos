@@ -277,7 +277,8 @@ class VM(
         if (tpe.name().matches("^scala\\.runtime\\.[A-Z][a-z]+Ref$")) {
           val elemField = tpe.fieldByName("elem")
           valueSummary(v.getValue(elemField))
-        } else "Instance of " + lastNameComponent(v.referenceType().name())
+        } else
+          "Instance of " + lastNameComponent(v.referenceType().name())
       case _ => "NA"
     }
   }
@@ -327,7 +328,8 @@ class VM(
         var tpe = tpeIn
         while (tpe != null && result.isEmpty) {
           for (f <- tpe.fields()) {
-            if (f.name() == name) result = Some(f)
+            if (f.name() == name)
+              result = Some(f)
           }
           tpe = tpe.superclass
         }
@@ -372,7 +374,8 @@ class VM(
   private def makeDebugNull(): DebugNullValue = DebugNullValue("Null")
 
   private def makeDebugValue(value: Value): DebugValue = {
-    if (value == null) makeDebugNull()
+    if (value == null)
+      makeDebugNull()
     else {
       value match {
         case v: ArrayReference  => makeDebugArr(v)
@@ -463,7 +466,11 @@ class VM(
       location: DebugLocation): Option[String] = {
     valueAtLocation(location) match {
       case Some(arr: ArrayReference) =>
-        val quantifier = if (arr.length == 1) "element" else "elements"
+        val quantifier =
+          if (arr.length == 1)
+            "element"
+          else
+            "elements"
         Some("<array of " + arr.length + " " + quantifier + ">")
       case Some(str: StringReference) =>
         Some(str.value)
@@ -496,9 +503,10 @@ class VM(
       objectId: DebugObjectId,
       name: String): Option[Value] = {
     for (obj <- savedObjects.get(objectId);
-         f <- fieldByName(obj, name)) yield {
-      remember(obj.getValue(f))
-    }
+         f <- fieldByName(obj, name))
+      yield {
+        remember(obj.getValue(f))
+      }
   }
 
   private def valueForIndex(
@@ -519,7 +527,8 @@ class VM(
       val stackFrame = thread.frame(frame)
       val value = stackFrame.getValue(stackFrame.visibleVariables.get(offset))
       Some(remember(value))
-    } else None
+    } else
+      None
   }
 
   case class StackSlot(frame: Int, offset: Int)
@@ -620,10 +629,12 @@ class VM(
         case tpe: ReferenceType if tpe.name == "java.lang.String" =>
           if (s.startsWith("\"") && s.endsWith("\"")) {
             Some(vm.mirrorOf(s.substring(1, s.length - 1)))
-          } else Some(vm.mirrorOf(s))
+          } else
+            Some(vm.mirrorOf(s))
         case _ => None
       }
-    } else None
+    } else
+      None
   }
 
   def setStackVar(
@@ -641,7 +652,8 @@ class VM(
           true
         case None => false
       }
-    } else false
+    } else
+      false
   }
 
 }

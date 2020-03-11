@@ -32,8 +32,10 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
   private[this] def source(): Future[Buf] = Future.value(buf)
 
   private[this] def runControl(n: Int): Future[Boolean] =
-    if (n <= 1) source().flatMap(sink)
-    else source().flatMap(sink).flatMap(_ => runControl(n - 1))
+    if (n <= 1)
+      source().flatMap(sink)
+    else
+      source().flatMap(sink).flatMap(_ => runControl(n - 1))
 
   /**
     * The control benchmark.
@@ -45,12 +47,16 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     Await.result(runControl(size))
 
   private[this] def feedQueue(n: Int): Future[Unit] =
-    if (n <= 0) Future.Done
-    else source().map(q.offer).flatMap(_ => feedQueue(n - 1))
+    if (n <= 0)
+      Future.Done
+    else
+      source().map(q.offer).flatMap(_ => feedQueue(n - 1))
 
   private[this] def consumeQueue(n: Int): Future[Boolean] =
-    if (n <= 1) q.poll().flatMap(sink)
-    else q.poll().flatMap(sink).flatMap(_ => consumeQueue(n - 1))
+    if (n <= 1)
+      q.poll().flatMap(sink)
+    else
+      q.poll().flatMap(sink).flatMap(_ => consumeQueue(n - 1))
 
   @Benchmark
   def asyncQueue: Boolean =
@@ -68,9 +74,12 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     })
 
   private[this] def mkAsyncStream(n: Int): AsyncStream[Buf] =
-    if (n <= 0) AsyncStream.empty
-    else if (n == 1) AsyncStream.fromFuture(source())
-    else AsyncStream.fromFuture(source()) ++ mkAsyncStream(n - 1)
+    if (n <= 0)
+      AsyncStream.empty
+    else if (n == 1)
+      AsyncStream.fromFuture(source())
+    else
+      AsyncStream.fromFuture(source()) ++ mkAsyncStream(n - 1)
 
   @Benchmark
   def asyncStream: Boolean =
@@ -89,12 +98,16 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     })
 
   private[this] def feedBroker(n: Int): Future[Unit] =
-    if (n <= 0) Future.Done
-    else source().flatMap(b.send(_).sync()) before feedBroker(n - 1)
+    if (n <= 0)
+      Future.Done
+    else
+      source().flatMap(b.send(_).sync()) before feedBroker(n - 1)
 
   private[this] def consumeBroker(n: Int): Future[Boolean] =
-    if (n <= 1) b.recv.sync().flatMap(sink)
-    else b.recv.sync().flatMap(sink).flatMap(_ => consumeBroker(n - 1))
+    if (n <= 1)
+      b.recv.sync().flatMap(sink)
+    else
+      b.recv.sync().flatMap(sink).flatMap(_ => consumeBroker(n - 1))
 
   @Benchmark
   def broker: Boolean =
@@ -107,12 +120,16 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     })
 
   private[this] def feedReader(n: Int): Future[Unit] =
-    if (n <= 0) Future.Done
-    else source().flatMap(r.write) before feedReader(n - 1)
+    if (n <= 0)
+      Future.Done
+    else
+      source().flatMap(r.write) before feedReader(n - 1)
 
   private[this] def consumeReader(n: Int): Future[Boolean] =
-    if (n <= 1) r.read(Int.MaxValue).flatMap(sink)
-    else r.read(Int.MaxValue).flatMap(sink).flatMap(_ => consumeReader(n - 1))
+    if (n <= 1)
+      r.read(Int.MaxValue).flatMap(sink)
+    else
+      r.read(Int.MaxValue).flatMap(sink).flatMap(_ => consumeReader(n - 1))
 
   @Benchmark
   def reader: Boolean =
@@ -126,13 +143,16 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
 
   import Spool.*::
   private[this] def mkSpool(n: Int): Future[Spool[Buf]] =
-    if (n <= 0) Future.value(Spool.empty)
-    else source().map(_ *:: mkSpool(n - 1))
+    if (n <= 0)
+      Future.value(Spool.empty)
+    else
+      source().map(_ *:: mkSpool(n - 1))
 
   private[this] def consumeSpool[A](
       spool: Spool[A],
       b: Boolean): Future[Boolean] =
-    if (spool.isEmpty) Future.value(b)
+    if (spool.isEmpty)
+      Future.value(b)
     else
       sink(spool.head).flatMap { newB =>
         spool.tail.flatMap { tail =>

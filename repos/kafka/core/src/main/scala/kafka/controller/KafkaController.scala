@@ -258,7 +258,11 @@ class KafkaController(
   newGauge(
     "ActiveControllerCount",
     new Gauge[Int] {
-      def value() = if (isActive) 1 else 0
+      def value() =
+        if (isActive)
+          1
+        else
+          0
     }
   )
 
@@ -1047,7 +1051,8 @@ class KafkaController(
               .partitionLeadershipInfo(partition)
               .leaderAndIsr
               .leader == replicasOpt.get.head
-          else false
+          else
+            false
         successful || topicDeleted
       }
     controllerContext.partitionsUndergoingPreferredReplicaElection ++= partitionsUndergoingPreferredReplicaElection
@@ -1074,8 +1079,10 @@ class KafkaController(
           controllerContext.partitionReplicaAssignment.get(partition._1)
         val topicDeleted = replicasOpt.isEmpty
         val successful =
-          if (!topicDeleted) replicasOpt.get == partition._2.newReplicas
-          else false
+          if (!topicDeleted)
+            replicasOpt.get == partition._2.newReplicas
+          else
+            false
         topicDeleted || successful
       }
       .map(_._1)
@@ -1527,7 +1534,7 @@ class KafkaController(
         .getLeaderIsrAndEpochForPartition(zkUtils, topic, partition)
       zkWriteCompleteOrUnnecessary = leaderIsrAndEpochOpt match {
         case Some(
-            leaderIsrAndEpoch
+              leaderIsrAndEpoch
             ) => // increment the leader epoch even if the ISR changes
           val leaderAndIsr = leaderIsrAndEpoch.leaderAndIsr
           val controllerEpoch = leaderIsrAndEpoch.controllerEpoch
@@ -1541,8 +1548,10 @@ class KafkaController(
           if (leaderAndIsr.isr.contains(replicaId)) {
             // if the replica to be removed from the ISR is also the leader, set the new leader value to -1
             val newLeader =
-              if (replicaId == leaderAndIsr.leader) LeaderAndIsr.NoLeader
-              else leaderAndIsr.leader
+              if (replicaId == leaderAndIsr.leader)
+                LeaderAndIsr.NoLeader
+              else
+                leaderAndIsr.leader
             var newIsr = leaderAndIsr.isr.filter(b => b != replicaId)
 
             // if the replica to be removed from the ISR is the last surviving member of the ISR and unclean leader election
@@ -1873,7 +1882,7 @@ class ReassignedPartitionsIsrChangeListener(
               zkUtils.getLeaderAndIsrForPartition(topic, partition)
             newLeaderAndIsrOpt match {
               case Some(
-                  leaderAndIsr
+                    leaderAndIsr
                   ) => // check if new replicas have joined ISR
                 val caughtUpReplicas =
                   reassignedReplicas & leaderAndIsr.isr.toSet

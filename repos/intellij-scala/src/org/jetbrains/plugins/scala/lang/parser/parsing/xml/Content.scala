@@ -40,7 +40,8 @@ object Content {
       var isReturn = false
       if (!XmlContent.parse(builder) &&
           !Reference.parse(builder) &&
-          !ScalaExpr.parse(builder) && !patcher.parse(builder)) isReturn = true
+          !ScalaExpr.parse(builder) && !patcher.parse(builder))
+        isReturn = true
       builder.getTokenType match {
         case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>
           builder.advanceLexer()
@@ -48,7 +49,8 @@ object Content {
           builder.advanceLexer()
         case ScalaXmlTokenTypes.XML_ENTITY_REF_TOKEN => builder.advanceLexer()
         case _ =>
-          if (isReturn) return
+          if (isReturn)
+            return
       }
       subparse()
     }

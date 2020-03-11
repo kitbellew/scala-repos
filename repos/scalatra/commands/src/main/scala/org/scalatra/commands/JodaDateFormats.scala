@@ -27,7 +27,10 @@ object JodaDateFormats extends DateParser {
 
   def apply(f: DateFormat*): DateParser = new DateParser {
     def parse(s: String) = f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒
-      if (!r.isDefined) f.parse(s) else r
+      if (!r.isDefined)
+        f.parse(s)
+      else
+        r
     }
   }
 

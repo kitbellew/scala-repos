@@ -97,8 +97,10 @@ object MongoAPIKeyManager extends Logging {
       })
 
     (
-      if (cached) new CachingAPIKeyManager(mongoAPIKeyManager)
-      else mongoAPIKeyManager,
+      if (cached)
+        new CachingAPIKeyManager(mongoAPIKeyManager)
+      else
+        mongoAPIKeyManager,
       dbStop)
   }
 
@@ -342,8 +344,10 @@ class MongoAPIKeyManager(
 
   def removeGrants(apiKey: APIKey, remove: Set[GrantId]) =
     updateAPIKey(apiKey) { r =>
-      if (remove.subsetOf(r.grants)) Some(r.copy(grants = r.grants -- remove))
-      else None
+      if (remove.subsetOf(r.grants))
+        Some(r.copy(grants = r.grants -- remove))
+      else
+        None
     }
 
   private def updateAPIKey(apiKey: APIKey)(

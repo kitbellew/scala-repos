@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Arc {
   implicit def sfxArc2jfx(v: Arc): jfxss.Arc =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(
       centerX: Double,

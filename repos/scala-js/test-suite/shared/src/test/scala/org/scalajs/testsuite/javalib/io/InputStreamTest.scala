@@ -24,7 +24,8 @@ class InputStreamTest extends CommonStreamsTests {
       if (i < length) {
         i += 1;
         i
-      } else -1
+      } else
+        -1
   }
 
   @Test def should_provide_a_default_implementation_of_read_to_an_array()

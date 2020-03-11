@@ -78,7 +78,8 @@ class DataSourceJdbcDataSource(
       }
     }
     val c = ds.getConnection
-    if (connectionPreparer ne null) connectionPreparer(c)
+    if (connectionPreparer ne null)
+      connectionPreparer(c)
     c
   }
 
@@ -158,7 +159,8 @@ trait DriverBasedJdbcDataSource extends JdbcDataSource {
     if (registeredDriver ne null) {
       DriverManager.deregisterDriver(registeredDriver);
       true
-    } else false
+    } else
+      false
 }
 
 /** A JdbcDataSource for lookup via a `Driver` or the `DriverManager` */
@@ -175,14 +177,18 @@ class DriverJdbcDataSource(
     extends DriverBasedJdbcDataSource {
   private[this] var openedKeepAliveConnection: Connection = null
 
-  if (driver eq null) registerDriver(driverName, url)
+  if (driver eq null)
+    registerDriver(driverName, url)
 
   val connectionProps =
-    if (prop.ne(null) && user.eq(null) && password.eq(null)) prop
+    if (prop.ne(null) && user.eq(null) && password.eq(null))
+      prop
     else {
       val p = new Properties(prop)
-      if (user ne null) p.setProperty("user", user)
-      if (password ne null) p.setProperty("password", password)
+      if (user ne null)
+        p.setProperty("user", user)
+      if (password ne null)
+        p.setProperty("password", password)
       p
     }
 
@@ -198,7 +204,8 @@ class DriverJdbcDataSource(
 
   protected[this] def internalCreateConnection(): Connection = {
     val conn =
-      (if (driver eq null) DriverManager.getConnection(url, connectionProps)
+      (if (driver eq null)
+         DriverManager.getConnection(url, connectionProps)
        else {
          val conn = driver.connect(url, connectionProps)
          if (conn eq null)
@@ -207,12 +214,14 @@ class DriverJdbcDataSource(
              "08001")
          conn
        })
-    if (connectionPreparer ne null) connectionPreparer(conn)
+    if (connectionPreparer ne null)
+      connectionPreparer(conn)
     conn
   }
 
   def close(): Unit = if (keepAliveConnection) {
-    if (openedKeepAliveConnection ne null) openedKeepAliveConnection.close()
+    if (openedKeepAliveConnection ne null)
+      openedKeepAliveConnection.close()
   }
 }
 
@@ -231,7 +240,10 @@ object DriverJdbcDataSource extends JdbcDataSourceFactory {
       c.getPropertiesOr("properties"),
       c.getStringOr("driver", c.getStringOr("driverClassName")),
       driver,
-      if (cp.isLive) cp else null,
+      if (cp.isLive)
+        cp
+      else
+        null,
       c.getBooleanOr("keepAliveConnection"))
   }
 }

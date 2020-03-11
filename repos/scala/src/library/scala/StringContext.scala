@@ -184,8 +184,10 @@ object StringContext {
         s"""invalid escape ${
           require(index >= 0 && index < str.length)
           val ok = """[\b, \t, \n, \f, \r, \\, \", \']"""
-          if (index == str.length - 1) "at terminal"
-          else s"'\\${str(index + 1)}' not one of $ok at"
+          if (index == str.length - 1)
+            "at terminal"
+          else
+            s"'\\${str(index + 1)}' not one of $ok at"
         } index $index in "$str". Use \\\\ for literal \\."""
       )
 
@@ -212,9 +214,11 @@ object StringContext {
       @tailrec def loop(i: Int, next: Int): String = {
         if (next >= 0) {
           //require(str(next) == '\\')
-          if (next > i) b.append(str, i, next)
+          if (next > i)
+            b.append(str, i, next)
           var idx = next + 1
-          if (idx >= len) throw new InvalidEscapeException(str, next)
+          if (idx >= len)
+            throw new InvalidEscapeException(str, next)
           val c = str(idx) match {
             case 'b'  => '\b'
             case 't'  => '\t'
@@ -225,7 +229,8 @@ object StringContext {
             case '\'' => '\''
             case '\\' => '\\'
             case o if '0' <= o && o <= '7' =>
-              if (strict) throw new InvalidEscapeException(str, next)
+              if (strict)
+                throw new InvalidEscapeException(str, next)
               val leadch = str(idx)
               var oct = leadch - '0'
               idx += 1
@@ -246,7 +251,8 @@ object StringContext {
           b append c
           loop(idx, str.indexOf('\\', idx))
         } else {
-          if (i < len) b.append(str, i, len)
+          if (i < len)
+            b.append(str, i, len)
           b.toString
         }
       }

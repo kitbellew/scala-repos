@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
   */
 class ScalaLiteralEvaluator(value: AnyRef, tp: ScType) extends Evaluator {
   def evaluate(context: EvaluationContextImpl): AnyRef = {
-    if (value == null) return null
+    if (value == null)
+      return null
     val vm = context.getDebugProcess.getVirtualMachineProxy
     value match {
       case s: String => vm.mirrorOf(s)

@@ -88,7 +88,11 @@ trait CompletionControl {
       logger.warn("completionsAt request has point outside of file")
       CompletionInfoList("", List.empty)
     } else {
-      val maxResults = if (maxResultsArg == 0) Int.MaxValue else maxResultsArg
+      val maxResults =
+        if (maxResultsArg == 0)
+          Int.MaxValue
+        else
+          maxResultsArg
 
       val preceding = inputP.source.content.slice(
         Math.max(0, inputP.point - 100),
@@ -141,7 +145,11 @@ trait CompletionControl {
                       constructing = true))
                 case Select(qual, name)
                     if qual.pos.isDefined && qual.pos.isRange =>
-                  val prefix = if (patched) "" else name.decoded
+                  val prefix =
+                    if (patched)
+                      ""
+                    else
+                      name.decoded
                   Some(
                     MemberContext(
                       src,
@@ -150,7 +158,8 @@ trait CompletionControl {
                       constructing))
                 case _ =>
                   val prefix =
-                    if (patched) ""
+                    if (patched)
+                      ""
                     else
                       src.content
                         .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
@@ -234,16 +243,24 @@ trait CompletionControl {
     ): List[CompletionInfo] = {
 
       var score = 0
-      if (sym.nameString.startsWith(context.prefix)) score += 10
-      if (!inherited) score += 10
-      if (!sym.hasPackageFlag) score += 10
-      if (!sym.isType) score += 10
-      if (sym.isLocalToBlock) score += 10
-      if (sym.isPublic) score += 10
-      if (viaView == NoSymbol) score += 10
+      if (sym.nameString.startsWith(context.prefix))
+        score += 10
+      if (!inherited)
+        score += 10
+      if (!sym.hasPackageFlag)
+        score += 10
+      if (!sym.isType)
+        score += 10
+      if (sym.isLocalToBlock)
+        score += 10
+      if (sym.isPublic)
+        score += 10
+      if (viaView == NoSymbol)
+        score += 10
       if (sym.owner != definitions.AnyClass &&
           sym.owner != definitions.AnyRefClass &&
-          sym.owner != definitions.ObjectClass) score += 30
+          sym.owner != definitions.ObjectClass)
+        score += 30
 
       val infos = List(CompletionInfo.fromSymbolAndType(sym, tpe, score))
 
@@ -269,7 +286,8 @@ trait CompletionControl {
       case ScopeContext(_, _, prefix, _) =>
         if (TypeNameRegex.findFirstMatchIn(prefix).isDefined) {
           Some(fetchTypeSearchCompletions(prefix, maxResults, indexer))
-        } else None
+        } else
+          None
       case _ => None
     }
 
@@ -420,7 +438,8 @@ trait Completion { self: RichPresentationCompiler =>
                   isCallable = false,
                   50,
                   None))
-            else None
+            else
+              None
           }
           .toList
           .sortBy(ci => (ci.relevance, ci.name))

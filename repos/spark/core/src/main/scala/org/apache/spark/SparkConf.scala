@@ -783,7 +783,10 @@ private[spark] object SparkConf extends Logging {
       alts.collectFirst {
         case alt if conf.contains(alt.key) =>
           val value = conf.get(alt.key)
-          if (alt.translation != null) alt.translation(value) else value
+          if (alt.translation != null)
+            alt.translation(value)
+          else
+            value
       }
     }
   }

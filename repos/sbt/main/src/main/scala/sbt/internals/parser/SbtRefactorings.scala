@@ -50,7 +50,10 @@ private[sbt] object SbtRefactorings {
 
   private def emptyStringForEmptyString(text: String) = {
     val trimmed = text.trim
-    if (trimmed.isEmpty) trimmed else text
+    if (trimmed.isEmpty)
+      trimmed
+    else
+      text
   }
 
   private def recordCommands(commands: Seq[SessionSetting], split: SbtParser) =

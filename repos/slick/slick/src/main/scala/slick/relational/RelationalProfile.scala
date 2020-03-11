@@ -81,7 +81,8 @@ trait RelationalProfile
     val canJoinLeft = capabilities contains RelationalCapabilities.joinLeft
     val canJoinRight = capabilities contains RelationalCapabilities.joinRight
     val canJoinFull = capabilities contains RelationalCapabilities.joinFull
-    if (canJoinLeft && canJoinRight && canJoinFull) base
+    if (canJoinLeft && canJoinRight && canJoinFull)
+      base
     else
       base.addBefore(
         new EmulateOuterJoins(canJoinLeft, canJoinRight),

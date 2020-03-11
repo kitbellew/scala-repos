@@ -11,7 +11,8 @@ trait Test {
     def asMatch(m: Node): Any = {
       if (m.isInstanceOf[MatchableImpl]) {
         null;
-      } else null;
+      } else
+        null;
       // NO_CRASH: null;
     }
   }

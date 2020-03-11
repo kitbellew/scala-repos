@@ -41,15 +41,18 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
         try {
           val variable: LocalVariableProxyImpl =
             frameProxy.visibleVariableByName("$this")
-          if (variable == null) null
+          if (variable == null)
+            null
           else {
             frameProxy.getValue(variable)
           }
         } catch {
           case e: AbsentInformationException =>
             val args = frameProxy.getArgumentValues
-            if (args.size() > 0) args.get(0)
-            else null
+            if (args.size() > 0)
+              args.get(0)
+            else
+              null
         }
       case x => x
     }

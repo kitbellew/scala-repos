@@ -69,7 +69,11 @@ final class MersenneTwister32 protected[random] (
   }
 
   def setSeedBytes(bytes: Array[Byte]): Unit = {
-    val bs = if (bytes.length < BYTES) Arrays.copyOf(bytes, BYTES) else bytes
+    val bs =
+      if (bytes.length < BYTES)
+        Arrays.copyOf(bytes, BYTES)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bs)
     cfor(0)(_ < N, _ + 1) { i =>
       mt(i) = bb.getInt()
@@ -134,7 +138,11 @@ object MersenneTwister32
 
   @inline private val BYTES = N * 4 + 4
 
-  @inline private def mag01(x: Int) = if ((x & 1) == 0) 0 else 0x9908B0DF
+  @inline private def mag01(x: Int) =
+    if ((x & 1) == 0)
+      0
+    else
+      0x9908B0DF
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(N, Utils.intFromTime()), N + 1)

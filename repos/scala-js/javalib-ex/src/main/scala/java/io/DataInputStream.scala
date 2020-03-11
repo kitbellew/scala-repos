@@ -25,14 +25,20 @@ class DataInputStream(in: InputStream)
     if (hasArrayBuffer) {
       val in = inArrayBufferStream
       new DataView(in.buffer, in.offset, in.length)
-    } else null
+    } else
+      null
   }
 
   private def consumePos(n: Int) = {
-    val off = if (pushedBack != -1) 1 else 0
+    val off =
+      if (pushedBack != -1)
+        1
+      else
+        0
     val resultPos = inArrayBufferStream.pos - off
     val toSkip = n - off
-    if (in.skip(toSkip) != toSkip) eof()
+    if (in.skip(toSkip) != toSkip)
+      eof()
     resultPos
   }
 
@@ -49,7 +55,8 @@ class DataInputStream(in: InputStream)
     var i = 0
     while (i < len) {
       val byte = read()
-      if (byte == -1) eof()
+      if (byte == -1)
+        eof()
       convInView(i) = byte.toByte
       i += 1
     }
@@ -67,7 +74,8 @@ class DataInputStream(in: InputStream)
 
   def readByte(): Byte = {
     val res = read()
-    if (res == -1) eof()
+    if (res == -1)
+      eof()
     res.toByte
   }
 
@@ -102,7 +110,8 @@ class DataInputStream(in: InputStream)
     var offset = off
     while (remaining > 0) {
       val readCount = read(b, offset, remaining)
-      if (readCount == -1) eof()
+      if (readCount == -1)
+        eof()
       remaining -= readCount
       offset += readCount
     }
@@ -117,7 +126,8 @@ class DataInputStream(in: InputStream)
 
   def readLine(): String = {
     var cur = read()
-    if (cur == -1) null
+    if (cur == -1)
+      null
     else {
       var res = ""
       while (cur != -1 && cur != '\n' && cur != '\r') {
@@ -127,7 +137,8 @@ class DataInputStream(in: InputStream)
       if (cur == '\r') {
         // Discard a potential \n (from \r\n line endings)
         cur = read()
-        if (cur != '\n') pushBack(cur)
+        if (cur != '\n')
+          pushBack(cur)
       }
       res
     }
@@ -148,7 +159,8 @@ class DataInputStream(in: InputStream)
 
   def readUnsignedByte(): Int = {
     val res = read()
-    if (res == -1) eof()
+    if (res == -1)
+      eof()
     res
   }
 
@@ -223,8 +235,10 @@ class DataInputStream(in: InputStream)
   // Methods on FilterInputStream.
   // Overridden to track pushedBack / pushedBackMark
   override def available(): Int = {
-    if (pushedBack != -1) in.available + 1
-    else in.available
+    if (pushedBack != -1)
+      in.available + 1
+    else
+      in.available
   }
 
   override def mark(readlimit: Int): Unit = {

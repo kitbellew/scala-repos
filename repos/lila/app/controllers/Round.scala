@@ -40,7 +40,8 @@ object Round extends LilaController with TheftPrevention {
     implicit ctx =>
       GameRepo pov fullId flatMap {
         case Some(pov) =>
-          if (isTheft(pov)) fuccess(Left(theftResponse))
+          if (isTheft(pov))
+            fuccess(Left(theftResponse))
           else
             get("sri") match {
               case Some(uid) =>
@@ -88,7 +89,8 @@ object Round extends LilaController with TheftPrevention {
         notFound
       ),
       api = apiVersion => {
-        if (isTheft(pov)) fuccess(theftResponse)
+        if (isTheft(pov))
+          fuccess(theftResponse)
         else
           Env.api.roundApi
             .player(pov, apiVersion)
@@ -131,9 +133,10 @@ object Round extends LilaController with TheftPrevention {
 
   def whatsNext(fullId: String) = Open { implicit ctx =>
     OptionFuResult(GameRepo pov fullId) { currentPov =>
-      if (currentPov.isMyTurn) fuccess {
-        Ok(Json.obj("nope" -> true))
-      }
+      if (currentPov.isMyTurn)
+        fuccess {
+          Ok(Json.obj("nope" -> true))
+        }
       else
         otherPovs(currentPov.game) map getNext(currentPov.game) map { next =>
           Ok(Json.obj("next" -> next.map(_.fullId)))
@@ -175,7 +178,8 @@ object Round extends LilaController with TheftPrevention {
           html = {
             if (getBool("sudo") && isGranted(_.SuperAdmin))
               Redirect(routes.Round.player(pov.fullId)).fuccess
-            else if (pov.game.replayable) Analyse.replay(pov, userTv = userTv)
+            else if (pov.game.replayable)
+              Analyse.replay(pov, userTv = userTv)
             else if (HTTPRequest.isHuman(ctx.req))
               myTour(pov.game.tournamentId, false) zip
                 (pov.game.simulId ?? Env.simul.repo.find) zip
@@ -219,15 +223,19 @@ object Round extends LilaController with TheftPrevention {
 
   def playerText(fullId: String) = Open { implicit ctx =>
     OptionResult(GameRepo pov fullId) { pov =>
-      if (ctx.blindMode) Ok(html.game.textualRepresentation(pov, true))
-      else BadRequest
+      if (ctx.blindMode)
+        Ok(html.game.textualRepresentation(pov, true))
+      else
+        BadRequest
     }
   }
 
   def watcherText(gameId: String, color: String) = Open { implicit ctx =>
     OptionResult(GameRepo.pov(gameId, color)) { pov =>
-      if (ctx.blindMode) Ok(html.game.textualRepresentation(pov, false))
-      else BadRequest
+      if (ctx.blindMode)
+        Ok(html.game.textualRepresentation(pov, false))
+      else
+        BadRequest
     }
   }
 

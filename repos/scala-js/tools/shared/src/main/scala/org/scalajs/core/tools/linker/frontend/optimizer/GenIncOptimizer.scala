@@ -131,21 +131,25 @@ abstract class GenIncOptimizer private[optimizer] (
         processAllTaggedMethods()
       }
 
-      val newLinkedClasses = for (linkedClass <- unit.classDefs) yield {
-        def defs(container: Option[MethodContainer]) =
-          container.fold[List[LinkedMember[MethodDef]]](Nil) {
-            _.optimizedDefs.toList
+      val newLinkedClasses =
+        for (linkedClass <- unit.classDefs)
+          yield {
+            def defs(container: Option[MethodContainer]) =
+              container.fold[List[LinkedMember[MethodDef]]](Nil) {
+                _.optimizedDefs.toList
+              }
+
+            val encodedName = linkedClass.encodedName
+            val memberNamespace =
+              if (linkedClass.kind == ClassKind.Interface)
+                getDefaults(encodedName)
+              else
+                getClass(encodedName)
+
+            linkedClass.copy(
+              staticMethods = defs(getStaticsNamespace(encodedName)),
+              memberMethods = defs(memberNamespace))
           }
-
-        val encodedName = linkedClass.encodedName
-        val memberNamespace =
-          if (linkedClass.kind == ClassKind.Interface) getDefaults(encodedName)
-          else getClass(encodedName)
-
-        linkedClass.copy(
-          staticMethods = defs(getStaticsNamespace(encodedName)),
-          memberMethods = defs(memberNamespace))
-      }
 
       unit.updated(classDefs = newLinkedClasses, isComplete = true)
     }
@@ -333,8 +337,10 @@ abstract class GenIncOptimizer private[optimizer] (
       val deletedMethods = Set.newBuilder[String]
 
       val linkedMethodDefs =
-        if (isStatic) linkedClass.staticMethods
-        else linkedClass.memberMethods
+        if (isStatic)
+          linkedClass.staticMethods
+        else
+          linkedClass.memberMethods
 
       val newMethodNames = linkedMethodDefs.map(_.info.encodedName).toSet
       val methodSetChanged = methods.keySet != newMethodNames

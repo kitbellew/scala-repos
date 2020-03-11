@@ -28,7 +28,11 @@ final case class Position(
 
   def isDefined: Boolean = !isEmpty
 
-  def orElse(that: => Position): Position = if (isDefined) this else that
+  def orElse(that: => Position): Position =
+    if (isDefined)
+      this
+    else
+      that
 }
 
 object Position {

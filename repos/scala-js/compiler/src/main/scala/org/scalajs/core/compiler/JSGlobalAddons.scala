@@ -68,7 +68,11 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
 
     /** creates a name for an export specification */
     def scalaExportName(jsName: String, isProp: Boolean): TermName = {
-      val pref = if (isProp) propExportPrefix else methodExportPrefix
+      val pref =
+        if (isProp)
+          propExportPrefix
+        else
+          methodExportPrefix
       val encname = NameTransformer.encode(jsName)
       newTermName(pref + encname)
     }
@@ -87,7 +91,8 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
           // We can't decode right away due to $ separators
           val enc = name.encoded.substring(prefix.length)
           Some(NameTransformer.decode(enc))
-        } else None
+        } else
+          None
       }
 
       dropPrefix(methodExportPrefix).map((_, false)) orElse
@@ -133,8 +138,10 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
     def jsNameOf(sym: Symbol): String = {
       sym.getAnnotation(JSNameAnnotation).flatMap(_.stringArg(0)) getOrElse {
         val base = sym.unexpandedName.decoded.stripSuffix("_=")
-        if (!sym.isMethod) base.stripSuffix(" ")
-        else base
+        if (!sym.isMethod)
+          base.stripSuffix(" ")
+        else
+          base
       }
     }
 

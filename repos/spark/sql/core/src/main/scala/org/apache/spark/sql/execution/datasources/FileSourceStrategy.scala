@@ -57,9 +57,9 @@ import org.apache.spark.sql.types._
 private[sql] object FileSourceStrategy extends Strategy with Logging {
   def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(files: HadoopFsRelation, _, _))
+          projects,
+          filters,
+          l @ LogicalRelation(files: HadoopFsRelation, _, _))
         if files.fileFormat.toString == "TestFileFormat" =>
       // Filters on this relation fall into four categories based on where we can use them to avoid
       // reading unneeded data:
@@ -155,7 +155,10 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
                 (0L to file.getLen by maxSplitBytes).map { offset =>
                   val remaining = file.getLen - offset
                   val size =
-                    if (remaining > maxSplitBytes) maxSplitBytes else remaining
+                    if (remaining > maxSplitBytes)
+                      maxSplitBytes
+                    else
+                      remaining
                   PartitionedFile(
                     partition.values,
                     file.getPath.toUri.toString,

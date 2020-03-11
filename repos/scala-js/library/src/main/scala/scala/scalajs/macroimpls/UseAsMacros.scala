@@ -82,8 +82,10 @@ private[scalajs] object UseAsMacros {
       val isRawJSType = srcTpe <:< typeOf[js.Any]
 
       val definedMembers =
-        if (isRawJSType) rawJSMembers(srcTpe)
-        else exportedMembers(srcTpe)
+        if (isRawJSType)
+          rawJSMembers(srcTpe)
+        else
+          exportedMembers(srcTpe)
 
       for {
         (jsMemberSelection, jsMembers) <- requiredMembers
@@ -124,7 +126,11 @@ private[scalajs] object UseAsMacros {
           // Error: A member is missing. Construct an informative error message
 
           def noSuchMember(memberName: String) = {
-            val membershipStr = if (isRawJSType) "have" else "export"
+            val membershipStr =
+              if (isRawJSType)
+                "have"
+              else
+                "export"
             val memberStr = jsMember.displayStr(memberName)
             s"$srcTpe does not $membershipStr a $memberStr."
           }
@@ -209,8 +215,10 @@ private[scalajs] object UseAsMacros {
 
         optName.fold {
           val name = defaultName(sym)
-          if (name == "apply") JSMemberCall
-          else JSNamedMember(name)
+          if (name == "apply")
+            JSMemberCall
+          else
+            JSNamedMember(name)
         } { name =>
           JSNamedMember(name)
         }
@@ -288,8 +296,10 @@ private[scalajs] object UseAsMacros {
         annotStringArg(annot).getOrElse(default)
       }
 
-      if (exportAll && sym.isPublic) default :: explicitNames
-      else explicitNames
+      if (exportAll && sym.isPublic)
+        default :: explicitNames
+      else
+        explicitNames
     }
 
     /** Default JavaScript name of a method */
@@ -342,7 +352,11 @@ private[scalajs] object UseAsMacros {
       *  Looks on accessed field if this is an accessor
       */
     private def memberAnnotations(sym: MethodSymbol): List[Annotation] = {
-      val trgSym = if (sym.isAccessor) sym.accessed else sym
+      val trgSym =
+        if (sym.isAccessor)
+          sym.accessed
+        else
+          sym
 
       // Force typeSignature to calculate annotations
       trgSym.typeSignature

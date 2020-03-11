@@ -36,11 +36,14 @@ object Levenshtein {
     */
   def distance(s: String, t: String): Int = {
     // handle some degenerate cases: strings are equal, or empty
-    if (s == t) return 0
+    if (s == t)
+      return 0
     val n = s.length
     val m = t.length
-    if (n == 0) return m
-    if (m == 0) return n
+    if (n == 0)
+      return m
+    if (m == 0)
+      return n
 
     // each vector represents a row of the Levenshtein algorithm.
     // for instance, if t="dog", the column headers would be:
@@ -53,7 +56,11 @@ object Levenshtein {
       arr1(0) = col + 1
       var row = 0
       while (row < m) {
-        val cost = if (s.charAt(col) == t.charAt(row)) 0 else 1
+        val cost =
+          if (s.charAt(col) == t.charAt(row))
+            0
+          else
+            1
 
         val north = arr1(row) + 1
         val west = arr0(row + 1) + 1

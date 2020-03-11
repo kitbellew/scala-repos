@@ -36,8 +36,10 @@ case class ReferenceSort(
     extends UnaryNode {
 
   override def requiredChildDistribution: Seq[Distribution] =
-    if (global) OrderedDistribution(sortOrder) :: Nil
-    else UnspecifiedDistribution :: Nil
+    if (global)
+      OrderedDistribution(sortOrder) :: Nil
+    else
+      UnspecifiedDistribution :: Nil
 
   protected override def doExecute(): RDD[InternalRow] =
     attachTree(this, "sort") {

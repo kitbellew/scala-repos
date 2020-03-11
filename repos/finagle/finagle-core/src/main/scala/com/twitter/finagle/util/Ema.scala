@@ -31,7 +31,11 @@ private[finagle] class Ema(window: Long) {
       val td = stamp - time
       assert(td >= 0, "Nonmonotonic timestamp")
       time = stamp
-      val w = if (window == 0) 0 else math.exp(-td.toDouble / window)
+      val w =
+        if (window == 0)
+          0
+        else
+          math.exp(-td.toDouble / window)
       ema = x * (1 - w) + ema * w
     }
     ema

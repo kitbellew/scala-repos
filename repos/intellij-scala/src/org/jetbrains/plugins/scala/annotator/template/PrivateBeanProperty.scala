@@ -20,7 +20,8 @@ object PrivateBeanProperty extends AnnotatorPart[ScAnnotation] {
       element: ScAnnotation,
       holder: AnnotationHolder,
       typeAware: Boolean = false): Unit = {
-    if (!isBeanPropertyAnnotation(element)) return
+    if (!isBeanPropertyAnnotation(element))
+      return
     val member = PsiTreeUtil.getParentOfType(element, classOf[ScMember])
     def registerProblem() = {
       val toPublicFix = new MakeNonPrivateQuickFix(member, toProtected = false)

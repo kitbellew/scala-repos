@@ -10,7 +10,10 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
   protected def synchronousRequests: Boolean
 
   protected def askAllSources[T] =
-    if (synchronousRequests) askAllSourcesSync[T] _ else askAllSourcesAsync[T] _
+    if (synchronousRequests)
+      askAllSourcesSync[T] _
+    else
+      askAllSourcesAsync[T] _
 
   /** Perform an operation on all sources at all positions that match the given
     *  `marker`. For instance, askAllSources(TypeMarker)(askTypeAt)(println) would
@@ -19,9 +22,12 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
   private def askAllSourcesAsync[T](marker: TestMarker)(
       askAt: Position => Response[T])(f: (Position, T) => Unit) {
     val positions = allPositionsOf(str = marker.marker)
-    val responses = for (pos <- positions) yield askAt(pos)
+    val responses =
+      for (pos <- positions)
+        yield askAt(pos)
 
-    for ((pos, r) <- positions zip responses) withResponse(pos, r)(f)
+    for ((pos, r) <- positions zip responses)
+      withResponse(pos, r)(f)
   }
 
   /** Synchronous version of askAllSources. Each position is treated in turn, waiting for the
@@ -30,7 +36,8 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
   private def askAllSourcesSync[T](marker: TestMarker)(
       askAt: Position => Response[T])(f: (Position, T) => Unit) {
     val positions = allPositionsOf(str = marker.marker)
-    for (pos <- positions) withResponse(pos, askAt(pos))(f)
+    for (pos <- positions)
+      withResponse(pos, askAt(pos))(f)
   }
 
   /** All positions of the given string in all source files. */
@@ -38,7 +45,8 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
       srcs: Seq[SourceFile] = sourceFiles,
       str: String): Seq[Position] =
     for (s <- srcs;
-         p <- positionsOf(s, str)) yield p
+         p <- positionsOf(s, str))
+      yield p
 
   /** Return all positions of the given str in the given source file. */
   private def positionsOf(source: SourceFile, str: String): Seq[Position] = {

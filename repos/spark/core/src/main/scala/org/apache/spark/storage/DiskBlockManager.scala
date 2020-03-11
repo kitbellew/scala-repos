@@ -102,7 +102,10 @@ private[spark] class DiskBlockManager(
       .filter(_ != null)
       .flatMap { dir =>
         val files = dir.listFiles()
-        if (files != null) files else Seq.empty
+        if (files != null)
+          files
+        else
+          Seq.empty
       }
   }
 

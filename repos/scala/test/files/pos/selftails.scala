@@ -11,9 +11,12 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
     */
   def isEq(a: Array[Byte], b: Array[Byte]) = {
     def eq(a: Array[Byte], b: Array[Byte], pos: Int, len: Int): Boolean = {
-      if (pos == len) true
-      else if (a(pos) != b(pos)) false
-      else eq(a, b, pos + 1, len)
+      if (pos == len)
+        true
+      else if (a(pos) != b(pos))
+        false
+      else
+        eq(a, b, pos + 1, len)
     }
     a.length == b.length && eq(a, b, 0, a.length)
   }

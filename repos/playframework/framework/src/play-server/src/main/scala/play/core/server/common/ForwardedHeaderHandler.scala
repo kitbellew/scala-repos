@@ -144,7 +144,8 @@ private[server] object ForwardedHeaderHandler {
       if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(
             s.length - 1) == '"') {
         s.substring(1, s.length - 1)
-      } else s
+      } else
+        s
     }
 
     /**
@@ -163,7 +164,8 @@ private[server] object ForwardedHeaderHandler {
               _.split(";")
                 .flatMap(s => {
                   val splitted = s.split("=", 2)
-                  if (splitted.length < 2) Seq.empty
+                  if (splitted.length < 2)
+                    Seq.empty
                   else {
                     // Remove surrounding quotes
                     val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)

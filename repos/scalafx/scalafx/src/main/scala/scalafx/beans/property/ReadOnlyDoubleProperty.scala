@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyDoubleProperty {
   implicit def sfxReadOnlyDoubleProperty2jfx(
       rodp: ReadOnlyDoubleProperty): jfxbp.ReadOnlyDoubleProperty =
-    if (rodp != null) rodp.delegate else null
+    if (rodp != null)
+      rodp.delegate
+    else
+      null
 }
 
 class ReadOnlyDoubleProperty(

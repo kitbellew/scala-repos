@@ -41,7 +41,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
       val v = tmd.getValue(r, idx)
       if ((v.asInstanceOf[AnyRef] eq null) || tmd.wasNull(r, idx))
         null.asInstanceOf[T]
-      else comap(v)
+      else
+        comap(v)
     }
     def wasNull(r: ResultSet, idx: Int) = tmd.wasNull(r, idx)
     def updateValue(v: T, r: ResultSet, idx: Int) =
@@ -101,7 +102,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
         val size =
           sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR(254)")(l =>
-          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
+          if (l.varying)
+            s"VARCHAR(${l.length})"
+          else
+            s"CHAR(${l.length})")
       case java.sql.Types.DECIMAL => "DECIMAL(21,2)"
       case t =>
         JdbcTypesComponent.typeNames.getOrElse(
@@ -117,7 +121,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
     def sqlTypeName(sym: Option[FieldSymbol]): String =
       self.defaultSqlTypeName(this, sym)
     def valueToSQLLiteral(value: T) =
-      if (hasLiteralForm) value.toString
+      if (hasLiteralForm)
+        value.toString
       else
         throw new SlickException(
           sqlTypeName(None) + " does not have a literal representation")
@@ -195,7 +200,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
         stringJdbcType.setValue(String.valueOf(v), p, idx)
       def getValue(r: ResultSet, idx: Int) = {
         val s = stringJdbcType.getValue(r, idx)
-        if (s == null || s.isEmpty) ' ' else s.charAt(0)
+        if (s == null || s.isEmpty)
+          ' '
+        else
+          s.charAt(0)
       }
       def updateValue(v: Char, r: ResultSet, idx: Int) =
         stringJdbcType.updateValue(String.valueOf(v), r, idx)
@@ -260,14 +268,16 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
       def updateValue(v: String, r: ResultSet, idx: Int) =
         r.updateString(idx, v)
       override def valueToSQLLiteral(value: String) =
-        if (value eq null) "NULL"
+        if (value eq null)
+          "NULL"
         else {
           val sb = new StringBuilder
           sb append '\''
-          for (c <- value) c match {
-            case '\'' => sb append "''"
-            case _    => sb append c
-          }
+          for (c <- value)
+            c match {
+              case '\'' => sb append "''"
+              case _    => sb append c
+            }
           sb append '\''
           sb.toString
         }
@@ -302,7 +312,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
         r.updateBytes(idx, toBytes(v))
       override def hasLiteralForm = false
       def toBytes(uuid: UUID) =
-        if (uuid eq null) null
+        if (uuid eq null)
+          null
         else {
           val msb = uuid.getMostSignificantBits
           val lsb = uuid.getLeastSignificantBits
@@ -314,7 +325,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
           buff
         }
       def fromBytes(data: Array[Byte]) =
-        if (data eq null) null
+        if (data eq null)
+          null
         else {
           var msb = 0L
           var lsb = 0L
@@ -336,7 +348,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
         p.setBigDecimal(idx, v.bigDecimal)
       def getValue(r: ResultSet, idx: Int) = {
         val v = r.getBigDecimal(idx)
-        if (v eq null) null else BigDecimal(v)
+        if (v eq null)
+          null
+        else
+          BigDecimal(v)
       }
       def updateValue(v: BigDecimal, r: ResultSet, idx: Int) =
         r.updateBigDecimal(idx, v.bigDecimal)

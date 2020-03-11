@@ -40,7 +40,8 @@ trait Combiner[-Elem, +To] extends Builder[Elem, To] with Sizing with Parallel {
     if (cts eq null) {
       _combinerTaskSupport = defaultTaskSupport
       defaultTaskSupport
-    } else cts
+    } else
+      cts
   }
 
   def combinerTaskSupport_=(cts: TaskSupport) = _combinerTaskSupport = cts

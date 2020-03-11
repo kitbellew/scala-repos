@@ -44,7 +44,10 @@ private[akka] class ActorRefSourceActor(
 
   // when bufferSize is 0 there the buffer is not used
   protected val buffer =
-    if (bufferSize == 0) null else Buffer[Any](bufferSize, maxFixedBufferSize)
+    if (bufferSize == 0)
+      null
+    else
+      Buffer[Any](bufferSize, maxFixedBufferSize)
 
   def receive =
     ({
@@ -54,7 +57,8 @@ private[akka] class ActorRefSourceActor(
       case _: Status.Success ⇒
         if (bufferSize == 0 || buffer.isEmpty)
           context.stop(self) // will complete the stream successfully
-        else context.become(drainBufferThenComplete)
+        else
+          context.become(drainBufferThenComplete)
 
       case Status.Failure(cause) if isActive ⇒
         onErrorThenStop(cause)

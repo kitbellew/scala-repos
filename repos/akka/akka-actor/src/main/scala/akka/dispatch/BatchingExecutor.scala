@@ -65,7 +65,8 @@ private[akka] trait BatchingExecutor extends Executor {
       if ((current eq this) && !current.isEmpty) { // Resubmit ourselves if something bad happened and we still have work to do
         unbatchedExecute(current) //TODO what if this submission fails?
         true
-      } else false
+      } else
+        false
     }
   }
 
@@ -92,7 +93,8 @@ private[akka] trait BatchingExecutor extends Executor {
       require(_tasksLocal.get eq null)
       _tasksLocal set this // Install ourselves as the current batch
       val firstInvocation = _blockContext.get eq null
-      if (firstInvocation) _blockContext.set(BlockContext.current)
+      if (firstInvocation)
+        _blockContext.set(BlockContext.current)
       BlockContext.withBlockContext(this) {
         try processBatch(this)
         catch {
@@ -101,7 +103,8 @@ private[akka] trait BatchingExecutor extends Executor {
             throw t
         } finally {
           _tasksLocal.remove()
-          if (firstInvocation) _blockContext.remove()
+          if (firstInvocation)
+            _blockContext.remove()
         }
       }
     }
@@ -123,7 +126,10 @@ private[akka] trait BatchingExecutor extends Executor {
       _tasksLocal.get match {
         case null ⇒
           val newBatch: AbstractBatch =
-            if (resubmitOnBlock) new BlockableBatch() else new Batch()
+            if (resubmitOnBlock)
+              new BlockableBatch()
+            else
+              new Batch()
           newBatch.add(runnable)
           unbatchedExecute(
             newBatch

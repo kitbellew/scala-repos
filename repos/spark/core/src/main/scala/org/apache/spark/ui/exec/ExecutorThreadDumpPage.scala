@@ -45,11 +45,15 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
           .sortWith {
             case (threadTrace1, threadTrace2) => {
               val v1 =
-                if (threadTrace1.threadName.contains("Executor task launch")) 1
-                else 0
+                if (threadTrace1.threadName.contains("Executor task launch"))
+                  1
+                else
+                  0
               val v2 =
-                if (threadTrace2.threadName.contains("Executor task launch")) 1
-                else 0
+                if (threadTrace2.threadName.contains("Executor task launch"))
+                  1
+                else
+                  0
               if (v1 == v2) {
                 threadTrace1.threadName.toLowerCase < threadTrace2.threadName.toLowerCase
               } else {

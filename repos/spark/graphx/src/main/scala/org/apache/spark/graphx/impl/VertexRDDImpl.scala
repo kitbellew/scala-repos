@@ -238,8 +238,10 @@ class VertexRDDImpl[VD] private[graphx] (
     val vertexPartitions = partitionsRDD.zipPartitions(routingTables, true) {
       (partIter, routingTableIter) =>
         val routingTable =
-          if (routingTableIter.hasNext) routingTableIter.next()
-          else RoutingTablePartition.empty
+          if (routingTableIter.hasNext)
+            routingTableIter.next()
+          else
+            RoutingTablePartition.empty
         partIter.map(_.withRoutingTable(routingTable))
     }
     this.withPartitionsRDD(vertexPartitions)

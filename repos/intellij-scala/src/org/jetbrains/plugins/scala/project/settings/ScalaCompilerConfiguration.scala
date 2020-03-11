@@ -60,7 +60,10 @@ class ScalaCompilerConfiguration(project: Project)
           .toSet
         @tailrec def firstFreeName(i: Int): String = {
           val name = source + " " + i
-          if (profileNames.contains(name)) firstFreeName(i + 1) else name
+          if (profileNames.contains(name))
+            firstFreeName(i + 1)
+          else
+            name
         }
         val profile = new ScalaCompilerSettingsProfile(firstFreeName(1))
         profile.setSettings(settings)

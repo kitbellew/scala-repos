@@ -68,17 +68,22 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
         if (logU <= math.log1p(-shape)) {
           val logV = log(v)
           val logX = logU / shape
-          if (logX <= logV) logX
-          else rec
+          if (logX <= logV)
+            logX
+          else
+            rec
         } else {
           val y = -log((1 - u) / shape)
           val logX = math.log(1.0 - shape + shape * y) / shape
-          if (logX <= math.log(v + y)) logX
-          else rec
+          if (logX <= math.log(v + y))
+            logX
+          else
+            rec
         }
       }
       rec + math.log(scale)
-    } else math.log(draw)
+    } else
+      math.log(draw)
 
   def draw() = {
     if (shape == 1.0) {
@@ -91,13 +96,17 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
         val v = -math.log(rand.uniform.draw())
         if (u <= 1.0 - shape) {
           val x = pow(u, 1.0 / shape)
-          if (x <= v) x
-          else rec
+          if (x <= v)
+            x
+          else
+            rec
         } else {
           val y = -log((1 - u) / shape)
           val x = pow(1.0 - shape + shape * y, 1.0 / shape)
-          if (x <= (v + y)) x
-          else rec
+          if (x <= (v + y))
+            x
+          else
+            rec
         }
       }
 

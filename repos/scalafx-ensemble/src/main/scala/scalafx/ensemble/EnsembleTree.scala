@@ -55,12 +55,16 @@ object EnsembleTree {
     * This is used in UI
     */
   private def createTree(): Map[String, List[TreeItem[String]]] = {
-    val pairs = for ((dirName, examples) <- loadExampleNames()) yield {
-      val leaves = for (leafName <- examples) yield {
-        new TreeItem(ExampleInfo.formatAddSpaces(leafName))
-      }
-      dirName -> leaves.toList.sortWith(SortUtils.treeItemSort)
-    }
+    val pairs =
+      for ((dirName, examples) <- loadExampleNames())
+        yield {
+          val leaves =
+            for (leafName <- examples)
+              yield {
+                new TreeItem(ExampleInfo.formatAddSpaces(leafName))
+              }
+          dirName -> leaves.toList.sortWith(SortUtils.treeItemSort)
+        }
     TreeMap(pairs: _*)
   }
 
@@ -72,44 +76,51 @@ object EnsembleTree {
 
     val lines = scala.io.Source.fromURL(examplListURL).getLines()
 
-    for (line <- lines.toArray) yield {
-      val v = line.split("->")
-      assert(v.length == 2)
-      val dirName = v.head.trim
-      val examples = v(1).split(",").map(_.trim())
-      dirName -> examples
-    }
+    for (line <- lines.toArray)
+      yield {
+        val v = line.split("->")
+        assert(v.length == 2)
+        val dirName = v.head.trim
+        val examples = v(1).split(",").map(_.trim())
+        dirName -> examples
+      }
   }
 
   private def createThumbnails() = {
-    val pairs = for ((dirName, examples) <- loadExampleNames()) yield {
-      val groupName = dirName
-      val thumbs = for (leafName <- examples) yield {
-        val sampleName = ExampleInfo.formatAddSpaces(leafName)
-        val img = new ImageView {
-          val filePath = ExampleInfo.thumbnailPath(leafName, groupName)
-          val inputStream = this.getClass.getResourceAsStream(filePath)
-          if (inputStream == null) {
-            throw new IOException("Unable to locate resource: " + filePath)
-          }
-          image = new Image(inputStream)
+    val pairs =
+      for ((dirName, examples) <- loadExampleNames())
+        yield {
+          val groupName = dirName
+          val thumbs =
+            for (leafName <- examples)
+              yield {
+                val sampleName = ExampleInfo.formatAddSpaces(leafName)
+                val img = new ImageView {
+                  val filePath = ExampleInfo.thumbnailPath(leafName, groupName)
+                  val inputStream = this.getClass.getResourceAsStream(filePath)
+                  if (inputStream == null) {
+                    throw new IOException(
+                      "Unable to locate resource: " + filePath)
+                  }
+                  image = new Image(inputStream)
+                }
+                val button = new Button(sampleName, img) {
+                  prefWidth = 140
+                  prefHeight = 145
+                  contentDisplay = ContentDisplay.Top
+                  styleClass.clear()
+                  styleClass += "sample-tile"
+                  onAction = (ae: ActionEvent) => {
+                    Ensemble.splitPane.items.remove(1)
+                    Ensemble.splitPane.items.add(
+                      1,
+                      PageDisplayer.choosePage(groupName + " > " + sampleName))
+                  }
+                }
+                EnsembleThumbNail(button)
+              }
+          dirName.capitalize -> thumbs.toList.sortWith(SortUtils.thumbNailsSort)
         }
-        val button = new Button(sampleName, img) {
-          prefWidth = 140
-          prefHeight = 145
-          contentDisplay = ContentDisplay.Top
-          styleClass.clear()
-          styleClass += "sample-tile"
-          onAction = (ae: ActionEvent) => {
-            Ensemble.splitPane.items.remove(1)
-            Ensemble.splitPane.items
-              .add(1, PageDisplayer.choosePage(groupName + " > " + sampleName))
-          }
-        }
-        EnsembleThumbNail(button)
-      }
-      dirName.capitalize -> thumbs.toList.sortWith(SortUtils.thumbNailsSort)
-    }
     TreeMap(pairs: _*)
   }
 }

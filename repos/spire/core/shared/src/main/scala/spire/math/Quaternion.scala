@@ -58,7 +58,10 @@ private[math] trait QuaternionAlgebra[A]
   def mod(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] = a % b
   def gcd(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] = {
     @tailrec def _gcd(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] =
-      if (b.isZero) a else _gcd(b, a - (a / b).round * b)
+      if (b.isZero)
+        a
+      else
+        _gcd(b, a - (a / b).round * b)
     _gcd(a, b)
   }
 
@@ -111,8 +114,10 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
 
   // important to keep in sync with Complex[_]
   override def hashCode: Int =
-    if (sillyIsReal) r.##
-    else (19 * r.##) + (41 * i.##) + (13 * j.##) + (77 * k.##) + 97
+    if (sillyIsReal)
+      r.##
+    else
+      (19 * r.##) + (41 * i.##) + (13 * j.##) + (77 * k.##) + 97
 
   // not typesafe, so this is the best we can do :(
   override def equals(that: Any): Boolean = that match {
@@ -171,13 +176,19 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       f: Field[A],
       o: IsReal[A],
       n: NRoot[A]): Quaternion[A] =
-    if (isZero) this else this / abs
+    if (isZero)
+      this
+    else
+      this / abs
 
   def pureSignum(implicit
       f: Field[A],
       o: IsReal[A],
       n: NRoot[A]): Quaternion[A] =
-    if (isReal) Quaternion.zero[A] else (pure / pureAbs)
+    if (isReal)
+      Quaternion.zero[A]
+    else
+      (pure / pureAbs)
 
   def unary_-(implicit s: Rng[A]): Quaternion[A] =
     Quaternion(-r, -i, -j, -k)
@@ -212,7 +223,11 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       val n = abs
       val t = acos(r / n)
       val v = Quaternion(f.zero, i / s, j / s, k / s)
-      val e = if (sin(t).signum >= 0) v else -v
+      val e =
+        if (sin(t).signum >= 0)
+          v
+        else
+          -v
       val tm = t / m
       (e * sin(tm) + cos(tm)) * n.nroot(m)
     } else if (r.signum >= 0) {
@@ -266,12 +281,17 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
         p: Quaternion[A],
         b: Quaternion[A],
         e: Int): Quaternion[A] =
-      if (e == 0) p
-      else if ((e & 1) == 1) loop(p * b, b * b, e >>> 1)
-      else loop(p, b * b, e >>> 1)
+      if (e == 0)
+        p
+      else if ((e & 1) == 1)
+        loop(p * b, b * b, e >>> 1)
+      else
+        loop(p, b * b, e >>> 1)
 
-    if (k >= 0) loop(Quaternion.one[A], this, k)
-    else throw new IllegalArgumentException(s"illegal exponent: $k")
+    if (k >= 0)
+      loop(Quaternion.one[A], this, k)
+    else
+      throw new IllegalArgumentException(s"illegal exponent: $k")
   }
 
   def **(k: Int)(implicit s: Ring[A]): Quaternion[A] = pow(k)

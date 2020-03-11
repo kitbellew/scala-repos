@@ -33,7 +33,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
       .checkIntention(this, element)
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    if (element == null || !element.isValid) return
+    if (element == null || !element.isValid)
+      return
     check(project, editor, element) match {
       case Some(x) => x()
       case None    =>
@@ -133,7 +134,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
                 IntentionUtil.collectComments(x, onElementLine = true)
               if (!IntentionUtil.hasOtherComments(blk, comments))
                 Some((blk, x, comments))
-              else None
+              else
+                None
             case _ => None
           }
         case _ => None

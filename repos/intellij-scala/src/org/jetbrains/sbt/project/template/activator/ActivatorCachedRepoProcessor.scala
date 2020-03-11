@@ -39,25 +39,26 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
   private def urlString = s"$REPO_URI/$INDEX_DIR/$VERSION"
 
   private def extractHash(): Option[String] = {
-    if (extractedHash.isEmpty) extractedHash = {
-      var downloaded: Option[String] = None
+    if (extractedHash.isEmpty)
+      extractedHash = {
+        var downloaded: Option[String] = None
 
-      try {
-        downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
-          s"$urlString/$PROPERTIES")
-      } catch {
-        case io: IOException => error("Can't download index", io)
-      }
+        try {
+          downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
+            s"$urlString/$PROPERTIES")
+        } catch {
+          case io: IOException => error("Can't download index", io)
+        }
 
-      downloaded flatMap {
-        case str =>
-          str.split('\n').find {
-            case s => s.trim startsWith CACHE_HASH
-          } map {
-            case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
-          }
+        downloaded flatMap {
+          case str =>
+            str.split('\n').find {
+              case s => s.trim startsWith CACHE_HASH
+            } map {
+              case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
+            }
+        }
       }
-    }
 
     extractedHash
   }
@@ -65,7 +66,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
   private def downloadIndex(): Option[File] = {
     if (extractedHash
           .flatMap(a => indexFile.map(b => (a, b._1)))
-          .exists(a => a._1 == a._2)) indexFile.map(_._2)
+          .exists(a => a._1 == a._2))
+      indexFile.map(_._2)
     else {
       extractHash() flatMap {
         case hash =>
@@ -79,7 +81,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           if (downloaded) {
             indexFile = Some((hash, tmpFile))
             Some(tmpFile)
-          } else None
+          } else
+            None
       }
     }
   }
@@ -88,12 +91,14 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     val cacheDir = getCacheDataPath
 
     if (cacheDir.exists() || cacheDir.mkdir()) {
-      if (where.exists() || where.createNewFile()) FileUtil.copy(file, where)
+      if (where.exists() || where.createNewFile())
+        FileUtil.copy(file, where)
     }
   }
 
   private def processIndex(location: File): Map[String, DocData] = {
-    if (!location.exists()) return Map.empty
+    if (!location.exists())
+      return Map.empty
 
     var reader: IndexReader = null
 
@@ -137,7 +142,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         error("Can't process templates list", io)
         Map.empty
     } finally {
-      if (reader != null) reader.close()
+      if (reader != null)
+        reader.close()
     }
   }
 
@@ -171,7 +177,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       pathTo,
       myOnError)
     workOffline = hasError
-    if (!workOffline) cacheFile(pathTo, cachedTemplate)
+    if (!workOffline)
+      cacheFile(pathTo, cachedTemplate)
   }
 
   def createTemplate(
@@ -198,10 +205,14 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       case None =>
         val cacheFile = new File(getCacheDataPath, INDEX_CACHE_NAME)
         workOffline = true
-        if (!cacheFile.exists()) null else cacheFile
+        if (!cacheFile.exists())
+          null
+        else
+          cacheFile
     }
 
-    if (toProcess != null) processIndex(toProcess)
+    if (toProcess != null)
+      processIndex(toProcess)
     else {
       error("No index file")
       Map.empty
@@ -229,8 +240,10 @@ object ActivatorCachedRepoProcessor {
 
   def logError(msg: String, ex: Throwable) {
     val newMsg =
-      if (ex == null) msg
-      else s"$msg : ${ex.getMessage} :\n ${ex.getStackTrace.mkString("\n")} "
+      if (ex == null)
+        msg
+      else
+        s"$msg : ${ex.getMessage} :\n ${ex.getStackTrace.mkString("\n")} "
     logError(newMsg)
   }
 }

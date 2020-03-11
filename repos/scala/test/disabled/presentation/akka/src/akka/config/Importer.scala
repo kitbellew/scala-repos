@@ -52,7 +52,11 @@ trait Importer {
 class FilesystemImporter(val baseDir: String) extends Importer {
   def importFile(filename: String): String = {
     val f = new File(filename)
-    val file = if (f.isAbsolute) f else new File(baseDir, filename)
+    val file =
+      if (f.isAbsolute)
+        f
+      else
+        new File(baseDir, filename)
     streamToString(new FileInputStream(file))
   }
 }

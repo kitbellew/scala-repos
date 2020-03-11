@@ -905,9 +905,15 @@ object SparkSubmit {
     @tailrec
     def findCause(t: Throwable): Throwable = t match {
       case e: UndeclaredThrowableException =>
-        if (e.getCause() != null) findCause(e.getCause()) else e
+        if (e.getCause() != null)
+          findCause(e.getCause())
+        else
+          e
       case e: InvocationTargetException =>
-        if (e.getCause() != null) findCause(e.getCause()) else e
+        if (e.getCause() != null)
+          findCause(e.getCause())
+        else
+          e
       case e: Throwable =>
         e
     }
@@ -998,7 +1004,10 @@ object SparkSubmit {
       .filterNot(StringUtils.isBlank)
       .flatMap(_.split(","))
       .mkString(",")
-    if (merged == "") null else merged
+    if (merged == "")
+      null
+    else
+      merged
   }
 }
 
@@ -1283,7 +1292,8 @@ private[spark] object SparkSubmitUtils {
         val previousResolution = new File(
           ivySettings.getDefaultCache,
           s"${mdId.getOrganisation}-${mdId.getName}-$ivyConfName.xml")
-        if (previousResolution.exists) previousResolution.delete
+        if (previousResolution.exists)
+          previousResolution.delete
 
         md.setDefaultConf(ivyConfName)
 

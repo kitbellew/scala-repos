@@ -790,8 +790,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     def ignore456(path: Uri.Path) = path match {
       case s @ Uri.Path.Segment(head, tail) if head.startsWith("456") =>
         val newHead = head.drop(3)
-        if (newHead.isEmpty) tail
-        else s.copy(head = head.drop(3))
+        if (newHead.isEmpty)
+          tail
+        else
+          s.copy(head = head.drop(3))
       case _ => path
     }
     val ignoring456 = mapUnmatchedPath(ignore456)

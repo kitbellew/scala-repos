@@ -27,9 +27,12 @@ trait ScAccessModifier extends ScalaPsiElement {
 
   def modifierFormattedText: String = {
     val builder = new StringBuilder
-    if (isPrivate) builder.append("private")
-    else if (isProtected) builder.append("protected")
-    else return ""
+    if (isPrivate)
+      builder.append("private")
+    else if (isProtected)
+      builder.append("protected")
+    else
+      return ""
     if (isThis) {
       builder.append("[this]")
       return builder.toString()

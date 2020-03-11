@@ -82,7 +82,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
 
     val element = inReadAction(sourcePosition.getElementAt)
 
-    if (element == null) Collections.emptySet()
+    if (element == null)
+      Collections.emptySet()
     else
       getVisibleVariables(element, evaluationContext, alreadyCollected)
         .map(toTextWithImports)
@@ -204,7 +205,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       val contextClass =
         ScalaEvaluatorBuilderUtil.getContextClass(place, strict = false)
       val containingClass = ScalaEvaluatorBuilderUtil.getContextClass(named)
-      if (contextClass == containingClass) return false
+      if (contextClass == containingClass)
+        return false
 
       val placesToSearch = ArrayBuffer[PsiElement]()
       contextClass.accept(new ScalaRecursiveElementVisitor() {
@@ -220,7 +222,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
           }
         }
       })
-      if (placesToSearch.isEmpty) true
+      if (placesToSearch.isEmpty)
+        true
       else {
         val scopes = placesToSearch.map(new LocalSearchScope(_))
         val helper =
@@ -277,12 +280,15 @@ private class CollectingProcessor(element: PsiElement)
       containingBlock.depthFirst.collect {
         case ref: ScReferenceExpression if ref.qualifier.isEmpty => ref.refName
       }.toSet
-    } else Set.empty
+    } else
+      Set.empty
 
   override def execute(element: PsiElement, state: ResolveState): Boolean = {
     val result = super.execute(element, state)
 
-    candidatesSet.foreach(rr => if (!shouldShow(rr)) candidatesSet -= rr)
+    candidatesSet.foreach(rr =>
+      if (!shouldShow(rr))
+        candidatesSet -= rr)
     result
   }
 

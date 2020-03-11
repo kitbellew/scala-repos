@@ -64,7 +64,8 @@ sealed trait Vector extends Serializable {
   override def equals(other: Any): Boolean = {
     other match {
       case v2: Vector =>
-        if (this.size != v2.size) return false
+        if (this.size != v2.size)
+          return false
         (this, v2) match {
           case (s1: SparseVector, s2: SparseVector) =>
             Vectors.equals(s1.indices, s1.values, s2.indices, s2.values)
@@ -472,7 +473,8 @@ object Vectors {
       var i = 0
       while (i < size) {
         val value = math.abs(values(i))
-        if (value > max) max = value
+        if (value > max)
+          max = value
         i += 1
       }
       max
@@ -562,7 +564,11 @@ object Vectors {
     var squaredDistance = 0.0
     val nnzv1 = indices.length
     val nnzv2 = v2.size
-    var iv1 = if (nnzv1 > 0) indices(kv1) else -1
+    var iv1 =
+      if (nnzv1 > 0)
+        indices(kv1)
+      else
+        -1
 
     while (kv2 < nnzv2) {
       var score = 0.0
@@ -595,8 +601,10 @@ object Vectors {
     var k2 = 0
     var allEqual = true
     while (allEqual) {
-      while (k1 < v1Size && v1Values(k1) == 0) k1 += 1
-      while (k2 < v2Size && v2Values(k2) == 0) k2 += 1
+      while (k1 < v1Size && v1Values(k1) == 0)
+        k1 += 1
+      while (k2 < v2Size && v2Values(k2) == 0)
+        k2 += 1
 
       if (k1 >= v1Size || k2 >= v2Size) {
         return k1 >= v1Size && k2 >= v2Size // check end alignment

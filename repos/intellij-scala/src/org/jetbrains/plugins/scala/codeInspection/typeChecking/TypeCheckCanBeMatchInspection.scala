@@ -97,7 +97,8 @@ class TypeCheckCanBeMatchQuickFix(
   def doApplyFix(project: Project) {
     val isInstOf = getFirstElement
     val ifSt = getSecondElement
-    if (!ifSt.isValid || !isInstOf.isValid) return
+    if (!ifSt.isValid || !isInstOf.isValid)
+      return
     val (matchStmtOption, renameData) =
       buildMatchStmt(ifSt, isInstOf, onlyFirst = true)
     for (matchStmt <- matchStmtOption) {
@@ -165,7 +166,8 @@ object TypeCheckToMatchUtil {
                 definition = Some(patternDef)
                 true
             }
-          } else false
+          } else
+            false
         case null => false
       }
     }
@@ -182,8 +184,10 @@ object TypeCheckToMatchUtil {
       val typeElem = args.typeArgs.head
       val typeName0 = typeElem.getText
       val typeName =
-        if (typeNeedParentheses(typeElem)) s"($typeName0)"
-        else typeName0
+        if (typeNeedParentheses(typeElem))
+          s"($typeName0)"
+        else
+          typeName0
       val asInstOfInBody = findAsInstOfCalls(ifStmt.thenBranch, isInstOf)
       val guardCond = guardCondition(condition, isInstOf)
       val asInstOfInGuard = findAsInstOfCalls(guardCond, isInstOf)
@@ -277,7 +281,8 @@ object TypeCheckToMatchUtil {
       case Some(expr: ScExpression) => builder.append(expr.getText)
       case None                     =>
     }
-    if (!builder.last.isWhitespace) builder.append("\n")
+    if (!builder.last.isWhitespace)
+      builder.append("\n")
     builder.toString()
   }
 
@@ -404,7 +409,8 @@ object TypeCheckToMatchUtil {
       }
     }
 
-    for (expr <- body) expr.accept(visitor)
+    for (expr <- body)
+      expr.accept(visitor)
     result
   }
 
@@ -479,13 +485,16 @@ object TypeCheckToMatchUtil {
   def equiv(elem1: PsiElement, elem2: PsiElement): Boolean = {
     val comparator = new Comparator[PsiElement]() {
       def compare(element1: PsiElement, element2: PsiElement): Int = {
-        if (element1 == element2) return 0
+        if (element1 == element2)
+          return 0
         (element1, element2) match {
           case (par1: ScParameter, par2: ScParameter) =>
             val name1 = par1.name
             val name2 = par2.name
-            if (name1 != null && name2 != null) name1.compareTo(name2)
-            else 1
+            if (name1 != null && name2 != null)
+              name1.compareTo(name2)
+            else
+              1
           case _ => 1
         }
       }

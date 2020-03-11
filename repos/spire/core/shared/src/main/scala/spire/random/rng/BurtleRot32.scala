@@ -38,7 +38,11 @@ abstract class BurtleRot32(_a: Int, _b: Int, _c: Int, _d: Int)
   }
 
   def setSeedBytes(bytes: Array[Byte]): Unit = {
-    val bs = if (bytes.length < 16) Arrays.copyOf(bytes, 16) else bytes
+    val bs =
+      if (bytes.length < 16)
+        Arrays.copyOf(bytes, 16)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bs)
     a = bb.getInt()
     b = bb.getInt()
@@ -55,13 +59,21 @@ abstract class BurtleCompanion[G <: BurtleRot32]
   def randomSeed: Array[Int] = GlobalRng.generateInts(4)
 
   def fromBytes(bytes: Array[Byte]): G = {
-    val bs = if (bytes.length < 16) Arrays.copyOf(bytes, 16) else bytes
+    val bs =
+      if (bytes.length < 16)
+        Arrays.copyOf(bytes, 16)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bs)
     create(bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt())
   }
 
   def fromSeed(ints: Array[Int]): G = {
-    val zs = if (ints.length < 4) Arrays.copyOf(ints, 4) else ints
+    val zs =
+      if (ints.length < 4)
+        Arrays.copyOf(ints, 4)
+      else
+        ints
     create(zs(0), zs(1), zs(2), zs(3))
   }
 

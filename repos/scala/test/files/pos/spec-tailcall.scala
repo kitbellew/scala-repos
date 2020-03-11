@@ -1,7 +1,9 @@
 class TailCall[@specialized T] {
   final def dropLeft(n: Int, xs: List[T]): List[T] =
-    if (n == 0) xs
-    else dropLeft(n - 1, xs.tail)
+    if (n == 0)
+      xs
+    else
+      dropLeft(n - 1, xs.tail)
   /*
   def filter(pf: PartialFunction[Option[String], Boolean]) = null
 

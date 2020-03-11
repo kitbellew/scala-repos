@@ -52,7 +52,10 @@ class HoistClientOps extends Phase {
           rsm2
         case _ =>
           val from2 = rewriteDBSide(from1)
-          if (from2 eq rsm.from) rsm else rsm.copy(from = from2).infer()
+          if (from2 eq rsm.from)
+            rsm
+          else
+            rsm.copy(from = from2).infer()
       }
     })
 
@@ -106,7 +109,8 @@ class HoistClientOps extends Phase {
                 case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
               }.toMap
               (bl2, repl)
-            } else (bl, Map.empty)
+            } else
+              (bl, Map.empty)
           val (br2: Bind, rrepl: Map[TermSymbol, (Node => Node, AnonSymbol)]) =
             if (jt != JoinType.Left) {
               val hoisted = rdefs.map {
@@ -131,7 +135,8 @@ class HoistClientOps extends Phase {
                 case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
               }.toMap
               (br2, repl)
-            } else (br, Map.empty)
+            } else
+              (br, Map.empty)
           if ((bl2 ne bl) || (br2 ne br)) {
             val from3 = from2.copy(
               left = bl2,
@@ -162,10 +167,15 @@ class HoistClientOps extends Phase {
             logger.debug("from3", from3)
             logger.debug("sel2", sel2)
             n.copy(from = from3, select = sel2).infer()
-          } else if (from2 eq from1) n
-          else n.copy(from = from2) :@ n.nodeType
+          } else if (from2 eq from1)
+            n
+          else
+            n.copy(from = from2) :@ n.nodeType
         case from2 =>
-          if (from2 eq from1) n else n.copy(from = from2) :@ n.nodeType
+          if (from2 eq from1)
+            n
+          else
+            n.copy(from = from2) :@ n.nodeType
       }
 
     // Push CollectionCast down unless it casts from a collection without duplicates to one with duplicates.
@@ -186,7 +196,10 @@ class HoistClientOps extends Phase {
             Ellipsis(res, List(0, 0)))
           res
         case from2 =>
-          if (from2 eq from1) n else n.copy(child = from2) :@ n.nodeType
+          if (from2 eq from1)
+            n
+          else
+            n.copy(child = from2) :@ n.nodeType
       }
 
     case n @ Filter(s1, from1, pred1) =>
@@ -216,7 +229,10 @@ class HoistClientOps extends Phase {
           logger.debug("Pulled Bind out of Filter", Ellipsis(res, List(0, 0)))
           res.infer()
         case from2 =>
-          if (from2 eq from1) n else n.copy(from = from2) :@ n.nodeType
+          if (from2 eq from1)
+            n
+          else
+            n.copy(from = from2) :@ n.nodeType
       }
 
     case n => n
@@ -246,7 +262,8 @@ class HoistClientOps extends Phase {
             r2 @ LiteralNode(Some(1)))) :@ OptionType(t)
         if t == ScalaBaseType.optionDiscType =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      if (topLevel) (recCh, recTr)
+      if (topLevel)
+        (recCh, recTr)
       else
         (
           recCh,

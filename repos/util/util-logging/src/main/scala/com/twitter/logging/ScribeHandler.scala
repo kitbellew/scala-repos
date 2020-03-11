@@ -228,7 +228,8 @@ class ScribeHandler(
     }
 
     def detectArchaicServer(): Unit = {
-      if (serverType != Unknown) return
+      if (serverType != Unknown)
+        return
 
       serverType = socket match {
         case None => Unknown
@@ -280,7 +281,10 @@ class ScribeHandler(
             try {
               outStream.write(buffer.array)
               val expectedReply =
-                if (isArchaicServer()) OLD_SCRIBE_REPLY else SCRIBE_REPLY
+                if (isArchaicServer())
+                  OLD_SCRIBE_REPLY
+                else
+                  SCRIBE_REPLY
 
               readResponseExpecting(s, expectedReply)
 
@@ -336,7 +340,9 @@ class ScribeHandler(
 
   // should be private, make it visible to tests
   private[logging] def makeBuffer(count: Int): ByteBuffer = {
-    val texts = for (i <- 0 until count) yield queue.poll()
+    val texts =
+      for (i <- 0 until count)
+        yield queue.poll()
 
     val recordHeader = ByteBuffer.wrap(new Array[Byte](10 + category.length))
     recordHeader.order(ByteOrder.BIG_ENDIAN)
@@ -347,7 +353,11 @@ class ScribeHandler(
     recordHeader.put(11: Byte)
     recordHeader.putShort(2)
 
-    val prefix = if (isArchaicServer()) OLD_SCRIBE_PREFIX else SCRIBE_PREFIX
+    val prefix =
+      if (isArchaicServer())
+        OLD_SCRIBE_PREFIX
+      else
+        SCRIBE_PREFIX
     val messageSize =
       (count * (recordHeader.capacity + 5)) + texts.foldLeft(0) {
         _ + _.length
@@ -390,14 +400,17 @@ class ScribeHandler(
   }
 
   override def publish(record: javalog.LogRecord) {
-    if (record.getLoggerName == loggerName) return
+    if (record.getLoggerName == loggerName)
+      return
     publish(getFormatter.format(record).getBytes("UTF-8"))
   }
 
   def publish(record: Array[Byte]) {
     stats.incrPublished()
-    if (!queue.offer(record)) stats.incrDroppedRecords()
-    if (Time.now.since(_lastTransmission) >= bufferTime) flush()
+    if (!queue.offer(record))
+      stats.incrDroppedRecords()
+    if (Time.now.since(_lastTransmission) >= bufferTime)
+      flush()
   }
 
   override def toString = {

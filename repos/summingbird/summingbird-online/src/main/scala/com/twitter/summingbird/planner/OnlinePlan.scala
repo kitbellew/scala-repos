@@ -29,7 +29,10 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
     .filter(depData.fanOut(_).exists(_ > 1))
     .toSet
   private def distinctAddToList[T](l: List[T], n: T): List[T] =
-    if (l.contains(n)) l else (n :: l)
+    if (l.contains(n))
+      l
+    else
+      (n :: l)
 
   // We don't merge flatMaps or joins with source.
   // That is just a hueristic, and in some cases perhaps we should

@@ -32,7 +32,10 @@ abstract class AbstractFormatConversionIntention(
       element: PsiElement): Option[(PsiElement, Seq[StringPart])] = {
     val candidates = {
       val list = element :: element.parentsInFile.toList
-      if (eager) list.reverse else list
+      if (eager)
+        list.reverse
+      else
+        list
     }
     val results = candidates.map(parser.parse)
     candidates.zip(results).collectFirst {

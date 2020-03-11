@@ -84,7 +84,8 @@ class RealCheck
 
   property("x / x = 1") {
     forAll { (x: Real) =>
-      if (x != 0) x / x shouldBe Real.one
+      if (x != 0)
+        x / x shouldBe Real.one
     }
   }
 
@@ -219,7 +220,10 @@ class RealCheck
       f: Rational => Rational)(g: Double => Double, h: Real => Real): String =
     (-8 to 8).map { i =>
       val x = Real(f(Rational(i)))
-      if ((g(x.toDouble) - h(x).toDouble).abs < 0.00001) "." else "!"
+      if ((g(x.toDouble) - h(x).toDouble).abs < 0.00001)
+        "."
+      else
+        "!"
     }.mkString
 
   // useful for visually debugging atan/asin

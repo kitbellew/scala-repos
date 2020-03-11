@@ -23,7 +23,8 @@ trait Collections {
       xs1: List[A],
       xs2: List[B],
       xs3: List[C])(f: (A, B, C) => Boolean): Boolean = (
-    if (xs1.isEmpty) xs2.isEmpty && xs3.isEmpty
+    if (xs1.isEmpty)
+      xs2.isEmpty && xs3.isEmpty
     else
       !xs2.isEmpty && !xs3.isEmpty && f(
         xs1.head,
@@ -43,8 +44,13 @@ trait Collections {
     xss map (_ map f)
   final def mfind[A](xss: List[List[A]])(p: A => Boolean): Option[A] = {
     var res: Option[A] = null
-    mforeach(xss)(x => if ((res eq null) && p(x)) res = Some(x))
-    if (res eq null) None else res
+    mforeach(xss)(x =>
+      if ((res eq null) && p(x))
+        res = Some(x))
+    if (res eq null)
+      None
+    else
+      res
   }
 
   /** These are all written in terms of List because we're trying to wring all
@@ -58,7 +64,8 @@ trait Collections {
 
   /** A version of List#map, specialized for List, and optimized to avoid allocation if `as` is empty */
   final def mapList[A, B](as: List[A])(f: A => B): List[B] =
-    if (as eq Nil) Nil
+    if (as eq Nil)
+      Nil
     else {
       val head = new ::[B](f(as.head), Nil)
       var tail: ::[B] = head
@@ -110,8 +117,10 @@ trait Collections {
         pending0: List[A],
         pending1: List[B]): List[A] = {
       if (pending0.isEmpty || pending1.isEmpty) {
-        if (mapped eq null) unchanged
-        else mapped.prependToList(unchanged)
+        if (mapped eq null)
+          unchanged
+        else
+          mapped.prependToList(unchanged)
       } else {
         val head00 = pending0.head
         val head01 = pending1.head
@@ -120,7 +129,11 @@ trait Collections {
         if ((head1 eq head00.asInstanceOf[AnyRef])) {
           loop(mapped, unchanged, pending0.tail, pending1.tail)
         } else {
-          val b = if (mapped eq null) new ListBuffer[A] else mapped
+          val b =
+            if (mapped eq null)
+              new ListBuffer[A]
+            else
+              mapped
           var xc = unchanged
           while ((xc ne pending0) && (xc ne pending1)) {
             b += xc.head
@@ -138,7 +151,8 @@ trait Collections {
 
   final def map3[A, B, C, D](xs1: List[A], xs2: List[B], xs3: List[C])(
       f: (A, B, C) => D): List[D] = {
-    if (xs1.isEmpty || xs2.isEmpty || xs3.isEmpty) Nil
+    if (xs1.isEmpty || xs2.isEmpty || xs3.isEmpty)
+      Nil
     else
       f(xs1.head, xs2.head, xs3.head) :: map3(xs1.tail, xs2.tail, xs3.tail)(f)
   }
@@ -150,13 +164,17 @@ trait Collections {
     while (!ys1.isEmpty && !ys2.isEmpty) {
       val cs = f(ys1.head, ys2.head)
       if (cs ne Nil) {
-        if (lb eq null) lb = new ListBuffer[C]
+        if (lb eq null)
+          lb = new ListBuffer[C]
         lb ++= cs
       }
       ys1 = ys1.tail
       ys2 = ys2.tail
     }
-    if (lb eq null) Nil else lb.result
+    if (lb eq null)
+      Nil
+    else
+      lb.result
   }
 
   final def flatCollect[A, B](elems: List[A])(
@@ -306,8 +324,10 @@ trait Collections {
   }
 
   final def sequence[A](as: List[Option[A]]): Option[List[A]] = {
-    if (as.exists(_.isEmpty)) None
-    else Some(as.flatten)
+    if (as.exists(_.isEmpty))
+      None
+    else
+      Some(as.flatten)
   }
 
   final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =

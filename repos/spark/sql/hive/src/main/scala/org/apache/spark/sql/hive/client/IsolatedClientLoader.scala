@@ -226,7 +226,10 @@ private[hive] class IsolatedClientLoader(
         new URLClassLoader(allJars, rootClassLoader) {
           override def loadClass(name: String, resolve: Boolean): Class[_] = {
             val loaded = findLoadedClass(name)
-            if (loaded == null) doLoadClass(name, resolve) else loaded
+            if (loaded == null)
+              doLoadClass(name, resolve)
+            else
+              loaded
           }
           def doLoadClass(name: String, resolve: Boolean): Class[_] = {
             val classFileName = name.replaceAll("\\.", "/") + ".class"

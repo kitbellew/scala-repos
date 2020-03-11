@@ -108,7 +108,8 @@ class FlowConflateSpec extends AkkaSpec {
       val future = Source(1 to 1000)
         .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
         .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10);
+          if (ThreadLocalRandom.current().nextBoolean())
+            Thread.sleep(10);
           i
         }
         .runFold(0)(_ + _)
@@ -119,7 +120,8 @@ class FlowConflateSpec extends AkkaSpec {
       val future = Source(1 to 1000)
         .conflate(_ + _)
         .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10);
+          if (ThreadLocalRandom.current().nextBoolean())
+            Thread.sleep(10);
           i
         }
         .runFold(0)(_ + _)
@@ -178,7 +180,8 @@ class FlowConflateSpec extends AkkaSpec {
           if (i % 2 == 0) {
             exceptionLatch.open()
             throw TE("I hate even seed numbers")
-          } else i
+          } else
+            i
         } { (sum, i) ⇒
           sum + i
         }
@@ -221,7 +224,8 @@ class FlowConflateSpec extends AkkaSpec {
           if (elem == "two") {
             latch.open()
             throw TE("two is a three letter word")
-          } else state + elem)
+          } else
+            state + elem)
         .withAttributes(supervisionStrategy(restartingDecider))
 
       val sourceProbe = TestPublisher.probe[String]()
@@ -260,7 +264,8 @@ class FlowConflateSpec extends AkkaSpec {
           if (elem == 2) {
             throw TE("three is a four letter word")
           } else {
-            if (elem == 4) saw4Latch.open()
+            if (elem == 4)
+              saw4Latch.open()
             state :+ elem
           })
         .withAttributes(supervisionStrategy(resumingDecider))

@@ -364,7 +364,8 @@ object WiringUI {
         lastValue = value
         lastTime = ct
         f(value, first)
-      } else Noop
+      } else
+        Noop
     })
   }
 
@@ -395,7 +396,8 @@ object WiringUI {
         lastValue = Full(value)
         lastTime = ct
         f(oldValue, value)
-      } else Noop
+      } else
+        Noop
     })
   }
 

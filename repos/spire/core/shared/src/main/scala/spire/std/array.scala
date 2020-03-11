@@ -10,8 +10,10 @@ object ArraySupport {
 
   def eqv[@sp A: Eq](x: Array[A], y: Array[A]): Boolean = {
     var i = 0
-    if (x.length != y.length) return false
-    while (i < x.length && i < y.length && x(i) === y(i)) i += 1
+    if (x.length != y.length)
+      return false
+    while (i < x.length && i < y.length && x(i) === y(i))
+      i += 1
     i == x.length
   }
 
@@ -19,9 +21,12 @@ object ArraySupport {
       ev: Eq[A],
       sc: AdditiveMonoid[A]): Boolean = {
     var i = 0
-    while (i < x.length && i < y.length && x(i) === y(i)) i += 1
-    while (i < x.length && x(i) === sc.zero) i += 1
-    while (i < y.length && y(i) === sc.zero) i += 1
+    while (i < x.length && i < y.length && x(i) === y(i))
+      i += 1
+    while (i < x.length && x(i) === sc.zero)
+      i += 1
+    while (i < y.length && y(i) === sc.zero)
+      i += 1
     i >= x.length && i >= y.length
   }
 
@@ -29,7 +34,8 @@ object ArraySupport {
     var i = 0
     while (i < x.length && i < y.length) {
       val cmp = x(i) compare y(i)
-      if (cmp != 0) return cmp
+      if (cmp != 0)
+        return cmp
       i += 1
     }
     x.length - y.length
@@ -41,15 +47,18 @@ object ArraySupport {
     var i = 0
     while (i < x.length && i < y.length) {
       val cmp = x(i) compare y(i)
-      if (cmp != 0) return cmp
+      if (cmp != 0)
+        return cmp
       i += 1
     }
     while (i < x.length) {
-      if (x(i) =!= sc.zero) return 1
+      if (x(i) =!= sc.zero)
+        return 1
       i += 1
     }
     while (i < y.length) {
-      if (y(i) =!= sc.zero) return -1
+      if (y(i) =!= sc.zero)
+        return -1
       i += 1
     }
     0
@@ -149,7 +158,8 @@ object ArraySupport {
       v(j) = sc.zero;
       j += 1
     }
-    if (i < dimensions) v(i) = sc.one
+    if (i < dimensions)
+      v(i) = sc.one
     v
   }
 }

@@ -180,7 +180,10 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(
     override def head = headOption.get
     override def headOption = {
       val elem =
-        if (from.isDefined) RB.minKeyAfter(tree, from.get) else RB.minKey(tree)
+        if (from.isDefined)
+          RB.minKeyAfter(tree, from.get)
+        else
+          RB.minKey(tree)
       (elem, until) match {
         case (Some(e), Some(unt)) if ordering.compare(e, unt) >= 0 => None
         case _                                                     => elem
@@ -190,8 +193,10 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(
     override def last = lastOption.get
     override def lastOption = {
       val elem =
-        if (until.isDefined) RB.maxKeyBefore(tree, until.get)
-        else RB.maxKey(tree)
+        if (until.isDefined)
+          RB.maxKeyBefore(tree, until.get)
+        else
+          RB.maxKey(tree)
       (elem, from) match {
         case (Some(e), Some(fr)) if ordering.compare(e, fr) < 0 => None
         case _                                                  => elem

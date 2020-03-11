@@ -169,7 +169,11 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedDouble[T] =>
-            f.st(if (v == null) defaultValue else v.getTime)
+            f.st(
+              if (v == null)
+                defaultValue
+              else
+                v.getTime)
         })
 
   def buildSetStringValue(
@@ -191,7 +195,12 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDouble[T] => f.st(if (isNull) defaultValue else v)
+          case f: MappedDouble[T] =>
+            f.st(
+              if (isNull)
+                defaultValue
+              else
+                v)
         })
 
   def buildSetActualValue(

@@ -45,12 +45,18 @@ import scalafx.scene.Node
 
 object ListView {
   implicit def sfxListView2jfx[T](l: ListView[T]): jfxsc.ListView[T] =
-    if (l != null) l.delegate else null
+    if (l != null)
+      l.delegate
+    else
+      null
 
   object EditEvent {
     implicit def sfxEditEvent2jfx[T](
         e: EditEvent[T]): jfxsc.ListView.EditEvent[T] =
-      if (e != null) e.delegate else null
+      if (e != null)
+        e.delegate
+      else
+        null
   }
 
   class EditEvent[T](override val delegate: jfxsc.ListView.EditEvent[T])

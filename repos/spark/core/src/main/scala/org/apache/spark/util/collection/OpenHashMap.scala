@@ -50,7 +50,11 @@ private[spark] class OpenHashMap[K: ClassTag,
   private var haveNullValue = false
   private var nullValue: V = null.asInstanceOf[V]
 
-  override def size: Int = if (haveNullValue) _keySet.size + 1 else _keySet.size
+  override def size: Int =
+    if (haveNullValue)
+      _keySet.size + 1
+    else
+      _keySet.size
 
   /** Tests whether this map contains a binding for a key. */
   def contains(k: K): Boolean = {

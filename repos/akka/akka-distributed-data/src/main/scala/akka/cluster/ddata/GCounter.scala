@@ -85,7 +85,8 @@ final class GCounter private[akka] (
     */
   private[akka] def increment(key: UniqueAddress, delta: BigInt): GCounter = {
     require(delta >= 0, "Can't decrement a GCounter")
-    if (delta == 0) this
+    if (delta == 0)
+      this
     else
       state.get(key) match {
         case Some(v) ⇒
@@ -96,8 +97,10 @@ final class GCounter private[akka] (
   }
 
   override def merge(that: GCounter): GCounter =
-    if ((this eq that) || that.isAncestorOf(this)) this.clearAncestor()
-    else if (this.isAncestorOf(that)) that.clearAncestor()
+    if ((this eq that) || that.isAncestorOf(this))
+      this.clearAncestor()
+    else if (this.isAncestorOf(that))
+      that.clearAncestor()
     else {
       var merged = that.state
       for ((key, thisValue) ← state) {

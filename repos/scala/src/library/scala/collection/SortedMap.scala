@@ -52,7 +52,8 @@ object SortedMap extends SortedMapFactory[SortedMap] {
 
     override def -(key: A): SortedMap[A, B] = {
       val b = newBuilder
-      for (kv <- this; if kv._1 != key) b += kv
+      for (kv <- this; if kv._1 != key)
+        b += kv
       b.result()
     }
   }

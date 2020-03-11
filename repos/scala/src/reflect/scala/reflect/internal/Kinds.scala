@@ -37,14 +37,19 @@ trait Kinds {
     )
     // @M TODO this method is duplicated all over the place (varianceString)
     private def varStr(s: Symbol): String =
-      if (s.isCovariant) "covariant"
-      else if (s.isContravariant) "contravariant"
-      else "invariant"
+      if (s.isCovariant)
+        "covariant"
+      else if (s.isContravariant)
+        "contravariant"
+      else
+        "invariant"
 
     private def qualify(a0: Symbol, b0: Symbol): String =
-      if (a0.toString != b0.toString) ""
+      if (a0.toString != b0.toString)
+        ""
       else {
-        if ((a0 eq b0) || (a0.owner eq b0.owner)) ""
+        if ((a0 eq b0) || (a0.owner eq b0.owner))
+          ""
         else {
           var a = a0;
           var b = b0
@@ -52,7 +57,10 @@ trait Kinds {
             a = a.owner;
             b = b.owner
           }
-          if (a.locationString ne "") " (" + a.locationString.trim + ")" else ""
+          if (a.locationString ne "")
+            " (" + a.locationString.trim + ")"
+          else
+            ""
         }
       }
     private def kindMessage(a: Symbol, p: Symbol)(
@@ -87,8 +95,10 @@ trait Kinds {
 
     private def buildMessage(xs: List[SymPair], f: (Symbol, Symbol) => String) =
       (
-        if (xs.isEmpty) ""
-        else xs map f.tupled mkString ("\n", ", ", "")
+        if (xs.isEmpty)
+          ""
+        else
+          xs map f.tupled mkString ("\n", ", ", "")
       )
 
     def errorMessage(targ: Type, tparam: Symbol): String = (
@@ -178,9 +188,11 @@ trait Kinds {
 
       if (!sameLength(hkargs, hkparams)) {
         // Any and Nothing are kind-overloaded
-        if (arg == AnyClass || arg == NothingClass) NoKindErrors
+        if (arg == AnyClass || arg == NothingClass)
+          NoKindErrors
         // shortcut: always set error, whether explainTypesOrNot
-        else return kindErrors.arityError(arg -> param)
+        else
+          return kindErrors.arityError(arg -> param)
       } else
         foreach2(hkargs, hkparams) { (hkarg, hkparam) =>
           if (hkparam.typeParams.isEmpty && hkarg.typeParams.isEmpty) { // base-case: kind *
@@ -230,8 +242,10 @@ trait Kinds {
           if (!explainErrors && !kindErrors.isEmpty)
             return kindErrors
         }
-      if (explainErrors) kindErrors
-      else NoKindErrors
+      if (explainErrors)
+        kindErrors
+      else
+        NoKindErrors
     }
 
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
@@ -242,7 +256,8 @@ trait Kinds {
 
     flatMap2(tparams, targs) { (tparam, targ) =>
       // Prevent WildcardType from causing kind errors, as typevars may be higher-order
-      if (targ == WildcardType) Nil
+      if (targ == WildcardType)
+        Nil
       else {
         // force symbol load for #4205
         targ.typeSymbolDirect.info
@@ -258,13 +273,17 @@ trait Kinds {
             tparam.typeParams,
             tparamsHO
           )
-          if (kindErrors.isEmpty) Nil
+          if (kindErrors.isEmpty)
+            Nil
           else {
-            if (explainErrors) List((targ, tparam, kindErrors))
+            if (explainErrors)
+              List((targ, tparam, kindErrors))
             // Return as soon as an error is seen if there's nothing to explain.
-            else return List((NoType, NoSymbol, NoKindErrors))
+            else
+              return List((NoType, NoSymbol, NoKindErrors))
           }
-        } else Nil
+        } else
+          Nil
       }
     }
   }
@@ -337,8 +356,10 @@ trait Kinds {
       def appendHead(order: Int, sym: Symbol): StringState = {
         val n = countByOrder(order) + 1
         val alias =
-          if (sym eq NoSymbol) None
-          else Some(sym.nameString)
+          if (sym eq NoSymbol)
+            None
+          else
+            Some(sym.nameString)
         StringState(tokens :+ Head(order, Some(n), alias))
       }
       def countByOrder(o: Int): Int = tokens count {
@@ -358,7 +379,8 @@ trait Kinds {
                 case Head(`o`, _, a) => Head(o, None, a)
                 case t               => t
               }
-            else ts
+            else
+              ts
         })
       }
       // Replace Head(o, n, Some(_)) with Head(o, n, None), so F[F] becomes F[A].
@@ -400,7 +422,8 @@ trait Kinds {
     import Kind.StringState
     val order = (args map (_.kind.order)).max + 1
     def description: String =
-      if (order == 1) "This is a type constructor: a 1st-order-kinded type."
+      if (order == 1)
+        "This is a type constructor: a 1st-order-kinded type."
       else
         "This is a type constructor that takes type constructor(s): a higher-kinded type."
     override def hasBounds: Boolean =
@@ -409,8 +432,10 @@ trait Kinds {
       val s =
         buildState(NoSymbol, Variance.Invariant)(StringState.empty).removeOnes
       val s2 =
-        if (hasBounds) s
-        else s.removeAlias
+        if (hasBounds)
+          s
+        else
+          s.removeAlias
       s2.toString
     }
     private[internal] def buildState(sym: Symbol, v: Variance)(
@@ -430,10 +455,14 @@ trait Kinds {
     def starNotation: String = {
       import Variance._
       (args map { arg =>
-        (if (arg.kind.order == 0) arg.kind.starNotation
-         else "(" + arg.kind.starNotation + ")") +
-          (if (arg.variance == Invariant) " -> "
-           else " -(" + arg.variance.symbolicString + ")-> ")
+        (if (arg.kind.order == 0)
+           arg.kind.starNotation
+         else
+           "(" + arg.kind.starNotation + ")") +
+          (if (arg.variance == Invariant)
+             " -> "
+           else
+             " -(" + arg.variance.symbolicString + ")-> ")
       }).mkString + "*" + bounds.starNotation(_.toString)
     }
   }
@@ -467,9 +496,12 @@ trait Kinds {
     def apply(pre: Type): InferKind = new InferKind {
       protected def infer(tpe: Type, owner: Symbol, topLevel: Boolean): Kind = {
         val bounds =
-          if (topLevel) TypeBounds.empty
-          else tpe.asSeenFrom(pre, owner).bounds
-        if (!tpe.isHigherKinded) ProperTypeKind(bounds)
+          if (topLevel)
+            TypeBounds.empty
+          else
+            tpe.asSeenFrom(pre, owner).bounds
+        if (!tpe.isHigherKinded)
+          ProperTypeKind(bounds)
         else
           TypeConKind(
             bounds,

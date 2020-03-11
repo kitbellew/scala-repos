@@ -32,7 +32,10 @@ sealed trait CPath { self =>
   def nodes: List[CPathNode]
 
   def parent: Option[CPath] =
-    if (nodes.isEmpty) None else Some(CPath(nodes.take(nodes.length - 1): _*))
+    if (nodes.isEmpty)
+      None
+    else
+      Some(CPath(nodes.take(nodes.length - 1): _*))
 
   def ancestors: List[CPath] = {
     def ancestors0(path: CPath, acc: List[CPath]): List[CPath] = {
@@ -47,7 +50,8 @@ sealed trait CPath { self =>
   }
 
   def combine(paths: Seq[CPath]): Seq[CPath] = {
-    if (paths.isEmpty) Seq(this)
+    if (paths.isEmpty)
+      Seq(this)
     else
       paths map { path =>
         CPath(this.nodes ++ path.nodes)
@@ -82,8 +86,10 @@ sealed trait CPath { self =>
           }
 
         case Nil =>
-          if (toDrop.isEmpty) Some(CPath(nodes))
-          else None
+          if (toDrop.isEmpty)
+            Some(CPath(nodes))
+          else
+            None
       }
     }
 
@@ -153,7 +159,11 @@ sealed trait CPath { self =>
 
   def length = nodes.length
 
-  override def toString = if (nodes.isEmpty) "." else path
+  override def toString =
+    if (nodes.isEmpty)
+      "."
+    else
+      path
 }
 
 sealed trait CPathNode {
@@ -176,7 +186,12 @@ object CPathNode {
       case (_, CPathArray)          => LT
 
       case (CPathIndex(i1), CPathIndex(i2)) =>
-        if (i1 < i2) LT else if (i1 == i2) EQ else GT
+        if (i1 < i2)
+          LT
+        else if (i1 == i2)
+          EQ
+        else
+          GT
       case (CPathIndex(_), _) => GT
       case (_, CPathIndex(_)) => LT
 
@@ -246,7 +261,8 @@ object CPath {
         case Nil => acc
 
         case head :: tail =>
-          if (head.trim.length == 0) parse0(tail, acc)
+          if (head.trim.length == 0)
+            parse0(tail, acc)
           else
             parse0(
               tail,
@@ -258,7 +274,11 @@ object CPath {
               }) :: acc)
       }
 
-    val properPath = if (path.startsWith(".")) path else "." + path
+    val properPath =
+      if (path.startsWith("."))
+        path
+      else
+        "." + path
 
     apply(parse0(PathPattern.split(properPath).toList, Nil).reverse: _*)
   }
@@ -332,7 +352,10 @@ object CPath {
           case (_, Nil)   => GT
           case (n1 :: ns1, n2 :: ns2) =>
             val ncomp = Order[CPathNode].order(n1, n2)
-            if (ncomp != EQ) ncomp else compare0(ns1, ns2)
+            if (ncomp != EQ)
+              ncomp
+            else
+              compare0(ns1, ns2)
         }
 
       compare0(v1.nodes, v2.nodes)

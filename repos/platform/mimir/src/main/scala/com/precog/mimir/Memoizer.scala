@@ -422,9 +422,9 @@ trait Memoizer extends DAG {
 
     // an approximation of table heritage that *should* be accurate
     case Filter(
-        _,
-        target,
-        boolean
+          _,
+          target,
+          boolean
         ) /*if target.identities != boolean.identities*/ => {
       val merged = findForcingRefs(
         target,

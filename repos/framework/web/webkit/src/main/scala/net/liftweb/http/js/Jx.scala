@@ -104,12 +104,14 @@ trait JxBase {
             JsRaw(parent + ".appendChild(" + varName + ")") &
             addToDocFrag(varName, e.child.toList)
         case ns: NodeSeq =>
-          if (ns.length == 0) Noop
+          if (ns.length == 0)
+            Noop
           else if (ns.length == 1) {
             logger.error(
               "In addToDocFrag, got a " + ns + " of type " + ns.getClass.getName)
             Noop
-          } else addToDocFrag(parent, ns.toList)
+          } else
+            addToDocFrag(parent, ns.toList)
 
       }
       .foldLeft(Noop)(_ & _)

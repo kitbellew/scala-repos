@@ -534,9 +534,12 @@ abstract class TreeBrowsers {
     /** Return a textual representation of this t's symbol */
     def symbolText(t: Tree): String = {
       val prefix =
-        if (t.hasSymbolField) "[has] "
-        else if (t.isDef) "[defines] "
-        else ""
+        if (t.hasSymbolField)
+          "[has] "
+        else if (t.isDef)
+          "[defines] "
+        else
+          ""
 
       prefix + t.symbol
     }
@@ -557,13 +560,16 @@ abstract class TreeBrowsers {
 
       if ((s ne null) && (s != NoSymbol)) {
         var str = s.flagString
-        if (s.isStaticMember) str = str + " isStatic "
+        if (s.isStaticMember)
+          str = str + " isStatic "
         (str + " annotations: " + s.annotations.mkString("", " ", "")
           + (if (s.isTypeSkolem)
                "\ndeSkolemized annotations: " + s.deSkolemize.annotations
                  .mkString("", " ", "")
-             else ""))
-      } else ""
+             else
+               ""))
+      } else
+        ""
     }
   }
 

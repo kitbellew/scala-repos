@@ -51,7 +51,8 @@ object Test {
       }
     } foreach { (p: Process) =>
       val ok = reading.await(10, SECONDS)
-      if (!ok) Console println "Timed out waiting for process output!"
+      if (!ok)
+        Console println "Timed out waiting for process output!"
       p.destroy()
     }
     //Console println s"Read count $counted lines"

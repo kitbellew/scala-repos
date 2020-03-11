@@ -287,7 +287,10 @@ trait WithPlay { self: PackageObject =>
   implicit final class LilaPimpedBooleanWithFuture(self: Boolean) {
 
     def optionFu[A](v: => Fu[A]): Fu[Option[A]] =
-      if (self) v map (_.some) else fuccess(none)
+      if (self)
+        v map (_.some)
+      else
+        fuccess(none)
   }
 
   implicit final class LilaPimpedActorSystem(self: akka.actor.ActorSystem) {

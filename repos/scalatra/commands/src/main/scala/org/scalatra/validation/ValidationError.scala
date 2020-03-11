@@ -136,10 +136,12 @@ class ValidationErrorSerializer(
             val ec: JValue =
               if (includeCode && code.isDefined)
                 ("code" -> (code map (Extraction.decompose(_)(formats))))
-              else JNothing
+              else
+                JNothing
             val arg: JValue =
               if (includeArgs && args.nonEmpty)
                 ("args" -> Extraction.decompose(args)(formats))
-              else JNothing
+              else
+                JNothing
             jv merge wf merge ec merge arg
         }))

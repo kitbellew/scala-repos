@@ -63,7 +63,10 @@ object SBTProjectBuilder {
     val projectName = {
       val path = {
         val p = projectDir.toURI.toString
-        if (p.last == '/') p.dropRight(1) else p
+        if (p.last == '/')
+          p.dropRight(1)
+        else
+          p
       }
       path.substring(path.lastIndexOf('/') + 1)
     }

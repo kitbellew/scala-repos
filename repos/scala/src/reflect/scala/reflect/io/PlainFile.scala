@@ -62,8 +62,10 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
       case (_: Directory | _: io.File) => true
       case _                           => path.exists
     }
-    if (!isDirectory) Iterator.empty
-    else givenPath.toDirectory.list filter existsFast map (new PlainFile(_))
+    if (!isDirectory)
+      Iterator.empty
+    else
+      givenPath.toDirectory.list filter existsFast map (new PlainFile(_))
   }
 
   /**
@@ -76,16 +78,21 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
     val child = givenPath / name
     if ((child.isDirectory && directory) || (child.isFile && !directory))
       new PlainFile(child)
-    else null
+    else
+      null
   }
 
   /** Does this abstract file denote an existing file? */
-  def create(): Unit = if (!exists) givenPath.createFile()
+  def create(): Unit =
+    if (!exists)
+      givenPath.createFile()
 
   /** Delete the underlying file or directory (recursively). */
   def delete(): Unit =
-    if (givenPath.isFile) givenPath.delete()
-    else if (givenPath.isDirectory) givenPath.toDirectory.deleteRecursively()
+    if (givenPath.isFile)
+      givenPath.delete()
+    else if (givenPath.isDirectory)
+      givenPath.toDirectory.deleteRecursively()
 
   /** Returns a plain file with the given name. It does not
     *  check that it exists.

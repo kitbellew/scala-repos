@@ -357,5 +357,8 @@ trait ActivityService {
     )
 
   private def cut(value: String, length: Int): String =
-    if (value.length > length) value.substring(0, length) + "..." else value
+    if (value.length > length)
+      value.substring(0, length) + "..."
+    else
+      value
 }

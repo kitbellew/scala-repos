@@ -29,20 +29,20 @@ object FormattedStringParser extends StringParser {
     Some(element) collect {
       // "%d".format(1)
       case ScMethodCall(
-          ScReferenceExpression.withQualifier(literal: ScLiteral) &&
+            ScReferenceExpression.withQualifier(literal: ScLiteral) &&
             PsiReferenceEx.resolve(
               (f: ScFunction) && ContainingClass(owner: ScTrait)),
-          args)
+            args)
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
         (literal, args)
 
       // "%d" format 1, "%d" format (1)
       case ScInfixExpr(
-          literal: ScLiteral,
-          PsiReferenceEx.resolve(
-            (f: ScFunction) &&
+            literal: ScLiteral,
+            PsiReferenceEx.resolve(
+              (f: ScFunction) &&
               ContainingClass(owner: ScTrait)),
-          arg)
+            arg)
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
         val args = arg match {
           case tuple: ScTuple => tuple.exprs
@@ -52,10 +52,10 @@ object FormattedStringParser extends StringParser {
 
       // 1.formatted("%d")
       case ScMethodCall(
-          ScReferenceExpression.withQualifier(arg: ScExpression) &&
+            ScReferenceExpression.withQualifier(arg: ScExpression) &&
             PsiReferenceEx.resolve(
               (f: ScFunction) && ContainingClass(owner: ScClass)),
-          Seq(literal: ScLiteral))
+            Seq(literal: ScLiteral))
           if literal.isString && isFormattedMethod(
             owner.qualifiedName,
             f.name) =>
@@ -63,11 +63,11 @@ object FormattedStringParser extends StringParser {
 
       // 1 formatted "%d"
       case ScInfixExpr(
-          arg: ScExpression,
-          PsiReferenceEx.resolve(
-            (f: ScFunction) &&
+            arg: ScExpression,
+            PsiReferenceEx.resolve(
+              (f: ScFunction) &&
               ContainingClass(owner: ScClass)),
-          literal: ScLiteral)
+            literal: ScLiteral)
           if literal.isString && isFormattedMethod(
             owner.qualifiedName,
             f.name) =>
@@ -75,10 +75,10 @@ object FormattedStringParser extends StringParser {
 
       // String.format("%d", 1)
       case MethodInvocation(
-          PsiReferenceEx.resolve(
-            (f: PsiMethod) &&
+            PsiReferenceEx.resolve(
+              (f: PsiMethod) &&
               ContainingClass(owner: PsiClass)),
-          Seq(literal: ScLiteral, args @ _*))
+            Seq(literal: ScLiteral, args @ _*))
           if literal.isString && isStringFormatMethod(
             owner.qualifiedName,
             f.getName) =>
@@ -98,7 +98,11 @@ object FormattedStringParser extends StringParser {
       literal: ScLiteral,
       arguments: Seq[ScExpression]): Seq[StringPart] = {
     val remainingArguments = arguments.toIterator
-    val shift = if (literal.isMultiLineString) 3 else 1
+    val shift =
+      if (literal.isMultiLineString)
+        3
+      else
+        1
     val formatString = literal.getText.drop(shift).dropRight(shift)
 
     var refferredArguments: List[ScExpression] = Nil
@@ -135,13 +139,16 @@ object FormattedStringParser extends StringParser {
               None)
           else if (remainingArguments.hasNext)
             Injection(remainingArguments.next(), Some(specifier))
-          else UnboundSpecifier(specifier)
+          else
+            UnboundSpecifier(specifier)
         }
     }
 
     val texts = FormatSpecifierPattern.split(formatString).map { s =>
-      if (literal.isMultiLineString) Text(s)
-      else Text(StringUtil.unescapeStringCharacters(s))
+      if (literal.isMultiLineString)
+        Text(s)
+      else
+        Text(StringUtil.unescapeStringCharacters(s))
     }
 
     val prefix = intersperse(texts.toList, bindings.toList).filter {

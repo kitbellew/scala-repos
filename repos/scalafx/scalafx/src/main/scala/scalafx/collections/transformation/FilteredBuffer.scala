@@ -46,7 +46,10 @@ object FilteredBuffer {
     */
   implicit def sfxFilteredList2jfx[E](
       v: FilteredBuffer[E]): jfxct.FilteredList[E] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

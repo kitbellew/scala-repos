@@ -12,7 +12,8 @@ abstract class Reader private[this] (_lock: Option[Object])
   protected def this() = this(None)
 
   def read(target: CharBuffer): Int = {
-    if (!target.hasRemaining) 0
+    if (!target.hasRemaining)
+      0
     else if (target.hasArray) {
       val charsRead = read(
         target.array,
@@ -32,8 +33,10 @@ abstract class Reader private[this] (_lock: Option[Object])
 
   def read(): Int = {
     val buf = new Array[Char](1)
-    if (read(buf) == -1) -1
-    else buf(0).toInt
+    if (read(buf) == -1)
+      -1
+    else
+      buf(0).toInt
   }
 
   def read(cbuf: Array[Char]): Int =
@@ -44,8 +47,10 @@ abstract class Reader private[this] (_lock: Option[Object])
   def skip(n: Long): Long = {
     if (n < 0)
       throw new IllegalArgumentException("Cannot skip negative amount")
-    else if (read() == -1) 0
-    else 1
+    else if (read() == -1)
+      0
+    else
+      1
   }
 
   def ready(): Boolean = false

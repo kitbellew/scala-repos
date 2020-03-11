@@ -119,7 +119,8 @@ object UserAnalysis extends LilaController with TheftPrevention {
     implicit ctx => me =>
       import lila.round.Forecast
       OptionFuResult(GameRepo pov fullId) { pov =>
-        if (isTheft(pov)) fuccess(theftResponse)
+        if (isTheft(pov))
+          fuccess(theftResponse)
         else
           ctx.body.body
             .validate[Forecast.Steps]
@@ -141,7 +142,8 @@ object UserAnalysis extends LilaController with TheftPrevention {
     AuthBody(BodyParsers.parse.json) { implicit ctx => me =>
       import lila.round.Forecast
       OptionFuResult(GameRepo pov fullId) { pov =>
-        if (isTheft(pov)) fuccess(theftResponse)
+        if (isTheft(pov))
+          fuccess(theftResponse)
         else {
           ctx.body.body
             .validate[Forecast.Steps]

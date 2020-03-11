@@ -145,8 +145,10 @@ class Configuration(val map: Map[String, Any]) {
   def getBoolean(key: String): Option[Boolean] = {
     getString(key) flatMap { s =>
       val isTrue = trueValues.contains(s)
-      if (!isTrue && !falseValues.contains(s)) None
-      else Some(isTrue)
+      if (!isTrue && !falseValues.contains(s))
+        None
+      else
+        Some(isTrue)
     }
   }
 
@@ -173,7 +175,9 @@ class Configuration(val map: Map[String, Any]) {
     val m = map.collect {
       case (k, v) if k.startsWith(name) => (k.substring(l), v)
     }
-    if (m.isEmpty) None
-    else Some(new Configuration(m))
+    if (m.isEmpty)
+      None
+    else
+      Some(new Configuration(m))
   }
 }

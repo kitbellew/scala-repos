@@ -131,7 +131,8 @@ private[akka] class Mailboxes(
 
   def getProducedMessageQueueType(mailboxType: MailboxType): Class[_] = {
     val pmqClass = classOf[ProducesMessageQueue[_]]
-    if (!pmqClass.isAssignableFrom(mailboxType.getClass)) classOf[MessageQueue]
+    if (!pmqClass.isAssignableFrom(mailboxType.getClass))
+      classOf[MessageQueue]
     else
       Reflect.findMarker(mailboxType.getClass, pmqClass) match {
         case t: ParameterizedType ⇒
@@ -337,8 +338,10 @@ private[akka] class Mailboxes(
     val fallback =
       disp.withFallback(settings.config.getConfig(Mailboxes.DefaultMailboxId))
     val config =
-      if (mailbox == Mailboxes.DefaultMailboxId) fallback
-      else settings.config.getConfig(mailbox).withFallback(fallback)
+      if (mailbox == Mailboxes.DefaultMailboxId)
+        fallback
+      else
+        settings.config.getConfig(mailbox).withFallback(fallback)
     config.getInt("stash-capacity")
   }
 }

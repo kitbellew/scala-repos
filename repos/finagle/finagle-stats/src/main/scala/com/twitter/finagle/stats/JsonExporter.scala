@@ -114,7 +114,8 @@ class JsonExporter(registry: Metrics, timer: Timer)
       if (vals.isEmpty) {
         false
       } else {
-        if (vals.exists(_ == "60")) true
+        if (vals.exists(_ == "60"))
+          true
         else {
           log.warning(
             s"${getClass.getName} request ignored due to unsupported period: '${vals
@@ -185,7 +186,11 @@ class JsonExporter(registry: Metrics, timer: Timer)
 
     val formatted = StatsFormatter.default(values)
 
-    val sampleFiltered = if (filtered) filterSample(formatted) else formatted
+    val sampleFiltered =
+      if (filtered)
+        filterSample(formatted)
+      else
+        formatted
 
     if (pretty) {
       // Create a TreeMap for sorting the keys

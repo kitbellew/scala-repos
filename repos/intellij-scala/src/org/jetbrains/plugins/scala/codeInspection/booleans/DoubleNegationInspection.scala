@@ -40,7 +40,8 @@ class DoubleNegationQuickFix(expr: ScExpression)
     extends AbstractFixOnPsiElement("Remove double negation", expr) {
   def doApplyFix(project: Project) {
     val scExpr = getElement
-    if (!scExpr.isValid || !DoubleNegationUtil.hasDoubleNegation(scExpr)) return
+    if (!scExpr.isValid || !DoubleNegationUtil.hasDoubleNegation(scExpr))
+      return
 
     val newExpr = DoubleNegationUtil.removeDoubleNegation(scExpr)
     scExpr.replaceExpression(newExpr, removeParenthesis = true)
@@ -74,11 +75,20 @@ object DoubleNegationUtil {
         val hasNegInfix = hasNegation(infix)
         val builder = new mutable.StringBuilder()
         builder.append(
-          if (hasNegLeft) invertedNegationText(left) else left.getText)
+          if (hasNegLeft)
+            invertedNegationText(left)
+          else
+            left.getText)
         builder.append(
-          if (hasNegLeft && hasNegInfix && hasNegRight) " != " else " == ")
+          if (hasNegLeft && hasNegInfix && hasNegRight)
+            " != "
+          else
+            " == ")
         builder.append(
-          if (hasNegRight) invertedNegationText(right) else right.getText)
+          if (hasNegRight)
+            invertedNegationText(right)
+          else
+            right.getText)
         builder.toString()
     }
     ScalaPsiElementFactory.createExpressionFromText(text, expr.getManager)

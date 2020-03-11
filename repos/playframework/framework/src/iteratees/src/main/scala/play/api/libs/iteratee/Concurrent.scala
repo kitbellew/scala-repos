@@ -155,7 +155,10 @@ object Concurrent {
               (interested.length > 0 && iteratees().length <= 0)
             }
 
-            if (in == Input.EOF) Done((), Input.Empty) else Cont(step)
+            if (in == Input.EOF)
+              Done((), Input.Empty)
+            else
+              Cont(step)
 
           }(dec))
     }
@@ -485,7 +488,8 @@ object Concurrent {
                     busy.single() = true
                     Cont(step(inner))
                 }(dec))
-              } else Cont(step(inner))
+              } else
+                Cont(step(inner))
           }
         }
 
@@ -721,11 +725,14 @@ object Concurrent {
 
         }
         def result(): Iteratee[E, Unit] =
-          if (in == Input.EOF || closeFlag) Done((), Input.Empty)
-          else Cont(step)
+          if (in == Input.EOF || closeFlag)
+            Done((), Input.Empty)
+          else
+            Cont(step)
         if (downToZero)
           Future(interestIsDownToZero())(pec).map(_ => result())(dec)
-        else Future.successful(result())
+        else
+          Future.successful(result())
 
       }(dec))
     }

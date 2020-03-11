@@ -138,7 +138,8 @@ class ListMap[A, +B]
       var self: ListMap[A, B] = ListMap.this
       def hasNext = !self.isEmpty
       def next(): (A, B) =
-        if (!hasNext) throw new NoSuchElementException("next on empty iterator")
+        if (!hasNext)
+          throw new NoSuchElementException("next on empty iterator")
         else {
           val res = (self.key, self.value);
           self = self.next;
@@ -168,7 +169,10 @@ class ListMap[A, +B]
 
     // to allow tail recursion and prevent stack overflows
     @tailrec private def size0(cur: ListMap[A, B1], acc: Int): Int =
-      if (cur.isEmpty) acc else size0(cur.next, acc + 1)
+      if (cur.isEmpty)
+        acc
+      else
+        size0(cur.next, acc + 1)
 
     /** Is this an empty map?
       *
@@ -186,9 +190,12 @@ class ListMap[A, +B]
     override def apply(k: A): B1 = apply0(this, k)
 
     @tailrec private def apply0(cur: ListMap[A, B1], k: A): B1 =
-      if (cur.isEmpty) throw new NoSuchElementException("key not found: " + k)
-      else if (k == cur.key) cur.value
-      else apply0(cur.next, k)
+      if (cur.isEmpty)
+        throw new NoSuchElementException("key not found: " + k)
+      else if (k == cur.key)
+        cur.value
+      else
+        apply0(cur.next, k)
 
     /** Checks if this map maps `key` to a value and return the
       *  value if it exists.
@@ -199,16 +206,22 @@ class ListMap[A, +B]
     override def get(k: A): Option[B1] = get0(this, k)
 
     @tailrec private def get0(cur: ListMap[A, B1], k: A): Option[B1] =
-      if (k == cur.key) Some(cur.value)
-      else if (cur.next.nonEmpty) get0(cur.next, k)
-      else None
+      if (k == cur.key)
+        Some(cur.value)
+      else if (cur.next.nonEmpty)
+        get0(cur.next, k)
+      else
+        None
 
     override def contains(key: A): Boolean = contains0(this, key)
 
     @tailrec private def contains0(cur: ListMap[A, B1], k: A): Boolean =
-      if (k == cur.key) true
-      else if (cur.next.nonEmpty) contains0(cur.next, k)
-      else false
+      if (k == cur.key)
+        true
+      else if (cur.next.nonEmpty)
+        contains0(cur.next, k)
+      else
+        false
 
     /** This method allows one to create a new map with an additional mapping
       *  from `key` to `value`. If the map contains already a mapping for `key`,

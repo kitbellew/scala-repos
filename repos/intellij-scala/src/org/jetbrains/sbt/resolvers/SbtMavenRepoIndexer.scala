@@ -57,9 +57,16 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   ).asJava
 
   private var context = {
-    val repoUrl = if (root.startsWith("file:")) null else root
+    val repoUrl =
+      if (root.startsWith("file:"))
+        null
+      else
+        root
     val repoDir =
-      if (root.startsWith("file:")) new File(root.substring(5)) else null
+      if (root.startsWith("file:"))
+        new File(root.substring(5))
+      else
+        null
     if (repoDir != null && !repoDir.isDirectory)
       throw new InvalidRepository(repoDir.getAbsolutePath)
     indexer.createIndexingContext(

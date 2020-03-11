@@ -28,7 +28,8 @@ trait CacheSupport { self: ScalatraBase =>
 
     cacheBackend.get[(String, A)](key) match {
       case Some(v) =>
-        if (headerStrategy.isUnchanged(v._1)) halt(304)
+        if (headerStrategy.isUnchanged(v._1))
+          halt(304)
         else {
           headerStrategy.setRevision(v._1)
           v._2

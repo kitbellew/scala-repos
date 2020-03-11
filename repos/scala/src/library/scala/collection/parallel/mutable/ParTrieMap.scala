@@ -170,7 +170,8 @@ private[mutable] trait ParTrieMapCombiner[K, V]
 
   def combine[N <: (K, V), NewTo >: ParTrieMap[K, V]](
       other: Combiner[N, NewTo]): Combiner[N, NewTo] =
-    if (this eq other) this
+    if (this eq other)
+      this
     else {
       throw new UnsupportedOperationException(
         "This shouldn't have been called in the first place.")

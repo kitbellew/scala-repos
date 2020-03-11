@@ -117,7 +117,8 @@ trait ScBlock
       case Some(e) =>
         val m = new mutable.HashMap[String, ScExistentialArgument]
         def existize(t: ScType, visited: HashSet[ScType]): ScType = {
-          if (visited.contains(t)) return t
+          if (visited.contains(t))
+            return t
           val visitedWithT = visited + t
           t match {
             case ScDesignatorType(p: ScParameter)
@@ -187,8 +188,10 @@ trait ScBlock
                       s.substitutedTypes.map(_.map(f =>
                         () => existize(f(), visitedWithT)))
                     val tParams: Array[TypeParameter] =
-                      if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                      else s.typeParams.map(updateTypeParam)
+                      if (s.typeParams.length == 0)
+                        TypeParameter.EMPTY_ARRAY
+                      else
+                        s.typeParams.map(updateTypeParam)
                     val rt: ScType = existize(tp, visitedWithT)
                     (
                       new Signature(
@@ -236,8 +239,10 @@ trait ScBlock
           }
         }
         val t = existize(e.getType(TypingContext.empty).getOrAny, HashSet.empty)
-        if (m.size == 0) t
-        else new ScExistentialType(t, m.values.toList).simplify()
+        if (m.size == 0)
+          t
+        else
+          new ScExistentialType(t, m.values.toList).simplify()
     }
     Success(inner, Some(this))
   }
@@ -260,7 +265,8 @@ trait ScBlock
         holders.toList,
         aliases.toList,
         ScSubstitutor.empty)
-    } else superTypes(0)
+    } else
+      superTypes(0)
   }
 
   def hasCaseClauses: Boolean = false

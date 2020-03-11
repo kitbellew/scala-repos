@@ -50,7 +50,8 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
   override protected def interpolate(x: Double): Double = {
     val index = bisearch(x) - 1
 
-    if (index == -1) Y(0)
+    if (index == -1)
+      Y(0)
     else {
       val dx = x - X(index)
       A(index, 0) + A(index, 1) * dx + A(index, 2) * dx * dx + A(

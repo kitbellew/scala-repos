@@ -90,13 +90,17 @@ object CalendarBatcher {
       val skip = 10L
       @annotation.tailrec
       def makeBefore(prev: Long = guess): Long = {
-        if (notAfter(prev)) prev
-        else makeBefore(prev - skip)
+        if (notAfter(prev))
+          prev
+        else
+          makeBefore(prev - skip)
       }
       @annotation.tailrec
       def makeAfter(prev: Long = guess): Long = {
-        if (!notAfter(prev)) prev
-        else makeAfter(prev + skip)
+        if (!notAfter(prev))
+          prev
+        else
+          makeAfter(prev + skip)
       }
       // Return the largest value that is not after the date (<=)
       search(makeBefore(), makeAfter())

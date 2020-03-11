@@ -62,7 +62,8 @@ object DefaultRoutines {
         case Full(x) => x
         case _ => {
           val res = rawResBundle(loc, path)
-          if (!Props.devMode) resourceMap(key) = res
+          if (!Props.devMode)
+            resourceMap(key) = res
           res
         }
 

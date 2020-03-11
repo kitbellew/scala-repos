@@ -86,7 +86,8 @@ class DiskBlockManagerSuite
 
   def writeToFile(file: File, numBytes: Int) {
     val writer = new FileWriter(file, true)
-    for (i <- 0 until numBytes) writer.write(i)
+    for (i <- 0 until numBytes)
+      writer.write(i)
     writer.close()
   }
 }

@@ -59,6 +59,12 @@ object FileLock {
         "Could not lock. Previous lock exists on " + target)
     }
 
-    LockHolder(channel, lock, if (removeFile) Some(lockFile) else None)
+    LockHolder(
+      channel,
+      lock,
+      if (removeFile)
+        Some(lockFile)
+      else
+        None)
   }
 }

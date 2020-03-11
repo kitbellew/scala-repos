@@ -16,7 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef._
   */
 class ExtendsFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val (leaf, isScriptFile) = processPsiLeafForFilter(
       getLeafByOffset(context.getTextRange.getStartOffset, context))
 
@@ -32,13 +33,15 @@ class ExtendsFilter extends ElementFilter {
       val prev2 = prev.getPrevSibling
       prev2 match {
         case x: ScTypeDefinition =>
-          if (x.extendsBlock.templateParents.isDefined) return false
+          if (x.extendsBlock.templateParents.isDefined)
+            return false
           else {
             if (leaf.getNextSibling != null &&
                 leaf.getNextSibling.getNextSibling != null &&
                 leaf.getNextSibling.getNextSibling.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
               return false
-            else return true
+            else
+              return true
           }
         case _ => return false
       }

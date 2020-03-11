@@ -41,7 +41,10 @@ trait Field[@sp(Byte, Short, Int, Long, Float, Double) A]
         num
       }
 
-      if (a < 0) negate(unsigned) else unsigned
+      if (a < 0)
+        negate(unsigned)
+      else
+        unsigned
     }
 }
 

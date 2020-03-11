@@ -61,11 +61,13 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
   private[this] var _keys: Array[AnyRef] = null
   private[this] var _values: Array[AnyRef] = null
 
-  if (initBlank) defaultInitialize(initialBufferSize)
+  if (initBlank)
+    defaultInitialize(initialBufferSize)
 
   private[this] def defaultInitialize(n: Int) {
     mask =
-      if (n < 0) 0x7
+      if (n < 0)
+        0x7
       else
         (((1 << (32 - java.lang.Integer
           .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
@@ -97,13 +99,17 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     (_size + _vacant) > 0.5 * mask || _vacant > _size
 
   private def hashOf(key: K): Int = {
-    if (key eq null) 0x41081989
+    if (key eq null)
+      0x41081989
     else {
       val h = key.hashCode
       // Part of the MurmurHash3 32 bit finalizer
       val i = (h ^ (h >>> 16)) * 0x85EBCA6B
       val j = (i ^ (i >>> 13))
-      if (j == 0) 0x41081989 else j & 0x7FFFFFFF
+      if (j == 0)
+        0x41081989
+      else
+        j & 0x7FFFFFFF
     }
   }
 
@@ -118,7 +124,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       if (g == h && {
             val q = _keys(e);
             (q eq k) || ((q ne null) && (q equals k))
-          }) return e
+          })
+        return e
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
@@ -137,24 +144,35 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       if (g == h && {
             val q = _keys(e);
             (q eq k) || ((q ne null) && (q equals k))
-          }) return e
-      else if (o == -1 && g + g == 0) o = e
+          })
+        return e
+      else if (o == -1 && g + g == 0)
+        o = e
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
-    if (o >= 0) o | MissVacant else e | MissingBit
+    if (o >= 0)
+      o | MissVacant
+    else
+      e | MissingBit
   }
 
   override def contains(key: K): Boolean = seekEntry(hashOf(key), key) >= 0
 
   override def get(key: K): Option[V] = {
     val i = seekEntry(hashOf(key), key)
-    if (i < 0) None else Some(_values(i).asInstanceOf[V])
+    if (i < 0)
+      None
+    else
+      Some(_values(i).asInstanceOf[V])
   }
 
   override def getOrElse[V1 >: V](key: K, default: => V1): V1 = {
     val i = seekEntry(hashOf(key), key)
-    if (i < 0) default else _values(i).asInstanceOf[V]
+    if (i < 0)
+      default
+    else
+      _values(i).asInstanceOf[V]
   }
 
   override def getOrElseUpdate(key: K, defaultValue: => V): V = {
@@ -169,7 +187,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
         val ans = defaultValue
         if (oh ne _hashes) {
           i = seekEntryOrOpen(h, key)
-          if (i >= 0) _size -= 1
+          if (i >= 0)
+            _size -= 1
         }
         ans
       }
@@ -178,10 +197,13 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _hashes(j) = h
       _keys(j) = key.asInstanceOf[AnyRef]
       _values(j) = value.asInstanceOf[AnyRef]
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0)
+        _vacant -= 1
+      else if (imbalanced)
+        repack()
       value
-    } else _values(i).asInstanceOf[V]
+    } else
+      _values(i).asInstanceOf[V]
   }
 
   /** Retrieves the value associated with a key, or the default for that type if none exists
@@ -193,7 +215,10 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     */
   def getOrNull(key: K): V = {
     val i = seekEntry(hashOf(key), key)
-    (if (i < 0) null else _values(i)).asInstanceOf[V]
+    (if (i < 0)
+       null
+     else
+       _values(i)).asInstanceOf[V]
   }
 
   /** Retrieves the value associated with a key.
@@ -203,7 +228,10 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     */
   override def apply(key: K): V = {
     val i = seekEntry(hashOf(key), key)
-    if (i < 0) defaultEntry(key) else _values(i).asInstanceOf[V]
+    if (i < 0)
+      defaultEntry(key)
+    else
+      _values(i).asInstanceOf[V]
   }
 
   /** Defers to defaultEntry to find a default value for the key.  Throws an
@@ -250,7 +278,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var m = mask
     if (_size + _vacant >= 0.5 * mask && !(_vacant > 0.2 * mask))
       m = ((m << 1) + 1) & IndexMask
-    while (m > 8 && 8 * _size < m) m = m >>> 1
+    while (m > 8 && 8 * _size < m)
+      m = m >>> 1
     repack(m)
   }
 
@@ -264,8 +293,10 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _keys(j) = k
       _values(j) = value.asInstanceOf[AnyRef]
       _size += 1
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0)
+        _vacant -= 1
+      else if (imbalanced)
+        repack()
       None
     } else {
       val ans = Some(_values(i).asInstanceOf[V])
@@ -290,8 +321,10 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _keys(j) = k
       _values(j) = value.asInstanceOf[AnyRef]
       _size += 1
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0)
+        _vacant -= 1
+      else if (imbalanced)
+        repack()
     } else {
       _hashes(i) = h
       _keys(i) = k
@@ -333,7 +366,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       var h = hz(index)
       while (h + h == 0) {
         index += 1
-        if (index >= hz.length) return false
+        if (index >= hz.length)
+          return false
         h = hz(index)
       }
       true
@@ -344,7 +378,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
         val ans = (kz(index).asInstanceOf[K], vz(index).asInstanceOf[V])
         index += 1
         ans
-      } else throw new NoSuchElementException("next")
+      } else
+        throw new NoSuchElementException("next")
     }
   }
 
@@ -355,12 +390,14 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       while (i < _hashes.length && {
                val h = _hashes(i);
                h + h == 0 && i < _hashes.length
-             }) i += 1
+             })
+        i += 1
       if (i < _hashes.length) {
         f((_keys(i).asInstanceOf[K], _values(i).asInstanceOf[V]))
         i += 1
         e -= 1
-      } else return
+      } else
+        return
     }
   }
 
@@ -461,7 +498,11 @@ object AnyRefMap {
   private final val MissVacant = 0xC0000000
 
   private val exceptionDefault = (k: Any) =>
-    throw new NoSuchElementException(if (k == null) "(null)" else k.toString)
+    throw new NoSuchElementException(
+      if (k == null)
+        "(null)"
+      else
+        k.toString)
 
   implicit def canBuildFrom[K <: AnyRef, V, J <: AnyRef, U]
       : CanBuildFrom[AnyRefMap[K, V], (J, U), AnyRefMap[J, U]] =
@@ -489,12 +530,17 @@ object AnyRefMap {
 
   /** Creates a new `AnyRefMap` with zero or more key/value pairs. */
   def apply[K <: AnyRef, V](elems: (K, V)*): AnyRefMap[K, V] = {
-    val sz = if (elems.hasDefiniteSize) elems.size else 4
+    val sz =
+      if (elems.hasDefiniteSize)
+        elems.size
+      else
+        4
     val arm = new AnyRefMap[K, V](sz * 2)
     elems.foreach {
       case (k, v) => arm(k) = v
     }
-    if (arm.size < (sz >> 3)) arm.repack()
+    if (arm.size < (sz >> 3))
+      arm.repack()
     arm
   }
 
@@ -518,7 +564,8 @@ object AnyRefMap {
       arm(keys(i)) = values(i);
       i += 1
     }
-    if (arm.size < (sz >> 3)) arm.repack()
+    if (arm.size < (sz >> 3))
+      arm.repack()
     arm
   }
 
@@ -532,8 +579,10 @@ object AnyRefMap {
     val arm = new AnyRefMap[K, V](sz * 2)
     val ki = keys.iterator
     val vi = values.iterator
-    while (ki.hasNext && vi.hasNext) arm(ki.next) = vi.next
-    if (arm.size < (sz >> 3)) arm.repack()
+    while (ki.hasNext && vi.hasNext)
+      arm(ki.next) = vi.next
+    if (arm.size < (sz >> 3))
+      arm.repack()
     arm
   }
 }

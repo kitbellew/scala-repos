@@ -42,7 +42,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
               .emitWarning(compilerSettings)) {
           val annotWarn =
-            if (callee.annotatedInline) " is annotated @inline but" else ""
+            if (callee.annotatedInline)
+              " is annotated @inline but"
+            else
+              ""
           val msg = s"${BackendReporting.methodSignature(
             callee.calleeDeclarationClass.internalName,
             callee.callee)}$annotWarn could not be inlined:\n$warning"
@@ -65,13 +68,16 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       val yCs = y.callsite
       val cls =
         xCs.callsiteClass.internalName compareTo yCs.callsiteClass.internalName
-      if (cls != 0) return cls
+      if (cls != 0)
+        return cls
 
       val name = xCs.callsiteMethod.name compareTo yCs.callsiteMethod.name
-      if (name != 0) return name
+      if (name != 0)
+        return name
 
       val desc = xCs.callsiteMethod.desc compareTo yCs.callsiteMethod.desc
-      if (desc != 0) return desc
+      if (desc != 0)
+        return desc
 
       def pos(c: Callsite) =
         c.callsiteMethod.instructions.indexOf(c.callsiteInstruction)
@@ -85,8 +91,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // `callsties` map while iterating it.
     val toRewrite = mutable.ArrayBuffer.empty[Callsite]
     for (css <- callsites.valuesIterator;
-         cs <- css.valuesIterator
-         if doRewriteTraitCallsite(cs)) toRewrite += cs
+         cs <- css.valuesIterator if doRewriteTraitCallsite(cs))
+      toRewrite += cs
     toRewrite foreach rewriteFinalTraitMethodInvocation
   }
 
@@ -112,7 +118,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       callsite.callsiteClass.internalName)
 
     // If the callsite was eliminated by DCE, do nothing.
-    if (!callGraph.containsCallsite(callsite)) return
+    if (!callGraph.containsCallsite(callsite))
+      return
 
     val Right(
       Callee(
@@ -192,8 +199,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         callsite.callsiteInstruction,
         callsite.callsiteMethod)
       val staticCallSamParamTypes = {
-        if (selfParamType.info.get.inlineInfo.sam.isEmpty) samParamTypes - 0
-        else samParamTypes.updated(0, selfParamType)
+        if (selfParamType.info.get.inlineInfo.sam.isEmpty)
+          samParamTypes - 0
+        else
+          samParamTypes.updated(0, selfParamType)
       }
       val staticCallsite = callsite.copy(
         callsiteInstruction = newCallsiteInstruction,
@@ -252,8 +261,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
             check: List[MethodNode],
             visited: Set[MethodNode]): Boolean = check match {
           case x :: xs =>
-            if (x == goal) true
-            else if (visited(x)) reachableImpl(xs, visited)
+            if (x == goal)
+              true
+            else if (visited(x))
+              reachableImpl(xs, visited)
             else {
               val callees =
                 nonElidedRequests(x).map(_.callsite.callee.get.callee)
@@ -287,7 +298,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     def leavesFirst(
         requests: List[InlineRequest],
         visited: Set[InlineRequest] = Set.empty): List[InlineRequest] = {
-      if (requests.isEmpty) Nil
+      if (requests.isEmpty)
+        Nil
       else {
         val (leaves, others) = requests.partition(r => {
           val inlineRequestsForCallee =
@@ -408,7 +420,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       calleeDeclarationClass.internalName)
 
     // If the callsite was eliminated by DCE, do nothing.
-    if (!callGraph.containsCallsite(callsite)) return
+    if (!callGraph.containsCallsite(callsite))
+      return
 
     // New labels for the cloned instructions
     val labelsMap = cloneLabels(callee)
@@ -513,7 +526,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       }
 
       // drop the rest of the stack
-      for (i <- 0 until stackHeight) drop(i)
+      for (i <- 0 until stackHeight)
+        drop(i)
 
       returnReplacement add new JumpInsnNode(GOTO, postCallLabel)
       clonedInstructions.insert(inlinedReturn, returnReplacement)
@@ -548,8 +562,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     callsiteMethod.maxLocals += returnType.getSize + callee.maxLocals
     val maxStackOfInlinedCode = {
       // One slot per value is correct for long / double, see comment in the `analysis` package object.
-      val numStoredArgs =
-        calleeParamTypes.length + (if (isStaticMethod(callee)) 0 else 1)
+      val numStoredArgs = calleeParamTypes.length + (if (isStaticMethod(callee))
+                                                       0
+                                                     else
+                                                       1)
       callee.maxStack + callsiteStackHeight - numStoredArgs
     }
     val stackHeightAtNullCheck = {
@@ -558,8 +574,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // and stored into locals before the null check, so in that case the maxStack doesn't grow.
       val stackSlotForNullCheck =
         if (!isStaticMethod(
-              callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty) 1
-        else 0
+              callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty)
+          1
+        else
+          0
       callsiteStackHeight + stackSlotForNullCheck
     }
 
@@ -1046,7 +1064,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     val it = instructions.iterator.asScala
     @tailrec def find: Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
-      if (!it.hasNext) None // all instructions are legal
+      if (!it.hasNext)
+        None // all instructions are legal
       else {
         val i = it.next()
         isLegal(i) match {

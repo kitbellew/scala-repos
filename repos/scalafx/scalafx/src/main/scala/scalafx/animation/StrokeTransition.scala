@@ -53,7 +53,10 @@ object StrokeTransition extends AnimationStatics {
     */
   implicit def sfxStrokeTransition2jfx(
       v: StrokeTransition): jfxa.StrokeTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

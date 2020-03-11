@@ -115,7 +115,11 @@ class Date private (private val date: js.Date)
 
   override def toString(): String = {
     val offset = -date.getTimezoneOffset()
-    val sign = if (offset < 0) "-" else "+"
+    val sign =
+      if (offset < 0)
+        "-"
+      else
+        "+"
     val hours = pad0(Math.abs(offset) / 60)
     val mins = pad0(Math.abs(offset) % 60)
     Days(date.getDay()) + " " + Months(date.getMonth()) + " " +
@@ -144,7 +148,10 @@ object Date {
 
   private def pad0(i: Int): String = {
     val str = "" + i
-    if (str.length < 2) "0" + str else str
+    if (str.length < 2)
+      "0" + str
+    else
+      str
   }
 
   @Deprecated

@@ -78,13 +78,16 @@ private[phantomjs] final class JettyWebsocketManager(
     private[this] var debugEnabled = false
 
     def debug(msg: String, args: Object*): Unit =
-      if (debugEnabled) log("DEBUG", msg, args)
+      if (debugEnabled)
+        log("DEBUG", msg, args)
 
     def debug(msg: String, thrown: Throwable): Unit =
-      if (debugEnabled) log("DEBUG", msg, thrown)
+      if (debugEnabled)
+        log("DEBUG", msg, thrown)
 
     def debug(thrown: Throwable): Unit =
-      if (debugEnabled) log("DEBUG", thrown)
+      if (debugEnabled)
+        log("DEBUG", thrown)
 
     def getName(): String = fullName
 

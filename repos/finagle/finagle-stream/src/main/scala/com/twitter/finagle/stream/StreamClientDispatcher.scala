@@ -55,7 +55,8 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
 
             if (!httpRes.isChunked) {
               val content = httpRes.getContent
-              if (content.readable) out ! ChannelBufferBuf.Owned(content)
+              if (content.readable)
+                out ! ChannelBufferBuf.Owned(content)
               done.setDone()
             } else {
               readChunks(out) respond {

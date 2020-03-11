@@ -48,7 +48,8 @@ abstract class CreateEntityQuickFix(
       project: Project,
       editor: Editor,
       file: PsiFile): Boolean = {
-    if (!super.isAvailable(project, editor, file)) return false
+    if (!super.isAvailable(project, editor, file))
+      return false
 
     def checkBlock(expr: ScExpression) = blockFor(expr) match {
       case Success(bl) => !bl.isInCompiledFile
@@ -57,8 +58,8 @@ abstract class CreateEntityQuickFix(
 
     ref match {
       case Both(
-          Parent(_: ScAssignStmt),
-          Parent(Parent(_: ScArgumentExprList))) =>
+            Parent(_: ScAssignStmt),
+            Parent(Parent(_: ScArgumentExprList))) =>
         false
       case exp @ Parent(infix: ScInfixExpr) if infix.operation == exp =>
         checkBlock(infix.getBaseExpr)
@@ -87,14 +88,22 @@ abstract class CreateEntityQuickFix(
       }
     }
 
-    if (!ref.isValid) return
+    if (!ref.isValid)
+      return
     val entityType = typeFor(ref)
     val genericParams = genericParametersFor(ref)
     val parameters = parametersFor(ref)
 
-    val placeholder = if (entityType.isDefined) "%s %s%s: Int" else "%s %s%s"
+    val placeholder =
+      if (entityType.isDefined)
+        "%s %s%s: Int"
+      else
+        "%s %s%s"
     val unimplementedBody =
-      if (file.scalaLanguageLevel.exists(_ >= Scala_2_10)) " = ???" else ""
+      if (file.scalaLanguageLevel.exists(_ >= Scala_2_10))
+        " = ???"
+      else
+        ""
     val params = (genericParams ++: parameters).mkString
     val text = placeholder.format(
       keyword,
@@ -108,7 +117,8 @@ abstract class CreateEntityQuickFix(
     }
 
     if (!FileModificationService.getInstance.prepareFileForWrite(
-          block.map(_.getContainingFile).getOrElse(file))) return
+          block.map(_.getContainingFile).getOrElse(file)))
+      return
 
     inWriteAction {
       val entity = block match {
@@ -181,7 +191,8 @@ object CreateEntityQuickFix {
               th,
               classOf[ScExtendsBlock], /*strict = */ true,
               /*stopAt = */ classOf[ScTemplateDefinition])
-            if (parentBl != null) Success(parentBl)
+            if (parentBl != null)
+              Success(parentBl)
             else
               Failure(
                 new IllegalStateException(
@@ -197,8 +208,8 @@ object CreateEntityQuickFix {
       case Both(th: ScThisReference, ParentExtendsBlock(block)) =>
         Success(block)
       case Both(
-          ReferenceTarget((_: ScSelfTypeElement)),
-          ParentExtendsBlock(block)) =>
+            ReferenceTarget((_: ScSelfTypeElement)),
+            ParentExtendsBlock(block)) =>
         Success(block)
       case _ =>
         Failure(
@@ -220,7 +231,8 @@ object CreateEntityQuickFix {
     val hasMembers = holder.children.findByType(classOf[ScMember]).isDefined
 
     val entity = holder.addAfter(parseElement(text, ref.getManager), anchor)
-    if (hasMembers) holder.addAfter(createNewLine(ref.getManager), entity)
+    if (hasMembers)
+      holder.addAfter(createNewLine(ref.getManager), entity)
 
     entity
   }

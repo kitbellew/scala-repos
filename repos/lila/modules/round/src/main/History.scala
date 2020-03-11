@@ -33,8 +33,10 @@ private[round] final class History(
   def getEventsSince(v: Int): Option[List[VersionedEvent]] = {
     waitForLoadedEvents
     val version = getVersion
-    if (v > version) None
-    else if (v == version) Some(Nil)
+    if (v > version)
+      None
+    else if (v == version)
+      Some(Nil)
     else
       events.takeWhile(_.version > v).reverse.some filter {
         case first :: rest => first.version == v + 1
@@ -50,7 +52,8 @@ private[round] final class History(
       }
       ._1
     events = (vevs ::: events) take History.size
-    if (persistenceEnabled) persist(events)
+    if (persistenceEnabled)
+      persist(events)
     vevs.reverse
   }
 
@@ -65,7 +68,8 @@ private[round] final class History(
   def enablePersistence {
     if (!persistenceEnabled) {
       persistenceEnabled = true
-      if (events != null) persist(events)
+      if (events != null)
+        persist(events)
     }
   }
 }

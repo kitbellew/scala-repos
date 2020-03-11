@@ -108,7 +108,8 @@ object SwaggerAuthSerializers {
                                           Some(
                                             Extraction.decompose(
                                               obj.responseMessages))
-                                        else None))
+                                        else
+                                          None))
 
               val consumes = dontAddOnEmpty("consumes", obj.consumes) _
               val produces = dontAddOnEmpty("produces", obj.produces) _
@@ -223,7 +224,8 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
       val docs = swagger.docs
         .filter(_.apis.exists(_.operations.exists(_.allows(userOption))))
         .toList
-      if (docs.isEmpty) halt(NotFound())
+      if (docs.isEmpty)
+        halt(NotFound())
       renderIndex(docs.asInstanceOf[List[ApiType]])
     }
   }
@@ -242,7 +244,8 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
             includeServletPath = false,
             includeContextPath = false) + (if (includeFormatParameter)
                                              ".{format}"
-                                           else ""))) ~
+                                           else
+                                             ""))) ~
             ("description" -> doc.description)
         })) ~
       ("authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
@@ -377,8 +380,16 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
     (swaggerEndpointEntries(extractOperation) groupBy (_.key)).toList map {
       case (name, entries) =>
         val desc = _description.lift apply name
-        val pth = if (basePath endsWith "/") basePath else basePath + "/"
-        val nm = if (name startsWith "/") name.substring(1) else name
+        val pth =
+          if (basePath endsWith "/")
+            basePath
+          else
+            basePath + "/"
+        val nm =
+          if (name startsWith "/")
+            name.substring(1)
+          else
+            name
         new AuthEndpoint[TypeForUser](
           pth + nm,
           desc,

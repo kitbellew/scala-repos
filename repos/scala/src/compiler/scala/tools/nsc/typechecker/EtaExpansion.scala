@@ -63,7 +63,8 @@ trait EtaExpansion { self: Analyzer =>
      */
     def liftoutPrefix(tree: Tree): Tree = {
       def liftout(tree: Tree, byName: Boolean): Tree =
-        if (treeInfo.isExprSafeToInline(tree)) tree
+        if (treeInfo.isExprSafeToInline(tree))
+          tree
         else {
           val vname: Name = freshName()
           // Problem with ticket #2351 here
@@ -74,11 +75,15 @@ trait EtaExpansion { self: Analyzer =>
                 typer.context.owner,
                 res.symbol) traverse tree // SI-6274
               res
-            } else tree
+            } else
+              tree
             ValDef(Modifiers(SYNTHETIC), vname.toTermName, TypeTree(), rhs)
           }
           atPos(tree.pos.focus) {
-            if (byName) Apply(Ident(vname), List()) else Ident(vname)
+            if (byName)
+              Apply(Ident(vname), List())
+            else
+              Ident(vname)
           }
         }
       val tree1 = tree match {
@@ -110,7 +115,8 @@ trait EtaExpansion { self: Analyzer =>
         case Ident(name) =>
           tree
       }
-      if (tree1 ne tree) tree1 setPos tree1.pos.makeTransparent
+      if (tree1 ne tree)
+        tree1 setPos tree1.pos.makeTransparent
       tree1
     }
 
@@ -122,8 +128,10 @@ trait EtaExpansion { self: Analyzer =>
           val isRepeated = definitions.isRepeatedParamType(origTpe)
           // SI-4176 Don't leak A* in eta-expanded function types. See t4176b.scala
           val droppedStarTpe =
-            if (settings.etaExpandKeepsStar) origTpe
-            else dropIllegalStarTypes(origTpe)
+            if (settings.etaExpandKeepsStar)
+              origTpe
+            else
+              dropIllegalStarTypes(origTpe)
           val valDef = ValDef(
             Modifiers(SYNTHETIC | PARAM),
             sym.name.toTermName,

@@ -31,11 +31,13 @@ class ScalaCodeBlockSelectioner extends ExtendWordSelectionHandlerBase {
       }
       val start = firstChild.getTextRange.getEndOffset
       val end = lastChild.getTextRange.getStartOffset
-      if (start >= end) new util.ArrayList[TextRange]() // '{   }' case
+      if (start >= end)
+        new util.ArrayList[TextRange]() // '{   }' case
       else
         ExtendWordSelectionHandlerBase.expandToWholeLine(
           editorText,
           new TextRange(start, end))
-    } else new util.ArrayList[TextRange]
+    } else
+      new util.ArrayList[TextRange]
   }
 }

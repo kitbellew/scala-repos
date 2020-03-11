@@ -86,8 +86,10 @@ case class DefaultServer[Req, Rep, In, Out](
   val underlying: StackServer[Req, Rep] = Server()
 
   private[this] val sem =
-    if (maxConcurrentRequests == Int.MaxValue) None
-    else Some(new AsyncSemaphore(maxConcurrentRequests, 0))
+    if (maxConcurrentRequests == Int.MaxValue)
+      None
+    else
+      Some(new AsyncSemaphore(maxConcurrentRequests, 0))
 
   val configured = underlying
     .configured(param.Label(name))

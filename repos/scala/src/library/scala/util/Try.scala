@@ -246,14 +246,20 @@ final case class Failure[+T](exception: Throwable) extends Try[T] {
       @deprecatedName('rescueException) pf: PartialFunction[Throwable, U])
       : Try[U] =
     try {
-      if (pf isDefinedAt exception) Success(pf(exception)) else this
+      if (pf isDefinedAt exception)
+        Success(pf(exception))
+      else
+        this
     } catch {
       case NonFatal(e) => Failure(e)
     }
   override def recoverWith[U >: T](
       @deprecatedName('f) pf: PartialFunction[Throwable, Try[U]]): Try[U] =
     try {
-      if (pf isDefinedAt exception) pf(exception) else this
+      if (pf isDefinedAt exception)
+        pf(exception)
+      else
+        this
     } catch {
       case NonFatal(e) => Failure(e)
     }
@@ -281,7 +287,8 @@ final case class Success[+T](value: T) extends Try[T] {
   override def map[U](f: T => U): Try[U] = Try[U](f(value))
   override def collect[U](pf: PartialFunction[T, U]): Try[U] =
     try {
-      if (pf isDefinedAt value) Success(pf(value))
+      if (pf isDefinedAt value)
+        Success(pf(value))
       else
         Failure(
           new NoSuchElementException("Predicate does not hold for " + value))
@@ -290,7 +297,8 @@ final case class Success[+T](value: T) extends Try[T] {
     }
   override def filter(p: T => Boolean): Try[T] =
     try {
-      if (p(value)) this
+      if (p(value))
+        this
       else
         Failure(
           new NoSuchElementException("Predicate does not hold for " + value))

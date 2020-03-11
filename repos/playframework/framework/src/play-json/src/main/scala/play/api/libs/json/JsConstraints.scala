@@ -188,8 +188,10 @@ trait ConstraintReads {
       rds.reads(js).flatMap { t =>
         (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(t))
           .flatMap { b =>
-            if (b) Some(subreads.reads(js).map(_ => t))
-            else None
+            if (b)
+              Some(subreads.reads(js).map(_ => t))
+            else
+              None
           }
           .getOrElse(JsSuccess(t))
       }

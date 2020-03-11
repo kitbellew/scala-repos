@@ -163,7 +163,8 @@ abstract class TestResponse(
   def assertHeaderExists(name: String, value: String): TestResponse = {
     val lowercased = name.toRootLowerCase
     val headers = response.headers.filter(_.is(lowercased))
-    if (headers.isEmpty) fail(s"Expected `$name` header was missing.")
+    if (headers.isEmpty)
+      fail(s"Expected `$name` header was missing.")
     else
       assertTrue(
         headers.exists(_.value == value),
@@ -174,8 +175,10 @@ abstract class TestResponse(
   }
 
   private[this] def extractFromResponse[T](f: HttpResponse ⇒ T): T =
-    if (response eq null) doFail("Request didn't complete with response")
-    else f(response)
+    if (response eq null)
+      doFail("Request didn't complete with response")
+    else
+      f(response)
 
   protected def assertEqualsKind(
       expected: AnyRef,

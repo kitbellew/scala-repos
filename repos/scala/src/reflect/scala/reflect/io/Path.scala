@@ -42,8 +42,10 @@ object Path {
     while (i >= 0 && name.charAt(i) != '.')
       i -= 1
 
-    if (i < 0) ""
-    else name.substring(i + 1).toLowerCase
+    if (i < 0)
+      ""
+    else
+      name.substring(i + 1).toLowerCase
   }
 
   // not certain these won't be problematic, but looks good so far
@@ -63,7 +65,8 @@ object Path {
   def apply(jfile: JFile): Path =
     try {
       def isFile = {
-        if (Statistics.canEnable) Statistics.incCounter(IOStats.fileIsFileCount)
+        if (Statistics.canEnable)
+          Statistics.incCounter(IOStats.fileIsFileCount)
         jfile.isFile
       }
 
@@ -73,9 +76,12 @@ object Path {
         jfile.isDirectory
       }
 
-      if (isFile) new File(jfile)
-      else if (isDirectory) new Directory(jfile)
-      else new Path(jfile)
+      if (isFile)
+        new File(jfile)
+      else if (isDirectory)
+        new Directory(jfile)
+      else
+        new Path(jfile)
     } catch {
       case ex: SecurityException => new Path(jfile)
     }
@@ -98,7 +104,11 @@ class Path private[io] (val jfile: JFile) {
   // conversions
   def toFile: File = new File(jfile)
   def toDirectory: Directory = new Directory(jfile)
-  def toAbsolute: Path = if (isAbsolute) this else Path(jfile.getAbsolutePath())
+  def toAbsolute: Path =
+    if (isAbsolute)
+      this
+    else
+      Path(jfile.getAbsolutePath())
   def toCanonical: Path = Path(jfile.getCanonicalPath())
   def toURI: URI = jfile.toURI()
   def toURL: URL = toURI.toURL()
@@ -107,13 +117,19 @@ class Path private[io] (val jfile: JFile) {
     *  path made up of root / this.
     */
   def toAbsoluteWithRoot(root: Path) =
-    if (isAbsolute) this else root.toAbsolute / this
+    if (isAbsolute)
+      this
+    else
+      root.toAbsolute / this
 
   /** Creates a new Path with the specified path appended.  Assumes
     *  the type of the new component implies the type of the result.
     */
   def /(child: Path): Path =
-    if (isEmpty) child else new Path(new JFile(jfile, child.path))
+    if (isEmpty)
+      child
+    else
+      new Path(new JFile(jfile, child.path))
   def /(child: Directory): Directory = /(child: Path).toDirectory
   def /(child: File): File = /(child: Path).toFile
 
@@ -125,9 +141,12 @@ class Path private[io] (val jfile: JFile) {
     *  file and subdirectory underneath it will appear.
     */
   def walkFilter(cond: Path => Boolean): Iterator[Path] =
-    if (isFile) toFile walkFilter cond
-    else if (isDirectory) toDirectory walkFilter cond
-    else Iterator.empty
+    if (isFile)
+      toFile walkFilter cond
+    else if (isDirectory)
+      toDirectory walkFilter cond
+    else
+      Iterator.empty
 
   /** Equivalent to walkFilter(_ => false).
     */
@@ -139,7 +158,10 @@ class Path private[io] (val jfile: JFile) {
   def normalize: Path = Path(jfile.getAbsolutePath())
 
   def resolve(other: Path) =
-    if (other.isAbsolute || isEmpty) other else /(other)
+    if (other.isAbsolute || isEmpty)
+      other
+    else
+      /(other)
   def relativize(other: Path) = {
     assert(
       isAbsolute == other.isAbsolute,
@@ -175,14 +197,18 @@ class Path private[io] (val jfile: JFile) {
           case null =>
             if (isAbsolute)
               toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
-            else Directory(".") // a dir under pwd
+            else
+              Directory(".") // a dir under pwd
           case x =>
             Directory(x)
         }
   }
   def parents: List[Directory] = {
     val p = parent
-    if (p isSame this) Nil else p :: p.parents
+    if (p isSame this)
+      Nil
+    else
+      p :: p.parents
   }
   // if name ends with an extension (e.g. "foo.jpg") returns the extension ("jpg"), otherwise ""
   def extension: String = {
@@ -190,8 +216,10 @@ class Path private[io] (val jfile: JFile) {
     while (i >= 0 && name.charAt(i) != '.')
       i -= 1
 
-    if (i < 0) ""
-    else name.substring(i + 1)
+    if (i < 0)
+      ""
+    else
+      name.substring(i + 1)
   }
   // compares against extensions in a CASE INSENSITIVE way.
   def hasExtension(ext: String, exts: String*) = {
@@ -205,20 +233,30 @@ class Path private[io] (val jfile: JFile) {
   // changes the existing extension out for a new one, or adds it
   // if the current path has none.
   def changeExtension(ext: String): Path = (
-    if (extension == "") addExtension(ext)
-    else Path(path.stripSuffix(extension) + ext)
+    if (extension == "")
+      addExtension(ext)
+    else
+      Path(path.stripSuffix(extension) + ext)
   )
 
   // conditionally execute
-  def ifFile[T](f: File => T): Option[T] = if (isFile) Some(f(toFile)) else None
+  def ifFile[T](f: File => T): Option[T] =
+    if (isFile)
+      Some(f(toFile))
+    else
+      None
   def ifDirectory[T](f: Directory => T): Option[T] =
-    if (isDirectory) Some(f(toDirectory)) else None
+    if (isDirectory)
+      Some(f(toDirectory))
+    else
+      None
 
   // Boolean tests
   def canRead = jfile.canRead()
   def canWrite = jfile.canWrite()
   def exists = {
-    if (Statistics.canEnable) Statistics.incCounter(IOStats.fileExistsCount)
+    if (Statistics.canEnable)
+      Statistics.incCounter(IOStats.fileExistsCount)
     try jfile.exists()
     catch {
       case ex: SecurityException => false
@@ -226,7 +264,8 @@ class Path private[io] (val jfile: JFile) {
   }
 
   def isFile = {
-    if (Statistics.canEnable) Statistics.incCounter(IOStats.fileIsFileCount)
+    if (Statistics.canEnable)
+      Statistics.incCounter(IOStats.fileIsFileCount)
     try jfile.isFile()
     catch {
       case ex: SecurityException => false
@@ -256,18 +295,26 @@ class Path private[io] (val jfile: JFile) {
   def createDirectory(
       force: Boolean = true,
       failIfExists: Boolean = false): Directory = {
-    val res = if (force) jfile.mkdirs() else jfile.mkdir()
+    val res =
+      if (force)
+        jfile.mkdirs()
+      else
+        jfile.mkdir()
     if (!res && failIfExists && exists)
       fail("Directory '%s' already exists." format name)
-    else if (isDirectory) toDirectory
-    else new Directory(jfile)
+    else if (isDirectory)
+      toDirectory
+    else
+      new Directory(jfile)
   }
   def createFile(failIfExists: Boolean = false): File = {
     val res = jfile.createNewFile()
     if (!res && failIfExists && exists)
       fail("File '%s' already exists." format name)
-    else if (isFile) toFile
-    else new File(jfile)
+    else if (isFile)
+      toFile
+    else
+      new File(jfile)
   }
 
   // deletions
@@ -278,10 +325,11 @@ class Path private[io] (val jfile: JFile) {
     */
   def deleteRecursively(): Boolean = deleteRecursively(jfile)
   private def deleteRecursively(f: JFile): Boolean = {
-    if (f.isDirectory) f.listFiles match {
-      case null =>
-      case xs   => xs foreach deleteRecursively
-    }
+    if (f.isDirectory)
+      f.listFiles match {
+        case null =>
+        case xs   => xs foreach deleteRecursively
+      }
     f.delete()
   }
 

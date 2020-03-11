@@ -41,10 +41,12 @@ class ScalaAttachSourcesNotificationProvider(
   override def createNotificationPanel(
       file: VirtualFile,
       fileEditor: FileEditor): EditorNotificationPanel = {
-    if (file.getFileType ne JavaClassFileType.INSTANCE) return null
+    if (file.getFileType ne JavaClassFileType.INSTANCE)
+      return null
     val libraries: util.List[LibraryOrderEntry] =
       findOrderEntriesContainingFile(file)
-    if (libraries == null) return null
+    if (libraries == null)
+      return null
     val psiFile: PsiFile = PsiManager.getInstance(myProject).findFile(file)
     val isScala = psiFile.isInstanceOf[ScalaFile]
     if (!isScala)
@@ -53,15 +55,20 @@ class ScalaAttachSourcesNotificationProvider(
         fileEditor
       ) //as Java has now different message
     val fqn: String =
-      if (isScala) ScalaEditorFileSwapper.getFQN(psiFile)
-      else getFQN(psiFile)
-    if (fqn == null) return null
+      if (isScala)
+        ScalaEditorFileSwapper.getFQN(psiFile)
+      else
+        getFQN(psiFile)
+    if (fqn == null)
+      return null
     if (isScala && ScalaEditorFileSwapper.findSourceFile(
           myProject,
-          file) != null) return null
+          file) != null)
+      return null
     if (!isScala && JavaEditorFileSwapper.findSourceFile(
           myProject,
-          file) != null) return null
+          file) != null)
+      return null
     val panel: EditorNotificationPanel = new EditorNotificationPanel
     val sourceFile: VirtualFile = findSourceFile(file)
     var defaultAction: AttachSourcesProvider.AttachSourcesAction = null
@@ -164,23 +171,30 @@ class ScalaAttachSourcesNotificationProvider(
         case _ =>
       }
     }
-    if (libs.isEmpty) null else libs
+    if (libs.isEmpty)
+      null
+    else
+      libs
   }
 
   private def findSourceFile(classFile: VirtualFile): VirtualFile = {
     val parent: VirtualFile = classFile.getParent
     var name: String = classFile.getName
     var i: Int = name.indexOf('$')
-    if (i != -1) name = name.substring(0, i)
+    if (i != -1)
+      name = name.substring(0, i)
     i = name.indexOf('.')
-    if (i != -1) name = name.substring(0, i)
+    if (i != -1)
+      name = name.substring(0, i)
     parent.findChild(name + JavaFileType.DOT_DEFAULT_EXTENSION)
   }
 
   private def getFQN(psiFile: PsiFile): String = {
-    if (!psiFile.isInstanceOf[PsiJavaFile]) return null
+    if (!psiFile.isInstanceOf[PsiJavaFile])
+      return null
     val classes: Array[PsiClass] = psiFile.asInstanceOf[PsiJavaFile].getClasses
-    if (classes.length == 0) return null
+    if (classes.length == 0)
+      return null
     classes(0).getQualifiedName
   }
 }

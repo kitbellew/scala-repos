@@ -163,7 +163,8 @@ private[persistence] class LocalSnapshotStore
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): immutable.Seq[SnapshotMetadata] = {
     val files = snapshotDir.listFiles(new SnapshotFilenameFilter(persistenceId))
-    if (files eq null) Nil // if the dir was removed
+    if (files eq null)
+      Nil // if the dir was removed
     else
       files
         .map(_.getName)

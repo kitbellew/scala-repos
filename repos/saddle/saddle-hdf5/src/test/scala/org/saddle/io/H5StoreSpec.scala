@@ -420,41 +420,48 @@ class H5StoreSpec extends Specification {
 
       // simultaneous writes
 
-      val taskListW = for (i <- 1 to 100) yield new Callable[Unit] {
-        def call() {
-          H5Store.writeFrame(tmp, "f%s".format(i), df1)
-          H5Store.writeFrame(tmp, "f%s".format(100 + i), df2)
-        }
-      }
+      val taskListW =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
+            def call() {
+              H5Store.writeFrame(tmp, "f%s".format(i), df1)
+              H5Store.writeFrame(tmp, "f%s".format(100 + i), df2)
+            }
+          }
 
       pool.invokeAll(taskListW)
 
       // simultaneous reads
 
-      val taskListR = for (i <- 1 to 100) yield new Callable[Unit] {
-        def call() {
-          H5Store.readFrame[DateTime, Int, Double](
-            tmp,
-            "f%s".format(100 + i)) must_== df2
-          H5Store
-            .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
-        }
-      }
+      val taskListR =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
+            def call() {
+              H5Store.readFrame[DateTime, Int, Double](
+                tmp,
+                "f%s".format(100 + i)) must_== df2
+              H5Store.readFrame[DateTime, Int, Double](
+                tmp,
+                "f%s".format(i)) must_== df1
+            }
+          }
 
       pool.invokeAll(taskListR.toSeq)
 
       // interleaved reads & writes
 
-      val taskListRW = for (i <- 1 to 100) yield new Callable[Unit] {
-        def call() {
-          if (i % 2 == 0)
-            H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
-          else
-            H5Store.readFrame[DateTime, Int, Double](
-              tmp,
-              "f%s".format(i)) must_== df1
-        }
-      }
+      val taskListRW =
+        for (i <- 1 to 100)
+          yield new Callable[Unit] {
+            def call() {
+              if (i % 2 == 0)
+                H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
+              else
+                H5Store.readFrame[DateTime, Int, Double](
+                  tmp,
+                  "f%s".format(i)) must_== df1
+            }
+          }
 
       pool.invokeAll(taskListRW.toSeq)
 

@@ -30,7 +30,8 @@ object PairingSystem extends AbstractPairingSystem {
         fuccess(false),
         PlayerRepo.countActive(tour.id).map(2 ==))
       data = Data(tour, lastOpponents, ranking, onlyTwoActivePlayers)
-      preps <- if (lastOpponents.hash.isEmpty) evenOrAll(data, users)
+      preps <- if (lastOpponents.hash.isEmpty)
+        evenOrAll(data, users)
       else
         makePreps(data, users.waiting) flatMap {
           case Nil => fuccess(Nil)
@@ -60,10 +61,12 @@ object PairingSystem extends AbstractPairingSystem {
       data: Data,
       users: List[String]): Fu[List[Pairing.Prep]] = {
     import data._
-    if (users.size < 2) fuccess(Nil)
+    if (users.size < 2)
+      fuccess(Nil)
     else
       PlayerRepo.rankedByTourAndUserIds(tour.id, users, ranking) map { idles =>
-        if (lastOpponents.hash.isEmpty) naivePairings(tour, idles)
+        if (lastOpponents.hash.isEmpty)
+          naivePairings(tour, idles)
         else
           idles.grouped(pairingGroupSize).toList match {
             case a :: b :: c :: _ =>
@@ -125,7 +128,8 @@ object PairingSystem extends AbstractPairingSystem {
             justPlayedTogether(a.player.userId, b.player.userId).?? {
               if (veryMuchJustPlayedTogether(a.player.userId, b.player.userId))
                 9000 * 1000
-              else 8000 * 1000
+              else
+                8000 * 1000
             }
       }
       i
@@ -154,13 +158,16 @@ object PairingSystem extends AbstractPairingSystem {
           nexts.foldLeft(none[Combination]) {
             case (current, next) =>
               val toBeat = current.fold(than)(score)
-              if (score(next) >= toBeat) current
-              else if (continue) findBetter(next, toBeat) match {
-                case Found(b) => b.some
-                case End      => next.some
-                case NoBetter => current
-              }
-              else current
+              if (score(next) >= toBeat)
+                current
+              else if (continue)
+                findBetter(next, toBeat) match {
+                  case Found(b) => b.some
+                  case End      => next.some
+                  case NoBetter => current
+                }
+              else
+                current
           } match {
             case Some(best) => Found(best)
             case None       => NoBetter

@@ -135,7 +135,8 @@ trait HttpComponentsClient extends Client {
   }
 
   private def attachBody(req: HttpRequestBase, body: Array[Byte]) {
-    if (body == null) return
+    if (body == null)
+      return
 
     req match {
       case r: HttpEntityEnclosingRequestBase =>

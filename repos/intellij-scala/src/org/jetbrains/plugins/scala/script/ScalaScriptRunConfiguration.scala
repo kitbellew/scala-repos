@@ -45,8 +45,10 @@ class ScalaScriptRunConfiguration(
   private var consoleArgs = ""
   private var workingDirectory = {
     val base = getProject.getBaseDir
-    if (base != null) base.getPath
-    else ""
+    if (base != null)
+      base.getPath
+    else
+      ""
   }
 
   def getScriptPath = scriptPath
@@ -95,7 +97,8 @@ class ScalaScriptRunConfiguration(
     }
 
     val module = getModule
-    if (module == null) throw new ExecutionException("Module is not specified")
+    if (module == null)
+      throw new ExecutionException("Module is not specified")
 
     val script = VcsUtil.getVirtualFile(scriptPath)
     val state = new JavaCommandLineState(env) {
@@ -144,7 +147,8 @@ class ScalaScriptRunConfiguration(
     } catch {
       case e: Exception =>
     }
-    if (module == null) module = getConfigurationModule.getModule
+    if (module == null)
+      module = getConfigurationModule.getModule
     module
   }
 
@@ -171,7 +175,8 @@ class ScalaScriptRunConfiguration(
     scriptArgs = JDOMExternalizer.readString(element, "params")
     consoleArgs = JDOMExternalizer.readString(element, "consoleargs")
     val pp = JDOMExternalizer.readString(element, "workingDirectory")
-    if (pp != null) workingDirectory = pp
+    if (pp != null)
+      workingDirectory = pp
   }
 
   private def getFilter(file: VirtualFile): Filter = {
@@ -195,7 +200,8 @@ class ScalaScriptRunConfiguration(
           } catch {
             case _: Exception => return null
           }
-        } else null
+        } else
+          null
       }
     }
   }

@@ -70,7 +70,8 @@ trait TopComponentAction extends TopComponentDisplayable {
   }
 
   protected def updateInner(presentation: Presentation, project: Project) {
-    if (project == null) return
+    if (project == null)
+      return
 
     def enable() {
       presentation setEnabled true

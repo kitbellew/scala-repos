@@ -37,7 +37,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
 
     def addThrowsAnnotation(throwableSym: Symbol): Self = {
       val throwableTpe =
-        if (throwableSym.isMonomorphicType) throwableSym.tpe
+        if (throwableSym.isMonomorphicType)
+          throwableSym.tpe
         else {
           debuglog(
             s"Encountered polymorphic exception `${throwableSym.fullName}` while parsing class file.")
@@ -73,7 +74,10 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
         anns: List[AnnotationInfo],
         cls: Symbol): List[AnnotationInfo] = anns match {
       case ann :: rest =>
-        if (ann matches cls) anns else dropOtherAnnotations(rest, cls)
+        if (ann matches cls)
+          anns
+        else
+          dropOtherAnnotations(rest, cls)
       case Nil => Nil
     }
   }
@@ -178,7 +182,11 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       val srclen = src.length
       while (i < srclen) {
         val in = src(i)
-        src(i) = (if (in == 0x7f) 0.toByte else (in + 1).toByte)
+        src(i) =
+          (if (in == 0x7f)
+             0.toByte
+           else
+             (in + 1).toByte)
         i += 1
       }
       src
@@ -246,11 +254,18 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
 
   private[scala] def completeAnnotationToString(annInfo: AnnotationInfo) = {
     import annInfo._
-    val s_args = if (!args.isEmpty) args.mkString("(", ", ", ")") else ""
-    val s_assocs = if (!assocs.isEmpty) (assocs map {
-      case (x, y) => x + " = " + y
-    } mkString ("(", ", ", ")"))
-    else ""
+    val s_args =
+      if (!args.isEmpty)
+        args.mkString("(", ", ", ")")
+      else
+        ""
+    val s_assocs =
+      if (!assocs.isEmpty)
+        (assocs map {
+          case (x, y) => x + " = " + y
+        } mkString ("(", ", ", ")"))
+      else
+        ""
     s"${atp}${s_args}${s_assocs}"
   }
 
@@ -274,9 +289,17 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     }
 
     // We should always be able to print things without forcing them.
-    override def toString = if (forced) forcedInfo.toString else "@<?>"
+    override def toString =
+      if (forced)
+        forcedInfo.toString
+      else
+        "@<?>"
 
-    override def pos: Position = if (forced) forcedInfo.pos else NoPosition
+    override def pos: Position =
+      if (forced)
+        forcedInfo.pos
+      else
+        NoPosition
 
     override def completeInfo(): Unit = forcedInfo
   }
@@ -390,7 +413,10 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       }
 
     def argAtIndex(index: Int): Option[Tree] =
-      if (index < args.size) Some(args(index)) else None
+      if (index < args.size)
+        Some(args(index))
+      else
+        None
 
     override def hashCode = atp.## + args.## + assocs.##
     override def equals(other: Any) = other match {
@@ -417,7 +443,11 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     def reverseEngineerArgs(): List[Tree] = {
       def reverseEngineerArg(jarg: ClassfileAnnotArg): Tree = jarg match {
         case LiteralAnnotArg(const) =>
-          val tpe = if (const.tag == UnitTag) UnitTpe else ConstantType(const)
+          val tpe =
+            if (const.tag == UnitTag)
+              UnitTpe
+            else
+              ConstantType(const)
           Literal(const) setType tpe
         case ArrayAnnotArg(jargs) =>
           val args = jargs map reverseEngineerArg
@@ -442,8 +472,10 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
             reverseEngineerArg(jarg)) :: reverseEngineerArgs(rest)
         case Nil => Nil
       }
-      if (ann.javaArgs.isEmpty) ann.scalaArgs
-      else reverseEngineerArgs(ann.javaArgs.toList)
+      if (ann.javaArgs.isEmpty)
+        ann.scalaArgs
+      else
+        reverseEngineerArgs(ann.javaArgs.toList)
     }
 
     // TODO: at the moment, constructor selection is unattributed, because AnnotationInfos lack necessary information

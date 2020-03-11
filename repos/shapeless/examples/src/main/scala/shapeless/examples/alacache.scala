@@ -91,19 +91,24 @@ trait CachedFacet extends ProductISOFacet {
       val found = uncache.synchronized {
         uncache.get(c)
       }
-      if (found != null) found.get
+      if (found != null)
+        found.get
       else {
         val extracted = Some(toProduct(c))
         val found = uncache.synchronized {
           // this could potentially hit
           uncache.put(c, new WeakReference(extracted))
         }
-        if (found != null) found.get else extracted
+        if (found != null)
+          found.get
+        else
+          extracted
       }
     }
     def intern(c: C): C = cache.synchronized {
       val found = cache.get(c)
-      if (found != null) found.get
+      if (found != null)
+        found.get
       else {
         cache.put(c, new WeakReference(c))
         c

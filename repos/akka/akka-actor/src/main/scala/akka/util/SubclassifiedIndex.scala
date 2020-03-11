@@ -31,8 +31,10 @@ private[akka] object SubclassifiedIndex {
 
     override def innerAddValue(key: K, value: V): Changes = {
       // break the recursion on super when key is found and transition to recursive add-to-set
-      if (sc.isEqual(key, this.key)) addValue(value)
-      else super.innerAddValue(key, value)
+      if (sc.isEqual(key, this.key))
+        addValue(value)
+      else
+        super.innerAddValue(key, value)
     }
 
     private def addValue(value: V): Changes = {
@@ -40,14 +42,17 @@ private[akka] object SubclassifiedIndex {
       if (!(values contains value)) {
         values += value
         kids :+ ((key, Set(value)))
-      } else kids
+      } else
+        kids
     }
 
     // this will return the keys and values to be removed from the cache
     override def innerRemoveValue(key: K, value: V): Changes = {
       // break the recursion on super when key is found and transition to recursive remove-from-set
-      if (sc.isEqual(key, this.key)) removeValue(value)
-      else super.innerRemoveValue(key, value)
+      if (sc.isEqual(key, this.key))
+        removeValue(value)
+      else
+        super.innerRemoveValue(key, value)
     }
 
     override def removeValue(value: V): Changes = {
@@ -55,11 +60,15 @@ private[akka] object SubclassifiedIndex {
       if (values contains value) {
         values -= value
         kids :+ ((key, Set(value)))
-      } else kids
+      } else
+        kids
     }
 
     override def innerFindValues(key: K): Set[V] =
-      if (sc.isEqual(key, this.key)) values else super.innerFindValues(key)
+      if (sc.isEqual(key, this.key))
+        values
+      else
+        super.innerFindValues(key)
 
     override def toString =
       subkeys.mkString("Nonroot(" + key + ", " + values + ",\n", ",\n", ")")
@@ -113,11 +122,13 @@ private[akka] class SubclassifiedIndex[K, V] private (
       } else if (sc.isSubclass(key, n.key)) {
         found = true
         n.innerAddKey(key)
-      } else Nil
+      } else
+        Nil
     }
     if (!found) {
       integrate(new Nonroot(root, key, values)) :+ ((key, values))
-    } else ch
+    } else
+      ch
   }
 
   /**
@@ -135,13 +146,15 @@ private[akka] class SubclassifiedIndex[K, V] private (
       if (sc.isSubclass(key, n.key)) {
         found = true
         n.innerAddValue(key, value)
-      } else Nil
+      } else
+        Nil
     }
     if (!found) {
       val v = values + value
       val n = new Nonroot(root, key, v)
       integrate(n) ++ n.innerAddValue(key, value) :+ (key -> v)
-    } else ch
+    } else
+      ch
   }
 
   /**
@@ -164,12 +177,14 @@ private[akka] class SubclassifiedIndex[K, V] private (
       if (sc.isSubclass(key, n.key)) {
         found = true
         n.innerRemoveValue(key, value)
-      } else Nil
+      } else
+        Nil
     }
     if (!found) {
       val n = new Nonroot(root, key, values)
       integrate(n) ++ n.removeValue(value)
-    } else ch
+    } else
+      ch
   }
 
   /**
@@ -203,7 +218,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
       key: K,
       except: Vector[Nonroot[K, V]]): Set[K] =
     (Set.empty[K] /: subkeys) { (s, n) ⇒
-      if (sc.isEqual(key, n.key)) s
+      if (sc.isEqual(key, n.key))
+        s
       else
         n.innerFindSubKeys(key, except) ++ {
           if (sc.isSubclass(n.key, key) && !except.exists(e ⇒
@@ -224,7 +240,11 @@ private[akka] class SubclassifiedIndex[K, V] private (
   private def integrate(n: Nonroot[K, V]): Changes = {
     val (subsub, sub) = subkeys partition (k ⇒ sc.isSubclass(k.key, n.key))
     subkeys = sub :+ n
-    n.subkeys = if (subsub.nonEmpty) subsub else n.subkeys
+    n.subkeys =
+      if (subsub.nonEmpty)
+        subsub
+      else
+        n.subkeys
     n.subkeys ++= findSubKeysExcept(n.key, n.subkeys).map(k ⇒
       new Nonroot(root, k, values))
     n.subkeys.map(n ⇒ (n.key, n.values.toSet))

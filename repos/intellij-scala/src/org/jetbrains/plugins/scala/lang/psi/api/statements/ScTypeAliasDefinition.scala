@@ -73,7 +73,8 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
   }
 
   def isAliasFor(cls: PsiClass): Boolean = {
-    if (cls.getTypeParameters.length != typeParameters.length) false
+    if (cls.getTypeParameters.length != typeParameters.length)
+      false
     else if (cls.hasTypeParameters) {
       val typeParamsAreAppliedInOrderToCorrectClass =
         aliasedType.getOrAny match {

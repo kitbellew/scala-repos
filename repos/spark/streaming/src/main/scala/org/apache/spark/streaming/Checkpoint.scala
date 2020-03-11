@@ -314,7 +314,8 @@ private[streaming] class CheckpointWriter(
   }
 
   def stop(): Unit = synchronized {
-    if (stopped) return
+    if (stopped)
+      return
 
     executor.shutdown()
     val startTime = System.currentTimeMillis()
@@ -331,7 +332,8 @@ private[streaming] class CheckpointWriter(
   }
 
   private def fs = synchronized {
-    if (_fs == null) _fs = new Path(checkpointDir).getFileSystem(hadoopConf)
+    if (_fs == null)
+      _fs = new Path(checkpointDir).getFileSystem(hadoopConf)
     _fs
   }
 

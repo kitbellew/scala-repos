@@ -40,7 +40,8 @@ object ScalaStubsUtil {
       clazz: PsiClass,
       scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
     val name: String = clazz.name
-    if (name == null) return Seq.empty
+    if (name == null)
+      return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     val iterator: java.util.Iterator[ScExtendsBlock] =
       StubIndex
@@ -75,7 +76,8 @@ object ScalaStubsUtil {
       clazz: PsiClass,
       scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
     val name: String = clazz.name
-    if (name == null) return Seq.empty
+    if (name == null)
+      return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     def processClass(inheritedClazz: PsiClass) {
       inReadAction {
@@ -103,7 +105,8 @@ object ScalaStubsUtil {
                           tp,
                           Some(inheritedClazz.getProject)) match {
                           case Some(otherClazz) =>
-                            if (otherClazz == inheritedClazz) return true
+                            if (otherClazz == inheritedClazz)
+                              return true
                           case _ =>
                         }
                     }
@@ -113,7 +116,8 @@ object ScalaStubsUtil {
                     val clazz = PsiTreeUtil.getContextOfType(
                       selfTypeElement,
                       classOf[ScTemplateDefinition])
-                    if (clazz != null) inheritors += clazz
+                    if (clazz != null)
+                      inheritors += clazz
                   }
                 case _ =>
               }

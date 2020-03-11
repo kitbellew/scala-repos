@@ -155,8 +155,10 @@ object Docs {
       val classpath = apiDocsClasspath.value
 
       val scaladoc = {
-        if (useCache) Doc.scaladoc(label, scalaCache, compilers.scalac)
-        else DocNoCache.scaladoc(label, compilers.scalac)
+        if (useCache)
+          Doc.scaladoc(label, scalaCache, compilers.scalac)
+        else
+          DocNoCache.scaladoc(label, compilers.scalac)
       }
       // Since there is absolutely no documentation on what the arguments here should be aside from their types, here
       // are the parameter names of the method that does eventually get called:
@@ -183,8 +185,10 @@ object Docs {
       )
 
       val javadoc = {
-        if (useCache) Doc.javadoc(label, javaCache, compilers.javac)
-        else DocNoCache.javadoc(label, compilers)
+        if (useCache)
+          Doc.javadoc(label, javaCache, compilers.javac)
+        else
+          DocNoCache.javadoc(label, compilers)
       }
       javadoc(
         apiDocsJavaSources.value,
@@ -256,8 +260,10 @@ object Docs {
       childRefs flatMap { childRef =>
         val includeApiDocs =
           (apiDocsInclude in childRef).get(structure.data).getOrElse(false)
-        if (includeApiDocs) childRef +: aggregated(childRef)
-        else aggregated(childRef)
+        if (includeApiDocs)
+          childRef +: aggregated(childRef)
+        else
+          aggregated(childRef)
       }
     }
     val rootProjectId = Load.getRootProject(structure.units)(build)

@@ -363,7 +363,8 @@ router-dispatcher {}
       context.actorOf(BalancingPool(20).props(Props[Worker]), "router10b")
     //#balancing-pool-3
     import scala.collection.JavaConversions._
-    for (i <- 1 to 100) router10b ! i
+    for (i <- 1 to 100)
+      router10b ! i
     val threads10b = Thread.getAllStackTraces.keySet.filter {
       _.getName contains "router10b"
     }

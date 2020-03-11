@@ -71,7 +71,11 @@ class PostToEventStreamStepImpl @Inject() (
           slaveId = status.getSlaveId.getValue,
           taskId = Task.Id(status.getTaskId),
           taskStatus = status.getState.name,
-          message = if (status.hasMessage) status.getMessage else "",
+          message =
+            if (status.hasMessage)
+              status.getMessage
+            else
+              "",
           appId = taskId.appId,
           host = task.agentInfo.host,
           ipAddresses = launched.networking match {

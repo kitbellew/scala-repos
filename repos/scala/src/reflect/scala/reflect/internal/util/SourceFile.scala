@@ -39,13 +39,17 @@ abstract class SourceFile {
   def lineToString(index: Int): String = {
     val start = lineToOffset(index)
     var end = start
-    while (end < length && !isEndOfLine(end)) end += 1
+    while (end < length && !isEndOfLine(end))
+      end += 1
     new String(content, start, end - start)
   }
 
   @tailrec
   final def skipWhitespace(offset: Int): Int =
-    if (content(offset).isWhitespace) skipWhitespace(offset + 1) else offset
+    if (content(offset).isWhitespace)
+      skipWhitespace(offset + 1)
+    else
+      offset
 
   def identifier(pos: Position): Option[String] = None
 }
@@ -79,11 +83,13 @@ object ScriptSourceFile {
 
     if (headerStarts exists (cs startsWith _)) {
       val matcher = headerPattern matcher cs.mkString
-      if (matcher.find) matcher.end
+      if (matcher.find)
+        matcher.end
       else
         throw new IOException(
           "script file does not close its header with !# or ::!#")
-    } else 0
+    } else
+      0
   }
 
   def apply(file: AbstractFile, content: Array[Char]) = {
@@ -112,8 +118,10 @@ class ScriptSourceFile(
   override def isSelfContained = false
 
   override def positionInUltimateSource(pos: Position) =
-    if (!pos.isDefined) super.positionInUltimateSource(pos)
-    else pos withSource underlying withShift start
+    if (!pos.isDefined)
+      super.positionInUltimateSource(pos)
+    else
+      pos withSource underlying withShift start
 }
 
 /** a file whose contents do not change over time */
@@ -133,7 +141,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     (
       if (content0.length == 0 || !content0.last.isWhitespace)
         content0 :+ '\n'
-      else content0
+      else
+        content0
     )
   val length = content.length
   def start = 0
@@ -173,7 +182,9 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   def calculateLineIndices(cs: Array[Char]) = {
     val buf = new ArrayBuffer[Int]
     buf += 0
-    for (i <- 0 until cs.length) if (isAtEndOfLine(i)) buf += i + 1
+    for (i <- 0 until cs.length)
+      if (isAtEndOfLine(i))
+        buf += i + 1
     buf += cs.length // sentinel, so that findLine below works smoother
     buf.toArray
   }
@@ -191,10 +202,12 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     def findLine(lo: Int, hi: Int, mid: Int): Int = (
       if (mid < lo || hi < mid)
         mid // minimal sanity check - as written this easily went into infinite loopyland
-      else if (offset < lines(mid)) findLine(lo, mid - 1, (lo + mid - 1) / 2)
+      else if (offset < lines(mid))
+        findLine(lo, mid - 1, (lo + mid - 1) / 2)
       else if (offset >= lines(mid + 1))
         findLine(mid + 1, hi, (mid + 1 + hi) / 2)
-      else mid
+      else
+        mid
     )
     lastLine = findLine(0, lines.length, lastLine)
     lastLine

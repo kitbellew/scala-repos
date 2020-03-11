@@ -318,7 +318,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
           totalRegisteredExecutors.addAndGet(-1)
           scheduler.executorLost(
             executorId,
-            if (killed) ExecutorKilled else reason)
+            if (killed)
+              ExecutorKilled
+            else
+              reason)
           listenerBus.post(
             SparkListenerExecutorRemoved(
               System.currentTimeMillis(),

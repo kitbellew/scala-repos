@@ -33,7 +33,8 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
 
   lazy val context: DefaultCamelContext = {
     val ctx = settings.ContextProvider.getContext(system)
-    if (!settings.JmxStatistics) ctx.disableJMX()
+    if (!settings.JmxStatistics)
+      ctx.disableJMX()
     ctx.setName(system.name)
     ctx.setStreamCaching(settings.StreamingCache)
     ctx.addComponent("akka", new ActorComponent(this, system))

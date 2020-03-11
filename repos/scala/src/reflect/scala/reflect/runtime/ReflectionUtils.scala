@@ -40,8 +40,10 @@ object ReflectionUtils {
     import scala.language.reflectiveCalls
 
     def isAbstractFileClassLoader(clazz: Class[_]): Boolean = {
-      if (clazz == null) return false
-      if (clazz == classOf[AbstractFileClassLoader]) return true
+      if (clazz == null)
+        return false
+      if (clazz == classOf[AbstractFileClassLoader])
+        return true
       isAbstractFileClassLoader(clazz.getSuperclass)
     }
     def inferClasspath(cl: ClassLoader): String = cl match {
@@ -74,7 +76,11 @@ object ReflectionUtils {
   }
 
   def staticSingletonInstance(cl: ClassLoader, className: String): AnyRef = {
-    val name = if (className endsWith "$") className else className + "$"
+    val name =
+      if (className endsWith "$")
+        className
+      else
+        className + "$"
     val clazz = java.lang.Class.forName(name, true, cl)
     staticSingletonInstance(clazz)
   }
@@ -84,10 +90,13 @@ object ReflectionUtils {
 
   def innerSingletonInstance(outer: AnyRef, className: String): AnyRef = {
     val accessorName =
-      if (className endsWith "$") className.substring(0, className.length - 1)
-      else className
+      if (className endsWith "$")
+        className.substring(0, className.length - 1)
+      else
+        className
     def singletonAccessor(clazz: Class[_]): Option[Method] =
-      if (clazz == null) None
+      if (clazz == null)
+        None
       else {
         val declaredAccessor =
           clazz.getDeclaredMethods.find(_.getName == accessorName)

@@ -59,16 +59,20 @@ trait ScTypeAlias
 
   def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
-    if (ccontainingClass == null) return this
+    if (ccontainingClass == null)
+      return this
     val originalClass: PsiClass =
       ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
-    if (ccontainingClass eq originalClass) return this
-    if (!originalClass.isInstanceOf[ScTypeDefinition]) return this
+    if (ccontainingClass eq originalClass)
+      return this
+    if (!originalClass.isInstanceOf[ScTypeDefinition])
+      return this
     val c = originalClass.asInstanceOf[ScTypeDefinition]
     val aliasesIterator = c.aliases.iterator
     while (aliasesIterator.hasNext) {
       val alias = aliasesIterator.next()
-      if (alias.name == name) return alias
+      if (alias.name == name)
+        return alias
     }
     this
   }

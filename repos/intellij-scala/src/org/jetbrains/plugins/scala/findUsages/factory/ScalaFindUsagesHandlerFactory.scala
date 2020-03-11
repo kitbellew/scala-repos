@@ -79,8 +79,10 @@ class ScalaFindUsagesHandlerFactory(project: Project)
           case _ => replacedElement = null
         }
       }
-      if (SwingUtilities.isEventDispatchThread) showDialog()
-      else extensions.invokeAndWait(showDialog())
+      if (SwingUtilities.isEventDispatchThread)
+        showDialog()
+      else
+        extensions.invokeAndWait(showDialog())
     }
 
     replacedElement match {
@@ -89,10 +91,12 @@ class ScalaFindUsagesHandlerFactory(project: Project)
         val supers = RenameSuperMembersUtil
           .allSuperMembers(named, withSelfType = true)
           .filter(needToAsk)
-        if (supers.nonEmpty) chooseSuper(named.name, supers)
+        if (supers.nonEmpty)
+          chooseSuper(named.name, supers)
       case _ =>
     }
-    if (replacedElement == null) return FindUsagesHandler.NULL_HANDLER
+    if (replacedElement == null)
+      return FindUsagesHandler.NULL_HANDLER
     new ScalaFindUsagesHandler(replacedElement, this)
   }
 

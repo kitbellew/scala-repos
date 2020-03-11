@@ -100,7 +100,8 @@ class Dispatchers(
         // That shouldn't happen often and in case it does the actual ExecutorService isn't
         // created until used, i.e. cheap.
         val newConfigurator =
-          if (cachingConfig.hasPath(id)) configuratorFrom(config(id))
+          if (cachingConfig.hasPath(id))
+            configuratorFrom(config(id))
           else
             throw new ConfigurationException(s"Dispatcher [$id] not configured")
 
@@ -247,8 +248,10 @@ private[akka] object BalancingDispatcherConfigurator {
       "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
     if (config.getString(
-          "mailbox-requirement") != Mailboxes.NoMailboxRequirement) config
-    else defaultRequirement.withFallback(config)
+          "mailbox-requirement") != Mailboxes.NoMailboxRequirement)
+      config
+    else
+      defaultRequirement.withFallback(config)
 }
 
 /**
@@ -286,7 +289,8 @@ class BalancingDispatcherConfigurator(
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox-type' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt
-      } else mailboxes.lookupByQueueType(requirement)
+      } else
+        mailboxes.lookupByQueueType(requirement)
     create(mailboxType)
   }
 

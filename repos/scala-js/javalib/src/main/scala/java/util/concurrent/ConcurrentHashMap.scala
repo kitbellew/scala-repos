@@ -96,8 +96,10 @@ class ConcurrentHashMap[K >: Null, V >: Null]
 
   override def replace(key: K, value: V): V = {
     if (key != null && value != null) {
-      if (inner(Box(key)) != null) put(key, value)
-      else null
+      if (inner(Box(key)) != null)
+        put(key, value)
+      else
+        null
     } else {
       throw new NullPointerException()
     }
@@ -178,7 +180,8 @@ object ConcurrentHashMap {
 
     def toArray[T <: AnyRef](a: Array[T]): Array[T] = {
       val toFill: Array[T] =
-        if (a.size >= size) a
+        if (a.size >= size)
+          a
         else
           jlr.Array
             .newInstance(a.getClass.getComponentType, size)

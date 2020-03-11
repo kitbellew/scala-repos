@@ -60,12 +60,15 @@ class Queue[+A] protected (
     */
   override def apply(n: Int): A = {
     val olen = out.length
-    if (n < olen) out.apply(n)
+    if (n < olen)
+      out.apply(n)
     else {
       val m = n - olen
       val ilen = in.length
-      if (m < ilen) in.apply(ilen - m - 1)
-      else throw new NoSuchElementException("index out of range")
+      if (m < ilen)
+        in.apply(ilen - m - 1)
+      else
+        throw new NoSuchElementException("index out of range")
     }
   }
 
@@ -80,14 +83,20 @@ class Queue[+A] protected (
   override def isEmpty: Boolean = in.isEmpty && out.isEmpty
 
   override def head: A =
-    if (out.nonEmpty) out.head
-    else if (in.nonEmpty) in.last
-    else throw new NoSuchElementException("head on empty queue")
+    if (out.nonEmpty)
+      out.head
+    else if (in.nonEmpty)
+      in.last
+    else
+      throw new NoSuchElementException("head on empty queue")
 
   override def tail: Queue[A] =
-    if (out.nonEmpty) new Queue(in, out.tail)
-    else if (in.nonEmpty) new Queue(Nil, in.reverse.tail)
-    else throw new NoSuchElementException("tail on empty queue")
+    if (out.nonEmpty)
+      new Queue(in, out.tail)
+    else if (in.nonEmpty)
+      new Queue(Nil, in.reverse.tail)
+    else
+      throw new NoSuchElementException("tail on empty queue")
 
   /** Returns the length of the queue.
     */
@@ -144,7 +153,10 @@ class Queue[+A] protected (
     *         If the queue is empty, `None` is returned.
     */
   def dequeueOption: Option[(A, Queue[A])] =
-    if (isEmpty) None else Some(dequeue)
+    if (isEmpty)
+      None
+    else
+      Some(dequeue)
 
   /** Returns the first element in the queue, or throws an error if there
     *  is no element contained in the queue.

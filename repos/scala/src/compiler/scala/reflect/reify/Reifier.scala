@@ -55,20 +55,25 @@ abstract class Reifier extends States with Phases with Errors with Utils {
     */
   lazy val reification: Tree = {
     try {
-      if (universe exists (_.isErroneous)) CannotReifyErroneousPrefix(universe)
-      if (universe.tpe == null) CannotReifyUntypedPrefix(universe)
+      if (universe exists (_.isErroneous))
+        CannotReifyErroneousPrefix(universe)
+      if (universe.tpe == null)
+        CannotReifyUntypedPrefix(universe)
 
       val result = reifee match {
         case tree: Tree =>
           reifyTrace("reifying = ")(
             if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
               "\n" + nodePrinters.nodeToString(tree).trim
-            else tree.toString)
+            else
+              tree.toString)
           reifyTrace("reifee is located at: ")(tree.pos)
           reifyTrace("universe = ")(universe)
           reifyTrace("mirror = ")(mirror)
-          if (tree exists (_.isErroneous)) CannotReifyErroneousReifee(tree)
-          if (tree.tpe == null) CannotReifyUntypedReifee(tree)
+          if (tree exists (_.isErroneous))
+            CannotReifyErroneousReifee(tree)
+          if (tree.tpe == null)
+            CannotReifyUntypedReifee(tree)
           val pipeline = mkReificationPipeline
           val rtree = pipeline(tree)
 
@@ -104,7 +109,10 @@ abstract class Reifier extends States with Phases with Errors with Utils {
           throw new Error(
             "reifee %s of type %s is not supported".format(
               reifee,
-              if (reifee == null) "null" else reifee.getClass.toString))
+              if (reifee == null)
+                "null"
+              else
+                reifee.getClass.toString))
       }
 
       // todo. why do we reset attrs?
@@ -162,9 +170,11 @@ abstract class Reifier extends States with Phases with Errors with Utils {
       )
 
       if (reifyCopypaste) {
-        if (reifyDebug) println("=============================")
+        if (reifyDebug)
+          println("=============================")
         println(reifiedNodeToString(untyped))
-        if (reifyDebug) println("=============================")
+        if (reifyDebug)
+          println("=============================")
       } else {
         reifyTrace("reification = ")(untyped)
       }

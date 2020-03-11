@@ -87,13 +87,15 @@ class QuaternionCheck
 
   property("q * q.reciprocal = 1") {
     forAll { (q: H) =>
-      if (q != zero) (q * q.reciprocal) shouldBe one
+      if (q != zero)
+        (q * q.reciprocal) shouldBe one
     }
   }
 
   property("1 / q = 1.reciprocal") {
     forAll { (q: H) =>
-      if (q != zero) (one / q) shouldBe q.reciprocal
+      if (q != zero)
+        (one / q) shouldBe q.reciprocal
     }
   }
 

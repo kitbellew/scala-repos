@@ -241,8 +241,8 @@ class NIHDBProjectionSpecs
 
       result must awaited(maxDuration)(beLike {
         case (
-            Some(BlockProjectionData(min1, max1, data1)),
-            Some(BlockProjectionData(min2, max2, data2))) =>
+              Some(BlockProjectionData(min1, max1, data1)),
+              Some(BlockProjectionData(min2, max2, data2))) =>
           min1 mustEqual 0L
           max1 mustEqual 0L
           data1.size mustEqual 1200

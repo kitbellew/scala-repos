@@ -35,7 +35,8 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
         val classesNames: mutable.HashSet[String] = mutable.HashSet.empty
         val objectNames: mutable.HashSet[String] = mutable.HashSet.empty
         val parent = position.getContext.getContext
-        if (parent == null) return
+        if (parent == null)
+          return
         parent.getChildren.foreach {
           case c: ScClass  => classesNames += c.name
           case t: ScTrait  => classesNames += t.name

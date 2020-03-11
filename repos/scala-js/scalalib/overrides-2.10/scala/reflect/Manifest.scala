@@ -305,8 +305,14 @@ object ManifestFactory {
       extends Manifest[T] {
     def runtimeClass: Predef.Class[_] = runtimeClass1
     override def toString =
-      (if (prefix.isEmpty) "" else prefix.get.toString + "#") +
-        (if (erasure.isArray) "Array" else erasure.getName) +
+      (if (prefix.isEmpty)
+         ""
+       else
+         prefix.get.toString + "#") +
+        (if (erasure.isArray)
+           "Array"
+         else
+           erasure.getName) +
         argString
   }
 
@@ -336,8 +342,14 @@ object ManifestFactory {
       def runtimeClass = upperBound.erasure
       override def toString =
         "_" +
-          (if (lowerBound eq Nothing) "" else " >: " + lowerBound) +
-          (if (upperBound eq Nothing) "" else " <: " + upperBound)
+          (if (lowerBound eq Nothing)
+             ""
+           else
+             " >: " + lowerBound) +
+          (if (upperBound eq Nothing)
+             ""
+           else
+             " <: " + upperBound)
     }
 
   /** Manifest for the intersection type `parents_0 with ... with parents_n'. */

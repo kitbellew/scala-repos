@@ -112,8 +112,10 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
     Option(gridFS.findOne(filename)) map { file =>
       val idealChunkSize = file.getChunkSize
       val chunkSize =
-        if (idealChunkSize > MaxChunkSize) MaxChunkSize
-        else idealChunkSize.toInt
+        if (idealChunkSize > MaxChunkSize)
+          MaxChunkSize
+        else
+          idealChunkSize.toInt
       val mimeType = Option(file.getContentType) flatMap { ct =>
         MimeTypes.parseMimeTypes(ct).headOption
       }

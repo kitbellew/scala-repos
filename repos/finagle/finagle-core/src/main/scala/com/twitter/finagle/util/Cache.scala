@@ -81,7 +81,8 @@ private[finagle] class Cache[A](
     val evicted = synchronized {
       timerTask = None
       val es = removeExpiredItems()
-      if (!deque.isEmpty) scheduleTimer()
+      if (!deque.isEmpty)
+        scheduleTimer()
       es
     }
     evicted foreach {
@@ -100,7 +101,8 @@ private[finagle] class Cache[A](
   def get() = synchronized {
     if (!deque.isEmpty) {
       val rv = Some(deque.pop()._2)
-      if (deque.isEmpty) cancelTimer()
+      if (deque.isEmpty)
+        cancelTimer()
       rv
     } else {
       None
@@ -112,7 +114,8 @@ private[finagle] class Cache[A](
     */
   def put(item: A) {
     val evicted = synchronized {
-      if (deque.isEmpty && ttl != Duration.Top) scheduleTimer()
+      if (deque.isEmpty && ttl != Duration.Top)
+        scheduleTimer()
       deque.push((Time.now, item))
       if (deque.size > cacheSize) { // it will ever only be over by 1
         // should ditch *oldest* items, so take from last of deque

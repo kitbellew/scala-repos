@@ -33,7 +33,8 @@ class InjectorServerConnector(
         source: Option[File],
         line: Option[Long],
         column: Option[Long]): Unit = {
-      if (kind == Kind.ERROR) errors += text
+      if (kind == Kind.ERROR)
+        errors += text
     }
     override def deleted(module: File): Unit = {}
     override def progress(text: String, done: Option[Float]): Unit = {}
@@ -62,7 +63,10 @@ class InjectorServerConnector(
       Seq("Compilation failed"))
     compilationProcess.addTerminationCallback {
       result =
-        if (errors.nonEmpty) Right(errors) else Left(classfiles(outputDir))
+        if (errors.nonEmpty)
+          Right(errors)
+        else
+          Left(classfiles(outputDir))
     }
     compilationProcess.run()
     result

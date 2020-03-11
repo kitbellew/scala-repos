@@ -42,15 +42,16 @@ class CircuitBreakerMTSpec extends AkkaSpec {
 
     def testCallsWithBreaker(): immutable.IndexedSeq[Future[String]] = {
       val aFewActive = new TestLatch(5)
-      for (_ ← 1 to numberOfTestCalls) yield breaker.withCircuitBreaker(Future {
-        aFewActive.countDown()
-        Await.ready(aFewActive, 5.seconds.dilated)
-        "succeed"
-      }) recoverWith {
-        case _: CircuitBreakerOpenException ⇒
+      for (_ ← 1 to numberOfTestCalls)
+        yield breaker.withCircuitBreaker(Future {
           aFewActive.countDown()
-          Future.successful("CBO")
-      }
+          Await.ready(aFewActive, 5.seconds.dilated)
+          "succeed"
+        }) recoverWith {
+          case _: CircuitBreakerOpenException ⇒
+            aFewActive.countDown()
+            Future.successful("CBO")
+        }
     }
 
     "allow many calls while in closed state with no errors" in {

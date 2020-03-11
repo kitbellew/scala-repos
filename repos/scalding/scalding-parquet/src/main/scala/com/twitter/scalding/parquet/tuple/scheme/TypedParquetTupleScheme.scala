@@ -203,8 +203,10 @@ class TypedParquetTupleScheme[T](
 
     val hasNext = sc.getInput.next(null, value)
 
-    if (!hasNext) false
-    else if (value == null) true
+    if (!hasNext)
+      false
+    else if (value == null)
+      true
     else {
       val tuple = new Tuple(value.get.asInstanceOf[AnyRef])
       sc.getIncomingEntry.setTuple(tuple)

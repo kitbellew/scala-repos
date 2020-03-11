@@ -39,7 +39,8 @@ trait GenSymbols {
     else if (sym.isModuleClass)
       if (sym.sourceModule.isLocatable)
         Select(Select(reify(sym.sourceModule), nme.asModule), nme.moduleClass)
-      else reifySymDef(sym)
+      else
+        reifySymDef(sym)
     else if (sym.hasPackageFlag)
       mirrorMirrorCall(nme.staticPackage, reify(sym.fullName))
     else if (sym.isLocatable) {
@@ -76,7 +77,11 @@ trait GenSymbols {
         sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
       if (sym.isStatic && (sym.isClass || sym.isModule) && !hasPackagelessParent) {
         // SI-6238: if applicable, emit references to StandardDefinitions instead of staticClass/staticModule calls
-        val resolver = if (sym.isType) nme.staticClass else nme.staticModule
+        val resolver =
+          if (sym.isType)
+            nme.staticClass
+          else
+            nme.staticModule
         mirrorMirrorCall(resolver, reify(sym.fullName))
       } else {
         if (reifyDebug)
@@ -106,9 +111,12 @@ trait GenSymbols {
       }
     } else {
       // todo. make sure that free methods work correctly
-      if (sym.isExistential) reifySymDef(sym)
-      else if (sym.isTerm) reifyFreeTerm(Ident(sym))
-      else reifyFreeType(Ident(sym)) // TODO: reify refinement classes
+      if (sym.isExistential)
+        reifySymDef(sym)
+      else if (sym.isTerm)
+        reifyFreeTerm(Ident(sym))
+      else
+        reifyFreeType(Ident(sym)) // TODO: reify refinement classes
     }
   }
 
@@ -116,13 +124,15 @@ trait GenSymbols {
     reifyIntoSymtab(binding.symbol) { sym =>
       if (reifyDebug)
         println(
-          "Free term" + (if (sym.isCapturedVariable) " (captured)"
+          "Free term" + (if (sym.isCapturedVariable)
+                           " (captured)"
                          else
                            "") + ": " + sym + "(" + sym.accurateKindString + ")")
       val name = newTermName(
         "" + nme.REIFY_FREE_PREFIX + sym.name + (if (sym.isType)
                                                    nme.REIFY_FREE_THIS_SUFFIX
-                                                 else ""))
+                                                 else
+                                                   ""))
       // We need to note whether the free value being reified is stable or not to guide subsequent reflective compilation.
       // Here's why reflection compilation needs our help.
       //
@@ -149,7 +159,8 @@ trait GenSymbols {
       //
       // To overcome this glitch, we note whether a given free term is stable or not (because vars can also end up being free terms).
       // Then, if a free term is stable, we tell the compiler to treat `free.apply()` specially and assume that it's stable.
-      if (!sym.isMutable) sym setFlag STABLE
+      if (!sym.isMutable)
+        sym setFlag STABLE
       if (sym.isCapturedVariable) {
         assert(binding.isInstanceOf[Ident], showRaw(binding))
         val capturedBinding = referenceCapturedVariable(sym)
@@ -198,7 +209,10 @@ trait GenSymbols {
         println("Sym def: %s (%s)".format(sym, sym.accurateKindString))
       val name: TermName = nme.REIFY_SYMDEF_PREFIX append sym.name
       def reifiedOwner =
-        if (sym.owner.isLocatable) reify(sym.owner) else reifySymDef(sym.owner)
+        if (sym.owner.isLocatable)
+          reify(sym.owner)
+        else
+          reifySymDef(sym.owner)
       Reification(
         name,
         Ident(sym),

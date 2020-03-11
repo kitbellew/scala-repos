@@ -105,12 +105,14 @@ class ScTypeParamElementType[Func <: ScTypeParam]
   def deserialiseSeq(dataStream: StubInputStream): Seq[StringRef] = {
     val n = dataStream.readInt
     val refs = new ArrayBuffer[StringRef]
-    for (i <- 0 until n) refs += dataStream.readName
+    for (i <- 0 until n)
+      refs += dataStream.readName
     refs
   }
 
   def serialiseSeq(dataStream: StubOutputStream, ref: Seq[String]) {
     dataStream.writeInt(ref.length)
-    for (r <- ref) dataStream.writeName(r)
+    for (r <- ref)
+      dataStream.writeName(r)
   }
 }

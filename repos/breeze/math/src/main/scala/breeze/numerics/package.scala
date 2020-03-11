@@ -280,13 +280,25 @@ package object numerics {
     */
   object sinc extends UFunc with MappingUFunc {
     implicit object sincIntImpl extends Impl[Int, Double] {
-      def apply(v: Int) = if (v == 0) 1d else m.sin(v.toDouble) / v.toDouble
+      def apply(v: Int) =
+        if (v == 0)
+          1d
+        else
+          m.sin(v.toDouble) / v.toDouble
     }
     implicit object sincDoubleImpl extends Impl[Double, Double] {
-      def apply(v: Double) = if (v == 0) 1d else m.sin(v) / v
+      def apply(v: Double) =
+        if (v == 0)
+          1d
+        else
+          m.sin(v) / v
     }
     implicit object sincFloatImpl extends Impl[Float, Float] {
-      def apply(v: Float) = if (v == 0) 1f else m.sin(v).toFloat / v
+      def apply(v: Float) =
+        if (v == 0)
+          1f
+        else
+          m.sin(v).toFloat / v
     }
   }
 
@@ -296,7 +308,8 @@ package object numerics {
   object sincpi extends UFunc with MappingUFunc {
     implicit object sincpiIntImpl extends Impl[Int, Double] {
       def apply(v: Int) =
-        if (v == 0) 1d
+        if (v == 0)
+          1d
         else {
           val temp = v.toDouble * m.Pi;
           m.sin(temp) / temp
@@ -304,7 +317,8 @@ package object numerics {
     }
     implicit object sincpiDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) =
-        if (v == 0) 1d
+        if (v == 0)
+          1d
         else {
           val temp = v * m.Pi;
           m.sin(temp) / temp
@@ -312,7 +326,8 @@ package object numerics {
     }
     implicit object sincpiFloatImpl extends Impl[Float, Float] {
       def apply(v: Float) =
-        if (v == 0) 1f
+        if (v == 0)
+          1f
         else {
           val temp = v * m.Pi;
           (m.sin(temp) / temp).toFloat
@@ -647,11 +662,17 @@ package object numerics {
   object lgamma extends UFunc with MappingUFunc {
     implicit object lgammaImplInt extends Impl[Int, Double] {
       def apply(v: Int): Double =
-        if (v == 0) Double.PositiveInfinity else G.logGamma(v.toDouble)
+        if (v == 0)
+          Double.PositiveInfinity
+        else
+          G.logGamma(v.toDouble)
     }
     implicit object lgammaImplDouble extends Impl[Double, Double] {
       def apply(v: Double): Double =
-        if (v == 0.0) Double.PositiveInfinity else G.logGamma(v)
+        if (v == 0.0)
+          Double.PositiveInfinity
+        else
+          G.logGamma(v)
     }
 
     implicit object lgammaImplIntInt extends Impl2[Int, Int, Double] {
@@ -667,8 +688,10 @@ package object numerics {
     implicit object lgammaImplDoubleDouble
         extends Impl2[Double, Double, Double] {
       def apply(a: Double, x: Double): Double = {
-        if (x < 0.0 || a <= 0.0) throw new IllegalArgumentException()
-        else if (x == 0) 0.0
+        if (x < 0.0 || a <= 0.0)
+          throw new IllegalArgumentException()
+        else if (x == 0)
+          0.0
         else if (x < a + 1.0) {
           var ap = a
           var del, sum = 1.0 / a
@@ -684,8 +707,10 @@ package object numerics {
             }
             n += 1
           }
-          if (result.isNaN) throw new ArithmeticException("Convergence failed")
-          else result
+          if (result.isNaN)
+            throw new ArithmeticException("Convergence failed")
+          else
+            result
         } else {
           val gln = lgamma(a)
           var b = x + 1.0 - a
@@ -698,17 +723,22 @@ package object numerics {
             val an = -n * (n - a)
             b += 2.0
             d = an * d + b
-            if (scala.math.abs(d) < 1e-30) d = 1e-30
+            if (scala.math.abs(d) < 1e-30)
+              d = 1e-30
             c = b + an / c
-            if (scala.math.abs(c) < 1e-30) c = 1e-30
+            if (scala.math.abs(c) < 1e-30)
+              c = 1e-30
             d = 1.0 / d
             val del = d * c
             h *= del
-            if (scala.math.abs(del - 1.0) < 1e-7) n = 101
+            if (scala.math.abs(del - 1.0) < 1e-7)
+              n = 101
           }
 
-          if (n == 100) throw new ArithmeticException("Convergence failed")
-          else breeze.linalg.logDiff(gln, -x + a * m.log(x) + m.log(h))
+          if (n == 100)
+            throw new ArithmeticException("Convergence failed")
+          else
+            breeze.linalg.logDiff(gln, -x + a * m.log(x) + m.log(h))
         }
       }
     }
@@ -814,7 +844,8 @@ package object numerics {
     }
     implicit object erfiImplDouble extends Impl[Double, Double] {
       def apply(x: Double): Double = {
-        if (x < 0) -apply(-x)
+        if (x < 0)
+          -apply(-x)
         else { // taylor expansion
           var y = x
           val x2 = x * x
@@ -826,7 +857,8 @@ package object numerics {
             f /= n
             xx *= x2
             val del = f * xx / (2 * n + 1)
-            if (del < 1e-8) n = 101
+            if (del < 1e-8)
+              n = 101
             y += del
           }
           y = y * 2 / m.sqrt(Pi)
@@ -938,11 +970,19 @@ package object numerics {
     */
   object I extends UFunc with MappingUFunc {
     implicit object iBoolImpl extends Impl[Boolean, Double] {
-      def apply(b: Boolean) = if (b) 1.0 else 0.0
+      def apply(b: Boolean) =
+        if (b)
+          1.0
+        else
+          0.0
     }
 
     implicit def vImpl[V: Semiring]: Impl[V, Double] = new Impl[V, Double] {
-      def apply(b: V) = if (b != implicitly[Semiring[V]].zero) 1.0 else 0.0
+      def apply(b: V) =
+        if (b != implicitly[Semiring[V]].zero)
+          1.0
+        else
+          0.0
     }
   }
 
@@ -951,7 +991,11 @@ package object numerics {
     */
   object logI extends UFunc with breeze.generic.MappingUFunc {
     implicit object logIBoolImpl extends Impl[Boolean, Double] {
-      def apply(b: Boolean) = if (b) 0.0 else -inf
+      def apply(b: Boolean) =
+        if (b)
+          0.0
+        else
+          -inf
     }
   }
 

@@ -13,7 +13,8 @@ private[slick] object LogUtil {
         "\u001B[34m",
         "\u001B[35m",
         "\u001B[36m")
-    else ("", "", "", "", "", "", "", "")
+    else
+      ("", "", "", "", "", "", "", "")
   val (bRed, bGreen, bYellow, bBlue, bMagenta, bCyan) =
     if (GlobalConfig.ansiDump)
       (
@@ -23,9 +24,14 @@ private[slick] object LogUtil {
         "\u001B[44m",
         "\u001B[45m",
         "\u001B[46m")
-    else ("", "", "", "", "", "")
+    else
+      ("", "", "", "", "", "")
 
-  private[this] val multi = if (GlobalConfig.unicodeDump) "\u2507 " else "  "
+  private[this] val multi =
+    if (GlobalConfig.unicodeDump)
+      "\u2507 "
+    else
+      "  "
   private[this] val multilineBorderPrefix = cYellow + multi + cNormal
 
   def multilineBorder(s: String): String =

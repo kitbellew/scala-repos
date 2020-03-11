@@ -47,7 +47,8 @@ class CsvFile(path: String, encoding: String = UTF8) extends CsvSource {
 
   def readLine = {
     val line = reader.readLine()
-    if (line == null) file.close()
+    if (line == null)
+      file.close()
     line
   }
 

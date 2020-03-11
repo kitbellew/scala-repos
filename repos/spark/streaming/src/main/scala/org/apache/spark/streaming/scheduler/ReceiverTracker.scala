@@ -170,7 +170,8 @@ private[streaming] class ReceiverTracker(
       endpoint = ssc.env.rpcEnv.setupEndpoint(
         "ReceiverTracker",
         new ReceiverTrackerEndpoint(ssc.env.rpcEnv))
-      if (!skipReceiverLaunch) launchReceivers()
+      if (!skipReceiverLaunch)
+        launchReceivers()
       logInfo("ReceiverTracker started")
       trackerState = Started
     }
@@ -315,8 +316,10 @@ private[streaming] class ReceiverTracker(
       message: String,
       error: String) {
     val lastErrorTime =
-      if (error == null || error == "") -1
-      else ssc.scheduler.clock.getTimeMillis()
+      if (error == null || error == "")
+        -1
+      else
+        ssc.scheduler.clock.getTimeMillis()
     val errorInfo = ReceiverErrorInfo(
       lastErrorMessage = message,
       lastError = error,
@@ -563,11 +566,11 @@ private[streaming] class ReceiverTracker(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       // Remote messages
       case RegisterReceiver(
-          streamId,
-          typ,
-          host,
-          executorId,
-          receiverEndpoint) =>
+            streamId,
+            typ,
+            host,
+            executorId,
+            receiverEndpoint) =>
         val successful =
           registerReceiver(
             streamId,

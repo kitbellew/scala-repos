@@ -96,10 +96,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
               }
             }
           case ScalaTestLineInFinePattern(
-              classFqn,
-              fileName,
-              lineNumber,
-              testName) =>
+                classFqn,
+                fileName,
+                lineNumber,
+                testName) =>
             val clazzes = ScalaPsiManager
               .instance(project)
               .getCachedClass(GlobalSearchScope.allScope(project), classFqn)
@@ -167,18 +167,27 @@ class ScalaTestLocationProvider extends SMTestLocator {
         found = true
       }
       val length: Int = elementAtLine.getTextLength
-      offset += (if (length > 1) length - 1 else 1)
+      offset += (if (length > 1)
+                   length - 1
+                 else
+                   1)
     }
     withName match {
       case Some(testName) =>
         new PsiLocationWithName(
           project,
-          if (elementAtLine != null) elementAtLine else psiFile,
+          if (elementAtLine != null)
+            elementAtLine
+          else
+            psiFile,
           testName)
       case _ =>
         PsiLocation.fromPsiElement(
           project,
-          if (elementAtLine != null) elementAtLine else psiFile)
+          if (elementAtLine != null)
+            elementAtLine
+          else
+            psiFile)
     }
   }
 }

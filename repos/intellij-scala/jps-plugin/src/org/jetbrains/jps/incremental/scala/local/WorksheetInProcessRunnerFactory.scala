@@ -47,8 +47,10 @@ class WorksheetInProcessRunnerFactory {
 
     classLoader match {
       case Some((urls1, urls2, loader)) =>
-        if (compilerSet == urls1 && classpathSet == urls2) loader
-        else createClassLoader(compilerSet, classpathSet)
+        if (compilerSet == urls1 && classpathSet == urls2)
+          loader
+        else
+          createClassLoader(compilerSet, classpathSet)
       case _ => createClassLoader(compilerSet, classpathSet)
     }
   }
@@ -65,9 +67,11 @@ class WorksheetInProcessRunnerFactory {
       private var buffer = ByteBuffer.allocate(capacity)
 
       override def write(b: Int) {
-        if (b == '\r') return
+        if (b == '\r')
+          return
 
-        if (buffer.position() < capacity) buffer.put(b.toByte)
+        if (buffer.position() < capacity)
+          buffer.put(b.toByte)
         else {
           val copy = buffer.array().clone()
           capacity *= 2
@@ -76,7 +80,8 @@ class WorksheetInProcessRunnerFactory {
           buffer put b.toByte
         }
 
-        if (b == '\n') flush()
+        if (b == '\n')
+          flush()
       }
 
       override def close() {
@@ -84,14 +89,17 @@ class WorksheetInProcessRunnerFactory {
       }
 
       override def flush() {
-        if (buffer.position() == 0) return
+        if (buffer.position() == 0)
+          return
         val event = WorksheetOutputEvent(
           new String(buffer.array(), 0, buffer.position()))
         buffer.clear()
         val encode = Base64Converter.encode(event.toBytes)
         out.write(
-          if (standalone && !encode.endsWith("=")) (encode + "=").getBytes
-          else encode.getBytes)
+          if (standalone && !encode.endsWith("="))
+            (encode + "=").getBytes
+          else
+            encode.getBytes)
       }
     }
 
@@ -134,7 +142,11 @@ class WorksheetInProcessRunnerFactory {
             case userEx: InvocationTargetException =>
               myOut.flush()
 
-              val e = if (userEx.getCause != null) userEx.getCause else userEx
+              val e =
+                if (userEx.getCause != null)
+                  userEx.getCause
+                else
+                  userEx
               cleanStackTrace(
                 e,
                 arguments.compilationData.sources.headOption.orNull.getName,
@@ -155,12 +167,17 @@ class WorksheetInProcessRunnerFactory {
       def transformElement(original: StackTraceElement): StackTraceElement = {
         val originalClassName = original.getClassName
         val declaringClassName =
-          if (originalClassName == className) WORKSHEET
+          if (originalClassName == className)
+            WORKSHEET
           else if (originalClassName.startsWith(className + "$"))
             WORKSHEET + "." + originalClassName.substring(className.length + 1)
-          else originalClassName
+          else
+            originalClassName
         val originalFileName =
-          if (fileName == null) original.getFileName else fileName
+          if (fileName == null)
+            original.getFileName
+          else
+            fileName
         new StackTraceElement(
           declaringClassName,
           original.getMethodName,
@@ -170,7 +187,8 @@ class WorksheetInProcessRunnerFactory {
 
       val els = e.getStackTrace
       val length = els.length
-      if (length < TRACE_PREFIX) return e
+      if (length < TRACE_PREFIX)
+        return e
 
       val newTrace = new Array[StackTraceElement](length - TRACE_PREFIX + 1)
       val referenceElement = els(length - TRACE_PREFIX)
@@ -178,7 +196,10 @@ class WorksheetInProcessRunnerFactory {
       newTrace(newTrace.length - 1) = new StackTraceElement(
         WORKSHEET,
         WORKSHEET,
-        if (fileName == null) referenceElement.getFileName else fileName,
+        if (fileName == null)
+          referenceElement.getFileName
+        else
+          fileName,
         referenceElement.getLineNumber - 4)
 
       var i: Int = 0

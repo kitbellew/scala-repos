@@ -20,7 +20,8 @@ class ScalaWhileConditionFixer extends ScalaFixer {
       psiElement: PsiElement): OperationPerformed = {
     val whileStatement =
       PsiTreeUtil.getParentOfType(psiElement, classOf[ScWhileStmt], false)
-    if (whileStatement == null) return NoOperation
+    if (whileStatement == null)
+      return NoOperation
 
     val doc = editor.getDocument
     val leftParenthesis = whileStatement.getLeftParenthesis.orNull

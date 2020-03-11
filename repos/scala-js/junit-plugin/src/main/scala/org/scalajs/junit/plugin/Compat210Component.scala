@@ -35,8 +35,10 @@ trait Compat210Component {
 
   def TypeTreeMemberType(sym: Symbol): TypeTree = {
     val resType = {
-      if (sym.owner.isTerm) sym.tpe
-      else sym.owner.thisType.memberType(sym)
+      if (sym.owner.isTerm)
+        sym.tpe
+      else
+        sym.owner.thisType.memberType(sym)
     }.finalResultType
     atPos(sym.pos.focus)(TypeTree(resType))
   }
@@ -63,7 +65,11 @@ trait Compat210Component {
         templ: Template): ClassDef = {
       val isInterface =
         mods.isTrait && templ.body.forall(treeInfo.isInterfaceMember)
-      val mods1 = if (isInterface) mods | Flags.INTERFACE else mods
+      val mods1 =
+        if (isInterface)
+          mods | Flags.INTERFACE
+        else
+          mods
       ClassDef(mods1, name, tparams, templ)
     }
   }

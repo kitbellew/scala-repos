@@ -36,9 +36,11 @@ final class Firewall(
       cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
         blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
       } addEffect { v =>
-        if (v) lila.mon.security.firewall.block()
+        if (v)
+          lila.mon.security.firewall.block()
       }
-    } else fuccess(false)
+    } else
+      fuccess(false)
 
   def accepts(req: RequestHeader): Fu[Boolean] = blocks(req) map (!_)
 

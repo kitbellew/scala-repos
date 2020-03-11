@@ -28,8 +28,10 @@ trait DefaultMapModel[A, B] extends Map[A, B] {
 
   def get(key: A): Option[B] = {
     val e = findEntry(key)
-    if (e == null) None
-    else Some(e.value)
+    if (e == null)
+      None
+    else
+      Some(e.value)
   }
 
   override def put(key: A, value: B): Option[B] = {

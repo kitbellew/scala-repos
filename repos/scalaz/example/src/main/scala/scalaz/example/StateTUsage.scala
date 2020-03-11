@@ -96,7 +96,11 @@ object LaunchburyInterpreter extends App {
   // e.g. sub(map("x" -> "y"), Var("x")) => Var("y")
   private def sub(m: Map[String, String])(e: Expr): Expr = {
     val subExpr = sub(m) _
-    def subName(n: String) = if (m contains n) m(n) else n
+    def subName(n: String) =
+      if (m contains n)
+        m(n)
+      else
+        n
     e match {
       case Lambda(z, e2) => Lambda(subName(z), subExpr(e2))
       case Apply(e2, z)  => Apply(subExpr(e2), subName(z))

@@ -139,10 +139,16 @@ object EmitManPage {
     out.println(
       ".\\\" ############################## " + section.title + " ###############################")
     out println ".\\\""
-    val tag = if (depth > 1) ".SS" else ".SH"
+    val tag =
+      if (depth > 1)
+        ".SS"
+      else
+        ".SH"
     val title =
-      if (section.title.indexOf(" ") > 0) "\"" + section.title + "\""
-      else section.title
+      if (section.title.indexOf(" ") > 0)
+        "\"" + section.title + "\""
+      else
+        section.title
     out.println(tag + " " + title)
 
     section.paragraphs foreach emitParagraph
@@ -178,7 +184,8 @@ object EmitManPage {
   def emitManPage(
       classname: String,
       outStream: java.io.OutputStream = out.out) {
-    if (outStream != out.out) out setOut outStream
+    if (outStream != out.out)
+      out setOut outStream
     try {
       val cl = this.getClass.getClassLoader()
       val clasz = cl loadClass classname

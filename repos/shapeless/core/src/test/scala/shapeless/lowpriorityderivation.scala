@@ -39,7 +39,11 @@ object LowPriorityDerivationTests {
 
     def instance[T](msg0: Int => String): TC[T] =
       new TC[T] {
-        def msg(n: Int) = if (n >= 0) msg0(n) else "…"
+        def msg(n: Int) =
+          if (n >= 0)
+            msg0(n)
+          else
+            "…"
       }
 
     implicit val intTC: TC[Int] = instance[Int](_ => "Int")
@@ -60,7 +64,11 @@ object LowPriorityDerivationTests {
 
     def instance[T](msg0: Int => String): TC0[T] =
       new TC0[T] {
-        def msg(n: Int) = if (n >= 0) msg0(n) else "…"
+        def msg(n: Int) =
+          if (n >= 0)
+            msg0(n)
+          else
+            "…"
       }
 
     implicit def defaultTC[T]: TC0[T] = instance(_ => "default")
@@ -202,8 +210,10 @@ object LowPriorityDerivationTests {
         new MkGenericTupleTC[H :: T] {
           lazy val tc = instance[H :: T] { n =>
             val tailMsg = tail.tc.msg(n - 1)
-            head.value.msg(n - 1) + (if (tailMsg.isEmpty) ""
-                                     else ", " + tailMsg)
+            head.value.msg(n - 1) + (if (tailMsg.isEmpty)
+                                       ""
+                                     else
+                                       ", " + tailMsg)
           }
         }
     }

@@ -177,7 +177,8 @@ case class ZKData(
     val (data, compressed) =
       if (compression.enabled && bytes.length > compression.sizeLimit)
         (IO.gzipCompress(bytes.toArray), true)
-      else (bytes.toArray, false)
+      else
+        (bytes.toArray, false)
     Protos.ZKStoreEntry
       .newBuilder()
       .setName(name)
@@ -193,8 +194,10 @@ object ZKData {
     try {
       val proto = Protos.ZKStoreEntry.parseFrom(bytes)
       val content =
-        if (proto.getCompressed) uncompress(proto.getValue.toByteArray)
-        else proto.getValue.toByteArray
+        if (proto.getCompressed)
+          uncompress(proto.getValue.toByteArray)
+        else
+          proto.getValue.toByteArray
       new ZKData(
         proto.getName,
         UUIDUtil.uuid(proto.getUuid.toByteArray),

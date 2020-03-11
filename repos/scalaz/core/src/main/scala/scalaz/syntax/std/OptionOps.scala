@@ -45,7 +45,9 @@ final class OptionOps[A](self: Option[A]) {
   /**
     * Executes the provided side effect if the Option if it is undefined.
     */
-  final def ifNone(n: => Unit): Unit = if (self.isEmpty) n
+  final def ifNone(n: => Unit): Unit =
+    if (self.isEmpty)
+      n
 
   /**
     * Returns the item contained in the Option if it is defined, otherwise, raises an error with the provided message.

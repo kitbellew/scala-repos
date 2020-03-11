@@ -31,7 +31,8 @@ case class LogNormal(mu: Double, sigma: Double)(implicit rand: RandBasis = Rand)
   }
 
   def unnormalizedLogPdf(x: Double): Double = {
-    if (x <= 0.0) return Double.NegativeInfinity
+    if (x <= 0.0)
+      return Double.NegativeInfinity
     val logx = log(x)
     val rad = (logx - mu) / sigma
     -(rad * rad / 2) - logx

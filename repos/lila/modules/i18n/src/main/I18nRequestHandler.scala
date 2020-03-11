@@ -13,8 +13,10 @@ final class I18nRequestHandler(
   def apply(req: RequestHeader): Option[Handler] =
     if (HTTPRequest.isRedirectable(req) &&
         req.host != cdnDomain &&
-        pool.domainLang(req).isEmpty) Some(Action(Redirect(redirectUrl(req))))
-    else None
+        pool.domainLang(req).isEmpty)
+      Some(Action(Redirect(redirectUrl(req))))
+    else
+      None
 
   def forUser(
       req: RequestHeader,

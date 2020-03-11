@@ -67,7 +67,8 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
           tag.newArray(size).asInstanceOf[Array[A with AnyRef]])
           .asInstanceOf[WrappedArray[A]]
     }
-    if (this.size > 0) Array.copy(elems.array, 0, newelems.array, 0, this.size)
+    if (this.size > 0)
+      Array.copy(elems.array, 0, newelems.array, 0, this.size)
     newelems
   }
 
@@ -77,13 +78,19 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
   }
 
   override def sizeHint(size: Int) {
-    if (capacity < size) resize(size)
+    if (capacity < size)
+      resize(size)
   }
 
   private def ensureSize(size: Int) {
     if (capacity < size) {
-      var newsize = if (capacity == 0) 16 else capacity * 2
-      while (newsize < size) newsize *= 2
+      var newsize =
+        if (capacity == 0)
+          16
+        else
+          capacity * 2
+      while (newsize < size)
+        newsize *= 2
       resize(newsize)
     }
   }
@@ -103,7 +110,8 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
     if (capacity != 0 && capacity == size) {
       capacity = 0
       elems
-    } else mkArray(size)
+    } else
+      mkArray(size)
   }
 
   // todo: add ++=

@@ -45,7 +45,10 @@ object SwingNode {
     * @return JavaFX SwingNode
     */
   implicit def sfxPanel2jfx(node: SwingNode): jfxes.SwingNode =
-    if (node != null) node.delegate else null
+    if (node != null)
+      node.delegate
+    else
+      null
 
 }
 

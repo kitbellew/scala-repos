@@ -27,7 +27,8 @@ abstract class DBTest {
 
   @Before def beforeDBTest = tdb.cleanUpBefore()
   @After def afterDBTest = {
-    if (dbInitialized) db.close()
+    if (dbInitialized)
+      db.close()
     tdb.cleanUpAfter()
   }
 }

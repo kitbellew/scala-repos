@@ -57,9 +57,11 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
     val id =
       if (app.id == 0) {
         var roll = seq.genNext("apps")
-        while (!get(roll).isEmpty) roll = seq.genNext("apps")
+        while (!get(roll).isEmpty)
+          roll = seq.genNext("apps")
         roll
-      } else app.id
+      } else
+        app.id
     val realapp = app.copy(id = id)
     update(realapp)
     Some(id)

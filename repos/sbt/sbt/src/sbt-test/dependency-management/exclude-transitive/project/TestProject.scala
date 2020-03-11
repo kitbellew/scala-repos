@@ -13,7 +13,10 @@ object TestProject extends Build {
   )
 
   def transitive(dep: ModuleID)(base: File) =
-    if ((base / "transitive").exists) dep else dep.intransitive()
+    if ((base / "transitive").exists)
+      dep
+    else
+      dep.intransitive()
 
   private def check(transitive: Boolean) =
     (dependencyClasspath in Compile) map { downloaded =>
@@ -22,12 +25,14 @@ object TestProject extends Build {
         if (jars <= 2)
           sys.error(
             s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
-        else ()
+        else
+          ()
       } else {
         if (jars > 2)
           sys.error(
             s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
-        else ()
+        else
+          ()
       }
     }
 }

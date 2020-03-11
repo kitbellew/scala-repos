@@ -61,7 +61,8 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
       val sibling: PsiElement = step(current)
       sibling match {
         case leaf: LeafPsiElement =>
-          if (leaf.getElementType == stopAt) return current
+          if (leaf.getElementType == stopAt)
+            return current
           if (ScalaPsiUtil.isLineTerminator(leaf)) {
             val strings: Array[String] =
               LineTokenizer.tokenize(leaf.getText.toCharArray, false)

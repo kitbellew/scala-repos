@@ -138,6 +138,9 @@ private[spark] trait Spillable[C] extends Logging {
           threadId,
           org.apache.spark.util.Utils.bytesToString(size),
           _spillCount,
-          if (_spillCount > 1) "s" else ""))
+          if (_spillCount > 1)
+            "s"
+          else
+            ""))
   }
 }

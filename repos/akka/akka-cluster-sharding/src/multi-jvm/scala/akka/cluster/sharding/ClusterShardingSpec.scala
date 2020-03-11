@@ -226,14 +226,16 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   override protected def atStartup() {
     runOn(controller) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(controller) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -265,7 +267,10 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         .parseString(s"""
       handoff-timeout = 10s
       shard-start-timeout = 10s
-      rebalance-interval = ${if (rebalanceEnabled) "2s" else "3600s"}
+      rebalance-interval = ${if (rebalanceEnabled)
+          "2s"
+        else
+          "3600s"}
       """)
         .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
       val settings =

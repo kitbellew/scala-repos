@@ -8,6 +8,7 @@ class foo {
 
   def test = {
     val tmp: bar = null
-    if (map.get(tmp).isEmpty) map.put(tmp, collection.mutable.Set())
+    if (map.get(tmp).isEmpty)
+      map.put(tmp, collection.mutable.Set())
   }
 }

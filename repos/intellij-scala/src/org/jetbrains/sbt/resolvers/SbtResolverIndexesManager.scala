@@ -66,7 +66,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
       updatingIndexes ++= indexesToUpdate
     }
 
-    if (indexesToUpdate.isEmpty) return
+    if (indexesToUpdate.isEmpty)
+      return
 
     ProgressManager
       .getInstance()
@@ -106,7 +107,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
     }
 
     val indices = indexesDir.listFiles()
-    if (indices == null) return
+    if (indices == null)
+      return
     indices foreach { indexDir =>
       if (indexDir.isDirectory) {
         try {

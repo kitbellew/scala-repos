@@ -36,7 +36,10 @@ import scalafx.scene.paint._
 
 object Rectangle {
   implicit def sfxRectangle2jfx(v: Rectangle): jfxss.Rectangle =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(width: Double, height: Double) =
     new Rectangle(new jfxss.Rectangle(width, height))

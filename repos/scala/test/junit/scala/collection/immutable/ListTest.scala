@@ -24,7 +24,8 @@ class ListTest {
 
       val i = list.iterator
 
-      while (i.hasNext) i.next()
+      while (i.hasNext)
+        i.next()
 
       emptyIterators = (i, ref) +: emptyIterators
 

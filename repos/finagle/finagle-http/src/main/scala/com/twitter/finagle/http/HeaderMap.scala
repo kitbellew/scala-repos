@@ -89,7 +89,8 @@ class MapHeaderMap(underlying: mutable.Map[String, Seq[String]])
   // For Map/MapLike
   def iterator: Iterator[(String, String)] = {
     for ((k, vs) <- underlying.iterator;
-         v <- vs) yield (k, v)
+         v <- vs)
+      yield (k, v)
   }
 
   // For Map/MapLike
@@ -197,7 +198,9 @@ object HeaderMap {
   }
 
   private def format(date: Date): String =
-    if (date == null) null
-    else formatter.get().format(date)
+    if (date == null)
+      null
+    else
+      formatter.get().format(date)
 
 }

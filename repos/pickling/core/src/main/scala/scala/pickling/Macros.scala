@@ -51,7 +51,10 @@ trait PickleMacros extends Macro with TypeAnalysis {
     val tpe = weakTypeOf[T]
     val q"${_}($pickleeArg)" = c.prefix.tree
     val endPickle =
-      if (shouldBotherAboutCleaning(tpe)) q"clearPicklees()" else q"";
+      if (shouldBotherAboutCleaning(tpe))
+        q"clearPicklees()"
+      else
+        q"";
     val pickleeName = newTermName("picklee$pickleTo$")
     val builderName = newTermName("builder$pickleTo$")
     q"""

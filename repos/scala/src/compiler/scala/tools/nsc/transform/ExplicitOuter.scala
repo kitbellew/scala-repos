@@ -80,15 +80,22 @@ abstract class ExplicitOuter
 
   def outerAccessor(clazz: Symbol): Symbol = {
     val firstTry = clazz.info.decl(nme.expandedName(nme.OUTER, clazz))
-    if (firstTry != NoSymbol && firstTry.outerSource == clazz) firstTry
-    else findOrElse(clazz.info.decls)(_.outerSource == clazz)(NoSymbol)
+    if (firstTry != NoSymbol && firstTry.outerSource == clazz)
+      firstTry
+    else
+      findOrElse(clazz.info.decls)(_.outerSource == clazz)(NoSymbol)
   }
   def newOuterAccessor(clazz: Symbol) = {
-    val accFlags =
-      SYNTHETIC | ARTIFACT | STABLE | (if (clazz.isTrait) DEFERRED else 0)
+    val accFlags = SYNTHETIC | ARTIFACT | STABLE | (if (clazz.isTrait)
+                                                      DEFERRED
+                                                    else
+                                                      0)
     val sym = clazz.newMethod(nme.OUTER, clazz.pos, accFlags)
     val restpe =
-      if (clazz.isTrait) clazz.outerClass.tpe_* else clazz.outerClass.thisType
+      if (clazz.isTrait)
+        clazz.outerClass.tpe_*
+      else
+        clazz.outerClass.thisType
 
     sym expandName clazz
     sym.referenced = clazz
@@ -98,7 +105,8 @@ abstract class ExplicitOuter
     val accFlags =
       SYNTHETIC | ARTIFACT | PARAMACCESSOR | (if (clazz.isEffectivelyFinal)
                                                 PrivateLocal
-                                              else PROTECTED)
+                                              else
+                                                PROTECTED)
     val sym = clazz.newValue(nme.OUTER_LOCAL, clazz.pos, accFlags)
 
     sym setInfo clazz.outerClass.thisType
@@ -172,7 +180,8 @@ abstract class ExplicitOuter
         // TODO: I don't believe any private accessors remain after the fields phase
         if ((sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isModule)
           sym.makeNotPrivate(sym.owner) // 5
-        if (sym.isProtected) sym setFlag notPROTECTED // 6
+        if (sym.isProtected)
+          sym setFlag notPROTECTED // 6
       }
 
       val paramsWithOuter =
@@ -180,11 +189,13 @@ abstract class ExplicitOuter
           sym
             .newValueParameter(innerClassConstructorParamName, sym.pos)
             .setInfo(sym.owner.outerClass.thisType) :: params
-        else params
+        else
+          params
 
       if ((resTpTransformed ne resTp) || (paramsWithOuter ne params))
         MethodType(paramsWithOuter, resTpTransformed)
-      else tp
+      else
+        tp
 
     case ClassInfoType(parents, decls, clazz) =>
       var decls1 = decls
@@ -202,7 +213,8 @@ abstract class ExplicitOuter
               debuglog(
                 s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
             else {
-              if (decls1 eq decls) decls1 = decls.cloneScope
+              if (decls1 eq decls)
+                decls1 = decls.cloneScope
               val newAcc = mixinOuterAcc
                 .cloneSymbol(clazz, mixinOuterAcc.flags & ~DEFERRED)
               newAcc setInfo (clazz.thisType memberType mixinOuterAcc)
@@ -211,10 +223,16 @@ abstract class ExplicitOuter
           }
         }
       }
-      if (decls1 eq decls) tp else ClassInfoType(parents, decls1, clazz)
+      if (decls1 eq decls)
+        tp
+      else
+        ClassInfoType(parents, decls1, clazz)
     case PolyType(tparams, restp) =>
       val restp1 = transformInfo(sym, restp)
-      if (restp eq restp1) tp else PolyType(tparams, restp1)
+      if (restp eq restp1)
+        tp
+      else
+        PolyType(tparams, restp1)
 
     case _ =>
       // Local fields of traits need to be unconditionally unprivatized.
@@ -285,8 +303,10 @@ abstract class ExplicitOuter
           else
             NoSymbol
         val path =
-          if (outerFld != NoSymbol) Select(base, outerFld)
-          else Apply(Select(base, outerAcc), Nil)
+          if (outerFld != NoSymbol)
+            Select(base, outerFld)
+          else
+            Apply(Select(base, outerAcc), Nil)
 
         localTyper typed path
       }
@@ -299,8 +319,10 @@ abstract class ExplicitOuter
       */
     protected def outerPath(base: Tree, from: Symbol, to: Symbol): Tree = {
       //Console.println("outerPath from "+from+" to "+to+" at "+base+":"+base.tpe)
-      if (from == to) base
-      else outerPath(outerSelect(base), from.outerClass, to)
+      if (from == to)
+        base
+      else
+        outerPath(outerSelect(base), from.outerClass, to)
     }
 
     override def transform(tree: Tree): Tree = {
@@ -389,8 +411,10 @@ abstract class ExplicitOuter
     def outerAccessorDef: Tree = localTyper typed {
       val acc = outerAccessor(currentClass)
       val rhs =
-        if (acc.isDeferred) EmptyTree
-        else Select(This(currentClass), outerField(currentClass))
+        if (acc.isDeferred)
+          EmptyTree
+        else
+          Select(This(currentClass), outerField(currentClass))
       DefDef(acc, rhs)
     }
 
@@ -418,7 +442,8 @@ abstract class ExplicitOuter
             gen.mkAttributedThis(mixinClass.owner.enclClass)
           else if (mixinPrefix.typeArgs.nonEmpty)
             gen.mkAttributedThis(mixinPrefix.typeSymbol)
-          else gen.mkAttributedQualifier(mixinPrefix)
+          else
+            gen.mkAttributedQualifier(mixinPrefix)
         )
       // Need to cast for nested outer refs in presence of self-types. See ticket #3274.
       localTyper typed DefDef(
@@ -430,8 +455,10 @@ abstract class ExplicitOuter
     override def transform(tree: Tree): Tree = {
       val sym = tree.symbol
       if (sym != null && sym.isType) { //(9)
-        if (sym.isPrivate) sym setFlag notPRIVATE
-        if (sym.isProtected) sym setFlag notPROTECTED
+        if (sym.isPrivate)
+          sym setFlag notPRIVATE
+        if (sym.isProtected)
+          sym setFlag notPROTECTED
       }
       tree match {
         case Template(parents, self, decls) =>
@@ -453,8 +480,10 @@ abstract class ExplicitOuter
           }
           super.transform(
             deriveTemplate(tree)(decls =>
-              if (newDefs.isEmpty) decls
-              else decls ::: newDefs.toList)
+              if (newDefs.isEmpty)
+                decls
+              else
+                decls ::: newDefs.toList)
           )
         case DefDef(_, _, _, vparamss, _, rhs) =>
           if (sym.isClassConstructor) {
@@ -476,14 +505,16 @@ abstract class ExplicitOuter
                         sym.pos) setInfo clazz.outerClass.thisType
                     ((ValDef(
                       outerParam) setType NoType) :: vparamss.head) :: vparamss.tail
-                  } else vparamss
+                  } else
+                    vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
             }
           } else
             super.transform(tree)
 
         case This(qual) =>
-          if (sym == currentClass || sym.hasModuleFlag && sym.isStatic) tree
+          if (sym == currentClass || sym.hasModuleFlag && sym.isStatic)
+            tree
           else
             atPos(tree.pos)(
               outerPath(outerValue, currentClass.outerClass, sym)
@@ -528,10 +559,10 @@ abstract class ExplicitOuter
         // base.<outer>.eq(o) --> base.$outer().eq(o) if there's an accessor, else the whole tree becomes TRUE
         // TODO remove the synthetic `<outer>` method from outerFor??
         case Apply(
-            eqsel @ Select(
-              eqapp @ Apply(sel @ Select(base, nme.OUTER_SYNTH), Nil),
-              eq),
-            args) =>
+              eqsel @ Select(
+                eqapp @ Apply(sel @ Select(base, nme.OUTER_SYNTH), Nil),
+                eq),
+              args) =>
           val outerFor = sel.symbol.owner
           val acc = outerAccessor(outerFor)
 
@@ -559,8 +590,10 @@ abstract class ExplicitOuter
 
         case _ =>
           val x = super.transform(tree)
-          if (x.tpe eq null) x
-          else x setType transformInfo(currentOwner, x.tpe)
+          if (x.tpe eq null)
+            x
+          else
+            x setType transformInfo(currentOwner, x.tpe)
       }
     }
 

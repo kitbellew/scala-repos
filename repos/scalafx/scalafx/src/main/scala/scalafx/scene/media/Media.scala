@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object Media {
   implicit def sfxMedia2jfx(m: Media): jfxsm.Media =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 }
 
 class Media(override val delegate: jfxsm.Media)

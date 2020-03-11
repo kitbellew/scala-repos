@@ -8,7 +8,8 @@ import com.intellij.psi.{PsiElement, PsiElementVisitor}
 class VisitorWrapper(action: PartialFunction[PsiElement, Any])
     extends PsiElementVisitor {
   override def visitElement(element: PsiElement) {
-    if (action.isDefinedAt(element)) action(element)
+    if (action.isDefinedAt(element))
+      action(element)
   }
 }
 

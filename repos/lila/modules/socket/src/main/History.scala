@@ -18,8 +18,10 @@ final class History[Metadata](ttl: Duration) {
   // none if version asked is > to history version
   // none if an event is missing (asked too old version)
   def since(v: Int): Option[List[Message]] =
-    if (v > version) None
-    else if (v == version) Some(Nil)
+    if (v > version)
+      None
+    else if (v == version)
+      Some(Nil)
     else {
       val msgs = (v + 1 to version).toList flatMap message
       (msgs.size == version - v) option msgs

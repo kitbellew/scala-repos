@@ -31,7 +31,10 @@ trait TypingTransformers {
       val savedLocalTyper = localTyper
       localTyper = localTyper.atOwner(
         tree,
-        if (owner.isModuleNotMethod) owner.moduleClass else owner)
+        if (owner.isModuleNotMethod)
+          owner.moduleClass
+        else
+          owner)
       val result = super.atOwner(owner)(trans)
       localTyper = savedLocalTyper
       result

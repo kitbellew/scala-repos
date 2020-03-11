@@ -74,7 +74,8 @@ object Osgi {
     }
     val includeRes =
       resourceDirectories.filter(_.exists).map(_.getAbsolutePath).mkString(",")
-    if (!includeRes.isEmpty) builder.setProperty(INCLUDERESOURCE, includeRes)
+    if (!includeRes.isEmpty)
+      builder.setProperty(INCLUDERESOURCE, includeRes)
     builder.getProperties.foreach {
       case (k, v) => log.debug(s"bnd: $k: $v")
     }

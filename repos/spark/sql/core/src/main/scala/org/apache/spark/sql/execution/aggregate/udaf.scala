@@ -53,50 +53,82 @@ sealed trait BufferSetterGetterUtils {
 
         case BooleanType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getBoolean(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getBoolean(ordinal)
 
         case ByteType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getByte(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getByte(ordinal)
 
         case ShortType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getShort(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getShort(ordinal)
 
         case IntegerType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getInt(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getInt(ordinal)
 
         case LongType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getLong(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getLong(ordinal)
 
         case FloatType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getFloat(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getFloat(ordinal)
 
         case DoubleType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getDouble(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getDouble(ordinal)
 
         case dt: DecimalType =>
           val precision = dt.precision
           val scale = dt.scale
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null
-            else row.getDecimal(ordinal, precision, scale)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getDecimal(ordinal, precision, scale)
 
         case DateType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getInt(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getInt(ordinal)
 
         case TimestampType =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.getLong(ordinal)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.getLong(ordinal)
 
         case other =>
           (row: InternalRow, ordinal: Int) =>
-            if (row.isNullAt(ordinal)) null else row.get(ordinal, other)
+            if (row.isNullAt(ordinal))
+              null
+            else
+              row.get(ordinal, other)
       }
 
       i += 1

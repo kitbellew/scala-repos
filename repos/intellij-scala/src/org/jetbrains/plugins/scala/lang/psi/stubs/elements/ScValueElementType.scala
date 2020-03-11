@@ -37,15 +37,19 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     val bodyText =
       if (!isDecl)
         psi.asInstanceOf[ScPatternDefinition].expr.map(_.getText).getOrElse("")
-      else ""
+      else
+        ""
     val containerText =
-      if (isDecl) psi.asInstanceOf[ScValueDeclaration].getIdList.getText
-      else psi.asInstanceOf[ScPatternDefinition].pList.getText
+      if (isDecl)
+        psi.asInstanceOf[ScValueDeclaration].getIdList.getText
+      else
+        psi.asInstanceOf[ScPatternDefinition].pList.getText
     val isImplicit = psi.hasModifierProperty("implicit")
     new ScValueStubImpl[ParentPsi](
       parentStub,
       this,
-      (for (elem <- psi.declaredElements) yield elem.name).toArray,
+      (for (elem <- psi.declaredElements)
+        yield elem.name).toArray,
       isDecl,
       typeText,
       bodyText,
@@ -58,7 +62,8 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     dataStream.writeBoolean(stub.isDeclaration)
     val names = stub.getNames
     dataStream.writeInt(names.length)
-    for (name <- names) dataStream.writeName(name)
+    for (name <- names)
+      dataStream.writeName(name)
     dataStream.writeName(stub.getTypeText)
     dataStream.writeName(stub.getBodyText)
     dataStream.writeName(stub.getBindingsContainerText)
@@ -72,7 +77,8 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     val isDecl = dataStream.readBoolean
     val namesLength = dataStream.readInt
     val names = new Array[StringRef](namesLength)
-    for (i <- 0 until namesLength) names(i) = dataStream.readName
+    for (i <- 0 until namesLength)
+      names(i) = dataStream.readName
     val parent = parentStub.asInstanceOf[StubElement[PsiElement]]
     val typeText = dataStream.readName
     val bodyText = dataStream.readName

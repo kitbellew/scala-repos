@@ -37,8 +37,10 @@ object EnsimeConfigProtocol {
   private def inferJavaLibs(javaHome: File): List[File] =
     // WORKAROUND https://github.com/ensime/ensime-server/issues/886
     // speeds up the emacs integration tests significantly,
-    if (Properties.envOrNone("ENSIME_SKIP_JRE_INDEX").isDefined) Nil
-    else javaHome.tree.filter(_.getName == "rt.jar").toList
+    if (Properties.envOrNone("ENSIME_SKIP_JRE_INDEX").isDefined)
+      Nil
+    else
+      javaHome.tree.filter(_.getName == "rt.jar").toList
 
   def validated(c: EnsimeConfig): EnsimeConfig = c.copy(
     subprojects = c.subprojects.map(validated)

@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object ParallelCamera {
   implicit def sfxParallelCamera2jfx(c: ParallelCamera): jfxs.ParallelCamera =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class ParallelCamera(

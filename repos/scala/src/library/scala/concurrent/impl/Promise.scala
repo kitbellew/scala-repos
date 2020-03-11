@@ -128,7 +128,10 @@ private[concurrent] object Promise {
       extends AbstractQueuedSynchronizer
       with (Try[T] => Unit) {
     override protected def tryAcquireShared(ignored: Int): Int =
-      if (getState != 0) 1 else -1
+      if (getState != 0)
+        1
+      else
+        -1
     override protected def tryReleaseShared(ignore: Int): Boolean = {
       setState(1)
       true
@@ -240,8 +243,10 @@ private[concurrent] object Promise {
     private[this] final def compressedRoot(
         linked: DefaultPromise[_]): DefaultPromise[T] = {
       val target = linked.asInstanceOf[DefaultPromise[T]].root
-      if (linked eq target) target
-      else if (compareAndSet(linked, target)) target
+      if (linked eq target)
+        target
+      else if (compareAndSet(linked, target))
+        target
       else {
         get() match {
           case newLinked: DefaultPromise[_] => compressedRoot(newLinked)
@@ -285,12 +290,14 @@ private[concurrent] object Promise {
         }
 
         isCompleted
-      } else true // Already completed
+      } else
+        true // Already completed
 
     @throws(classOf[TimeoutException])
     @throws(classOf[InterruptedException])
     final def ready(atMost: Duration)(implicit permit: CanAwait): this.type =
-      if (tryAwait(atMost)) this
+      if (tryAwait(atMost))
+        this
       else
         throw new TimeoutException("Futures timed out after [" + atMost + "]")
 
@@ -337,7 +344,10 @@ private[concurrent] object Promise {
       get() match {
         case raw: List[_] =>
           val cur = raw.asInstanceOf[List[CallbackRunnable[T]]]
-          if (compareAndSet(cur, v)) cur else tryCompleteAndGetListeners(v)
+          if (compareAndSet(cur, v))
+            cur
+          else
+            tryCompleteAndGetListeners(v)
         case dp: DefaultPromise[_] =>
           compressedRoot(dp).tryCompleteAndGetListeners(v)
         case _ => null
@@ -359,8 +369,10 @@ private[concurrent] object Promise {
         case dp: DefaultPromise[_] =>
           compressedRoot(dp).dispatchOrAddCallback(runnable)
         case listeners: List[_] =>
-          if (compareAndSet(listeners, runnable :: listeners)) ()
-          else dispatchOrAddCallback(runnable)
+          if (compareAndSet(listeners, runnable :: listeners))
+            ()
+          else
+            dispatchOrAddCallback(runnable)
       }
     }
 
@@ -469,7 +481,8 @@ private[concurrent] object Promise {
       override def zipWith[U, R](that: Future[U])(f: (T, U) => R)(
           implicit executor: ExecutionContext): Future[R] = thisAs[R]
       override def fallbackTo[U >: T](that: Future[U]): Future[U] =
-        if (this eq that) this
+        if (this eq that)
+          this
         else
           that.recoverWith({
             case _ => this

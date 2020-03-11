@@ -27,7 +27,11 @@ object HandshakeInit extends Decoder[HandshakeInit] {
     br.skip(1) // 1 filler byte always 0x00
 
     // the rest of the fields are optional and protocol version specific
-    val capLow = if (br.readable(2)) br.readUnsignedShort() else 0
+    val capLow =
+      if (br.readable(2))
+        br.readUnsignedShort()
+      else
+        0
 
     require(
       protocol == 10 && (capLow & Capability.Protocol41) != 0,
@@ -46,8 +50,10 @@ object HandshakeInit extends Decoder[HandshakeInit] {
     br.skip(10)
 
     val salt2 =
-      if (!serverCap.has(Capability.SecureConnection)) Array.empty[Byte]
-      else br.readNullTerminatedBytes()
+      if (!serverCap.has(Capability.SecureConnection))
+        Array.empty[Byte]
+      else
+        br.readNullTerminatedBytes()
 
     HandshakeInit(
       protocol,
@@ -185,7 +191,11 @@ case class Field(
     flags: Short,
     decimals: Byte
 ) extends Result {
-  def id: String = if (name.isEmpty) origName else name
+  def id: String =
+    if (name.isEmpty)
+      origName
+    else
+      name
   override val toString = "Field(%s)".format(id)
 }
 

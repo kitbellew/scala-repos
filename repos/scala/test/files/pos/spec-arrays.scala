@@ -126,7 +126,8 @@ class ScalaWrapTest extends Test {
 
 class ScalaGenTest extends Test {
   val arr: AbsArray[Integer] = new ArraySeq(new Array[Integer](1000))
-  for (i <- 0 until arr.length) arr(i) = new Integer(0)
+  for (i <- 0 until arr.length)
+    arr(i) = new Integer(0)
 
   def sum(): Int = {
     var acc = 0

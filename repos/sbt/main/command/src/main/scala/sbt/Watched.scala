@@ -55,7 +55,9 @@ object Watched {
 
   val PollDelayMillis = 500
   def isEnter(key: Int): Boolean = key == 10 || key == 13
-  def printIfDefined(msg: String) = if (!msg.isEmpty) System.out.println(msg)
+  def printIfDefined(msg: String) =
+    if (!msg.isEmpty)
+      System.out.println(msg)
 
   def executeContinuously(
       watched: Watched,
@@ -94,7 +96,8 @@ object Watched {
       (ClearOnFailure :: next :: FailureWall :: repeat :: s)
         .put(ContinuousState, newWatchState)
     } else {
-      while (System.in.available() > 0) System.in.read()
+      while (System.in.available() > 0)
+        System.in.read()
       s.put(ContinuousState, WatchState.empty)
     }
   }

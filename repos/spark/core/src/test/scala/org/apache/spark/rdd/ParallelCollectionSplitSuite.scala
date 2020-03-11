@@ -84,7 +84,8 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
     val data = new Array[Int](0)
     val slices = ParallelCollectionRDD.slice(data, 5)
     assert(slices.size === 5)
-    for (slice <- slices) assert(slice.size === 0)
+    for (slice <- slices)
+      assert(slice.size === 0)
   }
 
   test("zero slices") {
@@ -259,10 +260,12 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
     val data1 = Int.MaxValue until Int.MaxValue
     val slices1 = ParallelCollectionRDD.slice(data1, 5)
     assert(slices1.size === 5)
-    for (i <- 0 until 5) assert(slices1(i).size === 0)
+    for (i <- 0 until 5)
+      assert(slices1(i).size === 0)
     val data2 = Int.MaxValue until Int.MaxValue
     val slices2 = ParallelCollectionRDD.slice(data2, 5)
     assert(slices2.size === 5)
-    for (i <- 0 until 5) assert(slices2(i).size === 0)
+    for (i <- 0 until 5)
+      assert(slices2(i).size === 0)
   }
 }

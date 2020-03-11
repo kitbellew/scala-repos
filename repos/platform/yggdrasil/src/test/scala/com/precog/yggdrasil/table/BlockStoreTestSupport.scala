@@ -110,7 +110,8 @@ trait BaseBlockStoreTestModule[M[+_]]
           case x #:: xs =>
             if ((x.toJson(x.size - 1).getOrElse(JUndefined) \ "key") > id)
               Some(x)
-            else findBlockAfter(id, xs)
+            else
+              findBlockAfter(id, xs)
 
           case _ => None
         }

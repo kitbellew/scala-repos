@@ -16,7 +16,8 @@ object SbtResolverUtils {
     fileOpt match {
       case Some(file) =>
         val moduleManager = ModuleManager.getInstance(file.getProject)
-        if (moduleManager == null) return Seq.empty
+        if (moduleManager == null)
+          return Seq.empty
         moduleManager.getModules.toSeq.flatMap(SbtModule.getResolversFrom)
       case _ => Seq.empty
     }

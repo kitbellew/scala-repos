@@ -77,7 +77,8 @@ abstract class HadoopFsRelationTest
     checkAnswer(
       df.filter('a > 1 && 'p1 === 2),
       for (i <- 2 to 3;
-           p2 <- Seq("foo", "bar")) yield Row(i, s"val_$i", 2, p2))
+           p2 <- Seq("foo", "bar"))
+        yield Row(i, s"val_$i", 2, p2))
 
     // Simple projection and filtering
     checkAnswer(
@@ -91,7 +92,8 @@ abstract class HadoopFsRelationTest
     checkAnswer(
       df.filter('a > 1 && 'p1 < 2).select('b, 'p1),
       for (i <- 2 to 3;
-           _ <- Seq("foo", "bar")) yield Row(s"val_$i", 1))
+           _ <- Seq("foo", "bar"))
+        yield Row(s"val_$i", 1))
 
     // Project many copies of columns with different types (reproduction for SPARK-7858)
     checkAnswer(

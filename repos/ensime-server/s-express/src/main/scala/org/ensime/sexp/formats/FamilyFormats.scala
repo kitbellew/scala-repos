@@ -25,8 +25,10 @@ trait FamilyFormats {
     new SexpFormat[T] {
       def write(t: T) = SexpNil
       def read(v: Sexp) =
-        if (v == SexpNil) w.value
-        else deserializationError(v)
+        if (v == SexpNil)
+          w.value
+        else
+          deserializationError(v)
     }
 
   abstract class TraitFormat[T] extends SexpFormat[T] {
@@ -34,8 +36,10 @@ trait FamilyFormats {
         t: E)(implicit th: TypeHint[E], sf: SexpFormat[E]): Sexp = {
       val contents = t.toSexp
       // special cases: empty case clases, and case objects (hopefully)
-      if (contents == SexpNil) SexpList(th.hint)
-      else SexpData(th.hint -> contents)
+      if (contents == SexpNil)
+        SexpList(th.hint)
+      else
+        SexpData(th.hint -> contents)
     }
 
     // implement by matching on the implementations and passing off to wrap

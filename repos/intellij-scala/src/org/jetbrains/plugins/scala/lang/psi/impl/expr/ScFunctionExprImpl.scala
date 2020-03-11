@@ -49,7 +49,8 @@ class ScFunctionExprImpl(node: ASTNode)
               .asInstanceOf[ScalaPsiElement]
               .getDeepSameElementInContext) =>
         for (p <- parameters) {
-          if (!processor.execute(p, state)) return false
+          if (!processor.execute(p, state))
+            return false
         }
         true
       case _ => true

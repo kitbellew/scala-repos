@@ -78,7 +78,8 @@ trait PredefinedFromStringUnmarshallers {
       value: String,
       target: String): PartialFunction[Throwable, Nothing] = {
     case e: NumberFormatException ⇒
-      throw if (value.isEmpty) Unmarshaller.NoContentException
+      throw if (value.isEmpty)
+        Unmarshaller.NoContentException
       else
         new IllegalArgumentException(
           s"'$value' is not a valid $target value",

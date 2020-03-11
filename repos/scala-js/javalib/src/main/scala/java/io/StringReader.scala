@@ -25,7 +25,8 @@ class StringReader(s: String) extends Reader {
       val res = s.charAt(pos).toInt
       pos += 1
       res
-    } else -1
+    } else
+      -1
   }
 
   override def read(cbuf: Array[Char], off: Int, len: Int): Int = {
@@ -34,7 +35,8 @@ class StringReader(s: String) extends Reader {
     if (off < 0 || len < 0 || len > cbuf.length - off)
       throw new IndexOutOfBoundsException
 
-    if (len == 0) 0
+    if (len == 0)
+      0
     else {
       val count = Math.min(len, s.length - pos)
       var i = 0
@@ -43,7 +45,10 @@ class StringReader(s: String) extends Reader {
         i += 1
       }
       pos += count
-      if (count == 0) -1 else count
+      if (count == 0)
+        -1
+      else
+        count
     }
   }
 

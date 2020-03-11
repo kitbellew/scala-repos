@@ -30,9 +30,9 @@ class ParameterDirectivesSpec
       } ~> check {
         inside(rejection) {
           case MalformedQueryParamRejection(
-              "amount",
-              "'1x3' is not a valid 32-bit signed integer value",
-              Some(_)) ⇒
+                "amount",
+                "'1x3' is not a valid 32-bit signed integer value",
+                Some(_)) ⇒
         }
       }
     }
@@ -72,9 +72,9 @@ class ParameterDirectivesSpec
         } ~> check {
           inside(rejection) {
             case MalformedQueryParamRejection(
-                "amount",
-                "'x' is not a valid 32-bit signed integer value",
-                Some(_)) ⇒
+                  "amount",
+                  "'x' is not a valid 32-bit signed integer value",
+                  Some(_)) ⇒
           }
         }
       }
@@ -117,9 +117,9 @@ class ParameterDirectivesSpec
       } ~> check {
         inside(rejection) {
           case MalformedQueryParamRejection(
-              "amount",
-              "'1x3' is not a valid 32-bit hexadecimal integer value",
-              Some(_)) ⇒
+                "amount",
+                "'1x3' is not a valid 32-bit hexadecimal integer value",
+                Some(_)) ⇒
         }
       }
     }
@@ -159,9 +159,9 @@ class ParameterDirectivesSpec
         } ~> check {
           inside(rejection) {
             case MalformedQueryParamRejection(
-                "amount",
-                "'x' is not a valid 32-bit hexadecimal integer value",
-                Some(_)) ⇒
+                  "amount",
+                  "'x' is not a valid 32-bit hexadecimal integer value",
+                  Some(_)) ⇒
           }
         }
       }
@@ -202,9 +202,9 @@ class ParameterDirectivesSpec
       } ~> check {
         inside(rejection) {
           case MalformedQueryParamRejection(
-              "really",
-              "'absolutely' is not a valid Boolean value",
-              None) ⇒
+                "really",
+                "'absolutely' is not a valid Boolean value",
+                None) ⇒
         }
       }
     }

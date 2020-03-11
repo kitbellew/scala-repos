@@ -19,8 +19,16 @@ sealed abstract class TypeResult[+T] {
   def get: T
   def isEmpty: Boolean
   def isDefined = !isEmpty
-  def getOrElse[U >: T](default: => U): U = if (isEmpty) default else this.get
-  def toOption: Option[T] = if (isEmpty) None else Some(this.get)
+  def getOrElse[U >: T](default: => U): U =
+    if (isEmpty)
+      default
+    else
+      this.get
+  def toOption: Option[T] =
+    if (isEmpty)
+      None
+    else
+      Some(this.get)
 
   def apply(fail: Failure): TypeResult[T]
   def isCyclic: Boolean
@@ -28,7 +36,10 @@ sealed abstract class TypeResult[+T] {
   def getOrNothing(implicit ev: T <:< ScType): ScType = getOrType(Nothing)
   def getOrAny(implicit ev: T <:< ScType): ScType = getOrType(Any)
   def getOrType(default: ScType)(implicit ev: T <:< ScType): ScType =
-    if (isEmpty) default else this.get
+    if (isEmpty)
+      default
+    else
+      this.get
 }
 
 object TypeResult {
@@ -69,7 +80,10 @@ case class Success[+T](result: T, elem: Option[PsiElement])
   def flatMap[U](f: (T) => TypeResult[U]) = f(result)
   def map[U](f: T => U) = Success(f(result), elem)
   def filter(f: T => Boolean) =
-    if (f(result)) Success(result, elem) else Failure("Wrong type", elem)
+    if (f(result))
+      Success(result, elem)
+    else
+      Failure("Wrong type", elem)
   def withFilter(f: (T) => Boolean): TypeResultWithFilter[T] =
     new TypeResultWithFilter[T](this, f)
   def foreach[B](f: T => B): Unit = f(result)

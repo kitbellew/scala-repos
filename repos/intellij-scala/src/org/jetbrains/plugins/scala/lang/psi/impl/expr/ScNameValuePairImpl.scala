@@ -28,8 +28,10 @@ class ScNameValuePairImpl(node: ASTNode)
     getLiteral match {
       case Some(literal) =>
         val value = literal.getValue
-        if (value != null) value.toString
-        else null
+        if (value != null)
+          value.toString
+        else
+          null
       case _ => null
     }
   }

@@ -231,7 +231,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       i += 1
     }
     val n1n2 = (math.sqrt(n1) * math.sqrt(n2))
-    if (n1n2 == 0) 0 else (d / n1n2)
+    if (n1n2 == 0)
+      0
+    else
+      (d / n1n2)
   }
 
   private def isCandidateItem(

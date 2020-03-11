@@ -36,8 +36,10 @@ class SliceMatrix[
   def repr: Matrix[V] = this
 
   def copy: Matrix[V] = {
-    if (rows == 0) Matrix.zeroRows[V](cols)
-    else if (cols == 0) Matrix.zeroCols[V](rows)
+    if (rows == 0)
+      Matrix.zeroRows[V](cols)
+    else if (cols == 0)
+      Matrix.zeroCols[V](rows)
     else {
 //      val v = apply(0,0)
       val result = new DenseMatrix[V](rows, cols, new Array[V](size))

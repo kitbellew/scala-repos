@@ -220,7 +220,11 @@ object Test {
       createSources(nestedPkg, nestedDir, rep)
     }
 
-    val pkgHeader = if (pkg == RootPackage) "" else s"package $pkg\n\n"
+    val pkgHeader =
+      if (pkg == RootPackage)
+        ""
+      else
+        s"package $pkg\n\n"
     dirRep.sourceFiles foreach { srcName =>
       val text = s"""${pkgHeader}case class $srcName(x: String = "")"""
       val srcFile = dirFile createSrcFile srcName
@@ -245,7 +249,8 @@ object Test {
 
   private def cleanDir(dir: JFile): Unit =
     dir.listFiles().foreach { file =>
-      if (file.isDirectory) cleanDir(file)
+      if (file.isDirectory)
+        cleanDir(file)
       file.delete()
     }
 

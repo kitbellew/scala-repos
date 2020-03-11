@@ -49,7 +49,8 @@ private[streaming] case class JobSet(
 
   def handleJobCompletion(job: Job) {
     incompleteJobs -= job
-    if (hasCompleted) processingEndTime = System.currentTimeMillis()
+    if (hasCompleted)
+      processingEndTime = System.currentTimeMillis()
   }
 
   def hasStarted: Boolean = processingStartTime > 0
@@ -69,8 +70,14 @@ private[streaming] case class JobSet(
       time,
       streamIdToInputInfo,
       submissionTime,
-      if (hasStarted) Some(processingStartTime) else None,
-      if (hasCompleted) Some(processingEndTime) else None,
+      if (hasStarted)
+        Some(processingStartTime)
+      else
+        None,
+      if (hasCompleted)
+        Some(processingEndTime)
+      else
+        None,
       jobs.map { job =>
         (job.outputOpId, job.toOutputOperationInfo)
       }.toMap

@@ -38,7 +38,10 @@ import scalafx.util.StringConverter
 
 object DatePicker {
   implicit def sfxDatePicker2jfx(v: DatePicker): jfxsc.DatePicker =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

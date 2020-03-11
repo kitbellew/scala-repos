@@ -61,7 +61,8 @@ trait BaseConfig extends Config {
   lazy val scratchDir = new File(rootDir, "scratch")
 
   def newWorkDir = {
-    if (!scratchDir.exists) scratchDir.mkdirs
+    if (!scratchDir.exists)
+      scratchDir.mkdirs
     val tempFile = File.createTempFile("ygg", "workdir", scratchDir)
     tempFile.delete
     tempFile.mkdir

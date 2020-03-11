@@ -49,7 +49,11 @@ object MakeJar {
       .replace("\\", "/")
     if (source.isDirectory) {
       if (!name.isEmpty) {
-        val entry = new JarEntry(if (!name.endsWith("/")) name + "/" else name)
+        val entry = new JarEntry(
+          if (!name.endsWith("/"))
+            name + "/"
+          else
+            name)
         entry.setTime(source.lastModified())
         target.putNextEntry(entry)
         target.closeEntry()

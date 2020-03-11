@@ -125,9 +125,10 @@ class DebugManager(
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {
       try {
-        for (vm <- maybeVM) yield {
-          action(vm)
-        }
+        for (vm <- maybeVM)
+          yield {
+            action(vm)
+          }
       } catch {
         case e: VMDisconnectedException =>
           log.error(e, "Attempted interaction with disconnected VM:")
@@ -152,9 +153,10 @@ class DebugManager(
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
       action: ((VM, ThreadReference) => RpcResponse)): RpcResponse = {
     withVM { vm =>
-      (for (thread <- vm.threadById(threadId)) yield {
-        action(vm, thread)
-      }).getOrElse {
+      (for (thread <- vm.threadById(threadId))
+        yield {
+          action(vm, thread)
+        }).getOrElse {
         log.warning(s"Could not find thread: $threadId")
         FalseResponse
       }
@@ -202,25 +204,27 @@ class DebugManager(
     case e: VMDisconnectEvent =>
       disconnectDebugVM()
     case e: StepEvent =>
-      (for (pos <- sourceMap.locToPos(e.location())) yield {
-        broadcaster ! DebugStepEvent(
-          DebugThreadId(e.thread().uniqueID()),
-          e.thread().name,
-          pos.file,
-          pos.line)
-      }) getOrElse {
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield {
+          broadcaster ! DebugStepEvent(
+            DebugThreadId(e.thread().uniqueID()),
+            e.thread().name,
+            pos.file,
+            pos.line)
+        }) getOrElse {
         val loc = e.location()
         log.warning(
           s"Step position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
       }
     case e: BreakpointEvent =>
-      (for (pos <- sourceMap.locToPos(e.location())) yield {
-        broadcaster ! DebugBreakEvent(
-          DebugThreadId(e.thread().uniqueID()),
-          e.thread().name,
-          pos.file,
-          pos.line)
-      }) getOrElse {
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield {
+          broadcaster ! DebugBreakEvent(
+            DebugThreadId(e.thread().uniqueID()),
+            e.thread().name,
+            pos.file,
+            pos.line)
+        }) getOrElse {
         val loc = e.location()
         log.warning(
           s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
@@ -231,8 +235,10 @@ class DebugManager(
       }
 
       val pos =
-        if (e.catchLocation() != null) sourceMap.locToPos(e.catchLocation())
-        else None
+        if (e.catchLocation() != null)
+          sourceMap.locToPos(e.catchLocation())
+        else
+          None
       broadcaster ! DebugExceptionEvent(
         e.exception.uniqueID(),
         DebugThreadId(e.thread().uniqueID()),

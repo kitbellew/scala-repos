@@ -13,7 +13,10 @@ import scala.reflect.{ClassTag, classTag}
 trait SigTest {
   def mstr(m: JMethod) = "  (m) %s%s".format(
     m.toGenericString,
-    if (m.isBridge) " (bridge)" else ""
+    if (m.isBridge)
+      " (bridge)"
+    else
+      ""
   )
   def fstr(f: JField) = "  (f) %s".format(f.toGenericString)
 
@@ -47,7 +50,9 @@ trait SigTest {
 
   def show[T: ClassTag](name: String = "") = {
     println(classTag[T].runtimeClass.getName)
-    if (name == "") allGenericStrings[T]() foreach println
-    else genericStrings[T](name) foreach println
+    if (name == "")
+      allGenericStrings[T]() foreach println
+    else
+      genericStrings[T](name) foreach println
   }
 }

@@ -63,8 +63,18 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
       val total = runner.taskTotalCount
       val msg = Seq(
         c("Test run finished:", INFO),
-        c(s"$failed failed,", if (failed == 0) INFO else ERRCOUNT),
-        c(s"$ignored ignored,", if (ignored == 0) INFO else IGNCOUNT),
+        c(
+          s"$failed failed,",
+          if (failed == 0)
+            INFO
+          else
+            ERRCOUNT),
+        c(
+          s"$ignored ignored,",
+          if (ignored == 0)
+            INFO
+          else
+            IGNCOUNT),
         c(s"$total total,", INFO),
         c(s"${time.toDouble / 1000000000}s", INFO)
       )

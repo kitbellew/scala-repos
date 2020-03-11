@@ -29,8 +29,10 @@ object Maths {
     val list = a.list
     val size = list.size
     val (lower, upper) = list.sorted.splitAt(size / 2)
-    if (size % 2 == 0) (n.toDouble(lower.last) + n.toDouble(upper.head)) / 2.0
-    else n toDouble upper.head
+    if (size % 2 == 0)
+      (n.toDouble(lower.last) + n.toDouble(upper.head)) / 2.0
+    else
+      n toDouble upper.head
   }
 
   def truncateAt(n: Double, p: Int): Double = {

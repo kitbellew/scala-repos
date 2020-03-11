@@ -72,7 +72,8 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
       override def visitElement(element: ScalaPsiElement): Unit = {
         if (element.getTextRange.getStartOffset >= startOffset && element.getTextRange.getEndOffset <= endOffset) {
           buffer += element
-        } else super.visitElement(element)
+        } else
+          super.visitElement(element)
       }
     }
     psi.accept(visitor)

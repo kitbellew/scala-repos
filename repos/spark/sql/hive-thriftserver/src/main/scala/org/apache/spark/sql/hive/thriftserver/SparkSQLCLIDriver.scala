@@ -287,7 +287,10 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
   }
 
   private val conf: Configuration =
-    if (sessionState != null) sessionState.getConf else new Configuration()
+    if (sessionState != null)
+      sessionState.getConf
+    else
+      new Configuration()
 
   // Force initializing SparkSQLEnv. This is put here but not object SparkSQLCliDriver
   // because the Hive unit tests do not go through the main() code path.

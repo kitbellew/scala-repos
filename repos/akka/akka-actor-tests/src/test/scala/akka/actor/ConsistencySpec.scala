@@ -81,7 +81,8 @@ class ConsistencySpec extends AkkaSpec(ConsistencySpec.config) {
         a.tell("done", testActor)
       }
 
-      for (a ← actors) expectMsg(5 minutes, "done")
+      for (a ← actors)
+        expectMsg(5 minutes, "done")
     }
   }
 }

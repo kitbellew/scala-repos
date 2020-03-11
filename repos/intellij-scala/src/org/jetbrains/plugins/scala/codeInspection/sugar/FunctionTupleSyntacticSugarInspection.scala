@@ -28,7 +28,8 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,
       isOnTheFly: Boolean): PsiElementVisitor = {
-    if (!holder.getFile.isInstanceOf[ScalaFile]) return new PsiElementVisitor {}
+    if (!holder.getFile.isInstanceOf[ScalaFile])
+      return new PsiElementVisitor {}
 
     object QualifiedName {
       def unapply(p: PsiElement): Option[String] = p match {
@@ -120,8 +121,10 @@ object FunctionTupleSyntacticSugarInspection {
       val paramTypes = typeElement.typeArgList.typeArgs.dropRight(1)
       val returnType = typeElement.typeArgList.typeArgs.last
       val elemsInParamTypes =
-        if (paramTypes.isEmpty) Seq.empty
-        else ScalaPsiUtil.getElementsRange(paramTypes.head, paramTypes.last)
+        if (paramTypes.isEmpty)
+          Seq.empty
+        else
+          ScalaPsiUtil.getElementsRange(paramTypes.head, paramTypes.last)
 
       val returnTypeTextWithParens = {
         val returnTypeNeedParens = returnType match {

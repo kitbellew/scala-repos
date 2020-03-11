@@ -101,7 +101,8 @@ private[akka] class ClusterDeployer(
         ConfigFactory
           .parseString("nr-of-instances=" + maxTotalNrOfInstances)
           .withFallback(config)
-      } else config
+      } else
+        config
 
     super.parseConfig(path, config2) match {
       case d @ Some(deploy) ⇒
@@ -134,7 +135,8 @@ private[akka] class ClusterDeployer(
               throw new IllegalArgumentException(
                 s"Cluster aware router can only wrap Pool or Group, got [${other.getClass.getName}]")
           }
-        } else d
+        } else
+          d
       case None ⇒ None
     }
   }

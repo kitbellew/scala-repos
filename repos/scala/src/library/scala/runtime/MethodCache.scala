@@ -64,7 +64,8 @@ private[scala] final class PolyMethodCache(
     *  from `find`, because the type of next is not `PolyMethodCache`.
     */
   @tailrec private def findInternal(forReceiver: JClass[_]): JMethod =
-    if (forReceiver eq receiver) method
+    if (forReceiver eq receiver)
+      method
     else
       next match {
         case x: PolyMethodCache => x findInternal forReceiver

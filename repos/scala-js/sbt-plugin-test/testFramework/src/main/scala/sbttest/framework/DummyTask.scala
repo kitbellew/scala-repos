@@ -49,7 +49,10 @@ final class DummyTask(
     val selector: Selector = new SuiteSelector
 
     val status: Status =
-      if (t.isDefined) Status.Error else Status.Success
+      if (t.isDefined)
+        Status.Error
+      else
+        Status.Success
 
     val throwable: OptionalThrowable =
       t.fold(new OptionalThrowable)(new OptionalThrowable(_))

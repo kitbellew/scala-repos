@@ -153,7 +153,9 @@ trait JdbcBackend extends RelationalBackend {
     def forURL(url: String, prop: Map[String, String]): Database = {
       val p = new Properties
       if (prop ne null)
-        for ((k, v) <- prop) if (k.ne(null) && v.ne(null)) p.setProperty(k, v)
+        for ((k, v) <- prop)
+          if (k.ne(null) && v.ne(null))
+            p.setProperty(k, v)
       forURL(url, prop = p, driver = null)
     }
 
@@ -325,7 +327,11 @@ trait JdbcBackend extends RelationalBackend {
         driver: Driver = null,
         classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
         : Database = {
-      val usedConfig = if (path.isEmpty) config else config.getConfig(path)
+      val usedConfig =
+        if (path.isEmpty)
+          config
+        else
+          config.getConfig(path)
       val source =
         JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)
       val executor = AsyncExecutor(
@@ -375,7 +381,8 @@ trait JdbcBackend extends RelationalBackend {
                 resultSetConcurrency.withDefault(defaultConcurrency).intValue,
                 h.intValue)
           }))
-      if (fetchSize != 0) s.setFetchSize(fetchSize)
+      if (fetchSize != 0)
+        s.setFetchSize(fetchSize)
       s
     }
 
@@ -390,7 +397,8 @@ trait JdbcBackend extends RelationalBackend {
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnNames)))
-      if (fetchSize != 0) s.setFetchSize(fetchSize)
+      if (fetchSize != 0)
+        s.setFetchSize(fetchSize)
       s
     }
 
@@ -404,7 +412,8 @@ trait JdbcBackend extends RelationalBackend {
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnIndexes)))
-      if (fetchSize != 0) s.setFetchSize(fetchSize)
+      if (fetchSize != 0)
+        s.setFetchSize(fetchSize)
       s
     }
 
@@ -427,7 +436,8 @@ trait JdbcBackend extends RelationalBackend {
                 resultSetConcurrency.withDefault(defaultConcurrency).intValue,
                 h.intValue)
           }))
-      if (fetchSize != 0) s.setFetchSize(fetchSize)
+      if (fetchSize != 0)
+        s.setFetchSize(fetchSize)
       s
     }
 
@@ -497,7 +507,8 @@ trait JdbcBackend extends RelationalBackend {
       override def resultSetHoldability = rsHoldability
       override def fetchSize = _fetchSize
       override def decorateStatement[S <: Statement](statement: S): S = {
-        if (statementInit ne null) statementInit(statement)
+        if (statementInit ne null)
+          statementInit(statement)
         statement
       }
       def database = self.database
@@ -513,13 +524,15 @@ trait JdbcBackend extends RelationalBackend {
     protected def loggingStatement(st: Statement): Statement =
       if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend.benchmarkLogger.isDebugEnabled)
         new LoggingStatement(st)
-      else st
+      else
+        st
 
     protected def loggingPreparedStatement(
         st: PreparedStatement): PreparedStatement =
       if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend.benchmarkLogger.isDebugEnabled)
         new LoggingPreparedStatement(st)
-      else st
+      else
+        st
 
     /** Start a `transactionally` block */
     private[slick] def startInTransaction: Unit
@@ -545,7 +558,8 @@ trait JdbcBackend extends RelationalBackend {
 
     def capabilities = {
       val dc = database.capabilities
-      if (dc ne null) dc
+      if (dc ne null)
+        dc
       else {
         val newDC = new DatabaseCapabilities(this)
         database.capabilities = newDC
@@ -554,11 +568,13 @@ trait JdbcBackend extends RelationalBackend {
     }
 
     def close() {
-      if (open) conn.close()
+      if (open)
+        conn.close()
     }
 
     private[slick] def startInTransaction: Unit = {
-      if (!isInTransaction) conn.setAutoCommit(false)
+      if (!isInTransaction)
+        conn.setAutoCommit(false)
       inTransactionally += 1
     }
 
@@ -591,36 +607,53 @@ trait JdbcBackend extends RelationalBackend {
           val curr =
             if (statementParameters eq null)
               JdbcBackend.defaultStatementParameters
-            else statementParameters.head
+            else
+              statementParameters.head
           JdbcBackend.StatementParameters(
-            if (p.rsType eq null) curr.rsType else p.rsType,
-            if (p.rsConcurrency eq null) curr.rsConcurrency
-            else p.rsConcurrency,
-            if (p.rsHoldability eq null) curr.rsHoldability
-            else p.rsHoldability,
-            if (p.statementInit eq null) curr.statementInit
-            else if (curr.statementInit eq null) p.statementInit
+            if (p.rsType eq null)
+              curr.rsType
+            else
+              p.rsType,
+            if (p.rsConcurrency eq null)
+              curr.rsConcurrency
+            else
+              p.rsConcurrency,
+            if (p.rsHoldability eq null)
+              curr.rsHoldability
+            else
+              p.rsHoldability,
+            if (p.statementInit eq null)
+              curr.statementInit
+            else if (curr.statementInit eq null)
+              p.statementInit
             else { s =>
               curr.statementInit(s);
               p.statementInit(s)
             },
             p.fetchSize
           )
-        } else p
-      statementParameters =
-        p2 :: (if (statementParameters eq null) Nil else statementParameters)
+        } else
+          p
+      statementParameters = p2 :: (if (statementParameters eq null)
+                                     Nil
+                                   else
+                                     statementParameters)
     }
 
     def popStatementParameters: Unit = {
       val p = statementParameters.tail
-      if (p.isEmpty) statementParameters = null else statementParameters = p
+      if (p.isEmpty)
+        statementParameters = null
+      else
+        statementParameters = p
     }
 
     /* TODO: Creating a new Session here for parameter overrides is not the most efficient solution
        but it provides compatibility with the old Session-based API. This should be changed once
        the old API has been removed. */
     override def session: Session =
-      if (statementParameters eq null) super.session
+      if (statementParameters eq null)
+        super.session
       else {
         val p = statementParameters.head
         super.session.internalForParameters(
@@ -666,8 +699,10 @@ object JdbcBackend extends JdbcBackend {
   protected[jdbc] def logStatement(msg: String, stmt: String) =
     if (statementLogger.isDebugEnabled) {
       val s =
-        if (GlobalConfig.sqlIndent) msg + ":\n" + LogUtil.multilineBorder(stmt)
-        else msg + ": " + stmt
+        if (GlobalConfig.sqlIndent)
+          msg + ":\n" + LogUtil.multilineBorder(stmt)
+        else
+          msg + ": " + stmt
       statementLogger.debug(s)
     }
 }

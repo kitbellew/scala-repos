@@ -50,8 +50,10 @@ private[persistence] trait LeveldbStore
   private val tagPersistenceIdPrefix = "$$$"
 
   def leveldbFactory =
-    if (nativeLeveldb) org.fusesource.leveldbjni.JniDBFactory.factory
-    else org.iq80.leveldb.impl.Iq80DBFactory.factory
+    if (nativeLeveldb)
+      org.fusesource.leveldbjni.JniDBFactory.factory
+    else
+      org.iq80.leveldb.impl.Iq80DBFactory.factory
 
   val serialization = SerializationExtension(context.system)
 
@@ -109,8 +111,10 @@ private[persistence] trait LeveldbStore
         val fromSequenceNr = withIterator { iter ⇒
           val startKey = Key(nid, 1L, 0)
           iter.seek(keyToBytes(startKey))
-          if (iter.hasNext) keyFromBytes(iter.peekNext().getKey).sequenceNr
-          else Long.MaxValue
+          if (iter.hasNext)
+            keyFromBytes(iter.peekNext().getKey).sequenceNr
+          else
+            Long.MaxValue
         }
 
         if (fromSequenceNr != Long.MaxValue) {
@@ -193,8 +197,10 @@ private[persistence] trait LeveldbStore
   override def preStart() {
     leveldb = leveldbFactory.open(
       leveldbDir,
-      if (nativeLeveldb) leveldbOptions
-      else leveldbOptions.compressionType(CompressionType.NONE))
+      if (nativeLeveldb)
+        leveldbOptions
+      else
+        leveldbOptions.compressionType(CompressionType.NONE))
     super.preStart()
   }
 

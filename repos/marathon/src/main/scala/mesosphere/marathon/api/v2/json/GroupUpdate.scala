@@ -77,7 +77,12 @@ case class GroupUpdate(
 
 object GroupUpdate {
   def apply(id: PathId, apps: Set[AppDefinition]): GroupUpdate = {
-    GroupUpdate(Some(id), if (apps.isEmpty) None else Some(apps))
+    GroupUpdate(
+      Some(id),
+      if (apps.isEmpty)
+        None
+      else
+        Some(apps))
   }
   def apply(
       id: PathId,
@@ -85,8 +90,14 @@ object GroupUpdate {
       groups: Set[GroupUpdate]): GroupUpdate = {
     GroupUpdate(
       Some(id),
-      if (apps.isEmpty) None else Some(apps),
-      if (groups.isEmpty) None else Some(groups))
+      if (apps.isEmpty)
+        None
+      else
+        Some(apps),
+      if (groups.isEmpty)
+        None
+      else
+        Some(groups))
   }
   def empty(id: PathId): GroupUpdate = GroupUpdate(Some(id))
 

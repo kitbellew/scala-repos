@@ -26,7 +26,8 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
     ScalaMacroDebuggingUtil.allMacroCalls.clear()
 
-    if (!ScalaMacroDebuggingUtil.isEnabled || elements.isEmpty) return
+    if (!ScalaMacroDebuggingUtil.isEnabled || elements.isEmpty)
+      return
     val first = elements get 0
     val file = first.getContainingFile
 
@@ -38,7 +39,8 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
     }
 
     val macrosFound = elements filter ScalaMacroDebuggingUtil.isMacroCall
-    if (macrosFound.isEmpty) return
+    if (macrosFound.isEmpty)
+      return
 
     macrosFound foreach {
       case macroCall =>

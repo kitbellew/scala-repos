@@ -130,18 +130,19 @@ trait ManagedExecution
     String,
     QueryExecutor[Future, StreamT[Future, Slice]]] = {
     import scalaz.syntax.monad._
-    for (queryExec <- syncExecutorFor(apiKey)) yield {
-      new QueryExecutor[Future, StreamT[Future, Slice]] {
-        def execute(
-            query: String,
-            context: EvaluationContext,
-            opts: QueryOptions) = {
-          queryExec.execute(query, context, opts) map {
-            _._2
+    for (queryExec <- syncExecutorFor(apiKey))
+      yield {
+        new QueryExecutor[Future, StreamT[Future, Slice]] {
+          def execute(
+              query: String,
+              context: EvaluationContext,
+              opts: QueryOptions) = {
+            queryExec.execute(query, context, opts) map {
+              _._2
+            }
           }
         }
       }
-    }
   }
 
   def asyncExecutorFor(

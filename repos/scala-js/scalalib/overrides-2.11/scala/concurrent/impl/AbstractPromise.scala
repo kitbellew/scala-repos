@@ -18,7 +18,8 @@ abstract class AbstractPromise {
     if (state eq oldState) {
       state = newState
       true
-    } else false
+    } else
+      false
   }
 
   protected final def getState: AnyRef = state

@@ -862,7 +862,8 @@ object TypeDefinitionMembers {
     }
 
     if (BaseProcessor.isImplicitProcessor(processor) && !clazz
-          .isInstanceOf[ScTemplateDefinition]) return true
+          .isInstanceOf[ScTemplateDefinition])
+      return true
 
     if (!privateProcessDeclarations(
           processor,
@@ -876,7 +877,8 @@ object TypeDefinitionMembers {
           isObject = clazz.isInstanceOf[ScObject],
           signaturesForJava = () => signaturesForJava,
           syntheticMethods = () => syntheticMethods
-        )) return false
+        ))
+      return false
 
     if (!(types.AnyRef
           .asClass(clazz.getProject)
@@ -890,7 +892,8 @@ object TypeDefinitionMembers {
 
     if (shouldProcessMethods(processor) && !processEnum(
           clazz,
-          processor.execute(_, state))) return false
+          processor.execute(_, state)))
+      return false
     true
   }
 
@@ -910,7 +913,8 @@ object TypeDefinitionMembers {
           () => getTypes(td),
           isSupers = true,
           isObject = td.isInstanceOf[ScObject]
-        )) return false
+        ))
+      return false
 
     if (!(types.AnyRef
           .asClass(td.getProject)
@@ -942,12 +946,16 @@ object TypeDefinitionMembers {
           () => getTypes(comp, compoundTypeThisType, place),
           isSupers = false,
           isObject = false
-        )) return false
+        ))
+      return false
 
     val project =
-      if (lastParent != null) lastParent.getProject
-      else if (place != null) place.getProject
-      else return true
+      if (lastParent != null)
+        lastParent.getProject
+      else if (place != null)
+        place.getProject
+      else
+        return true
     if (!(types.AnyRef
           .asClass(project)
           .getOrElse(return true)
@@ -994,17 +1002,32 @@ object TypeDefinitionMembers {
       syntheticMethods: Lazy[Seq[(Signature, SignatureNodes.Node)]] = () =>
         Seq.empty): Boolean = {
     val substK = state.get(ScSubstitutor.key)
-    val subst = if (substK == null) ScSubstitutor.empty else substK
+    val subst =
+      if (substK == null)
+        ScSubstitutor.empty
+      else
+        substK
     val nameHint = processor.getHint(NameHint.KEY)
-    val name = if (nameHint == null) "" else nameHint.getName(state)
-    val decodedName = if (name != null) convertMemberName(name) else ""
+    val name =
+      if (nameHint == null)
+        ""
+      else
+        nameHint.getName(state)
+    val decodedName =
+      if (name != null)
+        convertMemberName(name)
+      else
+        ""
     val isScalaProcessor = processor.isInstanceOf[BaseProcessor]
     def checkName(s: String): Boolean = {
-      if (name == null || name == "") true
-      else convertMemberName(s) == decodedName
+      if (name == null || name == "")
+        true
+      else
+        convertMemberName(s) == decodedName
     }
     def checkNameGetSetIs(s: String): Boolean = {
-      if (name == null || name == "") true
+      if (name == null || name == "")
+        true
       else {
         val decoded = NameTransformer.decode(s)
         val beanPropertyNames =
@@ -1060,8 +1083,11 @@ object TypeDefinitionMembers {
                           n.supers.apply(0).substitutor followed subst)))
                     return false
                 }
-              } else if (!tail) return false
-            case _ => if (!tail) return false
+              } else if (!tail)
+                return false
+            case _ =>
+              if (!tail)
+                return false
           }
           def tail: Boolean = {
             if (processValsForScala && checkName(elem.name) &&
@@ -1078,7 +1104,8 @@ object TypeDefinitionMembers {
                         t.getUnderEqualsMethod,
                         state.put(
                           ScSubstitutor.key,
-                          n.substitutor followed subst))) return false
+                          n.substitutor followed subst)))
+                    return false
                 case _ =>
               }
             }
@@ -1092,20 +1119,25 @@ object TypeDefinitionMembers {
                           method,
                           state.put(
                             ScSubstitutor.key,
-                            n.substitutor followed subst))) return false
+                            n.substitutor followed subst)))
+                      return false
                     true
                   }
                   if (decodedName.startsWith("set") && !process(
-                        t.getSetBeanMethod)) return false
+                        t.getSetBeanMethod))
+                    return false
                   if (decodedName.startsWith("get") && !process(
-                        t.getGetBeanMethod)) return false
+                        t.getGetBeanMethod))
+                    return false
                   if (decodedName.startsWith("is") && !process(
-                        t.getIsBeanMethod)) return false
+                        t.getIsBeanMethod))
+                    return false
                   if (decodedName.isEmpty) {
                     //completion processor    a
                     val beanMethodsIterator = t.getBeanMethods.iterator
                     while (beanMethodsIterator.hasNext) {
-                      if (!process(beanMethodsIterator.next())) return false
+                      if (!process(beanMethodsIterator.next()))
+                        return false
                     }
                   }
                 case _ =>
@@ -1125,20 +1157,25 @@ object TypeDefinitionMembers {
               val substitutor = n.substitutor followed subst
               if (!processor.execute(
                     method,
-                    state.put(ScSubstitutor.key, substitutor))) return false
+                    state.put(ScSubstitutor.key, substitutor)))
+                return false
             }
             true
           }
           sig match {
             case phys: PhysicalSignature if processMethods =>
-              if (!addMethod(phys.method)) return false
+              if (!addMethod(phys.method))
+                return false
             case phys: PhysicalSignature => //do nothing
             case s: Signature
                 if processMethods && s.namedElement.isInstanceOf[PsiMethod] =>
               //this is compound type case
-              if (!addMethod(s.namedElement)) return false
-            case _ if processValsForScala => if (!runForValInfo(n)) return false
-            case _                        => //do nothing
+              if (!addMethod(s.namedElement))
+                return false
+            case _ if processValsForScala =>
+              if (!runForValInfo(n))
+                return false
+            case _ => //do nothing
           }
           true
         }
@@ -1146,8 +1183,10 @@ object TypeDefinitionMembers {
         if (decodedName != "") {
           def checkList(s: String): Boolean = {
             val l =
-              if (!isSupers) signatures.forName(s)._1
-              else signatures.forName(s)._2
+              if (!isSupers)
+                signatures.forName(s)._1
+              else
+                signatures.forName(s)._2
             if (l != null) {
               val iterator: Iterator[(T#T, T#Node)] = l.iterator
               while (iterator.hasNext) {
@@ -1161,40 +1200,48 @@ object TypeDefinitionMembers {
 
                 n.info match {
                   case phys: PhysicalSignature if processMethods =>
-                    if (!addMethod(phys.method)) return false
+                    if (!addMethod(phys.method))
+                      return false
                   case phys: PhysicalSignature => //do nothing
                   case s: Signature
                       if processMethods && s.namedElement
                         .isInstanceOf[PsiMethod] =>
                     //this is compound type case
-                    if (!addMethod(s.namedElement)) return false
+                    if (!addMethod(s.namedElement))
+                      return false
                   case _ if processValsForScala =>
-                    if (!runForValInfo(n)) return false
+                    if (!runForValInfo(n))
+                      return false
                   case _ => //do nothing
                 }
               }
             }
             true
           }
-          if (!checkList(decodedName)) return false
+          if (!checkList(decodedName))
+            return false
         } else if (BaseProcessor.isImplicitProcessor(processor)) {
           val implicits: List[(T#T, T#Node)] = signatures.forImplicits()
           val iterator: Iterator[(T#T, T#Node)] = implicits.iterator
           while (iterator.hasNext) {
             val (sig, n) = iterator.next()
-            if (!addSignature(sig, n)) return false
+            if (!addSignature(sig, n))
+              return false
           }
         } else {
           val map =
-            if (!isSupers) signatures.allFirstSeq()
-            else signatures.allSecondSeq()
+            if (!isSupers)
+              signatures.allFirstSeq()
+            else
+              signatures.allSecondSeq()
           val valuesIterator = map.iterator
           while (valuesIterator.hasNext) {
             val iterator: Iterator[(T#T, T#Node)] =
               valuesIterator.next().iterator
             while (iterator.hasNext) {
               val (sig, n) = iterator.next()
-              if (!addSignature(sig, n)) return false
+              if (!addSignature(sig, n))
+                return false
             }
           }
         }
@@ -1244,8 +1291,10 @@ object TypeDefinitionMembers {
     if (shouldProcessTypes(processor)) {
       if (decodedName != "") {
         val l: TypeNodes.AllNodes =
-          if (!isSupers) types().forName(decodedName)._1
-          else types().forName(decodedName)._2
+          if (!isSupers)
+            types().forName(decodedName)._1
+          else
+            types().forName(decodedName)._2
         val iterator = l.iterator
         while (iterator.hasNext) {
           val (_, n) = iterator.next()
@@ -1256,7 +1305,10 @@ object TypeDefinitionMembers {
         }
       } else {
         val map =
-          if (!isSupers) types().allFirstSeq() else types().allSecondSeq()
+          if (!isSupers)
+            types().allFirstSeq()
+          else
+            types().allSecondSeq()
         val valuesIterator = map.iterator
         while (valuesIterator.hasNext) {
           val iterator = valuesIterator.next().iterator
@@ -1276,9 +1328,11 @@ object TypeDefinitionMembers {
 
     if (processMethodRefs) {
       if (processOnlyStable) {
-        if (!process(parameterlessSignatures())) return false
+        if (!process(parameterlessSignatures()))
+          return false
       } else {
-        if (!process(signatures())) return false
+        if (!process(signatures()))
+          return false
       }
     }
 
@@ -1286,8 +1340,10 @@ object TypeDefinitionMembers {
     if (shouldProcessJavaInnerClasses(processor)) {
       if (decodedName != "") {
         val l: TypeNodes.AllNodes =
-          if (!isSupers) types().forName(decodedName)._1
-          else types().forName(decodedName)._2
+          if (!isSupers)
+            types().forName(decodedName)._1
+          else
+            types().forName(decodedName)._2
         val iterator = l.iterator
         while (iterator.hasNext) {
           val (_, n) = iterator.next()
@@ -1299,7 +1355,10 @@ object TypeDefinitionMembers {
         }
       } else {
         val map =
-          if (!isSupers) types().allFirstSeq() else types().allSecondSeq()
+          if (!isSupers)
+            types().allFirstSeq()
+          else
+            types().allSecondSeq()
         val valuesIterator = map.iterator
         while (valuesIterator.hasNext) {
           val iterator = valuesIterator.next().iterator
@@ -1354,7 +1413,8 @@ object TypeDefinitionMembers {
   }
 
   def shouldProcessJavaInnerClasses(processor: PsiScopeProcessor): Boolean = {
-    if (processor.isInstanceOf[BaseProcessor]) return false
+    if (processor.isInstanceOf[BaseProcessor])
+      return false
     val hint = processor.getHint(ElementClassHint.KEY)
     hint == null || hint.shouldProcess(ElementClassHint.DeclarationKind.CLASS)
   }
@@ -1391,8 +1451,10 @@ object TypeDefinitionMembers {
         clazz)
       val values = new LightMethod(clazz.getManager, valuesMethod, clazz)
       val valueOf = new LightMethod(clazz.getManager, valueOfMethod, clazz)
-      if (!process(values)) return false
-      if (!process(valueOf)) return false
+      if (!process(values))
+        return false
+      if (!process(valueOf))
+        return false
     }
     true
   }

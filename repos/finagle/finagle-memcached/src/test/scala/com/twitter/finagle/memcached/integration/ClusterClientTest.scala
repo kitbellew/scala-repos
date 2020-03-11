@@ -133,7 +133,8 @@ class ClusterClientTest
   }
 
   override def withFixture(test: NoArgTest): Outcome = {
-    if (!testServers.isEmpty) test()
+    if (!testServers.isEmpty)
+      test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()
@@ -690,7 +691,8 @@ class ClusterClientTest
           zkPath,
           zookeeperClient,
           backupPool = backupPool)
-      else CachePoolCluster.newUnmanagedZkCluster(zkPath, zookeeperClient)
+      else
+        CachePoolCluster.newUnmanagedZkCluster(zkPath, zookeeperClient)
 
     Await.result(myCachePool.ready, TimeOut) // wait until the pool is ready
     myCachePool.snap match {
@@ -736,7 +738,8 @@ class ClusterClientTest
               (expectedRem == -1 || remSeen == expectedRem) &&
               (expectedPoolSize == -1 || poolSeen.size == expectedPoolSize))
             Future.Done
-          else tail flatMap expectMore
+          else
+            tail flatMap expectMore
       }
     }
 

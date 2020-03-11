@@ -217,8 +217,10 @@ object Combinatorics {
               values.sum
             }
             .filter('temp) { x: Double =>
-              if (allc.size == numWeights) (math.abs(x - result) <= error)
-              else (x <= result)
+              if (allc.size == numWeights)
+                (math.abs(x - result) <= error)
+              else
+                (x <= result)
             }
             .discard('temp),
           allc)

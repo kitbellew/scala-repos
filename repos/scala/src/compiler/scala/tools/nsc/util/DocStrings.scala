@@ -18,7 +18,8 @@ object DocStrings {
   def skipWhitespace(str: String, start: Int): Int =
     if (start < str.length && isWhitespace(str charAt start))
       skipWhitespace(str, start + 1)
-    else start
+    else
+      start
 
   /** Returns index of string `str` following `start` skipping
     *  sequence of identifier characters.
@@ -26,7 +27,8 @@ object DocStrings {
   def skipIdent(str: String, start: Int): Int =
     if (start < str.length && isIdentifierPart(str charAt start))
       skipIdent(str, start + 1)
-    else start
+    else
+      start
 
   /** Returns index of string `str` following `start` skipping
     *  sequence of identifier characters.
@@ -34,7 +36,8 @@ object DocStrings {
   def skipTag(str: String, start: Int): Int =
     if (start < str.length && (str charAt start) == '@')
       skipIdent(str, start + 1)
-    else start
+    else
+      start
 
   /** Returns index of string `str` after `start` skipping longest
     *  sequence of space and tab characters, possibly also containing
@@ -42,14 +45,16 @@ object DocStrings {
     *  @pre  start == str.length || str(start) == `\n`
     */
   def skipLineLead(str: String, start: Int): Int =
-    if (start == str.length) start
+    if (start == str.length)
+      start
     else {
       val idx = skipWhitespace(str, start + 1)
       if (idx < str.length && (str charAt idx) == '*')
         skipWhitespace(str, idx + 1)
       else if (idx + 2 < str.length && (str charAt idx) == '/' && (str charAt (idx + 1)) == '*' && (str charAt (idx + 2)) == '*')
         skipWhitespace(str, idx + 3)
-      else idx
+      else
+        idx
     }
 
   /** Skips to next occurrence of `\n` or to the position after the `/``**` sequence following index `start`.
@@ -59,15 +64,18 @@ object DocStrings {
       start + 3
     else if (start < str.length && (str charAt start) != '\n')
       skipToEol(str, start + 1)
-    else start
+    else
+      start
 
   /** Returns first index following `start` and starting a line (i.e. after skipLineLead) or starting the comment
     *  which satisfies predicate `p`.
     */
   def findNext(str: String, start: Int)(p: Int => Boolean): Int = {
     val idx = skipLineLead(str, skipToEol(str, start))
-    if (idx < str.length && !p(idx)) findNext(str, idx)(p)
-    else idx
+    if (idx < str.length && !p(idx))
+      findNext(str, idx)(p)
+    else
+      idx
   }
 
   /** Return first index following `start` and starting a line (i.e. after skipLineLead)
@@ -75,8 +83,10 @@ object DocStrings {
     */
   def findAll(str: String, start: Int)(p: Int => Boolean): List[Int] = {
     val idx = findNext(str, start)(p)
-    if (idx == str.length) List()
-    else idx :: findAll(str, idx)(p)
+    if (idx == str.length)
+      List()
+    else
+      idx :: findAll(str, idx)(p)
   }
 
   /** Produces a string index, which is a list of `sections`, i.e
@@ -149,10 +159,11 @@ object DocStrings {
       tag: String,
       sections: List[(Int, Int)]): Map[String, (Int, Int)] =
     Map() ++ {
-      for (section <- sections if startsWithTag(str, section, tag)) yield {
-        val start = skipWhitespace(str, section._1 + tag.length)
-        str.substring(start, skipIdent(str, start)) -> section
-      }
+      for (section <- sections if startsWithTag(str, section, tag))
+        yield {
+          val start = skipWhitespace(str, section._1 + tag.length)
+          str.substring(start, skipIdent(str, start)) -> section
+        }
     }
 
   /** Optionally start and end index of return section in `str`, or `None`
@@ -179,7 +190,10 @@ object DocStrings {
     var idx = start
     if (idx < str.length && (str charAt idx) == '{') {
       do idx += 1 while (idx < str.length && (str charAt idx) != '}')
-      if (idx < str.length) idx + 1 else start
+      if (idx < str.length)
+        idx + 1
+      else
+        start
     } else {
       while (idx < str.length && isVarPart(str charAt idx))
         idx += 1
@@ -192,7 +206,8 @@ object DocStrings {
       str: String,
       sections: List[(Int, Int)]): Map[String, (Int, Int)] =
     Map() ++ {
-      for (section <- sections) yield extractSectionTag(str, section) -> section
+      for (section <- sections)
+        yield extractSectionTag(str, section) -> section
     }
 
   /** Extract the section tag, treating the section tag as an identifier */

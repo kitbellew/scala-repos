@@ -47,6 +47,9 @@ class SortingKeyComparator private[SortingKeyComparator] (
 
   def compare(a: Array[Byte], b: Array[Byte]) = {
     val ret = rowFormat.compare(a, b)
-    if (ascending) ret else -ret
+    if (ascending)
+      ret
+    else
+      -ret
   }
 }

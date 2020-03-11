@@ -20,7 +20,8 @@ trait Semiring[@sp(Byte, Short, Int, Long, Float, Double) A]
     * a multiplicative identity, and so the exponent must be positive.
     */
   def pow(a: A, n: Int): A =
-    if (n > 0) prodn(a, n)
+    if (n > 0)
+      prodn(a, n)
     else
       throw new IllegalArgumentException(
         s"Illegal non-positive exponent $n to Semiring#pow")

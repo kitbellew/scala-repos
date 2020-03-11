@@ -162,8 +162,10 @@ sealed trait ExpressionDag[N[_]] { self =>
     // call expand while we are still growing
     def go(s: Set[Id[_]]): Set[Id[_]] = {
       val step = expand(s)
-      if (step == s) s
-      else go(step)
+      if (step == s)
+        s
+      else
+        go(step)
     }
     go(roots)
   }

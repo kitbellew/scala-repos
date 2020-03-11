@@ -78,5 +78,8 @@ object Environment
   }
 
   def NotForKids[Html](f: => Html)(implicit ctx: lila.api.Context) =
-    if (ctx.kid) Html("") else f
+    if (ctx.kid)
+      Html("")
+    else
+      f
 }

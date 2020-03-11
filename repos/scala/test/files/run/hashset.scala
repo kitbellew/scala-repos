@@ -18,7 +18,8 @@ object Test extends App {
   def test(creator: Creator) {
     println("*** " + creator.hashSetType + " primitives")
     val h1 = creator.create[Int]
-    for (i <- 0 until 20) h1 += i
+    for (i <- 0 until 20)
+      h1 += i
     println(
       (for (i <- 0 until 20)
         yield i + " " + (h1 contains i)).toList.sorted mkString (","))
@@ -31,7 +32,8 @@ object Test extends App {
     println("*** " + creator.hashSetType + " Strings with null")
     val h2 = creator.create[String]
     h2 += null
-    for (i <- 0 until 20) h2 += "" + i
+    for (i <- 0 until 20)
+      h2 += "" + i
     println("null " + (h2 contains null))
     println(
       (for (i <- 0 until 20)

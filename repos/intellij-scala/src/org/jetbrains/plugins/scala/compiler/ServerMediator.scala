@@ -64,9 +64,12 @@ class ServerMediator(project: Project) extends ProjectComponent {
   private val checkSettingsTask = new CompileTask {
     def execute(context: CompileContext): Boolean = {
       if (isScalaProject) {
-        if (!checkCompilationSettings()) false
-        else true
-      } else true
+        if (!checkCompilationSettings())
+          false
+        else
+          true
+      } else
+        true
     }
   }
 
@@ -98,7 +101,8 @@ class ServerMediator(project: Project) extends ProjectComponent {
               "Cancel compilation",
               Messages.getErrorIcon
             )
-          } else Messages.YES
+          } else
+            Messages.YES
 
         val splitAutomatically = choice == Messages.YES
 
@@ -117,7 +121,8 @@ class ServerMediator(project: Project) extends ProjectComponent {
               val nameForTests =
                 if (outputUrlParts.lastOption.contains("classes"))
                   "test-classes"
-                else "test"
+                else
+                  "test"
 
               extension.inheritCompilerOutputPath(false)
               extension.setCompilerOutputPathForTests(

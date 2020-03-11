@@ -94,7 +94,8 @@ import org.apache.tools.ant.types.Mapper
 
   /** Tests if all mandatory attributes are set and valid. */
   private def validateAttributes() = {
-    if (origin.isEmpty) sys.error("Mandatory attribute 'dir' is not set.")
+    if (origin.isEmpty)
+      sys.error("Mandatory attribute 'dir' is not set.")
     if (destination.isEmpty)
       sys.error("Mandatory attribute 'todir' is not set.")
   }
@@ -149,7 +150,8 @@ import org.apache.tools.ant.types.Mapper
           reportDiff(originFile, destFile)
         originStream.close
         destStream.close
-      } else reportMissing(originFile)
+      } else
+        reportMissing(originFile)
     }
     if (!allEqualNow)
       if (failing)

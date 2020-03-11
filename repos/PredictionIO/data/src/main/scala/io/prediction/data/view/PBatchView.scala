@@ -45,7 +45,11 @@ private[prediction] case class SetProp(
       val thisData = this.fields(k)
       val thatData = that.fields(k)
       // only keep the value with latest time
-      val v = if (thisData.t > thatData.t) thisData else thatData
+      val v =
+        if (thisData.t > thatData.t)
+          thisData
+        else
+          thatData
       (k, v)
     }.toMap
 
@@ -53,7 +57,11 @@ private[prediction] case class SetProp(
       (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
 
     // keep the latest set time
-    val combinedT = if (this.t > that.t) this.t else that.t
+    val combinedT =
+      if (this.t > that.t)
+        this.t
+      else
+        that.t
 
     SetProp(
       fields = combinedFields,
@@ -71,7 +79,11 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
       val thisData = this.fields(k)
       val thatData = that.fields(k)
       // only keep the value with latest time
-      val v = if (thisData > thatData) thisData else thatData
+      val v =
+        if (thisData > thatData)
+          thisData
+        else
+          thatData
       (k, v)
     }.toMap
 
@@ -86,7 +98,10 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
 
 private[prediction] case class DeleteEntity(t: Long) extends Serializable {
   def ++(that: DeleteEntity): DeleteEntity = {
-    if (this.t > that.t) this else that
+    if (this.t > that.t)
+      this
+    else
+      that
   }
 }
 

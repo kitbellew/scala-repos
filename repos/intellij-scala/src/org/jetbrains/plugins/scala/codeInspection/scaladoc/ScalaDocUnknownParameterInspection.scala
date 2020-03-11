@@ -186,14 +186,17 @@ class ScalaDocDeleteDuplicatingParamQuickFix(
     paramTag: ScDocTag,
     isDuplicating: Boolean)
     extends AbstractFixOnPsiElement(
-      if (isDuplicating) ScalaBundle.message("delete.duplicating.param")
-      else ScalaBundle.message("delete.tag"),
+      if (isDuplicating)
+        ScalaBundle.message("delete.duplicating.param")
+      else
+        ScalaBundle.message("delete.tag"),
       paramTag) {
   override def getFamilyName: String = InspectionsUtil.SCALADOC
 
   def doApplyFix(project: Project) {
     val tag = getElement
-    if (!tag.isValid) return
+    if (!tag.isValid)
+      return
 
     tag.delete()
   }

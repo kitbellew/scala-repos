@@ -18,5 +18,9 @@ object BoxedType {
     classOf[Unit] -> classOf[scala.runtime.BoxedUnit]
   )
 
-  final def apply(c: Class[_]): Class[_] = if (c.isPrimitive) toBoxed(c) else c
+  final def apply(c: Class[_]): Class[_] =
+    if (c.isPrimitive)
+      toBoxed(c)
+    else
+      c
 }

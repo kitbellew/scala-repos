@@ -14,7 +14,11 @@ object Timeout extends Timeout
 case class Timer(
     timeoutTickMs: Int = 100,
     workerName: String = "TimeoutContextWorker") {
-  val safeTickMs = if (timeoutTickMs > 5) timeoutTickMs else 5
+  val safeTickMs =
+    if (timeoutTickMs > 5)
+      timeoutTickMs
+    else
+      5
   private[this] val futureNondeterminism = Nondeterminism[Future]
   private[this] val taskNondeterminism = Nondeterminism[Task]
   @volatile private[this] var continueRunning: Boolean = true
@@ -91,8 +95,11 @@ case class Timer(
       if (continueRunning) {
         val listen: (T => Unit) => Unit = callback =>
           withWrite {
-            val waitTime =
-              alignTimeResolution(lastNow + (if (waitMs < 0) 0 else waitMs))
+            val waitTime = alignTimeResolution(
+              lastNow + (if (waitMs < 0)
+                           0
+                         else
+                           waitMs))
             val timedCallback = () => callback(value)
             // Lazy implementation for now.
             futures = futures + futures

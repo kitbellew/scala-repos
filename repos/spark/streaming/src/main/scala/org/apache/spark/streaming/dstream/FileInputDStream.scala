@@ -111,7 +111,10 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   // Initial ignore threshold based on which old, existing files in the directory (at the time of
   // starting the streaming application) will be ignored or considered
   private val initialModTimeIgnoreThreshold =
-    if (newFilesOnly) clock.getTimeMillis() else 0L
+    if (newFilesOnly)
+      clock.getTimeMillis()
+    else
+      0L
 
   /*
    * Make sure that the information of files selected in the last few batches are remembered.
@@ -317,7 +320,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   }
 
   private def directoryPath: Path = {
-    if (_path == null) _path = new Path(directory)
+    if (_path == null)
+      _path = new Path(directory)
     _path
   }
 

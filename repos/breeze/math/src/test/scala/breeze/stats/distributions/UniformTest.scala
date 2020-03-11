@@ -42,7 +42,8 @@ class UniformTest
          b <- arbitrary[Double].map {
            _.abs % 10000.0
          }
-         if a != b) yield new Uniform(a min b, a max b)
+         if a != b)
+      yield new Uniform(a min b, a max b)
   }
 
   test("pdf outside range should be 0.0") {

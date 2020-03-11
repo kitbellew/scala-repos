@@ -75,11 +75,15 @@ object RawBitSet {
     def loopBits(bits: Int, shift: Int, value: Int, intsIndex: Int): Int = {
       if (((bits >> shift) & 1) == 1) {
         ints(intsIndex) = value
-        if (shift < 31) loopBits(bits, shift + 1, value + 1, intsIndex + 1)
-        else intsIndex
+        if (shift < 31)
+          loopBits(bits, shift + 1, value + 1, intsIndex + 1)
+        else
+          intsIndex
       } else {
-        if (shift < 31) loopBits(bits, shift + 1, value + 1, intsIndex)
-        else intsIndex
+        if (shift < 31)
+          loopBits(bits, shift + 1, value + 1, intsIndex)
+        else
+          intsIndex
       }
     }
 

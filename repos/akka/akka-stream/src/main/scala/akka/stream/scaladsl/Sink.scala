@@ -251,7 +251,8 @@ object Sink {
         if (i.hasNext) {
           d.out(idx) ~> i.next()
           combineRest(idx + 1, i)
-        } else new SinkShape(d.in)
+        } else
+          new SinkShape(d.in)
 
       combineRest(2, rest.iterator)
     })

@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object SVGPath {
   implicit def sfxSVGPath2jfx(v: SVGPath): jfxss.SVGPath =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class SVGPath(override val delegate: jfxss.SVGPath = new jfxss.SVGPath())

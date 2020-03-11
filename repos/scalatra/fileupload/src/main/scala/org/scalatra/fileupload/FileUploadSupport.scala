@@ -50,7 +50,8 @@ trait FileUploadSupport extends ServletBase {
               mergedParams += name -> (values.toList ++ formValues)
           }
           wrapRequest(req, mergedParams)
-        } else req
+        } else
+          req
       } catch {
         case e: FileUploadException => {
           req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)

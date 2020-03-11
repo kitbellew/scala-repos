@@ -88,7 +88,10 @@ object BuildPaths {
 
   def getFileProperty(name: String): Option[File] =
     Option(System.getProperty(name)) flatMap { path =>
-      if (path.isEmpty) None else Some(new File(path))
+      if (path.isEmpty)
+        None
+      else
+        Some(new File(path))
     }
 
   def defaultVersionedGlobalBase(sbtVersion: String): File =

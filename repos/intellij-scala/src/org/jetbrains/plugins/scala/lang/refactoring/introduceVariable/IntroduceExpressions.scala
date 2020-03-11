@@ -137,7 +137,11 @@ trait IntroduceExpressions {
               ScalaApplicationSettings
                 .getInstance()
                 .INTRODUCE_VARIABLE_EXPLICIT_TYPE)
-            val selectedType = if (needExplicitType) types(0) else null
+            val selectedType =
+              if (needExplicitType)
+                types(0)
+              else
+                null
             val introduceRunnable
                 : Computable[SmartPsiElementPointer[PsiElement]] =
               introduceVariable(
@@ -178,7 +182,11 @@ trait IntroduceExpressions {
                         .getInstance(project)
                         .doPostponedOperationsAndUnblockDocument(
                           editor.getDocument)
-                      val checkedExpr = if (expr.isValid) expr else null
+                      val checkedExpr =
+                        if (expr.isValid)
+                          expr
+                        else
+                          null
                       val variableIntroducer =
                         new ScalaInplaceVariableIntroducer(
                           project,
@@ -217,8 +225,10 @@ trait IntroduceExpressions {
         }
       }
 
-      if (ScalaRefactoringUtil.isInplaceAvailable(editor)) runInplace()
-      else runWithDialog()
+      if (ScalaRefactoringUtil.isInplaceAvailable(editor))
+        runInplace()
+      else
+        runWithDialog()
     } catch {
       case _: IntroduceException =>
     }
@@ -348,14 +358,19 @@ trait IntroduceExpressions {
       editor.getCaretModel.getOffset)
     editor.putUserData(ScalaIntroduceVariableHandler.REVERT_INFO, revertInfo)
 
-    val typeName = if (varType != null) varType.canonicalText else ""
+    val typeName =
+      if (varType != null)
+        varType.canonicalText
+      else
+        ""
     val expression = ScalaRefactoringUtil.expressionToIntroduce(expression_)
 
     val isFunExpr = expression.isInstanceOf[ScFunctionExpr]
     val mainRange = new TextRange(startOffset, endOffset)
     val occurrences: Array[TextRange] = if (!replaceAllOccurrences) {
       Array[TextRange](mainRange)
-    } else occurrences_
+    } else
+      occurrences_
     val occCount = occurrences.length
 
     val mainOcc = occurrences.indexWhere(range =>
@@ -420,7 +435,8 @@ trait IntroduceExpressions {
               result)
           }
         } else {
-          if (sibling.getText.indexOf('\n') != -1) needSemicolon = false
+          if (sibling.getText.indexOf('\n') != -1)
+            needSemicolon = false
           result = parent.addBefore(created, elem).asInstanceOf[ScEnumerator]
           parent.addBefore(
             ScalaPsiElementFactory.createNewLineNode(elem.getManager).getPsi,
@@ -470,7 +486,8 @@ trait IntroduceExpressions {
                 case _ =>
               }
               replaced
-            } else container
+            } else
+              container
         }
         val anchor = parent.getChildren
           .find(_.getTextRange.contains(firstRange))
@@ -481,7 +498,8 @@ trait IntroduceExpressions {
             parent,
             Some(anchor))
           CodeEditUtil.markToReformat(parent.getNode, needFormatting)
-        } else throw new IntroduceException
+        } else
+          throw new IntroduceException
       }
       result
     }

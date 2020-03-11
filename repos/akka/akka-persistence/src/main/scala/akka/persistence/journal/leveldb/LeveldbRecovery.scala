@@ -64,7 +64,8 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
           val msg = persistentFromBytes(nextEntry.getValue)
           val del = deletion(iter, nextKey)
           if (ctr < max) {
-            if (!del) replayCallback(msg)
+            if (!del)
+              replayCallback(msg)
             go(iter, nextKey, ctr + 1L, replayCallback)
           }
         }
@@ -81,13 +82,20 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
               nextKey)) {
           iter.next()
           true
-        } else false
-      } else false
+        } else
+          false
+      } else
+        false
     }
 
     withIterator { iter ⇒
-      val startKey =
-        Key(persistenceId, if (fromSequenceNr < 1L) 1L else fromSequenceNr, 0)
+      val startKey = Key(
+        persistenceId,
+        if (fromSequenceNr < 1L)
+          1L
+        else
+          fromSequenceNr,
+        0)
       iter.seek(keyToBytes(startKey))
       go(iter, startKey, 0L, replayCallback)
     }
@@ -137,8 +145,13 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
     }
 
     withIterator { iter ⇒
-      val startKey =
-        Key(tagNid, if (fromSequenceNr < 1L) 1L else fromSequenceNr, 0)
+      val startKey = Key(
+        tagNid,
+        if (fromSequenceNr < 1L)
+          1L
+        else
+          fromSequenceNr,
+        0)
       iter.seek(keyToBytes(startKey))
       go(iter, startKey, 0L, replayCallback)
     }

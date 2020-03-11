@@ -38,7 +38,8 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       actor ! "hello"
 
       within(2 seconds) {
-        for (i ← 1 to 5) expectMsg("world")
+        for (i ← 1 to 5)
+          expectMsg("world")
       }
 
       system.stop(actor)

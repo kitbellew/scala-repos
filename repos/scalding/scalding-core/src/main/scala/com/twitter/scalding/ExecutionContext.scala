@@ -46,8 +46,10 @@ trait ExecutionContext {
   import ExecutionContext._
 
   private def getIdentifierOpt(descriptions: Seq[String]): Option[String] = {
-    if (descriptions.nonEmpty) Some(descriptions.distinct.mkString(", "))
-    else None
+    if (descriptions.nonEmpty)
+      Some(descriptions.distinct.mkString(", "))
+    else
+      None
   }
 
   private def updateStepConfigWithDescriptions(

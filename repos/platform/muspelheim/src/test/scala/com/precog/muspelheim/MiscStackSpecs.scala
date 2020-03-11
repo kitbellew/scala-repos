@@ -3877,8 +3877,10 @@ trait MiscStackSpecs extends EvalStackSpecs {
           ids must haveSize(1)
           obj.keySet mustEqual Set("foo", "bar", "ack")
 
-          if (obj("foo") == SDecimal(5)) obj("ack") mustEqual SDecimal(10000)
-          else obj("ack") mustEqual SDecimal(0)
+          if (obj("foo") == SDecimal(5))
+            obj("ack") mustEqual SDecimal(10000)
+          else
+            obj("ack") mustEqual SDecimal(0)
         }
         case _ => ko
       }

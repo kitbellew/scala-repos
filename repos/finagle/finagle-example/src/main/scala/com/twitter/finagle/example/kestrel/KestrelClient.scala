@@ -52,7 +52,8 @@ object KestrelClient {
 
     // Attach an async error handler that prints to stderr
     readHandle.error foreach { e =>
-      if (!stopped.get) System.err.println("zomg! got an error " + e)
+      if (!stopped.get)
+        System.err.println("zomg! got an error " + e)
     }
 
     // Attach an async message handler that prints the messages to stdout

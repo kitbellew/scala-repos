@@ -7,13 +7,16 @@ trait Positions extends scala.reflect.internal.Positions {
   class ValidatingPosAssigner extends PosAssigner {
     var pos: Position = _
     override def traverse(t: Tree) {
-      if (t eq EmptyTree) ()
-      else if (t.pos == NoPosition) super.traverse(t setPos pos)
+      if (t eq EmptyTree)
+        ()
+      else if (t.pos == NoPosition)
+        super.traverse(t setPos pos)
       else if (globalPhase.id <= currentRun.picklerPhase.id) {
         // When we prune due to encountering a position, traverse the
         // pruned children so we can warn about those lacking positions.
         t.children foreach { c =>
-          if (!c.canHaveAttrs) ()
+          if (!c.canHaveAttrs)
+            ()
           else if (c.pos == NoPosition) {
             reporter.warning(
               t.pos,
@@ -29,5 +32,6 @@ trait Positions extends scala.reflect.internal.Positions {
   override protected[this] lazy val posAssigner: PosAssigner =
     if (settings.Yrangepos && settings.debug || settings.Yposdebug)
       new ValidatingPosAssigner
-    else new DefaultPosAssigner
+    else
+      new DefaultPosAssigner
 }

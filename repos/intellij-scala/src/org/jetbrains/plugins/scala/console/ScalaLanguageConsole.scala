@@ -63,8 +63,10 @@ class ScalaLanguageConsole(project: Project, title: String)
       values.get(name) match {
         case Some((oldRange, r)) =>
           val newText =
-            if (r) "_" + StringUtil.repeatSymbol(' ', oldRange.getLength - 1)
-            else StringUtil.repeatSymbol(' ', oldRange.getLength)
+            if (r)
+              "_" + StringUtil.repeatSymbol(' ', oldRange.getLength - 1)
+            else
+              StringUtil.repeatSymbol(' ', oldRange.getLength)
           textBuffer.replace(
             oldRange.getStartOffset,
             oldRange.getEndOffset,

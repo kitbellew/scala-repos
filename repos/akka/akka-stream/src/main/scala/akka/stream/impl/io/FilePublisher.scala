@@ -91,7 +91,8 @@ private[akka] final class FilePublisher(
     if (isActive) {
       // Write previously buffered, then refill buffer
       availableChunks = readAhead(maxReadAhead, signalOnNexts(availableChunks))
-      if (totalDemand > 0 && isActive) self ! Continue
+      if (totalDemand > 0 && isActive)
+        self ! Continue
     }
 
   @tailrec private def signalOnNexts(
@@ -131,7 +132,8 @@ private[akka] final class FilePublisher(
           buf.clear()
           readAhead(maxChunks, newChunks)
       }
-    } else chunks
+    } else
+      chunks
 
   private def eofEncountered: Boolean = eofReachedAtOffset != Long.MinValue
 
@@ -139,7 +141,8 @@ private[akka] final class FilePublisher(
     super.postStop()
 
     try {
-      if (chan ne null) chan.close()
+      if (chan ne null)
+        chan.close()
     } catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(readBytesTotal, Failure(ex)))

@@ -49,13 +49,16 @@ class JavaCharArrayReader(
       case '\\' =>
         def evenSlashPrefix: Boolean = {
           var p = bp - 2
-          while (p >= 0 && buf(p) == '\\') p -= 1
+          while (p >= 0 && buf(p) == '\\')
+            p -= 1
           (bp - p) % 2 == 0
         }
         def udigit: Int = {
           val d = digit2int(buf(bp), 16)
-          if (d >= 0) bp += 1
-          else error("error in unicode escape")
+          if (d >= 0)
+            bp += 1
+          else
+            error("error in unicode escape")
           d
         }
         if (buf(bp) == 'u' && decodeUni && evenSlashPrefix) {

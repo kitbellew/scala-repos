@@ -35,7 +35,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         for (a <- t.attributes) {
           indent;
           print(toString(a))
-          if (onNewLine) print("\n") else print(" ")
+          if (onNewLine)
+            print("\n")
+          else
+            print(" ")
         }
       }
       case _ =>
@@ -45,7 +48,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     if (!symbol.isLocal &&
         !(symbol.isPrivate && !printPrivates)) {
       def indent() {
-        for (i <- 1 to level) print("  ")
+        for (i <- 1 to level)
+          print("  ")
       }
 
       printSymbolAttributes(symbol, true, indent)
@@ -91,12 +95,14 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   }
 
   private def printChildren(level: Int, symbol: Symbol) {
-    for (child <- symbol.children) printSymbol(level + 1, child)
+    for (child <- symbol.children)
+      printSymbol(level + 1, child)
   }
 
   def printWithIndent(level: Int, s: String) {
     def indent() {
-      for (i <- 1 to level) print("  ")
+      for (i <- 1 to level)
+        print("  ")
     }
     indent
     print(s)
@@ -104,8 +110,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
   def printModifiers(symbol: Symbol) {
     // print private access modifier
-    if (symbol.isPrivate) print("private ")
-    else if (symbol.isProtected) print("protected ")
+    if (symbol.isPrivate)
+      print("private ")
+    else if (symbol.isProtected)
+      print("protected ")
     else
       symbol match {
         case sym: SymbolInfoSymbol =>
@@ -116,16 +124,22 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         case _ =>
       }
 
-    if (symbol.isSealed) print("sealed ")
-    if (symbol.isImplicit) print("implicit ")
-    if (symbol.isFinal && !symbol.isInstanceOf[ObjectSymbol]) print("final ")
-    if (symbol.isOverride) print("override ")
-    if (symbol.isAbstract) symbol match {
-      case c @ (_: ClassSymbol | _: ObjectSymbol) if !c.isTrait =>
-        print("abstract ")
-      case _ => ()
-    }
-    if (symbol.isCase && !symbol.isMethod) print("case ")
+    if (symbol.isSealed)
+      print("sealed ")
+    if (symbol.isImplicit)
+      print("implicit ")
+    if (symbol.isFinal && !symbol.isInstanceOf[ObjectSymbol])
+      print("final ")
+    if (symbol.isOverride)
+      print("override ")
+    if (symbol.isAbstract)
+      symbol match {
+        case c @ (_: ClassSymbol | _: ObjectSymbol) if !c.isTrait =>
+          print("abstract ")
+        case _ => ()
+      }
+    if (symbol.isCase && !symbol.isMethod)
+      print("case ")
   }
 
   private def refinementClass(c: ClassSymbol) = c.name == "<refinement>"
@@ -135,8 +149,15 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       print("\n")
     } else {
       printModifiers(c)
-      val defaultConstructor = if (c.isCase) getPrinterByConstructor(c) else ""
-      if (c.isTrait) print("trait ") else print("class ")
+      val defaultConstructor =
+        if (c.isCase)
+          getPrinterByConstructor(c)
+        else
+          ""
+      if (c.isTrait)
+        print("trait ")
+      else
+        print("class ")
       print(processName(c.name))
       val it = c.infoType
       val classType = it match {
@@ -255,19 +276,25 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     def cont() = print(" = { /* compiled code */ }")
 
     val n = m.name
-    if (underCaseClass(m) && n == CONSTRUCTOR_NAME) return
+    if (underCaseClass(m) && n == CONSTRUCTOR_NAME)
+      return
     if (n.matches(".+\\$default\\$\\d+"))
       return // skip default function parameters
     if (n.startsWith("super$"))
       return // do not print auxiliary qualified super accessors
-    if (m.isAccessor && n.endsWith("_$eq")) return
+    if (m.isAccessor && n.endsWith("_$eq"))
+      return
     indent()
     printModifiers(m)
     if (m.isAccessor) {
       val indexOfSetter = m.parent.get.children.indexWhere(x =>
         x.isInstanceOf[MethodSymbol] &&
           x.asInstanceOf[MethodSymbol].name == n + "_$eq")
-      print(if (indexOfSetter > 0) "var " else "val ")
+      print(
+        if (indexOfSetter > 0)
+          "var "
+        else
+          "val ")
     } else {
       print("def ")
     }
@@ -311,14 +338,18 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       buffer.append("(")
       val value = attrib.value.get
       val stringVal = value.isInstanceOf[String]
-      if (stringVal) buffer.append("\"")
+      if (stringVal)
+        buffer.append("\"")
       val stringValue = valueToString(value)
       val isMultiline = stringVal && (stringValue.contains("\n")
         || stringValue.contains("\r"))
-      if (isMultiline) buffer.append("\"\"")
+      if (isMultiline)
+        buffer.append("\"\"")
       buffer.append(valueToString(value))
-      if (isMultiline) buffer.append("\"\"")
-      if (stringVal) buffer.append("\"")
+      if (isMultiline)
+        buffer.append("\"\"")
+      if (stringVal)
+        buffer.append("\"")
       buffer.append(")")
     }
     if (!attrib.values.isEmpty) {
@@ -399,8 +430,16 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case TypeBoundsType(lower, upper) => {
         val lb = toString(lower)
         val ub = toString(upper)
-        val lbs = if (!lb.equals("scala.Nothing")) " >: " + lb else ""
-        val ubs = if (!ub.equals("scala.Any")) " <: " + ub else ""
+        val lbs =
+          if (!lb.equals("scala.Nothing"))
+            " >: " + lb
+          else
+            ""
+        val ubs =
+          if (!ub.equals("scala.Any"))
+            " <: " + ub
+          else
+            ""
         lbs + ubs
       }
       case RefinedType(classSym, typeRefs) =>
@@ -427,19 +466,30 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
           symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
         toString(typeRef, sep) + (if (refs.size > 0)
                                     refs.mkString(" forSome {", "; ", "}")
-                                  else "")
+                                  else
+                                    "")
       }
       case _ => sep + t.toString
     }
   }
 
   def getVariance(t: TypeSymbol) =
-    if (t.isCovariant) "+" else if (t.isContravariant) "-" else ""
+    if (t.isCovariant)
+      "+"
+    else if (t.isContravariant)
+      "-"
+    else
+      ""
 
   def toString(symbol: Symbol): String = symbol match {
     case symbol: TypeSymbol => {
-      val attrs = (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
-      val atrs = if (attrs.length > 0) attrs.trim + " " else ""
+      val attrs = (for (a <- symbol.attributes)
+        yield toString(a)).mkString(" ")
+      val atrs =
+        if (attrs.length > 0)
+          attrs.trim + " "
+        else
+          ""
       atrs + getVariance(symbol) + processName(symbol.name) + toString(
         symbol.infoType)
     }
@@ -447,7 +497,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   }
 
   def typeArgString(typeArgs: Seq[Type]): String =
-    if (typeArgs.isEmpty) ""
+    if (typeArgs.isEmpty)
+      ""
     else
       typeArgs
         .map(toString)
@@ -455,8 +506,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[Symbol]): String =
-    if (params.isEmpty) ""
-    else params.map(toString).mkString("[", ", ", "]")
+    if (params.isEmpty)
+      ""
+    else
+      params.map(toString).mkString("[", ", ", "]")
 
   val _syms = Map(
     "\\$bar" -> "|",
@@ -479,12 +532,19 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     "\\$hash" -> "#"
   )
   val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
+    _syms.keys.foldLeft("")((x, y) =>
+      if (x == "")
+        y
+      else
+        x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private def stripPrivatePrefix(name: String) = {
     val i = name.lastIndexOf("$$")
-    if (i > 0) name.substring(i + 2) else name
+    if (i > 0)
+      name.substring(i + 2)
+    else
+      name
   }
 
   def processName(name: String) = {

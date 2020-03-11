@@ -120,7 +120,10 @@ object ListTest extends SpecLite {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
           State { i =>
-            val j = i + (if (f(a)) 0 else 1)
+            val j = i + (if (f(a))
+                           0
+                         else
+                           1)
             val done = j >= n
             (j, !done)
           })
@@ -143,7 +146,10 @@ object ListTest extends SpecLite {
   }
 
   "index" ! forAll { (xs: List[Int], n: Int) =>
-    (xs index n) must_=== (if (n >= 0 && xs.size > n) Some(xs(n)) else None)
+    (xs index n) must_=== (if (n >= 0 && xs.size > n)
+                             Some(xs(n))
+                           else
+                             None)
   }
 
   "groupWhen is groupWhenM[Id]" ! forAll { xs: List[Int] =>

@@ -21,29 +21,36 @@ object ScalaEditorFileSwapper {
       case _                                  => return null
     }
     val fqn: String = getFQN(psiFile)
-    if (fqn == null) return null
+    if (fqn == null)
+      return null
     val classes = ScalaPsiManager
       .instance(project)
       .getCachedClasses(psiFile.getResolveScope, fqn)
     var clazz: PsiClass = null
     for (cl <- classes if clazz == null) {
-      if (cl.getContainingFile == psiFile) clazz = cl
+      if (cl.getContainingFile == psiFile)
+        clazz = cl
     }
-    if (!clazz.isInstanceOf[ScTypeDefinition]) return null
+    if (!clazz.isInstanceOf[ScTypeDefinition])
+      return null
     val sourceClass: PsiClass =
       clazz.asInstanceOf[ScTypeDefinition].getSourceMirrorClass
-    if (sourceClass == null || (sourceClass eq clazz)) return null
+    if (sourceClass == null || (sourceClass eq clazz))
+      return null
     val result: VirtualFile = sourceClass.getContainingFile.getVirtualFile
     assert(result != null)
     result
   }
 
   def getFQN(psiFile: PsiFile): String = {
-    if (!psiFile.isInstanceOf[ScalaFile]) return null
+    if (!psiFile.isInstanceOf[ScalaFile])
+      return null
     val classes = psiFile.asInstanceOf[ScalaFile].typeDefinitions
-    if (classes.length == 0) return null
+    if (classes.length == 0)
+      return null
     val fqn: String = classes(0).qualifiedName
-    if (fqn == null) return null
+    if (fqn == null)
+      return null
     fqn
   }
 }

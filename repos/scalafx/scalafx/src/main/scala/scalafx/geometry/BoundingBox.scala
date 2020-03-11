@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object BoundingBox {
   implicit def sfxBoundingBox2jfx(b: BoundingBox): jfxg.BoundingBox =
-    if (b != null) b.delegate else null
+    if (b != null)
+      b.delegate
+    else
+      null
 
 }
 

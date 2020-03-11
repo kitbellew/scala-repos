@@ -128,8 +128,10 @@ final object EvaluateTaskConfig {
       def checkCycles: Boolean = old.checkCycles
       def progressReporter: ExecuteProgress[Task] = old.progress
       def cancelStrategy: TaskCancellationStrategy =
-        if (old.cancelable) TaskCancellationStrategy.Signal
-        else TaskCancellationStrategy.Null
+        if (old.cancelable)
+          TaskCancellationStrategy.Signal
+        else
+          TaskCancellationStrategy.Null
       def forceGarbageCollection = GCUtil.defaultForceGarbageCollection
       def minForcegcInterval = GCUtil.defaultMinForcegcInterval
     }
@@ -212,8 +214,10 @@ object EvaluateTask {
   import Keys.state
 
   private[sbt] def defaultProgress: ExecuteProgress[Task] =
-    if (java.lang.Boolean.getBoolean("sbt.task.timings")) new TaskTimings
-    else ExecuteProgress.empty[Task]
+    if (java.lang.Boolean.getBoolean("sbt.task.timings"))
+      new TaskTimings
+    else
+      ExecuteProgress.empty[Task]
 
   val SystemProcessors = Runtime.getRuntime.availableProcessors
 
@@ -448,8 +452,10 @@ object EvaluateTask {
       def log = getStreams(key, streams).log
       ExceptionCategory(ex) match {
         case AlreadyHandled => ()
-        case m: MessageOnly => if (msg.isEmpty) log.error(m.message)
-        case f: Full        => log.trace(f.exception)
+        case m: MessageOnly =>
+          if (msg.isEmpty)
+            log.error(m.message)
+        case f: Full => log.trace(f.exception)
       }
     }
 
@@ -463,7 +469,12 @@ object EvaluateTask {
     }
   }
   private[this] def contextDisplay(state: State, highlight: Boolean) =
-    Project.showContextKey(state, if (highlight) Some(RED) else None)
+    Project.showContextKey(
+      state,
+      if (highlight)
+        Some(RED)
+      else
+        None)
   def suppressedMessage(key: ScopedKey[_])(
       implicit display: Show[ScopedKey[_]]): String =
     "Stack trace suppressed.  Run 'last %s' for the full log.".format(
@@ -625,7 +636,8 @@ object EvaluateTask {
   def convertCyclic(c: AnyCyclic): String =
     (c.caller, c.target) match {
       case (caller: Task[_], target: Task[_]) =>
-        c.toString + (if (caller eq target) "(task: " + name(caller) + ")"
+        c.toString + (if (caller eq target)
+                        "(task: " + name(caller) + ")"
                       else
                         "(caller: " + name(caller) + ", target: " + name(
                           target) + ")")
@@ -648,7 +660,8 @@ object EvaluateTask {
       log: Logger,
       show: Boolean = false): T =
     onResult(result, log) { v =>
-      if (show) println("Result: " + v);
+      if (show)
+        println("Result: " + v);
       v
     }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =

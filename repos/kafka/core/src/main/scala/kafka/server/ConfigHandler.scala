@@ -69,7 +69,8 @@ class TopicConfigHandler(
       props.putAll(logManager.defaultConfig.originals)
       topicConfig.asScala.foreach {
         case (key, value) =>
-          if (key != configNameToExclude) props.put(key, value)
+          if (key != configNameToExclude)
+            props.put(key, value)
       }
       val logConfig = LogConfig(props)
       logs.foreach(_.config = logConfig)

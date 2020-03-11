@@ -166,8 +166,10 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         {
           case f: MappedEnum[T, ENUM] =>
             f.st(
-              if (v eq null) defaultValue
-              else fromInt(Helpers.toInt(v.toString)))
+              if (v eq null)
+                defaultValue
+              else
+                fromInt(Helpers.toInt(v.toString)))
         })
 
   def buildSetLongValue(
@@ -179,7 +181,11 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnum[T, ENUM] =>
-            f.st(if (isNull) defaultValue else fromInt(v.toInt))
+            f.st(
+              if (isNull)
+                defaultValue
+              else
+                fromInt(v.toInt))
         })
 
   def buildSetStringValue(
@@ -191,7 +197,11 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnum[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+            f.st(
+              if (v eq null)
+                defaultValue
+              else
+                fromInt(Helpers.toInt(v)))
         })
 
   def buildSetDateValue(
@@ -203,7 +213,11 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnum[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+            f.st(
+              if (v eq null)
+                defaultValue
+              else
+                fromInt(Helpers.toInt(v)))
         })
 
   def buildSetBooleanValue(
@@ -273,10 +287,14 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
   def makeKeyJDBCFriendly(in: Int) = new java.lang.Integer(in)
 
   def convertKey(in: String): Box[Int] = {
-    if (in eq null) Empty
+    if (in eq null)
+      Empty
     try {
       val what =
-        if (in.startsWith(name + "=")) in.substring((name + "=").length) else in
+        if (in.startsWith(name + "="))
+          in.substring((name + "=").length)
+        else
+          in
       Full(Integer.parseInt(what))
     } catch {
       case _: Exception => Empty
@@ -286,17 +304,22 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
   override def dbDisplay_? = false
 
   def convertKey(in: Int): Box[Int] = {
-    if (in < 0) Empty
-    else Full(in)
+    if (in < 0)
+      Empty
+    else
+      Full(in)
   }
 
   def convertKey(in: Long): Box[Int] = {
-    if (in < 0 || in > Integer.MAX_VALUE) Empty
-    else Full(in.asInstanceOf[Int])
+    if (in < 0 || in > Integer.MAX_VALUE)
+      Empty
+    else
+      Full(in.asInstanceOf[Int])
   }
 
   def convertKey(in: AnyRef): Box[Int] = {
-    if ((in eq null) || (in eq None)) None
+    if ((in eq null) || (in eq None))
+      None
     try {
       convertKey(in.toString)
     } catch {
@@ -447,7 +470,12 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt)
+          case f: MappedInt[T] =>
+            f.st(
+              if (isNull)
+                0
+              else
+                v.toInt)
         })
 
   def buildSetStringValue(
@@ -480,7 +508,12 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedInt[T] => f.st(if (isNull || !v) 0 else 1)
+          case f: MappedInt[T] =>
+            f.st(
+              if (isNull || !v)
+                0
+              else
+                1)
         })
 
   /**

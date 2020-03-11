@@ -166,7 +166,10 @@ private[spark] object RollingFileAppender {
     }.sorted
     val activeFile = {
       val file = new File(directory, activeFileName).getAbsoluteFile
-      if (file.exists) Some(file) else None
+      if (file.exists)
+        Some(file)
+      else
+        None
     }
     rolledOverFiles ++ activeFile
   }

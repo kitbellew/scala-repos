@@ -47,11 +47,16 @@ object Client {
       seenAt: DateTime) {
 
     def update(i: Instance): Option[Instance] =
-      if (i.version != version) i.some
-      else if (i.engine != engine) i.some
-      else if (i.ip != ip) i.some
-      else if (i.seenAt isAfter seenAt.plusMinutes(5)) i.some
-      else none
+      if (i.version != version)
+        i.some
+      else if (i.engine != engine)
+        i.some
+      else if (i.ip != ip)
+        i.some
+      else if (i.seenAt isAfter seenAt.plusMinutes(5))
+        i.some
+      else
+        none
 
     def seenRecently = seenAt isAfter Instance.recentSince
   }

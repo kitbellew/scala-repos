@@ -20,12 +20,15 @@ trait Trees extends api.Trees {
   protected def treeLine(t: Tree): String =
     if (t.pos.isDefined && t.pos.isRange)
       t.pos.lineContent.drop(t.pos.column - 1).take(t.pos.end - t.pos.start + 1)
-    else t.summaryString
+    else
+      t.summaryString
 
   protected def treeStatus(t: Tree, enclosingTree: Tree = null) = {
     val parent =
-      if (enclosingTree eq null) "        "
-      else " P#%5s".format(enclosingTree.id)
+      if (enclosingTree eq null)
+        "        "
+      else
+        " P#%5s".format(enclosingTree.id)
 
     "[L%4s%8s] #%-6s %-15s %-10s // %s".format(
       t.pos.line,
@@ -37,13 +40,18 @@ trait Trees extends api.Trees {
   }
   protected def treeSymStatus(t: Tree) = {
     val line =
-      if (t.pos.isDefined) "line %-4s".format(t.pos.line) else "         "
+      if (t.pos.isDefined)
+        "line %-4s".format(t.pos.line)
+      else
+        "         "
     "#%-5s %s %-10s // %s".format(
       t.id,
       line,
       t.shortClass,
-      if (t.symbol ne NoSymbol) "(" + t.symbol.fullLocationString + ")"
-      else treeLine(t))
+      if (t.symbol ne NoSymbol)
+        "(" + t.symbol.fullLocationString + ")"
+      else
+        treeLine(t))
   }
 
   abstract class Tree extends TreeContextApiImpl with Attachable with Product {
@@ -111,7 +119,8 @@ trait Trees extends api.Trees {
     private[scala] def copyAttrs(tree: Tree): this.type = {
       rawatt = tree.rawatt
       setType(tree.tpe)
-      if (hasSymbolField) symbol = tree.symbol
+      if (hasSymbolField)
+        symbol = tree.symbol
       this
     }
 
@@ -124,7 +133,11 @@ trait Trees extends api.Trees {
 
   abstract class TreeContextApiImpl extends TreeApi { this: Tree =>
 
-    override def orElse(alt: => Tree) = if (!isEmpty) this else alt
+    override def orElse(alt: => Tree) =
+      if (!isEmpty)
+        this
+      else
+        alt
 
     override def foreach(f: Tree => Unit) {
       new ForeachTreeTraverser(f).traverse(this)
@@ -197,7 +210,8 @@ trait Trees extends api.Trees {
         symOfType: Type => Symbol): List[S] = {
       val s = mutable.LinkedHashSet[S]()
       def addIfFree(sym: Symbol): Unit =
-        if (sym != null && isFree(sym)) s += sym.asInstanceOf[S]
+        if (sym != null && isFree(sym))
+          s += sym.asInstanceOf[S]
       for (t <- this) {
         addIfFree(t.symbol)
         if (t.tpe != null) {
@@ -228,8 +242,10 @@ trait Trees extends api.Trees {
       *  If the type is null, it remains null - the function is not called.
       */
     def modifyType(f: Type => Type): Tree =
-      if (tpe eq null) this
-      else this setType f(tpe)
+      if (tpe eq null)
+        this
+      else
+        this setType f(tpe)
 
     /** If `pf` is defined for a given subtree, call super.traverse(pf(tree)),
       *  otherwise super.traverse(tree).
@@ -261,8 +277,10 @@ trait Trees extends api.Trees {
       case t: NameTree => t.name.longString
       case t =>
         t.shortClass + (
-          if (t.symbol != null && t.symbol != NoSymbol) "(" + t.symbol + ")"
-          else ""
+          if (t.symbol != null && t.symbol != NoSymbol)
+            "(" + t.symbol + ")"
+          else
+            ""
         )
     }
   }
@@ -312,12 +330,19 @@ trait Trees extends api.Trees {
     def keyword: String = this match {
       case TypeDef(_, _, _, _) => "type"
       case ClassDef(mods, _, _, _) =>
-        if (mods hasFlag TRAIT) "trait" else "class"
+        if (mods hasFlag TRAIT)
+          "trait"
+        else
+          "class"
       case DefDef(_, _, _, _, _, _) => "def"
       case ModuleDef(_, _, _)       => "object"
       case PackageDef(_, _)         => "package"
-      case ValDef(mods, _, _, _)    => if (mods hasFlag MUTABLE) "var" else "val"
-      case _                        => ""
+      case ValDef(mods, _, _, _) =>
+        if (mods hasFlag MUTABLE)
+          "var"
+        else
+          "val"
+      case _ => ""
     }
   }
 
@@ -744,8 +769,10 @@ trait Trees extends api.Trees {
   def TypeTree(tp: Type): TypeTree = TypeTree() setType tp
   private def TypeTreeMemberType(sym: Symbol): TypeTree = {
     // Needed for pos/t4970*.scala. See SI-7853
-    val resType = (if (sym.isLocalToBlock) sym.tpe
-                   else (sym.owner.thisType memberType sym)).finalResultType
+    val resType = (if (sym.isLocalToBlock)
+                     sym.tpe
+                   else
+                     (sym.owner.thisType memberType sym)).finalResultType
     atPos(sym.pos.focus)(TypeTree(resType))
   }
 
@@ -1188,31 +1215,41 @@ trait Trees extends api.Trees {
 
     def &(flag: Long): Modifiers = {
       val flags1 = flags & flag
-      if (flags1 == flags) this
-      else Modifiers(flags1, privateWithin, annotations) setPositions positions
+      if (flags1 == flags)
+        this
+      else
+        Modifiers(flags1, privateWithin, annotations) setPositions positions
     }
     def &~(flag: Long): Modifiers = {
       val flags1 = flags & (~flag)
-      if (flags1 == flags) this
-      else Modifiers(flags1, privateWithin, annotations) setPositions positions
+      if (flags1 == flags)
+        this
+      else
+        Modifiers(flags1, privateWithin, annotations) setPositions positions
     }
     def |(flag: Int): Modifiers = this | flag.toLong
     def |(flag: Long): Modifiers = {
       val flags1 = flags | flag
-      if (flags1 == flags) this
-      else Modifiers(flags1, privateWithin, annotations) setPositions positions
+      if (flags1 == flags)
+        this
+      else
+        Modifiers(flags1, privateWithin, annotations) setPositions positions
     }
     def withAnnotations(annots: List[Tree]) =
-      if (annots.isEmpty) this
-      else copy(annotations = annotations ::: annots) setPositions positions
+      if (annots.isEmpty)
+        this
+      else
+        copy(annotations = annotations ::: annots) setPositions positions
 
     def withPosition(flag: Long, position: Position) =
       copy() setPositions positions + (flag -> position)
 
     override def mapAnnotations(f: List[Tree] => List[Tree]): Modifiers = {
       val newAnns = f(annotations)
-      if (annotations == newAnns) this
-      else Modifiers(flags, privateWithin, newAnns) setPositions positions
+      if (annotations == newAnns)
+        this
+      else
+        Modifiers(flags, privateWithin, newAnns) setPositions positions
     }
 
     override def toString =
@@ -1236,7 +1273,10 @@ trait Trees extends api.Trees {
     atPos(sym.pos) {
       Template(
         sym.info.parents map TypeTree,
-        if (sym.thisSym == sym) noSelfType else ValDef(sym),
+        if (sym.thisSym == sym)
+          noSelfType
+        else
+          ValDef(sym),
         body)
     }
   }
@@ -1392,7 +1432,8 @@ trait Trees extends api.Trees {
   /** Block factory that flattens directly nested blocks.
     */
   def Block(stats: Tree*): Block = {
-    if (stats.isEmpty) Block(Nil, Literal(Constant(())))
+    if (stats.isEmpty)
+      Block(Nil, Literal(Constant(())))
     else
       stats match {
         case Seq(b @ Block(_, _)) => b
@@ -1406,7 +1447,10 @@ trait Trees extends api.Trees {
     *  underlying type.
     */
   protected def typeTreeSymbol(tree: TypeTree): Symbol =
-    if (tree.tpe == null) null else tree.tpe.typeSymbol
+    if (tree.tpe == null)
+      null
+    else
+      tree.tpe.typeSymbol
 
   // --- generic traversers and transformers
 
@@ -1741,7 +1785,11 @@ trait Trees extends api.Trees {
   class ForeachPartialTreeTraverser(pf: PartialFunction[Tree, Tree])
       extends Traverser {
     override def traverse(tree: Tree) {
-      val t = if (pf isDefinedAt tree) pf(tree) else tree
+      val t =
+        if (pf isDefinedAt tree)
+          pf(tree)
+        else
+          tree
       super.traverse(t)
     }
   }
@@ -1751,7 +1799,8 @@ trait Trees extends api.Trees {
     final def change(sym: Symbol) = {
       if (sym != NoSymbol && sym.owner == oldowner) {
         sym.owner = newowner
-        if (sym.isModule) sym.moduleClass.owner = newowner
+        if (sym.isModule)
+          sym.moduleClass.owner = newowner
       }
     }
     override def traverse(tree: Tree) {
@@ -1781,18 +1830,22 @@ trait Trees extends api.Trees {
   private class ShallowDuplicator(orig: Tree) extends Transformer {
     override val treeCopy = newStrictTreeCopier
     override def transform(tree: Tree) =
-      if (tree eq orig) super.transform(tree)
-      else tree
+      if (tree eq orig)
+        super.transform(tree)
+      else
+        tree
   }
 
   /** A transformer that replaces tree `from` with tree `to` in a given tree */
   class TreeReplacer(from: Tree, to: Tree, positionAware: Boolean)
       extends Transformer {
     override def transform(t: Tree): Tree = {
-      if (t == from) to
+      if (t == from)
+        to
       else if (!positionAware || (t.pos includes from.pos) || t.pos.isTransparent)
         super.transform(t)
-      else t
+      else
+        t
     }
   }
 
@@ -1817,10 +1870,12 @@ trait Trees extends api.Trees {
     override def transform(tree: Tree): Tree = tree match {
       case Ident(_) =>
         def subst(from: List[Symbol], to: List[Tree]): Tree =
-          if (from.isEmpty) tree
+          if (from.isEmpty)
+            tree
           else if (tree.symbol == from.head)
             to.head.shallowDuplicate // TODO: does it ever make sense *not* to perform a shallowDuplicate on `to.head`?
-          else subst(from.tail, to.tail)
+          else
+            subst(from.tail, to.tail)
         subst(from, to)
       case _ =>
         super.transform(tree)
@@ -1882,8 +1937,10 @@ trait Trees extends api.Trees {
     override def transform(tree: Tree): Tree = {
       def subst(from: List[Symbol], to: List[Symbol]) {
         if (!from.isEmpty)
-          if (tree.symbol == from.head) tree setSymbol to.head
-          else subst(from.tail, to.tail)
+          if (tree.symbol == from.head)
+            tree setSymbol to.head
+          else
+            subst(from.tail, to.tail)
       }
       tree modifyType symSubst
 
@@ -1942,7 +1999,8 @@ trait Trees extends api.Trees {
   class FilterTreeTraverser(p: Tree => Boolean) extends Traverser {
     val hits = mutable.ListBuffer[Tree]()
     override def traverse(t: Tree) {
-      if (p(t)) hits += t
+      if (p(t))
+        hits += t
       super.traverse(t)
     }
   }
@@ -1951,7 +2009,8 @@ trait Trees extends api.Trees {
       extends Traverser {
     val results = mutable.ListBuffer[T]()
     override def traverse(t: Tree) {
-      if (pf.isDefinedAt(t)) results += pf(t)
+      if (pf.isDefinedAt(t))
+        results += pf(t)
       super.traverse(t)
     }
   }
@@ -1960,7 +2019,8 @@ trait Trees extends api.Trees {
     var result: Option[Tree] = None
     override def traverse(t: Tree) {
       if (result.isEmpty) {
-        if (p(t)) result = Some(t)
+        if (p(t))
+          result = Some(t)
         super.traverse(t)
       }
     }
@@ -1971,7 +2031,8 @@ trait Trees extends api.Trees {
     override val treeCopy = newStrictTreeCopier
     override def transform(t: Tree) = {
       val t1 = super.transform(t)
-      if ((t1 ne t) && t1.pos.isRange && focusPositions) t1 setPos t.pos.focus
+      if ((t1 ne t) && t1.pos.isRange && focusPositions)
+        t1 setPos t.pos.focus
       t1
     }
   }
@@ -2001,7 +2062,8 @@ trait Trees extends api.Trees {
         selfOrSuperCalls push currentOwner.owner
         try super.transform(tree)
         finally selfOrSuperCalls.pop()
-      } else super.transform(tree)
+      } else
+        super.transform(tree)
     }
   }
 
@@ -2032,12 +2094,30 @@ trait Trees extends api.Trees {
     case DefDef(mods0, name0, tparams0, vparamss0, tpt0, rhs0) =>
       treeCopy.DefDef(
         tree,
-        if (mods eq null) mods0 else mods,
-        if (name eq null) name0 else name,
-        if (tparams eq null) tparams0 else tparams,
-        if (vparamss eq null) vparamss0 else vparamss,
-        if (tpt eq null) tpt0 else tpt,
-        if (rhs eq null) rhs0 else rhs
+        if (mods eq null)
+          mods0
+        else
+          mods,
+        if (name eq null)
+          name0
+        else
+          name,
+        if (tparams eq null)
+          tparams0
+        else
+          tparams,
+        if (vparamss eq null)
+          vparamss0
+        else
+          vparamss,
+        if (tpt eq null)
+          tpt0
+        else
+          tpt,
+        if (rhs eq null)
+          rhs0
+        else
+          rhs
       )
     case t =>
       sys.error("Not a DefDef: " + t + "/" + t.getClass)
@@ -2051,10 +2131,22 @@ trait Trees extends api.Trees {
     case ValDef(mods0, name0, tpt0, rhs0) =>
       treeCopy.ValDef(
         tree,
-        if (mods eq null) mods0 else mods,
-        if (name eq null) name0 else name,
-        if (tpt eq null) tpt0 else tpt,
-        if (rhs eq null) rhs0 else rhs)
+        if (mods eq null)
+          mods0
+        else
+          mods,
+        if (name eq null)
+          name0
+        else
+          name,
+        if (tpt eq null)
+          tpt0
+        else
+          tpt,
+        if (rhs eq null)
+          rhs0
+        else
+          rhs)
     case t =>
       sys.error("Not a ValDef: " + t + "/" + t.getClass)
   }
@@ -2067,10 +2159,22 @@ trait Trees extends api.Trees {
     case TypeDef(mods0, name0, tparams0, rhs0) =>
       treeCopy.TypeDef(
         tree,
-        if (mods eq null) mods0 else mods,
-        if (name eq null) name0 else name,
-        if (tparams eq null) tparams0 else tparams,
-        if (rhs eq null) rhs0 else rhs)
+        if (mods eq null)
+          mods0
+        else
+          mods,
+        if (name eq null)
+          name0
+        else
+          name,
+        if (tparams eq null)
+          tparams0
+        else
+          tparams,
+        if (rhs eq null)
+          rhs0
+        else
+          rhs)
     case t =>
       sys.error("Not a TypeDef: " + t + "/" + t.getClass)
   }
@@ -2083,10 +2187,22 @@ trait Trees extends api.Trees {
     case ClassDef(mods0, name0, tparams0, impl0) =>
       treeCopy.ClassDef(
         tree,
-        if (mods eq null) mods0 else mods,
-        if (name eq null) name0 else name,
-        if (tparams eq null) tparams0 else tparams,
-        if (impl eq null) impl0 else impl)
+        if (mods eq null)
+          mods0
+        else
+          mods,
+        if (name eq null)
+          name0
+        else
+          name,
+        if (tparams eq null)
+          tparams0
+        else
+          tparams,
+        if (impl eq null)
+          impl0
+        else
+          impl)
     case t =>
       sys.error("Not a ClassDef: " + t + "/" + t.getClass)
   }
@@ -2099,9 +2215,18 @@ trait Trees extends api.Trees {
     case ModuleDef(mods0, name0, impl0) =>
       treeCopy.ModuleDef(
         tree,
-        if (mods eq null) mods0 else mods,
-        if (name eq null) name0 else name,
-        if (impl eq null) impl0 else impl)
+        if (mods eq null)
+          mods0
+        else
+          mods,
+        if (name eq null)
+          name0
+        else
+          name,
+        if (impl eq null)
+          impl0
+        else
+          impl)
     case t =>
       sys.error("Not a ModuleDef: " + t + "/" + t.getClass)
   }

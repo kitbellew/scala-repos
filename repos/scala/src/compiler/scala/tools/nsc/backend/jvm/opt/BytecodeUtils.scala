@@ -33,7 +33,8 @@ object BytecodeUtils {
     def unapply(instruction: AbstractInsnNode): Option[JumpInsnNode] = {
       if (instruction.getOpcode == GOTO)
         Some(instruction.asInstanceOf[JumpInsnNode])
-      else None
+      else
+        None
     }
   }
 
@@ -41,7 +42,8 @@ object BytecodeUtils {
     def unapply(instruction: AbstractInsnNode): Option[JumpInsnNode] = {
       if (isJumpNonJsr(instruction))
         Some(instruction.asInstanceOf[JumpInsnNode])
-      else None
+      else
+        None
     }
   }
 
@@ -49,7 +51,8 @@ object BytecodeUtils {
     def unapply(instruction: AbstractInsnNode): Option[JumpInsnNode] = {
       if (isConditionalJump(instruction))
         Some(instruction.asInstanceOf[JumpInsnNode])
-      else None
+      else
+        None
     }
   }
 
@@ -60,7 +63,8 @@ object BytecodeUtils {
         Some((instruction, instruction.asInstanceOf[VarInsnNode].`var`))
       else if (instruction.getOpcode == IINC)
         Some((instruction, instruction.asInstanceOf[IincInsnNode].`var`))
-      else None
+      else
+        None
     }
 
   }
@@ -136,8 +140,10 @@ object BytecodeUtils {
       alsoKeep: AbstractInsnNode => Boolean = Set())
       : Option[AbstractInsnNode] = {
     val next = insn.getNext
-    if (next == null || isExecutable(next) || alsoKeep(next)) Option(next)
-    else nextExecutableInstruction(next, alsoKeep)
+    if (next == null || isExecutable(next) || alsoKeep(next))
+      Option(next)
+    else
+      nextExecutableInstruction(next, alsoKeep)
   }
 
   @tailrec def nextExecutableInstructionOrLabel(
@@ -145,7 +151,8 @@ object BytecodeUtils {
     val next = insn.getNext
     if (next == null || isExecutable(next) || next.isInstanceOf[LabelNode])
       Option(next)
-    else nextExecutableInstructionOrLabel(next)
+    else
+      nextExecutableInstructionOrLabel(next)
   }
 
   def sameTargetExecutableInstruction(
@@ -179,8 +186,10 @@ object BytecodeUtils {
         seenLabels: Set[LabelNode]): LabelNode =
       nextExecutableInstruction(label) match {
         case Some(Goto(dest)) =>
-          if (seenLabels(dest.label)) dest.label
-          else followGoto(dest.label, seenLabels + dest.label)
+          if (seenLabels(dest.label))
+            dest.label
+          else
+            followGoto(dest.label, seenLabels + dest.label)
 
         case _ => label
       }
@@ -219,7 +228,11 @@ object BytecodeUtils {
   }
 
   def getPop(size: Int): InsnNode = {
-    val op = if (size == 1) POP else POP2
+    val op =
+      if (size == 1)
+        POP
+      else
+        POP2
     new InsnNode(op)
   }
 
@@ -241,14 +254,19 @@ object BytecodeUtils {
   def parametersSize(methodNode: MethodNode): Int = {
     (Type
       .getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
-                                                                  methodNode)) 1
-                                                            else 0)
+                                                                  methodNode))
+                                                              1
+                                                            else
+                                                              0)
   }
 
   def labelReferences(method: MethodNode): Map[LabelNode, Set[AnyRef]] = {
     val res = mutable.Map.empty[LabelNode, Set[AnyRef]]
     def add(l: LabelNode, ref: AnyRef) =
-      if (res contains l) res(l) = res(l) + ref else res(l) = Set(ref)
+      if (res contains l)
+        res(l) = res(l) + ref
+      else
+        res(l) = Set(ref)
 
     method.instructions.iterator().asScala foreach {
       case jump: JumpInsnNode   => add(jump.label, jump)
@@ -291,7 +309,8 @@ object BytecodeUtils {
     def substList(list: java.util.List[LabelNode]) = {
       foreachWithIndex(list.asScala.toList) {
         case (l, i) =>
-          if (l == from) list.set(i, to)
+          if (l == from)
+            list.set(i, to)
       }
     }
     reference match {
@@ -299,17 +318,24 @@ object BytecodeUtils {
       case line: LineNumberNode => line.start = to
       case switch: LookupSwitchInsnNode =>
         substList(switch.labels);
-        if (switch.dflt == from) switch.dflt = to
+        if (switch.dflt == from)
+          switch.dflt = to
       case switch: TableSwitchInsnNode =>
         substList(switch.labels);
-        if (switch.dflt == from) switch.dflt = to
+        if (switch.dflt == from)
+          switch.dflt = to
       case local: LocalVariableNode =>
-        if (local.start == from) local.start = to
-        if (local.end == from) local.end = to
+        if (local.start == from)
+          local.start = to
+        if (local.end == from)
+          local.end = to
       case handler: TryCatchBlockNode =>
-        if (handler.start == from) handler.start = to
-        if (handler.handler == from) handler.handler = to
-        if (handler.end == from) handler.end = to
+        if (handler.start == from)
+          handler.start = to
+        if (handler.handler == from)
+          handler.handler = to
+        if (handler.end == from)
+          handler.end = to
     }
   }
 
@@ -331,15 +357,17 @@ object BytecodeUtils {
   }
 
   def removeLineNumberNodes(classNode: ClassNode): Unit = {
-    for (m <- classNode.methods.asScala) removeLineNumberNodes(m.instructions)
+    for (m <- classNode.methods.asScala)
+      removeLineNumberNodes(m.instructions)
   }
 
   def removeLineNumberNodes(instructions: InsnList): Unit = {
     val iter = instructions.iterator()
-    while (iter.hasNext) iter.next() match {
-      case _: LineNumberNode => iter.remove()
-      case _                 =>
-    }
+    while (iter.hasNext)
+      iter.next() match {
+        case _: LineNumberNode => iter.remove()
+        case _                 =>
+      }
   }
 
   def cloneLabels(methodNode: MethodNode): Map[LabelNode, LabelNode] = {
@@ -455,16 +483,20 @@ object BytecodeUtils {
       * Gets the value at slot i, where i may be a local or a stack index.
       */
     def getValue(i: Int): V = {
-      if (i < frame.getLocals) frame.getLocal(i)
-      else frame.getStack(i - frame.getLocals)
+      if (i < frame.getLocals)
+        frame.getLocal(i)
+      else
+        frame.getStack(i - frame.getLocals)
     }
 
     /**
       * Sets the value at slot i, where i may be a local or a stack index.
       */
     def setValue(i: Int, value: V): Unit = {
-      if (i < frame.getLocals) frame.setLocal(i, value)
-      else frame.setStack(i - frame.getLocals, value)
+      if (i < frame.getLocals)
+        frame.setLocal(i, value)
+      else
+        frame.setStack(i - frame.getLocals, value)
     }
   }
 }

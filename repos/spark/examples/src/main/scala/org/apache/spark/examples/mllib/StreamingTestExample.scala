@@ -88,7 +88,8 @@ object StreamingTestExample {
     out.foreachRDD { rdd =>
       timeoutCounter -= 1
       val anySignificant = rdd.map(_.pValue < 0.05).fold(false)(_ || _)
-      if (timeoutCounter == 0 || anySignificant) rdd.context.stop()
+      if (timeoutCounter == 0 || anySignificant)
+        rdd.context.stop()
     }
 
     ssc.start()

@@ -224,8 +224,10 @@ object StackTrace {
 
   private def decodeClassName(encodedName: String): String = {
     val encoded =
-      if (encodedName.charAt(0) == '$') encodedName.substring(1)
-      else encodedName
+      if (encodedName.charAt(0) == '$')
+        encodedName.substring(1)
+      else
+        encodedName
     val base = if (decompressedClasses.contains(encoded)) {
       decompressedClasses(encoded)
     } else {
@@ -239,8 +241,10 @@ object StackTrace {
             loop(i + 1)
         } else {
           // no prefix matches
-          if (encoded.startsWith("L")) encoded.substring(1)
-          else encoded // just in case
+          if (encoded.startsWith("L"))
+            encoded.substring(1)
+          else
+            encoded // just in case
         }
       }
       loop(0)
@@ -301,8 +305,10 @@ object StackTrace {
       "<init>"
     } else {
       val methodNameLen = encodedName.indexOf("__")
-      if (methodNameLen < 0) encodedName
-      else encodedName.substring(0, methodNameLen)
+      if (methodNameLen < 0)
+        encodedName
+      else
+        encodedName.substring(0, methodNameLen)
     }
   }
 

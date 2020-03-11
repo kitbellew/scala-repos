@@ -26,7 +26,11 @@ case class TextAnalysis(text: String, badWords: List[String]) {
 
   def nbBadWords = badWords.size
 
-  def ratio: Double = if (nbWords == 0) 0 else nbBadWords.toDouble / nbWords
+  def ratio: Double =
+    if (nbWords == 0)
+      0
+    else
+      nbBadWords.toDouble / nbWords
 }
 
 sealed abstract class TextType(

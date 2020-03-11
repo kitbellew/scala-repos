@@ -17,7 +17,8 @@ class JuliaBenchmarks extends MyBenchmark {
     var z = c
     var n = 1
     while (n < 80) {
-      if (z.abs > 2.0) return n - 1
+      if (z.abs > 2.0)
+        return n - 1
       z = z * z + c
       n += 1
     }
@@ -46,7 +47,8 @@ class JuliaBenchmarks extends MyBenchmark {
     var z = c
     var n = 1
     while (n < 80) {
-      if (z.abs > 2.0f) return n - 1
+      if (z.abs > 2.0f)
+        return n - 1
       z = z * z + c
       n += 1
     }
@@ -75,7 +77,8 @@ class JuliaBenchmarks extends MyBenchmark {
     var z = c
     var n = 1
     while (n < 80) {
-      if (FastComplex.abs(z) > 2.0f) return n - 1
+      if (FastComplex.abs(z) > 2.0f)
+        return n - 1
       z = FastComplex.add(FastComplex.multiply(z, z), c)
       n += 1
     }

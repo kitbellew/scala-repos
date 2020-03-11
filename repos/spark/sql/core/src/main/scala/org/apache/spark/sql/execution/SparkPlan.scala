@@ -344,7 +344,10 @@ abstract class SparkPlan
       val res = sc.runJob(
         childRDD,
         (it: Iterator[Array[Byte]]) =>
-          if (it.hasNext) it.next() else Array.empty,
+          if (it.hasNext)
+            it.next()
+          else
+            Array.empty,
         p)
 
       res.foreach { r =>

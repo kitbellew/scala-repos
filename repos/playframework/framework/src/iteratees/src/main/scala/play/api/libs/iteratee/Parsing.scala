@@ -63,8 +63,10 @@ object Parsing {
               Unmatched(prefix),
               Matched(matched)) filter (!_.content.isEmpty)
 
-            if (left.length < needleSize) (newResults, left)
-            else scan(newResults, left, 0)
+            if (left.length < needleSize)
+              (newResults, left)
+            else
+              scan(newResults, left, 0)
 
           } else {
             val jump = jumpBadCharecter(piece(startScan + needleSize - 1))
@@ -73,7 +75,8 @@ object Parsing {
             if (newScan + needleSize > piece.length) {
               val (prefix, suffix) = (piece.splitAt(startScan))
               (previousMatches ++ List(Unmatched(prefix)), suffix)
-            } else scan(previousMatches, piece, newScan)
+            } else
+              scan(previousMatches, piece, newScan)
           }
         }
       }
@@ -92,7 +95,10 @@ object Parsing {
           case Input.El(chunk) =>
             val all = rest ++ chunk
             def inputOrEmpty(a: Array[Byte]) =
-              if (a.isEmpty) Input.Empty else Input.El(a)
+              if (a.isEmpty)
+                Input.Empty
+              else
+                Input.El(a)
 
             Iteratee.flatten(
               inner.fold1(

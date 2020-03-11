@@ -971,7 +971,12 @@ class RecordTests {
     object f extends Poly1 {
       implicit def int = at[Int](i => i > 0)
       implicit def string = at[String](s => s"s: $s")
-      implicit def boolean = at[Boolean](v => if (v) "Yup" else "Nope")
+      implicit def boolean =
+        at[Boolean](v =>
+          if (v)
+            "Yup"
+          else
+            "Nope")
     }
 
     {

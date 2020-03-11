@@ -28,18 +28,26 @@ trait TypersTracking {
           case s  => " with flags " + inLightMagenta(s)
         }
         s", a ${context.owner.shortSymbolClass}$flags_s"
-      } else ""
+      } else
+        ""
     )
-    def marker = if (context.bufferErrors) "silent" else "site"
+    def marker =
+      if (context.bufferErrors)
+        "silent"
+      else
+        "site"
     def undet_s = context.undetparams match {
       case Nil => ""
       case ps  => ps.mkString(" solving: ", ",", "")
     }
     def implicits_s = (
       if (context.enrichmentEnabled)
-        if (context.implicitsEnabled) ""
-        else inLightRed("enrichment only")
-      else inLightRed("implicits disabled")
+        if (context.implicitsEnabled)
+          ""
+        else
+          inLightRed("enrichment only")
+      else
+        inLightRed("implicits disabled")
     )
 
     s"($marker$undet_s: ${context.siteString}$owner_long_s) $implicits_s"
@@ -60,11 +68,17 @@ trait TypersTracking {
       finally depth += 1
     }
     private def resetIfEmpty(s: String) =
-      if (trees.isEmpty) resetColor(s) else s
+      if (trees.isEmpty)
+        resetColor(s)
+      else
+        s
 
     private def truncAndOneLine(s: String): String = {
       val s1 = s.replaceAll("\\s+", " ")
-      if (s1.length < 60 || settings.debug.value) s1 else s1.take(57) + "..."
+      if (s1.length < 60 || settings.debug.value)
+        s1
+      else
+        s1.take(57) + "..."
     }
 
     private class Frame(val tree: Tree) {}
@@ -77,8 +91,10 @@ trait TypersTracking {
       case _                        => "<?>"
     }
     def indented(s: String): String =
-      if (s == "") ""
-      else currentIndent + s.replaceAll("\n", "\n" + currentIndent)
+      if (s == "")
+        ""
+      else
+        currentIndent + s.replaceAll("\n", "\n" + currentIndent)
 
     @inline final def runWith[T](t: Tree)(body: => T): T = {
       push(t)
@@ -96,7 +112,8 @@ trait TypersTracking {
       depth -= 1
     }
     def show(s: String) {
-      if (s != "") out.println(s)
+      if (s != "")
+        out.println(s)
     }
 
     def showPush(tree: Tree, context: Context) {
@@ -105,8 +122,10 @@ trait TypersTracking {
     def showPush(tree: Tree, mode: Mode, pt: Type, context: Context) {
       def tree_s = truncAndOneLine(ptTree(tree))
       def pt_s =
-        if (pt.isWildcard || context.inTypeConstructorAllowed) ""
-        else s": pt=$pt"
+        if (pt.isWildcard || context.inTypeConstructorAllowed)
+          ""
+        else
+          s": pt=$pt"
       def all_s =
         List(
           tree_s,
@@ -124,7 +143,11 @@ trait TypersTracking {
     def showAdapt(original: Tree, adapted: Tree, pt: Type, context: Context) {
       if (!noPrintAdapt(original, adapted)) {
         def tree_s1 = inLightCyan(truncAndOneLine(ptTree(original)))
-        def pt_s = if (pt.isWildcard) "" else s" based on pt $pt"
+        def pt_s =
+          if (pt.isWildcard)
+            ""
+          else
+            s" based on pt $pt"
         def tree_s2 = adapted match {
           case tt: TypeTree =>
             "is now a TypeTree(" + tpe_s(tt.tpe, inCyan) + ")"

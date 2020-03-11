@@ -76,7 +76,8 @@ object TimeoutFilter {
       ): ServiceFactory[Req, Rep] = {
         val Param(timeout) = _param
         val param.Timer(timer) = _timer
-        if (!timeout.isFinite || timeout <= Duration.Zero) next
+        if (!timeout.isFinite || timeout <= Duration.Zero)
+          next
         else {
           val exc = new IndividualRequestTimeoutException(timeout)
           val filter = new TimeoutFilter[Req, Rep](timeout, exc, timer)

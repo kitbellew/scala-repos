@@ -87,7 +87,8 @@ class CompletionProcessor(
   }
 
   def execute(_element: PsiElement, state: ResolveState): Boolean = {
-    if (!_element.isInstanceOf[PsiElement]) return false
+    if (!_element.isInstanceOf[PsiElement])
+      return false
     val element = _element.asInstanceOf[PsiNamedElement]
     forName match {
       case Some(name) if element.name != name => return true
@@ -117,7 +118,8 @@ class CompletionProcessor(
             levelSet.remove(result)
             addResult(result)
           }
-        } else addResult(result)
+        } else
+          addResult(result)
         signature.foreach(sign => signatures += ((sign, forImplicit)))
       } else {
         signature match {
@@ -146,7 +148,8 @@ class CompletionProcessor(
                 levelSet.remove(result)
                 addResult(result)
               }
-            } else addResult(result)
+            } else
+              addResult(result)
         }
       }
     }
@@ -222,7 +225,8 @@ class CompletionProcessor(
   }
 
   override def changedLevel: Boolean = {
-    if (levelSet.isEmpty) return true
+    if (levelSet.isEmpty)
+      return true
     val iterator = levelSet.iterator()
     while (iterator.hasNext) {
       val next = iterator.next()

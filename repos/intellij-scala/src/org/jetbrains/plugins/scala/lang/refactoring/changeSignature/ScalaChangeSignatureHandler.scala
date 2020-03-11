@@ -89,7 +89,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
 
     unwrapMethod(element) match {
       case Some(method) =>
-        if (!CommonRefactoringUtil.checkReadOnlyStatus(project, method)) return
+        if (!CommonRefactoringUtil.checkReadOnlyStatus(project, method))
+          return
         method match {
           case f: ScFunction if f.isSynthetic => return
           case _                              =>
@@ -100,7 +101,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
           RefactoringBundle.message("to.refactor"))
         unwrapMethod(newMethod) match {
           case Some(fun: ScMethodLike) =>
-            if (isSupportedFor(fun)) invokeWithDialog(project, fun)
+            if (isSupportedFor(fun))
+              invokeWithDialog(project, fun)
           case Some(m) if m != method =>
             ChangeSignatureUtil.invokeChangeSignatureOn(m, project)
           case _ =>
@@ -128,10 +130,13 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
       project: Project,
       elements: Array[PsiElement],
       dataContext: DataContext): Unit = {
-    if (elements.length != 1) return
+    if (elements.length != 1)
+      return
     val editor: Editor =
-      if (dataContext == null) null
-      else CommonDataKeys.EDITOR.getData(dataContext)
+      if (dataContext == null)
+        null
+      else
+        CommonDataKeys.EDITOR.getData(dataContext)
     invokeOnElement(project, editor, elements(0))
   }
 
@@ -139,7 +144,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
     ScalaBundle.message("error.wrong.caret.position.method.name")
 
   override def findTargetMember(element: PsiElement): PsiElement = {
-    if (element.isInstanceOf[PsiMethod]) return element
+    if (element.isInstanceOf[PsiMethod])
+      return element
 
     def resolvedMethod =
       PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement]) match {

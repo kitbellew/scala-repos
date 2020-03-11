@@ -9,12 +9,14 @@ object methcall {
     var v: Boolean = false
 
     val toggle = new Toggle(true);
-    for (i <- Iterator.range(1, n)) v = toggle.activate.value;
+    for (i <- Iterator.range(1, n))
+      v = toggle.activate.value;
 
     Console println (toggle.activate.value);
 
     val ntoggle = new NToggle(true, 3);
-    for (i <- Iterator.range(1, n)) v = ntoggle.activate.value;
+    for (i <- Iterator.range(1, n))
+      v = ntoggle.activate.value;
 
     Console println (ntoggle.activate.value);
   }
@@ -26,7 +28,10 @@ object methcall {
       } catch {
         case _ => 1
       }
-    if (i > 0) i; else 1;
+    if (i > 0)
+      i;
+    else
+      1;
   }
 }
 

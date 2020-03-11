@@ -41,7 +41,8 @@ object BuildSettings {
       if (branch == "HEAD") {
         // not on a branch, get the hash
         "git rev-parse HEAD".!!.trim
-      } else branch
+      } else
+        branch
     } catch {
       case NonFatal(_) => "unknown"
     }

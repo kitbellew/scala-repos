@@ -27,13 +27,15 @@ class ScRefinementImpl(node: ASTNode)
     val iterator = types.iterator
     while (iterator.hasNext) {
       val elem = iterator.next
-      if (!processor.execute(elem, state)) return false
+      if (!processor.execute(elem, state))
+        return false
     }
 
     val iterator1 = holders.iterator.flatMap(_.declaredElements.iterator)
     while (iterator1.hasNext) {
       val elem = iterator1.next
-      if (!processor.execute(elem, state)) return false
+      if (!processor.execute(elem, state))
+        return false
     }
     true
   }

@@ -27,7 +27,8 @@ class PackageSplitLinesProcessor extends SmartEnterProcessor {
       case Package(prefix) =>
         val i = offset - start
         val dotIndex = line.indexOf('.', i)
-        if (dotIndex == -1) false
+        if (dotIndex == -1)
+          false
         else {
           val tail = line.substring(dotIndex + 1)
           document.replaceString(

@@ -28,7 +28,10 @@ trait Logging {
   private val log4jController = Log4jController
 
   private def msgWithLogIdent(msg: String) =
-    if (logIdent == null) msg else logIdent + msg
+    if (logIdent == null)
+      msg
+    else
+      logIdent + msg
 
   def trace(msg: => String): Unit = {
     if (logger.isTraceEnabled())

@@ -32,7 +32,10 @@ case class BitSet(length: Int, array: Array[Int]) {
   }
 
   def update(n: Int, b: Boolean): Unit =
-    if (b) this += n else this -= n
+    if (b)
+      this += n
+    else
+      this -= n
 
   def apply(n: Int): Boolean =
     ((array(n >>> 5) >>> (n & 31)) & 1) == 1

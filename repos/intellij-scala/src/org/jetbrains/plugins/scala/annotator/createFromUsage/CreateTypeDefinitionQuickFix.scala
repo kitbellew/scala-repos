@@ -69,8 +69,10 @@ abstract class CreateTypeDefinitionQuickFix(
             case td: ScTypeDefinition if td.isTopLevel => td
           }
           val fileOption =
-            if (file == null || file.getContainingDirectory == null) None
-            else Some(file)
+            if (file == null || file.getContainingDirectory == null)
+              None
+            else
+              Some(file)
           val possibleSiblings = fileOption ++: inThisFile.toSeq.reverse
           createClassWithLevelChoosing(editor, possibleSiblings)
         case _ =>
@@ -107,7 +109,8 @@ abstract class CreateTypeDefinitionQuickFix(
       anchorAfter: Option[PsiElement]): Unit = {
     try {
       if (!FileModificationService.getInstance.preparePsiElementForWrite(
-            parent)) return
+            parent))
+        return
 
       val text = s"${kind.keyword} $name"
       val newTd = ScalaPsiElementFactory.createTemplateDefinitionFromText(

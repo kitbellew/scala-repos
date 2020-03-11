@@ -86,7 +86,8 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
       }
       val observe = ignore map (ignoreFunc ⇒
         !ignoreFunc.applyOrElse(x, FALSE)) getOrElse true
-      if (observe) queue.offerLast(RealMessage(x, sender()))
+      if (observe)
+        queue.offerLast(RealMessage(x, sender()))
   }
 
   override def postStop() = {
@@ -302,7 +303,8 @@ trait TestKitBase {
           false
         } catch {
           case NonFatal(e) ⇒
-            if ((now + t) >= stop) throw e
+            if ((now + t) >= stop)
+              throw e
             true
         }
       if (failed) {
@@ -333,7 +335,11 @@ trait TestKitBase {
   def within[T](min: FiniteDuration, max: FiniteDuration)(f: ⇒ T): T = {
     val _max = max.dilated
     val start = now
-    val rem = if (end == Duration.Undefined) Duration.Inf else end - start
+    val rem =
+      if (end == Duration.Undefined)
+        Duration.Inf
+      else
+        end - start
     assert(
       rem >= min,
       s"required min time $min not possible, only ${format(min.unit, rem)} left")
@@ -455,7 +461,10 @@ trait TestKitBase {
       assert(
         f.isDefinedAt(o),
         s"fishForMessage($hint) found unexpected message $o")
-      if (f(o)) o else recv
+      if (f(o))
+        o
+      else
+        recv
     }
     recv
   }
@@ -585,10 +594,14 @@ trait TestKitBase {
       unexpectedMessage: String): Unit = {
     assert(
       missing.isEmpty && unexpected.isEmpty,
-      (if (missing.isEmpty) ""
-       else missing.mkString(missingMessage + " [", ", ", "] ")) +
-        (if (unexpected.isEmpty) ""
-         else unexpected.mkString(unexpectedMessage + " [", ", ", "]"))
+      (if (missing.isEmpty)
+         ""
+       else
+         missing.mkString(missingMessage + " [", ", ", "] ")) +
+        (if (unexpected.isEmpty)
+           ""
+         else
+           unexpected.mkString(unexpectedMessage + " [", ", ", "]"))
     )
   }
 
@@ -726,7 +739,8 @@ trait TestKitBase {
 
     @tailrec
     def doit(acc: List[T], count: Int): List[T] = {
-      if (count >= messages) acc.reverse
+      if (count >= messages)
+        acc.reverse
       else {
         receiveOne((stop - now) min idle)
         lastMessage match {
@@ -887,13 +901,16 @@ object TestKit {
       if (!p) {
         val toSleep = stop - now
         if (toSleep <= Duration.Zero) {
-          if (noThrow) false
-          else throw new AssertionError(s"timeout $max expired")
+          if (noThrow)
+            false
+          else
+            throw new AssertionError(s"timeout $max expired")
         } else {
           Thread.sleep((toSleep min interval).toMillis)
           poll()
         }
-      } else true
+      } else
+        true
     }
 
     poll()
@@ -922,8 +939,10 @@ object TestKit {
           actorSystem.name,
           duration,
           actorSystem.asInstanceOf[ActorSystemImpl].printTree)
-        if (verifySystemShutdown) throw new RuntimeException(msg)
-        else actorSystem.log.warning(msg)
+        if (verifySystemShutdown)
+          throw new RuntimeException(msg)
+        else
+          actorSystem.log.warning(msg)
     }
   }
 }

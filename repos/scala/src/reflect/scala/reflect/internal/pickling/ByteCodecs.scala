@@ -15,7 +15,8 @@ object ByteCodecs {
     val srclen = src.length
     var count = 0
     while (i < srclen) {
-      if (src(i) == 0x7f) count += 1
+      if (src(i) == 0x7f)
+        count += 1
       i += 1
     }
     val dst = new Array[Byte](srclen + count)
@@ -124,7 +125,8 @@ object ByteCodecs {
           }
         }
       }
-      if (j < dstlen) dst(j) = out.toByte
+      if (j < dstlen)
+        dst(j) = out.toByte
     }
     dst
   }
@@ -196,7 +198,8 @@ object ByteCodecs {
           }
         }
       }
-      if (j < dstlen) src(j) = out.toByte
+      if (j < dstlen)
+        src(j) = out.toByte
     }
     dstlen
   }

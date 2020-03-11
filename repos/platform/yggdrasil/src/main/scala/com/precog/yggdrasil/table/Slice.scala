@@ -337,8 +337,8 @@ trait Slice { source =>
       case CPathIndex(i) =>
         source.columns collect {
           case (
-              ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
-              col: HomogeneousArrayColumn[_]) =>
+                ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
+                col: HomogeneousArrayColumn[_]) =>
             (ColumnRef(CPath(xs: _*), elemType), col.select(i))
 
           case (ColumnRef(CPath(CPathIndex(`i`), xs @ _*), ctype), col) =>
@@ -439,9 +439,9 @@ trait Slice { source =>
             cType,
             CPath(cPath: _*))) getOrElse (retain)
         case (
-            JArrayFixedT(elems),
-            CArrayType(cElemType),
-            CPath(CPathArray, cPath @ _*)) =>
+              JArrayFixedT(elems),
+              CArrayType(cElemType),
+              CPath(CPathArray, cPath @ _*)) =>
           val mappers =
             elems mapValues (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
           xs =>
@@ -453,9 +453,9 @@ trait Slice { source =>
                 }
             })
         case (
-            JArrayHomogeneousT(jType),
-            CArrayType(cType),
-            CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
+              JArrayHomogeneousT(jType),
+              CArrayType(cType),
+              CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
           delete
         case _ =>
           retain
@@ -469,8 +469,8 @@ trait Slice { source =>
         None
 
       case (
-          ref @ ColumnRef(cpath, ctype: CArrayType[a]),
-          col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
+            ref @ ColumnRef(cpath, ctype: CArrayType[a]),
+            col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
         val trans = flattenDeleteTree(jtype, ctype, cpath)
         Some(
           (
@@ -597,8 +597,8 @@ trait Slice { source =>
     val size = source.size
     val columns = source.columns.collect {
       case (
-          ColumnRef(cPath @ CPath(CPathArray, _*), cType),
-          col: HomogeneousArrayColumn[a]) =>
+            ColumnRef(cPath @ CPath(CPathArray, _*), cType),
+            col: HomogeneousArrayColumn[a]) =>
         (
           ColumnRef(cPath, cType),
           new HomogeneousArrayColumn[a] {
@@ -606,7 +606,8 @@ trait Slice { source =>
             def isDefinedAt(row: Int) = col.isDefinedAt(row)
             def apply(row: Int) = {
               val xs = col(row)
-              if (index >= xs.length) xs
+              if (index >= xs.length)
+                xs
               else {
                 val ys = tpe.elemType.manifest.newArray(xs.length)
 
@@ -727,7 +728,8 @@ trait Slice { source =>
         case AnyDefined => {
           val acc = new ArrayIntList
           Loop.range(0, filter.size) { i =>
-            if (cols.values.toArray.exists(_.isDefinedAt(i))) acc.add(i)
+            if (cols.values.toArray.exists(_.isDefinedAt(i)))
+              acc.add(i)
           }
           acc
         }
@@ -754,7 +756,8 @@ trait Slice { source =>
             }
             val otherBool = otherCols.values.toArray.forall(_.isDefinedAt(i))
 
-            if (otherBool && numBool) acc.add(i)
+            if (otherBool && numBool)
+              acc.add(i)
           }
           acc
         }
@@ -788,11 +791,18 @@ trait Slice { source =>
 
           @tailrec
           def findSelfDistinct0(prevRow: Int, curRow: Int): ArrayIntList = {
-            if (curRow >= filter.size) acc
+            if (curRow >= filter.size)
+              acc
             else {
               val retain = selfComparator.compare(prevRow, curRow) != EQ
-              if (retain) acc.add(curRow)
-              findSelfDistinct0(if (retain) curRow else prevRow, curRow + 1)
+              if (retain)
+                acc.add(curRow)
+              findSelfDistinct0(
+                if (retain)
+                  curRow
+                else
+                  prevRow,
+                curRow + 1)
             }
           }
 
@@ -807,10 +817,12 @@ trait Slice { source =>
           def findStraddlingDistinct0(
               prevRow: Int,
               curRow: Int): ArrayIntList = {
-            if (curRow >= filter.size) acc
+            if (curRow >= filter.size)
+              acc
             else {
               val retain = straddleComparator.compare(prevRow, curRow) != EQ
-              if (retain) acc.add(curRow)
+              if (retain)
+                acc.add(curRow)
               if (retain)
                 findSelfDistinct(curRow, curRow + 1)
               else
@@ -929,7 +941,10 @@ trait Slice { source =>
       keySlice.isDefinedAt(row) && source.isDefinedAt(row)
     }
     val rowOrder =
-      if (sortOrder == SortAscending) keySlice.order else keySlice.order.reverse
+      if (sortOrder == SortAscending)
+        keySlice.order
+      else
+        keySlice.order.reverse
     spire.math.MergeSort.sort(order)(rowOrder, implicitly)
 
     val remapOrder = new ArrayIntList(order.size)
@@ -978,7 +993,8 @@ trait Slice { source =>
   }
 
   def take(sz: Int): Slice =
-    if (sz >= source.size) source
+    if (sz >= source.size)
+      source
     else {
       new Slice {
         val size = sz
@@ -989,7 +1005,8 @@ trait Slice { source =>
     }
 
   def drop(sz: Int): Slice =
-    if (sz <= 0) source
+    if (sz <= 0)
+      source
     else {
       new Slice {
         val size = source.size - sz
@@ -1041,7 +1058,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[Long](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayLongColumn(defined, values)
 
@@ -1049,7 +1067,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[Double](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayDoubleColumn(defined, values)
 
@@ -1057,7 +1076,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[BigDecimal](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayNumColumn(defined, values)
 
@@ -1065,7 +1085,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[String](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayStrColumn(defined, values)
 
@@ -1073,7 +1094,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[DateTime](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayDateColumn(defined, values)
 
@@ -1081,7 +1103,8 @@ trait Slice { source =>
           val defined = col.definedAt(0, source.size)
           val values = new Array[Period](source.size)
           Loop.range(0, source.size) { row =>
-            if (defined(row)) values(row) = col(row)
+            if (defined(row))
+              values(row) = col(row)
           }
           ArrayPeriodColumn(defined, values)
 
@@ -1814,7 +1837,8 @@ trait Slice { source =>
           case JUndefined => rec(i + 1, acc)
           case jv         => rec(i + 1, acc :+ jv)
         }
-      } else acc
+      } else
+        acc
     }
 
     rec(0, Vector())
@@ -1823,8 +1847,10 @@ trait Slice { source =>
   def toString(row: Int): Option[String] = {
     (columns.toList.sortBy(_._1) map {
       case (ref, col) =>
-        ref.toString + ": " + (if (col.isDefinedAt(row)) col.strValue(row)
-                               else "(undefined)")
+        ref.toString + ": " + (if (col.isDefinedAt(row))
+                                 col.strValue(row)
+                               else
+                                 "(undefined)")
     }) match {
       case Nil => None
       case l   => Some(l.mkString("[", ", ", "]"))

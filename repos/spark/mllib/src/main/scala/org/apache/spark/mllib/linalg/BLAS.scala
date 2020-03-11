@@ -391,10 +391,26 @@ private[spark] object BLAS extends Serializable with Logging {
       B: DenseMatrix,
       beta: Double,
       C: DenseMatrix): Unit = {
-    val tAstr = if (A.isTransposed) "T" else "N"
-    val tBstr = if (B.isTransposed) "T" else "N"
-    val lda = if (!A.isTransposed) A.numRows else A.numCols
-    val ldb = if (!B.isTransposed) B.numRows else B.numCols
+    val tAstr =
+      if (A.isTransposed)
+        "T"
+      else
+        "N"
+    val tBstr =
+      if (B.isTransposed)
+        "T"
+      else
+        "N"
+    val lda =
+      if (!A.isTransposed)
+        A.numRows
+      else
+        A.numCols
+    val ldb =
+      if (!B.isTransposed)
+        B.numRows
+      else
+        B.numCols
 
     require(
       A.numCols == B.numRows,
@@ -592,9 +608,21 @@ private[spark] object BLAS extends Serializable with Logging {
       x: DenseVector,
       beta: Double,
       y: DenseVector): Unit = {
-    val tStrA = if (A.isTransposed) "T" else "N"
-    val mA = if (!A.isTransposed) A.numRows else A.numCols
-    val nA = if (!A.isTransposed) A.numCols else A.numRows
+    val tStrA =
+      if (A.isTransposed)
+        "T"
+      else
+        "N"
+    val mA =
+      if (!A.isTransposed)
+        A.numRows
+      else
+        A.numCols
+    val nA =
+      if (!A.isTransposed)
+        A.numCols
+      else
+        A.numRows
     nativeBLAS.dgemv(
       tStrA,
       mA,
@@ -676,8 +704,16 @@ private[spark] object BLAS extends Serializable with Logging {
     val nA: Int = A.numCols
 
     val Avals = A.values
-    val Arows = if (!A.isTransposed) A.rowIndices else A.colPtrs
-    val Acols = if (!A.isTransposed) A.colPtrs else A.rowIndices
+    val Arows =
+      if (!A.isTransposed)
+        A.rowIndices
+      else
+        A.colPtrs
+    val Acols =
+      if (!A.isTransposed)
+        A.colPtrs
+      else
+        A.rowIndices
 
     if (A.isTransposed) {
       var rowCounter = 0
@@ -697,7 +733,8 @@ private[spark] object BLAS extends Serializable with Logging {
         rowCounter += 1
       }
     } else {
-      if (beta != 1.0) scal(beta, y)
+      if (beta != 1.0)
+        scal(beta, y)
 
       var colCounterForA = 0
       var k = 0
@@ -735,8 +772,16 @@ private[spark] object BLAS extends Serializable with Logging {
     val nA: Int = A.numCols
 
     val Avals = A.values
-    val Arows = if (!A.isTransposed) A.rowIndices else A.colPtrs
-    val Acols = if (!A.isTransposed) A.colPtrs else A.rowIndices
+    val Arows =
+      if (!A.isTransposed)
+        A.rowIndices
+      else
+        A.colPtrs
+    val Acols =
+      if (!A.isTransposed)
+        A.colPtrs
+      else
+        A.rowIndices
     // Slicing is easy in this case. This is the optimal multiplication setting for sparse matrices
     if (A.isTransposed) {
       var rowCounter = 0
@@ -752,7 +797,8 @@ private[spark] object BLAS extends Serializable with Logging {
         rowCounter += 1
       }
     } else {
-      if (beta != 1.0) scal(beta, y)
+      if (beta != 1.0)
+        scal(beta, y)
       // Perform matrix-vector multiplication and add to y
       var colCounterForA = 0
       while (colCounterForA < nA) {

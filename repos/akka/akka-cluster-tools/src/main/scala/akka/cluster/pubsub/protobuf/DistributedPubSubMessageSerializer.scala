@@ -185,7 +185,10 @@ private[akka] class DistributedPubSubMessageSerializer(
         entry ⇒
           entry.getKey -> ValueHolder(
             entry.getVersion,
-            if (entry.hasRef) Some(resolveActorRef(entry.getRef)) else None)
+            if (entry.hasRef)
+              Some(resolveActorRef(entry.getRef))
+            else
+              None)
       }(breakOut)
       Bucket(addressFromProto(b.getOwner), b.getVersion, content)
     })
@@ -265,8 +268,10 @@ private[akka] class DistributedPubSubMessageSerializer(
 
   private def payloadFromProto(payload: dm.Payload): AnyRef = {
     val manifest =
-      if (payload.hasMessageManifest) payload.getMessageManifest.toStringUtf8
-      else ""
+      if (payload.hasMessageManifest)
+        payload.getMessageManifest.toStringUtf8
+      else
+        ""
     serialization
       .deserialize(
         payload.getEnclosedMessage.toByteArray,

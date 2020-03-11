@@ -30,8 +30,10 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 5
-    else identifierFromConfig
+    if (system eq null)
+      5
+    else
+      identifierFromConfig
 
   private final val BufferSize = 1024 * 4
   // must be lazy because serializer is initialized from Cluster extension constructor
@@ -180,7 +182,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def getProtocol(address: cm.Address): String = {
     val p = address.getProtocol
     val pc = protocolCache
-    if (pc == p) pc
+    if (pc == p)
+      pc
     else {
       protocolCache = p
       p
@@ -190,7 +193,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def getSystem(address: cm.Address): String = {
     val s = address.getSystem
     val sc = systemCache
-    if (sc == s) sc
+    if (sc == s)
+      sc
     else {
       systemCache = s
       s
@@ -571,7 +575,10 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       Metric(
         metricNameMapping(metric.getNameIndex),
         numberFromProto(metric.getNumber),
-        if (metric.hasEwma) ewmaFromProto(metric.getEwma) else None)
+        if (metric.hasEwma)
+          ewmaFromProto(metric.getEwma)
+        else
+          None)
 
     def nodeMetricsFromProto(nodeMetrics: cm.NodeMetrics): NodeMetrics =
       NodeMetrics(

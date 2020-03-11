@@ -66,7 +66,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       commit(editor)
 
       val atCaret = getStatementAtCaret(editor, file)
-      if (atCaret == null) return
+      if (atCaret == null)
+        return
 
       for (psiElement <- collectAllAtCaret(atCaret)) {
         for (fixer <- ScalaSmartEnterProcessor.myFixers) {
@@ -78,12 +79,14 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
           go match {
             case fixer.WithEnter(inserted) =>
               commit(editor)
-              if (inserted != 0) moveCaretBy(editor, inserted)
+              if (inserted != 0)
+                moveCaretBy(editor, inserted)
               plainEnter(editor)
               return
             case fixer.WithReformat(inserted) =>
               commit(editor)
-              if (inserted != 0) moveCaretBy(editor, inserted)
+              if (inserted != 0)
+                moveCaretBy(editor, inserted)
               reformat(getStatementAtCaret(editor, file))
               return
             case _ =>
@@ -99,7 +102,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
   }
 
   protected override def reformat(caret: PsiElement) {
-    if (caret == null) return
+    if (caret == null)
+      return
 
     var atCaret = caret
     val parent = atCaret.getParent
@@ -132,11 +136,14 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       if (atCaret != null && processor.doEnter(
             editor,
             atCaret,
-            isModified(editor))) return
+            isModified(editor)))
+        return
     }
 
-    if (!isModified(editor)) plainEnter(editor)
-    else editor.getCaretModel.moveToOffset(rangeMarker.getEndOffset)
+    if (!isModified(editor))
+      plainEnter(editor)
+    else
+      editor.getCaretModel.moveToOffset(rangeMarker.getEndOffset)
   }
 
   private def collectAllAtCaret(caret: PsiElement): Iterable[PsiElement] = {
@@ -166,9 +173,11 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       editor: Editor,
       psiFile: PsiFile): PsiElement = {
     val atCaret: PsiElement = super.getStatementAtCaret(editor, psiFile)
-    if (atCaret.isInstanceOf[PsiWhiteSpace] || atCaret == null) return null
+    if (atCaret.isInstanceOf[PsiWhiteSpace] || atCaret == null)
+      return null
     if (("}" == atCaret.getText) && !atCaret.getParent
-          .isInstanceOf[PsiArrayInitializerExpression]) return null
+          .isInstanceOf[PsiArrayInitializerExpression])
+      return null
 
     var statementAtCaret: PsiElement =
       PsiTreeUtil.getParentOfType(
@@ -180,7 +189,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
         classOf[ScCatchBlock],
         classOf[ScMethodCall])
 
-    if (statementAtCaret.isInstanceOf[PsiBlockStatement]) return null
+    if (statementAtCaret.isInstanceOf[PsiBlockStatement])
+      return null
 
     if (statementAtCaret != null && statementAtCaret.getParent
           .isInstanceOf[ScForStatement]) {

@@ -36,7 +36,8 @@ private[puzzle] final class PuzzleApi(
         .collect[List](nb)
 
     def importBatch(json: JsValue, token: String): Fu[List[Try[PuzzleId]]] =
-      if (token != apiToken) fufail("Invalid API token")
+      if (token != apiToken)
+        fufail("Invalid API token")
       else {
         import Generated.generatedJSONRead
         insertPuzzles(json.as[List[Generated]] map (_.toPuzzle))

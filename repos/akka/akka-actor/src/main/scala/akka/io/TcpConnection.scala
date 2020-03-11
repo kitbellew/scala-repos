@@ -80,7 +80,8 @@ private[io] abstract class TcpConnection(
         useResumeWriting)
 
       // if we have resumed reading from pullMode while waiting for Register then register OP_READ interest
-      if (pullMode && !readingSuspended) resumeReading(info)
+      if (pullMode && !readingSuspended)
+        resumeReading(info)
       doRead(
         info,
         None
@@ -143,8 +144,10 @@ private[io] abstract class TcpConnection(
     case UpdatePendingWriteAndThen(remaining, work) ⇒
       pendingWrite = remaining
       work()
-      if (writePending) info.registration.enableInterest(OP_WRITE)
-      else handleClose(info, closeCommander, closedEvent)
+      if (writePending)
+        info.registration.enableInterest(OP_WRITE)
+      else
+        handleClose(info, closeCommander, closedEvent)
 
     case WriteFileFailed(e) ⇒
       handleError(info.handler, e) // rethrow exception from dispatcher task
@@ -179,13 +182,16 @@ private[io] abstract class TcpConnection(
         sender() ! write.failureMessage
 
       } else if (writePending) {
-        if (TraceLogging) log.debug("Dropping write because queue is full")
+        if (TraceLogging)
+          log.debug("Dropping write because queue is full")
         sender() ! write.failureMessage
-        if (info.useResumeWriting) writingSuspended = true
+        if (info.useResumeWriting)
+          writingSuspended = true
 
       } else {
         pendingWrite = PendingWrite(sender(), write)
-        if (writePending) doWrite(info)
+        if (writePending)
+          doWrite(info)
       }
 
     case ResumeWriting ⇒
@@ -201,14 +207,18 @@ private[io] abstract class TcpConnection(
        */
       writingSuspended = false
       if (writePending) {
-        if (interestedInResume.isEmpty) interestedInResume = Some(sender())
-        else sender() ! CommandFailed(ResumeWriting)
-      } else sender() ! WritingResumed
+        if (interestedInResume.isEmpty)
+          interestedInResume = Some(sender())
+        else
+          sender() ! CommandFailed(ResumeWriting)
+      } else
+        sender() ! WritingResumed
 
     case UpdatePendingWriteAndThen(remaining, work) ⇒
       pendingWrite = remaining
       work()
-      if (writePending) info.registration.enableInterest(OP_WRITE)
+      if (writePending)
+        info.registration.enableInterest(OP_WRITE)
 
     case WriteFileFailed(e) ⇒
       handleError(info.handler, e) // rethrow exception from dispatcher task
@@ -266,27 +276,34 @@ private[io] abstract class TcpConnection(
           val readBytes = channel.read(buffer)
           buffer.flip()
 
-          if (TraceLogging) log.debug("Read [{}] bytes.", readBytes)
-          if (readBytes > 0) info.handler ! Received(ByteString(buffer))
+          if (TraceLogging)
+            log.debug("Read [{}] bytes.", readBytes)
+          if (readBytes > 0)
+            info.handler ! Received(ByteString(buffer))
 
           readBytes match {
             case `maxBufferSpace` ⇒
-              if (pullMode) MoreDataWaiting
-              else innerRead(buffer, remainingLimit - maxBufferSpace)
+              if (pullMode)
+                MoreDataWaiting
+              else
+                innerRead(buffer, remainingLimit - maxBufferSpace)
             case x if x >= 0 ⇒ AllRead
             case -1 ⇒ EndOfStream
             case _ ⇒
               throw new IllegalStateException(
                 "Unexpected value returned from read: " + readBytes)
           }
-        } else MoreDataWaiting
+        } else
+          MoreDataWaiting
 
       val buffer = bufferPool.acquire()
       try innerRead(buffer, ReceivedMessageSizeLimit) match {
         case AllRead ⇒
-          if (!pullMode) info.registration.enableInterest(OP_READ)
+          if (!pullMode)
+            info.registration.enableInterest(OP_READ)
         case MoreDataWaiting ⇒
-          if (!pullMode) self ! ChannelReadable
+          if (!pullMode)
+            self ! ChannelReadable
         case EndOfStream if channel.socket.isOutputShutdown ⇒
           if (TraceLogging)
             log.debug("Read returned end-of-stream, our side already closed")
@@ -304,15 +321,18 @@ private[io] abstract class TcpConnection(
     pendingWrite = pendingWrite.doWrite(info)
 
   def closeReason =
-    if (channel.socket.isOutputShutdown) ConfirmedClosed
-    else PeerClosed
+    if (channel.socket.isOutputShutdown)
+      ConfirmedClosed
+    else
+      PeerClosed
 
   def handleClose(
       info: ConnectionInfo,
       closeCommander: Option[ActorRef],
       closedEvent: ConnectionClosed): Unit = closedEvent match {
     case Aborted ⇒
-      if (TraceLogging) log.debug("Got Abort command. RESETing connection.")
+      if (TraceLogging)
+        log.debug("Got Abort command. RESETing connection.")
       doCloseConnection(info.handler, closeCommander, closedEvent)
     case PeerClosed if info.keepOpenOnPeerClosed ⇒
       // report that peer closed the connection
@@ -327,7 +347,8 @@ private[io] abstract class TcpConnection(
         log.debug("Got Close command but write is still pending.")
       context.become(closingWithPendingWrite(info, closeCommander, closedEvent))
     case ConfirmedClosed ⇒ // shutdown output and wait for confirmation
-      if (TraceLogging) log.debug("Got ConfirmedClose command, sending FIN.")
+      if (TraceLogging)
+        log.debug("Got ConfirmedClose command, sending FIN.")
 
       // If peer closed first, the socket is now fully closed.
       // Also, if shutdownOutput threw an exception we expect this to be an indication
@@ -335,9 +356,11 @@ private[io] abstract class TcpConnection(
       // also see http://bugs.sun.com/view_bug.do?bug_id=4516760
       if (peerClosed || !safeShutdownOutput())
         doCloseConnection(info.handler, closeCommander, closedEvent)
-      else context.become(closing(info, closeCommander))
+      else
+        context.become(closing(info, closeCommander))
     case _ ⇒ // close now
-      if (TraceLogging) log.debug("Got Close command, closing connection.")
+      if (TraceLogging)
+        log.debug("Got Close command, closing connection.")
       doCloseConnection(info.handler, closeCommander, closedEvent)
   }
 
@@ -345,8 +368,10 @@ private[io] abstract class TcpConnection(
       handler: ActorRef,
       closeCommander: Option[ActorRef],
       closedEvent: ConnectionClosed): Unit = {
-    if (closedEvent == Aborted) abort()
-    else channel.close()
+    if (closedEvent == Aborted)
+      abort()
+    else
+      channel.close()
     stopWith(CloseInformation(Set(handler) ++ closeCommander, closedEvent))
   }
 
@@ -363,7 +388,8 @@ private[io] abstract class TcpConnection(
     }
 
   @tailrec private[this] def extractMsg(t: Throwable): String =
-    if (t == null) "unknown"
+    if (t == null)
+      "unknown"
     else {
       t.getMessage match {
         case null | "" ⇒ extractMsg(t.getCause)
@@ -378,7 +404,8 @@ private[io] abstract class TcpConnection(
       case NonFatal(e) ⇒
         // setSoLinger can fail due to http://bugs.sun.com/view_bug.do?bug_id=6799574
         // (also affected: OS/X Java 1.6.0_37)
-        if (TraceLogging) log.debug("setSoLinger(true, 0) failed with [{}]", e)
+        if (TraceLogging)
+          log.debug("setSoLinger(true, 0) failed with [{}]", e)
     }
     channel.close()
   }
@@ -392,12 +419,15 @@ private[io] abstract class TcpConnection(
     if (channel.isOpen)
       abort()
 
-    if (writePending) pendingWrite.release()
+    if (writePending)
+      pendingWrite.release()
 
     if (closedMessage != null) {
       val interestedInClose =
-        if (writePending) closedMessage.notificationsTo + pendingWrite.commander
-        else closedMessage.notificationsTo
+        if (writePending)
+          closedMessage.notificationsTo + pendingWrite.commander
+        else
+          closedMessage.notificationsTo
 
       interestedInClose.foreach(_ ! closedMessage.closedEvent)
     }
@@ -413,7 +443,10 @@ private[io] abstract class TcpConnection(
         tail: WriteCommand = Write.empty): PendingWrite =
       head match {
         case Write.empty ⇒
-          if (tail eq Write.empty) EmptyPendingWrite else create(tail)
+          if (tail eq Write.empty)
+            EmptyPendingWrite
+          else
+            create(tail)
         case Write(data, ack) if data.nonEmpty ⇒
           PendingBufferWrite(commander, data, ack, tail)
         case WriteFile(path, offset, count, ack) ⇒
@@ -423,7 +456,8 @@ private[io] abstract class TcpConnection(
               _,
               ack
             ) ⇒ // empty write with either an ACK or a non-standard NoACK
-          if (x.wantsAck) commander ! ack
+          if (x.wantsAck)
+            commander ! ack
           create(tail)
       }
     create(write)
@@ -460,10 +494,12 @@ private[io] abstract class TcpConnection(
           channel.write(
             buffer
           ) // at first we try to drain the remaining bytes from the buffer
-        if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
+        if (TraceLogging)
+          log.debug("Wrote [{}] bytes to channel", writtenBytes)
         if (buffer.hasRemaining) {
           // we weren't able to write all bytes from the buffer, so we need to try again later
-          if (data eq remainingData) this
+          if (data eq remainingData)
+            this
           else
             new PendingBufferWrite(
               commander,
@@ -480,7 +516,8 @@ private[io] abstract class TcpConnection(
           writeToChannel(data drop copied)
 
         } else {
-          if (!ack.isInstanceOf[NoAck]) commander ! ack
+          if (!ack.isInstanceOf[NoAck])
+            commander ! ack
           release()
           PendingWrite(commander, tail)
         }
@@ -549,7 +586,9 @@ private[io] abstract class TcpConnection(
         } else {
           release()
           val andThen =
-            if (!ack.isInstanceOf[NoAck])() ⇒ commander ! ack else doNothing
+            if (!ack.isInstanceOf[NoAck])() ⇒ commander ! ack
+            else
+              doNothing
           self ! UpdatePendingWriteAndThen(
             PendingWrite(commander, tail),
             andThen)

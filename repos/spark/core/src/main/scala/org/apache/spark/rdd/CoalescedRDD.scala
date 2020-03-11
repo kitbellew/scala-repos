@@ -61,7 +61,10 @@ private[spark] case class CoalescedRDDPartition(
         rdd.context.getPreferredLocs(rdd, p.index).map(_.host)
       preferredLocation.exists(parentPreferredLocations.contains)
     }
-    if (parents.size == 0) 0.0 else (loc.toDouble / parents.size.toDouble)
+    if (parents.size == 0)
+      0.0
+    else
+      (loc.toDouble / parents.size.toDouble)
   }
 }
 
@@ -165,7 +168,12 @@ private class PartitionCoalescer(
   def compare(o1: PartitionGroup, o2: PartitionGroup): Boolean =
     o1.size < o2.size
   def compare(o1: Option[PartitionGroup], o2: Option[PartitionGroup]): Boolean =
-    if (o1 == None) false else if (o2 == None) true else compare(o1.get, o2.get)
+    if (o1 == None)
+      false
+    else if (o2 == None)
+      true
+    else
+      compare(o1.get, o2.get)
 
   val rnd = new scala.util.Random(7919) // keep this class deterministic
 
@@ -204,7 +212,10 @@ private class PartitionCoalescer(
     def resetIterator(): Iterator[(String, Partition)] = {
       val iterators = (0 to 2).map(x =>
         prev.partitions.iterator.flatMap(p => {
-          if (currPrefLocs(p).size > x) Some((currPrefLocs(p)(x), p)) else None
+          if (currPrefLocs(p).size > x)
+            Some((currPrefLocs(p)(x), p))
+          else
+            None
         }))
       iterators.reduceLeft((x, y) => x ++ y)
     }
@@ -316,12 +327,19 @@ private class PartitionCoalescer(
       currPrefLocs(p)
         .map(getLeastGroupHash(_))
         .sortWith(compare) // least loaded pref locs
-    val prefPart = if (pref == Nil) None else pref.head
+    val prefPart =
+      if (pref == Nil)
+        None
+      else
+        pref.head
 
     val r1 = rnd.nextInt(groupArr.size)
     val r2 = rnd.nextInt(groupArr.size)
     val minPowerOfTwo =
-      if (groupArr(r1).size < groupArr(r2).size) groupArr(r1) else groupArr(r2)
+      if (groupArr(r1).size < groupArr(r2).size)
+        groupArr(r1)
+      else
+        groupArr(r2)
     if (prefPart.isEmpty) {
       // if no preferred locations, just use basic power of two
       return minPowerOfTwo

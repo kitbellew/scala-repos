@@ -21,16 +21,26 @@ object Test extends App {
 
   def convert(value: Any, tpe: Type) = {
     import scala.runtime.BoxesRunTime._
-    if (tpe =:= typeOf[Byte]) toByte(value)
-    else if (tpe =:= typeOf[Short]) toShort(value)
-    else if (tpe =:= typeOf[Char]) toCharacter(value)
-    else if (tpe =:= typeOf[Int]) toInteger(value)
-    else if (tpe =:= typeOf[Long]) toLong(value)
-    else if (tpe =:= typeOf[Float]) toFloat(value)
-    else if (tpe =:= typeOf[Double]) toDouble(value)
-    else if (tpe =:= typeOf[String]) value.toString
-    else if (tpe =:= typeOf[Boolean]) value.asInstanceOf[Boolean]
-    else throw new Exception(s"not supported: value = $value, tpe = $tpe")
+    if (tpe =:= typeOf[Byte])
+      toByte(value)
+    else if (tpe =:= typeOf[Short])
+      toShort(value)
+    else if (tpe =:= typeOf[Char])
+      toCharacter(value)
+    else if (tpe =:= typeOf[Int])
+      toInteger(value)
+    else if (tpe =:= typeOf[Long])
+      toLong(value)
+    else if (tpe =:= typeOf[Float])
+      toFloat(value)
+    else if (tpe =:= typeOf[Double])
+      toDouble(value)
+    else if (tpe =:= typeOf[String])
+      value.toString
+    else if (tpe =:= typeOf[Boolean])
+      value.asInstanceOf[Boolean]
+    else
+      throw new Exception(s"not supported: value = $value, tpe = $tpe")
   }
 
   def test[T: ClassTag](tpe: Type, receiver: T, method: String, args: Any*) {
@@ -47,8 +57,10 @@ object Test extends App {
       }
     val meth = tpe.decl(TermName(method).encodedName.toTermName)
     val testees =
-      if (meth.isMethod) List(meth.asMethod)
-      else meth.asTerm.alternatives.map(_.asMethod)
+      if (meth.isMethod)
+        List(meth.asMethod)
+      else
+        meth.asTerm.alternatives.map(_.asMethod)
     testees foreach (testee => {
       val convertedArgs = args.zipWithIndex.map {
         case (arg, i) => convert(arg, testee.paramLists.flatten.apply(i).info)

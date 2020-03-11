@@ -78,7 +78,11 @@ object ChangeFillExample extends JFXApp {
           children = new Button {
             text = "Change Fill"
             onAction = (ae: ActionEvent) =>
-              fillPaint() = if (Light == fillPaint()) Dark else Light
+              fillPaint() =
+                if (Light == fillPaint())
+                  Dark
+                else
+                  Light
           }
         }
       }

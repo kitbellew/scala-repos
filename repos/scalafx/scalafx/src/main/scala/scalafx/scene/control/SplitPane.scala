@@ -38,12 +38,18 @@ import scalafx.scene.Node
 
 object SplitPane {
   implicit def sfxSplitPane2jfx(v: SplitPane): jfxsc.SplitPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object Divider {
     implicit def sfxSplitPaneDivider2jfx(
         v: SplitPane.Divider): jfxsc.SplitPane.Divider =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   class Divider(

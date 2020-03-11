@@ -61,8 +61,10 @@ object TimePathSourceLaws extends Properties("Time path source") {
     { (dr: DateRange) =>
       val botTs = max(dr.start.timestamp, availableRange.start.timestamp)
       val topTs = min(dr.end.timestamp, availableRange.end.timestamp)
-      if (botTs > topTs) None
-      else Some(DateRange(RichDate(botTs), RichDate(topTs)))
+      if (botTs > topTs)
+        None
+      else
+        Some(DateRange(RichDate(botTs), RichDate(topTs)))
     }
   }
 
@@ -87,7 +89,8 @@ object TimePathSourceLaws extends Properties("Time path source") {
             data.embiggen,
             data.availableRange)) {
         retData == Some(data.requestedRange)
-      } else true // not tested here
+      } else
+        true // not tested here
     }
 
   property(

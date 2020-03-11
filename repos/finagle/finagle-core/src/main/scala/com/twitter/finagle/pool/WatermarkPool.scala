@@ -152,10 +152,11 @@ class WatermarkPool[Req, Rep](
     }
     underlying.respond { res =>
       p.updateIfEmpty(res)
-      if (res.isThrow) thePool.synchronized {
-        numServices -= 1
-        flushWaiters()
-      }
+      if (res.isThrow)
+        thePool.synchronized {
+          numServices -= 1
+          flushWaiters()
+        }
     }
     p.setInterruptHandler {
       case e =>
@@ -194,8 +195,10 @@ class WatermarkPool[Req, Rep](
   }
 
   override def status: Status =
-    if (isOpen) factory.status
-    else Status.Closed
+    if (isOpen)
+      factory.status
+    else
+      Status.Closed
 
   override val toString: String = "watermark_pool_%s".format(factory.toString)
 }

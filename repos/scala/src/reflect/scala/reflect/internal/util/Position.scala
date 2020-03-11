@@ -47,7 +47,11 @@ object Position {
       posIn: Position,
       msg: String,
       shortenFile: Boolean): String = {
-    val pos = if (posIn eq null) NoPosition else posIn
+    val pos =
+      if (posIn eq null)
+        NoPosition
+      else
+        posIn
     val prefix = pos.source match {
       case NoSourceFile     => ""
       case s if shortenFile => s.file.name + ":"
@@ -108,11 +112,16 @@ sealed abstract class DefinedPosition extends Position {
   }
   override def hashCode = Seq[Any](source.file, start, point, end).##
   override def toString = (
-    if (isRange) s"RangePosition($canonicalPath, $start, $point, $end)"
-    else s"source-$canonicalPath,line-$line,$pointMessage$point"
+    if (isRange)
+      s"RangePosition($canonicalPath, $start, $point, $end)"
+    else
+      s"source-$canonicalPath,line-$line,$pointMessage$point"
   )
   private def pointMessage =
-    if (point > source.length) "out-of-bounds-" else "offset="
+    if (point > source.length)
+      "out-of-bounds-"
+    else
+      "offset="
   private def canonicalPath = source.file.canonicalPath
 }
 
@@ -145,15 +154,25 @@ private[util] trait InternalPositionImpl {
   def isTransparent = false
   def isOffset = isDefined && !isRange
   def isOpaqueRange = isRange && !isTransparent
-  def pointOrElse(alt: Int): Int = if (isDefined) point else alt
+  def pointOrElse(alt: Int): Int =
+    if (isDefined)
+      point
+    else
+      alt
   def makeTransparent: Position =
-    if (isOpaqueRange) Position.transparent(source, start, point, end) else this
+    if (isOpaqueRange)
+      Position.transparent(source, start, point, end)
+    else
+      this
 
   /** Copy a range position with a changed value.
     */
   def withStart(start: Int): Position = copyRange(start = start)
   def withPoint(point: Int): Position =
-    if (isRange) copyRange(point = point) else Position.offset(source, point)
+    if (isRange)
+      copyRange(point = point)
+    else
+      Position.offset(source, point)
   def withEnd(end: Int): Position = copyRange(end = end)
   def withSource(source: SourceFile): Position = copyRange(source = source)
   def withShift(shift: Int): Position =
@@ -161,9 +180,21 @@ private[util] trait InternalPositionImpl {
 
   /** Convert a range position to a simple offset.
     */
-  def focusStart: Position = if (this.isRange) asOffset(start) else this
-  def focus: Position = if (this.isRange) asOffset(point) else this
-  def focusEnd: Position = if (this.isRange) asOffset(end) else this
+  def focusStart: Position =
+    if (this.isRange)
+      asOffset(start)
+    else
+      this
+  def focus: Position =
+    if (this.isRange)
+      asOffset(point)
+    else
+      this
+  def focusEnd: Position =
+    if (this.isRange)
+      asOffset(end)
+    else
+      this
 
   /** If you have it in for punctuation you might not like these methods.
     *  However I think they're aptly named.
@@ -181,10 +212,12 @@ private[util] trait InternalPositionImpl {
   def ^|(that: Position): Position = (this | that) ^ this.point
 
   def union(pos: Position): Position = (
-    if (!pos.isRange) this
+    if (!pos.isRange)
+      this
     else if (this.isRange)
       copyRange(start = start min pos.start, end = end max pos.end)
-    else pos
+    else
+      pos
   )
 
   def includes(pos: Position): Boolean =
@@ -202,10 +235,26 @@ private[util] trait InternalPositionImpl {
   def overlaps(pos: Position): Boolean =
     bothRanges(pos) && start < pos.end && pos.start < end
 
-  def line: Int = if (hasSource) source.offsetToLine(point) + 1 else 0
-  def column: Int = if (hasSource) calculateColumn() else 0
-  def lineContent: String = if (hasSource) source.lineToString(line - 1) else ""
-  def lineCaret: String = if (hasSource) " " * (column - 1) + "^" else ""
+  def line: Int =
+    if (hasSource)
+      source.offsetToLine(point) + 1
+    else
+      0
+  def column: Int =
+    if (hasSource)
+      calculateColumn()
+    else
+      0
+  def lineContent: String =
+    if (hasSource)
+      source.lineToString(line - 1)
+    else
+      ""
+  def lineCaret: String =
+    if (hasSource)
+      " " * (column - 1) + "^"
+    else
+      ""
   @deprecated("use `lineCaret`", since = "2.11.0")
   def lineCarat: String = lineCaret
 
@@ -215,9 +264,14 @@ private[util] trait InternalPositionImpl {
       def uable(c: Int) = (c < 0x20 && c != '\t') || c == 0x7F
       if (s exists (c => uable(c))) {
         val sb = new StringBuilder
-        s foreach (c => sb append (if (uable(c)) u(c) else c))
+        s foreach (c =>
+          sb append (if (uable(c))
+                       u(c)
+                     else
+                       c))
         sb.toString
-      } else s
+      } else
+        s
     }
     def errorAt(p: Pos) = {
       def where = p.line
@@ -233,10 +287,14 @@ private[util] trait InternalPositionImpl {
   }
   def showDebug: String = toString
   def show = (
-    if (isOpaqueRange) s"[$start:$end]"
-    else if (isTransparent) s"<$start:$end>"
-    else if (isDefined) s"[$point]"
-    else "[NoPosition]"
+    if (isOpaqueRange)
+      s"[$start:$end]"
+    else if (isTransparent)
+      s"<$start:$end>"
+    else if (isDefined)
+      s"[$point]"
+    else
+      "[NoPosition]"
   )
 
   private def asOffset(point: Int): Position = Position.offset(source, point)
@@ -253,7 +311,8 @@ private[util] trait InternalPositionImpl {
     while (idx != point) {
       col += (if (source.content(idx) == '\t')
                 Position.tabInc - col % Position.tabInc
-              else 1)
+              else
+                1)
       idx += 1
     }
     col + 1
@@ -268,7 +327,11 @@ private[util] trait DeprecatedPosition {
   self: Position =>
 
   @deprecated("use `point`", "2.9.0") // Used in SBT 0.12.4
-  def offset: Option[Int] = if (isDefined) Some(point) else None
+  def offset: Option[Int] =
+    if (isDefined)
+      Some(point)
+    else
+      None
 
   @deprecated("use `focus`", "2.11.0")
   def toSingleLine: Position = this
@@ -291,8 +354,16 @@ private[util] trait DeprecatedPosition {
     this withSource source withShift shift
 
   @deprecated("Use `start` instead", "2.11.0")
-  def startOrPoint: Int = if (isRange) start else point
+  def startOrPoint: Int =
+    if (isRange)
+      start
+    else
+      point
 
   @deprecated("Use `end` instead", "2.11.0")
-  def endOrPoint: Int = if (isRange) end else point
+  def endOrPoint: Int =
+    if (isRange)
+      end
+    else
+      point
 }

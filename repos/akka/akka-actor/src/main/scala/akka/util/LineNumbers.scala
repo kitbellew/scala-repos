@@ -28,7 +28,10 @@ object LineNumbers {
   final case class SourceFileLines(filename: String, from: Int, to: Int)
       extends Result {
     override def toString =
-      if (from != to) s"$filename:$from-$to" else s"$filename:$from"
+      if (from != to)
+        s"$filename:$from-$to"
+      else
+        s"$filename:$from"
   }
 
   /**
@@ -94,7 +97,8 @@ object LineNumbers {
     def contains(str: String): Boolean = _rev contains str
 
     private def put(idx: Int, str: String): Unit = {
-      if (!(_rev contains str)) _rev = _rev.updated(str, idx)
+      if (!(_rev contains str))
+        _rev = _rev.updated(str, idx)
       _fwd = _fwd.updated(idx, str)
     }
 
@@ -170,7 +174,8 @@ object LineNumbers {
       val lines = readMethods(dis, filter)
       val source = readAttributes(dis)
 
-      if (source.isEmpty) NoSourceInfo
+      if (source.isEmpty)
+        NoSourceInfo
       else
         lines match {
           case None ⇒ SourceFile(source.get)
@@ -193,7 +198,8 @@ object LineNumbers {
     val resource = c.getName.replace('.', '/') + ".class"
     val cl = c.getClassLoader
     val r = cl.getResourceAsStream(resource)
-    if (debug) println(s"LNB:     resource '$resource' resolved to stream $r")
+    if (debug)
+      println(s"LNB:     resource '$resource' resolved to stream $r")
     Option(r).map(_ -> None)
   }
 
@@ -212,13 +218,15 @@ object LineNumbers {
       }
     } catch {
       case NonFatal(ex) ⇒
-        if (debug) ex.printStackTrace()
+        if (debug)
+          ex.printStackTrace()
         None
     }
 
   private def skipID(d: DataInputStream): Unit = {
     val magic = d.readInt()
-    if (debug) println(f"LNB: magic=0x$magic%08X")
+    if (debug)
+      println(f"LNB: magic=0x$magic%08X")
     if (magic != 0xcafebabe)
       throw new IllegalArgumentException("not a Java class file")
   }
@@ -226,14 +234,17 @@ object LineNumbers {
   private def skipVersion(d: DataInputStream): Unit = {
     val minor = d.readShort()
     val major = d.readShort()
-    if (debug) println(s"LNB: version=$major:$minor")
+    if (debug)
+      println(s"LNB: version=$major:$minor")
   }
 
   private def getConstants(d: DataInputStream): Constants = {
     val count = d.readUnsignedShort()
-    if (debug) println(s"LNB: reading $count constants")
+    if (debug)
+      println(s"LNB: reading $count constants")
     val c = new Constants(count)
-    while (!c.isDone) c.readOne(d)
+    while (!c.isDone)
+      c.readOne(d)
     c.resolve()
     c
   }
@@ -242,7 +253,8 @@ object LineNumbers {
     skip(d, 2) // access flags
     val name = d.readUnsignedShort() // class name
     skip(d, 2) // superclass name
-    if (debug) println(s"LNB: class name = ${c(name)}")
+    if (debug)
+      println(s"LNB: class name = ${c(name)}")
   }
 
   private def skipInterfaceInfo(d: DataInputStream)(
@@ -250,14 +262,17 @@ object LineNumbers {
     val count = d.readUnsignedShort()
     for (_ ← 1 to count) {
       val intf = d.readUnsignedShort()
-      if (debug) println(s"LNB:   implements ${c(intf)}")
+      if (debug)
+        println(s"LNB:   implements ${c(intf)}")
     }
   }
 
   private def skipFields(d: DataInputStream)(implicit c: Constants): Unit = {
     val count = d.readUnsignedShort()
-    if (debug) println(s"LNB: reading $count fields:")
-    for (_ ← 1 to count) skipMethodOrField(d)
+    if (debug)
+      println(s"LNB: reading $count fields:")
+    for (_ ← 1 to count)
+      skipMethodOrField(d)
   }
 
   private def skipMethodOrField(d: DataInputStream)(
@@ -266,8 +281,10 @@ object LineNumbers {
     val name = d.readUnsignedShort() // name
     skip(d, 2) // signature
     val attributes = d.readUnsignedShort()
-    for (_ ← 1 to attributes) skipAttribute(d)
-    if (debug) println(s"LNB:   ${c(name)} ($attributes attributes)")
+    for (_ ← 1 to attributes)
+      skipAttribute(d)
+    if (debug)
+      println(s"LNB:   ${c(name)} ($attributes attributes)")
   }
 
   private def skipAttribute(d: DataInputStream): Unit = {
@@ -279,7 +296,8 @@ object LineNumbers {
   private def readMethods(d: DataInputStream, filter: Option[String])(
       implicit c: Constants): Option[(Int, Int)] = {
     val count = d.readUnsignedShort()
-    if (debug) println(s"LNB: reading $count methods")
+    if (debug)
+      println(s"LNB: reading $count methods")
     if (c.contains("Code") && c.contains("LineNumberTable")) {
       (1 to count)
         .map(_ ⇒ readMethod(d, c("Code"), c("LineNumberTable"), filter))
@@ -292,8 +310,10 @@ object LineNumbers {
         case other ⇒ Some(other)
       }
     } else {
-      if (debug) println(s"LNB:   (skipped)")
-      for (_ ← 1 to count) skipMethodOrField(d)
+      if (debug)
+        println(s"LNB:   (skipped)")
+      for (_ ← 1 to count)
+        skipMethodOrField(d)
       None
     }
   }
@@ -306,66 +326,75 @@ object LineNumbers {
     skip(d, 2) // access flags
     val name = d.readUnsignedShort() // name
     skip(d, 2) // signature
-    if (debug) println(s"LNB:   ${c(name)}")
+    if (debug)
+      println(s"LNB:   ${c(name)}")
     val attributes =
-      for (_ ← 1 to d.readUnsignedShort()) yield {
-        val tag = d.readUnsignedShort()
-        val length = d.readInt()
-        if (tag != codeTag || (filter.isDefined && c(name) != filter.get)) {
-          skip(d, length)
-          None
-        } else {
-          skip(d, 4) // shorts: max stack, max locals
-          skip(d, d.readInt()) // skip byte-code
-          // skip exception table: N records of 4 shorts (start PC, end PC, handler PC, catch type)
-          skip(d, 8 * d.readUnsignedShort())
-          val possibleLines =
-            for (_ ← 1 to d.readUnsignedShort()) yield {
-              val tag = d.readUnsignedShort()
-              val length = d.readInt()
-              if (tag != lineNumberTableTag) {
-                skip(d, length)
-                None
-              } else {
-                val lines =
-                  for (_ ← 1 to d.readUnsignedShort()) yield {
-                    skip(d, 2) // start PC
-                    d.readUnsignedShort() // finally: the line number
+      for (_ ← 1 to d.readUnsignedShort())
+        yield {
+          val tag = d.readUnsignedShort()
+          val length = d.readInt()
+          if (tag != codeTag || (filter.isDefined && c(name) != filter.get)) {
+            skip(d, length)
+            None
+          } else {
+            skip(d, 4) // shorts: max stack, max locals
+            skip(d, d.readInt()) // skip byte-code
+            // skip exception table: N records of 4 shorts (start PC, end PC, handler PC, catch type)
+            skip(d, 8 * d.readUnsignedShort())
+            val possibleLines =
+              for (_ ← 1 to d.readUnsignedShort())
+                yield {
+                  val tag = d.readUnsignedShort()
+                  val length = d.readInt()
+                  if (tag != lineNumberTableTag) {
+                    skip(d, length)
+                    None
+                  } else {
+                    val lines =
+                      for (_ ← 1 to d.readUnsignedShort())
+                        yield {
+                          skip(d, 2) // start PC
+                          d.readUnsignedShort() // finally: the line number
+                        }
+                    Some(lines.min -> lines.max)
                   }
-                Some(lines.min -> lines.max)
-              }
-            }
-          if (debug)
-            println(s"LNB:     nested attributes yielded: $possibleLines")
-          possibleLines.flatten.headOption
+                }
+            if (debug)
+              println(s"LNB:     nested attributes yielded: $possibleLines")
+            possibleLines.flatten.headOption
+          }
         }
-      }
     attributes.flatten.headOption
   }
 
   private def readAttributes(d: DataInputStream)(
       implicit c: Constants): Option[String] = {
     val count = d.readUnsignedShort()
-    if (debug) println(s"LNB: reading $count attributes")
+    if (debug)
+      println(s"LNB: reading $count attributes")
     if (c contains "SourceFile") {
       val s = c("SourceFile")
       val attributes =
-        for (_ ← 1 to count) yield {
-          val tag = d.readUnsignedShort()
-          val length = d.readInt()
-          if (debug) println(s"LNB:   tag ${c(tag)} ($length bytes)")
-          if (tag != s) {
-            skip(d, length)
-            None
-          } else {
-            val name = d.readUnsignedShort()
-            Some(c(name))
+        for (_ ← 1 to count)
+          yield {
+            val tag = d.readUnsignedShort()
+            val length = d.readInt()
+            if (debug)
+              println(s"LNB:   tag ${c(tag)} ($length bytes)")
+            if (tag != s) {
+              skip(d, length)
+              None
+            } else {
+              val name = d.readUnsignedShort()
+              Some(c(name))
+            }
           }
-        }
-      if (debug) println(s"LNB:   yielded $attributes")
+      if (debug)
+        println(s"LNB:   yielded $attributes")
       attributes.flatten.headOption
     } else {
-      if (debug) println(s"LNB:   (skipped)")
+      if (debug)
+        println(s"LNB:   (skipped)")
       None
     }
   }

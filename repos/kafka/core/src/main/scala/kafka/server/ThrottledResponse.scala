@@ -41,8 +41,11 @@ private[server] class ThrottledResponse(
 
   override def compareTo(d: Delayed): Int = {
     val other = d.asInstanceOf[ThrottledResponse]
-    if (this.endTime < other.endTime) -1
-    else if (this.endTime > other.endTime) 1
-    else 0
+    if (this.endTime < other.endTime)
+      -1
+    else if (this.endTime > other.endTime)
+      1
+    else
+      0
   }
 }

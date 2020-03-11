@@ -16,7 +16,11 @@ trait MonadFilterLaws[F[_]] extends MonadLaws[F] {
     fa.flatMap(_ => F.empty[B]) <-> F.empty[B]
 
   def monadFilterConsistency[A, B](fa: F[A], f: A => Boolean): IsEq[F[A]] =
-    fa.filter(f) <-> fa.flatMap(a => if (f(a)) F.pure(a) else F.empty)
+    fa.filter(f) <-> fa.flatMap(a =>
+      if (f(a))
+        F.pure(a)
+      else
+        F.empty)
 }
 
 object MonadFilterLaws {

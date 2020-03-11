@@ -40,9 +40,16 @@ object PathResolver {
         indented: Boolean = false,
         embraced: Boolean = false): String = {
       val space = "\u0020"
-      val sep = if (indented) EOL + space * 2 else EOL
+      val sep =
+        if (indented)
+          EOL + space * 2
+        else
+          EOL
       val (lbrace, rbrace) =
-        if (embraced) (space + "{", EOL + "}") else ("", "")
+        if (embraced)
+          (space + "{", EOL + "}")
+        else
+          ("", "")
       t.mkString(header + lbrace + sep, sep, rbrace + EOL)
     }
   }
@@ -110,14 +117,20 @@ object PathResolver {
     def scalaLibAsDir = Directory(scalaClassesDir / "library")
 
     def scalaLibDirFound: Option[Directory] =
-      if (scalaLibAsJar.isFile) Some(scalaLibDir)
-      else if (scalaLibAsDir.isDirectory) Some(scalaClassesDir)
-      else None
+      if (scalaLibAsJar.isFile)
+        Some(scalaLibDir)
+      else if (scalaLibAsDir.isDirectory)
+        Some(scalaClassesDir)
+      else
+        None
 
     def scalaLibFound =
-      if (scalaLibAsJar.isFile) scalaLibAsJar.path
-      else if (scalaLibAsDir.isDirectory) scalaLibAsDir.path
-      else ""
+      if (scalaLibAsJar.isFile)
+        scalaLibAsJar.path
+      else if (scalaLibAsDir.isDirectory)
+        scalaLibAsDir.path
+      else
+        ""
 
     // TODO It must be time for someone to figure out what all these things
     // are intended to do.  This is disabled here because it was causing all
@@ -160,11 +173,17 @@ object PathResolver {
       def jarPath(path: Path) = (path / "lib" / jarName).toFile
       def jarAt(path: Path) = {
         val f = jarPath(path)
-        if (f.isFile) Some(f) else None
+        if (f.isFile)
+          Some(f)
+        else
+          None
       }
       val jdkDir = {
         val d = Directory(jdkHome)
-        if (d.isDirectory) Some(d) else None
+        if (d.isDirectory)
+          Some(d)
+        else
+          None
       }
       def deeply(dir: Directory) = dir.deepFiles find (_.name == jarName)
 
@@ -259,7 +278,10 @@ abstract class PathResolverBase[
       cmdLineOrElse("javabootclasspath", Defaults.javaBootClassPath)
     def javaExtDirs = cmdLineOrElse("javaextdirs", Defaults.javaExtDirs)
     def javaUserClassPath =
-      if (useJavaClassPath) Defaults.javaUserClassPath else ""
+      if (useJavaClassPath)
+        Defaults.javaUserClassPath
+      else
+        ""
     def scalaBootClassPath =
       cmdLineOrElse("bootclasspath", Defaults.scalaBootClassPath)
     def scalaExtDirs = cmdLineOrElse("extdirs", Defaults.scalaExtDirs)
@@ -275,7 +297,8 @@ abstract class PathResolverBase[
     def sourcePath =
       if (!settings.isScaladoc)
         cmdLineOrElse("sourcepath", Defaults.scalaSourcePath)
-      else ""
+      else
+        ""
 
     def userClassPath =
       settings.classpath.value // default is specified by settings and can be overridden there

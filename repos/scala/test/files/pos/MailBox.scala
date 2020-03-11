@@ -86,7 +86,8 @@ class MailBox {
           });
         lastReceiver = r;
         r.elem.wait(msec);
-        if (r.elem.msg == null) r.elem.msg = TIMEOUT;
+        if (r.elem.msg == null)
+          r.elem.msg = TIMEOUT;
         r.elem.msg
       }
     }

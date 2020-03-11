@@ -112,7 +112,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           var name = ft.name.toString
           val namesakes = freeTerms takeWhile (_ != ft) filter (ft2 =>
             ft != ft2 && ft.name == ft2.name)
-          if (namesakes.length > 0) name += ("$" + (namesakes.length + 1))
+          if (namesakes.length > 0)
+            name += ("$" + (namesakes.length + 1))
           freeTermNames += (ft -> newTermName(
             name + nme.REIFY_FREE_VALUE_SUFFIX))
         })
@@ -122,8 +123,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
               tree match {
                 case Ident(_) =>
                   val freeTermRef = Ident(freeTermNames(tree.symbol.asFreeTerm))
-                  if (wrapFreeTermRefs) Apply(freeTermRef, List())
-                  else freeTermRef
+                  if (wrapFreeTermRefs)
+                    Apply(freeTermRef, List())
+                  else
+                    freeTermRef
                 case _ =>
                   throw new Error(
                     "internal error: %s (%s, %s) is not supported"
@@ -143,7 +146,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           withMacrosDisabled: Boolean)(
           transform: (analyzer.Typer, Tree) => Tree): Tree = {
         def withWrapping(tree: Tree)(op: Tree => Tree) =
-          if (mode == TERMmode) wrappingIntoTerm(tree)(op) else op(tree)
+          if (mode == TERMmode)
+            wrappingIntoTerm(tree)(op)
+          else
+            op(tree)
         withWrapping(verify(expr))(expr1 => {
           // need to extract free terms, because otherwise you won't be able to typecheck macros against something that contains them
           val exprAndFreeTerms =
@@ -177,11 +183,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           val withImplicitFlag =
             if (!withImplicitViewsDisabled)
               (currentTyper.context.withImplicitsEnabled[Tree] _)
-            else (currentTyper.context.withImplicitsDisabled[Tree] _)
+            else
+              (currentTyper.context.withImplicitsDisabled[Tree] _)
           val withMacroFlag =
             if (!withMacrosDisabled)
               (currentTyper.context.withMacrosEnabled[Tree] _)
-            else (currentTyper.context.withMacrosDisabled[Tree] _)
+            else
+              (currentTyper.context.withMacrosDisabled[Tree] _)
           def withContext(tree: => Tree) = withImplicitFlag(withMacroFlag(tree))
 
           val run = new Run
@@ -275,8 +283,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           withImplicitViewsDisabled = false,
           withMacrosDisabled = withMacrosDisabled)((currentTyper, tree) => {
           trace(
-            "inferring implicit %s (macros = %s): "
-              .format(if (isView) "view" else "value", !withMacrosDisabled))(
+            "inferring implicit %s (macros = %s): ".format(
+              if (isView)
+                "view"
+              else
+                "value",
+              !withMacrosDisabled))(
             showAttributed(
               pt,
               true,
@@ -339,7 +351,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             meth.newValueParameter(
               name,
               newFlags =
-                if (fv.hasStableFlag) STABLE else 0) setInfo appliedType(
+                if (fv.hasStableFlag)
+                  STABLE
+                else
+                  0) setInfo appliedType(
               definitions.FunctionClass(0).tpe,
               List(fv.tpe.resultType))
           }
@@ -385,7 +400,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         val msym = wrapInPackageAndCompile(mdef.name, mdef)
 
         val className = msym.fullName
-        if (settings.debug) println("generated: " + className)
+        if (settings.debug)
+          println("generated: " + className)
         def moduleFileName(className: String) = className + "$"
         val jclazz =
           jClass.forName(moduleFileName(className), true, classLoader)
@@ -411,8 +427,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         () => {
           val result =
             jmeth.invoke(singleton, thunks map (_.asInstanceOf[AnyRef]): _*)
-          if (jmeth.getReturnType == java.lang.Void.TYPE) ()
-          else result
+          if (jmeth.getReturnType == java.lang.Void.TYPE)
+            ()
+          else
+            result
         }
       }
 
@@ -602,8 +620,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
       if (compiler.settings.verbose)
         println(
-          "inferring implicit %s of type %s, macros = %s"
-            .format(if (isView) "view" else "value", pt, !withMacrosDisabled))
+          "inferring implicit %s of type %s, macros = %s".format(
+            if (isView)
+              "view"
+            else
+              "value",
+            pt,
+            !withMacrosDisabled))
       val itree: compiler.Tree = compiler.inferImplicit(
         ctree,
         cpt,
@@ -627,7 +650,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
     def parse(code: String): u.Tree = withCompilerApi { compilerApi =>
       import compilerApi._
-      if (compiler.settings.verbose) println("parsing " + code)
+      if (compiler.settings.verbose)
+        println("parsing " + code)
       val ctree: compiler.Tree = compiler.parse(code)
       val utree = exporter.importTree(ctree)
       utree
@@ -636,21 +660,25 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
     def compile(tree: u.Tree): () => Any = withCompilerApi { compilerApi =>
       import compilerApi._
 
-      if (compiler.settings.verbose) println("importing " + tree)
+      if (compiler.settings.verbose)
+        println("importing " + tree)
       val ctree: compiler.Tree = importer.importTree(tree)
 
-      if (compiler.settings.verbose) println("compiling " + ctree)
+      if (compiler.settings.verbose)
+        println("compiling " + ctree)
       compiler.compile(ctree)
     }
 
     def define(tree: u.ImplDef): u.Symbol = withCompilerApi { compilerApi =>
       import compilerApi._
 
-      if (compiler.settings.verbose) println("importing " + tree)
+      if (compiler.settings.verbose)
+        println("importing " + tree)
       val ctree: compiler.ImplDef =
         importer.importTree(tree).asInstanceOf[compiler.ImplDef]
 
-      if (compiler.settings.verbose) println("defining " + ctree)
+      if (compiler.settings.verbose)
+        println("defining " + ctree)
       val csym: compiler.Symbol = compiler.define(ctree)
       val usym = exporter.importSymbol(csym)
       usym

@@ -57,11 +57,16 @@ object build extends Build {
   def scalac210Options = Seq("-Yno-generic-signatures")
 
   private[this] val tagName = Def.setting {
-    s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value
-    else version.value}"
+    s"v${if (releaseUseGlobalVersion.value)
+      (version in ThisBuild).value
+    else
+      version.value}"
   }
   private[this] val tagOrHash = Def.setting {
-    if (isSnapshot.value) gitHash() else tagName.value
+    if (isSnapshot.value)
+      gitHash()
+    else
+      tagName.value
   }
 
   val scalajsProjectSettings = Seq[Sett](
@@ -101,7 +106,8 @@ object build extends Build {
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0-M3"),
     resolvers ++= (if (scalaVersion.value.endsWith("-SNAPSHOT"))
                      List(Opts.resolver.sonatypeSnapshots)
-                   else Nil),
+                   else
+                     Nil),
     fullResolvers ~= {
       _.filterNot(_.name == "jcenter")
     }, // https://github.com/sbt/sbt/issues/2217
@@ -186,7 +192,8 @@ object build extends Build {
     showDoc in Compile <<= (doc in Compile, target in doc in Compile) map {
       (_, out) =>
         val index = out / "index.html"
-        if (index.exists()) Desktop.getDesktop.open(out / "index.html")
+        if (index.exists())
+          Desktop.getDesktop.open(out / "index.html")
     },
     credentialsSetting,
     publishSetting,

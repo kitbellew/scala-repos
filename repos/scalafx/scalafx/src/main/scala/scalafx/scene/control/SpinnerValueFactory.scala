@@ -46,13 +46,19 @@ object SpinnerValueFactory {
 
   implicit def sfxSpinnerValueFactory2jfx[T](
       v: SpinnerValueFactory[T]): jfxsc.SpinnerValueFactory[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object ListSpinnerValueFactory {
     implicit def sfxListSpinnerValueFactory2jfx[T](
         v: ListSpinnerValueFactory[T])
         : jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   /**
@@ -93,7 +99,10 @@ object SpinnerValueFactory {
     implicit def sfxIntegerSpinnerValueFactory2jfx(
         v: IntegerSpinnerValueFactory)
         : jfxsc.SpinnerValueFactory.IntegerSpinnerValueFactory =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   class IntegerSpinnerValueFactory(
@@ -177,7 +186,10 @@ object SpinnerValueFactory {
   object DoubleSpinnerValueFactory {
     implicit def sfxDoubleSpinnerValueFactory2jfx(v: DoubleSpinnerValueFactory)
         : jfxsc.SpinnerValueFactory.DoubleSpinnerValueFactory =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   /**

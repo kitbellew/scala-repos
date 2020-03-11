@@ -60,7 +60,8 @@ class RichFlowDef(val fd: FlowDef) {
   private[this] def mergeLeft[K, V](left: JMap[K, V], right: JMap[K, V]) {
     right.asScala.foreach {
       case (k, v) =>
-        if (!left.containsKey(k)) left.put(k, v)
+        if (!left.containsKey(k))
+          left.put(k, v)
     }
   }
   private[this] def appendLeft[T](left: JList[T], right: JList[T]) {
@@ -152,8 +153,10 @@ class RichFlowDef(val fd: FlowDef) {
         val subFlowState = thisFS.sourceMap
           .foldLeft(Map[String, Source]()) {
             case (newfs, kv @ (name, source)) =>
-              if (headNames(name)) newfs + kv
-              else newfs
+              if (headNames(name))
+                newfs + kv
+              else
+                newfs
           }
         FlowStateMap.mutate(newFd) { oldFS =>
           (

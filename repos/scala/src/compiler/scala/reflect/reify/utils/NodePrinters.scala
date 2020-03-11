@@ -24,48 +24,54 @@ trait NodePrinters {
       // Also as of late we have tests that ensure that UX won't be broken by random changes to the reifier.
       val lines = (tree.toString.split(EOL) drop 1 dropRight 1).toList splitAt 2
       val (List(universe, mirror), reification0) = lines
-      val reification = (for (line <- reification0) yield {
-        var s = line substring 2
-        s = s.replace(nme.UNIVERSE_PREFIX.toString, "")
-        s = s.replace(".apply", "")
-        s = "([^\"])scala\\.collection\\.immutable\\.".r.replaceAllIn(s, "$1")
-        s = "List\\[List\\[.*?\\].*?\\]".r.replaceAllIn(s, "List")
-        s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
-        s = s.replace("immutable.this.Nil", "List()")
-        s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r
-          .replaceAllIn(
-            s,
-            m => {
-              flagsAreUsed = true
-              show(m.group(1).toLong)
-            })
-        s = s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
-        s = """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
-          .replaceAllIn(
-            s,
-            m => {
-              val buf = new scala.collection.mutable.ListBuffer[String]
+      val reification =
+        (for (line <- reification0)
+          yield {
+            var s = line substring 2
+            s = s.replace(nme.UNIVERSE_PREFIX.toString, "")
+            s = s.replace(".apply", "")
+            s =
+              "([^\"])scala\\.collection\\.immutable\\.".r.replaceAllIn(s, "$1")
+            s = "List\\[List\\[.*?\\].*?\\]".r.replaceAllIn(s, "List")
+            s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
+            s = s.replace("immutable.this.Nil", "List()")
+            s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r
+              .replaceAllIn(
+                s,
+                m => {
+                  flagsAreUsed = true
+                  show(m.group(1).toLong)
+                })
+            s =
+              s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
+            s =
+              """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
+                .replaceAllIn(
+                  s,
+                  m => {
+                    val buf = new scala.collection.mutable.ListBuffer[String]
 
-              val annotations = m.group(3)
-              if (buf.nonEmpty || annotations != "")
-                buf.append("List(" + annotations + ")")
+                    val annotations = m.group(3)
+                    if (buf.nonEmpty || annotations != "")
+                      buf.append("List(" + annotations + ")")
 
-              val privateWithin = "" + m.group(2)
-              if (buf.nonEmpty || privateWithin != "")
-                buf.append("TypeName(\"" + privateWithin + "\")")
+                    val privateWithin = "" + m.group(2)
+                    if (buf.nonEmpty || privateWithin != "")
+                      buf.append("TypeName(\"" + privateWithin + "\")")
 
-              val bits = m.group(1)
-              if (buf.nonEmpty || bits != "0L") {
-                flagsAreUsed = true
-                buf.append(show(bits.toLong))
-              }
+                    val bits = m.group(1)
+                    if (buf.nonEmpty || bits != "0L") {
+                      flagsAreUsed = true
+                      buf.append(show(bits.toLong))
+                    }
 
-              val replacement = "Modifiers(" + buf.reverse.mkString(", ") + ")"
-              java.util.regex.Matcher.quoteReplacement(replacement)
-            }
-          )
-        s
-      })
+                    val replacement =
+                      "Modifiers(" + buf.reverse.mkString(", ") + ")"
+                    java.util.regex.Matcher.quoteReplacement(replacement)
+                  }
+                )
+            s
+          })
 
       val isExpr =
         reification.length > 0 && reification(0).trim.startsWith("Expr[")
@@ -86,11 +92,17 @@ trait NodePrinters {
         printout += mirror.replace("Mirror[", "scala.reflect.api.Mirror[").trim
       val imports = scala.collection.mutable.ListBuffer[String]()
       imports += nme.UNIVERSE_SHORT.toString
-      if (mirrorIsUsed) imports += nme.MIRROR_SHORT.toString
-      if (flagsAreUsed) imports += nme.Flag.toString
+      if (mirrorIsUsed)
+        imports += nme.MIRROR_SHORT.toString
+      if (flagsAreUsed)
+        imports += nme.Flag.toString
       printout += s"""import ${imports map (_ + "._") mkString ", "}"""
 
-      val name = if (isExpr) "tree" else "tpe"
+      val name =
+        if (isExpr)
+          "tree"
+        else
+          "tpe"
       if (rtree(0) startsWith "val") {
         printout += s"val $name = {"
         printout ++= (rtree map ("  " + _))

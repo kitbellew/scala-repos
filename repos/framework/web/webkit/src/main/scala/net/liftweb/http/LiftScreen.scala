@@ -45,7 +45,8 @@ trait AbstractScreen extends Factory with Loggable {
   def additionalAttributes: MetaData =
     if (hasUploadField)
       new UnprefixedAttribute("enctype", Text("multipart/form-data"), Null)
-    else Null
+    else
+      Null
 
   /**
     * Add a FieldContainer to the Screen.  A FieldContainer
@@ -237,7 +238,11 @@ trait AbstractScreen extends Factory with Loggable {
     private lazy val _theFieldId: NonCleanAnyVar[String] =
       vendAVar(Helpers.nextFuncName)
 
-    override def toString = if (is != null) is.toString else ""
+    override def toString =
+      if (is != null)
+        is.toString
+      else
+        ""
 
     def binding: Box[FieldBinding] = Empty
 
@@ -814,11 +819,19 @@ trait AbstractScreen extends Factory with Loggable {
 
   protected def minVal[T](len: => T, msg: => String)(
       implicit f: T => Number): T => List[FieldError] =
-    s => if (f(s).doubleValue < f(len).doubleValue) msg else Nil
+    s =>
+      if (f(s).doubleValue < f(len).doubleValue)
+        msg
+      else
+        Nil
 
   protected def maxVal[T](len: => T, msg: => String)(
       implicit f: T => Number): T => List[FieldError] =
-    s => if (f(s).doubleValue > f(len).doubleValue) msg else Nil
+    s =>
+      if (f(s).doubleValue > f(len).doubleValue)
+        msg
+      else
+        Nil
 
   def noticeTypeToAttr(
       screen: AbstractScreen): Box[NoticeType.Value => MetaData] =
@@ -1926,7 +1939,10 @@ trait LiftScreen
     }
 
     val form = renderHtml()
-    if (ajaxForms_?) wrapInDiv(form) else form
+    if (ajaxForms_?)
+      wrapInDiv(form)
+    else
+      form
   }
 
   protected def renderHtml(): NodeSeq = {
@@ -1985,7 +2001,8 @@ trait LiftScreen
                 f.toForm,
                 fieldBinding(f),
                 fieldTransform(f)))
-          else Nil), //fields: List[ScreenFieldInfo],
+          else
+            Nil), //fields: List[ScreenFieldInfo],
       Empty, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       Empty, // next: Box[Elem],
@@ -2064,10 +2081,18 @@ trait IntField extends FieldIdentifier {
   lazy val manifest = buildIt[Int]
 
   def minVal(len: Int, msg: => String): Int => List[FieldError] =
-    s => if (s < len) List(FieldError(this, Text(msg))) else Nil
+    s =>
+      if (s < len)
+        List(FieldError(this, Text(msg)))
+      else
+        Nil
 
   def maxVal(len: Int, msg: => String): Int => List[FieldError] =
-    s => if (s > len) List(FieldError(this, Text(msg))) else Nil
+    s =>
+      if (s > len)
+        List(FieldError(this, Text(msg)))
+      else
+        Nil
 }
 
 trait BooleanField extends FieldIdentifier {

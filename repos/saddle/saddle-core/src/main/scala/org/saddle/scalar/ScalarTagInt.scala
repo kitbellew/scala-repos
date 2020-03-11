@@ -32,17 +32,29 @@ object ScalarTagInt extends ScalarTag[Int] {
   def notMissing(v: Int): Boolean = v != Int.MinValue
 
   def compare(x: Int, y: Int)(implicit ev: ORD[Int]) =
-    if (x == y) 0 else if (x > y) 1 else -1
+    if (x == y)
+      0
+    else if (x > y)
+      1
+    else
+      -1
 
   def toDouble(t: Int)(implicit ev: NUM[Int]) =
-    if (isMissing(t)) ScalarTagDouble.missing else t.asInstanceOf[Double]
+    if (isMissing(t))
+      ScalarTagDouble.missing
+    else
+      t.asInstanceOf[Double]
 
   def zero(implicit ev: NUM[Int]) = 0
   def one(implicit ev: NUM[Int]) = 1
   def inf(implicit ev: NUM[Int]) = Int.MaxValue
   def negInf(implicit ev: NUM[Int]) = Int.MinValue
 
-  def show(v: Int) = if (isMissing(v)) "%s" format "NA" else "%d" format v
+  def show(v: Int) =
+    if (isMissing(v))
+      "%s" format "NA"
+    else
+      "%d" format v
 
   override def runtimeClass = classOf[Int]
 

@@ -27,7 +27,8 @@ class ScInfixExprImpl(node: ASTNode)
   override def toString: String = "InfixExpression"
 
   override def argumentExpressions: Seq[ScExpression] = {
-    if (isLeftAssoc) Seq(lOp)
+    if (isLeftAssoc)
+      Seq(lOp)
     else
       rOp match {
         case tuple: ScTuple => tuple.exprs

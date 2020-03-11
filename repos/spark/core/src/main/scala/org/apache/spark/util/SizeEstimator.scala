@@ -114,7 +114,8 @@ object SizeEstimator extends Logging {
     isCompressedOops = getIsCompressedOops
 
     objectSize =
-      if (!is64bit) 8
+      if (!is64bit)
+        8
       else {
         if (!isCompressedOops) {
           16
@@ -122,7 +123,11 @@ object SizeEstimator extends Logging {
           12
         }
       }
-    pointerSize = if (is64bit && !isCompressedOops) 8 else 4
+    pointerSize =
+      if (is64bit && !isCompressedOops)
+        8
+      else
+        4
     classInfos.clear()
     classInfos.put(classOf[Object], new ClassInfo(objectSize, Nil))
   }
@@ -162,7 +167,11 @@ object SizeEstimator extends Logging {
       case e: Exception => {
         // Guess whether they've enabled UseCompressedOops based on whether maxMemory < 32 GB
         val guess = Runtime.getRuntime.maxMemory < (32L * 1024 * 1024 * 1024)
-        val guessInWords = if (guess) "yes" else "not"
+        val guessInWords =
+          if (guess)
+            "yes"
+          else
+            "not"
         logWarning(
           "Failed to check whether UseCompressedOops is set; assuming " + guessInWords)
         return guess

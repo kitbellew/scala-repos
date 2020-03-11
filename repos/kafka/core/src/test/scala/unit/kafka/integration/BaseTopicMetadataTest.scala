@@ -284,7 +284,10 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     val expectedIsr: Seq[BrokerEndPoint] = activeBrokers.map(x =>
       new BrokerEndPoint(
         x.config.brokerId,
-        if (x.config.hostName.nonEmpty) x.config.hostName else "localhost",
+        if (x.config.hostName.nonEmpty)
+          x.config.hostName
+        else
+          "localhost",
         x.boundPort()))
 
     // Assert that topic metadata at new brokers is updated correctly
@@ -298,8 +301,10 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
             Seq(
               new BrokerEndPoint(
                 x.config.brokerId,
-                if (x.config.hostName.nonEmpty) x.config.hostName
-                else "localhost",
+                if (x.config.hostName.nonEmpty)
+                  x.config.hostName
+                else
+                  "localhost",
                 x.boundPort())),
             "TopicMetadataTest-testBasicTopicMetadata",
             2000,

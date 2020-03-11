@@ -132,7 +132,8 @@ object Storage extends Logging {
     }
   }
 
-  if (sourceKeys.size == 0) warn("There is no properly configured data source.")
+  if (sourceKeys.size == 0)
+    warn("There is no properly configured data source.")
 
   private val s2cm = scala.collection.mutable.Map[String, Option[ClientMeta]]()
 
@@ -204,7 +205,11 @@ object Storage extends Logging {
       source: String,
       parallel: Boolean,
       test: Boolean): Option[ClientMeta] = {
-    val sourceName = if (parallel) s"parallel-$source" else source
+    val sourceName =
+      if (parallel)
+        s"parallel-$source"
+      else
+        source
     s2cm.getOrElseUpdate(sourceName, updateS2CM(source, parallel, test))
   }
 
@@ -236,7 +241,8 @@ object Storage extends Logging {
     if (s2cm.contains(sourceName) && s2cm.get(sourceName).nonEmpty
         && s2cm.get(sourceName).get.nonEmpty) {
       Some(s2cm.get(sourceName).get.get.config)
-    } else None
+    } else
+      None
   }
 
   private def updateS2CM(

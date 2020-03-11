@@ -179,7 +179,8 @@ case class Filter(condition: Expression, child: SparkPlan)
       val predicate = newPredicate(condition, child.output)
       iter.filter { row =>
         val r = predicate(row)
-        if (r) numOutputRows += 1
+        if (r)
+          numOutputRows += 1
         r
       }
     }
@@ -362,7 +363,8 @@ case class Range(
               } else {
                 number > safePartitionEnd
               }
-            } else false
+            } else
+              false
 
           override def next() = {
             val ret = number
@@ -407,8 +409,10 @@ case class Coalesce(numPartitions: Int, child: SparkPlan) extends UnaryNode {
   override def output: Seq[Attribute] = child.output
 
   override def outputPartitioning: Partitioning = {
-    if (numPartitions == 1) SinglePartition
-    else UnknownPartitioning(numPartitions)
+    if (numPartitions == 1)
+      SinglePartition
+    else
+      UnknownPartitioning(numPartitions)
   }
 
   protected override def doExecute(): RDD[InternalRow] = {

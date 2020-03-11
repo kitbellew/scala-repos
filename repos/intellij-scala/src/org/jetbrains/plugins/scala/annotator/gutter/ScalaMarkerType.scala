@@ -63,7 +63,8 @@ object ScalaMarkerType {
             val signatures: Seq[Signature] =
               method.superSignaturesIncludingSelfType
             //removed assertion, because can be change before adding gutter, so just need to return ""
-            if (signatures.isEmpty) return ""
+            if (signatures.isEmpty)
+              return ""
             val optionClazz =
               ScalaPsiUtil.nameContext(signatures.head.namedElement) match {
                 case member: PsiMember => Option(member.containingClass)
@@ -129,7 +130,8 @@ object ScalaMarkerType {
               case 0 =>
               case 1 =>
                 val elem = elems.iterator.next()
-                if (elem.canNavigate) elem.navigate(true)
+                if (elem.canNavigate)
+                  elem.navigate(true)
               case _ =>
                 val gotoDeclarationPopup = NavigationUtil.getPsiElementPopup(
                   elems.toArray,
@@ -158,7 +160,8 @@ object ScalaMarkerType {
               case 0 =>
               case 1 =>
                 val elem = elems.iterator.next()
-                if (elem.canNavigate) elem.navigate(true)
+                if (elem.canNavigate)
+                  elem.navigate(true)
               case _ =>
                 val gotoDeclarationPopup = NavigationUtil.getPsiElementPopup(
                   elems.toArray,
@@ -174,7 +177,8 @@ object ScalaMarkerType {
             elems.toSeq match {
               case Seq() =>
               case Seq(x: NavigatablePsiElement) =>
-                if (x.canNavigate) x.navigate(true)
+                if (x.canNavigate)
+                  x.navigate(true)
               case _ =>
                 val gotoDeclarationPopup = NavigationUtil.getPsiElementPopup(
                   elems.toArray,
@@ -202,7 +206,8 @@ object ScalaMarkerType {
           case _: PsiMember =>
             if (GutterUtil.isAbstract(element))
               ScalaBundle.message("has.implementations")
-            else ScalaBundle.message("is.overriden.by")
+            else
+              ScalaBundle.message("is.overriden.by")
           case _ => null
         }
       }
@@ -225,7 +230,8 @@ object ScalaMarkerType {
         for (member <- members)
           overrides ++= ScalaOverridingMemberSearcher
             .search(member, withSelfType = true)
-        if (overrides.isEmpty) return
+        if (overrides.isEmpty)
+          return
         val title =
           if (GutterUtil.isAbstract(element))
             ScalaBundle.message(
@@ -258,7 +264,8 @@ object ScalaMarkerType {
         if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
           elem = PsiTreeUtil.getParentOfType(element, classOf[ScNamedElement])
         }
-        if (!elem.isInstanceOf[PsiClass]) return null
+        if (!elem.isInstanceOf[PsiClass])
+          return null
         elem match {
           case _: ScTrait  => ScalaBundle.message("trait.has.implementations")
           case _: ScObject => ScalaBundle.message("object.has.subclasses")
@@ -279,7 +286,8 @@ object ScalaMarkerType {
         val inheritors = ClassInheritorsSearch
           .search(clazz, clazz.getUseScope, true)
           .toArray(PsiClass.EMPTY_ARRAY)
-        if (inheritors.isEmpty) return
+        if (inheritors.isEmpty)
+          return
         val title = clazz match {
           case _: ScTrait =>
             ScalaBundle.message(
@@ -325,7 +333,8 @@ object ScalaMarkerType {
             if ScalaPsiUtil.nameContext(x).isInstanceOf[ScMember] =>
           val containing =
             ScalaPsiUtil.nameContext(x).asInstanceOf[ScMember].containingClass
-          if (containing == null) defaultPresentation
+          if (containing == null)
+            defaultPresentation
           else {
             val presentation = containing.getPresentation
             presentation.getPresentableText + " " + presentation.getLocationString

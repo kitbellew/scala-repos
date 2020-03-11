@@ -92,12 +92,15 @@ trait PostgresProfile extends JdbcProfile {
             val d = super.default
             if (meta.nullable == Some(true) && d == None) {
               Some(None)
-            } else d
+            } else
+              d
           }
       override def length: Option[Int] = {
         val l = super.length
-        if (tpe == "String" && varying && l == Some(2147483647)) None
-        else l
+        if (tpe == "String" && varying && l == Some(2147483647))
+          None
+        else
+          l
       }
       override def tpe = meta.typeName match {
         case "bytea"                                         => "Array[Byte]"
@@ -148,7 +151,10 @@ trait PostgresProfile extends JdbcProfile {
       val size =
         sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
       size.fold("VARCHAR")(l =>
-        if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
+        if (l.varying)
+          s"VARCHAR(${l.length})"
+        else
+          s"CHAR(${l.length})")
     case java.sql.Types.BLOB   => "lo"
     case java.sql.Types.DOUBLE => "DOUBLE PRECISION"
     /* PostgreSQL does not have a TINYINT type, so we use SMALLINT instead. */
@@ -182,8 +188,10 @@ trait PostgresProfile extends JdbcProfile {
                   .collect[List[TermSymbol]] {
                     case FwdPath(ss) => ss
                   }
-                  .toSet) b"distinct "
-          else super.buildSelectModifiers(c)
+                  .toSet)
+            b"distinct "
+          else
+            super.buildSelectModifiers(c)
         case _ => super.buildSelectModifiers(c)
       }
 
@@ -237,7 +245,8 @@ trait PostgresProfile extends JdbcProfile {
       val dropLobs = columns.flatMap {
         case cb: ColumnDDLBuilder => cb.dropLobTrigger(table.tableName)
       }
-      if (dropLobs.isEmpty) super.dropPhase1
+      if (dropLobs.isEmpty)
+        super.dropPhase1
       else
         Seq(
           "delete from " + quoteIdentifier(
@@ -250,9 +259,12 @@ trait PostgresProfile extends JdbcProfile {
     override def appendColumn(sb: StringBuilder) {
       sb append quoteIdentifier(column.name) append ' '
       if (autoIncrement && !customSqlType) {
-        sb append (if (sqlType.toUpperCase == "BIGINT") "BIGSERIAL"
-                   else "SERIAL")
-      } else appendType(sb)
+        sb append (if (sqlType.toUpperCase == "BIGINT")
+                     "BIGSERIAL"
+                   else
+                     "SERIAL")
+      } else
+        appendType(sb)
       autoIncrement = false
       appendOptions(sb)
     }
@@ -269,14 +281,16 @@ trait PostgresProfile extends JdbcProfile {
               tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
             column.name) + ")"
         )
-      else None
+      else
+        None
 
     def dropLobTrigger(tname: String): Option[String] =
       if (sqlType == "lo")
         Some(
           "drop trigger " + lobTrigger(tname) + " on " + quoteIdentifier(tname)
         )
-      else None
+      else
+        None
   }
 
   class JdbcTypes extends super.JdbcTypes {

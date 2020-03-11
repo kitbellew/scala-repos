@@ -37,9 +37,10 @@ object BuildDependencies {
   def transitive[D](
       deps: DependencyMap[D],
       extract: D => ProjectRef): DependencyMap[ProjectRef] =
-    for ((ref, _) <- deps) yield {
-      val sorted = Dag.topologicalSort(ref)(d => deps(d) map extract)
-      (ref, sorted dropRight 1)
-    }
+    for ((ref, _) <- deps)
+      yield {
+        val sorted = Dag.topologicalSort(ref)(d => deps(d) map extract)
+        (ref, sorted dropRight 1)
+      }
   val getID: ClasspathDep[ProjectRef] => ProjectRef = _.project
 }

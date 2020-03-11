@@ -67,7 +67,10 @@ trait Other {
     abstract class BarFactory[CC[X] <: Bar[X]]
 
     def f(x: Boolean) =
-      if (x) (null: BarFactory[CC1]) else (null: BarFactory[CC2])
+      if (x)
+        (null: BarFactory[CC1])
+      else
+        (null: BarFactory[CC2])
   }
 
   // Fails - only difference is CC covariant.
@@ -75,7 +78,10 @@ trait Other {
     abstract class BarFactory[+CC[X] <: Bar[X]]
 
     def f(x: Boolean) =
-      if (x) (null: BarFactory[CC1]) else (null: BarFactory[CC2])
+      if (x)
+        (null: BarFactory[CC1])
+      else
+        (null: BarFactory[CC2])
     // c.scala:23: error: kinds of the type arguments (Bar with Templ[Any,Bar]) do not conform to the expected kinds of the type parameters (type CC) in class BarFactory.
     // Bar with Templ[Any,Bar]'s type parameters do not match type CC's expected parameters:
     // <empty> has no type parameters, but type CC has one
@@ -89,7 +95,10 @@ trait Other {
     abstract class BarFactory[-CC[X] <: Bar[X]] // with Templ[X, CC]]
 
     def f(x: Boolean) =
-      if (x) (null: BarFactory[CC1]) else (null: BarFactory[CC2])
+      if (x)
+        (null: BarFactory[CC1])
+      else
+        (null: BarFactory[CC2])
     // c.scala:23: error: kinds of the type arguments (Bar with Templ[Any,Bar]) do not conform to the expected kinds of the type parameters (type CC) in class BarFactory.
     // Bar with Templ[Any,Bar]'s type parameters do not match type CC's expected parameters:
     // <empty> has no type parameters, but type CC has one

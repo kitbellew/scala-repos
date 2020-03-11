@@ -76,13 +76,18 @@ object MediaRange {
     def withParams(params: Map[String, String]) =
       custom(mainType, params, qValue)
     def withQValue(qValue: Float) =
-      if (qValue != this.qValue) custom(mainType, params, qValue) else this
+      if (qValue != this.qValue)
+        custom(mainType, params, qValue)
+      else
+        this
     def render[R <: Rendering](r: R): r.type = {
       r ~~ mainType ~~ '/' ~~ '*'
-      if (qValue < 1.0f) r ~~ ";q=" ~~ qValue
-      if (params.nonEmpty) params foreach {
-        case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
-      }
+      if (qValue < 1.0f)
+        r ~~ ";q=" ~~ qValue
+      if (params.nonEmpty)
+        params foreach {
+          case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+        }
       r
     }
     override def isApplication = mainType == "application"
@@ -121,7 +126,10 @@ object MediaRange {
       copy(mediaType = mediaType.withParams(params))
     def withQValue(qValue: Float) = copy(qValue = qValue)
     def render[R <: Rendering](r: R): r.type =
-      if (qValue < 1.0f) r ~~ mediaType ~~ ";q=" ~~ qValue else r ~~ mediaType
+      if (qValue < 1.0f)
+        r ~~ mediaType ~~ ";q=" ~~ qValue
+      else
+        r ~~ mediaType
   }
 
   implicit def apply(mediaType: MediaType): MediaRange = apply(mediaType, 1.0f)
@@ -141,7 +149,10 @@ object MediaRanges extends ObjectRegistry[String, MediaRange] {
     def withParams(params: Map[String, String]) =
       MediaRange.custom(mainType, params)
     def withQValue(qValue: Float) =
-      if (qValue != 1.0f) MediaRange.custom(mainType, params, qValue) else this
+      if (qValue != 1.0f)
+        MediaRange.custom(mainType, params, qValue)
+      else
+        this
   }
 
   val `*/*` = new PredefinedMediaRange("*/*") {

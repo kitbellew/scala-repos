@@ -100,7 +100,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
       )(simpleImport)
     }
 
-    if (isReferenceTo(element)) return this
+    if (isReferenceTo(element))
+      return this
     element match {
       case _: ScTrait | _: ScClass =>
         ScalaPsiUtil.getCompanionModule(
@@ -122,7 +123,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
               .getImportHolder(ref = this, project = getProject)
               .addImportForClass(c, ref = this)
             //need to use unqualified reference with new import
-            if (!this.isQualified) this
+            if (!this.isQualified)
+              this
             else
               this.replace(
                 ScalaPsiElementFactory
@@ -208,7 +210,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
             case res: ScalaResolveResult => res.isNamedParameter
             case _                       => false
           }
-        } else true
+        } else
+          true
       })
   }
 
@@ -283,7 +286,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 if lower.isDefined && lower.get.isStable =>
               return true
             case _ =>
-              if (tp.isStable) return true
+              if (tp.isStable)
+                return true
               typeElementOpt match {
                 case Some(te) =>
                   te.getContext match {
@@ -310,7 +314,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                                 }
                               }
                               f.returnTypeElement.foreach(_.accept(visitor))
-                              if (found) return true
+                              if (found)
+                                return true
                             case _ => //looks like it's not working for classes, so do nothing here.
                           }
                         case _ =>
@@ -421,7 +426,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
         val functionType = s.subst(fun.polymorphicType())
         if (result.isDynamic)
           ResolvableReferenceExpression.getDynamicReturn(functionType)
-        else functionType
+        else
+          functionType
       case Some(ScalaResolveResult(param: ScParameter, s))
           if param.isRepeatedParameter =>
         val seqClass = ScalaPsiManager
@@ -437,7 +443,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
         })
         if (seqClass != null) {
           ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
-        } else computeType
+        } else
+          computeType
       case Some(ScalaResolveResult(obj: ScObject, s)) =>
         def tail = {
           fromType match {
@@ -457,14 +464,18 @@ class ScReferenceExpressionImpl(node: ASTNode)
                       new MethodResolveProcessor(this, "apply", Nil, Nil, Nil)
                     processor.processType(tp, this)
                     val candidates = processor.candidates
-                    if (candidates.length != 1) tail
-                    else convertBindToType(Some(candidates(0))).getOrElse(tail)
-                  } else tail
+                    if (candidates.length != 1)
+                      tail
+                    else
+                      convertBindToType(Some(candidates(0))).getOrElse(tail)
+                  } else
+                    tail
                 case _ => tail
               }
             case _ => tail
           }
-        } else tail
+        } else
+          tail
       case Some(r @ ScalaResolveResult(f: ScFieldId, s)) =>
         if (stableTypeRequired && f.isStable) {
           r.fromType match {
@@ -519,7 +530,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                     case ScThisType(clazz)             => ScDesignatorType(clazz)
                     case ScDesignatorType(o: ScObject) => Any
                     case ScCompoundType(comps, _, _) =>
-                      if (comps.isEmpty) Any
+                      if (comps.isEmpty)
+                        Any
                       else
                         ScTypeUtil
                           .removeTypeDesignator(comps.head)
@@ -534,7 +546,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                       ScExistentialArgument("_$1", Nil, Nothing, actualType))))
                 case _ => None
               }
-            } else None
+            } else
+              None
           }
           val returnType: Option[ScType] = qualifier match {
             case Some(qual) =>

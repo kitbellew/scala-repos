@@ -73,7 +73,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       compoundTypeThisType: Option[ScType]): PMap = {
     if (ScalaProjectSettings.getInstance(project).isDontCacheCompoundTypes)
       ParameterlessNodes.build(tp, compoundTypeThisType)
-    else getParameterlessSignaturesCached(tp, compoundTypeThisType)
+    else
+      getParameterlessSignaturesCached(tp, compoundTypeThisType)
   }
 
   @CachedWithoutModificationCount(
@@ -92,7 +93,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       compoundTypeThisType: Option[ScType]): TMap = {
     if (ScalaProjectSettings.getInstance(project).isDontCacheCompoundTypes)
       TypeNodes.build(tp, compoundTypeThisType)
-    else getTypesCached(tp, compoundTypeThisType)
+    else
+      getTypesCached(tp, compoundTypeThisType)
   }
 
   @CachedWithoutModificationCount(
@@ -135,8 +137,10 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getPackageImplicitObjects(
       fqn: String,
       scope: GlobalSearchScope): Seq[ScObject] = {
-    if (DumbService.getInstance(project).isDumb) Seq.empty
-    else getPackageImplicitObjectsCached(fqn, scope)
+    if (DumbService.getInstance(project).isDumb)
+      Seq.empty
+    else
+      getPackageImplicitObjectsCached(fqn, scope)
   }
 
   @CachedWithoutModificationCount(
@@ -171,8 +175,10 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         fqn: String): Option[PsiClass] = {
       val clazz = JavaPsiFacade.getInstance(project).findClass(fqn, scope)
       if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] || clazz
-            .isInstanceOf[PsiClassWrapper]) None
-      else Option(clazz)
+            .isInstanceOf[PsiClassWrapper])
+        None
+      else
+        Option(clazz)
     }
 
     val res = ScalaShortNamesCacheManager
@@ -227,15 +233,19 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         case OBJECT => allClasses.filter(_.isInstanceOf[ScObject])
         case TYPE   => allClasses.filter(!_.isInstanceOf[ScObject])
       }
-    if (classes.length == 0) null
-    else classes(0)
+    if (classes.length == 0)
+      null
+    else
+      classes(0)
   }
 
   def getClasses(
       pack: PsiPackage,
       scope: GlobalSearchScope): Array[PsiClass] = {
-    if (pack.getQualifiedName == "scala") getClassesCached(pack, scope)
-    else getClassesImpl(pack, scope)
+    if (pack.getQualifiedName == "scala")
+      getClassesCached(pack, scope)
+    else
+      getClassesImpl(pack, scope)
   }
 
   @CachedWithoutModificationCount(
@@ -284,7 +294,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         classes,
         SyntheticClassProducer.getAllClasses(fqn, scope))
     }
-    if (DumbService.getInstance(project).isDumb) return Array.empty
+    if (DumbService.getInstance(project).isDumb)
+      return Array.empty
 
     val classes = getCachedFacadeClasses(scope, fqn)
     val fromScala = ScalaShortNamesCacheManager
@@ -301,7 +312,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getJavaPackageClassNames(
       psiPackage: PsiPackage,
       scope: GlobalSearchScope): JSet[String] = {
-    if (DumbService.getInstance(project).isDumb) return Collections.emptySet()
+    if (DumbService.getInstance(project).isDumb)
+      return Collections.emptySet()
     val qualifier: String = psiPackage.getQualifiedName
     getJavaPackageClassNamesCached(qualifier, scope)
   }
@@ -328,7 +340,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       strings add clazz.getName
       clazz match {
         case t: ScTemplateDefinition =>
-          for (name <- t.additionalJavaNames) strings add name
+          for (name <- t.additionalJavaNames)
+            strings add name
         case _ =>
       }
     }
@@ -338,7 +351,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getScalaClassNames(
       psiPackage: PsiPackage,
       scope: GlobalSearchScope): mutable.HashSet[String] = {
-    if (DumbService.getInstance(project).isDumb) return mutable.HashSet.empty
+    if (DumbService.getInstance(project).isDumb)
+      return mutable.HashSet.empty
     val qualifier: String = psiPackage.getQualifiedName
     getScalaClassNamesCached(qualifier, scope)
   }
@@ -436,7 +450,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     var p = syntheticPackages.get(fqn)
     if (p == null) {
       p = syntheticPackagesCreator.getPackage(fqn)
-      if (p == null) p = types.Null
+      if (p == null)
+        p = types.Null
       synchronized {
         val pp = syntheticPackages.get(fqn)
         if (pp == null) {

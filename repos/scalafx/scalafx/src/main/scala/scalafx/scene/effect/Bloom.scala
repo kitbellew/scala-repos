@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Bloom {
   implicit def sfxBloom2jfx(b: Bloom): jfxse.Bloom =
-    if (b != null) b.delegate else null
+    if (b != null)
+      b.delegate
+    else
+      null
 }
 
 class Bloom(override val delegate: jfxse.Bloom = new jfxse.Bloom)

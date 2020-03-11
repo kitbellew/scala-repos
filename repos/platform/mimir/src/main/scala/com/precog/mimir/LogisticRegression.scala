@@ -169,8 +169,10 @@ trait LogisticRegressionLibModule[M[+_]]
           arr.last == 0 || arr.last == 1
         }
 
-        if (seq.isEmpty) None
-        else Some(seq)
+        if (seq.isEmpty)
+          None
+        else
+          Some(seq)
       }
 
       def reducer: Reducer[Result] = new Reducer[Result] {
@@ -189,8 +191,10 @@ trait LogisticRegressionLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 

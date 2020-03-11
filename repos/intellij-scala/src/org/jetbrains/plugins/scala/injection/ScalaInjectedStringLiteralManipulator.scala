@@ -32,7 +32,11 @@ class ScalaInjectedStringLiteralManipulator
 
     expr match {
       case inter: ScInterpolatedStringLiteral =>
-        val quotes = if (inter.isMultiLineString) "\"\"\"" else "\""
+        val quotes =
+          if (inter.isMultiLineString)
+            "\"\"\""
+          else
+            "\""
 
         inter.reference.map {
           case ref =>
@@ -65,18 +69,20 @@ class ScalaInjectedStringLiteralManipulator
   }
 
   override def getRangeInElement(element: ScLiteral): TextRange = {
-    if (element.isString) element match {
-      case interp: ScInterpolatedStringLiteral =>
-        val prefixLength = interp.reference match {
-          case Some(ref) => ref.getText.length
-          case _         => 0
-        }
-        getLiteralRange(element.getText.substring(prefixLength))
-          .shiftRight(prefixLength)
-      case _ =>
-        getLiteralRange(element.getText)
-    }
-    else TextRange.from(0, element.getTextLength)
+    if (element.isString)
+      element match {
+        case interp: ScInterpolatedStringLiteral =>
+          val prefixLength = interp.reference match {
+            case Some(ref) => ref.getText.length
+            case _         => 0
+          }
+          getLiteralRange(element.getText.substring(prefixLength))
+            .shiftRight(prefixLength)
+        case _ =>
+          getLiteralRange(element.getText)
+      }
+    else
+      TextRange.from(0, element.getTextLength)
   }
 
   private def getLiteralRange(text: String): TextRange = {
@@ -85,6 +91,7 @@ class ScalaInjectedStringLiteralManipulator
     if (text.length >= 6 && text.startsWith(tripleQuote) && text.endsWith(
           tripleQuote))
       new TextRange(3, text.length - 3)
-    else new TextRange(1, Math.max(1, text.length - 1))
+    else
+      new TextRange(1, Math.max(1, text.length - 1))
   }
 }

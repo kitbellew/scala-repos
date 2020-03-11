@@ -37,7 +37,8 @@ class BoundedBlockingQueue[E <: AnyRef](
   private val notFull = lock.newCondition()
 
   def put(e: E) { //Blocks until not full
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     lock.lockInterruptibly()
     try {
       @tailrec def putElement() {
@@ -73,10 +74,12 @@ class BoundedBlockingQueue[E <: AnyRef](
 
   def offer(
       e: E): Boolean = { //Tries to do it immediately, if fail return false
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     lock.lock()
     try {
-      if (backing.size() == maxCapacity) false
+      if (backing.size() == maxCapacity)
+        false
       else {
         require(backing.offer(e)) //Should never fail
         notEmpty.signal()
@@ -90,7 +93,8 @@ class BoundedBlockingQueue[E <: AnyRef](
       timeout: Long,
       unit: TimeUnit)
       : Boolean = { //Tries to do it within the timeout, return false if fail
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     lock.lockInterruptibly()
     try {
       @tailrec def offerElement(remainingNanos: Long): Boolean = {
@@ -98,8 +102,10 @@ class BoundedBlockingQueue[E <: AnyRef](
           require(backing.offer(e)) //Should never fail
           notEmpty.signal()
           true
-        } else if (remainingNanos <= 0) false
-        else offerElement(notFull.awaitNanos(remainingNanos))
+        } else if (remainingNanos <= 0)
+          false
+        else
+          offerElement(notFull.awaitNanos(remainingNanos))
       }
       offerElement(unit.toNanos(timeout))
     } finally lock.unlock()
@@ -140,18 +146,21 @@ class BoundedBlockingQueue[E <: AnyRef](
   override def remove(
       e: AnyRef)
       : Boolean = { //Tries to do it immediately, if fail, return false
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     lock.lock()
     try {
       if (backing remove e) {
         notFull.signal()
         true
-      } else false
+      } else
+        false
     } finally lock.unlock()
   }
 
   override def contains(e: AnyRef): Boolean = {
-    if (e eq null) throw new NullPointerException
+    if (e eq null)
+      throw new NullPointerException
     lock.lock()
     try backing.contains(e)
     finally lock.unlock()
@@ -187,10 +196,14 @@ class BoundedBlockingQueue[E <: AnyRef](
   def drainTo(c: Collection[_ >: E]): Int = drainTo(c, Int.MaxValue)
 
   def drainTo(c: Collection[_ >: E], maxElements: Int): Int = {
-    if (c eq null) throw new NullPointerException
-    if (c eq this) throw new IllegalArgumentException
-    if (c eq backing) throw new IllegalArgumentException
-    if (maxElements <= 0) 0
+    if (c eq null)
+      throw new NullPointerException
+    if (c eq this)
+      throw new IllegalArgumentException
+    if (c eq backing)
+      throw new IllegalArgumentException
+    if (maxElements <= 0)
+      0
     else {
       lock.lock()
       try {
@@ -202,10 +215,12 @@ class BoundedBlockingQueue[E <: AnyRef](
                 c add e;
                 drainOne(n + 1)
             }
-          } else n
+          } else
+            n
         }
         val n = drainOne()
-        if (n > 0) notFull.signalAll()
+        if (n > 0)
+          notFull.signalAll()
         n
       } finally lock.unlock()
     }
@@ -222,10 +237,13 @@ class BoundedBlockingQueue[E <: AnyRef](
     try {
       if (backing.removeAll(c)) {
         val sz = backing.size()
-        if (sz < maxCapacity) notFull.signal()
-        if (sz > 0) notEmpty.signal()
+        if (sz < maxCapacity)
+          notFull.signal()
+        if (sz > 0)
+          notEmpty.signal()
         true
-      } else false
+      } else
+        false
     } finally lock.unlock()
   }
 
@@ -234,10 +252,13 @@ class BoundedBlockingQueue[E <: AnyRef](
     try {
       if (backing.retainAll(c)) {
         val sz = backing.size()
-        if (sz < maxCapacity) notFull.signal()
-        if (sz > 0) notEmpty.signal()
+        if (sz < maxCapacity)
+          notFull.signal()
+        if (sz > 0)
+          notEmpty.signal()
         true
-      } else false
+      } else
+        false
     } finally lock.unlock()
   }
 
@@ -252,14 +273,16 @@ class BoundedBlockingQueue[E <: AnyRef](
         def hasNext(): Boolean = at < elements.length
 
         def next(): E = {
-          if (at >= elements.length) throw new NoSuchElementException
+          if (at >= elements.length)
+            throw new NoSuchElementException
           last = at
           at += 1
           elements(last).asInstanceOf[E]
         }
 
         def remove() {
-          if (last < 0) throw new IllegalStateException
+          if (last < 0)
+            throw new IllegalStateException
           val target = elements(last)
           last = -1 //To avoid 2 subsequent removes without a next in between
           lock.lock()
@@ -270,7 +293,8 @@ class BoundedBlockingQueue[E <: AnyRef](
                 if (i.next eq target) {
                   i.remove()
                   notFull.signal()
-                } else removeTarget(i)
+                } else
+                  removeTarget(i)
               }
 
             removeTarget()

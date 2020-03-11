@@ -50,8 +50,10 @@ private[nio] final class ByteArrayBits(
 
   @inline
   private def makeChar(b0: Byte, b1: Byte): Char =
-    if (isBigEndian) makeCharBE(b0, b1)
-    else makeCharBE(b1, b0)
+    if (isBigEndian)
+      makeCharBE(b0, b1)
+    else
+      makeCharBE(b1, b0)
 
   @inline
   private def makeCharBE(b0: Byte, b1: Byte): Char =
@@ -63,8 +65,10 @@ private[nio] final class ByteArrayBits(
 
   @inline
   private def makeShort(b0: Byte, b1: Byte): Short =
-    if (isBigEndian) makeShortBE(b0, b1)
-    else makeShortBE(b1, b0)
+    if (isBigEndian)
+      makeShortBE(b0, b1)
+    else
+      makeShortBE(b1, b0)
 
   @inline
   private def makeShortBE(b0: Byte, b1: Byte): Short =
@@ -76,8 +80,10 @@ private[nio] final class ByteArrayBits(
 
   @inline
   private def makeInt(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int =
-    if (isBigEndian) makeIntBE(b0, b1, b2, b3)
-    else makeIntBE(b3, b2, b1, b0)
+    if (isBigEndian)
+      makeIntBE(b0, b1, b2, b3)
+    else
+      makeIntBE(b3, b2, b1, b0)
 
   @inline
   private def makeIntBE(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int =
@@ -98,8 +104,10 @@ private[nio] final class ByteArrayBits(
       b5: Byte,
       b6: Byte,
       b7: Byte): Long =
-    if (isBigEndian) makeLongBE(b0, b1, b2, b3, b4, b5, b6, b7)
-    else makeLongBE(b7, b6, b5, b4, b3, b2, b1, b0)
+    if (isBigEndian)
+      makeLongBE(b0, b1, b2, b3, b4, b5, b6, b7)
+    else
+      makeLongBE(b7, b6, b5, b4, b3, b2, b1, b0)
 
   @inline
   private def makeLongBE(
@@ -143,8 +151,10 @@ private[nio] final class ByteArrayBits(
   @inline
   private def unmakeChar(c: Char): (Byte, Byte) = {
     val bs = unmakeCharBE(c)
-    if (isBigEndian) bs
-    else (bs._2, bs._1)
+    if (isBigEndian)
+      bs
+    else
+      (bs._2, bs._1)
   }
 
   @inline
@@ -154,8 +164,10 @@ private[nio] final class ByteArrayBits(
   @inline
   private def unmakeShort(s: Short): (Byte, Byte) = {
     val bs = unmakeShortBE(s)
-    if (isBigEndian) bs
-    else (bs._2, bs._1)
+    if (isBigEndian)
+      bs
+    else
+      (bs._2, bs._1)
   }
 
   @inline
@@ -165,8 +177,10 @@ private[nio] final class ByteArrayBits(
   @inline
   private def unmakeInt(i: Int): (Byte, Byte, Byte, Byte) = {
     val bs = unmakeIntBE(i)
-    if (isBigEndian) bs
-    else (bs._4, bs._3, bs._2, bs._1)
+    if (isBigEndian)
+      bs
+    else
+      (bs._4, bs._3, bs._2, bs._1)
   }
 
   @inline
@@ -180,7 +194,8 @@ private[nio] final class ByteArrayBits(
     val bs1 = unmakeIntBE(l.toInt)
     if (isBigEndian)
       (bs0._1, bs0._2, bs0._3, bs0._4, bs1._1, bs1._2, bs1._3, bs1._4)
-    else (bs1._4, bs1._3, bs1._2, bs1._1, bs0._4, bs0._3, bs0._2, bs0._1)
+    else
+      (bs1._4, bs1._3, bs1._2, bs1._1, bs0._4, bs0._3, bs0._2, bs0._1)
   }
 
   @inline

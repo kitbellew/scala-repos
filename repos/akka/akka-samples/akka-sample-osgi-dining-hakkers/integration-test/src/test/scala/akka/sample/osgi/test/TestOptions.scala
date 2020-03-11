@@ -31,7 +31,8 @@ object TestOptions {
     new DefaultCompositeOption(
       if (extractInTargetFolder)
         kdc.unpackDirectory(new File("target/paxexam/unpack/"))
-      else kdc,
+      else
+        kdc,
       editConfigurationFilePut(
         "etc/config.properties",
         "karaf.framework",

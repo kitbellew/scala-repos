@@ -84,7 +84,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
       dataContext getData LangDataKeys.IDE_VIEW.getName,
       dataContext getData CommonDataKeys.PROJECT.getName) match {
       case (module: Module, view: IdeView, project: Project) =>
-        if (!Option(module).exists(checkModule)) return false
+        if (!Option(module).exists(checkModule))
+          return false
 
         val projectFileIndex =
           ProjectRootManager.getInstance(project).getFileIndex

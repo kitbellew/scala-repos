@@ -144,8 +144,10 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       if (expr.parameters.size == 1 && fcText.startsWith("(") && fcText
             .endsWith(")"))
         firstClause.replace(newClause)
-      else param.replace(newParam)
-    } else param.replace(newParam)
+      else
+        param.replace(newParam)
+    } else
+      param.replace(newParam)
   }
 
   def addTypeAnnotation(t: ScType, context: PsiElement, anchor: PsiElement) {

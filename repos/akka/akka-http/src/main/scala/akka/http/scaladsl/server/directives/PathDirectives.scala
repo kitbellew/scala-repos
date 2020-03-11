@@ -148,7 +148,8 @@ trait PathDirectives
   def redirectToTrailingSlashIfMissing(
       redirectionType: StatusCodes.Redirection): Directive0 =
     extractUri.flatMap { uri ⇒
-      if (uri.path.endsWithSlash) pass
+      if (uri.path.endsWithSlash)
+        pass
       else {
         val newPath = uri.path ++ Path.SingleSlash
         val newUri = uri.withPath(newPath)
@@ -168,7 +169,8 @@ trait PathDirectives
         val newPath = uri.path.reverse.tail.reverse
         val newUri = uri.withPath(newPath)
         redirect(newUri, redirectionType)
-      } else pass
+      } else
+        pass
     }
 
 }

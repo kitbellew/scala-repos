@@ -50,7 +50,8 @@ class ScalaI18nMessageGotoDeclarationHandler
             foldRegion = region
           }
         }
-        if (foldRegion == null || foldRegion.isExpanded) return null
+        if (foldRegion == null || foldRegion.isExpanded)
+          return null
         for (expression <- methodCall.args.exprsArray) {
           expression match {
             case literal: ScLiteral
@@ -67,7 +68,8 @@ class ScalaI18nMessageGotoDeclarationHandler
   }
 
   @Nullable private def resolve(element: PsiElement): PsiElement = {
-    if (element == null) return null
+    if (element == null)
+      return null
     val references: Array[PsiReference] = element.getReferences
     if (references.length != 0) {
       for (reference <- references) {

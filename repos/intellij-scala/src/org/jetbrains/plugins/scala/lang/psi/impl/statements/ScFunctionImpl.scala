@@ -61,7 +61,8 @@ abstract class ScFunctionImpl protected (
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     lazy val parameterIncludingSynthetic: Seq[ScParameter] =
       effectiveParameterClauses.flatMap(_.effectiveParameters)
@@ -71,7 +72,8 @@ abstract class ScFunctionImpl protected (
             if lastParent != null && x.startOffsetInParent == lastParent.startOffsetInParent =>
           for (p <- parameterIncludingSynthetic) {
             ProgressManager.checkCanceled()
-            if (!processor.execute(p, state)) return false
+            if (!processor.execute(p, state))
+              return false
           }
         case _ =>
       }
@@ -79,7 +81,8 @@ abstract class ScFunctionImpl protected (
       if (lastParent != null && lastParent.getContext != lastParent.getParent) {
         for (p <- parameterIncludingSynthetic) {
           ProgressManager.checkCanceled()
-          if (!processor.execute(p, state)) return false
+          if (!processor.execute(p, state))
+            return false
         }
       }
     }

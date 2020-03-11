@@ -88,7 +88,8 @@ class ScalaCalleeMethodsTreeStructure(
         overridingMethod,
         false,
         false)
-      if (!result.contains(node)) result += node
+      if (!result.contains(node))
+        result += node
     }
     result.toArray
   }
@@ -99,7 +100,8 @@ object ScalaCalleeMethodsTreeStructure {
   private[hierarchy] def visitor(
       element: PsiElement,
       methods: ArrayBuffer[PsiMethod]): Unit = {
-    if (element == null) return
+    if (element == null)
+      return
     element match {
       case ref: ScReferenceElement =>
         val resolve = ref.resolve()

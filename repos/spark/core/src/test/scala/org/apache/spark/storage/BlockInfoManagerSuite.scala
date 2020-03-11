@@ -165,7 +165,10 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val winningTID = blockInfoManager.get("block").get.writerTask
     assert(winningTID === 1 || winningTID === 2)
     val losingFuture: Future[Boolean] =
-      if (winningTID == 1) lock2Future else lock1Future
+      if (winningTID == 1)
+        lock2Future
+      else
+        lock1Future
     assert(!losingFuture.isCompleted)
     // Once the writer releases its lock, the blocked future should wake up again and complete.
     withTaskId(winningTID) {
@@ -317,7 +320,11 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
           Future.firstCompletedOf(Seq(write1Future, write2Future)),
           1.seconds)
         .isDefined)
-    val firstWriteWinner = if (write1Future.isCompleted) 1 else 2
+    val firstWriteWinner =
+      if (write1Future.isCompleted)
+        1
+      else
+        2
     withTaskId(firstWriteWinner) {
       blockInfoManager.unlock("block")
     }

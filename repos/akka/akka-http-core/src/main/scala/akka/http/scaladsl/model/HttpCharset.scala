@@ -33,12 +33,18 @@ object HttpCharsetRange {
   case class `*`(qValue: Float) extends HttpCharsetRange {
     require(0.0f <= qValue && qValue <= 1.0f, "qValue must be >= 0 and <= 1.0")
     final def render[R <: Rendering](r: R): r.type =
-      if (qValue < 1.0f) r ~~ "*;q=" ~~ qValue else r ~~ '*'
+      if (qValue < 1.0f)
+        r ~~ "*;q=" ~~ qValue
+      else
+        r ~~ '*'
     def matches(charset: HttpCharset) = true
     def withQValue(qValue: Float) =
-      if (qValue == 1.0f) `*`
-      else if (qValue != this.qValue) `*`(qValue.toFloat)
-      else this
+      if (qValue == 1.0f)
+        `*`
+      else if (qValue != this.qValue)
+        `*`(qValue.toFloat)
+      else
+        this
   }
   object `*` extends `*`(1.0f)
 
@@ -49,7 +55,10 @@ object HttpCharsetRange {
       this.charset.value.equalsIgnoreCase(charset.value)
     def withQValue(qValue: Float) = One(charset, qValue)
     def render[R <: Rendering](r: R): r.type =
-      if (qValue < 1.0f) r ~~ charset ~~ ";q=" ~~ qValue else r ~~ charset
+      if (qValue < 1.0f)
+        r ~~ charset ~~ ";q=" ~~ qValue
+      else
+        r ~~ charset
   }
 
   implicit def apply(charset: HttpCharset): HttpCharsetRange =

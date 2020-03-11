@@ -30,17 +30,18 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   val settings = RARP(system).provider.remoteSettings
 
   private val adaptersTable: Map[String, TransportAdapterProvider] =
-    for ((name, fqn) ← settings.Adapters) yield {
-      name -> system.dynamicAccess
-        .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
-        .recover({
-          case e ⇒
-            throw new IllegalArgumentException(
-              s"Cannot instantiate transport adapter [${fqn}]",
-              e)
-        })
-        .get
-    }
+    for ((name, fqn) ← settings.Adapters)
+      yield {
+        name -> system.dynamicAccess
+          .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
+          .recover({
+            case e ⇒
+              throw new IllegalArgumentException(
+                s"Cannot instantiate transport adapter [${fqn}]",
+                e)
+          })
+          .get
+      }
 
   def getAdapterProvider(name: String): TransportAdapterProvider =
     adaptersTable.get(name) match {
@@ -72,7 +73,8 @@ trait SchemeAugmenter {
   protected def removeScheme(scheme: String): String =
     if (scheme.startsWith(s"$addedSchemeIdentifier."))
       scheme.drop(addedSchemeIdentifier.length + 1)
-    else scheme
+    else
+      scheme
 
   protected def removeScheme(address: Address): Address =
     address.copy(protocol = removeScheme(address.protocol))

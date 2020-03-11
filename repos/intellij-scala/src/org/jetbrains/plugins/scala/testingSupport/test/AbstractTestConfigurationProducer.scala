@@ -24,14 +24,16 @@ trait AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement],
       context: ConfigurationContext)
       : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
-    if (context.getModule == null) return null
+    if (context.getModule == null)
+      return null
     val scope: GlobalSearchScope = GlobalSearchScope
       .moduleWithDependenciesAndLibrariesScope(context.getModule, true)
     if (suitePaths.forall(suitePath =>
           ScalaPsiManager
             .instance(context.getProject)
             .getCachedClass(scope, suitePath)
-            .orNull == null)) return null
+            .orNull == null))
+      return null
     myPsiElement = location.getPsiElement
     createConfigurationByLocation(
       location
@@ -56,6 +58,9 @@ trait AbstractTestConfigurationProducer {
 
   protected def escapeAndConcatTestNames(testNames: List[String]) = {
     val res = testNames.map(TestConfigurationUtil.escapeTestName)
-    if (res.size > 0) res.tail.fold(res.head)(_ + "\n" + _) else ""
+    if (res.size > 0)
+      res.tail.fold(res.head)(_ + "\n" + _)
+    else
+      ""
   }
 }

@@ -8,12 +8,16 @@ object BoxesRunTime {
 
   @inline
   def unboxToChar(c: Object): Char =
-    if (c eq null) 0
-    else c.asInstanceOf[java.lang.Character].charValue()
+    if (c eq null)
+      0
+    else
+      c.asInstanceOf[java.lang.Character].charValue()
 
   def equals(x: Object, y: Object): Boolean =
-    if (x eq y) true
-    else equals2(x, y)
+    if (x eq y)
+      true
+    else
+      equals2(x, y)
 
   @inline // only called by equals(), not by codegen
   def equals2(x: Object, y: Object): Boolean = {
@@ -78,15 +82,19 @@ object BoxesRunTime {
       case xn: Double => xn == yc.charValue()
       case xn: Long   => xn == yc.charValue()
       case _ =>
-        if (xn eq null) yc eq null
-        else xn.equals(yc)
+        if (xn eq null)
+          yc eq null
+        else
+          xn.equals(yc)
     }
   }
 
   def hashFromLong(n: java.lang.Long): Int = {
     val iv = n.intValue()
-    if (iv == n.longValue()) iv
-    else n.hashCode()
+    if (iv == n.longValue())
+      iv
+    else
+      n.hashCode()
   }
 
   def hashFromDouble(n: java.lang.Double): Int = {

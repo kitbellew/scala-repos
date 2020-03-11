@@ -70,12 +70,14 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
               }
             }
           })
-        if (!deletedOk) return false
+        if (!deletedOk)
+          return false
         else {
           needEquals = true
           needHashCode = true
         }
-      } else return false
+      } else
+        return false
     }
 
     val allFields: Seq[ScNamedElement] = GenerationUtil.getAllFields(aClass)
@@ -93,7 +95,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       val wizard =
         new ScalaGenerateEqualsWizard(project, aClass, needEquals, needHashCode)
       wizard.show()
-      if (!wizard.isOK) return false
+      if (!wizard.isOK)
+        return false
       myEqualsFields ++= wizard.getEqualsFields
       myHashCodeFields ++= wizard.getHashCodeFields
     }
@@ -114,8 +117,10 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         aClass.extendsBlock),
       ScSubstitutor.empty)
     val superCall = Option(
-      if (!overridesFromJavaObject(aClass, signature)) "super.hashCode()"
-      else null)
+      if (!overridesFromJavaObject(aClass, signature))
+        "super.hashCode()"
+      else
+        null)
     val usedFields = superCall ++: myHashCodeFields.map(_.name)
     val stateText = usedFields.mkString("Seq(", ", ", ")")
     val firstStmtText = s"val state = $stateText"
@@ -162,10 +167,15 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         aClass.extendsBlock),
       ScSubstitutor.empty)
     val superCheck = Option(
-      if (!overridesFromJavaObject(aClass, signature)) "super.equals(that)"
-      else null)
+      if (!overridesFromJavaObject(aClass, signature))
+        "super.equals(that)"
+      else
+        null)
     val canEqualCheck = Option(
-      if (aClass.hasFinalModifier) null else "(that canEqual this)")
+      if (aClass.hasFinalModifier)
+        null
+      else
+        "(that canEqual this)")
     val allChecks = superCheck ++: canEqualCheck ++: fieldComparisons
     val checksText = allChecks.mkString(" &&\n")
     val arrow = ScalaPsiUtil.functionArrow(project)
@@ -181,10 +191,12 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
+    if (!CodeInsightUtilBase.prepareEditorForWrite(editor))
+      return
     if (!FileDocumentManager.getInstance.requestWriting(
           editor.getDocument,
-          project)) return
+          project))
+      return
 
     try {
       val aClass = GenerationUtil
@@ -192,21 +204,31 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         .getOrElse(return
         )
       val isOk = chooseOriginalMembers(aClass, project, editor)
-      if (!isOk) return
+      if (!isOk)
+        return
 
       extensions.inWriteAction {
         val needHashCode = hasHashCode(aClass).isEmpty
-        val hashCodeMethod =
-          Option(if (needHashCode) createHashCode(aClass) else null)
+        val hashCodeMethod = Option(
+          if (needHashCode)
+            createHashCode(aClass)
+          else
+            null)
 
         val needEquals = hasEquals(aClass).isEmpty
-        val equalsMethod =
-          Option(if (needEquals) createEquals(aClass, project) else null)
+        val equalsMethod = Option(
+          if (needEquals)
+            createEquals(aClass, project)
+          else
+            null)
 
         val needCanEqual =
           needEquals && hasCanEqual(aClass).isEmpty && !aClass.hasFinalModifier
-        val canEqualMethod =
-          Option(if (needCanEqual) createCanEqual(aClass, project) else null)
+        val canEqualMethod = Option(
+          if (needCanEqual)
+            createCanEqual(aClass, project)
+          else
+            null)
 
         val newMethods =
           hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
@@ -266,7 +288,10 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         case sign: PhysicalSignature => sign.equiv(signature)
         case _                       => false
       }
-    if (needModifier) ScalaKeyword.OVERRIDE else ""
+    if (needModifier)
+      ScalaKeyword.OVERRIDE
+    else
+      ""
   }
 
   private def overridesFromJavaObject(

@@ -11,7 +11,8 @@ case class AnaDests(variant: Variant, fen: String, path: String) {
     variant.standard && fen == chess.format.Forsyth.initial && path == "0"
 
   def dests: String =
-    if (isInitial) "iqy muC gvx ltB bqs pxF jrz nvD ksA owE"
+    if (isInitial)
+      "iqy muC gvx ltB bqs pxF jrz nvD ksA owE"
     else
       chess.Game(variant.some, fen.some).situation.destinations map {
         case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"

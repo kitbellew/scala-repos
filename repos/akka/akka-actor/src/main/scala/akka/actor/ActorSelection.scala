@@ -167,8 +167,10 @@ object ActorSelection {
         case x if !x.isEmpty ⇒
           if ((x.indexOf('?') != -1) || (x.indexOf('*') != -1))
             SelectChildPattern(x)
-          else if (x == "..") SelectParent
-          else SelectChildName(x)
+          else if (x == "..")
+            SelectParent
+          else
+            SelectChildName(x)
       })(scala.collection.breakOut)
     new ActorSelection with ScalaActorSelection {
       override val anchor = anchorRef
@@ -211,7 +213,8 @@ object ActorSelection {
                 val child = refWithCell.getSingleChild(name)
                 if (child == Nobody) {
                   // don't send to emptyRef after wildcard fan-out
-                  if (!sel.wildcardFanOut) emptyRef.tell(sel, sender)
+                  if (!sel.wildcardFanOut)
+                    emptyRef.tell(sel, sender)
                 } else if (iter.isEmpty)
                   child.tell(sel.msg, sender)
                 else

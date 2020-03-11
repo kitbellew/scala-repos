@@ -49,7 +49,10 @@ object TreeTableCell {
     */
   implicit def sfxTreeTableCell2jfx[S, T](
       ttc: TreeTableCell[S, T]): jfxsc.TreeTableCell[S, T] =
-    if (ttc != null) ttc.delegate else null
+    if (ttc != null)
+      ttc.delegate
+    else
+      null
 
 }
 

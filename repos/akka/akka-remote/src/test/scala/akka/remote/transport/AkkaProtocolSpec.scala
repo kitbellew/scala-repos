@@ -105,7 +105,8 @@ class AkkaProtocolSpec
   }
 
   def lastActivityIsHeartbeat(registry: AssociationRegistry) =
-    if (registry.logSnapshot.isEmpty) false
+    if (registry.logSnapshot.isEmpty)
+      false
     else
       registry.logSnapshot.last match {
         case WriteAttempt(sender, recipient, payload)
@@ -121,7 +122,8 @@ class AkkaProtocolSpec
       registry: AssociationRegistry,
       uid: Long,
       cookie: Option[String]) =
-    if (registry.logSnapshot.isEmpty) false
+    if (registry.logSnapshot.isEmpty)
+      false
     else
       registry.logSnapshot.last match {
         case WriteAttempt(sender, recipient, payload)
@@ -135,7 +137,8 @@ class AkkaProtocolSpec
       }
 
   def lastActivityIsDisassociate(registry: AssociationRegistry) =
-    if (registry.logSnapshot.isEmpty) false
+    if (registry.logSnapshot.isEmpty)
+      false
     else
       registry.logSnapshot.last match {
         case WriteAttempt(sender, recipient, payload)

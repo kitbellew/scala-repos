@@ -38,7 +38,10 @@ import scalafx.scene.paint.Color
 
 object LightBase {
   implicit def sfxLightBase2jfx(lb: LightBase): jfxs.LightBase =
-    if (lb != null) lb.delegate else null
+    if (lb != null)
+      lb.delegate
+    else
+      null
 }
 
 /** The LightBase class provides definitions of common properties for objects that represent a form of Light source. */

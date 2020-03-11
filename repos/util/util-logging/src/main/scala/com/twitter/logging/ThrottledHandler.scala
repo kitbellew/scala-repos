@@ -89,7 +89,8 @@ class ThrottledHandler(
         }
       }
 
-      if (shouldPublish) doPublish(record)
+      if (shouldPublish)
+        doPublish(record)
       added
     }
 
@@ -99,7 +100,8 @@ class ThrottledHandler(
         expired
       }
 
-      if (didExpire && count > maxToDisplay) publishSwallowed()
+      if (didExpire && count > maxToDisplay)
+        publishSwallowed()
 
       didExpire
     }
@@ -158,7 +160,8 @@ class ThrottledHandler(
       }
 
       // catch the case where throttle is removed before we had a chance to add
-      if (!throttle.add(record, now)) tryPublish()
+      if (!throttle.add(record, now))
+        tryPublish()
     }
 
     tryPublish()

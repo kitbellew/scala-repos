@@ -71,9 +71,12 @@ private[twitter] object ZipkinTracerTest {
       ClientRecvFragment(),
       ServerSendFragment(),
       ServerRecvFragment()),
-    for (s <- arbitrary[String]) yield Message(s),
-    for (s <- arbitrary[String]) yield ServiceName(s),
-    for (s <- arbitrary[String]) yield Rpc(s),
+    for (s <- arbitrary[String])
+      yield Message(s),
+    for (s <- arbitrary[String])
+      yield ServiceName(s),
+    for (s <- arbitrary[String])
+      yield Rpc(s),
     Gen.oneOf(
       ClientAddr(new InetSocketAddress(0)),
       ServerAddr(new InetSocketAddress(0)),

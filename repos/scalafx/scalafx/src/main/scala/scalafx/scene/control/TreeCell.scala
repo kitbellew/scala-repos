@@ -37,7 +37,10 @@ import scalafx.scene.Node
 
 object TreeCell {
   implicit def sfxTreeCell2jfx[T](t: TreeCell[T]): jfxsc.TreeCell[T] =
-    if (t != null) t.delegate else null
+    if (t != null)
+      t.delegate
+    else
+      null
 }
 
 /**

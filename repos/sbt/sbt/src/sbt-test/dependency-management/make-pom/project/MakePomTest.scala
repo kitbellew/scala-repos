@@ -29,8 +29,10 @@ object MakePomTest extends Build {
 
   def withRepositories[T](pomXML: Elem)(f: NodeSeq => T) = {
     val repositoriesElement = pomXML \ "repositories"
-    if (repositoriesElement.size == 1) f(repositoriesElement)
-    else sys.error("'repositories' element not found in generated pom")
+    if (repositoriesElement.size == 1)
+      f(repositoriesElement)
+    else
+      sys.error("'repositories' element not found in generated pom")
   }
 
   lazy val checkExtra = readPom map { pomXML =>
@@ -38,7 +40,8 @@ object MakePomTest extends Build {
     val extra = pomXML \ extraTagName
     if (extra.isEmpty)
       sys.error("'" + extraTagName + "' not found in generated pom.xml.")
-    else ()
+    else
+      ()
   }
 
   lazy val checkVersionPlusMapping = (readPom) map { (pomXml) =>
@@ -81,7 +84,10 @@ object MakePomTest extends Build {
 
   def normalize(url: String): String = {
     val base = uri(url).normalize.toString
-    if (base.endsWith("/")) base else (base + "/")
+    if (base.endsWith("/"))
+      base
+    else
+      (base + "/")
   }
   def normalize(repo: MavenRepository): MavenRepository =
     new MavenRepository(repo.name, normalize(repo.root))

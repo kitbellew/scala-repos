@@ -33,9 +33,14 @@ object ActivatorDownloadUtil {
       progress: ProgressIndicator,
       location: String,
       output: OutputStream) {
-    val originalText: String = if (progress != null) progress.getText else null
+    val originalText: String =
+      if (progress != null)
+        progress.getText
+      else
+        null
     substituteContentLength(progress, originalText, -1)
-    if (progress != null) progress.setText2("Downloading " + location)
+    if (progress != null)
+      progress.setText2("Downloading " + location)
 
     try {
       HttpRequests
@@ -71,7 +76,8 @@ object ActivatorDownloadUtil {
       progress: ProgressIndicator,
       text: String,
       contentLengthInBytes: Int) {
-    if (progress == null || text == null) return
+    if (progress == null || text == null)
+      return
 
     val ind = text indexOf CONTENT_LENGTH_TEMPLATE
 
@@ -84,11 +90,13 @@ object ActivatorDownloadUtil {
   }
 
   private def formatContentLength(contentLengthInBytes: Int): String = {
-    if (contentLengthInBytes < 0) return ""
+    if (contentLengthInBytes < 0)
+      return ""
 
     val kilo: Int = 1024
 
-    if (contentLengthInBytes < kilo) return f", $contentLengthInBytes bytes"
+    if (contentLengthInBytes < kilo)
+      return f", $contentLengthInBytes bytes"
 
     if (contentLengthInBytes < kilo * kilo)
       return f", ${contentLengthInBytes / (1.0 * kilo)}%.1f KB"

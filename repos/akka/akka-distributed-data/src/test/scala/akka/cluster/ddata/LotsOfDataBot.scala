@@ -90,11 +90,19 @@ class LotsOfDataBot extends Actor with ActorLogging {
   var count = 1L
   val maxEntries = context.system.settings.config.getInt("max-entries")
 
-  def receive = if (isPassive) passive else active
+  def receive =
+    if (isPassive)
+      passive
+    else
+      active
 
   def active: Receive = {
     case Tick ⇒
-      val loop = if (count >= maxEntries) 1 else 100
+      val loop =
+        if (count >= maxEntries)
+          1
+        else
+          100
       for (_ ← 1 to loop) {
         count += 1
         if (count % 10000 == 0)

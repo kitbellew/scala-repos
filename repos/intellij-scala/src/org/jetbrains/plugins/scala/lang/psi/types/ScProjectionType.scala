@@ -103,8 +103,8 @@ class ScProjectionType private (
                             .zip(typeArgs)
                             .forall {
                               case (
-                                  tParam: ScTypeParam,
-                                  ScTypeParameterType(_, _, _, _, param))
+                                    tParam: ScTypeParam,
+                                    ScTypeParameterType(_, _, _, _, param))
                                   if tParam == param =>
                                 true
                               case _ => false
@@ -146,15 +146,19 @@ class ScProjectionType private (
             ))
         case _ => None
       }
-    } else None
+    } else
+      None
   }
 
   private var hash: Int = -1
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = projected
-        .hashCode() + element.hashCode() * 31 + (if (superReference) 239 else 0)
+      hash =
+        projected.hashCode() + element.hashCode() * 31 + (if (superReference)
+                                                            239
+                                                          else
+                                                            0)
     }
     hash
   }
@@ -249,8 +253,10 @@ class ScProjectionType private (
               Some(element, defaultSubstitutor followed node.substitutor)
             case _ => Some(element, defaultSubstitutor)
           }
-        } else Some(candidates(0).element, defaultSubstitutor)
-      } else None
+        } else
+          Some(candidates(0).element, defaultSubstitutor)
+      } else
+        None
     }
     element match {
       case a: ScTypeAlias => processType(a.name)
@@ -267,7 +273,8 @@ class ScProjectionType private (
           Some(
             candidates(0).element,
             emptySubst followed candidates(0).substitutor)
-        } else None
+        } else
+          None
       case d: ScTypeDefinition => processType(d.name)
       case d: PsiClass         => processType(d.getName)
       case _                   => None
@@ -300,7 +307,8 @@ class ScProjectionType private (
         val tp = subst.subst(a.getType(TypingContext.empty).getOrAny)
         if (ScType.isSingletonType(tp)) {
           val resInner = Equivalence.equivInner(tp, r, uSubst, falseUndef)
-          if (resInner._1) return resInner
+          if (resInner._1)
+            return resInner
         }
       case _ =>
     }
@@ -346,7 +354,8 @@ class ScProjectionType private (
             if (ScType.isSingletonType(tp)) {
               val resInner =
                 Equivalence.equivInner(tp, this, uSubst, falseUndef)
-              if (resInner._1) return resInner
+              if (resInner._1)
+                return resInner
             }
           case _ =>
         }
@@ -528,8 +537,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                           .zip(typeArgs)
                           .forall {
                             case (
-                                tParam: ScTypeParam,
-                                ScTypeParameterType(_, _, _, _, param))
+                                  tParam: ScTypeParam,
+                                  ScTypeParameterType(_, _, _, _, param))
                                 if tParam == param =>
                               true
                             case _ => false

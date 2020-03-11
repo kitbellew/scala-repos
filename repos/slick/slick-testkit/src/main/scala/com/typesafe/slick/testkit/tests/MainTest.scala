@@ -38,7 +38,8 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
     ddl.create.statements.toSeq.length.should(_ >= 2)
     users.map(u => (u.first, u.last)).insertStatement
 
-    val q1 = (for (u <- users) yield (u.id, u.first, u.last)).sortBy(_._1)
+    val q1 = (for (u <- users)
+      yield (u.id, u.first, u.last)).sortBy(_._1)
     q1.result.statements.toSeq.length.should(_ >= 1)
 
     val q1b =
@@ -50,7 +51,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
           (Case If u.id < 3 Then "low" If u.id < 6 Then "medium" Else "high"))
     q1b.result.statements.toSeq.length.should(_ >= 1)
 
-    val q2 = for (u <- users if u.first === "Apu".bind) yield (u.last, u.id)
+    val q2 =
+      for (u <- users if u.first === "Apu".bind)
+        yield (u.last, u.id)
     q2.result.statements.toSeq.length.should(_ >= 1)
 
     val expectedUserTuples = List(
@@ -73,7 +76,8 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         ("Lenny", Some("Leonard")))
       ins3 <- users.map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
       total = for (i2 <- ins2;
-                   i3 <- ins3) yield ins1 + i2 + i3
+                   i3 <- ins3)
+        yield ins1 + i2 + i3
       /* All test DBs seem to report the actual number of rows. None would also be acceptable: */
       _ = total.map(_ shouldBe 7)
       r1 <- q1.result
@@ -94,7 +98,12 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
                 id,
                 Some(f),
                 l,
-                if (id < 3) "low" else if (id < 6) "medium" else "high")
+                if (id < 3)
+                  "low"
+                else if (id < 6)
+                  "medium"
+                else
+                  "high")
           }
           _ <- q2.result.head.map(_ shouldBe (Some("Nahasapeemapetilon"), 3))
         } yield allUsers)
@@ -143,7 +152,8 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         val q4b =
           for (u <- users;
                o <- maxOfPer(orders)(_.orderID, _.userID)
-               if o.userID === u.id) yield (u.first, o.orderID)
+               if o.userID === u.id)
+            yield (u.first, o.orderID)
         q4b.result.statements.toSeq.length.should(_ >= 1)
 
         val q4d =
@@ -240,7 +250,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         } yield ())
       }
       .flatMap { _ =>
-        val q8 = for (u <- users if u.last.isEmpty) yield (u.first, u.last)
+        val q8 =
+          for (u <- users if u.last.isEmpty)
+            yield (u.first, u.last)
         q8.updateStatement
         val q9 = users.length
         q9.result.statements.toSeq.length.should(_ >= 1)

@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyStringProperty {
   implicit def sfxReadOnlyStringProperty2jfx(
       rosp: ReadOnlyStringProperty): jfxbp.ReadOnlyStringProperty =
-    if (rosp != null) rosp.delegate else null
+    if (rosp != null)
+      rosp.delegate
+    else
+      null
 }
 
 class ReadOnlyStringProperty(

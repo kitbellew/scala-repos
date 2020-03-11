@@ -55,11 +55,13 @@ object Boilerplate {
   )
 
   /** Returns a seq of the generated files.  As a side-effect, it actually generates them... */
-  def gen(dir: File) = for (t <- templates) yield {
-    val tgtFile = dir / "shapeless" / t.filename
-    IO.write(tgtFile, t.body)
-    tgtFile
-  }
+  def gen(dir: File) =
+    for (t <- templates)
+      yield {
+        val tgtFile = dir / "shapeless" / t.filename
+        IO.write(tgtFile, t.body)
+        tgtFile
+      }
 
   val header =
     """
@@ -96,12 +98,20 @@ object Boilerplate {
     val `a::n` = (synVals :+ "HNil") mkString "::"
     val `_.._` = Seq.fill(arity)("_").mkString(", ")
     val `(A..N)` =
-      if (arity == 1) "Tuple1[A]" else synTypes.mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1[A]"
+      else
+        synTypes.mkString("(", ", ", ")")
     val `(_.._)` =
-      if (arity == 1) "Tuple1[_]"
-      else Seq.fill(arity)("_").mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1[_]"
+      else
+        Seq.fill(arity)("_").mkString("(", ", ", ")")
     val `(a..n)` =
-      if (arity == 1) "Tuple1(a)" else synVals.mkString("(", ", ", ")")
+      if (arity == 1)
+        "Tuple1(a)"
+      else
+        synVals.mkString("(", ", ", ")")
     val `a:A..n:N` = synTypedVals mkString ", "
   }
 
@@ -176,8 +186,10 @@ object Boilerplate {
       val fnType = s"(${`A..N`}) => Res"
       val hlistFnType = s"(${`A::N`}) => Res"
       val fnBody =
-        if (arity == 0) "fn()"
-        else s"l match { case ${`a::n`} => fn(${`a..n`}) }"
+        if (arity == 0)
+          "fn()"
+        else
+          s"l match { case ${`a::n`} => fn(${`a..n`}) }"
 
       block"""
         |package ops
@@ -349,8 +361,10 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
       val fnBody =
-        if (arity == 0) "fn()"
-        else s"l match { case ${`a::n`} => fn(${`a..n`}) }"
+        if (arity == 0)
+          "fn()"
+        else
+          s"l match { case ${`a::n`} => fn(${`a..n`}) }"
 
       block"""
         |

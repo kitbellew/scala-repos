@@ -42,7 +42,10 @@ object Incomplete extends Enumeration {
     def visit(inc: Incomplete): Incomplete =
       visited.getOrElseUpdate(
         inc,
-        if (topDown) visitCauses(f(inc)) else f(visitCauses(inc)))
+        if (topDown)
+          visitCauses(f(inc))
+        else
+          f(visitCauses(inc)))
     def visitCauses(inc: Incomplete): Incomplete =
       inc.copy(causes = inc.causes.map(visit))
 

@@ -41,8 +41,10 @@ class ArrayOrderBenchmarks extends MyBenchmark {
 
   def directEq(x: Array[Int], y: Array[Int]): Boolean = {
     var i = 0
-    if (x.length != y.length) return false
-    while (i < x.length && i < y.length && x(i) === y(i)) i += 1
+    if (x.length != y.length)
+      return false
+    while (i < x.length && i < y.length && x(i) === y(i))
+      i += 1
     i == x.length
   }
 
@@ -51,7 +53,8 @@ class ArrayOrderBenchmarks extends MyBenchmark {
     val ev = Order[Int]
     while (i < x.length && i < y.length) {
       val cmp = ev.compare(x(i), y(i))
-      if (cmp != 0) return cmp
+      if (cmp != 0)
+        return cmp
       i += 1
     }
     x.length - y.length

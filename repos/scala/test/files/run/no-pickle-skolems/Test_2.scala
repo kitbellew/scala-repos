@@ -21,7 +21,8 @@ object Test {
     def check(s: Symbol) {
       if (!seen(s)) {
         seen += s
-        if (s.name.toString == name) buf ::= s
+        if (s.name.toString == name)
+          buf ::= s
       }
     }
     def loop(t: Type) {

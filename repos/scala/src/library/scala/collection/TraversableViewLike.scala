@@ -36,7 +36,10 @@ trait ViewMkString[+A] {
     var first = true
     b append start
     for (x <- self) {
-      if (first) first = false else b append sep
+      if (first)
+        first = false
+      else
+        b append sep
       b append x
     }
     b append end
@@ -128,7 +131,10 @@ trait TraversableViewLike[
         empty = false
         result = x
       }
-      if (empty) None else Some(result)
+      if (empty)
+        None
+      else
+        Some(result)
     }
 
     // XXX: As yet not dealt with, tail and init both call isEmpty.
@@ -161,7 +167,8 @@ trait TraversableViewLike[
       var index = 0
       for (x <- self) {
         if (from <= index) {
-          if (until <= index) return
+          if (until <= index)
+            return
           f(x)
         }
         index += 1
@@ -211,7 +218,8 @@ trait TraversableViewLike[
     protected[this] val pred: A => Boolean
     def foreach[U](f: A => U) {
       for (x <- self)
-        if (pred(x)) f(x)
+        if (pred(x))
+          f(x)
     }
     final override protected[this] def viewIdentifier = "F"
   }
@@ -220,7 +228,8 @@ trait TraversableViewLike[
     protected[this] val pred: A => Boolean
     def foreach[U](f: A => U) {
       for (x <- self) {
-        if (!pred(x)) return
+        if (!pred(x))
+          return
         f(x)
       }
     }
@@ -232,8 +241,10 @@ trait TraversableViewLike[
     def foreach[U](f: A => U) {
       var go = false
       for (x <- self) {
-        if (!go && !pred(x)) go = true
-        if (go) f(x)
+        if (!go && !pred(x))
+          go = true
+        if (go)
+          f(x)
       }
     }
     final override protected[this] def viewIdentifier = "D"
@@ -377,7 +388,10 @@ trait TraversableViewLike[
 
   override def tail: This =
     // super.tail would also work as it is currently implemented in terms of drop(Int).
-    if (isEmpty) super.tail else newDropped(1)
+    if (isEmpty)
+      super.tail
+    else
+      newDropped(1)
 
   override def toString = viewToString
 }

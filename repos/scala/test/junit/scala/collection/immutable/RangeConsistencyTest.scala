@@ -20,22 +20,32 @@ class RangeConsistencyTest {
     import num._
     val one = num.one
 
-    if (!check(puff, fromInt(r.start))) return Nil
+    if (!check(puff, fromInt(r.start)))
+      return Nil
     val start = puff * fromInt(r.start)
     val sp1 = start + one
     val sn1 = start - one
 
-    if (!check(puff, fromInt(r.end))) return Nil
+    if (!check(puff, fromInt(r.end)))
+      return Nil
     val end = puff * fromInt(r.end)
     val ep1 = end + one
     val en1 = end - one
 
-    if (!check(stride, fromInt(r.step))) return Nil
+    if (!check(stride, fromInt(r.step)))
+      return Nil
     val step = stride * fromInt(r.step)
 
     def NR(s: T, e: T, i: T) = {
-      val delta = (bi(e) - bi(s)).abs - (if (r.isInclusive) 0 else 1)
-      val n = if (r.length == 0) BigInt(0) else delta / bi(i).abs + 1
+      val delta = (bi(e) - bi(s)).abs - (if (r.isInclusive)
+                                           0
+                                         else
+                                           1)
+      val n =
+        if (r.length == 0)
+          BigInt(0)
+        else
+          delta / bi(i).abs + 1
       if (r.isInclusive) {
         (n, Try(NumericRange.inclusive(s, e, i).length))
       } else {
@@ -44,10 +54,22 @@ class RangeConsistencyTest {
     }
 
     List(NR(start, end, step)) :::
-      (if (sn1 < start) List(NR(sn1, end, step)) else Nil) :::
-      (if (start < sp1) List(NR(sp1, end, step)) else Nil) :::
-      (if (en1 < end) List(NR(start, en1, step)) else Nil) :::
-      (if (end < ep1) List(NR(start, ep1, step)) else Nil)
+      (if (sn1 < start)
+         List(NR(sn1, end, step))
+       else
+         Nil) :::
+      (if (start < sp1)
+         List(NR(sp1, end, step))
+       else
+         Nil) :::
+      (if (en1 < end)
+         List(NR(start, en1, step))
+       else
+         Nil) :::
+      (if (end < ep1)
+         List(NR(start, ep1, step))
+       else
+         Nil)
   }
 
   // Motivated by SI-4370: Wrong result for Long.MinValue to Long.MaxValue by Int.MaxValue
@@ -64,12 +86,15 @@ class RangeConsistencyTest {
           case 2 => (rn.nextInt(11) + 2) * (2 * rn.nextInt(2) + 1)
           case 3 =>
             var x = rn.nextInt;
-            while (x == 0) x = rn.nextInt;
+            while (x == 0)
+              x = rn.nextInt;
             x
         }
         val r =
-          if (rn.nextBoolean) Range.inclusive(start, end, step)
-          else Range(start, end, step)
+          if (rn.nextBoolean)
+            Range.inclusive(start, end, step)
+          else
+            Range(start, end, step)
 
         try {
           r.length

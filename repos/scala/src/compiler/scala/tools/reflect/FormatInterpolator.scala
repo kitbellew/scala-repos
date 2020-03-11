@@ -35,15 +35,23 @@ abstract class FormatInterpolator {
       def badlyInvoked = (parts.length != args.length + 1) && truly {
         def because(s: String) = s"too $s arguments for interpolated string"
         val (p, msg) =
-          if (parts.length == 0) (c.prefix.tree.pos, "there are no parts")
+          if (parts.length == 0)
+            (c.prefix.tree.pos, "there are no parts")
           else if (args.length + 1 < parts.length)
             (
-              if (args.isEmpty) c.enclosingPosition else args.last.pos,
+              if (args.isEmpty)
+                c.enclosingPosition
+              else
+                args.last.pos,
               because("few"))
-          else (args(parts.length - 1).pos, because("many"))
+          else
+            (args(parts.length - 1).pos, because("many"))
         c.abort(p, msg)
       }
-      if (badlyInvoked) c.macroApplication else interpolated(parts, args)
+      if (badlyInvoked)
+        c.macroApplication
+      else
+        interpolated(parts, args)
     case other =>
       bail(s"Unexpected application ${showRaw(other)}")
       other
@@ -127,8 +135,10 @@ abstract class FormatInterpolator {
               }
             }
             val txt =
-              if ("" == suggest) ""
-              else s", use $suggest instead"
+              if ("" == suggest)
+                ""
+              else
+                s", use $suggest instead"
             txt
           }
           def badOctal = {
@@ -172,7 +182,8 @@ abstract class FormatInterpolator {
           defval(arg, AnyTpe)
         }
         def accept(op: Conversion) = {
-          if (!op.isLeading) errorLeading(op)
+          if (!op.isLeading)
+            errorLeading(op)
           op.accepts(arg) match {
             case Some(tpe) => defval(arg, tpe)
             case None      =>
@@ -182,7 +193,8 @@ abstract class FormatInterpolator {
           Conversion(ms.next, part.pos, args.size) match {
             case Some(op) if op.isLiteral => s_%()
             case Some(op) if op.indexed =>
-              if (op.index map (_ == n) getOrElse true) accept(op)
+              if (op.index map (_ == n) getOrElse true)
+                accept(op)
               else {
                 // either some other arg num, or '<'
                 c.warning(op.groupPos(Index), "Index is not this arg")
@@ -191,7 +203,8 @@ abstract class FormatInterpolator {
             case Some(op) => accept(op)
             case None     =>
           }
-        } else s_%()
+        } else
+          s_%()
       }
       // any remaining conversions must be either literals or indexed
       while (ms.hasNext) {
@@ -212,7 +225,8 @@ abstract class FormatInterpolator {
 
     //q"{..$evals; new StringOps(${fstring.toString}).format(..$ids)}"
     val format = fstring.toString
-    if (ids.isEmpty && !format.contains("%")) Literal(Constant(format))
+    if (ids.isEmpty && !format.contains("%"))
+      Literal(Constant(format))
     else {
       val scalaPackage = Select(Ident(nme.ROOTPKG), TermName("scala"))
       val newStringOps = Select(
@@ -264,7 +278,11 @@ abstract class FormatInterpolator {
     val precision: Option[Int] = maybeStr(Precision) map (_.drop(1).toInt)
     val op: String = maybeStr(CC) getOrElse ""
 
-    def cc: Char = if ("tT" contains op(0)) op(1) else op(0)
+    def cc: Char =
+      if ("tT" contains op(0))
+        op(1)
+      else
+        op(0)
 
     def indexed: Boolean = index.nonEmpty || hasFlag('<')
     def isLiteral: Boolean = false
@@ -309,7 +327,8 @@ abstract class FormatInterpolator {
     def goodFlags = {
       val badFlags = flags map (_ filterNot (okFlags contains _))
       for (bf <- badFlags;
-           f <- bf) badFlag(f, s"Illegal flag '$f'")
+           f <- bf)
+        badFlag(f, s"Illegal flag '$f'")
       badFlags.getOrElse("").isEmpty
     }
     def goodIndex = {
@@ -338,7 +357,11 @@ abstract class FormatInterpolator {
     def apply(m: Match, p: Position, n: Int): Option[Conversion] = {
       def badCC(msg: String) = {
         val dk = new ErrorXn(m, p)
-        val at = if (dk.op.isEmpty) Spec else CC
+        val at =
+          if (dk.op.isEmpty)
+            Spec
+          else
+            CC
         dk.errorAt(at, msg)
       }
       def cv(cc: Char) = cc match {
@@ -373,7 +396,10 @@ abstract class FormatInterpolator {
       case 's' | 'S' if hasFlag('#') =>
         pickAcceptable(arg, tagOfFormattable.tpe)
       case 'b' | 'B' =>
-        if (arg.tpe <:< NullTpe) Some(NullTpe) else Some(BooleanTpe)
+        if (arg.tpe <:< NullTpe)
+          Some(NullTpe)
+        else
+          Some(BooleanTpe)
       case _ => Some(AnyTpe)
     }
     override protected def okFlags = cc match {
@@ -426,7 +452,8 @@ abstract class FormatInterpolator {
               s"only use '$badf' for BigInt conversions to o, x, X"))
           true
       }
-      if (bad_+) None
+      if (bad_+)
+        None
       else
         pickAcceptable(arg, IntTpe, LongTpe, ByteTpe, ShortTpe, tagOfBigInt.tpe)
     }

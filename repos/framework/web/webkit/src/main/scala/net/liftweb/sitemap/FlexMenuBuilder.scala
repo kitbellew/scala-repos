@@ -59,7 +59,10 @@ trait FlexMenuBuilder {
     } openOr false
 
     val kids: List[MenuItem] =
-      if (expandAll) loc.buildKidMenuItems(loc.menu.kids) else Nil
+      if (expandAll)
+        loc.buildKidMenuItems(loc.menu.kids)
+      else
+        Nil
     loc.buildItem(kids, currLoc == Full(loc), isInPath).toList
   }
 
@@ -246,20 +249,28 @@ trait FlexMenuBuilder {
          sm <- LiftRules.siteMap;
          req <- S.request
        } yield sm.buildMenu(req.location).lines
-     else S.request.map(_.buildMenu.lines)) openOr Nil
+     else
+       S.request.map(_.buildMenu.lines)) openOr Nil
 
   def render: NodeSeq = {
 
     val level: Box[Int] =
       for (lvs <- S.attr("level");
-           i <- Helpers.asInt(lvs)) yield i
+           i <- Helpers.asInt(lvs))
+        yield i
 
     val toRender: Seq[MenuItem] = this.toRender
 
     def ifExpandCurrent(f: => NodeSeq): NodeSeq =
-      if (expandAny || expandAll) f else NodeSeq.Empty
+      if (expandAny || expandAll)
+        f
+      else
+        NodeSeq.Empty
     def ifExpandAll(f: => NodeSeq): NodeSeq =
-      if (expandAll) f else NodeSeq.Empty
+      if (expandAll)
+        f
+      else
+        NodeSeq.Empty
     toRender.toList match {
       case Nil if S.attr("group").isDefined => emptyGroup
       case Nil                              => emptyMenu
@@ -295,8 +306,10 @@ trait FlexMenuBuilder {
         val realMenuItems = level match {
           case Full(lvl) if lvl > 0 =>
             def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
-              if (depth == 0) cur
-              else findKids(cur.flatMap(mi => mi.kids), depth - 1)
+              if (depth == 0)
+                cur
+              else
+                findKids(cur.flatMap(mi => mi.kids), depth - 1)
 
             findKids(xs, lvl)
 

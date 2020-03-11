@@ -36,7 +36,10 @@ import scalafx.scene.layout.Region
 
 object Control {
   implicit def sfxControl2jfx(v: Control): jfxsc.Control =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class Control(override val delegate: jfxsc.Control)

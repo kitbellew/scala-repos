@@ -183,7 +183,8 @@ class LRUMap[K, V](
       var toRemove = _prev
       while (!canExpire(toRemove.value1, toRemove.value2)) {
         toRemove = toRemove._prev
-        if (toRemove eq this) return
+        if (toRemove eq this)
+          return
       }
       toRemove.remove
       localMap.remove(toRemove.value1)

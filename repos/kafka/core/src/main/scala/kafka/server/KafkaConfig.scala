@@ -1747,7 +1747,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
             getInt(KafkaConfig.LogRetentionTimeHoursProp) * millisInHour
         })
 
-    if (millis < 0) return -1
+    if (millis < 0)
+      return -1
     millis
   }
 

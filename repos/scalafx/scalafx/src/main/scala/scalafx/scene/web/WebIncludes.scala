@@ -66,7 +66,10 @@ trait WebIncludes {
     * @return $SFX $HE
     */
   implicit def jfxHTMLEditor2sfx(he: jfxsw.HTMLEditor): HTMLEditor =
-    if (he != null) new HTMLEditor(he) else null
+    if (he != null)
+      new HTMLEditor(he)
+    else
+      null
 
   /**
     * $START$PF.html $PF$END
@@ -75,7 +78,10 @@ trait WebIncludes {
     * @return $SFX $PF
     */
   implicit def jfxPopupFeatures2sfx(pf: jfxsw.PopupFeatures): PopupFeatures =
-    if (pf != null) new PopupFeatures(pf) else null
+    if (pf != null)
+      new PopupFeatures(pf)
+    else
+      null
 
   /**
     * $START$PD.html $PD$END
@@ -84,7 +90,10 @@ trait WebIncludes {
     * @return $SFX $PD
     */
   implicit def jfxPromptData2sfx(pd: jfxsw.PromptData): PromptData =
-    if (pd != null) new PromptData(pd) else null
+    if (pd != null)
+      new PromptData(pd)
+    else
+      null
 
   /**
     * $START$WE.html $WE$END
@@ -93,7 +102,10 @@ trait WebIncludes {
     * @return $SFX $WE
     */
   implicit def jfxWebEngine2sfx(we: jfxsw.WebEngine): WebEngine =
-    if (we != null) new WebEngine(we) else null
+    if (we != null)
+      new WebEngine(we)
+    else
+      null
 
   /**
     * $START$WT.html $WT$END
@@ -102,7 +114,10 @@ trait WebIncludes {
     * @return $SFX $WT
     */
   implicit def jfxWebEvent2sfx[T](we: jfxsw.WebEvent[T]): WebEvent[T] =
-    if (we != null) new WebEvent(we) else null
+    if (we != null)
+      new WebEvent(we)
+    else
+      null
 
   /**
     * $START$WR.html $WR$END
@@ -111,7 +126,10 @@ trait WebIncludes {
     * @return $SFX $WR
     */
   implicit def jfxWebErrorEvent2sfx(wr: jfxsw.WebErrorEvent): WebErrorEvent =
-    if (wr != null) new WebErrorEvent(wr) else null
+    if (wr != null)
+      new WebErrorEvent(wr)
+    else
+      null
 
   /**
     * $START$WV.html $WV$END
@@ -120,7 +138,10 @@ trait WebIncludes {
     * @return $SFX $WV
     */
   implicit def jfxWebView2sfx(wv: jfxsw.WebView): WebView =
-    if (wv != null) new WebView(wv) else null
+    if (wv != null)
+      new WebView(wv)
+    else
+      null
 
   /**
     * $BEGINWR$WE$FINISHWR

@@ -20,7 +20,11 @@ final class TriState private (val value: Int) extends AnyVal {
 }
 
 object TriState {
-  implicit def booleanToTriState(b: Boolean): TriState = if (b) True else False
+  implicit def booleanToTriState(b: Boolean): TriState =
+    if (b)
+      True
+    else
+      False
 
   val Unknown = new TriState(-1)
   val False = new TriState(0)

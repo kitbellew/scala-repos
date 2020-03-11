@@ -97,8 +97,10 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
         case previous
             if (previous.keySet & m.keySet).nonEmpty => // Key intersection nonempty
           // prefer the old values
-          if (countersForJob.replace(jobID, previous, (m ++ previous))) ()
-          else put(m)
+          if (countersForJob.replace(jobID, previous, (m ++ previous)))
+            ()
+          else
+            put(m)
         case _ => () // there is something there, but the keys are all present
       }
 

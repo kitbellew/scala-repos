@@ -273,11 +273,14 @@ trait ProdConsAnalyzerImpl {
           dupX1Case
 
         case DUP_X2 =>
-          if (frame.peekStack(1).getSize == 2) dupX1Case
-          else dupX2Case
+          if (frame.peekStack(1).getSize == 2)
+            dupX1Case
+          else
+            dupX2Case
 
         case DUP2 =>
-          if (frame.peekStack(0).getSize == 2) stackValue(0)
+          if (frame.peekStack(0).getSize == 2)
+            stackValue(0)
           else {
             (producedIndex(2): @switch) match {
               case 0 | 2 => stackValue(1)
@@ -286,18 +289,23 @@ trait ProdConsAnalyzerImpl {
           }
 
         case DUP2_X1 =>
-          if (frame.peekStack(0).getSize == 2) dupX1Case
-          else dup2X1Case
+          if (frame.peekStack(0).getSize == 2)
+            dupX1Case
+          else
+            dup2X1Case
 
         case DUP2_X2 =>
           val v1isSize2 = frame.peekStack(0).getSize == 2
           if (v1isSize2) {
             val v2isSize2 = frame.peekStack(1).getSize == 2
-            if (v2isSize2) dupX1Case // Form 4
-            else dupX2Case // Form 2
+            if (v2isSize2)
+              dupX1Case // Form 4
+            else
+              dupX2Case // Form 2
           } else {
             val v3isSize2 = frame.peekStack(2).getSize == 2
-            if (v3isSize2) dup2X1Case // Form 3
+            if (v3isSize2)
+              dup2X1Case // Form 3
             else {
               // Form 1
               (producedIndex(4): @switch) match {
@@ -310,8 +318,10 @@ trait ProdConsAnalyzerImpl {
           }
 
         case SWAP =>
-          if (producedIndex(2) == 0) stackValue(0)
-          else stackValue(1)
+          if (producedIndex(2) == 0)
+            stackValue(0)
+          else
+            stackValue(1)
 
         case CHECKCAST =>
           stackValue(0)
@@ -329,7 +339,8 @@ trait ProdConsAnalyzerImpl {
   private def copyOperationProducedValueSlots(
       copyOp: AbstractInsnNode,
       consumedSlot: Int): Set[Int] = {
-    if (isStore(copyOp)) Set(copyOp.asInstanceOf[VarInsnNode].`var`)
+    if (isStore(copyOp))
+      Set(copyOp.asInstanceOf[VarInsnNode].`var`)
     else {
       val nextFrame = frameAt(copyOp.getNext)
       val top = nextFrame.stackTop
@@ -358,7 +369,8 @@ trait ProdConsAnalyzerImpl {
         case 2 => Set(top - 3, top)
       }
 
-      if (isLoad(copyOp)) Set(top)
+      if (isLoad(copyOp))
+        Set(top)
       else
         (copyOp.getOpcode: @switch) match {
           case DUP =>
@@ -368,11 +380,14 @@ trait ProdConsAnalyzerImpl {
             dupX1Case
 
           case DUP_X2 =>
-            if (nextFrame.peekStack(1).getSize == 2) dupX1Case
-            else dupX2Case
+            if (nextFrame.peekStack(1).getSize == 2)
+              dupX1Case
+            else
+              dupX2Case
 
           case DUP2 =>
-            if (nextFrame.peekStack(0).getSize == 2) Set(top - 1, top)
+            if (nextFrame.peekStack(0).getSize == 2)
+              Set(top - 1, top)
             else
               (consumedIndex(4): @switch) match {
                 case 0 => Set(top - 3, top - 1)
@@ -380,18 +395,23 @@ trait ProdConsAnalyzerImpl {
               }
 
           case DUP2_X1 =>
-            if (nextFrame.peekStack(0).getSize == 2) dupX1Case
-            else dup2X1Case
+            if (nextFrame.peekStack(0).getSize == 2)
+              dupX1Case
+            else
+              dup2X1Case
 
           case DUP2_X2 =>
             val v1isSize2 = nextFrame.peekStack(0).getSize == 2
             if (v1isSize2) {
               val v2isSize2 = nextFrame.peekStack(1).getSize == 2
-              if (v2isSize2) dupX1Case // Form 4
-              else dupX2Case // Form 2
+              if (v2isSize2)
+                dupX1Case // Form 4
+              else
+                dupX2Case // Form 2
             } else {
               val v3isSize2 = nextFrame.peekStack(2).getSize == 2
-              if (v3isSize2) dup2X1Case // Form 3
+              if (v3isSize2)
+                dup2X1Case // Form 3
               else {
                 // Form 1
                 (consumedIndex(6): @switch) match {
@@ -404,8 +424,10 @@ trait ProdConsAnalyzerImpl {
             }
 
           case SWAP =>
-            if (consumedIndex(2) == 0) Set(top)
-            else Set(top - 1)
+            if (consumedIndex(2) == 0)
+              Set(top)
+            else
+              Set(top - 1)
 
           case CHECKCAST =>
             Set(top)
@@ -421,7 +443,8 @@ trait ProdConsAnalyzerImpl {
 
   /** Returns the frame slots holding the values consumed by executing `insn`. */
   private def inputValueSlots(insn: AbstractInsnNode): Seq[Int] = {
-    if (insn.getOpcode == -1) return Seq.empty
+    if (insn.getOpcode == -1)
+      return Seq.empty
     if (isLoad(insn)) {
       Seq(insn.asInstanceOf[VarInsnNode].`var`)
     } else if (insn.getOpcode == IINC) {
@@ -440,7 +463,8 @@ trait ProdConsAnalyzerImpl {
     case UninitializedLocalProducer(local) => Seq(local)
     case ExceptionProducer(_, frame)       => Seq(frame.stackTop)
     case _ =>
-      if (insn.getOpcode == -1) return Seq.empty
+      if (insn.getOpcode == -1)
+        return Seq.empty
       if (isStore(insn)) {
         Seq(insn.asInstanceOf[VarInsnNode].`var`)
       } else if (insn.getOpcode == IINC) {

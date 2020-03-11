@@ -32,7 +32,8 @@ trait MetaProtoTag[ModelType <: ProtoTag[ModelType]]
 
   def findOrCreate(ntag: String): ModelType = synchronized {
     val tag = capify(ntag)
-    if (tagCache.contains(tag)) tagCache(tag)
+    if (tagCache.contains(tag))
+      tagCache(tag)
     else {
       find(By(name, tag)) match {
         case Full(t) =>
@@ -49,7 +50,8 @@ trait MetaProtoTag[ModelType <: ProtoTag[ModelType]]
   override def findDbByKey(
       dbId: ConnectionIdentifier,
       key: Long): Box[ModelType] = synchronized {
-    if (idCache.contains(key)) Full(idCache(key))
+    if (idCache.contains(key))
+      Full(idCache(key))
     else {
       val ret = super.findDbByKey(dbId, key)
       ret.foreach(v => idCache(key) = v)

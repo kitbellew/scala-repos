@@ -325,7 +325,11 @@ trait Mailer extends SimpleInjector {
       ns.toList.collect {
         case e: Elem => e
       } match {
-        case Nil     => if (ns.length == 0) Text("") else ns(0)
+        case Nil =>
+          if (ns.length == 0)
+            Text("")
+          else
+            ns(0)
         case x :: xs => x
       }
   }
@@ -390,7 +394,11 @@ trait Mailer extends SimpleInjector {
 
     part.setFileName(holder.name)
     part.setContentID(holder.name)
-    part.setDisposition(if (holder.attachment) Part.ATTACHMENT else Part.INLINE)
+    part.setDisposition(
+      if (holder.attachment)
+        Part.ATTACHMENT
+      else
+        Part.INLINE)
     part.setDataHandler(
       new javax.activation.DataHandler(new javax.activation.DataSource {
         def getContentType = holder.mimeType

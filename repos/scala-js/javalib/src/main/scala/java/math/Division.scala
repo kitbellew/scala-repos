@@ -216,7 +216,11 @@ private[math] object Division {
       new QuotAndRem(BigInteger.valueOf(quo), BigInteger.valueOf(rem))
     } else {
       val quotientLength = valLen
-      val quotientSign = if (valSign == divisorSign) 1 else -1
+      val quotientSign =
+        if (valSign == divisorSign)
+          1
+        else
+          -1
       val quotientDigits = new Array[Int](quotientLength)
       var remainderDigits: Array[Int] = Array()
       val div = divideArrayByInt(quotientDigits, valDigits, valLen, divisor)
@@ -509,8 +513,10 @@ private[math] object Division {
       leadingZeros = 32 - (n & 31)
       x.numberLength = fd + 1
       val shift =
-        if (leadingZeros < 32) -1 >>> leadingZeros
-        else 0
+        if (leadingZeros < 32)
+          -1 >>> leadingZeros
+        else
+          0
       x.digits(fd) &= shift
       x.cutOffLeadingZeroes()
     }
@@ -596,7 +602,11 @@ private[math] object Division {
         u = u.negate()
     }
     if (u.testBit(n))
-      r = if (r.signum() < 0) r.negate() else modulo.subtract(r)
+      r =
+        if (r.signum() < 0)
+          r.negate()
+        else
+          modulo.subtract(r)
     if (r.signum() < 0)
       r = r.add(modulo)
     r
@@ -784,7 +794,8 @@ private[math] object Division {
     val res =
       if (modulus.numberLength == 1)
         squareAndMultiply(x2, a2, exponent, modulus, n2)
-      else slidingWindow(x2, a2, exponent, modulus, n2)
+      else
+        slidingWindow(x2, a2, exponent, modulus, n2)
     monPro(res, BigInteger.ONE, modulus, n2)
   }
 

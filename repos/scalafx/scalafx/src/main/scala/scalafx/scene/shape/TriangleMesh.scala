@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object TriangleMesh {
   implicit def sfxTriangleMesh2jfx(tm: TriangleMesh): jfxss.TriangleMesh =
-    if (tm != null) tm.delegate else null
+    if (tm != null)
+      tm.delegate
+    else
+      null
 }
 
 /**

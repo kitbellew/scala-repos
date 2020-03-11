@@ -228,7 +228,8 @@ object Future {
     *     `Future` regardless of if they succeed or fail.
     */
   def join[A](fs: Seq[Future[A]]): Future[Unit] = {
-    if (fs.isEmpty) Unit
+    if (fs.isEmpty)
+      Unit
     else {
       val count = new AtomicInteger(fs.size)
       val p = Promise.interrupts[Unit](fs: _*)
@@ -1095,7 +1096,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @return a `Future[Map[A, B]]` containing the collected values from fs
     */
   def collect[A, B](fs: Map[A, Future[B]]): Future[Map[A, B]] =
-    if (fs.isEmpty) Future(Map.empty[A, B])
+    if (fs.isEmpty)
+      Future(Map.empty[A, B])
     else {
       val (keys, values) = fs.toSeq.unzip
       Future.collect(values) map { seq =>
@@ -1152,12 +1154,14 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     } else {
       val p = Promise.interrupts[(Try[A], Seq[Future[A]])](fs: _*)
       val as = fs.map(f => (Promise.attached(f), f))
-      for ((a, f) <- as) a respond { t =>
-        if (!p.isDefined) {
-          p.updateIfEmpty(Return(t -> fs.filterNot(_ eq f)))
-          for (z <- as) z._1.detach()
+      for ((a, f) <- as)
+        a respond { t =>
+          if (!p.isDefined) {
+            p.updateIfEmpty(Return(t -> fs.filterNot(_ eq f)))
+            for (z <- as)
+              z._1.detach()
+          }
         }
-      }
       p
     }
 
@@ -1218,7 +1222,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * flag is true.
     */
   def when[A](p: Boolean)(f: => Future[A]): Future[Unit] =
-    if (p) f.unit else Future.Unit
+    if (p)
+      f.unit
+    else
+      Future.Unit
 
   /**
     * Repeat a computation that returns a Future while some predicate obtains,
@@ -1226,10 +1233,12 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     */
   def whileDo[A](p: => Boolean)(f: => Future[A]): Future[Unit] = {
     def loop(): Future[Unit] = {
-      if (p) f flatMap { _ =>
-        loop()
-      }
-      else Future.Unit
+      if (p)
+        f flatMap { _ =>
+          loop()
+        }
+      else
+        Future.Unit
     }
 
     loop()
@@ -1685,7 +1694,10 @@ abstract class Future[+A] extends Awaitable[A] {
     transform({
       case Throw(t) =>
         val result = rescueException.applyOrElse(t, Future.AlwaysNotApplied)
-        if (result eq Future.NotApplied) this else result
+        if (result eq Future.NotApplied)
+          this
+        else
+          result
       case _ => this
     })
 
@@ -1827,10 +1839,12 @@ abstract class Future[+A] extends Awaitable[A] {
     val a = Promise.attached(other)
     val b = Promise.attached(this)
     a respond { t =>
-      if (p.updateIfEmpty(t)) b.detach()
+      if (p.updateIfEmpty(t))
+        b.detach()
     }
     b respond { t =>
-      if (p.updateIfEmpty(t)) a.detach()
+      if (p.updateIfEmpty(t))
+        a.detach()
     }
     p
   }
@@ -2013,7 +2027,8 @@ abstract class Future[+A] extends Awaitable[A] {
     * `Future` will not be held onto by the killer `Future`.
     */
   def interruptible(): Future[A] = {
-    if (isDefined) return this
+    if (isDefined)
+      return this
 
     val p = Promise.attached(this)
     p setInterruptHandler {

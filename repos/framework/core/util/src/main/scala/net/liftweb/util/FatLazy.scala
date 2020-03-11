@@ -172,7 +172,8 @@ class ThreadLazy[TheType](theFunc: => TheType) extends LoanWrapper {
     * Return the value, evaluating the default expression if necessary.
     */
   def get: TheType = {
-    if (calced.value) value.value
+    if (calced.value)
+      value.value
     else {
       value.set(theFunc)
       calced.set(true)

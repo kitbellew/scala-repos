@@ -63,7 +63,10 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
       def previousCharacterIsUnderscore(name: String, i: Int) =
         i > 1 && name.charAt(i - 1) == '_'
       def underscoresNumber(name: String, i: Int) =
-        if (i == 0) 0 else name.substring(0, i).toList.count(_ == '_')
+        if (i == 0)
+          0
+        else
+          name.substring(0, i).toList.count(_ == '_')
       def correspondingIndexInCamelCase(name: String, i: Int) =
         i - underscoresNumber(name, i)
       def correspondingCharInCamelCase(name: String, i: Int): Char =

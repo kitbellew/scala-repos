@@ -32,7 +32,8 @@ object Try {
     * the argument Trys are Throws. The first Throw in the Seq is the one which is surfaced.
     */
   def collect[A](ts: Seq[Try[A]]): Try[Seq[A]] = {
-    if (ts.isEmpty) Return(Seq.empty[A])
+    if (ts.isEmpty)
+      Return(Seq.empty[A])
     else
       Try {
         ts map { t =>
@@ -102,7 +103,11 @@ sealed abstract class Try[+R] {
   /**
     * Returns the value from this Return or the given argument if this is a Throw.
     */
-  def getOrElse[R2 >: R](default: => R2) = if (isReturn) apply() else default
+  def getOrElse[R2 >: R](default: => R2) =
+    if (isReturn)
+      apply()
+    else
+      default
 
   /**
     * Returns the value from this Return or throws the exception if this is a Throw
@@ -191,7 +196,11 @@ sealed abstract class Try[+R] {
   /**
     * Returns None if this is a Throw or a Some containing the value if this is a Return
     */
-  def toOption = if (isReturn) Some(apply()) else None
+  def toOption =
+    if (isReturn)
+      Some(apply())
+    else
+      None
 
   /**
     * Invokes the given closure when the value is available.  Returns
@@ -234,7 +243,10 @@ final case class Throw[+R](e: Throwable) extends Try[R] {
   def rescue[R2 >: R](rescueException: PartialFunction[Throwable, Try[R2]]) = {
     try {
       val result = rescueException.applyOrElse(e, Throw.AlwaysNotApplied)
-      if (result eq Throw.NotApplied) this else result
+      if (result eq Throw.NotApplied)
+        this
+      else
+        result
     } catch {
       case NonFatal(e2) => Throw(e2)
     }
@@ -302,7 +314,10 @@ final case class Return[+R](r: R) extends Try[R] {
   def exists(p: R => Boolean): Boolean = p(r)
 
   def filter(p: R => Boolean): Try[R] =
-    if (p(apply())) this else Throw(new Try.PredicateDoesNotObtain)
+    if (p(apply()))
+      this
+    else
+      Throw(new Try.PredicateDoesNotObtain)
 
   def withFilter(p: R => Boolean): Try[R] = filter(p)
 

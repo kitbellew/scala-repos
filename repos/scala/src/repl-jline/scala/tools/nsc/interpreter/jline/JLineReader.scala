@@ -95,7 +95,11 @@ private class JLineConsoleReader
   private def printColumns_(items: List[String]): Unit =
     if (items exists (_ != "")) {
       val grouped = tabulate(items)
-      var linesLeft = if (isPaginationEnabled()) height - 1 else Int.MaxValue
+      var linesLeft =
+        if (isPaginationEnabled())
+          height - 1
+        else
+          Int.MaxValue
       grouped foreach { xs =>
         println(xs.mkString)
         linesLeft -= 1
@@ -133,7 +137,11 @@ private class JLineConsoleReader
             _buf: String,
             cursor: Int,
             candidates: JList[CharSequence]): Int = {
-          val buf = if (_buf == null) "" else _buf
+          val buf =
+            if (_buf == null)
+              ""
+            else
+              _buf
           val Candidates(newCursor, newCandidates) =
             completion.complete(buf, cursor)
           newCandidates foreach (candidates add _)

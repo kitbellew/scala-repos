@@ -115,7 +115,8 @@ class SizedTests {
 
     val cs =
       for (x <- s1;
-           y <- s2) yield x ++ y
+           y <- s2)
+        yield x ++ y
     assertTrue(cs.isDefined)
     typed[Sized[String, _6]](cs.get)
     assertEquals("foobar", cs.get.unsized)
@@ -133,7 +134,8 @@ class SizedTests {
 
     val cl =
       for (x <- ll1;
-           y <- ll2) yield x ++ y
+           y <- ll2)
+        yield x ++ y
     assertTrue(cl.isDefined)
     typed[Sized[List[Int], _6]](cl.get)
     assertEquals(List(1, 2, 3, 4, 5, 6), cl.get.unsized)

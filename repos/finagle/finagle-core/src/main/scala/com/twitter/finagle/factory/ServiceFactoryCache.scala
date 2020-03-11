@@ -63,7 +63,11 @@ private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
     * reading from the watch. (I.e. the factory can become nonidle
     * between the checks). This is fine.
     */
-  def idleFor = if (n.get > 0) Duration.Zero else watch()
+  def idleFor =
+    if (n.get > 0)
+      Duration.Zero
+    else
+      watch()
 }
 
 /**
@@ -177,8 +181,10 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     val (evictNamer, evictFactory) = cache maxBy {
       case (_, fac) => fac.idleFor
     }
-    if (evictFactory.idleFor > Duration.Zero) Some(evictNamer)
-    else None
+    if (evictFactory.idleFor > Duration.Zero)
+      Some(evictNamer)
+    else
+      None
   }
 
   def close(deadline: Time) =

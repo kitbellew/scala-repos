@@ -46,7 +46,8 @@ abstract class AbstractReporter extends Reporter {
       }
     } else {
       val hidden = testAndLog(pos, severity, msg)
-      if (severity == WARNING && noWarnings) ()
+      if (severity == WARNING && noWarnings)
+        ()
       else {
         if (!hidden || isPromptSet) {
           severity.count += 1

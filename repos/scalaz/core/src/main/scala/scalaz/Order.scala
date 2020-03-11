@@ -24,11 +24,23 @@ trait Order[F] extends Equal[F] { self =>
 
   def greaterThanOrEqual(x: F, y: F) = order(x, y) != Ordering.LT
 
-  def max(x: F, y: F) = if (greaterThanOrEqual(x, y)) x else y
+  def max(x: F, y: F) =
+    if (greaterThanOrEqual(x, y))
+      x
+    else
+      y
 
-  def min(x: F, y: F) = if (lessThan(x, y)) x else y
+  def min(x: F, y: F) =
+    if (lessThan(x, y))
+      x
+    else
+      y
 
-  def sort(x: F, y: F) = if (lessThanOrEqual(x, y)) (x, y) else (y, x)
+  def sort(x: F, y: F) =
+    if (lessThanOrEqual(x, y))
+      (x, y)
+    else
+      (y, x)
 
   override def contramap[B](f: B => F): Order[B] = new Order[B] {
     def order(b1: B, b2: B): Ordering = self.order(f(b1), f(b2))

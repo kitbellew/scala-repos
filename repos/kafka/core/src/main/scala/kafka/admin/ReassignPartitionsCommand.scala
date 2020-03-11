@@ -147,7 +147,10 @@ object ReassignPartitionsCommand extends Logging {
       case (tp, _) => tp.topic
     }
     val rackAwareMode =
-      if (disableRackAware) RackAwareMode.Disabled else RackAwareMode.Enforced
+      if (disableRackAware)
+        RackAwareMode.Disabled
+      else
+        RackAwareMode.Enforced
     val brokerMetadatas = AdminUtils.getBrokerMetadatas(
       zkUtils,
       rackAwareMode,

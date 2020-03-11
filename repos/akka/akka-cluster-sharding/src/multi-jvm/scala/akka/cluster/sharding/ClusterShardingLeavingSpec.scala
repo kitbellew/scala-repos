@@ -129,14 +129,16 @@ abstract class ClusterShardingLeavingSpec(
   override protected def atStartup() {
     runOn(first) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(first) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -196,11 +198,12 @@ abstract class ClusterShardingLeavingSpec(
       runOn(first) {
         val shardLocations =
           system.actorOf(Props[ShardLocations], "shardLocations")
-        val locations = (for (n ← 1 to 10) yield {
-          val id = n.toString
-          region ! Ping(id)
-          id -> expectMsgType[ActorRef]
-        }).toMap
+        val locations = (for (n ← 1 to 10)
+          yield {
+            val id = n.toString
+            region ! Ping(id)
+            id -> expectMsgType[ActorRef]
+          }).toMap
         shardLocations ! Locations(locations)
       }
       enterBarrier("after-3")

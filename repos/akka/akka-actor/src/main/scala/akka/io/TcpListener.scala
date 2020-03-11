@@ -49,7 +49,11 @@ private[io] class TcpListener(
   val channel = ServerSocketChannel.open
   channel.configureBlocking(false)
 
-  var acceptLimit = if (bind.pullMode) 0 else BatchAcceptLimit
+  var acceptLimit =
+    if (bind.pullMode)
+      0
+    else
+      BatchAcceptLimit
 
   val localAddress =
     try {
@@ -64,7 +68,10 @@ private[io] class TcpListener(
       }
       channelRegistry.register(
         channel,
-        if (bind.pullMode) 0 else SelectionKey.OP_ACCEPT)
+        if (bind.pullMode)
+          0
+        else
+          SelectionKey.OP_ACCEPT)
       log.debug("Successfully bound to {}", ret)
       bind.options.foreach {
         case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
@@ -94,7 +101,8 @@ private[io] class TcpListener(
   def bound(registration: ChannelRegistration): Receive = {
     case ChannelAcceptable ⇒
       acceptLimit = acceptAllPending(registration, acceptLimit)
-      if (acceptLimit > 0) registration.enableInterest(SelectionKey.OP_ACCEPT)
+      if (acceptLimit > 0)
+        registration.enableInterest(SelectionKey.OP_ACCEPT)
 
     case ResumeAccepting(batchSize) ⇒
       acceptLimit = batchSize
@@ -128,7 +136,8 @@ private[io] class TcpListener(
             null
           }
         }
-      } else null
+      } else
+        null
     if (socketChannel != null) {
       log.debug("New connection accepted")
       socketChannel.configureBlocking(false)
@@ -146,8 +155,10 @@ private[io] class TcpListener(
         self,
         props)
       acceptAllPending(registration, limit - 1)
-    } else if (bind.pullMode) limit
-    else BatchAcceptLimit
+    } else if (bind.pullMode)
+      limit
+    else
+      BatchAcceptLimit
   }
 
   override def postStop() {

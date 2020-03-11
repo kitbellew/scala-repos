@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object ListCell {
   implicit def sfxListCell2jfx[T](l: ListCell[T]): jfxsc.ListCell[T] =
-    if (l != null) l.delegate else null
+    if (l != null)
+      l.delegate
+    else
+      null
 }
 
 class ListCell[T](

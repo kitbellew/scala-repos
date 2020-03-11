@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object Path {
   implicit def sfxPath2jfx(v: Path): jfxss.Path =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

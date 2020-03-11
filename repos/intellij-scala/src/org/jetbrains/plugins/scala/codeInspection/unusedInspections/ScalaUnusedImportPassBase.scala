@@ -48,8 +48,10 @@ trait ScalaUnusedImportPassBase { self: TextEditorHighlightingPass =>
             val impSt = expr.getParent.asInstanceOf[ScImportStmt]
             if (impSt == null)
               None //todo: investigate this case, this cannot be null
-            else if (impSt.importExprs.length == 1) Some(impSt)
-            else Some(expr)
+            else if (impSt.importExprs.length == 1)
+              Some(impSt)
+            else
+              Some(expr)
           case ImportSelectorUsed(sel) if !isLanguageFeatureImport(imp) =>
             Some(sel)
           case ImportWildcardSelectorUsed(e)

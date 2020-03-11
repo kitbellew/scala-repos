@@ -247,7 +247,8 @@ object LDAPUtil {
         false)) { results =>
       if (results.hasMore) {
         Option(results.next.getAttribute(mailAttribute)).map(_.getStringValue)
-      } else None
+      } else
+        None
     }
 
   private def findFullName(
@@ -265,7 +266,8 @@ object LDAPUtil {
         false)) { results =>
       if (results.hasMore) {
         Option(results.next.getAttribute(nameAttribute)).map(_.getStringValue)
-      } else None
+      } else
+        None
     }
 
   case class LDAPUserInfo(

@@ -188,8 +188,10 @@ trait ShardQueryExecutorPlatform[M[+_]]
                       false
                     }
                 } map { errors =>
-                  faults -> (if (errors.exists(_ == true)) Table.empty
-                             else table)
+                  faults -> (if (errors.exists(_ == true))
+                               Table.empty
+                             else
+                               table)
                 }
               }
             }
@@ -246,7 +248,10 @@ trait ShardQueryExecutorPlatform[M[+_]]
         val tp = err.tp
 
         val constr =
-          if (isWarning(err)) Fault.Warning.apply _ else Fault.Error.apply _
+          if (isWarning(err))
+            Fault.Warning.apply _
+          else
+            Fault.Error.apply _
 
         constr(
           Some(FaultPosition(loc.lineNum, loc.colNum, loc.line)),

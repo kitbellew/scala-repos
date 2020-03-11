@@ -37,7 +37,10 @@ import scalafx.geometry.Orientation
 
 object ScrollBar {
   implicit def sfxScrollBar2jfx(sc: ScrollBar): jfxsc.ScrollBar =
-    if (sc != null) sc.delegate else null
+    if (sc != null)
+      sc.delegate
+    else
+      null
 }
 
 /**

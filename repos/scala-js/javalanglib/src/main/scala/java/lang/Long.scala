@@ -109,8 +109,10 @@ object Long {
       case 16 => toHexString(i)
       case _ =>
         val radix1 =
-          if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) 10
-          else radix
+          if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+            10
+          else
+            radix
         toUnsignedStringImpl(i, radix1)
     }
   }
@@ -212,8 +214,10 @@ object Long {
       parseLongError(s)
 
     val start =
-      if (s.charAt(0) == '+') 1
-      else 0
+      if (s.charAt(0) == '+')
+        1
+      else
+        0
 
     parseUnsignedLongInternal(s, radix, start)
   }
@@ -317,9 +321,12 @@ object Long {
 
   // Intrinsic
   @inline def compare(x: scala.Long, y: scala.Long): scala.Int = {
-    if (x == y) 0
-    else if (x < y) -1
-    else 1
+    if (x == y)
+      0
+    else if (x < y)
+      -1
+    else
+      1
   }
 
   // TODO Intrinsic?
@@ -366,20 +373,26 @@ object Long {
       bShift >>>= 1
     }
 
-    if (isDivide) quot
-    else rem
+    if (isDivide)
+      quot
+    else
+      rem
   }
 
   def highestOneBit(i: scala.Long): scala.Long = {
     val hi = (i >>> 32).toInt
-    if (hi != 0) Integer.highestOneBit(hi).toLong << 32
-    else Integer.highestOneBit(i.toInt).toLong & 0xFFFFFFFFL
+    if (hi != 0)
+      Integer.highestOneBit(hi).toLong << 32
+    else
+      Integer.highestOneBit(i.toInt).toLong & 0xFFFFFFFFL
   }
 
   def lowestOneBit(i: scala.Long): scala.Long = {
     val lo = i.toInt
-    if (lo != 0) Integer.lowestOneBit(lo).toLong & 0xFFFFFFFFL
-    else Integer.lowestOneBit((i >>> 32).toInt).toLong << 32
+    if (lo != 0)
+      Integer.lowestOneBit(lo).toLong & 0xFFFFFFFFL
+    else
+      Integer.lowestOneBit((i >>> 32).toInt).toLong << 32
   }
 
   def bitCount(i: scala.Long): scala.Int = {
@@ -402,21 +415,28 @@ object Long {
 
   def signum(i: scala.Long): Int = {
     val hi = (i >>> 32).toInt
-    if (hi < 0) -1
-    else if (hi == 0 && i.toInt == 0) 0
-    else 1
+    if (hi < 0)
+      -1
+    else if (hi == 0 && i.toInt == 0)
+      0
+    else
+      1
   }
 
   def numberOfLeadingZeros(l: scala.Long): Int = {
     val hi = (l >>> 32).toInt
-    if (hi != 0) Integer.numberOfLeadingZeros(hi)
-    else Integer.numberOfLeadingZeros(l.toInt) + 32
+    if (hi != 0)
+      Integer.numberOfLeadingZeros(hi)
+    else
+      Integer.numberOfLeadingZeros(l.toInt) + 32
   }
 
   def numberOfTrailingZeros(l: scala.Long): Int = {
     val lo = l.toInt
-    if (lo != 0) Integer.numberOfTrailingZeros(lo)
-    else Integer.numberOfTrailingZeros((l >>> 32).toInt) + 32
+    if (lo != 0)
+      Integer.numberOfTrailingZeros(lo)
+    else
+      Integer.numberOfTrailingZeros((l >>> 32).toInt) + 32
   }
 
   def toBinaryString(l: scala.Long): String = {
@@ -429,8 +449,10 @@ object Long {
     val lo = l.toInt
     val hi = (l >>> 32).toInt
 
-    if (hi != 0) Integer.toBinaryString(hi) + padBinary32(lo)
-    else Integer.toBinaryString(lo)
+    if (hi != 0)
+      Integer.toBinaryString(hi) + padBinary32(lo)
+    else
+      Integer.toBinaryString(lo)
   }
 
   def toHexString(l: scala.Long): String = {
@@ -443,8 +465,10 @@ object Long {
     val lo = l.toInt
     val hi = (l >>> 32).toInt
 
-    if (hi != 0) Integer.toHexString(hi) + padBinary8(lo)
-    else Integer.toHexString(lo)
+    if (hi != 0)
+      Integer.toHexString(hi) + padBinary8(lo)
+    else
+      Integer.toHexString(lo)
   }
 
   def toOctalString(l: scala.Long): String = {
@@ -461,9 +485,12 @@ object Long {
     val mp = ((lo >>> 30) + (hi << 2)) & 0x3fffffff
     val hp = hi >>> 28
 
-    if (hp != 0) Integer.toOctalString(hp) + padOctal10(mp) + padOctal10(lp)
-    else if (mp != 0) Integer.toOctalString(mp) + padOctal10(lp)
-    else Integer.toOctalString(lp)
+    if (hp != 0)
+      Integer.toOctalString(hp) + padOctal10(mp) + padOctal10(lp)
+    else if (mp != 0)
+      Integer.toOctalString(mp) + padOctal10(lp)
+    else
+      Integer.toOctalString(lp)
   }
 
   @inline def sum(a: scala.Long, b: scala.Long): scala.Long =

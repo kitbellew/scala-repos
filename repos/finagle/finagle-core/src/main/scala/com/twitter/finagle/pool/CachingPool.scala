@@ -57,7 +57,8 @@ private[finagle] class CachingPool[Req, Rep](
   }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = synchronized {
-    if (!isOpen) Future.exception(new ServiceClosedException)
+    if (!isOpen)
+      Future.exception(new ServiceClosedException)
     else {
       get() match {
         case Some(service) =>
@@ -78,8 +79,10 @@ private[finagle] class CachingPool[Req, Rep](
   }
 
   override def status =
-    if (isOpen) factory.status
-    else Status.Closed
+    if (isOpen)
+      factory.status
+    else
+      Status.Closed
 
   override val toString = "caching_pool_%s".format(factory.toString)
 }

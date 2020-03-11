@@ -83,16 +83,20 @@ object TcpHelper {
           readBuffer = ByteString.empty
           toRead = 0
           readTo = context.system.deadLetters
-        } else connection ! Tcp.ResumeReading
+        } else
+          connection ! Tcp.ResumeReading
       case PingClose(requester) ⇒
         readTo = requester
         connection ! ResumeReading
       case c: ConnectionClosed ⇒
         readTo ! c
-        if (!c.isPeerClosed) context.stop(self)
+        if (!c.isPeerClosed)
+          context.stop(self)
       case ClientClose(cmd) ⇒
-        if (!writePending) connection ! cmd
-        else closeAfterWrite = Some(cmd)
+        if (!writePending)
+          connection ! cmd
+        else
+          closeAfterWrite = Some(cmd)
     }
 
   }
@@ -196,7 +200,8 @@ trait TcpHelper { this: TestKitBase ⇒
     var demand = 0L
 
     def write(bytes: ByteString): Unit = {
-      if (demand == 0) demand += tcpWriteSubscription.expectRequest()
+      if (demand == 0)
+        demand += tcpWriteSubscription.expectRequest()
       tcpWriteSubscription.sendNext(bytes)
       demand -= 1
     }

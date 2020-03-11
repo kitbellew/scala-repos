@@ -38,7 +38,8 @@ object Annotation {
     if (countLinesAfterAnnotation && builder.twoNewlinesBeforeCurrentToken) {
       rollbackMarker.rollbackTo()
       return false
-    } else rollbackMarker.drop()
+    } else
+      rollbackMarker.drop()
     true
   }
 }

@@ -25,9 +25,12 @@ object PomRepoTest extends Build {
 
   def pomIncludeRepository(base: File, prev: MavenRepository => Boolean) =
     (r: MavenRepository) =>
-      if (base / "repo.none" exists) false
-      else if (base / "repo.all" exists) true
-      else prev(r)
+      if (base / "repo.none" exists)
+        false
+      else if (base / "repo.all" exists)
+        true
+      else
+        prev(r)
 
   def addSlash(s: String): String =
     s match {

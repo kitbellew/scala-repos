@@ -243,7 +243,10 @@ class Accumulable[R, T] private (
   }
 
   override def toString: String =
-    if (value_ == null) "null" else value_.toString
+    if (value_ == null)
+      "null"
+    else
+      value_.toString
 }
 
 /**

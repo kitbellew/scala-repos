@@ -68,8 +68,10 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
       private def dequeueAndDispatch(): Unit = {
         val in = pendingQueue.dequeue()
         push(out, grab(in))
-        if (upstreamsClosed && !pending) completeStage()
-        else tryPull(in)
+        if (upstreamsClosed && !pending)
+          completeStage()
+        else
+          tryPull(in)
       }
 
       in.foreach { i ⇒
@@ -82,17 +84,20 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
                 // -> grab and push immediately
                 push(out, grab(i))
                 tryPull(i)
-              } else pendingQueue.enqueue(i)
+              } else
+                pendingQueue.enqueue(i)
             }
 
             override def onUpstreamFinish() =
               if (eagerComplete) {
                 in.foreach(cancel)
                 runningUpstreams = 0
-                if (!pending) completeStage()
+                if (!pending)
+                  completeStage()
               } else {
                 runningUpstreams -= 1
-                if (upstreamsClosed && !pending) completeStage()
+                if (upstreamsClosed && !pending)
+                  completeStage()
               }
           }
         )
@@ -175,7 +180,8 @@ final class MergePreferred[T] private (
       var openInputs = secondaryPorts + 1
       def onComplete(): Unit = {
         openInputs -= 1
-        if (eagerComplete || openInputs == 0) completeStage()
+        if (eagerComplete || openInputs == 0)
+          completeStage()
       }
 
       override def preStart(): Unit = {
@@ -204,8 +210,10 @@ final class MergePreferred[T] private (
         new InHandler {
           override def onUpstreamFinish(): Unit = onComplete()
           override def onPush(): Unit =
-            if (preferredEmitting == maxEmitting) () // blocked
-            else emitPreferred()
+            if (preferredEmitting == maxEmitting)
+              () // blocked
+            else
+              emitPreferred()
 
           def emitPreferred(): Unit = {
             preferredEmitting += 1
@@ -215,15 +223,18 @@ final class MergePreferred[T] private (
 
           val emitted = () ⇒ {
             preferredEmitting -= 1
-            if (isAvailable(preferred)) emitPreferred()
-            else if (preferredEmitting == 0) emitSecondary()
+            if (isAvailable(preferred))
+              emitPreferred()
+            else if (preferredEmitting == 0)
+              emitSecondary()
           }
 
           def emitSecondary(): Unit = {
             var i = 0
             while (i < secondaryPorts) {
               val port = in(i)
-              if (isAvailable(port)) emit(out, grab(port), pullMe(i))
+              if (isAvailable(port))
+                emit(out, grab(port), pullMe(i))
               i += 1
             }
           }
@@ -238,7 +249,8 @@ final class MergePreferred[T] private (
           port,
           new InHandler {
             override def onPush(): Unit = {
-              if (preferredEmitting > 0) () // blocked
+              if (preferredEmitting > 0)
+                () // blocked
               else {
                 emit(out, grab(port), pullPort)
               }
@@ -311,9 +323,11 @@ final class Interleave[T] private (
             case `inputPorts` ⇒ 0
             case x ⇒ x
           }
-          if (!isClosed(in(successor))) successor
+          if (!isClosed(in(successor)))
+            successor
           else {
-            if (successor != currentUpstreamIndex) nextInletIndex(successor)
+            if (successor != currentUpstreamIndex)
+              nextInletIndex(successor)
             else {
               completeStage()
               0 // return dummy/min value to exit stage logic gracefully
@@ -331,7 +345,8 @@ final class Interleave[T] private (
             override def onPush(): Unit = {
               push(out, grab(i))
               counter += 1
-              if (counter == segmentSize) switchToNextInput()
+              if (counter == segmentSize)
+                switchToNextInput()
             }
 
             override def onUpstreamFinish(): Unit = {
@@ -340,10 +355,13 @@ final class Interleave[T] private (
                 if (!upstreamsClosed) {
                   if (i == currentUpstream) {
                     switchToNextInput()
-                    if (isAvailable(out)) pull(currentUpstream)
+                    if (isAvailable(out))
+                      pull(currentUpstream)
                   }
-                } else completeStage()
-              } else completeStage()
+                } else
+                  completeStage()
+              } else
+                completeStage()
             }
           }
         )
@@ -353,7 +371,8 @@ final class Interleave[T] private (
         out,
         new OutHandler {
           override def onPull(): Unit =
-            if (!hasBeenPulled(currentUpstream)) tryPull(currentUpstream)
+            if (!hasBeenPulled(currentUpstream))
+              tryPull(currentUpstream)
         })
     }
 
@@ -496,7 +515,8 @@ final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
       )
 
       private def tryPull(): Unit =
-        if (pendingCount == 0 && !hasBeenPulled(in)) pull(in)
+        if (pendingCount == 0 && !hasBeenPulled(in))
+          pull(in)
 
       {
         var idx = 0
@@ -514,10 +534,12 @@ final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
               }
 
               override def onDownstreamFinish() = {
-                if (eagerCancel) completeStage()
+                if (eagerCancel)
+                  completeStage()
                 else {
                   downstreamsRunning -= 1
-                  if (downstreamsRunning == 0) completeStage()
+                  if (downstreamsRunning == 0)
+                    completeStage()
                   else if (pending(i)) {
                     pending(i) = false
                     pendingCount -= 1
@@ -703,13 +725,17 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
       private def noPending: Boolean = pendingQueue.isEmpty
 
       private var needDownstreamPulls: Int =
-        if (waitForAllDownstreams) outputPorts else 0
+        if (waitForAllDownstreams)
+          outputPorts
+        else
+          0
       private var downstreamsRunning: Int = outputPorts
 
       private def dequeueAndDispatch(): Unit = {
         val out = pendingQueue.dequeue()
         push(out, grab(in))
-        if (!noPending) pull(in)
+        if (!noPending)
+          pull(in)
       }
 
       setHandler(
@@ -727,7 +753,8 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
             override def onPull(): Unit = {
               if (!hasPulled) {
                 hasPulled = true
-                if (needDownstreamPulls > 0) needDownstreamPulls -= 1
+                if (needDownstreamPulls > 0)
+                  needDownstreamPulls -= 1
               }
 
               if (needDownstreamPulls == 0) {
@@ -736,18 +763,22 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
                     push(o, grab(in))
                   }
                 } else {
-                  if (!hasBeenPulled(in)) pull(in)
+                  if (!hasBeenPulled(in))
+                    pull(in)
                   pendingQueue.enqueue(o)
                 }
-              } else pendingQueue.enqueue(o)
+              } else
+                pendingQueue.enqueue(o)
             }
 
             override def onDownstreamFinish() = {
               downstreamsRunning -= 1
-              if (downstreamsRunning == 0) completeStage()
+              if (downstreamsRunning == 0)
+                completeStage()
               else if (!hasPulled && needDownstreamPulls > 0) {
                 needDownstreamPulls -= 1
-                if (needDownstreamPulls == 0 && !hasBeenPulled(in)) pull(in)
+                if (needDownstreamPulls == 0 && !hasBeenPulled(in))
+                  pull(in)
               }
             }
           }
@@ -893,9 +924,12 @@ final class Concat[T](inputPorts: Int)
                   activeStream += 1
                   // Skip closed inputs
                   while (activeStream < inputPorts && isClosed(
-                           in(activeStream))) activeStream += 1
-                  if (activeStream == inputPorts) completeStage()
-                  else if (isAvailable(out)) pull(in(activeStream))
+                           in(activeStream)))
+                    activeStream += 1
+                  if (activeStream == inputPorts)
+                    completeStage()
+                  else if (isAvailable(out))
+                    pull(in(activeStream))
                 }
               }
             }
@@ -933,7 +967,8 @@ object GraphDSL extends GraphApply {
       * connected.
       */
     def add[S <: Shape](graph: Graph[S, _]): S = {
-      if (StreamLayout.Debug) StreamLayout.validate(graph.module)
+      if (StreamLayout.Debug)
+        StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy)
       graph.shape
@@ -950,7 +985,8 @@ object GraphDSL extends GraphApply {
     private[stream] def add[S <: Shape, A](
         graph: Graph[S, _],
         transform: (A) ⇒ Any): S = {
-      if (StreamLayout.Debug) StreamLayout.validate(graph.module)
+      if (StreamLayout.Debug)
+        StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(
         copy.transformMaterializedValue(transform.asInstanceOf[Any ⇒ Any]))
@@ -968,7 +1004,8 @@ object GraphDSL extends GraphApply {
     private[stream] def add[S <: Shape, A, B](
         graph: Graph[S, _],
         combine: (A, B) ⇒ Any): S = {
-      if (StreamLayout.Debug) StreamLayout.validate(graph.module)
+      if (StreamLayout.Debug)
+        StreamLayout.validate(graph.module)
       val copy = graph.module.carbonCopy
       moduleInProgress = moduleInProgress.compose(copy, combine)
       graph.shape
@@ -1038,7 +1075,8 @@ object GraphDSL extends GraphApply {
         throw new IllegalArgumentException(s"no more outlets free on $junction")
       else if (b.module.downstreams.contains(junction.out(n)))
         findOut(b, junction, n + 1)
-      else junction.out(n)
+      else
+        junction.out(n)
     }
 
     @tailrec
@@ -1050,7 +1088,8 @@ object GraphDSL extends GraphApply {
         throw new IllegalArgumentException(s"no more inlets free on $junction")
       else if (b.module.upstreams.contains(junction.in(n)))
         findIn(b, junction, n + 1)
-      else junction.in(n)
+      else
+        junction.in(n)
     }
 
     sealed trait CombinerBase[+T] extends Any {
@@ -1072,8 +1111,10 @@ object GraphDSL extends GraphApply {
           if (n == junction.inSeq.length)
             throw new IllegalArgumentException(
               s"no more inlets free on $junction")
-          else if (b.module.upstreams.contains(junction.in(n))) bind(n + 1)
-          else b.addEdge(importAndGetPort(b), junction.in(n))
+          else if (b.module.upstreams.contains(junction.in(n)))
+            bind(n + 1)
+          else
+            b.addEdge(importAndGetPort(b), junction.in(n))
         }
         bind(0)
         junction.out
@@ -1120,8 +1161,10 @@ object GraphDSL extends GraphApply {
           if (n == junction.outArray.length)
             throw new IllegalArgumentException(
               s"no more outlets free on $junction")
-          else if (b.module.downstreams.contains(junction.out(n))) bind(n + 1)
-          else b.addEdge(junction.out(n), importAndGetPortReverse(b))
+          else if (b.module.downstreams.contains(junction.out(n)))
+            bind(n + 1)
+          else
+            b.addEdge(junction.out(n), importAndGetPortReverse(b))
         }
         bind(0)
         junction.in

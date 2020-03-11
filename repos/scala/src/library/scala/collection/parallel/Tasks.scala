@@ -44,7 +44,9 @@ trait Task[R, +Tp] {
 
   // exception handling mechanism
   @volatile var throwable: Throwable = null
-  def forwardThrowable() = if (throwable != null) throw throwable
+  def forwardThrowable() =
+    if (throwable != null)
+      throw throwable
 
   // tries to do the leaf computation, storing the possible exception
   private[parallel] def tryLeaf(lastres: Option[R]) {
@@ -66,7 +68,8 @@ trait Task[R, +Tp] {
 
   private[parallel] def tryMerge(t: Tp @uncheckedVariance) {
     val that = t.asInstanceOf[Task[R, Tp]]
-    if (this.throwable == null && that.throwable == null) merge(t)
+    if (this.throwable == null && that.throwable == null)
+      merge(t)
     mergeThrowables(that)
   }
 
@@ -249,7 +252,8 @@ trait ThreadPoolTasks extends Tasks {
           //assert(executor.getCorePoolSize == (coresize + 1))
         }
       }
-      while (!completed) this.wait
+      while (!completed)
+        this.wait
     }
     def tryCancel() = synchronized {
       // utb: future.cancel(false)
@@ -257,7 +261,8 @@ trait ThreadPoolTasks extends Tasks {
         // debuglog("Cancelling " + body)
         owned = true
         true
-      } else false
+      } else
+        false
     }
     def run() = {
       // utb: compute
@@ -499,7 +504,8 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
       if (task.shouldSplitFurther && depth < maxdepth) {
         val subtasks = task.split
         val subfutures =
-          for (subtask <- subtasks.iterator) yield compute(subtask, depth + 1)
+          for (subtask <- subtasks.iterator)
+            yield compute(subtask, depth + 1)
         subfutures.reduceLeft { (firstFuture, nextFuture) =>
           for {
             firstTask <- firstFuture

@@ -166,7 +166,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val dataFiles = inputFiles.filterNot(_.getPath.getName startsWith "_")
 
     val path =
-      if (dataFiles.length == 1) dataFiles(0).getPath.toUri.toString
+      if (dataFiles.length == 1)
+        dataFiles(0).getPath.toUri.toString
       else if (dataFiles.isEmpty)
         throw new IOException("No input path specified for libsvm data")
       else
@@ -181,7 +182,11 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val sparse = vectorType == "sparse"
     baseRdd
       .map { pt =>
-        val features = if (sparse) pt.features.toSparse else pt.features.toDense
+        val features =
+          if (sparse)
+            pt.features.toSparse
+          else
+            pt.features.toDense
         Row(pt.label, features)
       }
       .mapPartitions { externalRows =>

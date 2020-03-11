@@ -509,11 +509,16 @@ object Logging {
     * Defaults to DebugLevel.
     */
   def levelFor(eventClass: Class[_ <: LogEvent]): LogLevel = {
-    if (classOf[Error].isAssignableFrom(eventClass)) ErrorLevel
-    else if (classOf[Warning].isAssignableFrom(eventClass)) WarningLevel
-    else if (classOf[Info].isAssignableFrom(eventClass)) InfoLevel
-    else if (classOf[Debug].isAssignableFrom(eventClass)) DebugLevel
-    else DebugLevel
+    if (classOf[Error].isAssignableFrom(eventClass))
+      ErrorLevel
+    else if (classOf[Warning].isAssignableFrom(eventClass))
+      WarningLevel
+    else if (classOf[Info].isAssignableFrom(eventClass))
+      InfoLevel
+    else if (classOf[Debug].isAssignableFrom(eventClass))
+      DebugLevel
+    else
+      DebugLevel
   }
 
   /**
@@ -873,8 +878,10 @@ object Logging {
 
     def error(event: Error): Unit = {
       val f =
-        if (event.cause == Error.NoCause) errorFormatWithoutCause
-        else errorFormat
+        if (event.cause == Error.NoCause)
+          errorFormatWithoutCause
+        else
+          errorFormat
       println(
         f.format(
           timestamp(event),
@@ -925,8 +932,10 @@ object Logging {
     override val toString = "StandardOutLogger"
     override def !(message: Any)(
         implicit sender: ActorRef = Actor.noSender): Unit =
-      if (message == null) throw new InvalidMessageException("Message is null")
-      else print(message)
+      if (message == null)
+        throw new InvalidMessageException("Message is null")
+      else
+        print(message)
 
     @throws(classOf[java.io.ObjectStreamException])
     override protected def writeReplace(): AnyRef = serializedStandardOutLogger
@@ -1032,7 +1041,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(cause: Throwable, message: String): Unit = {
-    if (isErrorEnabled) notifyError(cause, message)
+    if (isErrorEnabled)
+      notifyError(cause, message)
   }
 
   /**
@@ -1040,7 +1050,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(cause: Throwable, template: String, arg1: Any): Unit = {
-    if (isErrorEnabled) notifyError(cause, format1(template, arg1))
+    if (isErrorEnabled)
+      notifyError(cause, format1(template, arg1))
   }
 
   /**
@@ -1048,7 +1059,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(cause: Throwable, template: String, arg1: Any, arg2: Any): Unit = {
-    if (isErrorEnabled) notifyError(cause, format(template, arg1, arg2))
+    if (isErrorEnabled)
+      notifyError(cause, format(template, arg1, arg2))
   }
 
   /**
@@ -1061,7 +1073,8 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any): Unit = {
-    if (isErrorEnabled) notifyError(cause, format(template, arg1, arg2, arg3))
+    if (isErrorEnabled)
+      notifyError(cause, format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1084,7 +1097,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(message: String): Unit = {
-    if (isErrorEnabled) notifyError(message)
+    if (isErrorEnabled)
+      notifyError(message)
   }
 
   /**
@@ -1092,7 +1106,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(template: String, arg1: Any): Unit = {
-    if (isErrorEnabled) notifyError(format1(template, arg1))
+    if (isErrorEnabled)
+      notifyError(format1(template, arg1))
   }
 
   /**
@@ -1100,7 +1115,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(template: String, arg1: Any, arg2: Any): Unit = {
-    if (isErrorEnabled) notifyError(format(template, arg1, arg2))
+    if (isErrorEnabled)
+      notifyError(format(template, arg1, arg2))
   }
 
   /**
@@ -1108,7 +1124,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def error(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
-    if (isErrorEnabled) notifyError(format(template, arg1, arg2, arg3))
+    if (isErrorEnabled)
+      notifyError(format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1121,7 +1138,8 @@ trait LoggingAdapter {
       arg2: Any,
       arg3: Any,
       arg4: Any): Unit = {
-    if (isErrorEnabled) notifyError(format(template, arg1, arg2, arg3, arg4))
+    if (isErrorEnabled)
+      notifyError(format(template, arg1, arg2, arg3, arg4))
   }
 
   /**
@@ -1129,7 +1147,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def warning(message: String): Unit = {
-    if (isWarningEnabled) notifyWarning(message)
+    if (isWarningEnabled)
+      notifyWarning(message)
   }
 
   /**
@@ -1137,7 +1156,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def warning(template: String, arg1: Any): Unit = {
-    if (isWarningEnabled) notifyWarning(format1(template, arg1))
+    if (isWarningEnabled)
+      notifyWarning(format1(template, arg1))
   }
 
   /**
@@ -1145,7 +1165,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def warning(template: String, arg1: Any, arg2: Any): Unit = {
-    if (isWarningEnabled) notifyWarning(format(template, arg1, arg2))
+    if (isWarningEnabled)
+      notifyWarning(format(template, arg1, arg2))
   }
 
   /**
@@ -1153,7 +1174,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def warning(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
-    if (isWarningEnabled) notifyWarning(format(template, arg1, arg2, arg3))
+    if (isWarningEnabled)
+      notifyWarning(format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1175,7 +1197,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def info(message: String) {
-    if (isInfoEnabled) notifyInfo(message)
+    if (isInfoEnabled)
+      notifyInfo(message)
   }
 
   /**
@@ -1183,7 +1206,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def info(template: String, arg1: Any): Unit = {
-    if (isInfoEnabled) notifyInfo(format1(template, arg1))
+    if (isInfoEnabled)
+      notifyInfo(format1(template, arg1))
   }
 
   /**
@@ -1191,7 +1215,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def info(template: String, arg1: Any, arg2: Any): Unit = {
-    if (isInfoEnabled) notifyInfo(format(template, arg1, arg2))
+    if (isInfoEnabled)
+      notifyInfo(format(template, arg1, arg2))
   }
 
   /**
@@ -1199,7 +1224,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def info(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
-    if (isInfoEnabled) notifyInfo(format(template, arg1, arg2, arg3))
+    if (isInfoEnabled)
+      notifyInfo(format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1212,7 +1238,8 @@ trait LoggingAdapter {
       arg2: Any,
       arg3: Any,
       arg4: Any): Unit = {
-    if (isInfoEnabled) notifyInfo(format(template, arg1, arg2, arg3, arg4))
+    if (isInfoEnabled)
+      notifyInfo(format(template, arg1, arg2, arg3, arg4))
   }
 
   /**
@@ -1220,7 +1247,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def debug(message: String) {
-    if (isDebugEnabled) notifyDebug(message)
+    if (isDebugEnabled)
+      notifyDebug(message)
   }
 
   /**
@@ -1228,7 +1256,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def debug(template: String, arg1: Any): Unit = {
-    if (isDebugEnabled) notifyDebug(format1(template, arg1))
+    if (isDebugEnabled)
+      notifyDebug(format1(template, arg1))
   }
 
   /**
@@ -1236,7 +1265,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def debug(template: String, arg1: Any, arg2: Any): Unit = {
-    if (isDebugEnabled) notifyDebug(format(template, arg1, arg2))
+    if (isDebugEnabled)
+      notifyDebug(format(template, arg1, arg2))
   }
 
   /**
@@ -1244,7 +1274,8 @@ trait LoggingAdapter {
     * @see [[LoggingAdapter]]
     */
   def debug(template: String, arg1: Any, arg2: Any, arg3: Any): Unit = {
-    if (isDebugEnabled) notifyDebug(format(template, arg1, arg2, arg3))
+    if (isDebugEnabled)
+      notifyDebug(format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1257,21 +1288,24 @@ trait LoggingAdapter {
       arg2: Any,
       arg3: Any,
       arg4: Any): Unit = {
-    if (isDebugEnabled) notifyDebug(format(template, arg1, arg2, arg3, arg4))
+    if (isDebugEnabled)
+      notifyDebug(format(template, arg1, arg2, arg3, arg4))
   }
 
   /**
     * Log message at the specified log level.
     */
   def log(level: Logging.LogLevel, message: String) {
-    if (isEnabled(level)) notifyLog(level, message)
+    if (isEnabled(level))
+      notifyLog(level, message)
   }
 
   /**
     * Message template with 1 replacement argument.
     */
   def log(level: Logging.LogLevel, template: String, arg1: Any): Unit = {
-    if (isEnabled(level)) notifyLog(level, format1(template, arg1))
+    if (isEnabled(level))
+      notifyLog(level, format1(template, arg1))
   }
 
   /**
@@ -1282,7 +1316,8 @@ trait LoggingAdapter {
       template: String,
       arg1: Any,
       arg2: Any): Unit = {
-    if (isEnabled(level)) notifyLog(level, format(template, arg1, arg2))
+    if (isEnabled(level))
+      notifyLog(level, format(template, arg1, arg2))
   }
 
   /**
@@ -1294,7 +1329,8 @@ trait LoggingAdapter {
       arg1: Any,
       arg2: Any,
       arg3: Any): Unit = {
-    if (isEnabled(level)) notifyLog(level, format(template, arg1, arg2, arg3))
+    if (isEnabled(level))
+      notifyLog(level, format(template, arg1, arg2, arg3))
   }
 
   /**
@@ -1323,10 +1359,18 @@ trait LoggingAdapter {
 
   final def notifyLog(level: Logging.LogLevel, message: String): Unit =
     level match {
-      case Logging.ErrorLevel ⇒ if (isErrorEnabled) notifyError(message)
-      case Logging.WarningLevel ⇒ if (isWarningEnabled) notifyWarning(message)
-      case Logging.InfoLevel ⇒ if (isInfoEnabled) notifyInfo(message)
-      case Logging.DebugLevel ⇒ if (isDebugEnabled) notifyDebug(message)
+      case Logging.ErrorLevel ⇒
+        if (isErrorEnabled)
+          notifyError(message)
+      case Logging.WarningLevel ⇒
+        if (isWarningEnabled)
+          notifyWarning(message)
+      case Logging.InfoLevel ⇒
+        if (isInfoEnabled)
+          notifyInfo(message)
+      case Logging.DebugLevel ⇒
+        if (isDebugEnabled)
+          notifyDebug(message)
     }
 
   private def format1(t: String, arg: Any): String = arg match {
@@ -1427,7 +1471,12 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
     * These values can be used in PatternLayout when `akka.event.slf4j.Slf4jLogger` is configured.
     * Visit <a href="http://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
     */
-  def mdc(mdc: MDC): Unit = _mdc = if (mdc != null) mdc else emptyMDC
+  def mdc(mdc: MDC): Unit =
+    _mdc =
+      if (mdc != null)
+        mdc
+      else
+        emptyMDC
 
   /**
     * Java API:
@@ -1456,7 +1505,11 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
     * Visit <a href="http://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
     */
   def setMDC(jMdc: java.util.Map[String, Any]): Unit =
-    mdc(if (jMdc != null) jMdc.asScala.toMap else emptyMDC)
+    mdc(
+      if (jMdc != null)
+        jMdc.asScala.toMap
+      else
+        emptyMDC)
 
   /**
     * Clear all entries in the MDC

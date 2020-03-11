@@ -35,7 +35,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
     if (child.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS ||
         child.getElementType == ScalaDocTokenType.DOC_COMMENT_END) {
       return Indent.getSpaceIndent(
-        if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
+        if (scalaSettings.USE_SCALADOC2_FORMATTING)
+          2
+        else
+          1)
     }
     if ((node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE) &&
         parent.myLastNode != null) {
@@ -77,7 +80,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
             settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
           Indent.getNormalIndent
-        else Indent.getNoneIndent
+        else
+          Indent.getNoneIndent
       case _ => Indent.getContinuationWithoutFirstIndent
     }
 
@@ -109,7 +113,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         Indent.getNoneIndent
       else if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
         Indent.getNoneIndent
-      else Indent.getNormalIndent()
+      else
+        Indent.getNormalIndent()
     }
 
     node.getPsi match {
@@ -122,16 +127,18 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         }
       case _: ScalaFile => Indent.getNoneIndent
       case p: ScPackaging =>
-        if (p.isExplicit) child.getElementType match {
-          case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
-            if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
-              Indent.getNormalIndent
-            else
-              Indent.getNoneIndent
-          case _ => Indent.getNoneIndent
-        }
-        else Indent.getNoneIndent
+        if (p.isExplicit)
+          child.getElementType match {
+            case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
+              if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
+                  settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
+                Indent.getNormalIndent
+              else
+                Indent.getNoneIndent
+            case _ => Indent.getNoneIndent
+          }
+        else
+          Indent.getNoneIndent
       case _: ScMatchStmt =>
         child.getPsi match {
           case _: ScCaseClauses if settings.INDENT_CASE_FROM_SWITCH =>
@@ -207,7 +214,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
             child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
             child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
           Indent.getNormalIndent
-        else Indent.getNoneIndent
+        else
+          Indent.getNoneIndent
       case _: ScIfStmt | _: ScWhileStmt | _: ScDoStmt | _: ScForStatement |
           _: ScFinallyBlock | _: ScCatchBlock | _: ScValue | _: ScVariable =>
         if (child.getElementType == ScalaTokenTypes.kYIELD)
@@ -250,7 +258,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
               case _ =>
                 if (scalaSettings.DO_NOT_INDENT_CASE_CLAUSE_BODY)
                   Indent.getNoneIndent
-                else Indent.getNormalIndent
+                else
+                  Indent.getNormalIndent
             }
           case _ => Indent.getNoneIndent
         }
@@ -302,7 +311,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         if (child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
             child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
           Indent.getNormalIndent(settings.ALIGN_MULTILINE_METHOD_BRACKETS)
-        else Indent.getNoneIndent
+        else
+          Indent.getNoneIndent
       case _: ScDocComment => Indent.getNoneIndent
       case _
           if node.getElementType == ScalaTokenTypes.kEXTENDS && child.getElementType != ScalaTokenTypes.kEXTENDS =>

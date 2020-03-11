@@ -254,7 +254,11 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
   test("self-join") {
     // 4 rows, cells of column 1 of row 2 and row 4 are null
     val data = (1 to 4).map { i =>
-      val maybeInt = if (i % 2 == 0) None else Some(i)
+      val maybeInt =
+        if (i % 2 == 0)
+          None
+        else
+          Some(i)
       (maybeInt, i.toString)
     }
 
@@ -387,7 +391,11 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
         // only when all the values are null (maybe this works differently when the data
         // or query is complicated). So, simply here a column only having `null` is added.
         val data = (0 until 10).map { i =>
-          val maybeInt = if (i % 2 == 0) None else Some(i)
+          val maybeInt =
+            if (i % 2 == 0)
+              None
+            else
+              Some(i)
           val nullValue: Option[String] = None
           (maybeInt, nullValue)
         }

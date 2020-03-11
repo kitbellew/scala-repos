@@ -80,8 +80,10 @@ class ScSubstitutor(
   def getFollower: ScSubstitutor = follower
 
   override def toString: String =
-    s"ScSubstitutor($tvMap, $aliasesMap, $updateThisType)${if (follower != null) " >> " + follower.toString
-    else ""}"
+    s"ScSubstitutor($tvMap, $aliasesMap, $updateThisType)${if (follower != null)
+      " >> " + follower.toString
+    else
+      ""}"
 
   def bindT(name: (String, PsiElement), t: ScType) = {
     val res = new ScSubstitutor(
@@ -132,7 +134,8 @@ class ScSubstitutor(
   def isUpdateThisSubst: Option[ScType] = {
     if (tvMap.size + aliasesMap.size == 0 && !myDependentMethodTypesFunDefined)
       updateThisType
-    else None
+    else
+      None
   }
 
   private def followed(s: ScSubstitutor, level: Int): ScSubstitutor = {
@@ -148,7 +151,10 @@ class ScSubstitutor(
         tvMap,
         aliasesMap,
         updateThisType,
-        if (follower != null) follower followed (s, level + 1) else s)
+        if (follower != null)
+          follower followed (s, level + 1)
+        else
+          s)
       res.myDependentMethodTypesFun = myDependentMethodTypesFun
       res.myDependentMethodTypesFunDefined = myDependentMethodTypesFunDefined
       res.myDependentMethodTypes = myDependentMethodTypes
@@ -158,8 +164,10 @@ class ScSubstitutor(
 
   def subst(t: ScType): ScType =
     try {
-      if (follower != null) follower.subst(substInternal(t))
-      else substInternal(t)
+      if (follower != null)
+        follower.subst(substInternal(t))
+      else
+        substInternal(t)
     } catch {
       case s: StackOverflowError =>
         throw new RuntimeException(
@@ -168,7 +176,8 @@ class ScSubstitutor(
     }
 
   private def extractTpt(tpt: ScTypeParameterType, t: ScType): ScType = {
-    if (tpt.args.isEmpty) t
+    if (tpt.args.isEmpty)
+      t
     else
       t match {
         case ScParameterizedType(designator, _) => designator
@@ -279,8 +288,10 @@ class ScSubstitutor(
             def update(typez: ScType): ScType = {
               ScType.extractDesignated(typez, withoutAliases = true) match {
                 case Some((t: ScTypeDefinition, subst)) =>
-                  if (t == clazz) tp
-                  else if (ScalaPsiUtil.cachedDeepIsInheritor(t, clazz)) tp
+                  if (t == clazz)
+                    tp
+                  else if (ScalaPsiUtil.cachedDeepIsInheritor(t, clazz))
+                    tp
                   else {
                     t.selfType match {
                       case Some(selfType) =>
@@ -288,11 +299,14 @@ class ScSubstitutor(
                           selfType,
                           withoutAliases = true) match {
                           case Some((cl: PsiClass, _)) =>
-                            if (cl == clazz) tp
+                            if (cl == clazz)
+                              tp
                             else if (ScalaPsiUtil.cachedDeepIsInheritor(
                                        cl,
-                                       clazz)) tp
-                            else null
+                                       clazz))
+                              tp
+                            else
+                              null
                           case _ =>
                             selfType match {
                               case ScCompoundType(types, _, _) =>
@@ -301,7 +315,8 @@ class ScSubstitutor(
                                   val tps = iter.next()
                                   ScType.extractClass(tps) match {
                                     case Some(cl) =>
-                                      if (cl == clazz) return tp
+                                      if (cl == clazz)
+                                        return tp
                                     case _ =>
                                   }
                                 }
@@ -323,9 +338,12 @@ class ScSubstitutor(
                       }
                     case _ =>
                   }
-                  if (cl == clazz) tp
-                  else if (ScalaPsiUtil.cachedDeepIsInheritor(cl, clazz)) tp
-                  else null
+                  if (cl == clazz)
+                    tp
+                  else if (ScalaPsiUtil.cachedDeepIsInheritor(cl, clazz))
+                    tp
+                  else
+                    null
                 case Some((named: ScTypedDefinition, subst)) =>
                   update(named.getType(TypingContext.empty).getOrAny)
                 case _ =>
@@ -336,10 +354,12 @@ class ScSubstitutor(
                         val tps = iter.next()
                         ScType.extractClass(tps) match {
                           case Some(cl) =>
-                            if (cl == clazz) return tp
+                            if (cl == clazz)
+                              return tp
                             else if (ScalaPsiUtil.cachedDeepIsInheritor(
                                        cl,
-                                       clazz)) return tp
+                                       clazz))
+                              return tp
                           case _ =>
                         }
                       }
@@ -370,7 +390,8 @@ class ScSubstitutor(
                   if (parentTemplate != null)
                     tp = ScThisType(
                       parentTemplate.asInstanceOf[ScTemplateDefinition])
-                  else tp = null
+                  else
+                    tp = null
                 case ScProjectionType(newType, _, _) => tp = newType
                 case ScParameterizedType(ScProjectionType(newType, _, _), _) =>
                   tp = newType
@@ -476,7 +497,8 @@ class ScSubstitutor(
             if (actualElement.isInstanceOf[ScTypeDefinition] &&
                 actualElement != res.actualElement)
               res.copy(superReference = true)
-            else res
+            else
+              res
           case _ => res
         }
       }
@@ -503,8 +525,10 @@ class ScSubstitutor(
               val pTypes: List[Seq[() => ScType]] =
                 s.substitutedTypes.map(_.map(f => () => substInternal(f())))
               val tParams: Array[TypeParameter] =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(substTypeParam)
+                if (s.typeParams.length == 0)
+                  TypeParameter.EMPTY_ARRAY
+                else
+                  s.typeParams.map(substTypeParam)
               val rt: ScType = substInternal(tp)
               (
                 new Signature(
@@ -537,8 +561,10 @@ class ScSubstitutor(
           case Some(thisType @ ScDesignatorType(param: ScParameter)) =>
             val paramType =
               param.getRealParameterType(TypingContext.empty).getOrAny
-            if (paramType.conforms(middleRes)) thisType
-            else middleRes
+            if (paramType.conforms(middleRes))
+              thisType
+            else
+              middleRes
           case _ => middleRes
         }
       }
@@ -613,7 +639,8 @@ class ScUndefinedSubstitutor(
     var index = 0
     val lower = (_lower match {
       case ScAbstractType(_, absLower, upper) =>
-        if (absLower.equiv(Nothing)) return this
+        if (absLower.equiv(Nothing))
+          return this
         absLower //upper will be added separately
       case _ =>
         _lower.recursiveVarianceUpdate(
@@ -651,16 +678,22 @@ class ScUndefinedSubstitutor(
           variance
         )
     }).unpackedType
-    val lMap = if (additional) lowerAdditionalMap else lowerMap
+    val lMap =
+      if (additional)
+        lowerAdditionalMap
+      else
+        lowerMap
     lMap.get(name) match {
       case Some(set: HashSet[ScType]) =>
         if (additional)
           copy(lowerAdditionalMap = lMap.updated(name, set + lower))
-        else copy(lowerMap = lMap.updated(name, set + lower))
+        else
+          copy(lowerMap = lMap.updated(name, set + lower))
       case None =>
         if (additional)
           copy(lowerAdditionalMap = lMap + ((name, HashSet(lower))))
-        else copy(lowerMap = lMap + ((name, HashSet(lower))))
+        else
+          copy(lowerMap = lMap + ((name, HashSet(lower))))
     }
   }
 
@@ -673,7 +706,8 @@ class ScUndefinedSubstitutor(
     val upper =
       (_upper match {
         case ScAbstractType(_, lower, absUpper) if variance == 0 =>
-          if (absUpper.equiv(Any)) return this
+          if (absUpper.equiv(Any))
+            return this
           absUpper // lower will be added separately
         case ScAbstractType(_, lower, absUpper)
             if variance == 1 && absUpper.equiv(Any) =>
@@ -722,16 +756,22 @@ class ScUndefinedSubstitutor(
             variance
           )
       }).unpackedType
-    val uMap = if (additional) upperAdditionalMap else upperMap
+    val uMap =
+      if (additional)
+        upperAdditionalMap
+      else
+        upperMap
     uMap.get(name) match {
       case Some(set: HashSet[ScType]) =>
         if (additional)
           copy(upperAdditionalMap = uMap.updated(name, set + upper))
-        else copy(upperMap = uMap.updated(name, set + upper))
+        else
+          copy(upperMap = uMap.updated(name, set + upper))
       case None =>
         if (additional)
           copy(upperAdditionalMap = uMap + ((name, HashSet(upper))))
-        else copy(upperMap = uMap + ((name, HashSet(upper))))
+        else
+          copy(upperMap = uMap + ((name, HashSet(upper))))
     }
   }
 
@@ -818,7 +858,8 @@ class ScUndefinedSubstitutor(
                 val subst =
                   if (res)
                     new ScSubstitutor(IHashMap.empty ++ tvMap, Map.empty, None)
-                  else ScSubstitutor.empty
+                  else
+                    ScSubstitutor.empty
                 var lower: ScType = Nothing
                 val setIterator = set.iterator
                 while (setIterator.hasNext) {
@@ -880,7 +921,8 @@ class ScUndefinedSubstitutor(
                 val subst =
                   if (res)
                     new ScSubstitutor(IHashMap.empty ++ tvMap, Map.empty, None)
-                  else ScSubstitutor.empty
+                  else
+                    ScSubstitutor.empty
                 val size: Int = set.size
                 if (size == 1) {
                   rType = subst.subst(set.iterator.next())

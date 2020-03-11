@@ -86,7 +86,8 @@ class ScReferencePatternImpl private (
             holder.declaredElements.find(_.name == name).getOrElse(navElem)
           case x => x
         }
-      } else super.getNavigationElement
+      } else
+        super.getNavigationElement
     }
     case _ => super.getNavigationElement
   }

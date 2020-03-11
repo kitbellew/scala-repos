@@ -100,7 +100,11 @@ object ConcurrentRestrictions {
       f: (Int, Int) => Int): TagMap = {
     val aTags = get(a)
     val base = merge(m, aTags)(f)
-    val un = if (aTags.isEmpty) update(base, Untagged, 1)(f) else base
+    val un =
+      if (aTags.isEmpty)
+        update(base, Untagged, 1)(f)
+      else
+        base
     update(un, All, 1)(f)
   }
 
@@ -167,7 +171,8 @@ object ConcurrentRestrictions {
           tagState = newState
           submitValid(node, work)
         } else {
-          if (running == 0) errorAddingToIdle()
+          if (running == 0)
+            errorAddingToIdle()
           pending.add(new Enqueue(node, work))
         }
       }
@@ -194,7 +199,8 @@ object ConcurrentRestrictions {
       @tailrec private[this] def submitValid(tried: Queue[Enqueue]): Unit =
         if (pending.isEmpty) {
           if (!tried.isEmpty) {
-            if (running == 0) errorAddingToIdle()
+            if (running == 0)
+              errorAddingToIdle()
             pending.addAll(tried)
           }
         } else {

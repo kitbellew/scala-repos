@@ -52,7 +52,8 @@ class ScTypeAliasDefinitionImpl private (
 
   override def navigate(requestFocus: Boolean) {
     val descriptor = EditSourceUtil.getDescriptor(nameId);
-    if (descriptor != null) descriptor.navigate(requestFocus)
+    if (descriptor != null)
+      descriptor.navigate(requestFocus)
   }
 
   override def toString: String = "ScTypeAliasDefinition: " + name

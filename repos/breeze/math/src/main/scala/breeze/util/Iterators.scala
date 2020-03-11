@@ -48,7 +48,10 @@ object Iterators {
             (headA: (Option[T], Int), headB: (Option[T], Int)) =>
               (headA, headB) match {
                 case ((Some(a), i), (Some(b), j)) =>
-                  if (compare(a, b) <= 0) headA else headB
+                  if (compare(a, b) <= 0)
+                    headA
+                  else
+                    headB
                 case ((Some(a), i), (None, j)) => headA
                 case ((None, i), (Some(b), j)) => headB
                 case ((None, i), (None, j))    => headA
@@ -62,7 +65,10 @@ object Iterators {
       }
 
       def get(iter: Iterator[T]): Option[T] =
-        if (iter.hasNext) Some(iter.next) else None
+        if (iter.hasNext)
+          Some(iter.next)
+        else
+          None
     }
 
 }

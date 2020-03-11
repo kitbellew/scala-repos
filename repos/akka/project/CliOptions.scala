@@ -12,7 +12,11 @@ object CliOption {
       implicit ev: CliOptionParser[T]): CliOption[T] = ev.parse(path, default)
 
   implicit class BooleanCliOption(cliOption: CliOption[Boolean]) {
-    def ifTrue[A](a: => A): Option[A] = if (cliOption.get) Some(a) else None
+    def ifTrue[A](a: => A): Option[A] =
+      if (cliOption.get)
+        Some(a)
+      else
+        None
   }
 
   trait CliOptionParser[T] {

@@ -19,7 +19,10 @@ object WSTestUtils {
       rsv2: Boolean = false,
       rsv3: Boolean = false): ByteString = {
     def set(should: Boolean, mask: Int): Int =
-      if (should) mask else 0
+      if (should)
+        mask
+      else
+        0
 
     val flags =
       set(fin, Protocol.FIN_MASK) |
@@ -31,13 +34,19 @@ object WSTestUtils {
 
     require(length >= 0)
     val (lengthByteComponent, lengthBytes) =
-      if (length < 126) (length.toByte, ByteString.empty)
-      else if (length < 65536) (126.toByte, shortBE(length.toInt))
+      if (length < 126)
+        (length.toByte, ByteString.empty)
+      else if (length < 65536)
+        (126.toByte, shortBE(length.toInt))
       else
         throw new IllegalArgumentException(
           "Only lengths < 65536 allowed in test")
 
-    val maskMask = if (mask.isDefined) Protocol.MASK_MASK else 0
+    val maskMask =
+      if (mask.isDefined)
+        Protocol.MASK_MASK
+      else
+        0
     val maskBytes = mask match {
       case Some(mask) ⇒ intBE(mask)
       case None ⇒ ByteString.empty

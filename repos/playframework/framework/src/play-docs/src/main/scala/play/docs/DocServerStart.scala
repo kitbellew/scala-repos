@@ -56,7 +56,8 @@ class DocServerStart {
                     inline = true,
                     fileName = _ => "report.html"))
               }
-            } else None
+            } else
+              None
           )
           .orElse(
             Some(Results.Redirect("/@documentation"))

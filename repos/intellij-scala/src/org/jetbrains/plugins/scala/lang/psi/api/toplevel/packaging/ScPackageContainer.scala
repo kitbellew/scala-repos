@@ -20,7 +20,10 @@ trait ScPackageContainer extends ScalaPsiElement {
   def isExplicit: Boolean
 
   protected def concat(prefix: String, suffix: String) =
-    if (prefix.length > 0) prefix + "." + suffix else suffix
+    if (prefix.length > 0)
+      prefix + "." + suffix
+    else
+      suffix
 
   def packagings: Seq[ScPackaging]
 

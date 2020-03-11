@@ -22,14 +22,17 @@ abstract class Utils {
     override def transform(tree: Tree): Tree = tree match {
       case Ident(_) =>
         def subst(from: List[Symbol], to: List[Tree]): Tree =
-          if (from.isEmpty) tree
+          if (from.isEmpty)
+            tree
           else if (tree.symbol == from.head)
             to.head.duplicate // TODO: does it ever make sense *not* to perform a shallowDuplicate on `to.head`?
-          else subst(from.tail, to.tail);
+          else
+            subst(from.tail, to.tail);
         subst(from, to)
       case _ =>
         val tree1 = super.transform(tree)
-        if (tree1 ne tree) setType(tree1, null)
+        if (tree1 ne tree)
+          setType(tree1, null)
         tree1
     }
   }

@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Affine {
   implicit def sfxAffine2jfx(v: Affine): jfxst.Affine =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

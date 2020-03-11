@@ -97,7 +97,8 @@ trait IssuesControllerBase extends ControllerBase {
             (getCollaborators(owner, name) ::: (if (getAccountByUserName(
                                                       owner).get.isGroupAccount)
                                                   Nil
-                                                else List(owner))).sorted,
+                                                else
+                                                  List(owner))).sorted,
             getMilestonesWithIssueCount(owner, name),
             getLabels(owner, name),
             hasWritePermission(owner, name, context.loginAccount),
@@ -114,7 +115,8 @@ trait IssuesControllerBase extends ControllerBase {
           (getCollaborators(owner, name) ::: (if (getAccountByUserName(
                                                     owner).get.isGroupAccount)
                                                 Nil
-                                              else List(owner))).sorted,
+                                              else
+                                                List(owner))).sorted,
           getMilestones(owner, name),
           getLabels(owner, name),
           hasWritePermission(owner, name, context.loginAccount),
@@ -137,8 +139,14 @@ trait IssuesControllerBase extends ControllerBase {
             userName,
             form.title,
             form.content,
-            if (writable) form.assignedUserName else None,
-            if (writable) form.milestoneId else None)
+            if (writable)
+              form.assignedUserName
+            else
+              None,
+            if (writable)
+              form.milestoneId
+            else
+              None)
 
           // insert labels
           if (writable) {
@@ -203,7 +211,8 @@ trait IssuesControllerBase extends ControllerBase {
                   context.loginAccount.get)
 
                 redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-              } else Unauthorized
+              } else
+                Unauthorized
           } getOrElse NotFound
       }
     })
@@ -226,7 +235,8 @@ trait IssuesControllerBase extends ControllerBase {
                   context.loginAccount.get)
 
                 redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-              } else Unauthorized
+              } else
+                Unauthorized
           } getOrElse NotFound
       }
     })
@@ -245,8 +255,10 @@ trait IssuesControllerBase extends ControllerBase {
           handleComment(issue, Some(form.content), repository, actionOpt) map {
             case (issue, id) =>
               redirect(
-                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
+                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest)
+                  "pull"
+                else
+                  "issues"}/${form.issueId}#comment-${id}")
           }
         } getOrElse NotFound
     })
@@ -265,8 +277,10 @@ trait IssuesControllerBase extends ControllerBase {
           handleComment(issue, form.content, repository, actionOpt) map {
             case (issue, id) =>
               redirect(
-                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
+                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest)
+                  "pull"
+                else
+                  "issues"}/${form.issueId}#comment-${id}")
           }
         } getOrElse NotFound
     })
@@ -280,7 +294,8 @@ trait IssuesControllerBase extends ControllerBase {
               updateComment(comment.commentId, form.content)
               redirect(
                 s"/${owner}/${name}/issue_comments/_data/${comment.commentId}")
-            } else Unauthorized
+            } else
+              Unauthorized
           } getOrElse NotFound
       }
     })
@@ -292,7 +307,8 @@ trait IssuesControllerBase extends ControllerBase {
           getComment(owner, name, params("id")).map { comment =>
             if (isEditable(owner, name, comment.commentedUserName)) {
               Ok(deleteComment(comment.commentId))
-            } else Unauthorized
+            } else
+              Unauthorized
           } getOrElse NotFound
       }
   })
@@ -325,7 +341,8 @@ trait IssuesControllerBase extends ControllerBase {
                 )
               )
             }
-          } else Unauthorized
+          } else
+            Unauthorized
       } getOrElse NotFound
   })
 
@@ -360,7 +377,8 @@ trait IssuesControllerBase extends ControllerBase {
               )
             )
           }
-        } else Unauthorized
+        } else
+          Unauthorized
       } getOrElse NotFound
   })
 

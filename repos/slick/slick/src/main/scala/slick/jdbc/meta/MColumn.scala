@@ -53,9 +53,15 @@ object MColumn {
         r.skip.skip.<<,
         r.<<,
         DatabaseMeta.yesNoOpt(r),
-        if (r.hasMoreColumns) MQName.optionalFrom(r) else None,
+        if (r.hasMoreColumns)
+          MQName.optionalFrom(r)
+        else
+          None,
         r.<<?,
-        if (r.hasMoreColumns) DatabaseMeta.yesNoOpt(r) else None
+        if (r.hasMoreColumns)
+          DatabaseMeta.yesNoOpt(r)
+        else
+          None
       )
     }
 }

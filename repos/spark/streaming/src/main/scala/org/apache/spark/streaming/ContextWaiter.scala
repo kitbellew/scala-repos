@@ -69,7 +69,8 @@ private[streaming] class ContextWaiter {
         }
       }
       // If already had error, then throw it
-      if (error != null) throw error
+      if (error != null)
+        throw error
       // already stopped or timeout
       stopped
     } finally {

@@ -84,7 +84,8 @@ class VecBool(values: Array[Boolean]) extends Vec[Boolean] { self =>
     val b = math.max(from, 0)
     val e = math.min(until, self.length)
 
-    if (e <= b) Vec.empty
+    if (e <= b)
+      Vec.empty
     else
       new VecBool(values) {
         private val ub = math.min(self.length, e)
@@ -196,7 +197,8 @@ private[saddle] object VecBool {
 
     // count # false
     while (i < arr.length) {
-      if (!arr(i)) c += 1
+      if (!arr(i))
+        c += 1
       i += 1
     }
 

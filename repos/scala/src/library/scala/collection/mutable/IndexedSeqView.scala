@@ -53,8 +53,10 @@ trait IndexedSeqView[A, +Coll]
   trait Sliced extends super.Sliced with Transformed[A] {
     override def length = endpoints.width
     def update(idx: Int, elem: A) =
-      if (idx >= 0 && idx + from < until) self.update(idx + from, elem)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx >= 0 && idx + from < until)
+        self.update(idx + from, elem)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
   }
 
   trait Filtered extends super.Filtered with Transformed[A] {
@@ -63,14 +65,18 @@ trait IndexedSeqView[A, +Coll]
 
   trait TakenWhile extends super.TakenWhile with Transformed[A] {
     def update(idx: Int, elem: A) =
-      if (idx < len) self.update(idx, elem)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx < len)
+        self.update(idx, elem)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
   }
 
   trait DroppedWhile extends super.DroppedWhile with Transformed[A] {
     def update(idx: Int, elem: A) =
-      if (idx >= 0) self.update(idx + start, elem)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx >= 0)
+        self.update(idx + start, elem)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
   }
 
   trait Reversed extends super.Reversed with Transformed[A] {
@@ -113,7 +119,10 @@ trait IndexedSeqView[A, +Coll]
   override def splitAt(n: Int): (This, This) = (take(n), drop(n)) // !!!
   override def reverse: This = newReversed
   override def tail: IndexedSeqView[A, Coll] =
-    if (isEmpty) super.tail else slice(1, length)
+    if (isEmpty)
+      super.tail
+    else
+      slice(1, length)
 }
 
 /** An object containing the necessary implicit definitions to make

@@ -64,7 +64,11 @@ object RemoveInternalClusterShardingData {
     else {
       val system = ActorSystem("RemoveInternalClusterShardingData")
       val remove2dot3Data = (args(0) == "-2.3")
-      val typeNames = if (remove2dot3Data) args.tail.toSet else args.toSet
+      val typeNames =
+        if (remove2dot3Data)
+          args.tail.toSet
+        else
+          args.toSet
       if (typeNames.isEmpty)
         println(
           "Specify the Cluster Sharding type names to remove in program arguments")
@@ -98,7 +102,8 @@ object RemoveInternalClusterShardingData {
     val resolvedJournalPluginId =
       if (journalPluginId == "")
         system.settings.config.getString("akka.persistence.journal.plugin")
-      else journalPluginId
+      else
+        journalPluginId
     if (resolvedJournalPluginId == "akka.persistence.journal.leveldb-shared") {
       val store = system.actorOf(Props[SharedLeveldbStore], "store")
       SharedLeveldbJournal.setStore(store, system)
@@ -226,7 +231,10 @@ class RemoveInternalClusterShardingData(
   var currentPid: String = _
   var currentRef: ActorRef = _
   var remainingPids = typeNames.map(persistenceId) ++
-    (if (remove2dot3Data) typeNames.map(persistenceId2dot3) else Set.empty)
+    (if (remove2dot3Data)
+       typeNames.map(persistenceId2dot3)
+     else
+       Set.empty)
 
   def persistenceId(typeName: String): String =
     s"/sharding/${typeName}Coordinator"
@@ -250,8 +258,10 @@ class RemoveInternalClusterShardingData(
   def receive = {
     case Result(Success(_)) ⇒
       log.info("Removed data for persistenceId [{}]", currentPid)
-      if (remainingPids.isEmpty) done()
-      else removeNext()
+      if (remainingPids.isEmpty)
+        done()
+      else
+        removeNext()
 
     case Result(Failure(cause)) ⇒
       log.error("Failed to remove data for persistenceId [{}]", currentPid)

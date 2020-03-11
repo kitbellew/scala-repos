@@ -19,12 +19,15 @@ trait CompilationPathProperty {
   protected var compilationPath: Option[Path] = None
 
   def setCompilationPath(input: Path) {
-    if (compilationPath.isEmpty) compilationPath = Some(input)
-    else compilationPath.get.append(input)
+    if (compilationPath.isEmpty)
+      compilationPath = Some(input)
+    else
+      compilationPath.get.append(input)
   }
 
   def createCompilationPath: Path = {
-    if (compilationPath.isEmpty) compilationPath = Some(new Path(getProject()))
+    if (compilationPath.isEmpty)
+      compilationPath = Some(new Path(getProject()))
     compilationPath.get.createPath()
   }
 
@@ -59,12 +62,15 @@ trait TaskArgs extends CompilationPathProperty {
   }
 
   def setSrcPath(input: Path) {
-    if (sourcePath.isEmpty) sourcePath = Some(input)
-    else sourcePath.get.append(input)
+    if (sourcePath.isEmpty)
+      sourcePath = Some(input)
+    else
+      sourcePath.get.append(input)
   }
 
   def createSrcPath: Path = {
-    if (sourcePath.isEmpty) sourcePath = Some(new Path(getProject()))
+    if (sourcePath.isEmpty)
+      sourcePath = Some(new Path(getProject()))
     sourcePath.get.createPath()
   }
 
@@ -73,12 +79,15 @@ trait TaskArgs extends CompilationPathProperty {
   }
 
   def setCompilerPath(input: Path) {
-    if (compilerPath.isEmpty) compilerPath = Some(input)
-    else compilerPath.get.append(input)
+    if (compilerPath.isEmpty)
+      compilerPath = Some(input)
+    else
+      compilerPath.get.append(input)
   }
 
   def createCompilerPath: Path = {
-    if (compilerPath.isEmpty) compilerPath = Some(new Path(getProject()))
+    if (compilerPath.isEmpty)
+      compilerPath = Some(new Path(getProject()))
     compilerPath.get.createPath()
   }
 
@@ -99,6 +108,9 @@ trait TaskArgs extends CompilationPathProperty {
 
   def extraArgsFlat: Seq[String] = extraArgs flatMap { a =>
     val parts = a.getParts
-    if (parts eq null) Seq[String]() else parts.toSeq
+    if (parts eq null)
+      Seq[String]()
+    else
+      parts.toSeq
   }
 }

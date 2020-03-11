@@ -56,15 +56,23 @@ class FlowReduceSpec extends AkkaSpec {
 
     "propagate an error" in assertAllStagesStopped {
       val error = new Exception with NoStackTrace
-      val future =
-        inputSource.map(x ⇒ if (x > 50) throw error else x).runReduce(Keep.none)
+      val future = inputSource
+        .map(x ⇒
+          if (x > 50)
+            throw error
+          else
+            x)
+        .runReduce(Keep.none)
       the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
     }
 
     "complete future with failure when reducing function throws" in assertAllStagesStopped {
       val error = new Exception with NoStackTrace
-      val future =
-        inputSource.runReduce[Int]((x, y) ⇒ if (x > 50) throw error else x + y)
+      val future = inputSource.runReduce[Int]((x, y) ⇒
+        if (x > 50)
+          throw error
+        else
+          x + y)
       the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
     }
 

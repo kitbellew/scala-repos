@@ -158,7 +158,9 @@ package object financial {
     val complexRoots = if (0 < N) {
       val A = DenseMatrix.zeros[Double](N, N);
       //fill the 1th diagnal below the main diagnal with ones
-      val downDiagIdxs = for (i <- (1 until N)) yield (i, i - 1)
+      val downDiagIdxs =
+        for (i <- (1 until N))
+          yield (i, i - 1)
       A(downDiagIdxs) := 1.0
       A(0 until 1, ::) := nonZeroCoeffs(1 to N) :/ -nonZeroCoeffs(0)
       val rootEig = eig(A)
@@ -213,9 +215,17 @@ package object financial {
       reinvestRate: Double = 0) = {
     val n = values.length
     var posCnt: Int = values.valuesIterator.count(0 < _)
-    val positives = values.mapValues(x => if (0 < x) x else 0)
+    val positives = values.mapValues(x =>
+      if (0 < x)
+        x
+      else
+        0)
     var negCnt: Int = values.valuesIterator.count(_ < 0)
-    val negatives = values.mapValues(x => if (x < 0) x else 0)
+    val negatives = values.mapValues(x =>
+      if (x < 0)
+        x
+      else
+        0)
     if (posCnt == 0 || negCnt == 0) {
       throw new IllegalArgumentException(
         "The values must has one positive and negative value!")
@@ -266,7 +276,10 @@ package object financial {
       rate = nextRate
     }
 
-    if (close) Option[Double](rate) else None
+    if (close)
+      Option[Double](rate)
+    else
+      None
   }
   //f(annuity)/f'(annuity)
   private def annuityFDivGradf(

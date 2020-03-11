@@ -5,7 +5,9 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.SyntheticMembe
 
 class SCL9445Injector extends SyntheticMembersInjector {
   override def injectInners(source: ScTypeDefinition): Seq[String] = {
-    if (source.name.startsWith("SCL")) Seq("case class Bar(x: Int)")
-    else Seq.empty
+    if (source.name.startsWith("SCL"))
+      Seq("case class Bar(x: Int)")
+    else
+      Seq.empty
   }
 }

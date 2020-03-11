@@ -137,7 +137,8 @@ object LiftRules extends LiftRulesMocker {
   def realInstance: LiftRules =
     if (devOrTest) {
       LiftRulesMocker.calcLiftRulesInstance()
-    } else prodInstance
+    } else
+      prodInstance
 
   type DispatchPF = PartialFunction[Req, () => Box[LiftResponse]];
 
@@ -376,7 +377,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     */
   @volatile var attachResourceId: (String) => String = (name) => {
-    name + (if (name contains ("?")) "&" else "?") + instanceResourceId + "=_"
+    name + (if (name contains ("?"))
+              "&"
+            else
+              "?") + instanceResourceId + "=_"
   }
 
   /**
@@ -697,7 +701,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private[http] def notFoundOrIgnore(
       requestState: Req,
       session: Box[LiftSession]): Box[LiftResponse] = {
-    if (passNotFoundToChain) Empty
+    if (passNotFoundToChain)
+      Empty
     else
       session match {
         case Full(session) =>
@@ -970,8 +975,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *   LiftRules.jsLogFunc = Full(v => JE.Call("alert",v).cmd)
     */
   @volatile var jsLogFunc: Box[JsVar => JsCmd] =
-    if (Props.devMode) Full(v => JE.Call("lift.defaultLogError", v))
-    else Empty
+    if (Props.devMode)
+      Full(v => JE.Call("lift.defaultLogError", v))
+    else
+      Empty
 
   /**
     * The JavaScript to execute at the end of an
@@ -1227,7 +1234,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       this.synchronized {
         sitemapRequestVar.is
       }
-    } else _sitemap
+    } else
+      _sitemap
 
   /**
     * A unified set of properties for managing how to treat
@@ -1284,7 +1292,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         be displayed, but there will be errors in the output logs.
         </i>
         </div>
-        else NodeSeq.Empty
+        else
+          NodeSeq.Empty
       }
     }) {}
 
@@ -1304,7 +1313,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             be displayed, but there will be errors in the output logs.
           </i>
         </div>
-      else NodeSeq.Empty
+      else
+        NodeSeq.Empty
     }) {}
 
   /**
@@ -1314,7 +1324,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     new FactoryMaker(() => {
       if (Props.devMode)
         false
-      else true
+      else
+        true
     }) {}
 
   private[http] val reqCnt = new AtomicInteger(0)
@@ -1426,7 +1437,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Tells Lift where to find Snippets,Views, Comet Actors and Lift ORM Model object
     */
   def addToPackages(what: String) {
-    if (doneBoot) throw new IllegalStateException("Cannot modify after boot.");
+    if (doneBoot)
+      throw new IllegalStateException("Cannot modify after boot.");
     otherPackages = what :: otherPackages
   }
 
@@ -1434,14 +1446,18 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Tells Lift where to find Snippets, Views, Comet Actors and Lift ORM Model object
     */
   def addToPackages(what: Package) {
-    if (doneBoot) throw new IllegalStateException("Cannot modify after boot.");
+    if (doneBoot)
+      throw new IllegalStateException("Cannot modify after boot.");
     otherPackages = what.getName :: otherPackages
   }
 
   private val defaultFinder = getClass.getResource _
 
   private def resourceFinder(name: String): java.net.URL =
-    if (null eq _context) null else _context.resource(name)
+    if (null eq _context)
+      null
+    else
+      _context.resource(name)
 
   /**
     * Obtain the resource URL by name
@@ -1479,8 +1495,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       val out = new ByteArrayOutputStream
       def reader {
         val len = stream.read(buffer)
-        if (len < 0) return
-        else if (len > 0) out.write(buffer, 0, len)
+        if (len < 0)
+          return
+        else if (len > 0)
+          out.write(buffer, 0, len)
         reader
       }
       reader
@@ -1652,7 +1670,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   def performTransform(in: LiftResponse): LiftResponse =
     responseTransformers.toList.foldLeft(in) {
       case (in, pf: PartialFunction[_, _]) =>
-        if (pf.isDefinedAt(in)) pf(in) else in
+        if (pf.isDefinedAt(in))
+          pf(in)
+        else
+          in
       case (in, f) => f(in)
     }
 
@@ -2016,13 +2037,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             val suffix = last.substring(firstDot + 1)
             // if the suffix isn't in the list of suffixes we care about, don't split it
             if (!LiftRules.explicitlyParsedSuffixes.contains(
-                  suffix.toLowerCase)) -1
-            else firstDot
+                  suffix.toLowerCase))
+              -1
+            else
+              firstDot
           }
         }
       }
 
-      if (idx == -1) (parts, "")
+      if (idx == -1)
+        (parts, "")
       else
         (
           parts.dropRight(1) ::: List(last.substring(0, idx)),
@@ -2115,13 +2139,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Jetty6, Jetty7, and Servlet 3.0 providers
     */
   def addSyncProvider(asyncMeta: AsyncProviderMeta) {
-    if (doneBoot) throw new IllegalStateException("Cannot modify after boot.")
+    if (doneBoot)
+      throw new IllegalStateException("Cannot modify after boot.")
     asyncMetaList ::= asyncMeta
   }
 
   def updateAsyncMetaList(
       f: List[AsyncProviderMeta] => List[AsyncProviderMeta]) {
-    if (doneBoot) throw new IllegalStateException("Cannot modify after boot.")
+    if (doneBoot)
+      throw new IllegalStateException("Cannot modify after boot.")
     asyncMetaList = f(asyncMetaList)
 
   }
@@ -2425,7 +2451,8 @@ trait FormVendor {
             .get(name)
             .headOption
             .map(_.func.asInstanceOf[(T, T => Any) => NodeSeq])
-        } else Empty
+        } else
+          Empty
     }
   }
 

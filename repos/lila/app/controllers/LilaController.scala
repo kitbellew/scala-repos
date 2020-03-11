@@ -300,8 +300,10 @@ private[controllers] trait LilaController
 
   def notFound(implicit ctx: Context): Fu[Result] = negotiate(
     html =
-      if (HTTPRequest isSynchronousHttp ctx.req) Main notFound ctx.req
-      else fuccess(Results.NotFound("Resource not found")),
+      if (HTTPRequest isSynchronousHttp ctx.req)
+        Main notFound ctx.req
+      else
+        fuccess(Results.NotFound("Resource not found")),
     api = _ => notFoundJson("Resource not found")
   )
 
@@ -416,15 +418,20 @@ private[controllers] trait LilaController
     }
 
   protected def XhrOnly(res: => Fu[Result])(implicit ctx: Context) =
-    if (HTTPRequest isXhr ctx.req) res
-    else notFound
+    if (HTTPRequest isXhr ctx.req)
+      res
+    else
+      notFound
 
   protected def Reasonable(page: Int, max: Int = 40)(
       result: => Fu[Result]): Fu[Result] =
     (page < max).fold(result, BadRequest("resource too old").fuccess)
 
   protected def NotForKids(f: => Fu[Result])(implicit ctx: Context) =
-    if (ctx.kid) notFound else f
+    if (ctx.kid)
+      notFound
+    else
+      f
 
   protected def errorsAsJson(form: play.api.data.Form[_])(
       implicit lang: play.api.i18n.Messages) =

@@ -38,7 +38,8 @@ private[akka] class RemoteDeployer(
             val nodes =
               immutableSeq(deploy.config.getStringList("target.nodes"))
                 .map(AddressFromURIString(_))
-            if (nodes.isEmpty || deploy.routerConfig == NoRouter) d
+            if (nodes.isEmpty || deploy.routerConfig == NoRouter)
+              d
             else
               deploy.routerConfig match {
                 case r: Pool ⇒

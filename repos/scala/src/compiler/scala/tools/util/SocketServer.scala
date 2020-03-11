@@ -16,7 +16,9 @@ import scala.tools.nsc.io.Socket
 trait CompileOutputCommon {
   def verbose: Boolean
 
-  def info(msg: String) = if (verbose) echo(msg)
+  def info(msg: String) =
+    if (verbose)
+      echo(msg)
   def echo(msg: String) = {
     Console println msg;
     Console.flush()

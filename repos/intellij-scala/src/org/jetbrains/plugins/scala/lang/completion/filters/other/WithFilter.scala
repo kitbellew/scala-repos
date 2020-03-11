@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef._
   */
 class WithFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       var i = context.getTextRange.getStartOffset - 1

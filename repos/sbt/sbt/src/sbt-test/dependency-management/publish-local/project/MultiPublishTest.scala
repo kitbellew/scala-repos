@@ -31,6 +31,9 @@ object MultiPublishTest extends Build {
       publishMavenStyle,
       publishMavenStyle in sub,
       projectDependencies) map { (style, subStyle, pd) =>
-      if (style == subStyle) pd else Nil
+      if (style == subStyle)
+        pd
+      else
+        Nil
     }
 }

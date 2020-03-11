@@ -44,7 +44,10 @@ object ScalatraAtmosphereHandler {
 
     def onDisconnect(event: AtmosphereResourceEvent) {
       val disconnector =
-        if (event.isCancelled) ClientDisconnected else ServerDisconnected
+        if (event.isCancelled)
+          ClientDisconnected
+        else
+          ServerDisconnected
       client(event.getResource) foreach (_.receive.lift(
         Disconnected(disconnector, Option(event.throwable))))
       //      if (!event.getResource.isResumed) {
@@ -103,12 +106,14 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
           case (_, true) =>
             val cl = if (isNew) {
               createClient(route.get, session, resource)
-            } else null
+            } else
+              null
 
             addEventListener(resource)
             resumeIfNeeded(resource)
             configureBroadcaster(resource)
-            if (isNew && cl != null) handleIncomingMessage(Connected, cl)
+            if (isNew && cl != null)
+              handleIncomingMessage(Connected, cl)
             resource.suspend
           case _ =>
             val ex = new ScalatraAtmosphereException(
@@ -147,7 +152,10 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
 
   private[this] def requestUri(resource: AtmosphereResource) = {
     val u = resource.getRequest.getRequestURI.blankOption getOrElse "/"
-    if (u.endsWith("/")) u + "*" else u + "/*"
+    if (u.endsWith("/"))
+      u + "*"
+    else
+      u + "/*"
   }
 
   private[this] def configureBroadcaster(resource: AtmosphereResource) {

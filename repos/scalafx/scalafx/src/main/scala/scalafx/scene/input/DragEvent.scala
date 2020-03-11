@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object DragEvent {
   implicit def sfxDragEvent2jfx(de: DragEvent): jfxsi.DragEvent =
-    if (de != null) de.delegate else null
+    if (de != null)
+      de.delegate
+    else
+      null
 
   /**
     * Common supertype for all drag event types.

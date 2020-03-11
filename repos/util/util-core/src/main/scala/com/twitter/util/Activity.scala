@@ -52,7 +52,8 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     */
   def join[U](that: Activity[U]): Activity[(T, U)] =
     for (left <- this;
-         right <- that) yield (left, right)
+         right <- that)
+      yield (left, right)
 
   /**
     * The activity which behaves as `f` applied to Ok values.

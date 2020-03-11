@@ -55,7 +55,8 @@ object SerializationBenchmark
       val p = scGen.Parameters.default.withRng(rng)
 
       def get(attempt: Int): T =
-        if (attempt > 1000) sys.error("Failed to generate after 100 tries")
+        if (attempt > 1000)
+          sys.error("Failed to generate after 100 tries")
         else {
           item(p) match {
             case None    => get(attempt + 1)

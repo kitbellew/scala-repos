@@ -109,11 +109,13 @@ class HeapBalancerTest
     val made = Seq.fill(N) {
       Await.result(b())
     }
-    for (f <- factories) assert(f.load == 1)
+    for (f <- factories)
+      assert(f.load == 1)
     val made2 = Seq.fill(N) {
       Await.result(b())
     }
-    for (f <- factories) assert(f.load == 2)
+    for (f <- factories)
+      assert(f.load == 2)
 
     val s = made(0)
     val f = Await.result(s(()))
@@ -130,16 +132,19 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     factories(0).setStatus(Status.Closed)
     factories(1).setStatus(Status.Closed)
 
-    for (_ <- 0 until 2 * (N - 2)) b()
+    for (_ <- 0 until 2 * (N - 2))
+      b()
 
     assert(factories(0).load == 1)
     assert(factories(1).load == 1)
 
-    for (f <- factories drop 2) assert(f.load == 3)
+    for (f <- factories drop 2)
+      assert(f.load == 3)
   }
 
   test("handle dynamic groups") {
@@ -150,7 +155,8 @@ class HeapBalancerTest
     val made = Seq.fill(N * 2) {
       Await.result(b())
     }
-    for (f <- factories) assert(f.load == 2)
+    for (f <- factories)
+      assert(f.load == 2)
 
     // add newFactory to the heap balancer. Initially it has
     // load 0, so the next two make()() should both pick
@@ -168,7 +174,8 @@ class HeapBalancerTest
     val made2 = Seq.fill(N) {
       Await.result(b())
     }
-    for (f <- factories) assert(f.load == 3)
+    for (f <- factories)
+      assert(f.load == 3)
     assert(newFactory.load == 2)
   }
 
@@ -181,7 +188,8 @@ class HeapBalancerTest
     }
     group() += newFactory
     val made2 = Await.result(b())
-    for (f <- factories :+ newFactory) assert(f.load == 1)
+    for (f <- factories :+ newFactory)
+      assert(f.load == 1)
 
     group() -= newFactory
     made2.close()
@@ -197,7 +205,8 @@ class HeapBalancerTest
     }
     group() --= half1
     Await.result(b()).close()
-    for (f <- half1) assert(f.isClosed)
+    for (f <- half1)
+      assert(f.isClosed)
   }
 
   test("report stats correctly") {
@@ -208,12 +217,14 @@ class HeapBalancerTest
     assertGauge("available", 10)
     assertGauge("size", 10)
 
-    for (_ <- 0 until N) Await.result(b())
+    for (_ <- 0 until N)
+      Await.result(b())
     assertGauge("load", 10)
     assertGauge("available", 10)
     assertGauge("size", 10)
 
-    for (_ <- 0 until N) Await.result(b())
+    for (_ <- 0 until N)
+      Await.result(b())
     assertGauge("load", 20)
     assertGauge("available", 10)
     assertGauge("size", 10)
@@ -252,10 +263,12 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     for (f <- factories)
       f.setStatus(Status.Closed)
-    for (_ <- 0 until 100 * N) b()
+    for (_ <- 0 until 100 * N)
+      b()
     for (f <- factories)
       assert(f.load == 101)
   }
@@ -289,32 +302,38 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     for (f <- factories)
       f.setStatus(Status.Closed)
-    for (_ <- 0 until 100 * N) b()
+    for (_ <- 0 until 100 * N)
+      b()
     val f0 = factories(0)
     f0.setStatus(Status.Open)
     for (_ <- 0 until 100)
       assert(Await.result(Await.result(b()).apply(())) == f0)
 
     assert(f0.load == 201)
-    for (f <- factories drop 1) assert(f.load == 101)
+    for (f <- factories drop 1)
+      assert(f.load == 101)
   }
 
   test("properly remove a nonhealthy service") {
     val ctx = new Ctx
     import ctx._
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     factories(1).setStatus(Status.Closed)
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     assert(factories(1).load == 1)
 
     factories(1).setStatus(Status.Open)
     group() -= factories(1)
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     assert(factories(1).load == 1)
   }
 
@@ -322,21 +341,24 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     assertGauge("size", N)
     assertGauge("available", N)
 
     factories(1).setStatus(Status.Closed)
     factories(2).setStatus(Status.Closed)
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     assertGauge("size", N)
     assertGauge("available", N - 2)
 
     factories(1).setStatus(Status.Open)
     factories(2).setStatus(Status.Open)
 
-    for (_ <- 0 until N) b()
+    for (_ <- 0 until N)
+      b()
     assertGauge("size", N)
 
     assertGauge("available", N)
@@ -365,19 +387,22 @@ class HeapBalancerTest
     factories(0).setStatus(Status.Closed)
     factories(1).setStatus(Status.Closed)
 
-    for (_ <- 0 until 1000) b()
+    for (_ <- 0 until 1000)
+      b()
     assert(factories(0).load == 502)
     assert(factories(1).load == 502)
 
     factories(1).setStatus(Status.Open)
 
-    for (_ <- 0 until 1000) b()
+    for (_ <- 0 until 1000)
+      b()
     assert(factories(0).load == 502)
     assert(factories(1).load == 1502)
 
     group() -= factories(1)
 
-    for (_ <- 0 until 1000) b()
+    for (_ <- 0 until 1000)
+      b()
     assert(factories(0).load == 1502)
     assert(factories(1).load == 1502)
   }

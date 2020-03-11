@@ -376,9 +376,9 @@ object Printers {
           print(')')
 
         case BinaryOp(
-            BinaryOp.Double_-,
-            IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
-            rhs) =>
+              BinaryOp.Double_-,
+              IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
+              rhs) =>
           print("(-")
           print(rhs)
           print(')')
@@ -484,8 +484,10 @@ object Printers {
           print('(')
           var first = true
           for ((field, value) <- tpe.fields zip elems) {
-            if (first) first = false
-            else print(", ")
+            if (first)
+              first = false
+            else
+              print(", ")
             print(field.name)
             print(" = ")
             print(value)
@@ -700,7 +702,11 @@ object Printers {
           print("null")
 
         case BooleanLiteral(value) =>
-          print(if (value) "true" else "false")
+          print(
+            if (value)
+              "true"
+            else
+              "false")
 
         case IntLiteral(value) =>
           if (value >= 0) {
@@ -886,8 +892,10 @@ object Printers {
         print('(')
         var first = false
         for (RecordType.Field(name, _, tpe, mutable) <- fields) {
-          if (first) first = false
-          else print(", ")
+          if (first)
+            first = false
+          else
+            print(", ")
           if (mutable)
             print("var ")
           print(name)
@@ -939,7 +947,11 @@ object Printers {
       print(kind.toString)
       println()
       print("superClass: ")
-      print(if (superClass == null) "null" else superClass.toString)
+      print(
+        if (superClass == null)
+          "null"
+        else
+          superClass.toString)
       println()
 
       if (interfaces.nonEmpty) {

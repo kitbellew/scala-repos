@@ -29,7 +29,8 @@ class ScExistentialClauseImpl(node: ASTNode)
     if (lastParent != null) {
       var run = lastParent
       while (run != null) {
-        if (!processElement(run, processor, state)) return false
+        if (!processElement(run, processor, state))
+          return false
         run = run.getPrevSibling
       }
     }
@@ -43,7 +44,8 @@ class ScExistentialClauseImpl(node: ASTNode)
     case named: ScNamedElement => processor.execute(named, state)
     case holder: ScDeclaredElementsHolder => {
       for (declared <- holder.declaredElements) {
-        if (!processor.execute(declared, state)) return false
+        if (!processor.execute(declared, state))
+          return false
       }
       true
     }

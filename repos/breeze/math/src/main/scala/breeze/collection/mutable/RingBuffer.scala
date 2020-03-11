@@ -10,7 +10,9 @@ class RingBuffer[A](m: Int)
     with Builder[A, List[A]] {
   private val buf = new ListBuffer[A]
 
-  private def resize(): Unit = while (buf.size > m) buf.remove(0)
+  private def resize(): Unit =
+    while (buf.size > m)
+      buf.remove(0)
 
   def length = buf.length
   override def apply(n: Int): A = buf.apply(n)

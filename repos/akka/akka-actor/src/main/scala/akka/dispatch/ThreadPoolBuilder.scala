@@ -301,6 +301,7 @@ class SaneRejectedExecutionHandler extends RejectedExecutionHandler {
       threadPoolExecutor: ThreadPoolExecutor): Unit = {
     if (threadPoolExecutor.isShutdown)
       throw new RejectedExecutionException("Shutdown")
-    else runnable.run()
+    else
+      runnable.run()
   }
 }

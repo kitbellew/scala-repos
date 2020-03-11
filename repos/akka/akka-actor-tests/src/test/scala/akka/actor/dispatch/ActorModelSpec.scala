@@ -327,12 +327,15 @@ object ActorModelSpec {
       var done = false
       try {
         done = condition
-        if (!done) Thread.sleep(25)
+        if (!done)
+          Thread.sleep(25)
       } catch {
         case e: InterruptedException ⇒
       }
-      if (!done) await(until)(condition)
-    } else throw new AssertionError("await failed")
+      if (!done)
+        await(until)(condition)
+    } else
+      throw new AssertionError("await failed")
 }
 
 abstract class ActorModelSpec(config: String)
@@ -375,15 +378,19 @@ abstract class ActorModelSpec(config: String)
         msgsProcessed = 0,
         restarts = 0)
 
-      val futures = for (i ← 1 to 10) yield Future {
-        i
-      }
+      val futures =
+        for (i ← 1 to 10)
+          yield Future {
+            i
+          }
       assertDispatcher(dispatcher)(stops = 2)
 
       val a2 = newTestActor(dispatcher.id)
-      val futures2 = for (i ← 1 to 10) yield Future {
-        i
-      }
+      val futures2 =
+        for (i ← 1 to 10)
+          yield Future {
+            i
+          }
 
       assertDispatcher(dispatcher)(stops = 2)
 
@@ -663,7 +670,8 @@ abstract class ActorModelSpec(config: String)
 
     "not double-deregister" in {
       implicit val dispatcher = interceptedDispatcher()
-      for (i ← 1 to 1000) system.actorOf(Props.empty)
+      for (i ← 1 to 1000)
+        system.actorOf(Props.empty)
       val a = newTestActor(dispatcher.id)
       a ! DoubleStop
       awaitCond(statsFor(a, dispatcher).registers.get == 1)

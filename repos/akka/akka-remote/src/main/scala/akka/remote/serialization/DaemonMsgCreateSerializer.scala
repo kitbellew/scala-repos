@@ -33,8 +33,10 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 3
-    else identifierFromConfig
+    if (system eq null)
+      3
+    else
+      identifierFromConfig
 
   def includeManifest: Boolean = false
 
@@ -61,8 +63,10 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
           .setDeploy(deployProto(props.deploy))
         props.args map serialize foreach builder.addArgs
         props.args map (a ⇒
-          if (a == null) "null"
-          else a.getClass.getName) foreach builder.addClasses
+          if (a == null)
+            "null"
+          else
+            a.getClass.getName) foreach builder.addClasses
         builder.build
       }
 
@@ -87,18 +91,23 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
       val config =
         if (protoDeploy.hasConfig)
           deserialize(protoDeploy.getConfig, classOf[Config])
-        else ConfigFactory.empty
+        else
+          ConfigFactory.empty
       val routerConfig =
         if (protoDeploy.hasRouterConfig)
           deserialize(protoDeploy.getRouterConfig, classOf[RouterConfig])
-        else NoRouter
+        else
+          NoRouter
       val scope =
         if (protoDeploy.hasScope)
           deserialize(protoDeploy.getScope, classOf[Scope])
-        else NoScopeGiven
+        else
+          NoScopeGiven
       val dispatcher =
-        if (protoDeploy.hasDispatcher) protoDeploy.getDispatcher
-        else NoDispatcherGiven
+        if (protoDeploy.hasDispatcher)
+          protoDeploy.getDispatcher
+        else
+          NoDispatcherGiven
       Deploy(protoDeploy.getPath, config, routerConfig, scope, dispatcher)
     }
 
@@ -123,8 +132,10 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
     ByteString.copyFrom(serialization.serialize(any.asInstanceOf[AnyRef]).get)
 
   protected def deserialize(p: (ByteString, String)): AnyRef =
-    if (p._1.isEmpty && p._2 == "null") null
-    else deserialize(p._1, system.dynamicAccess.getClassFor[AnyRef](p._2).get)
+    if (p._1.isEmpty && p._2 == "null")
+      null
+    else
+      deserialize(p._1, system.dynamicAccess.getClassFor[AnyRef](p._2).get)
 
   protected def deserialize[T: ClassTag](
       data: ByteString,

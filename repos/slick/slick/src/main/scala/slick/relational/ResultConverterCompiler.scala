@@ -16,23 +16,29 @@ trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
         case Select(_, ElementSymbol(idx)) =>
           createColumnConverter(n, idx, Some(fs))
       }
-      if (pathConvs.length == 1) pathConvs.head
-      else CompoundResultConverter(1, pathConvs.toSeq: _*)
+      if (pathConvs.length == 1)
+        pathConvs.head
+      else
+        CompoundResultConverter(1, pathConvs.toSeq: _*)
     case OptionApply(InsertColumn(paths, fs, _)) =>
       val pathConvs = paths.map {
         case Select(_, ElementSymbol(idx)) =>
           createColumnConverter(n, idx, Some(fs))
       }
-      if (pathConvs.length == 1) pathConvs.head
-      else CompoundResultConverter(1, pathConvs.toSeq: _*)
+      if (pathConvs.length == 1)
+        pathConvs.head
+      else
+        CompoundResultConverter(1, pathConvs.toSeq: _*)
     case Select(_, ElementSymbol(idx)) => createColumnConverter(n, idx, None)
     case cast @ Library.SilentCast(sel @ Select(_, ElementSymbol(idx))) =>
       createColumnConverter(sel :@ cast.nodeType, idx, None)
     case OptionApply(Select(_, ElementSymbol(idx))) =>
       createColumnConverter(n, idx, None)
     case ProductNode(ch) =>
-      if (ch.isEmpty) new UnitResultConverter
-      else new ProductResultConverter(ch.map(n => compile(n)).toSeq: _*)
+      if (ch.isEmpty)
+        new UnitResultConverter
+      else
+        new ProductResultConverter(ch.map(n => compile(n)).toSeq: _*)
     case GetOrElse(ch, default) =>
       createGetOrElseResultConverter(
         compile(ch).asInstanceOf[ResultConverter[Domain, Option[Any]]],

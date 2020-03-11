@@ -75,7 +75,8 @@ trait Positional { self: Config =>
           clock = makeClock)
         if (Forsyth.>>(game) == Forsyth.initial)
           makeGame(chess.variant.Standard) -> none
-        else game -> baseState
+        else
+          game -> baseState
     }
     val game = builder(chessGame)
     state.fold(game) {

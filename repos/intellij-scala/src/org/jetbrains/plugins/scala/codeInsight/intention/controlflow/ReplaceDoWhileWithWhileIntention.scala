@@ -148,7 +148,8 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
                 doStmtInBraces,
                 classOf[ScDoStmt],
                 true)
-            } else doStmt
+            } else
+              doStmt
           val newExpression: ScExpression =
             newDoStmt.replaceExpression(newWhileStmt, removeParenthesis = true)
           val parent = newExpression.getParent

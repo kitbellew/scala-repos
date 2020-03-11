@@ -19,7 +19,11 @@ object ProxySpec {
   class TestImpl extends TestInterface {
     def foo = "foo"
     def bar(a: Int) = Some(a.toLong)
-    def whoops = if (false) 2 else sys.error("whoops")
+    def whoops =
+      if (false)
+        2
+      else
+        sys.error("whoops")
     def theVoid() = ()
     def theJavaVoid = null
     def aFuture = Future.value(2)
@@ -87,7 +91,8 @@ class ProxyTest extends WordSpec {
       var unitsCalled = 0
 
       val pf = new ProxyFactory[TestImpl]({ call =>
-        if (call.returnsUnit) unitsCalled += 1
+        if (call.returnsUnit)
+          unitsCalled += 1
         call()
       })
 
@@ -106,7 +111,8 @@ class ProxyTest extends WordSpec {
       var futuresCalled = 0
 
       val pf = new ProxyFactory[TestImpl]({ call =>
-        if (call.returnsFuture) futuresCalled += 1
+        if (call.returnsFuture)
+          futuresCalled += 1
         call()
       })
 
@@ -169,10 +175,13 @@ class ProxyTest extends WordSpec {
     }
     def benchmark(f: => Unit) = {
       // warm up
-      for (i <- 1 to 10) f
+      for (i <- 1 to 10)
+        f
 
       // measure
-      val results = for (i <- 1 to 7) yield time(f)
+      val results =
+        for (i <- 1 to 7)
+          yield time(f)
       //println(results)
 
       // drop the top and bottom then average

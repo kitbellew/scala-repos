@@ -141,14 +141,17 @@ object ThrottlerTransportAdapter {
               availableTokens - tokens + tokensGenerated(nanoTimeOfSend),
               capacity)),
           true)
-      else (this, false)
+      else
+        (this, false)
     }
 
     override def timeToAvailable(
         currentNanoTime: Long,
         tokens: Int): FiniteDuration = {
-      val needed = (if (tokens > capacity) 1 else tokens) - tokensGenerated(
-        currentNanoTime)
+      val needed = (if (tokens > capacity)
+                      1
+                    else
+                      tokens) - tokensGenerated(currentNanoTime)
       (needed / tokensPerSecond).seconds
     }
 
@@ -379,7 +382,8 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
 
   private def askModeWithDeathCompletion(target: ActorRef, mode: ThrottleMode)(
       implicit timeout: Timeout): Future[SetThrottleAck.type] = {
-    if (target.isTerminated) Future successful SetThrottleAck
+    if (target.isTerminated)
+      Future successful SetThrottleAck
     else {
       val internalTarget = target.asInstanceOf[InternalActorRef]
       val ref = PromiseActorRef(
@@ -487,7 +491,8 @@ private[transport] class ThrottledAssociation(
 
   override def postStop(): Unit = originalHandle.disassociate()
 
-  if (inbound) startWith(WaitExposedHandle, Uninitialized)
+  if (inbound)
+    startWith(WaitExposedHandle, Uninitialized)
   else {
     originalHandle.readHandlerPromise.success(ActorHandleEventListener(self))
     startWith(WaitModeAndUpstreamListener, Uninitialized)
@@ -540,8 +545,8 @@ private[transport] class ThrottledAssociation(
 
   when(WaitModeAndUpstreamListener) {
     case Event(
-        ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
-        _) ⇒
+          ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
+          _) ⇒
       upstreamListener = listener
       inboundThrottleMode = mode
       self ! Dequeue
@@ -554,7 +559,8 @@ private[transport] class ThrottledAssociation(
   when(Throttling) {
     case Event(mode: ThrottleMode, _) ⇒
       inboundThrottleMode = mode
-      if (mode == Blackhole) throttledMessages = Queue.empty[ByteString]
+      if (mode == Blackhole)
+        throttledMessages = Queue.empty[ByteString]
       cancelTimer(DequeueTimerName)
       if (throttledMessages.nonEmpty)
         scheduleDequeue(
@@ -661,16 +667,22 @@ private[transport] final case class ThrottlerHandle(
       val (newBucket, allow) =
         currentBucket.tryConsumeTokens(timeOfSend, tokens)
       if (allow) {
-        if (outboundThrottleMode.compareAndSet(currentBucket, newBucket)) true
-        else tryConsume(outboundThrottleMode.get())
-      } else false
+        if (outboundThrottleMode.compareAndSet(currentBucket, newBucket))
+          true
+        else
+          tryConsume(outboundThrottleMode.get())
+      } else
+        false
     }
 
     outboundThrottleMode.get match {
       case Blackhole ⇒ true
       case bucket @ _ ⇒
         val success = tryConsume(outboundThrottleMode.get())
-        if (success) wrappedHandle.write(payload) else false
+        if (success)
+          wrappedHandle.write(payload)
+        else
+          false
       // FIXME: this depletes the token bucket even when no write happened!! See #2825
     }
 

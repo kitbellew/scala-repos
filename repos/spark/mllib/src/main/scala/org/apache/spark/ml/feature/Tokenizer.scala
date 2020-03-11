@@ -143,8 +143,16 @@ class RegexTokenizer(override val uid: String)
   override protected def createTransformFunc: String => Seq[String] = {
     originStr =>
       val re = $(pattern).r
-      val str = if ($(toLowercase)) originStr.toLowerCase() else originStr
-      val tokens = if ($(gaps)) re.split(str).toSeq else re.findAllIn(str).toSeq
+      val str =
+        if ($(toLowercase))
+          originStr.toLowerCase()
+        else
+          originStr
+      val tokens =
+        if ($(gaps))
+          re.split(str).toSeq
+        else
+          re.findAllIn(str).toSeq
       val minLength = $(minTokenLength)
       tokens.filter(_.length >= minLength)
   }

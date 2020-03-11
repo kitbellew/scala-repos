@@ -28,7 +28,10 @@ object ParquetSchemaProvider {
         q"_root_.org.apache.parquet.schema.Type.Repetition.REPEATED"
 
       def repetition: Tree =
-        if (isOption) REPETITION_OPTIONAL else REPETITION_REQUIRED
+        if (isOption)
+          REPETITION_OPTIONAL
+        else
+          REPETITION_REQUIRED
 
       def createPrimitiveTypeField(primitiveType: Tree): Tree =
         q"""new _root_.org.apache.parquet.schema.PrimitiveType($repetition, $primitiveType, $fieldName)"""

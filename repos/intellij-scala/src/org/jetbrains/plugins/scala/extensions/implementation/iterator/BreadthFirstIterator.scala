@@ -17,7 +17,8 @@ class BreadthFirstIterator(
 
   def next() = {
     val element = queue.dequeue()
-    if (predicate(element)) pushChildren(element)
+    if (predicate(element))
+      pushChildren(element)
     element
   }
 

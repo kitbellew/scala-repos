@@ -9,8 +9,10 @@ object Main {
       new Ensure[a] {
         def ensure(postcondition: a => Boolean): a = {
           val result = command;
-          if (postcondition(result)) result
-          else sys.error("Assertion error")
+          if (postcondition(result))
+            result
+          else
+            sys.error("Assertion error")
         }
       }
     else

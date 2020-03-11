@@ -132,9 +132,15 @@ final class EMLDAOptimizer extends LDAOptimizer {
     )
 
     this.docConcentration =
-      if (docConcentration == -1) (50.0 / k) + 1.0 else docConcentration
+      if (docConcentration == -1)
+        (50.0 / k) + 1.0
+      else
+        docConcentration
     this.topicConcentration =
-      if (topicConcentration == -1) 1.1 else topicConcentration
+      if (topicConcentration == -1)
+        1.1
+      else
+        topicConcentration
     val randomSeed = lda.getSeed
 
     // For each document, create an edge (Document -> Term) for each unique term in the document.
@@ -460,8 +466,10 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
       lda.getAsymmetricDocConcentration
     }
     this.eta =
-      if (lda.getTopicConcentration == -1) 1.0 / k
-      else lda.getTopicConcentration
+      if (lda.getTopicConcentration == -1)
+        1.0 / k
+      else
+        lda.getTopicConcentration
     this.randomGenerator = new Random(lda.getSeed)
 
     this.docs = docs
@@ -477,7 +485,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
       withReplacement = sampleWithReplacement,
       miniBatchFraction,
       randomGenerator.nextLong())
-    if (batch.isEmpty()) return this
+    if (batch.isEmpty())
+      return this
     submitMiniBatch(batch)
   }
 
@@ -527,7 +536,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
 
     // Note that this is an optimization to avoid batch.count
     updateLambda(batchResult, (miniBatchFraction * corpusSize).ceil.toInt)
-    if (optimizeDocConcentration) updateAlpha(gammat)
+    if (optimizeDocConcentration)
+      updateAlpha(gammat)
     this
   }
 

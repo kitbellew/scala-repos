@@ -61,7 +61,10 @@ private[input] trait JMapWrapperLike[
 
   override def put(k: A, v: B): Option[B] = {
     val r = underlying.put(k, v)
-    if (r != null) Some(r) else None
+    if (r != null)
+      Some(r)
+    else
+      None
   }
 
   override def update(k: A, v: B) {
@@ -70,7 +73,10 @@ private[input] trait JMapWrapperLike[
 
   override def remove(k: A): Option[B] = {
     val r = underlying remove k
-    if (r != null) Some(r) else None
+    if (r != null)
+      Some(r)
+    else
+      None
   }
 
   //  def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {

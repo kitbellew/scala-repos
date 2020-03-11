@@ -48,7 +48,10 @@ object KeyFrame {
     * @return JavaFX $KF extracted from `v`.
     */
   implicit def sfxKeyFrame2jfx(v: KeyFrame): jfxa.KeyFrame =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Creates a new $KF instance

@@ -6,7 +6,8 @@ object Test extends App {
   }
 
   val tm = TrieMap[Collision, Unit]()
-  for (i <- 0 until 1000) tm(new Collision(i)) = ()
+  for (i <- 0 until 1000)
+    tm(new Collision(i)) = ()
 
   tm.par.foreach(kv => ())
 }

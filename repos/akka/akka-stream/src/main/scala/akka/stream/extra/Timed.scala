@@ -116,8 +116,10 @@ object Timed extends TimedOps with TimedIntervalBetweenOps {
 
     private def compareStartAndStop(): FiniteDuration = {
       val stp = _stop.get
-      if (stp <= 0) Duration.Zero
-      else (stp - _start.get).nanos
+      if (stp <= 0)
+        Duration.Zero
+      else
+        (stp - _start.get).nanos
     }
   }
 

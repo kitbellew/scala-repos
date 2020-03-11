@@ -34,11 +34,13 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
     val context = e.getDataContext
     val editor = CommonDataKeys.EDITOR.getData(context)
 
-    if (editor == null) return
+    if (editor == null)
+      return
     val file = PsiUtilBase.getPsiFileInEditor(
       editor,
       CommonDataKeys.PROJECT.getData(context))
-    if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE) return
+    if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE)
+      return
 
     val selectionModel = editor.getSelectionModel
     if (selectionModel.hasSelection) {
@@ -85,8 +87,10 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val types =
               mainText ++ simplified.orElse(nonSingleton) ++ orig ++ expected
 
-            if (types.size == 1) tpeText
-            else types.mkString("\n")
+            if (types.size == 1)
+              tpeText
+            else
+              types.mkString("\n")
           case _ => "Could not find type for selection"
         }
       }
@@ -114,7 +118,8 @@ object ShowTypeInfoAction {
       case ResolvedWithSubst(e, subst) => typeTextOf(e, subst)
       case _ =>
         val element = file.findElementAt(offset)
-        if (element == null) return None
+        if (element == null)
+          return None
         if (element.getNode.getElementType != ScalaTokenTypes.tIDENTIFIER)
           return None
         element match {

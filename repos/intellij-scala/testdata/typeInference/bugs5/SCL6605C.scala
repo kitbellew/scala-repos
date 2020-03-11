@@ -12,7 +12,11 @@ trait SCL6605C {
   val x: X
   val h: H
 
-  val u = if (true) x else h
+  val u =
+    if (true)
+      x
+    else
+      h
   /*start*/
   u /*end*/
 }

@@ -47,7 +47,10 @@ object PrinterJob {
     * @return JavaFX PrinterJob
     */
   implicit def sfxPrinterJob2jfx(pj: PrinterJob): jfxp.PrinterJob =
-    if (pj != null) pj.delegate else null
+    if (pj != null)
+      pj.delegate
+    else
+      null
 
   // JobStatus - begin
 

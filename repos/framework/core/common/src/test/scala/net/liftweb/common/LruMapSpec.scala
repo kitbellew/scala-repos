@@ -28,14 +28,16 @@ object LruMapSpec extends Specification {
 
     "never grow beyond the given size" in {
       val lru = new LRUMap[Int, Int](10)
-      for (i <- 1 to 20) lru(i) = i
+      for (i <- 1 to 20)
+        lru(i) = i
 
       lru.size must_== 10
     }
 
     "have the last N elements (where N is the initial MaxSize)" in {
       val lru = new LRUMap[Int, Int](10)
-      for (i <- 1 to 20) lru(i) = i
+      for (i <- 1 to 20)
+        lru(i) = i
 
       lru.size must_== 10
       ((i: Int) => lru(i) must_== i).forall(11 to 20)
@@ -52,7 +54,8 @@ object LruMapSpec extends Specification {
           k must be > 0;
           v must be < 11
         })
-      for (i <- 1 to 20) lru(i) = i
+      for (i <- 1 to 20)
+        lru(i) = i
 
       lru.size must_== 10
       expCnt must_== 10
@@ -70,12 +73,14 @@ object LruMapSpec extends Specification {
           k must be > 0
         })
       for (i <- 1 to 20) {
-        for (q <- 1 to 10) lru.get(q)
+        for (q <- 1 to 10)
+          lru.get(q)
         lru(i) = i
       }
 
       lru.size must_== 10
-      for (i <- 2 to 10) lru(i) must_== i
+      for (i <- 2 to 10)
+        lru(i) must_== i
       lru(20) must_== 20
     }
 

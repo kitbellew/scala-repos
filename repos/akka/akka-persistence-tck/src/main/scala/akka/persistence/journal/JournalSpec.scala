@@ -121,8 +121,8 @@ abstract class JournalSpec(config: Config)
     fromSnr to toSnr foreach { i ⇒
       probe.expectMsgPF() {
         case WriteMessageSuccess(
-            PersistentImpl(payload, `i`, `pid`, _, _, `sender`, `writerUuid`),
-            _) ⇒
+              PersistentImpl(payload, `i`, `pid`, _, _, `sender`, `writerUuid`),
+              _) ⇒
           payload should be(s"a-${i}")
       }
     }
@@ -297,7 +297,11 @@ abstract class JournalSpec(config: Config)
           override def toString = "not serializable"
         }
         val msgs = (6 to 8).map { i ⇒
-          val event = if (i == 7) notSerializableEvent else s"b-$i"
+          val event =
+            if (i == 7)
+              notSerializableEvent
+            else
+              s"b-$i"
           AtomicWrite(
             PersistentRepr(
               payload = event,
@@ -315,42 +319,42 @@ abstract class JournalSpec(config: Config)
         val WriterUuid = writerUuid
         probe.expectMsgPF() {
           case WriteMessageSuccess(
-              PersistentImpl(
-                payload,
-                6L,
-                Pid,
-                _,
-                _,
-                Actor.noSender,
-                WriterUuid),
-              _) ⇒
+                PersistentImpl(
+                  payload,
+                  6L,
+                  Pid,
+                  _,
+                  _,
+                  Actor.noSender,
+                  WriterUuid),
+                _) ⇒
             payload should be(s"b-6")
         }
         probe.expectMsgPF() {
           case WriteMessageRejected(
-              PersistentImpl(
-                payload,
-                7L,
-                Pid,
+                PersistentImpl(
+                  payload,
+                  7L,
+                  Pid,
+                  _,
+                  _,
+                  Actor.noSender,
+                  WriterUuid),
                 _,
-                _,
-                Actor.noSender,
-                WriterUuid),
-              _,
-              _) ⇒
+                _) ⇒
             payload should be(notSerializableEvent)
         }
         probe.expectMsgPF() {
           case WriteMessageSuccess(
-              PersistentImpl(
-                payload,
-                8L,
-                Pid,
-                _,
-                _,
-                Actor.noSender,
-                WriterUuid),
-              _) ⇒
+                PersistentImpl(
+                  payload,
+                  8L,
+                  Pid,
+                  _,
+                  _,
+                  Actor.noSender,
+                  WriterUuid),
+                _) ⇒
             payload should be(s"b-8")
         }
       }

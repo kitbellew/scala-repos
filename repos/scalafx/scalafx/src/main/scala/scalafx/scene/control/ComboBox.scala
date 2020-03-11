@@ -45,7 +45,10 @@ import scalafx.util.StringConverter._
 
 object ComboBox {
   implicit def sfxComboBox2jfx[T](cb: ComboBox[T]): jfxsc.ComboBox[T] =
-    if (cb != null) cb.delegate else null
+    if (cb != null)
+      cb.delegate
+    else
+      null
 }
 
 class ComboBox[T](

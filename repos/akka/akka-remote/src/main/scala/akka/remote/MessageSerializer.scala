@@ -28,7 +28,8 @@ private[akka] object MessageSerializer {
         messageProtocol.getSerializerId,
         if (messageProtocol.hasMessageManifest)
           messageProtocol.getMessageManifest.toStringUtf8
-        else ""
+        else
+          ""
       )
       .get
   }

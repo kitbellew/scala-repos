@@ -230,7 +230,8 @@ abstract class QueryTest extends PlanTest {
       }
 
     // bypass hive tests before we fix all corner cases in hive module.
-    if (this.getClass.getName.startsWith("org.apache.spark.sql.hive")) return
+    if (this.getClass.getName.startsWith("org.apache.spark.sql.hive"))
+      return
 
     val jsonString =
       try {
@@ -381,7 +382,10 @@ object QueryTest {
     // For binary arrays, we convert it to Seq to avoid of calling java.util.Arrays.equals for
     // equality test.
     val converted: Seq[Row] = answer.map(prepareRow)
-    if (!isSorted) converted.sortBy(_.toString()) else converted
+    if (!isSorted)
+      converted.sortBy(_.toString())
+    else
+      converted
   }
 
   // We need to call prepareRow recursively to handle schemas with struct types.

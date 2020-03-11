@@ -146,7 +146,11 @@ trait MathLibModule[M[+_]]
         extends Op1DD(
           "round",
           doubleIsDefined,
-          n => if (Math.abs(n) >= 4503599627370496.0) n else Math.round(n))
+          n =>
+            if (Math.abs(n) >= 4503599627370496.0)
+              n
+            else
+              Math.round(n))
 
     object cosh extends Op1DD("cosh", doubleIsDefined, Math.cosh)
 
@@ -236,8 +240,10 @@ trait MathLibModule[M[+_]]
           { (n, digits) =>
             val adjusted = n * math.pow(10, digits)
             val rounded =
-              if (Math.abs(n) >= 4503599627370496.0) adjusted
-              else Math.round(adjusted)
+              if (Math.abs(n) >= 4503599627370496.0)
+                adjusted
+              else
+                Math.round(adjusted)
 
             rounded / math.pow(10, digits)
           })

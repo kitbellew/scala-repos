@@ -36,7 +36,10 @@ import scalafx.delegate.{AlignmentDelegate, SFXDelegate}
 
 object TextField {
   implicit def sfxTextField2jfx(v: TextField): jfxsc.TextField =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class TextField(override val delegate: jfxsc.TextField = new jfxsc.TextField)

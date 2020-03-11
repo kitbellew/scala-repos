@@ -182,8 +182,10 @@ object TypeParameter {
   }
 
   def fromArray(ptps: Array[PsiTypeParameter]): Array[TypeParameter] = {
-    if (ptps.length == 0) EMPTY_ARRAY
-    else ptps.map(new TypeParameter(_))
+    if (ptps.length == 0)
+      EMPTY_ARRAY
+    else
+      ptps.map(new TypeParameter(_))
   }
 
   val EMPTY_ARRAY: Array[TypeParameter] = Array.empty
@@ -206,7 +208,8 @@ case class ScMethodType(
       returnType.inferValueType,
       params.map(p => {
         val inferredParamType = p.paramType.inferValueType
-        if (!p.isRepeated) inferredParamType
+        if (!p.isRepeated)
+          inferredParamType
         else {
           val seqClass = ScalaPsiManager
             .instance(project)
@@ -273,13 +276,15 @@ case class ScMethodType(
     var undefinedSubst = uSubst
     r match {
       case m: ScMethodType =>
-        if (m.params.length != params.length) return (false, undefinedSubst)
+        if (m.params.length != params.length)
+          return (false, undefinedSubst)
         var t = Equivalence.equivInner(
           m.returnType,
           returnType,
           undefinedSubst,
           falseUndef)
-        if (!t._1) return (false, undefinedSubst)
+        if (!t._1)
+          return (false, undefinedSubst)
         undefinedSubst = t._2
         var i = 0
         while (i < params.length) {
@@ -291,7 +296,8 @@ case class ScMethodType(
             m.params(i).paramType,
             undefinedSubst,
             falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
           i = i + 1
         }
@@ -333,8 +339,10 @@ case class ScTypePolymorphicType(
               val (tpName, id) = pair
               if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
                     tp.ptp)) {
-                if (i == -1) contraVariant += 1
-                else coOrInVariant += 1
+                if (i == -1)
+                  contraVariant += 1
+                else
+                  coOrInVariant += 1
               }
             }
             (false, typez)
@@ -373,11 +381,15 @@ case class ScTypePolymorphicType(
     new ScSubstitutor(
       new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
         val lowerType: ScType =
-          if (hasRecursiveTypeParameters(tp.lowerType())) Nothing
-          else tp.lowerType()
+          if (hasRecursiveTypeParameters(tp.lowerType()))
+            Nothing
+          else
+            tp.lowerType()
         val upperType: ScType =
-          if (hasRecursiveTypeParameters(tp.upperType())) Any
-          else tp.upperType()
+          if (hasRecursiveTypeParameters(tp.upperType()))
+            Any
+          else
+            tp.upperType()
         (
           (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
           new ScAbstractType(
@@ -411,11 +423,15 @@ case class ScTypePolymorphicType(
     new ScSubstitutor(
       new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
         val lowerType: ScType =
-          if (hasRecursiveTypeParameters(tp.lowerType())) Nothing
-          else tp.lowerType()
+          if (hasRecursiveTypeParameters(tp.lowerType()))
+            Nothing
+          else
+            tp.lowerType()
         val upperType: ScType =
-          if (hasRecursiveTypeParameters(tp.upperType())) Any
-          else tp.upperType()
+          if (hasRecursiveTypeParameters(tp.upperType()))
+            Any
+          else
+            tp.upperType()
         (
           (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
           if (lowerType.equiv(Nothing))
@@ -423,7 +439,8 @@ case class ScTypePolymorphicType(
               new ScTypeParameterType(tp.ptp, ScSubstitutor.empty),
               lowerType,
               upperType)
-          else lowerType)
+          else
+            lowerType)
       }),
       Map.empty,
       None)
@@ -536,14 +553,16 @@ case class ScTypePolymorphicType(
             p.typeParameters(i).lowerType(),
             undefinedSubst,
             falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
           t = Equivalence.equivInner(
             typeParameters(i).upperType(),
             p.typeParameters(i).upperType(),
             undefinedSubst,
             falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
           i = i + 1
         }
@@ -586,6 +605,7 @@ case class ScTypePolymorphicType(
     if (typeParameters.nonEmpty)
       internalType.typeDepth.max(
         ScType.typeParamsDepth(typeParameters.toArray) + 1)
-    else internalType.typeDepth
+    else
+      internalType.typeDepth
   }
 }

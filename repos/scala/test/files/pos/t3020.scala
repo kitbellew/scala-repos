@@ -3,7 +3,8 @@ object Test {
     var x = true
 
     ({
-      if (x) new scala.util.Random()
+      if (x)
+        new scala.util.Random()
     }.asInstanceOf[Runnable])
   }
 }

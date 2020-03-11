@@ -276,7 +276,11 @@ object StringTranslate {
     val dict = new HashMap[Character, Character]()
     var i = 0
     while (i < matching.length()) {
-      val rep = if (i < replace.length()) replace.charAt(i) else '\u0000'
+      val rep =
+        if (i < replace.length())
+          replace.charAt(i)
+        else
+          '\u0000'
       if (null == dict.get(matching.charAt(i))) {
         dict.put(matching.charAt(i), rep)
       }
@@ -751,7 +755,11 @@ case class StringSpace(child: Expression)
 
   override def nullSafeEval(s: Any): Any = {
     val length = s.asInstanceOf[Int]
-    UTF8String.blankString(if (length < 0) 0 else length)
+    UTF8String.blankString(
+      if (length < 0)
+        0
+      else
+        length)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

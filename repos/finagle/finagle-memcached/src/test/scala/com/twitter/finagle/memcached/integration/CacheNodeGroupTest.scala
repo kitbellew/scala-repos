@@ -236,7 +236,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         if (current != expect)
           throw new TimeoutException(
             "timed out waiting for CacheNode pool to reach the expected size")
-        else true
+        else
+          true
       } else {
         Thread.sleep(100)
         loop()

@@ -467,7 +467,8 @@ abstract class Message extends HttpMessageProxy {
   @throws(classOf[BufReader.ReaderDiscarded])
   @throws(classOf[IllegalStateException])
   def write(buffer: ChannelBuffer) {
-    if (isChunked) writeChunk(buffer)
+    if (isChunked)
+      writeChunk(buffer)
     else {
       getContent match {
         case ChannelBuffers.EMPTY_BUFFER =>
@@ -517,7 +518,8 @@ abstract class Message extends HttpMessageProxy {
     if (buf.readable) {
       val future = writer.write(new ChannelBufferBuf(buf))
       // Unwraps the future in the Return case, or throws exception in the Throw case.
-      if (future.isDefined) Await.result(future)
+      if (future.isDefined)
+        Await.result(future)
     }
   }
 }

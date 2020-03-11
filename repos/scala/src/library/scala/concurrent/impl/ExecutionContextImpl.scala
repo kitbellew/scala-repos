@@ -90,7 +90,8 @@ private[concurrent] object ExecutionContextImpl {
             try runnable.run()
             finally deregisterThread()
         }))
-      else null
+      else
+        null
 
     def newThread(fjp: ForkJoinPool): ForkJoinWorkerThread =
       if (reserveThread()) {
@@ -122,7 +123,8 @@ private[concurrent] object ExecutionContextImpl {
             result
           }
         })
-      } else null
+      } else
+        null
   }
 
   def createDefaultExecutorService(

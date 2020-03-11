@@ -644,9 +644,11 @@ class FutureTests extends MinimalScalaTest {
     }
 
     "find" in {
-      val futures = for (i <- 1 to 10) yield Future {
-        i
-      }
+      val futures =
+        for (i <- 1 to 10)
+          yield Future {
+            i
+          }
 
       val result = Future.find[Int](futures)(_ == 3)
       Await.result(result, defaultTimeout) mustBe (Some(3))
@@ -750,7 +752,8 @@ class FutureTests extends MinimalScalaTest {
       val folded = futures.foldLeft(Future(0)) {
         case (fr, fa) =>
           for (r <- fr;
-               a <- fa) yield (r + a)
+               a <- fa)
+            yield (r + a)
       }
       Await.result(folded, timeout) mustBe (45)
     }
@@ -820,7 +823,8 @@ class FutureTests extends MinimalScalaTest {
         if (add == 6)
           throw new IllegalArgumentException(
             "shouldFoldResultsWithException: expected")
-        else add
+        else
+          add
       }
       val timeout = 10000 millis
       def futures = (1 to 10) map { idx =>
@@ -908,7 +912,8 @@ class FutureTests extends MinimalScalaTest {
         Await.ready(latch(3), TestLatch.DefaultTimeout)
         s.length
       }
-      for (_ <- f2) latch(4).open()
+      for (_ <- f2)
+        latch(4).open()
 
       Await.ready(latch(0), TestLatch.DefaultTimeout)
 
@@ -926,7 +931,8 @@ class FutureTests extends MinimalScalaTest {
         Await.ready(latch(6), TestLatch.DefaultTimeout)
         s.length * 2
       }
-      for (_ <- f3) latch(3).open()
+      for (_ <- f3)
+        latch(3).open()
 
       Await.ready(latch(5), TestLatch.DefaultTimeout)
 
@@ -944,7 +950,8 @@ class FutureTests extends MinimalScalaTest {
         Await.ready(latch(8), TestLatch.DefaultTimeout)
         s.length
       }
-      for (_ <- f4) latch(9).open()
+      for (_ <- f4)
+        latch(9).open()
 
       p1.future.isCompleted mustBe (false)
       f4.isCompleted mustBe (false)
@@ -976,12 +983,14 @@ class FutureTests extends MinimalScalaTest {
       val complex = Future(()) map { _ =>
         blocking {
           val nested = Future(())
-          for (_ <- nested) l1.open()
+          for (_ <- nested)
+            l1.open()
           Await.ready(
             l1,
             TestLatch.DefaultTimeout
           ) // make sure nested is completed
-          for (_ <- nested) l2.open()
+          for (_ <- nested)
+            l2.open()
           Await.ready(l2, TestLatch.DefaultTimeout)
         }
       }

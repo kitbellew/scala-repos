@@ -29,7 +29,11 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
   def ping(host: String, port: Int): RestResult[String] =
     custom("/ping")(host, port)
 
-  def scheme: String = if (https) "https" else "http"
+  def scheme: String =
+    if (https)
+      "https"
+    else
+      "http"
 
   def custom(uri: String)(host: String, port: Int): RestResult[String] = {
     retry() {

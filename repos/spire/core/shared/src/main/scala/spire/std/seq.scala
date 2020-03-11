@@ -123,9 +123,13 @@ class SeqCoordinateSpace[A: Field, SA <: SeqLike[A, SA]](val dimensions: Int)(
 
     @tailrec def loop(j: Int): SA =
       if (i < dimensions) {
-        b += (if (i == j) scalar.one else scalar.zero)
+        b += (if (i == j)
+                scalar.one
+              else
+                scalar.zero)
         loop(j + 1)
-      } else b.result
+      } else
+        b.result
 
     loop(0)
   }
@@ -174,7 +178,12 @@ class SeqMaxNormedVectorSpace[A: Field: Order: Signed, SA <: SeqLike[A, SA]](
     def loop(xi: Iterator[A], acc: A): A = {
       if (xi.hasNext) {
         val x = Signed[A].abs(xi.next())
-        loop(xi, if (Order[A].gt(x, acc)) x else acc)
+        loop(
+          xi,
+          if (Order[A].gt(x, acc))
+            x
+          else
+            acc)
       } else {
         acc
       }
@@ -228,7 +237,10 @@ class SeqOrder[A: Order, SA <: SeqLike[A, SA]]
     def loop(xi: Iterator[A], yi: Iterator[A]): Int = {
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
-        if (cmp == 0) loop(xi, yi) else cmp
+        if (cmp == 0)
+          loop(xi, yi)
+        else
+          cmp
       } else if (xi.hasNext) {
         1
       } else if (yi.hasNext) {
@@ -264,11 +276,20 @@ class SeqVectorOrder[A: Order, SA <: SeqLike[A, SA]](
     def loop(xi: Iterator[A], yi: Iterator[A]): Int = {
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
-        if (cmp == 0) loop(xi, yi) else cmp
+        if (cmp == 0)
+          loop(xi, yi)
+        else
+          cmp
       } else if (xi.hasNext) {
-        if (Order[A].eqv(xi.next(), scalar.zero)) loop(xi, yi) else 1
+        if (Order[A].eqv(xi.next(), scalar.zero))
+          loop(xi, yi)
+        else
+          1
       } else if (yi.hasNext) {
-        if (Order[A].eqv(yi.next(), scalar.zero)) loop(xi, yi) else -1
+        if (Order[A].eqv(yi.next(), scalar.zero))
+          loop(xi, yi)
+        else
+          -1
       } else {
         0
       }

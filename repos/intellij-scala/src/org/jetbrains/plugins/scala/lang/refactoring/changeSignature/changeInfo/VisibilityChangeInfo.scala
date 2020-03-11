@@ -11,8 +11,10 @@ private[changeInfo] trait VisibilityChangeInfo {
   this: ScalaChangeInfo =>
 
   def getNewVisibility: String = {
-    if (newVisibility != null) scalaToJavaVisibility(newVisibility)
-    else oldVisibility
+    if (newVisibility != null)
+      scalaToJavaVisibility(newVisibility)
+    else
+      oldVisibility
   }
 
   def isVisibilityChanged: Boolean = oldVisibility != newVisibility
@@ -23,8 +25,11 @@ private[changeInfo] trait VisibilityChangeInfo {
 
   private def scalaToJavaVisibility(
       scalaModifier: String): String = { //todo more correct transformation
-    if (scalaModifier == "") PsiModifier.PUBLIC
-    else if (scalaModifier.startsWith("protected")) PsiModifier.PROTECTED
-    else PsiModifier.PRIVATE
+    if (scalaModifier == "")
+      PsiModifier.PUBLIC
+    else if (scalaModifier.startsWith("protected"))
+      PsiModifier.PROTECTED
+    else
+      PsiModifier.PRIVATE
   }
 }

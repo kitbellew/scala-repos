@@ -20,7 +20,10 @@ private[finagle] class WriteCompletionTimeoutHandler(
       Channels.fireExceptionCaught(
         channel,
         new WriteTimedOutException(
-          if (channel != null) channel.getRemoteAddress else null))
+          if (channel != null)
+            channel.getRemoteAddress
+          else
+            null))
     }
     e.getFuture.addListener(new ChannelFutureListener {
       override def operationComplete(f: ChannelFuture): Unit =

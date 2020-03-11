@@ -124,8 +124,10 @@ final class ListBuffer[A]
   // Implementations of abstract methods in Buffer
 
   override def apply(n: Int): A =
-    if (n < 0 || n >= len) throw new IndexOutOfBoundsException(n.toString())
-    else super.apply(n)
+    if (n < 0 || n >= len)
+      throw new IndexOutOfBoundsException(n.toString())
+    else
+      super.apply(n)
 
   /** Replaces element at index `n` with the new element
     *  `newelem`. Takes time linear in the buffer size. (except the
@@ -137,8 +139,10 @@ final class ListBuffer[A]
     */
   def update(n: Int, x: A) {
     // We check the bounds early, so that we don't trigger copying.
-    if (n < 0 || n >= len) throw new IndexOutOfBoundsException(n.toString)
-    if (exported) copy()
+    if (n < 0 || n >= len)
+      throw new IndexOutOfBoundsException(n.toString)
+    if (exported)
+      copy()
     if (n == 0) {
       val newElem = new ::(x, start.tail)
       if (last0 eq start) {
@@ -166,7 +170,8 @@ final class ListBuffer[A]
     *  @return   this $coll.
     */
   def +=(x: A): this.type = {
-    if (exported) copy()
+    if (exported)
+      copy()
     if (isEmpty) {
       last0 = new ::(x, Nil)
       start = last0
@@ -186,8 +191,10 @@ final class ListBuffer[A]
   }
 
   override def ++=:(xs: TraversableOnce[A]): this.type =
-    if (xs.asInstanceOf[AnyRef] eq this) ++=:(this take size)
-    else super.++=:(xs)
+    if (xs.asInstanceOf[AnyRef] eq this)
+      ++=:(this take size)
+    else
+      super.++=:(xs)
 
   /** Clears the buffer contents.
     */
@@ -205,9 +212,11 @@ final class ListBuffer[A]
     *  @return   this $coll.
     */
   def +=:(x: A): this.type = {
-    if (exported) copy()
+    if (exported)
+      copy()
     val newElem = new ::(x, start)
-    if (isEmpty) last0 = newElem
+    if (isEmpty)
+      last0 = newElem
     start = newElem
     len += 1
     this
@@ -223,14 +232,17 @@ final class ListBuffer[A]
     */
   def insertAll(n: Int, seq: Traversable[A]) {
     // We check the bounds early, so that we don't trigger copying.
-    if (n < 0 || n > len) throw new IndexOutOfBoundsException(n.toString)
-    if (exported) copy()
+    if (n < 0 || n > len)
+      throw new IndexOutOfBoundsException(n.toString)
+    if (exported)
+      copy()
     var elems = seq.toList.reverse
     len += elems.length
     if (n == 0) {
       while (!elems.isEmpty) {
         val newElem = new ::(elems.head, start)
-        if (start.isEmpty) last0 = newElem
+        if (start.isEmpty)
+          last0 = newElem
         start = newElem
         elems = elems.tail
       }
@@ -243,7 +255,8 @@ final class ListBuffer[A]
       }
       while (!elems.isEmpty) {
         val newElem = new ::(elems.head, cursor.tail)
-        if (cursor.tail.isEmpty) last0 = newElem
+        if (cursor.tail.isEmpty)
+          last0 = newElem
         cursor.asInstanceOf[::[A]].tl = newElem
         elems = elems.tail
       }
@@ -272,11 +285,13 @@ final class ListBuffer[A]
     if (count < 0)
       throw new IllegalArgumentException(
         "removing negative number of elements: " + count.toString)
-    else if (count == 0) return // Nothing to do
+    else if (count == 0)
+      return // Nothing to do
     if (n < 0 || n > len - count)
       throw new IndexOutOfBoundsException(
         "at " + n.toString + " deleting " + count.toString)
-    if (exported) copy()
+    if (exported)
+      copy()
     val n1 = n max 0
     val count1 = count min (len - n1)
     if (n1 == 0) {
@@ -294,7 +309,8 @@ final class ListBuffer[A]
       }
       var c = count1
       while (c > 0) {
-        if (last0 eq cursor.tail) last0 = cursor.asInstanceOf[::[A]]
+        if (last0 eq cursor.tail)
+          last0 = cursor.asInstanceOf[::[A]]
         cursor.asInstanceOf[::[A]].tl = cursor.tail.tail
         c -= 1
       }
@@ -325,9 +341,11 @@ final class ListBuffer[A]
     *  @param xs   the list to which elements are prepended
     */
   def prependToList(xs: List[A]): List[A] = {
-    if (isEmpty) xs
+    if (isEmpty)
+      xs
     else {
-      if (exported) copy()
+      if (exported)
+        copy()
       last0.tl = xs
       toList
     }
@@ -344,8 +362,10 @@ final class ListBuffer[A]
     *  @throws IndexOutOfBoundsException if `n` is out of bounds.
     */
   def remove(n: Int): A = {
-    if (n < 0 || n >= len) throw new IndexOutOfBoundsException(n.toString())
-    if (exported) copy()
+    if (n < 0 || n >= len)
+      throw new IndexOutOfBoundsException(n.toString())
+    if (exported)
+      copy()
     var old = start.head
     if (n == 0) {
       start = start.tail
@@ -357,7 +377,8 @@ final class ListBuffer[A]
         i += 1
       }
       old = cursor.tail.head
-      if (last0 eq cursor.tail) last0 = cursor.asInstanceOf[::[A]]
+      if (last0 eq cursor.tail)
+        last0 = cursor.asInstanceOf[::[A]]
       cursor.asInstanceOf[::[A]].tl = cursor.tail.tail
     }
     reduceLengthBy(1)
@@ -371,7 +392,8 @@ final class ListBuffer[A]
     *  @return      this $coll.
     */
   override def -=(elem: A): this.type = {
-    if (exported) copy()
+    if (exported)
+      copy()
     if (isEmpty) {} else if (start.head == elem) {
       start = start.tail
       reduceLengthBy(1)
@@ -405,11 +427,16 @@ final class ListBuffer[A]
     // a structure while iterating, but we should never return hasNext == true
     // on exhausted iterators (thus creating exceptions) merely because
     // values were changed in-place.
-    var cursor: List[A] = if (ListBuffer.this.isEmpty) Nil else start
+    var cursor: List[A] =
+      if (ListBuffer.this.isEmpty)
+        Nil
+      else
+        start
 
     def hasNext: Boolean = cursor ne Nil
     def next(): A =
-      if (!hasNext) throw new NoSuchElementException("next on empty Iterator")
+      if (!hasNext)
+        throw new NoSuchElementException("next on empty Iterator")
       else {
         val ans = cursor.head
         cursor = cursor.tail
@@ -421,7 +448,8 @@ final class ListBuffer[A]
 
   /** Copy contents of this buffer */
   private def copy() {
-    if (isEmpty) return
+    if (isEmpty)
+      return
     var cursor = start
     val limit = last0.tail
     clear()

@@ -19,7 +19,8 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
       psiElement: PsiElement): OperationPerformed = {
     val ifStatement =
       PsiTreeUtil.getParentOfType(psiElement, classOf[ScIfStmt], false)
-    if (ifStatement == null) return NoOperation
+    if (ifStatement == null)
+      return NoOperation
 
     val doc = editor.getDocument
     var transformingOneLiner = false
@@ -36,7 +37,8 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
         return NoOperation
       case Some(branch)
           if startLine(doc, branch) == startLine(doc, ifStatement) =>
-        if (ifStatement.condition.isDefined) return NoOperation
+        if (ifStatement.condition.isDefined)
+          return NoOperation
         transformingOneLiner = true
       case _ =>
     }

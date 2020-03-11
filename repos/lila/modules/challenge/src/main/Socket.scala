@@ -39,7 +39,8 @@ private final class Socket(
 
     case Broom => {
       broom
-      if (timeBomb.boom) self ! PoisonPill
+      if (timeBomb.boom)
+        self ! PoisonPill
     }
 
     case GetVersion => sender ! history.version

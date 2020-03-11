@@ -53,29 +53,30 @@ final class ScriptedTests(
     import GlobFilter._
     var failed = false
     for (groupDir <- (resourceBaseDirectory * group).get;
-         nme <- (groupDir * name).get) yield {
-      val g = groupDir.getName
-      val n = nme.getName
-      val str = s"$g / $n"
-      () => {
-        println("Running " + str)
-        testResources.readWriteResourceDirectory(g, n) { testDirectory =>
-          val disabled = new File(testDirectory, "disabled").isFile
-          if (disabled) {
-            log.info("D " + str + " [DISABLED]")
-            None
-          } else {
-            try {
-              scriptedTest(str, testDirectory, prescripted, log);
+         nme <- (groupDir * name).get)
+      yield {
+        val g = groupDir.getName
+        val n = nme.getName
+        val str = s"$g / $n"
+        () => {
+          println("Running " + str)
+          testResources.readWriteResourceDirectory(g, n) { testDirectory =>
+            val disabled = new File(testDirectory, "disabled").isFile
+            if (disabled) {
+              log.info("D " + str + " [DISABLED]")
               None
-            } catch {
-              case _: TestException | _: PendingTestSuccessException =>
-                Some(str)
+            } else {
+              try {
+                scriptedTest(str, testDirectory, prescripted, log);
+                None
+              } catch {
+                case _: TestException | _: PendingTestSuccessException =>
+                  Some(str)
+              }
             }
           }
         }
       }
-    }
   }
 
   private def scriptedTest(
@@ -97,9 +98,16 @@ final class ScriptedTests(
     val (file, pending) = {
       val normal = new File(testDirectory, ScriptFilename)
       val pending = new File(testDirectory, PendingScriptFilename)
-      if (pending.isFile) (pending, true) else (normal, false)
+      if (pending.isFile)
+        (pending, true)
+      else
+        (normal, false)
     }
-    val pendingString = if (pending) " [PENDING]" else ""
+    val pendingString =
+      if (pending)
+        " [PENDING]"
+      else
+        ""
 
     def runTest() = {
       val run = new ScriptRunner
@@ -107,7 +115,10 @@ final class ScriptedTests(
       run(parser.parse(file))
     }
     def testFailed(): Unit = {
-      if (pending) buffered.clear() else buffered.stop()
+      if (pending)
+        buffered.clear()
+      else
+        buffered.stop()
       buffered.error("x " + label + pendingString)
     }
 
@@ -115,7 +126,8 @@ final class ScriptedTests(
       prescripted(testDirectory)
       runTest()
       buffered.info("+ " + label + pendingString)
-      if (pending) throw new PendingTestSuccessException(label)
+      if (pending)
+        throw new PendingTestSuccessException(label)
     } catch {
       case e: TestException =>
         testFailed()
@@ -124,14 +136,16 @@ final class ScriptedTests(
             buffered.error("   " + e.getMessage)
           case _ => e.printStackTrace
         }
-        if (!pending) throw e
+        if (!pending)
+          throw e
       case e: PendingTestSuccessException =>
         testFailed()
         buffered.error("  Mark as passing to remove this failure.")
         throw e
       case e: Exception =>
         testFailed()
-        if (!pending) throw e
+        if (!pending)
+          throw e
     } finally {
       buffered.clear()
     }
@@ -260,7 +274,8 @@ class ScriptedRunner {
   def runAll(tests: Seq[() => Option[String]]): Unit = {
     val errors =
       for (test <- tests;
-           err <- test()) yield err
+           err <- test())
+        yield err
     if (errors.nonEmpty)
       sys.error(errors.mkString("Failed tests:\n\t", "\n\t", "\n"))
   }
@@ -268,14 +283,18 @@ class ScriptedRunner {
       tests: Seq[String],
       baseDirectory: File,
       log: Logger): Seq[ScriptedTest] =
-    if (tests.isEmpty) listTests(baseDirectory, log) else parseTests(tests)
+    if (tests.isEmpty)
+      listTests(baseDirectory, log)
+    else
+      parseTests(tests)
   def listTests(baseDirectory: File, log: Logger): Seq[ScriptedTest] =
     (new ListTests(baseDirectory, _ => true, log)).listTests
   def parseTests(in: Seq[String]): Seq[ScriptedTest] =
-    for (testString <- in) yield {
-      val Array(group, name) = testString.split("/").map(_.trim)
-      ScriptedTest(group, name)
-    }
+    for (testString <- in)
+      yield {
+        val Array(group, name) = testString.split("/").map(_.trim)
+        ScriptedTest(group, name)
+      }
 }
 
 final case class ScriptedTest(group: String, name: String) extends NotNull {

@@ -86,7 +86,8 @@ private class MakeFullQualifiedImportFix(
 
   def doApplyFix(project: Project) {
     val ref = getElement
-    if (ref == null || !ref.isValid) return
+    if (ref == null || !ref.isValid)
+      return
     val newRef =
       ScalaPsiElementFactory.createReferenceFromText(fqn, ref.getContext, ref)
     import org.jetbrains.plugins.scala.codeInspection.relativeImports.RelativeImportInspection.qual

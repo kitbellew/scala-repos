@@ -169,7 +169,8 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
     def addRatingIf(cond: Boolean, perf: Perf, rating: Rating) =
       if (cond)
         perf.addOrReset(_.round.error.glicko, s"game ${game.id}")(rating, date)
-      else perf
+      else
+        perf
     val perfs1 = perfs.copy(
       chess960 = addRatingIf(
         game.ratingVariant.chess960,
@@ -230,6 +231,9 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       correspondence =
         r(PT.Correspondence, perfs.correspondence, perfs1.correspondence)
     )
-    if (isStd) perfs2.updateStandard else perfs2
+    if (isStd)
+      perfs2.updateStandard
+    else
+      perfs2
   }
 }

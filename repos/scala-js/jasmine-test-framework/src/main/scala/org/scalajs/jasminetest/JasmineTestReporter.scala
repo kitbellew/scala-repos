@@ -107,8 +107,10 @@ class JasmineTestReporter(
     loggers.foreach(_.info(str))
 
   private def color(log: Logger, color: String, msg: String) =
-    if (log.ansiCodesSupported) color + msg + Reset
-    else msg
+    if (log.ansiCodesSupported)
+      color + msg + Reset
+    else
+      msg
 
   private def sanitizeMessage(message: String) = {
     val FilePattern = """^(.+?) [^ ]+\.js \(line \d+\)\.*?$""".r

@@ -181,7 +181,11 @@ object FetchResponse {
   // The request version is used to determine which fields we can expect in the response
   def readFrom(buffer: ByteBuffer, requestVersion: Int): FetchResponse = {
     val correlationId = buffer.getInt
-    val throttleTime = if (requestVersion > 0) buffer.getInt else 0
+    val throttleTime =
+      if (requestVersion > 0)
+        buffer.getInt
+      else
+        0
     val topicCount = buffer.getInt
     val pairs = (1 to topicCount).flatMap(_ => {
       val topicData = TopicData.readFrom(buffer)
@@ -195,7 +199,11 @@ object FetchResponse {
 
   // Returns the size of the response header
   def headerSize(requestVersion: Int): Int = {
-    val throttleTimeSize = if (requestVersion > 0) 4 else 0
+    val throttleTimeSize =
+      if (requestVersion > 0)
+        4
+      else
+        0
     4 + /* correlationId */
     4 + /* topic count */
     throttleTimeSize

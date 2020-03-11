@@ -44,10 +44,12 @@ class CompoundTypeCheckSignatureProcessor(
   def getUndefinedSubstitutor = innerUndefinedSubstitutor
 
   def execute(element: PsiElement, state: ResolveState): Boolean = {
-    if (!element.isInstanceOf[PsiNamedElement]) return true
+    if (!element.isInstanceOf[PsiNamedElement])
+      return true
     val namedElement = element.asInstanceOf[PsiNamedElement]
     val subst = getSubst(state)
-    if (namedElement.name != name) return true
+    if (namedElement.name != name)
+      return true
 
     var undef = undefSubst
 
@@ -57,41 +59,54 @@ class CompoundTypeCheckSignatureProcessor(
         variance: Int = 1): Boolean = {
       tp1 match {
         case tp1: ScTypeParam =>
-          if (tp1.typeParameters.length != tp2.typeParams.length) return false
+          if (tp1.typeParameters.length != tp2.typeParams.length)
+            return false
           val iter = tp1.typeParameters.zip(tp2.typeParams).iterator
           while (iter.hasNext) {
             val (tp1, tp2) = iter.next()
-            if (!checkTypeParameters(tp1, tp2, -variance)) return false
+            if (!checkTypeParameters(tp1, tp2, -variance))
+              return false
           }
           //lower type
           val lower1 = tp1.lowerBound.getOrNothing
           val lower2 = substitutor.subst(tp2.lowerType())
           var t = Conformance.conformsInner(
-            if (variance == 1) lower2
-            else lower1,
-            if (variance == 1) lower1
-            else lower2,
+            if (variance == 1)
+              lower2
+            else
+              lower1,
+            if (variance == 1)
+              lower1
+            else
+              lower2,
             Set.empty,
             undef)
-          if (!t._1) return false
+          if (!t._1)
+            return false
           undef = t._2
 
           val upper1 = tp1.upperBound.getOrAny
           val upper2 = substitutor.subst(tp2.upperType())
           t = Conformance.conformsInner(
-            if (variance == 1) upper1
-            else upper2,
-            if (variance == 1) upper2
-            else upper1,
+            if (variance == 1)
+              upper1
+            else
+              upper2,
+            if (variance == 1)
+              upper2
+            else
+              upper1,
             Set.empty,
             undef)
-          if (!t._1) return false
+          if (!t._1)
+            return false
           undef = t._2
 
           //todo: view?
           true
         case _ =>
-          if (tp2.typeParams.length > 0) return false
+          if (tp2.typeParams.length > 0)
+            return false
           //todo: check bounds?
           true
       }
@@ -100,20 +115,26 @@ class CompoundTypeCheckSignatureProcessor(
     //let's check type parameters
     element match {
       case o: ScTypeParametersOwner =>
-        if (o.typeParameters.length != s.typeParams.length) return true
+        if (o.typeParameters.length != s.typeParams.length)
+          return true
         val iter = o.typeParameters.zip(s.typeParams).iterator
         while (iter.hasNext) {
           val (tp1, tp2) = iter.next()
-          if (!checkTypeParameters(tp1, tp2)) return true
+          if (!checkTypeParameters(tp1, tp2))
+            return true
         }
       case p: PsiTypeParameterListOwner =>
-        if (p.getTypeParameters.length != s.typeParams.length) return true
+        if (p.getTypeParameters.length != s.typeParams.length)
+          return true
         val iter = p.getTypeParameters.toSeq.zip(s.typeParams).iterator
         while (iter.hasNext) {
           val (tp1, tp2) = iter.next()
-          if (!checkTypeParameters(tp1, tp2)) return true
+          if (!checkTypeParameters(tp1, tp2))
+            return true
         }
-      case _ => if (s.typeParams.length > 0) return true
+      case _ =>
+        if (s.typeParams.length > 0)
+          return true
     }
 
     def checkSignature(
@@ -124,10 +145,12 @@ class CompoundTypeCheckSignatureProcessor(
 
       val sign2 = s
 
-      if (!sign1.parameterlessCompatible(sign2)) return true
+      if (!sign1.parameterlessCompatible(sign2))
+        return true
 
       var t = sign1.paramTypesEquivExtended(sign2, undef, falseUndef = false)
-      if (!t._1) return true
+      if (!t._1)
+        return true
       undef = t._2
       innerUndefinedSubstitutor = undef
 
@@ -162,11 +185,13 @@ class CompoundTypeCheckSignatureProcessor(
         if (!checkSignature(
               new Signature(dcl.name, Seq.empty, 0, subst, dcl),
               Array.empty,
-              rt)) return false
+              rt))
+          return false
         if (isVar && !checkSignature(
               new Signature(dcl.name + "_=", Seq(() => rt), 1, subst, dcl),
               Array.empty,
-              Unit)) return false
+              Unit))
+          return false
       case method: PsiMethod =>
         val sign1 = new PhysicalSignature(method, subst)
         if (!checkSignature(
@@ -180,7 +205,8 @@ class CompoundTypeCheckSignatureProcessor(
                     method.getProject,
                     method.getResolveScope)
               }
-            )) return false
+            ))
+          return false
       case _ =>
     }
     true
@@ -203,10 +229,12 @@ class CompoundTypeCheckTypeAliasProcessor(
   def getUndefinedSubstitutor = innerUndefinedSubstitutor
 
   def execute(element: PsiElement, state: ResolveState): Boolean = {
-    if (!element.isInstanceOf[PsiNamedElement]) return true
+    if (!element.isInstanceOf[PsiNamedElement])
+      return true
     val namedElement = element.asInstanceOf[PsiNamedElement]
     val subst = getSubst(state)
-    if (namedElement.name != name) return true
+    if (namedElement.name != name)
+      return true
 
     var undef = undefSubst
 
@@ -216,41 +244,54 @@ class CompoundTypeCheckTypeAliasProcessor(
         variance: Int = 1): Boolean = {
       tp1 match {
         case tp1: ScTypeParam =>
-          if (tp1.typeParameters.length != tp2.typeParams.length) return false
+          if (tp1.typeParameters.length != tp2.typeParams.length)
+            return false
           val iter = tp1.typeParameters.zip(tp2.typeParams).iterator
           while (iter.hasNext) {
             val (tp1, tp2) = iter.next()
-            if (!checkTypeParameters(tp1, tp2, -variance)) return false
+            if (!checkTypeParameters(tp1, tp2, -variance))
+              return false
           }
           //lower type
           val lower1 = tp1.lowerBound.getOrNothing
           val lower2 = substitutor.subst(tp2.lowerType())
           var t = Conformance.conformsInner(
-            if (variance == 1) lower2
-            else lower1,
-            if (variance == 1) lower1
-            else lower2,
+            if (variance == 1)
+              lower2
+            else
+              lower1,
+            if (variance == 1)
+              lower1
+            else
+              lower2,
             Set.empty,
             undef)
-          if (!t._1) return false
+          if (!t._1)
+            return false
           undef = t._2
 
           val upper1 = tp1.upperBound.getOrAny
           val upper2 = substitutor.subst(tp2.upperType())
           t = Conformance.conformsInner(
-            if (variance == 1) upper1
-            else upper2,
-            if (variance == 1) upper2
-            else upper1,
+            if (variance == 1)
+              upper1
+            else
+              upper2,
+            if (variance == 1)
+              upper2
+            else
+              upper1,
             Set.empty,
             undef)
-          if (!t._1) return false
+          if (!t._1)
+            return false
           undef = t._2
 
           //todo: view?
           true
         case _ =>
-          if (tp2.typeParams.length > 0) return false
+          if (tp2.typeParams.length > 0)
+            return false
           //todo: check bounds?
           true
       }
@@ -259,20 +300,26 @@ class CompoundTypeCheckTypeAliasProcessor(
     //let's check type parameters
     element match {
       case o: ScTypeParametersOwner =>
-        if (o.typeParameters.length != sign.typeParams.length) return true
+        if (o.typeParameters.length != sign.typeParams.length)
+          return true
         val iter = o.typeParameters.zip(sign.typeParams).iterator
         while (iter.hasNext) {
           val (tp1, tp2) = iter.next()
-          if (!checkTypeParameters(tp1, tp2)) return true
+          if (!checkTypeParameters(tp1, tp2))
+            return true
         }
       case p: PsiTypeParameterListOwner =>
-        if (p.getTypeParameters.length != sign.typeParams.length) return true
+        if (p.getTypeParameters.length != sign.typeParams.length)
+          return true
         val iter = p.getTypeParameters.toSeq.zip(sign.typeParams).iterator
         while (iter.hasNext) {
           val (tp1, tp2) = iter.next()
-          if (!checkTypeParameters(tp1, tp2)) return true
+          if (!checkTypeParameters(tp1, tp2))
+            return true
         }
-      case _ => if (sign.typeParams.length > 0) return true
+      case _ =>
+        if (sign.typeParams.length > 0)
+          return true
     }
 
     def checkDeclarationForTypeAlias(tp: ScTypeAlias): Boolean = {
@@ -317,11 +364,13 @@ class CompoundTypeCheckTypeAliasProcessor(
               return false
             }
           case _: ScTypeAliasDeclaration =>
-            if (checkDeclarationForTypeAlias(tp)) return false
+            if (checkDeclarationForTypeAlias(tp))
+              return false
           case _ =>
         }
       case tp: ScTypeAliasDeclaration =>
-        if (checkDeclarationForTypeAlias(tp)) return false
+        if (checkDeclarationForTypeAlias(tp))
+          return false
       case _ =>
     }
     true

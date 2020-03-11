@@ -58,12 +58,17 @@ object WorksheetSourceProcessor {
       if (nums.length == 2) {
         try {
           val (a, b) = (Integer parseInt nums(0), Integer parseInt nums(1))
-          if (a > -1 && b > -1) Some((a, b)) else None
+          if (a > -1 && b > -1)
+            Some((a, b))
+          else
+            None
         } catch {
           case _: NumberFormatException => None
         }
-      } else None
-    } else None
+      } else
+        None
+    } else
+      None
   }
 
   /**
@@ -73,7 +78,8 @@ object WorksheetSourceProcessor {
       srcFile: ScalaFile,
       ifEditor: Option[Editor],
       iterNumber: Int): Either[(String, String), PsiErrorElement] = {
-    if (!srcFile.isWorksheetFile) return Right(null)
+    if (!srcFile.isWorksheetFile)
+      return Right(null)
 
     val name = s"A$$A$iterNumber"
     val instanceName = s"inst$$A$$A"
@@ -129,7 +135,10 @@ object WorksheetSourceProcessor {
     @inline def insertNlsFromWs(psi: PsiElement) = psi.getNextSibling match {
       case ws: PsiWhiteSpace =>
         val c = countNls(ws.getText)
-        if (c == 0) ";" else StringUtil.repeat("\n", c)
+        if (c == 0)
+          ";"
+        else
+          StringUtil.repeat("\n", c)
       case _ => ";"
     }
 
@@ -202,7 +211,8 @@ object WorksheetSourceProcessor {
       } getOrElse {
         val count = countNls(comment.getText) - backOffset
 
-        for (_ <- 0 until count) objectRes append printMethodName append "()\n"
+        for (_ <- 0 until count)
+          objectRes append printMethodName append "()\n"
       }
     }
 
@@ -217,13 +227,15 @@ object WorksheetSourceProcessor {
             range.getStartOffset) + 1
       } getOrElse countNls(comment.getText)
 
-      for (_ <- 0 until count) classRes append "//\n"
+      for (_ <- 0 until count)
+        classRes append "//\n"
       classRes append insertNlsFromWs(comment).stripPrefix("\n")
     }
 
     @inline def appendPsiWhitespace(ws: PsiWhiteSpace) {
       val count = countNls(ws.getText)
-      for (_ <- 1 until count) objectRes append printMethodName append "()\n"
+      for (_ <- 1 until count)
+        objectRes append printMethodName append "()\n"
     }
 
     @inline def appendAll(
@@ -243,7 +255,8 @@ object WorksheetSourceProcessor {
     }
 
     @inline def processImport(imp: ScImportStmt): Unit = {
-      if (importsProcessed contains imp) return
+      if (importsProcessed contains imp)
+        return
 
       val text = imp.getText
       val lineNums = psiToLineNumbers(imp)
@@ -256,11 +269,14 @@ object WorksheetSourceProcessor {
     }
 
     @inline def variableInstanceName(name: String) =
-      if (name startsWith "`") s"`get$$$$instance$$$$${name.stripPrefix("`")}"
-      else s"get$$$$instance$$$$$name"
+      if (name startsWith "`")
+        s"`get$$$$instance$$$$${name.stripPrefix("`")}"
+      else
+        s"get$$$$instance$$$$$name"
 
     def processLocalImport(imp: ScImportStmt): Boolean = {
-      if (imp.importExprs.length < 1) return false
+      if (imp.importExprs.length < 1)
+        return false
 
       var currentQual = imp.importExprs(0).qualifier
       var lastFound: Option[(ScStableCodeReferenceElement, PsiElement)] = None
@@ -284,7 +300,8 @@ object WorksheetSourceProcessor {
             if (el.isInstanceOf[ScValue] || el
                   .isInstanceOf[ScVariable]) //variable to avoid weird errors
               variableInstanceName(qualifierName)
-            else qualifierName
+            else
+              qualifierName
 
           objectRes append
             s";{val $qualifierName = $instanceName.$memberName; $printMethodName($macroPrinterName.printImportInfo({$text;}))}\n"
@@ -296,7 +313,8 @@ object WorksheetSourceProcessor {
     }
 
     def withTempVar(callee: String, withInstance: Boolean = true) =
-      "{val $$temp$$ = " + (if (withInstance) instanceName + "."
+      "{val $$temp$$ = " + (if (withInstance)
+                              instanceName + "."
                             else
                               "") + callee + s"; $macroPrinterName.printDefInfo(" + "$$temp$$" + ")" +
         eraseClassName + " + \" = \" + ( " + PRINT_ARRAY_NAME + "($$temp$$) )" + erasePrefixName + "}"
@@ -311,7 +329,8 @@ object WorksheetSourceProcessor {
     val postDeclarations = mutable.ListBuffer.empty[PsiElement]
 
     val root =
-      if (!isForObject(srcFile)) srcFile
+      if (!isForObject(srcFile))
+        srcFile
       else {
         ((null: PsiElement) /: srcFile.getChildren) {
           case (a, imp: ScImportStmt) =>
@@ -435,7 +454,8 @@ object WorksheetSourceProcessor {
 
         assignCount += 1
       case imp: ScImportStmt =>
-        if (!processLocalImport(imp)) processImport(imp)
+        if (!processLocalImport(imp))
+          processImport(imp)
       case comm: PsiComment =>
         appendPsiComment(comm)
         appendCommentToClass(comm)

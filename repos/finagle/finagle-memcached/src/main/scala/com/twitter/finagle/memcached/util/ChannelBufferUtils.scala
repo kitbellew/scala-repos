@@ -14,7 +14,8 @@ private[finagle] object ChannelBufferUtils {
   private val FIND_SPACE = new ChannelBufferIndexFinder() {
     def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
       val enoughBytesForDelimeter = guessedIndex + 1
-      if (buffer.writerIndex < enoughBytesForDelimeter) return false
+      if (buffer.writerIndex < enoughBytesForDelimeter)
+        return false
 
       val space = buffer.getByte(guessedIndex)
       space == ' '
@@ -29,7 +30,8 @@ private[finagle] object ChannelBufferUtils {
   val FIND_INVALID_KEY_CHARACTER = new ChannelBufferIndexFinder() {
     def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
       val enoughBytesForDelimeter = guessedIndex + 1
-      if (buffer.writerIndex < enoughBytesForDelimeter) return false
+      if (buffer.writerIndex < enoughBytesForDelimeter)
+        return false
 
       val control = buffer.getByte(guessedIndex)
       control == '\u0000' || control == '\n' || control == '\r' || control == ' '
@@ -118,17 +120,20 @@ private[finagle] object ChannelBufferUtils {
     new RichChannelBuffer(buffer)
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
-    if (Strings.isNullOrEmpty(string)) null
+    if (Strings.isNullOrEmpty(string))
+      null
     else {
       ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
     }
 
   implicit def seqOfStringToSeqOfChannelBuffer(
       strings: Seq[String]): Seq[ChannelBuffer] =
-    if (strings == null) null
+    if (strings == null)
+      null
     else {
       strings.map { string =>
-        if (Strings.isNullOrEmpty(string)) null
+        if (Strings.isNullOrEmpty(string))
+          null
         else {
           ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
         }

@@ -78,11 +78,13 @@ object ActivatorRepoProcessor {
           connection.getInputStream,
           "utf-8" /*connection.getContentEncoding*/ )
         Some(text)
-      } else None
+      } else
+        None
     } catch {
       case _: Exception => None
     } finally {
-      if (connection != null) connection.disconnect()
+      if (connection != null)
+        connection.disconnect()
     }
   }
 
@@ -93,7 +95,8 @@ object ActivatorRepoProcessor {
       indicator: ProgressIndicator = null): Boolean = {
     try {
       val file = new File(toFile)
-      if (!file.exists()) return false
+      if (!file.exists())
+        return false
 
       ActivatorDownloadUtil.downloadContentToFile(indicator, url, file)
       true

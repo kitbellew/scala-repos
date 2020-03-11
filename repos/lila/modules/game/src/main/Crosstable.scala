@@ -13,9 +13,12 @@ case class Crosstable(
   def users = List(user2, user1)
 
   def winnerId =
-    if (user1.score > user2.score) Some(user1.id)
-    else if (user1.score < user2.score) Some(user2.id)
-    else None
+    if (user1.score > user2.score)
+      Some(user1.id)
+    else if (user1.score < user2.score)
+      Some(user2.id)
+    else
+      None
 
   def user(id: String) = users find (_.id == id)
 
@@ -28,9 +31,12 @@ case class Crosstable(
   }
 
   def showOpponentScore(userId: String) =
-    if (userId == user1.id) showScore(user2.id).some
-    else if (userId == user2.id) showScore(user1.id).some
-    else none
+    if (userId == user1.id)
+      showScore(user2.id).some
+    else if (userId == user2.id)
+      showScore(user1.id).some
+    else
+      none
 
   def addWins(userId: Option[String], wins: Int) =
     copy(
@@ -47,8 +53,10 @@ case class Crosstable(
     )
 
   def fromPov(userId: String) =
-    if (userId == user2.id) copy(user1 = user2, user2 = user1)
-    else this
+    if (userId == user2.id)
+      copy(user1 = user2, user2 = user1)
+    else
+      this
 
   lazy val size = results.size
 
@@ -98,7 +106,10 @@ object Crosstable {
 
     def writeResult(result: Result, u1: String): String =
       result.gameId + (result.winnerId ?? { w =>
-        if (w == u1) "+" else "-"
+        if (w == u1)
+          "+"
+        else
+          "-"
       })
 
     def writes(w: BSON.Writer, o: Crosstable) =

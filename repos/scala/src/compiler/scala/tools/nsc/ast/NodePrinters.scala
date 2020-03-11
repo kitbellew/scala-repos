@@ -38,7 +38,11 @@ abstract class NodePrinters {
     def showNameAndPos(tree: NameTree) =
       showPosition(tree) + showName(tree.name)
     def showDefTreeName(tree: DefTree) = showName(tree.name)
-    def showPosition(tree: Tree) = if (printPos) tree.pos.show else ""
+    def showPosition(tree: Tree) =
+      if (printPos)
+        tree.pos.show
+      else
+        ""
     def showFlags(tree: MemberDef) =
       flagsToString(tree.symbol.flags | tree.mods.flags)
     def showLiteral(lit: Literal) =
@@ -52,17 +56,22 @@ abstract class NodePrinters {
 
     def showSymbol(tree: Tree): String = {
       val sym = tree.symbol
-      if (sym == null || sym == NoSymbol) ""
-      else sym.defString + sym.locationString
+      if (sym == null || sym == NoSymbol)
+        ""
+      else
+        sym.defString + sym.locationString
     }
     def showType(tree: Tree): String = {
       val tpe = tree.tpe
-      if (tpe == null || tpe == NoType) ""
-      else "tree.tpe=" + tpe
+      if (tpe == null || tpe == NoType)
+        ""
+      else
+        "tree.tpe=" + tpe
     }
 
     def showAttributes(tree: Tree): String = {
-      if (infolevel == InfoLevel.Quiet) ""
+      if (infolevel == InfoLevel.Quiet)
+        ""
       else {
         try {
           List(
@@ -100,7 +109,8 @@ abstract class NodePrinters {
     def showRefTree(tree: RefTree): String = {
       def prefix0 = showRefTreeName(tree.qualifier)
       def prefix =
-        if (prefix0 == "") ""
+        if (prefix0 == "")
+          ""
         else
           (tree match {
             case SelectFromTypeTree(_, _) => prefix0 + "#"
@@ -110,11 +120,16 @@ abstract class NodePrinters {
       prefix + showNameAndPos(tree) + emptyOrComment(showAttributes(tree))
     }
 
-    def emptyOrComment(s: String) = if (s == "") "" else " // " + s
+    def emptyOrComment(s: String) =
+      if (s == "")
+        ""
+      else
+        " // " + s
 
     def stringify(tree: Tree): String = {
       buf.clear()
-      if (settings.XshowtreesStringified) buf.append(tree.toString + EOL)
+      if (settings.XshowtreesStringified)
+        buf.append(tree.toString + EOL)
       if (settings.XshowtreesCompact) {
         buf.append(
           showRaw(
@@ -328,11 +343,13 @@ abstract class NodePrinters {
         case Template(parents, self, body) =>
           printMultiline(tree) {
             val ps0 = parents map { p =>
-              if (p.tpe eq null) p match {
-                case x: RefTree => showRefTree(x)
-                case x          => showPosition(x) + x
-              }
-              else showName(newTypeName(p.tpe.typeSymbol.fullName))
+              if (p.tpe eq null)
+                p match {
+                  case x: RefTree => showRefTree(x)
+                  case x          => showPosition(x) + x
+                }
+              else
+                showName(newTypeName(p.tpe.typeSymbol.fullName))
             }
             printLine(ps0 mkString ", ", "parents")
             traverse(self)

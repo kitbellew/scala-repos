@@ -44,7 +44,10 @@ abstract class DependantGraph[T] {
   def depth(p: T): Option[Int] = depths.get(p)
 
   def dependantsOf(p: T): Option[List[T]] =
-    if (isNode(p)) Some(graph(p).toList) else None
+    if (isNode(p))
+      Some(graph(p).toList)
+    else
+      None
 
   def fanOut(p: T): Option[Int] = dependantsOf(p).map {
     _.size

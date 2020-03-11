@@ -211,9 +211,14 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
 
   private val secretKey = generateSecretKey()
   logInfo(
-    "SecurityManager: authentication " + (if (authOn) "enabled"
-                                          else "disabled") +
-      "; ui acls " + (if (aclsOn) "enabled" else "disabled") +
+    "SecurityManager: authentication " + (if (authOn)
+                                            "enabled"
+                                          else
+                                            "disabled") +
+      "; ui acls " + (if (aclsOn)
+                        "enabled"
+                      else
+                        "disabled") +
       "; users with view permissions: " + viewAcls.toString() +
       "; users with modify permissions: " + modifyAcls.toString())
 
@@ -245,24 +250,25 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   val fileServerSSLOptions = getSSLOptions("fs")
   val (sslSocketFactory, hostnameVerifier) = if (fileServerSSLOptions.enabled) {
     val trustStoreManagers =
-      for (trustStore <- fileServerSSLOptions.trustStore) yield {
-        val input =
-          Files.asByteSource(fileServerSSLOptions.trustStore.get).openStream()
+      for (trustStore <- fileServerSSLOptions.trustStore)
+        yield {
+          val input =
+            Files.asByteSource(fileServerSSLOptions.trustStore.get).openStream()
 
-        try {
-          val ks = KeyStore.getInstance(KeyStore.getDefaultType)
-          ks.load(
-            input,
-            fileServerSSLOptions.trustStorePassword.get.toCharArray)
+          try {
+            val ks = KeyStore.getInstance(KeyStore.getDefaultType)
+            ks.load(
+              input,
+              fileServerSSLOptions.trustStorePassword.get.toCharArray)
 
-          val tmf = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm)
-          tmf.init(ks)
-          tmf.getTrustManagers
-        } finally {
-          input.close()
+            val tmf = TrustManagerFactory.getInstance(
+              TrustManagerFactory.getDefaultAlgorithm)
+            tmf.init(ks)
+            tmf.getTrustManagers
+          } finally {
+            input.close()
+          }
         }
-      }
 
     lazy val credulousTrustStoreManagers = Array({
       logWarning("Using 'accept-all' trust manager for SSL connections.")

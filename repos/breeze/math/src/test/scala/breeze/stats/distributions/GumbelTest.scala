@@ -44,7 +44,8 @@ class GumbelTest
          }; // Gumbel pdf at 0 not defined when location == 1
          scale <- arbitrary[Double].map { x =>
            math.abs(x) % 8.0 + 1.0
-         }) yield new Gumbel(location, scale)(RandBasis.mt0)
+         })
+      yield new Gumbel(location, scale)(RandBasis.mt0)
   }
 
 }

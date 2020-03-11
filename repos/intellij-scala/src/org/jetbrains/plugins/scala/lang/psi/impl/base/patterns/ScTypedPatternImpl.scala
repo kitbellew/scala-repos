@@ -78,11 +78,13 @@ class ScTypedPatternImpl(node: ASTNode)
                             val lowerBound =
                               if (arg.lower.equiv(psi.types.Nothing))
                                 subst subst param.lowerBound.getOrNothing
-                              else arg.lower //todo: lub?
+                              else
+                                arg.lower //todo: lub?
                             val upperBound =
                               if (arg.upper.equiv(psi.types.Any))
                                 subst subst param.upperBound.getOrAny
-                              else arg.upper //todo: glb?
+                              else
+                                arg.upper //todo: glb?
                             ScSkolemizedType(
                               arg.name,
                               arg.args,
@@ -103,14 +105,15 @@ class ScTypedPatternImpl(node: ASTNode)
                         des,
                         typeArgs.zip(typeParams).map {
                           case (
-                              arg: ScSkolemizedType,
-                              param: PsiTypeParameter) =>
+                                arg: ScSkolemizedType,
+                                param: PsiTypeParameter) =>
                             val lowerBound = arg.lower
                             val upperBound =
                               if (arg.upper.equiv(psi.types.Any)) {
                                 val listTypes: Array[PsiClassType] =
                                   param.getExtendsListTypes
-                                if (listTypes.isEmpty) types.Any
+                                if (listTypes.isEmpty)
+                                  types.Any
                                 else
                                   subst.subst(
                                     Bounds.glb(
@@ -120,7 +123,8 @@ class ScTypedPatternImpl(node: ASTNode)
                                           getProject,
                                           param.getResolveScope)),
                                       checkWeak = true))
-                              } else arg.upper //todo: glb?
+                              } else
+                                arg.upper //todo: glb?
                             ScSkolemizedType(
                               arg.name,
                               arg.args,

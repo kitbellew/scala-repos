@@ -106,25 +106,26 @@ private[spark] class AppClient(
       *  Register with all masters asynchronously and returns an array `Future`s for cancellation.
       */
     private def tryRegisterAllMasters(): Array[JFuture[_]] = {
-      for (masterAddress <- masterRpcAddresses) yield {
-        registerMasterThreadPool.submit(new Runnable {
-          override def run(): Unit =
-            try {
-              if (registered.get) {
-                return
+      for (masterAddress <- masterRpcAddresses)
+        yield {
+          registerMasterThreadPool.submit(new Runnable {
+            override def run(): Unit =
+              try {
+                if (registered.get) {
+                  return
+                }
+                logInfo(
+                  "Connecting to master " + masterAddress.toSparkURL + "...")
+                val masterRef =
+                  rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+                masterRef.send(RegisterApplication(appDescription, self))
+              } catch {
+                case ie: InterruptedException => // Cancelled
+                case NonFatal(e) =>
+                  logWarning(s"Failed to connect to master $masterAddress", e)
               }
-              logInfo(
-                "Connecting to master " + masterAddress.toSparkURL + "...")
-              val masterRef =
-                rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
-              masterRef.send(RegisterApplication(appDescription, self))
-            } catch {
-              case ie: InterruptedException => // Cancelled
-              case NonFatal(e) =>
-                logWarning(s"Failed to connect to master $masterAddress", e)
-            }
-        })
-      }
+          })
+        }
     }
 
     /**
@@ -189,11 +190,11 @@ private[spark] class AppClient(
         stop()
 
       case ExecutorAdded(
-          id: Int,
-          workerId: String,
-          hostPort: String,
-          cores: Int,
-          memory: Int) =>
+            id: Int,
+            workerId: String,
+            hostPort: String,
+            cores: Int,
+            memory: Int) =>
         val fullId = appId + "/" + id
         logInfo(
           "Executor added: %s on %s (%s) with %d cores"

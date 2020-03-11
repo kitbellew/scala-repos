@@ -410,7 +410,10 @@ private[spark] class ExecutorAllocationManager(
         hostToLocalTaskCount)
     if (addRequestAcknowledged) {
       val executorsString = "executor" + {
-        if (delta > 1) "s" else ""
+        if (delta > 1)
+          "s"
+        else
+          ""
       }
       logInfo(
         s"Requesting $delta new $executorsString because tasks are backlogged" +
@@ -559,7 +562,10 @@ private[spark] class ExecutorAllocationManager(
           }
         }
         val realTimeout =
-          if (timeout <= 0) Long.MaxValue else timeout // overflow
+          if (timeout <= 0)
+            Long.MaxValue
+          else
+            timeout // overflow
         removeTimes(executorId) = realTimeout
         logDebug(s"Starting idle timer for $executorId because there are no more tasks " +
           s"scheduled to run on the executor (to expire in ${(realTimeout - now) / 1000} seconds)")

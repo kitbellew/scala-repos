@@ -39,10 +39,15 @@ object Case {
       extends Rep.TypedRep[Option[B]] {
     def toNode: IfThenElse = {
       val cl =
-        if (implicitly[TypedType[T]].isInstanceOf[OptionType]) clauses
+        if (implicitly[TypedType[T]].isInstanceOf[OptionType])
+          clauses
         else
           clauses.zipWithIndex.map {
-            case (n, i) => if (i % 2 == 0) n else OptionApply(n)
+            case (n, i) =>
+              if (i % 2 == 0)
+                n
+              else
+                OptionApply(n)
           }
       IfThenElse(cl :+ LiteralNode(null))
     }

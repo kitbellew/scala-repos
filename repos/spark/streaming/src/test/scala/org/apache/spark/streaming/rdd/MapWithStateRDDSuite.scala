@@ -132,7 +132,10 @@ class MapWithStateRDDSuite
           case Some("get-state") =>
             Some(state.getOption().getOrElse(-1))
           case Some("update-state") =>
-            if (state.exists) state.update(state.get + 1) else state.update(0)
+            if (state.exists)
+              state.update(state.get + 1)
+            else
+              state.update(0)
             None
           case Some("remove-state") =>
             removedStates += state.get()
@@ -328,7 +331,8 @@ class MapWithStateRDDSuite
             case Some(1) =>
               if (state.exists()) {
                 state.update(state.get + 1)
-              } else state.update(0)
+              } else
+                state.update(0)
             case Some(2) =>
               state.remove()
             case _ =>
@@ -551,7 +555,8 @@ class MapWithStateRDDSuite
       mappingFunction,
       Time(currentTime),
       None)
-    if (doFullScan) newStateRDD.setFullScan()
+    if (doFullScan)
+      newStateRDD.setFullScan()
 
     // Persist to make sure that it gets computed only once and we can track precisely how many
     // state keys the computing touched

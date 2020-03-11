@@ -49,14 +49,18 @@ class ScalaDocParamEnterHandlerDelegate extends EnterHandlerDelegateAdapter {
     }
 
     val probData =
-      if (tagValueElement != null) tagValueElement.getNextSibling
-      else tagNameElement.getNextSibling
+      if (tagValueElement != null)
+        tagValueElement.getNextSibling
+      else
+        tagNameElement.getNextSibling
     if (probData == null) {
       return Result.Continue
     }
     val nextProbData =
-      if (probData.getNextSibling != null) probData.getNextSibling.getNode
-      else null
+      if (probData.getNextSibling != null)
+        probData.getNextSibling.getNode
+      else
+        null
 
     val startOffset = tagParent.getNameElement.getTextRange.getStartOffset
     val endOffset = probData.getTextRange.getStartOffset + (Option(nextProbData)

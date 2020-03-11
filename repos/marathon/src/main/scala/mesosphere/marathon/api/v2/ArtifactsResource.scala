@@ -56,7 +56,10 @@ class ArtifactsResource @Inject() (
     val item = storage.item(path)
     val exists = item.exists
     item.store(upload)
-    if (exists) ok() else created(item.url)
+    if (exists)
+      ok()
+    else
+      created(item.url)
   }
 
   /**
@@ -86,7 +89,8 @@ class ArtifactsResource @Inject() (
   @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def delete(@PathParam("path") path: String): Response = {
     val item = storage.item(path)
-    if (item.exists) item.delete()
+    if (item.exists)
+      item.delete()
     ok()
   }
 

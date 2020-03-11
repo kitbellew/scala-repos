@@ -22,7 +22,8 @@ object DiffUtil {
     val revisedInfo =
       revisedFile.getAbsolutePath() + "\t" + fileModificationTimeOrEpoch(
         revisedFile)
-    if (diff.getDeltas.isEmpty) ""
+    if (diff.getDeltas.isEmpty)
+      ""
     else
       difflib.DiffUtils
         .generateUnifiedDiff(

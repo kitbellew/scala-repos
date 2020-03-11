@@ -29,7 +29,8 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
       .checkIntention(this, element)
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    if (element == null || !element.isValid) return
+    if (element == null || !element.isValid)
+      return
     check(project, editor, element) match {
       case Some(x) => x()
       case None    =>

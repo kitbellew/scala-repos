@@ -42,9 +42,12 @@ object VersionUtil {
       commitDate: String,
       isRelease: Boolean) {
     val githubTree =
-      if (isRelease) "v" + mavenVersion
-      else if (commitSha != "unknown") commitSha
-      else "master"
+      if (isRelease)
+        "v" + mavenVersion
+      else if (commitSha != "unknown")
+        commitSha
+      else
+        "master"
 
     override def toString =
       s"Canonical: $canonicalVersion, Maven: $mavenVersion, OSGi: $osgiVersion, github: $githubTree"
@@ -79,14 +82,16 @@ object VersionUtil {
           val split = """([\w+\.]+)(-[\w+\.]+)??""".r
           val split(b2, sOrNull) = b
           (b2, Option(sOrNull).map(_.drop(1)).getOrElse(""))
-        } else (b, s)
+        } else
+          (b, s)
       }
 
       def executeTool(tool: String) = {
         val cmd =
           if (System.getProperty("os.name").toLowerCase.contains("windows"))
             s"cmd.exe /c tools\\$tool.bat -p"
-          else s"tools/$tool"
+          else
+            s"tools/$tool"
         Process(cmd).lines.head
       }
 

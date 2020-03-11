@@ -19,11 +19,13 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       (if (tables.exists(_.hlistEnabled)) {
          "import slick.collection.heterogeneous._\n" +
            "import slick.collection.heterogeneous.syntax._\n"
-       } else "") +
+       } else
+         "") +
       (if (tables.exists(_.PlainSqlMapper.enabled)) {
          "// NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.\n" +
            "import slick.jdbc.{GetResult => GR}\n"
-       } else "") +
+       } else
+         "") +
       (if (ddlEnabled) {
          "\n/** DDL for all tables. Call .create to execute. */" +
            (
@@ -41,7 +43,8 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
            "\ndef ddl = schema" +
            "\n\n"
-       } else "") +
+       } else
+         "") +
       tables.map(_.code.mkString("\n")).mkString("\n\n")
   }
 
@@ -56,21 +59,27 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
           case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
         }
         mkHList(types.toList)
-      } else compoundValue(types)
+      } else
+        compoundValue(types)
     }
 
     def compoundValue(values: Seq[String]): String = {
-      if (hlistEnabled) values.mkString(" :: ") + " :: HNil"
-      else if (values.size == 1) values.head
-      else if (values.size <= 22) s"""(${values.mkString(", ")})"""
+      if (hlistEnabled)
+        values.mkString(" :: ") + " :: HNil"
+      else if (values.size == 1)
+        values.head
+      else if (values.size <= 22)
+        s"""(${values.mkString(", ")})"""
       else
         throw new Exception(
           "Cannot generate tuple for > 22 columns, please set hlistEnable=true or override compound.")
     }
 
     def factory =
-      if (columns.size == 1) TableClass.elementType
-      else s"${TableClass.elementType}.tupled"
+      if (columns.size == 1)
+        TableClass.elementType
+      else
+        s"${TableClass.elementType}.tupled"
     def extractor = s"${TableClass.elementType}.unapply"
 
     trait EntityTypeDef extends super.EntityTypeDef {
@@ -104,8 +113,10 @@ def $name($args): $name = {
       def code = {
         val positional = compoundValue(
           columnsPositional.map(c =>
-            (if (c.fakeNullable || c.model.nullable) s"<<?[${c.rawType}]"
-             else s"<<[${c.rawType}]")))
+            (if (c.fakeNullable || c.model.nullable)
+               s"<<?[${c.rawType}]"
+             else
+               s"<<[${c.rawType}]")))
         val dependencies = columns
           .map(_.exposedType)
           .distinct
@@ -115,9 +126,16 @@ def $name($args): $name = {
           }
           .mkString(", ")
         val rearranged = compoundValue(
-          desiredColumnOrder.map(i => if (hlistEnabled) s"r($i)" else tuple(i)))
+          desiredColumnOrder.map(i =>
+            if (hlistEnabled)
+              s"r($i)"
+            else
+              tuple(i)))
         def result(args: String) =
-          if (mappingEnabled) s"$factory($args)" else args
+          if (mappingEnabled)
+            s"$factory($args)"
+          else
+            args
         val body =
           if (autoIncLastAsOption && columns.size > 1) {
             s"""
@@ -138,32 +156,53 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
 
     trait TableClassDef extends super.TableClassDef {
       def star = {
-        val struct = compoundValue(columns.map(c =>
-          if (c.fakeNullable) s"Rep.Some(${c.name})" else s"${c.name}"))
+        val struct = compoundValue(
+          columns.map(c =>
+            if (c.fakeNullable)
+              s"Rep.Some(${c.name})"
+            else
+              s"${c.name}"))
         val rhs =
-          if (mappingEnabled) s"$struct <> ($factory, $extractor)" else struct
+          if (mappingEnabled)
+            s"$struct <> ($factory, $extractor)"
+          else
+            struct
         s"def * = $rhs"
       }
       def option = {
-        val struct = compoundValue(columns.map(c =>
-          if (c.model.nullable) s"${c.name}" else s"Rep.Some(${c.name})"))
+        val struct = compoundValue(
+          columns.map(c =>
+            if (c.model.nullable)
+              s"${c.name}"
+            else
+              s"Rep.Some(${c.name})"))
         val rhs =
           if (mappingEnabled)
             s"""$struct.shaped.<>($optionFactory, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))"""
-          else struct
+          else
+            struct
         s"def ? = $rhs"
       }
       def optionFactory = {
         val accessors = columns.zipWithIndex.map {
           case (c, i) =>
-            val accessor = if (columns.size > 1) tuple(i) else "r"
-            if (c.fakeNullable || c.model.nullable) accessor
-            else s"$accessor.get"
+            val accessor =
+              if (columns.size > 1)
+                tuple(i)
+              else
+                "r"
+            if (c.fakeNullable || c.model.nullable)
+              accessor
+            else
+              s"$accessor.get"
         }
         val fac = s"$factory(${compoundValue(accessors)})"
         val discriminator = columns.zipWithIndex.collect {
           case (c, i) if !c.model.nullable =>
-            if (columns.size > 1) tuple(i) else "r"
+            if (columns.size > 1)
+              tuple(i)
+            else
+              "r"
         }.headOption
         val expr =
           discriminator.map(d => s"$d.map(_=> $fac)").getOrElse(s"None")
@@ -256,10 +295,12 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
           (referencedColumns, referencingColumns).zipped.map { (p, f) =>
             val pk = s"r.${p.name}"
             val fk = f.name
-            if (p.model.nullable && !f.model.nullable) (pk, s"Rep.Some($fk)")
+            if (p.model.nullable && !f.model.nullable)
+              (pk, s"Rep.Some($fk)")
             else if (!p.model.nullable && f.model.nullable)
               (s"Rep.Some($pk)", fk)
-            else (pk, fk)
+            else
+              (pk, fk)
           }.unzip
         s"""lazy val $name = foreignKey("$dbName", ${compoundValue(
           fkColumns)}, $pkTable)(r => ${compoundValue(
@@ -269,7 +310,11 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
 
     class IndexDef(model: m.Index) extends super.IndexDef(model) {
       def code = {
-        val unique = if (model.unique) s", unique=true" else ""
+        val unique =
+          if (model.unique)
+            s", unique=true"
+          else
+            ""
         s"""val $name = index("$dbName", ${compoundValue(
           columns.map(_.name))}$unique)"""
       }
@@ -280,20 +325,29 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
 trait StringGeneratorHelpers
     extends slick.codegen.GeneratorHelpers[String, String, String] {
   def docWithCode(doc: String, code: String): String =
-    (if (doc != "") "/** " + doc.split("\n").mkString("\n *  ") + " */\n"
-     else "") + code
+    (if (doc != "")
+       "/** " + doc.split("\n").mkString("\n *  ") + " */\n"
+     else
+       "") + code
   final def optionType(t: String) = s"Option[$t]"
   def parseType(tpe: String): String = tpe
   def shouldQuoteIdentifier(s: String) = {
     def isIdent =
-      if (s.isEmpty) false
+      if (s.isEmpty)
+        false
       else
         Character.isJavaIdentifierStart(s.head) && s.tail.forall(
           Character.isJavaIdentifierPart)
     scalaKeywords.contains(s) || !isIdent
   }
   def termName(name: String) =
-    if (shouldQuoteIdentifier(name)) "`" + name + "`" else name
+    if (shouldQuoteIdentifier(name))
+      "`" + name + "`"
+    else
+      name
   def typeName(name: String) =
-    if (shouldQuoteIdentifier(name)) "`" + name + "`" else name
+    if (shouldQuoteIdentifier(name))
+      "`" + name + "`"
+    else
+      name
 }

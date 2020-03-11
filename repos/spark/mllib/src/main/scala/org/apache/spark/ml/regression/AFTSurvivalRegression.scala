@@ -212,7 +212,8 @@ class AFTSurvivalRegression @Since("1.6.0") (
     validateAndTransformSchema(dataset.schema, fitting = true)
     val instances = extractAFTPoints(dataset)
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
+    if (handlePersistence)
+      instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val costFun = new AFTCostFun(instances, $(fitIntercept))
     val optimizer = new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
@@ -246,7 +247,8 @@ class AFTSurvivalRegression @Since("1.6.0") (
       state.x.toArray.clone()
     }
 
-    if (handlePersistence) instances.unpersist()
+    if (handlePersistence)
+      instances.unpersist()
 
     val coefficients = Vectors.dense(parameters.slice(2, parameters.length))
     val intercept = parameters(1)
@@ -499,7 +501,11 @@ private class AFTAggregator(parameters: BDV[Double], fitIntercept: Boolean)
 
   def count: Long = totalCnt
 
-  def loss: Double = if (totalCnt == 0) 1.0 else lossSum / totalCnt
+  def loss: Double =
+    if (totalCnt == 0)
+      1.0
+    else
+      lossSum / totalCnt
 
   // Here we optimize loss function over coefficients, intercept and log(sigma)
   def gradient: BDV[Double] =
@@ -517,7 +523,11 @@ private class AFTAggregator(parameters: BDV[Double], fitIntercept: Boolean)
     */
   def add(data: AFTPoint): this.type = {
 
-    val interceptFlag = if (fitIntercept) 1.0 else 0.0
+    val interceptFlag =
+      if (fitIntercept)
+        1.0
+      else
+        0.0
 
     val xi = data.features.toBreeze
     val ti = data.label

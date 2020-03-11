@@ -29,11 +29,31 @@ object SimpleSkewedGroupByTest {
   def main(args: Array[String]) {
 
     val sparkConf = new SparkConf().setAppName("SimpleSkewedGroupByTest")
-    var numMappers = if (args.length > 0) args(0).toInt else 2
-    var numKVPairs = if (args.length > 1) args(1).toInt else 1000
-    var valSize = if (args.length > 2) args(2).toInt else 1000
-    var numReducers = if (args.length > 3) args(3).toInt else numMappers
-    var ratio = if (args.length > 4) args(4).toInt else 5.0
+    var numMappers =
+      if (args.length > 0)
+        args(0).toInt
+      else
+        2
+    var numKVPairs =
+      if (args.length > 1)
+        args(1).toInt
+      else
+        1000
+    var valSize =
+      if (args.length > 2)
+        args(2).toInt
+      else
+        1000
+    var numReducers =
+      if (args.length > 3)
+        args(3).toInt
+      else
+        numMappers
+    var ratio =
+      if (args.length > 4)
+        args(4).toInt
+      else
+        5.0
 
     val sc = new SparkContext(sparkConf)
 

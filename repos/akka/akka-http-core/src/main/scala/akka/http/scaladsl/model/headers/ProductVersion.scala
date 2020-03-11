@@ -18,9 +18,11 @@ final case class ProductVersion(
     with ValueRenderable {
   def render[R <: Rendering](r: R): r.type = {
     r ~~ product
-    if (!version.isEmpty) r ~~ '/' ~~ version
+    if (!version.isEmpty)
+      r ~~ '/' ~~ version
     if (!comment.isEmpty) {
-      if (!product.isEmpty || !version.isEmpty) r ~~ ' '
+      if (!product.isEmpty || !version.isEmpty)
+        r ~~ ' '
       r ~~ '(' ~~ comment ~~ ')'
     }
     r

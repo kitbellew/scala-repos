@@ -120,7 +120,10 @@ trait PartialFunction[-A, +B] extends (A => B) { self =>
     *  @since   2.10
     */
   def applyOrElse[A1 <: A, B1 >: B](x: A1, default: A1 => B1): B1 =
-    if (isDefinedAt(x)) apply(x) else default(x)
+    if (isDefinedAt(x))
+      apply(x)
+    else
+      default(x)
 
   /** Composes this partial function with an action function which
     *  gets applied to results of this partial function.
@@ -142,7 +145,8 @@ trait PartialFunction[-A, +B] extends (A => B) { self =>
     if (!fallbackOccurred(z)) {
       action(z);
       true
-    } else false
+    } else
+      false
   }
 }
 
@@ -176,7 +180,10 @@ object PartialFunction {
 
     override def applyOrElse[A1 <: A, B1 >: B](x: A1, default: A1 => B1): B1 = {
       val z = f1.applyOrElse(x, checkFallback[B])
-      if (!fallbackOccurred(z)) z else f2.applyOrElse(x, default)
+      if (!fallbackOccurred(z))
+        z
+      else
+        f2.applyOrElse(x, default)
     }
 
     override def orElse[A1 <: A, B1 >: B](that: PartialFunction[A1, B1]) =
@@ -197,7 +204,10 @@ object PartialFunction {
 
     override def applyOrElse[A1 <: A, C1 >: C](x: A1, default: A1 => C1): C1 = {
       val z = pf.applyOrElse(x, checkFallback[B])
-      if (!fallbackOccurred(z)) k(z) else default(x)
+      if (!fallbackOccurred(z))
+        k(z)
+      else
+        default(x)
     }
   }
 
@@ -236,7 +246,10 @@ object PartialFunction {
 
     def apply(x: A): Option[B] = {
       val z = pf.applyOrElse(x, checkFallback[B])
-      if (!fallbackOccurred(z)) Some(z) else None
+      if (!fallbackOccurred(z))
+        Some(z)
+      else
+        None
     }
   }
 
@@ -247,7 +260,10 @@ object PartialFunction {
 
     override def applyOrElse[A1 <: A, B1 >: B](x: A1, default: A1 => B1): B1 = {
       val z = f(x)
-      if (!z.isEmpty) z.get else default(x)
+      if (!z.isEmpty)
+        z.get
+      else
+        default(x)
     }
 
     override def lift = f

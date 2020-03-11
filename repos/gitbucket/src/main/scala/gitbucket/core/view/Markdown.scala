@@ -36,7 +36,11 @@ object Markdown {
       pages: List[String] = Nil)(implicit context: Context): String = {
 
     // escape task list
-    val source = if (enableTaskList) escapeTaskList(markdown) else markdown
+    val source =
+      if (enableTaskList)
+        escapeTaskList(markdown)
+      else
+        markdown
 
     val options = new Options()
     options.setSanitize(true)
@@ -94,8 +98,12 @@ object Markdown {
     override def code(code: String, lang: String, escaped: Boolean): String = {
       "<pre class=\"prettyprint" + (if (lang != null)
                                       s" ${options.getLangPrefix}${lang}"
-                                    else "") + "\">" +
-        (if (escaped) code else escape(code, true)) + "</pre>"
+                                    else
+                                      "") + "\">" +
+        (if (escaped)
+           code
+         else
+           escape(code, true)) + "</pre>"
     }
 
     override def list(body: String, ordered: Boolean): String = {
@@ -123,12 +131,17 @@ object Markdown {
     override def text(text: String): String = {
       // convert commit id and username to link.
       val t1 =
-        if (enableRefsLink) convertRefsLinks(text, repository, "#", false)
-        else text
+        if (enableRefsLink)
+          convertRefsLinks(text, repository, "#", false)
+        else
+          text
 
       // convert task list to checkbox.
       val t2 =
-        if (enableTaskList) convertCheckBox(t1, hasWritePermission) else t1
+        if (enableTaskList)
+          convertCheckBox(t1, hasWritePermission)
+        else
+          t1
 
       t2
     }
@@ -173,27 +186,36 @@ object Markdown {
         ("#" + generateAnchorName(url.substring(1)))
       } else if (!enableWikiLink) {
         if (context.currentPath.contains("/blob/")) {
-          url + (if (isImage) "?raw=true" else "")
+          url + (if (isImage)
+                   "?raw=true"
+                 else
+                   "")
         } else if (context.currentPath.contains("/tree/")) {
           val paths = context.currentPath.split("/")
           val branch =
-            if (paths.length > 3) paths.drop(4).mkString("/")
-            else repository.repository.defaultBranch
+            if (paths.length > 3)
+              paths.drop(4).mkString("/")
+            else
+              repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
                                                                       "?raw=true"
-                                                                    else "")
+                                                                    else
+                                                                      "")
         } else {
           val paths = context.currentPath.split("/")
           val branch =
-            if (paths.length > 3) paths.last
-            else repository.repository.defaultBranch
+            if (paths.length > 3)
+              paths.last
+            else
+              repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
                                                                       "?raw=true"
-                                                                    else "")
+                                                                    else
+                                                                      "")
         }
       } else {
         repository.httpUrl
@@ -220,7 +242,11 @@ object Markdown {
   }
 
   def convertCheckBox(text: String, hasWritePermission: Boolean): String = {
-    val disabled = if (hasWritePermission) "" else "disabled"
+    val disabled =
+      if (hasWritePermission)
+        ""
+      else
+        "disabled"
     text
       .replaceAll(
         "task:x:",

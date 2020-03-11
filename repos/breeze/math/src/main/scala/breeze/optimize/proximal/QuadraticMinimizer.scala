@@ -70,7 +70,11 @@ class QuadraticMinimizer(
       iter: Int,
       converged: Boolean) {}
 
-  val linearEquality = if (Aeq != null) Aeq.rows else 0
+  val linearEquality =
+    if (Aeq != null)
+      Aeq.rows
+    else
+      0
 
   if (linearEquality > 0)
     require(
@@ -113,9 +117,17 @@ class QuadraticMinimizer(
     */
   private val wsH = DenseMatrix.zeros[Double](n, n)
 
-  val transAeq = if (linearEquality > 0) Aeq.t else null
+  val transAeq =
+    if (linearEquality > 0)
+      Aeq.t
+    else
+      null
 
-  val admmIters = if (maxIters < 0) Math.max(400, 20 * n) else maxIters
+  val admmIters =
+    if (maxIters < 0)
+      Math.max(400, 20 * n)
+    else
+      maxIters
 
   def getProximal = proximal
 
@@ -174,7 +186,8 @@ class QuadraticMinimizer(
   def initialize = {
     var pivot: Array[Int] = null
     // Allocate memory for pivot
-    if (linearEquality > 0) pivot = Array.fill[Int](n)(0)
+    if (linearEquality > 0)
+      pivot = Array.fill[Int](n)(0)
 
     val x = DenseVector.zeros[Double](nGram)
     val z = DenseVector.zeros[Double](nGram)
@@ -275,7 +288,11 @@ class QuadraticMinimizer(
       rho: Double,
       initialState: State,
       resetState: Boolean = true): State = {
-    val startState = if (resetState) reset(q, initialState) else initialState
+    val startState =
+      if (resetState)
+        reset(q, initialState)
+      else
+        initialState
     import startState._
 
     // Unconstrained Quadratic Minimization with/without affine constraints does not need
@@ -503,9 +520,21 @@ object QuadraticMinimizer {
       x: DenseVector[Double],
       beta: Double,
       y: DenseVector[Double]): Unit = {
-    val tStrA = if (A.isTranspose) "T" else "N"
-    val mA = if (!A.isTranspose) A.rows else A.cols
-    val nA = if (!A.isTranspose) A.rows else A.cols
+    val tStrA =
+      if (A.isTranspose)
+        "T"
+      else
+        "N"
+    val mA =
+      if (!A.isTranspose)
+        A.rows
+      else
+        A.cols
+    val nA =
+      if (!A.isTranspose)
+        A.rows
+      else
+        A.cols
     blas.dgemv(tStrA, mA, nA, alpha, A.data, mA, x.data, 1, beta, y.data, 1)
   }
 
@@ -568,7 +597,8 @@ object QuadraticMinimizer {
       for (r <- 0 until H.rows) {
         absColSum += abs(H(r, c))
       }
-      if (absColSum > maxColSum) maxColSum = absColSum
+      if (absColSum > maxColSum)
+        maxColSum = absColSum
       absColSum = 0.0
     }
     maxColSum

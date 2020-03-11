@@ -240,8 +240,16 @@ private[spark] object SerDeUtil extends Logging {
     rdd.mapPartitions { iter =>
       val cleaned = iter.map {
         case (k, v) =>
-          val key = if (keyFailed) k.toString else k
-          val value = if (valueFailed) v.toString else v
+          val key =
+            if (keyFailed)
+              k.toString
+            else
+              k
+          val value =
+            if (valueFailed)
+              v.toString
+            else
+              v
           Array[Any](key, value)
       }
       if (batchSize == 0) {

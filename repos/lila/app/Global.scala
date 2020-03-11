@@ -27,16 +27,21 @@ object Global extends GlobalSettings {
       !HTTPRequest.hasFileExtension(req)
 
   override def onHandlerNotFound(req: RequestHeader) =
-    if (niceError(req)) controllers.Main.notFound(req)
-    else fuccess(NotFound("404 - Resource not found"))
+    if (niceError(req))
+      controllers.Main.notFound(req)
+    else
+      fuccess(NotFound("404 - Resource not found"))
 
   override def onBadRequest(req: RequestHeader, error: String) =
-    if (error startsWith "Illegal character in path") fuccess(Redirect("/"))
-    else if (error startsWith "Cannot parse parameter") onHandlerNotFound(req)
+    if (error startsWith "Illegal character in path")
+      fuccess(Redirect("/"))
+    else if (error startsWith "Cannot parse parameter")
+      onHandlerNotFound(req)
     else if (niceError(req)) {
       lila.mon.http.response.code400()
       controllers.Lobby.handleStatus(req, Results.BadRequest)
-    } else fuccess(BadRequest(error))
+    } else
+      fuccess(BadRequest(error))
 
   override def onError(req: RequestHeader, ex: Throwable) =
     if (niceError(req)) {
@@ -45,6 +50,8 @@ object Global extends GlobalSettings {
         fuccess(
           InternalServerError(
             views.html.base.errorPage(ex)(lila.api.Context(req))))
-      } else super.onError(req, ex)
-    } else fuccess(InternalServerError(ex.getMessage))
+      } else
+        super.onError(req, ex)
+    } else
+      fuccess(InternalServerError(ex.getMessage))
 }

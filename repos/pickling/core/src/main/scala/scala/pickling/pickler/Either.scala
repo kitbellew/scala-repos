@@ -11,7 +11,8 @@ trait EitherPicklers {
     new AbstractPickler[Left[L, R]] {
       override def pickle(picklee: Left[L, R], builder: PBuilder): Unit = {
         builder.beginEntry(picklee, tag)
-        if (lp.tag.isEffectivelyPrimitive) builder.hintElidedType(lp.tag)
+        if (lp.tag.isEffectivelyPrimitive)
+          builder.hintElidedType(lp.tag)
         builder.putField("a", b => lp.pickle(picklee.a, b))
         builder.endEntry()
       }
@@ -24,7 +25,8 @@ trait EitherPicklers {
     new AbstractPickler[Right[L, R]] {
       override def pickle(picklee: Right[L, R], builder: PBuilder): Unit = {
         builder.beginEntry(picklee, tag)
-        if (rp.tag.isEffectivelyPrimitive) builder.hintElidedType(rp.tag)
+        if (rp.tag.isEffectivelyPrimitive)
+          builder.hintElidedType(rp.tag)
         builder.putField("b", b => rp.pickle(picklee.b, b))
         builder.endEntry()
       }
@@ -55,7 +57,8 @@ trait EitherPicklers {
       override def unpickle(tag: String, reader: PReader): Any = {
         // TODO - check tag == our tag?
         val rr = reader.readField("a")
-        if (lp.tag.isEffectivelyPrimitive) rr.hintElidedType(lp.tag)
+        if (lp.tag.isEffectivelyPrimitive)
+          rr.hintElidedType(lp.tag)
         Left(lp.unpickleEntry(rr).asInstanceOf[R])
       }
       override def tag: FastTypeTag[Left[L, R]] = t
@@ -67,7 +70,8 @@ trait EitherPicklers {
       override def unpickle(tag: String, reader: PReader): Any = {
         // TODO - check tag == our tag?
         val rr = reader.readField("b")
-        if (rp.tag.isEffectivelyPrimitive) rr.hintElidedType(rp.tag)
+        if (rp.tag.isEffectivelyPrimitive)
+          rr.hintElidedType(rp.tag)
         Right(rp.unpickleEntry(rr).asInstanceOf[R])
       }
       override def tag: FastTypeTag[Right[L, R]] = t
@@ -79,9 +83,12 @@ trait EitherPicklers {
       t: FastTypeTag[Either[L, R]]): Unpickler[Either[L, R]] =
     new AbstractUnpickler[Either[L, R]] {
       override def unpickle(tag: String, reader: PReader): Any = {
-        if (tag == rp.tag.key) rp.unpickle(tag, reader)
-        else if (tag == lp.tag.key) lp.unpickle(tag, reader)
-        else throw new PicklingException(s"Unknown type tag for Either: $tag")
+        if (tag == rp.tag.key)
+          rp.unpickle(tag, reader)
+        else if (tag == lp.tag.key)
+          lp.unpickle(tag, reader)
+        else
+          throw new PicklingException(s"Unknown type tag for Either: $tag")
       }
       override def tag: FastTypeTag[Either[L, R]] = t
       override def toString = s"EitherUnpickler($tag)"

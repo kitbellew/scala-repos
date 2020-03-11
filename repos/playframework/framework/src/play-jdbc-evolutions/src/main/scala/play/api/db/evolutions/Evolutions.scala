@@ -186,8 +186,10 @@ object Evolutions {
     val hasDownWarning =
       "# !!! WARNING! This script contains DOWNS evolutions that are likely destructive\n\n"
 
-    if (scripts.exists(_.isInstanceOf[DownScript])) hasDownWarning + txt
-    else txt
+    if (scripts.exists(_.isInstanceOf[DownScript]))
+      hasDownWarning + txt
+    else
+      txt
   }
 
   /**

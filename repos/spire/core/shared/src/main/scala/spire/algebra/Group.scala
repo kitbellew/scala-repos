@@ -22,11 +22,16 @@ trait Group[@sp(Byte, Short, Int, Long, Float, Double) A]
     * Return `a` combined with itself `n` times.
     */
   override def combinen(a: A, n: Int): A =
-    if (n == Int.MinValue) op(combinen(inverse(a), Int.MaxValue), inverse(a))
-    else if (n < 0) combinen(inverse(a), -n)
-    else if (n == 0) id
-    else if (n == 1) a
-    else combinenAboveOne(a, n)
+    if (n == Int.MinValue)
+      op(combinen(inverse(a), Int.MaxValue), inverse(a))
+    else if (n < 0)
+      combinen(inverse(a), -n)
+    else if (n == 0)
+      id
+    else if (n == 1)
+      a
+    else
+      combinenAboveOne(a, n)
 }
 
 object Group {

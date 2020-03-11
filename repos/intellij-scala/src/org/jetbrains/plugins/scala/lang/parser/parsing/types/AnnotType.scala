@@ -31,10 +31,14 @@ object AnnotType {
         isAnnotation = true
       }
 
-      if (isAnnotation) annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
-      else annotationsMarker.drop()
-      if (isAnnotation) annotMarker.done(ScalaElementTypes.ANNOT_TYPE)
-      else annotMarker.drop()
+      if (isAnnotation)
+        annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
+      else
+        annotationsMarker.drop()
+      if (isAnnotation)
+        annotMarker.done(ScalaElementTypes.ANNOT_TYPE)
+      else
+        annotMarker.drop()
       true
     } else {
       annotMarker.rollbackTo()

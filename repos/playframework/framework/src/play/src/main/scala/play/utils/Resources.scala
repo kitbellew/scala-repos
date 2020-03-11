@@ -76,7 +76,11 @@ object Resources {
      * refers to a directory (return null otherwise). */
 
     val path = url.getPath
-    val pathSlash = if (path.last == '/') path else path + '/'
+    val pathSlash =
+      if (path.last == '/')
+        path
+      else
+        path + '/'
 
     classLoader.getResource(path) != null && classLoader.getResource(
       pathSlash) != null
@@ -86,9 +90,17 @@ object Resources {
     val path = url.getPath
     val bangIndex = url.getFile.indexOf("!")
 
-    val startIndex = if (path.startsWith("zip:")) 4 else 0
+    val startIndex =
+      if (path.startsWith("zip:"))
+        4
+      else
+        0
     val fileUri = path.substring(startIndex, bangIndex)
-    val fileProtocol = if (fileUri.startsWith("/")) "file://" else ""
+    val fileProtocol =
+      if (fileUri.startsWith("/"))
+        "file://"
+      else
+        ""
     val absoluteFileUri = fileProtocol + fileUri
 
     val zipFile: File = new File(URI.create(absoluteFileUri))
@@ -97,11 +109,13 @@ object Resources {
 
     try {
       val entry = zip.getEntry(resourcePath)
-      if (entry.isDirectory) true
+      if (entry.isDirectory)
+        true
       else {
         val stream = zip.getInputStream(entry)
         val isDir = stream == null
-        if (stream != null) stream.close()
+        if (stream != null)
+          stream.close()
         isDir
       }
     } finally {

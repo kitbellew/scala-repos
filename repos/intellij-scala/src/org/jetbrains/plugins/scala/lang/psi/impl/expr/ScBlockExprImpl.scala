@@ -37,7 +37,8 @@ class ScBlockExprImpl(text: CharSequence)
     val result: util.List[T] = new util.ArrayList[T]
     var cur: PsiElement = getFirstChild
     while (cur != null) {
-      if (aClass.isInstance(cur)) result.add(cur.asInstanceOf[T])
+      if (aClass.isInstance(cur))
+        result.add(cur.asInstanceOf[T])
       cur = cur.getNextSibling
     }
     result.toArray[T](
@@ -50,7 +51,8 @@ class ScBlockExprImpl(text: CharSequence)
       aClass: Class[T]): T = {
     var cur: PsiElement = getFirstChild
     while (cur != null) {
-      if (aClass.isInstance(cur)) return cur.asInstanceOf[T]
+      if (aClass.isInstance(cur))
+        return cur.asInstanceOf[T]
       cur = cur.getNextSibling
     }
     null

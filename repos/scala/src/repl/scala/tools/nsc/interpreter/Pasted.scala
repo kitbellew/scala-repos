@@ -63,8 +63,10 @@ abstract class Pasted(prompt: String) {
     val referenced =
       lines flatMap (resReference findAllIn _.trim.stripPrefix("res")) toSet
     val ActualPromptString = lines find matchesPrompt map (s =>
-      if (matchesString(s, PromptString)) PromptString
-      else AltPromptString) getOrElse PromptString
+      if (matchesString(s, PromptString))
+        PromptString
+      else
+        AltPromptString) getOrElse PromptString
     val cmds =
       lines reduceLeft append split ActualPromptString filterNot (_.trim == "") toList
 
@@ -73,10 +75,12 @@ abstract class Pasted(prompt: String) {
       *  and discarded.
       */
     def append(code: String, line: String): String =
-      if (matchesPrompt(line)) code + "\n" + line
+      if (matchesPrompt(line))
+        code + "\n" + line
       else if (matchesContinue(line))
         code + "\n" + stripString(line, ContinueString)
-      else fixResRefs(code, line)
+      else
+        fixResRefs(code, line)
 
     /** If the line looks like
       *    res15: Int
@@ -110,7 +114,8 @@ abstract class Pasted(prompt: String) {
     def interpreted(line: String) = {
       echo(line.trim)
       val res = interpret(line)
-      if (res != IR.Incomplete) echo("")
+      if (res != IR.Incomplete)
+        echo("")
       res
     }
     def incompletely(cmd: String) = {

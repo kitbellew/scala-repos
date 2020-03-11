@@ -82,7 +82,8 @@ object Cached {
         val analyzeCachesField =
           if (analyzeCaches)
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-          else EmptyTree
+          else
+            EmptyTree
         val fields = if (hasParameters) {
           q"""
             private val $mapName = _root_.com.intellij.util.containers.ContainerUtil.
@@ -116,7 +117,8 @@ object Cached {
             q"""
               ..$getValuesFromMap
             """
-          } else q""
+          } else
+            q""
 
         val functionContents = q"""
             ..$getValuesIfHasParams
@@ -124,7 +126,10 @@ object Cached {
               val cacheFunResult = $cachedFunName()
               $cacheVarName = _root_.scala.Some(cacheFunResult)
               $modCountVarName = currModCount
-              ..${if (hasParameters) putValuesIntoMap else EmptyTree}
+              ..${if (hasParameters)
+          putValuesIntoMap
+        else
+          EmptyTree}
             }
             $cacheVarName.get
           """
@@ -163,8 +168,10 @@ object Cached {
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
           ..$currModCount
           def cacheHasExpired(opt: Option[Any], cacheCount: Long) = opt.isEmpty || currModCount != cacheCount
-          ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-        else EmptyTree}
+          ${if (analyzeCaches)
+          q"$cacheStatsName.aboutToEnterCachedArea()"
+        else
+          EmptyTree}
           $functionContentsInSynchronizedBlock
         """
         val updatedDef =

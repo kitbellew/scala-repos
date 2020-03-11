@@ -39,7 +39,8 @@ object TestConfigurationUtil {
         JavaRuntimeConfigurationProducerBase.checkPackage(dir)
       case pack: PsiPackage => pack
     }
-    if (pack == null) return null
+    if (pack == null)
+      return null
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(displayName, confFactory)
@@ -62,7 +63,8 @@ object TestConfigurationUtil {
       case dir: PsiDirectory => JavaDirectoryService.getInstance.getPackage(dir)
       case pack: PsiPackage  => pack
     }
-    if (pack == null) return false
+    if (pack == null)
+      return false
     configuration match {
       case configuration: AbstractTestRunConfiguration =>
         configuration.getTestKind == TestRunConfigurationForm.TestKind.ALL_IN_PACKAGE &&

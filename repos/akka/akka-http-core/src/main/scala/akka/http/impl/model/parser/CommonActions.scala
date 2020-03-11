@@ -32,7 +32,10 @@ private[parser] trait CommonActions {
       case mainLower ⇒
         MediaTypes.getForKey((mainLower, subLower)) match {
           case Some(registered) ⇒
-            if (params.isEmpty) registered else registered.withParams(params)
+            if (params.isEmpty)
+              registered
+            else
+              registered.withParams(params)
           case None ⇒
             if (charsetDefined)
               MediaType.customWithOpenCharset(

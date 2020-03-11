@@ -1,8 +1,10 @@
 object Test extends App {
 
   def test[A](name: String, expect: A, actual: => A) {
-    if (expect != actual) throw new AssertionError("test " + name + " failed")
-    else println("test " + name + " completed properly")
+    if (expect != actual)
+      throw new AssertionError("test " + name + " failed")
+    else
+      println("test " + name + " completed properly")
   }
 
   def testNoBraces = 1

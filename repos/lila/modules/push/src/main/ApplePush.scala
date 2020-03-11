@@ -24,7 +24,8 @@ private final class ApplePush(
             token = device.deviceId,
             alert = Json.obj("title" -> data.title, "body" -> data.body),
             payload = data.payload)
-        else logger.warn(s"Sorry $userId, apple push is disabled by config!")
+        else
+          logger.warn(s"Sorry $userId, apple push is disabled by config!")
       }
     }
 }

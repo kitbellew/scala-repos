@@ -34,20 +34,24 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null) return false
+    if (ifStmt == null)
+      return false
 
     val thenBranch = ifStmt.thenBranch.orNull
-    if (thenBranch == null) return false
+    if (thenBranch == null)
+      return false
 
     val condition = ifStmt.condition.orNull
-    if (condition == null) return false
+    if (condition == null)
+      return false
 
     val offset = editor.getCaretModel.getOffset
     if (!(ifStmt.getTextRange.getStartOffset <= offset && offset <= condition.getTextRange.getStartOffset - 1))
       return false
 
     val elseBranch = ifStmt.elseBranch.orNull
-    if (elseBranch != null) return elseBranch.isInstanceOf[ScBlockExpr]
+    if (elseBranch != null)
+      return elseBranch.isInstanceOf[ScBlockExpr]
 
     true
   }
@@ -55,7 +59,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null || !ifStmt.isValid) return
+    if (ifStmt == null || !ifStmt.isValid)
+      return
 
     val expr = new StringBuilder
     val newCond = ifStmt.condition.get match {
@@ -93,8 +98,10 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
 
     val elseBranch = ifStmt.elseBranch.orNull
     val newThenBranch =
-      if (elseBranch != null) elseBranch.asInstanceOf[ScBlockExpr].getText
-      else "{\n\n}"
+      if (elseBranch != null)
+        elseBranch.asInstanceOf[ScBlockExpr].getText
+      else
+        "{\n\n}"
     expr
       .append("if (")
       .append(newCond)

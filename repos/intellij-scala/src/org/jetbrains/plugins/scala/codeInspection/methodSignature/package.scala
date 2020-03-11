@@ -12,8 +12,10 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiManager
 package object methodSignature {
 
   private[methodSignature] def isScalaJSFacade(c: PsiClass): Boolean = {
-    if (c == null) false
-    else findJsAny(c.getProject).exists(c.isInheritor(_, /*checkDeep =*/ true))
+    if (c == null)
+      false
+    else
+      findJsAny(c.getProject).exists(c.isInheritor(_, /*checkDeep =*/ true))
   }
 
   private def findJsAny(project: Project): Option[PsiClass] = {

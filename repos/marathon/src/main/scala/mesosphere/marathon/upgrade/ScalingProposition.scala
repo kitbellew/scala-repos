@@ -45,9 +45,15 @@ object ScalingProposition {
     val numberOfTasksToStart = scaleTo - runningTasks.size + killCount
 
     val tasksToKill =
-      if (candidatesToKill.nonEmpty) Some(candidatesToKill) else None
+      if (candidatesToKill.nonEmpty)
+        Some(candidatesToKill)
+      else
+        None
     val tasksToStart =
-      if (numberOfTasksToStart > 0) Some(numberOfTasksToStart) else None
+      if (numberOfTasksToStart > 0)
+        Some(numberOfTasksToStart)
+      else
+        None
 
     ScalingProposition(tasksToKill, tasksToStart)
   }

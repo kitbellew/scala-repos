@@ -25,8 +25,10 @@ case class OffsetMetadata(
     "OffsetMetadata[%d,%s]"
       .format(
         offset,
-        if (metadata != null && metadata.length > 0) metadata
-        else "NO_METADATA")
+        if (metadata != null && metadata.length > 0)
+          metadata
+        else
+          "NO_METADATA")
 }
 
 object OffsetMetadata {

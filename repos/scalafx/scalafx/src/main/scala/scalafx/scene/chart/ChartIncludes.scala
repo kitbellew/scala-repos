@@ -80,7 +80,10 @@ trait ChartIncludes {
     */
   implicit def jfxAreaChart2sfx[X, Y](
       b: jfxsc.AreaChart[X, Y]): AreaChart[X, Y] =
-    if (b != null) new AreaChart[X, Y](b) else null
+    if (b != null)
+      new AreaChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$AXIS.html $AXIS$END
@@ -90,8 +93,10 @@ trait ChartIncludes {
     * @return $SFX $AXIS
     */
   implicit def jfxAxis2sfx[X](a: jfxsc.Axis[X]): Axis[X] =
-    if (a != null) new Axis[X](a) {}
-    else null
+    if (a != null)
+      new Axis[X](a) {}
+    else
+      null
 
   /**
     * $START$BRCH.html $BRCH$END
@@ -102,7 +107,10 @@ trait ChartIncludes {
     * @return $SFX $BRCH
     */
   implicit def jfxBarChart2sfx[X, Y](b: jfxsc.BarChart[X, Y]): BarChart[X, Y] =
-    if (b != null) new BarChart[X, Y](b) else null
+    if (b != null)
+      new BarChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$BBCH.html $BBCH$END
@@ -114,7 +122,10 @@ trait ChartIncludes {
     */
   implicit def jfxBubbleChart2sfx[X, Y](
       b: jfxsc.BubbleChart[X, Y]): BubbleChart[X, Y] =
-    if (b != null) new BubbleChart[X, Y](b) else null
+    if (b != null)
+      new BubbleChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$CHAR.html $CHAR$END
@@ -123,8 +134,10 @@ trait ChartIncludes {
     * @return $SFX $CHAR
     */
   implicit def jfxChart2sfx(c: jfxsc.Chart): Chart =
-    if (c != null) new Chart(c) {}
-    else null
+    if (c != null)
+      new Chart(c) {}
+    else
+      null
 
   /**
     * $START$LNCH.html $LNCH$END
@@ -136,7 +149,10 @@ trait ChartIncludes {
     */
   implicit def jfxLineChart2sfx[X, Y](
       b: jfxsc.LineChart[X, Y]): LineChart[X, Y] =
-    if (b != null) new LineChart[X, Y](b) else null
+    if (b != null)
+      new LineChart[X, Y](b)
+    else
+      null
 
   implicit def jfxLineChartSortingPolicy2sfx(
       v: jfxsc.LineChart.SortingPolicy): LineChart.SortingPolicy =
@@ -149,7 +165,10 @@ trait ChartIncludes {
     * @return $SFX $PICH
     */
   implicit def jfxPieChart2sfx(b: jfxsc.PieChart): PieChart =
-    if (b != null) new PieChart(b) else null
+    if (b != null)
+      new PieChart(b)
+    else
+      null
 
   /**
     * $START$PIDT.html $PIDT$END
@@ -158,7 +177,10 @@ trait ChartIncludes {
     * @return $SFX $PIDT
     */
   implicit def jfxPieChartData2sfx(b: jfxsc.PieChart.Data): PieChart.Data =
-    if (b != null) new PieChart.Data(b) else null
+    if (b != null)
+      new PieChart.Data(b)
+    else
+      null
 
   /**
     * $START$SCCH.html $SCCH$END
@@ -170,7 +192,10 @@ trait ChartIncludes {
     */
   implicit def jfxScatterChart2sfx[X, Y](
       b: jfxsc.ScatterChart[X, Y]): ScatterChart[X, Y] =
-    if (b != null) new ScatterChart[X, Y](b) else null
+    if (b != null)
+      new ScatterChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$STCH.html $STCH$END
@@ -182,7 +207,10 @@ trait ChartIncludes {
     */
   implicit def jfxStackedAreaChart2sfx[X, Y](
       b: jfxsc.StackedAreaChart[X, Y]): StackedAreaChart[X, Y] =
-    if (b != null) new StackedAreaChart[X, Y](b) else null
+    if (b != null)
+      new StackedAreaChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$SBCH.html $SBCH$END
@@ -194,7 +222,10 @@ trait ChartIncludes {
     */
   implicit def jfxStackedBarChart2sfx[X, Y](
       b: jfxsc.StackedBarChart[X, Y]): StackedBarChart[X, Y] =
-    if (b != null) new StackedBarChart[X, Y](b) else null
+    if (b != null)
+      new StackedBarChart[X, Y](b)
+    else
+      null
 
   /**
     * $START$TIMK.html $TIMK$END
@@ -204,7 +235,10 @@ trait ChartIncludes {
     * @return $SFX $TIMK
     */
   implicit def jfxAxisTickMark2sfx[T](b: jfxsc.Axis.TickMark[T]): TickMark[T] =
-    if (b != null) new Axis.TickMark[T](b) else null
+    if (b != null)
+      new Axis.TickMark[T](b)
+    else
+      null
 
   /**
     * $START$CAAX.html $CAAX$END
@@ -213,7 +247,10 @@ trait ChartIncludes {
     * @return $SFX $CAAX
     */
   implicit def jfxCategoryAxis2sfx(b: jfxsc.CategoryAxis): CategoryAxis =
-    if (b != null) new CategoryAxis(b) else null
+    if (b != null)
+      new CategoryAxis(b)
+    else
+      null
 
   /**
     * $START$NMAX.html $NMAX$END
@@ -222,7 +259,10 @@ trait ChartIncludes {
     * @return $SFX $NMAX
     */
   implicit def jfxNumberAxis2sfx(b: jfxsc.NumberAxis): NumberAxis =
-    if (b != null) new NumberAxis(b) else null
+    if (b != null)
+      new NumberAxis(b)
+    else
+      null
 
   /**
     * $START$NMDF.html $NMDF$END
@@ -232,7 +272,10 @@ trait ChartIncludes {
     */
   implicit def jfxNumberAxisDefaultFormatter2sfx(
       b: jfxsc.NumberAxis.DefaultFormatter): DefaultFormatter =
-    if (b != null) new NumberAxis.DefaultFormatter(b) else null
+    if (b != null)
+      new NumberAxis.DefaultFormatter(b)
+    else
+      null
 
   /**
     * $START$VAAX.html $VAAX$END
@@ -243,8 +286,10 @@ trait ChartIncludes {
     */
   implicit def jfxValueAxis2sfx[X <: Number](
       a: jfxsc.ValueAxis[X]): ValueAxis[X] =
-    if (a != null) new ValueAxis[X](a) {}
-    else null
+    if (a != null)
+      new ValueAxis[X](a) {}
+    else
+      null
 
   /**
     * $START$XYCH.html $XYCH$END
@@ -255,8 +300,10 @@ trait ChartIncludes {
     * @return $SFX $XYCH
     */
   implicit def jfxXYChart2sfx[X, Y](c: jfxsc.XYChart[X, Y]): XYChart[X, Y] =
-    if (c != null) new XYChart[X, Y](c) {}
-    else null
+    if (c != null)
+      new XYChart[X, Y](c) {}
+    else
+      null
 
   /**
     * $START$XYDT.html $XYDT$END
@@ -268,7 +315,10 @@ trait ChartIncludes {
     */
   implicit def jfxXYChartData2sfx[X, Y](
       b: jfxsc.XYChart.Data[X, Y]): Data[X, Y] =
-    if (b != null) new XYChart.Data[X, Y](b) else null
+    if (b != null)
+      new XYChart.Data[X, Y](b)
+    else
+      null
 
   /**
     * $START$XYSR.html $XYSR$END
@@ -280,6 +330,9 @@ trait ChartIncludes {
     */
   implicit def jfxXYChartSeries2sfx[X, Y](
       b: jfxsc.XYChart.Series[X, Y]): Series[X, Y] =
-    if (b != null) new XYChart.Series[X, Y](b) else null
+    if (b != null)
+      new XYChart.Series[X, Y](b)
+    else
+      null
 
 }

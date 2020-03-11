@@ -34,7 +34,8 @@ object Main extends nsc.MainClass {
       if (this.settings.Yidedebug) {
         run();
         false
-      } else true
+      } else
+        true
     )
   }
 }

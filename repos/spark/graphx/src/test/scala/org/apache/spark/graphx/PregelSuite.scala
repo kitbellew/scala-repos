@@ -50,7 +50,10 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
           .toSet)
       val chainWithSeed = chain
         .mapVertices { (vid, attr) =>
-          if (vid == 1) 1 else 0
+          if (vid == 1)
+            1
+          else
+            0
         }
         .cache()
       assert(
@@ -59,8 +62,10 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
       val result = Pregel(chainWithSeed, 0)(
         (vid, attr, msg) => math.max(msg, attr),
         et =>
-          if (et.dstAttr != et.srcAttr) Iterator((et.dstId, et.srcAttr))
-          else Iterator.empty,
+          if (et.dstAttr != et.srcAttr)
+            Iterator((et.dstId, et.srcAttr))
+          else
+            Iterator.empty,
         (a: Int, b: Int) => math.max(a, b))
       assert(
         result.vertices.collect.toSet ===

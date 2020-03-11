@@ -39,13 +39,15 @@ class LogarthmicTest extends FunSuite with Checkers with MomentsTestBase[Int] {
   implicit def arbParameter = Arbitrary {
     for (p <- arbitrary[Double].map { m =>
            (math.abs(m) % 1.0) + 1e-3
-         }) yield p
+         })
+      yield p
   }
 
   implicit def arbDistr: Arbitrary[Logarthmic] = Arbitrary {
     for (p <- arbitrary[Double].map { m =>
            (math.abs(m) % 1.0) + 1e-3
-         }) yield new Logarthmic(p)(RandBasis.mt0)
+         })
+      yield new Logarthmic(p)(RandBasis.mt0)
   }
 
   def asDouble(x: Int) = x.toDouble

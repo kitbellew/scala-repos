@@ -186,7 +186,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       authorizerLogger.debug(
         s"No acl found for resource $resource, authorized = $shouldAllowEveryoneIfNoAclIsFound")
       shouldAllowEveryoneIfNoAclIsFound
-    } else false
+    } else
+      false
   }
 
   def isSuperUser(
@@ -198,7 +199,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       authorizerLogger.debug(
         s"principal = $principal is a super user, allowing operation without checking acls.")
       true
-    } else false
+    } else
+      false
   }
 
   private def aclMatch(
@@ -279,8 +281,10 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   def close() {
-    if (aclChangeListener != null) aclChangeListener.close()
-    if (zkUtils != null) zkUtils.close()
+    if (aclChangeListener != null)
+      aclChangeListener.close()
+    if (zkUtils != null)
+      zkUtils.close()
   }
 
   private def loadCache() {
@@ -310,7 +314,11 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       operation: Operation,
       resource: Resource,
       host: String) {
-    val permissionType = if (authorized) "Allowed" else "Denied"
+    val permissionType =
+      if (authorized)
+        "Allowed"
+      else
+        "Denied"
     authorizerLogger.debug(
       s"Principal = $principal is $permissionType Operation = $operation from host = $host on resource = $resource")
   }

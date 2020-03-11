@@ -230,7 +230,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         accessor,
         {
           case f: MappedString[T] =>
-            f.wholeSet(if (v eq null) null else v.toString)
+            f.wholeSet(
+              if (v eq null)
+                null
+              else
+                v.toString)
         })
 
   def buildSetLongValue(
@@ -242,7 +246,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         accessor,
         {
           case f: MappedString[T] =>
-            f.wholeSet(if (isNull) null else v.toString)
+            f.wholeSet(
+              if (isNull)
+                null
+              else
+                v.toString)
         })
 
   def buildSetStringValue(
@@ -253,7 +261,12 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         inst,
         accessor,
         {
-          case f: MappedString[T] => f.wholeSet(if (v eq null) null else v)
+          case f: MappedString[T] =>
+            f.wholeSet(
+              if (v eq null)
+                null
+              else
+                v)
         })
 
   def buildSetDateValue(
@@ -265,7 +278,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         accessor,
         {
           case f: MappedString[T] =>
-            f.wholeSet(if (v eq null) null else v.toString)
+            f.wholeSet(
+              if (v eq null)
+                null
+              else
+                v.toString)
         })
 
   def buildSetBooleanValue(
@@ -277,7 +294,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         accessor,
         {
           case f: MappedString[T] =>
-            f.wholeSet(if (isNull) null else v.toString)
+            f.wholeSet(
+              if (isNull)
+                null
+              else
+                v.toString)
         })
 
   /**

@@ -77,8 +77,10 @@ final class JsonView(
       .noNull
 
   def standing(tour: Tournament, page: Int): Fu[JsObject] =
-    if (page == 1) firstPageCache(tour.id)
-    else computeStanding(tour, page)
+    if (page == 1)
+      firstPageCache(tour.id)
+    else
+      computeStanding(tour, page)
 
   def clearCache(id: String) =
     firstPageCache.remove(id) >> cachableData.remove(id)
@@ -256,8 +258,10 @@ final class JsonView(
     case s: arena.ScoringSystem.Sheet =>
       val o = Json.obj(
         "scores" -> s.scores.reverse.map { score =>
-          if (score.flag == arena.ScoringSystem.Normal) JsNumber(score.value)
-          else Json.arr(score.value, score.flag.id)
+          if (score.flag == arena.ScoringSystem.Normal)
+            JsNumber(score.value)
+          else
+            Json.arr(score.value, score.flag.id)
         },
         "total" -> s.total
       )
@@ -318,12 +322,14 @@ final class JsonView(
     Json.obj(
       "id" -> p.gameId,
       "u" -> Json.arr(pairingUserJson(p.user1), pairingUserJson(p.user2)),
-      "s" -> (if (p.finished) p.winner match {
-                case Some(w) if w == p.user1 => 2
-                case Some(w)                 => 3
-                case _                       => 1
-              }
-              else 0)
+      "s" -> (if (p.finished)
+                p.winner match {
+                  case Some(w) if w == p.user1 => 2
+                  case Some(w)                 => 3
+                  case _                       => 1
+                }
+              else
+                0)
     )
 }
 

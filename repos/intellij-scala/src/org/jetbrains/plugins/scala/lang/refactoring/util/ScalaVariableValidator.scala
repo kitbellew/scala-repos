@@ -100,12 +100,14 @@ class ScalaVariableValidator(
   override def findConflicts(name: String, allOcc: Boolean)
       : Array[(PsiNamedElement, String)] = { //returns declaration and message
     val container = enclosingContainer(allOcc)
-    if (container == null) return Array()
+    if (container == null)
+      return Array()
     val buf = new ArrayBuffer[(PsiNamedElement, String)]
     buf ++= validateDown(container, name, allOcc)
     buf ++= validateReference(selectedElement, name)
     var cl = container
-    while (cl != null && !cl.isInstanceOf[ScTypeDefinition]) cl = cl.getParent
+    while (cl != null && !cl.isInstanceOf[ScTypeDefinition])
+      cl = cl.getParent
     if (cl != null) {
       cl match {
         case x: ScTypeDefinition =>
@@ -148,15 +150,19 @@ class ScalaVariableValidator(
           case p: ScClassParameter => messageForClassParameter(name)
           case p: ScParameter      => messageForParameter(name)
           case m: ScMember if m.isLocal =>
-            if (m.getTextOffset < context.getTextOffset) messageForLocal(name)
-            else ""
+            if (m.getTextOffset < context.getTextOffset)
+              messageForLocal(name)
+            else
+              ""
           case _: ScCaseClause | _: ScGenerator | _: ScEnumerator =>
             messageForLocal(name)
           case m: PsiMember => messageForMember(name)
           case _            => ""
         }
-        if (message != "") Seq((elem, message))
-        else Seq.empty
+        if (message != "")
+          Seq((elem, message))
+        else
+          Seq.empty
       case _ => Seq.empty
     }
   }
@@ -174,11 +180,15 @@ class ScalaVariableValidator(
         case x: ScParameter if x.name == name =>
           buf += ((x, messageForParameter(x.name)))
         case x: ScFunctionDefinition if x.name == name =>
-          buf += (if (x.isLocal) (x, messageForLocal(x.name))
-                  else (x, messageForMember(x.name)))
+          buf += (if (x.isLocal)
+                    (x, messageForLocal(x.name))
+                  else
+                    (x, messageForMember(x.name)))
         case x: ScBindingPattern if x.name == name =>
-          buf += (if (x.isClassMember) (x, messageForMember(x.name))
-                  else (x, messageForLocal(x.name)))
+          buf += (if (x.isClassMember)
+                    (x, messageForMember(x.name))
+                  else
+                    (x, messageForLocal(x.name)))
         case _ =>
       }
     }
@@ -196,7 +206,8 @@ class ScalaVariableValidator(
         if (PsiTreeUtil.isAncestor(container, parent, true))
           while (parent.getParent != null && parent.getParent != container)
             parent = parent.getParent
-        else parent = container.getFirstChild
+        else
+          parent = container.getFirstChild
         parent
       }
       var fromDoubles = from.getPrevSibling
@@ -207,13 +218,17 @@ class ScalaVariableValidator(
           case x: ScVariableDefinition =>
             val elems = x.declaredElements
             for (elem <- elems; if elem.name == name)
-              buf += (if (x.isLocal) (elem, messageForLocal(elem.name))
-                      else (elem, messageForMember(elem.name)))
+              buf += (if (x.isLocal)
+                        (elem, messageForLocal(elem.name))
+                      else
+                        (elem, messageForMember(elem.name)))
           case x: ScPatternDefinition =>
             val elems = x.declaredElements
             for (elem <- elems; if elem.name == name)
-              buf += (if (x.isLocal) (elem, messageForLocal(elem.name))
-                      else (elem, messageForMember(elem.name)))
+              buf += (if (x.isLocal)
+                        (elem, messageForLocal(elem.name))
+                      else
+                        (elem, messageForMember(elem.name)))
           case _ =>
         }
         fromDoubles = fromDoubles.getPrevSibling

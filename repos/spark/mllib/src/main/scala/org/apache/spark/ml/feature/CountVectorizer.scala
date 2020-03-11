@@ -284,7 +284,11 @@ class CountVectorizerModel(
         }
         tokenCount += 1
       }
-      val effectiveMinTF = if (minTf >= 1.0) minTf else tokenCount * minTf
+      val effectiveMinTF =
+        if (minTf >= 1.0)
+          minTf
+        else
+          tokenCount * minTf
       val effectiveCounts = if ($(binary)) {
         termCounts.filter(_._2 >= effectiveMinTF).map(p => (p._1, 1.0)).toSeq
       } else {

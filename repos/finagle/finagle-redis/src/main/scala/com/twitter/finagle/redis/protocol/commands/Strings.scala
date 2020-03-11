@@ -331,8 +331,14 @@ case class Set(
         case Some(InMilliseconds(millis)) =>
           Seq(Set.PxBytes, StringToChannelBuffer(millis.toString))
         case _ => Seq()
-      }) ++ (if (nx) Seq(Set.NxBytes) else Seq()) ++
-      (if (xx) Seq(Set.XxBytes) else Seq())
+      }) ++ (if (nx)
+               Seq(Set.NxBytes)
+             else
+               Seq()) ++
+      (if (xx)
+         Seq(Set.XxBytes)
+       else
+         Seq())
   )
 }
 object Set {

@@ -29,14 +29,16 @@ object BeanConfigurator extends Logging {
           case Some(pd) =>
             try {
               val tp = pd.getPropertyType
-              if (tp == classOf[Int]) pd.getWriteMethod.invoke(o, toInt(v))
+              if (tp == classOf[Int])
+                pd.getWriteMethod.invoke(o, toInt(v))
               else if (tp == classOf[Long])
                 pd.getWriteMethod.invoke(o, toLong(v))
               else if (tp == classOf[Boolean])
                 pd.getWriteMethod.invoke(o, toBoolean(v))
               else if (tp == classOf[String])
                 pd.getWriteMethod.invoke(o, v.toString)
-              else pd.getWriteMethod.invoke(o, v)
+              else
+                pd.getWriteMethod.invoke(o, v)
             } catch {
               case ex: Exception =>
                 throw new SlickException(

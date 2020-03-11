@@ -35,8 +35,10 @@ import scala.language.implicitConversions"""
         case F     => companionCoercions(D)
         case _     => Nil
       }
-      if (coercions.isEmpty) Nil
-      else coercionComment.lines.toList ++ coercions
+      if (coercions.isEmpty)
+        Nil
+      else
+        coercionComment.lines.toList ++ coercions
     }
 
     def isCardinal: Boolean = isIntegerType(this)
@@ -57,7 +59,8 @@ import scala.language.implicitConversions"""
             " * }}}\n" +
             " */"
         ) :: ops
-      else ops
+      else
+        ops
     }
 
     def bitwiseOps =
@@ -103,7 +106,8 @@ import scala.language.implicitConversions"""
               "  */"
           )
         )
-      else Nil
+      else
+        Nil
 
     def shiftOps =
       if (isCardinal)
@@ -143,7 +147,8 @@ import scala.language.implicitConversions"""
               "  */"
           )
         )
-      else Nil
+      else
+        Nil
 
     def comparisonOps =
       List(
@@ -206,7 +211,10 @@ import scala.language.implicitConversions"""
     def clumps: List[List[String]] = {
       val xs1 =
         List(mkCoercions, mkUnaryOps, mkStringOps, mkShiftOps) map (xs =>
-          if (xs.isEmpty) xs else xs :+ "")
+          if (xs.isEmpty)
+            xs
+          else
+            xs :+ "")
       val xs2 = List(
         mkBinOpsGroup(comparisonOps, numeric, _ => Z),
         mkBinOpsGroup(bitwiseOps, cardinal, this opType _),
@@ -224,7 +232,11 @@ import scala.language.implicitConversions"""
         res ++ xs
     }
     def objectLines = {
-      val comp = if (isCardinal) cardinalCompanion else floatingCompanion
+      val comp =
+        if (isCardinal)
+          cardinalCompanion
+        else
+          floatingCompanion
       interpolate(
         comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (implicitCoercions map interpolate)
     }
@@ -280,7 +292,11 @@ import scala.language.implicitConversions"""
 
     def representation = repr.map(", a " + _).getOrElse("")
 
-    def indent(s: String) = if (s == "") "" else "  " + s
+    def indent(s: String) =
+      if (s == "")
+        ""
+      else
+        "  " + s
     def indentN(s: String) = s.lines map indent mkString "\n"
 
     def boxUnboxImpls = Map(
@@ -330,8 +346,10 @@ import scala.language.implicitConversions"""
 
     def assemble(decl: String, lines: List[String]): String = {
       val body =
-        if (lines.isEmpty) " { }\n\n"
-        else lines map indent mkString (" {\n", "\n", "\n}\n")
+        if (lines.isEmpty)
+          " { }\n\n"
+        else
+          lines map indent mkString (" {\n", "\n", "\n}\n")
 
       decl + body + "\n"
     }

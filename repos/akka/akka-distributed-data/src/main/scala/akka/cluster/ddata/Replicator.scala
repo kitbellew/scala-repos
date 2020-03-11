@@ -74,7 +74,10 @@ object ReplicatorSettings {
     * INTERNAL API
     */
   private[akka] def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 }
 
 /**
@@ -600,7 +603,8 @@ object Replicator {
       }
 
       def merge(other: DataEnvelope): DataEnvelope =
-        if (other.data == DeletedData) DeletedEnvelope
+        if (other.data == DeletedData)
+          DeletedEnvelope
         else {
           var mergedRemovedNodePruning = other.pruning
           for ((key, thisValue) ← pruning) {
@@ -622,7 +626,8 @@ object Replicator {
         }
 
       def merge(otherData: ReplicatedData): DataEnvelope =
-        if (otherData == DeletedData) DeletedEnvelope
+        if (otherData == DeletedData)
+          DeletedEnvelope
         else
           copy(data =
             data merge cleaned(otherData, pruning).asInstanceOf[data.T])
@@ -631,9 +636,12 @@ object Replicator {
           c: ReplicatedData,
           p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
         case (
-            c: RemovedNodePruning,
-            (removed, PruningState(_, PruningPerformed))) ⇒
-          if (c.needPruningFrom(removed)) c.pruningCleanup(removed) else c
+              c: RemovedNodePruning,
+              (removed, PruningState(_, PruningPerformed))) ⇒
+          if (c.needPruningFrom(removed))
+            c.pruningCleanup(removed)
+          else
+            c
         case (c, _) ⇒ c
       }
 
@@ -645,8 +653,10 @@ object Replicator {
             changed = (newPruningState ne pruningState) || changed
             (removed, newPruningState)
         }
-        if (changed) copy(pruning = newRemovedNodePruning)
-        else this
+        if (changed)
+          copy(pruning = newRemovedNodePruning)
+        else
+          this
       }
     }
 
@@ -925,7 +935,10 @@ final class Replicator(settings: ReplicatorSettings)
 
   override def preStart(): Unit = {
     val leaderChangedClass =
-      if (role.isDefined) classOf[RoleLeaderChanged] else classOf[LeaderChanged]
+      if (role.isDefined)
+        classOf[RoleLeaderChanged]
+      else
+        classOf[LeaderChanged]
     cluster.subscribe(
       self,
       initialStateMode = InitialStateAsEvents,
@@ -1118,8 +1131,10 @@ final class Replicator(settings: ReplicatorSettings)
         if (dig != oldDigest)
           changed += key // notify subscribers, later
         dig
-      } else if (envelope.data == DeletedData) DeletedDigest
-      else LazyDigest
+      } else if (envelope.data == DeletedData)
+        DeletedDigest
+      else
+        LazyDigest
 
     dataEntries = dataEntries.updated(key, (envelope, dig))
   }
@@ -1136,7 +1151,8 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def digest(envelope: DataEnvelope): Digest =
-    if (envelope.data == DeletedData) DeletedDigest
+    if (envelope.data == DeletedData)
+      DeletedDigest
     else {
       val bytes = serializer.toBinary(envelope)
       ByteString.fromArray(MessageDigest.getInstance("SHA-1").digest(bytes))
@@ -1152,8 +1168,10 @@ final class Replicator(settings: ReplicatorSettings)
       getData(keyId) match {
         case Some(envelope) ⇒
           val msg =
-            if (envelope.data == DeletedData) DataDeleted(key)
-            else Changed(key)(envelope.data)
+            if (envelope.data == DeletedData)
+              DataDeleted(key)
+            else
+              Changed(key)(envelope.data)
           subs.foreach {
             _ ! msg
           }
@@ -1219,8 +1237,10 @@ final class Replicator(settings: ReplicatorSettings)
 
   def selectRandomNode(
       addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None
-    else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
+    if (addresses.isEmpty)
+      None
+    else
+      Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
   def replica(address: Address): ActorSelection =
     context.actorSelection(self.path.toStringWithAddress(address))
@@ -1246,7 +1266,8 @@ final class Replicator(settings: ReplicatorSettings)
     }
     val otherKeys = otherDigests.keySet
     val myKeys =
-      if (totChunks == 1) dataEntries.keySet
+      if (totChunks == 1)
+        dataEntries.keySet
       else
         dataEntries.keysIterator.filter(_.hashCode % totChunks == chunk).toSet
     val otherMissingKeys = myKeys diff otherKeys
@@ -1290,12 +1311,13 @@ final class Replicator(settings: ReplicatorSettings)
       case (key, envelope) ⇒
         val hadData = dataEntries.contains(key)
         write(key, envelope)
-        if (sendBack) getData(key) match {
-          case Some(d) ⇒
-            if (hadData || d.pruning.nonEmpty)
-              replyData = replyData.updated(key, d)
-          case None ⇒
-        }
+        if (sendBack)
+          getData(key) match {
+            case Some(d) ⇒
+              if (hadData || d.pruning.nonEmpty)
+                replyData = replyData.updated(key, d)
+            case None ⇒
+          }
     }
     if (sendBack && replyData.nonEmpty)
       sender() ! Gossip(replyData, sendBack = false)
@@ -1361,15 +1383,18 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def receiveUnreachable(m: Member): Unit =
-    if (matchingRole(m)) unreachable += m.address
+    if (matchingRole(m))
+      unreachable += m.address
 
   def receiveReachable(m: Member): Unit =
-    if (matchingRole(m)) unreachable -= m.address
+    if (matchingRole(m))
+      unreachable -= m.address
 
   def receiveLeaderChanged(
       leaderOption: Option[Address],
       roleOption: Option[String]): Unit =
-    if (roleOption == role) leader = leaderOption
+    if (roleOption == role)
+      leader = leaderOption
 
   def receiveClockTick(): Unit = {
     val now = System.nanoTime()
@@ -1426,8 +1451,8 @@ final class Replicator(settings: ReplicatorSettings)
     // perform pruning when all seen Init
     dataEntries.foreach {
       case (
-          key,
-          (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+            key,
+            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
         pruning.foreach {
           case (removed, PruningState(owner, PruningInitialized(seen)))
               if owner == selfUniqueAddress
@@ -1452,8 +1477,8 @@ final class Replicator(settings: ReplicatorSettings)
     def allPruningPerformed(removed: UniqueAddress): Boolean = {
       dataEntries forall {
         case (
-            key,
-            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+              key,
+              (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
           pruning.get(removed) match {
             case Some(PruningState(_, PruningInitialized(_))) ⇒ false
             case _ ⇒ true
@@ -1472,8 +1497,8 @@ final class Replicator(settings: ReplicatorSettings)
         tombstoneNodes += removed
         dataEntries.foreach {
           case (
-              key,
-              (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
+                key,
+                (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
             setData(key, pruningCleanupTombstoned(removed, envelope))
           case _ ⇒ // deleted, or pruning not needed
         }
@@ -1499,7 +1524,8 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def pruningCleanupTombstoned(data: ReplicatedData): ReplicatedData =
-    if (tombstoneNodes.isEmpty) data
+    if (tombstoneNodes.isEmpty)
+      data
     else
       tombstoneNodes.foldLeft(data)((c, removed) ⇒
         pruningCleanupTombstoned(removed, c))
@@ -1511,7 +1537,8 @@ final class Replicator(settings: ReplicatorSettings)
       case dataWithRemovedNodePruning: RemovedNodePruning ⇒
         if (dataWithRemovedNodePruning.needPruningFrom(removed))
           dataWithRemovedNodePruning.pruningCleanup(removed)
-        else data
+        else
+          data
       case _ ⇒ data
     }
 
@@ -1750,8 +1777,10 @@ private[akka] class ReadAggregator(
   def waitReadRepairAck(envelope: Replicator.Internal.DataEnvelope): Receive = {
     case ReadRepairAck ⇒
       val replyMsg =
-        if (envelope.data == DeletedData) DataDeleted(key)
-        else GetSuccess(key, req)(envelope.data)
+        if (envelope.data == DeletedData)
+          DataDeleted(key)
+        else
+          GetSuccess(key, req)(envelope.data)
       replyTo.tell(replyMsg, context.parent)
       context.stop(self)
     case _: ReadResult ⇒

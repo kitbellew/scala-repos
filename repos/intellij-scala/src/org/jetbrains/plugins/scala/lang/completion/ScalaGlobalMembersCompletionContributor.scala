@@ -63,9 +63,11 @@ class ScalaGlobalMembersCompletionContributor
           parameters: CompletionParameters,
           context: ProcessingContext,
           result: CompletionResultSet) {
-        if (parameters.getInvocationCount < 2) return
+        if (parameters.getInvocationCount < 2)
+          return
         val position: PsiElement = positionFromParameters(parameters)
-        if (!ScalaPsiUtil.fileContext(position).isInstanceOf[ScalaFile]) return
+        if (!ScalaPsiUtil.fileContext(position).isInstanceOf[ScalaFile])
+          return
         val parent: PsiElement = position.getContext
         parent match {
           case ref: ScReferenceExpression =>
@@ -80,7 +82,8 @@ class ScalaGlobalMembersCompletionContributor
                   case pref: ScPrefixExpr if pref.operation == ref =>
                     pref.getBaseExpr
                   case _ =>
-                    if (result.getPrefixMatcher.getPrefix == "") return
+                    if (result.getPrefixMatcher.getPrefix == "")
+                      return
                     complete(
                       ref,
                       result,
@@ -90,7 +93,8 @@ class ScalaGlobalMembersCompletionContributor
                 }
             }
             val typeWithoutImplicits = qualifier.getTypeWithoutImplicits()
-            if (typeWithoutImplicits.isEmpty) return
+            if (typeWithoutImplicits.isEmpty)
+              return
             val tp = typeWithoutImplicits.get
             completeImplicits(ref, result, parameters.getOriginalFile, tp)
           case _ =>
@@ -111,7 +115,8 @@ class ScalaGlobalMembersCompletionContributor
       containingClass: PsiClass): Boolean = {
     ScalaPsiUtil.nameContext(member) match {
       case memb: PsiMember =>
-        if (containingClass == null) return false
+        if (containingClass == null)
+          return false
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
           if (qualifiedName == excluded || qualifiedName.startsWith(
@@ -152,9 +157,11 @@ class ScalaGlobalMembersCompletionContributor
           case member: PsiMember => member.containingClass
           case _                 => null
         }
-        if (containingClass == null) return false
+        if (containingClass == null)
+          return false
         val qualName = containingClass.qualifiedName
-        if (qualName == null) return false
+        if (qualName == null)
+          return false
         for {
           element <- elemsSet
           if element.name == name
@@ -170,7 +177,8 @@ class ScalaGlobalMembersCompletionContributor
           return true
         }
         false
-      } else elemsSet.contains(elem)
+      } else
+        elemsSet.contains(elem)
     }
 
     val collection = StubIndex.getElements(
@@ -273,9 +281,11 @@ class ScalaGlobalMembersCompletionContributor
           case member: PsiMember => member.containingClass
           case _                 => null
         }
-        if (containingClass == null) return false
+        if (containingClass == null)
+          return false
         val qualName = containingClass.qualifiedName
-        if (qualName == null) return false
+        if (qualName == null)
+          return false
         for {
           element <- elemsSet
           if element.name == name
@@ -291,7 +301,8 @@ class ScalaGlobalMembersCompletionContributor
           return true
         }
         false
-      } else elemsSet.contains(elem)
+      } else
+        elemsSet.contains(elem)
     }
 
     ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
@@ -329,7 +340,8 @@ class ScalaGlobalMembersCompletionContributor
                 ClassInheritorsSearch
                   .search(cClass, scope, true)
                   .toArray(PsiClass.EMPTY_ARRAY)
-              else Array.empty
+              else
+                Array.empty
             }
             val currentAndInheritors = Iterator(cClass) ++ inheritors.iterator
             for {
@@ -356,7 +368,8 @@ class ScalaGlobalMembersCompletionContributor
                   val lookup = createLookupElement(
                     if (overloads.head.getParameterList.getParametersCount == 0)
                       overloads(1)
-                    else overloads.head,
+                    else
+                      overloads.head,
                     containingClass,
                     shouldImport,
                     overloaded = true)

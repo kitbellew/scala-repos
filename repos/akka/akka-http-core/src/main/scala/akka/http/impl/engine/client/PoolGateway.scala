@@ -93,7 +93,8 @@ private[http] class PoolGateway(hcps: HostConnectionPoolSetup, _shutdownStartedP
           shutdownStartedPromise.success(Done) // trigger cache removal
           ref ! PoolInterfaceActor.Shutdown
           shutdownCompletedPromise.future
-        } else shutdown() // CAS loop (not a spinlock)
+        } else
+          shutdown() // CAS loop (not a spinlock)
 
       case IsShutdown(x) ⇒ x
 

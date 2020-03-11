@@ -25,7 +25,8 @@ object ParamType {
         builder.advanceLexer() //Ate '=>'
         Type.parse(builder)
       case _ =>
-        if (!Type.parse(builder, star = true)) false
+        if (!Type.parse(builder, star = true))
+          false
         else {
           builder.getTokenText match {
             case "*" => builder.advanceLexer() // Ate '*'

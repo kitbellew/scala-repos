@@ -80,7 +80,8 @@ class ScModifierListImpl private (
       val am = stub.findChildStubByType(ScalaElementTypes.ACCESS_MODIFIER)
       if (am != null) {
         return Some(am.getPsi)
-      } else return None
+      } else
+        return None
     }
     findChild(classOf[ScAccessModifier])
   }
@@ -103,12 +104,15 @@ class ScModifierListImpl private (
   def setModifierProperty(name: String, value: Boolean) {
     def space = ScalaPsiElementFactory.createNewLineNode(getManager, " ")
     checkSetModifierProperty(name, value)
-    if (hasModifierProperty(name) == value) return
+    if (hasModifierProperty(name) == value)
+      return
     def addAfter(node: ASTNode) {
       val wasEmpty = getFirstChild == null
-      if (!wasEmpty) getNode.addChild(space)
+      if (!wasEmpty)
+        getNode.addChild(space)
       getNode.addChild(node)
-      if (wasEmpty) getNode.addChild(space)
+      if (wasEmpty)
+        getNode.addChild(space)
     }
     def addBefore(node: ASTNode) {
       val first = getFirstChild
@@ -242,7 +246,8 @@ class ScModifierListImpl private (
           .apply(0)
           .getAnnotations
           .map(_.asInstanceOf[PsiAnnotation])
-      } else return PsiAnnotation.EMPTY_ARRAY
+      } else
+        return PsiAnnotation.EMPTY_ARRAY
     }
     getParent.getNode.findChildByType(ScalaElementTypes.ANNOTATIONS) match {
       case null => PsiAnnotation.EMPTY_ARRAY
@@ -292,7 +297,8 @@ class ScModifierListImpl private (
             .asInstanceOf[ScModifiersStub]
             .getModifiers
             .contains(prop2String(prop))
-        else findChildByType[PsiElement](prop) != null
+        else
+          findChildByType[PsiElement](prop) != null
     }
   }
 

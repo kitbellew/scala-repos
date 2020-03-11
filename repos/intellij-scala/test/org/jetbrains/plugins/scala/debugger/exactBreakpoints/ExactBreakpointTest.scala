@@ -89,7 +89,10 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
     val lineRange =
       DocumentUtil.getLineTextRange(document, sourcePosition.getLine)
     val textRange =
-      if (elemRange != null) elemRange.intersection(lineRange) else lineRange
+      if (elemRange != null)
+        elemRange.intersection(lineRange)
+      else
+        lineRange
     document.getText(textRange).trim
   }
 

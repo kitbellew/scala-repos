@@ -547,9 +547,11 @@ class MockHttpServletRequest(
   def getRequestURL(): StringBuffer = {
     val buffer = new StringBuffer(scheme + "://" + localName)
 
-    if (localPort != 80) buffer.append(":" + localPort)
+    if (localPort != 80)
+      buffer.append(":" + localPort)
 
-    if (contextPath != "") buffer.append(contextPath)
+    if (contextPath != "")
+      buffer.append(contextPath)
 
     buffer.append(path)
 

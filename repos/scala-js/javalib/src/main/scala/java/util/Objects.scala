@@ -6,13 +6,17 @@ object Objects {
 
   @inline
   def equals(a: AnyRef, b: AnyRef): Boolean =
-    if (a == null) b == null
-    else a.equals(b)
+    if (a == null)
+      b == null
+    else
+      a.equals(b)
 
   @inline
   def deepEquals(a: AnyRef, b: AnyRef): Boolean = {
-    if (a eq b) true
-    else if (a == null || b == null) false
+    if (a eq b)
+      true
+    else if (a == null || b == null)
+      false
     else {
       (a, b) match {
         case (a1: Array[AnyRef], a2: Array[AnyRef])   => Arrays.deepEquals(a1, a2)
@@ -31,8 +35,10 @@ object Objects {
 
   @inline
   def hashCode(o: AnyRef): Int =
-    if (o == null) 0
-    else o.hashCode()
+    if (o == null)
+      0
+    else
+      o.hashCode()
 
   @inline
   def hash(values: Array[AnyRef]): Int =
@@ -44,23 +50,31 @@ object Objects {
 
   @inline
   def toString(o: AnyRef, nullDefault: String): String =
-    if (o == null) nullDefault
-    else o.toString
+    if (o == null)
+      nullDefault
+    else
+      o.toString
 
   @inline
   def compare[T](a: T, b: T, c: Comparator[_ >: T]): Int =
-    if (a.asInstanceOf[AnyRef] eq b.asInstanceOf[AnyRef]) 0
-    else c.compare(a, b)
+    if (a.asInstanceOf[AnyRef] eq b.asInstanceOf[AnyRef])
+      0
+    else
+      c.compare(a, b)
 
   @inline
   def requireNonNull[T](obj: T): T =
-    if (obj == null) throw new NullPointerException
-    else obj
+    if (obj == null)
+      throw new NullPointerException
+    else
+      obj
 
   @inline
   def requireNonNull[T](obj: T, message: String): T =
-    if (obj == null) throw new NullPointerException(message)
-    else obj
+    if (obj == null)
+      throw new NullPointerException(message)
+    else
+      obj
 
   @inline
   def isNull(obj: AnyRef): Boolean =

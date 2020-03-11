@@ -57,7 +57,8 @@ final class EvalDefinitions(
     val valNames: Seq[String]) {
   def values(parent: ClassLoader): Seq[Any] = {
     val module = getModule(enclosingModule, loader(parent))
-    for (n <- valNames) yield module.getClass.getMethod(n).invoke(module)
+    for (n <- valNames)
+      yield module.getClass.getMethod(n).invoke(module)
   }
 }
 
@@ -197,7 +198,10 @@ final class Eval(
     }
     def unlinkAll(): Unit =
       for ((sym, _) <- run.symSource)
-        if (ev.unlink) unlink(sym) else toUnlinkLater ::= sym
+        if (ev.unlink)
+          unlink(sym)
+        else
+          toUnlinkLater ::= sym
 
     val (extra, loader) = backing match {
       case Some(back) if classExists(back, moduleName) =>
@@ -250,7 +254,8 @@ final class Eval(
     checkError("Type error in expression")
 
     val extra = ev.extra(run, unit)
-    for (f <- backing) ev.write(extra, cacheFile(f, moduleName))
+    for (f <- backing)
+      ev.write(extra, cacheFile(f, moduleName))
     val loader = (parent: ClassLoader) =>
       new AbstractFileClassLoader(dir, parent)
     (extra, loader)
@@ -516,7 +521,8 @@ final class Eval(
   private[this] def mkUnit(srcName: String, firstLine: Int, s: String) =
     new CompilationUnit(new EvalSourceFile(srcName, firstLine, s))
   private[this] def checkError(label: String) =
-    if (reporter.hasErrors) throw new EvalException(label)
+    if (reporter.hasErrors)
+      throw new EvalException(label)
 
   private[this] final class EvalSourceFile(
       name: String,
@@ -570,7 +576,10 @@ final class Eval(
     // the SourceFile attribute is populated from this method, so we are required to only return the name
     override def toString = new File(srcName).getName
     private[this] def index(a: Array[Int], i: Int): Int =
-      if (i < 0 || i >= a.length) 0 else a(i)
+      if (i < 0 || i >= a.length)
+        0
+      else
+        a(i)
   }
 }
 private[sbt] object Eval {
@@ -580,13 +589,22 @@ private[sbt] object Eval {
   def seqBytes[T](s: Seq[T])(f: T => Array[Byte]): Array[Byte] = bytes(s map f)
   def bytes(b: Seq[Array[Byte]]): Array[Byte] =
     bytes(b.length) ++ b.flatten.toArray[Byte]
-  def bytes(b: Boolean): Array[Byte] = Array[Byte](if (b) 1 else 0)
+  def bytes(b: Boolean): Array[Byte] =
+    Array[Byte](
+      if (b)
+        1
+      else
+        0)
   def filesModifiedBytes(fs: Array[File]): Array[Byte] =
-    if (fs eq null) filesModifiedBytes(Array[File]())
-    else seqBytes(fs)(fileModifiedBytes)
+    if (fs eq null)
+      filesModifiedBytes(Array[File]())
+    else
+      seqBytes(fs)(fileModifiedBytes)
   def fileModifiedBytes(f: File): Array[Byte] =
-    (if (f.isDirectory) filesModifiedBytes(f listFiles classDirFilter)
-     else bytes(f.lastModified)) ++
+    (if (f.isDirectory)
+       filesModifiedBytes(f listFiles classDirFilter)
+     else
+       bytes(f.lastModified)) ++
       bytes(f.getAbsolutePath)
   def fileExistsBytes(f: File): Array[Byte] =
     bytes(f.exists) ++

@@ -16,9 +16,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._;
 
 class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
   override def isApplicable(elements: Array[PsiElement]): Boolean = {
-    if (elements.length > 1) return false
+    if (elements.length > 1)
+      return false
     for (element <- elements)
-      if (!isApplicable(element)) return false
+      if (!isApplicable(element))
+        return false
     true
   }
   override def isApplicable(element: PsiElement): Boolean = {
@@ -41,8 +43,10 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
 
   override def getTemplateAsString(elements: Array[PsiElement]): String = {
     val arrow =
-      if (elements.length == 0) "=>"
-      else ScalaPsiUtil.functionArrow(elements(0).getProject)
+      if (elements.length == 0)
+        "=>"
+      else
+        ScalaPsiUtil.functionArrow(elements(0).getProject)
     (if (elements.length == 1 && !needBraces(elements(0)))
        super.getTemplateAsString(elements)
      else

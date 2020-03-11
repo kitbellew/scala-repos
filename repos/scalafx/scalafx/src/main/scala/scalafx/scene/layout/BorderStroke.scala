@@ -37,7 +37,10 @@ import scalafx.scene.paint.Paint
 
 object BorderStroke {
   implicit def sfxBorderStroke2jfx(v: BorderStroke): jfxsl.BorderStroke =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * The default Insets to be used with a BorderStroke that does not otherwise define any.

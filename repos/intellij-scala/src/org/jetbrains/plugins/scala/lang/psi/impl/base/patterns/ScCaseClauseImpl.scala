@@ -42,12 +42,14 @@ class ScCaseClauseImpl(node: ASTNode)
           val iterator = p.bindings.iterator
           while (iterator.hasNext) {
             val b = iterator.next()
-            if (!processor.execute(b, state)) return false
+            if (!processor.execute(b, state))
+              return false
           }
           val typeVariablesIterator = p.typeVariables.iterator
           while (typeVariablesIterator.hasNext) {
             val tvar = typeVariablesIterator.next()
-            if (!processor.execute(tvar, state)) return false
+            if (!processor.execute(tvar, state))
+              return false
           }
           true
         }
@@ -55,14 +57,18 @@ class ScCaseClauseImpl(node: ASTNode)
           case Some(e)
               if lastParent != null &&
                 e.startOffsetInParent == lastParent.startOffsetInParent =>
-            if (!process) return false
-          case Some(e: ScInterpolationPattern) => if (!process) return false
+            if (!process)
+              return false
+          case Some(e: ScInterpolationPattern) =>
+            if (!process)
+              return false
           case _ =>
             guard match {
               case Some(g)
                   if lastParent != null &&
                     g.startOffsetInParent == lastParent.startOffsetInParent =>
-                if (!process) return false
+                if (!process)
+                  return false
               case _ =>
                 //todo: is this good? Maybe parser => always expression.
                 val last = findLastChildByType(
@@ -80,7 +86,8 @@ class ScCaseClauseImpl(node: ASTNode)
                     ScalaElementTypes.OBJECT_DEF
                   ))
                 if (last != null && lastParent != null && last.startOffsetInParent == lastParent.startOffsetInParent) {
-                  if (!process) return false
+                  if (!process)
+                    return false
                 }
             }
         }

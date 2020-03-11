@@ -116,11 +116,15 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       extends super.DefaultKeySet
       with immutable.Set[A] {
     override def +(elem: A): immutable.Set[A] =
-      if (this(elem)) this
-      else immutable.Set[A]() ++ this + elem
+      if (this(elem))
+        this
+      else
+        immutable.Set[A]() ++ this + elem
     override def -(elem: A): immutable.Set[A] =
-      if (this(elem)) immutable.Set[A]() ++ this - elem
-      else this
+      if (this(elem))
+        immutable.Set[A]() ++ this - elem
+      else
+        this
 
     // ImmutableDefaultKeySet is only protected, so we won't warn on override.
     // Someone could override in a way that makes widening not okay
@@ -137,7 +141,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
   def transform[C, That](f: (A, B) => C)(
       implicit bf: CanBuildFrom[This, (A, C), That]): That = {
     val b = bf(repr)
-    for ((key, value) <- this) b += ((key, f(key, value)))
+    for ((key, value) <- this)
+      b += ((key, f(key, value)))
     b.result()
   }
 }

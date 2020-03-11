@@ -52,7 +52,10 @@ object ObservableMap extends MutableMapFactory[ObservableMap] {
     */
   implicit def sfxObservableMap2sfxObservableMap[K, V](
       om: ObservableMap[K, V]): jfxc.ObservableMap[K, V] =
-    if (om != null) om.delegate else null
+    if (om != null)
+      om.delegate
+    else
+      null
 
   // CHANGING INDICATORS - BEGIN
 
@@ -230,7 +233,10 @@ trait ObservableMap[K, V]
     *         none exists.
     */
   def get(key: K): Option[V] =
-    if (delegate.containsKey(key)) Option(delegate.get(key)) else None
+    if (delegate.containsKey(key))
+      Option(delegate.get(key))
+    else
+      None
 
   import scalafx.collections.ObservableMap._
 

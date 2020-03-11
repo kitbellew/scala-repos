@@ -69,10 +69,12 @@ case class OptionalUnzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
         val (rl, rr) = apply(r)
         val mergedl =
           for (lli <- ll;
-               rli <- rl) yield lli.merge(rli)
+               rli <- rl)
+            yield lli.merge(rli)
         val mergedr =
           for (lri <- lr;
-               rri <- rr) yield lri.merge(rri)
+               rri <- rr)
+            yield lri.merge(rri)
         (mergedl, mergedr)
 
       case WrittenProducer(producer, sink) =>
@@ -80,10 +82,12 @@ case class OptionalUnzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
         val (leftSink, rightSink) = sink
         val sinkl =
           for (li <- l;
-               leftSinki <- leftSink) yield li.write(leftSinki)
+               leftSinki <- leftSink)
+            yield li.write(leftSinki)
         val sinkr =
           for (ri <- r;
-               rightSinki <- rightSink) yield ri.write(rightSinki)
+               rightSinki <- rightSink)
+            yield ri.write(rightSinki)
         (sinkl, sinkr)
 
       case LeftJoinedProducer(producer, service) =>

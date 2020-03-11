@@ -24,7 +24,8 @@ final class MatchError(obj: Any) extends RuntimeException {
     */
   private lazy val objString = {
     def ofClass = "of class " + obj.getClass.getName
-    if (obj == null) "null"
+    if (obj == null)
+      "null"
     else
       try {
         obj.toString() + " (" + ofClass + ")"

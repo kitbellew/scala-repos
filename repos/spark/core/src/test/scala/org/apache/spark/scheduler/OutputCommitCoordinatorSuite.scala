@@ -260,8 +260,10 @@ private case class OutputCommitFunctions(tempDirPath: String) {
     runCommitWithProvidedCommitter(
       ctx,
       iter,
-      if (ctx.attemptNumber == 0) failingOutputCommitter
-      else successfulOutputCommitter)
+      if (ctx.attemptNumber == 0)
+        failingOutputCommitter
+      else
+        successfulOutputCommitter)
   }
 
   private def runCommitWithProvidedCommitter(

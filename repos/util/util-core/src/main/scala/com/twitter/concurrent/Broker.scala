@@ -47,7 +47,11 @@ class Broker[T] {
         val nextq = q filter {
           _ ne elem
         }
-        val nextState = if (nextq.isEmpty) Quiet else Sending(nextq)
+        val nextState =
+          if (nextq.isEmpty)
+            Quiet
+          else
+            Sending(nextq)
         if (!state.compareAndSet(s, nextState))
           rmElem(elem)
 
@@ -55,7 +59,11 @@ class Broker[T] {
         val nextq = q filter {
           _ ne elem
         }
-        val nextState = if (nextq.isEmpty) Quiet else Receiving(nextq)
+        val nextState =
+          if (nextq.isEmpty)
+            Quiet
+          else
+            Receiving(nextq)
         if (!state.compareAndSet(s, nextState))
           rmElem(elem)
 
@@ -68,10 +76,16 @@ class Broker[T] {
     def prepare() = {
       state.get match {
         case s @ Receiving(rq) =>
-          if (rq.isEmpty) throw new IllegalStateException()
+          if (rq.isEmpty)
+            throw new IllegalStateException()
           val (recvp, newq) = rq.dequeue
-          val nextState = if (newq.isEmpty) Quiet else Receiving(newq)
-          if (!state.compareAndSet(s, nextState)) prepare()
+          val nextState =
+            if (newq.isEmpty)
+              Quiet
+            else
+              Receiving(newq)
+          if (!state.compareAndSet(s, nextState))
+            prepare()
           else {
             val (sendTx, recvTx) = Tx.twoParty(msg)
             recvp.setValue(recvTx)
@@ -90,7 +104,10 @@ class Broker[T] {
             case Receiving(_) => throw new IllegalStateException()
           }
 
-          if (state.compareAndSet(s, nextState)) p else prepare()
+          if (state.compareAndSet(s, nextState))
+            p
+          else
+            prepare()
       }
     }
   }
@@ -100,10 +117,16 @@ class Broker[T] {
     def prepare() =
       state.get match {
         case s @ Sending(sq) =>
-          if (sq.isEmpty) throw new IllegalStateException()
+          if (sq.isEmpty)
+            throw new IllegalStateException()
           val ((sendp, msg), newq) = sq.dequeue
-          val nextState = if (newq.isEmpty) Quiet else Sending(newq)
-          if (!state.compareAndSet(s, nextState)) prepare()
+          val nextState =
+            if (newq.isEmpty)
+              Quiet
+            else
+              Sending(newq)
+          if (!state.compareAndSet(s, nextState))
+            prepare()
           else {
             val (sendTx, recvTx) = Tx.twoParty(msg)
             sendp.setValue(sendTx)
@@ -121,7 +144,10 @@ class Broker[T] {
             case Sending(_)   => throw new IllegalStateException()
           }
 
-          if (state.compareAndSet(s, nextState)) p else prepare()
+          if (state.compareAndSet(s, nextState))
+            p
+          else
+            prepare()
       }
   }
 

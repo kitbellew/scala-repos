@@ -25,14 +25,17 @@ object Resolvers {
     val from = new File(uri)
     val to = uniqueSubdirectoryFor(uri, in = info.staging)
 
-    if (from.isDirectory) Some { () =>
-      if (from.canWrite) from
-      else
-        creates(to) {
-          IO.copyDirectory(from, to)
-        }
-    }
-    else None
+    if (from.isDirectory)
+      Some { () =>
+        if (from.canWrite)
+          from
+        else
+          creates(to) {
+            IO.copyDirectory(from, to)
+          }
+      }
+    else
+      None
   }
 
   val remote: Resolver = (info: ResolveInfo) => {
@@ -150,8 +153,10 @@ object Resolvers {
 
   def run(cwd: Option[File], command: String*): Unit = {
     val result = Process(
-      if (onWindows) "cmd" +: "/c" +: command
-      else command,
+      if (onWindows)
+        "cmd" +: "/c" +: command
+      else
+        command,
       cwd
     ) !;
     if (result != 0)

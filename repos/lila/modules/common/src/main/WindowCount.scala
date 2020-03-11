@@ -24,8 +24,10 @@ final class WindowCount(timeout: FiniteDuration) {
     val current = nowMillis
     val (precedent, (count, millis)) = counter.single()
     val since = current - millis
-    if (since <= tms) ((count + precedent) * 1000) / (since + tms / 2)
-    else 0
+    if (since <= tms)
+      ((count + precedent) * 1000) / (since + tms / 2)
+    else
+      0
   } toInt
 
 }

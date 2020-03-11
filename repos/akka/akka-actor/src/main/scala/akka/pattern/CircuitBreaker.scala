@@ -430,7 +430,8 @@ class CircuitBreaker(
       * @return
       */
     override def callFails(): Unit =
-      if (incrementAndGet() == maxFailures) tripBreaker(Closed)
+      if (incrementAndGet() == maxFailures)
+        tripBreaker(Closed)
 
     /**
       * On entry of this state, failure count is reset.
@@ -460,8 +461,10 @@ class CircuitBreaker(
       * @return Future containing result of protected call
       */
     override def invoke[T](body: ⇒ Future[T]): Future[T] =
-      if (compareAndSet(true, false)) callThrough(body)
-      else Promise.failed[T](new CircuitBreakerOpenException(0.seconds)).future
+      if (compareAndSet(true, false))
+        callThrough(body)
+      else
+        Promise.failed[T](new CircuitBreakerOpenException(0.seconds)).future
 
     /**
       * Reset breaker on successful call.
@@ -516,8 +519,10 @@ class CircuitBreaker(
       */
     private def remainingDuration(): FiniteDuration = {
       val diff = System.nanoTime() - get
-      if (diff <= 0L) Duration.Zero
-      else diff.nanos
+      if (diff <= 0L)
+        Duration.Zero
+      else
+        diff.nanos
     }
 
     /**

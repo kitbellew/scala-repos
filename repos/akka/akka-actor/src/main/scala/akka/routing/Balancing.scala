@@ -29,8 +29,10 @@ private[akka] final class BalancingRoutingLogic extends RoutingLogic {
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
-    else routees.head
+    if (routees.isEmpty)
+      NoRoutee
+    else
+      routees.head
 }
 
 /**
@@ -128,7 +130,8 @@ final case class BalancingPool(
         // use the user defined 'pool-dispatcher' config as fallback, if any
         if (systemConfig.hasPath(deployDispatcherConfigPath))
           systemConfig.getConfig(deployDispatcherConfigPath)
-        else ConfigFactory.empty
+        else
+          ConfigFactory.empty
       )
 
       dispatchers.registerConfigurator(
@@ -147,7 +150,8 @@ final case class BalancingPool(
     * if this RouterConfig doesn't have one.
     */
   override def withFallback(other: RouterConfig): RouterConfig =
-    if (other == NoRouter) this // NoRouter is the default, hence “neutral”
+    if (other == NoRouter)
+      this // NoRouter is the default, hence “neutral”
     else {
 
       other match {
@@ -155,7 +159,8 @@ final case class BalancingPool(
           if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
               && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
             this.withSupervisorStrategy(p.supervisorStrategy)
-          else this
+          else
+            this
 
         case _ ⇒ this
       }

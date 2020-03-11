@@ -168,7 +168,8 @@ object Tests {
         case Filters(includes) =>
           if (orderedFilters.nonEmpty)
             sys.error("Cannot define multiple ordered test filters.")
-          else orderedFilters = includes
+          else
+            orderedFilters = includes
         case Exclude(exclude)         => excludeTestsSet ++= exclude
         case Listeners(listeners)     => testListeners ++= listeners
         case Setup(setupFunction)     => setup += setupFunction
@@ -189,7 +190,8 @@ object Tests {
         filter(test.name))
     val filtered0 = discovered.filter(includeTest).toList.distinct
     val tests =
-      if (orderedFilters.isEmpty) filtered0
+      if (orderedFilters.isEmpty)
+        filtered0
       else
         orderedFilters
           .flatMap(f => filtered0.filter(d => f(d.name)))
@@ -376,7 +378,13 @@ object Tests {
         results.toIndexedSeq,
         {
           case (Output(v1, m1, _), Output(v2, m2, _)) =>
-            Output(if (v1.id < v2.id) v2 else v1, m1 ++ m2, Iterable.empty)
+            Output(
+              if (v1.id < v2.id)
+                v2
+              else
+                v1,
+              m1 ++ m2,
+              Iterable.empty)
         })
     else {
       def sequence(
@@ -397,7 +405,10 @@ object Tests {
     }
   def overall(results: Iterable[TestResult.Value]): TestResult.Value =
     (TestResult.Passed /: results) { (acc, result) =>
-      if (acc.id < result.id) result else acc
+      if (acc.id < result.id)
+        result
+      else
+        acc
     }
   def discover(
       frameworks: Seq[Framework],

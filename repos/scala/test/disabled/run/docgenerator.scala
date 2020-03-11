@@ -11,7 +11,8 @@ object Test {
     // overwrites value of UrlContext.generator in file DocUtil.scala
     System.setProperty("doc.generator", "scaladoc")
     var dirname = System.getProperty("partest.output")
-    if (dirname eq null) dirname = System.getProperty("java.io.tmpdir")
+    if (dirname eq null)
+      dirname = System.getProperty("java.io.tmpdir")
     val tmpDir = new File(dirname)
     tmpDir.mkdirs()
     test1(tmpDir)
@@ -151,7 +152,11 @@ object Foo2 {
     }
     def main(args: Array[String]) {
       process(args)
-      exit(if (reporter.hasErrors) 1 else 0)
+      exit(
+        if (reporter.hasErrors)
+          1
+        else
+          0)
     }
     // main returning a status (no exit code)
     def main0(args: Array[String]): Boolean = {

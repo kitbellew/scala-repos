@@ -499,8 +499,10 @@ object Test {
   object Bug1281 {
     class Sync {
       def unapplySeq(scrut: Int): Option[Seq[Int]] = {
-        if (scrut == 42) Some(List(1, 2))
-        else None
+        if (scrut == 42)
+          Some(List(1, 2))
+        else
+          None
       }
     }
     class Buffer {

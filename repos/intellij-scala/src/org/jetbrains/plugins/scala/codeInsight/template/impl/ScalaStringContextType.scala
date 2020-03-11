@@ -21,7 +21,8 @@ class ScalaStringContextType
 
 object ScalaStringContextType {
   def isInContext(file: PsiFile, offset: Int): Boolean = {
-    if (!file.isInstanceOf[ScalaFile]) return false
+    if (!file.isInstanceOf[ScalaFile])
+      return false
     val element = file.findElementAt(offset)
     PsiTreeUtil.getParentOfType(element, classOf[ScLiteral]) match {
       case literal: ScLiteral =>

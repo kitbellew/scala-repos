@@ -482,7 +482,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
           var max = 0.0
           activeValuesIterator foreach (v => {
             val nn = v.abs.toDouble;
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {
@@ -519,7 +520,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
           var max = 0.0
           activeValuesIterator foreach (v => {
             val nn = f.sNorm(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {
@@ -943,7 +945,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpAdd.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2(i))
       }
     }
 
@@ -954,7 +957,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpSub.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2(i))
       }
     }
 
@@ -964,7 +968,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       : OpMulScalar.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpMulScalar.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2(i))
       }
     }
 
@@ -975,7 +980,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpDiv.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2(i))
       }
     }
 
@@ -986,7 +992,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpPow.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2(i))
       }
     }
 
@@ -997,7 +1004,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[HashVector[T], T] = {
     new OpAdd.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2)
       }
     }
 
@@ -1034,7 +1042,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[HashVector[T], T] = {
     new OpSub.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2)
       }
     }
 
@@ -1045,7 +1054,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[HashVector[T], T] = {
     new OpMulScalar.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2)
       }
     }
   }
@@ -1055,7 +1065,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[HashVector[T], T] = {
     new OpDiv.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2)
       }
     }
   }
@@ -1065,7 +1076,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[HashVector[T], T] = {
     new OpPow.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2)
       }
     }
   }
@@ -1134,7 +1146,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
           var max = 0.0
           activeValuesIterator foreach (v => {
             val nn = canNormS(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {

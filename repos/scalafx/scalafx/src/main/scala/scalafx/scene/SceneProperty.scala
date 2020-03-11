@@ -44,7 +44,10 @@ object SceneProperty {
     "8.0.60-R10")
   implicit def sfxSceneProperty2jfx(
       p: SceneProperty): jfxbp.ReadOnlyObjectProperty[jfxs.Scene] =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 }
 
 // This particular construct enables the reading of properties of the scene that will be set into the property later on.

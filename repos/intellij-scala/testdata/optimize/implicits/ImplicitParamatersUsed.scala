@@ -11,7 +11,8 @@ class ImplicitParamatersUsed {
   def moo() {
     import Z._
     val b = new G
-    for (i <- b) yield i
+    for (i <- b)
+      yield i
   }
 }
 /*

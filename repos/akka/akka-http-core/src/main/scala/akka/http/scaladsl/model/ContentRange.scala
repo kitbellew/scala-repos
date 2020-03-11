@@ -50,7 +50,10 @@ object ContentRange {
 
     def render[R <: Rendering](r: R): r.type = {
       r ~~ first ~~ '-' ~~ last ~~ '/'
-      if (instanceLength.isDefined) r ~~ instanceLength.get else r ~~ '*'
+      if (instanceLength.isDefined)
+        r ~~ instanceLength.get
+      else
+        r ~~ '*'
     }
 
     /** Java API */

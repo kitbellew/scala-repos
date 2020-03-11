@@ -34,7 +34,12 @@ trait Naming {
     // Not lots - preserve whitespace and ESC
     else
       cleaned map (ch =>
-        if (ch.isWhitespace || ch == ESC) ch else if (ch < 32) '?' else ch)
+        if (ch.isWhitespace || ch == ESC)
+          ch
+        else if (ch < 32)
+          '?'
+        else
+          ch)
   }
 
   // The two name forms this is catching are the two sides of this assignment:

@@ -44,7 +44,8 @@ private[play] abstract class ClosableLazy[T >: Null <: AnyRef, C] {
     */
   final def get(): T = {
     val currentValue = value
-    if (currentValue != null) return currentValue
+    if (currentValue != null)
+      return currentValue
     synchronized {
       if (hasBeenClosed)
         throw new IllegalStateException(

@@ -29,7 +29,8 @@ class IdeaIncrementalCompiler(scalac: AnalyzingCompiler)
     val out =
       if (compilationData.outputGroups.size <= 1)
         CompileOutput(compilationData.output)
-      else CompileOutput(compilationData.outputGroups: _*)
+      else
+        CompileOutput(compilationData.outputGroups: _*)
     val cArgs = new CompilerArguments(scalac.scalaInstance, scalac.cp)
     val options = "IntellijIdea.simpleAnalysis" +: cArgs(
       Nil,

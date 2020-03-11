@@ -46,9 +46,21 @@ package object time {
 
     val dt = new DateTime(zone)
 
-    val Y = if (y == 0) dt.getYear else y
-    val M = if (m == 0) dt.getMonthOfYear else m
-    val D = if (d == 0) dt.getDayOfMonth else d
+    val Y =
+      if (y == 0)
+        dt.getYear
+      else
+        y
+    val M =
+      if (m == 0)
+        dt.getMonthOfYear
+      else
+        m
+    val D =
+      if (d == 0)
+        dt.getDayOfMonth
+      else
+        d
 
     new DateTime(Y, M, D, h, t, s, ms, zone)
   }

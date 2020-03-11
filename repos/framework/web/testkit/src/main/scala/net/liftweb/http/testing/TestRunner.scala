@@ -94,7 +94,8 @@ class TestRunner(
             case e: Exception => e.getStackTrace.toList.tail.head
           }
 
-        if (testItem.resetDB) doResetDB
+        if (testItem.resetDB)
+          doResetDB
         val (success, trace, excp) =
           try {
             testItem.getFunc(0)()
@@ -120,48 +121,55 @@ class TestRunner(
       }
 
       def runForkTest(testItem: Item, cnt: Int) {
-        val threads = for (n <- (1 to cnt).toList) yield {
-          val thread = new Thread(new Runnable {
-            def run {
-              beforeTest(testItem.name + " thread " + n)
+        val threads =
+          for (n <- (1 to cnt).toList)
+            yield {
+              val thread = new Thread(new Runnable {
+                def run {
+                  beforeTest(testItem.name + " thread " + n)
 
-              val myTrace =
-                try {
-                  throw new Exception("")
-                } catch {
-                  case e: Exception => e.getStackTrace.toList.tail.head
-                }
-
-              if (testItem.resetDB) doResetDB
-              val (success, trace, excp) =
-                try {
-                  testItem.getFunc(n)()
-                  (true, Nil, Empty)
-                } catch {
-                  case e: Throwable =>
-                    def combineStack(
-                        ex: Throwable,
-                        base: List[StackTraceElement])
-                        : List[StackTraceElement] = ex match {
-                      case null => base
-                      case _ =>
-                        combineStack(
-                          ex.getCause,
-                          ex.getStackTrace.toList ::: base)
+                  val myTrace =
+                    try {
+                      throw new Exception("")
+                    } catch {
+                      case e: Exception => e.getStackTrace.toList.tail.head
                     }
-                    val trace = combineStack(e, Nil)
-                      .takeWhile(e =>
-                        e.getClassName != myTrace.getClassName || e.getFileName != myTrace.getFileName || e.getMethodName != myTrace.getMethodName)
-                      .dropRight(2)
-                    (false, trace, Full(e))
-                }
 
-              afterTest(testItem.name + " thread " + n, success, excp, trace)
+                  if (testItem.resetDB)
+                    doResetDB
+                  val (success, trace, excp) =
+                    try {
+                      testItem.getFunc(n)()
+                      (true, Nil, Empty)
+                    } catch {
+                      case e: Throwable =>
+                        def combineStack(
+                            ex: Throwable,
+                            base: List[StackTraceElement])
+                            : List[StackTraceElement] = ex match {
+                          case null => base
+                          case _ =>
+                            combineStack(
+                              ex.getCause,
+                              ex.getStackTrace.toList ::: base)
+                        }
+                        val trace = combineStack(e, Nil)
+                          .takeWhile(e =>
+                            e.getClassName != myTrace.getClassName || e.getFileName != myTrace.getFileName || e.getMethodName != myTrace.getMethodName)
+                          .dropRight(2)
+                        (false, trace, Full(e))
+                    }
+
+                  afterTest(
+                    testItem.name + " thread " + n,
+                    success,
+                    excp,
+                    trace)
+                }
+              })
+              thread.start
+              thread
             }
-          })
-          thread.start
-          thread
-        }
 
         def waitAll(in: List[Thread]) {
           in match {
@@ -192,10 +200,20 @@ class TestRunner(
 case class TestResults(res: List[Tracker]) {
   def stats = {
     val rev = res.reverse
-    val start =
-      res.map(_.at).reduceLeft((a: Long, b: Long) => if (a < b) a else b)
-    val end =
-      res.map(_.at).reduceLeft((a: Long, b: Long) => if (a > b) a else b)
+    val start = res
+      .map(_.at)
+      .reduceLeft((a: Long, b: Long) =>
+        if (a < b)
+          a
+        else
+          b)
+    val end = res
+      .map(_.at)
+      .reduceLeft((a: Long, b: Long) =>
+        if (a > b)
+          a
+        else
+          b)
     val assertCnt = res.filter(a => a.isAssert && !a.isBegin).length
     val testCnt = res.filter(a => a.isTest && !a.isBegin).length
     val failedAsserts = res.filter(a => a.isAssert && !a.success)

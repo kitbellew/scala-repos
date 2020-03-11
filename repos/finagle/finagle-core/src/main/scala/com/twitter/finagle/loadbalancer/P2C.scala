@@ -46,10 +46,15 @@ private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
 
       // if all nodes are down, we might as well try to send requests somewhere
       // as our view of the world may be out of date.
-      val vec = if (up.isEmpty) down else up
+      val vec =
+        if (up.isEmpty)
+          down
+        else
+          up
       val size = vec.size
 
-      if (size == 1) vec.head
+      if (size == 1)
+        vec.head
       else {
         val a = rng.nextInt(size)
         var b = rng.nextInt(size)
@@ -67,7 +72,10 @@ private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
         if (nodeA.status != Status.Open || nodeB.status != Status.Open)
           sawDown = true
 
-        if (nodeA.load < nodeB.load) nodeA else nodeB
+        if (nodeA.load < nodeB.load)
+          nodeA
+        else
+          nodeB
       }
     }
   }

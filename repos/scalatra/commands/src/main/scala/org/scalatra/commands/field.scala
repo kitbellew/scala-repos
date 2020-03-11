@@ -109,7 +109,8 @@ class BasicFieldDescriptor[T](
     val nwValidators: Option[Validator[T]] =
       if (bindingValidators.nonEmpty)
         Some(bindingValidators.map(_ apply name).reduce(_ andThen _))
-      else None
+      else
+        None
 
     copy(validator =
       validator.flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
@@ -295,14 +296,16 @@ class BoundFieldDescriptor[S, T](
       val doValidation: Validator[T] = if (isRequired) {
         (x: FieldValidation[T]) =>
           x flatMap { v =>
-            if (original.isDefined) v.success
+            if (original.isDefined)
+              v.success
             else
               ValidationError(
                 "%s is required." format name.underscore.humanize,
                 FieldName(name),
                 ValidationFail).failure
           }
-      } else identity
+      } else
+        identity
       new ValidatedBoundFieldDescriptor(
         (doValidation andThen defaultValidator)(value) map transformations,
         this)

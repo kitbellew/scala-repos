@@ -13,7 +13,10 @@ object SafeLongUtil {
     x.getClass.getSimpleName.endsWith("BigInteger")
 
   def classify(a: SafeLong): String =
-    if (isBig(a)) "b" else "l"
+    if (isBig(a))
+      "b"
+    else
+      "l"
 
   def classify(a: SafeLong, op_a: SafeLong): String =
     classify(a) + "_" + classify(op_a)

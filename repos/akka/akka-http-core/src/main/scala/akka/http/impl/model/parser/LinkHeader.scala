@@ -92,7 +92,10 @@ private[parser] trait LinkHeader {
       case Seq((x: LinkParams.rel), tail @ _*) ⇒
         sanitize(
           tail,
-          if (seenRel) result else result :+ x,
+          if (seenRel)
+            result
+          else
+            result :+ x,
           seenRel = true,
           seenMedia,
           seenTitle,
@@ -101,7 +104,10 @@ private[parser] trait LinkHeader {
       case Seq((x: LinkParams.media), tail @ _*) ⇒
         sanitize(
           tail,
-          if (seenMedia) result else result :+ x,
+          if (seenMedia)
+            result
+          else
+            result :+ x,
           seenRel,
           seenMedia = true,
           seenTitle,
@@ -110,7 +116,10 @@ private[parser] trait LinkHeader {
       case Seq((x: LinkParams.title), tail @ _*) ⇒
         sanitize(
           tail,
-          if (seenTitle) result else result :+ x,
+          if (seenTitle)
+            result
+          else
+            result :+ x,
           seenRel,
           seenMedia,
           seenTitle = true,
@@ -119,7 +128,10 @@ private[parser] trait LinkHeader {
       case Seq((x: LinkParams.`title*`), tail @ _*) ⇒
         sanitize(
           tail,
-          if (seenTitleS) result else result :+ x,
+          if (seenTitleS)
+            result
+          else
+            result :+ x,
           seenRel,
           seenMedia,
           seenTitle,
@@ -128,7 +140,10 @@ private[parser] trait LinkHeader {
       case Seq((x: LinkParams.`type`), tail @ _*) ⇒
         sanitize(
           tail,
-          if (seenType) result else result :+ x,
+          if (seenType)
+            result
+          else
+            result :+ x,
           seenRel,
           seenMedia,
           seenTitle,

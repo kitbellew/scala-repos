@@ -415,8 +415,10 @@ private[spark] class BlockManagerMasterEndpoint(
   }
 
   private def getLocations(blockId: BlockId): Seq[BlockManagerId] = {
-    if (blockLocations.containsKey(blockId)) blockLocations.get(blockId).toSeq
-    else Seq.empty
+    if (blockLocations.containsKey(blockId))
+      blockLocations.get(blockId).toSeq
+    else
+      Seq.empty
   }
 
   private def getLocationsMultipleBlockIds(
@@ -447,9 +449,10 @@ private[spark] class BlockManagerMasterEndpoint(
   private def getExecutorEndpointRef(
       executorId: String): Option[RpcEndpointRef] = {
     for (blockManagerId <- blockManagerIdByExecutor.get(executorId);
-         info <- blockManagerInfo.get(blockManagerId)) yield {
-      info.slaveEndpoint
-    }
+         info <- blockManagerInfo.get(blockManagerId))
+      yield {
+        info.slaveEndpoint
+      }
   }
 
   override def onStop(): Unit = {

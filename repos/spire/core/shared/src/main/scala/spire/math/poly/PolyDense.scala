@@ -14,7 +14,11 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     implicit val ct: ClassTag[C])
     extends Polynomial[C] { lhs =>
 
-  def degree: Int = if (isZero) 0 else coeffs.length - 1
+  def degree: Int =
+    if (isZero)
+      0
+    else
+      coeffs.length - 1
 
   def toSparse(implicit ring: Semiring[C], eq: Eq[C]): PolySparse[C] =
     Polynomial.sparse(data)
@@ -42,7 +46,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   class TermIterator extends Iterator[Term[C]] {
     private[this] var e: Int = 0
     private[this] def findNext(): Unit =
-      while (e < coeffs.length && coeffs(e) == 0) e += 1
+      while (e < coeffs.length && coeffs(e) == 0)
+        e += 1
     findNext()
     def hasNext: Boolean = e < coeffs.length
     def next: Term[C] = {
@@ -56,17 +61,24 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   def coeffsArray(implicit ring: Semiring[C]): Array[C] = coeffs
 
   def nth(n: Int)(implicit ring: Semiring[C]): C =
-    if (n < coeffs.length) coeffs(n) else ring.zero
+    if (n < coeffs.length)
+      coeffs(n)
+    else
+      ring.zero
 
   def maxOrderTermCoeff(implicit ring: Semiring[C]): C =
-    if (isZero) ring.zero else coeffs(degree)
+    if (isZero)
+      ring.zero
+    else
+      coeffs(degree)
 
   def reductum(implicit
       e: Eq[C],
       ring: Semiring[C],
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeffs.length - 2
-    while (i >= 0 && coeffs(i) === ring.zero) i -= 1
+    while (i >= 0 && coeffs(i) === ring.zero)
+      i -= 1
     if (i < 0) {
       new PolyDense(new Array[C](0))
     } else {
@@ -80,7 +92,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     coeffs.length == 0
 
   def apply(x: C)(implicit ring: Semiring[C]): C = {
-    if (isZero) return ring.zero
+    if (isZero)
+      return ring.zero
 
     var even = coeffs.length - 1
     var odd = coeffs.length - 2
@@ -107,7 +120,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   }
 
   def derivative(implicit ring: Ring[C], eq: Eq[C]): Polynomial[C] = {
-    if (isZero) return this
+    if (isZero)
+      return this
     val cs = new Array[C](degree)
     var j = coeffs.length - 1
     cfor(cs.length - 1)(_ >= 0, _ - 1) { i =>
@@ -142,8 +156,10 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   def *(rhs: Polynomial[C])(implicit
       ring: Semiring[C],
       eq: Eq[C]): Polynomial[C] = {
-    if (rhs.isZero) return rhs
-    if (lhs.isZero) return lhs
+    if (rhs.isZero)
+      return rhs
+    if (lhs.isZero)
+      return lhs
     val lcs = lhs.coeffsArray
     val rcs = rhs.coeffsArray
     val cs = new Array[C](lcs.length + rcs.length - 1)
@@ -182,7 +198,11 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       if (u.isEmpty || n < 0) {
         (polyFromCoeffsLE(q), polyFromCoeffsBE(u))
       } else {
-        val v0 = if (rhs.isZero) field.zero else rhs.maxOrderTermCoeff
+        val v0 =
+          if (rhs.isZero)
+            field.zero
+          else
+            rhs.maxOrderTermCoeff
         val q0 = u(0) / v0
         val uprime = zipSum(u, rhs.coeffsArray.reverse.map(_ * -q0))
         eval(Array(q0) ++ q, uprime, n - 1)

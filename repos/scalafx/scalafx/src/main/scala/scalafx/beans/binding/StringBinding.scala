@@ -33,7 +33,10 @@ import scalafx.beans.value.ObservableValue
 
 object StringBinding {
   implicit def sfxStringBinding2jfx(sb: StringBinding): jfxbb.StringBinding =
-    if (sb != null) sb.delegate else null
+    if (sb != null)
+      sb.delegate
+    else
+      null
 }
 
 class StringBinding(override val delegate: jfxbb.StringBinding)

@@ -107,7 +107,8 @@ trait WikiService {
               file.time,
               file.commitId)
           }
-      } else None
+      } else
+        None
     }
   }
 
@@ -121,8 +122,16 @@ trait WikiService {
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
       if (!JGitUtil.isEmpty(git)) {
         val index = path.lastIndexOf('/')
-        val parentPath = if (index < 0) "." else path.substring(0, index)
-        val fileName = if (index < 0) path else path.substring(index + 1)
+        val parentPath =
+          if (index < 0)
+            "."
+          else
+            path.substring(0, index)
+        val fileName =
+          if (index < 0)
+            path
+          else
+            path.substring(index + 1)
 
         JGitUtil
           .getFileList(git, "master", parentPath)
@@ -130,7 +139,8 @@ trait WikiService {
           .map { file =>
             git.getRepository.open(file.id).getBytes
           }
-      } else None
+      } else
+        None
     }
 
   /**
@@ -208,13 +218,15 @@ trait WikiService {
                   val applied = PatchUtil.apply(source, patch, fh)
                   if (applied != null) {
                     Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else Nil
+                  } else
+                    Nil
                 }
                 case DiffEntry.ChangeType.ADD => {
                   val applied = PatchUtil.apply("", patch, fh)
                   if (applied != null) {
                     Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else Nil
+                  } else
+                    Nil
                 }
                 case DiffEntry.ChangeType.DELETE => {
                   Seq(RevertInfo("DELETE", fh.getNewPath, ""))
@@ -355,7 +367,8 @@ trait WikiService {
             )
 
             Some(newHeadId.getName)
-          } else None
+          } else
+            None
       }
     }
   }

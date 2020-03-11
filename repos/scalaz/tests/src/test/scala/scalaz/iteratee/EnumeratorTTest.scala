@@ -119,7 +119,11 @@ object EnumeratorTTest extends SpecLite {
 
     val testIter = IterateeT.fold[Int, IO, Boolean](true) {
       case (false, _) => false
-      case (true, i)  => if (i <= 2) v == 0 else v == 1
+      case (true, i) =>
+        if (i <= 2)
+          v == 0
+        else
+          v == 1
     }
 
     (testIter &= (enum |+| effect |+| enum2)).run.unsafePerformIO must_=== (true)

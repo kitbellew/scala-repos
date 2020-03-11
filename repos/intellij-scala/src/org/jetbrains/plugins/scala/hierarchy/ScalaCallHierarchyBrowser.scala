@@ -103,7 +103,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
         myProject,
         psiElement.asInstanceOf[PsiMethod],
         getCurrentScopeType)
-    else null
+    else
+      null
   }
 
   protected def getComparator: Comparator[NodeDescriptor[_]] = {

@@ -38,7 +38,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
   }
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
-    if (!td.isValid) return false
+    if (!td.isValid)
+      return false
     td.getContainingFile match {
       case _: ScalaCodeFragment         => false
       case f: ScalaFile if f.isWritable => true
@@ -60,7 +61,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
 
     val entity = holder.addAfter(parseElement(text, td.getManager), anchor)
 
-    if (hasMembers) holder.addAfter(createNewLine(td.getManager), entity)
+    if (hasMembers)
+      holder.addAfter(createNewLine(td.getManager), entity)
 
     entity
   }
@@ -76,7 +78,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
-    if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+    if (!FileModificationService.getInstance.prepareFileForWrite(file))
+      return
 
     IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 

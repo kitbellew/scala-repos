@@ -66,11 +66,14 @@ class DuplicatePattern(
   def isDuplicateStart(candidate: PsiElement): Option[DuplicateMatch] = {
     withFilteredForwardSiblings(candidate, elements.size) match {
       case Some(cands) =>
-        if (cands.exists(isUnder(_, elements))) None
+        if (cands.exists(isUnder(_, elements)))
+          None
         else {
           val mtch = new DuplicateMatch(this, cands)
-          if (mtch.isDuplicate) Some(mtch)
-          else None
+          if (mtch.isDuplicate)
+            Some(mtch)
+          else
+            None
         }
       case _ => None
     }

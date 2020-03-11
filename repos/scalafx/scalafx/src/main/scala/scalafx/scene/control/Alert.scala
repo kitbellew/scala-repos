@@ -45,7 +45,10 @@ object Alert {
     * @return JavaFX Alert
     */
   implicit def sfxAlert2jfx(v: Alert): jfxsc.Alert =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * An enumeration containing the available, pre-built alert types that

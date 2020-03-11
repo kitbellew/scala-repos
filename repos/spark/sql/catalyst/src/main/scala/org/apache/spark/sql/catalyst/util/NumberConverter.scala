@@ -135,7 +135,11 @@ object NumberConverter {
       return null
     }
 
-    var (negative, first) = if (n(0) == '-') (true, 1) else (false, 0)
+    var (negative, first) =
+      if (n(0) == '-')
+        (true, 1)
+      else
+        (false, 0)
 
     // Copy the digits in the right side of the array
     var i = 1
@@ -163,7 +167,10 @@ object NumberConverter {
     // Find the first non-zero digit or the last digits if all are zero.
     val firstNonZeroPos = {
       val firstNonZero = value.indexWhere(_ != 0)
-      if (firstNonZero != -1) firstNonZero else value.length - 1
+      if (firstNonZero != -1)
+        firstNonZero
+      else
+        value.length - 1
     }
 
     byte2char(Math.abs(toBase), firstNonZeroPos)

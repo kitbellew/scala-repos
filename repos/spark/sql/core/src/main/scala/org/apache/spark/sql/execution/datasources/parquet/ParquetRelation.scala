@@ -373,8 +373,10 @@ private[sql] class DefaultSource
           val inputFormat = new ParquetInputFormat[InternalRow] {
             override def listStatus(
                 jobContext: JobContext): JList[FileStatus] = {
-              if (cacheMetadata) cachedStatuses.asJava
-              else super.listStatus(jobContext)
+              if (cacheMetadata)
+                cachedStatuses.asJava
+              else
+                super.listStatus(jobContext)
             }
           }
 

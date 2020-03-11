@@ -36,11 +36,16 @@ abstract class JavaToScalaConversionTestBase
     configureFromFileTextAdapter(getTestName(false) + ".java", fileText)
     val javaFile = getFileAdapter
     val offset = fileText.indexOf(startMarker)
-    val startOffset = if (offset != -1) offset + startMarker.length else 0
+    val startOffset =
+      if (offset != -1)
+        offset + startMarker.length
+      else
+        0
 
     val lastPsi = javaFile.findElementAt(javaFile.getText.length - 1)
     var endOffset = fileText.indexOf(endMarker)
-    if (endOffset == -1) endOffset = lastPsi.getTextRange.getStartOffset
+    if (endOffset == -1)
+      endOffset = lastPsi.getTextRange.getStartOffset
 
     var elem: PsiElement = javaFile.findElementAt(startOffset)
     assert(elem.getTextRange.getStartOffset == startOffset)

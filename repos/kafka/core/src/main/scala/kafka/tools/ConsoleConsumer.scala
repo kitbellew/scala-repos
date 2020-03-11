@@ -60,7 +60,10 @@ object ConsoleConsumer extends Logging {
     val consumer =
       if (conf.useNewConsumer) {
         val timeoutMs =
-          if (conf.timeoutMs >= 0) conf.timeoutMs else Long.MaxValue
+          if (conf.timeoutMs >= 0)
+            conf.timeoutMs
+          else
+            Long.MaxValue
         new NewShinyConsumer(
           Option(conf.topicArg),
           Option(conf.whitelistArg),
@@ -197,7 +200,10 @@ object ConsoleConsumer extends Logging {
     props.putAll(config.consumerProps)
     props.put(
       "auto.offset.reset",
-      if (config.fromBeginning) "smallest" else "largest")
+      if (config.fromBeginning)
+        "smallest"
+      else
+        "largest")
     props.put("zookeeper.connect", config.zkConnectionStr)
 
     if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
@@ -228,18 +234,24 @@ object ConsoleConsumer extends Logging {
     props.putAll(config.consumerProps)
     props.put(
       ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-      if (config.options.has(config.resetBeginningOpt)) "earliest"
-      else "latest")
+      if (config.options.has(config.resetBeginningOpt))
+        "earliest"
+      else
+        "latest")
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.bootstrapServer)
     props.put(
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-      if (config.keyDeserializer != null) config.keyDeserializer
-      else "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+      if (config.keyDeserializer != null)
+        config.keyDeserializer
+      else
+        "org.apache.kafka.common.serialization.ByteArrayDeserializer"
     )
     props.put(
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-      if (config.valueDeserializer != null) config.valueDeserializer
-      else "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+      if (config.valueDeserializer != null)
+        config.valueDeserializer
+      else
+        "org.apache.kafka.common.serialization.ByteArrayDeserializer"
     )
 
     props
@@ -376,8 +388,10 @@ object ConsoleConsumer extends Logging {
           "Exactly one of whitelist/blacklist/topic is required.")
       topicArg = options.valueOf(topicOrFilterOpt.head)
       filterSpec =
-        if (options.has(blacklistOpt)) new Blacklist(topicArg)
-        else new Whitelist(topicArg)
+        if (options.has(blacklistOpt))
+          new Blacklist(topicArg)
+        else
+          new Whitelist(topicArg)
     }
     val consumerProps =
       if (options.has(consumerConfigOpt))
@@ -387,17 +401,24 @@ object ConsoleConsumer extends Logging {
     val zkConnectionStr = options.valueOf(zkConnectOpt)
     val fromBeginning = options.has(resetBeginningOpt)
     val skipMessageOnError =
-      if (options.has(skipMessageOnErrorOpt)) true else false
+      if (options.has(skipMessageOnErrorOpt))
+        true
+      else
+        false
     val messageFormatterClass =
       Class.forName(options.valueOf(messageFormatterOpt))
     val formatterArgs = CommandLineUtils.parseKeyValueArgs(
       options.valuesOf(messageFormatterArgOpt).asScala)
     val maxMessages =
-      if (options.has(maxMessagesOpt)) options.valueOf(maxMessagesOpt).intValue
-      else -1
+      if (options.has(maxMessagesOpt))
+        options.valueOf(maxMessagesOpt).intValue
+      else
+        -1
     val timeoutMs =
-      if (options.has(timeoutMsOpt)) options.valueOf(timeoutMsOpt).intValue
-      else -1
+      if (options.has(timeoutMsOpt))
+        options.valueOf(timeoutMsOpt).intValue
+      else
+        -1
     val bootstrapServer = options.valueOf(bootstrapServerOpt)
     val keyDeserializer = options.valueOf(keyDeserializerOpt)
     val valueDeserializer = options.valueOf(valueDeserializerOpt)
@@ -408,7 +429,10 @@ object ConsoleConsumer extends Logging {
     CommandLineUtils.checkRequiredArgs(
       parser,
       options,
-      if (useNewConsumer) bootstrapServerOpt else zkConnectOpt)
+      if (useNewConsumer)
+        bootstrapServerOpt
+      else
+        zkConnectOpt)
 
     if (options.has(csvMetricsReporterEnabledOpt)) {
       val csvReporterProps = new Properties()
@@ -516,7 +540,8 @@ class DefaultMessageFormatter extends MessageFormatter {
       output.write(keySeparator)
     }
 
-    if (printKey) write(keyDeserializer, key, keySeparator)
+    if (printKey)
+      write(keyDeserializer, key, keySeparator)
     write(valueDeserializer, value, lineSeparator)
   }
 }
@@ -535,10 +560,17 @@ class LoggingMessageFormatter extends MessageFormatter {
       logger.info({
           if (timestampType != TimestampType.NO_TIMESTAMP_TYPE)
             s"$timestampType:$timestamp, "
-          else ""
+          else
+            ""
         } +
-          s"key:${if (key == null) "null" else new String(key)}, " +
-          s"value:${if (value == null) "null" else new String(value)}")
+          s"key:${if (key == null)
+            "null"
+          else
+            new String(key)}, " +
+          s"value:${if (value == null)
+            "null"
+          else
+            new String(value)}")
   }
 }
 

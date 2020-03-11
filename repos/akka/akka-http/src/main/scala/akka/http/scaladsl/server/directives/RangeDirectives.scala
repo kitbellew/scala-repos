@@ -182,15 +182,18 @@ trait RangeDirectives {
         }
 
       def rangeHeaderOfGetRequests(ctx: RequestContext): Option[Range] =
-        if (ctx.request.method == HttpMethods.GET) ctx.request.header[Range]
-        else None
+        if (ctx.request.method == HttpMethods.GET)
+          ctx.request.header[Range]
+        else
+          None
 
       extract(rangeHeaderOfGetRequests).flatMap {
         case Some(Range(RangeUnits.Bytes, ranges)) ⇒
           if (ranges.size <= rangeCountLimit)
             applyRanges(
               ranges) & RangeDirectives.respondWithAcceptByteRangesHeader
-          else reject(TooManyRangesRejection(rangeCountLimit))
+          else
+            reject(TooManyRangesRejection(rangeCountLimit))
         case _ ⇒
           MethodDirectives.get & RangeDirectives.respondWithAcceptByteRangesHeader | pass
       }

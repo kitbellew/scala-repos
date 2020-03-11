@@ -83,7 +83,11 @@ final class Semantics private (
 
   /** Retrieve a list of semantics which are set to compliant */
   def compliants: List[String] = {
-    def cl(name: String, cond: Boolean) = if (cond) List(name) else Nil
+    def cl(name: String, cond: Boolean) =
+      if (cond)
+        List(name)
+      else
+        Nil
 
     cl("asInstanceOfs", asInstanceOfs == CheckedBehavior.Compliant) ++
       cl("moduleInit", moduleInit == CheckedBehavior.Compliant) ++
@@ -126,7 +130,10 @@ object Semantics {
     val semsSet = semantics.toSet
 
     def sw[T](name: String, compliant: T, default: T): T =
-      if (semsSet.contains(name)) compliant else default
+      if (semsSet.contains(name))
+        compliant
+      else
+        default
 
     new Semantics(
       asInstanceOfs = sw("asInstanceOfs", Compliant, asInstanceOfs),

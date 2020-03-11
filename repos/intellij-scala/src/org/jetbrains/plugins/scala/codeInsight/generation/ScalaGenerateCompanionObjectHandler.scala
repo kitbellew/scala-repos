@@ -63,7 +63,8 @@ class ScalaGenerateCompanionObjectHandler
         text,
         clazz.getContext,
         clazz)
-    } else throw new IllegalArgumentException("Cannot create companion object")
+    } else
+      throw new IllegalArgumentException("Cannot create companion object")
   }
 
 }

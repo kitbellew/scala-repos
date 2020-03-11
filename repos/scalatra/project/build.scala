@@ -119,8 +119,10 @@ object ScalatraBuild extends Build {
           jodaConvert,
           akkaActor % "test"
         )
-        if (sv.startsWith("2.10")) default
-        else default ++ Seq(parserCombinators, xml)
+        if (sv.startsWith("2.10"))
+          default
+        else
+          default ++ Seq(parserCombinators, xml)
       }),
       libraryDependencies ++= Seq(akkaTestkit % "test"),
       description := "The core Scalatra framework",
@@ -276,7 +278,10 @@ object ScalatraBuild extends Build {
     settings = scalatraSettings ++ Seq(
       libraryDependencies <++= (scalaVersion) { sv =>
         val com = Seq(json4sExt, logbackClassic % "provided")
-        if (sv.startsWith("2.10")) com else parserCombinators +: com
+        if (sv.startsWith("2.10"))
+          com
+        else
+          parserCombinators +: com
       },
       description := "Scalatra integration with Swagger"
     )

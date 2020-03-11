@@ -68,7 +68,8 @@ object ScalaAfterNewCompletionUtil {
         case ScAbstractType(_, lower, upper) => upper
         case tp                              => tp
       }
-    } else Array[ScType]()
+    } else
+      Array[ScType]()
 
     (data, isAfter)
   }
@@ -209,7 +210,8 @@ object ScalaAfterNewCompletionUtil {
       lookupElement.setAutoCompletionPolicy(
         if (ApplicationManager.getApplication.isUnitTestMode)
           AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE
-        else AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
+        else
+          AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
     val qualName = psiClass.qualifiedName
     if (ScalaCodeStyleSettings
           .getInstance(psiClass.getProject)
@@ -248,10 +250,12 @@ object ScalaAfterNewCompletionUtil {
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
         if (clazz.containingClass != null && (!clazz.containingClass
               .isInstanceOf[ScObject] ||
-            clazz.hasModifierPropertyScala("static"))) return null
+            clazz.hasModifierPropertyScala("static")))
+          return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null
-        if (addedClasses.contains(clazz.qualifiedName)) return null
+        if (addedClasses.contains(clazz.qualifiedName))
+          return null
         addedClasses += clazz.qualifiedName
         getLookupElementFromTypeAndClass(
           tp,
@@ -281,12 +285,14 @@ object ScalaAfterNewCompletionUtil {
         val searchScope =
           if (clazz.getUseScope.isInstanceOf[LocalSearchScope])
             GlobalSearchScope.allScope(place.getProject)
-          else clazz.getUseScope
+          else
+            clazz.getUseScope
         ClassInheritorsSearch
           .search(clazz, searchScope, true)
           .forEach(new Processor[PsiClass] {
             def process(clazz: PsiClass): Boolean = {
-              if (clazz.name == null || clazz.name == "") return true
+              if (clazz.name == null || clazz.name == "")
+                return true
               val undefines: Seq[ScUndefinedType] =
                 clazz.getTypeParameters.map(ptp =>
                   new ScUndefinedType(
@@ -294,15 +300,18 @@ object ScalaAfterNewCompletionUtil {
               val predefinedType =
                 if (clazz.getTypeParameters.nonEmpty) {
                   ScParameterizedType(ScDesignatorType(clazz), undefines)
-                } else ScDesignatorType(clazz)
+                } else
+                  ScDesignatorType(clazz)
               val noUndefType =
                 if (clazz.getTypeParameters.nonEmpty) {
                   ScParameterizedType(
                     ScDesignatorType(clazz),
                     clazz.getTypeParameters.map(ptp =>
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-                } else ScDesignatorType(clazz)
-              if (!predefinedType.conforms(typez)) return true
+                } else
+                  ScDesignatorType(clazz)
+              if (!predefinedType.conforms(typez))
+                return true
               val undef = Conformance.undefinedSubst(typez, predefinedType)
               undef.getSubstitutor match {
                 case Some(undefSubst) =>

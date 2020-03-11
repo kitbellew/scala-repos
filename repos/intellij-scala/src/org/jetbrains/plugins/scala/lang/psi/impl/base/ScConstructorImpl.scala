@@ -76,7 +76,8 @@ class ScConstructorImpl(node: ASTNode)
   def expectedType: Option[ScType] = {
     getContext match {
       case parents: ScClassParents =>
-        if (parents.allTypeElements.length != 1) None
+        if (parents.allTypeElements.length != 1)
+          None
         else {
           parents.getContext match {
             case e: ScExtendsBlock =>
@@ -126,8 +127,10 @@ class ScConstructorImpl(node: ASTNode)
 
   def shapeType(i: Int): TypeResult[ScType] = {
     val seq = shapeMultiType(i)
-    if (seq.length == 1) seq.head
-    else Failure("Can't resolve type", Some(this))
+    if (seq.length == 1)
+      seq.head
+    else
+      Failure("Can't resolve type", Some(this))
   }
 
   def shapeMultiType(i: Int): Seq[TypeResult[ScType]] =
@@ -226,7 +229,10 @@ class ScConstructorImpl(node: ASTNode)
         case Some(ref) =>
           val buffer = new ArrayBuffer[TypeResult[ScType]]
           val resolve =
-            if (isShape) ref.shapeResolveConstr else ref.resolveAllConstructors
+            if (isShape)
+              ref.shapeResolveConstr
+            else
+              ref.resolveAllConstructors
           resolve.foreach {
             case r @ ScalaResolveResult(constr: PsiMethod, subst) =>
               buffer += workWithResolveResult(constr, r, subst, s, ref)

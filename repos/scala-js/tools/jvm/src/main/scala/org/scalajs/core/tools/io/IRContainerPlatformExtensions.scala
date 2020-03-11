@@ -42,10 +42,11 @@ trait IRContainerPlatformExtensions { this: IRContainer.type =>
       subdirs.flatMap(walkForIR) ++ files.filter(_.getName.endsWith(".sjsir"))
     }
 
-    for (ir <- walkForIR(baseDir)) yield {
-      val relDir = ir.getPath.stripPrefix(baseDir.getPath)
-      val vf = FileVirtualScalaJSIRFile.relative(ir, relDir)
-      File(vf)
-    }
+    for (ir <- walkForIR(baseDir))
+      yield {
+        val relDir = ir.getPath.stripPrefix(baseDir.getPath)
+        val vf = FileVirtualScalaJSIRFile.relative(ir, relDir)
+        File(vf)
+      }
   }
 }

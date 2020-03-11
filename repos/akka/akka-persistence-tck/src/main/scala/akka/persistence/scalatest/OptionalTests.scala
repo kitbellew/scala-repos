@@ -12,10 +12,14 @@ trait OptionalTests {
 
   def optional(flag: CapabilityFlag)(test: ⇒ Unit) = {
     val msg = s"CapabilityFlag `${flag.name}` was turned `" +
-      (if (flag.value) "on" else "off") +
+      (if (flag.value)
+         "on"
+       else
+         "off") +
       "`. " + (if (!flag.value)
                  "To enable the related tests override it with `CapabilityFlag.on` (or `true` in Scala)."
-               else "")
+               else
+                 "")
     info(msg)
     if (flag.value)
       try test

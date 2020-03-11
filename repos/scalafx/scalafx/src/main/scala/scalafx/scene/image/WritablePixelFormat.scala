@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object WritablePixelFormat {
   implicit def sfxWritablePixelFormat2jfx[B <: Buffer](
       wpf: WritablePixelFormat[B]): jfxsi.WritablePixelFormat[B] =
-    if (null == wpf) null else wpf.delegate
+    if (null == wpf)
+      null
+    else
+      wpf.delegate
 }
 
 /**

@@ -48,29 +48,38 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
   def makeKeyJDBCFriendly(in: Long) = new java.lang.Long(in)
 
   def convertKey(in: String): Box[Long] = {
-    if (in eq null) Empty
+    if (in eq null)
+      Empty
     else
       tryo(
         toLong(
-          if (in.startsWith(name + "=")) in.substring((name + "=").length)
-          else in))
+          if (in.startsWith(name + "="))
+            in.substring((name + "=").length)
+          else
+            in))
   }
 
   override def dbDisplay_? = false
 
   def convertKey(in: Long): Box[Long] = {
-    if (in < 0L) Empty
-    else Full(in)
+    if (in < 0L)
+      Empty
+    else
+      Full(in)
   }
 
   def convertKey(in: Int): Box[Long] = {
-    if (in < 0) Empty
-    else Full(in)
+    if (in < 0)
+      Empty
+    else
+      Full(in)
   }
 
   def convertKey(in: AnyRef): Box[Long] = {
-    if ((in eq null) || (in eq None)) Empty
-    else tryo(convertKey(in.toString)).flatMap(s => s)
+    if ((in eq null) || (in eq None))
+      Empty
+    else
+      tryo(convertKey(in.toString)).flatMap(s => s)
   }
 
   override def fieldCreatorString(dbType: DriverType, colName: String): String =
@@ -217,7 +226,11 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+            f.st(
+              if (v eq null)
+                defaultValue
+              else
+                fromLong(Helpers.toLong(v)))
         })
 
   def buildSetLongValue(
@@ -229,7 +242,11 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnumList[T, ENUM] =>
-            f.st(if (isNull) defaultValue else fromLong(v))
+            f.st(
+              if (isNull)
+                defaultValue
+              else
+                fromLong(v))
         })
 
   def buildSetStringValue(
@@ -241,7 +258,11 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+            f.st(
+              if (v eq null)
+                defaultValue
+              else
+                fromLong(Helpers.toLong(v)))
         })
 
   def buildSetDateValue(
@@ -253,7 +274,11 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
         accessor,
         {
           case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+            f.st(
+              if (v eq null)
+                defaultValue
+              else
+                fromLong(Helpers.toLong(v)))
         })
 
   def buildSetBooleanValue(
@@ -436,7 +461,12 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedNullableLong[T] => f.st(if (isNull) Empty else Full(v))
+          case f: MappedNullableLong[T] =>
+            f.st(
+              if (isNull)
+                Empty
+              else
+                Full(v))
         })
 
   def buildSetStringValue(
@@ -459,7 +489,11 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedNullableLong[T] =>
-            f.st(if (v == null) Empty else Full(v.getTime))
+            f.st(
+              if (v == null)
+                Empty
+              else
+                Full(v.getTime))
         })
 
   def buildSetBooleanValue(
@@ -615,7 +649,12 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedLong[T] => f.st(if (isNull) defaultValue else v)
+          case f: MappedLong[T] =>
+            f.st(
+              if (isNull)
+                defaultValue
+              else
+                v)
         })
 
   def buildSetStringValue(
@@ -638,7 +677,11 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedLong[T] =>
-            f.st(if (v == null) defaultValue else v.getTime)
+            f.st(
+              if (v == null)
+                defaultValue
+              else
+                v.getTime)
         })
 
   def buildSetBooleanValue(

@@ -29,7 +29,8 @@ abstract class Flatten extends InfoTransform {
     val old = (scope lookupUnshadowedEntries sym.name).toList
     old foreach (scope unlink _)
     def old_s = old map (_.sym) mkString ", "
-    if (old.nonEmpty) debuglog(s"In scope of ${sym.owner}, unlinked $old_s")
+    if (old.nonEmpty)
+      debuglog(s"In scope of ${sym.owner}, unlinked $old_s")
   }
 
   private def liftClass(sym: Symbol) {
@@ -102,10 +103,16 @@ abstract class Flatten extends InfoTransform {
         ClassInfoType(parents1, decls1, clazz)
       case MethodType(params, restp) =>
         val restp1 = apply(restp)
-        if (restp1 eq restp) tp else copyMethodType(tp, params, restp1)
+        if (restp1 eq restp)
+          tp
+        else
+          copyMethodType(tp, params, restp1)
       case PolyType(tparams, restp) =>
         val restp1 = apply(restp)
-        if (restp1 eq restp) tp else PolyType(tparams, restp1)
+        if (restp1 eq restp)
+          tp
+        else
+          PolyType(tparams, restp1)
       case _ =>
         mapOver(tp)
     }
@@ -158,7 +165,8 @@ abstract class Flatten extends InfoTransform {
           exitingFlatten {
             atPos(tree.pos) {
               val ref = gen.mkAttributedRef(sym)
-              if (isQualifierSafeToElide(qual)) ref
+              if (isQualifierSafeToElide(qual))
+                ref
               else
                 Block(List(qual), ref).setType(
                   tree.tpe
@@ -179,7 +187,8 @@ abstract class Flatten extends InfoTransform {
       if (currentOwner.isPackageClass) {
         val lifted = liftedDefs.remove(currentOwner).toList.flatten
         stats1 ::: lifted
-      } else stats1
+      } else
+        stats1
     }
   }
 }

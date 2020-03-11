@@ -93,8 +93,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
     val name0 = encodeMemberNameInternal(sym)
     val name =
-      if (name0.charAt(name0.length() - 1) != ' ') name0
-      else name0.substring(0, name0.length() - 1)
+      if (name0.charAt(name0.length() - 1) != ' ')
+        name0
+      else
+        name0.substring(0, name0.length() - 1)
 
     /* We have to special-case fields of Ref types (IntRef, ObjectRef, etc.)
      * because they are emitted as private by our .scala source files, but
@@ -159,7 +161,8 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     def privateSuffix(owner: Symbol): String =
       if (owner.isTraitOrInterface && !owner.isImplClass)
         encodeClassFullName(owner)
-      else owner.ancestors.count(!_.isTraitOrInterface).toString
+      else
+        owner.ancestors.count(!_.isTraitOrInterface).toString
 
     val encodedName = {
       if (sym.isClassConstructor)
@@ -203,8 +206,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     sym.isModuleClass && nme.isImplClassName(sym.name)
 
   def encodeClassType(sym: Symbol): jstpe.Type = {
-    if (sym == definitions.ObjectClass) jstpe.AnyType
-    else if (isRawJSType(sym.toTypeConstructor)) jstpe.AnyType
+    if (sym == definitions.ObjectClass)
+      jstpe.AnyType
+    else if (isRawJSType(sym.toTypeConstructor))
+      jstpe.AnyType
     else {
       assert(
         sym != definitions.ArrayClass,
@@ -220,7 +225,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   def encodeClassFullName(sym: Symbol): String = {
     ir.Definitions.encodeClassName(
-      sym.fullName + (if (needsModuleClassSuffix(sym)) "$" else ""))
+      sym.fullName + (if (needsModuleClassSuffix(sym))
+                        "$"
+                      else
+                        ""))
   }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =
@@ -242,8 +250,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     val hasExplicitThisParameter =
       inRTClass || isScalaJSDefinedJSClass(sym.owner)
     val paramTypeNames =
-      if (!hasExplicitThisParameter) paramTypeNames0
-      else internalName(sym.owner.toTypeConstructor) :: paramTypeNames0
+      if (!hasExplicitThisParameter)
+        paramTypeNames0
+      else
+        internalName(sym.owner.toTypeConstructor) :: paramTypeNames0
 
     val paramAndResultTypeNames = {
       if (sym.isClassConstructor)
@@ -277,5 +287,6 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   private def mangleJSName(name: String) =
     if (js.isKeyword(name) || name(0).isDigit || name(0) == '$')
       "$" + name
-    else name
+    else
+      name
 }

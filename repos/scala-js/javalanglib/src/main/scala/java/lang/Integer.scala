@@ -83,21 +83,29 @@ object Integer {
         radix > Character.MAX_RADIX)
       fail
     else {
-      var i = if ((signed && s(0) == '-') || s(0) == '+') 1 else 0
+      var i =
+        if ((signed && s(0) == '-') || s(0) == '+')
+          1
+        else
+          0
       // JavaDoc says: We need at least one digit
-      if (s.size <= i) fail
+      if (s.size <= i)
+        fail
       else {
         // Check each character for validity
         while (i < s.size) {
-          if (Character.digit(s(i), radix) < 0) fail
+          if (Character.digit(s(i), radix) < 0)
+            fail
           i += 1
         }
         val res =
           js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
 
         @inline def isOutOfBounds: scala.Boolean = {
-          if (signed) res > MAX_VALUE || res < MIN_VALUE
-          else res > 0xFFFFFFFFL || res < 0
+          if (signed)
+            res > MAX_VALUE || res < MIN_VALUE
+          else
+            res > 0xFFFFFFFFL || res < 0
         }
 
         if (res.isNaN || isOutOfBounds) {
@@ -117,13 +125,21 @@ object Integer {
     toStringBase(i, radix)
 
   @inline def compare(x: scala.Int, y: scala.Int): scala.Int =
-    if (x == y) 0 else if (x < y) -1 else 1
+    if (x == y)
+      0
+    else if (x < y)
+      -1
+    else
+      1
 
   @inline def compareUnsigned(x: scala.Int, y: scala.Int): scala.Int = {
     import js.JSNumberOps._
-    if (x == y) 0
-    else if (x.toUint > y.toUint) 1
-    else -1
+    if (x == y)
+      0
+    else if (x.toUint > y.toUint)
+      1
+    else
+      -1
   }
 
   @inline def toUnsignedLong(x: Int): scala.Long =
@@ -161,8 +177,10 @@ object Integer {
   }
 
   @inline def highestOneBit(i: Int): Int =
-    if (i == 0) 0
-    else (1 << 31) >>> numberOfLeadingZeros(i)
+    if (i == 0)
+      0
+    else
+      (1 << 31) >>> numberOfLeadingZeros(i)
 
   @inline def lowestOneBit(i: Int): Int =
     i & -i
@@ -182,7 +200,12 @@ object Integer {
     (i >>> distance) | (i << -distance)
 
   @inline def signum(i: scala.Int): scala.Int =
-    if (i == 0) 0 else if (i < 0) -1 else 1
+    if (i == 0)
+      0
+    else if (i < 0)
+      -1
+    else
+      1
 
   // Intrinsic
   def numberOfLeadingZeros(i: scala.Int): scala.Int = {
@@ -213,8 +236,10 @@ object Integer {
   }
 
   @inline def numberOfTrailingZeros(i: scala.Int): scala.Int =
-    if (i == 0) 32
-    else 31 - numberOfLeadingZeros(i & -i)
+    if (i == 0)
+      32
+    else
+      31 - numberOfLeadingZeros(i & -i)
 
   def toBinaryString(i: scala.Int): String = toStringBase(i, 2)
   def toHexString(i: scala.Int): String = toStringBase(i, 16)

@@ -50,10 +50,12 @@ object NameSuggester {
 
     val types = new ArrayBuffer[ScType]()
     val typez = expr.getType(TypingContext.empty).getOrElse(null)
-    if (typez != null && typez != Unit) types += typez
+    if (typez != null && typez != Unit)
+      types += typez
     expr.getTypeWithoutImplicits().foreach(types += _)
     expr.getTypeIgnoreBaseType(TypingContext.empty).foreach(types += _)
-    if (typez != null && typez == Unit) types += typez
+    if (typez != null && typez == Unit)
+      types += typez
 
     for (tpe <- types.reverse) {
       generateNamesByType(tpe)(names, validator)
@@ -62,11 +64,17 @@ object NameSuggester {
 
     val result =
       (for (name <- names if name != "" && ScalaNamesUtil.isIdentifier(
-              name) || name == "class") yield {
-        if (name != "class") name else "clazz"
-      }).toList.reverse.toArray
-    if (result.size > 0) result
-    else Array(validator.validateName("value", increaseNumber = true))
+              name) || name == "class")
+        yield {
+          if (name != "class")
+            name
+          else
+            "clazz"
+        }).toList.reverse.toArray
+    if (result.size > 0)
+      result
+    else
+      Array(validator.validateName("value", increaseNumber = true))
   }
 
   def suggestNamesByType(typez: ScType): Array[String] = {
@@ -82,7 +90,8 @@ object NameSuggester {
       .filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
     if (result.length == 0) {
       Array("value")
-    } else result.reverse.toArray
+    } else
+      result.reverse.toArray
   }
 
   private def add(s: String)(implicit
@@ -111,7 +120,8 @@ object NameSuggester {
     val project = validator.getProject()
     def addPlurals(arg: ScType) {
       def addPlural(s: String) {
-        if (!withPlurals) add(s)
+        if (!withPlurals)
+          add(s)
         else {
           s match {
             case "x"     => add("xs")
@@ -224,7 +234,11 @@ object NameSuggester {
       if (name != null && name.toUpperCase == name) {
         add(deleteNonLetterFromString(name).toLowerCase)
       } else if (name == "String") {
-        add(if (shortVersion) "s" else "string")
+        add(
+          if (shortVersion)
+            "s"
+          else
+            "string")
       } else {
         generateCamelNames(name)
       }
@@ -238,16 +252,51 @@ object NameSuggester {
     typez match {
       case ValType(name) =>
         name match {
-          case "Int"     => add(if (shortVersion) "i" else "int")
-          case "Unit"    => add("unit")
-          case "Byte"    => add("byte")
-          case "Long"    => add(if (shortVersion) "l" else "long")
-          case "Float"   => add(if (shortVersion) "fl" else "float")
-          case "Double"  => add(if (shortVersion) "d" else "double")
-          case "Short"   => add(if (shortVersion) "sh" else "short")
-          case "Boolean" => add(if (shortVersion) "b" else "boolean")
-          case "Char"    => add(if (shortVersion) "c" else "char")
-          case _         =>
+          case "Int" =>
+            add(
+              if (shortVersion)
+                "i"
+              else
+                "int")
+          case "Unit" => add("unit")
+          case "Byte" => add("byte")
+          case "Long" =>
+            add(
+              if (shortVersion)
+                "l"
+              else
+                "long")
+          case "Float" =>
+            add(
+              if (shortVersion)
+                "fl"
+              else
+                "float")
+          case "Double" =>
+            add(
+              if (shortVersion)
+                "d"
+              else
+                "double")
+          case "Short" =>
+            add(
+              if (shortVersion)
+                "sh"
+              else
+                "short")
+          case "Boolean" =>
+            add(
+              if (shortVersion)
+                "b"
+              else
+                "boolean")
+          case "Char" =>
+            add(
+              if (shortVersion)
+                "c"
+              else
+                "char")
+          case _ =>
         }
       case ScTupleType(comps)          => add("tuple")
       case ScFunctionType(ret, params) => addForFunctionType(ret, params)
@@ -259,7 +308,8 @@ object NameSuggester {
         addForParameterizedType(tp, args)
       case JavaArrayType(arg) => addPlurals(arg)
       case ScCompoundType(comps, _, _) =>
-        if (comps.size > 0) generateNamesByType(comps(0))
+        if (comps.size > 0)
+          generateNamesByType(comps(0))
       case _ =>
     }
   }
@@ -302,14 +352,16 @@ object NameSuggester {
   private def generateCamelNames(name: String)(implicit
       names: ArrayBuffer[String],
       validator: NameValidator) {
-    if (name == "") return
+    if (name == "")
+      return
     val s =
       if (Array("get", "set", "is").exists(name.startsWith))
         name.charAt(0) match {
           case 'g' | 's' => name.substring(3, name.length)
           case _         => name.substring(2, name.length)
         }
-      else name
+      else
+        name
     for (i <- 0 to s.length - 1) {
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)
@@ -322,7 +374,8 @@ object NameSuggester {
   }
 
   private def getCamelNames(name: String): Seq[String] = {
-    if (name == "") return Seq.empty
+    if (name == "")
+      return Seq.empty
     val names = new ArrayBuffer[String]
     val s =
       if (Array("get", "set", "is").exists(name.startsWith))
@@ -330,7 +383,8 @@ object NameSuggester {
           case 'g' | 's' => name.substring(3, name.length)
           case _         => name.substring(2, name.length)
         }
-      else name
+      else
+        name
     for (i <- 0 to s.length - 1) {
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)

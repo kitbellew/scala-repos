@@ -74,7 +74,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     var off = 0
     var acc = ring.zero
     while (off < used) {
-      if (_index(off) == i) acc = ring.+(acc, _data(off))
+      if (_index(off) == i)
+        acc = ring.+(acc, _data(off))
       off += 1
     }
 
@@ -94,7 +95,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
       if (_index(off) == i) {
         if (!marked)
           _data(off) = v
-        else _data(off) = ring.zero
+        else
+          _data(off) = ring.zero
         marked = true
       }
 
@@ -205,7 +207,10 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     val outValues = ArrayUtil.newArrayLike(values, values.length)
 
     val ord =
-      if (!alreadySorted) sortedIndices(index) else VectorBuilder.range(used)
+      if (!alreadySorted)
+        sortedIndices(index)
+      else
+        VectorBuilder.range(used)
     if (ord.length > 0) {
       outIndex(0) = index(ord(0))
       outValues(0) = values(ord(0))

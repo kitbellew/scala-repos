@@ -20,7 +20,8 @@ object BasicAuthExample {
         response: HttpServletResponse): Option[MyUser] = {
       if (userName == "scalatra" && password == "scalatra")
         Some(MyUser("scalatra"))
-      else None
+      else
+        None
     }
 
     protected def getUserId(user: MyUser)(implicit

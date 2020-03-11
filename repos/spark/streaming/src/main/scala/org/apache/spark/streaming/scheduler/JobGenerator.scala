@@ -93,7 +93,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
   /** Start generation of jobs */
   def start(): Unit = synchronized {
-    if (eventLoop != null) return // generator has already been started
+    if (eventLoop != null)
+      return // generator has already been started
 
     // Call checkpointWriter here to initialize it before eventLoop uses it to avoid a deadlock.
     // See SPARK-10125
@@ -122,7 +123,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     * checkpoints written.
     */
   def stop(processReceivedData: Boolean): Unit = synchronized {
-    if (eventLoop == null) return // generator has already been stopped
+    if (eventLoop == null)
+      return // generator has already been stopped
 
     if (processReceivedData) {
       logInfo("Stopping JobGenerator gracefully")
@@ -175,7 +177,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     }
 
     // Stop the event loop and checkpoint writer
-    if (shouldCheckpoint) checkpointWriter.stop()
+    if (shouldCheckpoint)
+      checkpointWriter.stop()
     eventLoop.stop()
     logInfo("Stopped JobGenerator")
   }

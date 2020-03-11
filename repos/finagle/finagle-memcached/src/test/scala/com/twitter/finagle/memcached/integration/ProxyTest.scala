@@ -72,7 +72,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
     if (testServer == None) {
       info("Cannot start memcached. skipping test...")
       cancel()
-    } else test()
+    } else
+      test()
   }
 
   test("Proxied Memcached Servers should handle a basic get/set operation") {

@@ -274,8 +274,10 @@ object MediaType {
     require(
       parts.length == 2,
       s"`$value` is not a valid media-type. It must consist of two parts separated by '/'.")
-    if (binary) customBinary(parts(0), parts(1), comp, fileExtensions)
-    else customWithOpenCharset(parts(0), parts(1), fileExtensions)
+    if (binary)
+      customBinary(parts(0), parts(1), comp, fileExtensions)
+    else
+      customWithOpenCharset(parts(0), parts(1), fileExtensions)
   }
 
   /**
@@ -294,9 +296,10 @@ object MediaType {
       subType: String,
       params: Map[String, String]): String = {
     val r = new StringRendering ~~ mainType ~~ '/' ~~ subType
-    if (params.nonEmpty) params foreach {
-      case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
-    }
+    if (params.nonEmpty)
+      params foreach {
+        case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+      }
     r.get
   }
 
@@ -385,8 +388,10 @@ object MediaType {
       new MediaType.Multipart(subType, params)
     def withBoundary(boundary: String): MediaType.Multipart =
       withParams(
-        if (boundary.isEmpty) params - "boundary"
-        else params.updated("boundary", boundary))
+        if (boundary.isEmpty)
+          params - "boundary"
+        else
+          params.updated("boundary", boundary))
   }
 
   sealed abstract class Compressibility(val compressible: Boolean)

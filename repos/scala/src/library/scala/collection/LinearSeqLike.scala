@@ -51,7 +51,8 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
         val result = these.head;
         these = these.tail;
         result
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
 
     override def toList: List[A] = {
       /* Have to clear `these` so the iterator is exhausted like
@@ -71,7 +72,9 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
 
   @tailrec override final def corresponds[B](that: GenSeq[B])(
       p: (A, B) => Boolean): Boolean = {
-    if (this.isEmpty) that.isEmpty
-    else that.nonEmpty && p(head, that.head) && (tail corresponds that.tail)(p)
+    if (this.isEmpty)
+      that.isEmpty
+    else
+      that.nonEmpty && p(head, that.head) && (tail corresponds that.tail)(p)
   }
 }

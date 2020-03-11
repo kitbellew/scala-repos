@@ -23,7 +23,8 @@ trait IssuesService {
         owner,
         repository,
         issueId.toInt)) firstOption
-    else None
+    else
+      None
 
   def getComments(owner: String, repository: String, issueId: Int)(
       implicit s: Session) =
@@ -54,7 +55,8 @@ trait IssuesService {
       IssueComments filter { t =>
         t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
       } firstOption
-    else None
+    else
+      None
 
   def getIssueLabels(owner: String, repository: String, issueId: Int)(
       implicit s: Session) =
@@ -181,15 +183,15 @@ trait IssuesService {
           ON SUMM.CS_ALL = 1 AND SUMM.COMMIT_ID = CSD.COMMIT_ID""");
       query(issueList).list.map {
         case (
-            userName,
-            repositoryName,
-            issueId,
-            count,
-            successCount,
-            context,
-            state,
-            targetUrl,
-            description) =>
+              userName,
+              repositoryName,
+              issueId,
+              count,
+              successCount,
+              context,
+              state,
+              targetUrl,
+              description) =>
           (userName, repositoryName, issueId) -> CommitStatusInfo(
             count,
             successCount,
@@ -720,8 +722,10 @@ object IssuesService {
 
     def toURL: String =
       "?" + List(
-        if (labels.isEmpty) None
-        else Some("labels=" + urlEncode(labels.mkString(","))),
+        if (labels.isEmpty)
+          None
+        else
+          Some("labels=" + urlEncode(labels.mkString(","))),
         milestone.map {
           _ match {
             case Some(x) => "milestone=" + urlEncode(x)
@@ -735,8 +739,10 @@ object IssuesService {
         Some("sort=" + urlEncode(sort)),
         Some("direction=" + urlEncode(direction)),
         visibility.map(x => "visibility=" + urlEncode(x)),
-        if (groups.isEmpty) None
-        else Some("groups=" + urlEncode(groups.mkString(",")))
+        if (groups.isEmpty)
+          None
+        else
+          Some("groups=" + urlEncode(groups.mkString(",")))
       ).flatten.mkString("&")
 
   }
@@ -749,8 +755,10 @@ object IssuesService {
         allow: Seq[String] = Nil): Option[String] = {
       val value = request.getParameter(name)
       if (value == null || value.isEmpty || (allow.nonEmpty && !allow.contains(
-            value))) None
-      else Some(value)
+            value)))
+        None
+      else
+        Some(value)
     }
 
     /**
@@ -831,7 +839,10 @@ object IssuesService {
     def page(request: HttpServletRequest) =
       try {
         val i = param(request, "page").getOrElse("1").toInt
-        if (i <= 0) 1 else i
+        if (i <= 0)
+          1
+        else
+          i
       } catch {
         case e: NumberFormatException => 1
       }

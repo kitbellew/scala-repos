@@ -37,6 +37,7 @@ private[netty4] class EncodeHandler[Out](frameEncoder: FrameEncoder[Out])
           Buf.Empty
       }
 
-    if (!encoded.isEmpty) super.write(ctx, BufAsByteBuf.Owned(encoded), promise)
+    if (!encoded.isEmpty)
+      super.write(ctx, BufAsByteBuf.Owned(encoded), promise)
   }
 }

@@ -478,7 +478,8 @@ private object Docker extends Logging {
       mountDir: String = ""): ProcessBuilder = {
     val mountCmd = if (mountDir != "") {
       " -v " + mountDir
-    } else ""
+    } else
+      ""
 
     val cmd = "docker run -privileged %s %s %s".format(mountCmd, imageTag, args)
     logDebug("Run command: " + cmd)

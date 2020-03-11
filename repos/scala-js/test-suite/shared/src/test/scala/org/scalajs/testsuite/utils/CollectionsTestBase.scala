@@ -53,8 +53,10 @@ trait CollectionsTestBase {
       recursive: Boolean = false): Unit = {
     testSetUnmodifiability(set, elem)
     def testSubsets(ss: ju.SortedSet[E]) = {
-      if (recursive) testSetUnmodifiability(ss, elem)
-      else testSortedSetUnmodifiability(ss, elem, true)
+      if (recursive)
+        testSetUnmodifiability(ss, elem)
+      else
+        testSortedSetUnmodifiability(ss, elem, true)
     }
     testSubsets(set.headSet(elem))
     testSubsets(set.tailSet(elem))
@@ -73,8 +75,10 @@ trait CollectionsTestBase {
     expectThrows(classOf[UnsupportedOperationException], list.remove(0))
     expectThrows(classOf[UnsupportedOperationException], list.set(0, elem))
     def testSublist(sl: ju.List[E]): Unit = {
-      if (recursive) testCollectionUnmodifiability(sl, elem)
-      else testListUnmodifiability(sl, elem, true)
+      if (recursive)
+        testCollectionUnmodifiability(sl, elem)
+      else
+        testListUnmodifiability(sl, elem, true)
     }
     testSublist(list.subList(0, list.size / 2))
     testListIteratorsUnmodifiability(() => list.listIterator(), elem)
@@ -118,8 +122,10 @@ trait CollectionsTestBase {
       recursive: Boolean = false): Unit = {
     testMapUnmodifiability(map, key, value)
     def testSubmap(sm: ju.SortedMap[K, V]) = {
-      if (recursive) testMapUnmodifiability(sm, key, value)
-      else testSortedMapUnmodifiability(sm, key, value, true)
+      if (recursive)
+        testMapUnmodifiability(sm, key, value)
+      else
+        testSortedMapUnmodifiability(sm, key, value, true)
     }
     testSubmap(map.headMap(key))
     testSubmap(map.tailMap(key))

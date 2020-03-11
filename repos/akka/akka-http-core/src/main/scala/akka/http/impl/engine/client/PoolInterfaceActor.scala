@@ -152,8 +152,10 @@ private class PoolInterfaceActor(
         if (inputBuffer.isFull) {
           x.responsePromise.failure(new BufferOverflowException(
             s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))
-        } else inputBuffer.enqueue(x)
-      } else dispatchRequest(x) // if we can dispatch right now, do it
+        } else
+          inputBuffer.enqueue(x)
+      } else
+        dispatchRequest(x) // if we can dispatch right now, do it
       request(
         1
       ) // for every incoming request we demand one response from the pool
@@ -194,7 +196,10 @@ private class PoolInterfaceActor(
         .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
         .withDefaultHeaders(hostHeader)
     val retries =
-      if (pr.request.method.isIdempotent) hcps.setup.settings.maxRetries else 0
+      if (pr.request.method.isIdempotent)
+        hcps.setup.settings.maxRetries
+      else
+        0
     onNext(RequestContext(effectiveRequest, pr.responsePromise, retries))
   }
 

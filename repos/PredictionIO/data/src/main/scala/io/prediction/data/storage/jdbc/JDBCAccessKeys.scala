@@ -41,10 +41,16 @@ class JDBCAccessKeys(
   }
 
   def insert(accessKey: AccessKey): Option[String] = DB localTx { implicit s =>
-    val key = if (accessKey.key.isEmpty) generateKey else accessKey.key
+    val key =
+      if (accessKey.key.isEmpty)
+        generateKey
+      else
+        accessKey.key
     val events =
-      if (accessKey.events.isEmpty) None
-      else Some(accessKey.events.mkString(","))
+      if (accessKey.events.isEmpty)
+        None
+      else
+        Some(accessKey.events.mkString(","))
     sql"""
     insert into $tableName values(
       $key,
@@ -76,8 +82,10 @@ class JDBCAccessKeys(
 
   def update(accessKey: AccessKey): Unit = DB localTx { implicit session =>
     val events =
-      if (accessKey.events.isEmpty) None
-      else Some(accessKey.events.mkString(","))
+      if (accessKey.events.isEmpty)
+        None
+      else
+        Some(accessKey.events.mkString(","))
     sql"""
     UPDATE $tableName SET
       appid = ${accessKey.appid},

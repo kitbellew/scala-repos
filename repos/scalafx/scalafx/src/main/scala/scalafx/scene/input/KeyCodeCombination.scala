@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object KeyCodeCombination {
   implicit def sfxKeyCodeCombination2jfx(
       kcc: KeyCodeCombination): jfxsi.KeyCodeCombination =
-    if (kcc != null) kcc.delegate else null
+    if (kcc != null)
+      kcc.delegate
+    else
+      null
 }
 
 class KeyCodeCombination(override val delegate: jfxsi.KeyCodeCombination)

@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 
 object LinearGradient {
   implicit def sfxLinearGradient2jfx(lg: LinearGradient): jfxsp.LinearGradient =
-    if (lg != null) lg.delegate else null
+    if (lg != null)
+      lg.delegate
+    else
+      null
 
   /**
     * Creates a new instance of LinearGradient.

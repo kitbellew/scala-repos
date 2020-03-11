@@ -104,7 +104,10 @@ object SourceCodeGenerator {
     val out =
       outputDir.getOrElse(dc.config.getStringOr("codegen.outputDir", "."))
     val profile =
-      if (dc.profileIsObject) dc.profileName else "new " + dc.profileName
+      if (dc.profileIsObject)
+        dc.profileName
+      else
+        "new " + dc.profileName
     try {
       val m = Await.result(
         dc.db.run(

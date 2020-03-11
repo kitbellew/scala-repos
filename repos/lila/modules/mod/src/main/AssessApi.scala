@@ -73,8 +73,8 @@ final class AssessApi(
       relatedUsers zip
       (relatedUsers flatMap UserRepo.filterByEngine) map {
       case (
-          ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
-          relatedCheaters) =>
+            ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
+            relatedCheaters) =>
         Some(
           PlayerAggregateAssessment(
             user,
@@ -118,13 +118,20 @@ final class AssessApi(
     def consistentMoveTimes(game: Game)(player: Player) =
       Statistics.consistentMoveTimes(Pov(game, player))
     val shouldAssess =
-      if (!game.source.exists(assessableSources.contains)) false
-      else if (game.players.exists(_.hasSuspiciousHoldAlert)) true
-      else if (game.isCorrespondence) false
-      else if (game.players exists consistentMoveTimes(game)) true
-      else if (game.playedTurns < 40) false
-      else if (game.mode.casual) false
-      else true
+      if (!game.source.exists(assessableSources.contains))
+        false
+      else if (game.players.exists(_.hasSuspiciousHoldAlert))
+        true
+      else if (game.isCorrespondence)
+        false
+      else if (game.players exists consistentMoveTimes(game))
+        true
+      else if (game.playedTurns < 40)
+        false
+      else if (game.mode.casual)
+        false
+      else
+        true
     shouldAssess.?? {
       val assessible = Assessible(Analysed(game, analysis))
       createPlayerAssessment(assessible playerAssessment chess.White) >>
@@ -187,18 +194,25 @@ final class AssessApi(
     val blackSuspCoefVariation = suspCoefVariation(chess.Black)
 
     val shouldAnalyse: Option[AutoAnalysis.Reason] =
-      if (!game.analysable) none
-      else if (!game.source.exists(assessableSources.contains)) none
+      if (!game.analysable)
+        none
+      else if (!game.source.exists(assessableSources.contains))
+        none
       // give up on correspondence games
-      else if (game.isCorrespondence) none
+      else if (game.isCorrespondence)
+        none
       // stop here for short games
-      else if (game.playedTurns < 36) none
+      else if (game.playedTurns < 36)
+        none
       // stop here for long games
-      else if (game.playedTurns > 90) none
+      else if (game.playedTurns > 90)
+        none
       // stop here for casual games
-      else if (!game.mode.rated) none
+      else if (!game.mode.rated)
+        none
       // someone is using a bot
-      else if (game.players.exists(_.hasSuspiciousHoldAlert)) HoldAlert.some
+      else if (game.players.exists(_.hasSuspiciousHoldAlert))
+        HoldAlert.some
       // white has consistent move times
       else if (whiteSuspCoefVariation.isDefined)
         whiteSuspCoefVariation.map(_ => WhiteMoveTime)
@@ -206,9 +220,11 @@ final class AssessApi(
       else if (blackSuspCoefVariation.isDefined)
         blackSuspCoefVariation.map(_ => BlackMoveTime)
       // don't analyse other bullet games
-      else if (game.speed == chess.Speed.Bullet) none
+      else if (game.speed == chess.Speed.Bullet)
+        none
       // someone blurs a lot
-      else if (game.players exists manyBlurs) Blurs.some
+      else if (game.players exists manyBlurs)
+        Blurs.some
       // the winner shows a great rating progress
       else if (game.players exists winnerGreatProgress)
         WinnerRatingProgress.some
@@ -217,7 +233,8 @@ final class AssessApi(
       /// analyse new player games
       else if (winnerNbGames.??(30 >) && Random.nextInt(2) == 0)
         NewPlayerWin.some
-      else none
+      else
+        none
 
     shouldAnalyse foreach { reason =>
       lila.mon.cheat.autoAnalysis.reason(reason.toString)()

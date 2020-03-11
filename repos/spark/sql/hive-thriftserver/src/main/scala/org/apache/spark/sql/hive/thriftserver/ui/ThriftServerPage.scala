@@ -108,8 +108,10 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           </a>
         }
         val detail =
-          if (info.state == ExecutionState.FAILED) info.detail
-          else info.executePlan
+          if (info.state == ExecutionState.FAILED)
+            info.detail
+          else
+            info.executePlan
         <tr>
           <td>{
           info.userName
@@ -126,7 +128,8 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           formatDate(info.startTimestamp)
         }</td>
           <td>{
-          if (info.finishTimestamp > 0) formatDate(info.finishTimestamp)
+          if (info.finishTimestamp > 0)
+            formatDate(info.finishTimestamp)
         }</td>
           <td>{
           formatDurationOption(Some(info.totalTime))
@@ -234,7 +237,8 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           formatDate(session.startTimestamp)
         } </td>
           <td> {
-          if (session.finishTimestamp > 0) formatDate(session.finishTimestamp)
+          if (session.finishTimestamp > 0)
+            formatDate(session.finishTimestamp)
         } </td>
           <td> {
           formatDurationOption(Some(session.totalTime))

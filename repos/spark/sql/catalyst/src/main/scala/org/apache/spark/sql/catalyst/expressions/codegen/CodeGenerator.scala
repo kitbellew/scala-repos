@@ -624,7 +624,8 @@ class CodegenContext {
   def generateExpressions(
       expressions: Seq[Expression],
       doSubexpressionElimination: Boolean = false): Seq[ExprCode] = {
-    if (doSubexpressionElimination) subexpressionElimination(expressions)
+    if (doSubexpressionElimination)
+      subexpressionElimination(expressions)
     expressions.map(e => e.gen(this))
   }
 }

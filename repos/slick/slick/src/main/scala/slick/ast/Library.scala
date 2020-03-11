@@ -106,7 +106,11 @@ object Library {
 class FunctionSymbol(val name: String) extends TermSymbol {
 
   /** Match an Apply of this Symbol */
-  def unapplySeq(a: Apply) = if (a.sym eq this) Some(a.children.toSeq) else None
+  def unapplySeq(a: Apply) =
+    if (a.sym eq this)
+      Some(a.children.toSeq)
+    else
+      None
 
   /** Create a typed Apply of this Symbol */
   def typed(tpe: Type, ch: Node*): Apply = Apply(this, ConstArray.from(ch))(tpe)

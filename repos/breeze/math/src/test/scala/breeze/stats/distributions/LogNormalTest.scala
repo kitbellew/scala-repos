@@ -38,7 +38,8 @@ class LogNormalTest
          };
          std <- arbitrary[Double].map { x =>
            math.abs(x) % 8.0 + .1
-         }) yield (mean, std)
+         })
+      yield (mean, std)
   }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
@@ -57,7 +58,8 @@ class LogNormalTest
          };
          std <- arbitrary[Double].map { x =>
            math.abs(x) % 1.0 + .1
-         }) yield new LogNormal(mean, std)
+         })
+      yield new LogNormal(mean, std)
   }
 
   def asDouble(x: Double) = x

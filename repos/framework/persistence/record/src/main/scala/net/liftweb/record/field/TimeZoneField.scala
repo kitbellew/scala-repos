@@ -43,8 +43,10 @@ trait TimeZoneTypedField extends StringTypedField {
   def emptyOptionLabel: String = ""
 
   def buildDisplayList: List[(String, String)] =
-    if (optional_?) ("", emptyOptionLabel) :: TimeZoneField.timeZoneList
-    else TimeZoneField.timeZoneList
+    if (optional_?)
+      ("", emptyOptionLabel) :: TimeZoneField.timeZoneList
+    else
+      TimeZoneField.timeZoneList
 
   private def elem =
     SHtml.select(

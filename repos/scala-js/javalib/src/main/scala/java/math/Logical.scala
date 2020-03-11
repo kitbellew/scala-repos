@@ -179,9 +179,12 @@ private[math] object Logical {
     } else {
       var i = Math.max(iShorter, iLonger)
       var digit: Int =
-        if (iShorter > iLonger) -shorter.digits(i) & ~longer.digits(i)
-        else if (iShorter < iLonger) ~shorter.digits(i) & -longer.digits(i)
-        else -shorter.digits(i) & -longer.digits(i)
+        if (iShorter > iLonger)
+          -shorter.digits(i) & ~longer.digits(i)
+        else if (iShorter < iLonger)
+          ~shorter.digits(i) & -longer.digits(i)
+        else
+          -shorter.digits(i) & -longer.digits(i)
 
       if (digit == 0) {
         i += 1
@@ -427,8 +430,10 @@ private[math] object Logical {
         }
       } else {
         resDigits(i) =
-          if (iThat < iVal) -bi.digits(i) & that.digits(i)
-          else -bi.digits(i) & (that.digits(i) - 1)
+          if (iThat < iVal)
+            -bi.digits(i) & that.digits(i)
+          else
+            -bi.digits(i) & (that.digits(i) - 1)
       }
 
       limit = Math.min(bi.numberLength, that.numberLength)
@@ -458,8 +463,10 @@ private[math] object Logical {
       that
     } else if (bi.sign > 0) {
       if (that.sign > 0) {
-        if (bi.numberLength > that.numberLength) orPositive(bi, that)
-        else orPositive(that, bi)
+        if (bi.numberLength > that.numberLength)
+          orPositive(bi, that)
+        else
+          orPositive(that, bi)
       } else {
         orDiffSigns(bi, that)
       }
@@ -603,8 +610,10 @@ private[math] object Logical {
       that.not()
     } else if (bi.sign > 0) {
       if (that.sign > 0) {
-        if (bi.numberLength > that.numberLength) xorPositive(bi, that)
-        else xorPositive(that, bi)
+        if (bi.numberLength > that.numberLength)
+          xorPositive(bi, that)
+        else
+          xorPositive(that, bi)
       } else {
         xorDiffSigns(bi, that)
       }

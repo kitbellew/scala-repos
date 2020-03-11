@@ -15,7 +15,10 @@ object URIHasher {
   private[this] final val HashFunc = MurmurHash128(1L)
 
   private[this] def deSign(b: Byte): Int =
-    if (b < 0) b + 0xff else b
+    if (b < 0)
+      b + 0xff
+    else
+      b
 
   def apply(stringUri: String): String =
     apply(new URI(stringUri))

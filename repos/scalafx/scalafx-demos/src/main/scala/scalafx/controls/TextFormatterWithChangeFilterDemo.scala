@@ -58,8 +58,10 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
   val converter = new StringConverter[Message] {
     override def fromString(s: String): Message = {
       val r =
-        if (s.startsWith(prompt)) s.substring(prompt.length)
-        else s
+        if (s.startsWith(prompt))
+          s.substring(prompt.length)
+        else
+          s
       Message(r)
     }
     override def toString(v: Message): String = {
@@ -74,7 +76,8 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
       change.text = prompt.substring(change.controlNewText.length)
     }
     // Restore caret position if it moved over the prompt
-    if (change.anchor < prompt.length) change.anchor = prompt.length
+    if (change.anchor < prompt.length)
+      change.anchor = prompt.length
     if (change.caretPosition < prompt.length)
       change.caretPosition = prompt.length
     change

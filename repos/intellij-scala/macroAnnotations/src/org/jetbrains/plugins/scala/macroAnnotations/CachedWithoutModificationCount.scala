@@ -84,7 +84,8 @@ object CachedWithoutModificationCount {
         val analyzeCachesField =
           if (analyzeCaches)
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-          else EmptyTree
+          else
+            EmptyTree
         val wrappedRetTp: Tree = valueWrapper match {
           case ValueWrapper.None => retTp
           case ValueWrapper.WeakReference =>
@@ -141,24 +142,35 @@ object CachedWithoutModificationCount {
 
         val functionContents =
           q"""
-            ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-          else EmptyTree}
-            ..${if (hasParameters) getValuesFromMap else EmptyTree}
+            ${if (analyzeCaches)
+            q"$cacheStatsName.aboutToEnterCachedArea()"
+          else
+            EmptyTree}
+            ..${if (hasParameters)
+            getValuesFromMap
+          else
+            EmptyTree}
             val cacheHasExpired = $hasCacheExpired
             if (cacheHasExpired) {
               val cacheFunResult = $cachedFunName()
               $cacheVarName = $wrappedResult
-              ..${if (hasParameters) putValuesIntoMap else EmptyTree}
+              ..${if (hasParameters)
+            putValuesIntoMap
+          else
+            EmptyTree}
             }
-            ${if (valueWrapper == ValueWrapper.None) q"$cacheVarName"
-          else q"$cacheVarName.get"}
+            ${if (valueWrapper == ValueWrapper.None)
+            q"$cacheVarName"
+          else
+            q"$cacheVarName.get"}
           """
         val getValuesIfHasParams =
           if (hasParameters) {
             q"""
               ..$getValuesFromMap
             """
-          } else q""
+          } else
+            q""
 
         val functionContentsInSynchronizedBlock =
           if (synchronized) {

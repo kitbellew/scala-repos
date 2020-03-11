@@ -137,7 +137,8 @@ trait QuirrelCache extends AST { parser: Parser =>
         while (i < original.length) {
           val c = original.charAt(i)
           i += 1
-          if (c == '\n') lens.append(i)
+          if (c == '\n')
+            lens.append(i)
         }
         lens.append(i)
         lens
@@ -148,8 +149,10 @@ trait QuirrelCache extends AST { parser: Parser =>
         val s = original.substring(i)
         lit match {
           case _: BoolLit =>
-            if (s.startsWith("true")) ("b", 4)
-            else if (s.startsWith("false")) ("b", 5)
+            if (s.startsWith("true"))
+              ("b", 4)
+            else if (s.startsWith("false"))
+              ("b", 5)
             else {
               sys.error(
                 "error recovering boolean literal from %s (%s at %s)" format (s, original, i))

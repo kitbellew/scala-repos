@@ -68,8 +68,10 @@ class TestService[K, V](
       .sortBy(_._1)
       .foldLeft(Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
         case (
-            map,
-            (batch: BatchID, writes: Iterable[(Timestamp, (K, Option[V]))])) =>
+              map,
+              (
+                batch: BatchID,
+                writes: Iterable[(Timestamp, (K, Option[V]))])) =>
           val thisBatch = writes.foldLeft(
             map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
             case (innerMap, (time, (k, v))) =>

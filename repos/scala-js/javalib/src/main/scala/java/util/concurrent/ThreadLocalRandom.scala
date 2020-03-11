@@ -37,8 +37,10 @@ class ThreadLocalRandom extends Random {
       @tailrec
       def loop(): Int = {
         val n = nextInt()
-        if (n >= least && n < bound) n
-        else loop()
+        if (n >= least && n < bound)
+          n
+        else
+          loop()
       }
 
       loop()
@@ -64,8 +66,10 @@ class ThreadLocalRandom extends Random {
       val bits = next(2)
       val halfn = n >>> 1
       val nextn =
-        if ((bits & 2) == 0) halfn
-        else n - halfn
+        if ((bits & 2) == 0)
+          halfn
+        else
+          n - halfn
       if ((bits & 1) == 0)
         offset += n - nextn
       n = nextn
@@ -87,8 +91,10 @@ class ThreadLocalRandom extends Random {
       @tailrec
       def loop(): Long = {
         val n = nextLong()
-        if (n >= least && n < bound) n
-        else loop()
+        if (n >= least && n < bound)
+          n
+        else
+          loop()
       }
 
       loop()
@@ -111,8 +117,10 @@ class ThreadLocalRandom extends Random {
      * https://docs.oracle.com/javase/8/docs/api/java/util/Random.html#doubles-double-double-
      */
     val next = nextDouble() * (bound - least) + least
-    if (next < bound) next
-    else Math.nextAfter(bound, Double.NegativeInfinity)
+    if (next < bound)
+      next
+    else
+      Math.nextAfter(bound, Double.NegativeInfinity)
   }
 }
 

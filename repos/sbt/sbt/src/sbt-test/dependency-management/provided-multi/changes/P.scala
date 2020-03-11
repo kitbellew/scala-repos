@@ -20,8 +20,10 @@ object P extends Build {
 
   lazy val b = Project("B", file("b")) dependsOn (a) settings (
     libraryDependencies <<= declared(d =>
-      if (d) Seq("org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided")
-      else Nil),
+      if (d)
+        Seq("org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided")
+      else
+        Nil),
     declared <<= baseDirectory(_ / "declare.lib" exists),
     configIvyScala
   )

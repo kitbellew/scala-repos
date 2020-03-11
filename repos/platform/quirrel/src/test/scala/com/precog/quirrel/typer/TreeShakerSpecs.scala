@@ -71,9 +71,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Import(
-              LineStream(),
-              SpecificImport(Vector("std")),
-              NumLit(LineStream(), "12")) =>
+                LineStream(),
+                SpecificImport(Vector("std")),
+                NumLit(LineStream(), "12")) =>
             ok
         }
       }
@@ -87,9 +87,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Assert(
-              LineStream(),
-              NumLit(LineStream(), "42"),
-              NumLit(LineStream(), "12")) =>
+                LineStream(),
+                NumLit(LineStream(), "42"),
+                NumLit(LineStream(), "12")) =>
             ok
         }
       }
@@ -104,10 +104,10 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Relate(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2"),
-              NumLit(LineStream(), "3")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2"),
+                NumLit(LineStream(), "3")) =>
             ok
         }
       }
@@ -167,10 +167,10 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case ObjectDef(
-              LineStream(),
-              Vector(
-                ("a", NumLit(LineStream(), "1")),
-                ("b", NumLit(LineStream(), "2")))) =>
+                LineStream(),
+                Vector(
+                  ("a", NumLit(LineStream(), "1")),
+                  ("b", NumLit(LineStream(), "2")))) =>
             ok
         }
       }
@@ -185,10 +185,10 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case ObjectDef(
-              LineStream(),
-              Vector(
-                ("a", NullLit(LineStream())),
-                ("b", StrLit(LineStream(), "foo")))) =>
+                LineStream(),
+                Vector(
+                  ("a", NullLit(LineStream())),
+                  ("b", StrLit(LineStream(), "foo")))) =>
             ok
         }
       }
@@ -201,8 +201,8 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case ArrayDef(
-              LineStream(),
-              Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
+                LineStream(),
+                Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
             ok
         }
       }
@@ -215,8 +215,8 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case ArrayDef(
-              LineStream(),
-              Vector(NullLit(LineStream()), StrLit(LineStream(), "foo"))) =>
+                LineStream(),
+                Vector(NullLit(LineStream()), StrLit(LineStream(), "foo"))) =>
             ok
         }
       }
@@ -248,9 +248,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Deref(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -264,9 +264,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Dispatch(
-              LineStream(),
-              Identifier(Vector(), "foo"),
-              Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
+                LineStream(),
+                Identifier(Vector(), "foo"),
+                Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
             ok
         }
       }
@@ -280,9 +280,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Where(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -295,9 +295,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case With(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -310,9 +310,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Union(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -325,9 +325,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Intersect(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -340,9 +340,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Difference(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -356,9 +356,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Add(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -372,9 +372,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Sub(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -388,9 +388,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Mul(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -404,9 +404,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Div(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -418,9 +418,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Lt(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -434,9 +434,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case LtEq(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -448,9 +448,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Gt(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -464,9 +464,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case GtEq(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -478,9 +478,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Eq(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -494,9 +494,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case NotEq(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -510,9 +510,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case And(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -524,9 +524,9 @@ object TreeShakerSpecs
 
         shakeTree(tree) must beLike {
           case Or(
-              LineStream(),
-              NumLit(LineStream(), "1"),
-              NumLit(LineStream(), "2")) =>
+                LineStream(),
+                NumLit(LineStream(), "1"),
+                NumLit(LineStream(), "2")) =>
             ok
         }
       }
@@ -588,11 +588,11 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) =>
+              LineStream(),
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) =>
           ok
       }
 
@@ -614,12 +614,12 @@ object TreeShakerSpecs
 
       results must beLike {
         case Solve(
-            LineStream(),
-            Vector(TicVar(LineStream(), "'a")),
-            Add(
               LineStream(),
-              TicVar(LineStream(), "'a"),
-              NumLit(LineStream(), "42"))) =>
+              Vector(TicVar(LineStream(), "'a")),
+              Add(
+                LineStream(),
+                TicVar(LineStream(), "'a"),
+                NumLit(LineStream(), "42"))) =>
           ok
       }
     }
@@ -696,9 +696,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Import(
-            LineStream(),
-            SpecificImport(Vector()),
-            NumLit(LineStream(), "24")) =>
+              LineStream(),
+              SpecificImport(Vector()),
+              NumLit(LineStream(), "24")) =>
           ok
       }
 
@@ -721,14 +721,14 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Import(
               LineStream(),
-              SpecificImport(Vector()),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Import(
+                LineStream(),
+                SpecificImport(Vector()),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
           ok
       }
 
@@ -792,9 +792,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Assert(
-            LineStream(),
-            BoolLit(LineStream(), true),
-            NumLit(LineStream(), "24")) =>
+              LineStream(),
+              BoolLit(LineStream(), true),
+              NumLit(LineStream(), "24")) =>
           ok
       }
 
@@ -817,14 +817,14 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Assert(
               LineStream(),
-              BoolLit(LineStream(), true),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Assert(
+                LineStream(),
+                BoolLit(LineStream(), true),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
           ok
       }
 
@@ -904,13 +904,13 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            New(
               LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              New(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
           ok
       }
 
@@ -974,10 +974,10 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Relate(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25"),
-            NumLit(LineStream(), "26")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25"),
+              NumLit(LineStream(), "26")) =>
           ok
       }
 
@@ -1002,15 +1002,15 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Relate(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"),
-                NumLit(LineStream(), "25"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Relate(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"),
+                  NumLit(LineStream(), "25"))) =>
             ok
         }
 
@@ -1034,15 +1034,15 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Relate(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "25"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Relate(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "25"))) =>
             ok
         }
 
@@ -1066,15 +1066,18 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Relate(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                NumLit(LineStream(), "25"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Relate(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  NumLit(LineStream(), "25"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -1233,8 +1236,8 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case ObjectDef(
-            LineStream(),
-            Vector(("foo", NumLit(LineStream(), "24")))) =>
+              LineStream(),
+              Vector(("foo", NumLit(LineStream(), "24")))) =>
           ok
       }
 
@@ -1260,19 +1263,19 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            ObjectDef(
               LineStream(),
-              Vector(
-                (
-                  "foo",
-                  Dispatch(
-                    LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              ObjectDef(
+                LineStream(),
+                Vector(
+                  (
+                    "foo",
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))))) =>
           ok
       }
 
@@ -1353,17 +1356,17 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            ArrayDef(
               LineStream(),
-              Vector(
-                Dispatch(
-                  LineStream(),
-                  Identifier(Vector(), "a"),
-                  Vector())))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              ArrayDef(
+                LineStream(),
+                Vector(
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector())))) =>
           ok
       }
 
@@ -1445,14 +1448,14 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Descent(
               LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              "foo")) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Descent(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                "foo")) =>
           ok
       }
 
@@ -1534,14 +1537,14 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            MetaDescent(
               LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              "foo")) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              MetaDescent(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                "foo")) =>
           ok
       }
 
@@ -1608,9 +1611,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Deref(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -1634,14 +1637,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Deref(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Deref(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -1664,14 +1667,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Deref(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Deref(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -1737,9 +1743,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Dispatch(
-            LineStream(),
-            Identifier(Vector(), "count"),
-            Vector(NumLit(LineStream(), "24"))) =>
+              LineStream(),
+              Identifier(Vector(), "count"),
+              Vector(NumLit(LineStream(), "24"))) =>
           ok
       }
 
@@ -1762,18 +1768,18 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Dispatch(
               LineStream(),
-              Identifier(Vector(), "count"),
-              Vector(
-                Dispatch(
-                  LineStream(),
-                  Identifier(Vector(), "a"),
-                  Vector())))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Dispatch(
+                LineStream(),
+                Identifier(Vector(), "count"),
+                Vector(
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector())))) =>
           ok
       }
 
@@ -1840,9 +1846,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Where(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -1866,14 +1872,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Where(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Where(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -1896,14 +1902,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Where(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Where(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -1968,9 +1977,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Add(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -1994,14 +2003,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Add(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Add(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2024,14 +2033,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Add(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Add(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2096,9 +2108,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Sub(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2122,14 +2134,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Sub(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Sub(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2152,14 +2164,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Sub(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Sub(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2224,9 +2239,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Mul(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2250,14 +2265,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Mul(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Mul(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2280,14 +2295,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Mul(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Mul(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2352,9 +2370,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Div(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2378,14 +2396,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Div(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Div(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2408,14 +2426,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Div(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Div(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2480,9 +2501,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Mod(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2506,14 +2527,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Mod(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Mod(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2536,14 +2557,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Mod(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Mod(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2608,9 +2632,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Pow(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2634,14 +2658,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Pow(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Pow(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2664,14 +2688,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Pow(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Pow(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2736,9 +2763,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Lt(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2762,14 +2789,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Lt(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Lt(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2792,14 +2819,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Lt(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Lt(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2864,9 +2894,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case LtEq(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -2890,14 +2920,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              LtEq(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                LtEq(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -2920,14 +2950,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              LtEq(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                LtEq(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -2992,9 +3025,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Gt(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3018,14 +3051,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Gt(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Gt(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3048,14 +3081,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Gt(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Gt(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3120,9 +3156,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case GtEq(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3146,14 +3182,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              GtEq(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                GtEq(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3176,14 +3212,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              GtEq(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                GtEq(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3248,9 +3287,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Eq(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3274,14 +3313,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Eq(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Eq(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3304,14 +3343,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Eq(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Eq(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3376,9 +3418,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case NotEq(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3402,14 +3444,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              NotEq(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                NotEq(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3432,14 +3474,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              NotEq(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                NotEq(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3504,9 +3549,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case And(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3530,14 +3575,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              And(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                And(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3560,14 +3605,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              And(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                And(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3632,9 +3680,9 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Or(
-            LineStream(),
-            NumLit(LineStream(), "24"),
-            NumLit(LineStream(), "25")) =>
+              LineStream(),
+              NumLit(LineStream(), "24"),
+              NumLit(LineStream(), "25")) =>
           ok
       }
 
@@ -3658,14 +3706,14 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Or(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                NumLit(LineStream(), "24"))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Or(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  NumLit(LineStream(), "24"))) =>
             ok
         }
 
@@ -3688,14 +3736,17 @@ object TreeShakerSpecs
         val result = shakeTree(tree)
         result must beLike {
           case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Or(
                 LineStream(),
-                NumLit(LineStream(), "24"),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Or(
+                  LineStream(),
+                  NumLit(LineStream(), "24"),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
             ok
         }
 
@@ -3776,13 +3827,13 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Comp(
               LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Comp(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
           ok
       }
 
@@ -3860,13 +3911,13 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(LineStream(), "42"),
-            Neg(
               LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(LineStream(), "42"),
+              Neg(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
           ok
       }
 
@@ -3935,14 +3986,14 @@ object TreeShakerSpecs
 
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector("b"),
-            t @ Dispatch(LineStream(), Identifier(Vector(), "b"), Vector()),
-            Dispatch(
               LineStream(),
               Identifier(Vector(), "a"),
-              Vector(NullLit(LineStream())))) =>
+              Vector("b"),
+              t @ Dispatch(LineStream(), Identifier(Vector(), "b"), Vector()),
+              Dispatch(
+                LineStream(),
+                Identifier(Vector(), "a"),
+                Vector(NullLit(LineStream())))) =>
           t.binding must beLike {
             case FormalBinding(`result`) => ok
           }
@@ -3961,9 +4012,9 @@ object TreeShakerSpecs
 
       result must beLike {
         case Solve(
-            LineStream(),
-            Vector(TicVar(LineStream(), "'a")),
-            t @ TicVar(LineStream(), "'a")) =>
+              LineStream(),
+              Vector(TicVar(LineStream(), "'a")),
+              t @ TicVar(LineStream(), "'a")) =>
           t.binding must beLike {
             case SolveBinding(`result`) => ok
           }
@@ -3990,14 +4041,14 @@ object TreeShakerSpecs
 
       result must beLike {
         case Let(
-            LineStream(),
-            Identifier(Vector(), "a"),
-            Vector("a"),
-            Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-            d @ Dispatch(
               LineStream(),
               Identifier(Vector(), "a"),
-              Vector(NullLit(LineStream())))) =>
+              Vector("a"),
+              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+              d @ Dispatch(
+                LineStream(),
+                Identifier(Vector(), "a"),
+                Vector(NullLit(LineStream())))) =>
           d.binding must beLike {
             case LetBinding(`result`) => ok
           }

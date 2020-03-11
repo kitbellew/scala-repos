@@ -12,7 +12,8 @@ final class Player(moveDb: MoveDB, uciMemo: UciMemo) {
 
   def apply(game: Game): Funit = game.aiLevel ?? { level =>
     makeWork(game, level) map { move =>
-      if (!moveDb.exists(_ similar move)) moveDb add move
+      if (!moveDb.exists(_ similar move))
+        moveDb add move
     }
   }
 
@@ -38,5 +39,6 @@ final class Player(moveDb: MoveDB, uciMemo: UciMemo) {
       else
         fufail(
           s"[fishnet] Too many moves (${game.turns}), won't play ${game.id}")
-    else fufail("[fishnet] invalid position")
+    else
+      fufail("[fishnet] invalid position")
 }

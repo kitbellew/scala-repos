@@ -67,9 +67,12 @@ abstract class IntroduceFieldTestBase()
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val replaceAll = fileText.contains(replaceAllMarker)
     val initInDecl =
-      if (fileText.contains(initInDeclarationMarker)) Some(true)
-      else if (fileText.contains(initLocallyMarker)) Some(false)
-      else None
+      if (fileText.contains(initInDeclarationMarker))
+        Some(true)
+      else if (fileText.contains(initLocallyMarker))
+        Some(false)
+      else
+        None
     val selectedClassNumber =
       fileText.indexOf(selectedClassNumberMarker) match {
         case -1 => 0

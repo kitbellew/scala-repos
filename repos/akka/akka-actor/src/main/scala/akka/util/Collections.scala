@@ -36,8 +36,10 @@ private[akka] object Collections {
               _next = apply(potentiallyNext)
               _hasNext = true
               true
-            } else hasNext //Attempt to find the next
-          } else _hasNext // Return if we found one
+            } else
+              hasNext //Attempt to find the next
+          } else
+            _hasNext // Return if we found one
 
         override final def next(): To =
           if (hasNext) {
@@ -47,7 +49,8 @@ private[akka] object Collections {
             _hasNext =
               false // Mark as consumed (we need to look for the next value)
             ret
-          } else throw new java.util.NoSuchElementException("next")
+          } else
+            throw new java.util.NoSuchElementException("next")
       }
     }
 

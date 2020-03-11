@@ -222,8 +222,10 @@ trait Loc[T] {
     * the page into stateless mode)
     */
   def stateless_? : Boolean =
-    if (Props.devMode) (calcStateless() || reqCalcStateless())
-    else (_frozenStateless || reqCalcStateless())
+    if (Props.devMode)
+      (calcStateless() || reqCalcStateless())
+    else
+      (_frozenStateless || reqCalcStateless())
 
   /**
     * A lazy val used to track statelessness for non-dev mode.
@@ -263,7 +265,10 @@ trait Loc[T] {
 
   protected def foundStatelessCalc
       : (Box[Loc.CalcStateless], Box[Loc.CalcParamStateless[T]]) =
-    if (Props.devMode) findStatelessCalc else _foundStatelessCalc
+    if (Props.devMode)
+      findStatelessCalc
+    else
+      _foundStatelessCalc
 
   /**
     * run the stateless calculation
@@ -307,14 +312,26 @@ trait Loc[T] {
         case Nil => Left(true)
 
         case Loc.If(test, msg) :: xs =>
-          if (!test()) Right(Full(msg)) else testParams(xs)
+          if (!test())
+            Right(Full(msg))
+          else
+            testParams(xs)
         case Loc.IfValue(test, msg) :: xs =>
-          if (!test(currentValue)) Right(Full(msg)) else testParams(xs)
+          if (!test(currentValue))
+            Right(Full(msg))
+          else
+            testParams(xs)
 
         case Loc.Unless(test, msg) :: xs =>
-          if (test()) Right(Full(msg)) else testParams(xs)
+          if (test())
+            Right(Full(msg))
+          else
+            testParams(xs)
         case Loc.UnlessValue(test, msg) :: xs =>
-          if (test(currentValue)) Right(Full(msg)) else testParams(xs)
+          if (test(currentValue))
+            Right(Full(msg))
+          else
+            testParams(xs)
 
         case Loc.TestAccess(func) :: xs =>
           func() match {
@@ -922,8 +939,10 @@ object Loc {
     def this(b: List[String]) = this(b, false)
 
     def isDefinedAt(req: Req): Boolean = {
-      if (matchHead_?) req.path.partPath.take(uriList.length) == uriList
-      else uriList == req.path.partPath
+      if (matchHead_?)
+        req.path.partPath.take(uriList.length) == uriList
+      else
+        uriList == req.path.partPath
     }
 
     /**
@@ -932,8 +951,10 @@ object Loc {
     def external_? = false
 
     def apply(in: Req): Box[Boolean] = {
-      if (isDefinedAt(in)) Full(true)
-      else throw new MatchError("Failed for Link " + uriList)
+      if (isDefinedAt(in))
+        Full(true)
+      else
+        throw new MatchError("Failed for Link " + uriList)
     }
 
     /**
@@ -1046,7 +1067,9 @@ case class MenuItem(
   }
 
   def breadCrumbs: Seq[MenuItem] = {
-    if (!path) Nil
-    else this :: kids.toList.flatMap(_.breadCrumbs)
+    if (!path)
+      Nil
+    else
+      this :: kids.toList.flatMap(_.breadCrumbs)
   }
 }

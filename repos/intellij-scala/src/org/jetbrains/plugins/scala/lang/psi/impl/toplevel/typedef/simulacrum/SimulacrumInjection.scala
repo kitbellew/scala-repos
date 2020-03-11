@@ -69,8 +69,10 @@ class SimulacrumInjection extends SyntheticMembersInjector {
             val tpName = clazzTypeParam.name
             val tpText = ScalaPsiUtil.typeParamString(clazzTypeParam)
             val tpAdditional =
-              if (clazzTypeParam.typeParameters.nonEmpty) Some(s"Lifted$tpName")
-              else None
+              if (clazzTypeParam.typeParameters.nonEmpty)
+                Some(s"Lifted$tpName")
+              else
+                None
             val additionalWithComma = tpAdditional.map(", " + _).getOrElse("")
             val additionalWithBracket =
               tpAdditional.map("[" + _ + "]").getOrElse("")
@@ -80,8 +82,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                     if param == clazzTypeParam =>
                   Some(None)
                 case ScParameterizedType(
-                    ScTypeParameterType(_, _, _, _, param),
-                    Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
+                      ScTypeParameterType(_, _, _, _, param),
+                      Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
                   Some(Some(p))
                 case _ => None
               }
@@ -160,7 +162,10 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             p.parameters
                               .map(paramText)
                               .mkString(
-                                "(" + (if (p.isImplicit) "implicit " else ""),
+                                "(" + (if (p.isImplicit)
+                                         "implicit "
+                                       else
+                                         ""),
                                 ", ",
                                 ")")
                           }
@@ -170,8 +175,10 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             f.paramClauses.clauses.head.parameters.tail
                               .map(paramText)
                           val restHeadClause =
-                            if (headParams.isEmpty) ""
-                            else headParams.mkString("(", ", ", ")")
+                            if (headParams.isEmpty)
+                              ""
+                            else
+                              headParams.mkString("(", ", ", ")")
                           val restClauses = f.paramClauses.clauses.tail
                             .map(clauseText)
                             .mkString("")

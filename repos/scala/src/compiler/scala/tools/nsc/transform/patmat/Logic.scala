@@ -15,10 +15,19 @@ import scala.reflect.internal.util.{NoPosition, Position, Statistics, HashSet}
 trait Logic extends Debugging {
   import PatternMatchingStats._
 
-  private def max(xs: Seq[Int]) = if (xs isEmpty) 0 else xs max
+  private def max(xs: Seq[Int]) =
+    if (xs isEmpty)
+      0
+    else
+      xs max
   private def alignedColumns(cols: Seq[Any]): Seq[String] = {
-    def toString(x: Any) = if (x == null) "" else x.toString
-    if (cols.isEmpty || cols.tails.isEmpty) cols map toString
+    def toString(x: Any) =
+      if (x == null)
+        ""
+      else
+        x.toString
+    if (cols.isEmpty || cols.tails.isEmpty)
+      cols map toString
     else {
       val colLens = cols map (c => toString(c).length)
       val maxLen = max(colLens)
@@ -168,9 +177,15 @@ trait Logic extends Debugging {
     }
 
     def /\(props: Iterable[Prop]) =
-      if (props.isEmpty) True else And(props.toSeq: _*)
+      if (props.isEmpty)
+        True
+      else
+        And(props.toSeq: _*)
     def \/(props: Iterable[Prop]) =
-      if (props.isEmpty) False else Or(props.toSeq: _*)
+      if (props.isEmpty)
+        False
+      else
+        Or(props.toSeq: _*)
 
     /**
       * Simplifies propositional formula according to the following rules:
@@ -354,8 +369,10 @@ trait Logic extends Debugging {
         props: List[Prop],
         modelNull: Boolean = false): (Prop, List[Prop]) = {
       val start =
-        if (Statistics.canEnable) Statistics.startTimer(patmatAnaVarEq)
-        else null
+        if (Statistics.canEnable)
+          Statistics.startTimer(patmatAnaVarEq)
+        else
+          null
 
       val vars = new mutable.HashSet[Var]
 
@@ -376,7 +393,8 @@ trait Logic extends Debugging {
       }
 
       props foreach gatherEqualities.apply
-      if (modelNull) vars foreach (_.registerNull())
+      if (modelNull)
+        vars foreach (_.registerNull())
 
       val pure = props map (p => rewriteEqualsToProp(p))
 
@@ -399,7 +417,8 @@ trait Logic extends Debugging {
         v.symForStaticTp foreach { symForStaticTp =>
           if (v.mayBeNull)
             addAxiom(Or(v.propForEqualsTo(NullConst), symForStaticTp))
-          else addAxiom(symForStaticTp)
+          else
+            addAxiom(symForStaticTp)
         }
 
         v.implications foreach {
@@ -421,14 +440,16 @@ trait Logic extends Debugging {
 
         // all symbols in a domain are mutually exclusive
         v.groupedDomains.foreach { syms =>
-          if (syms.size > 1) addAxiom(AtMostOne(syms.toList))
+          if (syms.size > 1)
+            addAxiom(AtMostOne(syms.toList))
         }
       }
 
       debug.patmat(s"eqAxioms:\n${eqAxioms.mkString("\n")}")
       debug.patmat(s"pure:${pure.mkString("\n")}")
 
-      if (Statistics.canEnable) Statistics.stopTimer(patmatAnaVarEq, start)
+      if (Statistics.canEnable)
+        Statistics.stopTimer(patmatAnaVarEq, start)
 
       (And(eqAxioms: _*), pure)
     }
@@ -502,7 +523,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       private[this] var _mayBeNull = false
       def registerNull(): Unit = {
         ensureCanModify();
-        if (ConstantNull <:< staticTpCheckable) _mayBeNull = true
+        if (ConstantNull <:< staticTpCheckable)
+          _mayBeNull = true
       }
       def mayBeNull: Boolean = _mayBeNull
 
@@ -538,7 +560,10 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           .map { subTypes =>
             val syms =
               subTypes.flatMap(tpe => symForEqualsTo.get(TypeConst(tpe))).toSet
-            if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
+            if (mayBeNull)
+              syms + symForEqualsTo(NullConst)
+            else
+              syms
           }
           .filter(_.nonEmpty)
       }
@@ -581,7 +606,10 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
             // type implication
             (lower != NullConst && !upper.isValue &&
               instanceOfTpImplies(
-                if (lower.isValue) lower.wideTp else lower.tp,
+                if (lower.isValue)
+                  lower.wideTp
+                else
+                  lower.tp,
                 upper.tp))
 
         // if(r) debug.patmat("implies    : "+(lower, lower.tp, upper, upper.tp))
@@ -808,15 +836,21 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
     // since we're talking values, there must have been a class involved in creating it, so rephrase our types in terms of classes
     // (At least conceptually: `true` is an instance of class `Boolean`)
     private def widenToClass(tp: Type): Type =
-      if (tp.typeSymbol.isClass) tp
-      else if (tp.baseClasses.isEmpty) sys.error("Bad type: " + tp)
-      else tp.baseType(tp.baseClasses.head)
+      if (tp.typeSymbol.isClass)
+        tp
+      else if (tp.baseClasses.isEmpty)
+        sys.error("Bad type: " + tp)
+      else
+        tp.baseType(tp.baseClasses.head)
 
     object TypeConst extends TypeConstExtractor {
       def apply(tp: Type) = {
-        if (tp =:= ConstantNull) NullConst
-        else if (tp.isInstanceOf[SingletonType]) ValueConst.fromType(tp)
-        else Const.unique(tp, new TypeConst(tp))
+        if (tp =:= ConstantNull)
+          NullConst
+        else if (tp.isInstanceOf[SingletonType])
+          ValueConst.fromType(tp)
+        else
+          Const.unique(tp, new TypeConst(tp))
       }
       def unapply(c: TypeConst): Some[Type] = Some(c.tp)
     }
@@ -845,17 +879,21 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       }
       def apply(p: Tree) = {
         val tp = p.tpe.normalize
-        if (tp =:= ConstantNull) NullConst
+        if (tp =:= ConstantNull)
+          NullConst
         else {
           val wideTp = widenToClass(tp)
 
           val narrowTp =
-            if (tp.isInstanceOf[SingletonType]) tp
+            if (tp.isInstanceOf[SingletonType])
+              tp
             else
               p match {
                 case Literal(c) =>
-                  if (c.tpe =:= UnitTpe) c.tpe
-                  else ConstantType(c)
+                  if (c.tpe =:= UnitTpe)
+                    c.tpe
+                  else
+                    ConstantType(c)
                 case Ident(_) if p.symbol.isStable =>
                   // for Idents, can encode uniqueness of symbol as uniqueness of the corresponding singleton type
                   // for Selects, which are handled by the next case, the prefix of the select varies independently of the symbol (see pos/virtpatmat_unreach_select.scala)
@@ -865,8 +903,10 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
               }
 
           val toString =
-            if (hasStableSymbol(p)) p.symbol.name.toString // tp.toString
-            else p.toString //+"#"+ id
+            if (hasStableSymbol(p))
+              p.symbol.name.toString // tp.toString
+            else
+              p.toString //+"#"+ id
 
           Const.unique(
             narrowTp,

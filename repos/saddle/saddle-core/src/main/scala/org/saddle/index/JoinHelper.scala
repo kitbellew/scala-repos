@@ -177,12 +177,18 @@ private[saddle] object JoinHelper {
 
   private object ojCounter extends JoinCounter {
     def apply(lc: Int, rc: Int, count: Int): Int =
-      if (rc > 0 && lc > 0) count + lc * rc else count + lc + rc
+      if (rc > 0 && lc > 0)
+        count + lc * rc
+      else
+        count + lc + rc
   }
 
   private object ljCounter extends JoinCounter {
     def apply(lc: Int, rc: Int, count: Int): Int =
-      if (rc > 0) count + lc * rc else count + lc
+      if (rc > 0)
+        count + lc * rc
+      else
+        count + lc
   }
 
   private object ijMarker extends LabelMarker {

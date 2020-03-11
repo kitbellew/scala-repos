@@ -34,7 +34,8 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
       val packageDir = new File(dir, packageDirName)
       if (packageDir.exists && packageDir.isDirectory) {
         Some(packageDir)
-      } else None
+      } else
+        None
     }
   }
 
@@ -113,7 +114,8 @@ case class DirectoryFlatClassPath(dir: File)
       val wrappedClassFile = new scala.reflect.io.File(classFile)
       val abstractClassFile = new PlainFile(wrappedClassFile)
       Some(abstractClassFile)
-    } else None
+    } else
+      None
   }
 
   override protected def createFileEntry(

@@ -104,8 +104,10 @@ class PhantomJSEnv(
 
     private def loadMgr() = {
       val loader =
-        if (jettyClassLoader != null) jettyClassLoader
-        else getClass().getClassLoader()
+        if (jettyClassLoader != null)
+          jettyClassLoader
+        else
+          getClass().getClassLoader()
 
       val clazz =
         loader.loadClass("org.scalajs.jsenv.phantomjs.JettyWebsocketManager")

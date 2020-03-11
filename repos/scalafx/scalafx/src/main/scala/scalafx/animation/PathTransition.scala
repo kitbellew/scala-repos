@@ -53,7 +53,10 @@ object PathTransition extends AnimationStatics {
     * @return JavaFX $PT extracted from `v`.
     */
   implicit def sfxPathTransition2jfx(v: PathTransition): jfxa.PathTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Companion Object for $OT, where its values are defined.

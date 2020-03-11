@@ -128,7 +128,8 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
       bootJars: Iterable[File],
       arguments: Seq[String]): Seq[String] = {
     val boot =
-      if (bootJars.isEmpty) None
+      if (bootJars.isEmpty)
+        None
       else
         Some(
           "-Xbootclasspath/a:" + bootJars
@@ -174,7 +175,11 @@ object Fork {
     val (preCP, cpAndPost) = options.span(opt => !isClasspathOption(opt))
     val postCP = cpAndPost.drop(2)
     val classpathOption = cpAndPost.drop(1).headOption
-    val newOptions = if (classpathOption.isDefined) preCP ++ postCP else options
+    val newOptions =
+      if (classpathOption.isDefined)
+        preCP ++ postCP
+      else
+        options
     (classpathOption, newOptions)
   }
 
@@ -334,11 +339,16 @@ object Fork {
         env: Map[String, String],
         connectInput: Boolean,
         outputStrategy: OutputStrategy): Process = {
-      if (scalaJars.isEmpty) sys.error("Scala jars not specified")
+      if (scalaJars.isEmpty)
+        sys.error("Scala jars not specified")
       val scalaClasspathString = "-Xbootclasspath/a:" + scalaJars
         .map(_.getAbsolutePath)
         .mkString(File.pathSeparator)
-      val mainClass = if (mainClassName.isEmpty) Nil else mainClassName :: Nil
+      val mainClass =
+        if (mainClassName.isEmpty)
+          Nil
+        else
+          mainClassName :: Nil
       val options =
         jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)
       Fork.java.fork(

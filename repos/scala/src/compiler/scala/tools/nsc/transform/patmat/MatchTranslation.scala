@@ -148,7 +148,8 @@ trait MatchTranslation {
             // Statically conforms to paramType
             if (this ensureConformsTo paramType)
               treeMaker(binder, false, pos) :: Nil
-            else typeTest :: extraction :: Nil
+            else
+              typeTest :: extraction :: Nil
           )
         step(makers: _*)(extractor.subBoundTrees: _*)
       }
@@ -201,7 +202,10 @@ trait MatchTranslation {
       private def concreteType = tpe.bounds.hi
       private def unbound = unbind(tree)
       private def tpe_s =
-        if (pt <:< concreteType) "" + pt else s"$pt (binder: $tpe)"
+        if (pt <:< concreteType)
+          "" + pt
+        else
+          s"$pt (binder: $tpe)"
       private def at_s = unbound match {
         case WildcardPattern() => ""
         case pat               => s" @ $pat"
@@ -216,7 +220,10 @@ trait MatchTranslation {
       def merge(f: BoundTree => List[TreeMaker]): List[TreeMaker] =
         makers ::: (subpatterns flatMap f)
       override def toString =
-        if (subpatterns.isEmpty) "" else subpatterns.mkString("(", ", ", ")")
+        if (subpatterns.isEmpty)
+          ""
+        else
+          subpatterns.mkString("(", ", ", ")")
     }
 
     /** Implement a pattern match by turning its cases (including the implicit failure case)
@@ -251,7 +258,10 @@ trait MatchTranslation {
       debug.patmat("translating " + cases.mkString("{", "\n", "}"))
 
       val start =
-        if (Statistics.canEnable) Statistics.startTimer(patmatNanos) else null
+        if (Statistics.canEnable)
+          Statistics.startTimer(patmatNanos)
+        else
+          null
 
       val selectorTp = repeatedToSeq(
         elimAnonymousClass(selector.tpe.widen.withoutAnnotations))
@@ -276,7 +286,8 @@ trait MatchTranslation {
         matchOwner,
         defaultOverride)
 
-      if (Statistics.canEnable) Statistics.stopTimer(patmatNanos, start)
+      if (Statistics.canEnable)
+        Statistics.stopTimer(patmatNanos, start)
       combined
     }
 
@@ -290,7 +301,8 @@ trait MatchTranslation {
         pt: Type,
         pos: Position): List[CaseDef] =
       // if they're already simple enough to be handled by the back-end, we're done
-      if (caseDefs forall treeInfo.isCatchCase) caseDefs
+      if (caseDefs forall treeInfo.isCatchCase)
+        caseDefs
       else {
         val swatches = { // switch-catches
           // SI-7459 must duplicate here as we haven't committed to switch emission, and just figuring out
@@ -314,7 +326,8 @@ trait MatchTranslation {
         }
 
         val catches =
-          if (swatches.nonEmpty) swatches
+          if (swatches.nonEmpty)
+            swatches
           else {
             val scrutSym = freshSym(pos, pureType(ThrowableTpe))
             val casesNoSubstOnly = caseDefs map { caseDef =>
@@ -383,8 +396,10 @@ trait MatchTranslation {
     def translatePattern(bound: BoundTree): List[TreeMaker] = bound.translate()
 
     def translateGuard(guard: Tree): List[TreeMaker] =
-      if (guard == EmptyTree) Nil
-      else List(GuardTreeMaker(guard))
+      if (guard == EmptyTree)
+        Nil
+      else
+        List(GuardTreeMaker(guard))
 
     // TODO: 1) if we want to support a generalisation of Kotlin's patmat continue, must not hard-wire lifting into the monad (which is now done by codegen.one),
     // so that user can generate failure when needed -- use implicit conversion to lift into monad on-demand?
@@ -467,7 +482,10 @@ trait MatchTranslation {
       // don't go looking for selectors if we only expect one pattern
       def rawSubPatTypes = aligner.extractedTypes
       def resultInMonad =
-        if (isBool) UnitTpe else typeOfMemberNamedGet(resultType)
+        if (isBool)
+          UnitTpe
+        else
+          typeOfMemberNamedGet(resultType)
       def resultType = fun.tpe.finalResultType
 
       /** Create the TreeMaker that embodies this extractor call
@@ -523,9 +541,12 @@ trait MatchTranslation {
       // referenced by `binder`
       protected def subPatRefsSeq(binder: Symbol): List[Tree] = {
         def lastTrees: List[Tree] = (
-          if (!aligner.isStar) Nil
-          else if (expectedLength == 0) seqTree(binder) :: Nil
-          else genDrop(binder, expectedLength)
+          if (!aligner.isStar)
+            Nil
+          else if (expectedLength == 0)
+            seqTree(binder) :: Nil
+          else
+            genDrop(binder, expectedLength)
         )
         // this error-condition has already been checked by checkStarPatOK:
         //   if(isSeq) assert(firstIndexingBinder + nbIndexingIndices + (if(lastIsStar) 1 else 0) == totalArity, "(resultInMonad, ts, subPatTypes, subPats)= "+(resultInMonad, ts, subPatTypes, subPats))
@@ -542,8 +563,10 @@ trait MatchTranslation {
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
       // require (nbSubPats > 0 && (!lastIsStar || isSeq))
       protected def subPatRefs(binder: Symbol): List[Tree] = (
-        if (totalArity > 0 && isSeq) subPatRefsSeq(binder)
-        else productElemsToN(binder, totalArity)
+        if (totalArity > 0 && isSeq)
+          subPatRefsSeq(binder)
+        else
+          productElemsToN(binder, totalArity)
       )
 
       private def compareInts(t1: Tree, t2: Tree) =
@@ -572,8 +595,10 @@ trait MatchTranslation {
           // when the last subpattern is a wildcard-star the expectedLength is but a lower bound
           // (otherwise equality is required)
           def compareOp: (Tree, Tree) => Tree =
-            if (aligner.isStar) _ INT_>= _
-            else _ INT_== _
+            if (aligner.isStar)
+              _ INT_>= _
+            else
+              _ INT_== _
 
           // `if (binder != null && $checkExpectedLength [== | >=] 0) then else zero`
           (seqTree(binder) ANY_!= NULL) AND compareOp(checkExpectedLength, ZERO)
@@ -581,8 +606,10 @@ trait MatchTranslation {
 
       def checkedLength: Option[Int] =
         // no need to check unless it's an unapplySeq and the minimal length is non-trivially satisfied
-        if (!isSeq || expectedLength < starArity) None
-        else Some(expectedLength)
+        if (!isSeq || expectedLength < starArity)
+          None
+        else
+          Some(expectedLength)
     }
 
     // TODO: to be called when there's a def unapplyProd(x: T): U
@@ -625,10 +652,13 @@ trait MatchTranslation {
                 case (binder, idx) =>
                   val param = paramAccessorAt(idx)
                   if (param.isMutable || (definitions.isRepeated(
-                        param) && !aligner.isStar)) binder :: Nil
-                  else Nil
+                        param) && !aligner.isStar))
+                    binder :: Nil
+                  else
+                    Nil
               }
-            } else Nil
+            } else
+              Nil
           )
 
         // checks binder ne null before chaining to the next extractor
@@ -700,14 +730,18 @@ trait MatchTranslation {
       }
 
       override protected def seqTree(binder: Symbol): Tree =
-        if (firstIndexingBinder == 0) REF(binder)
-        else super.seqTree(binder)
+        if (firstIndexingBinder == 0)
+          REF(binder)
+        else
+          super.seqTree(binder)
 
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
       // require (totalArity > 0 && (!lastIsStar || isSeq))
       override protected def subPatRefs(binder: Symbol): List[Tree] =
-        if (aligner.isSingle) REF(binder) :: Nil // special case for extractors
-        else super.subPatRefs(binder)
+        if (aligner.isSingle)
+          REF(binder) :: Nil // special case for extractors
+        else
+          super.subPatRefs(binder)
 
       protected def spliceApply(binder: Symbol): Tree = {
         object splice extends Transformer {
@@ -719,8 +753,8 @@ trait MatchTranslation {
               treeCopy.Apply(t, x, binderRef(i.pos) :: Nil)
             // SI-7868 Account for numeric widening, e.g. <unapplySelector>.toInt
             case Apply(
-                x,
-                List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
+                  x,
+                  List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
               treeCopy.Apply(
                 t,
                 x,

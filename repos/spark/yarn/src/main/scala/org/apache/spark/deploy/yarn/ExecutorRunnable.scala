@@ -273,7 +273,13 @@ private[yarn] class ExecutorRunnable(
         ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
 
     // TODO: it would be nicer to just make sure there are no null commands here
-    commands.map(s => if (s == null) "null" else s).toList
+    commands
+      .map(s =>
+        if (s == null)
+          "null"
+        else
+          s)
+      .toList
   }
 
   private def setupDistributedCache(
@@ -368,7 +374,10 @@ private[yarn] class ExecutorRunnable(
       YarnConfiguration.YARN_HTTP_POLICY_DEFAULT
     )
     val httpScheme =
-      if (yarnHttpPolicy == "HTTPS_ONLY") "https://" else "http://"
+      if (yarnHttpPolicy == "HTTPS_ONLY")
+        "https://"
+      else
+        "http://"
 
     // Add log urls
     sys.env.get("SPARK_USER").foreach { user =>

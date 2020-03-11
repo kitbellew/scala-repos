@@ -20,7 +20,12 @@ class PolynomialBenchmarks extends MyBenchmark {
 
   def arbitraryRational = {
     val d = nextLong() % 100
-    Rational(nextLong(), if (d == 0L) 1L else d)
+    Rational(
+      nextLong(),
+      if (d == 0L)
+        1L
+      else
+        d)
   }
 
   var spireDenseRationalPolys: Array[Polynomial[Rational]] = null

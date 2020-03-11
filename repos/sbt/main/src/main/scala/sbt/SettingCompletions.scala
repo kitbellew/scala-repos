@@ -137,8 +137,16 @@ private[sbt] object SettingCompletions {
     else {
       val (redef, trimR) = lines(strings(redefined))
       val (used, trimU) = lines(strings(affected))
-      val details = if (trimR || trimU) "\n\tRun `last` for details." else ""
-      val valuesString = if (redefined.size == 1) "value" else "values"
+      val details =
+        if (trimR || trimU)
+          "\n\tRun `last` for details."
+        else
+          ""
+      val valuesString =
+        if (redefined.size == 1)
+          "value"
+        else
+          "values"
       "Defining %s\nThe new %s will be used by %s%s".format(
         redef,
         valuesString,
@@ -210,7 +218,11 @@ private[sbt] object SettingCompletions {
       assign: Assign.Value,
       scopedKeyP: Parser[ScopedKey[_]]): Parser[Seq[ScopedKey[_]]] = {
     val fullTypeString = keyTypeString(sk.key)
-    val typeString = if (assignNoAppend(assign)) fullTypeString else "..."
+    val typeString =
+      if (assignNoAppend(assign))
+        fullTypeString
+      else
+        "..."
     if (assign == Assign.Update) {
       val function = "{(prev: " + typeString + ") => /*" + typeString + "*/ }"
       token(OptSpace ~ function) ^^^ Nil
@@ -226,7 +238,10 @@ private[sbt] object SettingCompletions {
     * For example, if `definingKey` is for a setting, `in` may only be a setting itself.
     */
   def keyFilter(definingKey: AttributeKey[_]): AttributeKey[_] => Boolean =
-    if (isSetting(definingKey)) isSetting _ else isTaskOrSetting _
+    if (isSetting(definingKey))
+      isSetting _
+    else
+      isTaskOrSetting _
 
   /**
     * Parser for a Scope for a `key` given the current project `context` and evaluated `settings`.
@@ -240,7 +255,11 @@ private[sbt] object SettingCompletions {
     val data = settings.data
     val allScopes = data.keys.toSeq
     val definedScopes = data.toSeq flatMap {
-      case (scope, attrs) => if (attrs contains key) scope :: Nil else Nil
+      case (scope, attrs) =>
+        if (attrs contains key)
+          scope :: Nil
+        else
+          Nil
     }
     scope(key, allScopes, definedScopes, context)
   }
@@ -320,7 +339,10 @@ private[sbt] object SettingCompletions {
   def optionallyQuoted[T](p: Parser[T]): Parser[T] =
     (Backtick.? ~ p) flatMap {
       case (quote, id) =>
-        if (quote.isDefined) Backtick.? ^^^ id else success(id)
+        if (quote.isDefined)
+          Backtick.? ^^^ id
+        else
+          success(id)
     }
 
   /**
@@ -332,11 +354,16 @@ private[sbt] object SettingCompletions {
       level: Int,
       key: ScopedKey[_]): Seq[Completion] = {
     val allowed: Iterable[Assign.Value] =
-      if (appendable(key.key)) Assign.values
-      else assignNoAppend
+      if (appendable(key.key))
+        Assign.values
+      else
+        assignNoAppend
     val applicable = allowed.toSeq.flatMap { a =>
       val s = a.toString
-      if (s startsWith seen) (s, a) :: Nil else Nil
+      if (s startsWith seen)
+        (s, a) :: Nil
+      else
+        Nil
     }
     completeDescribed(seen, true, applicable)(assignDescription)
   }
@@ -376,7 +403,11 @@ private[sbt] object SettingCompletions {
 
     val showAll =
       (level >= 3) || (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
-    val showKeys = if (showAll) applicable else prominentOnly
+    val showKeys =
+      if (showAll)
+        applicable
+      else
+        prominentOnly
     val showDescriptions = (level >= 2) || (showKeys.size <= detailLimit)
     completeDescribed(seen, showDescriptions, showKeys)(s =>
       description(s).toList.mkString)
@@ -427,9 +458,12 @@ private[sbt] object SettingCompletions {
       im: Manifest[InputTask[_]]): S = {
     def argTpe = key.manifest.typeArguments.head
     val e = key.manifest.runtimeClass
-    if (e == tm.runtimeClass) onTask(argTpe)
-    else if (e == im.runtimeClass) onInput(argTpe)
-    else onSetting(key.manifest)
+    if (e == tm.runtimeClass)
+      onTask(argTpe)
+    else if (e == im.runtimeClass)
+      onInput(argTpe)
+    else
+      onSetting(key.manifest)
   }
 
   /** For a Task[T], InputTask[T], or Setting[T], this returns the manifest for T. */

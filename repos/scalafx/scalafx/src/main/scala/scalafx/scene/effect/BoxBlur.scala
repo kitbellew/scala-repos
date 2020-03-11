@@ -35,7 +35,10 @@ import scalafx.delegate.{DimensionDelegate, SFXDelegate}
 
 object BoxBlur {
   implicit def sfxBoxBlur2jfx(bb: BoxBlur): jfxse.BoxBlur =
-    if (bb != null) bb.delegate else null
+    if (bb != null)
+      bb.delegate
+    else
+      null
 }
 
 /**

@@ -42,7 +42,10 @@ import scalafx.delegate.SFXDelegate
 object ComboBoxBase {
   implicit def sfxComboBoxBase2jfx[T](
       cb: ComboBoxBase[T]): jfxsc.ComboBoxBase[T] =
-    if (cb != null) cb.delegate else null
+    if (cb != null)
+      cb.delegate
+    else
+      null
 }
 
 abstract class ComboBoxBase[T](override val delegate: jfxsc.ComboBoxBase[T])

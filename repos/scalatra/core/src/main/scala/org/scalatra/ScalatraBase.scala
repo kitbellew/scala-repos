@@ -231,7 +231,8 @@ trait ScalatraBase
       }
     )
 
-    if (!rendered) renderResponse(result)
+    if (!rendered)
+      renderResponse(result)
   }
 
   private[this] def cradleHalt(body: => Any, error: Throwable => Any): Any = {
@@ -361,7 +362,10 @@ trait ScalatraBase
 
   private[this] def matchOtherMethods(): Option[Any] = {
     val allow = routes.matchingMethodsExcept(request.requestMethod, requestPath)
-    if (allow.isEmpty) None else liftAction(() => doMethodNotAllowed(allow))
+    if (allow.isEmpty)
+      None
+    else
+      liftAction(() => doMethodNotAllowed(allow))
   }
 
   private[this] def handleStatusCode(status: Int): Option[Any] = {
@@ -402,7 +406,11 @@ trait ScalatraBase
       implicit request: HttpServletRequest): Unit = {
     val routeParams = matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
       case (key, values) =>
-        key -> values.map(s => if (s.nonBlank) UriDecoder.secondStep(s) else s)
+        key -> values.map(s =>
+          if (s.nonBlank)
+            UriDecoder.secondStep(s)
+          else
+            s)
     }
     request(MultiParamsKey) = originalParams ++ routeParams
   }
@@ -579,7 +587,8 @@ trait ScalatraBase
       e.headers foreach {
         case (name, value) => response.addHeader(name, value)
       }
-      if (!rendered) renderResponse(e.body)
+      if (!rendered)
+        renderResponse(e.body)
     } catch {
       case e: Throwable =>
         runCallbacks(Failure(e))
@@ -744,9 +753,15 @@ trait ScalatraBase
       case (key, Some(value)) => key.urlEncode + "=" + value.toString.urlEncode
       case (key, value)       => key.urlEncode + "=" + value.toString.urlEncode
     }
-    val queryString = if (pairs.isEmpty) "" else pairs.mkString("?", "&", "")
-    if (withSessionId) addSessionId(newPath + queryString)
-    else newPath + queryString
+    val queryString =
+      if (pairs.isEmpty)
+        ""
+      else
+        pairs.mkString("?", "&", "")
+    if (withSessionId)
+      addSessionId(newPath + queryString)
+    else
+      newPath + queryString
   }
 
   private[this] def ensureContextPathsStripped(path: String)(
@@ -757,19 +772,34 @@ trait ScalatraBase
   private[this] def ensureServletPathStripped(path: String)(
       implicit request: HttpServletRequest): String = {
     val sp = ensureSlash(request.getServletPath.blankOption getOrElse "")
-    val np = if (path.startsWith(sp + "/")) path.substring(sp.length) else path
+    val np =
+      if (path.startsWith(sp + "/"))
+        path.substring(sp.length)
+      else
+        path
     ensureSlash(np)
   }
 
   private[this] def ensureContextPathStripped(path: String): String = {
     val cp = ensureSlash(contextPath)
-    val np = if (path.startsWith(cp + "/")) path.substring(cp.length) else path
+    val np =
+      if (path.startsWith(cp + "/"))
+        path.substring(cp.length)
+      else
+        path
     ensureSlash(np)
   }
 
   private[this] def ensureSlash(candidate: String): String = {
-    val p = if (candidate.startsWith("/")) candidate else "/" + candidate
-    if (p.endsWith("/")) p.dropRight(1) else p
+    val p =
+      if (candidate.startsWith("/"))
+        candidate
+      else
+        "/" + candidate
+    if (p.endsWith("/"))
+      p.dropRight(1)
+    else
+      p
   }
 
   protected def isHttps(implicit request: HttpServletRequest): Boolean = {
@@ -816,18 +846,25 @@ trait ScalatraBase
       withSessionId: Boolean = true)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    if (path.startsWith("http")) path
+    if (path.startsWith("http"))
+      path
     else {
       val p =
         url(path, params, includeContextPath, includeServletPath, withSessionId)
-      if (p.startsWith("http")) p else buildBaseUrl + ensureSlash(p)
+      if (p.startsWith("http"))
+        p
+      else
+        buildBaseUrl + ensureSlash(p)
     }
   }
 
   private[this] def buildBaseUrl(
       implicit request: HttpServletRequest): String = {
     "%s://%s".format(
-      if (needsHttps || isHttps) "https" else "http",
+      if (needsHttps || isHttps)
+        "https"
+      else
+        "http",
       serverAuthority
     )
   }
@@ -836,7 +873,10 @@ trait ScalatraBase
       implicit request: HttpServletRequest): String = {
     val p = serverPort
     val h = serverHost
-    if (p == 80 || p == 443) h else h + ":" + p.toString
+    if (p == 80 || p == 443)
+      h
+    else
+      h + ":" + p.toString
   }
 
   def serverHost(implicit request: HttpServletRequest): String = {
@@ -900,8 +940,10 @@ trait ScalatraBase
   def multiParams(implicit request: HttpServletRequest): MultiParams = {
     val read = request.contains("MultiParamsRead")
     val found = request.get(MultiParamsKey) map (
-      _.asInstanceOf[MultiParams] ++ (if (read) Map.empty
-                                      else request.multiParameters)
+      _.asInstanceOf[MultiParams] ++ (if (read)
+                                        Map.empty
+                                      else
+                                        request.multiParameters)
     )
     val multi = found getOrElse request.multiParameters
     request("MultiParamsRead") = new {}

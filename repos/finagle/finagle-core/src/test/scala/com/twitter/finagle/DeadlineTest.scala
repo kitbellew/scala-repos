@@ -14,12 +14,15 @@ class DeadlineTest
     with GeneratorDrivenPropertyChecks {
 
   val time =
-    for (t <- Gen.choose(0L, Long.MaxValue)) yield Time.fromNanoseconds(t)
+    for (t <- Gen.choose(0L, Long.MaxValue))
+      yield Time.fromNanoseconds(t)
   val dur =
-    for (d <- Gen.choose(0L, Long.MaxValue)) yield Duration.fromNanoseconds(d)
+    for (d <- Gen.choose(0L, Long.MaxValue))
+      yield Duration.fromNanoseconds(d)
   val deadline =
     for (t <- time;
-         d <- dur) yield Deadline(t, t + d)
+         d <- dur)
+      yield Deadline(t, t + d)
 
   test("Deadline marshalling") {
     forAll(deadline) { d =>

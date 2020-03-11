@@ -111,8 +111,10 @@ class JSInteropTest extends DirectTest with TestHelpers {
       innerSJSDefined <- Seq(false, true)
     } yield {
       val innerLine =
-        if (innerSJSDefined) s"@ScalaJSDefined $inner A extends js.Object"
-        else s"$inner A"
+        if (innerSJSDefined)
+          s"@ScalaJSDefined $inner A extends js.Object"
+        else
+          s"$inner A"
       s"""
       @js.native
       $outer A extends js.Object {
@@ -326,10 +328,16 @@ class JSInteropTest extends DirectTest with TestHelpers {
       outerSJSDefined <- Seq(false, true)
     } yield {
       val outerLine =
-        if (outerSJSDefined) s"@ScalaJSDefined $outer A extends js.Object"
-        else s"$outer A"
+        if (outerSJSDefined)
+          s"@ScalaJSDefined $outer A extends js.Object"
+        else
+          s"$outer A"
 
-      val errTrg = if (inner == "object") "objects" else "classes"
+      val errTrg =
+        if (inner == "object")
+          "objects"
+        else
+          "classes"
 
       s"""
       $outerLine {

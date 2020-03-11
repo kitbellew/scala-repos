@@ -113,7 +113,11 @@ private[math] object BitLevel {
     *  @param n the bit to flip
     */
   def flipBit(bi: BigInteger, n: Int): BigInteger = {
-    val resSign = if (bi.sign == 0) 1 else bi.sign
+    val resSign =
+      if (bi.sign == 0)
+        1
+      else
+        bi.sign
     val intCount = n >> 5
     val bitN = n & 31
     val resLength = Math.max(intCount + 1, bi.numberLength) + 1
@@ -162,7 +166,11 @@ private[math] object BitLevel {
   def inplaceShiftLeft(bi: BigInteger, count: Int): Unit = {
     val intCount = count >> 5
     val numZeros = Integer.numberOfLeadingZeros(bi.digits(bi.numberLength - 1))
-    val offset = if ((numZeros - (count & 31)) >= 0) 0 else 1
+    val offset =
+      if ((numZeros - (count & 31)) >= 0)
+        0
+      else
+        1
 
     bi.numberLength += intCount + offset
     shiftLeft(bi.digits, bi.digits, intCount, count & 31)
@@ -220,7 +228,11 @@ private[math] object BitLevel {
   def shiftLeft(source: BigInteger, count: Int): BigInteger = {
     val intCount: Int = count >> 5
     val andCount: Int = count & 31
-    val offset = if (andCount == 0) 0 else 1
+    val offset =
+      if (andCount == 0)
+        0
+      else
+        1
     val resLength: Int = source.numberLength + intCount + offset
     val resDigits = new Array[Int](resLength)
     shiftLeft(resDigits, source.digits, intCount, andCount)
@@ -306,8 +318,10 @@ private[math] object BitLevel {
     val andCount: Int = count & 31 // count of remaining bits
 
     if (intCount >= source.numberLength) {
-      if (source.sign < 0) BigInteger.MINUS_ONE
-      else BigInteger.ZERO
+      if (source.sign < 0)
+        BigInteger.MINUS_ONE
+      else
+        BigInteger.ZERO
     } else {
       var resLength: Int = source.numberLength - intCount
       val resDigits = new Array[Int](resLength + 1)

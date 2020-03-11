@@ -121,17 +121,26 @@ trait ContextErrors {
     def name = tp.typeSymbol.nameString
     def parents = tp.parents filterNot isTrivialTopType
     def onlyAny = tp.parents forall (_.typeSymbol == AnyClass)
-    def parents_s = (if (parents.isEmpty) tp.parents else parents) mkString ", "
+    def parents_s =
+      (if (parents.isEmpty)
+         tp.parents
+       else
+         parents) mkString ", "
     def what = (
       if (tp.typeSymbol.isAbstractType) {
-        val descr = if (onlyAny) "unbounded" else "bounded only by " + parents_s
+        val descr =
+          if (onlyAny)
+            "unbounded"
+          else
+            "bounded only by " + parents_s
         s"$name is $descr, which means AnyRef is not a known parent"
       } else if (tp.typeSymbol.isAnonOrRefinementClass)
         s"the parents of this type ($parents_s) extend Any, not AnyRef"
       else
         s"$name extends Any, not AnyRef"
     )
-    if (isPrimitiveValueType(found) || isTrivialTopType(tp)) ""
+    if (isPrimitiveValueType(found) || isTrivialTopType(tp))
+      ""
     else
       "\n" +
         sm"""|Note that $what.
@@ -148,7 +157,8 @@ trait ContextErrors {
     val message =
       if (macroDebugLite || macroDebugVerbose)
         s"$friendlyMessage $debugDiagnostic"
-      else friendlyMessage
+      else
+        friendlyMessage
     // TODO: clean this up! (This is a more explicit version of what the code use to do, to reveal the issue.)
     throw new TypeError(analyzer.lastTreeToTyper.pos, message)
   }
@@ -198,7 +208,8 @@ trait ContextErrors {
           "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
                                                                          tree))
                                                                      addendum
-                                                                   else ""))
+                                                                   else
+                                                                     ""))
         setError(tree)
       }
 
@@ -224,7 +235,8 @@ trait ContextErrors {
             val retyped = typed(tree.duplicate.clearType())
             val foundDecls = retyped.tpe.decls filter (sym =>
               !sym.isConstructor && !sym.isSynthetic)
-            if (foundDecls.isEmpty || (found.typeSymbol eq NoSymbol)) found
+            if (foundDecls.isEmpty || (found.typeSymbol eq NoSymbol))
+              found
             else {
               // The members arrive marked private, presumably because there was no
               // expected type and so they're considered members of an anon class.
@@ -317,7 +329,11 @@ trait ContextErrors {
         setError(tree)
 
       def SymbolEscapesScopeError[T <: Tree](tree: T, badSymbol: Symbol): T = {
-        val modifierString = if (badSymbol.isPrivate) "private " else ""
+        val modifierString =
+          if (badSymbol.isPrivate)
+            "private "
+          else
+            ""
         issueNormalTypeError(
           tree,
           modifierString + badSymbol + " escapes its defining scope as part of type " + tree.tpe)
@@ -376,8 +392,10 @@ trait ContextErrors {
       def AssignmentError(tree: Tree, varSym: Symbol) = {
         issueNormalTypeError(
           tree,
-          if (varSym != null && varSym.isValue) "reassignment to val"
-          else "assignment to non variable")
+          if (varSym != null && varSym.isValue)
+            "reassignment to val"
+          else
+            "assignment to non variable")
         setError(tree)
       }
 
@@ -406,7 +424,10 @@ trait ContextErrors {
           val owner = qual.tpe.typeSymbol
           val target = qual.tpe.widen
           def targetKindString =
-            if (owner.isTypeParameterOrSkolem) "type parameter " else ""
+            if (owner.isTypeParameterOrSkolem)
+              "type parameter "
+            else
+              ""
           def nameString = decodeWithKind(name, owner)
           /* Illuminating some common situations and errors a bit further. */
           def addendum = {
@@ -418,7 +439,8 @@ trait ContextErrors {
                     "\nNote: %s exists, but it has no companion object.".format(
                       sym)
                 }
-              } else ""
+              } else
+                ""
             }
             val semicolon =
               (
@@ -431,14 +453,17 @@ trait ContextErrors {
               (
                 if (ObjectClass.info.member(name).exists)
                   notAnyRefMessage(target)
-                else ""
+                else
+                  ""
               )
             companion + notAnyRef + semicolon
           }
           def targetStr = targetKindString + target.directObjectString
           withAddendum(qual.pos)(
-            if (name == nme.CONSTRUCTOR) s"$target does not have a constructor"
-            else s"$nameString is not a member of $targetStr$addendum"
+            if (name == nme.CONSTRUCTOR)
+              s"$target does not have a constructor"
+            else
+              s"$nameString is not a member of $targetStr$addendum"
           )
         }
         issueNormalTypeError(sel, errMsg)
@@ -451,8 +476,10 @@ trait ContextErrors {
       def SelectWithUnderlyingError(sel: Tree, err: AbsTypeError) = {
         // if there's no position, this is likely the result of a MissingRequirementError
         // use the position of the selection we failed to type check to report the original message
-        if (err.errPos == NoPosition) issueNormalTypeError(sel, err.errMsg)
-        else issueTypeError(err)
+        if (err.errPos == NoPosition)
+          issueNormalTypeError(sel, err.errMsg)
+        else
+          issueTypeError(err)
         setError(sel)
       }
 
@@ -537,12 +564,15 @@ trait ContextErrors {
           }
           issueNormalTypeError(vparam, what + addendum)
         }
-        if (vparam.mods.isSynthetic) fun match {
-          case Function(_, Match(_, _)) =>
-            MissingParameterTypeAnonMatchError(vparam, pt)
-          case _ => issue("missing parameter type for expanded function " + fun)
-        }
-        else issue("missing parameter type")
+        if (vparam.mods.isSynthetic)
+          fun match {
+            case Function(_, Match(_, _)) =>
+              MissingParameterTypeAnonMatchError(vparam, pt)
+            case _ =>
+              issue("missing parameter type for expanded function " + fun)
+          }
+        else
+          issue("missing parameter type")
       }
 
       def MissingParameterTypeAnonMatchError(vparam: Tree, pt: Type) =
@@ -674,11 +704,22 @@ trait ContextErrors {
       def NotEnoughArgsError(tree: Tree, fun: Tree, missing: List[Symbol]) = {
         val notEnoughArgumentsMsg = {
           val suffix =
-            if (missing.isEmpty) ""
+            if (missing.isEmpty)
+              ""
             else {
               val keep = missing take 3 map (_.name)
-              val ess = if (missing.tail.isEmpty) "" else "s"
-              f".%nUnspecified value parameter$ess ${keep.mkString("", ", ", if ((missing drop 3).nonEmpty) "..." else ".")}"
+              val ess =
+                if (missing.tail.isEmpty)
+                  ""
+                else
+                  "s"
+              f".%nUnspecified value parameter$ess ${keep.mkString(
+                "",
+                ", ",
+                if ((missing drop 3).nonEmpty)
+                  "..."
+                else
+                  ".")}"
             }
           s"not enough arguments for ${treeSymTypeMsg(fun)}$suffix"
         }
@@ -774,11 +815,13 @@ trait ContextErrors {
           |Unapplied methods are only converted to functions when a function type is expected.
           |You can make this conversion explicit by writing `$f _` or `$paf` instead of `$f`.""".stripMargin
         val message =
-          if (meth.isMacro) MacroTooFewArgumentListsMessage
+          if (meth.isMacro)
+            MacroTooFewArgumentListsMessage
           else
             s"""missing argument list for ${meth.fullLocationString}${if (!meth.isConstructor)
               advice
-            else ""}"""
+            else
+              ""}"""
         issueNormalTypeError(tree, message)
         setError(tree)
       }
@@ -827,7 +870,10 @@ trait ContextErrors {
       def TypeSelectionFromVolatileTypeError(tree: Tree, qual: Tree) = {
         val hiBound = qual.tpe.bounds.hi
         val addendum =
-          if (hiBound =:= qual.tpe) "" else s" (with upper bound ${hiBound})"
+          if (hiBound =:= qual.tpe)
+            ""
+          else
+            s" (with upper bound ${hiBound})"
         issueNormalTypeError(
           tree,
           s"illegal type selection from volatile type ${qual.tpe}${addendum}")
@@ -875,7 +921,8 @@ trait ContextErrors {
           tree,
           if (qual.isEmpty)
             tree + " can be used only in a class, object, or template"
-          else qual + " is not an enclosing class")
+          else
+            qual + " is not an enclosing class")
         setError(tree)
       }
 
@@ -901,11 +948,13 @@ trait ContextErrors {
               "conflicting symbols originated in files '%s' and '%s'".format(
                 sym0.associatedFile.canonicalPath,
                 sym1.associatedFile.canonicalPath))
-          else None,
+          else
+            None,
           if (isBug)
             Some(
               "Note: this may be due to a bug in the compiler involving wildcards in package objects")
-          else None
+          else
+            None
         )
         val addendum = addendums.flatten match {
           case Nil => ""
@@ -950,11 +999,15 @@ trait ContextErrors {
         def msgForLog =
           if (msg != null && (msg contains "exception during macro expansion"))
             msg.split(EOL).drop(1).headOption.getOrElse("?")
-          else msg
+          else
+            msg
         macroLogLite("macro expansion has failed: %s".format(msgForLog))
         if (msg != null)
           context.error(
-            if (pos.isDefined) pos else expandee.pos,
+            if (pos.isDefined)
+              pos
+            else
+              expandee.pos,
             msg
           ) // issueTypeError(PosAndMsgTypeError(..)) won't work => swallows positions
         setError(expandee)
@@ -1012,7 +1065,8 @@ trait ContextErrors {
             val relevancyThreshold = realex
               .getStackTrace()
               .indexWhere(_.getMethodName endsWith "macroExpandWithRuntime")
-            if (relevancyThreshold == -1) None
+            if (relevancyThreshold == -1)
+              None
             else {
               var relevantElements =
                 realex.getStackTrace().take(relevancyThreshold + 1)
@@ -1033,7 +1087,7 @@ trait ContextErrors {
             // the code above tries various tricks to detect the relevant portion of the stack trace
             // if these tricks fail, just fall back to uninformative, but better than nothing, getMessage
             case NonFatal(
-                ex
+                  ex
                 ) => // currently giving a spurious warning, see SI-6994
               macroLogVerbose(
                 "got an exception when processing a macro generated exception\n" +
@@ -1043,7 +1097,10 @@ trait ContextErrors {
           }
         } getOrElse {
           val msg = realex.getMessage
-          if (msg != null) msg else realex.getClass.getName
+          if (msg != null)
+            msg
+          else
+            realex.getClass.getName
         }
         macroExpansionError(
           expandee,
@@ -1057,8 +1114,10 @@ trait ContextErrors {
         )
         val forgotten =
           (
-            if (sym.isTerm) "splice when splicing this variable into a reifee"
-            else "c.WeakTypeTag annotation for this type parameter"
+            if (sym.isTerm)
+              "splice when splicing this variable into a reifee"
+            else
+              "c.WeakTypeTag annotation for this type parameter"
           )
         macroExpansionError(
           expandee,
@@ -1073,18 +1132,23 @@ trait ContextErrors {
           expanded.isInstanceOf[scala.reflect.api.Trees#TreeApi]
         val expected = "expr or tree"
         val actual =
-          if (isUnaffiliatedExpr) "an expr"
-          else if (isUnaffiliatedTree) "a tree"
-          else "unexpected"
+          if (isUnaffiliatedExpr)
+            "an expr"
+          else if (isUnaffiliatedTree)
+            "a tree"
+          else
+            "unexpected"
         val isPathMismatch =
           expanded != null && (isUnaffiliatedExpr || isUnaffiliatedTree)
         macroExpansionError(
           expandee,
           s"macro must return a compiler-specific $expected; returned value is " + (
-            if (expanded == null) "null"
+            if (expanded == null)
+              "null"
             else if (isPathMismatch)
               s"$actual, but it doesn't belong to this compiler's universe"
-            else "of " + expanded.getClass
+            else
+              "of " + expanded.getClass
           )
         )
       }
@@ -1113,7 +1177,10 @@ trait ContextErrors {
       def asParams(xs: List[Any]) = xs.mkString("(", ", ", ")")
 
       def resType =
-        if (pt.isWildcard) "" else " with expected result type " + pt
+        if (pt.isWildcard)
+          ""
+        else
+          " with expected result type " + pt
       def allTypes =
         (alternatives(tree) flatMap (_.paramTypes)) ++ argtpes :+ pt
       def locals = alternatives(tree) flatMap (_.typeParams)
@@ -1187,7 +1254,10 @@ trait ContextErrors {
           explanation: String): AbsTypeError = {
         def errMsg = {
           val location =
-            if (sym.isClassConstructor) owner0 else pre.widen.directObjectString
+            if (sym.isClassConstructor)
+              owner0
+            else
+              pre.widen.directObjectString
 
           underlyingSymbol(sym).fullLocationString + " cannot be accessed in " +
             location + explanation
@@ -1232,7 +1302,8 @@ trait ContextErrors {
 
       // side-effect on the tree, break the overloaded type cycle in infer
       private def setErrorOnLastTry(lastTry: Boolean, tree: Tree) =
-        if (lastTry) setError(tree)
+        if (lastTry)
+          setError(tree)
 
       def NoBestMethodAlternativeError(
           tree: Tree,
@@ -1261,8 +1332,10 @@ trait ContextErrors {
         if (!(argtpes exists (_.isErroneous)) && !pt.isErroneous) {
           val msg0 =
             "argument types " + argtpes.mkString("(", ",", ")") +
-              (if (pt == WildcardType) ""
-               else " and expected result type " + pt)
+              (if (pt == WildcardType)
+                 ""
+               else
+                 " and expected result type " + pt)
           issueAmbiguousTypeErrorUnlessErroneous(
             tree.pos,
             pre,
@@ -1492,16 +1565,32 @@ trait ContextErrors {
           "`BeanProperty' annotation can be applied only to non-private fields")
 
       def DoubleDefError(currentSym: Symbol, prevSym: Symbol) = {
-        val s1 = if (prevSym.isModule) "case class companion " else ""
-        val s2 = if (prevSym.isSynthetic) "(compiler-generated) " + s1 else ""
+        val s1 =
+          if (prevSym.isModule)
+            "case class companion "
+          else
+            ""
+        val s2 =
+          if (prevSym.isSynthetic)
+            "(compiler-generated) " + s1
+          else
+            ""
         val s3 =
-          if (prevSym.isCase) "case class " + prevSym.name else "" + prevSym
+          if (prevSym.isCase)
+            "case class " + prevSym.name
+          else
+            "" + prevSym
         val where = if (currentSym.isTopLevel != prevSym.isTopLevel) {
-          val inOrOut = if (prevSym.isTopLevel) "outside of" else "in"
+          val inOrOut =
+            if (prevSym.isTopLevel)
+              "outside of"
+            else
+              "in"
           " %s package object %s".format(
             inOrOut,
             "" + prevSym.effectiveOwner.name)
-        } else ""
+        } else
+          ""
 
         issueSymbolTypeError(
           currentSym,
@@ -1641,7 +1730,10 @@ trait ContextErrors {
                     |${coreMsg}are possible conversion functions from $found to $req"""
           }
           typeErrorMsg(found, req) + (
-            if (explanation == "") "" else "\n" + explanation
+            if (explanation == "")
+              ""
+            else
+              "\n" + explanation
           )
         }
 
@@ -1697,7 +1789,8 @@ trait ContextErrors {
           "reference to " + name + " is ambiguous; it is both a method parameter " +
             "and a variable in scope.")
         setError(arg)
-      } else arg
+      } else
+        arg
     }
 
     def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(

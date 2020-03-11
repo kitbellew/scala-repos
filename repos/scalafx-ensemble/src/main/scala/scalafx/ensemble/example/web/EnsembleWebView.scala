@@ -59,7 +59,10 @@ class EnsembleWebView extends EnsembleExample {
     }
 
     def validUrl(url: String) =
-      if (url.startsWith("http://")) url else "http://" + locationField.text()
+      if (url.startsWith("http://"))
+        url
+      else
+        "http://" + locationField.text()
 
     val loadAction = (ae: ActionEvent) =>
       webView.engine.load(validUrl(locationField.text()))

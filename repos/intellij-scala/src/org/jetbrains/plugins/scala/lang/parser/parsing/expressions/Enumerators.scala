@@ -35,7 +35,8 @@ object Enumerators {
           exit = false;
           true
       }
-      if (!guard && !Enumerator.parse(builder)) exit = false
+      if (!guard && !Enumerator.parse(builder))
+        exit = false
     }
     enumsMarker.done(ScalaElementTypes.ENUMERATORS)
     return true

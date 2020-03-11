@@ -47,8 +47,10 @@ object Utils {
     *  Some browsers don't fetch URIs without authority correctly.
     */
   def fixFileURI(uri: URI): URI =
-    if (uri.getScheme() != "file" || uri.getAuthority() != null) uri
-    else new URI("file", "", uri.getPath(), uri.getQuery(), uri.getFragment())
+    if (uri.getScheme() != "file" || uri.getAuthority() != null)
+      uri
+    else
+      new URI("file", "", uri.getPath(), uri.getQuery(), uri.getFragment())
 
   def escapeJS(str: String): String = {
     // scalastyle:off return

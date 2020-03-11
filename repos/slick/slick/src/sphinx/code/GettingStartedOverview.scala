@@ -35,7 +35,8 @@ object GettingStartedOverview extends App {
 //#quick-query
         coffees.schema.create andThen
 //#quick-query
-          (for (c <- coffees; if c.price < 10.0) yield c.name).result
+          (for (c <- coffees; if c.price < 10.0)
+            yield c.name).result
 //#quick-query
           andThen
 //#quick-query
@@ -53,7 +54,8 @@ object GettingStartedOverview extends App {
         val limit = 10.0
 
         // Your query could look like this:
-        (for (c <- coffees; if c.price < limit) yield c.name).result
+        (for (c <- coffees; if c.price < limit)
+          yield c.name).result
 
         // Equivalent SQL: select COF_NAME from COFFEES where PRICE < 10.0
         //#what-is-slick-micro-example

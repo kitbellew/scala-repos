@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object EventTarget {
   implicit def sfxEventTarget2jfx(v: EventTarget): jfxe.EventTarget =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

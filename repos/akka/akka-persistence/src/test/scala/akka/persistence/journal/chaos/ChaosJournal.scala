@@ -47,10 +47,11 @@ class ChaosJournal extends AsyncWriteJournal {
       if (shouldFail(writeFailureRate))
         throw new WriteFailedException(messages.flatMap(_.payload))
       else
-        for (a ← messages) yield {
-          a.payload.foreach(add)
-          AsyncWriteJournal.successUnit
-        }
+        for (a ← messages)
+          yield {
+            a.payload.foreach(add)
+            AsyncWriteJournal.successUnit
+          }
     } catch {
       case NonFatal(e) ⇒ Future.failed(e)
     }
@@ -88,7 +89,8 @@ class ChaosJournal extends AsyncWriteJournal {
       fromSequenceNr: Long): Future[Long] =
     if (shouldFail(readHighestFailureRate))
       Future.failed(new ReadHighestFailedException)
-    else Future.successful(highestSequenceNr(persistenceId))
+    else
+      Future.successful(highestSequenceNr(persistenceId))
 
   def shouldFail(rate: Double): Boolean =
     random.nextDouble() < rate

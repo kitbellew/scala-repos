@@ -197,7 +197,8 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           } else
             () => {}
         }
-      } else () => {}
+      } else
+        () => {}
     }
     toDo()
   }
@@ -221,7 +222,8 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           } else
             () => {}
         }
-      } else () => {}
+      } else
+        () => {}
     }
     toDo()
   }
@@ -248,9 +250,11 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   private def proc2(ignoreProcessing: Boolean) {
     var clearProcessing = true
     baseMailbox.synchronized {
-      if (!ignoreProcessing && processing) return
+      if (!ignoreProcessing && processing)
+        return
       processing = true
-      if (startCnt > 0) startCnt = 0
+      if (startCnt > 0)
+        startCnt = 0
     }
 
     val eh = exceptionHandler
@@ -289,7 +293,9 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
                   try {
                     execTranslate(hiPriPf)(mb.item)
                   } catch {
-                    case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+                    case e: Exception =>
+                      if (eh.isDefinedAt(e))
+                        eh(e)
                   }
                 case _ =>
                   baseMailbox.synchronized {
@@ -316,7 +322,9 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
             try {
               execTranslate(pf)(mb.item)
             } catch {
-              case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+              case e: Exception =>
+                if (eh.isDefinedAt(e))
+                  eh(e)
             }
           case _ =>
             baseMailbox.synchronized {
@@ -423,7 +431,8 @@ trait LiftActor
         case other =>
           reply(other !? msg)
       }
-    } else forwardTo ! msg
+    } else
+      forwardTo ! msg
   }
 
   /**

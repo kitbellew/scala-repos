@@ -51,6 +51,7 @@ private[opening] final class Selector(
       case None =>
         if ((tolerance + toleranceStep) <= toleranceMax)
           tryRange(user, tolerance + toleranceStep, ids)
-        else fufail(s"Can't find a opening for user $user!")
+        else
+          fufail(s"Can't find a opening for user $user!")
     }
 }

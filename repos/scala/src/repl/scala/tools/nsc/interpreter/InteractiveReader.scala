@@ -35,8 +35,10 @@ trait InteractiveReader {
 
   def readLine(prompt: String): String =
     // hack necessary for OSX jvm suspension because read calls are not restarted after SIGTSTP
-    if (isMac) restartSysCalls(readOneLine(prompt), reset())
-    else readOneLine(prompt)
+    if (isMac)
+      restartSysCalls(readOneLine(prompt), reset())
+    else
+      readOneLine(prompt)
 }
 
 object InteractiveReader {

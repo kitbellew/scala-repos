@@ -43,9 +43,17 @@ trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
     exprs.apply(2)
   }
 
-  def getBaseExpr: ScExpression = if (isLeftAssoc) rOp else lOp
+  def getBaseExpr: ScExpression =
+    if (isLeftAssoc)
+      rOp
+    else
+      lOp
 
-  def getArgExpr = if (isLeftAssoc) lOp else rOp
+  def getArgExpr =
+    if (isLeftAssoc)
+      lOp
+    else
+      rOp
 
   def isLeftAssoc: Boolean = {
     val opText = operation.getText

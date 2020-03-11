@@ -120,10 +120,14 @@ object Test extends InteractiveTest {
                   val clazz = compiler.rootMirror.EmptyPackage.info
                     .decl(TypeName(className))
                   val term = clazz.info.decl(TermName(name))
-                  if (term eq NoSymbol) clazz.info.decl(TypeName(name))
-                  else if (term.isAccessor) term.accessed
-                  else term
-                } else toplevel
+                  if (term eq NoSymbol)
+                    clazz.info.decl(TypeName(name))
+                  else if (term.isAccessor)
+                    term.accessed
+                  else
+                    term
+                } else
+                  toplevel
               }
 
               getComment(sym, batch, (sym, batch) :: Nil) match {
@@ -146,7 +150,8 @@ object Test extends InteractiveTest {
     // only.  The problem is difficult to isolate and reproduce; see
     // https://github.com/scala/scala-dev/issues/72 for details.
     // So if we're on Windows, let's just bail out here.
-    if (scala.util.Properties.isWin) return
+    if (scala.util.Properties.isWin)
+      return
 
     // Check inter-classes documentation one-time retrieved ok.
     val baseSource = findSource("Base.scala")

@@ -23,8 +23,10 @@ case class HookConfig(
       color =
         if (mode == Mode.Rated &&
             lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
-            color != Color.Random) Color.Random
-        else color)
+            color != Color.Random)
+          Color.Random
+        else
+          color)
 
   // allowAnons -> membersOnly
   def >> =

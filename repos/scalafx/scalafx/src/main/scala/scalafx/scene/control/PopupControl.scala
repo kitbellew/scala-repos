@@ -50,7 +50,10 @@ object PopupControl {
     * @return JavaFX PopupControl
     */
   implicit def sfxPopupControl2jfx(v: PopupControl): jfxsc.PopupControl =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Sentinel value which can be passed to a control's minWidth, minHeight, prefWidth, prefHeight,

@@ -57,20 +57,24 @@ class IntroduceExplicitParameterIntention
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val expr = findExpression(element, editor).get
-    if (expr == null || !expr.isValid) return
+    if (expr == null || !expr.isValid)
+      return
 
     val buf = new StringBuilder
     val underscores = ScUnderScoreSectionUtil.underscores(expr)
     val parentStartOffset =
       if (ApplicationManager.getApplication.isUnitTestMode)
         underscores(0).getTextRange.getStartOffset
-      else expr.getTextRange.getStartOffset
+      else
+        expr.getTextRange.getStartOffset
     val parentEndOffset =
       if (ApplicationManager.getApplication.isUnitTestMode) {
         if (underscores.nonEmpty)
           underscores(underscores.size - 1).getTextRange.getEndOffset
-        else underscores(0).getTextRange.getEndOffset
-      } else expr.getTextRange.getEndOffset
+        else
+          underscores(0).getTextRange.getEndOffset
+      } else
+        expr.getTextRange.getEndOffset
 
     val underscoreToParam: mutable.HashMap[ScUnderscoreSection, ScParameter] =
       new mutable.HashMap[ScUnderscoreSection, ScParameter]
@@ -85,8 +89,10 @@ class IntroduceExplicitParameterIntention
     }
 
     for (u <- underscores) {
-      if (needComma) buf.append(",")
-      if (underscores.size > 1) needComma = true
+      if (needComma)
+        buf.append(",")
+      if (underscores.size > 1)
+        needComma = true
 
       val names = NameSuggester.suggestNames(
         u,
@@ -105,7 +111,8 @@ class IntroduceExplicitParameterIntention
 
             if (usedNames.contains(res)) {
               val indexStr = res.replaceAll(name, "")
-              if (indexStr != "") index = Integer.valueOf(indexStr)
+              if (indexStr != "")
+                index = Integer.valueOf(indexStr)
 
               while (usedNames.contains(name + index)) {
                 index = index + 1
@@ -154,7 +161,8 @@ class IntroduceExplicitParameterIntention
       }
     }
 
-    if (underscores.size > 1 || needBraces) buf.insert(0, "(").append(")")
+    if (underscores.size > 1 || needBraces)
+      buf.insert(0, "(").append(")")
     val arrow = ScalaPsiUtil.functionArrow(project)
     buf.append(s" $arrow ")
     val diff = buf.length
@@ -238,8 +246,10 @@ class IntroduceExplicitParameterIntention
                 template: Template,
                 oldIndex: Int,
                 newIndex: Int) {
-              if (oldIndex >= 0) clearHighlighters()
-              if (newIndex > 0) markCurrentVariables(newIndex + 1)
+              if (oldIndex >= 0)
+                clearHighlighters()
+              if (newIndex > 0)
+                markCurrentVariables(newIndex + 1)
             }
 
             override def templateCancelled(template: Template) {
@@ -325,7 +335,8 @@ class IntroduceExplicitParameterIntention
     if (!element.getParent.isInstanceOf[ScUnderscoreSection]) {
       if (element.getTextRange.getStartOffset == editor.getCaretModel.getOffset) {
         val offset = element.getTextRange.getStartOffset - 1
-        if (offset < 0) return None
+        if (offset < 0)
+          return None
         element = element.getContainingFile.findElementAt(offset)
       }
     }

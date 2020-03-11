@@ -31,7 +31,8 @@ class WebJarServlet extends HttpServlet {
       val normalized = new URI(resourceURI).normalize().getPath
       if (normalized.startsWith("/META-INF/resources/webjars"))
         sendResource(normalized, mime)
-      else resp.sendError(404, s"Path: $normalized")
+      else
+        resp.sendError(404, s"Path: $normalized")
     }
 
     //extract request data
@@ -62,7 +63,8 @@ class WebJarServlet extends HttpServlet {
     }
 
     //special rule for accessing root -> redirect to ui main page
-    if (req.getRequestURI == "/") sendRedirect(resp, "ui/")
+    if (req.getRequestURI == "/")
+      sendRedirect(resp, "ui/")
     //special rule for accessing /help -> redirect to api-console main page
     else if (req.getRequestURI == "/help")
       sendRedirect(resp, "api-console/index.html")
@@ -70,7 +72,8 @@ class WebJarServlet extends HttpServlet {
     else if (!file.contains("."))
       sendRedirect(resp, req.getRequestURI + "/") //request /ui -> /ui/
     //if we come here, it must be a resource
-    else sendResourceNormalized(resourceURI, mime)
+    else
+      sendResourceNormalized(resourceURI, mime)
   }
 
   private[this] def mimeType(mediaType: String): String = {

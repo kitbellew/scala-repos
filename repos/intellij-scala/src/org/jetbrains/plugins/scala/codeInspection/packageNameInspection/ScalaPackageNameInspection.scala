@@ -25,13 +25,17 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
     file match {
       case file: ScalaFile
           if IntentionAvailabilityChecker.checkInspection(this, file) =>
-        if (file.isScriptFile()) return null
-        if (file.typeDefinitions.isEmpty) return null
+        if (file.isScriptFile())
+          return null
+        if (file.typeDefinitions.isEmpty)
+          return null
 
         val dir = file.getContainingDirectory
-        if (dir == null) return null
+        if (dir == null)
+          return null
         val pack = JavaDirectoryService.getInstance().getPackage(dir)
-        if (pack == null) return null
+        if (pack == null)
+          return null
 
         val packName = cleanKeywords(file.packageName)
         val ranges: Seq[TextRange] = file.packagingRanges match {
@@ -72,13 +76,15 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
           )
 
           problemDescriptors(fixes).toArray
-        } else null
+        } else
+          null
       case _ => null
     }
   }
 
   private def cleanKeywords(packageName: String): String = {
-    if (packageName == null) return null
+    if (packageName == null)
+      return null
     import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil._
     packageName.split('.').map {
       case isBacktickedName(name) if isKeyword(name) => name

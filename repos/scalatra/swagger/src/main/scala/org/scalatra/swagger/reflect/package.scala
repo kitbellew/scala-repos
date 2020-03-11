@@ -42,6 +42,7 @@ package object reflect {
     if (cause != null) {
       System.err.println(msg)
       throw cause
-    } else sys.error(msg)
+    } else
+      sys.error(msg)
   }
 }

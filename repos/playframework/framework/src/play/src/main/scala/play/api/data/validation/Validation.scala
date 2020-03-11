@@ -78,8 +78,10 @@ trait Constraints {
     """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
   def emailAddress: Constraint[String] =
     Constraint[String]("constraint.email") { e =>
-      if (e == null) Invalid(ValidationError("error.email"))
-      else if (e.trim.isEmpty) Invalid(ValidationError("error.email"))
+      if (e == null)
+        Invalid(ValidationError("error.email"))
+      else if (e.trim.isEmpty)
+        Invalid(ValidationError("error.email"))
       else
         emailRegex
           .findFirstMatchIn(e)
@@ -95,9 +97,12 @@ trait Constraints {
     */
   def nonEmpty: Constraint[String] = Constraint[String]("constraint.required") {
     o =>
-      if (o == null) Invalid(ValidationError("error.required"))
-      else if (o.trim.isEmpty) Invalid(ValidationError("error.required"))
-      else Valid
+      if (o == null)
+        Invalid(ValidationError("error.required"))
+      else if (o.trim.isEmpty)
+        Invalid(ValidationError("error.required"))
+      else
+        Valid
   }
 
   /**
@@ -141,9 +146,12 @@ trait Constraints {
   def minLength(length: Int): Constraint[String] =
     Constraint[String]("constraint.minLength", length) { o =>
       require(length >= 0, "string minLength must not be negative")
-      if (o == null) Invalid(ValidationError("error.minLength", length))
-      else if (o.size >= length) Valid
-      else Invalid(ValidationError("error.minLength", length))
+      if (o == null)
+        Invalid(ValidationError("error.minLength", length))
+      else if (o.size >= length)
+        Valid
+      else
+        Invalid(ValidationError("error.minLength", length))
     }
 
   /**
@@ -155,9 +163,12 @@ trait Constraints {
   def maxLength(length: Int): Constraint[String] =
     Constraint[String]("constraint.maxLength", length) { o =>
       require(length >= 0, "string maxLength must not be negative")
-      if (o == null) Invalid(ValidationError("error.maxLength", length))
-      else if (o.size <= length) Valid
-      else Invalid(ValidationError("error.maxLength", length))
+      if (o == null)
+        Invalid(ValidationError("error.maxLength", length))
+      else if (o.size <= length)
+        Valid
+      else
+        Invalid(ValidationError("error.maxLength", length))
     }
 
   /**
@@ -175,7 +186,8 @@ trait Constraints {
       require(name != null, "name must not be null")
       require(error != null, "error must not be null")
 
-      if (o == null) Invalid(ValidationError(error, regex))
+      if (o == null)
+        Invalid(ValidationError(error, regex))
       else
         regex
           .unapplySeq(o)

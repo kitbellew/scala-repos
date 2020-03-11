@@ -111,10 +111,17 @@ class NNLS(val maxIters: Int = -1) extends SerializableLogging {
       initialState: State,
       resetState: Boolean = true): State = {
     val startState =
-      if (resetState) reset(ata, atb, initialState) else initialState
+      if (resetState)
+        reset(ata, atb, initialState)
+      else
+        initialState
     import startState._
     val n = atb.length
-    val iterMax = if (maxIters < 0) Math.max(400, 20 * n) else maxIters
+    val iterMax =
+      if (maxIters < 0)
+        Math.max(400, 20 * n)
+      else
+        maxIters
 
     var nextNorm = lastNorm
     var nextWall = lastWall

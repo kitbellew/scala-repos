@@ -2624,7 +2624,8 @@ trait Trees { self: Universe =>
     // Special handling of noSelfType necessary for backward compat: existing
     // traversers break down when they see the unexpected tree.
     def traverseSelfType(self: ValDef): Unit =
-      if (self ne noSelfType) traverse(self)
+      if (self ne noSelfType)
+        traverse(self)
 
     /** Traverses a list of trees. */
     def traverseTrees(trees: List[Tree]): Unit = trees foreach traverse
@@ -2643,8 +2644,10 @@ trait Trees { self: Universe =>
     /** Traverses a list of trees with a given owner symbol. */
     def traverseStats(stats: List[Tree], exprOwner: Symbol) {
       stats foreach (stat =>
-        if (exprOwner != currentOwner) atOwner(exprOwner)(traverse(stat))
-        else traverse(stat))
+        if (exprOwner != currentOwner)
+          atOwner(exprOwner)(traverse(stat))
+        else
+          traverse(stat))
     }
 
     /** Performs a traversal with a given owner symbol. */
@@ -2691,14 +2694,20 @@ trait Trees { self: Universe =>
     /** The enclosing method of the currently transformed tree. */
     protected def currentMethod = {
       def enclosingMethod(sym: Symbol): Symbol =
-        if (sym.isMethod || sym == NoSymbol) sym else enclosingMethod(sym.owner)
+        if (sym.isMethod || sym == NoSymbol)
+          sym
+        else
+          enclosingMethod(sym.owner)
       enclosingMethod(currentOwner)
     }
 
     /** The enclosing class of the currently transformed tree. */
     protected def currentClass = {
       def enclosingClass(sym: Symbol): Symbol =
-        if (sym.isClass || sym == NoSymbol) sym else enclosingClass(sym.owner)
+        if (sym.isClass || sym == NoSymbol)
+          sym
+        else
+          enclosingClass(sym.owner)
       enclosingClass(currentOwner)
     }
 
@@ -2709,7 +2718,10 @@ trait Trees { self: Universe =>
 
     /** Transforms a list of trees. */
     def transformTrees(trees: List[Tree]): List[Tree] =
-      if (trees.isEmpty) Nil else trees mapConserve transform
+      if (trees.isEmpty)
+        Nil
+      else
+        trees mapConserve transform
 
     /** Transforms a `Template`. */
     def transformTemplate(tree: Template): Template =
@@ -2721,8 +2733,10 @@ trait Trees { self: Universe =>
 
     /** Transforms a `ValDef`. */
     def transformValDef(tree: ValDef): ValDef =
-      if (tree eq noSelfType) tree
-      else transform(tree).asInstanceOf[ValDef]
+      if (tree eq noSelfType)
+        tree
+      else
+        transform(tree).asInstanceOf[ValDef]
 
     /** Transforms a list of `ValDef` nodes. */
     def transformValDefs(trees: List[ValDef]): List[ValDef] =
@@ -2747,12 +2761,15 @@ trait Trees { self: Universe =>
       stats mapConserve (stat =>
         if (exprOwner != currentOwner && stat.isTerm)
           atOwner(exprOwner)(transform(stat))
-        else transform(stat)) filter (EmptyTree != _)
+        else
+          transform(stat)) filter (EmptyTree != _)
 
     /** Transforms `Modifiers`. */
     def transformModifiers(mods: Modifiers): Modifiers = {
-      if (mods.annotations.isEmpty) mods
-      else mods mapAnnotations transformTrees
+      if (mods.annotations.isEmpty)
+        mods
+      else
+        mods mapAnnotations transformTrees
     }
 
     /** Transforms a tree with a given owner symbol. */

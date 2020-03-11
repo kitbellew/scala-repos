@@ -32,7 +32,8 @@ private[io] trait WithUdpSend {
 
   def sendHandlers(registration: ChannelRegistration): Receive = {
     case send: Send if hasWritePending ⇒
-      if (TraceLogging) log.debug("Dropping write because queue is full")
+      if (TraceLogging)
+        log.debug("Dropping write because queue is full")
       sender() ! CommandFailed(send)
 
     case send: Send if send.payload.isEmpty ⇒
@@ -66,7 +67,9 @@ private[io] trait WithUdpSend {
         doSend(registration)
       }
 
-    case ChannelWritable ⇒ if (hasWritePending) doSend(registration)
+    case ChannelWritable ⇒
+      if (hasWritePending)
+        doSend(registration)
   }
 
   private def doSend(registration: ChannelRegistration): Unit = {
@@ -76,7 +79,8 @@ private[io] trait WithUdpSend {
       pendingSend.payload.copyToBuffer(buffer)
       buffer.flip()
       val writtenBytes = channel.send(buffer, pendingSend.target)
-      if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
+      if (TraceLogging)
+        log.debug("Wrote [{}] bytes to channel", writtenBytes)
 
       // Datagram channel either sends the whole message, or nothing
       if (writtenBytes == 0) {
@@ -90,7 +94,8 @@ private[io] trait WithUdpSend {
           retriedSend = true
         }
       } else {
-        if (pendingSend.wantsAck) pendingCommander ! pendingSend.ack
+        if (pendingSend.wantsAck)
+          pendingCommander ! pendingSend.ack
         retriedSend = false
         pendingSend = null
         pendingCommander = null

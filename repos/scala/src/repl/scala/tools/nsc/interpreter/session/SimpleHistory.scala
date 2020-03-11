@@ -33,7 +33,11 @@ class SimpleHistory extends History {
   }
 
   def maxSize: Int = 2500
-  def last = if (isEmpty) fail("last") else buf.last
+  def last =
+    if (isEmpty)
+      fail("last")
+    else
+      buf.last
 
   def size = buf.size
   def index = _index
@@ -52,7 +56,10 @@ class SimpleHistory extends History {
   def set(idx: Int, to: CharSequence): Unit = buf(idx) = to
 
   def current() =
-    if (index >= 0 && index < buf.size) buf(index) else fail("current()")
+    if (index >= 0 && index < buf.size)
+      buf(index)
+    else
+      fail("current()")
   def previous() = (index > 0) && minusOne
   def next() = (index <= lastIndex) && plusOne
   def moveToFirst() = (size > 0) && (index != 0) && setTo(0)

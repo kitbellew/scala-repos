@@ -56,7 +56,10 @@ object LogisticRegressionSuite {
 
     val y = (0 until nPoints).map { i =>
       val p = 1.0 / (1.0 + math.exp(-(offset + scale * x1(i))))
-      if (rnd.nextDouble() < p) 1.0 else 0.0
+      if (rnd.nextDouble() < p)
+        1.0
+      else
+        0.0
     }
 
     val testData = (0 until nPoints).map(i =>
@@ -97,7 +100,11 @@ object LogisticRegressionSuite {
     val rnd = new Random(seed)
 
     val xDim = xMean.length
-    val xWithInterceptsDim = if (addIntercept) xDim + 1 else xDim
+    val xWithInterceptsDim =
+      if (addIntercept)
+        xDim + 1
+      else
+        xDim
     val nClasses = weights.length / xWithInterceptsDim + 1
 
     val x = Array.fill[Vector](nPoints)(
@@ -127,7 +134,9 @@ object LogisticRegressionSuite {
       }
       // Preventing the overflow when we compute the probability
       val maxMargin = margins.max
-      if (maxMargin > 0) for (i <- 0 until nClasses) margins(i) -= maxMargin
+      if (maxMargin > 0)
+        for (i <- 0 until nClasses)
+          margins(i) -= maxMargin
 
       // Computing the probabilities for each class from the margins.
       val norm = {
@@ -138,10 +147,12 @@ object LogisticRegressionSuite {
         }
         temp
       }
-      for (i <- 0 until nClasses) probs(i) /= norm
+      for (i <- 0 until nClasses)
+        probs(i) /= norm
 
       // Compute the cumulative probability so we can generate a random number and assign a label.
-      for (i <- 1 until nClasses) probs(i) += probs(i - 1)
+      for (i <- 1 until nClasses)
+        probs(i) += probs(i - 1)
       val p = rnd.nextDouble()
       var y = 0
       breakable {

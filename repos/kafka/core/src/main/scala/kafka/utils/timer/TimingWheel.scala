@@ -157,7 +157,8 @@ private[timer] class TimingWheel(
       true
     } else {
       // Out of the interval. Put it into the parent timer
-      if (overflowWheel == null) addOverflowWheel()
+      if (overflowWheel == null)
+        addOverflowWheel()
       overflowWheel.add(timerTaskEntry)
     }
   }
@@ -168,7 +169,8 @@ private[timer] class TimingWheel(
       currentTime = timeMs - (timeMs % tickMs)
 
       // Try to advance the clock of the overflow wheel if present
-      if (overflowWheel != null) overflowWheel.advanceClock(currentTime)
+      if (overflowWheel != null)
+        overflowWheel.advanceClock(currentTime)
     }
   }
 }

@@ -55,7 +55,10 @@ object TextFieldTreeCell {
     */
   implicit def sfxTextFieldTreeCell2jfx[T](
       cell: TextFieldTreeCell[T]): jfxsc.cell.TextFieldTreeCell[T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FLVINIT

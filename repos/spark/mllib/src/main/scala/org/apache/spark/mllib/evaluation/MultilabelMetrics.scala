@@ -147,7 +147,10 @@ class MultilabelMetrics @Since("1.2.0") (
   def precision(label: Double): Double = {
     val tp = tpPerClass(label)
     val fp = fpPerClass.getOrElse(label, 0L)
-    if (tp + fp == 0) 0.0 else tp.toDouble / (tp + fp)
+    if (tp + fp == 0)
+      0.0
+    else
+      tp.toDouble / (tp + fp)
   }
 
   /**
@@ -158,7 +161,10 @@ class MultilabelMetrics @Since("1.2.0") (
   def recall(label: Double): Double = {
     val tp = tpPerClass(label)
     val fn = fnPerClass.getOrElse(label, 0L)
-    if (tp + fn == 0) 0.0 else tp.toDouble / (tp + fn)
+    if (tp + fn == 0)
+      0.0
+    else
+      tp.toDouble / (tp + fn)
   }
 
   /**
@@ -169,7 +175,10 @@ class MultilabelMetrics @Since("1.2.0") (
   def f1Measure(label: Double): Double = {
     val p = precision(label)
     val r = recall(label)
-    if ((p + r) == 0) 0.0 else 2 * p * r / (p + r)
+    if ((p + r) == 0)
+      0.0
+    else
+      2 * p * r / (p + r)
   }
 
   private lazy val sumTp = tpPerClass.foldLeft(0L) {

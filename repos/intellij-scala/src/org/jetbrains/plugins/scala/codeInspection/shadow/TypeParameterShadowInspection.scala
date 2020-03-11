@@ -27,7 +27,8 @@ class TypeParameterShadowInspection
       parent match {
         case t: ScTypeParametersOwner if t != owner =>
           for (param <- t.typeParameters) {
-            if (refPat.name == param.name && refPat.name != "_") return Some(t)
+            if (refPat.name == param.name && refPat.name != "_")
+              return Some(t)
           }
         case _ =>
       }

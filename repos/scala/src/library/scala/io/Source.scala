@@ -168,7 +168,8 @@ object Source {
     val resetFn =
       if (reset == null)() =>
         createBufferedSource(inputStream, bufferSize, reset, close)(codec)
-      else reset
+      else
+        reset
 
     new BufferedSource(inputStream, bufferSize)(
       codec) withReset resetFn withClose close
@@ -236,7 +237,8 @@ abstract class Source extends Iterator[Char] with Closeable {
     def isNewline(ch: Char) = ch == '\r' || ch == '\n'
     def getc() = iter.hasNext && {
       val ch = iter.next()
-      if (ch == '\n') false
+      if (ch == '\n')
+        false
       else if (ch == '\r') {
         if (iter.hasNext && iter.head == '\n')
           iter.next()
@@ -374,7 +376,11 @@ abstract class Source extends Iterator[Char] with Closeable {
 
   /** Change or disable the positioner. */
   def withPositioning(on: Boolean): this.type = {
-    positioner = if (on) RelaxedPositioner else NoPositioner
+    positioner =
+      if (on)
+        RelaxedPositioner
+      else
+        NoPositioner
     this
   }
   def withPositioning(pos: Positioner): this.type = {
@@ -384,12 +390,14 @@ abstract class Source extends Iterator[Char] with Closeable {
 
   /** The close() method closes the underlying resource. */
   def close() {
-    if (closeFunction != null) closeFunction()
+    if (closeFunction != null)
+      closeFunction()
   }
 
   /** The reset() method creates a fresh copy of this Source. */
   def reset(): Source =
-    if (resetFunction != null) resetFunction()
+    if (resetFunction != null)
+      resetFunction()
     else
       throw new UnsupportedOperationException(
         "Source's reset() method was not set.")

@@ -36,8 +36,10 @@ trait Invoker[+R] { self =>
   final def first(implicit session: JdbcBackend#Session): R = {
     val it = iteratorTo(0)
     try {
-      if (it.hasNext) it.next()
-      else throw new NoSuchElementException("Invoker.first")
+      if (it.hasNext)
+        it.next()
+      else
+        throw new NoSuchElementException("Invoker.first")
     } finally it.close
   }
 

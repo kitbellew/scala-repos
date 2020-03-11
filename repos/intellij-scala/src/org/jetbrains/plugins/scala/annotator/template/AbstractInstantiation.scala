@@ -23,12 +23,15 @@ object AbstractInstantiation extends AnnotatorPart[ScTemplateDefinition] {
     val hasEarlyBody =
       definition.extendsBlock.earlyDefinitions.exists(_.members.nonEmpty)
 
-    if (!newObject || hasEarlyBody || hasBody) return
+    if (!newObject || hasEarlyBody || hasBody)
+      return
 
     val refs = definition.refs
 
-    if (refs.isEmpty) return
-    if (refs.tail.nonEmpty) return
+    if (refs.isEmpty)
+      return
+    if (refs.tail.nonEmpty)
+      return
 
     refs.headOption.foreach {
       case (refElement, Some((psiClass, _))) if isAbstract(psiClass) =>

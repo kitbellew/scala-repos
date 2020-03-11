@@ -96,8 +96,10 @@ trait ClassTag[T]
         || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(
           classOf[Boolean]))
         || (x.isInstanceOf[Unit] && runtimeClass.isAssignableFrom(
-          classOf[Unit])))) Some(x.asInstanceOf[T])
-    else None
+          classOf[Unit]))))
+      Some(x.asInstanceOf[T])
+    else
+      None
 
   // TODO: deprecate overloads in 2.12.0, remove in 2.13.0
   def unapply(x: Byte): Option[T] = unapplyImpl(x, classOf[Byte])
@@ -114,8 +116,10 @@ trait ClassTag[T]
       x: Any,
       primitiveCls: java.lang.Class[_]): Option[T] =
     if (runtimeClass.isInstance(x) || runtimeClass.isAssignableFrom(
-          primitiveCls)) Some(x.asInstanceOf[T])
-    else None
+          primitiveCls))
+      Some(x.asInstanceOf[T])
+    else
+      None
 
   // case class accessories
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
@@ -126,7 +130,8 @@ trait ClassTag[T]
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =
-      if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
+      if (clazz.isArray)
+        s"Array[${prettyprint(arrayElementClass(clazz))}]"
       else
         clazz.getName
     prettyprint(runtimeClass)

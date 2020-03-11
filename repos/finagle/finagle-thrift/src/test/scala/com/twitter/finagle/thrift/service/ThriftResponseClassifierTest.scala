@@ -25,7 +25,8 @@ class ThriftResponseClassifierTest extends FunSuite {
     val asString = new String(bytes, Charsets.Utf8)
     if (asString.startsWith("fail"))
       Throw(new InvalidQueryException(asString.length))
-    else Return(asString)
+    else
+      Return(asString)
   }
 
   test("usingDeserializeCtx basics") {

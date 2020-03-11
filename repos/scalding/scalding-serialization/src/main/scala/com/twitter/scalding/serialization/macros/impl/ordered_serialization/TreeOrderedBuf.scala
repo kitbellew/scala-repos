@@ -61,7 +61,8 @@ object CommonCompareBinary {
           return false
         }
         // a == b, but may be eof
-        if (a < 0) return JavaStreamEnrichments.eof
+        if (a < 0)
+          return JavaStreamEnrichments.eof
       }
       // we consumed all the bytes, and they were all equal
       true

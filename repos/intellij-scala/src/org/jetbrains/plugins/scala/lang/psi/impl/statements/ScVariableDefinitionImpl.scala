@@ -57,8 +57,10 @@ class ScVariableDefinitionImpl private (
 
   def bindings: Seq[ScBindingPattern] = {
     val plist = this.pList
-    if (plist != null) plist.patterns.flatMap((p: ScPattern) => p.bindings)
-    else Seq.empty
+    if (plist != null)
+      plist.patterns.flatMap((p: ScPattern) => p.bindings)
+    else
+      Seq.empty
   }
 
   def getType(ctx: TypingContext) = typeElement match {
@@ -74,7 +76,8 @@ class ScVariableDefinitionImpl private (
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScVariableStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    } else
+      findChild(classOf[ScTypeElement])
   }
 
   def pList: ScPatternList = {
@@ -85,6 +88,7 @@ class ScVariableDefinitionImpl private (
           ScalaElementTypes.PATTERN_LIST,
           JavaArrayFactoryUtil.ScPatternListFactory)
         .apply(0)
-    } else findChildByClass(classOf[ScPatternList])
+    } else
+      findChildByClass(classOf[ScPatternList])
   }
 }

@@ -83,7 +83,11 @@ class SslConnectHandler(
   }
 
   private[this] def fail(c: Channel, exGen: (SocketAddress) => Throwable) {
-    val t = exGen(if (c != null) c.getRemoteAddress else null)
+    val t = exGen(
+      if (c != null)
+        c.getRemoteAddress
+      else
+        null)
     fail(c, t)
   }
 
@@ -188,7 +192,8 @@ object SslConnectHandler {
       case _ => false
     }
 
-    if (isValid) None
+    if (isValid)
+      None
     else {
       Some(new SslHostVerificationException(session.getPeerPrincipal.getName))
     }

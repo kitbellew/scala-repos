@@ -449,7 +449,10 @@ class SArrayAdapter[V <: android.view.View, T <: AnyRef](
       convertView: View,
       parent: ViewGroup): View = {
     val v = super.getView(position, convertView, parent)
-    if (_style != null) _style(v.asInstanceOf[V]) else v
+    if (_style != null)
+      _style(v.asInstanceOf[V])
+    else
+      v
   }
 
   protected var _style: V => V = null
@@ -464,7 +467,10 @@ class SArrayAdapter[V <: android.view.View, T <: AnyRef](
       convertView: View,
       parent: ViewGroup): View = {
     val v = super.getDropDownView(position, convertView, parent)
-    if (_dropDownStyle != null) _dropDownStyle(v.asInstanceOf[V]) else v
+    if (_dropDownStyle != null)
+      _dropDownStyle(v.asInstanceOf[V])
+    else
+      v
   }
 
   protected var _dropDownStyle: V => V = null
@@ -598,7 +604,8 @@ class SImageButton()(implicit
     this()
     this.imageDrawable = imageResource
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(
@@ -909,7 +916,8 @@ class SEditText()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -1260,7 +1268,8 @@ class SImageView()(implicit
     this()
     this.imageDrawable = imageResource
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(
@@ -1382,7 +1391,8 @@ class SMultiAutoCompleteTextView()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -3414,7 +3424,8 @@ class SChronometer()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -3548,7 +3559,8 @@ class SCheckedTextView()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -7320,7 +7332,8 @@ class SRadioButton()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -7418,7 +7431,8 @@ class SQuickContactBadge()(implicit
     this()
     this.imageDrawable = imageResource
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(
@@ -7882,7 +7896,8 @@ class SDigitalClock()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -7981,7 +7996,8 @@ class SToggleButton()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -8041,7 +8057,8 @@ class SButton()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -8102,7 +8119,8 @@ class SCheckBox()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -9700,7 +9718,8 @@ class SZoomButton()(implicit
     this()
     this.imageDrawable = imageResource
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(
@@ -11745,7 +11764,8 @@ class STextView()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -12515,7 +12535,8 @@ class SAutoCompleteTextView()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -12781,7 +12802,8 @@ class SSwitch()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(
@@ -12873,8 +12895,10 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
       context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = apply(text, onClickListener.onClickListener)
-    if (interval >= 0) v.onPressAndHold(interval, onClickListener.func(v))
-    else v
+    if (interval >= 0)
+      v.onPressAndHold(interval, onClickListener.func(v))
+    else
+      v
   }
 
   private def apply[LP <: ViewGroupLayoutParams[_, T]](
@@ -12919,8 +12943,10 @@ abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
       context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = apply(imageResource, onClickListener.onClickListener)
-    if (interval >= 0) v.onPressAndHold(interval, onClickListener.func(v))
-    else v
+    if (interval >= 0)
+      v.onPressAndHold(interval, onClickListener.func(v))
+    else
+      v
   }
 
   private def apply[LP <: ViewGroupLayoutParams[_, T]](
@@ -12976,7 +13002,8 @@ class SExtractEditText()(implicit
     this()
     this.text = text
     this.setOnClickListener(onClickListener.onClickListener)
-    if (interval >= 0) onPressAndHold(interval, onClickListener.func(this))
+    if (interval >= 0)
+      onPressAndHold(interval, onClickListener.func(this))
   }
 
   def this(text: CharSequence, onClickListener: ViewOnClickListener)(

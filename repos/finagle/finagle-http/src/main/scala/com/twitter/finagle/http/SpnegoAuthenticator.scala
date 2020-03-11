@@ -179,7 +179,11 @@ object SpnegoAuthenticator {
         pool {
           val token =
             context.acceptSecContext(negotiation, 0, negotiation.length)
-          val established = if (context.isEstablished) Some(context) else None
+          val established =
+            if (context.isEstablished)
+              Some(context)
+            else
+              None
           val wwwAuthenticate = AuthHeader(Option(token))
           Negotiated(established, wwwAuthenticate)
         }

@@ -11,7 +11,8 @@ object Test {
     val sz = 2000
     var ht = new parallel.immutable.ParHashMap[Int, Int]
     // println("creating trie")
-    for (i <- 0 until sz) ht += ((i + sz, i))
+    for (i <- 0 until sz)
+      ht += ((i + sz, i))
     // println("created trie")
     for (n <- 0 until (sz - 1)) {
       // println("---------> n = " + n)

@@ -143,7 +143,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
               message + " " + DebuggerBundle.message(
                 "evaluation.error.cannot.evaluate.tostring",
                 value.`type`.name)
-            else message
+            else
+              message
           valueDescriptor.setValueLabelFailed(new EvaluateException(msg, null))
           labelListener.labelChanged()
         }

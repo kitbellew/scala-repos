@@ -92,7 +92,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
           Source(elements) ~> balance.in
 
-          for (i ← 0 until 5) balance.out(i) ~> merge.in(i)
+          for (i ← 0 until 5)
+            balance.out(i) ~> merge.in(i)
 
           merge.out.grouped(elements.size * 2) ~> sink.in
           ClosedShape

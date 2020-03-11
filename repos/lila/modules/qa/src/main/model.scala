@@ -23,7 +23,10 @@ case class Question(
 
   def slug = {
     val s = lila.common.String slugify title
-    if (s.isEmpty) "-" else s
+    if (s.isEmpty)
+      "-"
+    else
+      s
   }
 
   def ownBy(user: User) = userId == user.id
@@ -62,16 +65,23 @@ case class AnswerWithQuestion(answer: Answer, question: Question)
 
 case class Vote(up: Set[String], down: Set[String], score: Int) {
 
-  def add(user: String, v: Boolean) = (if (v) addUp _ else addDown _)(user)
+  def add(user: String, v: Boolean) =
+    (if (v)
+       addUp _
+     else
+       addDown _)(user)
   def addUp(user: String) =
     copy(up = up + user, down = down - user).computeScore
   def addDown(user: String) =
     copy(up = up - user, down = down + user).computeScore
 
   def of(userId: String): Option[Boolean] =
-    if (up(userId)) Some(true)
-    else if (down(userId)) Some(false)
-    else None
+    if (up(userId))
+      Some(true)
+    else if (down(userId))
+      Some(false)
+    else
+      None
 
   private def computeScore = copy(score = up.size - down.size)
 }

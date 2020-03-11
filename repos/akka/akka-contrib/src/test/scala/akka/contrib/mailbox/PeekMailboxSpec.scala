@@ -29,7 +29,8 @@ object PeekMailboxSpec {
         PeekMailboxExtension.ack()
       case msg ⇒
         sender() ! msg
-        if (togo == 0) throw new RuntimeException("DONTWANNA")
+        if (togo == 0)
+          throw new RuntimeException("DONTWANNA")
         togo -= 1
         PeekMailboxExtension.ack()
     }
@@ -117,7 +118,8 @@ class MyActor extends Actor {
   //#business-logic-elided
   var i = 0
   def doStuff(m: Any) {
-    if (i == 1) throw new Exception("DONTWANNA")
+    if (i == 1)
+      throw new Exception("DONTWANNA")
     i += 1
   }
 

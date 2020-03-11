@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object FloatMap {
   implicit def sfxFloatMap2jfx(fm: FloatMap): jfxse.FloatMap =
-    if (fm != null) fm.delegate else null
+    if (fm != null)
+      fm.delegate
+    else
+      null
 }
 
 class FloatMap(override val delegate: jfxse.FloatMap = new jfxse.FloatMap)

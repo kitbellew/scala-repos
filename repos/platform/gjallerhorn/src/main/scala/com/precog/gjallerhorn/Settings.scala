@@ -54,7 +54,8 @@ object Settings {
   private val SecureRegex = """^secure (true|false)$""".r
 
   def fromFile(f: File): Settings = {
-    if (!f.canRead) sys.error("Can't read %s. Is bifrost running?" format f)
+    if (!f.canRead)
+      sys.error("Can't read %s. Is bifrost running?" format f)
 
     case class PartialSettings(
         host: Option[String] = None,
@@ -74,7 +75,10 @@ object Settings {
 
       def missing: List[String] = {
         def q(o: Option[_], s: String): List[String] =
-          if (o.isDefined) Nil else s :: Nil
+          if (o.isDefined)
+            Nil
+          else
+            s :: Nil
 
         q(host, "host") ++ q(id, "id") ++ q(token, "token") ++
           q(accountsPort, "accountsPort") ++ q(accountsPath, "accountsPath") ++

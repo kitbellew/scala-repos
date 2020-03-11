@@ -694,7 +694,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
   private object StratifiedAuxiliary {
     def stratifier(fractionPositive: Double): (Int) => String = { (x: Int) =>
-      if (x % 10 < (10 * fractionPositive).toInt) "1" else "0"
+      if (x % 10 < (10 * fractionPositive).toInt)
+        "1"
+      else
+        "0"
     }
 
     def assertBinomialSample(

@@ -11,7 +11,8 @@ private[io] class BufReader(buf: Buf) extends Reader {
   def read(n: Int) = synchronized {
     state match {
       case Return(buf) =>
-        if (buf.isEmpty) Future.None
+        if (buf.isEmpty)
+          Future.None
         else {
           val f = Future.value(Some(buf.slice(0, n)))
           state = Return(buf.slice(n, Int.MaxValue))
@@ -28,5 +29,8 @@ private[io] class BufReader(buf: Buf) extends Reader {
 
 object BufReader {
   def apply(buf: Buf): Reader =
-    if (buf.isEmpty) Reader.Null else new BufReader(buf)
+    if (buf.isEmpty)
+      Reader.Null
+    else
+      new BufReader(buf)
 }

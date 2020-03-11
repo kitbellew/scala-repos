@@ -62,7 +62,8 @@ abstract class SimpleJsonWireFormat extends WireFormat {
   private[this] def parseMessage(message: String) = {
     if (message.trim.startsWith("{") || message.trim.startsWith("["))
       parseOpt(message) map (JsonMessage(_)) getOrElse TextMessage(message)
-    else TextMessage(message)
+    else
+      TextMessage(message)
   }
 
   def parseOutMessage(message: String): OutboundMessage = parseMessage(message)

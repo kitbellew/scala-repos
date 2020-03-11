@@ -21,7 +21,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates._
   */
 class CaseFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val (leaf, _) = processPsiLeafForFilter(
       getLeafByOffset(context.getTextRange.getStartOffset, context))
 
@@ -39,11 +40,13 @@ class CaseFilter extends ElementFilter {
         case _: ScCaseClause =>
           if (parent.getNode.findChildByType(ScalaTokenTypes.tFUNTYPE) != null)
             return true
-          else return false
+          else
+            return false
         case _: ScMatchStmt => return true
         case _: ScalaFile | _: ScPackaging =>
           var node = leaf.getPrevSibling
-          if (node.isInstanceOf[PsiWhiteSpace]) node = node.getPrevSibling
+          if (node.isInstanceOf[PsiWhiteSpace])
+            node = node.getPrevSibling
           node match {
             case x: PsiErrorElement => {
               val s = ErrMsg("wrong.top.statment.declaration")
@@ -60,8 +63,10 @@ class CaseFilter extends ElementFilter {
         parent.getParent.getParent match {
           case _: ScCaseClause =>
             if (parent.getParent.getParent.getNode.findChildByType(
-                  ScalaTokenTypes.tFUNTYPE) != null) return true
-            else return false
+                  ScalaTokenTypes.tFUNTYPE) != null)
+              return true
+            else
+              return false
           case _ =>
         }
       }
@@ -76,8 +81,10 @@ class CaseFilter extends ElementFilter {
             return true
         case _: ScCaseClause =>
           if (parent.getParent.getNode.findChildByType(
-                ScalaTokenTypes.tFUNTYPE) != null) return true
-          else return false
+                ScalaTokenTypes.tFUNTYPE) != null)
+            return true
+          else
+            return false
         case _ =>
       }
       if (leaf.getPrevSibling != null &&

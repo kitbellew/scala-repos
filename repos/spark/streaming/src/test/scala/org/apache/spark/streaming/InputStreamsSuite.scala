@@ -194,7 +194,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         assert(obtainedOutput.toSeq === expectedOutput)
       }
     } finally {
-      if (testDir != null) Utils.deleteRecursively(testDir)
+      if (testDir != null)
+        Utils.deleteRecursively(testDir)
     }
   }
 
@@ -439,7 +440,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         assert(outputQueue.asScala.flatten.toSet === expectedOutput)
       }
     } finally {
-      if (testDir != null) Utils.deleteRecursively(testDir)
+      if (testDir != null)
+        Utils.deleteRecursively(testDir)
     }
   }
 }

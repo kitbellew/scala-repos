@@ -73,7 +73,8 @@ private final class RowIteratorToScala(val rowIter: RowIterator)
     _hasNext
   }
   override def next(): InternalRow = {
-    if (!hasNext) throw new NoSuchElementException
+    if (!hasNext)
+      throw new NoSuchElementException
     hasNextWasCalled = false
     rowIter.getRow
   }

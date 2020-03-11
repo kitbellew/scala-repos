@@ -43,13 +43,18 @@ object O {
         case _            => -(y compareTo x)
       }
       private def compareLists(xs: List[a], ys: List[a]): Int = {
-        if (xs.isEmpty && ys.isEmpty) 0
-        else if (xs.isEmpty) -1
-        else if (ys.isEmpty) 1
+        if (xs.isEmpty && ys.isEmpty)
+          0
+        else if (xs.isEmpty)
+          -1
+        else if (ys.isEmpty)
+          1
         else {
           val s = xs.head compareTo ys.head;
-          if (s != 0) s
-          else compareLists(xs.tail, ys.tail)
+          if (s != 0)
+            s
+          else
+            compareLists(xs.tail, ys.tail)
         }
       }
     }
@@ -68,9 +73,12 @@ object Empty extends Tree[Nothing] {
 
 class Node[a <% Ordered[a]](elem: a, l: Tree[a], r: Tree[a]) extends Tree[a] {
   def insert[b >: a <% Ordered[b]](x: b): Tree[b] =
-    if (x == elem) this
-    else if (x < elem) new Node(elem, l insert x, r)
-    else new Node(elem, l, r insert x)
+    if (x == elem)
+      this
+    else if (x < elem)
+      new Node(elem, l insert x, r)
+    else
+      new Node(elem, l, r insert x)
   def elements: List[a] =
     l.elements ::: List(elem) ::: r.elements
 }
@@ -86,8 +94,10 @@ object Test {
   import O._
 
   private def toCharList(s: String): List[Char] =
-    if (s.length() == 0) List()
-    else s.charAt(0) :: toCharList(s.substring(1))
+    if (s.length() == 0)
+      List()
+    else
+      s.charAt(0) :: toCharList(s.substring(1))
 
   def main(args: Array[String]) {
     {

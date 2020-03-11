@@ -9,7 +9,9 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.SyntheticMembe
   */
 class SCL9865Injector extends SyntheticMembersInjector {
   override def injectSupers(source: ScTypeDefinition): Seq[String] = {
-    if (source.name == "A") Seq("something.B")
-    else Seq.empty
+    if (source.name == "A")
+      Seq("something.B")
+    else
+      Seq.empty
   }
 }

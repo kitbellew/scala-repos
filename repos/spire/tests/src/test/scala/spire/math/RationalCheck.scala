@@ -15,7 +15,11 @@ class RationalCheck
   def rat1(name: String)(f: Q => Unit) =
     property(name) {
       forAll { (nx: Long, _dx: Long) =>
-        val dx = if (_dx == 0) 1 else _dx
+        val dx =
+          if (_dx == 0)
+            1
+          else
+            _dx
         f(Rational(nx, dx))
       }
     }
@@ -23,8 +27,16 @@ class RationalCheck
   def rat2(name: String)(f: (Q, Q) => Unit) =
     property(name) {
       forAll { (nx: Long, _dx: Long, ny: Long, _dy: Long) =>
-        val dx = if (_dx == 0) 1 else _dx
-        val dy = if (_dy == 0) 1 else _dy
+        val dx =
+          if (_dx == 0)
+            1
+          else
+            _dx
+        val dy =
+          if (_dy == 0)
+            1
+          else
+            _dy
         f(Rational(nx, dx), Rational(ny, dy))
       }
     }
@@ -33,9 +45,21 @@ class RationalCheck
     property(name) {
       forAll {
         (nx: Long, _dx: Long, ny: Long, _dy: Long, nz: Long, _dz: Long) =>
-          val dx = if (_dx == 0) 1 else _dx
-          val dy = if (_dy == 0) 1 else _dy
-          val dz = if (_dz == 0) 1 else _dz
+          val dx =
+            if (_dx == 0)
+              1
+            else
+              _dx
+          val dy =
+            if (_dy == 0)
+              1
+            else
+              _dy
+          val dz =
+            if (_dz == 0)
+              1
+            else
+              _dz
           f(Rational(nx, dx), Rational(ny, dy), Rational(nz, dz))
       }
     }
@@ -65,10 +89,12 @@ class RationalCheck
     (x * x) shouldBe x.pow(2)
   }
   rat1("(x^-1)^3 == x^-3") { x: Q =>
-    if (x != 0) x.reciprocal.pow(3) shouldBe x.pow(-3)
+    if (x != 0)
+      x.reciprocal.pow(3) shouldBe x.pow(-3)
   }
   rat1("x / x == 1") { x: Q =>
-    if (x != 0) x / x shouldBe Rational(1)
+    if (x != 0)
+      x / x shouldBe Rational(1)
   }
 
   rat2("x + y == y + x") { (x: Q, y: Q) =>
@@ -81,7 +107,8 @@ class RationalCheck
     (x + y) - x shouldBe y
   }
   rat2("x / y == x * (y^-1)") { (x: Q, y: Q) =>
-    if (y != 0) x / y shouldBe x * y.reciprocal
+    if (y != 0)
+      x / y shouldBe x * y.reciprocal
   }
 
   rat3("(x + y) * z == x * z + y * z") { (x: Q, y: Q, z: Q) =>

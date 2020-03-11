@@ -76,12 +76,17 @@ class LinkedHashSet[A]
 
   override def remove(elem: A): Boolean = {
     val e = removeEntry(elem)
-    if (e eq null) false
+    if (e eq null)
+      false
     else {
-      if (e.earlier eq null) firstEntry = e.later
-      else e.earlier.later = e.later
-      if (e.later eq null) lastEntry = e.earlier
-      else e.later.earlier = e.earlier
+      if (e.earlier eq null)
+        firstEntry = e.later
+      else
+        e.earlier.later = e.later
+      if (e.later eq null)
+        lastEntry = e.earlier
+      else
+        e.later.earlier = e.earlier
       true
     }
   }
@@ -94,7 +99,8 @@ class LinkedHashSet[A]
         val res = cur.key;
         cur = cur.later;
         res
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   override def foreach[U](f: A => U) {
@@ -115,7 +121,8 @@ class LinkedHashSet[A]
 
   protected def createNewEntry[B](key: A, dummy: B): Entry = {
     val e = new Entry(key)
-    if (firstEntry eq null) firstEntry = e
+    if (firstEntry eq null)
+      firstEntry = e
     else {
       lastEntry.later = e;
       e.earlier = lastEntry

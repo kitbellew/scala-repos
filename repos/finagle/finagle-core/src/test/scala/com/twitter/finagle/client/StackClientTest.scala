@@ -279,7 +279,8 @@ class StackClientTest
         Future.value(new Service[String, String] {
           def apply(request: String): Future[String] = {
             count += 1
-            if (runSideEffect(count)) sideEffect()
+            if (runSideEffect(count))
+              sideEffect()
             Future.exception(WriteException(new Exception("boom")))
           }
 

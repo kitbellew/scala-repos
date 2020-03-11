@@ -141,10 +141,16 @@ object LEventAggregator {
   }
 
   private def first(a: DateTime, b: DateTime): DateTime =
-    if (b.isBefore(a)) b else a
+    if (b.isBefore(a))
+      b
+    else
+      a
 
   private def last(a: DateTime, b: DateTime): DateTime =
-    if (b.isAfter(a)) b else a
+    if (b.isAfter(a))
+      b
+    else
+      a
 
   private case class Prop(
       dm: Option[DataMap] = None,

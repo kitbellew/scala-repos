@@ -104,8 +104,10 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
   case class FLOAT private[TypeKinds] (typeSymbol: Symbol)
       extends ValueTypeKind {
     def toIRType: Types.Type =
-      if (typeSymbol == FloatClass) Types.FloatType
-      else Types.DoubleType
+      if (typeSymbol == FloatClass)
+        Types.FloatType
+      else
+        Types.DoubleType
   }
 
   /** Boolean */

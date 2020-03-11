@@ -20,7 +20,8 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
       editor: Editor,
       element: PsiElement): Boolean = {
     if (element == null || element.getNode == null || element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING ||
-        !element.getText.contains("\n")) return false
+        !element.getText.contains("\n"))
+      return false
 
     MultilineStringUtil.needAddStripMargin(element, getMarginChar(project))
   }
@@ -30,7 +31,11 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val marginChar = getMarginChar(project)
-    val suffix = if (marginChar == "|") "" else "(\'" + marginChar + "\')"
+    val suffix =
+      if (marginChar == "|")
+        ""
+      else
+        "(\'" + marginChar + "\')"
 
     extensions.inWriteAction {
       editor.getDocument.insertString(

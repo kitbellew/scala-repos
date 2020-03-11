@@ -152,7 +152,11 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "read N should not emit if upstream fails before N is sent" in assertAllStagesStopped {
       val error = new IllegalArgumentException("Don't argue like that!")
       Source(1 to 5)
-        .map(x ⇒ if (x > 3) throw error else x)
+        .map(x ⇒
+          if (x > 3)
+            throw error
+          else
+            x)
         .via(ReadNEmitN(6))
         .runWith(TestSink.probe)
         .request(10)

@@ -37,15 +37,19 @@ object Transform {
       "sbt.ScriptMain" -> "scalas",
       "sbt.ConsoleMain" -> "screpl"
     )
-    for ((main, dir) <- pairs) yield {
-      val file = conscriptBase / dir / "launchconfig"
-      copyPropertiesFile(source, main, file)
-      file
-    }
+    for ((main, dir) <- pairs)
+      yield {
+        val file = conscriptBase / dir / "launchconfig"
+        copyPropertiesFile(source, main, file)
+        file
+      }
   }
   def copyPropertiesFile(source: File, newMain: String, target: File): Unit = {
     def subMain(line: String): String =
-      if (line.trim.startsWith("class:")) "  class: " + newMain else line
+      if (line.trim.startsWith("class:"))
+        "  class: " + newMain
+      else
+        line
     IO.writeLines(target, IO.readLines(source) map subMain)
   }
 

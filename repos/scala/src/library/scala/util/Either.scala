@@ -392,7 +392,11 @@ object Either {
       * }}}
       */
     def filter[Y](p: A => Boolean): Option[Either[A, Y]] = e match {
-      case Left(a)  => if (p(a)) Some(Left(a)) else None
+      case Left(a) =>
+        if (p(a))
+          Some(Left(a))
+        else
+          None
       case Right(b) => None
     }
 
@@ -551,8 +555,12 @@ object Either {
       * }}}
       */
     def filter[X](p: B => Boolean): Option[Either[X, B]] = e match {
-      case Left(_)  => None
-      case Right(b) => if (p(b)) Some(Right(b)) else None
+      case Left(_) => None
+      case Right(b) =>
+        if (p(b))
+          Some(Right(b))
+        else
+          None
     }
 
     /** Returns a `Seq` containing the `Right` value if
@@ -594,5 +602,8 @@ object Either {
     * }}}
     */
   def cond[A, B](test: Boolean, right: => B, left: => A): Either[A, B] =
-    if (test) Right(right) else Left(left)
+    if (test)
+      Right(right)
+    else
+      Left(left)
 }

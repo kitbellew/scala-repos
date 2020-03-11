@@ -64,19 +64,24 @@ class HashMap[A, B] private[collection] (
 
   override def apply(key: A): B = {
     val result = findEntry(key)
-    if (result eq null) default(key)
-    else result.value
+    if (result eq null)
+      default(key)
+    else
+      result.value
   }
 
   def get(key: A): Option[B] = {
     val e = findEntry(key)
-    if (e eq null) None
-    else Some(e.value)
+    if (e eq null)
+      None
+    else
+      Some(e.value)
   }
 
   override def put(key: A, value: B): Option[B] = {
     val e = findOrAddEntry(key, value)
-    if (e eq null) None
+    if (e eq null)
+      None
     else {
       val v = e.value;
       e.value = value;
@@ -88,13 +93,16 @@ class HashMap[A, B] private[collection] (
 
   override def remove(key: A): Option[B] = {
     val e = removeEntry(key)
-    if (e ne null) Some(e.value)
-    else None
+    if (e ne null)
+      Some(e.value)
+    else
+      None
   }
 
   def +=(kv: (A, B)): this.type = {
     val e = findOrAddEntry(kv._1, kv._2)
-    if (e ne null) e.value = kv._2
+    if (e ne null)
+      e.value = kv._2
     this
   }
 
@@ -137,8 +145,10 @@ class HashMap[A, B] private[collection] (
     */
   def useSizeMap(t: Boolean) =
     if (t) {
-      if (!isSizeMapDefined) sizeMapInitAndRebuild()
-    } else sizeMapDisable()
+      if (!isSizeMapDefined)
+        sizeMapInitAndRebuild()
+    } else
+      sizeMapDisable()
 
   protected def createNewEntry[B1](key: A, value: B1): Entry = {
     new Entry(key, value.asInstanceOf[B])

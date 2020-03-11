@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object SelectionModel {
   implicit def sfxSelectionModel2jfx[T](
       v: SelectionModel[T]): jfxsc.SelectionModel[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class SelectionModel[T](override val delegate: jfxsc.SelectionModel[T])

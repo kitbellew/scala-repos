@@ -50,7 +50,10 @@ object DialogPane {
     * @return JavaFX DialogPane
     */
   implicit def sfxDialogPane2jfx(v: DialogPane): jfxsc.DialogPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

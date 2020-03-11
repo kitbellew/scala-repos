@@ -393,7 +393,11 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       assert(new URI(Utils.resolveURIs(after)) === new URI(after))
     }
     val rawCwd = System.getProperty("user.dir")
-    val cwd = if (Utils.isWindows) s"/$rawCwd".replace("\\", "/") else rawCwd
+    val cwd =
+      if (Utils.isWindows)
+        s"/$rawCwd".replace("\\", "/")
+      else
+        rawCwd
     assertResolves("hdfs:/root/spark.jar", "hdfs:/root/spark.jar")
     assertResolves(
       "hdfs:///root/spark.jar#app.jar",
@@ -424,7 +428,11 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       assert(resolve(resolve(resolve(after))) === after)
     }
     val rawCwd = System.getProperty("user.dir")
-    val cwd = if (Utils.isWindows) s"/$rawCwd".replace("\\", "/") else rawCwd
+    val cwd =
+      if (Utils.isWindows)
+        s"/$rawCwd".replace("\\", "/")
+      else
+        rawCwd
     assertResolves("jar1,jar2", s"file:$cwd/jar1,file:$cwd/jar2")
     assertResolves("file:/jar1,file:/jar2", "file:/jar1,file:/jar2")
     assertResolves(
@@ -873,7 +881,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
       val versionParts = System.getProperty("java.version").split("[+.\\-]+", 3)
       var majorVersion = versionParts(0).toInt
-      if (majorVersion == 1) majorVersion = versionParts(1).toInt
+      if (majorVersion == 1)
+        majorVersion = versionParts(1).toInt
       if (majorVersion >= 8) {
         // Java8 added a way to forcibly terminate a process. We'll make sure that works by
         // creating a very misbehaving process. It ignores SIGTERM and has been SIGSTOPed. On

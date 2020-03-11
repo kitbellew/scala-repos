@@ -9,7 +9,11 @@ object TestProject extends Build {
 
   lazy val root = Project("root", file(".")) settings (
     provided <<= baseDirectory(_ / "useProvided" exists),
-    configuration <<= provided(p => if (p) Provided else Compile),
+    configuration <<= provided(p =>
+      if (p)
+        Provided
+      else
+        Compile),
     libraryDependencies <+= configuration(c =>
       "javax.servlet" % "servlet-api" % "2.5" % c.name),
     managedClasspath in Provided <<= (classpathTypes, update) map {
@@ -27,11 +31,16 @@ object TestProject extends Build {
         fullClasspath in Test) map {
         case ((conf, expected), p, r, c, t) =>
           val cp =
-            if (conf == Compile.name) c
-            else if (conf == Runtime.name) r
-            else if (conf == Provided.name) p
-            else if (conf == Test.name) t
-            else sys.error("Invalid config: " + conf)
+            if (conf == Compile.name)
+              c
+            else if (conf == Runtime.name)
+              r
+            else if (conf == Provided.name)
+              p
+            else if (conf == Test.name)
+              t
+            else
+              sys.error("Invalid config: " + conf)
           checkServletAPI(cp.files, expected, conf)
       }
     }

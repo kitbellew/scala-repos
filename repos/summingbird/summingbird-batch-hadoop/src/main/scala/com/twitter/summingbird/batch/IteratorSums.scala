@@ -36,7 +36,8 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
       }
       override def sumOption(
           items: TraversableOnce[(T1, T2)]): Option[(T1, T2)] = {
-        if (items.isEmpty) None
+        if (items.isEmpty)
+          None
         else {
           val op = new BufferOp[(T1, T2)](blockSize) {
             def operate(items: Seq[(T1, T2)]): Option[(T1, T2)] =
@@ -59,7 +60,8 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
 
     def put(v: V): Option[V] = {
       buffer += v
-      if (buffer.size > sz) flush.flatMap(put(_)) // put it back in the front
+      if (buffer.size > sz)
+        flush.flatMap(put(_)) // put it back in the front
       None
     }
 
@@ -86,8 +88,10 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
     def semigroup = Semigroup.from {
       case ((lk, lv), (rk, rv)) =>
         // if the keys match, sum, else return the new pair
-        if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
-        else (rk, rv)
+        if (Equiv[K].equiv(lk, rk))
+          (rk, Semigroup.plus(lv, rv))
+        else
+          (rk, rv)
     }
 
     var lastK: Option[K] = None
@@ -96,10 +100,12 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
     def put(kv: (K, V)): Option[(K, V)] = {
       val (k, v) = kv
       val res = lastK.flatMap { lk =>
-        if (!Equiv[K].equiv(lk, k)) flush
+        if (!Equiv[K].equiv(lk, k))
+          flush
         else if (buffer.size > sz)
           flush.flatMap(put(_)) // put it back in the front
-        else None
+        else
+          None
       }
       lastK = Some(k)
       buffer += v

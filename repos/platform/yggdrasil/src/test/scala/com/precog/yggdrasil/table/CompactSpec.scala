@@ -48,7 +48,10 @@ trait CompactSpec[M[+_]]
       val undefined = slices.map { slice =>
         (0 until slice.size).foldLeft(0) {
           case (acc, i) =>
-            if (!slice.columns.values.exists(_.isDefinedAt(i))) acc + 1 else acc
+            if (!slice.columns.values.exists(_.isDefinedAt(i)))
+              acc + 1
+            else
+              acc
         }
       }.toList
 
@@ -97,7 +100,10 @@ trait CompactSpec[M[+_]]
           }
         } else {
           val retained = (0 until slice.size).flatMap { x =>
-            if (scala.util.Random.nextDouble < 0.75) Some(x) else None
+            if (scala.util.Random.nextDouble < 0.75)
+              Some(x)
+            else
+              None
           }
           new Slice {
             val size = slice.size
@@ -127,7 +133,10 @@ trait CompactSpec[M[+_]]
               (col |> cf.util.filter(0, slice.size, new BitSet)).get
             else {
               val retained = (0 until slice.size).map { (x: Int) =>
-                if (scala.util.Random.nextDouble < 0.75) Some(x) else None
+                if (scala.util.Random.nextDouble < 0.75)
+                  Some(x)
+                else
+                  None
               }.flatten
               (col |> cf.util
                 .filter(0, slice.size, BitSetUtil.create(retained))).get

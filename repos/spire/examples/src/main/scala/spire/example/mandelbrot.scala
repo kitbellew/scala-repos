@@ -12,9 +12,12 @@ object MandelbrotDemo {
     */
   def mandelbrot(c: Complex[Double], limit: Int): Int = {
     @tailrec def loop(z: Complex[Double], n: Int): Int =
-      if (n >= limit) n
-      else if (z.abs > 2.0) n - 1
-      else loop(z * z + c, n + 1)
+      if (n >= limit)
+        n
+      else if (z.abs > 2.0)
+        n - 1
+      else
+        loop(z * z + c, n + 1)
 
     loop(c, 1)
   }
@@ -24,7 +27,11 @@ object MandelbrotDemo {
     */
   def main(args: Array[String]): Unit = {
     val res = 26 // number of iterations to try before including pt in the set
-    val rows = if (args.isEmpty) 20 else args(0).toInt // rows to print
+    val rows =
+      if (args.isEmpty)
+        20
+      else
+        args(0).toInt // rows to print
     val cols = rows * 2 // cols to print. most fonts are roughly 1:2
 
     val h = 4.0 / rows // height per pixel character
@@ -41,7 +48,11 @@ object MandelbrotDemo {
         // if n<res, color the pixel accordingly, otherwise then we
         // treat it as being in the set.
         val n = mandelbrot(pt(x, y), res)
-        val pixel = if (n == res) " " else "x"
+        val pixel =
+          if (n == res)
+            " "
+          else
+            "x"
         display(pixel, n)
       }
       println(Xterm.clear())
@@ -62,10 +73,16 @@ object Xterm {
 
   // 0-25 are colors, 26+ is clear
   def rainbow(n: Int) =
-    if (n < 6) Xterm.color(5, n, 0)
-    else if (n < 11) Xterm.color(10 - n, 5, 0)
-    else if (n < 16) Xterm.color(0, 5, n - 10)
-    else if (n < 21) Xterm.color(0, 20 - n, 5)
-    else if (n < 26) Xterm.color(n - 20, 0, 5)
-    else Xterm.clear()
+    if (n < 6)
+      Xterm.color(5, n, 0)
+    else if (n < 11)
+      Xterm.color(10 - n, 5, 0)
+    else if (n < 16)
+      Xterm.color(0, 5, n - 10)
+    else if (n < 21)
+      Xterm.color(0, 20 - n, 5)
+    else if (n < 26)
+      Xterm.color(n - 20, 0, 5)
+    else
+      Xterm.clear()
 }

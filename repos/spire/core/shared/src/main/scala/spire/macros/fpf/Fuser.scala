@@ -143,9 +143,10 @@ private[spire] trait Fuser[C <: Context, A] {
     for (a <- t(apx);
          b <- t(mes);
          c <- ind0;
-         d <- t(exact)) yield {
-      (a, b, c, d)
-    }
+         d <- t(exact))
+      yield {
+        (a, b, c, d)
+      }
   }
 
   private def freshApproxNames(): (TermName, TermName, TermName, TermName) = {

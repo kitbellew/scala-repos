@@ -33,7 +33,10 @@ import scala.language.implicitConversions
 object LongStringConverter {
   implicit def sfxLongStringConverter2jfx(
       c: LongStringConverter): jfxuc.LongStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class LongStringConverter(

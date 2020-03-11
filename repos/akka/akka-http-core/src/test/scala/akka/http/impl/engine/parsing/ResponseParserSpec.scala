@@ -383,14 +383,14 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .prefixAndTail(1)
         .collect {
           case (
-              Seq(
-                ResponseStart(
-                  statusCode,
-                  protocol,
-                  headers,
-                  createEntity,
-                  close)),
-              entityParts) ⇒
+                Seq(
+                  ResponseStart(
+                    statusCode,
+                    protocol,
+                    headers,
+                    createEntity,
+                    close)),
+                entityParts) ⇒
             closeAfterResponseCompletion :+= close
             Right(
               HttpResponse(
@@ -399,8 +399,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 createEntity(entityParts),
                 protocol))
           case (
-              Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
-              tail) ⇒
+                Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
+                tail) ⇒
             tail.runWith(Sink.ignore)
             Left(x)
         }

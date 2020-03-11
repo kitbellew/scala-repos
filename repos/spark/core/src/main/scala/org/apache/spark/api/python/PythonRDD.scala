@@ -60,7 +60,10 @@ private[spark] class PythonRDD(
   override def getPartitions: Array[Partition] = firstParent.partitions
 
   override val partitioner: Option[Partitioner] = {
-    if (preservePartitoning) firstParent.partitioner else None
+    if (preservePartitoning)
+      firstParent.partitioner
+    else
+      None
   }
 
   val asJavaRDD: JavaRDD[Array[Byte]] = JavaRDD.fromRDD(this)

@@ -185,7 +185,8 @@ trait EnumeratorTFunctions {
       import MO._
       def apply[A] = {
         def go(xs: Iterator[E])(s: StepT[E, F, A]): IterateeT[E, F, A] =
-          if (xs.isEmpty) s.pointI
+          if (xs.isEmpty)
+            s.pointI
           else {
             s mapCont { k =>
               val next = xs.next
@@ -207,8 +208,10 @@ trait EnumeratorTFunctions {
         (s: StepT[IoExceptionOr[E], F, A]) =>
           s.mapCont(k => {
             val i = get()
-            if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
-            else s.pointI
+            if (gotdata(i))
+              k(elInput(i.map(render))) >>== apply[A]
+            else
+              s.pointI
           })
     }
 
@@ -239,8 +242,10 @@ trait EnumeratorTFunctions {
       def apply[A] = {
         def loop(pos: Int): StepT[E, F, A] => IterateeT[E, F, A] = { s =>
           s.mapCont(k =>
-            if (limit > pos) k(elInput(a(pos))) >>== loop(pos + 1)
-            else s.pointI)
+            if (limit > pos)
+              k(elInput(a(pos))) >>== loop(pos + 1)
+            else
+              s.pointI)
         }
         loop(min)
       }

@@ -61,8 +61,8 @@ class ScalaUselessExpressionInspection
   private def isLastInBlock(expr: ScExpression): Boolean = expr match {
     case ChildOf(bl: ScBlock) => bl.lastExpr.contains(expr)
     case ChildOf(
-        _: ScPatternDefinition | _: ScFunctionDefinition |
-        _: ScVariableDefinition) =>
+          _: ScPatternDefinition | _: ScFunctionDefinition |
+          _: ScVariableDefinition) =>
       !expr.isInstanceOf[ScBlock]
     case _ => false
   }

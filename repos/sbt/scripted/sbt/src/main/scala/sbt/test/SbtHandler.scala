@@ -81,7 +81,8 @@ final class SbtHandler(
   def receive(errorMessage: String, server: IPC.Server) =
     server.connection { ipc =>
       val resultMessage = ipc.receive
-      if (!resultMessage.toBoolean) throw new TestFailed(errorMessage)
+      if (!resultMessage.toBoolean)
+        throw new TestFailed(errorMessage)
     }
   def newRemote(server: IPC.Server): Process = {
     val launcherJar = launcher.getAbsolutePath
@@ -113,5 +114,6 @@ final class SbtHandler(
       "\"" + argument
         .replaceAll(q("""\"""), """\\""")
         .replaceAll(q("\""), "\\\"") + "\""
-    else argument
+    else
+      argument
 }

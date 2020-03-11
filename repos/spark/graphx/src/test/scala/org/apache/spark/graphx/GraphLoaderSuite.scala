@@ -34,7 +34,8 @@ class GraphLoaderSuite extends SparkFunSuite with LocalSparkContext {
       val writer = new OutputStreamWriter(
         new FileOutputStream(graphFile),
         StandardCharsets.UTF_8)
-      for (i <- (1 until 101)) writer.write(s"$i 0\n")
+      for (i <- (1 until 101))
+        writer.write(s"$i 0\n")
       writer.close()
       try {
         val graph = GraphLoader.edgeListFile(sc, tmpDir.getAbsolutePath)

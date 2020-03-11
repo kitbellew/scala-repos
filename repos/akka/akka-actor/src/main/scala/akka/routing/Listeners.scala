@@ -35,7 +35,8 @@ trait Listeners { self: Actor ⇒
     case Deafen(l) ⇒ listeners remove l
     case WithListeners(f) ⇒
       val i = listeners.iterator
-      while (i.hasNext) f(i.next)
+      while (i.hasNext)
+        f(i.next)
   }
 
   /**
@@ -47,6 +48,7 @@ trait Listeners { self: Actor ⇒
   protected def gossip(msg: Any)(
       implicit sender: ActorRef = Actor.noSender): Unit = {
     val i = listeners.iterator
-    while (i.hasNext) i.next ! msg
+    while (i.hasNext)
+      i.next ! msg
   }
 }

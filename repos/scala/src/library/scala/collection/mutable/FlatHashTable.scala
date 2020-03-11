@@ -48,7 +48,10 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   import HashTable.powerOfTwo
 
   protected def capacity(expectedSize: Int) =
-    if (expectedSize == 0) 1 else powerOfTwo(expectedSize)
+    if (expectedSize == 0)
+      1
+    else
+      powerOfTwo(expectedSize)
 
   /** The initial size of the hash table.
     */
@@ -83,7 +86,10 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     seedvalue = in.readInt()
 
     val smDefined = in.readBoolean()
-    if (smDefined) sizeMapInit(table.length) else sizemap = null
+    if (smDefined)
+      sizeMapInit(table.length)
+    else
+      sizemap = null
 
     var index = 0
     while (index < size) {
@@ -153,7 +159,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     var h = index(newEntry.hashCode)
     var curEntry = table(h)
     while (null != curEntry) {
-      if (curEntry == newEntry) return false
+      if (curEntry == newEntry)
+        return false
       h = (h + 1) % table.length
       curEntry = table(h)
       //Statistics.collisions += 1
@@ -161,7 +168,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     table(h) = newEntry
     tableSize = tableSize + 1
     nnSizeMapAdd(h)
-    if (tableSize >= threshold) growTable()
+    if (tableSize >= threshold)
+      growTable()
     true
 
   }
@@ -171,11 +179,14 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     * or false if it didn't exist.
     */
   protected def removeElem(elem: A): Boolean = {
-    if (tableDebug) checkConsistent()
+    if (tableDebug)
+      checkConsistent()
     def precedes(i: Int, j: Int) = {
       val d = table.length >> 1
-      if (i <= j) j - i < d
-      else i - j > d
+      if (i <= j)
+        j - i < d
+      else
+        i - j > d
     }
     val removalEntry = elemToEntry(elem)
     var h = index(removalEntry.hashCode)
@@ -197,7 +208,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
         table(h0) = null
         tableSize -= 1
         nnSizeMapRemove(h0)
-        if (tableDebug) checkConsistent()
+        if (tableDebug)
+          checkConsistent()
         return true
       }
       h = (h + 1) % table.length
@@ -209,14 +221,16 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   protected def iterator: Iterator[A] = new AbstractIterator[A] {
     private var i = 0
     def hasNext: Boolean = {
-      while (i < table.length && (null == table(i))) i += 1
+      while (i < table.length && (null == table(i)))
+        i += 1
       i < table.length
     }
     def next(): A =
       if (hasNext) {
         i += 1;
         entryToElem(table(i - 1))
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   private def growTable() {
@@ -229,10 +243,12 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     var i = 0
     while (i < oldtable.length) {
       val entry = oldtable(i)
-      if (null != entry) addEntry(entry)
+      if (null != entry)
+        addEntry(entry)
       i += 1
     }
-    if (tableDebug) checkConsistent()
+    if (tableDebug)
+      checkConsistent()
   }
 
   private def checkConsistent() {
@@ -276,8 +292,10 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     "2.11.0")
   protected def nnSizeMapReset(tableLength: Int) = if (sizemap ne null) {
     val nsize = calcSizeMapSize(tableLength)
-    if (sizemap.length != nsize) sizemap = new Array[Int](nsize)
-    else java.util.Arrays.fill(sizemap, 0)
+    if (sizemap.length != nsize)
+      sizemap = new Array[Int](nsize)
+    else
+      java.util.Arrays.fill(sizemap, 0)
   }
 
   private[collection] final def totalSizeMapBuckets =
@@ -314,7 +332,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     while (bucketidx < totalbuckets) {
       var currbucketsz = 0
       while (tableidx < tableuntil) {
-        if (tbl(tableidx) ne null) currbucketsz += 1
+        if (tbl(tableidx) ne null)
+          currbucketsz += 1
         tableidx += 1
       }
       sizemap(bucketidx) = currbucketsz
@@ -388,7 +407,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
       seedvalue = c.seedvalue
       sizemap = c.sizemap
     }
-    if (alwaysInitSizeMap && sizemap == null) sizeMapInitAndRebuild()
+    if (alwaysInitSizeMap && sizemap == null)
+      sizeMapInitAndRebuild()
   }
 
 }
@@ -458,14 +478,19 @@ private[collection] object FlatHashTable {
       * null elems, which need to be stored as NullSentinel
       */
     protected final def elemToEntry(elem: A): AnyRef =
-      if (null == elem) NullSentinel else elem.asInstanceOf[AnyRef]
+      if (null == elem)
+        NullSentinel
+      else
+        elem.asInstanceOf[AnyRef]
 
     /**
       * Does the inverse translation of elemToEntry
       */
     protected final def entryToElem(entry: AnyRef): A =
-      (if (entry.isInstanceOf[NullSentinel.type]) null else entry)
-        .asInstanceOf[A]
+      (if (entry.isInstanceOf[NullSentinel.type])
+         null
+       else
+         entry).asInstanceOf[A]
   }
 
 }

@@ -301,7 +301,8 @@ trait ActorPublisher[T] extends Actor {
             lifecycleState = Active
             tryOnSubscribe(sub, new ActorPublisherSubscription(self))
           case ErrorEmitted(cause, stop) ⇒
-            if (stop) context.stop(self)
+            if (stop)
+              context.stop(self)
             tryOnSubscribe(sub, CancelledSubscription)
             tryOnError(sub, cause)
           case Completed ⇒
@@ -390,7 +391,8 @@ trait ActorPublisher[T] extends Actor {
     */
   protected[akka] override def aroundPostStop(): Unit = {
     state.remove(self)
-    try if (lifecycleState == Active) tryOnComplete(subscriber)
+    try if (lifecycleState == Active)
+      tryOnComplete(subscriber)
     finally super.aroundPostStop()
   }
 

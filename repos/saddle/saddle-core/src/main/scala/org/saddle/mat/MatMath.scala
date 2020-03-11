@@ -189,12 +189,20 @@ object MatMath {
     val rsz = inR
     val csz = inC
     while (r < rsz) {
-      val blockHeight = if (XOVER < rsz - r) XOVER else rsz - r
+      val blockHeight =
+        if (XOVER < rsz - r)
+          XOVER
+        else
+          rsz - r
       var inRow = r * csz // first element of current row
       var outCol = r // first element of current col
       var c = 0
       while (c < csz) {
-        val blockWidth = if (XOVER < csz - c) XOVER else csz - c
+        val blockWidth =
+          if (XOVER < csz - c)
+            XOVER
+          else
+            csz - c
         val rowEnd = inRow + blockWidth
         while (inRow < rowEnd) {
           var rowSrc = inRow

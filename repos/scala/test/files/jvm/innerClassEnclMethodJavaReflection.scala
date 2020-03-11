@@ -35,9 +35,16 @@ object Test extends App {
     def flatten(f: AbstractFile, s: String): Iterator[(AbstractFile, String)] =
       if (f.isClassContainer)
         f.iterator
-          .map(ch => (ch, (if (s.isEmpty) "" else s + "/") + ch.name))
+          .map(ch =>
+            (
+              ch,
+              (if (s.isEmpty)
+                 ""
+               else
+                 s + "/") + ch.name))
           .flatMap((flatten _).tupled)
-      else Iterator((f, s))
+      else
+        Iterator((f, s))
 
     val classFullNames = flatten(classPath, "")
       .filter(_._1.hasExtension("class"))

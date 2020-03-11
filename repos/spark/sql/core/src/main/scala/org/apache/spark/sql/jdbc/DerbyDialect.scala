@@ -30,7 +30,10 @@ private object DerbyDialect extends JdbcDialect {
       typeName: String,
       size: Int,
       md: MetadataBuilder): Option[DataType] = {
-    if (sqlType == Types.REAL) Option(FloatType) else None
+    if (sqlType == Types.REAL)
+      Option(FloatType)
+    else
+      None
   }
 
   override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {

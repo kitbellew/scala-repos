@@ -21,7 +21,10 @@ object TypeCheckerWithExplicitTypes_Monadic {
       t2: Type,
       resultType: Type,
       errorMsg: String): String \/ Type =
-    if (t1 == t2) success(resultType) else typeError(errorMsg)
+    if (t1 == t2)
+      success(resultType)
+    else
+      typeError(errorMsg)
 
   // the real type check function, which works with the type environment.
   def typeCheck(expr: Exp, env: TypeEnv = predef): String \/ Type = expr match {

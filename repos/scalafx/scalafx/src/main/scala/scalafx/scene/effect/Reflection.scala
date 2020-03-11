@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Reflection {
   implicit def sfxReflection2jfx(r: Reflection): jfxse.Reflection =
-    if (r != null) r.delegate else null
+    if (r != null)
+      r.delegate
+    else
+      null
 }
 
 class Reflection(override val delegate: jfxse.Reflection = new jfxse.Reflection)

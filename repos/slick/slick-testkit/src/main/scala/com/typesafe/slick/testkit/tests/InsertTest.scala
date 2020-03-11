@@ -19,7 +19,9 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     val dst2 = TableQuery(new TestTable(_, "dst2_q"))
     val dst3 = TableQuery(new TestTable(_, "dst3_q"))
 
-    val q2 = for (s <- src1 if s.id <= 2) yield s
+    val q2 =
+      for (s <- src1 if s.id <= 2)
+        yield s
     println("Insert 2: " + dst2.forceInsertStatementFor(q2))
     val q3 = (42, "X".bind)
     println("Insert 3: " + dst2.forceInsertStatementFor(q3))

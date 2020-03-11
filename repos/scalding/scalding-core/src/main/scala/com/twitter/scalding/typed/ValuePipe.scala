@@ -107,7 +107,11 @@ case object EmptyValue extends ValuePipe[Nothing] {
 }
 case class LiteralValue[T](value: T) extends ValuePipe[T] {
   override def map[U](fn: T => U) = LiteralValue(fn(value))
-  override def filter(fn: T => Boolean) = if (fn(value)) this else EmptyValue
+  override def filter(fn: T => Boolean) =
+    if (fn(value))
+      this
+    else
+      EmptyValue
   override def toTypedPipe = TypedPipe.from(Iterable(value))
   override def toOptionExecution = Execution.from(Some(value))
 

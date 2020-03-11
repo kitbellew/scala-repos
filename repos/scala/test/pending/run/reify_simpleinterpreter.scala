@@ -35,8 +35,12 @@ object Test extends App {
     type Environment = List[Tuple2[Name, Value]]
 
     def lookup(x: Name, e: Environment): M[Value] = e match {
-      case List()       => unitM(Wrong)
-      case (y, b) :: e1 => if (x == y) unitM(b) else lookup(x, e1)
+      case List() => unitM(Wrong)
+      case (y, b) :: e1 =>
+        if (x == y)
+          unitM(b)
+        else
+          lookup(x, e1)
     }
 
     def add(a: Value, b: Value): M[Value] = (a, b) match {

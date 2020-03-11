@@ -135,7 +135,8 @@ class WorksheetEditorPrinter(
           }
 
           buffed += linesCount
-          if (buffed > WorksheetEditorPrinter.BULK_COUNT) midFlush()
+          if (buffed > WorksheetEditorPrinter.BULK_COUNT)
+            midFlush()
           clear()
         case _ =>
       }
@@ -147,7 +148,8 @@ class WorksheetEditorPrinter(
       if (linesCount > getOutputLimit) {
         outputBuffer append WorksheetEditorPrinter.END_MESSAGE
         cutoffPrinted = true
-      } else outputBuffer append line
+      } else
+        outputBuffer append line
     }
 
     false
@@ -158,7 +160,8 @@ class WorksheetEditorPrinter(
 
     val oldSync =
       originalEditor getUserData WorksheetEditorPrinter.DIFF_SYNC_SUPPORT
-    if (oldSync != null) oldSync.dispose()
+    if (oldSync != null)
+      oldSync.dispose()
 
     WorksheetEditorPrinter.synch(
       originalEditor,
@@ -190,8 +193,12 @@ class WorksheetEditorPrinter(
         f = checkFlag(s)
       }
 
-      if (s != null) Some(s.getTextRange.getStartOffset) else None
-    } else None
+      if (s != null)
+        Some(s.getTextRange.getStartOffset)
+      else
+        None
+    } else
+      None
   }
 
   private def isResultEnd(line: String) =
@@ -205,11 +212,14 @@ class WorksheetEditorPrinter(
   }
 
   def flushBuffer() {
-    if (!inited) init()
-    if (terminated) return
+    if (!inited)
+      init()
+    if (terminated)
+      return
     val str = getCurrentText
 
-    if (timer.isRunning) timer.stop()
+    if (timer.isRunning)
+      timer.stop()
 
     updateWithPersistentScroll(viewerDocument, str)
 
@@ -238,7 +248,8 @@ class WorksheetEditorPrinter(
   }
 
   def midFlush() {
-    if (terminated || buffed == 0) return
+    if (terminated || buffed == 0)
+      return
 
     val str = getCurrentText
     buffed = 0
@@ -319,7 +330,8 @@ class WorksheetEditorPrinter(
   }
 
   private def commitDocument(doc: Document) {
-    if (project.isDisposed) return //EA-70786
+    if (project.isDisposed)
+      return //EA-70786
     PsiDocumentManager getInstance project commitDocument doc
   }
 
@@ -347,7 +359,8 @@ class WorksheetEditorPrinter(
           project,
           new Runnable {
             override def run() {
-              if (linesOld != viewerDocument.getLineCount) return
+              if (linesOld != viewerDocument.getLineCount)
+                return
               viewerDocument.deleteString(0, text.length)
               viewerDocument.insertString(0, text)
 
@@ -413,7 +426,8 @@ object WorksheetEditorPrinter {
               if (!e.getEditor
                     .asInstanceOf[EditorImpl]
                     .getContentComponent
-                    .hasFocus) return
+                    .hasFocus)
+                return
               recipient.getCaretModel.moveToVisualPosition(
                 new VisualPosition(
                   Math.min(
@@ -427,7 +441,8 @@ object WorksheetEditorPrinter {
           if (!e.getEditor
                 .asInstanceOf[EditorImpl]
                 .getContentComponent
-                .hasFocus) return
+                .hasFocus)
+            return
           recipient.getCaretModel.moveToVisualPosition(
             don.getCaretModel.getVisualPosition)
         }
@@ -439,7 +454,12 @@ object WorksheetEditorPrinter {
           patched remove don
           don.getCaretModel.removeCaretListener(new MyCaretAdapterBase)
           don.getCaretModel.addCaretListener(createListener(recipient, don))
-          patched.put(don, if (foldGroup.isDefined) "100" else "50")
+          patched.put(
+            don,
+            if (foldGroup.isDefined)
+              "100"
+            else
+              "50")
         case _ =>
       }
     }
@@ -569,7 +589,8 @@ object WorksheetEditorPrinter {
             worksheetViewer.getUserData(DIFF_SPLITTER_KEY).getProportion
           case _ => 0.5f
         }
-      else 0.5f
+      else
+        0.5f
 
     val dimension = editorComponent.getSize()
     val prefDim = new Dimension(dimension.width / 2, dimension.height)
@@ -578,7 +599,8 @@ object WorksheetEditorPrinter {
 
     worksheetViewer.getComponent setPreferredSize prefDim
 
-    if (modelSync) synch(editor, worksheetViewer)
+    if (modelSync)
+      synch(editor, worksheetViewer)
     editorContentComponent.setPreferredSize(prefDim)
 
     if (!ApplicationManager.getApplication.isUnitTestMode) {
@@ -599,7 +621,8 @@ object WorksheetEditorPrinter {
 
         body
 
-        if (hadFocus) editorContentComponent.requestFocusInWindow()
+        if (hadFocus)
+          editorContentComponent.requestFocusInWindow()
       }
 
       @inline def patchEditor(): Unit = preserveFocus {
@@ -614,15 +637,17 @@ object WorksheetEditorPrinter {
         }
       }
 
-      if (parent.getComponentCount > 1) parent.getComponent(1) match {
-        case splitter: Splitter =>
-          preserveFocus {
-            parent.remove(1)
-            parent.add(diffPane, 1)
-          }
-        case _ => patchEditor()
-      }
-      else patchEditor()
+      if (parent.getComponentCount > 1)
+        parent.getComponent(1) match {
+          case splitter: Splitter =>
+            preserveFocus {
+              parent.remove(1)
+              parent.add(diffPane, 1)
+            }
+          case _ => patchEditor()
+        }
+      else
+        patchEditor()
     }
 
     WorksheetViewerInfo.addViewer(worksheetViewer, editor)
@@ -633,7 +658,8 @@ object WorksheetEditorPrinter {
     WorksheetViewerInfo getViewer editor match {
       case editorImpl: EditorImpl => editorImpl
       case _ =>
-        if (isPlain) createBlankEditor(editor.getProject)
+        if (isPlain)
+          createBlankEditor(editor.getProject)
         else
           createBlankEditorWithLang(
             editor.getProject,
@@ -653,7 +679,10 @@ object WorksheetEditorPrinter {
           DataManager.CLIENT_PROPERTY_DATA_PROVIDER,
           new DataProvider {
             override def getData(dataId: String) =
-              if (CommonDataKeys.HOST_EDITOR.is(dataId)) editor else null
+              if (CommonDataKeys.HOST_EDITOR.is(dataId))
+                editor
+              else
+                null
           })
       case _ =>
     }

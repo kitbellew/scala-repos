@@ -52,7 +52,8 @@ object TemplateBody {
                 subparse()
               }
               case _ => {
-                if (builder.newlineBeforeCurrentToken) subparse()
+                if (builder.newlineBeforeCurrentToken)
+                  subparse()
                 else {
                   builder error ScalaBundle.message("semi.expected")
                   builder.advanceLexer() //Ate something

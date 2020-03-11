@@ -41,8 +41,10 @@ object TestUtils { // FIXME: remove once going back to project dependencies
       udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
     Vector.fill(numberOfAddresses) {
       val serverSocket: GeneralSocket =
-        if (udp) DatagramChannel.open().socket()
-        else ServerSocketChannel.open().socket()
+        if (udp)
+          DatagramChannel.open().socket()
+        else
+          ServerSocketChannel.open().socket()
 
       serverSocket.bind(new InetSocketAddress(hostname, 0))
       (serverSocket, new InetSocketAddress(hostname, serverSocket.getLocalPort))

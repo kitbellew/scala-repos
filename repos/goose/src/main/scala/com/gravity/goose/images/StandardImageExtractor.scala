@@ -233,7 +233,8 @@ class StandardImageExtractor(
     } else {
       try {
         val siblingNode = node.previousElementSibling()
-        if (siblingNode == null) throw new NullPointerException
+        if (siblingNode == null)
+          throw new NullPointerException
         Some(DepthTraversal(siblingNode, parentDepth, siblingDepth + 1))
       } catch {
         case e: NullPointerException => {
@@ -328,7 +329,10 @@ class StandardImageExtractor(
   }
 
   def getNode(node: Element): Option[Element] = {
-    if (node == null) None else Some(node)
+    if (node == null)
+      None
+    else
+      Some(node)
   }
 
   /**
@@ -368,7 +372,10 @@ class StandardImageExtractor(
     })
 
     trace(logPrefix + " Now leaving findImagesThatPassByteSizeTest")
-    if (goodImages != null && goodImages.size > 0) Some(goodImages) else None
+    if (goodImages != null && goodImages.size > 0)
+      Some(goodImages)
+    else
+      None
   }
 
   /**
@@ -386,7 +393,10 @@ class StandardImageExtractor(
         image.remove()
       }
     }
-    if (goodImages != null && goodImages.size > 0) Some(goodImages) else None
+    if (goodImages != null && goodImages.size > 0)
+      Some(goodImages)
+    else
+      None
   }
 
   /**

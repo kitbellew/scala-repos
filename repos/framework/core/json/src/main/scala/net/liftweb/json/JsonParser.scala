@@ -120,7 +120,8 @@ object JsonParser {
               s.appendCodePoint(codePoint)
             case _ => s.append('\\')
           }
-        } else s.append(c)
+        } else
+          s.append(c)
         c = buf.next
       }
       s.toString
@@ -146,8 +147,10 @@ object JsonParser {
   private val BrokenDouble = BigDecimal("2.2250738585072012e-308")
   private[json] def parseDouble(s: String) = {
     val d = BigDecimal(s)
-    if (d == BrokenDouble) sys.error("Error parsing 2.2250738585072012e-308")
-    else d.doubleValue
+    if (d == BrokenDouble)
+      sys.error("Error parsing 2.2250738585072012e-308")
+    else
+      d.doubleValue
   }
 
   private val astParser = (p: Parser) => {
@@ -234,7 +237,8 @@ object JsonParser {
     def replace[A](newTop: Any) = stack.set(0, newTop)
 
     private def convert[A](x: Any, expectedType: Class[A]): A = {
-      if (x == null) parser.fail("expected object or array")
+      if (x == null)
+        parser.fail("expected object or array")
       try {
         x.asInstanceOf[A]
       } catch {
@@ -242,7 +246,11 @@ object JsonParser {
       }
     }
 
-    def peekOption = if (stack.isEmpty) None else Some(stack.peek)
+    def peekOption =
+      if (stack.isEmpty)
+        None
+      else
+        Some(stack.peek)
     def isEmpty = stack.isEmpty
   }
 
@@ -285,11 +293,14 @@ object JsonParser {
                        c) || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+')) {
             wasInt = false
             buf.back
-          } else s.append(c)
+          } else
+            s.append(c)
         }
         val value = s.toString
-        if (doubleVal) DoubleVal(parseDouble(value))
-        else IntVal(BigInt(value))
+        if (doubleVal)
+          DoubleVal(parseDouble(value))
+        else
+          IntVal(BigInt(value))
       }
 
       while (true) {
@@ -330,7 +341,8 @@ object JsonParser {
             }
             fail("expected null")
           case ':' =>
-            if (blocks.peek == ARRAY) fail("Colon in an invalid position")
+            if (blocks.peek == ARRAY)
+              fail("Colon in an invalid position")
             fieldNameMode = false
           case '[' =>
             blocks.addFirst(ARRAY)
@@ -376,8 +388,10 @@ object JsonParser {
 
     def next: Char = {
       if (cur >= offset && read < 0) {
-        if (eofIsFailure) throw new ParseException("unexpected eof", null)
-        else EOF
+        if (eofIsFailure)
+          throw new ParseException("unexpected eof", null)
+        else
+          EOF
       } else {
         val c = segment(cur)
         cur += 1
@@ -393,8 +407,16 @@ object JsonParser {
         var i = curSegmentIdx
         while (i >= curMarkSegment) {
           val s = segments(i).seg
-          val start = if (i == curMarkSegment) curMark else 0
-          val end = if (i == curSegmentIdx) cur else s.length + 1
+          val start =
+            if (i == curMarkSegment)
+              curMark
+            else
+              0
+          val end =
+            if (i == curSegmentIdx)
+              cur
+            else
+              s.length + 1
           parts = (start, end, s) :: parts
           i = i - 1
         }
@@ -422,7 +444,9 @@ object JsonParser {
 
     def release = segments.foreach(Segments.release)
 
-    private[JsonParser] def automaticClose = if (closeAutomatically) in.close
+    private[JsonParser] def automaticClose =
+      if (closeAutomatically)
+        in.close
 
     private[this] def read = {
       if (offset >= segment.length) {
@@ -438,7 +462,8 @@ object JsonParser {
         cur = offset
         offset += length
         length
-      } else -1
+      } else
+        -1
     }
   }
 
@@ -458,7 +483,10 @@ object JsonParser {
     def apply(): Segment = {
       val s = acquire
       // Give back a disposable segment if pool is exhausted.
-      if (s != null) s else DisposableSegment(new Array(segmentSize))
+      if (s != null)
+        s
+      else
+        DisposableSegment(new Array(segmentSize))
     }
 
     private[this] def acquire: Segment = {
@@ -466,9 +494,13 @@ object JsonParser {
       val createNew =
         if (segments.size == 0 && curCount < maxNumOfSegments)
           segmentCount.compareAndSet(curCount, curCount + 1)
-        else false
+        else
+          false
 
-      if (createNew) RecycledSegment(new Array(segmentSize)) else segments.poll
+      if (createNew)
+        RecycledSegment(new Array(segmentSize))
+      else
+        segments.poll
     }
 
     def release(s: Segment) = s match {

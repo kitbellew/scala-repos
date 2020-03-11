@@ -76,7 +76,10 @@ object DistributedPubSubSettings {
     * INTERNAL API
     */
   private[akka] def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 }
 
 /**
@@ -571,7 +574,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     var version = 0L
     () ⇒ {
       val current = System.currentTimeMillis
-      version = if (current > version) current else version + 1
+      version =
+        if (current > version)
+          current
+        else
+          version + 1
       version
     }
   }
@@ -858,8 +865,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   def selectRandomNode(
       addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None
-    else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
+    if (addresses.isEmpty)
+      None
+    else
+      Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
   def prune(): Unit = {
     registry foreach {

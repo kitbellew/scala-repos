@@ -141,8 +141,10 @@ trait BaseMappedField
     val conn = DB.currentConnection
     conn
       .map { c =>
-        if (c.metaData.storesMixedCaseIdentifiers) name
-        else name.toLowerCase
+        if (c.metaData.storesMixedCaseIdentifiers)
+          name
+        else
+          name.toLowerCase
       }
       .openOr(name)
   }
@@ -330,7 +332,11 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
       fieldCreatorString(dbType, c)
     }
 
-  def notNullAppender() = if (dbNotNull_?) " NOT NULL " else ""
+  def notNullAppender() =
+    if (dbNotNull_?)
+      " NOT NULL "
+    else
+      ""
 
   /**
     * Is the field dirty
@@ -413,8 +419,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Set the field to the value
     */
   def set(value: FieldType): FieldType = {
-    if (safe_? || writePermission_?) i_set_!(value)
-    else throw new Exception("Do not have permissions to set this field")
+    if (safe_? || writePermission_?)
+      i_set_!(value)
+    else
+      throw new Exception("Do not have permissions to set this field")
   }
 
   def :=[Q <% FieldType](v: Q): FieldType = {
@@ -446,7 +454,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Set the name of this field
     */
   private[mapper] final def setName_!(newName: String): String = {
-    if (safe_?) _name = newName
+    if (safe_?)
+      _name = newName
     _name
   }
 
@@ -457,7 +466,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     MapperRules.displayNameCalculator.vend(fieldOwner, S.locale, name)
 
   def resetDirty {
-    if (safe_?) dirty_?(false)
+    if (safe_?)
+      dirty_?(false)
   }
 
   /**
@@ -469,7 +479,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   def toFormAppendedAttributes: MetaData =
     if (Props.mode == Props.RunModes.Test)
       new PrefixedAttribute("lift", "field_name", Text(calcFieldName), Null)
-    else Null
+    else
+      Null
 
   def calcFieldName: String =
     fieldOwner.getSingleton.internal_dbTableName + ":" + name
@@ -580,7 +591,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
       meth: Method,
       func: PartialFunction[MappedField[FieldType, OwnerType], Unit]) {
     val f = getField(inst, meth)
-    if (func.isDefinedAt(f)) func(f)
+    if (func.isDefinedAt(f))
+      func(f)
   }
 
   /**
@@ -588,16 +600,20 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * If there are no read permissions, the value will be obscured
     */
   def get: FieldType = {
-    if (safe_? || readPermission_?) i_is_!
-    else i_obscure_!(i_is_!)
+    if (safe_? || readPermission_?)
+      i_is_!
+    else
+      i_obscure_!(i_is_!)
   }
 
   /**
     * What value was the field's value when it was pulled from the DB?
     */
   def was: FieldType = {
-    if (safe_? || readPermission_?) i_was_!
-    else i_obscure_!(i_was_!)
+    if (safe_? || readPermission_?)
+      i_was_!
+    else
+      i_obscure_!(i_was_!)
   }
 
   /**
@@ -625,7 +641,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   def dbColumnCount = 1
 
   def dbColumnNames(in: String) =
-    if (dbColumnCount == 1) List(_dbColumnNameLC) else List(in.toLowerCase)
+    if (dbColumnCount == 1)
+      List(_dbColumnNameLC)
+    else
+      List(in.toLowerCase)
 
   def dbColumnName = {
     val columnName =
@@ -694,8 +713,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
         case x :: rest =>
           val errors = x match {
             case pf: PartialFunction[FieldType, List[FieldError]] =>
-              if (pf.isDefinedAt(cv)) pf(cv)
-              else Nil
+              if (pf.isDefinedAt(cv))
+                pf(cv)
+              else
+                Nil
             case f => f(cv)
           }
 

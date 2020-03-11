@@ -74,8 +74,10 @@ class FlowStageSpec
 
             override def onUpstreamFinish(
                 ctx: Context[Int]): TerminationDirective = {
-              if (current eq waitForNext) ctx.finish()
-              else ctx.absorbTermination()
+              if (current eq waitForNext)
+                ctx.finish()
+              else
+                ctx.absorbTermination()
             }
 
           })
@@ -115,7 +117,8 @@ class FlowStageSpec
                   if (elem == 0) {
                     become(inflate)
                     ctx.pull()
-                  } else ctx.push(elem)
+                  } else
+                    ctx.push(elem)
               }
             })
           .runWith(Sink.asPublisher(false))
@@ -294,8 +297,10 @@ class FlowStageSpec
       val p2 = Source
         .fromPublisher(p)
         .map(elem ⇒
-          if (elem == 2) throw new IllegalArgumentException("two not allowed")
-          else elem)
+          if (elem == 2)
+            throw new IllegalArgumentException("two not allowed")
+          else
+            elem)
         .transform(() ⇒
           new StatefulStage[Int, Int] {
             override def initial = new State {

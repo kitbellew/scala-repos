@@ -16,7 +16,11 @@ object ParserUtils extends ParserUtilsBase {
 
   def lookAheadSeq(n: Int)(builder: PsiBuilder) =
     (1 to n).map(i => {
-      val token = if (!builder.eof) builder.getTokenType else null
+      val token =
+        if (!builder.eof)
+          builder.getTokenType
+        else
+          null
       builder.advanceLexer()
       token
     })
@@ -36,9 +40,11 @@ object ParserUtils extends ParserUtilsBase {
       DebugPrint println "an error"
     }
 
-    if (builder.eof()) /*builder error "unexpected end of file"; */ return
+    if (builder.eof())
+      /*builder error "unexpected end of file"; */ return
 
-    if (lastSet.contains(builder.getTokenType)) builder.advanceLexer()
+    if (lastSet.contains(builder.getTokenType))
+      builder.advanceLexer()
     return
   }
 
@@ -65,7 +71,10 @@ object ParserUtils extends ParserUtilsBase {
       inner: => Boolean): Boolean = {
     val marker = builder.mark
     val parsed = inner
-    if (parsed) marker.done(t) else marker.rollbackTo()
+    if (parsed)
+      marker.done(t)
+    else
+      marker.rollbackTo()
     parsed
   }
 

@@ -28,7 +28,8 @@ trait WSTestSetupBase extends Matchers {
       if (mask) {
         val m = Random.nextInt()
         (Some(m), maskedBytes(data, m)._1)
-      } else (None, data)
+      } else
+        (None, data)
     send(
       frameHeader(
         opcode,
@@ -126,7 +127,8 @@ trait WSTestSetupBase extends Matchers {
             (maskBytes(2) & 0xff) << 8 |
             (maskBytes(3) & 0xff) << 0
         Some(mask)
-      } else None
+      } else
+        None
 
     (Opcode.forCode(op.toByte), length, fin, mask)
   }

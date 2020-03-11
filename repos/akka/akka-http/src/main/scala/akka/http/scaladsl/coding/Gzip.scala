@@ -55,7 +55,8 @@ class GzipCompressor extends DeflateCompressor {
     if (!headerSent) {
       headerSent = true
       GzipDecompressor.Header
-    } else ByteString.empty
+    } else
+      ByteString.empty
 
   private def trailer(): ByteString = {
     def int32(i: Int): ByteString = ByteString(i, i >> 8, i >> 16, i >> 24)
@@ -99,7 +100,8 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
           ) // check compression method
         val flags = readByte()
         skip(6) // skip MTIME, XFL and OS fields
-        if ((flags & 4) > 0) skip(readShortLE()) // skip optional extra fields
+        if ((flags & 4) > 0)
+          skip(readShortLE()) // skip optional extra fields
         if ((flags & 8) > 0)
           skipZeroTerminatedString() // skip optional file name
         if ((flags & 16) > 0)

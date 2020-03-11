@@ -114,8 +114,10 @@ class AggregateFlatClassPathTest {
       fileName: String,
       extension: String) = {
     val packageDirs =
-      if (inPackage == FlatClassPath.RootPackage) ""
-      else inPackage.split('.').mkString("/", "/", "")
+      if (inPackage == FlatClassPath.RootPackage)
+        ""
+      else
+        inPackage.split('.').mkString("/", "/", "")
     new VirtualFile(
       fileName + extension,
       s"$pathPrefix$packageDirs/$fileName$extension")

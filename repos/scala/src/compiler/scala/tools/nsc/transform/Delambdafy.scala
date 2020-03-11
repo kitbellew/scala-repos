@@ -45,8 +45,10 @@ abstract class Delambdafy
   val phaseName: String = "delambdafy"
 
   override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-    if (settings.Ydelambdafy.value == "method") new Phase(prev)
-    else new SkipPhase(prev)
+    if (settings.Ydelambdafy.value == "method")
+      new Phase(prev)
+    else
+      new SkipPhase(prev)
   }
 
   class SkipPhase(prev: scala.tools.nsc.Phase) extends StdPhase(prev) {
@@ -75,13 +77,15 @@ abstract class Delambdafy
       // recursively find methods that refer to 'this' directly or indirectly via references to other methods
       // for each method found add it to the referrers set
       def refersToThis(symbol: Symbol): Boolean = {
-        if (referrers contains symbol) true
+        if (referrers contains symbol)
+          true
         else if (methodReferringMap(symbol) exists refersToThis) {
           // add it early to memoize
           debuglog(s"$symbol indirectly refers to 'this'")
           referrers += symbol
           true
-        } else false
+        } else
+          false
       }
       methodReferringMap.keys foreach refersToThis
       referrers
@@ -136,7 +140,10 @@ abstract class Delambdafy
     }
 
     private def optionSymbol(sym: Symbol): Option[Symbol] =
-      if (sym.exists) Some(sym) else None
+      if (sym.exists)
+        Some(sym)
+      else
+        None
 
     // turns a lambda into a new class def, a New expression instantiating that class
     private def transformFunction(
@@ -174,7 +181,8 @@ abstract class Delambdafy
           } else if (enteringErasure(tpe.typeSymbol.isDerivedValueClass)) {
             neededAdaptation = true;
             ObjectTpe
-          } else tpe
+          } else
+            tpe
         }
         val targetParams: List[Symbol] = target.paramss.head
         val numCaptures = targetParams.length - functionParamTypes.length
@@ -220,7 +228,8 @@ abstract class Delambdafy
                     ErasedValueType(functionParam.typeSymbol, targetParam.tpe))
                     .modifyType(postErasure.elimErasedValueType)
                   unboxed
-                } else adaptToType(gen.mkAttributedRef(param), targetParam.tpe)
+                } else
+                  adaptToType(gen.mkAttributedRef(param), targetParam.tpe)
               }
             }
             gen.mkMethodCall(newTarget, args)
@@ -234,7 +243,8 @@ abstract class Delambdafy
                     ErasedValueType(functionResultType.typeSymbol, body.tpe)),
                   "boxing lambda target"),
                 bridgeResultType)
-            else adaptToType(body, bridgeResultType)
+            else
+              adaptToType(body, bridgeResultType)
           val methDef0 = DefDef(methSym, List(bridgeParamTrees), body1)
           postErasure
             .newTransformer(unit)
@@ -342,8 +352,10 @@ abstract class Delambdafy
         //      - use `newAnonymousClassSymbol` or push the required variations into a similar factory method
         //      - reinstate the assertion in `Erasure.resolveAnonymousBridgeClash`
         val suffix = nme.DELAMBDAFY_LAMBDA_CLASS_NAME + "$" + (
-          if (funOwner.isPrimaryConstructor) ""
-          else "$" + funOwner.name + "$"
+          if (funOwner.isPrimaryConstructor)
+            ""
+          else
+            "$" + funOwner.name + "$"
         )
         val oldClassPart = oldClass.name.decode
         // make sure the class name doesn't contain $anon, otherwise isAnonymousClass/Function may be true
@@ -418,8 +430,10 @@ abstract class Delambdafy
           createBridgeMethod(lambdaClass, originalFunction, applyMethodDef)
 
         def fulldef(sym: Symbol) =
-          if (sym == NoSymbol) sym.toString
-          else s"$sym: ${sym.tpe} in ${sym.owner}"
+          if (sym == NoSymbol)
+            sym.toString
+          else
+            s"$sym: ${sym.tpe} in ${sym.owner}"
 
         bridgeMethod foreach (bm =>
           // TODO SI-6260 maybe just create the apply method with the signature (Object => Object) in all cases
@@ -439,7 +453,8 @@ abstract class Delambdafy
 
       val allCaptureArgs: List[Tree] = {
         val thisArg =
-          if (isStatic) Nil
+          if (isStatic)
+            Nil
           else
             (gen.mkAttributedThis(oldClass) setPos originalFunction.pos) :: Nil
         val captureArgs = captures.iterator
@@ -548,8 +563,10 @@ abstract class Delambdafy
       bridgeMethSym setInfo methodType
 
       def adapt(tree: Tree, expectedTpe: Type): (Boolean, Tree) = {
-        if (tree.tpe =:= expectedTpe) (false, tree)
-        else (true, adaptToType(tree, expectedTpe))
+        if (tree.tpe =:= expectedTpe)
+          (false, tree)
+        else
+          (true, adaptToType(tree, expectedTpe))
       }
 
       def adaptAndPostErase(tree: Tree, pt: Type): (Boolean, Tree) = {
@@ -598,7 +615,8 @@ abstract class Delambdafy
           val methDef = DefDef(bridgeMethSym, List(bridgeParams), adaptedBody)
           newClass.info.decls enter bridgeMethSym
           Some((localTyper typed methDef).asInstanceOf[DefDef])
-        } else None
+        } else
+          None
       }
     }
   } // DelambdafyTransformer
@@ -623,7 +641,8 @@ abstract class Delambdafy
         case Ident(_) =>
           val sym = tree.symbol
           if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared
-                .contains(sym)) freeVars += sym
+                .contains(sym))
+            freeVars += sym
         case _ =>
       }
       super.traverse(tree)

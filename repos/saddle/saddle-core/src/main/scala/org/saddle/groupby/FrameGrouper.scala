@@ -38,7 +38,9 @@ class FrameGrouper[Z: ST: ORD, X: ST: ORD, Y: ST: ORD, T: ST](
 
   def keys: Array[Z] = uniq
 
-  def groups: Array[(Z, Array[Int])] = for (k <- keys) yield (k, ix.get(k))
+  def groups: Array[(Z, Array[Int])] =
+    for (k <- keys)
+      yield (k, ix.get(k))
 
   def combine[U: ST](fn: (Z, Vec[T]) => U): Frame[Z, Y, U] =
     Frame(frame.values.map(SeriesGrouper.combine(ix, keys, _, fn)): _*)

@@ -40,7 +40,8 @@ object ByteIterator {
     @inline final def head: Byte = array(from)
 
     final def next(): Byte = {
-      if (!hasNext) Iterator.empty.next
+      if (!hasNext)
+        Iterator.empty.next
       else {
         val i = from;
         from = from + 1;
@@ -63,8 +64,10 @@ object ByteIterator {
     final override def ++(that: TraversableOnce[Byte]): ByteIterator =
       that match {
         case that: ByteIterator ⇒
-          if (that.isEmpty) this
-          else if (this.isEmpty) that
+          if (that.isEmpty)
+            this
+          else if (this.isEmpty)
+            that
           else
             that match {
               case that: ByteArrayIterator ⇒
@@ -86,16 +89,24 @@ object ByteIterator {
       new ByteArrayIterator(array, from, until)
 
     final override def take(n: Int): this.type = {
-      if (n < len) until = {
-        if (n > 0) (from + n) else from
-      }
+      if (n < len)
+        until = {
+          if (n > 0)
+            (from + n)
+          else
+            from
+        }
       this
     }
 
     final override def drop(n: Int): this.type = {
-      if (n > 0) from = {
-        if (n < len) (from + n) else until
-      }
+      if (n > 0)
+        from = {
+          if (n < len)
+            (from + n)
+          else
+            until
+        }
       this
     }
 
@@ -132,7 +143,8 @@ object ByteIterator {
       val result =
         if ((from == 0) && (until == array.length))
           ByteString.ByteString1C(array)
-        else ByteString.ByteString1(array, from, len)
+        else
+          ByteString.ByteString1(array, from, len)
       clear()
       result
     }
@@ -141,7 +153,8 @@ object ByteIterator {
       if (n <= this.len) {
         Array.copy(this.array, this.from, xs, offset, n)
         this.drop(n)
-      } else Iterator.empty.next
+      } else
+        Iterator.empty.next
     }
 
     private def wrappedByteBuffer: ByteBuffer =
@@ -189,17 +202,23 @@ object ByteIterator {
     def asInputStream: java.io.InputStream = new java.io.InputStream {
       override def available: Int = iterator.len
 
-      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int =
+        if (hasNext)
+          (next().toInt & 0xff)
+        else
+          -1
 
       override def read(b: Array[Byte], off: Int, len: Int): Int = {
         if ((off < 0) || (len < 0) || (off + len > b.length))
           throw new IndexOutOfBoundsException
-        if (len == 0) 0
+        if (len == 0)
+          0
         else if (!isEmpty) {
           val nRead = math.min(available, len)
           copyToArray(b, off, nRead)
           nRead
-        } else -1
+        } else
+          -1
       }
 
       override def skip(n: Long): Long = {
@@ -230,9 +249,12 @@ object ByteIterator {
     private def normalize(): this.type = {
       @tailrec def norm(
           xs: LinearSeq[ByteArrayIterator]): LinearSeq[ByteArrayIterator] = {
-        if (xs.isEmpty) MultiByteArrayIterator.clearedList
-        else if (xs.head.isEmpty) norm(xs.tail)
-        else xs
+        if (xs.isEmpty)
+          MultiByteArrayIterator.clearedList
+        else if (xs.head.isEmpty)
+          norm(xs.tail)
+        else
+          xs
       }
       iterators = norm(iterators)
       this
@@ -275,8 +297,10 @@ object ByteIterator {
     final override def ++(that: TraversableOnce[Byte]): ByteIterator =
       that match {
         case that: ByteIterator ⇒
-          if (that.isEmpty) this
-          else if (this.isEmpty) that
+          if (that.isEmpty)
+            this
+          else if (this.isEmpty)
+            that
           else {
             that match {
               case that: ByteArrayIterator ⇒
@@ -321,7 +345,8 @@ object ByteIterator {
         assert(current.isEmpty || (rest == 0))
         normalize()
         drop(rest)
-      } else this
+      } else
+        this
 
     final override def takeWhile(p: Byte ⇒ Boolean): this.type = {
       var stop = false
@@ -329,8 +354,10 @@ object ByteIterator {
       while (!stop && !iterators.isEmpty) {
         val lastLen = current.len
         current.takeWhile(p)
-        if (current.hasNext) builder += current
-        if (current.len < lastLen) stop = true
+        if (current.hasNext)
+          builder += current
+        if (current.len < lastLen)
+          stop = true
         dropCurrent()
       }
       iterators = builder.result
@@ -342,8 +369,12 @@ object ByteIterator {
         current.dropWhile(p)
         val dropMore = current.isEmpty
         normalize()
-        if (dropMore) dropWhile(p) else this
-      } else this
+        if (dropMore)
+          dropWhile(p)
+        else
+          this
+      } else
+        this
 
     final override def copyToArray[B >: Byte](
         xs: Array[B],
@@ -369,7 +400,8 @@ object ByteIterator {
     }
 
     final override def toByteString: ByteString = {
-      if (iterators.tail.isEmpty) iterators.head.toByteString
+      if (iterators.tail.isEmpty)
+        iterators.head.toByteString
       else {
         val result = iterators.foldLeft(ByteString.empty) {
           _ ++ _.toByteString
@@ -385,9 +417,11 @@ object ByteIterator {
         n: Int,
         elemSize: Int)(getSingle: ⇒ A)(
         getMult: (Array[A], Int, Int) ⇒ Unit): this.type =
-      if (n <= 0) this
+      if (n <= 0)
+        this
       else {
-        if (isEmpty) Iterator.empty.next
+        if (isEmpty)
+          Iterator.empty.next
         val nDone = if (current.len >= elemSize) {
           val nCurrent = math.min(n, current.len / elemSize)
           getMult(xs, offset, nCurrent)
@@ -458,7 +492,11 @@ object ByteIterator {
     def asInputStream: java.io.InputStream = new java.io.InputStream {
       override def available: Int = current.len
 
-      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int =
+        if (hasNext)
+          (next().toInt & 0xff)
+        else
+          -1
 
       override def read(b: Array[Byte], off: Int, len: Int): Int = {
         val nRead = current.asInputStream.read(b, off, len)
@@ -474,10 +512,14 @@ object ByteIterator {
               normalize()
               val newN = n - m
               val newSkipped = skipped + m
-              if (newN > 0) skipImpl(newN, newSkipped)
-              else newSkipped
-            } else 0
-          } else 0
+              if (newN > 0)
+                skipImpl(newN, newSkipped)
+              else
+                newSkipped
+            } else
+              0
+          } else
+            0
 
         skipImpl(n, 0)
       }
@@ -498,7 +540,10 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   protected def clear(): Unit
 
   def ++(that: TraversableOnce[Byte]): ByteIterator =
-    if (that.isEmpty) this else ByteIterator.ByteArrayIterator(that.toArray)
+    if (that.isEmpty)
+      this
+    else
+      ByteIterator.ByteArrayIterator(that.toArray)
 
   // *must* be overridden by derived classes. This construction is necessary
   // to specialize the return type, as the method is already implemented in
@@ -524,8 +569,10 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       "Method drop is not implemented in ByteIterator")
 
   override def slice(from: Int, until: Int): this.type = {
-    if (from > 0) drop(from).take(until - from)
-    else take(until)
+    if (from > 0)
+      drop(from).take(until - from)
+    else
+      take(until)
   }
 
   // *must* be overridden by derived classes. This construction is necessary
@@ -552,12 +599,16 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   override def indexWhere(p: Byte ⇒ Boolean): Int = {
     var index = 0
     var found = false
-    while (!found && hasNext) if (p(next())) {
-      found = true
-    } else {
-      index += 1
-    }
-    if (found) index else -1
+    while (!found && hasNext)
+      if (p(next())) {
+        found = true
+      } else {
+        index += 1
+      }
+    if (found)
+      index
+    else
+      -1
   }
 
   def indexOf(elem: Byte): Int = indexWhere {
@@ -573,7 +624,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   override def toSeq: ByteString = toByteString
 
   override def foreach[@specialized U](f: Byte ⇒ U): Unit =
-    while (hasNext) f(next())
+    while (hasNext)
+      f(next())
 
   override def foldLeft[@specialized B](z: B)(op: (B, Byte) ⇒ B): B = {
     var acc = z
@@ -602,7 +654,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       ((next() & 0xff) << 8 | (next() & 0xff) << 0).toShort
     else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
       ((next() & 0xff) << 0 | (next() & 0xff) << 8).toShort
-    else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
+    else
+      throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
   /**
@@ -619,7 +672,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
         | (next() & 0xff) << 8
         | (next() & 0xff) << 16
         | (next() & 0xff) << 24)
-    else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
+    else
+      throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
   /**
@@ -644,7 +698,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
         | (next().toLong & 0xff) << 40
         | (next().toLong & 0xff) << 48
         | (next().toLong & 0xff) << 56)
-    else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
+    else
+      throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
   /**
@@ -660,7 +715,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       var x = 0L
       (0 until n) foreach (i ⇒ x |= (next() & 0xff) << 8 * i)
       x
-    } else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
+    } else
+      throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
   def getFloat(implicit byteOrder: ByteOrder): Float =

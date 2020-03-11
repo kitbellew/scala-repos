@@ -38,7 +38,10 @@ import scalafx.scene.input.InputIncludes.jfxDataFormat2sfx
 object DataFormat {
 
   implicit def sfxDataFormat2jfx(ie: DataFormat): jfxsi.DataFormat =
-    if (ie != null) ie.delegate else null
+    if (ie != null)
+      ie.delegate
+    else
+      null
 
   /**
     * Looks for the DataFormat which has been previously created with the given mime type as one of its ids.

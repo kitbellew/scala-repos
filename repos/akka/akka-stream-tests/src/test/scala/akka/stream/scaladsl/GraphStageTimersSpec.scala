@@ -192,8 +192,10 @@ class GraphStageTimersSpec extends AkkaSpec {
 
           override def onTimer(timerKey: Any) = {
             tickCount += 1
-            if (isAvailable(out)) push(out, tickCount)
-            if (tickCount == 3) cancelTimer("tick")
+            if (isAvailable(out))
+              push(out, tickCount)
+            if (tickCount == 3)
+              cancelTimer("tick")
           }
         }
     }

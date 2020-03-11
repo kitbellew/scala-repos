@@ -39,8 +39,10 @@ class Server(address: SocketAddress) {
 
   def stop(blocking: Boolean = false) {
     server.foreach { server =>
-      if (blocking) Await.result(server.close())
-      else server.close()
+      if (blocking)
+        Await.result(server.close())
+      else
+        server.close()
       this.server = None
     }
   }

@@ -15,11 +15,17 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
     implicit val boolTypeMapper = MappedColumnType.base[Bool, Int](
       { b =>
         b shouldNotBe null
-        if (b == True) 1 else 0
+        if (b == True)
+          1
+        else
+          0
       },
       { i =>
         i shouldNotBe null
-        if (i == 1) True else False
+        if (i == 1)
+          True
+        else
+          False
       }
     )
 
@@ -117,11 +123,17 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
     implicit val boolTypeMapper = MappedColumnType.base[Bool, String](
       { b =>
         b shouldNotBe null
-        if (b == True) "y" else "n"
+        if (b == True)
+          "y"
+        else
+          "n"
       },
       { i =>
         i shouldNotBe null
-        if (i == "y") True else False
+        if (i == "y")
+          True
+        else
+          False
       }
     )
 

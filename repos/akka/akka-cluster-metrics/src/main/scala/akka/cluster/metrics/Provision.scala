@@ -81,7 +81,8 @@ object SigarProvider {
     * Note: `SigarProxy` is not `Sigar` during tests.
     */
   def close(sigar: SigarProxy) = {
-    if (sigar.isInstanceOf[Sigar]) sigar.asInstanceOf[Sigar].close()
+    if (sigar.isInstanceOf[Sigar])
+      sigar.asInstanceOf[Sigar].close()
   }
 }
 

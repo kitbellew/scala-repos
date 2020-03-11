@@ -77,7 +77,11 @@ class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
     val arr = Array.ofDim[Double](r.length)
     var i = 0
     while (i < r.length) {
-      arr(i) = if (r(i)) 1.0 else 0.0
+      arr(i) =
+        if (r(i))
+          1.0
+        else
+          0.0
       i += 1
     }
     arr

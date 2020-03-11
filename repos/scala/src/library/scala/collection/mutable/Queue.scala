@@ -84,7 +84,8 @@ class Queue[A]
       res
     } else {
       val optElem = removeFromList(p)
-      if (optElem != None) decrementLength()
+      if (optElem != None)
+        decrementLength()
       optElem
     }
 
@@ -96,7 +97,8 @@ class Queue[A]
     }
     if (leftlst.next.nonEmpty) {
       res = Some(leftlst.next.elem)
-      if (leftlst.next eq last0) last0 = leftlst
+      if (leftlst.next eq last0)
+        last0 = leftlst
       leftlst.next = leftlst.next.next
     }
     res
@@ -119,8 +121,10 @@ class Queue[A]
         first0 = first0.next
         decrementLength()
       }
-      if (first0.isEmpty) res
-      else removeAllFromList(p, res)
+      if (first0.isEmpty)
+        res
+      else
+        removeAllFromList(p, res)
     }
   }
 
@@ -131,10 +135,12 @@ class Queue[A]
     while (leftlst.next.nonEmpty) {
       if (p(leftlst.next.elem)) {
         res += leftlst.next.elem
-        if (leftlst.next eq last0) last0 = leftlst
+        if (leftlst.next eq last0)
+          last0 = leftlst
         leftlst.next = leftlst.next.next
         decrementLength()
-      } else leftlst = leftlst.next
+      } else
+        leftlst = leftlst.next
     }
     res
   }
@@ -148,7 +154,8 @@ class Queue[A]
   def extractFirst(
       start: LinkedList[A],
       p: A => Boolean): Option[LinkedList[A]] = {
-    if (isEmpty) None
+    if (isEmpty)
+      None
     else {
       var cell = start
       while ((cell.next.nonEmpty) && !p(cell.next.elem)) {
@@ -187,7 +194,8 @@ class Queue[A]
 
   private[this] def decrementLength() {
     len -= 1
-    if (len == 0) last0 = first0
+    if (len == 0)
+      last0 = first0
   }
 }
 

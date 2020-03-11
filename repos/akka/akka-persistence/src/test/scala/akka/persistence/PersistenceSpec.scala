@@ -125,8 +125,10 @@ trait PersistenceMatchers {
           pos)} was sorted! Was: $seq""""
       )
 
-      if (results.forall(_.matches)) MatchResult(true, "", "")
-      else results.find(r ⇒ !r.matches).get
+      if (results.forall(_.matches))
+        MatchResult(true, "", "")
+      else
+        results.find(r ⇒ !r.matches).get
     }
   }
 

@@ -46,7 +46,11 @@ object RecordHelpers {
   implicit def jvalueToJsExp(jvalue: JValue): JsExp = {
     jvalue match {
       case JArray(vs) => JsArray(vs.map(jvalueToJsExp): _*)
-      case JBool(b)   => if (b) JsTrue else JsFalse
+      case JBool(b) =>
+        if (b)
+          JsTrue
+        else
+          JsFalse
       case JDouble(d) => Num(d)
       case JInt(i)    => Num(i)
       case JNothing   => JsNull

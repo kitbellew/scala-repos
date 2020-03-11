@@ -139,14 +139,16 @@ object TestPurgatoryPerformance {
           val now = System.currentTimeMillis
           requestArrivalTime = requestArrivalTime + requestArrivalInterval
 
-          if (requestArrivalTime > now) Thread.sleep(requestArrivalTime - now)
+          if (requestArrivalTime > now)
+            Thread.sleep(requestArrivalTime - now)
 
           val request = new FakeOperation(
             timeout,
             requestDataSize,
             latencyToComplete,
             latch)
-          if (latencyToComplete < timeout) queue.add(request)
+          if (latencyToComplete < timeout)
+            queue.add(request)
           purgatory.tryCompleteElseWatch(request, keys)
         }
         end = System.currentTimeMillis
@@ -348,9 +350,12 @@ object TestPurgatoryPerformance {
 
         val other = d.asInstanceOf[Scheduled]
 
-        if (operation.completesAt < other.operation.completesAt) -1
-        else if (operation.completesAt > other.operation.completesAt) 1
-        else 0
+        if (operation.completesAt < other.operation.completesAt)
+          -1
+        else if (operation.completesAt > other.operation.completesAt)
+          1
+        else
+          0
       }
     }
   }

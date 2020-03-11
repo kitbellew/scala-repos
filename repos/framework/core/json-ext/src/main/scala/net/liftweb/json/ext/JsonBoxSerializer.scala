@@ -35,7 +35,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
       json match {
         case JNull | JNothing => Empty
         case JObject(
-            JField("box_failure", JString("Failure")) ::
+              JField("box_failure", JString("Failure")) ::
               JField("msg", JString(msg)) ::
               JField("exception", exception) ::
               JField("chain", chain) :: Nil) =>
@@ -45,7 +45,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
             extract(chain, TypeInfo(BoxClass, Some(typeHoldingFailure)))
               .asInstanceOf[Box[Failure]])
         case JObject(
-            JField("box_failure", JString("ParamFailure")) ::
+              JField("box_failure", JString("ParamFailure")) ::
               JField("msg", JString(msg)) ::
               JField("exception", exception) ::
               JField("chain", chain) ::

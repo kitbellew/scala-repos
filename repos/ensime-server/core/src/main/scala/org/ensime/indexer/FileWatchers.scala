@@ -42,12 +42,15 @@ class ClassfileWatcher(
     with SLF4JLogging {
 
   private val impls =
-    if (config.disableClassMonitoring) Nil
+    if (config.disableClassMonitoring)
+      Nil
     else
       config.targetClasspath.map { target =>
         val (selector, dir, rec) =
-          if (target.isJar) (JarSelector, target.getParentFile, false)
-          else (ClassfileSelector, target, true)
+          if (target.isJar)
+            (JarSelector, target.getParentFile, false)
+          else
+            (ClassfileSelector, target, true)
         new ApachePollingFileWatcher(dir, selector, rec, listeners)
       }
 
@@ -69,7 +72,8 @@ class SourceWatcher(
 ) extends Watcher
     with SLF4JLogging {
   private val impls =
-    if (config.disableSourceMonitoring) Nil
+    if (config.disableSourceMonitoring)
+      Nil
     else
       for {
         module <- config.modules.values
@@ -137,7 +141,10 @@ private class ApachePollingFileWatcher(
       listeners.foreach(_.baseReCreated(base))
     fm.addFile(base)
     for {
-      file <- if (recursive) watched.tree else watched.children
+      file <- if (recursive)
+        watched.tree
+      else
+        watched.children
       fo = vfs.vfile(file)
     } {
       // VFS doesn't send "file created" messages when it first starts

@@ -17,7 +17,13 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
       java.util.Arrays.sort(sorted)
       ("Workers: " + workers) |: ("Array: " + a.toList) |: {
         def result =
-          tryRun(sort(a.toSeq), false, if (workers > 0) workers else 1)
+          tryRun(
+            sort(a.toSeq),
+            false,
+            if (workers > 0)
+              workers
+            else
+              1)
         checkResult(result.toList, sorted.toList)
       }
   }

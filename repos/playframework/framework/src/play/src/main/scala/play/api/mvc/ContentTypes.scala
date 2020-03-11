@@ -234,7 +234,10 @@ case class RawBuffer(
     * Buffer size.
     */
   def size: Long = {
-    if (inMemory != null) inMemory.size else backedByTemporaryFile.file.length
+    if (inMemory != null)
+      inMemory.size
+    else
+      backedByTemporaryFile.file.length
   }
 
   /**

@@ -20,7 +20,8 @@ object IO {
 
   def listFiles(file: String): Array[File] = listFiles(new File(file))
   def listFiles(file: File): Array[File] = {
-    if (!file.exists()) throw new FileNotFoundException(file.getAbsolutePath)
+    if (!file.exists())
+      throw new FileNotFoundException(file.getAbsolutePath)
     if (!file.isDirectory)
       throw new FileNotFoundException(
         s"File ${file.getAbsolutePath} is not a directory!")
@@ -28,7 +29,8 @@ object IO {
   }
 
   def moveFile(from: File, to: File): File = {
-    if (to.exists()) delete(to)
+    if (to.exists())
+      delete(to)
     createDirectory(to.getParentFile)
     if (!from.renameTo(to)) {
       copyFile(from, to)
@@ -110,7 +112,8 @@ object IO {
       }
       read()
     } finally {
-      if (close) Try(in.close())
+      if (close)
+        Try(in.close())
     }
   }
 

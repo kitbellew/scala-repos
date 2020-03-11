@@ -88,7 +88,10 @@ private[finagle] class LatencyProfile(stopWatch: () => Duration) {
   def slowWithin(start: Duration, end: Duration, factor: Long)(
       next: () => Duration) = () => {
     val time = stopWatch()
-    if (time >= start && time <= end) next() * factor else next()
+    if (time >= start && time <= end)
+      next() * factor
+    else
+      next()
   }
 
   /**
@@ -99,8 +102,10 @@ private[finagle] class LatencyProfile(stopWatch: () => Duration) {
     () => {
       val time = stopWatch()
       val factor =
-        if (time < end) (1.0 / time.inNanoseconds) * (end.inNanoseconds)
-        else 1.0
+        if (time < end)
+          (1.0 / time.inNanoseconds) * (end.inNanoseconds)
+        else
+          1.0
       Duration.fromNanoseconds(
         (next().inNanoseconds * factor.min(maxFactor)).toLong)
     }
@@ -134,7 +139,8 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
       def apply(req: Unit) = {
         synchronized {
           val l = load.incrementAndGet()
-          if (l > maxload.get()) maxload.set(l)
+          if (l > maxload.get())
+            maxload.set(l)
         }
         Future.sleep(next()) ensure {
           count.incr()

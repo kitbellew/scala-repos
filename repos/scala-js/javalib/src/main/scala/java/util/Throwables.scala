@@ -86,7 +86,10 @@ class IllegalFormatWidthException(private val w: Int)
 
 class IllformedLocaleException(s: String, errorIndex: Int)
     extends RuntimeException(
-      s + (if (errorIndex < 0) "" else " [at index " + errorIndex + "]")) {
+      s + (if (errorIndex < 0)
+             ""
+           else
+             " [at index " + errorIndex + "]")) {
   def this() = this(null, -1)
   def this(s: String) = this(s, -1)
   def getErrorIndex(): Int = errorIndex
@@ -99,7 +102,11 @@ class InputMismatchException(s: String) extends NoSuchElementException(s) {
 class InvalidPropertiesFormatException(s: String)
     extends java.io.IOException(s) {
   def this(e: Throwable) = {
-    this(if (e == null) null.asInstanceOf[String] else e.toString())
+    this(
+      if (e == null)
+        null.asInstanceOf[String]
+      else
+        e.toString())
     this.initCause(e)
   }
   // private def writeObject(out: java.io.ObjectOutputStream) =

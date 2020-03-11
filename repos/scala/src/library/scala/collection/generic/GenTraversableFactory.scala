@@ -75,7 +75,8 @@ abstract class GenTraversableFactory[
     if (xss forall (_.isInstanceOf[IndexedSeq[_]]))
       b.sizeHint(xss.map(_.size).sum)
 
-    for (xs <- xss.seq) b ++= xs
+    for (xs <- xss.seq)
+      b ++= xs
     b.result()
   }
 
@@ -223,7 +224,8 @@ abstract class GenTraversableFactory[
     val num = implicitly[Integral[T]]
     import num._
 
-    if (step == zero) throw new IllegalArgumentException("zero step")
+    if (step == zero)
+      throw new IllegalArgumentException("zero step")
     val b = newBuilder[T]
     b sizeHint immutable.NumericRange.count(
       start,
@@ -231,7 +233,10 @@ abstract class GenTraversableFactory[
       step,
       isInclusive = false)
     var i = start
-    while (if (step < zero) end < i else i < end) {
+    while (if (step < zero)
+             end < i
+           else
+             i < end) {
       b += i
       i += step
     }

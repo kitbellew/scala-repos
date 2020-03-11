@@ -38,8 +38,10 @@ trait ExternalMarathonIntegrationTest {
 
   def env = {
     val envName = "MESOS_NATIVE_JAVA_LIBRARY"
-    if (sys.env.contains(envName)) sys.env
-    else sys.env + (envName -> config.mesosLib)
+    if (sys.env.contains(envName))
+      sys.env
+    else
+      sys.env + (envName -> config.mesosLib)
   }
 
   def startMarathon(port: Int, args: String*): Unit = {
@@ -78,8 +80,10 @@ class IntegrationHealthCheck(
   def afterDelay(delay: FiniteDuration, state: Boolean) {
     val item = HealthStatusChange(delay.fromNow, state)
     def insert(ag: List[HealthStatusChange]): List[HealthStatusChange] = {
-      if (ag.isEmpty || item.deadLine < ag.head.deadLine) item :: ag
-      else ag.head :: insert(ag.tail)
+      if (ag.isEmpty || item.deadLine < ag.head.deadLine)
+        item :: ag
+      else
+        ag.head :: insert(ag.tail)
     }
     changes = insert(changes)
   }

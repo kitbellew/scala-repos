@@ -50,7 +50,8 @@ abstract class MailboxSpec
       val q = factory(config)
       ensureInitialMailboxState(config, q)
 
-      for (i ← 1 to config.capacity) q.enqueue(testActor, exampleMessage)
+      for (i ← 1 to config.capacity)
+        q.enqueue(testActor, exampleMessage)
 
       q.numberOfMessages should ===(config.capacity)
       q.hasMessages should ===(true)
@@ -151,7 +152,8 @@ abstract class MailboxSpec
         spawn {
           val messages = Vector() ++ (for (i ← fromNum to toNum)
             yield createMessageInvocation(i))
-          for (i ← messages) q.enqueue(testActor, i)
+          for (i ← messages)
+            q.enqueue(testActor, i)
           messages
         }
 
@@ -332,7 +334,8 @@ class SingleConsumerOnlyMailboxVerificationSpec
       def receive = {
         case Ping ⇒ a.tell(Ping, b)
         case Terminated(`a` | `b`) ⇒
-          if (context.children.isEmpty) context stop self
+          if (context.children.isEmpty)
+            context stop self
       }
     }))
     watch(runner)

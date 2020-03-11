@@ -418,8 +418,10 @@ object DebuggerUtil {
         case e: NoDataException => return None
       }
 
-    if (!allClasses.isEmpty) Some(allClasses.get(0))
-    else None
+    if (!allClasses.isEmpty)
+      Some(allClasses.get(0))
+    else
+      None
   }
 
   def withoutBackticks(name: String): String = {
@@ -438,7 +440,8 @@ object DebuggerUtil {
       case t: ScNewTemplateDefinition =>
         new JVMClassAt(SourcePosition.createFromElement(t))
       case t: ScTypeDefinition =>
-        if (isLocalClass(t)) new JVMClassAt(SourcePosition.createFromElement(t))
+        if (isLocalClass(t))
+          new JVMClassAt(SourcePosition.createFromElement(t))
         else {
           val qual =
             t.getQualifiedNameForDebugger + classnamePostfix(t, withPostfix)
@@ -466,7 +469,10 @@ object DebuggerUtil {
         new mutable.HashSet[SourcePosition]): Set[SourcePosition] = {
     val node = elem.getNode
     val children: Array[ASTNode] =
-      if (node != null) node.getChildren(null) else Array.empty[ASTNode]
+      if (node != null)
+        node.getChildren(null)
+      else
+        Array.empty[ASTNode]
     if (children.isEmpty) {
       val position = SourcePosition.createFromElement(elem)
       if (!lines.exists(_.getLine == position.getLine)) {
@@ -494,8 +500,10 @@ object DebuggerUtil {
   object scalaRuntimeRefTo {
     def unapply(objRef: ObjectReference) = {
       val typeName = objRef.referenceType().name()
-      if (isScalaRuntimeRef(typeName)) Some(unwrapScalaRuntimeRef(objRef))
-      else None
+      if (isScalaRuntimeRef(typeName))
+        Some(unwrapScalaRuntimeRef(objRef))
+      else
+        None
     }
   }
 
@@ -508,9 +516,12 @@ object DebuggerUtil {
       val refType = objRef.referenceType()
       if (typeNameCondition(refType.name)) {
         val elemField = refType.fieldByName("elem")
-        if (elemField != null) objRef.getValue(elemField)
-        else objRef
-      } else objRef
+        if (elemField != null)
+          objRef.getValue(elemField)
+        else
+          objRef
+      } else
+        objRef
     case _ => value
   }
 
@@ -566,7 +577,8 @@ object DebuggerUtil {
         case (_: ScExpression) childOf ScForStatement(enumerators, _)
             if PsiTreeUtil.isContextAncestor(enumerators, elem, true) =>
           val generators = enumerators.generators
-          if (generators.size <= 1) true
+          if (generators.size <= 1)
+            true
           else {
             val lastGenerator = generators.last
             elem.getTextOffset >= lastGenerator.getTextOffset
@@ -660,7 +672,8 @@ object DebuggerUtil {
 
   def inTheMethod(pos: SourcePosition, method: PsiElement): Boolean = {
     val elem: PsiElement = pos.getElementAt
-    if (elem == null) return false
+    if (elem == null)
+      return false
     getContainingMethod(elem).contains(method)
   }
 

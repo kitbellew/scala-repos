@@ -70,7 +70,8 @@ private[play] final class NonBlockingMutex {
           executeAll(op)
         case _ =>
       }
-    } else schedule(op) // Try again
+    } else
+      schedule(op) // Try again
   }
 
   @tailrec
@@ -93,8 +94,10 @@ private[play] final class NonBlockingMutex {
       case pending if pending.isEmpty => (null, None)
       case pending                    => (pending.tail, Some(pending.head))
     }
-    if (state.compareAndSet(prevState, newState)) nextOp
-    else dequeueNextOpToExecute()
+    if (state.compareAndSet(prevState, newState))
+      nextOp
+    else
+      dequeueNextOpToExecute()
   }
 
 }

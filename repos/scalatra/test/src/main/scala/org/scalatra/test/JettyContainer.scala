@@ -61,7 +61,10 @@ trait JettyContainer extends Container {
 
     servletContextHandler.addServlet(
       holder,
-      if (path.endsWith("/*")) path else path + "/*")
+      if (path.endsWith("/*"))
+        path
+      else
+        path + "/*")
 
   }
 

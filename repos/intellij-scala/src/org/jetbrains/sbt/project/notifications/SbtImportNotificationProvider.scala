@@ -48,8 +48,10 @@ abstract class SbtImportNotificationProvider(
       fileEditor: FileEditor): EditorNotificationPanel =
     if (!isIgnored(file) && isSbtFile(file) && shouldShowPanel(
           file,
-          fileEditor)) createPanel(file)
-    else null
+          fileEditor))
+      createPanel(file)
+    else
+      null
 
   protected def refreshProject(): Unit = {
     FileDocumentManager.getInstance.saveAllDocuments()
@@ -74,7 +76,8 @@ abstract class SbtImportNotificationProvider(
       def onFailure(errorMessage: String, errorDetails: String) {}
 
       def onSuccess(externalProject: DataNode[ProjectData]) {
-        if (externalProject == null) return
+        if (externalProject == null)
+          return
 
         val sbtSystemSettings = SbtSystemSettings.getInstance(project)
 

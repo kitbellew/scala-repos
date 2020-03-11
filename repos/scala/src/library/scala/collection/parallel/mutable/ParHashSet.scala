@@ -140,8 +140,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
 
   def result: ParHashSet[T] = {
     val contents =
-      if (size >= ParHashSetCombiner.numblocks * sizeMapBucketSize) parPopulate
-      else seqPopulate
+      if (size >= ParHashSetCombiner.numblocks * sizeMapBucketSize)
+        parPopulate
+      else
+        seqPopulate
     new ParHashSet(contents)
   }
 
@@ -215,13 +217,16 @@ private[mutable] abstract class ParHashSetCombiner[T](
       */
     def insertEntry(insertAt: Int, comesBefore: Int, newEntry: AnyRef): Int = {
       var h = insertAt
-      if (h == -1) h = index(newEntry.hashCode)
+      if (h == -1)
+        h = index(newEntry.hashCode)
       var curEntry = table(h)
       while (null != curEntry) {
-        if (curEntry == newEntry) return 0
+        if (curEntry == newEntry)
+          return 0
         h =
           h + 1 // we *do not* do `(h + 1) % table.length` here, because we'll never overflow!!
-        if (h >= comesBefore) return -1
+        if (h >= comesBefore)
+          return -1
         curEntry = table(h)
       }
       table(h) = newEntry
@@ -273,8 +278,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
 
       // store the elems
       val (elemsIn, elemsLeft) =
-        if (elems != null) insertAll(-1, beforePos, elems)
-        else (0, UnrolledBuffer[AnyRef]())
+        if (elems != null)
+          insertAll(-1, beforePos, elems)
+        else
+          (0, UnrolledBuffer[AnyRef]())
 
       // store the leftovers
       val (leftoversIn, leftoversLeft) =
@@ -299,8 +306,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
         while (i < chunksz) {
           val entry = chunkarr(i)
           val res = t.insertEntry(atPos, beforePos, entry)
-          if (res >= 0) inserted += res
-          else leftovers += entry
+          if (res >= 0)
+            inserted += res
+          else
+            leftovers += entry
           i += 1
         }
         i = 0

@@ -77,7 +77,8 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
 
   def removeListener(document: Document) {
     val listener = listeners remove document
-    if (listener != null) document removeDocumentListener listener
+    if (listener != null)
+      document removeDocumentListener listener
   }
 
   private class MyDocumentAdapter(document: Document) extends DocumentAdapter {
@@ -90,16 +91,19 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
     }
 
     override def documentChanged(e: DocumentEvent) {
-      if (project.isDisposed) return
+      if (project.isDisposed)
+        return
 
       val psiFile = documentManager getPsiFile document
-      if (isDisabledOn(psiFile)) return
+      if (isDisabledOn(psiFile))
+        return
 
       val virtualFile = psiFile.getVirtualFile
       myAlarm.cancelAllRequests()
 
       if (woof.hasSyntaxErrors(virtualFile) || WorksheetProcessManager.running(
-            virtualFile)) return
+            virtualFile))
+        return
 
       myAlarm.addRequest(
         new Runnable {

@@ -71,7 +71,10 @@ class JobProgressListenerSuite
 
   private def createJobEndEvent(jobId: Int, failed: Boolean = false) = {
     val result =
-      if (failed) JobFailed(new Exception("dummy failure")) else JobSucceeded
+      if (failed)
+        JobFailed(new Exception("dummy failure"))
+      else
+        JobSucceeded
     SparkListenerJobEnd(jobId, jobCompletionTime, result)
   }
 

@@ -68,7 +68,8 @@ class FlowBufferSpec extends AkkaSpec {
       val sub = subscriber.expectSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 100) publisher.sendNext(i)
+      for (i ← 1 to 100)
+        publisher.sendNext(i)
 
       // drain
       for (i ← 1 to 100) {
@@ -90,7 +91,8 @@ class FlowBufferSpec extends AkkaSpec {
       val sub = subscriber.expectSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 200) publisher.sendNext(i)
+      for (i ← 1 to 200)
+        publisher.sendNext(i)
 
       // The next request would  be otherwise in race with the last onNext in the above loop
       subscriber.expectNoMsg(500.millis)
@@ -123,7 +125,8 @@ class FlowBufferSpec extends AkkaSpec {
       val sub = subscriber.expectSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 200) publisher.sendNext(i)
+      for (i ← 1 to 200)
+        publisher.sendNext(i)
 
       // The next request would  be otherwise in race with the last onNext in the above loop
       subscriber.expectNoMsg(500.millis)
@@ -159,7 +162,8 @@ class FlowBufferSpec extends AkkaSpec {
       val sub = subscriber.expectSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 150) publisher.sendNext(i)
+      for (i ← 1 to 150)
+        publisher.sendNext(i)
 
       // The next request would  be otherwise in race with the last onNext in the above loop
       subscriber.expectNoMsg(500.millis)
@@ -190,7 +194,8 @@ class FlowBufferSpec extends AkkaSpec {
       subscriber.ensureSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 150) publisher.sendNext(i)
+      for (i ← 1 to 150)
+        publisher.sendNext(i)
 
       // The next request would  be otherwise in race with the last onNext in the above loop
       subscriber.expectNoMsg(500.millis)
@@ -221,7 +226,8 @@ class FlowBufferSpec extends AkkaSpec {
       val sub = subscriber.expectSubscription()
 
       // Fill up buffer
-      for (i ← 1 to 100) publisher.sendNext(i)
+      for (i ← 1 to 100)
+        publisher.sendNext(i)
 
       // drain
       for (i ← 1 to 10) {
@@ -230,7 +236,8 @@ class FlowBufferSpec extends AkkaSpec {
       }
 
       // overflow the buffer
-      for (i ← 101 to 111) publisher.sendNext(i)
+      for (i ← 101 to 111)
+        publisher.sendNext(i)
 
       publisher.expectCancellation()
       val error =
@@ -256,7 +263,8 @@ class FlowBufferSpec extends AkkaSpec {
         val sub = subscriber.expectSubscription()
 
         // Fill up buffer
-        for (i ← 1 to 200) publisher.sendNext(i)
+        for (i ← 1 to 200)
+          publisher.sendNext(i)
 
         // The request below is in race otherwise with the onNext(200) above
         subscriber.expectNoMsg(500.millis)

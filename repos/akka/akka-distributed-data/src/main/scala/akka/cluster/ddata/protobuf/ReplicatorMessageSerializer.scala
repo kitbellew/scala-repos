@@ -66,11 +66,14 @@ private[akka] object ReplicatorMessageSerializer {
       // start at the latest added value, most likely that we want that
       val end = startPos + elements.length
       @tailrec def find(i: Int): B = {
-        if (end - i == 0) null.asInstanceOf[B]
+        if (end - i == 0)
+          null.asInstanceOf[B]
         else {
           val x = elements(i & mask)
-          if ((x eq null) || (x._1 ne a)) find(i + 1)
-          else x._2
+          if ((x eq null) || (x._1 ne a))
+            find(i + 1)
+          else
+            x._2
         }
       }
       lastUsed = System.nanoTime()
@@ -111,7 +114,8 @@ private[akka] object ReplicatorMessageSerializer {
           // some other thread added, try one more time
           // to reduce duplicates
           val c2 = get(a)
-          if (c2 ne null) c2 // found it
+          if (c2 ne null)
+            c2 // found it
           else {
             add(a, b2)
             b2
@@ -314,8 +318,10 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val get = dm.Get.parseFrom(bytes)
     val key = otherMessageFromProto(get.getKey).asInstanceOf[KeyR]
     val request =
-      if (get.hasRequest()) Some(otherMessageFromProto(get.getRequest))
-      else None
+      if (get.hasRequest())
+        Some(otherMessageFromProto(get.getRequest))
+      else
+        None
     val timeout = Duration(get.getTimeout, TimeUnit.MILLISECONDS)
     val consistency = get.getConsistency match {
       case 0 ⇒ ReadMajority(timeout)
@@ -342,7 +348,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val request =
       if (getSuccess.hasRequest())
         Some(otherMessageFromProto(getSuccess.getRequest))
-      else None
+      else
+        None
     val data =
       otherMessageFromProto(getSuccess.getData).asInstanceOf[ReplicatedData]
     GetSuccess(key, request)(data)
@@ -359,7 +366,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val request =
       if (notFound.hasRequest())
         Some(otherMessageFromProto(notFound.getRequest))
-      else None
+      else
+        None
     val key = otherMessageFromProto(notFound.getKey).asInstanceOf[KeyR]
     NotFound(key, request)
   }
@@ -376,7 +384,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val request =
       if (getFailure.hasRequest())
         Some(otherMessageFromProto(getFailure.getRequest))
-      else None
+      else
+        None
     val key = otherMessageFromProto(getFailure.getKey).asInstanceOf[KeyR]
     GetFailure(key, request)
   }
@@ -458,7 +467,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val pruning: Map[UniqueAddress, PruningState] =
       dataEnvelope.getPruningList.asScala.map { pruningEntry ⇒
         val phase =
-          if (pruningEntry.getPerformed) PruningState.PruningPerformed
+          if (pruningEntry.getPerformed)
+            PruningState.PruningPerformed
           else
             PruningState.PruningInitialized(
               pruningEntry.getSeenList.asScala.map(addressFromProto)(breakOut))
@@ -505,7 +515,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val envelope =
       if (readResult.hasEnvelope)
         Some(dataEnvelopeFromProto(readResult.getEnvelope))
-      else None
+      else
+        None
     ReadResult(envelope)
   }
 

@@ -85,7 +85,8 @@ object KMeans {
       .map {
         case ((oldId, vector), Some(centroids)) =>
           val (id, newcentroid) = closest(vector, centroids)
-          if (id != oldId) s.inc
+          if (id != oldId)
+            s.inc
           (id, vector)
         case (_, None) =>
           sys.error("Missing clusters, this should never happen")
@@ -158,8 +159,10 @@ object KMeans {
         .flatMap {
           case ((nextC, nextP), counters) =>
             val changed = counters(key)
-            if (changed == 0L) Execution.from((step, nextC, nextP))
-            else go(s, nextC, nextP, step + 1)
+            if (changed == 0L)
+              Execution.from((step, nextC, nextP))
+            else
+              go(s, nextC, nextP, step + 1)
         }
 
     Execution.withId { implicit uid =>

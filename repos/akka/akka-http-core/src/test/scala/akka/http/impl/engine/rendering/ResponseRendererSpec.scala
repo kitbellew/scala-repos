@@ -656,10 +656,15 @@ class ResponseRendererSpec
                   HttpEntity.CloseDelimited(
                     ContentTypes.`text/plain(UTF-8)`,
                     Source.single(ByteString("ENTITY")))
-                else HttpEntity("ENTITY"),
+                else
+                  HttpEntity("ENTITY"),
               protocol = resProto
             ),
-            requestMethod = if (headReq) HttpMethods.HEAD else HttpMethods.GET,
+            requestMethod =
+              if (headReq)
+                HttpMethods.HEAD
+              else
+                HttpMethods.GET,
             requestProtocol = reqProto,
             closeRequested =
               HttpMessage.connectionCloseExpected(reqProto, reqCH)
@@ -669,8 +674,14 @@ class ResponseRendererSpec
                  |Date: Thu, 25 Aug 2011 09:10:29 GMT
                  |${renCH
               .fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
-                 |${if (resCD) "" else "Content-Length: 6\n"}
-                 |${if (headReq) "" else "ENTITY"}""",
+                 |${if (resCD)
+              ""
+            else
+              "Content-Length: 6\n"}
+                 |${if (headReq)
+              ""
+            else
+              "ENTITY"}""",
             close
           ))
     }

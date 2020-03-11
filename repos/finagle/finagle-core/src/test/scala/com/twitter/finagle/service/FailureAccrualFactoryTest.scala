@@ -523,7 +523,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
         if (markDead) {
           markDead = false
           Some(1.second)
-        } else None
+        } else
+          None
       }
     }
 

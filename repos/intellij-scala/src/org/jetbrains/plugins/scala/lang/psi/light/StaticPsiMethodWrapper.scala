@@ -60,7 +60,8 @@ object StaticPsiMethodWrapper {
     }
     val count = ScalaPsiManager.instance(method.getProject).getModificationCount
     var res = data.getOrElse(containingClass, null)
-    if (res != null && res._2 == count) return res._1
+    if (res != null && res._2 == count)
+      return res._1
     res = (new StaticPsiMethodWrapper(method, containingClass), count)
     data += ((containingClass, res))
     method.putUserData(KEY, data)

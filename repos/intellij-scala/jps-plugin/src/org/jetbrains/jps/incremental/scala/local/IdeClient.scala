@@ -37,7 +37,11 @@ abstract class IdeClient(
       hasErrors = true
     }
 
-    val name = if (source.isEmpty) compilerName else ""
+    val name =
+      if (source.isEmpty)
+        compilerName
+      else
+        ""
 
     val sourcePath = source.map(file => file.getPath)
 
@@ -50,7 +54,8 @@ abstract class IdeClient(
         if (sourcePath.isDefined && line.isDefined && column.isDefined) {
           val lines = text.split('\n')
           lines.filterNot(_.trim == "^").mkString("\n")
-        } else text
+        } else
+          text
       context.processMessage(
         new CompilerMessage(
           name,
@@ -71,7 +76,8 @@ abstract class IdeClient(
 
   def progress(text: String, done: Option[Float]) {
     val formattedText =
-      if (text.isEmpty) ""
+      if (text.isEmpty)
+        ""
       else {
         val decapitalizedText =
           text.charAt(0).toLower.toString + text.substring(1)

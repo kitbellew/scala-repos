@@ -100,7 +100,10 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
   override def getSecretKeyFromUserCredentials(key: String): Array[Byte] = {
     val credentials = getCurrentUserCredentials()
-    if (credentials != null) credentials.getSecretKey(new Text(key)) else null
+    if (credentials != null)
+      credentials.getSecretKey(new Text(key))
+    else
+      null
   }
 
   /**
@@ -395,7 +398,8 @@ object YarnSparkHadoopUtil {
       value: String): Unit = {
     val newValue = if (env.contains(key)) {
       env(key) + getClassPathSeparator + value
-    } else value
+    } else
+      value
     env.put(key, newValue)
   }
 

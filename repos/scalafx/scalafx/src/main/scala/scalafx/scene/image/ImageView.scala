@@ -38,7 +38,10 @@ import scalafx.scene.Node
 
 object ImageView {
   implicit def sfxImageView2jfx(iv: ImageView): jfxsi.ImageView =
-    if (iv != null) iv.delegate else null
+    if (iv != null)
+      iv.delegate
+    else
+      null
 }
 
 class ImageView(override val delegate: jfxsi.ImageView = new jfxsi.ImageView())

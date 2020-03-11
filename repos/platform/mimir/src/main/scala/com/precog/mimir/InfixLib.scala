@@ -142,13 +142,23 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val Mod = new Op2F2(InfixNamespace, "mod") {
         val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
 
-        def longMod(x: Long, y: Long) = if ((x ^ y) < 0) (x % y) + y else x % y
+        def longMod(x: Long, y: Long) =
+          if ((x ^ y) < 0)
+            (x % y) + y
+          else
+            x % y
 
         def doubleMod(x: Double, y: Double) =
-          if (x.signum * y.signum == -1) x % y + y else x % y
+          if (x.signum * y.signum == -1)
+            x % y + y
+          else
+            x % y
 
         def numMod(x: BigDecimal, y: BigDecimal) =
-          if (x.signum * y.signum == -1) x % y + y else x % y
+          if (x.signum * y.signum == -1)
+            x % y + y
+          else
+            x % y
 
         def f2(ctx: MorphContext): F2 = CF2P("builtin::infix::mod") {
           case (c1: LongColumn, c2: LongColumn) =>

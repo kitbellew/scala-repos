@@ -381,12 +381,14 @@ trait CommentFactoryBase { this: MemberLookupBase =>
               case None          => oops("lastTagKey set when no tag exists for key")
             }
           tags + (key -> value)
-        } else tags
+        } else
+          tags
         parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
       }
 
       case line :: ls => {
-        if (docBody.length > 0) docBody append endOfLine
+        if (docBody.length > 0)
+          docBody append endOfLine
         docBody append line
         parse0(docBody, tags, lastTagKey, ls, inCodeBlock)
       }
@@ -449,17 +451,19 @@ trait CommentFactoryBase { this: MemberLookupBase =>
               case _ => None
             }
           val pairs: Seq[(String, Body)] =
-            for (key <- keys) yield {
-              val bs = (bodyTags remove key).get
-              if (bs.length > 1)
-                reporter.warning(
-                  pos,
-                  s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
-              (key.symbol, bs.head)
-            }
+            for (key <- keys)
+              yield {
+                val bs = (bodyTags remove key).get
+                if (bs.length > 1)
+                  reporter.warning(
+                    pos,
+                    s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
+                (key.symbol, bs.head)
+              }
           Map.empty[String, Body] ++ (if (filterEmpty)
                                         pairs.filterNot(_._2.blocks.isEmpty)
-                                      else pairs)
+                                      else
+                                        pairs)
         }
 
         def linkedExceptions: Map[String, Body] = {
@@ -667,8 +671,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         else {
           val s = summary()
           val r =
-            if (checkParaEnded()) List(s)
-            else List(s, inline(isInlineEnd = false))
+            if (checkParaEnded())
+              List(s)
+            else
+              List(s, inline(isInlineEnd = false))
           summaryParsed = true
           Paragraph(Chain(r))
         }
@@ -724,13 +730,20 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         if (char == safeTagMarker) {
           val tag = htmlTag()
           HtmlTag(tag.data + readHTMLFrom(tag))
-        } else if (check("'''")) bold()
-        else if (check("''")) italic()
-        else if (check("`")) monospace()
-        else if (check("__")) underline()
-        else if (check("^")) superscript()
-        else if (check(",,")) subscript()
-        else if (check("[[")) link()
+        } else if (check("'''"))
+          bold()
+        else if (check("''"))
+          italic()
+        else if (check("`"))
+          monospace()
+        else if (check("__"))
+          underline()
+        else if (check("^"))
+          superscript()
+        else if (check(",,"))
+          subscript()
+        else if (check("[["))
+          link()
         else {
           val str = readUntil {
             char == safeTagMarker || check("''") || char == '`' || check(
@@ -775,7 +788,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def htmlTag(): HtmlTag = {
       jump(safeTagMarker)
       val read = readUntil(safeTagMarker)
-      if (char != endOfText) jump(safeTagMarker)
+      if (char != endOfText)
+        jump(safeTagMarker)
       HtmlTag(read)
     }
 
@@ -843,11 +857,13 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         check(stop) || isWhitespaceOrNewLine(char)
       }
       val title =
-        if (!check(stop)) Some({
-          jumpWhitespaceOrNewLine()
-          inline(check(stop))
-        })
-        else None
+        if (!check(stop))
+          Some({
+            jumpWhitespaceOrNewLine()
+            inline(check(stop))
+          })
+        else
+          None
       jump(stop)
 
       (target, title) match {
@@ -894,12 +910,18 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       // maxSkip - size of the longest common whitespace prefix of non-empty lines
       val nonEmptyLines = lines.filter(_.trim.nonEmpty)
       val maxSkip =
-        if (nonEmptyLines.isEmpty) 0
-        else nonEmptyLines.map(line => line.prefixLength(_ == ' ')).min
+        if (nonEmptyLines.isEmpty)
+          0
+        else
+          nonEmptyLines.map(line => line.prefixLength(_ == ' ')).min
 
       // remove common whitespace prefix
       lines
-        .map(line => if (line.trim.nonEmpty) line.substring(maxSkip) else line)
+        .map(line =>
+          if (line.trim.nonEmpty)
+            line.substring(maxSkip)
+          else
+            line)
         .mkString("\n")
     }
 
@@ -939,7 +961,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     var offset: Int = 0
     def char: Char =
-      if (offset >= buffer.length) endOfText else buffer charAt offset
+      if (offset >= buffer.length)
+        endOfText
+      else
+        buffer charAt offset
 
     final def nextChar() {
       offset += 1
@@ -992,7 +1017,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       if (char == ch) {
         nextChar()
         true
-      } else false
+      } else
+        false
     }
 
     /** jumps all the characters in chars, consuming them in the process.

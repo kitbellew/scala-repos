@@ -44,7 +44,10 @@ object PageLayout {
     * @return JavaFX PageLayout
     */
   implicit def sfxPageLayout2jfx(pl: PageLayout): jfxp.PageLayout =
-    if (pl != null) pl.delegate else null
+    if (pl != null)
+      pl.delegate
+    else
+      null
 
 }
 

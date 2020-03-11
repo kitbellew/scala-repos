@@ -40,8 +40,10 @@ abstract class BytecodeTest {
   def sameBytecode(methA: MethodNode, methB: MethodNode) = {
     val isa = instructionsFromMethod(methA)
     val isb = instructionsFromMethod(methB)
-    if (isa == isb) println("bytecode identical")
-    else diffInstructions(isa, isb)
+    if (isa == isb)
+      println("bytecode identical")
+    else
+      diffInstructions(isa, isb)
   }
 
   // Do these classes have all the same methods, with the same names, access,
@@ -93,9 +95,12 @@ abstract class BytecodeTest {
       similar: (List[Instruction], List[Instruction]) => Boolean) = {
     val isa = instructionsFromMethod(methA)
     val isb = instructionsFromMethod(methB)
-    if (isa == isb) println("bytecode identical")
-    else if (similar(isa, isb)) println("bytecode similar")
-    else diffInstructions(isa, isb)
+    if (isa == isb)
+      println("bytecode identical")
+    else if (similar(isa, isb))
+      println("bytecode similar")
+    else
+      diffInstructions(isa, isb)
   }
 
   def diffInstructions(isa: List[Instruction], isb: List[Instruction]) = {
@@ -112,7 +117,8 @@ abstract class BytecodeTest {
         println(
           s"""$line${" " * (lineWidth - line.toString.length)} ${if (a == b)
             "=="
-          else "<>"} $a${" " * (width - a.length)} | $b""")
+          else
+            "<>"} $a${" " * (width - a.length)} | $b""")
       }
     }
   }
@@ -133,7 +139,12 @@ abstract class BytecodeTest {
 
     val cr = new ClassReader(classBytes)
     val cn = new ClassNode()
-    cr.accept(cn, if (skipDebugInfo) ClassReader.SKIP_DEBUG else 0)
+    cr.accept(
+      cn,
+      if (skipDebugInfo)
+        ClassReader.SKIP_DEBUG
+      else
+        0)
     cn
   }
 

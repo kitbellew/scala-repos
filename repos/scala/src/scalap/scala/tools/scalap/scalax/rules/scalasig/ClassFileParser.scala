@@ -20,7 +20,8 @@ object ByteCode {
       val bytes = new Array[Byte](rest)
       while (rest > 0) {
         val res = in.read(bytes, bytes.length - rest, rest)
-        if (res == -1) throw new IOException("read error")
+        if (res == -1)
+          throw new IOException("read error")
         rest -= res
       }
       ByteCode(bytes)
@@ -37,8 +38,16 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
   assert(pos >= 0 && length >= 0 && pos + length <= bytes.length)
 
-  def nextByte = if (length == 0) Failure else Success(drop(1), bytes(pos))
-  def next(n: Int) = if (length >= n) Success(drop(n), take(n)) else Failure
+  def nextByte =
+    if (length == 0)
+      Failure
+    else
+      Success(drop(1), bytes(pos))
+  def next(n: Int) =
+    if (length >= n)
+      Success(drop(n), take(n))
+    else
+      Failure
 
   def take(n: Int) = new ByteCode(bytes, pos, n)
   def drop(n: Int) = new ByteCode(bytes, pos + n, length - n)

@@ -77,15 +77,20 @@ class QueueSourceSpec extends AkkaSpec {
         .to(Sink.fromSubscriber(s))
         .run()
       val sub = s.expectSubscription
-      for (n ← 1 to 20) assertSuccess(queue.offer(n))
+      for (n ← 1 to 20)
+        assertSuccess(queue.offer(n))
       sub.request(10)
-      for (n ← 1 to 10) assertSuccess(queue.offer(n))
+      for (n ← 1 to 10)
+        assertSuccess(queue.offer(n))
       sub.request(10)
-      for (n ← 11 to 20) assertSuccess(queue.offer(n))
+      for (n ← 11 to 20)
+        assertSuccess(queue.offer(n))
 
-      for (n ← 200 to 399) assertSuccess(queue.offer(n))
+      for (n ← 200 to 399)
+        assertSuccess(queue.offer(n))
       sub.request(100)
-      for (n ← 300 to 399) assertSuccess(queue.offer(n))
+      for (n ← 300 to 399)
+        assertSuccess(queue.offer(n))
       sub.cancel()
     }
 
@@ -169,7 +174,8 @@ class QueueSourceSpec extends AkkaSpec {
         .toMat(TestSink.probe)(Keep.both)
         .run()
 
-      for (i ← 1 to 5) assertSuccess(queue.offer(i))
+      for (i ← 1 to 5)
+        assertSuccess(queue.offer(i))
 
       queue.offer(6).pipeTo(testActor)
 

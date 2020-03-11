@@ -260,7 +260,10 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     if (lhs intersects rhs) {
       (~rhs).map(lhs & _).filter(_.nonEmpty)
     } else {
-      if (lhs.isEmpty) Nil else List(lhs)
+      if (lhs.isEmpty)
+        Nil
+      else
+        List(lhs)
     }
 
   def split(t: A): (Interval[A], Interval[A]) =
@@ -289,14 +292,28 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     case Empty() =>
       "(Ø)"
     case Above(lower, flags) =>
-      if (isClosedLower(flags)) s"[$lower, ∞)" else s"($lower, ∞)"
+      if (isClosedLower(flags))
+        s"[$lower, ∞)"
+      else
+        s"($lower, ∞)"
     case Below(upper, flags) =>
-      if (isClosedUpper(flags)) s"(-∞, $upper]" else s"(-∞, $upper)"
+      if (isClosedUpper(flags))
+        s"(-∞, $upper]"
+      else
+        s"(-∞, $upper)"
     case Point(p) =>
       s"[$p]"
     case Bounded(lower, upper, flags) =>
-      val s1 = if (isClosedLower(flags)) s"[$lower" else s"($lower"
-      val s2 = if (isClosedUpper(flags)) s"$upper]" else s"$upper)"
+      val s1 =
+        if (isClosedLower(flags))
+          s"[$lower"
+        else
+          s"($lower"
+      val s2 =
+        if (isClosedUpper(flags))
+          s"$upper]"
+        else
+          s"$upper)"
       s"$s1, $s2"
   }
 
@@ -305,9 +322,12 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       this match {
         case Bounded(lower, upper, fs) =>
           val x = -lower
-          if (x > upper) Bounded(m.zero, x, lowerFlagToUpper(fs))
-          else if (upper > x) Bounded(m.zero, upper, upperFlag(fs))
-          else Bounded(m.zero, x, lowerFlagToUpper(fs) & upperFlag(fs))
+          if (x > upper)
+            Bounded(m.zero, x, lowerFlagToUpper(fs))
+          else if (upper > x)
+            Bounded(m.zero, upper, upperFlag(fs))
+          else
+            Bounded(m.zero, x, lowerFlagToUpper(fs) & upperFlag(fs))
         case _ => // Above or Below
           Interval.atOrAbove(m.zero)
       }
@@ -349,11 +369,16 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val lower1s = lower1.compare(z)
       val lower2s = lower2.compare(z)
 
-      if (lower1s < 0 || lower2s < 0) All()
+      if (lower1s < 0 || lower2s < 0)
+        All()
       else {
         val strongZero = (lower1s == 0 && isClosedLower(
           lf1)) || (lower2s == 0 && isClosedLower(lf2))
-        val flags = if (strongZero) 0 else lf1 | lf2
+        val flags =
+          if (strongZero)
+            0
+          else
+            lf1 | lf2
         Above(lower1 * lower2, flags)
       }
     }
@@ -361,12 +386,16 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     def belowBelow(upper1: A, uf1: Int, upper2: A, uf2: Int): Interval[A] = {
       val upper1s = upper1.compare(z)
       val upper2s = upper2.compare(z)
-      if (upper1s > 0 || upper2s > 0) All()
+      if (upper1s > 0 || upper2s > 0)
+        All()
       else {
         val strongZero = (upper1s == 0 && isClosedUpper(
           uf1)) || (upper2s == 0 && isClosedUpper(uf2))
         val flags =
-          if (strongZero) 0 else upperFlagToLower(uf1) | upperFlagToLower(uf2)
+          if (strongZero)
+            0
+          else
+            upperFlagToLower(uf1) | upperFlagToLower(uf2)
         Above(upper1 * upper2, flags)
       }
     }
@@ -374,11 +403,16 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     def aboveBelow(lower1: A, lf1: Int, upper2: A, uf2: Int): Interval[A] = {
       val lower1s = lower1.compare(z)
       val upper2s = upper2.compare(z)
-      if (lower1s < 0 || upper2s > 0) All()
+      if (lower1s < 0 || upper2s > 0)
+        All()
       else {
         val strongZero = (lower1s == 0 && isClosedLower(
           lf1)) || (upper2s == 0 && isClosedUpper(uf2))
-        val flags = if (strongZero) 0 else lowerFlagToUpper(lf1) | uf2
+        val flags =
+          if (strongZero)
+            0
+          else
+            lowerFlagToUpper(lf1) | uf2
         Below(lower1 * upper2, flags)
       }
     }
@@ -395,14 +429,19 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val hasBelowZero1 = lower1s < 0
       val hasBelowZero2 = lower2s < 0
       val hasAboveZero2 = upper2s > 0
-      if (hasBelowZero2 && hasAboveZero2) All() // bounded interval crosses zero
+      if (hasBelowZero2 && hasAboveZero2)
+        All() // bounded interval crosses zero
       else if (hasAboveZero2) { // bounded interval is fully above zero
         if (hasBelowZero1) // the minimal point is lower1(-) * upper2(+)
           Above(lower1 * upper2, lf1 | upperFlagToLower(flags2))
         else { // the minimal point is lower1(+) * lower2(+)
           val strongZero = (lower1s == 0 && isClosedLower(
             lf1)) || (lower2s == 0 && isClosedLower(flags2))
-          val flags = if (strongZero) 0 else lf1 | lowerFlag(flags2)
+          val flags =
+            if (strongZero)
+              0
+            else
+              lf1 | lowerFlag(flags2)
           Above(lower1 * lower2, flags)
         }
       } else { // bounded interval is fully below zero
@@ -411,14 +450,19 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           val strongZero = (lower1s == 0 && isClosedLower(
             lf1)) || (lower2s == 0 && isClosedLower(flags2))
           val flags =
-            if (strongZero) 0
-            else lowerFlagToUpper(lf1) | lowerFlagToUpper(flags2)
+            if (strongZero)
+              0
+            else
+              lowerFlagToUpper(lf1) | lowerFlagToUpper(flags2)
           Below(lower1 * lower2, flags)
         } else { // the maximal point is lower1(+) * upper2(-)
           val strongZero = (lower1s == 0 && isClosedLower(
             lf1)) || (upper2s == 0 && isClosedUpper(flags2))
           val flags =
-            if (strongZero) 0 else lowerFlagToUpper(lf1) | upperFlag(flags2)
+            if (strongZero)
+              0
+            else
+              lowerFlagToUpper(lf1) | upperFlag(flags2)
           Below(lower1 * upper2, flags)
         }
       }
@@ -436,28 +480,38 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val hasAboveZero1 = upper1s > 0
       val hasBelowZero2 = lower2s < 0
       val hasAboveZero2 = upper2s > 0
-      if (hasBelowZero2 && hasAboveZero2) All() // bounded interval crosses zero
+      if (hasBelowZero2 && hasAboveZero2)
+        All() // bounded interval crosses zero
       else if (hasAboveZero2) { // bounded interval is fully above zero
         if (hasAboveZero1) // the maximal point is upper1(+) * upper2(+)
           Below(upper1 * upper2, uf1 | upperFlag(flags2))
         else { // the maximal point is upper1(+) * lower2(-)
           val strongZero = (upper1s == 0 && isClosedUpper(
             uf1)) || (lower2s == 0 && isClosedLower(flags2))
-          val flags = if (strongZero) 0 else uf1 | lowerFlagToUpper(flags2)
+          val flags =
+            if (strongZero)
+              0
+            else
+              uf1 | lowerFlagToUpper(flags2)
           Below(upper1 * lower2, flags)
         }
       } else { // bounded interval is fully below zero
         if (hasAboveZero1) { // the minimal point is upper1(+) * lower2(-)
           val strongZero = (lower2s == 0 && isClosedLower(flags2))
           val flags =
-            if (strongZero) 0 else upperFlagToLower(uf1) | lowerFlag(flags2)
+            if (strongZero)
+              0
+            else
+              upperFlagToLower(uf1) | lowerFlag(flags2)
           Above(upper1 * lower2, flags)
         } else { // the minimal point is upper1(-) * upper2(-)
           val strongZero = (upper1s == 0 && isClosedUpper(
             uf1)) || (upper2s == 0 && isClosedUpper(flags2))
           val flags =
-            if (strongZero) 0
-            else upperFlagToLower(uf1) | upperFlagToLower(flags2)
+            if (strongZero)
+              0
+            else
+              upperFlagToLower(uf1) | upperFlagToLower(flags2)
           Above(upper1 * upper2, flags)
         }
       }
@@ -473,10 +527,26 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val ub1sz = ub1.a === z && ub1.isClosed
       val ub2sz = ub2.a === z && ub2.isClosed
 
-      val ll = if (lb1sz || lb2sz) interval.Closed(z) else (lb1 *~ lb2)
-      val lu = if (lb1sz || ub2sz) interval.Closed(z) else (lb1 *~ ub2)
-      val ul = if (ub1sz || lb2sz) interval.Closed(z) else (ub1 *~ lb2)
-      val uu = if (ub1sz || ub2sz) interval.Closed(z) else (ub1 *~ ub2)
+      val ll =
+        if (lb1sz || lb2sz)
+          interval.Closed(z)
+        else
+          (lb1 *~ lb2)
+      val lu =
+        if (lb1sz || ub2sz)
+          interval.Closed(z)
+        else
+          (lb1 *~ ub2)
+      val ul =
+        if (ub1sz || lb2sz)
+          interval.Closed(z)
+        else
+          (ub1 *~ lb2)
+      val uu =
+        if (ub1sz || ub2sz)
+          interval.Closed(z)
+        else
+          (ub1 *~ ub2)
       ValueBound.union4(ll, lu, ul, uu)
     }
 
@@ -614,7 +684,13 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       if (k == 1)
         b * extra
       else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+        loop(
+          b * b,
+          k >>> 1,
+          if ((k & 1) == 1)
+            b * extra
+          else
+            extra)
 
     if (k < 0) {
       throw new IllegalArgumentException(s"negative exponent: $k")
@@ -654,11 +730,19 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case Empty() | All() | Above(_, _) =>
         None // TOCHECK: changed semantics, Empty().top == None
       case Below(upper, uf) =>
-        Some(if (isOpenUpper(uf)) upper - epsilon else upper)
+        Some(
+          if (isOpenUpper(uf))
+            upper - epsilon
+          else
+            upper)
       case Point(v) =>
         Some(v)
       case Bounded(_, upper, flags) =>
-        Some(if (isOpenUpper(flags)) upper - epsilon else upper)
+        Some(
+          if (isOpenUpper(flags))
+            upper - epsilon
+          else
+            upper)
     }
 
   def bottom(epsilon: A)(implicit r: AdditiveGroup[A]): Option[A] =
@@ -666,11 +750,19 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case Empty() | All() | Below(_, _) =>
         None // TOCHECK: changed semantics, Empty().bottom == None
       case Above(lower, lf) =>
-        Some(if (isOpenLower(lf)) lower + epsilon else lower)
+        Some(
+          if (isOpenLower(lf))
+            lower + epsilon
+          else
+            lower)
       case Point(v) =>
         Some(v)
       case Bounded(lower, _, flags) =>
-        Some(if (isOpenLower(flags)) lower + epsilon else lower)
+        Some(
+          if (isOpenLower(flags))
+            lower + epsilon
+          else
+            lower)
     }
 
   import spire.random.{Dist, Uniform}
@@ -854,7 +946,10 @@ case class All[A: Order] private[spire] () extends Interval[A] {
 case class Above[A: Order] private[spire] (lower: A, flags: Int)
     extends Interval[A] {
   def lowerBound: ValueBound[A] =
-    if (isOpenLower(flags)) Open(lower) else Closed(lower)
+    if (isOpenLower(flags))
+      Open(lower)
+    else
+      Closed(lower)
   def upperBound: Unbound[A] = Unbound()
 }
 
@@ -862,7 +957,10 @@ case class Below[A: Order] private[spire] (upper: A, flags: Int)
     extends Interval[A] {
   def lowerBound: Unbound[A] = Unbound()
   def upperBound: ValueBound[A] =
-    if (isOpenUpper(flags)) Open(upper) else Closed(upper)
+    if (isOpenUpper(flags))
+      Open(upper)
+    else
+      Closed(upper)
 }
 
 // Bounded, non-empty interval with lower < upper
@@ -871,9 +969,15 @@ case class Bounded[A: Order] private[spire] (lower: A, upper: A, flags: Int)
   require(lower < upper) // TODO: remove after refactoring
 
   def lowerBound: ValueBound[A] =
-    if (isOpenLower(flags)) Open(lower) else Closed(lower)
+    if (isOpenLower(flags))
+      Open(lower)
+    else
+      Closed(lower)
   def upperBound: ValueBound[A] =
-    if (isOpenUpper(flags)) Open(upper) else Closed(upper)
+    if (isOpenUpper(flags))
+      Open(upper)
+    else
+      Closed(upper)
 }
 
 case class Point[A: Order] private[spire] (value: A) extends Interval[A] {
@@ -1000,16 +1104,28 @@ object Interval {
 
   def closed[A: Order](lower: A, upper: A): Interval[A] = {
     val c = lower compare upper
-    if (c < 0) Bounded(lower, upper, 0)
-    else if (c == 0) Point(lower)
-    else Interval.empty[A]
+    if (c < 0)
+      Bounded(lower, upper, 0)
+    else if (c == 0)
+      Point(lower)
+    else
+      Interval.empty[A]
   }
   def open[A: Order](lower: A, upper: A): Interval[A] =
-    if (lower < upper) Bounded(lower, upper, 3) else Interval.empty[A]
+    if (lower < upper)
+      Bounded(lower, upper, 3)
+    else
+      Interval.empty[A]
   def openLower[A: Order](lower: A, upper: A): Interval[A] =
-    if (lower < upper) Bounded(lower, upper, 1) else Interval.empty[A]
+    if (lower < upper)
+      Bounded(lower, upper, 1)
+    else
+      Interval.empty[A]
   def openUpper[A: Order](lower: A, upper: A): Interval[A] =
-    if (lower < upper) Bounded(lower, upper, 2) else Interval.empty[A]
+    if (lower < upper)
+      Bounded(lower, upper, 2)
+    else
+      Interval.empty[A]
   def above[A: Order](a: A): Interval[A] = Above(a, 1)
   def below[A: Order](a: A): Interval[A] = Below(a, 2)
   def atOrAbove[A: Order](a: A): Interval[A] = Above(a, 0)

@@ -184,7 +184,10 @@ object Parsed {
 
     private[this] lazy val expected0 = new Precedence {
       def opPred =
-        if (traceParsers.size == 1) traceParsers.head.opPred else Precedence.|
+        if (traceParsers.size == 1)
+          traceParsers.head.opPred
+        else
+          Precedence.|
       override def toString = traceParsers.map(opWrap).mkString(" | ")
     }
 
@@ -438,8 +441,10 @@ trait ParserResults[+T] { this: Parser[T] =>
       traceIndex: Int,
       lhs: Set[Parser[_]],
       rhs: Set[Parser[_]]): Set[Parser[_]] = {
-    if (traceIndex != -1) lhs | rhs
-    else Set.empty
+    if (traceIndex != -1)
+      lhs | rhs
+    else
+      Set.empty
   }
 
   /**
@@ -464,8 +469,10 @@ trait ParserResults[+T] { this: Parser[T] =>
     if (f.traceIndex != -1 && f.traceIndex >= index) {
       if (f.traceIndex == index) {
         f.traceParsers =
-          if (traceParsers == null) Set(this)
-          else traceParsers
+          if (traceParsers == null)
+            Set(this)
+          else
+            traceParsers
       } else {
         f.traceParsers = Set.empty
       }

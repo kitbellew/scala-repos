@@ -36,7 +36,10 @@ import scalafx.scene.paint._
 
 object ColorInput {
   implicit def sfxColorInput2jfx(ci: ColorInput): jfxse.ColorInput =
-    if (ci != null) ci.delegate else null
+    if (ci != null)
+      ci.delegate
+    else
+      null
 }
 
 class ColorInput(override val delegate: jfxse.ColorInput = new jfxse.ColorInput)

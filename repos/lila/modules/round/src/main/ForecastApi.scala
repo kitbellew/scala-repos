@@ -43,7 +43,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
   }
 
   def playAndSave(pov: Pov, uciMove: String, steps: Forecast.Steps): Funit =
-    if (!pov.isMyTurn) fufail("not my turn")
+    if (!pov.isMyTurn)
+      fufail("not my turn")
     else
       Uci.Move(uciMove).fold[Funit](fufail(s"Invalid move $uciMove")) { uci =>
         val promise = Promise[Unit]
@@ -66,7 +67,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns + 1))
           clearPov(pov) inject none
-        else fuccess(fc.some)
+        else
+          fuccess(fc.some)
     }
 
   def loadForPlay(pov: Pov): Fu[Option[Forecast]] =
@@ -77,7 +79,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns))
           clearPov(pov) inject none
-        else fuccess(fc.some)
+        else
+          fuccess(fc.some)
     }
 
   def nextMove(g: Game, last: chess.Move): Fu[Option[Uci.Move]] =

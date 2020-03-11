@@ -168,7 +168,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             Version.Snapshot),
           new util.HashMap())
     } finally {
-      if (stream != null) stream.close()
+      if (stream != null)
+        stream.close()
     }
   }
 
@@ -434,7 +435,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   private def compile(data: ManifestToDescriptors): Unit = {
-    if (data.isEmpty) return
+    if (data.isEmpty)
+      return
     val indicator = new ProgressIndicatorBase()
     indicator.setIndeterminate(true)
     val startTime = System.currentTimeMillis()
@@ -472,8 +474,10 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
               else
                 s"Failed to compile $numFailed injectors out of ${numSuccessful + numFailed}, see Event Log for details"
             val notificationDisplayType =
-              if (numFailed == 0) NotificationType.INFORMATION
-              else NotificationType.ERROR
+              if (numFailed == 0)
+                NotificationType.INFORMATION
+              else
+                NotificationType.ERROR
             GROUP
               .createNotification(
                 "IDEA Extensions",

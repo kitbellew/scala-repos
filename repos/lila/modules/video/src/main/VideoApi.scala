@@ -112,7 +112,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         user: Option[User],
         tags: List[Tag],
         page: Int): Fu[Paginator[VideoView]] =
-      if (tags.isEmpty) popular(user, page)
+      if (tags.isEmpty)
+        popular(user, page)
       else
         Paginator(
           adapter = new BSONAdapter[Video](
@@ -228,9 +229,10 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
     private val pathsCache = AsyncCache[List[Tag], List[TagNb]](
       f = filterTags => {
         val allPaths =
-          if (filterTags.isEmpty) allPopular map { tags =>
-            tags.filterNot(_.isNumeric)
-          }
+          if (filterTags.isEmpty)
+            allPopular map { tags =>
+              tags.filterNot(_.isNumeric)
+            }
           else
             videoColl
               .aggregate(
@@ -255,8 +257,10 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
               all find (_.tag == t)
             }
             list.sortBy { t =>
-              if (filterTags contains t.tag) Int.MinValue
-              else -t.nb
+              if (filterTags contains t.tag)
+                Int.MinValue
+              else
+                -t.nb
             }
         }
       },

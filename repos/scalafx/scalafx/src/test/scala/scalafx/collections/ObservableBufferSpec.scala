@@ -192,13 +192,14 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("a", "b", "c")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Add(position, elements) =>
-          changeCount += 1
-          position should equal(3 * changeCount)
-          elements should equal(Seq("d", "e", "f"))
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Add(position, elements) =>
+            changeCount += 1
+            position should equal(3 * changeCount)
+            elements should equal(Seq("d", "e", "f"))
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -265,14 +266,15 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("a", "b", "c")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Remove(position, elements) =>
-          changeCount += 1
-          position should equal(0)
-          elements should equal(Seq("a", "b", "c"))
-        case Add(_, _)      =>
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Remove(position, elements) =>
+            changeCount += 1
+            position should equal(0)
+            elements should equal(Seq("a", "b", "c"))
+          case Add(_, _)      =>
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -316,14 +318,15 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("a", "b", "c", "d", "e")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Remove(position, elements) =>
-          changeCount += 1
-          position should equal(1)
-          elements should equal(Seq("b", "c", "d"))
-        case Add(_, _)      =>
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Remove(position, elements) =>
+            changeCount += 1
+            position should equal(1)
+            elements should equal(Seq("b", "c", "d"))
+          case Add(_, _)      =>
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -340,17 +343,18 @@ class ObservableBufferSpec[T]
 
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Add(position, elements) =>
-          changeCount += 1
-          position should equal(0)
-          elements should equal(Seq("e", "f", "a", "b", "c", "d"))
-        case Remove(position, elements) =>
-          changeCount += 1
-          position should equal(0)
-          elements should equal(Seq("a", "b", "c", "d", "e", "f"))
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Add(position, elements) =>
+            changeCount += 1
+            position should equal(0)
+            elements should equal(Seq("e", "f", "a", "b", "c", "d"))
+          case Remove(position, elements) =>
+            changeCount += 1
+            position should equal(0)
+            elements should equal(Seq("a", "b", "c", "d", "e", "f"))
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -366,17 +370,18 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("a", "b", "c")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Add(position, elements) =>
-          changeCount += 1
-          position should equal(0)
-          elements should equal(Seq("d", "e", "f"))
-        case Remove(position, elements) =>
-          changeCount += 1
-          position should equal(0)
-          elements should equal(Seq("a", "b", "c"))
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Add(position, elements) =>
+            changeCount += 1
+            position should equal(0)
+            elements should equal(Seq("d", "e", "f"))
+          case Remove(position, elements) =>
+            changeCount += 1
+            position should equal(0)
+            elements should equal(Seq("a", "b", "c"))
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -390,16 +395,17 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Reorder(start, end, permutation) =>
-          changeCount += 1
-          start should equal(0)
-          end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(5 - i)
-          }
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Reorder(start, end, permutation) =>
+            changeCount += 1
+            start should equal(0)
+            end should equal(6)
+            for (i <- 0 until 5) {
+              permutation(i) should equal(5 - i)
+            }
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -414,16 +420,17 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Reorder(start, end, permutation) =>
-          changeCount += 1
-          start should equal(0)
-          end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(5 - i)
-          }
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Reorder(start, end, permutation) =>
+            changeCount += 1
+            start should equal(0)
+            end should equal(6)
+            for (i <- 0 until 5) {
+              permutation(i) should equal(5 - i)
+            }
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -449,16 +456,17 @@ class ObservableBufferSpec[T]
     val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
     var changeCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Reorder(start, end, permutation) =>
-          changeCount += 1
-          start should equal(0)
-          end should equal(6)
-          for (i <- 0 until 5) {
-            permutation(i) should equal(i)
-          }
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Reorder(start, end, permutation) =>
+            changeCount += 1
+            start should equal(0)
+            end should equal(6)
+            for (i <- 0 until 5) {
+              permutation(i) should equal(i)
+            }
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -474,19 +482,20 @@ class ObservableBufferSpec[T]
     var removeCount = 0
     var addCount = 0
     buffer onChange { (list, changes) =>
-      for (change <- changes) change match {
-        case Add(pos, addedBuffer) =>
-          addCount += 1
-          pos should equal(0)
-          addedBuffer.size should equal(buffer.size)
-          addedBuffer.toBuffer.sameElements(buffer)
-        case Remove(pos, removedBuffer) =>
-          removeCount += 1
-          pos should equal(0)
-          removedBuffer.size should equal(buffer.size)
-          removedBuffer.toBuffer.sameElements(buffer)
-        case _ @otherChange => fail(otherChange.toString)
-      }
+      for (change <- changes)
+        change match {
+          case Add(pos, addedBuffer) =>
+            addCount += 1
+            pos should equal(0)
+            addedBuffer.size should equal(buffer.size)
+            addedBuffer.toBuffer.sameElements(buffer)
+          case Remove(pos, removedBuffer) =>
+            removeCount += 1
+            pos should equal(0)
+            removedBuffer.size should equal(buffer.size)
+            removedBuffer.toBuffer.sameElements(buffer)
+          case _ @otherChange => fail(otherChange.toString)
+        }
     }
 
     // Execution
@@ -610,18 +619,19 @@ class ObservableBufferSpec[T]
     val permutations = Buffer.empty[Buffer[(Int, Int)]]
     buffer onChange { (list, changes) =>
       {
-        for (change <- changes) change match {
-          case Add(pos, addedBuffer) =>
-            addedValues ++= addedBuffer.toBuffer
-          case Remove(pos, removedBuffer) =>
-            removedValues ++= removedBuffer.toBuffer
-          case Reorder(start, end, permutation) =>
-            val p = Buffer.empty[(Int, Int)]
-            (start until end).foreach(i => p += ((i, permutation(i))))
-            permutations += p
-          case Update(pas, updated) => println(s"  case Update: $change")
+        for (change <- changes)
+          change match {
+            case Add(pos, addedBuffer) =>
+              addedValues ++= addedBuffer.toBuffer
+            case Remove(pos, removedBuffer) =>
+              removedValues ++= removedBuffer.toBuffer
+            case Reorder(start, end, permutation) =>
+              val p = Buffer.empty[(Int, Int)]
+              (start until end).foreach(i => p += ((i, permutation(i))))
+              permutations += p
+            case Update(pas, updated) => println(s"  case Update: $change")
 
-        }
+          }
       }
     }
 

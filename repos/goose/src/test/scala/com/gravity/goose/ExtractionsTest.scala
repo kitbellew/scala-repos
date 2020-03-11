@@ -221,7 +221,8 @@ class ExtractionsTest {
       def extract(rootElement: Element): Date = {
         // look for this guy: <meta name="DisplayDate" content="2010-08-18" />
         val elements = Selector.select("meta[name=DisplayDate]", rootElement);
-        if (elements.size() == 0) return null;
+        if (elements.size() == 0)
+          return null;
         val metaDisplayDate = elements.get(0);
         if (metaDisplayDate.hasAttr("content")) {
           val dateStr = metaDisplayDate.attr("content");

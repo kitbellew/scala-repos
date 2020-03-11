@@ -192,9 +192,12 @@ case class DefaultResizer(
     val delta = filter(press, currentSize)
     val proposed = currentSize + delta
 
-    if (proposed < lowerBound) delta + (lowerBound - proposed)
-    else if (proposed > upperBound) delta - (proposed - upperBound)
-    else delta
+    if (proposed < lowerBound)
+      delta + (lowerBound - proposed)
+    else if (proposed > upperBound)
+      delta - (proposed - upperBound)
+    else
+      delta
   }
 
   /**
@@ -257,7 +260,10 @@ case class DefaultResizer(
     * @return proposed increase in capacity
     */
   def rampup(pressure: Int, capacity: Int): Int =
-    if (pressure < capacity) 0 else math.ceil(rampupRate * capacity).toInt
+    if (pressure < capacity)
+      0
+    else
+      math.ceil(rampupRate * capacity).toInt
 
   /**
     * Computes a proposed negative (or zero) capacity delta using
@@ -269,7 +275,8 @@ case class DefaultResizer(
   def backoff(pressure: Int, capacity: Int): Int =
     if (backoffThreshold > 0.0 && backoffRate > 0.0 && capacity > 0 && pressure.toDouble / capacity < backoffThreshold)
       math.floor(-1.0 * backoffRate * capacity).toInt
-    else 0
+    else
+      0
 }
 
 /**
@@ -318,20 +325,21 @@ private[akka] final class ResizablePoolCell(
   }
 
   private[akka] def resize(initial: Boolean): Unit = {
-    if (resizeInProgress.get || initial) try {
-      tryReportMessageCount()
-      val requestedCapacity = resizer.resize(router.routees)
-      if (requestedCapacity > 0) {
-        val newRoutees =
-          Vector.fill(requestedCapacity)(pool.newRoutee(routeeProps, this))
-        addRoutees(newRoutees)
-      } else if (requestedCapacity < 0) {
-        val currentRoutees = router.routees
-        val abandon =
-          currentRoutees.drop(currentRoutees.length + requestedCapacity)
-        removeRoutees(abandon, stopChild = true)
-      }
-    } finally resizeInProgress.set(false)
+    if (resizeInProgress.get || initial)
+      try {
+        tryReportMessageCount()
+        val requestedCapacity = resizer.resize(router.routees)
+        if (requestedCapacity > 0) {
+          val newRoutees =
+            Vector.fill(requestedCapacity)(pool.newRoutee(routeeProps, this))
+          addRoutees(newRoutees)
+        } else if (requestedCapacity < 0) {
+          val currentRoutees = router.routees
+          val abandon =
+            currentRoutees.drop(currentRoutees.length + requestedCapacity)
+          removeRoutees(abandon, stopChild = true)
+        }
+      } finally resizeInProgress.set(false)
   }
 
   /**

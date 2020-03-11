@@ -45,7 +45,10 @@ object CSVRelation extends Logging {
       {
         case (split, iter) =>
           new BulkCsvReader(
-            if (params.headerFlag) iter.filterNot(_ == firstLine) else iter,
+            if (params.headerFlag)
+              iter.filterNot(_ == firstLine)
+            else
+              iter,
             params,
             headers = header)
       },
@@ -136,7 +139,8 @@ private[sql] class CSVOutputWriterFactory(params: CSVOptions)
       bucketId: Option[Int],
       dataSchema: StructType,
       context: TaskAttemptContext): OutputWriter = {
-    if (bucketId.isDefined) sys.error("csv doesn't support bucketing")
+    if (bucketId.isDefined)
+      sys.error("csv doesn't support bucketing")
     new CsvOutputWriter(path, dataSchema, context, params)
   }
 }

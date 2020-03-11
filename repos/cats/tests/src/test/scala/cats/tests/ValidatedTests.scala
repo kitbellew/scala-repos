@@ -185,8 +185,10 @@ class ValidatedTests extends CatsSuite {
 
   test("ad-hoc andThen tests") {
     def even(i: Int): Validated[String, Int] =
-      if (i % 2 == 0) Validated.valid(i)
-      else Validated.invalid(s"$i is not even")
+      if (i % 2 == 0)
+        Validated.valid(i)
+      else
+        Validated.invalid(s"$i is not even")
 
     (Validated.valid(3) andThen even) should ===(
       Validated.invalid("3 is not even"))
@@ -236,7 +238,11 @@ class ValidatedTests extends CatsSuite {
     val x: ValidatedNel[String, Int] = Validated.invalidNel("error 1")
     val y: ValidatedNel[String, Boolean] = Validated.invalidNel("error 2")
 
-    val z = x.map2(y)((i, b) => if (b) i + 1 else i)
+    val z = x.map2(y)((i, b) =>
+      if (b)
+        i + 1
+      else
+        i)
     z should ===(NonEmptyList("error 1", "error 2").invalid[Int])
   }
 }

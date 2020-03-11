@@ -19,8 +19,15 @@ sealed trait AsmNode[+T] {
   def erasedCharacteristics = f"$name%15s $desc%-30s$accessString"
 
   private def accessString =
-    if (access == 0) "" else " " + Modifier.toString(access)
-  private def sigString = if (signature == null) "" else " " + signature
+    if (access == 0)
+      ""
+    else
+      " " + Modifier.toString(access)
+  private def sigString =
+    if (signature == null)
+      ""
+    else
+      " " + signature
   override def toString = characteristics
 }
 

@@ -20,10 +20,14 @@ class OptimizeScalar extends Phase {
             val (checkTrue, checkFalse) = (a.isEmpty, b.isEmpty)
             logger.debug(s"a=$a, b=$b")
             val res =
-              if (checkTrue && checkFalse) LiteralNode(true)
-              else if (checkTrue && !checkFalse) p
-              else if (checkFalse) Library.Not.typed(p.nodeType, p)
-              else LiteralNode(false)
+              if (checkTrue && checkFalse)
+                LiteralNode(true)
+              else if (checkTrue && !checkFalse)
+                p
+              else if (checkFalse)
+                Library.Not.typed(p.nodeType, p)
+              else
+                LiteralNode(false)
             cast(n.nodeType, res).infer()
 
           case n @ IfThenElse(
@@ -72,7 +76,8 @@ class OptimizeScalar extends Phase {
         Some(
           if (n.nodeType.structural.isInstanceOf[OptionType])
             v.asInstanceOf[Option[Any]]
-          else Some(v))
+          else
+            Some(v))
       case Apply(Library.SilentCast, ConstArray(ch)) => unapply(ch)
       case OptionApply(ch)                           => unapply(ch).map(_.map(Option.apply _))
       case _                                         => None
@@ -81,6 +86,9 @@ class OptimizeScalar extends Phase {
 
   def cast(tpe: Type, n: Node): Node = {
     val n2 = n.infer()
-    if (n2.nodeType == tpe) n2 else Library.SilentCast.typed(tpe, n2)
+    if (n2.nodeType == tpe)
+      n2
+    else
+      Library.SilentCast.typed(tpe, n2)
   }
 }

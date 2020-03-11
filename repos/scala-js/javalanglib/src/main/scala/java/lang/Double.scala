@@ -86,8 +86,10 @@ object Double {
   def compare(a: scala.Double, b: scala.Double): scala.Int = {
     // NaN must equal itself, and be greater than anything else
     if (isNaN(a)) {
-      if (isNaN(b)) 0
-      else 1
+      if (isNaN(b))
+        0
+      else
+        1
     } else if (isNaN(b)) {
       -1
     } else {
@@ -95,15 +97,20 @@ object Double {
         // -0.0 must be smaller than 0.0
         if (a == 0.0) {
           val ainf = 1.0 / a
-          if (ainf == 1.0 / b) 0
-          else if (ainf < 0) -1
-          else 1
+          if (ainf == 1.0 / b)
+            0
+          else if (ainf < 0)
+            -1
+          else
+            1
         } else {
           0
         }
       } else {
-        if (a < b) -1
-        else 1
+        if (a < b)
+          -1
+        else
+          1
       }
     }
   }

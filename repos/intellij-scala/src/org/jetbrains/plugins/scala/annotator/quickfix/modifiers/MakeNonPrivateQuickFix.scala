@@ -17,7 +17,8 @@ class MakeNonPrivateQuickFix(member: ScModifierListOwner, toProtected: Boolean)
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     member.setModifierProperty("private", value = false)
-    if (toProtected) member.setModifierProperty("protected", value = true)
+    if (toProtected)
+      member.setModifierProperty("protected", value = true)
     PsiDocumentManager
       .getInstance(project)
       .doPostponedOperationsAndUnblockDocument(editor.getDocument)
@@ -29,7 +30,10 @@ class MakeNonPrivateQuickFix(member: ScModifierListOwner, toProtected: Boolean)
   }
 
   def getText: String =
-    if (toProtected) "Make field protected" else "Make field public"
+    if (toProtected)
+      "Make field protected"
+    else
+      "Make field public"
 
   def getFamilyName: String = "Make field non-private"
 

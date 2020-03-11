@@ -220,7 +220,10 @@ object RequestChannel extends Logging {
         processor,
         request,
         responseSend,
-        if (responseSend == null) NoOpAction else SendAction)
+        if (responseSend == null)
+          NoOpAction
+        else
+          SendAction)
 
     def this(request: Request, send: Send) =
       this(request.processor, request, send)

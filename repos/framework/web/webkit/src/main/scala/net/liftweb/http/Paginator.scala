@@ -57,7 +57,10 @@ trait Paginator[T] extends Loggable {
     */
   def numPages =
     (count / itemsPerPage).toInt +
-      (if (count % itemsPerPage > 0) 1 else 0)
+      (if (count % itemsPerPage > 0)
+         1
+       else
+         0)
 
   /**
     * Calculates the current page number, based on the value of 'first.'
@@ -122,8 +125,8 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     */
   def sortedBy(column: Int): SortState = sort match {
     case (
-        `column`,
-        true
+          `column`,
+          true
         ) => // descending is only if it was already sorted ascending
       (column, false)
     case _ =>

@@ -53,7 +53,10 @@ case class ImportInfo(
     wildcardHasUnusedImplicit: Boolean = false) {
 
   def withoutRelative: ImportInfo =
-    if (relative.isDefined || rootUsed) copy(relative = None) else this
+    if (relative.isDefined || rootUsed)
+      copy(relative = None)
+    else
+      this
 
   def split: Seq[ImportInfo] = {
     val result = new ArrayBuffer[ImportInfo]()
@@ -92,8 +95,10 @@ case class ImportInfo(
     hasWildcard && singleNames.isEmpty && renames.isEmpty && hiddenNames.isEmpty
 
   def namesFromWildcard: Set[String] = {
-    if (hasWildcard) allNames -- singleNames -- renames.keySet
-    else Set.empty[String]
+    if (hasWildcard)
+      allNames -- singleNames -- renames.keySet
+    else
+      Set.empty[String]
   }
 
   private def template: ImportInfo =
@@ -120,7 +125,8 @@ object ImportInfo {
     def name(s: String) = ScalaNamesUtil.changeKeyword(s)
 
     val qualifier = imp.qualifier
-    if (qualifier == null) return None //ignore invalid imports
+    if (qualifier == null)
+      return None //ignore invalid imports
 
     val importsUsed = ArrayBuffer[ImportUsed]()
     val allNames = mutable.HashSet[String]()
@@ -147,7 +153,8 @@ object ImportInfo {
     def addAllNames(
         ref: ScStableCodeReferenceElement,
         nameToAdd: String): Unit = {
-      if (ref.multiResolve(false).exists(shouldAddName)) allNames += nameToAdd
+      if (ref.multiResolve(false).exists(shouldAddName))
+        allNames += nameToAdd
     }
 
     def collectAllNamesForWildcard(): Unit = {
@@ -190,8 +197,10 @@ object ImportInfo {
       }
     } else if (imp.singleWildcard) {
       val importUsed =
-        if (imp.selectorSet.isEmpty) ImportExprUsed(imp)
-        else ImportWildcardSelectorUsed(imp)
+        if (imp.selectorSet.isEmpty)
+          ImportExprUsed(imp)
+        else
+          ImportWildcardSelectorUsed(imp)
       if (isImportUsed(importUsed)) {
         importsUsed += importUsed
         hasWildcard = true
@@ -220,7 +229,8 @@ object ImportInfo {
         }
       }
     }
-    if (importsUsed.isEmpty) return None //all imports are empty
+    if (importsUsed.isEmpty)
+      return None //all imports are empty
 
     allNames --= hiddenNames
     hasNonUsedImplicits = (implicitNames -- singleNames).nonEmpty
@@ -257,7 +267,10 @@ object ImportInfo {
     }
 
     def withDot(s: String): String = {
-      if (s.isEmpty) "" else "." + s
+      if (s.isEmpty)
+        ""
+      else
+        "." + s
     }
 
     @tailrec
@@ -275,20 +288,27 @@ object ImportInfo {
     }
 
     def qualifiedRef(ref: ScStableCodeReferenceElement): String = {
-      if (ref.getText == _root_prefix) return _root_prefix
+      if (ref.getText == _root_prefix)
+        return _root_prefix
 
       val refName = ref.refName
       ref.bind() match {
         case Some(ScalaResolveResult(p: PsiPackage, _)) =>
           if (p.getParentPackage != null && p.getParentPackage.getName != null)
             packageFqn(p)
-          else refName
+          else
+            refName
         case Some(ScalaResolveResult(o: ScObject, _)) =>
-          if (isRelativeObject(o)) o.qualifiedName
-          else refName
+          if (isRelativeObject(o))
+            o.qualifiedName
+          else
+            refName
         case Some(ScalaResolveResult(c: PsiClass, _)) =>
           val parts = c.qualifiedName.split('.')
-          if (parts.length > 1) parts.map(name).mkString(".") else refName
+          if (parts.length > 1)
+            parts.map(name).mkString(".")
+          else
+            refName
         case Some(ScalaResolveResult(td: ScTypedDefinition, _)) =>
           ScalaPsiUtil.nameContext(td) match {
             case m: ScMember =>
@@ -331,7 +351,8 @@ object ImportInfo {
     val relativeQualifier =
       if (isRelative)
         Some(explicitQualifierString(qualifier, withDeepest = true))
-      else None
+      else
+        None
 
     val isStableImport = {
       deepRef.resolve() match {

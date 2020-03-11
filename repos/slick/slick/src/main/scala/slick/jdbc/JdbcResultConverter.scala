@@ -37,7 +37,10 @@ class OptionResultConverter[
     extends ResultConverter[JdbcResultConverterDomain, Option[T]] {
   def read(pr: ResultSet) = {
     val v = ti.getValue(pr, idx)
-    if (ti.wasNull(pr, idx)) None else Some(v)
+    if (ti.wasNull(pr, idx))
+      None
+    else
+      Some(v)
   }
   def update(value: Option[T], pr: ResultSet) = value match {
     case Some(v) => ti.updateValue(v, pr, idx)
@@ -57,7 +60,10 @@ class OptionResultConverter[
       new DefaultingResultConverter[T](ti, default, idx) {
         override def read(pr: ResultSet) = {
           val v = ti.getValue(pr, idx)
-          if (v.asInstanceOf[AnyRef] eq null) default() else v
+          if (v.asInstanceOf[AnyRef] eq null)
+            default()
+          else
+            v
         }
       }
   def isDefined = new IsDefinedResultConverter[T](ti, idx)
@@ -73,7 +79,10 @@ class DefaultingResultConverter[
     extends ResultConverter[JdbcResultConverterDomain, T] {
   def read(pr: ResultSet) = {
     val v = ti.getValue(pr, idx)
-    if (ti.wasNull(pr, idx)) default() else v
+    if (ti.wasNull(pr, idx))
+      default()
+    else
+      v
   }
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
   def set(value: T, pp: PreparedStatement) = ti.setValue(value, pp, idx)

@@ -69,7 +69,10 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
 
   def takePendingSubscribers(): immutable.Seq[Subscriber[_ >: T]] = {
     val pending = pendingSubscribers.getAndSet(Nil)
-    if (pending eq null) Nil else pending.reverse
+    if (pending eq null)
+      Nil
+    else
+      pending.reverse
   }
 
   def shutdown(reason: Option[Throwable]): Unit = {
@@ -129,7 +132,9 @@ private[akka] trait SoftShutdown { this: Actor ⇒
     } else {
       context.children foreach context.watch
       context.become {
-        case Terminated(_) ⇒ if (context.children.isEmpty) context.stop(self)
+        case Terminated(_) ⇒
+          if (context.children.isEmpty)
+            context.stop(self)
         case _ ⇒ // ignore all the rest, we’re practically dead
       }
     }

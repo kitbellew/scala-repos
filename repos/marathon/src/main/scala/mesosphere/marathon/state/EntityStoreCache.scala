@@ -55,7 +55,12 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
       update: Update): Future[T] =
     directOrCached(store.modify(key, onSuccess)(update)) { cache =>
       def onModified(t: T): Unit = {
-        cache.update(key, if (noVersionKey(key)) Some(t) else None)
+        cache.update(
+          key,
+          if (noVersionKey(key))
+            Some(t)
+          else
+            None)
         onSuccess(t)
       }
       store.modify(key, onModified)(update)

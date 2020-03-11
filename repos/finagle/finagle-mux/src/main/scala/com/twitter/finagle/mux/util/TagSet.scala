@@ -41,7 +41,8 @@ private[mux] object TagSet {
 
     def acquire(): Option[Int] = synchronized {
       val tag = bits.nextClearBit(start)
-      if (!range.contains(tag)) None
+      if (!range.contains(tag))
+        None
       else {
         bits.set(tag)
         Some(tag)

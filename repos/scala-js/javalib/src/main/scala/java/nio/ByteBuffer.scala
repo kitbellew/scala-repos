@@ -105,8 +105,10 @@ abstract class ByteBuffer private[nio] (
     GenBuffer(this).generic_compareTo(that)(_.compareTo(_))
 
   final def order(): ByteOrder =
-    if (_isBigEndian) ByteOrder.BIG_ENDIAN
-    else ByteOrder.LITTLE_ENDIAN
+    if (_isBigEndian)
+      ByteOrder.BIG_ENDIAN
+    else
+      ByteOrder.LITTLE_ENDIAN
 
   final def order(bo: ByteOrder): ByteBuffer = {
     if (bo == null)

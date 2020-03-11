@@ -30,7 +30,10 @@ trait OptionInstances extends OptionInstances1 {
         fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: Option[A])(f: Option[A] => B): Option[B] =
-        if (fa.isDefined) Some(f(fa)) else None
+        if (fa.isDefined)
+          Some(f(fa))
+        else
+          None
 
       def foldLeft[A, B](fa: Option[A], b: B)(f: (B, A) => B): B =
         fa match {
@@ -86,7 +89,10 @@ trait OptionInstances extends OptionInstances1 {
               case None    => 1
             }
           case None =>
-            if (y.isDefined) -1 else 0
+            if (y.isDefined)
+              -1
+            else
+              0
         }
     }
 
@@ -104,8 +110,11 @@ private[std] sealed trait OptionInstances1 extends OptionInstances2 {
       implicit ev: PartialOrder[A]): PartialOrder[Option[A]] =
     new PartialOrder[Option[A]] {
       def partialCompare(x: Option[A], y: Option[A]): Double =
-        x.fold(if (y.isDefined) -1.0 else 0.0)(a =>
-          y.fold(1.0)(ev.partialCompare(_, a)))
+        x.fold(
+          if (y.isDefined)
+            -1.0
+          else
+            0.0)(a => y.fold(1.0)(ev.partialCompare(_, a)))
     }
 }
 

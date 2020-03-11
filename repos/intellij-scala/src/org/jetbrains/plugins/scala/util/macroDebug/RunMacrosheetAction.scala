@@ -42,7 +42,8 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
     val editor =
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    if (editor == null) return
+    if (editor == null)
+      return
 
     val psiFile: PsiFile = PsiDocumentManager
       .getInstance(e.getProject)

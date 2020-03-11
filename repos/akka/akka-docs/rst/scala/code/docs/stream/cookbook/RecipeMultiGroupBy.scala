@@ -17,8 +17,10 @@ class RecipeMultiGroupBy extends RecipeSpec {
 
       val elems = Source(List("1: a", "1: b", "all: c", "all: d", "1: e"))
       val extractTopics = { msg: Message =>
-        if (msg.startsWith("1")) List(Topic("1"))
-        else List(Topic("1"), Topic("2"))
+        if (msg.startsWith("1"))
+          List(Topic("1"))
+        else
+          List(Topic("1"), Topic("2"))
       }
 
       //#multi-groupby

@@ -30,7 +30,10 @@ trait Plugins { global: Global =>
       settings.plugin.value filter (_ != "") map (s => asPath(s) map Path.apply)
     val dirs = {
       def injectDefault(s: String) =
-        if (s.isEmpty) Defaults.scalaPluginPath else s
+        if (s.isEmpty)
+          Defaults.scalaPluginPath
+        else
+          s
       asPath(settings.pluginsDir.value) map injectDefault map Path.apply
     }
     val maybes = Plugin.loadAllFrom(paths, dirs, settings.disable.value)
@@ -39,7 +42,8 @@ trait Plugins { global: Global =>
     errors foreach (_.recover[Any] {
       // legacy behavior ignores altogether, so at least warn devs
       case e: MissingPluginException =>
-        if (global.isDeveloper) warning(e.getMessage)
+        if (global.isDeveloper)
+          warning(e.getMessage)
       case e: Exception => inform(e.getMessage)
     })
     val classes = goods map (_.get) // flatten
@@ -62,7 +66,8 @@ trait Plugins { global: Global =>
         plugins: List[Plugin],
         plugNames: Set[String],
         phaseNames: Set[String]): List[Plugin] = {
-      if (plugins.isEmpty) return Nil // early return
+      if (plugins.isEmpty)
+        return Nil // early return
 
       val plug :: tail = plugins
       val plugPhaseNames = Set(plug.components map (_.phaseName): _*)
@@ -72,7 +77,8 @@ trait Plugins { global: Global =>
       lazy val commonPhases = phaseNames intersect plugPhaseNames
 
       def note(msg: String): Unit =
-        if (settings.verbose) inform(msg format plug.name)
+        if (settings.verbose)
+          inform(msg format plug.name)
       def fail(msg: String) = {
         note(msg);
         withoutPlug
@@ -122,12 +128,14 @@ trait Plugins { global: Global =>
     */
   protected def computePluginPhases(): Unit =
     for (p <- plugins;
-         c <- p.components) addToPhasesSet(c, c.description)
+         c <- p.components)
+      addToPhasesSet(c, c.description)
 
   /** Summary of the options for all loaded plugins */
   def pluginOptionsHelp: String =
     (for (plug <- roughPluginsList;
-          help <- plug.optionsHelp) yield {
-      "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)
-    }).mkString
+          help <- plug.optionsHelp)
+      yield {
+        "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)
+      }).mkString
 }

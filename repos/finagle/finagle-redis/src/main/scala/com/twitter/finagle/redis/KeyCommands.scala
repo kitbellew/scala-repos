@@ -128,8 +128,10 @@ trait Keys { self: BaseClient =>
   def pTtl(key: ChannelBuffer): Future[Option[JLong]] =
     doRequest(PTtl(key)) {
       case IntegerReply(n) =>
-        if (n != -1) Future.value(Some(n))
-        else Future.value(None)
+        if (n != -1)
+          Future.value(Some(n))
+        else
+          Future.value(None)
     }
 
   /**

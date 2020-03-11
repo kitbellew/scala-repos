@@ -99,7 +99,10 @@ case class Generate(
         generatorOutput.map(a => a.withQualifiers(q +: a.qualifiers)))
       .getOrElse(generatorOutput)
 
-    if (join) child.output ++ qualified else qualified
+    if (join)
+      child.output ++ qualified
+    else
+      qualified
   }
 }
 
@@ -169,7 +172,11 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
   override def statistics: Statistics = {
     val leftSize = left.statistics.sizeInBytes
     val rightSize = right.statistics.sizeInBytes
-    val sizeInBytes = if (leftSize < rightSize) leftSize else rightSize
+    val sizeInBytes =
+      if (leftSize < rightSize)
+        leftSize
+      else
+        rightSize
     Statistics(sizeInBytes = sizeInBytes)
   }
 }

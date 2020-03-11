@@ -76,7 +76,8 @@ class SimpleLock {
         unlock()
       }
       true
-    } else false
+    } else
+      false
   }
 
   def ifPossibleYield[T](perform: () => T): Option[T] = {
@@ -86,7 +87,8 @@ class SimpleLock {
       } finally {
         unlock()
       }
-    } else None
+    } else
+      None
   }
 
   def ifPossibleApply[T, R](value: T)(function: (T) => R): Option[R] = {
@@ -96,12 +98,15 @@ class SimpleLock {
       } finally {
         unlock()
       }
-    } else None
+    } else
+      None
   }
 
   def tryLock() = {
-    if (acquired.get) false
-    else acquired.compareAndSet(false, true)
+    if (acquired.get)
+      false
+    else
+      acquired.compareAndSet(false, true)
   }
 
   def tryUnlock() = {
@@ -133,7 +138,8 @@ class Switch(startAsOn: Boolean = false) {
             throw e
         }
         true
-      } else false
+      } else
+        false
     }
 
   def switchOff(action: => Unit): Boolean = transcend(from = true, action)
@@ -147,55 +153,70 @@ class Switch(startAsOn: Boolean = false) {
   }
 
   def ifOnYield[T](action: => T): Option[T] = {
-    if (switch.get) Some(action)
-    else None
+    if (switch.get)
+      Some(action)
+    else
+      None
   }
 
   def ifOffYield[T](action: => T): Option[T] = {
-    if (!switch.get) Some(action)
-    else None
+    if (!switch.get)
+      Some(action)
+    else
+      None
   }
 
   def ifOn(action: => Unit): Boolean = {
     if (switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   def ifOff(action: => Unit): Boolean = {
     if (!switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   def whileOnYield[T](action: => T): Option[T] = synchronized {
-    if (switch.get) Some(action)
-    else None
+    if (switch.get)
+      Some(action)
+    else
+      None
   }
 
   def whileOffYield[T](action: => T): Option[T] = synchronized {
-    if (!switch.get) Some(action)
-    else None
+    if (!switch.get)
+      Some(action)
+    else
+      None
   }
 
   def whileOn(action: => Unit): Boolean = synchronized {
     if (switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   def whileOff(action: => Unit): Boolean = synchronized {
     if (switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   def ifElseYield[T](on: => T)(off: => T) = synchronized {
-    if (switch.get) on else off
+    if (switch.get)
+      on
+    else
+      off
   }
 
   def isOn = switch.get

@@ -34,7 +34,11 @@ class BitsetColumn(definedAt: BitSet) { this: Column =>
 
   override def toString = {
     val limit = definedAt.max
-    val repr = (row: Int) => if (definedAt(row)) 'x' else '_'
+    val repr = (row: Int) =>
+      if (definedAt(row))
+        'x'
+      else
+        '_'
     getClass.getName + "(" + (0 until limit)
       .map(repr)
       .mkString("[", ",", "]") + ", " + limit + ")"
@@ -46,7 +50,8 @@ object BitsetColumn {
     val bs = new BitSet
     var i = 0
     definedAt.foreach { v =>
-      if (v) bs.set(i)
+      if (v)
+        bs.set(i)
       i += 1
     }
     bs
@@ -135,8 +140,16 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
   @volatile private var lastIndex = 0
 
   @inline private final def inBound(row: Int, idx: Int): Boolean = {
-    val lb = if (idx < 0) 0 else offsets(idx)
-    val ub = if ((idx + 1) < offsets.length) offsets(idx + 1) else (row + 1)
+    val lb =
+      if (idx < 0)
+        0
+      else
+        offsets(idx)
+    val ub =
+      if ((idx + 1) < offsets.length)
+        offsets(idx + 1)
+      else
+        (row + 1)
     row >= lb && row < ub
   }
 
@@ -147,7 +160,11 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
       lastIdx
     } else {
       var idx = java.util.Arrays.binarySearch(offsets, row)
-      idx = if (idx < 0) -idx - 2 else idx
+      idx =
+        if (idx < 0)
+          -idx - 2
+        else
+          idx
       lastIndex = idx
       idx
     }
@@ -155,7 +172,8 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
 
   def isDefinedAt(row: Int) = {
     val idx = indexOf(row)
-    if (idx < 0) false
+    if (idx < 0)
+      false
     else {
       val column = columns(idx)
       val offset = offsets(idx)
@@ -198,7 +216,8 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
         a(idx(i)) = i
       }
       fill(a, i + 1)
-    } else a
+    } else
+      a
   }
 
   val remap: Array[Int] = fill(Array.fill[Int](toSize)(-1), 0)
@@ -229,7 +248,10 @@ abstract class ArraySetColumn[T <: Column](
     while (i < backing.length && !backing(i).isDefinedAt(row)) {
       i += 1
     }
-    if (i != backing.length) i else -1
+    if (i != backing.length)
+      i
+    else
+      -1
   }
   def isDefinedAt(row: Int) = firstDefinedIndexAt(row) != -1
   def jValue(row: Int) = backing(firstDefinedIndexAt(row)).jValue(row)

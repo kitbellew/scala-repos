@@ -320,7 +320,8 @@ class UriSpec extends WordSpec with Matchers {
               matches = false,
               s"The string parsed to '${Path(s, cs)}' rather than '$p'",
               "<?>")
-          else MatchResult(matches = true, "<?>", "<?>")
+          else
+            MatchResult(matches = true, "<?>", "<?>")
         }
 
       "" should roundTripTo(Empty)

@@ -56,13 +56,21 @@ object gen {
     val rationalFromLongs: Gen[Rational] =
       for {
         n <- arbitrary[Long]
-        d <- arbitrary[Long].map(n => if (n == 0) 1L else n)
+        d <- arbitrary[Long].map(n =>
+          if (n == 0)
+            1L
+          else
+            n)
       } yield Rational(n, d)
 
     val rationalFromSafeLongs: Gen[Rational] =
       for {
         n <- safeLong
-        d <- safeLong.map(n => if (n.isZero) SafeLong.one else n)
+        d <- safeLong.map(n =>
+          if (n.isZero)
+            SafeLong.one
+          else
+            n)
       } yield Rational(n, d)
 
     val bigRational: Gen[Rational] = {
@@ -75,7 +83,11 @@ object gen {
       10 → arbitrary[Double].map(n => Rational(n)),
       1 → rationalFromSafeLongs,
       1 → bigRational, // a rational that is guaranteed to have a big denominator
-      1 → bigRational.map(x ⇒ if (x.isZero) Rational.one else x.inverse)
+      1 → bigRational.map(x ⇒
+        if (x.isZero)
+          Rational.one
+        else
+          x.inverse)
     )
   }
 
@@ -141,7 +153,11 @@ object gen {
 
   def bounds[A: Arbitrary: Order]: Gen[(A, A)] =
     arbitrary[(A, A)].map {
-      case (x, y) => if (x <= y) (x, y) else (y, x)
+      case (x, y) =>
+        if (x <= y)
+          (x, y)
+        else
+          (y, x)
     }
 
   def makeBoundedInterval[A: Arbitrary: Order](

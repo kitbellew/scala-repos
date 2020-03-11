@@ -82,7 +82,11 @@ class DatasetPrimitiveSuite extends QueryTest with SharedSQLContext {
     val grouped = ds.groupByKey(_ % 2)
     val agged = grouped.mapGroups {
       case (g, iter) =>
-        val name = if (g == 0) "even" else "odd"
+        val name =
+          if (g == 0)
+            "even"
+          else
+            "odd"
         (name, iter.size)
     }
 

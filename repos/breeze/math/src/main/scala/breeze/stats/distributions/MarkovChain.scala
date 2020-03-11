@@ -170,7 +170,8 @@ object MarkovChain {
       for (c <- k1(t._1, t._2, t._3, t._4);
            d <- k2(c, t._2, t._3, t._4);
            e <- k3(c, d, t._3, t._4);
-           f <- k4(c, d, e, t._4)) yield (c, d, e, f);
+           f <- k4(c, d, e, t._4))
+        yield (c, d, e, f);
     }
 
     /**
@@ -211,7 +212,11 @@ object MarkovChain {
            oldLL = logMeasure(t);
            a = min(1, exp(newLL - oldLL));
            u <- rand.uniform)
-        yield if (u < a) next else t;
+        yield
+          if (u < a)
+            next
+          else
+            t;
     }
 
     /**
@@ -229,7 +234,11 @@ object MarkovChain {
            oldP = prop.logApply(t);
            a = min(1, exp(newLL + newP - oldLL - oldP));
            u <- rand.uniform)
-        yield if (u < a) next else t;
+        yield
+          if (u < a)
+            next
+          else
+            t;
     }
 
     /**

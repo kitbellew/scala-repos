@@ -94,7 +94,10 @@ abstract class GuiceBuilder[Self] protected (
       opt: BinderOption,
       enabled: Boolean = false): Self = {
     copyBuilder(binderOptions =
-      if (enabled) binderOptions + opt else binderOptions - opt)
+      if (enabled)
+        binderOptions + opt
+      else
+        binderOptions - opt)
   }
 
   /**

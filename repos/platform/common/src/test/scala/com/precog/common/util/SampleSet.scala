@@ -63,9 +63,15 @@ object AdSamples {
     case (l, h) => JArray(List(JNum(l), JNum(h)))
   }
   val platforms = List("android", "iphone", "web", "blackberry", "other")
-  val campaigns = for (i <- 0 to 30) yield "c" + i
-  val pageId = for (i <- 0 to 4) yield "page-" + i
-  val userId = for (i <- 1000 to 1020) yield "user-" + i
+  val campaigns =
+    for (i <- 0 to 30)
+      yield "c" + i
+  val pageId =
+    for (i <- 0 to 4)
+      yield "page-" + i
+  val userId =
+    for (i <- 1000 to 1020)
+      yield "user-" + i
   val eventNames = List("impression", "click", "conversion")
   val timeISO8601 = List(
     "2010-11-04T15:38:12.782+03:00",
@@ -174,8 +180,10 @@ object AdSamples {
     Gen(p => {
       def sample: Double = {
         val testIndex = (p.rng.nextGaussian * (size / 5)) + (size / 2)
-        if (testIndex < 0 || testIndex >= size) sample
-        else testIndex
+        if (testIndex < 0 || testIndex >= size)
+          sample
+        else
+          testIndex
       }
 
       Some(sample.toInt)
@@ -414,8 +422,10 @@ case class DistributedSampleSet[T](
     // dumb sample accumulation, just takes the first n samples recorded
     (
       sample,
-      if (recordedSamples.size >= queriableSampleSize) this
-      else this.copy(recordedSamples = recordedSamples :+ sample))
+      if (recordedSamples.size >= queriableSampleSize)
+        this
+      else
+        this.copy(recordedSamples = recordedSamples :+ sample))
   }
 }
 

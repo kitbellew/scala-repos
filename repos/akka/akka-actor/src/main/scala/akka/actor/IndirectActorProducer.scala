@@ -62,7 +62,8 @@ private[akka] object IndirectActorProducer {
         new NoArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]])
       else
         new ArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]], args)
-    } else throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
+    } else
+      throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
   }
 }
 

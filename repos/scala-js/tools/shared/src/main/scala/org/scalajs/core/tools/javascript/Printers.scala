@@ -147,7 +147,11 @@ object Printers {
           }
 
         case Let(ident, mutable, rhs) =>
-          print(if (mutable) "let " else "const ")
+          print(
+            if (mutable)
+              "let "
+            else
+              "const ")
           print(ident)
           if (rhs ne EmptyTree) {
             print(" = ")
@@ -249,14 +253,16 @@ object Printers {
           print(expr)
 
         case Break(label) =>
-          if (label.isEmpty) print("break")
+          if (label.isEmpty)
+            print("break")
           else {
             print("break ")
             print(label.get)
           }
 
         case Continue(label) =>
-          if (label.isEmpty) print("continue")
+          if (label.isEmpty)
+            print("continue")
           else {
             print("continue ")
             print(label.get)
@@ -439,7 +445,11 @@ object Printers {
           print("null")
 
         case BooleanLiteral(value) =>
-          print(if (value) "true" else "false")
+          print(
+            if (value)
+              "true"
+            else
+              "false")
 
         case IntLiteral(value) =>
           if (value >= 0) {

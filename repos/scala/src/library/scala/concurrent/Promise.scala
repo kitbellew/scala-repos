@@ -47,8 +47,10 @@ trait Promise[T] {
     *  $promiseCompletion
     */
   def complete(result: Try[T]): this.type =
-    if (tryComplete(result)) this
-    else throw new IllegalStateException("Promise already completed.")
+    if (tryComplete(result))
+      this
+    else
+      throw new IllegalStateException("Promise already completed.")
 
   /** Tries to complete the promise with either a value or the exception.
     *

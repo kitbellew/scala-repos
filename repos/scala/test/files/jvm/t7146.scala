@@ -9,7 +9,8 @@ object Test {
     if (ec startsWith "scala.concurrent.impl.ExecutionContextImpl")
       println(
         "ExecutionContext.global is a scala.concurrent.impl.ExecutionContextImpl.")
-    else println(s"!! ExecutionContext.global == $ec")
+    else
+      println(s"!! ExecutionContext.global == $ec")
 
     val u = ExecutionContext.global
       .asInstanceOf[{

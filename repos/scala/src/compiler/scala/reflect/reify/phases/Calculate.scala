@@ -73,7 +73,8 @@ trait Calculate {
         }
         def bindRelatedSymbol(related: Symbol, name: String): Unit =
           if (related != null && related != NoSymbol) {
-            if (reifyDebug) println("boundSym (" + name + "): " + related)
+            if (reifyDebug)
+              println("boundSym (" + name + "): " + related)
             registerLocalSymbol(related, currMetalevel)
           }
         super.traverse(tree)

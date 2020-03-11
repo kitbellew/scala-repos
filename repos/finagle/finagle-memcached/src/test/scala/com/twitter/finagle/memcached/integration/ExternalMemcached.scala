@@ -12,7 +12,8 @@ object TestMemcachedServer {
   def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] = {
     if (!Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
       InternalMemcached.start(address)
-    else ExternalMemcached.start(address)
+    else
+      ExternalMemcached.start(address)
   }
 }
 

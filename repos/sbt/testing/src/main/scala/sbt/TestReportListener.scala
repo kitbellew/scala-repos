@@ -100,10 +100,12 @@ object TestEvent {
   private[sbt] def overallResult(events: Seq[TEvent]): TestResult.Value =
     (TestResult.Passed /: events) { (sum, event) =>
       val status = event.status
-      if (sum == TestResult.Error || status == TStatus.Error) TestResult.Error
+      if (sum == TestResult.Error || status == TStatus.Error)
+        TestResult.Error
       else if (sum == TestResult.Failed || status == TStatus.Failure)
         TestResult.Failed
-      else TestResult.Passed
+      else
+        TestResult.Passed
     }
 }
 
@@ -125,7 +127,8 @@ object TestLogger {
     "0.13.1")
   def contentLogger(log: sbt.util.Logger, buffered: Boolean): ContentLogger = {
     val blog = new BufferedLogger(FullLogger(log))
-    if (buffered) blog.record()
+    if (buffered)
+      blog.record()
     new ContentLogger(wrap(blog), () => blog.stopQuietly())
   }
 
@@ -140,7 +143,8 @@ object TestLogger {
     def makePerTest(tdef: TestDefinition): ContentLogger = {
       val per = perTest(tdef)
       val blog = new BufferedLogger(FullLogger(per.log))
-      if (per.buffered) blog.record()
+      if (per.buffered)
+        blog.record()
       new ContentLogger(
         wrap(blog),
         () => {

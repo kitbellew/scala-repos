@@ -34,13 +34,15 @@ class StepBuilderPerfTest extends Specification {
     println("warming up")
     run(withOpening)
     println("running tests")
-    val durations = for (i ← 1 to iterations) yield {
-      val start = System.currentTimeMillis
-      run(withOpening)
-      val duration = System.currentTimeMillis - start
-      println(s"$nb games in $duration ms")
-      duration
-    }
+    val durations =
+      for (i ← 1 to iterations)
+        yield {
+          val start = System.currentTimeMillis
+          run(withOpening)
+          val duration = System.currentTimeMillis - start
+          println(s"$nb games in $duration ms")
+          duration
+        }
     val nbGames = iterations * nb
     val moveMicros = (1000 * durations.sum) / nbGames
     println(s"Average = $moveMicros microseconds per game")

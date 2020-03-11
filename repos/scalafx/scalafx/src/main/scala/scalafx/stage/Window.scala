@@ -42,7 +42,10 @@ import scalafx.event.{Event, EventHandlerDelegate}
 
 object Window {
   implicit def sfxWindow2jfx(v: Window): jfxs.Window =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class Window protected (override val delegate: jfxs.Window)

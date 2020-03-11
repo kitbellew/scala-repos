@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object RotateEvent {
   implicit def sfxRotateEvent2jfx(re: RotateEvent): jfxsi.RotateEvent =
-    if (re != null) re.delegate else null
+    if (re != null)
+      re.delegate
+    else
+      null
 
   /**
     * Common supertype for all rotate event types.

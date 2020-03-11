@@ -22,8 +22,13 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val title =
       if (withTitle)
         """data-hint="Rating progression over the last twelve games""""
-      else ""
-    val klass = if (withTitle) "progress hint--bottom" else "progress"
+      else
+        ""
+    val klass =
+      if (withTitle)
+        "progress hint--bottom"
+      else
+        "progress"
     s"""<span $title class="$klass">$span</span>"""
   }
 
@@ -77,10 +82,19 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       icon: Char,
       klass: String)(implicit ctx: Context) = Html {
     val title = s"$name rating over ${nb.localize} games"
-    val attr = if (klass == "title") "title" else "data-hint"
+    val attr =
+      if (klass == "title")
+        "title"
+      else
+        "data-hint"
     val number =
-      if (nb > 0) s"$rating${if (provisional) "?" else ""}"
-      else "&nbsp;&nbsp;&nbsp;-"
+      if (nb > 0)
+        s"$rating${if (provisional)
+          "?"
+        else
+          ""}"
+      else
+        "&nbsp;&nbsp;&nbsp;-"
     s"""<span $attr="$title" class="$klass"><span data-icon="$icon">$number</span></span>"""
   }
 
@@ -214,9 +228,21 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val klass = userClass(userId, cssClass, withOnline)
     val href = userHref(username, params = params)
     val content = truncate.fold(username)(username.take)
-    val titleS = if (withTitle) titleTag(title) else ""
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+    val titleS =
+      if (withTitle)
+        titleTag(title)
+      else
+        ""
+    val space =
+      if (withOnline)
+        "&nbsp;"
+      else
+        ""
+    val dataIcon =
+      if (withOnline)
+        """ data-icon="r""""
+      else
+        ""
     s"""<a$dataIcon $klass $href>$space$titleS$content</a>"""
   }
 
@@ -234,11 +260,27 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
     val href = userHref(user.username, params)
     val content = text | user.username
-    val titleS = if (withTitle) titleTag(user.title) else ""
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+    val titleS =
+      if (withTitle)
+        titleTag(user.title)
+      else
+        ""
+    val space =
+      if (withOnline)
+        "&nbsp;"
+      else
+        ""
+    val dataIcon =
+      if (withOnline)
+        """ data-icon="r""""
+      else
+        ""
     val rating = userRating(user, withPerfRating, withBestRating)
-    val donor = if (withDonor) donorBadge else ""
+    val donor =
+      if (withDonor)
+        donorBadge
+      else
+        ""
     s"""<a$dataIcon $klass $href>$space$titleS$content$rating$donor</a>"""
   }
 
@@ -255,8 +297,16 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val href = userHref(name)
     val content = rating.fold(name)(e => s"$name&nbsp;($e)")
     val titleS = titleTag(user.flatMap(_.title) ifTrue withTitle)
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+    val space =
+      if (withOnline)
+        "&nbsp;"
+      else
+        ""
+    val dataIcon =
+      if (withOnline)
+        """ data-icon="r""""
+      else
+        ""
     Html(s"""<a$dataIcon $klass $href>$space$titleS$content</a>""")
   }
 
@@ -272,9 +322,21 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val klass = userClass(user.id, cssClass, withOnline, withPowerTip)
     val href = s"data-${userHref(user.username)}"
     val content = text | user.username
-    val titleS = if (withTitle) titleTag(user.title) else ""
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+    val titleS =
+      if (withTitle)
+        titleTag(user.title)
+      else
+        ""
+    val space =
+      if (withOnline)
+        "&nbsp;"
+      else
+        ""
+    val dataIcon =
+      if (withOnline)
+        """ data-icon="r""""
+      else
+        ""
     val rating = userRating(user, withPerfRating, withBestRating)
     s"""<span$dataIcon $klass $href>$space$titleS$content$rating</span>"""
   }
@@ -285,13 +347,24 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     val content = user.fold(userId)(_.titleNameHtml)
     val klass = userClass(userId, none, false)
     val href = s"data-${userHref(name)}"
-    val space = if (withOnline) "&nbsp;" else ""
-    val dataIcon = if (withOnline) """ data-icon="r"""" else ""
+    val space =
+      if (withOnline)
+        "&nbsp;"
+      else
+        ""
+    val dataIcon =
+      if (withOnline)
+        """ data-icon="r""""
+      else
+        ""
     s"""<span$dataIcon $klass $href>$space$content</span>"""
   }
 
   private def renderRating(perf: Perf) =
-    s"&nbsp;(${perf.intRating}${if (perf.provisional) "?" else ""})"
+    s"&nbsp;(${perf.intRating}${if (perf.provisional)
+      "?"
+    else
+      ""})"
 
   private def userRating(
       user: User,

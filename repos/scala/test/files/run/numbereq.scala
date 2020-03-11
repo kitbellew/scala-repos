@@ -12,13 +12,16 @@ object Test {
     val extras = List(
       if (x >= Short.MinValue && x <= Short.MaxValue)
         List(new java.lang.Short(x.toShort))
-      else Nil,
+      else
+        Nil,
       if (x >= Byte.MinValue && x <= Byte.MaxValue)
         List(new java.lang.Byte(x.toByte))
-      else Nil,
+      else
+        Nil,
       if (x >= Char.MinValue && x <= Char.MaxValue)
         List(new java.lang.Character(x.toChar))
-      else Nil
+      else
+        Nil
     ).flatten
 
     base ::: extras
@@ -28,13 +31,34 @@ object Test {
     List(
       List(BigDecimal(x, java.math.MathContext.UNLIMITED)),
       List(x),
-      if (x.isValidDouble) List(new java.lang.Double(x.toDouble)) else Nil,
-      if (x.isValidFloat) List(new java.lang.Float(x.toFloat)) else Nil,
-      if (x.isValidLong) List(new java.lang.Long(x.toLong)) else Nil,
-      if (x.isValidInt) List(new java.lang.Integer(x.toInt)) else Nil,
-      if (x.isValidShort) List(new java.lang.Short(x.toShort)) else Nil,
-      if (x.isValidByte) List(new java.lang.Byte(x.toByte)) else Nil,
-      if (x.isValidChar) List(new java.lang.Character(x.toChar)) else Nil
+      if (x.isValidDouble)
+        List(new java.lang.Double(x.toDouble))
+      else
+        Nil,
+      if (x.isValidFloat)
+        List(new java.lang.Float(x.toFloat))
+      else
+        Nil,
+      if (x.isValidLong)
+        List(new java.lang.Long(x.toLong))
+      else
+        Nil,
+      if (x.isValidInt)
+        List(new java.lang.Integer(x.toInt))
+      else
+        Nil,
+      if (x.isValidShort)
+        List(new java.lang.Short(x.toShort))
+      else
+        Nil,
+      if (x.isValidByte)
+        List(new java.lang.Byte(x.toByte))
+      else
+        Nil,
+      if (x.isValidChar)
+        List(new java.lang.Character(x.toChar))
+      else
+        Nil
     ).flatten
   }
 

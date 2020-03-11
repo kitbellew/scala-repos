@@ -41,9 +41,12 @@ class FixedLengthDecoderTest
       val frames: Seq[String] = decode(buf).toList
       val groupedString = s.grouped(frameSize).toList
 
-      if (buf.length < frameSize) assert(frames == Nil)
-      else if (buf.length % frameSize == 0) assert(groupedString == frames)
-      else assert(groupedString.take(groupedString.length - 1) == frames)
+      if (buf.length < frameSize)
+        assert(frames == Nil)
+      else if (buf.length % frameSize == 0)
+        assert(groupedString == frames)
+      else
+        assert(groupedString.take(groupedString.length - 1) == frames)
     }
   }
 }

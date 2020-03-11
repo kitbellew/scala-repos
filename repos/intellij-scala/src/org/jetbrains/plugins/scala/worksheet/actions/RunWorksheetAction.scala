@@ -79,11 +79,13 @@ object RunWorksheetAction {
   def runCompiler(project: Project, auto: Boolean) {
     UsageTrigger.trigger("scala.worksheet")
 
-    if (project == null) return
+    if (project == null)
+      return
 
     val editor = FileEditorManager.getInstance(project).getSelectedTextEditor
 
-    if (editor == null) return
+    if (editor == null)
+      return
 
     if (project.hasDotty) {
       PopupUtil.showBalloonForComponent(
@@ -151,11 +153,13 @@ object RunWorksheetAction {
                     errors: Int,
                     warnings: Int,
                     compileContext: CompileContext) {
-                  if (!aborted && errors == 0) runnable()
+                  if (!aborted && errors == 0)
+                    runnable()
                 }
               }
             )
-        } else runnable()
+        } else
+          runnable()
       case _ =>
     }
   }
@@ -188,7 +192,8 @@ object RunWorksheetAction {
       worksheetField: String) = {
     import _root_.scala.collection.JavaConverters._
 
-    if (module == null) throw new ExecutionException("Module is not specified")
+    if (module == null)
+      throw new ExecutionException("Module is not specified")
 
     val project = module.getProject
 

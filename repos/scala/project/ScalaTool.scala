@@ -61,14 +61,21 @@ case class ScalaTool(
       case _         => false
     }
     val templatePath = s"scala/tools/ant/templates/tool-$platform.tmpl"
-    val suffix = if (forWindows) ".bat" else ""
+    val suffix =
+      if (forWindows)
+        ".bat"
+      else
+        ""
     val scriptFile = outDir / s"$file$suffix"
     val patched = patchedToolScript(
       IO.read(rootDir / templatePath).replace("\r", ""),
       forWindows)
     IO.write(
       scriptFile,
-      if (forWindows) patched.replace("\n", "\r\n") else patched)
+      if (forWindows)
+        patched.replace("\n", "\r\n")
+      else
+        patched)
     scriptFile
   }
 }

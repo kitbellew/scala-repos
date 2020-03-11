@@ -89,8 +89,10 @@ class LightArrayRevolverScheduler(
   protected def waitNanos(nanos: Long): Unit = {
     // see http://www.javamex.com/tutorials/threads/sleep_issues.shtml
     val sleepMs =
-      if (Helpers.isWindows) (nanos + 4999999) / 10000000 * 10
-      else (nanos + 999999) / 1000000
+      if (Helpers.isWindows)
+        (nanos + 4999999) / 10000000 * 10
+      else
+        (nanos + 999999) / 1000000
     try Thread.sleep(sleepMs)
     catch {
       case _: InterruptedException ⇒
@@ -133,8 +135,12 @@ class LightArrayRevolverScheduler(
 
       @tailrec private def swap(c: Cancellable): Unit = {
         get match {
-          case null ⇒ if (c != null) c.cancel()
-          case old ⇒ if (!compareAndSet(old, c)) swap(c)
+          case null ⇒
+            if (c != null)
+              c.cancel()
+          case old ⇒
+            if (!compareAndSet(old, c))
+              swap(c)
         }
       }
 
@@ -142,8 +148,10 @@ class LightArrayRevolverScheduler(
         get match {
           case null ⇒ false
           case c ⇒
-            if (c.cancel()) compareAndSet(c, null)
-            else compareAndSet(c, null) || cancel()
+            if (c.cancel())
+              compareAndSet(c, null)
+            else
+              compareAndSet(c, null) || cancel()
         }
       }
 
@@ -220,7 +228,8 @@ class LightArrayRevolverScheduler(
       // respond well to being interrupted.
       // Instead we just wait one more tick for it to finish.
       p.future
-    } else Future.successful(Nil)
+    } else
+      Future.successful(Nil)
   }
 
   @volatile private var timerThread: Thread =
@@ -313,7 +322,8 @@ class LightArrayRevolverScheduler(
                 if (task.ticks >= WheelSize) {
                   task.ticks -= WheelSize
                   putBack.addNode(node)
-                } else task.executeTask()
+                } else
+                  task.executeTask()
               }
               executeBucket()
           }
@@ -361,8 +371,10 @@ object LightArrayRevolverScheduler {
       task match {
         case t @ (ExecutedTask | CancelledTask) ⇒ t
         case x ⇒
-          if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith)) x
-          else extractTask(replaceWith)
+          if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith))
+            x
+          else
+            extractTask(replaceWith)
       }
 
     private[akka] final def executeTask(): Boolean =

@@ -42,7 +42,10 @@ trait Logging extends CanLog {
   }
 
   private def checkFormat(msg: String, refs: Seq[Any]): String =
-    if (refs.size > 0) formatmsg(msg, refs) else msg
+    if (refs.size > 0)
+      formatmsg(msg, refs)
+    else
+      msg
 
   def trace(msg: String, refs: Any*) {
     logger trace checkFormat(msg, refs)

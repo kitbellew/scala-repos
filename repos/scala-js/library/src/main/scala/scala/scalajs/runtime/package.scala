@@ -172,7 +172,11 @@ package object runtime {
       val SubnormalThreshold = 1.1754943508222875e-38 // pow(2, 1-bias)
 
       val isNegative = v < 0
-      val av = if (isNegative) -v else v
+      val av =
+        if (isNegative)
+          -v
+        else
+          v
 
       val absResult = if (av >= SubnormalThreshold) {
         val e0 = floor(log(av) / LN2)
@@ -208,7 +212,10 @@ package object runtime {
         Bits.roundToEven(av / rounder) * rounder
       }
 
-      if (isNegative) -absResult else absResult
+      if (isNegative)
+        -absResult
+      else
+        absResult
     }
   }
 

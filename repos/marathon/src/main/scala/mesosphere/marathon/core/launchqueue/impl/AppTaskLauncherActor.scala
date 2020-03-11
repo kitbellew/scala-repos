@@ -249,8 +249,8 @@ private class AppTaskLauncherActor(
       OfferMatcherRegistration.manageOfferMatcherStatus()
 
     case TaskOpSourceDelegate.TaskOpRejected(
-        op,
-        AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON) =>
+          op,
+          AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON) =>
       // This is a message that we scheduled in this actor.
       // When we receive a launch confirmation or rejection, we cancel this timer but
       // there is still a race and we might send ourselves the message nevertheless, so we just
@@ -383,7 +383,10 @@ private class AppTaskLauncherActor(
       val deadlineReached = clock.now() >= deadline
       log.debug(
         "ignoring offer, offer deadline {}reached. {}",
-        if (deadlineReached) "" else "NOT ",
+        if (deadlineReached)
+          ""
+        else
+          "NOT ",
         status)
       sender ! MatchedTaskOps(offer.getId, Seq.empty)
 
@@ -469,8 +472,10 @@ private class AppTaskLauncherActor(
       tasksMap.values.count(_.launched.isDefined) - inFlight
     val instanceCountDelta = tasksMap.size + tasksToLaunch - app.instances
     val matchInstanceStr =
-      if (instanceCountDelta == 0) ""
-      else s"instance count delta $instanceCountDelta."
+      if (instanceCountDelta == 0)
+        ""
+      else
+        s"instance count delta $instanceCountDelta."
     s"$tasksToLaunch tasksToLaunch, $inFlight in flight, " +
       s"$tasksLaunchedOrRunning confirmed. $matchInstanceStr $backoffStr"
   }

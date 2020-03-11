@@ -668,8 +668,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     val data: Dataset[String] = sqlContext
       .range(200)
       .map(i =>
-        if (i < 150) null
-        else "a")
+        if (i < 150)
+          null
+        else
+          "a")
     val df = data.toDF("col")
     assert(df.agg("col" -> "count").collect().head.getLong(0) == 50)
 

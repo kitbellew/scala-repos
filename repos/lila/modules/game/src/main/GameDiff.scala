@@ -24,7 +24,8 @@ private[game] object GameDiff {
       if (va != vb) {
         if (vb == None || vb == null || vb == "")
           unsetBuilder += (name -> BSONBoolean(true))
-        else setBuilder += name -> toBson(vb)
+        else
+          setBuilder += name -> toBson(vb)
       }
     }
 
@@ -84,7 +85,10 @@ private[game] object GameDiff {
       import Player.BSONFields._
       val name = s"p$i."
       val player: Game => Player =
-        if (i == 0) (_.whitePlayer) else (_.blackPlayer)
+        if (i == 0)
+          (_.whitePlayer)
+        else
+          (_.blackPlayer)
       dOpt(
         s"$name$lastDrawOffer",
         player(_).lastDrawOffer,

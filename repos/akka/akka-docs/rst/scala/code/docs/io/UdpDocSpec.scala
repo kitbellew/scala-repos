@@ -32,7 +32,8 @@ object ScalaUdpDocSpec {
       case msg: String =>
         send ! Udp.Send(ByteString(msg), remote)
         //#sender
-        if (msg == "world") send ! PoisonPill
+        if (msg == "world")
+          send ! PoisonPill
       //#sender
     }
   }

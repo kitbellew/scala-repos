@@ -49,7 +49,10 @@ object TableFocusModel {
     */
   implicit def sfxTableFocusModel2jfx[T, TC <: jfxsc.TableColumnBase[T, _]](
       tfm: TableFocusModel[T, TC]): jfxsc.TableFocusModel[T, TC] =
-    if (tfm != null) tfm.delegate else null
+    if (tfm != null)
+      tfm.delegate
+    else
+      null
 
 }
 

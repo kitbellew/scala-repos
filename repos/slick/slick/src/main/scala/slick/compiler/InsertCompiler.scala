@@ -50,7 +50,8 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
           if (mode(fs)) {
             cols += Select(tref, fs) :@ sel.nodeType
             ConstArray(Select(rref, ElementSymbol(cols.length)) :@ sel.nodeType)
-          } else ConstArray.empty
+          } else
+            ConstArray.empty
         InsertColumn(ch, fs, sel.nodeType).infer()
       case Ref(s) if s == expansionRef =>
         tr(tableExpansion.columns)

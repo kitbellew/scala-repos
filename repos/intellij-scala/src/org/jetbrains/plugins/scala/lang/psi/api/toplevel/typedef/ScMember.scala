@@ -157,13 +157,17 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
                     if (isSimilarMemberForNavigation(member, isStrict = false))
                       buf += member
                   }
-                  if (buf.isEmpty) this
-                  else if (buf.length == 1) buf(0)
+                  if (buf.isEmpty)
+                    this
+                  else if (buf.length == 1)
+                    buf(0)
                   else {
                     val filter = buf.filter(
                       isSimilarMemberForNavigation(_, isStrict = true))
-                    if (filter.isEmpty) buf(0)
-                    else filter(0)
+                    if (filter.isEmpty)
+                      buf(0)
+                    else
+                      filter(0)
                   }
                 case _ => this
               }

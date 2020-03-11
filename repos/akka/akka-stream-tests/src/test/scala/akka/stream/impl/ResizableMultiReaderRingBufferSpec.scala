@@ -138,7 +138,9 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
       val COUNTER_LIMIT = 200
       val LOG = false
       val sb = new java.lang.StringBuilder
-      def log(s: ⇒ String): Unit = if (LOG) sb.append(s)
+      def log(s: ⇒ String): Unit =
+        if (LOG)
+          sb.append(s)
 
       class StressTestCursor(cursorNr: Int, run: Int) extends Cursor {
         var cursor: Int = _
@@ -196,7 +198,8 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
               counter += 1
             } else {
               log("FAILED\n")
-              if (counter == COUNTER_LIMIT) stillWriting = 0
+              if (counter == COUNTER_LIMIT)
+                stillWriting = 0
             }
           } else {
             val cursor = activeCursors(index)
@@ -212,7 +215,11 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
       extends ResizableMultiReaderRingBuffer[Int](iSize, mSize, cursors) {
     def inspect: String =
       underlyingArray
-        .map(x ⇒ if (x == null) 0 else x)
+        .map(x ⇒
+          if (x == null)
+            0
+          else
+            x)
         .mkString("", " ", " " + toString.dropWhile(_ != '('))
   }
 

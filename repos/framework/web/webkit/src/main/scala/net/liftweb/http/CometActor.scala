@@ -1518,7 +1518,13 @@ private[http] class XmlOrJsCmd(
     */
   def toJavaScript(session: LiftSession, displayAll: Boolean): JsCmd = {
     val updateJs =
-      (if (ignoreHtmlOnJs) Empty else xml, javaScript, displayAll) match {
+      (
+        if (ignoreHtmlOnJs)
+          Empty
+        else
+          xml,
+        javaScript,
+        displayAll) match {
         case (Full(xml), Full(js), false) =>
           LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml)) & JsCmds
             .JsTry(js, false)

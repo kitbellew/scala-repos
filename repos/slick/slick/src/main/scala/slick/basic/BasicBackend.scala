@@ -135,7 +135,8 @@ trait BasicBackend { self =>
         createCtx: Subscriber[_ >: T] => StreamingContext)
         : DatabasePublisher[T] = new DatabasePublisher[T] {
       def subscribe(s: Subscriber[_ >: T]) = {
-        if (s eq null) throw new NullPointerException("Subscriber is null")
+        if (s eq null)
+          throw new NullPointerException("Subscriber is null")
         val ctx = createCtx(s)
         if (streamLogger.isDebugEnabled)
           streamLogger.debug(s"Signaling onSubscribe($ctx)")
@@ -200,23 +201,26 @@ trait BasicBackend { self =>
               ctx,
               streaming && pos == last,
               pos == 0)
-            if (pos == last) f1
-            else f1.flatMap(run(pos + 1, _))(DBIO.sameThreadExecutionContext)
+            if (pos == last)
+              f1
+            else
+              f1.flatMap(run(pos + 1, _))(DBIO.sameThreadExecutionContext)
           }
           run(0, null).asInstanceOf[Future[R]]
         case sa @ SequenceAction(actions) =>
           val len = actions.length
           val results = new AtomicReferenceArray[Any](len)
           def run(pos: Int): Future[Any] = {
-            if (pos == len) Future.successful {
-              val b = sa.cbf()
-              var i = 0
-              while (i < len) {
-                b += results.get(i)
-                i += 1
+            if (pos == len)
+              Future.successful {
+                val b = sa.cbf()
+                var i = 0
+                while (i < len) {
+                  b += results.get(i)
+                  i += 1
+                }
+                b.result()
               }
-              b.result()
-            }
             else
               runInContext(actions(pos), ctx, false, pos == 0).flatMap {
                 (v: Any) =>
@@ -236,7 +240,8 @@ trait BasicBackend { self =>
               runInContext(a2, ctx, false, false).onComplete { t2 =>
                 if (t2.isFailure && (t1.isSuccess || !keepFailure))
                   p.complete(t2.asInstanceOf[Failure[R]])
-                else p.complete(t1)
+                else
+                  p.complete(t1)
               }(DBIO.sameThreadExecutionContext)
             } catch {
               case NonFatal(ex) =>
@@ -289,7 +294,8 @@ trait BasicBackend { self =>
 
     /** Within a synchronous execution, ensure that a Session is available. */
     protected[this] final def acquireSession(ctx: Context): Unit =
-      if (!ctx.isPinned) ctx.currentSession = createSession()
+      if (!ctx.isPinned)
+        ctx.currentSession = createSession()
 
     /** Within a synchronous execution, close the current Session unless it is pinned.
       *
@@ -364,9 +370,12 @@ trait BasicBackend { self =>
           .prepare
           .execute(new AsyncExecutor.PrioritizedRunnable {
             private[this] def str(l: Long) =
-              if (l != Long.MaxValue) l
-              else if (GlobalConfig.unicodeDump) "\u221E"
-              else "oo"
+              if (l != Long.MaxValue)
+                l
+              else if (GlobalConfig.unicodeDump)
+                "\u221E"
+              else
+                "oo"
 
             def highPriority = highPrio
 
@@ -375,20 +384,26 @@ trait BasicBackend { self =>
                 val debug = streamLogger.isDebugEnabled
                 var state = initialState
                 ctx.readSync
-                if (state eq null) acquireSession(ctx)
+                if (state eq null)
+                  acquireSession(ctx)
                 var demand = ctx.demandBatch
                 var realDemand =
-                  if (demand < 0) demand - Long.MinValue else demand
+                  if (demand < 0)
+                    demand - Long.MinValue
+                  else
+                    demand
                 do {
                   try {
                     if (debug)
                       streamLogger.debug(
-                        (if (state eq null) "Starting initial"
+                        (if (state eq null)
+                           "Starting initial"
                          else
                            "Restarting ") + " streaming action, realDemand = " + str(
                           realDemand))
                     if (ctx.cancelled) {
-                      if (ctx.deferredError ne null) throw ctx.deferredError
+                      if (ctx.deferredError ne null)
+                        throw ctx.deferredError
                       if (state ne null) { // streaming cancelled before finishing
                         val oldState = state
                         state = null
@@ -427,13 +442,17 @@ trait BasicBackend { self =>
                   }
                   demand = ctx.delivered(demand)
                   realDemand =
-                    if (demand < 0) demand - Long.MinValue else demand
+                    if (demand < 0)
+                      demand - Long.MinValue
+                    else
+                      demand
                 } while ((state ne null) && realDemand > 0)
                 if (debug) {
                   if (state ne null)
                     streamLogger.debug(
                       "Suspending streaming action with continuation (more data available)")
-                  else streamLogger.debug("Finished streaming action")
+                  else
+                    streamLogger.debug("Finished streaming action")
                 }
               } catch {
                 case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
@@ -455,7 +474,11 @@ trait BasicBackend { self =>
       if (actionLogger.isDebugEnabled && a.isLogged) {
         ctx.sequenceCounter += 1
         val logA = a.nonFusedEquivalentAction
-        val aPrefix = if (a eq logA) "" else "[fused] "
+        val aPrefix =
+          if (a eq logA)
+            ""
+          else
+            "[fused] "
         val dump = new TreePrinter(
           prefix = "    ",
           firstPrefix = aPrefix,
@@ -491,7 +514,10 @@ trait BasicBackend { self =>
     /** Return the specified ExecutionContext unless running in same-thread mode, in which case
       * `Action.sameThreadExecutionContext` is returned instead. */
     private[BasicBackend] def getEC(ec: ExecutionContext): ExecutionContext =
-      if (useSameThread) DBIO.sameThreadExecutionContext else ec
+      if (useSameThread)
+        DBIO.sameThreadExecutionContext
+      else
+        ec
 
     /** A volatile variable to enforce the happens-before relationship (see
       * [[https://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html]] and
@@ -623,7 +649,8 @@ trait BasicBackend { self =>
           "Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
         cancel
       } else {
-        if (!cancelRequested && remaining.getAndAdd(l) == 0L) restartStreaming
+        if (!cancelRequested && remaining.getAndAdd(l) == 0L)
+          restartStreaming
       }
     }
 
@@ -632,7 +659,8 @@ trait BasicBackend { self =>
       // Restart streaming because cancelling requires closing the result set and the session from
       // within a synchronous action context. This will also complete the result Promise and thus
       // allow the rest of the scheduled Action to run.
-      if (remaining.getAndSet(Long.MaxValue) == 0L) restartStreaming
+      if (remaining.getAndSet(Long.MaxValue) == 0L)
+        restartStreaming
     }
   }
 }

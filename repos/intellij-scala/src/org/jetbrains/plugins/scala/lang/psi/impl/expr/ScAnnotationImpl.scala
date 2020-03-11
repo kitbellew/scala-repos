@@ -93,7 +93,8 @@ class ScAnnotationImpl private (
 
   def findAttributeValue(attributeName: String): PsiAnnotationMemberValue = {
     val value = findDeclaredAttributeValue(attributeName)
-    if (value != null) return value
+    if (value != null)
+      return value
 
     getClazz match {
       case Some(c) =>

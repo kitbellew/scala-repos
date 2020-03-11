@@ -75,10 +75,12 @@ object LightUtil {
                   }
                 if (classes.nonEmpty)
                   accumulator :+ classes.mkString(sep = ", ")
-                else accumulator
+                else
+                  accumulator
               case None => accumulator
             }
-          } else accumulator :+ classes.mkString(sep = ", ")
+          } else
+            accumulator :+ classes.mkString(sep = ", ")
         case _ => ArrayBuffer()
       }
     throwAnnotations.mkString(start = " throws ", sep = ", ", end = " ")

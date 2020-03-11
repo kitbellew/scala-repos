@@ -59,7 +59,10 @@ object GradientDescentSuite {
 
     val y: Seq[Int] = (0 until nPoints).map { i =>
       val yVal = offset + scale * x1(i) + rLogis(i)
-      if (yVal > 0) 1 else 0
+      if (yVal > 0)
+        1
+      else
+        0
     }
 
     (0 until nPoints).map(i => LabeledPoint(y(i), Vectors.dense(x1(i))))

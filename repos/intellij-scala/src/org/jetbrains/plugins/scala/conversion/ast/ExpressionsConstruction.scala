@@ -63,8 +63,10 @@ object MethodCallExpression extends IntermediateNode {
     }
     MethodCallExpression(
       methodName,
-      if (reciever != null) QualifiedExpression(reciever, identifier)
-      else identifier,
+      if (reciever != null)
+        QualifiedExpression(reciever, identifier)
+      else
+        identifier,
       args)
   }
 }

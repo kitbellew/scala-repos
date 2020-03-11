@@ -75,7 +75,10 @@ object Reference {
     new Ordering[ProjectRef] {
       def compare(a: ProjectRef, b: ProjectRef): Int = {
         val bc = a.build compareTo b.build
-        if (bc == 0) a.project compareTo b.project else bc
+        if (bc == 0)
+          a.project compareTo b.project
+        else
+          bc
       }
     }
 

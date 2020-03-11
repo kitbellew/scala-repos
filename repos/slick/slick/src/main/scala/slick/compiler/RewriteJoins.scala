@@ -87,7 +87,8 @@ class RewriteJoins extends Phase {
       val (oj3, m) = eliminateIllegalRefs(oj2, Set.empty, sn)
       val oj4 = rearrangeJoinConditions(oj3, Set.empty)
       val sel3 =
-        if (m.isEmpty) sel2
+        if (m.isEmpty)
+          sel2
         else
           sel2.replace {
             case p @ FwdPath(r1 :: rest) if r1 == sn && m.contains(rest) =>
@@ -163,7 +164,8 @@ class RewriteJoins extends Phase {
     val (l1, p1Opt, inv1) = hoist(j.leftGen, j.left)
     val (r1, p2Opt, inv2) = hoist(j.rightGen, j.right)
     val invalid = inv1 ++ inv2
-    if ((l1 eq j.left) && (r1 eq j.right)) (j, invalid)
+    if ((l1 eq j.left) && (r1 eq j.right))
+      (j, invalid)
     else {
       val j2 = j
         .copy(
@@ -219,7 +221,8 @@ class RewriteJoins extends Phase {
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =
-          if (newDefs.isEmpty) (b.select, tss1)
+          if (newDefs.isEmpty)
+            (b.select, tss1)
           else
             (
               Pure(
@@ -269,7 +272,8 @@ class RewriteJoins extends Phase {
         illegal: Set[TermSymbol]): (StructNode, Map[TermSymbol, Node]) = {
       val (illegalDefs, legalDefs) =
         sn.elements.toSeq.partition(t => hasRefTo(t._2, illegal))
-      if (illegalDefs.isEmpty) (sn, Map.empty)
+      if (illegalDefs.isEmpty)
+        (sn, Map.empty)
       else {
         logger.debug(
           "Pulling refs to [" + illegal.mkString(
@@ -314,7 +318,8 @@ class RewriteJoins extends Phase {
       case jch: Join => eliminateIllegalRefs(jch, illegal, outsideRef)
       case b @ Bind(s1, from, Pure(sn1 @ StructNode(defs), ts)) =>
         val (sn2, pulled) = pullOut(sn1, s1, illegal)
-        if (sn2 eq sn1) (b, Map.empty)
+        if (sn2 eq sn1)
+          (b, Map.empty)
         else {
           val b2 = b.copy(select = Pure(sn2, ts)).infer()
           (
@@ -327,7 +332,8 @@ class RewriteJoins extends Phase {
     }
     val (l1, l1m) = trChild(j.left, illegal, j.leftGen)
     val (r1, r1m) = trChild(j.right, illegal + j.leftGen, j.rightGen)
-    if (l1m.isEmpty && r1m.isEmpty) (j, Map.empty)
+    if (l1m.isEmpty && r1m.isEmpty)
+      (j, Map.empty)
     else {
       val on1 = j.on
         .replace(
@@ -370,10 +376,11 @@ class RewriteJoins extends Phase {
           },
           keepType = true
         ))
-      if (logger.isDebugEnabled) m2.foreach {
-        case (p, n) =>
-          logger.debug("Replacement for " + FwdPath.toString(p) + ":", n)
-      }
+      if (logger.isDebugEnabled)
+        m2.foreach {
+          case (p, n) =>
+            logger.debug("Replacement for " + FwdPath.toString(p) + ":", n)
+        }
       (j2, m2)
     }
   }
@@ -385,12 +392,12 @@ class RewriteJoins extends Phase {
   def rearrangeJoinConditions(j: Join, alsoPull: Set[TermSymbol]): Join =
     j match {
       case Join(
-          s1,
-          s2,
-          _,
-          j2a @ Join(_, _, _, _, JoinType.Inner, _),
-          JoinType.Inner,
-          on1) =>
+            s1,
+            s2,
+            _,
+            j2a @ Join(_, _, _, _, JoinType.Inner, _),
+            JoinType.Inner,
+            on1) =>
         logger.debug(
           "Trying to rearrange join conditions (alsoPull: " + alsoPull.mkString(
             ", ") + ") in:",
@@ -418,15 +425,21 @@ class RewriteJoins extends Phase {
               _.replace(
                 {
                   case Select(Ref(s), ElementSymbol(i)) :@ tpe if s == s2 =>
-                    Ref(if (i == 0) j2b.leftGen else j2b.rightGen) :@ tpe
+                    Ref(
+                      if (i == 0)
+                        j2b.leftGen
+                      else
+                        j2b.rightGen) :@ tpe
                 },
                 keepType = true)) ++ on2Keep)
           val j2c = j2b.copy(on = on2b.infer()) :@ j2b.nodeType
           val res = j.copy(right = j2c, on = on1b.infer()) :@ j.nodeType
           logger.debug("Rearranged join conditions in:", res)
           res
-        } else if (j2b eq j2a) j
-        else j.copy(right = j2b) :@ j.nodeType
+        } else if (j2b eq j2a)
+          j
+        else
+          j.copy(right = j2b) :@ j.nodeType
       case j => j
     }
 
@@ -440,9 +453,9 @@ class RewriteJoins extends Phase {
     * tree smaller to speed up subsequent phases. */
   def flattenAliasingMap(b: Bind): Bind = b match {
     case Bind(
-        s1,
-        Bind(s2, f, Pure(StructNode(p1), ts1)),
-        Pure(StructNode(p2), ts2)) =>
+          s1,
+          Bind(s2, f, Pure(StructNode(p1), ts1)),
+          Pure(StructNode(p2), ts2)) =>
       def isAliasing(s: ConstArray[(TermSymbol, Node)]) = s.forall {
         case (_, n) =>
           n.collect(
@@ -454,8 +467,10 @@ class RewriteJoins extends Phase {
       }
       val a1 = isAliasing(p1)
       if (a1 || isAliasing(p2)) {
-        logger.debug(
-          s"Bind(${if (a1) s1 else s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
+        logger.debug(s"Bind(${if (a1)
+          s1
+        else
+          s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
         val m = p1.iterator.toMap
         Bind(
           s2,
@@ -472,7 +487,8 @@ class RewriteJoins extends Phase {
                     keepType = true))
             }),
             ts2)).infer()
-      } else b
+      } else
+        b
     case b => b
   }
 
@@ -490,12 +506,16 @@ class RewriteJoins extends Phase {
   }
 
   def and(ns: IndexedSeq[Node]): Node =
-    if (ns.isEmpty) LiteralNode(true)
+    if (ns.isEmpty)
+      LiteralNode(true)
     else
       ns.reduceLeft { (p1, p2) =>
         val t1 = p1.nodeType.structural
         Library.And.typed(
-          if (t1.isInstanceOf[OptionType]) t1 else p2.nodeType.structural,
+          if (t1.isInstanceOf[OptionType])
+            t1
+          else
+            p2.nodeType.structural,
           p1,
           p2)
       }
@@ -503,7 +523,10 @@ class RewriteJoins extends Phase {
   def and(p1Opt: Option[Node], p2: Node): Node = p1Opt.fold(p2) { p1 =>
     val t1 = p1.nodeType.structural
     Library.And.typed(
-      if (t1.isInstanceOf[OptionType]) t1 else p2.nodeType.structural,
+      if (t1.isInstanceOf[OptionType])
+        t1
+      else
+        p2.nodeType.structural,
       p1,
       p2)
   }

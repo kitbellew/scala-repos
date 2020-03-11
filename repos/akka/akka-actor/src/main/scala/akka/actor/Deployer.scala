@@ -68,9 +68,14 @@ final case class Deploy(
       config.withFallback(other.config),
       routerConfig.withFallback(other.routerConfig),
       scope.withFallback(other.scope),
-      if (dispatcher == Deploy.NoDispatcherGiven) other.dispatcher
-      else dispatcher,
-      if (mailbox == Deploy.NoMailboxGiven) other.mailbox else mailbox
+      if (dispatcher == Deploy.NoDispatcherGiven)
+        other.dispatcher
+      else
+        dispatcher,
+      if (mailbox == Deploy.NoMailboxGiven)
+        other.mailbox
+      else
+        mailbox
     )
   }
 }
@@ -172,12 +177,13 @@ private[akka] class Deployer(
         path: Array[String],
         d: Deploy,
         w: WildcardTree[Deploy] = deployments.get): Unit = {
-      for (i ← 0 until path.length) path(i) match {
-        case "" ⇒
-          throw new InvalidActorNameException(
-            s"Actor name in deployment [${d.path}] must not be empty")
-        case el ⇒ ActorPath.validatePathElement(el, fullPath = d.path)
-      }
+      for (i ← 0 until path.length)
+        path(i) match {
+          case "" ⇒
+            throw new InvalidActorNameException(
+              s"Actor name in deployment [${d.path}] must not be empty")
+          case el ⇒ ActorPath.validatePathElement(el, fullPath = d.path)
+        }
 
       if (!deployments.compareAndSet(w, w.insert(path.iterator, d)))
         add(path, d)
@@ -210,14 +216,16 @@ private[akka] class Deployer(
       key: String,
       config: Config,
       deployment: Config): RouterConfig =
-    if (routerType == "from-code") NoRouter
+    if (routerType == "from-code")
+      NoRouter
     else {
       // need this for backwards compatibility, resizer enabled when including (parts of) resizer section in the deployment
       val deployment2 =
         if (config.hasPath("resizer") && !deployment.getBoolean(
               "resizer.enabled"))
           resizerEnabled.withFallback(deployment)
-        else deployment
+        else
+          deployment
 
       val fqn = routerTypeMapping.getOrElse(routerType, routerType)
 

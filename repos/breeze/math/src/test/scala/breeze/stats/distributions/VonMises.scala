@@ -39,7 +39,8 @@ class VonMisesTest
          }; // Gamma pdf at 0 not defined when shape == 1
          k <- arbitrary[Double].map {
            _.abs % 3.0 + 1.5
-         }) yield (mu, k);
+         })
+      yield (mu, k);
   }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
@@ -60,7 +61,8 @@ class VonMisesTest
          };
          scale <- arbitrary[Double].map { x =>
            math.abs(x) % 3.0 + 1.1
-         }) yield new VonMises(shape, scale);
+         })
+      yield new VonMises(shape, scale);
   }
 
   type Distr = VonMises

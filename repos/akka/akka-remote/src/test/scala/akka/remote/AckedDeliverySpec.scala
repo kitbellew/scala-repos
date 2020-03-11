@@ -272,9 +272,12 @@ class AckedDeliverySpec extends AkkaSpec {
     def happened(p: Double) = ThreadLocalRandom.current().nextDouble() < p
 
     @tailrec def geom(p: Double, limit: Int = 5, acc: Int = 0): Int =
-      if (acc == limit) acc
-      else if (happened(p)) acc
-      else geom(p, limit, acc + 1)
+      if (acc == limit)
+        acc
+      else if (happened(p))
+        acc
+      else
+        geom(p, limit, acc + 1)
 
     "correctly cooperate with each other" in {
       val MsgCount = 1000
@@ -299,10 +302,12 @@ class AckedDeliverySpec extends AkkaSpec {
           val tmp = toSend.take(steps - resends.size)
           toSend = toSend.drop(steps - resends.size)
           tmp
-        } else Seq.empty[Sequenced]
+        } else
+          Seq.empty[Sequenced]
 
         (resends ++ sends) foreach { msg ⇒
-          if (sends.contains(msg)) sndBuf = sndBuf.buffer(msg)
+          if (sends.contains(msg))
+            sndBuf = sndBuf.buffer(msg)
           if (happened(p)) {
             val (updatedRcvBuf, delivers, ack) =
               rcvBuf.receive(msg).extractDeliverable
@@ -311,7 +316,8 @@ class AckedDeliverySpec extends AkkaSpec {
             lastAck = ack
             received ++= delivers
             dbgLog(s"R: ${received.mkString(", ")}")
-          } else dbgLog(s"$sndBuf -- $msg --X $rcvBuf")
+          } else
+            dbgLog(s"$sndBuf -- $msg --X $rcvBuf")
         }
       }
 
@@ -319,7 +325,8 @@ class AckedDeliverySpec extends AkkaSpec {
         if (happened(p)) {
           sndBuf = sndBuf.acknowledge(lastAck)
           dbgLog(s"$sndBuf <-- $lastAck -- $rcvBuf")
-        } else dbgLog(s"$sndBuf X-- $lastAck -- $rcvBuf")
+        } else
+          dbgLog(s"$sndBuf X-- $lastAck -- $rcvBuf")
       }
 
       // Dropping phase

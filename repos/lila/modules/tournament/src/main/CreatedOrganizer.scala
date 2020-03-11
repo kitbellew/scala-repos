@@ -38,8 +38,10 @@ private[tournament] final class CreatedOrganizer(
               PlayerRepo count tour.id foreach {
                 case 0 => api wipe tour
                 case nb if tour.hasWaitedEnough =>
-                  if (nb >= Tournament.minPlayers) api start tour
-                  else api wipe tour
+                  if (nb >= Tournament.minPlayers)
+                    api start tour
+                  else
+                    api wipe tour
                 case _ =>
               }
             case Some(schedule) if tour.hasWaitedEnough => api start tour

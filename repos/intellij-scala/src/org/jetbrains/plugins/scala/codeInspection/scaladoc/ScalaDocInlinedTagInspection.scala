@@ -47,7 +47,8 @@ class ScalaDocInlinedTagDeleteQuickFix(inlinedTag: ScDocInlinedTag)
 
   def doApplyFix(project: Project) {
     val tag = getElement
-    if (!tag.isValid) return
+    if (!tag.isValid)
+      return
     tag.delete()
   }
 }
@@ -60,7 +61,8 @@ class ScalaDocInlinedTagReplaceQuickFix(inlinedTag: ScDocInlinedTag)
 
   def doApplyFix(project: Project) {
     val tag = getElement
-    if (!tag.isValid) return
+    if (!tag.isValid)
+      return
 
     if (tag.getValueElement == null) {
       tag.replace(

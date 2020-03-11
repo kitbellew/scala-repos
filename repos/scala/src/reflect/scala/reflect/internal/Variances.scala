@@ -41,7 +41,8 @@ trait Variances {
         () // done
       else if (site.isTerm || site.isPrivateLocal)
         checkForEscape(sym, site.owner) // ok - recurse to owner
-      else escapedLocals += sym
+      else
+        escapedLocals += sym
     }
 
     protected def issueVarianceError(
@@ -79,12 +80,15 @@ trait Variances {
         */
       def relativeVariance(tvar: Symbol): Variance = {
         def nextVariance(sym: Symbol, v: Variance): Variance = (
-          if (shouldFlip(sym, tvar)) v.flip
-          else if (isLocalOnly(sym)) Bivariant
+          if (shouldFlip(sym, tvar))
+            v.flip
+          else if (isLocalOnly(sym))
+            Bivariant
           else if (sym.isAliasType)
             (
               // Unsound pre-2.11 behavior preserved under -Xsource:2.10
-              if (settings.isScala211 || sym.isOverridingSymbol) Invariant
+              if (settings.isScala211 || sym.isOverridingSymbol)
+                Invariant
               else {
                 currentRun.reporting.deprecationWarning(
                   sym.pos,
@@ -92,11 +96,14 @@ trait Variances {
                 Bivariant
               }
             )
-          else v
+          else
+            v
         )
         def loop(sym: Symbol, v: Variance): Variance = (
-          if (sym == tvar.owner || v.isBivariant) v
-          else loop(sym.owner, nextVariance(sym, v))
+          if (sym == tvar.owner || v.isBivariant)
+            v
+          else
+            loop(sym.owner, nextVariance(sym, v))
         )
         loop(base, Covariant)
       }
@@ -112,8 +119,10 @@ trait Variances {
         if (!relative.isBivariant) {
           def sym_s = s"$sym (${sym.variance}${sym.locationString})"
           def base_s =
-            s"$base in ${base.owner}" + (if (base.owner.isClass) ""
-                                         else " in " + base.owner.enclClass)
+            s"$base in ${base.owner}" + (if (base.owner.isClass)
+                                           ""
+                                         else
+                                           " in " + base.owner.enclClass)
           log(s"verifying $sym_s is $required at $base_s")
           if (sym.variance != required)
             issueVarianceError(base, sym, required)
@@ -121,8 +130,11 @@ trait Variances {
       }
       override def mapOver(decls: Scope): Scope = {
         decls foreach (sym =>
-          withVariance(if (sym.isAliasType) Invariant else variance)(
-            this(sym.info)))
+          withVariance(
+            if (sym.isAliasType)
+              Invariant
+            else
+              variance)(this(sym.info)))
         decls
       }
       private def resultTypeOnly(tp: Type) = tp match {
@@ -221,7 +233,10 @@ trait Variances {
     def inTypes(tps: List[Type]): Variance = fold(tps map inType)
 
     def inSym(sym: Symbol): Variance =
-      if (sym.isAliasType) inType(sym.info).cut else inType(sym.info)
+      if (sym.isAliasType)
+        inType(sym.info).cut
+      else
+        inType(sym.info)
     def inType(tp: Type): Variance = tp match {
       case ErrorType | WildcardType | NoType | NoPrefix => Bivariant
       case ThisType(_) | ConstantType(_)                => Bivariant

@@ -15,15 +15,21 @@ trait Semigroup[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
     if (n <= 0)
       throw new IllegalArgumentException(
         "Repeated combination for semigroups must have repetitions > 0")
-    else if (n == 1) a
-    else combinenAboveOne(a, n)
+    else if (n == 1)
+      a
+    else
+      combinenAboveOne(a, n)
 
   protected def combinenAboveOne(a: A, n: Int): A = {
     @tailrec def loop(b: A, k: Int, extra: A): A =
       if (k == 1) {
         op(b, extra)
       } else {
-        val x = if ((k & 1) == 1) op(b, extra) else extra
+        val x =
+          if ((k & 1) == 1)
+            op(b, extra)
+          else
+            extra
         loop(op(b, b), k >>> 1, x)
       }
     loop(a, n - 1, a)

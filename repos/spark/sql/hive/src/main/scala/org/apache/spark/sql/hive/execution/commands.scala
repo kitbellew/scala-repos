@@ -59,7 +59,11 @@ private[hive] case class DropTable(tableName: String, ifExists: Boolean)
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     val hiveContext = sqlContext.asInstanceOf[HiveContext]
-    val ifExistsClause = if (ifExists) "IF EXISTS " else ""
+    val ifExistsClause =
+      if (ifExists)
+        "IF EXISTS "
+      else
+        ""
     try {
       hiveContext.cacheManager.tryUncacheQuery(hiveContext.table(tableName))
     } catch {

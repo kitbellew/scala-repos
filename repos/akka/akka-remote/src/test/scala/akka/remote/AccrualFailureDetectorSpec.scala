@@ -153,7 +153,8 @@ class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
         acceptableLostDuration = 3.seconds,
         clock = fakeTimeGenerator(timeIntervals))
 
-      for (_ ← 0 until 1000) fd.heartbeat()
+      for (_ ← 0 until 1000)
+        fd.heartbeat()
       fd.isAvailable should ===(false) // after the long pause
       fd.heartbeat()
       fd.isAvailable should ===(true)

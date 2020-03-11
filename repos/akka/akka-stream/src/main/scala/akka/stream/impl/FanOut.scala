@@ -116,8 +116,10 @@ private[akka] object FanOut {
 
     def markOutput(output: Int): Unit = {
       if (!marked(output)) {
-        if (cancelled(output)) markedCancelled += 1
-        if (pending(output)) markedPending += 1
+        if (cancelled(output))
+          markedCancelled += 1
+        if (pending(output))
+          markedPending += 1
         marked(output) = true
         markedCount += 1
       }
@@ -125,8 +127,10 @@ private[akka] object FanOut {
 
     def unmarkOutput(output: Int): Unit = {
       if (marked(output)) {
-        if (cancelled(output)) markedCancelled -= 1
-        if (pending(output)) markedPending -= 1
+        if (cancelled(output))
+          markedCancelled -= 1
+        if (pending(output))
+          markedPending -= 1
         marked(output) = false
         markedCount -= 1
       }
@@ -155,7 +159,8 @@ private[akka] object FanOut {
       var id = preferredId
       while (!(marked(id) && pending(id))) {
         id += 1
-        if (id == outputCount) id = 0
+        if (id == outputCount)
+          id = 0
         require(
           id != preferredId,
           "Tried to enqueue without waiting for any demand")
@@ -167,7 +172,8 @@ private[akka] object FanOut {
       val output = outputs(id)
       output.enqueueOutputElement(elem)
       if (!output.demandAvailable) {
-        if (marked(id)) markedPending -= 1
+        if (marked(id))
+          markedPending -= 1
         pending(id) = false
       }
     }
@@ -175,7 +181,8 @@ private[akka] object FanOut {
     def enqueueMarked(elem: Any): Unit = {
       var id = 0
       while (id < outputCount) {
-        if (marked(id)) enqueue(id, elem)
+        if (marked(id))
+          enqueue(id, elem)
         id += 1
       }
     }
@@ -183,7 +190,8 @@ private[akka] object FanOut {
     def idToEnqueueAndYield(): Int = {
       val id = idToEnqueue()
       preferredId = id + 1
-      if (preferredId == outputCount) preferredId = 0
+      if (preferredId == outputCount)
+        preferredId = 0
       id
     }
 
@@ -247,7 +255,8 @@ private[akka] object FanOut {
               id,
               ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
           else {
-            if (marked(id) && !pending(id)) markedPending += 1
+            if (marked(id) && !pending(id))
+              markedPending += 1
             pending(id) = true
             outputs(id).subreceive(RequestMore(null, demand))
           }
@@ -255,7 +264,8 @@ private[akka] object FanOut {
           if (unmarkCancelled) {
             unmarkOutput(id)
           }
-          if (marked(id) && !cancelled(id)) markedCancelled += 1
+          if (marked(id) && !cancelled(id))
+            markedCancelled += 1
           cancelled(id) = true
           onCancel(id)
           outputs(id).subreceive(Cancel(null))

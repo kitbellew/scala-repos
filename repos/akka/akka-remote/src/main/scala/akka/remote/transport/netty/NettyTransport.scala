@@ -69,9 +69,12 @@ object NettyFutureBridge {
     nettyFuture.addListener(new ChannelFutureListener {
       def operationComplete(future: ChannelFuture): Unit =
         p complete Try(
-          if (future.isSuccess) future.getChannel
-          else if (future.isCancelled) throw new CancellationException
-          else throw future.getCause)
+          if (future.isSuccess)
+            future.getChannel
+          else if (future.isCancelled)
+            throw new CancellationException
+          else
+            throw future.getCause)
     })
     p.future
   }
@@ -82,7 +85,8 @@ object NettyFutureBridge {
     nettyFuture.addListener(new ChannelGroupFutureListener {
       def operationComplete(future: ChannelGroupFuture): Unit =
         p complete Try(
-          if (future.isCompleteSuccess) future.getGroup
+          if (future.isCompleteSuccess)
+            future.getGroup
           else
             throw future.iterator.asScala.collectFirst {
               case f if f.isCancelled ⇒ new CancellationException
@@ -181,7 +185,10 @@ class NettyTransportSettings(config: Config) {
   }
 
   val SslSettings: Option[SSLSettings] =
-    if (EnableSsl) Some(new SSLSettings(config.getConfig("security"))) else None
+    if (EnableSsl)
+      Some(new SSLSettings(config.getConfig("security")))
+    else
+      None
 
   val ServerSocketWorkerPoolSize: Int = computeWPS(
     config.getConfig("server-socket-worker-pool"))
@@ -378,8 +385,10 @@ class NettyTransport(
       .map(system.dispatchers.lookup)
       .getOrElse(system.dispatcher)
 
-  override val schemeIdentifier: String =
-    (if (EnableSsl) "ssl." else "") + TransportMode
+  override val schemeIdentifier: String = (if (EnableSsl)
+                                             "ssl."
+                                           else
+                                             "") + TransportMode
   override def maximumPayloadBytes: Int = settings.MaxFrameSize
 
   private final val isDatagram = TransportMode == Udp
@@ -502,7 +511,8 @@ class NettyTransport(
         val handler =
           if (isDatagram)
             new UdpClientHandler(NettyTransport.this, remoteAddress)
-          else new TcpClientHandler(NettyTransport.this, remoteAddress)
+          else
+            new TcpClientHandler(NettyTransport.this, remoteAddress)
         pipeline.addLast("clienthandler", handler)
         pipeline
       }
@@ -602,8 +612,10 @@ class NettyTransport(
           schemeIdentifier,
           system.name,
           Some(settings.Hostname),
-          if (settings.PortSelector == 0) None
-          else Some(settings.PortSelector)) match {
+          if (settings.PortSelector == 0)
+            None
+          else
+            Some(settings.PortSelector)) match {
           case Some(address) ⇒
             addressFromSocketAddress(
               newServerChannel.getLocalAddress,
@@ -661,7 +673,8 @@ class NettyTransport(
                   .handshake()
                   .awaitUninterruptibly()
               }
-            if (!isDatagram) channel.setReadable(false)
+            if (!isDatagram)
+              channel.setReadable(false)
             channel
         }
         handle ← if (isDatagram)

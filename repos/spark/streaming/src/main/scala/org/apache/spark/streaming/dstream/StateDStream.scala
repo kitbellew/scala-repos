@@ -50,7 +50,11 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     val finalFunc = (iterator: Iterator[(K, (Iterable[V], Iterable[S]))]) => {
       val i = iterator.map(t => {
         val itr = t._2._2.iterator
-        val headOption = if (itr.hasNext) Some(itr.next()) else None
+        val headOption =
+          if (itr.hasNext)
+            Some(itr.next())
+          else
+            None
         (t._1, t._2._1.toSeq, headOption)
       })
       updateFuncLocal(i)
@@ -70,7 +74,7 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
         // Try to get the parent RDD
         parent.getOrCompute(validTime) match {
           case Some(
-              parentRDD) => { // If parent RDD exists, then compute as usual
+                parentRDD) => { // If parent RDD exists, then compute as usual
             computeUsingPreviousRDD(parentRDD, prevStateRDD)
           }
           case None => { // If parent RDD does not exist
@@ -93,7 +97,7 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
         // Try to get the parent RDD
         parent.getOrCompute(validTime) match {
           case Some(
-              parentRDD) => { // If parent RDD exists, then compute as usual
+                parentRDD) => { // If parent RDD exists, then compute as usual
             initialRDD match {
               case None => {
                 // Define the function for the mapPartition operation on grouped RDD;

@@ -16,7 +16,8 @@ trait NativeJsonSupport
       stream: InputStream,
       charset: String): JValue = {
     val rdr = new InputStreamReader(stream, charset)
-    if (rdr.ready()) native.JsonParser.parse(rdr, jsonFormats.wantsBigDecimal)
+    if (rdr.ready())
+      native.JsonParser.parse(rdr, jsonFormats.wantsBigDecimal)
     else {
       rdr.close()
       JNothing
@@ -24,8 +25,10 @@ trait NativeJsonSupport
   }
 
   protected def readJsonFromBody(bd: String): JValue = {
-    if (bd.nonBlank) native.JsonParser.parse(bd, jsonFormats.wantsBigDecimal)
-    else JNothing
+    if (bd.nonBlank)
+      native.JsonParser.parse(bd, jsonFormats.wantsBigDecimal)
+    else
+      JNothing
   }
 }
 
@@ -35,6 +38,7 @@ trait NativeJsonValueReaderProperty extends JsonValueReaderProperty[Document] {
 
 trait NativeJsonOutput extends JsonOutput[Document] with native.JsonMethods {
   protected def writeJson(json: JValue, writer: Writer) {
-    if (json != JNothing) native.Printer.compact(render(json), writer)
+    if (json != JNothing)
+      native.Printer.compact(render(json), writer)
   }
 }

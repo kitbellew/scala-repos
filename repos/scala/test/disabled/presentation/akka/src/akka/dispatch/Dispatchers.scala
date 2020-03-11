@@ -61,7 +61,10 @@ object Dispatchers {
     TIME_UNIT)
   val THROUGHPUT_DEADLINE_TIME_MILLIS = THROUGHPUT_DEADLINE_TIME.toMillis.toInt
   val MAILBOX_TYPE: MailboxType =
-    if (MAILBOX_CAPACITY < 1) UnboundedMailbox() else BoundedMailbox()
+    if (MAILBOX_CAPACITY < 1)
+      UnboundedMailbox()
+    else
+      BoundedMailbox()
 
   lazy val defaultGlobalDispatcher = {
     config

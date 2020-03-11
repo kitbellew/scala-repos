@@ -34,7 +34,10 @@ import scalafx.beans.value.ObservableValue
 object ObjectBinding {
   implicit def sfxObjectBinding2jfx[T](
       ob: ObjectBinding[T]): jfxbb.ObjectBinding[T] =
-    if (ob != null) ob.delegate else null
+    if (ob != null)
+      ob.delegate
+    else
+      null
 }
 
 class ObjectBinding[T](override val delegate: jfxbb.ObjectBinding[T])

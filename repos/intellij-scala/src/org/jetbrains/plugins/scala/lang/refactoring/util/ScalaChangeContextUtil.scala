@@ -27,7 +27,10 @@ object ScalaChangeContextUtil {
         Array[Int](range.getEndOffset))
       elem.putCopyableUserData(
         ASSOCIATIONS_KEY,
-        if (associations.isEmpty) null else associations.get(0))
+        if (associations.isEmpty)
+          null
+        else
+          associations.get(0))
     }
     scope.foreach(collectDataForElement)
   }

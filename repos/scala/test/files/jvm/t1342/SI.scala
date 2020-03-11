@@ -1,6 +1,7 @@
 class SI extends JI {
   def varArgsMethod(args: String*) {
-    for (arg <- args) println(arg)
+    for (arg <- args)
+      println(arg)
   }
 }
 

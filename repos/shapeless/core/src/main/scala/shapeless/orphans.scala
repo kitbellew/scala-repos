@@ -73,7 +73,11 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
     val appTpe = appliedType(fTcTpe, List(tTpe))
 
     val open = c.openImplicits
-    val materializerIdx = if (proxied) 1 else 0
+    val materializerIdx =
+      if (proxied)
+        1
+      else
+        0
     val materializer = open(materializerIdx)
     val checkIdx = (materializerIdx * 2) + 1
     if (open.size > checkIdx) {
@@ -92,7 +96,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
     val inst = c.inferImplicitValue(appTpe, silent = true)
 
     val masks =
-      if (!proxied) List(q"def materialize = ???")
+      if (!proxied)
+        List(q"def materialize = ???")
       else {
         val proxyOwner = materializer.sym.owner
         val proxyTpe = proxyOwner.typeSignature
@@ -122,8 +127,10 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         case b: Block => b.expr
       }
 
-      if (derived.equalsStructure(inst)) inst
-      else if (inst == EmptyTree) derived
+      if (derived.equalsStructure(inst))
+        inst
+      else if (inst == EmptyTree)
+        derived
       else {
         val resTpeD = derived.symbol.asMethod.info.finalResultType
         val resTpeI = inst.symbol.asMethod.info.finalResultType
@@ -135,7 +142,10 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
                 (!ad.typeSymbol.isParameter && !(ad <:< ai))
           }
 
-        if (useDerived) derived else inst
+        if (useDerived)
+          derived
+        else
+          inst
       }
     }
   }
@@ -143,7 +153,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
   def materializeWrapped[T](implicit tTag: WeakTypeTag[T]): Tree = {
     val open = c.openImplicits
     val masks =
-      if (open.size < 2) Nil
+      if (open.size < 2)
+        Nil
       else {
         val sym = open(1).sym
         List(q"def ${sym.name.toTermName} = ???")

@@ -104,8 +104,10 @@ final class Emitter private (
   private def compareClasses(lhs: LinkedClass, rhs: LinkedClass) = {
     val lhsAC = lhs.ancestors.size
     val rhsAC = rhs.ancestors.size
-    if (lhsAC != rhsAC) lhsAC < rhsAC
-    else lhs.encodedName.compareTo(rhs.encodedName) < 0
+    if (lhsAC != rhsAC)
+      lhsAC < rhsAC
+    else
+      lhs.encodedName.compareTo(rhs.encodedName) < 0
   }
 
   private def startRun(): Unit = {
@@ -152,12 +154,15 @@ final class Emitter private (
         classEmitter.genConstructor(linkedClass))
 
       // Normal methods
-      val memberMethods = for (m <- linkedClass.memberMethods) yield {
-        val methodCache = classCache.getMethodCache(m.info.encodedName)
+      val memberMethods =
+        for (m <- linkedClass.memberMethods)
+          yield {
+            val methodCache = classCache.getMethodCache(m.info.encodedName)
 
-        methodCache
-          .getOrElseUpdate(m.version, classEmitter.genMethod(className, m.tree))
-      }
+            methodCache.getOrElseUpdate(
+              m.version,
+              classEmitter.genMethod(className, m.tree))
+          }
 
       // Exported Members
       val exportedMembers = classTreeCache.exportedMembers.getOrElseUpdate(
@@ -182,13 +187,14 @@ final class Emitter private (
       }
     } else if (kind == ClassKind.Interface) {
       // Default methods
-      for (m <- linkedClass.memberMethods) yield {
-        val methodCache = classCache.getMethodCache(m.info.encodedName)
-        addTree(
-          methodCache.getOrElseUpdate(
-            m.version,
-            classEmitter.genDefaultMethod(className, m.tree)))
-      }
+      for (m <- linkedClass.memberMethods)
+        yield {
+          val methodCache = classCache.getMethodCache(m.info.encodedName)
+          addTree(
+            methodCache.getOrElseUpdate(
+              m.version,
+              classEmitter.genDefaultMethod(className, m.tree)))
+        }
     }
 
     if (classEmitter.needInstanceTests(linkedClass)) {
@@ -343,7 +349,10 @@ private[scalajs] object Emitter {
     import factory._
 
     def cond(p: Boolean)(v: => SymbolRequirement): SymbolRequirement =
-      if (p) v else none()
+      if (p)
+        v
+      else
+        none()
 
     multiple(
       instantiateClass("O", "init___"),

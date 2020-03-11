@@ -33,7 +33,10 @@ private class BoyerMoore(needle: Array[Byte]) {
     @tailrec def loop1(i: Int, lastPrefixPosition: Int): Unit =
       if (i >= 0) {
         val nextLastPrefixPosition =
-          if (isPrefix(i + 1, 0)) i + 1 else lastPrefixPosition
+          if (isPrefix(i + 1, 0))
+            i + 1
+          else
+            lastPrefixPosition
         table(nl1 - i) = nextLastPrefixPosition - i + nl1
         loop1(i - 1, nextLastPrefixPosition)
       }
@@ -42,7 +45,8 @@ private class BoyerMoore(needle: Array[Byte]) {
     @tailrec def suffixLength(i: Int, j: Int, result: Int): Int =
       if (i >= 0 && needle(i) == needle(j))
         suffixLength(i - 1, j - 1, result + 1)
-      else result
+      else
+        result
     @tailrec def loop2(i: Int): Unit =
       if (i < nl1) {
         val sl = suffixLength(i, nl1, 0)
@@ -61,8 +65,10 @@ private class BoyerMoore(needle: Array[Byte]) {
     @tailrec def rec(i: Int, j: Int): Int = {
       val byte = byteAt(haystack, i)
       if (needle(j) == byte) {
-        if (j == 0) i // found
-        else rec(i - 1, j - 1)
+        if (j == 0)
+          i // found
+        else
+          rec(i - 1, j - 1)
       } else
         rec(i + math.max(offsetTable(nl1 - j), charTable(byte & 0xff)), nl1)
     }

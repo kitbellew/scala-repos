@@ -65,8 +65,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @throws java.util.NoSuchElementException if the option is empty.
     */
   @inline final def get: A =
-    if (isEmpty) throw new NoSuchElementException("undefined.get")
-    else self.asInstanceOf[A]
+    if (isEmpty)
+      throw new NoSuchElementException("undefined.get")
+    else
+      self.asInstanceOf[A]
 
   @inline final private def forceGet: A = self.asInstanceOf[A]
 
@@ -76,7 +78,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @param default  the default expression.
     */
   @inline final def getOrElse[B >: A](default: => B): B =
-    if (isEmpty) default else this.forceGet
+    if (isEmpty)
+      default
+    else
+      this.forceGet
 
   /** Returns the option's value if it is nonempty,
     *  or `null` if it is empty.
@@ -102,7 +107,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see foreach
     */
   @inline final def map[B](f: A => B): UndefOr[B] =
-    if (isEmpty) undefined else f(this.forceGet)
+    if (isEmpty)
+      undefined
+    else
+      f(this.forceGet)
 
   /** Returns the result of applying `f` to this $option's
     *  value if the $option is nonempty.  Otherwise, evaluates
@@ -114,7 +122,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @param  f       the function to apply if nonempty.
     */
   @inline final def fold[B](ifEmpty: => B)(f: A => B): B =
-    if (isEmpty) ifEmpty else f(this.forceGet)
+    if (isEmpty)
+      ifEmpty
+    else
+      f(this.forceGet)
 
   /** Returns the result of applying `f` to this $option's value if
     *  this $option is nonempty.
@@ -127,10 +138,16 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see foreach
     */
   @inline final def flatMap[B](f: A => UndefOr[B]): UndefOr[B] =
-    if (isEmpty) undefined else f(this.forceGet)
+    if (isEmpty)
+      undefined
+    else
+      f(this.forceGet)
 
   def flatten[B](implicit ev: A <:< UndefOr[B]): UndefOr[B] =
-    if (isEmpty) undefined else ev(this.forceGet)
+    if (isEmpty)
+      undefined
+    else
+      ev(this.forceGet)
 
   /** Returns this $option if it is nonempty '''and''' applying the predicate `p` to
     *  this $option's value returns true. Otherwise, return $none.
@@ -138,7 +155,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @param  p   the predicate used for testing.
     */
   @inline final def filter(p: A => Boolean): UndefOr[A] =
-    if (isEmpty || p(this.forceGet)) self else undefined
+    if (isEmpty || p(this.forceGet))
+      self
+    else
+      undefined
 
   /** Returns this $option if it is nonempty '''and''' applying the predicate `p` to
     *  this $option's value returns false. Otherwise, return $none.
@@ -146,7 +166,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @param  p   the predicate used for testing.
     */
   @inline final def filterNot(p: A => Boolean): UndefOr[A] =
-    if (isEmpty || !p(this.forceGet)) self else undefined
+    if (isEmpty || !p(this.forceGet))
+      self
+    else
+      undefined
 
   /** Returns false if the option is $none, true otherwise.
     *  @note   Implemented here to avoid the implicit conversion to Iterable.
@@ -184,7 +207,8 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see flatMap
     */
   @inline final def foreach[U](f: A => U): Unit =
-    if (!isEmpty) f(this.forceGet)
+    if (!isEmpty)
+      f(this.forceGet)
 
   /** Returns the result of applying `pf` to this $option's contained
     *  value, '''if''' this option is
@@ -196,7 +220,8 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  value (if possible), or $none.
     */
   @inline final def collect[B](pf: PartialFunction[A, B]): UndefOr[B] =
-    if (isEmpty) undefined
+    if (isEmpty)
+      undefined
     else
       pf.applyOrElse(this.forceGet, (_: A) => undefined)
         .asInstanceOf[UndefOr[B]]
@@ -206,20 +231,28 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @param alternative the alternative expression.
     */
   @inline final def orElse[B >: A](alternative: => UndefOr[B]): UndefOr[B] =
-    if (isEmpty) alternative else self
+    if (isEmpty)
+      alternative
+    else
+      self
 
   /** Returns a singleton iterator returning the $option's value
     *  if it is nonempty, or an empty iterator if the option is empty.
     */
   def iterator: Iterator[A] =
-    if (isEmpty) scala.collection.Iterator.empty
-    else scala.collection.Iterator.single(this.forceGet)
+    if (isEmpty)
+      scala.collection.Iterator.empty
+    else
+      scala.collection.Iterator.single(this.forceGet)
 
   /** Returns a singleton list containing the $option's value
     *  if it is nonempty, or the empty list if the $option is empty.
     */
   def toList: List[A] =
-    if (isEmpty) Nil else this.forceGet :: Nil
+    if (isEmpty)
+      Nil
+    else
+      this.forceGet :: Nil
 
   // Can't link doc to Left or Right - #1969
   /** Returns a `Left` containing the given argument `left` if this $option is
@@ -229,7 +262,10 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see toLeft
     */
   @inline final def toRight[X](left: => X): Either[X, A] =
-    if (isEmpty) Left(left) else Right(this.forceGet)
+    if (isEmpty)
+      Left(left)
+    else
+      Right(this.forceGet)
 
   // Can't link doc to Left or Right - #1969
   /** Returns a `Right` containing the given argument `right` if this is empty,
@@ -239,14 +275,20 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see toRight
     */
   @inline final def toLeft[X](right: => X): Either[A, X] =
-    if (isEmpty) Right(right) else Left(this.forceGet)
+    if (isEmpty)
+      Right(right)
+    else
+      Left(this.forceGet)
 
   // Can't link doc to Some - #1969
   /** Returns a `Some` containing this $option's value
     *  if this $option is nonempty, [[scala.None None]] otherwise.
     */
   @inline final def toOption: Option[A] =
-    if (isEmpty) None else Some(this.forceGet)
+    if (isEmpty)
+      None
+    else
+      Some(this.forceGet)
 }
 
 object UndefOrOps {

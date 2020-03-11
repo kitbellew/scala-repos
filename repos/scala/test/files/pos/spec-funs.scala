@@ -24,7 +24,8 @@ final class IntTest {
       transF(xs, f)
     }
     var acc = 0
-    for (i <- 0 until xs.length) acc += xs(i)
+    for (i <- 0 until xs.length)
+      acc += xs(i)
     println(acc)
   }
 }
@@ -49,7 +50,8 @@ final class ClosureTest {
       transF(xs, x => x * x)
     }
     var acc = 0
-    for (i <- 0 until xs.length) acc += xs(i)
+    for (i <- 0 until xs.length)
+      acc += xs(i)
     println(acc)
   }
 }

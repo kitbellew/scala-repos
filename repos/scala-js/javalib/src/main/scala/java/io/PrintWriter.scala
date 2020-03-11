@@ -87,7 +87,12 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   def print(f: Float): Unit = write(String.valueOf(f))
   def print(d: Double): Unit = write(String.valueOf(d))
   def print(s: Array[Char]): Unit = write(s)
-  def print(s: String): Unit = write(if (s == null) "null" else s)
+  def print(s: String): Unit =
+    write(
+      if (s == null)
+        "null"
+      else
+        s)
   def print(obj: AnyRef): Unit = write(String.valueOf(obj))
 
   def println(): Unit = {
@@ -174,7 +179,9 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
 
   @inline private[this] def ensureOpenAndTrapIOExceptions(
       body: => Unit): Unit = {
-    if (closed) setError()
-    else trapIOExceptions(body)
+    if (closed)
+      setError()
+    else
+      trapIOExceptions(body)
   }
 }

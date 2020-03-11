@@ -34,7 +34,10 @@ import scala.language.implicitConversions
 object BigDecimalStringConverter {
   implicit def sfxBigDecimalStringConverter2jfx(
       c: BigDecimalStringConverter): jfxuc.BigDecimalStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class BigDecimalStringConverter(

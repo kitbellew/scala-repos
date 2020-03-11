@@ -410,7 +410,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
         val undefined = RawBitSet.create(colsArray.length)
 
         @inline @tailrec def definedCols(i: Int): Unit = if (i >= 0) {
-          if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
+          if (!colsArray(i).isDefinedAt(row))
+            RawBitSet.set(undefined, i)
           definedCols(i - 1)
         }
         definedCols(colsArray.length - 1)
@@ -439,7 +440,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
         @tailrec def helper(i: Int, decs: List[ColumnValueDecoder]) {
           decs match {
             case h :: t =>
-              if (!RawBitSet.get(undefined, i)) h.decode(row, buf)
+              if (!RawBitSet.get(undefined, i))
+                h.decode(row, buf)
               helper(i + 1, t)
             case Nil =>
           }
@@ -662,9 +664,10 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       zipWithSelectors(cols) map {
         case (_, colsWithTypes) =>
           val decoders: Map[Byte, ColumnValueDecoder] =
-            (for ((col, cType) <- colsWithTypes) yield {
-              (flagForCType(cType), getColumnDecoder(cType, col))
-            })(collection.breakOut)
+            (for ((col, cType) <- colsWithTypes)
+              yield {
+                (flagForCType(cType), getColumnDecoder(cType, col))
+              })(collection.breakOut)
 
           decoders
       }
@@ -849,8 +852,12 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     @tailrec
     def compare(cmp: Int): Int =
       if (cmp == 0) {
-        if (abuf.remaining() > 0) compare(compareNext()) else 0
-      } else cmp
+        if (abuf.remaining() > 0)
+          compare(compareNext())
+        else
+          0
+      } else
+        cmp
 
     compare(0)
   }
@@ -862,10 +869,11 @@ object SortingRowFormat {
     import scalaz.syntax.monad._
 
     val flag = flagForCType(cType)
-    for (buf <- M.getBuffer(1)) yield {
-      buf.put(flag)
-      ()
-    }
+    for (buf <- M.getBuffer(1))
+      yield {
+        buf.put(flag)
+        ()
+      }
   }
 
   def flagForCType(cType: CType): Byte = cType match {
@@ -923,7 +931,10 @@ trait IdentitiesRowFormat extends RowFormat {
     @inline @tailrec
     def loop(size: Int, n: Long): Int = {
       val m = n >>> 7
-      if (m == 0) size + 1 else loop(size + 1, m)
+      if (m == 0)
+        size + 1
+      else
+        loop(size + 1, m)
     }
 
     loop(0, n)
@@ -968,7 +979,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
     @inline @tailrec
     def packAll(xs: Array[Long], i: Int, offset: Int) {
-      if (i < xs.length) packAll(xs, i + 1, packLong(xs(i), bytes, offset))
+      if (i < xs.length)
+        packAll(xs, i + 1, packLong(xs(i), bytes, offset))
     }
 
     packAll(xs, 0, 0)
@@ -1002,7 +1014,8 @@ trait IdentitiesRowFormat extends RowFormat {
       val lo = bytes(offset)
       val m = shiftIn(lo, shift, n)
       val nOffset = offset + 1
-      if (more(lo)) loop(nOffset, shift + 7, m, i)
+      if (more(lo))
+        loop(nOffset, shift + 7, m, i)
       else {
         longs(i) = m
         if (nOffset < bytes.length)
@@ -1030,7 +1043,8 @@ trait IdentitiesRowFormat extends RowFormat {
         def sumPackedSize(i: Int, len: Int): Int =
           if (i < longCols.length) {
             sumPackedSize(i + 1, len + packedSize(longCols(i)(row)))
-          } else len
+          } else
+            len
 
         val bytes = new Array[Byte](sumPackedSize(0, 0))
 
@@ -1060,7 +1074,8 @@ trait IdentitiesRowFormat extends RowFormat {
           val b = src(offset)
           val m = shiftIn(b, shift, n)
           val nOffset = offset + 1
-          if (more(b)) loop(nOffset, shift + 7, m, col)
+          if (more(b))
+            loop(nOffset, shift + 7, m, col)
           else {
             longCols(col).update(row, m)
             if (nOffset < src.length)
@@ -1068,7 +1083,8 @@ trait IdentitiesRowFormat extends RowFormat {
           }
         }
 
-        if (src.length > 0) loop(0, 0, 0L, 0)
+        if (src.length > 0)
+          loop(0, 0, 0L, 0)
       }
     }
   }
@@ -1102,6 +1118,9 @@ trait IdentitiesRowFormat extends RowFormat {
       }
     }
 
-    if (identities == 0) 0 else loop(0, 0, 0L, 0L)
+    if (identities == 0)
+      0
+    else
+      loop(0, 0, 0L, 0L)
   }
 }

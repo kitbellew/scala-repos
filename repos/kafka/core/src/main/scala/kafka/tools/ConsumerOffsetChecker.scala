@@ -101,7 +101,10 @@ object ConsumerOffsetChecker extends Logging {
               .head
 
             val lagString = offsetOpt.map(o =>
-              if (o == -1) "unknown" else (logSize - o).toString)
+              if (o == -1)
+                "unknown"
+              else
+                (logSize - o).toString)
             println(
               "%-15s %-30s %-3s %-15s %-15s %-15s %s".format(
                 group,
@@ -205,7 +208,10 @@ object ConsumerOffsetChecker extends Logging {
       options.valueOf(channelRetryBackoffMsOpt).intValue()
 
     val topics =
-      if (options.has(topicsOpt)) Some(options.valueOf(topicsOpt)) else None
+      if (options.has(topicsOpt))
+        Some(options.valueOf(topicsOpt))
+      else
+        None
 
     var zkUtils: ZkUtils = null
     var channel: BlockingChannel = null

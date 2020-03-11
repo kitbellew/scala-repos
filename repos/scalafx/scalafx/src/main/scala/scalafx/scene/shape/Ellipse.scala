@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Ellipse {
   implicit def sfxEllipse2jfx(v: Ellipse): jfxss.Ellipse =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(radiusX: Double, radiusY: Double) =
     new Ellipse(new jfxss.Ellipse(radiusX, radiusY))

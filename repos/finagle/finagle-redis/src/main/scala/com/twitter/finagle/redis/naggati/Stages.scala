@@ -152,7 +152,15 @@ object Stages {
         }
       val byteBuffer = new Array[Byte](n)
       buffer.readBytes(byteBuffer)
-      process(new String(byteBuffer, 0, (if (removeLF) end else n), encoding))
+      process(
+        new String(
+          byteBuffer,
+          0,
+          (if (removeLF)
+             end
+           else
+             n),
+          encoding))
     }
   }
 

@@ -14,8 +14,10 @@ trait Tabulator {
     (items map (_.length)).sum + (items.length - 1) * marginSize < width
   )
   def tabulate(items: Seq[String]): Seq[Seq[String]] = (
-    if (fits(items, width)) Seq(Seq(items mkString " " * marginSize))
-    else printMultiLineColumns(items)
+    if (fits(items, width))
+      Seq(Seq(items mkString " " * marginSize))
+    else
+      printMultiLineColumns(items)
   )
   protected def columnize(ss: Seq[String]): Seq[Seq[String]] =
     ss map (s => Seq(s))
@@ -25,8 +27,10 @@ trait Tabulator {
     val columnWidth = longest + marginSize
     val maxcols =
       (
-        if (columnWidth >= width) 1
-        else 1 max (width / columnWidth) // make sure it doesn't divide to 0
+        if (columnWidth >= width)
+          1
+        else
+          1 max (width / columnWidth) // make sure it doesn't divide to 0
       )
     val nrows = items.size /% maxcols
     val ncols = items.size /% nrows
@@ -34,14 +38,20 @@ trait Tabulator {
     val padded = items map (s"%-${columnWidth}s" format _)
     val xwise = isAcross || ncols >= items.length
     val grouped: Seq[Seq[String]] =
-      if (groupSize == 1) columnize(items)
-      else if (xwise) (padded grouped groupSize).toSeq
+      if (groupSize == 1)
+        columnize(items)
+      else if (xwise)
+        (padded grouped groupSize).toSeq
       else {
         val h = 1 max padded.size /% groupSize
         val cols = (padded grouped h).toList
         for (i <- 0 until h)
           yield for (j <- 0 until groupSize)
-            yield if (i < cols(j).size) cols(j)(i) else ""
+            yield
+              if (i < cols(j).size)
+                cols(j)(i)
+              else
+                ""
       }
     grouped
   }
@@ -65,23 +75,33 @@ trait VariColumnTabulator extends Tabulator {
       // max width item in each column
       def maxima(rows: Seq[Seq[String]]) =
         (0 until (ncols min items.size)) map { col =>
-          val widths = for (r <- rows if r.size > col) yield r(col).length
+          val widths =
+            for (r <- rows if r.size > col)
+              yield r(col).length
           widths.max
         }
       def resulting(rows: Seq[Seq[String]]) = {
         val columnWidths = maxima(rows) map (_ + marginSize)
         val linelen = columnWidths.sum
-        if (linelen <= width) Some((nrows, columnWidths, rows))
-        else None
+        if (linelen <= width)
+          Some((nrows, columnWidths, rows))
+        else
+          None
       }
-      if (ncols == 1) resulting(columnize(items))
-      else if (xwise) resulting((items grouped ncols).toSeq)
+      if (ncols == 1)
+        resulting(columnize(items))
+      else if (xwise)
+        resulting((items grouped ncols).toSeq)
       else {
         val cols = (items grouped nrows).toList
         val rows =
           for (i <- 0 until nrows)
             yield for (j <- 0 until ncols)
-              yield if (j < cols.size && i < cols(j).size) cols(j)(i) else ""
+              yield
+                if (j < cols.size && i < cols(j).size)
+                  cols(j)(i)
+                else
+                  ""
         resulting(rows)
       }
     }

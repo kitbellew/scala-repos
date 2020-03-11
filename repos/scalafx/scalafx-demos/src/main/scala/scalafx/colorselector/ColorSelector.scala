@@ -74,8 +74,10 @@ object ColorSelector extends JFXApp {
 
   private def changeColor() {
     val newAlphaValue =
-      if (controlAlpha.disabled.value) 1.0
-      else (controlAlpha.value.toDouble / colorselector.Max)
+      if (controlAlpha.disabled.value)
+        1.0
+      else
+        (controlAlpha.value.toDouble / colorselector.Max)
 
     this.currentColor() = Color.rgb(
       controlRed.value.toInt,
@@ -123,7 +125,10 @@ object ColorSelector extends JFXApp {
   }
 
   private def getForegroundColor(d: Double) =
-    if (d > Max / 2) Color.Black else Color.White
+    if (d > Max / 2)
+      Color.Black
+    else
+      Color.White
 
   private def verifyWebColor() {
     cmbWebColor.value() =
@@ -204,8 +209,10 @@ object ColorSelector extends JFXApp {
   controlAlpha.selectedControl.onChange(controlSelected(controlAlpha))
   controlAlpha.disable.onChange({
     if (controlAlpha.selectedControl.value) {
-      if (controlAlpha.disable.value) synchronizedControls.remove(controlAlpha)
-      else synchronizedControls.add(controlAlpha)
+      if (controlAlpha.disable.value)
+        synchronizedControls.remove(controlAlpha)
+      else
+        synchronizedControls.add(controlAlpha)
     }
     changeColor()
     formatColor()

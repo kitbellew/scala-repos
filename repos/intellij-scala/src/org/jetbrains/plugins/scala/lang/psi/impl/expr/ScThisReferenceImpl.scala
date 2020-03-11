@@ -53,7 +53,8 @@ class ScThisReferenceImpl(node: ASTNode)
         Some(
           PsiTreeUtil
             .getContextOfType(encl, false, classOf[ScTemplateDefinition]))
-      else None
+      else
+        None
     }
   }
 

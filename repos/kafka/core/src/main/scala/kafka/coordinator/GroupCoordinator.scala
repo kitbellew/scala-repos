@@ -580,8 +580,10 @@ class GroupCoordinator(
       (Errors.GROUP_COORDINATOR_NOT_AVAILABLE, List[GroupOverview]())
     } else {
       val errorCode =
-        if (groupManager.isLoading()) Errors.GROUP_LOAD_IN_PROGRESS
-        else Errors.NONE
+        if (groupManager.isLoading())
+          Errors.GROUP_LOAD_IN_PROGRESS
+        else
+          Errors.NONE
       (errorCode, groupManager.currentGroups.map(_.overview).toList)
     }
   }
@@ -808,7 +810,8 @@ class GroupCoordinator(
     group synchronized {
       if (group.notYetRejoinedMembers.isEmpty)
         forceComplete()
-      else false
+      else
+        false
     }
   }
 
@@ -872,7 +875,8 @@ class GroupCoordinator(
     group synchronized {
       if (shouldKeepMemberAlive(member, heartbeatDeadline) || member.isLeaving)
         forceComplete()
-      else false
+      else
+        false
     }
   }
 

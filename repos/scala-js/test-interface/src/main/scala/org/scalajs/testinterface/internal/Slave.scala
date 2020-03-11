@@ -53,8 +53,10 @@ final class Slave(
   // Runner message handler methods
 
   private def outboundRunnerMessage(msg: String): Unit =
-    if (canSendRunnerMessage) sendOutboundRunnerMessage(msg)
-    else messageQueue.enqueue(msg)
+    if (canSendRunnerMessage)
+      sendOutboundRunnerMessage(msg)
+    else
+      messageQueue.enqueue(msg)
 
   private def sendOutboundRunnerMessage(msg: String): Unit = {
     assert(canSendRunnerMessage)
@@ -140,7 +142,8 @@ final class Slave(
     private[Slave] def invalidate(): Unit = valid = false
 
     protected def ensureValid(): Unit =
-      if (!valid) throw new IllegalStateException(s"$this has been invalidated")
+      if (!valid)
+        throw new IllegalStateException(s"$this has been invalidated")
   }
 
   private class RemoteEventHandler extends Invalidatable with EventHandler {

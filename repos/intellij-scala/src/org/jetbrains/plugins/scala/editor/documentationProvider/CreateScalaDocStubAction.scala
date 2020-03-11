@@ -43,11 +43,13 @@ class CreateScalaDocStubAction
     val context = e.getDataContext
     val editor = CommonDataKeys.EDITOR.getData(context)
 
-    if (editor == null) return
+    if (editor == null)
+      return
     val file = PsiUtilBase.getPsiFileInEditor(
       editor,
       CommonDataKeys.PROJECT.getData(context))
-    if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE) return
+    if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE)
+      return
 
     file findElementAt editor.getCaretModel.getOffset match {
       case id: PsiElement
@@ -124,8 +126,10 @@ class CreateScalaDocStubAction
 
       val tags = oldComment.getTags
       val firstAnchor =
-        if (tags.nonEmpty) tags(tags.length - 1)
-        else oldComment.getLastChild.getPrevSibling
+        if (tags.nonEmpty)
+          tags(tags.length - 1)
+        else
+          oldComment.getLastChild.getPrevSibling
 
       (firstAnchor.getTextRange.getEndOffset /: (groupNames zip paramMaps)) {
         case (anchor, (name, paramMap)) =>
@@ -135,7 +139,8 @@ class CreateScalaDocStubAction
                 if (psiDocument.getText(
                       new TextRange(currentAnchor - 1, currentAnchor)) == "*")
                   s"$name ${param._2.getName} \n"
-                else s"* $name ${param._2.getName} \n"
+                else
+                  s"* $name ${param._2.getName} \n"
               psiDocument.insertString(currentAnchor, newTagText)
               currentAnchor + newTagText.length
           }

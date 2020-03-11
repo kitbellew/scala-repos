@@ -14,12 +14,16 @@ class WindowedMaxTest extends FunSuite with Checkers {
       forAll { ary: Array[Long] =>
         forAll(Gen.posNum[Int]) { window: Int =>
           val w = new WindowedMax(window)
-          for (v <- ary) w.add(v)
+          for (v <- ary)
+            w.add(v)
 
           val expected =
-            if (ary.isEmpty) Long.MinValue
-            else if (window > ary.length) ary.max
-            else ary.takeRight(window).max
+            if (ary.isEmpty)
+              Long.MinValue
+            else if (window > ary.length)
+              ary.max
+            else
+              ary.takeRight(window).max
 
           expected == w.get
         }

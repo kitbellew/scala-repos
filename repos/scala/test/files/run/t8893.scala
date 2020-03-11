@@ -9,7 +9,11 @@ object Test {
         a() match {
           case Some(b2) =>
             @tailrec
-            def tick(i: Int): Unit = if (i < 0) () else tick(i - 1)
+            def tick(i: Int): Unit =
+              if (i < 0)
+                ()
+              else
+                tick(i - 1)
             tick(10000000) // testing that this doesn't SOE
           case None => None
         }
@@ -23,7 +27,11 @@ object Test {
         a() match {
           case Some(b2) =>
             @tailrec
-            def tick(i: Int): Unit = if (i < 0) () else tick(i - 1)
+            def tick(i: Int): Unit =
+              if (i < 0)
+                ()
+              else
+                tick(i - 1)
             tick(10000000) // testing that this doesn't SOE
           case None => test1
         }

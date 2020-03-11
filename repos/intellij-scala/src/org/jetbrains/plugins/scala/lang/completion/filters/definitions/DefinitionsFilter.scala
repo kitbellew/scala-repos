@@ -23,7 +23,8 @@ import scala.annotation.tailrec
   */
 class DefinitionsFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
@@ -35,7 +36,8 @@ class DefinitionsFilter extends ElementFilter {
       }
       @tailrec
       def findParent(p: PsiElement): PsiElement = {
-        if (p == null) return null
+        if (p == null)
+          return null
         p.getParent match {
           case parent @ (_: ScBlock | _: ScCaseClause | _: ScTemplateBody |
               _: ScClassParameter | _: ScalaFile) =>

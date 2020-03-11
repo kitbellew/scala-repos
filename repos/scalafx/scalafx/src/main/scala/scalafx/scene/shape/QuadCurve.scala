@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object QuadCurve {
   implicit def sfxQuadCurve2jfx(v: QuadCurve): jfxss.QuadCurve =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(
       startX: Double,

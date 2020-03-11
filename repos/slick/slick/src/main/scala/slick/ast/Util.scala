@@ -14,11 +14,15 @@ import scala.collection.mutable.ArrayBuffer
 object Util {
 
   def mapOrNone[A <: AnyRef](c: Option[A])(f: A => A): Option[A] = {
-    if (c.isEmpty) None
+    if (c.isEmpty)
+      None
     else {
       val x = c.get
       val n = f(x)
-      if (n ne x) Some(n) else None
+      if (n ne x)
+        Some(n)
+      else
+        None
     }
   }
 
@@ -39,8 +43,10 @@ final class NodeOps(val tree: Node) extends AnyVal {
       val r = pf.applyOrElse(n, retNull)
       if (r.asInstanceOf[AnyRef] ne null) {
         b += r
-        if (!stopOnMatch) n.childrenForeach(f)
-      } else n.childrenForeach(f)
+        if (!stopOnMatch)
+          n.childrenForeach(f)
+      } else
+        n.childrenForeach(f)
     }
     f(tree)
     b.result
@@ -90,7 +96,8 @@ final class NodeOps(val tree: Node) extends AnyVal {
 
   def untypeReferences(invalid: Set[TypeSymbol]): Node = {
     import TypeUtil.typeToTypeUtil
-    if (invalid.isEmpty) tree
+    if (invalid.isEmpty)
+      tree
     else
       replace(
         {
@@ -100,10 +107,14 @@ final class NodeOps(val tree: Node) extends AnyVal {
   }
 
   def findNode(p: Node => Boolean): Option[Node] = {
-    if (p(tree)) Some(tree)
+    if (p(tree))
+      Some(tree)
     else {
       val it = tree.children.iterator.map(_.findNode(p)).dropWhile(_.isEmpty)
-      if (it.hasNext) it.next() else None
+      if (it.hasNext)
+        it.next()
+      else
+        None
     }
   }
 

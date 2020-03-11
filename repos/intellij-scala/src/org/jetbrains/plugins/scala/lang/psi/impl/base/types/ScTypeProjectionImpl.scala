@@ -98,7 +98,8 @@ class ScTypeProjectionImpl(node: ASTNode)
   def doResolve(
       processor: BaseProcessor,
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
-    if (!accessibilityCheck) processor.doNotCheckAccessibility()
+    if (!accessibilityCheck)
+      processor.doNotCheckAccessibility()
     val projected = typeElement.getType(TypingContext.empty).getOrAny
     processor.processType(projected, this)
     val res = processor.candidates.map { r: ScalaResolveResult =>

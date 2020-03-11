@@ -42,12 +42,19 @@ sealed abstract class NullnessValue(final val isSize2: Boolean) extends Value {
     * The size of the slot described by this value. Cannot be 0 because no values are allocated
     * for void-typed slots, see NullnessInterpreter.newValue.
    **/
-  def getSize: Int = if (isSize2) 2 else 1
+  def getSize: Int =
+    if (isSize2)
+      2
+    else
+      1
 
   def merge(other: NullnessValue) = {
-    if (this eq other) this
-    else if (this eq UnknownValue2) this // the only possible value of size two
-    else UnknownValue1
+    if (this eq other)
+      this
+    else if (this eq UnknownValue2)
+      this // the only possible value of size two
+    else
+      UnknownValue1
   }
 
   final override def equals(other: Any) = this eq other.asInstanceOf[Object]
@@ -67,10 +74,16 @@ object NotNullValue extends NullnessValue(isSize2 = false) {
 }
 
 object NullnessValue {
-  def unknown(isSize2: Boolean) = if (isSize2) UnknownValue2 else UnknownValue1
+  def unknown(isSize2: Boolean) =
+    if (isSize2)
+      UnknownValue2
+    else
+      UnknownValue1
   def unknown(insn: AbstractInsnNode) =
-    if (BytecodeUtils.instructionResultSize(insn) == 2) UnknownValue2
-    else UnknownValue1
+    if (BytecodeUtils.instructionResultSize(insn) == 2)
+      UnknownValue2
+    else
+      UnknownValue1
 }
 
 final class NullnessInterpreter(bTypes: BTypes)
@@ -85,8 +98,10 @@ final class NullnessInterpreter(bTypes: BTypes)
     //
     // (2) `tp` may also be `null`. When creating the initial frame, the analyzer invokes
     //     `newValue(null)` for each local variable. We have to return a value of size 1.
-    if (tp == Type.VOID_TYPE) null // (1)
-    else NullnessValue.unknown(isSize2 = tp != null /*(2)*/ && tp.getSize == 2)
+    if (tp == Type.VOID_TYPE)
+      null // (1)
+    else
+      NullnessValue.unknown(isSize2 = tp != null /*(2)*/ && tp.getSize == 2)
   }
 
   override def newParameterValue(
@@ -94,8 +109,10 @@ final class NullnessInterpreter(bTypes: BTypes)
       local: Int,
       tp: Type): NullnessValue = {
     // For instance methods, the `this` parameter is known to be not null.
-    if (isInstanceMethod && local == 0) NotNullValue
-    else super.newParameterValue(isInstanceMethod, local, tp)
+    if (isInstanceMethod && local == 0)
+      NotNullValue
+    else
+      super.newParameterValue(isInstanceMethod, local, tp)
   }
 
   def newOperation(insn: AbstractInsnNode): NullnessValue =
@@ -147,8 +164,10 @@ final class NullnessInterpreter(bTypes: BTypes)
       NotNullValue
 
     case _ =>
-      if (insn.getOpcode == Opcodes.MULTIANEWARRAY) NotNullValue
-      else NullnessValue.unknown(insn)
+      if (insn.getOpcode == Opcodes.MULTIANEWARRAY)
+        NotNullValue
+      else
+        NullnessValue.unknown(insn)
   }
 
   def returnOperation(

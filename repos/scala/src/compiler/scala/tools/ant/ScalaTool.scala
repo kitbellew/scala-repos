@@ -94,7 +94,10 @@ class ScalaTool extends ScalaMatchingTask {
     platforms = input.split(",").toList.flatMap { s: String =>
       val st = s.trim
       if (Platforms.isPermissible(st))
-        (if (input != "") List(st) else Nil)
+        (if (input != "")
+           List(st)
+         else
+           Nil)
       else {
         buildError("Platform " + st + " does not exist.")
       }
@@ -138,7 +141,10 @@ class ScalaTool extends ScalaMatchingTask {
       val st = s.trim
       val stArray = st.split("=", 2)
       if (stArray.length == 2) {
-        if (input != "") List((stArray(0), stArray(1))) else Nil
+        if (input != "")
+          List((stArray(0), stArray(1)))
+        else
+          Nil
       } else
         buildError("Property " + st + " is not formatted properly.")
     }
@@ -188,7 +194,8 @@ class ScalaTool extends ScalaMatchingTask {
       clazz: Class[_],
       resource: String): Stream[Char] = {
     val stream = clazz.getClassLoader() getResourceAsStream resource
-    if (stream == null) Stream.empty
+    if (stream == null)
+      Stream.empty
     else
       Stream continually stream
         .read() takeWhile (_ != -1) map (_.asInstanceOf[Char])
@@ -215,7 +222,8 @@ class ScalaTool extends ScalaMatchingTask {
           builder.append('@')
         else
           builder.append(pre + token.toString + post)
-      } else builder.append(char)
+      } else
+        builder.append(char)
     }
     builder.toString
   }
@@ -241,7 +249,8 @@ class ScalaTool extends ScalaMatchingTask {
           builder.append('@')
         else
           builder.append("@" + token.toString + "@")
-      } else builder.append(char)
+      } else
+        builder.append(char)
     }
     builder.toString
   }
@@ -262,8 +271,10 @@ class ScalaTool extends ScalaMatchingTask {
   /** Performs the tool creation. */
   override def execute() = {
     // Tests if all mandatory attributes are set and valid.
-    if (file.isEmpty) buildError("Attribute 'file' is not set.")
-    if (mainClass.isEmpty) buildError("Main class must be set.")
+    if (file.isEmpty)
+      buildError("Attribute 'file' is not set.")
+    if (mainClass.isEmpty)
+      buildError("Main class must be set.")
     val resourceRoot = "scala/tools/ant/templates/"
     val patches = Map(
       ("class", mainClass.get),

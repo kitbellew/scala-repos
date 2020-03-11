@@ -60,7 +60,8 @@ final case class GenericHttpCredentials(
     extends HttpCredentials {
   def render[R <: Rendering](r: R): r.type = {
     r ~~ scheme
-    if (!token.isEmpty) r ~~ ' ' ~~ token
+    if (!token.isEmpty)
+      r ~~ ' ' ~~ token
     if (params.nonEmpty)
       params foreach new (((String, String)) ⇒ Unit) {
         var first = true
@@ -69,8 +70,10 @@ final case class GenericHttpCredentials(
           if (first) {
             r ~~ ' ';
             first = false
-          } else r ~~ ','
-          if (!k.isEmpty) r ~~ k ~~ '='
+          } else
+            r ~~ ','
+          if (!k.isEmpty)
+            r ~~ k ~~ '='
           r ~~# v
         }
       }

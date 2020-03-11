@@ -30,7 +30,8 @@ class Utf8CodingSpecs
           .filter(!isSurrogate(_))
 
       def codePointAsString(cp: Int): String = {
-        if (cp < 0x10000) new String(Array(cp.toChar))
+        if (cp < 0x10000)
+          new String(Array(cp.toChar))
         else {
           val part0 =
             0xd7c0 + (cp >> 10) // constant has 0x10000 subtracted already

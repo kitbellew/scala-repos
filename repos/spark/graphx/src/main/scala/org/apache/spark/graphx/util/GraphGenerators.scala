@@ -61,10 +61,18 @@ object GraphGenerators extends Logging {
       sigma: Double = 1.3,
       seed: Long = -1): Graph[Long, Int] = {
 
-    val evalNumEParts = if (numEParts == 0) sc.defaultParallelism else numEParts
+    val evalNumEParts =
+      if (numEParts == 0)
+        sc.defaultParallelism
+      else
+        numEParts
 
     // Enable deterministic seeding
-    val seedRand = if (seed == -1) new Random() else new Random(seed)
+    val seedRand =
+      if (seed == -1)
+        new Random()
+      else
+        new Random(seed)
     val seed1 = seedRand.nextInt()
     val seed2 = seedRand.nextInt()
 
@@ -94,7 +102,11 @@ object GraphGenerators extends Logging {
       numEdges: Int,
       maxVertexId: Int,
       seed: Long = -1): Array[Edge[Int]] = {
-    val rand = if (seed == -1) new Random() else new Random(seed)
+    val rand =
+      if (seed == -1)
+        new Random()
+      else
+        new Random(seed)
     Array.fill(numEdges) {
       Edge[Int](src, rand.nextInt(maxVertexId), 1)
     }
@@ -117,7 +129,11 @@ object GraphGenerators extends Logging {
       sigma: Double,
       maxVal: Int,
       seed: Long = -1): Int = {
-    val rand = if (seed == -1) new Random() else new Random(seed)
+    val rand =
+      if (seed == -1)
+        new Random()
+      else
+        new Random(seed)
 
     val sigmaSq = sigma * sigma
     val m = math.exp(mu + sigmaSq / 2.0)

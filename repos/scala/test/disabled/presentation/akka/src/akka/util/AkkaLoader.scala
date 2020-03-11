@@ -21,7 +21,8 @@ class AkkaLoader {
    * Boot initializes the specified bundles
    */
   def boot(withBanner: Boolean, b: Bootable): Unit = hasBooted switchOn {
-    if (withBanner) printBanner()
+    if (withBanner)
+      printBanner()
     println("Starting Akka...")
     b.onLoad
     Thread.currentThread.setContextClassLoader(getClass.getClassLoader)

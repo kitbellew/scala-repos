@@ -106,10 +106,10 @@ object EstimatorTransformerParamExample {
       .collect()
       .foreach {
         case Row(
-            features: Vector,
-            label: Double,
-            prob: Vector,
-            prediction: Double) =>
+              features: Vector,
+              label: Double,
+              prob: Vector,
+              prediction: Double) =>
           println(s"($features, $label) -> prob=$prob, prediction=$prediction")
       }
     // $example off$

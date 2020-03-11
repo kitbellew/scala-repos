@@ -85,7 +85,8 @@ object KafkaEventStore {
             localConfig,
             centralConfig)
           esStop.parent(raStop)
-        } else esStop
+        } else
+          esStop
 
         (eventStore, stoppables)
     }

@@ -77,42 +77,222 @@ object Test {
     whatis(extract(h2))
     whatis(extract(h3))
 
-    whatis(extract(if (true) f1 else f2))
-    whatis(extract(if (true) f1 else f3))
-    whatis(extract(if (true) f1 else g1))
-    whatis(extract(if (true) f1 else g2))
-    whatis(extract(if (true) f1 else g3))
-    whatis(extract(if (true) f1 else h1))
-    whatis(extract(if (true) f1 else h2))
-    whatis(extract(if (true) f1 else h3))
-    whatis(extract(if (true) f2 else f3))
-    whatis(extract(if (true) f2 else g1))
-    whatis(extract(if (true) f2 else g2))
-    whatis(extract(if (true) f2 else g3))
-    whatis(extract(if (true) f2 else h1))
-    whatis(extract(if (true) f2 else h2))
-    whatis(extract(if (true) f2 else h3))
-    whatis(extract(if (true) f3 else g1))
-    whatis(extract(if (true) f3 else g2))
-    whatis(extract(if (true) f3 else g3))
-    whatis(extract(if (true) f3 else h1))
-    whatis(extract(if (true) f3 else h2))
-    whatis(extract(if (true) f3 else h3))
-    whatis(extract(if (true) g1 else g2))
-    whatis(extract(if (true) g1 else g3))
-    whatis(extract(if (true) g1 else h1))
-    whatis(extract(if (true) g1 else h2))
-    whatis(extract(if (true) g1 else h3))
-    whatis(extract(if (true) g2 else g3))
-    whatis(extract(if (true) g2 else h1))
-    whatis(extract(if (true) g2 else h2))
-    whatis(extract(if (true) g2 else h3))
-    whatis(extract(if (true) g3 else h1))
-    whatis(extract(if (true) g3 else h2))
-    whatis(extract(if (true) g3 else h3))
-    whatis(extract(if (true) h1 else h2))
-    whatis(extract(if (true) h1 else h3))
-    whatis(extract(if (true) h2 else h3))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          f2))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          f3))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          g1))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          g2))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          g3))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          f1
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          f3))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          g1))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          g2))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          g3))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          f2
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          g1))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          g2))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          g3))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          f3
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          g1
+        else
+          g2))
+    whatis(
+      extract(
+        if (true)
+          g1
+        else
+          g3))
+    whatis(
+      extract(
+        if (true)
+          g1
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          g1
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          g1
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          g2
+        else
+          g3))
+    whatis(
+      extract(
+        if (true)
+          g2
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          g2
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          g2
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          g3
+        else
+          h1))
+    whatis(
+      extract(
+        if (true)
+          g3
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          g3
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          h1
+        else
+          h2))
+    whatis(
+      extract(
+        if (true)
+          h1
+        else
+          h3))
+    whatis(
+      extract(
+        if (true)
+          h2
+        else
+          h3))
 
     whatis(extract(Nil))
     whatis(extract(Vector()))
@@ -122,7 +302,17 @@ object Test {
     whatis(extract(Array[Int]()))
     whatis(extract(scala.collection.immutable.BitSet(1)))
     whatis(extract("abc"))
-    whatis(extract(if (true) Stream(1) else List(1)))
-    whatis(extract(if (true) Seq(1) else Set(1)))
+    whatis(
+      extract(
+        if (true)
+          Stream(1)
+        else
+          List(1)))
+    whatis(
+      extract(
+        if (true)
+          Seq(1)
+        else
+          Set(1)))
   }
 }

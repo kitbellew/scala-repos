@@ -37,7 +37,8 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
       val teq = Equiv[T]
       @annotation.tailrec
       def go(pos: Int): Boolean =
-        if (pos == a.length) true
+        if (pos == a.length)
+          true
         else {
           teq.equiv(a(pos), b(pos)) && go(pos + 1)
         }

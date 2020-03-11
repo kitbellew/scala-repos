@@ -184,7 +184,8 @@ class MinMaxScalerModel private[ml] (
         val raw =
           if (originalRange(i) != 0)
             (values(i) - minArray(i)) / originalRange(i)
-          else 0.5
+          else
+            0.5
         values(i) = raw * scale + $(min)
         i += 1
       }

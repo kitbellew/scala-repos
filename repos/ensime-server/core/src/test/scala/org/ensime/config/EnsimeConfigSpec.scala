@@ -109,7 +109,10 @@ class EnsimeConfigSpec extends EnsimeSpec {
  :java-home "$javaHome"
  :root-dir "$dir"
  :cache-dir "$cache"
- :source-mode ${if (sourceMode) "t" else "nil"}
+ :source-mode ${if (sourceMode)
+            "t"
+          else
+            "nil"}
  :subprojects ((:name "module1"
                 :scala-version "2.10.4"
                 :targets ("$abc"))))""",
@@ -117,7 +120,10 @@ class EnsimeConfigSpec extends EnsimeSpec {
             config.sourceMode shouldBe sourceMode
             config.runtimeClasspath shouldBe Set(abc)
             config.compileClasspath shouldBe (
-              if (sourceMode) Set.empty else Set(abc)
+              if (sourceMode)
+                Set.empty
+              else
+                Set(abc)
             )
           }
         )

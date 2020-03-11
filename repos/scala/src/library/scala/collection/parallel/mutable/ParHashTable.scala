@@ -77,7 +77,11 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
         append(
           itertable
             .slice(idx, until)
-            .map(x => if (x != null) x.toString else "n/a")
+            .map(x =>
+              if (x != null)
+                x.toString
+              else
+                "n/a")
             .mkString(" | "))
         append("\\--------------------/")
       }
@@ -123,7 +127,8 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
             signalDelegate)
           arrpit.split
         }
-      } else Seq(this.asInstanceOf[IterRepr])
+      } else
+        Seq(this.asInstanceOf[IterRepr])
 
     private def convertToArrayBuffer(
         chainhead: Entry): mutable.ArrayBuffer[T] = {

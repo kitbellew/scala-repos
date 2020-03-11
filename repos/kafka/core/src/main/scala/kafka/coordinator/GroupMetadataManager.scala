@@ -809,8 +809,10 @@ class GroupMetadataManager(
           s"Message format version for partition $groupMetadataTopicPartitionCount not found")
       }
     val timestamp =
-      if (messageFormatVersion == Message.MagicValue_V0) Message.NoTimestamp
-      else time.milliseconds()
+      if (messageFormatVersion == Message.MagicValue_V0)
+        Message.NoTimestamp
+      else
+        time.milliseconds()
     (messageFormatVersion, timestamp)
   }
 
@@ -1240,7 +1242,8 @@ object GroupMetadataManager {
             val groupTopicPartition = offsetKey.key
             val value = consumerRecord.value
             val formattedValue =
-              if (value == null) "NULL"
+              if (value == null)
+                "NULL"
               else
                 GroupMetadataManager
                   .readOffsetMessageValue(ByteBuffer.wrap(value))
@@ -1268,7 +1271,8 @@ object GroupMetadataManager {
             val groupId = groupMetadataKey.key
             val value = consumerRecord.value
             val formattedValue =
-              if (value == null) "NULL"
+              if (value == null)
+                "NULL"
               else
                 GroupMetadataManager
                   .readGroupMessageValue(groupId, ByteBuffer.wrap(value))

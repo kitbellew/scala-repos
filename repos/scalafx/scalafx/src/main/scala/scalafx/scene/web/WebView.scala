@@ -50,7 +50,10 @@ object WebView {
     * @return JavaFX WebView
     */
   implicit def sfxWebView2jfx(wv: WebView): jfxsw.WebView =
-    if (wv != null) wv.delegate else null
+    if (wv != null)
+      wv.delegate
+    else
+      null
 
   /**
     * @return The CssMetaData associated with this class, which may include the CssMetaData of its

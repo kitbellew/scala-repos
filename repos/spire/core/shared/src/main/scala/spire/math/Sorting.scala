@@ -50,7 +50,8 @@ object MergeSort extends Sort {
   final def sort[@sp A: Order: ClassTag](data: Array[A]): Unit = {
     val len = data.length
 
-    if (len <= startStep) return InsertionSort.sort(data)
+    if (len <= startStep)
+      return InsertionSort.sort(data)
 
     var buf1: Array[A] = data
     var buf2: Array[A] = new Array[A](len)
@@ -62,7 +63,8 @@ object MergeSort extends Sort {
       InsertionSort.sort(data, i, i + startWidth);
       i += startWidth
     }
-    if (i < len) InsertionSort.sort(data, i, len)
+    if (i < len)
+      InsertionSort.sort(data, i, len)
     var width = startWidth
     var step = startStep
     while (width < len) {
@@ -84,7 +86,8 @@ object MergeSort extends Sort {
       step *= 2
     }
 
-    if (buf1 != data) System.arraycopy(buf1, 0, data, 0, len)
+    if (buf1 != data)
+      System.arraycopy(buf1, 0, data, 0, len)
   }
 
   /**
@@ -131,7 +134,8 @@ object QuickSort {
       o: Order[A],
       ct: ClassTag[A]): Unit = {
 
-    if (right - left < limit) return InsertionSort.sort(data, left, right + 1)
+    if (right - left < limit)
+      return InsertionSort.sort(data, left, right + 1)
 
     val pivot = left + (right - left) / 2
     val next = partition(data, left, right, pivot)

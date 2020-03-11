@@ -45,7 +45,8 @@ object WhitespaceApi {
                   val (newIndex, newCut) =
                     if (index2 > index1 || index1 == cfg.input.length)
                       (index2, cut | cut0 | cut1 | cut2)
-                    else (index0, cut | cut0 | cut2)
+                    else
+                      (index0, cut | cut0 | cut2)
 
                   success(
                     cfg.success,
@@ -60,9 +61,14 @@ object WhitespaceApi {
     }
 
     override def toString = {
-      if (!cut && p0 == Pass) p.toString
+      if (!cut && p0 == Pass)
+        p.toString
       else {
-        val op = if (cut) "~/" else "~"
+        val op =
+          if (cut)
+            "~/"
+          else
+            "~"
         opWrap(p0) + " " + op + " " + opWrap(p)
       }
     }
@@ -99,7 +105,10 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
       p0,
       min,
       max,
-      if (sep != Pass) NoCut(WL) ~ sep ~ NoCut(WL) else NoCut(WL))
+      if (sep != Pass)
+        NoCut(WL) ~ sep ~ NoCut(WL)
+      else
+        NoCut(WL))
   }
 
   def ~~[V, R](p: P[V])(implicit ev: Sequencer[T, V, R]): P[R] =
@@ -109,7 +118,10 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
     assert(p != null)
     new WhitespaceApi.CustomSequence(
       WL,
-      if (p0 != WL) p0 else Pass.asInstanceOf[P[T]],
+      if (p0 != WL)
+        p0
+      else
+        Pass.asInstanceOf[P[T]],
       p,
       cut = false)(ev)
   }
@@ -118,7 +130,10 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
     assert(p != null)
     new WhitespaceApi.CustomSequence(
       WL,
-      if (p0 != WL) p0 else Pass.asInstanceOf[P[T]],
+      if (p0 != WL)
+        p0
+      else
+        Pass.asInstanceOf[P[T]],
       p,
       cut = true)(ev)
   }

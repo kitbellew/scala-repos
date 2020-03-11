@@ -113,7 +113,10 @@ case class DefaultClient[Req, Rep](
       .replace(StackClient.Role.pool, pool(statsReceiver))
       .replace(TraceInitializerFilter.role, newTraceInitializer)
 
-    if (!failFast) stk.remove(FailFastFactory.role) else stk
+    if (!failFast)
+      stk.remove(FailFastFactory.role)
+    else
+      stk
   }
 
   private[this] val clientStack = transform(StackClient.newStack[Req, Rep])

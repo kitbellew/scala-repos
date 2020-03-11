@@ -524,7 +524,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       }
 
       // initially all odd messages should go through
-      for (n ← 1 to N if n % 2 == 1) probeA.expectMsg(Action(n, s"a-$n"))
+      for (n ← 1 to N if n % 2 == 1)
+        probeA.expectMsg(Action(n, s"a-$n"))
       probeA.expectNoMsg(100.millis)
 
       // at each redelivery round, 2 (even) messages are sent, the first goes through

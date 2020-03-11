@@ -62,7 +62,10 @@ trait ImageIncludes {
     * @return $SFX $IMG
     */
   implicit def jfxImage2sfx(i: jfxsi.Image): Image =
-    if (i != null) new Image(i) else null
+    if (i != null)
+      new Image(i)
+    else
+      null
 
   /**
     * $START$IMV.html $IMV$END
@@ -71,7 +74,10 @@ trait ImageIncludes {
     * @return $SFX $IMV
     */
   implicit def jfxImageView2sfx(iv: jfxsi.ImageView): ImageView =
-    if (iv != null) new ImageView(iv) else null
+    if (iv != null)
+      new ImageView(iv)
+    else
+      null
 
   /**
     * $START$PXF.html $PXF$END
@@ -81,8 +87,10 @@ trait ImageIncludes {
     */
   implicit def jfxPixelFormat2sfx[B <: Buffer](
       pf: jfxsi.PixelFormat[B]): PixelFormat[B] =
-    if (pf != null) new PixelFormat[B](pf) {}
-    else null
+    if (pf != null)
+      new PixelFormat[B](pf) {}
+    else
+      null
 
   /**
     * $START$PFT.html $PFT$END
@@ -100,10 +108,12 @@ trait ImageIncludes {
     * @return $SFX $PXR
     */
   implicit def jfxPixelReader2sfx(pr: jfxsi.PixelReader): PixelReader =
-    if (pr != null) new PixelReader {
-      override val delegate = pr
-    }
-    else null
+    if (pr != null)
+      new PixelReader {
+        override val delegate = pr
+      }
+    else
+      null
 
   /**
     * $START$PXW.html $PXW$END
@@ -112,10 +122,12 @@ trait ImageIncludes {
     * @return $SFX $PXW
     */
   implicit def jfxPixelWriter2sfx(pw: jfxsi.PixelWriter): PixelWriter =
-    if (pw != null) new PixelWriter {
-      override val delegate = pw
-    }
-    else null
+    if (pw != null)
+      new PixelWriter {
+        override val delegate = pw
+      }
+    else
+      null
 
   /**
     * $START$WRI.html $WRI$END
@@ -124,7 +136,10 @@ trait ImageIncludes {
     * @return $SFX $WRI
     */
   implicit def jfxWritableImage2sfx(wi: jfxsi.WritableImage): WritableImage =
-    if (wi != null) new WritableImage(wi) else null
+    if (wi != null)
+      new WritableImage(wi)
+    else
+      null
 
   /**
     * $START$WPF.html $WPF$END

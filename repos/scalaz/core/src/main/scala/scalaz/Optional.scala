@@ -32,11 +32,17 @@ trait Optional[F[_]] { self =>
 
   /** Returns given context if it is defined or else the value of the `alternative`. */
   def orElse[A](fa: F[A])(alternative: => F[A]): F[A] =
-    if (isDefined(fa)) fa else alternative
+    if (isDefined(fa))
+      fa
+    else
+      alternative
 
   /** Returns `some` if this context is defined, otherwise `none`. */
   def ?[A, X](fa: F[A])(some: => X, none: => X): X =
-    if (isDefined(fa)) some else none
+    if (isDefined(fa))
+      some
+    else
+      none
 
   // conversions
 

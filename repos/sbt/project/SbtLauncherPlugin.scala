@@ -30,11 +30,13 @@ object SbtLauncherPlugin extends AutoPlugin {
     sbtLaunchJar := {
       val propFiles = (resources in Compile).value
       val propFileLocations =
-        for (file <- propFiles; if file.getName != "resources") yield {
-          if (file.getName == "sbt.boot.properties")
-            "sbt/sbt.boot.properties" -> file
-          else file.getName -> file
-        }
+        for (file <- propFiles; if file.getName != "resources")
+          yield {
+            if (file.getName == "sbt.boot.properties")
+              "sbt/sbt.boot.properties" -> file
+            else
+              file.getName -> file
+          }
       // TODO - We need to inject the appropriate boot.properties file for this version of sbt.
       rebundle(
         rawSbtLaunchJar.value,

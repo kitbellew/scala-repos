@@ -49,7 +49,8 @@ class EnsembleTilePane extends EnsembleExample {
 
     // Create buttons
     val buttons =
-      for (i <- 1 to 17) yield new Button("Button " + i, new ImageView(image))
+      for (i <- 1 to 17)
+        yield new Button("Button " + i, new ImageView(image))
 
     new TilePane {
       hgap = 3

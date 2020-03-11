@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyLongProperty {
   implicit def sfxReadOnlyLongProperty2jfx(
       rolp: ReadOnlyLongProperty): jfxbp.ReadOnlyLongProperty =
-    if (rolp != null) rolp.delegate else null
+    if (rolp != null)
+      rolp.delegate
+    else
+      null
 }
 
 class ReadOnlyLongProperty(override val delegate: jfxbp.ReadOnlyLongProperty)

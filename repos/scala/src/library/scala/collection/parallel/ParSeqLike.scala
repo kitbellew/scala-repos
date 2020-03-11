@@ -73,7 +73,8 @@ trait ParSeqLike[
         val x = self(i)
         i += 1
         x
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
 
     def head = self(i)
 
@@ -85,9 +86,10 @@ trait ParSeqLike[
 
     def psplit(sizes: Int*) = {
       val incr = sizes.scanLeft(0)(_ + _)
-      for ((from, until) <- incr.init zip incr.tail) yield {
-        new Elements(start + from, (start + until) min end) {}
-      }
+      for ((from, until) <- incr.init zip incr.tail)
+        yield {
+          new Elements(start + from, (start + until) min end) {}
+        }
     }
 
     override def toString = "Elements(" + start + ", " + end + ")"
@@ -108,9 +110,14 @@ trait ParSeqLike[
     *               satisfying the predicate
     */
   def segmentLength(p: T => Boolean, from: Int): Int =
-    if (from >= length) 0
+    if (from >= length)
+      0
     else {
-      val realfrom = if (from < 0) 0 else from
+      val realfrom =
+        if (from < 0)
+          0
+        else
+          from
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MaxValue)
       tasksupport
@@ -135,9 +142,14 @@ trait ParSeqLike[
     *               or `-1`, if none exists
     */
   def indexWhere(p: T => Boolean, from: Int): Int =
-    if (from >= length) -1
+    if (from >= length)
+      -1
     else {
-      val realfrom = if (from < 0) 0 else from
+      val realfrom =
+        if (from < 0)
+          0
+        else
+          from
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MaxValue)
       tasksupport.executeAndWaitResult(
@@ -160,9 +172,14 @@ trait ParSeqLike[
     *               or `-1`, if none exists
     */
   def lastIndexWhere(p: T => Boolean, end: Int): Int =
-    if (end < 0) -1
+    if (end < 0)
+      -1
     else {
-      val until = if (end >= length) length else end + 1
+      val until =
+        if (end >= length)
+          length
+        else
+          end + 1
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MinValue)
       tasksupport.executeAndWaitResult(
@@ -190,7 +207,8 @@ trait ParSeqLike[
           _.resultWithTaskSupport
         }
       )
-    } else setTaskSupport(seq.reverseMap(f)(bf2seq(bf)), tasksupport)
+    } else
+      setTaskSupport(seq.reverseMap(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new ReverseMap[S, That](f, pbf, splitter) mapResult { _.result })
   } otherwise seq.reverseMap(f)(bf2seq(bf))*/
@@ -206,9 +224,12 @@ trait ParSeqLike[
     */
   def startsWith[S](that: GenSeq[S], offset: Int): Boolean =
     that ifParSeq { pthat =>
-      if (offset < 0 || offset >= length) offset == length && pthat.length == 0
-      else if (pthat.length == 0) true
-      else if (pthat.length > length - offset) false
+      if (offset < 0 || offset >= length)
+        offset == length && pthat.length == 0
+      else if (pthat.length == 0)
+        true
+      else if (pthat.length > length - offset)
+        false
       else {
         val ctx = new DefaultSignalling with VolatileAbort
         tasksupport.executeAndWaitResult(
@@ -236,8 +257,10 @@ trait ParSeqLike[
     */
   def endsWith[S](that: GenSeq[S]): Boolean =
     that ifParSeq { pthat =>
-      if (that.length == 0) true
-      else if (that.length > length) false
+      if (that.length == 0)
+        true
+      else if (that.length > length)
+        false
       else {
         val ctx = new DefaultSignalling with VolatileAbort
         val tlen = that.length
@@ -272,7 +295,8 @@ trait ParSeqLike[
       } mapResult {
         _.resultWithTaskSupport
       })
-    } else patch_sequential(from, patch.seq, replaced)
+    } else
+      patch_sequential(from, patch.seq, replaced)
   }
 
   private def patch_sequential[U >: T, That](
@@ -301,7 +325,8 @@ trait ParSeqLike[
           _.resultWithTaskSupport
         }
       )
-    } else setTaskSupport(seq.updated(index, elem)(bf2seq(bf)), tasksupport)
+    } else
+      setTaskSupport(seq.updated(index, elem)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new Updated(index, elem, pbf, splitter) mapResult { _.result })
   } otherwise seq.updated(index, elem)(bf2seq(bf))*/
@@ -320,7 +345,8 @@ trait ParSeqLike[
       implicit bf: CanBuildFrom[Repr, U, That]): That =
     if (length < len) {
       patch(length, new immutable.Repetition(elem, len - length), 0)
-    } else patch(length, Nil, 0)
+    } else
+      patch(length, Nil, 0)
 
   override def zip[U >: T, S, That](that: GenIterable[S])(
       implicit bf: CanBuildFrom[Repr, (U, S), That]): That =
@@ -335,7 +361,8 @@ trait ParSeqLike[
           _.resultWithTaskSupport
         }
       )
-    } else super.zip(that)(bf)
+    } else
+      super.zip(that)(bf)
 
   /** Tests whether every element of this $coll relates to the
     *  corresponding element of another parallel sequence by satisfying a test predicate.
@@ -425,8 +452,10 @@ trait ParSeqLike[
         val itsize = pit.remaining
         val seglen = pit.prefixLength(pred)
         result = (seglen, itsize == seglen)
-        if (!result._2) pit.setIndexFlagIfLesser(from)
-      } else result = (0, false)
+        if (!result._2)
+          pit.setIndexFlagIfLesser(from)
+      } else
+        result = (0, false)
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
     override def split = {
@@ -435,7 +464,8 @@ trait ParSeqLike[
         yield new SegmentLength(pred, from + untilp, p)
     }
     override def merge(that: SegmentLength) =
-      if (result._2) result = (result._1 + that.result._1, that.result._2)
+      if (result._2)
+        result = (result._1 + that.result._1, that.result._2)
     override def requiresStrictSplitters = true
   }
 
@@ -461,9 +491,13 @@ trait ParSeqLike[
     }
     override def merge(that: IndexWhere) =
       result =
-        if (result == -1) that.result
+        if (result == -1)
+          that.result
         else {
-          if (that.result != -1) result min that.result else result
+          if (that.result != -1)
+            result min that.result
+          else
+            result
         }
     override def requiresStrictSplitters = true
   }
@@ -490,9 +524,13 @@ trait ParSeqLike[
     }
     override def merge(that: LastIndexWhere) =
       result =
-        if (result == -1) that.result
+        if (result == -1)
+          that.result
         else {
-          if (that.result != -1) result max that.result else result
+          if (that.result != -1)
+            result max that.result
+          else
+            result
         }
     override def requiresStrictSplitters = true
   }
@@ -531,7 +569,8 @@ trait ParSeqLike[
     @volatile var result: Boolean = true
     def leaf(prev: Option[Boolean]) = if (!pit.isAborted) {
       result = pit.sameElements(otherpit)
-      if (!result) pit.abort()
+      if (!result)
+        pit.abort()
     }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
@@ -539,7 +578,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp)) yield new SameElements(p, op)
+             .psplitWithSignalling(fp, sp))
+        yield new SameElements(p, op)
     }
     override def merge(that: SameElements[U]) = result = result && that.result
     override def requiresStrictSplitters = true
@@ -599,7 +639,8 @@ trait ParSeqLike[
     @volatile var result: Boolean = true
     def leaf(prev: Option[Boolean]) = if (!pit.isAborted) {
       result = pit.corresponds(corr)(otherpit)
-      if (!result) pit.abort()
+      if (!result)
+        pit.abort()
     }
     protected[this] def newSubtask(p: SuperParIterator) =
       throw new UnsupportedOperationException
@@ -607,7 +648,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <- pit.psplitWithSignalling(fp, sp) zip otherpit
-             .psplitWithSignalling(fp, sp)) yield new Corresponds(corr, p, op)
+             .psplitWithSignalling(fp, sp))
+        yield new Corresponds(corr, p, op)
     }
     override def merge(that: Corresponds[S]) = result = result && that.result
     override def requiresStrictSplitters = true

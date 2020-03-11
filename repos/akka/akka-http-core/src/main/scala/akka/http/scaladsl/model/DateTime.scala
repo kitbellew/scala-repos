@@ -180,9 +180,12 @@ object DateTime {
     val m7 = m % 7
     var d = m7 * 30 + ((m7 + 1) >> 1) + day
     val isLeap = isLeapYear(year)
-    if (m >= 7) d += 214
-    if (d >= 61) d -= 1 // skip non-existent Feb 30
-    if (!isLeap && (d >= 60)) d -= 1 // skip non-existent Feb 29
+    if (m >= 7)
+      d += 214
+    if (d >= 61)
+      d -= 1 // skip non-existent Feb 30
+    if (!isLeap && (d >= 60))
+      d -= 1 // skip non-existent Feb 29
 
     // convert year/yearday to days since Jan 1, 1970, 00:00:00
     val y = year - 1
@@ -219,8 +222,10 @@ object DateTime {
 
     // compute day number, seconds since beginning of day
     var s = c
-    if (s >= 0) s /= 1000 // seconds since 1 Jan 1970
-    else s = (s - 999) / 1000 // floor(sec/1000)
+    if (s >= 0)
+      s /= 1000 // seconds since 1 Jan 1970
+    else
+      s = (s - 999) / 1000 // floor(sec/1000)
 
     var dn = (s / 86400).toInt
     s %= 86400 // positive seconds since beginning of day
@@ -255,12 +260,15 @@ object DateTime {
     val isLeap = isLeapYear(y)
 
     // compute month/monthday from year/yearday
-    if (!isLeap && (d >= 59)) d += 1 // skip non-existent Feb 29
-    if (d >= 60) d += 1 // skip non-existent Feb 30
+    if (!isLeap && (d >= 59))
+      d += 1 // skip non-existent Feb 29
+    if (d >= 60)
+      d += 1 // skip non-existent Feb 30
     val d214 = d % 214
     val d214_61 = d214 % 61
     var mon = ((d214 / 61) << 1) + d214_61 / 31
-    if (d > 213) mon += 7
+    if (d > 213)
+      mon += 7
     d = d214_61 % 31 + 1
 
     // convert second to hour/min/sec
@@ -331,6 +339,7 @@ object DateTime {
       } catch {
         case _: IllegalArgumentException ⇒ None
       }
-    } else None
+    } else
+      None
   }
 }

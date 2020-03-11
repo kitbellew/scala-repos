@@ -36,7 +36,8 @@ object SparkTC {
     while (edges.size < numEdges) {
       val from = rand.nextInt(numVertices)
       val to = rand.nextInt(numVertices)
-      if (from != to) edges.+=((from, to))
+      if (from != to)
+        edges.+=((from, to))
     }
     edges.toSeq
   }
@@ -44,7 +45,11 @@ object SparkTC {
   def main(args: Array[String]) {
     val sparkConf = new SparkConf().setAppName("SparkTC")
     val spark = new SparkContext(sparkConf)
-    val slices = if (args.length > 0) args(0).toInt else 2
+    val slices =
+      if (args.length > 0)
+        args(0).toInt
+      else
+        2
     var tc = spark.parallelize(generateGraph, slices).cache()
 
     // Linear transitive closure: each round grows paths by one edge,

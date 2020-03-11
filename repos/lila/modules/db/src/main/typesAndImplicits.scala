@@ -37,7 +37,8 @@ trait Implicits extends Types {
   implicit final class LilaPimpedQueryBuilder(b: QueryBuilder) {
 
     def sort(sorters: (String, api.SortOrder)*): QueryBuilder =
-      if (sorters.size == 0) b
+      if (sorters.size == 0)
+        b
       else
         b sort {
           BSONDocument(

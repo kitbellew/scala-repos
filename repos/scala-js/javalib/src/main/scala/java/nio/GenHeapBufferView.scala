@@ -108,8 +108,10 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B)
 
   @inline
   def generic_order(): ByteOrder =
-    if (isBigEndian) ByteOrder.BIG_ENDIAN
-    else ByteOrder.LITTLE_ENDIAN
+    if (isBigEndian)
+      ByteOrder.BIG_ENDIAN
+    else
+      ByteOrder.LITTLE_ENDIAN
 
   @inline
   def byteArrayBits(

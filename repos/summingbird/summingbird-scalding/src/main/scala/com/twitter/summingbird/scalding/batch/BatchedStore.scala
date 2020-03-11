@@ -128,7 +128,11 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     Reader[FlowInput, Unit] {
       case (flow, mode) =>
         // make sure we checkpoint to disk to avoid double computation:
-        val checked = if (batches.size > 1) lastVals.forceToDisk else lastVals
+        val checked =
+          if (batches.size > 1)
+            lastVals.forceToDisk
+          else
+            lastVals
         batches.foreach { batchID =>
           val thisBatch = checked.filter {
             case (b, kv) =>

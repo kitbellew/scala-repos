@@ -98,8 +98,10 @@ object HttpDtab {
         msg.headerMap -= header._1
       }
     }
-    if (headerArr == null) Nil
-    else headerArr
+    if (headerArr == null)
+      Nil
+    else
+      headerArr
   }
 
   /**
@@ -155,7 +157,8 @@ object HttpDtab {
     * N.B. Comma is not a showable character in Paths nor is it meaningful in Dtabs.
     */
   private def readDtabLocal(msg: Message): Try[Dtab] =
-    if (!msg.headerMap.contains(Header)) EmptyReturn
+    if (!msg.headerMap.contains(Header))
+      EmptyReturn
     else
       Try {
         val headers = msg.headerMap.getAll(Header)
@@ -175,7 +178,8 @@ object HttpDtab {
     while (headers.hasNext) {
       val key = headers.next()._1.toLowerCase
       if (key.startsWith(Prefix)) {
-        if (keys == null) keys = ArrayBuffer[String]()
+        if (keys == null)
+          keys = ArrayBuffer[String]()
         keys += key
       }
     }

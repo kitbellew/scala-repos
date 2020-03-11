@@ -66,8 +66,10 @@ abstract class RestartNode2SpecSpec
   override def afterAll(): Unit = {
     runOn(seed1) {
       shutdown(
-        if (seed1System.whenTerminated.isCompleted) restartedSeed1System
-        else seed1System)
+        if (seed1System.whenTerminated.isCompleted)
+          restartedSeed1System
+        else
+          seed1System)
     }
     super.afterAll()
   }

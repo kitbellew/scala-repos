@@ -106,14 +106,17 @@ sealed abstract class Future[+A] {
       case Now(a) if !cancel.get => cb(a).run
       case Async(onFinish) if !cancel.get =>
         onFinish(a =>
-          if (!cancel.get) cb(a)
-          else Trampoline.done(()))
+          if (!cancel.get)
+            cb(a)
+          else
+            Trampoline.done(()))
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
             Trampoline.delay(
               g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
-          else Trampoline.done(()))
+          else
+            Trampoline.done(()))
       case _ if cancel.get => ()
     }
 
@@ -138,13 +141,15 @@ sealed abstract class Future[+A] {
   /** Like `step`, but may be interrupted by setting `cancel` to true. */
   @annotation.tailrec
   final def stepInterruptibly(cancel: AtomicBoolean): Future[A] =
-    if (!cancel.get) this match {
-      case Suspend(thunk) => thunk().stepInterruptibly(cancel)
-      case BindSuspend(thunk, f) =>
-        (thunk() flatMap f).stepInterruptibly(cancel)
-      case _ => this
-    }
-    else this
+    if (!cancel.get)
+      this match {
+        case Suspend(thunk) => thunk().stepInterruptibly(cancel)
+        case BindSuspend(thunk, f) =>
+          (thunk() flatMap f).stepInterruptibly(cancel)
+        case _ => this
+      }
+    else
+      this
 
   /**
     * Begins running this `Future` and returns a new future that blocks
@@ -292,7 +297,9 @@ sealed abstract class Future[+A] {
       )
 
       unsafePerformAsyncInterruptibly(
-        a => if (done.compareAndSet(false, true)) cb(\/-(a)),
+        a =>
+          if (done.compareAndSet(false, true))
+            cb(\/-(a)),
         cancel)
     }
 
@@ -434,7 +441,8 @@ object Future {
                   if (c.decrementAndGet() == 0)
                     cb(
                       results.toList.foldLeft(R.zero)((a, b) => R.append(a, b)))
-                  else Trampoline.done(())
+                  else
+                    Trampoline.done(())
                 }
               }
             }

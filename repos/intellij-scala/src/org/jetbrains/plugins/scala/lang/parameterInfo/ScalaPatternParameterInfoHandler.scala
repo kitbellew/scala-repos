@@ -137,7 +137,8 @@ class ScalaPatternParameterInfoHandler
                         buffer.append("*")
                       }
                       val isBold =
-                        if (o == index || (isSeq && o <= index)) true
+                        if (o == index || (isSeq && o <= index))
+                          true
                         else {
                           //todo: check type
                           false
@@ -145,7 +146,10 @@ class ScalaPatternParameterInfoHandler
                       val paramTypeText = buffer.toString()
                       val paramText = paramTextFor(sign, o, paramTypeText)
 
-                      if (isBold) "<b>" + paramText + "</b>" else paramText
+                      if (isBold)
+                        "<b>" + paramText + "</b>"
+                      else
+                        paramText
                   }
                   .mkString(", "))
             }
@@ -153,12 +157,15 @@ class ScalaPatternParameterInfoHandler
           case _ =>
         }
         val isGrey = buffer.indexOf("<g>")
-        if (isGrey != -1) buffer.replace(isGrey, isGrey + 3, "")
+        if (isGrey != -1)
+          buffer.replace(isGrey, isGrey + 3, "")
         val startOffset = buffer.indexOf("<b>")
-        if (startOffset != -1) buffer.replace(startOffset, startOffset + 3, "")
+        if (startOffset != -1)
+          buffer.replace(startOffset, startOffset + 3, "")
 
         val endOffset = buffer.indexOf("</b>")
-        if (endOffset != -1) buffer.replace(endOffset, endOffset + 4, "")
+        if (endOffset != -1)
+          buffer.replace(endOffset, endOffset + 4, "")
 
         if (buffer.toString != "")
           context.setupUIComponentPresentation(
@@ -224,7 +231,8 @@ class ScalaPatternParameterInfoHandler
         case _ =>
           paramTypeText
       }
-    } else paramTypeText
+    } else
+      paramTypeText
   }
 
   def showParameterInfo(
@@ -236,12 +244,14 @@ class ScalaPatternParameterInfoHandler
   def updateParameterInfo(
       o: ScPatternArgumentList,
       context: UpdateParameterInfoContext): Unit = {
-    if (context.getParameterOwner != o) context.removeHint()
+    if (context.getParameterOwner != o)
+      context.removeHint()
     val offset = context.getOffset
     var child = o.getNode.getFirstChildNode
     var i = 0
     while (child != null && child.getStartOffset < offset) {
-      if (child.getElementType == ScalaTokenTypes.tCOMMA) i = i + 1
+      if (child.getElementType == ScalaTokenTypes.tCOMMA)
+        i = i + 1
       child = child.getTreeNext
     }
     context.setCurrentParameter(i)
@@ -252,7 +262,8 @@ class ScalaPatternParameterInfoHandler
   private def findCall(context: ParameterInfoContext): ScPatternArgumentList = {
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
-    if (element == null) return null
+    if (element == null)
+      return null
     val args: ScPatternArgumentList =
       PsiTreeUtil.getParentOfType(element, getArgumentListClass)
     if (args != null) {
@@ -272,7 +283,8 @@ class ScalaPatternParameterInfoHandler
                     case fun: ScFunction if fun.parameters.nonEmpty =>
                       val substitutor = r.substitutor
                       val subst =
-                        if (fun.typeParameters.length == 0) substitutor
+                        if (fun.typeParameters.length == 0)
+                          substitutor
                         else {
                           val undefSubst =
                             fun.typeParameters.foldLeft(ScSubstitutor.empty)(
@@ -289,7 +301,8 @@ class ScalaPatternParameterInfoHandler
                                   p.upperBound.getOrAny))
                           val result =
                             fun.parameters(0).getType(TypingContext.empty)
-                          if (result.isEmpty) substitutor
+                          if (result.isEmpty)
+                            substitutor
                           else {
                             val funType = undefSubst.subst(result.get)
                             constr.expectedType match {
@@ -303,7 +316,8 @@ class ScalaPatternParameterInfoHandler
                                       newSubst.followed(substitutor)
                                     case _ => substitutor
                                   }
-                                } else substitutor
+                                } else
+                                  substitutor
                               case _ => substitutor
                             }
                           }
@@ -319,9 +333,11 @@ class ScalaPatternParameterInfoHandler
           }
         case context: UpdateParameterInfoContext =>
           var el = element
-          while (el.getParent != args) el = el.getParent
+          while (el.getParent != args)
+            el = el.getParent
           var index = 1
-          for (pattern <- args.patterns if pattern != el) index += 1
+          for (pattern <- args.patterns if pattern != el)
+            index += 1
           context.setCurrentParameter(index)
           context.setHighlightedParameter(el)
         case _ =>

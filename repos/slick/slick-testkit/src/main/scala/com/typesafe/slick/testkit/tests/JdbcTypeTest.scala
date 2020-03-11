@@ -38,7 +38,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         .result
         .map(_.map(_.mkString))
         .map(_ shouldBe Set("45"))
-    } else as1
+    } else
+      as1
   }
 
   def testByteArrayOption = {

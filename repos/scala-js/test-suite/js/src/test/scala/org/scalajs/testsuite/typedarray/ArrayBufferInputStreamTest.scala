@@ -94,7 +94,9 @@ trait ArrayBufferInputStreamTest {
   @Test def available(): Unit = {
     val stream = newStream
 
-    def mySkip(n: Int) = for (_ <- 1 to n) assertNotEquals(-1, stream.read())
+    def mySkip(n: Int) =
+      for (_ <- 1 to n)
+        assertNotEquals(-1, stream.read())
     def check(n: Int) = assertEquals(n, stream.available)
 
     check(50)
@@ -141,7 +143,9 @@ trait ArrayBufferInputStreamTest {
   @Test def mark_reset(): Unit = {
     val stream = newStream
 
-    def read(range: Range) = for (i <- range) assertEquals(i, stream.read())
+    def read(range: Range) =
+      for (i <- range)
+        assertEquals(i, stream.read())
 
     read(1 to 10)
     stream.reset() // mark must be 0 at creation

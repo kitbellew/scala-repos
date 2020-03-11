@@ -54,9 +54,13 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
               .map(idx => meta.getColumnLabel(idx))
               .to[ArrayBuffer]
           )
-        } else null
+        } else
+          null
         val logBuffer =
-          if (doLogResult) new ArrayBuffer[ArrayBuffer[Any]] else null
+          if (doLogResult)
+            new ArrayBuffer[ArrayBuffer[Any]]
+          else
+            null
         var rowCount = 0
         val pr = new PositionedResult(rs) {
           def close() = {
@@ -93,7 +97,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
           StatementInvoker.resultLogger.debug(count + " rows affected")
         Left(count)
       }
-    } finally if (doClose) st.close()
+    } finally if (doClose)
+      st.close()
   }
 
   protected def extractValue(pr: PositionedResult): R

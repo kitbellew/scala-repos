@@ -165,7 +165,8 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
           val updated = record.copy(grants = record.grants -- grants)
           apiKeys.put(apiKey, updated)
           Some(updated)
-        } else None
+        } else
+          None
       }
       .point[M]
   }

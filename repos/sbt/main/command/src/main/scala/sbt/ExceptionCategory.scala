@@ -18,7 +18,10 @@ private[sbt] object ExceptionCategory {
     case _: AlreadyHandledException | _: UnprintableException => AlreadyHandled
     case ite: InvocationTargetException =>
       val cause = ite.getCause
-      if (cause == null || cause == ite) new Full(ite) else apply(cause)
+      if (cause == null || cause == ite)
+        new Full(ite)
+      else
+        apply(cause)
     case _: MessageOnlyException => new MessageOnly(t.toString)
     case _                       => new Full(t)
   }

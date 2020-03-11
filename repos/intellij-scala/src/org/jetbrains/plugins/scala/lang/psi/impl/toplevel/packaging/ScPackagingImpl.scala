@@ -48,17 +48,23 @@ class ScPackagingImpl private (
   }
 
   def fullPackageName: String =
-    (if (prefix.length == 0) "" else prefix + ".") + getPackageName
+    (if (prefix.length == 0)
+       ""
+     else
+       prefix + ".") + getPackageName
 
   override def toString = "ScPackaging"
 
   def reference: Option[ScStableCodeReferenceElement] = {
     val firstChild = getFirstChild
-    if (firstChild == null) return None
+    if (firstChild == null)
+      return None
     var next = firstChild.getNextSibling
-    if (next == null) return None
+    if (next == null)
+      return None
     next = next.getNextSibling
-    if (next == null) return None
+    if (next == null)
+      return None
     next match {
       case ref: ScStableCodeReferenceElement => Some(ref)
       case _                                 => findChild(classOf[ScStableCodeReferenceElement])
@@ -94,8 +100,10 @@ class ScPackagingImpl private (
     def parentPackageName(e: PsiElement): String = e.getParent match {
       case p: ScPackaging =>
         val _packName = parentPackageName(p)
-        if (_packName.length > 0) _packName + "." + p.getPackageName
-        else p.getPackageName
+        if (_packName.length > 0)
+          _packName + "." + p.getPackageName
+        else
+          p.getPackageName
       case f: ScalaFileImpl => "" //f.getPackageName
       case null             => ""
       case parent           => parentPackageName(parent)
@@ -133,11 +141,19 @@ class ScPackagingImpl private (
     val packageName = getPackageName
     val topRefName = if (packageName.indexOf(".") != -1) {
       packageName.substring(0, packageName.indexOf("."))
-    } else packageName
-    val top = if (_prefix.length > 0) _prefix + "." + topRefName else topRefName
+    } else
+      packageName
+    val top =
+      if (_prefix.length > 0)
+        _prefix + "." + topRefName
+      else
+        topRefName
     val p = ScPackageImpl(
       JavaPsiFacade.getInstance(getProject).findPackage(top))
-    if (p == null) Seq.empty else Seq(p)
+    if (p == null)
+      Seq.empty
+    else
+      Seq(p)
   }
 
   override def processDeclarations(
@@ -145,12 +161,15 @@ class ScPackagingImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (DumbService.getInstance(getProject).isDumb) return true
+    if (DumbService.getInstance(getProject).isDumb)
+      return true
 
     //If stub is not null, then we are not trying to resolve packaging reference.
     if (getStub != null || !reference.contains(lastParent)) {
-      val pName =
-        (if (prefix.length == 0) "" else prefix + ".") + getPackageName
+      val pName = (if (prefix.length == 0)
+                     ""
+                   else
+                     prefix + ".") + getPackageName
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
@@ -180,14 +199,16 @@ class ScPackagingImpl private (
             processor,
             state,
             lastParent,
-            place)) return false
+            place))
+        return false
 
       if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
           !super[ScDeclarationSequenceHolder].processDeclarations(
             processor,
             state,
             lastParent,
-            place)) return false
+            place))
+        return false
     }
 
     true
@@ -207,7 +228,8 @@ class ScPackagingImpl private (
       val text = getText
       val endOffset = if (text.apply(text.length - 1) == '}') {
         text.length - 1
-      } else text.length
+      } else
+        text.length
       text.substring(startOffset, endOffset)
     } else {
       val text = getText
@@ -215,16 +237,21 @@ class ScPackagingImpl private (
       var ref = findChildByType[PsiElement](ScalaElementTypes.REFERENCE)
       if (ref == null)
         ref = findChildByType[PsiElement](ScalaTokenTypes.kPACKAGE)
-      if (ref == null) return getText
+      if (ref == null)
+        return getText
       val startOffset = ref.getTextRange.getEndOffset + 1 -
         getTextRange.getStartOffset
-      if (startOffset >= endOffset) ""
-      else text.substring(startOffset, endOffset)
+      if (startOffset >= endOffset)
+        ""
+      else
+        text.substring(startOffset, endOffset)
     }
   }
 
   override protected def childBeforeFirstImport: Option[PsiElement] = {
-    if (isExplicit) Option(findChildByType[PsiElement](ScalaTokenTypes.tLBRACE))
-    else reference
+    if (isExplicit)
+      Option(findChildByType[PsiElement](ScalaTokenTypes.tLBRACE))
+    else
+      reference
   }
 }

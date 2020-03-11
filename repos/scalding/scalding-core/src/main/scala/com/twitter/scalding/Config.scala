@@ -223,7 +223,8 @@ trait Config extends Serializable {
   def getKryo: Option[KryoInstantiator] =
     if (toMap.contains(ConfiguredInstantiator.KEY))
       Some((new ConfiguredInstantiator(ScalaMapConfig(toMap))).getDelegate)
-    else None
+    else
+      None
 
   def getArgs: Args = get(Config.ScaldingJobArgs) match {
     case None      => new Args(Map.empty)
@@ -525,7 +526,8 @@ object Config {
       case None => Success((nonStrings, initConf))
     }).flatMap {
       case (unhandled, withJar) =>
-        if (unhandled.isEmpty) Success(withJar)
+        if (unhandled.isEmpty)
+          Success(withJar)
         else
           Failure(
             new Exception("unhandled configurations: " + unhandled.toString))
@@ -553,7 +555,8 @@ object Config {
       conf: Config): Either[Set[String], Map[K, V]] = {
     val asMap = conf.toMap.toMap[K, V]
     val duplicateKeys = (m.keySet & asMap.keySet)
-    if (duplicateKeys.isEmpty) Right(m ++ asMap)
+    if (duplicateKeys.isEmpty)
+      Right(m ++ asMap)
     else
       Left(
         conf.toMap.keySet.filter(duplicateKeys(_))

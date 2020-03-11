@@ -14,7 +14,12 @@ trait BigInts {
     def zero: BigInt = 0L
 
     def order(x: BigInt, y: BigInt): Ordering =
-      if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+      if (x < y)
+        Ordering.LT
+      else if (x == y)
+        Ordering.EQ
+      else
+        Ordering.GT
 
     def succ(b: BigInt) = b + 1
     def pred(b: BigInt) = b - 1
@@ -43,9 +48,12 @@ trait BigInts {
     def order(
         x: BigInt @@ Multiplication,
         y: BigInt @@ Multiplication): Ordering =
-      if (Tag.unwrap(x) < Tag.unwrap(y)) Ordering.LT
-      else if (Tag.unwrap(x) == Tag.unwrap(y)) Ordering.EQ
-      else Ordering.GT
+      if (Tag.unwrap(x) < Tag.unwrap(y))
+        Ordering.LT
+      else if (Tag.unwrap(x) == Tag.unwrap(y))
+        Ordering.EQ
+      else
+        Ordering.GT
   }
 }
 

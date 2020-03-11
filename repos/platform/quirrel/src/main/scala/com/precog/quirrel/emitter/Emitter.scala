@@ -49,7 +49,10 @@ trait Emitter
 
   private case class Mark(index: Int, offset: Int) { self =>
     def insert(insertIdx: Int, length: Int): Mark =
-      copy(index = self.index + (if (insertIdx < index) length else 0))
+      copy(index = self.index + (if (insertIdx < index)
+                                   length
+                                 else
+                                   0))
   }
 
   private sealed trait MarkType
@@ -88,7 +91,11 @@ trait Emitter
 
     def insertInstrAtMulti(is: Seq[Instruction], _idx: Int): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
-        val idx = if (_idx < 0) (e.bytecode.length + 1 + _idx) else _idx
+        val idx =
+          if (_idx < 0)
+            (e.bytecode.length + 1 + _idx)
+          else
+            _idx
 
         val before = e.bytecode.take(idx)
         val after = e.bytecode.drop(idx)
@@ -265,7 +272,11 @@ trait Emitter
           .intersect(rightResolved.possibilities)
           .filter(p => p != ValueProvenance && p != NullProvenance)
 
-        val instr = emitInstr(if (itx.isEmpty) ifCross else ifMatch)
+        val instr = emitInstr(
+          if (itx.isEmpty)
+            ifCross
+          else
+            ifMatch)
 
         (left >> right >> instr)(e)
       }
@@ -489,7 +500,11 @@ trait Emitter
             val itx = intersection.filter(p =>
               p != ValueProvenance && p != NullProvenance)
 
-            emitInstr(if (itx.isEmpty) Map2Cross(op2) else Map2Match(op2))(e)
+            emitInstr(
+              if (itx.isEmpty)
+                Map2Cross(op2)
+              else
+                Map2Match(op2))(e)
           }
 
           val resultProv = provAcc ++ prov.possibilities
@@ -664,8 +679,10 @@ trait Emitter
                 val joinInstr = StateT.apply[Id, Emission, Unit] { e =>
                   val resolved = e.subResolve(provenance)
                   emitInstr(
-                    if (resolved == ValueProvenance) Map2Cross(JoinObject)
-                    else Map2Match(JoinObject))(e)
+                    if (resolved == ValueProvenance)
+                      Map2Cross(JoinObject)
+                    else
+                      Map2Match(JoinObject))(e)
                 }
 
                 val joins = Vector.fill(singles.length - 1)(joinInstr)
@@ -707,8 +724,10 @@ trait Emitter
                 val joinInstr = StateT.apply[Id, Emission, Unit] { e =>
                   val resolved = e.subResolve(provenance)
                   emitInstr(
-                    if (resolved == ValueProvenance) Map2Cross(JoinArray)
-                    else Map2Match(JoinArray))(e)
+                    if (resolved == ValueProvenance)
+                      Map2Cross(JoinArray)
+                    else
+                      Map2Match(JoinArray))(e)
                 }
 
                 val joins = Vector.fill(singles.length - 1)(joinInstr)

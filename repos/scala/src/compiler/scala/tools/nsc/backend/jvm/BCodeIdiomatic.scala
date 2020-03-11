@@ -37,7 +37,10 @@ abstract class BCodeIdiomatic extends SubComponent {
 
   val extraProc: Int = GenBCode.mkFlags(
     asm.ClassWriter.COMPUTE_MAXS,
-    if (emitStackMapFrame) asm.ClassWriter.COMPUTE_FRAMES else 0
+    if (emitStackMapFrame)
+      asm.ClassWriter.COMPUTE_FRAMES
+    else
+      0
   )
 
   lazy val JavaStringBuilderClassName = jlStringBuilderRef.internalName
@@ -330,7 +333,11 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // can-multi-thread
     final def boolconst(b: Boolean) {
-      iconst(if (b) 1 else 0)
+      iconst(
+        if (b)
+          1
+        else
+          0)
     }
 
     // can-multi-thread
@@ -475,7 +482,8 @@ abstract class BCodeIdiomatic extends SubComponent {
         pos: Position) = {
       val node = new MethodInsnNode(opcode, owner, name, desc, itf)
       jmethod.instructions.add(node)
-      if (settings.YoptInlinerEnabled) callsitePositions(node) = pos
+      if (settings.YoptInlinerEnabled)
+        callsitePositions(node) = pos
     }
     final def invokedynamic(owner: String, name: String, desc: String) {
       jmethod.visitMethodInsn(Opcodes.INVOKEDYNAMIC, owner, name, desc)
@@ -497,7 +505,10 @@ abstract class BCodeIdiomatic extends SubComponent {
     final def emitIF_ACMP(cond: TestOp, label: asm.Label) {
       assert((cond == TestOp.EQ) || (cond == TestOp.NE), cond)
       val opc =
-        (if (cond == TestOp.EQ) Opcodes.IF_ACMPEQ else Opcodes.IF_ACMPNE)
+        (if (cond == TestOp.EQ)
+           Opcodes.IF_ACMPEQ
+         else
+           Opcodes.IF_ACMPNE)
       jmethod.visitJumpInsn(opc, label)
     }
     // can-multi-thread
@@ -657,12 +668,20 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // can-multi-thread
     final def drop(tk: BType) {
-      emit(if (tk.isWideType) Opcodes.POP2 else Opcodes.POP)
+      emit(
+        if (tk.isWideType)
+          Opcodes.POP2
+        else
+          Opcodes.POP)
     }
 
     // can-multi-thread
     final def dup(tk: BType) {
-      emit(if (tk.isWideType) Opcodes.DUP2 else Opcodes.DUP)
+      emit(
+        if (tk.isWideType)
+          Opcodes.DUP2
+        else
+          Opcodes.DUP)
     }
 
     // ---------------- type checks and casts ----------------

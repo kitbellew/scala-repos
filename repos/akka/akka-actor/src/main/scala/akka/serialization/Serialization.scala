@@ -174,7 +174,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     *   class of the object.
     */
   def findSerializerFor(o: AnyRef): Serializer =
-    if (o eq null) NullSerializer else serializerFor(o.getClass)
+    if (o eq null)
+      NullSerializer
+    else
+      serializerFor(o.getClass)
 
   /**
     * Returns the configured Serializer for the given Class. The configured Serializer

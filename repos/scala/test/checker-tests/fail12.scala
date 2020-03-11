@@ -1,7 +1,8 @@
 class A {
   def f(b: Boolean) = {
     locally {
-      while (b == false) ()
+      while (b == false)
+        ()
       // or:
       // do () while (b == false)
     }

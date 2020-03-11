@@ -39,7 +39,8 @@ class ScalaInheritedMembersNodeProvider
         val children = new util.ArrayList[TreeElement]()
         val clazz = td.element
         try {
-          if (!clazz.isValid) return children
+          if (!clazz.isValid)
+            return children
           val signs = clazz.allSignatures
           for (sign <- signs) {
             sign match {

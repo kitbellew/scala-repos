@@ -169,28 +169,48 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $ACCD
     */
   implicit def jfxAccordion2sfx(a: jfxsc.Accordion): Accordion =
-    if (a != null) new Accordion(a) else null
+    if (a != null)
+      new Accordion(a)
+    else
+      null
 
   implicit def jfxAlert2sfx(a: jfxsc.Alert): Alert =
-    if (a != null) new Alert(a) else null
+    if (a != null)
+      new Alert(a)
+    else
+      null
 
   implicit def jfxAlertType2sfx(a: jfxsc.Alert.AlertType): Alert.AlertType =
-    if (a != null) new Alert.AlertType(a) else null
+    if (a != null)
+      new Alert.AlertType(a)
+    else
+      null
 
   implicit def jfxDialog2sfx[R](a: jfxsc.Dialog[R]): Dialog[R] =
-    if (a != null) new Dialog[R](a) else null
+    if (a != null)
+      new Dialog[R](a)
+    else
+      null
 
   implicit def jfxDialogEvent2sfx(a: jfxsc.DialogEvent): DialogEvent =
-    if (a != null) new DialogEvent(a) else null
+    if (a != null)
+      new DialogEvent(a)
+    else
+      null
 
   implicit def jfxDialogPane2sfx(a: jfxsc.DialogPane): DialogPane =
-    if (a != null) new DialogPane(a) else null
+    if (a != null)
+      new DialogPane(a)
+    else
+      null
 
   implicit def jfxDoubleSpinnerValueFactory2sfx(
       ev: jfxsc.SpinnerValueFactory.DoubleSpinnerValueFactory)
       : SpinnerValueFactory.DoubleSpinnerValueFactory =
-    if (ev != null) new SpinnerValueFactory.DoubleSpinnerValueFactory(ev)
-    else null
+    if (ev != null)
+      new SpinnerValueFactory.DoubleSpinnerValueFactory(ev)
+    else
+      null
 
   /**
     * $START$TGGR.html $TGGR$END
@@ -199,7 +219,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TGGR
     */
   implicit def jfxToggleGroup2sfx(tg: jfxsc.ToggleGroup): ToggleGroup =
-    if (tg != null) new ToggleGroup(tg) else null
+    if (tg != null)
+      new ToggleGroup(tg)
+    else
+      null
 
   /**
     * $START$TGBT.html $TGBT$END
@@ -208,7 +231,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TGBT
     */
   implicit def jfxToggleButton2sfx(tb: jfxsc.ToggleButton): ToggleButton =
-    if (tb != null) new ToggleButton(tb) else null
+    if (tb != null)
+      new ToggleButton(tb)
+    else
+      null
 
   /**
     * $START$RDBT.html $RDBT$END
@@ -217,7 +243,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $RDBT
     */
   implicit def jfxRadioButton2sfx(rb: jfxsc.RadioButton): RadioButton =
-    if (rb != null) new RadioButton(rb) else null
+    if (rb != null)
+      new RadioButton(rb)
+    else
+      null
 
   /**
     * $START$BTBS.html $BTBS$END
@@ -226,8 +255,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $BTBS
     */
   implicit def jfxButtonBase2sfx(b: jfxsc.ButtonBase): ButtonBase =
-    if (b != null) new ButtonBase(b) {}
-    else null
+    if (b != null)
+      new ButtonBase(b) {}
+    else
+      null
 
   /**
     * $START$BUTN.html $BUTN$END
@@ -236,17 +267,29 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $BUTN
     */
   implicit def jfxButton2sfx(b: jfxsc.Button): Button =
-    if (b != null) new Button(b) else null
+    if (b != null)
+      new Button(b)
+    else
+      null
 
   implicit def jfxButtonBar2sfx(b: jfxsc.ButtonBar): ButtonBar =
-    if (b != null) new ButtonBar(b) else null
+    if (b != null)
+      new ButtonBar(b)
+    else
+      null
 
   implicit def jfxButtonData2sfx(
       b: jfxsc.ButtonBar.ButtonData): ButtonBar.ButtonData =
-    if (b != null) new ButtonBar.ButtonData(b) else null
+    if (b != null)
+      new ButtonBar.ButtonData(b)
+    else
+      null
 
   implicit def jfxButtonType2sfx(b: jfxsc.ButtonType): ButtonType =
-    if (b != null) new ButtonType(b) else null
+    if (b != null)
+      new ButtonType(b)
+    else
+      null
 
   /**
     * $START$CELL.html $CELL$END
@@ -256,7 +299,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CELL
     */
   implicit def jfxCell2sfx[T](c: jfxsc.Cell[T]): Cell[T] =
-    if (c != null) new Cell[T](c) else null
+    if (c != null)
+      new Cell[T](c)
+    else
+      null
 
   /**
     * $START$CHBX.html $CHBX$END
@@ -267,7 +313,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxChoiceBox2sfx[J <: AnyRef](
       cb: jfxsc.ChoiceBox[J]): ChoiceBox[J] =
-    if (cb != null) new ChoiceBox[J](cb) else null
+    if (cb != null)
+      new ChoiceBox[J](cb)
+    else
+      null
 
   /**
     * $START$CEBX.html $CEBX$END
@@ -276,11 +325,17 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CEBX
     */
   implicit def jfxCheckBox2sfx(c: jfxsc.CheckBox): CheckBox =
-    if (c != null) new CheckBox(c) else null
+    if (c != null)
+      new CheckBox(c)
+    else
+      null
 
   implicit def jfxChoiceDialog2sfx[T](
       c: jfxsc.ChoiceDialog[T]): ChoiceDialog[T] =
-    if (c != null) new ChoiceDialog[T](c) else null
+    if (c != null)
+      new ChoiceDialog[T](c)
+    else
+      null
 
   /**
     * $START$CMNIT.html $MNIT$END
@@ -289,7 +344,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CMNIT
     */
   implicit def jfxCheckMenuItem2sfx(c: jfxsc.CheckMenuItem): CheckMenuItem =
-    if (c != null) new CheckMenuItem(c) else null
+    if (c != null)
+      new CheckMenuItem(c)
+    else
+      null
 
   /**
     * $START$CTDP.html $CTDP$END
@@ -307,7 +365,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CTMN
     */
   implicit def jfxContextMenu2sfx(c: jfxsc.ContextMenu): ContextMenu =
-    if (c != null) new ContextMenu(c) else null
+    if (c != null)
+      new ContextMenu(c)
+    else
+      null
 
   /**
     * $START$CTRL.html $CTRL$END
@@ -316,8 +377,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CTRL
     */
   implicit def jfxControl2sfx(c: jfxsc.Control): Control =
-    if (c != null) new Control(c) {}
-    else null
+    if (c != null)
+      new Control(c) {}
+    else
+      null
 
   /**
     * $START$CLPK.html $CLPK$END
@@ -326,7 +389,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CLPK
     */
   implicit def jfxColorPicker2sfx(cp: jfxsc.ColorPicker): ColorPicker =
-    if (cp != null) new ColorPicker(cp) else null
+    if (cp != null)
+      new ColorPicker(cp)
+    else
+      null
 
   /**
     * $START$CBBS.html $CBBS$END
@@ -337,8 +403,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxComboBoxBase2sfx[T](
       v: jfxsc.ComboBoxBase[T]): ComboBoxBase[T] =
-    if (v != null) new ComboBoxBase[T](v) {}
-    else null
+    if (v != null)
+      new ComboBoxBase[T](v) {}
+    else
+      null
 
   /**
     * $START$CBBX.html $CBBX$END
@@ -348,7 +416,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CBBX
     */
   implicit def jfxComboBox2sfx[T](v: jfxsc.ComboBox[T]): ComboBox[T] =
-    if (v != null) new ComboBox[T](v) else null
+    if (v != null)
+      new ComboBox[T](v)
+    else
+      null
 
   /**
     * $START$DTCL.html $DTCL$END
@@ -358,7 +429,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $DTCL
     */
   implicit def jfxDateCell2sfx(v: jfxsc.DateCell): DateCell =
-    if (v != null) new DateCell(v) else null
+    if (v != null)
+      new DateCell(v)
+    else
+      null
 
   /**
     * $START$DTPR.html $DTPR$END
@@ -368,7 +442,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $DTPR
     */
   implicit def jfxDatePicker2sfx(v: jfxsc.DatePicker): DatePicker =
-    if (v != null) new DatePicker(v) else null
+    if (v != null)
+      new DatePicker(v)
+    else
+      null
 
   /**
     * $START$FCMD.html $FCMD$END
@@ -378,8 +455,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $FCMD
     */
   implicit def jfxFocusModel2sfx[T](v: jfxsc.FocusModel[T]): FocusModel[T] =
-    if (v != null) new FocusModel[T](v) {}
-    else null
+    if (v != null)
+      new FocusModel[T](v) {}
+    else
+      null
 
   /**
     * $START$HYLK.html $HYLK$END
@@ -388,7 +467,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $HYLK
     */
   implicit def jfxHyperlink2sfx(h: jfxsc.Hyperlink): Hyperlink =
-    if (h != null) new Hyperlink(h) else null
+    if (h != null)
+      new Hyperlink(h)
+    else
+      null
 
   /**
     * $START$IDCL.html $IDCL$END
@@ -398,7 +480,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $IDCL
     */
   implicit def jfxIndexedCell2sfx[T](c: jfxsc.IndexedCell[T]): IndexedCell[T] =
-    if (c != null) new IndexedCell[T](c) else null
+    if (c != null)
+      new IndexedCell[T](c)
+    else
+      null
 
   /**
     * $START$IDRG.html $IDRG$END
@@ -407,13 +492,18 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $IDRG
     */
   implicit def jfxIndexRange2sfx(r: jfxsc.IndexRange): IndexRange =
-    if (r != null) new IndexRange(r) else null
+    if (r != null)
+      new IndexRange(r)
+    else
+      null
 
   implicit def jfxIntegerSpinnerValueFactory2sfx(
       ev: jfxsc.SpinnerValueFactory.IntegerSpinnerValueFactory)
       : SpinnerValueFactory.IntegerSpinnerValueFactory =
-    if (ev != null) new SpinnerValueFactory.IntegerSpinnerValueFactory(ev)
-    else null
+    if (ev != null)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(ev)
+    else
+      null
 
   /**
     * $START$LBEL.html $LBEL$END
@@ -422,7 +512,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $LBEL
     */
   implicit def jfxLabel2sfx(l: jfxsc.Label): Label =
-    if (l != null) new Label(l) else null
+    if (l != null)
+      new Label(l)
+    else
+      null
 
   /**
     * $START$LBLD.html $LBLD$END
@@ -431,8 +524,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $LBLD
     */
   implicit def jfxLabeled2sfx(l: jfxsc.Labeled): Labeled =
-    if (l != null) new Labeled(l) {}
-    else null
+    if (l != null)
+      new Labeled(l) {}
+    else
+      null
 
   /**
     * $START$LSCL.html $LSCL$END
@@ -442,13 +537,18 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $LSCL
     */
   implicit def jfxListCell[T](l: jfxsc.ListCell[T]): ListCell[T] =
-    if (l != null) new ListCell(l) else null
+    if (l != null)
+      new ListCell(l)
+    else
+      null
 
   implicit def jfxListSpinnerValueFactory2sfx[T](
       ev: jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[T])
       : SpinnerValueFactory.ListSpinnerValueFactory[T] =
-    if (ev != null) new SpinnerValueFactory.ListSpinnerValueFactory(ev)
-    else null
+    if (ev != null)
+      new SpinnerValueFactory.ListSpinnerValueFactory(ev)
+    else
+      null
 
   /**
     * $START$LSVW.html $LSVW$END
@@ -458,7 +558,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $LSVW
     */
   implicit def jfxListView2sfx[T](l: jfxsc.ListView[T]): ListView[T] =
-    if (l != null) new ListView(l) else null
+    if (l != null)
+      new ListView(l)
+    else
+      null
 
   /**
     * $START$LVEE.html $LVEE$END
@@ -469,7 +572,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxListViewEditEvent2sfx[T](
       l: jfxsc.ListView.EditEvent[T]): ListView.EditEvent[T] =
-    if (l != null) new ListView.EditEvent(l) else null
+    if (l != null)
+      new ListView.EditEvent(l)
+    else
+      null
 
   /**
     * $START$MENU.html $MENU$END
@@ -478,7 +584,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $MENU
     */
   implicit def jfxMenu2sfx(h: jfxsc.Menu): Menu =
-    if (h != null) new Menu(h) else null
+    if (h != null)
+      new Menu(h)
+    else
+      null
 
   /**
     * $START$MNBR.html $MNBR$END
@@ -487,7 +596,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $MNBR
     */
   implicit def jfxMenuBar2sfx(h: jfxsc.MenuBar): MenuBar =
-    if (h != null) new MenuBar(h) else null
+    if (h != null)
+      new MenuBar(h)
+    else
+      null
 
   /**
     * $START$MNBT.html $MNBT$END
@@ -496,7 +608,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $MNBT
     */
   implicit def jfxMenuButton2sfx(h: jfxsc.MenuButton): MenuButton =
-    if (h != null) new MenuButton(h) else null
+    if (h != null)
+      new MenuButton(h)
+    else
+      null
 
   /**
     * $START$MNIT.html $MNIT$END
@@ -505,7 +620,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $MNIT
     */
   implicit def jfxMenuItem2sfx(m: jfxsc.MenuItem): MenuItem =
-    if (m != null) new MenuItem(m) else null
+    if (m != null)
+      new MenuItem(m)
+    else
+      null
 
   /**
     * $START$CUMIT.html $CUMIT$END
@@ -514,7 +632,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $CUMIT
     */
   implicit def jfxCustomMenuItem2sfx(c: jfxsc.CustomMenuItem): CustomMenuItem =
-    if (c != null) new CustomMenuItem(c) else null
+    if (c != null)
+      new CustomMenuItem(c)
+    else
+      null
 
   /**
     * $START$SPMIT.html $SPMIT$END
@@ -524,7 +645,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSeparatorMenuItem2sfx(
       s: jfxsc.SeparatorMenuItem): SeparatorMenuItem =
-    if (s != null) new SeparatorMenuItem(s) else null
+    if (s != null)
+      new SeparatorMenuItem(s)
+    else
+      null
 
   /**
     * $START$MSMD.html $MSMD$END
@@ -534,8 +658,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxMultipleSelectionModel2sfx[T](
       v: jfxsc.MultipleSelectionModel[T]): MultipleSelectionModel[T] =
-    if (v != null) new MultipleSelectionModel[T](v) {}
-    else null
+    if (v != null)
+      new MultipleSelectionModel[T](v) {}
+    else
+      null
 
   /**
     * $START$ORST.html $ORST$END
@@ -553,7 +679,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $PGNT
     */
   implicit def jfxPagination2sfx(p: jfxsc.Pagination): Pagination =
-    if (p != null) new Pagination(p) else null
+    if (p != null)
+      new Pagination(p)
+    else
+      null
 
   /**
     * $START$SCPN.html $SCPN$END
@@ -562,7 +691,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SCPN
     */
   implicit def jfxScrollPane2sfx(s: jfxsc.ScrollPane): ScrollPane =
-    if (s != null) new ScrollPane(s) else null
+    if (s != null)
+      new ScrollPane(s)
+    else
+      null
 
   /**
     * $START$SCTE.html $SCTE$END
@@ -572,7 +704,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxScrollToEvent2sfx[T](
       ev: jfxsc.ScrollToEvent[T]): ScrollToEvent[T] =
-    if (ev != null) new ScrollToEvent[T](ev) else null
+    if (ev != null)
+      new ScrollToEvent[T](ev)
+    else
+      null
 
   /**
     * $START$SCSB.html $SCSB$END
@@ -591,7 +726,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SCBR
     */
   implicit def jfxScrollBar2sfx(s: jfxsc.ScrollBar): ScrollBar =
-    if (s != null) new ScrollBar(s) else null
+    if (s != null)
+      new ScrollBar(s)
+    else
+      null
 
   /**
     * $START$SLMD.html $SLMD$END
@@ -609,15 +747,23 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SLDR
     */
   implicit def jfxSlider2sfx(s: jfxsc.Slider): Slider =
-    if (s != null) new Slider(s) else null
+    if (s != null)
+      new Slider(s)
+    else
+      null
 
   implicit def jfxSpinner2sfx[T](ev: jfxsc.Spinner[T]): Spinner[T] =
-    if (ev != null) new Spinner[T](ev) else null
+    if (ev != null)
+      new Spinner[T](ev)
+    else
+      null
 
   implicit def jfxSpinnerValueFactory2sfx[T](
       ev: jfxsc.SpinnerValueFactory[T]): SpinnerValueFactory[T] =
-    if (ev != null) new SpinnerValueFactory(ev) {}
-    else null
+    if (ev != null)
+      new SpinnerValueFactory(ev) {}
+    else
+      null
 
   /**
     * $START$SPMB.html $SPMB$END
@@ -627,7 +773,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSplitMenuButton2sfx(
       h: jfxsc.SplitMenuButton): SplitMenuButton =
-    if (h != null) new SplitMenuButton(h) else null
+    if (h != null)
+      new SplitMenuButton(h)
+    else
+      null
 
   /**
     * $START$TBCL.html $TBCL$END
@@ -638,7 +787,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableCell2sfx[S, T](
       tc: jfxsc.TableCell[S, T]): TableCell[S, T] =
-    if (tc != null) new TableCell[S, T](tc) else null
+    if (tc != null)
+      new TableCell[S, T](tc)
+    else
+      null
 
   /**
     * $START$TBCM.html $TBCM$END
@@ -649,11 +801,17 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableColumn2sfx[S, T](
       tc: jfxsc.TableColumn[S, T]): TableColumn[S, T] =
-    if (tc != null) new TableColumn[S, T](tc) else null
+    if (tc != null)
+      new TableColumn[S, T](tc)
+    else
+      null
 
   implicit def jfxTextInputDialog2sfx(
       v: jfxsc.TextInputDialog): TextInputDialog =
-    if (v != null) new TextInputDialog(v) else null
+    if (v != null)
+      new TextInputDialog(v)
+    else
+      null
 
   /**
     * $START$TBST.html $TBST$END
@@ -673,7 +831,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxCellDataFeatures2sfx[S, T](
       cdf: jfxsc.TableColumn.CellDataFeatures[S, T]): CellDataFeatures[S, T] =
-    if (cdf != null) new TableColumn.CellDataFeatures[S, T](cdf) else null
+    if (cdf != null)
+      new TableColumn.CellDataFeatures[S, T](cdf)
+    else
+      null
 
   /**
     * $START$TCCE.html $TCCE$END
@@ -684,7 +845,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxCellEditEvent2sfx[S, T](
       cee: jfxsc.TableColumn.CellEditEvent[S, T]): CellEditEvent[S, T] =
-    if (cee != null) new TableColumn.CellEditEvent[S, T](cee) else null
+    if (cee != null)
+      new TableColumn.CellEditEvent[S, T](cee)
+    else
+      null
 
   /**
     * $START$TBPS.html $TBPS$END
@@ -695,7 +859,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTablePosition2sfx[S, T](
       tp: jfxsc.TablePosition[S, T]): TablePosition[S, T] =
-    if (tp != null) new TablePosition[S, T](tp) else null
+    if (tp != null)
+      new TablePosition[S, T](tp)
+    else
+      null
 
   /**
     * $START$TBPB.html $TBPB$END
@@ -707,8 +874,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTablePositionBase2sfx[TC <: jfxsc.TableColumnBase[_, _]](
       tpb: jfxsc.TablePositionBase[TC]): TablePositionBase[TC] =
-    if (tpb != null) new TablePositionBase[TC](tpb) {}
-    else null
+    if (tpb != null)
+      new TablePositionBase[TC](tpb) {}
+    else
+      null
 
   /**
     * $START$TBRW.html $TBRW$END
@@ -718,7 +887,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TBRW
     */
   implicit def jfxTableRow2sfx[T](tr: jfxsc.TableRow[T]): TableRow[T] =
-    if (tr != null) new TableRow[T](tr) else null
+    if (tr != null)
+      new TableRow[T](tr)
+    else
+      null
 
   /**
     * $START$TBVW.html $TBVW$END
@@ -728,7 +900,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TBVW
     */
   implicit def jfxTableView2sfx[S](tv: jfxsc.TableView[S]): TableView[S] =
-    if (tv != null) new TableView[S](tv) else null
+    if (tv != null)
+      new TableView[S](tv)
+    else
+      null
 
   /**
     * $START$RFBS.html $RFBS$END
@@ -739,7 +914,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxResizeFeaturesBase2sfx[S](
       rf: jfxsc.ResizeFeaturesBase[S]): ResizeFeaturesBase[S] =
-    if (rf != null) new ResizeFeaturesBase[S](rf) else null
+    if (rf != null)
+      new ResizeFeaturesBase[S](rf)
+    else
+      null
 
   /**
     * $START$TVRF.html $TVRF$END
@@ -750,7 +928,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxResizeFeatures2sfx[S](
       rf: jfxsc.TableView.ResizeFeatures[S]): ResizeFeatures[S] =
-    if (rf != null) new TableView.ResizeFeatures[S](rf) else null
+    if (rf != null)
+      new TableView.ResizeFeatures[S](rf)
+    else
+      null
 
   /**
     * $START$TVSM.html $TVSM$END
@@ -762,8 +943,10 @@ trait ControlIncludes extends CellIncludes {
   implicit def jfxTableViewSelectionModel2sfx[S](
       tvsm: jfxsc.TableView.TableViewSelectionModel[S])
       : TableViewSelectionModel[S] =
-    if (tvsm != null) new TableView.TableViewSelectionModel[S](tvsm) {}
-    else null
+    if (tvsm != null)
+      new TableView.TableViewSelectionModel[S](tvsm) {}
+    else
+      null
 
   /**
     * $START$TBSM.html $TBSM$END
@@ -774,8 +957,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableSelectionModel2sfx[T](
       tsm: jfxsc.TableSelectionModel[T]): TableSelectionModel[T] =
-    if (tsm != null) new TableSelectionModel[T](tsm) {}
-    else null
+    if (tsm != null)
+      new TableSelectionModel[T](tsm) {}
+    else
+      null
   /*
    * $START$TBCB.html $TBCB$END
    *
@@ -804,7 +989,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableViewFocusModel2sfx[S](
       tvfm: jfxsc.TableView.TableViewFocusModel[S]): TableViewFocusModel[S] =
-    if (tvfm != null) new TableView.TableViewFocusModel[S](tvfm) else null
+    if (tvfm != null)
+      new TableView.TableViewFocusModel[S](tvfm)
+    else
+      null
 
   /**
     * $START$TBFM.html $TBFM$END
@@ -818,16 +1006,24 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTableFocusModel2sfx[T, TC <: jfxsc.TableColumnBase[T, _]](
       tfm: jfxsc.TableFocusModel[T, TC]): TableFocusModel[T, TC] =
-    if (tfm != null) new TableFocusModel[T, TC](tfm) {}
-    else null
+    if (tfm != null)
+      new TableFocusModel[T, TC](tfm) {}
+    else
+      null
 
   implicit def jfxTextFormatter2sfx[V](
       t: jfxsc.TextFormatter[V]): TextFormatter[V] =
-    if (t != null) new TextFormatter(t) else null
+    if (t != null)
+      new TextFormatter(t)
+    else
+      null
 
   implicit def jfxTextFormatterChange2sfx[V](
       t: jfxsc.TextFormatter.Change): TextFormatter.Change =
-    if (t != null) new TextFormatter.Change(t) else null
+    if (t != null)
+      new TextFormatter.Change(t)
+    else
+      null
 
   /**
     * $START$TTPN.html $TTPN$END
@@ -836,7 +1032,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TTPN
     */
   implicit def jfxTitledPane2sfx(t: jfxsc.TitledPane): TitledPane =
-    if (t != null) new TitledPane(t) else null
+    if (t != null)
+      new TitledPane(t)
+    else
+      null
 
   /**
     * $START$TGGL.html $TGGL$END
@@ -845,14 +1044,16 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TGGL
     */
   implicit def jfxToggle2sfx(t: jfxsc.Toggle): Toggle =
-    if (t != null) new Toggle {
-      override val delegate = t
-      def userData: AnyRef = delegate.getUserData
-      def userData_=(v: AnyRef) {
-        delegate.setUserData(v)
+    if (t != null)
+      new Toggle {
+        override val delegate = t
+        def userData: AnyRef = delegate.getUserData
+        def userData_=(v: AnyRef) {
+          delegate.setUserData(v)
+        }
       }
-    }
-    else null
+    else
+      null
 
   /**
     * $START$SPRT.html $SPRT$END
@@ -861,7 +1062,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SPRT
     */
   implicit def jfxSeparator2sfx(s: jfxsc.Separator): Separator =
-    if (s != null) new Separator(s) else null
+    if (s != null)
+      new Separator(s)
+    else
+      null
 
   /**
     * $START$SKIN.html $SKIN$END
@@ -872,10 +1076,12 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSkin2sfxSkin[C <: jfxsc.Skinnable](
       s: jfxsc.Skin[C]): Skin[C] =
-    if (s != null) new Skin[C] {
-      override val delegate = s
-    }
-    else null
+    if (s != null)
+      new Skin[C] {
+        override val delegate = s
+      }
+    else
+      null
 
   /**
     * $START$SNBE.html $SNBE$END
@@ -885,8 +1091,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSkinBase2sfx[C <: jfxsc.Control](
       sb: jfxsc.SkinBase[C]): SkinBase[C] =
-    if (sb != null) new SkinBase[C](sb) {}
-    else null
+    if (sb != null)
+      new SkinBase[C](sb) {}
+    else
+      null
 
   /**
     * $START$SKNB.html $SKNB$END
@@ -895,10 +1103,12 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SKNB
     */
   implicit def jfxSkinnable2sfxSkinnable(s: jfxsc.Skinnable): Skinnable =
-    if (s != null) new Skinnable {
-      override val delegate = s
-    }
-    else null
+    if (s != null)
+      new Skinnable {
+        override val delegate = s
+      }
+    else
+      null
 
   /**
     * $START$PRGI.html $PRGI$END
@@ -908,7 +1118,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxProgressIndicator2sfx(
       p: jfxsc.ProgressIndicator): ProgressIndicator =
-    if (p != null) new ProgressIndicator(p) else null
+    if (p != null)
+      new ProgressIndicator(p)
+    else
+      null
 
   /**
     * $START$PRGB.html $PRGB$END
@@ -917,7 +1130,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $PRGB
     */
   implicit def jfxProgressBar2sfx(p: jfxsc.ProgressBar): ProgressBar =
-    if (p != null) new ProgressBar(p) else null
+    if (p != null)
+      new ProgressBar(p)
+    else
+      null
 
   /**
     * $START$PSFD.html $PSFD$END
@@ -926,7 +1142,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $PSFD
     */
   implicit def jfxPasswordField2sfx(v: jfxsc.PasswordField): PasswordField =
-    if (v != null) new PasswordField(v) else null
+    if (v != null)
+      new PasswordField(v)
+    else
+      null
 
   /**
     * $START$PPCT.html $PPCT$END
@@ -935,7 +1154,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $PPCT
     */
   implicit def jfxPopupControl2sfx(v: jfxsc.PopupControl): PopupControl =
-    if (v != null) new PopupControl(v) else null
+    if (v != null)
+      new PopupControl(v)
+    else
+      null
 
   /**
     * $START$RDMI.html $RDMI$END
@@ -944,7 +1166,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $RDMI
     */
   implicit def jfxRadioMenuItem2sfx(m: jfxsc.RadioMenuItem): RadioMenuItem =
-    if (m != null) new RadioMenuItem(m) else null
+    if (m != null)
+      new RadioMenuItem(m)
+    else
+      null
 
   /**
     * $START$SCMD.html $SCMD$END
@@ -955,8 +1180,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSelectionModel2sfx[T](
       v: jfxsc.SelectionModel[T]): SelectionModel[T] =
-    if (v != null) new SelectionModel[T](v) {}
-    else null
+    if (v != null)
+      new SelectionModel[T](v) {}
+    else
+      null
 
   /**
     * $START$SSMD.html $SSMD$END
@@ -967,8 +1194,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxSingleSelectionModel2sfx[T](
       v: jfxsc.SingleSelectionModel[T]): SingleSelectionModel[T] =
-    if (v != null) new SingleSelectionModel[T](v) {}
-    else null
+    if (v != null)
+      new SingleSelectionModel[T](v) {}
+    else
+      null
 
   /**
     * $START$SPPN.html $SPPN$END
@@ -977,7 +1206,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SPPN
     */
   implicit def jfxSplitPane2sfx(s: jfxsc.SplitPane): SplitPane =
-    if (s != null) new SplitPane(s) else null
+    if (s != null)
+      new SplitPane(s)
+    else
+      null
 
   /**
     * $START$SPDV.html $SPDV$END
@@ -986,7 +1218,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SPDV
     */
   implicit def jfxSplitPaneDivider2sfx(d: jfxsc.SplitPane.Divider): Divider =
-    if (d != null) new SplitPane.Divider(d) else null
+    if (d != null)
+      new SplitPane.Divider(d)
+    else
+      null
 
   /**
     * $START$TAB.html $TAB$END
@@ -995,7 +1230,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TAB
     */
   implicit def jfxTab2sfx(v: jfxsc.Tab): Tab =
-    if (v != null) new Tab(v) else null
+    if (v != null)
+      new Tab(v)
+    else
+      null
 
   /**
     * $START$TBPN.html $TBPN$END
@@ -1004,7 +1242,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TBPN
     */
   implicit def jfxTabPane2sfx(v: jfxsc.TabPane): TabPane =
-    if (v != null) new TabPane(v) else null
+    if (v != null)
+      new TabPane(v)
+    else
+      null
 
   /**
     * $START$TPCP.html $TPCP$END
@@ -1023,7 +1264,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TXFD
     */
   implicit def jfxTextField2sfx(v: jfxsc.TextField): TextField =
-    if (v != null) new TextField(v) else null
+    if (v != null)
+      new TextField(v)
+    else
+      null
 
   /**
     * Converts a $JFX `[[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/$TXFD.html $TXFD]]` to a
@@ -1034,7 +1278,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTextFieldProperty2sfx(
       p: ReadOnlyObjectProperty[jfxsc.TextField]): TextFieldProperty =
-    if (p != null) new TextFieldProperty(p) else null
+    if (p != null)
+      new TextFieldProperty(p)
+    else
+      null
 
   /**
     * $START$TXAR.html $TXAR$END
@@ -1043,7 +1290,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TXAR
     */
   implicit def jfxTextArea2sfx(t: jfxsc.TextArea): TextArea =
-    if (t != null) new TextArea(t) else null
+    if (t != null)
+      new TextArea(t)
+    else
+      null
 
   /**
     * $START$TXIC.html $TXIC$END
@@ -1053,8 +1303,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTextInputControl2sfx(
       t: jfxsc.TextInputControl): TextInputControl =
-    if (t != null) new TextInputControl(t) {}
-    else null
+    if (t != null)
+      new TextInputControl(t) {}
+    else
+      null
 
   /**
     * $START$TOTP.html $TOTP$END
@@ -1063,8 +1315,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TOTP
     */
   implicit def jfxTooltip2sfx(t: jfxsc.Tooltip): Tooltip =
-    if (t != null) new Tooltip(t) {}
-    else null
+    if (t != null)
+      new Tooltip(t) {}
+    else
+      null
 
   /**
     * $START$TOBR.html $TOBR$END
@@ -1073,8 +1327,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TOBR
     */
   implicit def jfxToolBar2sfx(t: jfxsc.ToolBar): ToolBar =
-    if (t != null) new ToolBar(t) {}
-    else null
+    if (t != null)
+      new ToolBar(t) {}
+    else
+      null
 
   /**
     * $START$TRCL.html $TRCL$END
@@ -1084,7 +1340,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TRCL
     */
   implicit def jfxTreeCell2sfx[T](t: jfxsc.TreeCell[T]): TreeCell[T] =
-    if (t != null) new TreeCell[T](t) else null
+    if (t != null)
+      new TreeCell[T](t)
+    else
+      null
 
   /**
     * $START$TRIT.html $TRIT$END
@@ -1094,7 +1353,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TRIT
     */
   implicit def jfxTreeItem2sfx[T](t: jfxsc.TreeItem[T]): TreeItem[T] =
-    if (t != null) new TreeItem[T](t) else null
+    if (t != null)
+      new TreeItem[T](t)
+    else
+      null
 
   /**
     * $START$TIME.html $TIME$END
@@ -1105,7 +1367,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeModificationEvent2sfx[T](
       tmi: jfxsc.TreeItem.TreeModificationEvent[T]): TreeModificationEvent[T] =
-    if (tmi != null) new TreeItem.TreeModificationEvent[T](tmi) else null
+    if (tmi != null)
+      new TreeItem.TreeModificationEvent[T](tmi)
+    else
+      null
 
   /**
     * $START$TRVW.html $TRVW$END
@@ -1115,7 +1380,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TRVW
     */
   implicit def jfxTreeView2sfx[T](t: jfxsc.TreeView[T]): TreeView[T] =
-    if (t != null) new TreeView[T](t) else null
+    if (t != null)
+      new TreeView[T](t)
+    else
+      null
 
   /**
     * $START$TVEE.html $TVEE$END
@@ -1126,7 +1394,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeViewEditEvent2sfx[T](
       t: jfxsc.TreeView.EditEvent[T]): EditEvent[T] =
-    if (t != null) new TreeView.EditEvent[T](t) else null
+    if (t != null)
+      new TreeView.EditEvent[T](t)
+    else
+      null
 
   /**
     * $START$TTRW.html $TTRW$END
@@ -1138,7 +1409,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTableRow2sfx[T](
       ttr: jfxsc.TreeTableRow[T]): TreeTableRow[T] =
-    if (ttr != null) new TreeTableRow[T](ttr) else null
+    if (ttr != null)
+      new TreeTableRow[T](ttr)
+    else
+      null
 
   /**
     * $START$TTCL.html $TTCL$END
@@ -1151,7 +1425,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTableCell2sfx[S, T](
       ttc: jfxsc.TreeTableCell[S, T]): TreeTableCell[S, T] =
-    if (ttc != null) new TreeTableCell[S, T](ttc) else null
+    if (ttc != null)
+      new TreeTableCell[S, T](ttc)
+    else
+      null
 
   /**
     * $START$SREV.html $SREV$END
@@ -1161,7 +1438,10 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $SREV
     */
   implicit def jfxSortEvent2sfx[C](se: jfxsc.SortEvent[C]): SortEvent[C] =
-    if (se != null) new SortEvent[C](se) else null
+    if (se != null)
+      new SortEvent[C](se)
+    else
+      null
 
   /**
     * $START$TRSM.html $TRSM$END
@@ -1183,14 +1463,23 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTablePosition2sfx[S, T](
       ttp: jfxsc.TreeTablePosition[S, T]): TreeTablePosition[S, T] =
-    if (ttp != null) new TreeTablePosition[S, T](ttp) else null
+    if (ttp != null)
+      new TreeTablePosition[S, T](ttp)
+    else
+      null
 
   implicit def jfxTreeTableColumn2sfx[S, T](a: jfxsc.TreeTableColumn[S, T]) =
-    if (a != null) new TreeTableColumn[S, T](a) else null
+    if (a != null)
+      new TreeTableColumn[S, T](a)
+    else
+      null
 
   implicit def jfxTreeCellDataFeatures2sfx[S, T](
       a: jfxsc.TreeTableColumn.CellDataFeatures[S, T]) =
-    if (a != null) new TreeTableColumn.CellDataFeatures[S, T](a) else null
+    if (a != null)
+      new TreeTableColumn.CellDataFeatures[S, T](a)
+    else
+      null
 
   /**
     * $START$TTVW.html $TTVW$END
@@ -1201,7 +1490,10 @@ trait ControlIncludes extends CellIncludes {
     * @since 8.0
     */
   implicit def jfxTreeTableView2sfx[S](a: jfxsc.TreeTableView[S]) =
-    if (a != null) new TreeTableView[S](a) else null
+    if (a != null)
+      new TreeTableView[S](a)
+    else
+      null
 
   /**
     * $START$TTVW.html $TTVW$END
@@ -1213,7 +1505,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTableViewEditEvent2sfx[T](
       t: jfxsc.TreeTableView.EditEvent[T]) =
-    if (t != null) new TreeTableView.EditEvent[T](t) else null
+    if (t != null)
+      new TreeTableView.EditEvent[T](t)
+    else
+      null
 
   /**
     * $START$TTVE.html $TTVE$END
@@ -1224,7 +1519,10 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTableViewResizeFeatures2sfx[S](
       rf: jfxsc.TreeTableView.ResizeFeatures[S]) =
-    if (rf != null) new TreeTableView.ResizeFeatures[S](rf) else null
+    if (rf != null)
+      new TreeTableView.ResizeFeatures[S](rf)
+    else
+      null
 
   /**
     * $START$TTVS.html $TTVS$END
@@ -1237,7 +1535,8 @@ trait ControlIncludes extends CellIncludes {
       ttvsm: jfxsc.TreeTableView.TreeTableViewSelectionModel[S]) =
     if (ttvsm != null)
       new TreeTableView.TreeTableViewSelectionModel[S](ttvsm) {}
-    else null
+    else
+      null
 
   /**
     * $START$TTVF.html $TTVF$END
@@ -1248,7 +1547,9 @@ trait ControlIncludes extends CellIncludes {
     */
   implicit def jfxTreeTableViewFocusModel2sfx[S](
       ttvfm: jfxsc.TreeTableView.TreeTableViewFocusModel[S]) =
-    if (ttvfm != null) new TreeTableView.TreeTableViewFocusModel[S](ttvfm)
-    else null
+    if (ttvfm != null)
+      new TreeTableView.TreeTableViewFocusModel[S](ttvfm)
+    else
+      null
 
 }

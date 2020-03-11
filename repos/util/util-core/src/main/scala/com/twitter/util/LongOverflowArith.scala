@@ -38,7 +38,8 @@ object LongOverflowArith {
       }
     } else if (a > 0L) {
       // and b > 0L
-      if (a > Long.MaxValue / b) throw new LongOverflowException(a + " * " + b)
+      if (a > Long.MaxValue / b)
+        throw new LongOverflowException(a + " * " + b)
     }
 
     a * b

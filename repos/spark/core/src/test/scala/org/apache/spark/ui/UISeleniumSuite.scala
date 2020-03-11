@@ -336,8 +336,10 @@ class UISeleniumSuite
         attemptId <- 0 to 1
       } {
         val exp =
-          if (attemptId == 0 && stageId == 1) StageStatus.FAILED
-          else StageStatus.COMPLETE
+          if (attemptId == 0 && stageId == 1)
+            StageStatus.FAILED
+          else
+            StageStatus.COMPLETE
         val stageJson = getJson(sc.ui.get, s"stages/$stageId/$attemptId")
         (stageJson \ "status").extract[String] should be(exp.name())
       }

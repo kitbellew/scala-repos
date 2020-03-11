@@ -157,8 +157,10 @@ object ConsumerFetcherThread {
       underlying.messages.asInstanceOf[ByteBufferMessageSet]
     def highWatermark: Long = underlying.hw
     def exception: Option[Throwable] =
-      if (errorCode == ErrorMapping.NoError) None
-      else Some(ErrorMapping.exceptionFor(errorCode))
+      if (errorCode == ErrorMapping.NoError)
+        None
+      else
+        Some(ErrorMapping.exceptionFor(errorCode))
 
   }
 }

@@ -255,7 +255,11 @@ private[parquet] class CatalystWriteSupport
           // Otherwise, the length must be less than `numBytes`.  In this case we copy contents of
           // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
           // fixed-length byte array.
-          val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
+          val signByte =
+            if (bytes.head < 0)
+              -1: Byte
+            else
+              0: Byte
           util.Arrays.fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
           System.arraycopy(
             bytes,

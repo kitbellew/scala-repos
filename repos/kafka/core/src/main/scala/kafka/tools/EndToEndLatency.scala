@@ -50,15 +50,21 @@ object EndToEndLatency {
     val numMessages = args(2).toInt
     val producerAcks = args(3)
     val messageLen = args(4).toInt
-    val sslPropsFile = if (args.length == 6) args(5) else ""
+    val sslPropsFile =
+      if (args.length == 6)
+        args(5)
+      else
+        ""
 
     if (!List("1", "all").contains(producerAcks))
       throw new IllegalArgumentException(
         "Latency testing requires synchronous acknowledgement. Please use 1 or all")
 
     val consumerProps =
-      if (sslPropsFile.equals("")) new Properties()
-      else Utils.loadProps(sslPropsFile)
+      if (sslPropsFile.equals(""))
+        new Properties()
+      else
+        Utils.loadProps(sslPropsFile)
     consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     consumerProps.put(
       ConsumerConfig.GROUP_ID_CONFIG,
@@ -80,8 +86,10 @@ object EndToEndLatency {
     consumer.subscribe(List(topic))
 
     val producerProps =
-      if (sslPropsFile.equals("")) new Properties()
-      else Utils.loadProps(sslPropsFile)
+      if (sslPropsFile.equals(""))
+        new Properties()
+      else
+        Utils.loadProps(sslPropsFile)
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     producerProps.put(
       ProducerConfig.LINGER_MS_CONFIG,
@@ -144,7 +152,8 @@ object EndToEndLatency {
       //Check we only got the one message
       if (recordIter.hasNext) {
         var count = 1
-        for (elem <- recordIter) count += 1
+        for (elem <- recordIter)
+          count += 1
         throw new RuntimeException(
           s"Only one result was expected during this test. We found [$count]")
       }

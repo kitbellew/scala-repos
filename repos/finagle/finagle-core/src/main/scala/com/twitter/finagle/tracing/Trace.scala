@@ -34,8 +34,10 @@ object Trace {
   private case class TraceCtx(terminal: Boolean, tracers: List[Tracer]) {
     def withTracer(tracer: Tracer) = copy(tracers = tracer :: this.tracers)
     def withTerminal(terminal: Boolean) =
-      if (terminal == this.terminal) this
-      else copy(terminal = terminal)
+      if (terminal == this.terminal)
+        this
+      else
+        copy(terminal = terminal)
   }
 
   private object TraceCtx {
@@ -75,12 +77,22 @@ object Trace {
 
       val flags = Flags(flags64)
       val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
-      } else None
+        if (flags.isFlagSet(Flags.Sampled))
+          someTrue
+        else
+          someFalse
+      } else
+        None
 
       val traceId = TraceId(
-        if (trace64 == parent64) None else Some(SpanId(trace64)),
-        if (parent64 == span64) None else Some(SpanId(parent64)),
+        if (trace64 == parent64)
+          None
+        else
+          Some(SpanId(trace64)),
+        if (parent64 == span64)
+          None
+        else
+          Some(SpanId(parent64)),
         SpanId(span64),
         sampled,
         flags)
@@ -160,12 +172,14 @@ object Trace {
     *                 id is set will not set the traceId
     */
   def letId[R](traceId: TraceId, terminal: Boolean = false)(f: => R): R = {
-    if (isTerminal) f
+    if (isTerminal)
+      f
     else if (terminal) {
       Contexts.local.let(traceCtx, ctx.withTerminal(terminal)) {
         Contexts.broadcast.let(idCtx, traceId)(f)
       }
-    } else Contexts.broadcast.let(idCtx, traceId)(f)
+    } else
+      Contexts.broadcast.let(idCtx, traceId)(f)
   }
 
   /**

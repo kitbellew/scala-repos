@@ -32,8 +32,12 @@ trait JValueGen {
       arbitrary[Boolean].map(JBool(_)),
       arbitrary[String].map(JString(_)))
 
-  def genArray: Gen[JValue] = for (l <- genList) yield JArray(l)
-  def genObject: Gen[JObject] = for (l <- genFieldList) yield JObject(l)
+  def genArray: Gen[JValue] =
+    for (l <- genList)
+      yield JArray(l)
+  def genObject: Gen[JObject] =
+    for (l <- genFieldList)
+      yield JObject(l)
 
   def genList = Gen.containerOfN[List, JValue](listSize, genJValue)
   def genFieldList = Gen.containerOfN[List, JField](listSize, genField)

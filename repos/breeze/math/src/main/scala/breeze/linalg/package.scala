@@ -223,8 +223,10 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j <= i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j <= i)
+        X(i, j)
+      else
+        implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -235,8 +237,10 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j < i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j < i)
+        X(i, j)
+      else
+        implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -247,8 +251,10 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j >= i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j >= i)
+        X(i, j)
+      else
+        implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -259,8 +265,10 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j > i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j > i)
+        X(i, j)
+      else
+        implicitly[Semiring[T]].zero)
   }
 
   /**

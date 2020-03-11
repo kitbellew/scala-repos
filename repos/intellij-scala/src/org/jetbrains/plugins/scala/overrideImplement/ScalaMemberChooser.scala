@@ -71,8 +71,10 @@ object ScalaMemberChooser {
         val more = c2.isInheritor(c1, /*checkDeep =*/ true)
         if (less && more)
           0 //it is possible to have cyclic inheritance for generic traits in scala
-        else if (less) -1
-        else 1
+        else if (less)
+          -1
+        else
+          1
       }
     }
     sortedClasses ++= groupedMembers.keys.toSeq.sorted(ordering)

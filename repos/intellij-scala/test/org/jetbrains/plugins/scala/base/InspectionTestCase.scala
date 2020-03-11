@@ -36,7 +36,8 @@ abstract class InspectionTestCase[T <: LocalInspectionTool: ClassTag]
         case HighlightSeverity.WEAK_WARNING => WeakWarning
         case _                              => Information
       }
-      if (severity == Information) Seq.empty
+      if (severity == Information)
+        Seq.empty
       else
         Seq(
           Highlight(

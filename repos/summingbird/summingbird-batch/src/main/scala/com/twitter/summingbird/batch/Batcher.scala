@@ -102,11 +102,15 @@ object Batcher {
         case Universe()            => totalBatchInterval
         case ExclusiveUpper(upper) => Empty()
         case InclusiveLower(lower) =>
-          if (lower == Timestamp.Min) totalBatchInterval
-          else Empty()
+          if (lower == Timestamp.Min)
+            totalBatchInterval
+          else
+            Empty()
         case InclusiveUpper(upper) =>
-          if (upper == Timestamp.Max) totalBatchInterval
-          else Empty()
+          if (upper == Timestamp.Max)
+            totalBatchInterval
+          else
+            Empty()
         case ExclusiveLower(lower) => Empty()
         case Intersection(low, high) =>
           batchesCoveredBy(low) && batchesCoveredBy(high)
@@ -129,7 +133,10 @@ trait Batcher extends Serializable {
 
   private def truncateUp(ts: Timestamp): BatchID = {
     val batch = batchOf(ts)
-    if (earliestTimeOf(batch) != ts) batch.next else batch
+    if (earliestTimeOf(batch) != ts)
+      batch.next
+    else
+      batch
   }
 
   /**

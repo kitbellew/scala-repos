@@ -63,7 +63,10 @@ class YarnSparkHadoopUtilSuite
   }
 
   def bashTest(name: String)(fn: => Unit): Unit =
-    if (hasBash) test(name)(fn) else ignore(name)(fn)
+    if (hasBash)
+      test(name)(fn)
+    else
+      ignore(name)(fn)
 
   bashTest("shell script escaping") {
     val scriptFile =

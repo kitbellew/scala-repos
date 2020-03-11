@@ -213,7 +213,8 @@ class GroupManager @Singleton @Inject() (
         }: _*)
         val actions = Seq.newBuilder[ResolveArtifacts]
         group.updateApps(group.version) { app =>
-          if (app.storeUrls.isEmpty) app
+          if (app.storeUrls.isEmpty)
+            app
           else {
             val storageUrls = app.storeUrls.map(paths).map(storage.item(_).url)
             val resolved = app.copy(
@@ -281,11 +282,16 @@ class GroupManager @Singleton @Inject() (
       )
 
       def nextFreeAppPort: Int =
-        if (assignedAndAvailable.nonEmpty) assignedAndAvailable.dequeue()
-        else nextGlobalFreePort
+        if (assignedAndAvailable.nonEmpty)
+          assignedAndAvailable.dequeue()
+        else
+          nextGlobalFreePort
 
       val servicePorts: Seq[Int] = app.servicePorts.map { port =>
-        if (port == 0) nextFreeAppPort else port
+        if (port == 0)
+          nextFreeAppPort
+        else
+          port
       }
 
       // defined only if there are port mappings

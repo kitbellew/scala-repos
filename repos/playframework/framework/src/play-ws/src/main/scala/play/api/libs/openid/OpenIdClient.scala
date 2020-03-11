@@ -167,7 +167,11 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         ) ++ axParameters(axRequired, axOptional) ++ realm
           .map("openid.realm" -> _)
           .toList
-        val separator = if (server.url.contains("?")) "&" else "?"
+        val separator =
+          if (server.url.contains("?"))
+            "&"
+          else
+            "?"
         server.url + separator + parameters
           .map(pair => pair._1 + "=" + URLEncoder.encode(pair._2, "UTF-8"))
           .mkString("&")
@@ -219,7 +223,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       .map(response => {
         if (response.status == 200 && response.body.contains("is_valid:true")) {
           UserInfo(queryString)
-        } else throw Errors.AUTH_ERROR
+        } else
+          throw Errors.AUTH_ERROR
       })
   }
 
@@ -230,12 +235,16 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       Nil
     else {
       val axRequiredParams =
-        if (axRequired.isEmpty) Nil
-        else Seq("openid.ax.required" -> axRequired.map(_._1).mkString(","))
+        if (axRequired.isEmpty)
+          Nil
+        else
+          Seq("openid.ax.required" -> axRequired.map(_._1).mkString(","))
 
       val axOptionalParams =
-        if (axOptional.isEmpty) Nil
-        else Seq("openid.ax.if_available" -> axOptional.map(_._1).mkString(","))
+        if (axOptional.isEmpty)
+          Nil
+        else
+          Seq("openid.ax.if_available" -> axOptional.map(_._1).mkString(","))
 
       val definitions = (axRequired ++ axOptional).map(attribute =>
         ("openid.ax.type." + attribute._1 -> attribute._2))
@@ -287,10 +296,16 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
         }
         def scheme(uri: URI) =
           Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)
-        def path(path: String) = if (null == path || path.isEmpty) "/" else path
+        def path(path: String) =
+          if (null == path || path.isEmpty)
+            "/"
+          else
+            path
 
-        val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*")) new URI(url)
-                   else new URI("http://" + url)).normalize()
+        val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*"))
+                     new URI(url)
+                   else
+                     new URI("http://" + url)).normalize()
         new URI(
           scheme(uri),
           uri.getUserInfo,

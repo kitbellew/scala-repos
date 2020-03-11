@@ -161,8 +161,10 @@ final case class ConsistentHashingRoutingLogic(
   private val selfAddress =
     system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
   val vnodes =
-    if (virtualNodesFactor == 0) system.settings.DefaultVirtualNodesFactor
-    else virtualNodesFactor
+    if (virtualNodesFactor == 0)
+      system.settings.DefaultVirtualNodesFactor
+    else
+      virtualNodesFactor
 
   private lazy val log = Logging(system, getClass)
 
@@ -187,7 +189,8 @@ final case class ConsistentHashingRoutingLogic(
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
+    if (routees.isEmpty)
+      NoRoutee
     else {
 
       // update consistentHash when routees has changed
@@ -199,7 +202,8 @@ final case class ConsistentHashingRoutingLogic(
         if (routees ne oldRoutees) {
           // when other instance, same content, no need to re-hash, but try to set routees
           val consistentHash =
-            if (routees == oldRoutees) oldConsistentHash
+            if (routees == oldRoutees)
+              oldConsistentHash
             else
               ConsistentHash(
                 routees.map(ConsistentRoutee(_, selfAddress)),
@@ -210,13 +214,15 @@ final case class ConsistentHashingRoutingLogic(
             oldConsistentHashTuple,
             (routees, consistentHash))
           consistentHash
-        } else oldConsistentHash
+        } else
+          oldConsistentHash
       }
 
       def target(hashData: Any): Routee =
         try {
           val currentConsistenHash = updateConsistentHash()
-          if (currentConsistenHash.isEmpty) NoRoutee
+          if (currentConsistenHash.isEmpty)
+            NoRoutee
           else
             hashData match {
               case bytes: Array[Byte] ⇒

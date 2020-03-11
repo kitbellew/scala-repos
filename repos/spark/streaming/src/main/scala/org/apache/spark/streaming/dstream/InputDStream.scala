@@ -105,7 +105,8 @@ abstract class InputDStream[T: ClassTag](_ssc: StreamingContext)
   override def dependencies: List[DStream[_]] = List()
 
   override def slideDuration: Duration = {
-    if (ssc == null) throw new Exception("ssc is null")
+    if (ssc == null)
+      throw new Exception("ssc is null")
     if (ssc.graph.batchDuration == null)
       throw new Exception("batchDuration is null")
     ssc.graph.batchDuration

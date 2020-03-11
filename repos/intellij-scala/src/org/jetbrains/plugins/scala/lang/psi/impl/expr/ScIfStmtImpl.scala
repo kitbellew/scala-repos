@@ -37,8 +37,12 @@ class ScIfStmtImpl(node: ASTNode)
     val c =
       if (rpar != null)
         PsiTreeUtil.getPrevSiblingOfType(rpar, classOf[ScExpression])
-      else null
-    if (c == null) None else Some(c)
+      else
+        null
+    if (c == null)
+      None
+    else
+      Some(c)
   }
 
   def thenBranch = {
@@ -54,7 +58,8 @@ class ScIfStmtImpl(node: ASTNode)
               getLastChild,
               classOf[ScExpression])
         }
-    if (t == null) None
+    if (t == null)
+      None
     else
       condition match {
         case None              => Some(t)
@@ -68,29 +73,40 @@ class ScIfStmtImpl(node: ASTNode)
     val e =
       if (kElse != null)
         PsiTreeUtil.getNextSiblingOfType(kElse, classOf[ScExpression])
-      else null
-    if (e == null) None else Some(e)
+      else
+        null
+    if (e == null)
+      None
+    else
+      Some(e)
   }
 
   def getLeftParenthesis = {
     val leftParenthesis =
       findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
-    if (leftParenthesis == null) None else Some(leftParenthesis)
+    if (leftParenthesis == null)
+      None
+    else
+      Some(leftParenthesis)
   }
 
   def getRightParenthesis = {
     val rightParenthesis =
       findChildByType[PsiElement](ScalaTokenTypes.tRPARENTHESIS)
-    if (rightParenthesis == null) None else Some(rightParenthesis)
+    if (rightParenthesis == null)
+      None
+    else
+      Some(rightParenthesis)
   }
 
   protected override def innerType(ctx: TypingContext) = {
     (thenBranch, elseBranch) match {
       case (Some(t), Some(e)) =>
         for (tt <- t.getType(TypingContext.empty);
-             et <- e.getType(TypingContext.empty)) yield {
-          Bounds.weakLub(tt, et)
-        }
+             et <- e.getType(TypingContext.empty))
+          yield {
+            Bounds.weakLub(tt, et)
+          }
       case (Some(t), None) =>
         t.getType(TypingContext.empty).map(tt => Bounds.weakLub(tt, types.Unit))
       case _ => Failure(ScalaBundle.message("nothing.to.type"), Some(this))

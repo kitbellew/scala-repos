@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyFloatProperty {
   implicit def sfxReadOnlyFloatProperty2jfx(
       rofp: ReadOnlyFloatProperty): jfxbp.ReadOnlyFloatProperty =
-    if (rofp != null) rofp.delegate else null
+    if (rofp != null)
+      rofp.delegate
+    else
+      null
 }
 
 class ReadOnlyFloatProperty(override val delegate: jfxbp.ReadOnlyFloatProperty)

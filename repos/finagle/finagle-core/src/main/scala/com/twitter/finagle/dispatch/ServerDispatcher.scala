@@ -63,7 +63,8 @@ abstract class GenSerialServerDispatcher[Req, Rep, In, Out](
         p map { res =>
           (res, eos)
         }
-      } else Eof
+      } else
+        Eof
     } flatMap {
       case (rep, eos) =>
         Future.join(handle(rep), eos).unit

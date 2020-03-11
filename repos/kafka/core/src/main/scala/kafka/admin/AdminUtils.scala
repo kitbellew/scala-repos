@@ -151,12 +151,16 @@ object AdminUtils extends Logging {
     val ret = mutable.Map[Int, Seq[Int]]()
     val brokerArray = brokerList.toArray
     val startIndex =
-      if (fixedStartIndex >= 0) fixedStartIndex
-      else rand.nextInt(brokerArray.length)
+      if (fixedStartIndex >= 0)
+        fixedStartIndex
+      else
+        rand.nextInt(brokerArray.length)
     var currentPartitionId = math.max(0, startPartitionId)
     var nextReplicaShift =
-      if (fixedStartIndex >= 0) fixedStartIndex
-      else rand.nextInt(brokerArray.length)
+      if (fixedStartIndex >= 0)
+        fixedStartIndex
+      else
+        rand.nextInt(brokerArray.length)
     for (_ <- 0 until nPartitions) {
       if (currentPartitionId > 0 && (currentPartitionId % brokerArray.length == 0))
         nextReplicaShift += 1
@@ -191,12 +195,16 @@ object AdminUtils extends Logging {
     val numBrokers = arrangedBrokerList.size
     val ret = mutable.Map[Int, Seq[Int]]()
     val startIndex =
-      if (fixedStartIndex >= 0) fixedStartIndex
-      else rand.nextInt(arrangedBrokerList.size)
+      if (fixedStartIndex >= 0)
+        fixedStartIndex
+      else
+        rand.nextInt(arrangedBrokerList.size)
     var currentPartitionId = math.max(0, startPartitionId)
     var nextReplicaShift =
-      if (fixedStartIndex >= 0) fixedStartIndex
-      else rand.nextInt(arrangedBrokerList.size)
+      if (fixedStartIndex >= 0)
+        fixedStartIndex
+      else
+        rand.nextInt(arrangedBrokerList.size)
     for (_ <- 0 until nPartitions) {
       if (currentPartitionId > 0 && (currentPartitionId % arrangedBrokerList.size == 0))
         nextReplicaShift += 1
@@ -425,7 +433,8 @@ object AdminUtils extends Logging {
       val dir = new ZKGroupDirs(group)
       zkUtils.deletePathRecursive(dir.consumerGroupDir)
       true
-    } else false
+    } else
+      false
   }
 
   /**
@@ -449,7 +458,8 @@ object AdminUtils extends Logging {
       zkUtils.deletePathRecursive(dir.consumerOwnerDir)
       zkUtils.deletePathRecursive(dir.consumerOffsetDir)
       true
-    } else false
+    } else
+      false
   }
 
   /**

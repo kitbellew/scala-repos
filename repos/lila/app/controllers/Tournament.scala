@@ -31,9 +31,10 @@ object Tournament extends LilaController {
       html = Reasonable(page, 20) {
         val finishedPaginator =
           repo.finishedPaginator(maxPerPage = 30, page = page)
-        if (HTTPRequest isXhr ctx.req) finishedPaginator map { pag =>
-          Ok(html.tournament.finishedPaginator(pag))
-        }
+        if (HTTPRequest isXhr ctx.req)
+          finishedPaginator map { pag =>
+            Ok(html.tournament.finishedPaginator(pag))
+          }
         else
           env.api.fetchVisibleTournaments zip
             repo.scheduledDedup zip
@@ -175,8 +176,10 @@ object Tournament extends LilaController {
   def withdraw(id: String) = Auth { implicit ctx => me =>
     OptionResult(repo byId id) { tour =>
       env.api.withdraw(tour.id, me.id)
-      if (HTTPRequest.isXhr(ctx.req)) Ok(Json.obj("ok" -> true)) as JSON
-      else Redirect(routes.Tournament.show(tour.id))
+      if (HTTPRequest.isXhr(ctx.req))
+        Ok(Json.obj("ok" -> true)) as JSON
+      else
+        Redirect(routes.Tournament.show(tour.id))
     }
   }
 

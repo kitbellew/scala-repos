@@ -366,14 +366,18 @@ private[akka] object ActorCell {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated
     val uid = ThreadLocalRandom.current.nextInt()
-    if (uid == undefinedUid) newUid
-    else uid
+    if (uid == undefinedUid)
+      newUid
+    else
+      uid
   }
 
   final def splitNameAndUid(name: String): (String, Int) = {
     val i = name.indexOf('#')
-    if (i < 0) (name, undefinedUid)
-    else (name.substring(0, i), Integer.valueOf(name.substring(i + 1)))
+    if (i < 0)
+      (name, undefinedUid)
+    else
+      (name.substring(0, i), Integer.valueOf(name.substring(i + 1)))
   }
 
   final val DefaultState = 0
@@ -449,9 +453,12 @@ private[akka] class ActorCell(
      */
 
     def calculateState: Int =
-      if (waitingForChildrenOrNull ne null) SuspendedWaitForChildrenState
-      else if (mailbox.isSuspended) SuspendedState
-      else DefaultState
+      if (waitingForChildrenOrNull ne null)
+        SuspendedWaitForChildrenState
+      else if (mailbox.isSuspended)
+        SuspendedState
+      else
+        DefaultState
 
     @tailrec def sendAllToDeadLetters(
         messages: EarliestFirstSystemMessageList): Unit =
@@ -502,10 +509,15 @@ private[akka] class ActorCell(
       // As each state accepts a strict subset of another state, it is enough to unstash if we "walk up" the state
       // chain
       val todo =
-        if (newState < currentState) unstashAll() reverse_::: rest else rest
+        if (newState < currentState)
+          unstashAll() reverse_::: rest
+        else
+          rest
 
-      if (isTerminated) sendAllToDeadLetters(todo)
-      else if (todo.nonEmpty) invokeAll(todo, newState)
+      if (isTerminated)
+        sendAllToDeadLetters(todo)
+      else if (todo.nonEmpty)
+        invokeAll(todo, newState)
     }
 
     invokeAll(new EarliestFirstSystemMessageList(message), calculateState)
@@ -570,9 +582,10 @@ private[akka] class ActorCell(
   }
 
   def become(behavior: Actor.Receive, discardOld: Boolean = true): Unit =
-    behaviorStack =
-      behavior :: (if (discardOld && behaviorStack.nonEmpty) behaviorStack.tail
-                   else behaviorStack)
+    behaviorStack = behavior :: (if (discardOld && behaviorStack.nonEmpty)
+                                   behaviorStack.tail
+                                 else
+                                   behaviorStack)
 
   def become(behavior: Procedure[Any]): Unit =
     become(behavior, discardOld = true)
@@ -589,7 +602,8 @@ private[akka] class ActorCell(
     behaviorStack =
       if (original.isEmpty || original.tail.isEmpty)
         actor.receive :: emptyBehaviorStack
-      else original.tail
+      else
+        original.tail
   }
 
   /*
@@ -610,14 +624,19 @@ private[akka] class ActorCell(
 
       // If no becomes were issued, the actors behavior is its receive method
       behaviorStack =
-        if (behaviorStack.isEmpty) instance.receive :: behaviorStack
-        else behaviorStack
+        if (behaviorStack.isEmpty)
+          instance.receive :: behaviorStack
+        else
+          behaviorStack
       instance
     } finally {
       val stackAfter = contextStack.get
       if (stackAfter.nonEmpty)
         contextStack.set(
-          if (stackAfter.head eq null) stackAfter.tail.tail else stackAfter.tail
+          if (stackAfter.head eq null)
+            stackAfter.tail.tail
+          else
+            stackAfter.tail
         ) // pop null marker plus our context
     }
   }
@@ -718,7 +737,11 @@ private[akka] class ActorCell(
     setActorFields(
       actorInstance,
       context = null,
-      self = if (recreate) self else system.deadLetters)
+      self =
+        if (recreate)
+          self
+        else
+          system.deadLetters)
     currentMessage = null
     behaviorStack = emptyBehaviorStack
   }
@@ -750,5 +773,8 @@ private[akka] class ActorCell(
     }
 
   protected final def clazz(o: AnyRef): Class[_] =
-    if (o eq null) this.getClass else o.getClass
+    if (o eq null)
+      this.getClass
+    else
+      o.getClass
 }

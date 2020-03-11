@@ -22,7 +22,8 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     lazy val orders = TableQuery[Orders]
 
     def userNameByID1(id: Int) =
-      for (u <- users if u.id === id.bind) yield u.first
+      for (u <- users if u.id === id.bind)
+        yield u.first
     def q1 = userNameByID1(3)
 
     val userNameByID2 = for {
@@ -55,9 +56,12 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       _ <- (users.schema ++ orders.schema).create
       _ <- users.map(_.first) ++= Seq("Homer", "Marge", "Apu", "Carl", "Lenny")
       uids <- users.map(_.id).result
-      _ <- DBIO.seq(uids.map(uid =>
-        orders.map(o => (o.userID, o.product)) += (uid, if (uid < 4) "Product A"
-        else "Product B")): _*)
+      _ <- DBIO.seq(
+        uids.map(uid =>
+          orders.map(o => (o.userID, o.product)) += (uid, if (uid < 4)
+            "Product A"
+          else
+            "Product B")): _*)
       _ <- q1.result.map(_ shouldBe List("Apu"))
       _ <- q2.result.map(_ shouldBe List("Apu"))
       _ <- q3.result.map(_.toSet shouldBe Set("Marge", "Apu", "Carl", "Lenny"))

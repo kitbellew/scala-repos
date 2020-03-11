@@ -39,8 +39,10 @@ class RecipeByteStrings extends RecipeSpec {
               out,
               new OutHandler {
                 override def onPull(): Unit = {
-                  if (isClosed(in)) emitChunk()
-                  else pull(in)
+                  if (isClosed(in))
+                    emitChunk()
+                  else
+                    pull(in)
                 }
               })
             setHandler(
@@ -53,7 +55,8 @@ class RecipeByteStrings extends RecipeSpec {
                 }
 
                 override def onUpstreamFinish(): Unit = {
-                  if (buffer.isEmpty) completeStage()
+                  if (buffer.isEmpty)
+                    completeStage()
                   // elements left in buffer, keep accepting downstream pulls
                   // and push from buffer until buffer is emitted
                 }
@@ -62,8 +65,10 @@ class RecipeByteStrings extends RecipeSpec {
 
             private def emitChunk(): Unit = {
               if (buffer.isEmpty) {
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in))
+                  completeStage()
+                else
+                  pull(in)
               } else {
                 val (chunk, nextBuffer) = buffer.splitAt(chunkSize)
                 buffer = nextBuffer
@@ -116,7 +121,8 @@ class RecipeByteStrings extends RecipeSpec {
                   count += chunk.size
                   if (count > maximumBytes)
                     failStage(new IllegalStateException("Too much bytes"))
-                  else push(out, chunk)
+                  else
+                    push(out, chunk)
                 }
               }
             )

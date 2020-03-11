@@ -278,8 +278,16 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
           val ExpiringService.Param(idleTime, lifeTime) =
             params[ExpiringService.Param]
           val Stats(sr) = params[Stats]
-          val idle = if (idleTime.isFinite) Some(idleTime) else None
-          val life = if (lifeTime.isFinite) Some(lifeTime) else None
+          val idle =
+            if (idleTime.isFinite)
+              Some(idleTime)
+            else
+              None
+          val life =
+            if (lifeTime.isFinite)
+              Some(lifeTime)
+            else
+              None
           val dispatcher = codec.newServerDispatcher(transport, service)
           (idle, life) match {
             case (None, None) => dispatcher
@@ -300,8 +308,10 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
 
       val proto = ps[ProtocolLibrary]
       val serverParams =
-        if (proto != ProtocolLibrary.param.default) ps
-        else ps + ProtocolLibrary(codec.protocolLibraryName)
+        if (proto != ProtocolLibrary.param.default)
+          ps
+        else
+          ps + ProtocolLibrary(codec.protocolLibraryName)
 
       Server(
         stack = newStack,
@@ -408,8 +418,10 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   def maxConcurrentRequests(max: Int): This = {
     val sem =
-      if (max == Int.MaxValue) None
-      else Some(new AsyncSemaphore(max, 0))
+      if (max == Int.MaxValue)
+        None
+      else
+        Some(new AsyncSemaphore(max, 0))
 
     configured(RequestSemaphoreFilter.Param(sem))
   }
@@ -599,7 +611,11 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   ): Server = {
 
     val Label(lbl) = params[Label]
-    val label = if (lbl == "") "server" else lbl
+    val label =
+      if (lbl == "")
+        "server"
+      else
+        lbl
 
     val BindTo(addr) = params[BindTo]
     val Logger(logger) = params[Logger]
@@ -618,7 +634,10 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     new Server with CloseAwaitably {
 
       val exitGuard =
-        if (!daemon) Some(ExitGuard.guard(s"server for '$label'")) else None
+        if (!daemon)
+          Some(ExitGuard.guard(s"server for '$label'"))
+        else
+          None
 
       override protected def closeServer(deadline: Time): Future[Unit] =
         closeAwaitably {

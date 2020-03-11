@@ -275,8 +275,10 @@ private[cluster] final case class ClusterHeartbeatSenderState(
         if (!ring.myReceivers(from))
           failureDetector remove from.address
         copy(oldReceiversNowUnreachable = oldReceiversNowUnreachable - from)
-      } else this
-    } else this
+      } else
+        this
+    } else
+      this
 
 }
 
@@ -336,7 +338,8 @@ private[cluster] final case class HeartbeatNodeRing(
           n: Int,
           iter: Iterator[UniqueAddress],
           acc: Set[UniqueAddress]): (Int, Set[UniqueAddress]) =
-        if (iter.isEmpty || n == 0) (n, acc)
+        if (iter.isEmpty || n == 0)
+          (n, acc)
         else {
           val next = iter.next()
           val isUnreachable = unreachable(next)
@@ -379,7 +382,10 @@ private[cluster] final case class HeartbeatNodeRing(
     * Add a node to the ring.
     */
   def :+(node: UniqueAddress): HeartbeatNodeRing =
-    if (nodes contains node) this else copy(nodes = nodes + node)
+    if (nodes contains node)
+      this
+    else
+      copy(nodes = nodes + node)
 
   /**
     * Remove a node from the ring.
@@ -387,6 +393,7 @@ private[cluster] final case class HeartbeatNodeRing(
   def :-(node: UniqueAddress): HeartbeatNodeRing =
     if (nodes.contains(node) || unreachable.contains(node))
       copy(nodes = nodes - node, unreachable = unreachable - node)
-    else this
+    else
+      this
 
 }

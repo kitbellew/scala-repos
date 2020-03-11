@@ -575,9 +575,12 @@ protected[kestrel] class ThriftConnectedClient(
     txnAbortTimeout: Duration)
     extends ClientBase[FinagledClosableClient, Seq[Item], Long](underlying) {
   private def safeLongToInt(l: Long): Int = {
-    if (l > Int.MaxValue) Int.MaxValue
-    else if (l < Int.MinValue) Int.MinValue
-    else l.toInt
+    if (l > Int.MaxValue)
+      Int.MaxValue
+    else if (l < Int.MinValue)
+      Int.MinValue
+    else
+      l.toInt
   }
 
   private def withClient[T](f: (FinagledClient) => Future[T]) =

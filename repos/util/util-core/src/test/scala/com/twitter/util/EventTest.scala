@@ -184,10 +184,14 @@ class EventTest extends FunSuite {
     val ref = new AtomicReference[Seq[(Int, String)]](Seq.empty)
     e.build.register(Witness(ref))
 
-    for (i <- 0 until 50) e1.notify(i)
-    for (i <- 0 until 50) e2.notify(i.toString)
-    for (i <- 50 until 100) e2.notify(i.toString)
-    for (i <- 50 until 100) e1.notify(i)
+    for (i <- 0 until 50)
+      e1.notify(i)
+    for (i <- 0 until 50)
+      e2.notify(i.toString)
+    for (i <- 50 until 100)
+      e2.notify(i.toString)
+    for (i <- 50 until 100)
+      e1.notify(i)
 
     assert(ref.get == ((0 until 100) zip ((0 until 100) map (_.toString))))
   }
@@ -234,11 +238,15 @@ class EventTest extends FunSuite {
     val ref = new AtomicReference[Seq[Int]](Seq.empty)
     e.build.register(Witness(ref))
 
-    for (i <- 0 until 100) e1.notify(i)
-    for (i <- 100 until 200) e2.notify(i)
+    for (i <- 0 until 100)
+      e1.notify(i)
+    for (i <- 100 until 200)
+      e2.notify(i)
     for (i <- 200 until 300) {
-      if (i % 2 == 0) e1.notify(i)
-      else e2.notify(i)
+      if (i % 2 == 0)
+        e1.notify(i)
+      else
+        e2.notify(i)
     }
 
     assert(ref.get == Seq.range(0, 300))
@@ -251,7 +259,8 @@ class EventTest extends FunSuite {
     val ref = new AtomicReference[Seq[Int]](Seq.empty)
     v.changes.build.register(Witness(ref))
 
-    for (i <- 1 until 100) e.notify(i)
+    for (i <- 1 until 100)
+      e.notify(i)
     assert(ref.get == Seq.range(0, 100))
   }
 
@@ -287,7 +296,10 @@ class EventTest extends FunSuite {
 
     def ite[T](i: Var[Boolean], t: Var[T], e: Var[T]) =
       i flatMap { i =>
-        if (i) t else e
+        if (i)
+          t
+        else
+          e
       }
 
     val b = Var(true)
@@ -326,7 +338,8 @@ class EventTest extends FunSuite {
         latch.countDown()
       }
     }
-    for (_ <- 1 to n) ex.execute(addTask)
+    for (_ <- 1 to n)
+      ex.execute(addTask)
     latch.await()
     ex.shutdown()
 

@@ -15,7 +15,8 @@ class DepthFirstIterator(element: PsiElement, predicate: PsiElement => Boolean)
 
   def next() = {
     val element = stack.pop()
-    if (predicate(element)) pushChildren(element)
+    if (predicate(element))
+      pushChildren(element)
     element
   }
 

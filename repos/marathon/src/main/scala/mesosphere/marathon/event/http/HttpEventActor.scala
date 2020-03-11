@@ -142,8 +142,10 @@ class HttpEventActor(
     response.onComplete {
       case Success(res) if res.status.isSuccess =>
         val inTime = start.until(clock.now()) < conf.slowConsumerTimeout
-        eventActor ! (if (inTime) NotificationSuccess(url)
-                      else NotificationFailed(url))
+        eventActor ! (if (inTime)
+                        NotificationSuccess(url)
+                      else
+                        NotificationFailed(url))
       case Success(res) =>
         log.warning(s"No success response for post $event to $url")
         metrics.failedCallbacks.mark()

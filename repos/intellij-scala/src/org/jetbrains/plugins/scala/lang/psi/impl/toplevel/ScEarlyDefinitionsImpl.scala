@@ -48,13 +48,15 @@ class ScEarlyDefinitionsImpl private (
           val iterator = p.bindings.iterator
           while (iterator.hasNext) {
             val elem = iterator.next()
-            if (!processor.execute(elem, state)) return false
+            if (!processor.execute(elem, state))
+              return false
           }
         case p: ScVariableDefinition =>
           val iterator = p.bindings.iterator
           while (iterator.hasNext) {
             val elem = iterator.next()
-            if (!processor.execute(elem, state)) return false
+            if (!processor.execute(elem, state))
+              return false
           }
         case _ =>
       }

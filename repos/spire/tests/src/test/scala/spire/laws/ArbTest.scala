@@ -22,19 +22,29 @@ class ArbTest extends FunSuite {
     val samples =
       Array.fill(100)(spire.laws.arb.rational.arbitrary(params)).flatten
     def classify(x: Rational): String = {
-      if (x.isZero) "zero"
-      else if (x.isOne) "one"
-      else if (x.isValidLong) "long"
-      else if (x.isWhole) "big"
+      if (x.isZero)
+        "zero"
+      else if (x.isOne)
+        "one"
+      else if (x.isValidLong)
+        "long"
+      else if (x.isWhole)
+        "big"
       else {
         if (x.numerator.isValidLong && x.denominator.isValidLong) {
-          if (x.numerator == 1) "1/long"
-          else "long/long"
+          if (x.numerator == 1)
+            "1/long"
+          else
+            "long/long"
         } else {
-          if (x.numerator == 1) "1/big"
-          else if (x.numerator.isValidLong) "long/big"
-          else if (x.denominator.isValidLong) "big/long"
-          else "big/big"
+          if (x.numerator == 1)
+            "1/big"
+          else if (x.numerator.isValidLong)
+            "long/big"
+          else if (x.denominator.isValidLong)
+            "big/long"
+          else
+            "big/big"
         }
       }
     }
@@ -59,10 +69,14 @@ class ArbTest extends FunSuite {
     val samples =
       Array.fill(100)(spire.laws.arb.safeLong.arbitrary(params)).flatten
     def classify(x: SafeLong): String = {
-      if (x.isZero) "zero"
-      else if (x.isOne) "one"
-      else if (x.isValidLong) "long"
-      else "big"
+      if (x.isZero)
+        "zero"
+      else if (x.isOne)
+        "one"
+      else if (x.isValidLong)
+        "long"
+      else
+        "big"
     }
     val kinds = samples.map(classify).distinct.sorted
     assert(kinds.length == 4)
@@ -82,7 +96,11 @@ class ArbTest extends FunSuite {
       case (Open(_), Open(_)) ⇒ "()"
       case (Open(_), Closed(_)) ⇒ "(]"
       case (Closed(_), Open(_)) ⇒ "[)"
-      case (Closed(a), Closed(b)) ⇒ if (a != b) "[]" else "point"
+      case (Closed(a), Closed(b)) ⇒
+        if (a != b)
+          "[]"
+        else
+          "point"
       case _ ⇒ "empty"
     }
     val kinds = samples.map(classify).distinct.sorted

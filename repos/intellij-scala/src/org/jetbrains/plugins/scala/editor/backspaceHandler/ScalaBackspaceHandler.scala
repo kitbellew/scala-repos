@@ -22,11 +22,13 @@ import org.jetbrains.plugins.scala.lang.scaladoc.lexer.docsyntax.ScaladocSyntaxE
   */
 class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
   def beforeCharDeleted(c: Char, file: PsiFile, editor: Editor) {
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     val offset = editor.getCaretModel.getOffset
     val element = file.findElementAt(offset - 1)
-    if (element == null) return
+    if (element == null)
+      return
 
     if (needCorrecrWiki(element)) {
       extensions.inWriteAction {
@@ -41,7 +43,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
             val textLength =
               if (tagToDelete.getNode.getElementType != ScalaDocTokenType.DOC_BOLD_TAG)
                 tagToDelete.getTextLength
-              else 1
+              else
+                1
             document.deleteString(
               tagToDelete.getTextOffset,
               tagToDelete.getTextOffset + textLength)
@@ -140,14 +143,17 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
         editor.asInstanceOf[EditorEx].getHighlighter.createIterator(offset)
 
       val fileType = file.getFileType
-      if (fileType != ScalaFileType.SCALA_FILE_TYPE) return None
+      if (fileType != ScalaFileType.SCALA_FILE_TYPE)
+        return None
       val txt = document.getImmutableCharSequence
 
       val tpe = iterator.getTokenType
-      if (tpe == null) return None
+      if (tpe == null)
+        return None
 
       val matcher = BraceMatchingUtil.getBraceMatcher(fileType, tpe)
-      if (matcher == null) return None
+      if (matcher == null)
+        return None
 
       val stack = scala.collection.mutable.Stack[IElementType]()
 
@@ -158,19 +164,24 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
         else if (matcher.isLBraceToken(iterator, txt, fileType)) {
           if (stack.isEmpty || !matcher.isPairBraces(
                 iterator.getTokenType,
-                stack.pop())) return Some(false)
+                stack.pop()))
+            return Some(false)
         }
 
         iterator.retreat()
       }
 
-      if (stack.isEmpty) Some(true) else None
+      if (stack.isEmpty)
+        Some(true)
+      else
+        None
     }
 
     @inline def fixBrace(): Unit =
-      if (hasLeft.exists(!_)) extensions.inWriteAction {
-        document.deleteString(offset, offset + 1)
-      }
+      if (hasLeft.exists(!_))
+        extensions.inWriteAction {
+          document.deleteString(offset, offset + 1)
+        }
 
     (c, c1) match {
       case ('{', '}') => fixBrace()

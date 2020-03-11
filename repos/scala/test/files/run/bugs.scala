@@ -168,7 +168,8 @@ class Bug167Node(bar: Int) {
 
 object Bug167Test {
   def test(args: Array[String]) {
-    if (new Bug167Node(0).foo != 1) println("bug 167");
+    if (new Bug167Node(0).foo != 1)
+      println("bug 167");
   }
 }
 
@@ -355,7 +356,8 @@ object Bug233Test {
 
 object Bug250Test {
   def test(args: Array[String]) {
-    if (true) null;
+    if (true)
+      null;
     ()
   }
 }
@@ -568,7 +570,11 @@ object Test {
 
     if (errors > 0) {
       Console.println;
-      Console.println(errors + " error" + (if (errors > 1) "s" else ""));
+      Console.println(
+        errors + " error" + (if (errors > 1)
+                               "s"
+                             else
+                               ""));
     }
   }
 }

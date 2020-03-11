@@ -184,7 +184,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             dd.getDependencyRevisionId.getName,
             result.getHighestVersion.toString,
             dd.getExtraAttributes)
-        } else dd.getDependencyRevisionId
+        } else
+          dd.getDependencyRevisionId
 
       // TODO - Check to see if we're asking for latest.* version, and if so, we should run a latest version query
       //        first and use that result to return the metadata/final module.
@@ -208,8 +209,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val desc: ModuleDescriptor = {
         // TODO - Better detection of snapshot and handling latest.integration/latest.snapshot
         val status =
-          if (drid.getRevision.endsWith("-SNAPSHOT")) "integration"
-          else "release"
+          if (drid.getRevision.endsWith("-SNAPSHOT"))
+            "integration"
+          else
+            "release"
         val md =
           new DefaultModuleDescriptor(drid, status, null /* pubDate */, false)
         //DefaultModuleDescriptor.newDefaultInstance(dd.getDependencyRevisionId)
@@ -491,8 +494,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       // Now we add the artifact....
       if ((d.getArtifact.getClassifier != null) || ((d.getArtifact.getExtension != null) && !("jar" == d.getArtifact.getExtension))) {
         val tpe: String =
-          if (d.getArtifact.getExtension != null) d.getArtifact.getExtension
-          else "jar"
+          if (d.getArtifact.getExtension != null)
+            d.getArtifact.getExtension
+          else
+            "jar"
         val ext: String = tpe match {
           case "test-jar"     => "jar"
           case JarPackaging() => "jar"
@@ -511,7 +516,11 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             ext,
             null,
             extraAtt)
-        val optionalizedScope: String = if (d.isOptional) "optional" else scope
+        val optionalizedScope: String =
+          if (d.isOptional)
+            "optional"
+          else
+            scope
         // TOOD - We may need to fix the configuration mappings here.
         dd.addDependencyArtifact(optionalizedScope, depArtifact)
       }
@@ -550,7 +559,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       props: java.util.Map[String, AnyRef]): String =
     if (props.containsKey(SbtPomExtraProperties.MAVEN_PACKAGING_KEY))
       props.get(SbtPomExtraProperties.MAVEN_PACKAGING_KEY).toString
-    else "jar"
+    else
+      "jar"
 
   override def download(
       artifacts: Array[Artifact],
@@ -558,24 +568,25 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     // TODO - Status reports on download and possibly parallel downloads
     val report = new DownloadReport
     val requests =
-      for (a <- artifacts) yield {
-        val request = new AetherArtifactRequest
-        val aetherArt =
-          getClassifier(a) match {
-            case None | Some("") =>
-              new AetherArtifact(
-                aetherCoordsFromMrid(a.getModuleRevisionId),
-                getArtifactProperties(a.getModuleRevisionId))
-            case Some(other) =>
-              new AetherArtifact(
-                aetherCoordsFromMrid(a.getModuleRevisionId, other, a.getExt),
-                getArtifactProperties(a.getModuleRevisionId))
-          }
-        Message.debug(s"Requesting download of [$aetherArt]")
-        request.setArtifact(aetherArt)
-        addRepositories(request)
-        request
-      }
+      for (a <- artifacts)
+        yield {
+          val request = new AetherArtifactRequest
+          val aetherArt =
+            getClassifier(a) match {
+              case None | Some("") =>
+                new AetherArtifact(
+                  aetherCoordsFromMrid(a.getModuleRevisionId),
+                  getArtifactProperties(a.getModuleRevisionId))
+              case Some(other) =>
+                new AetherArtifact(
+                  aetherCoordsFromMrid(a.getModuleRevisionId, other, a.getExt),
+                  getArtifactProperties(a.getModuleRevisionId))
+            }
+          Message.debug(s"Requesting download of [$aetherArt]")
+          request.setArtifact(aetherArt)
+          addRepositories(request)
+          request
+        }
     val (aetherResults, failed) =
       try {
         (
@@ -672,20 +683,21 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         Message.debug(
           s"Publishing module ${t.module}, with artifact count = ${t.artifacts.size}")
         val artifacts =
-          for ((art, file) <- t.artifacts) yield {
-            Message.debug(
-              s" - Publishing $art (${art.getType})(${art.getExtraAttribute(
-                "classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
-            new AetherArtifact(
-              t.module.getOrganisation,
-              aetherArtifactIdFromMrid(t.module),
-              getClassifier(art).orNull,
-              art.getExt,
-              t.module.getRevision,
-              getArtifactProperties(t.module),
-              file
-            )
-          }
+          for ((art, file) <- t.artifacts)
+            yield {
+              Message.debug(
+                s" - Publishing $art (${art.getType})(${art.getExtraAttribute(
+                  "classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
+              new AetherArtifact(
+                t.module.getOrganisation,
+                aetherArtifactIdFromMrid(t.module),
+                getClassifier(art).orNull,
+                art.getExt,
+                t.module.getRevision,
+                getArtifactProperties(t.module),
+                file
+              )
+            }
         publishArtifacts(artifacts)
         // TODO - Any kind of validity checking?
         currentTransaction = None

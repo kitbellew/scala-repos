@@ -67,8 +67,10 @@ object CachedWithRecursionGuard {
           q"new $cachesUtilFQN.$provider[$providerType, $retTp]($element, _ => $cachedFunName())($dependencyItem)"
 
         val updatedRhs = q"""
-          ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-        else EmptyTree}
+          ${if (analyzeCaches)
+          q"$cacheStatsName.aboutToEnterCachedArea()"
+        else
+          EmptyTree}
           $fun
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
           $cachesUtilFQN.getWithRecursionPreventingWithRollback[$providerType, $retTp]($element, $keyVarName, $builder, $defaultValue)
@@ -79,7 +81,8 @@ object CachedWithRecursionGuard {
 
           ${if (analyzeCaches)
           q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-        else EmptyTree}
+        else
+          EmptyTree}
 
           ..$updatedDef
           """

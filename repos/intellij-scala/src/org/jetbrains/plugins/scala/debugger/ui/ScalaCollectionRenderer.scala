@@ -137,7 +137,8 @@ object ScalaCollectionRenderer {
     val index =
       if (fullName endsWith "`")
         fullName.substring(0, fullName.length - 1).lastIndexOf('`')
-      else fullName.lastIndexOf('.')
+      else
+        fullName.lastIndexOf('.')
     "\"" + fullName.substring(index + 1) + "\""
   }
 
@@ -156,10 +157,13 @@ object ScalaCollectionRenderer {
               if (objRef.referenceType() != null)
                 ScalaCollectionRenderer.transformName(
                   objRef.referenceType().name)
-              else ""
+              else
+                ""
             val sizeValue =
-              if (!hasDefiniteSize(objRef, evaluationContext)) "?"
-              else size(objRef, evaluationContext)
+              if (!hasDefiniteSize(objRef, evaluationContext))
+                "?"
+              else
+                size(objRef, evaluationContext)
             typeName + sizePrefix + sizeValue
         }
       }
@@ -206,7 +210,8 @@ object ScalaCollectionRenderer {
         case b: BooleanValue => b.booleanValue()
         case _               => throw EvaluationException("Cannot evaluate expression")
       }
-    } else throw EvaluationException("Cannot evaluate expression")
+    } else
+      throw EvaluationException("Cannot evaluate expression")
   }
 
   object ScalaToArrayRenderer
@@ -302,7 +307,10 @@ object ScalaCollectionRenderer {
       if (renderer == null || childrenValue == null || !renderer.isApplicable(
             childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(
-          if (childrenValue != null) childrenValue.`type` else null)
+          if (childrenValue != null)
+            childrenValue.`type`
+          else
+            null)
         ExpressionChildrenRenderer.setPreferableChildrenRenderer(
           parentDescriptor,
           renderer)

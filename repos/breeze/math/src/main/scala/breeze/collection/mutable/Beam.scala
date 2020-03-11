@@ -56,7 +56,8 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
   }
 
   private def cat(h: PriorityQueue[T], x: T) {
-    if (h.size < maxSize) h += x
+    if (h.size < maxSize)
+      h += x
     else if (o.compare(h.head, x) < 0) {
       h.dequeue();
       h += x;

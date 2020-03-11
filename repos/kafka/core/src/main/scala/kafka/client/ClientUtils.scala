@@ -158,7 +158,8 @@ object ClientUtils extends Logging {
           true
         } catch {
           case e: Exception =>
-            if (channel != null) channel.disconnect()
+            if (channel != null)
+              channel.disconnect()
             channel = null
             info(
               "Error while creating channel to %s:%d."
@@ -166,7 +167,11 @@ object ClientUtils extends Logging {
             false
         }
       }
-      connected = if (channel == null) false else true
+      connected =
+        if (channel == null)
+          false
+        else
+          true
     }
 
     channel
@@ -242,7 +247,8 @@ object ClientUtils extends Logging {
         } catch {
           case ioe: IOException => // offsets manager may have moved
             info("Error while connecting to %s.".format(connectString))
-            if (offsetManagerChannel != null) offsetManagerChannel.disconnect()
+            if (offsetManagerChannel != null)
+              offsetManagerChannel.disconnect()
             Thread.sleep(retryBackOffMs)
             offsetManagerChannelOpt =
               None // just in case someone decides to change shutdownChannel to not swallow exceptions

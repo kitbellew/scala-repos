@@ -47,7 +47,11 @@ object LUB {
   def x = C(1)
   def y = C("abc")
   var coinflip: Boolean = _
-  def z = if (coinflip) x else y
+  def z =
+    if (coinflip)
+      x
+    else
+      y
   def zz: C[_1] forSome {
     type _1 >: Int with java.lang.String
   } = z

@@ -177,7 +177,8 @@ trait SQLiteProfile extends JdbcProfile {
       else if (o.nulls.first && o.direction.desc)
         b"($n) is null desc,"
       expr(n)
-      if (o.direction.desc) b" desc"
+      if (o.direction.desc)
+        b" desc"
     }
 
     override protected def buildFetchOffsetClause(
@@ -246,10 +247,14 @@ trait SQLiteProfile extends JdbcProfile {
   class ColumnDDLBuilder(column: FieldSymbol)
       extends super.ColumnDDLBuilder(column) {
     override protected def appendOptions(sb: StringBuilder) {
-      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
-      if (autoIncrement) sb append " PRIMARY KEY AUTOINCREMENT"
-      else if (primaryKey) sb append " PRIMARY KEY"
-      if (notNull) sb append " NOT NULL"
+      if (defaultLiteral ne null)
+        sb append " DEFAULT " append defaultLiteral
+      if (autoIncrement)
+        sb append " PRIMARY KEY AUTOINCREMENT"
+      else if (primaryKey)
+        sb append " PRIMARY KEY"
+      if (notNull)
+        sb append " NOT NULL"
     }
   }
 
@@ -283,7 +288,11 @@ trait SQLiteProfile extends JdbcProfile {
      * INTEGER with constants 1 and 0 for TRUE and FALSE. */
     class BooleanJdbcType extends super.BooleanJdbcType {
       override def sqlTypeName(sym: Option[FieldSymbol]) = "INTEGER"
-      override def valueToSQLLiteral(value: Boolean) = if (value) "1" else "0"
+      override def valueToSQLLiteral(value: Boolean) =
+        if (value)
+          "1"
+        else
+          "0"
     }
     /* The SQLite JDBC driver does not support the JDBC escape syntax for
      * date/time/timestamp literals. SQLite expects these values as milliseconds

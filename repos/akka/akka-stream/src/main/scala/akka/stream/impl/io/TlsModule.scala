@@ -33,7 +33,8 @@ private[akka] final case class TlsModule(
     if (s != shape) {
       shape.requireSamePortsAs(s)
       CompositeModule(this, s)
-    } else this
+    } else
+      this
 
   override def toString: String =
     f"TlsModule($firstSession, $role, $closing, $hostInfo) [${System.identityHashCode(this)}%08x]"

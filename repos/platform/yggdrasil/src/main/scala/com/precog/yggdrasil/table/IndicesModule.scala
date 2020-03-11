@@ -45,13 +45,16 @@ import com.weiglewilczek.slf4s.Logging
 object IndicesHelper {
   def assertSorted(buf: ArrayIntList): Unit = {
     val len = buf.size
-    if (len == 0) return ()
+    if (len == 0)
+      return ()
     var last = buf.get(0)
     var i = 1
     while (i < len) {
       val z = buf.get(i)
-      if (last > z) sys.error("buffer is out-of-order: %s" format buf)
-      if (last == z) sys.error("buffer has duplicates: %s" format buf)
+      if (last > z)
+        sys.error("buffer is out-of-order: %s" format buf)
+      if (last == z)
+        sys.error("buffer has duplicates: %s" format buf)
       last = z
       i += 1
     }

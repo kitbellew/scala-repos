@@ -86,7 +86,8 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
           val mergedFormParams = mergeFormParamsWithQueryString(req, bodyParams)
 
           wrapRequest(req, mergedFormParams)
-        } else req
+        } else
+          req
       } catch {
         case e: Exception => {
           req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
@@ -138,7 +139,10 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
 
   private def getParts(req: HttpServletRequest): Iterable[Part] = {
     try {
-      if (isMultipartRequest(req)) req.getParts.asScala else Seq.empty[Part]
+      if (isMultipartRequest(req))
+        req.getParts.asScala
+      else
+        Seq.empty[Part]
     } catch {
       case e: Exception if isSizeConstraintException(e) =>
         throw new SizeConstraintExceededException(

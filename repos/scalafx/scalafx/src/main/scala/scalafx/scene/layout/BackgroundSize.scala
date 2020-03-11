@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object BackgroundSize {
   implicit def sfxBackgroundSize2jfx(v: BackgroundSize): jfxsl.BackgroundSize =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** From the CSS Specification:
     * An "auto" value for one dimension is resolved by using the image's intrinsic ratio and

@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object BooleanProperty {
   implicit def sfxBooleanProperty2jfx(
       bp: BooleanProperty): jfxbp.BooleanProperty =
-    if (bp != null) bp.delegate else null
+    if (bp != null)
+      bp.delegate
+    else
+      null
 
   /**
     * Creates a new BooleanProperty instance using the SimpleBooleanProperty as the target.

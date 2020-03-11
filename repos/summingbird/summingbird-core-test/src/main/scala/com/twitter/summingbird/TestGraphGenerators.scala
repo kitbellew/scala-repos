@@ -81,7 +81,10 @@ object TestGraphGenerators {
       case x: KeyedProducer[_, _, _] =>
         x.asInstanceOf[KeyedProducer[P, Int, Int]]
     }
-    if (deps.size == 1) genProd2 else oneOf(deps)
+    if (deps.size == 1)
+      genProd2
+    else
+      oneOf(deps)
   }
 
   def aDependency1[P <: Platform[P]](p: Producer[P, Int])(implicit
@@ -94,7 +97,10 @@ object TestGraphGenerators {
     val deps = Producer.transitiveDependenciesOf(p).filter(_ == p).collect {
       case x: Producer[_, _] => x.asInstanceOf[Producer[P, Int]]
     }
-    if (deps.size == 1) genProd1 else oneOf(deps)
+    if (deps.size == 1)
+      genProd1
+    else
+      oneOf(deps)
   }
 
   def aTailDependency[P <: Platform[P]](p: Producer[P, Any])(implicit
@@ -107,7 +113,10 @@ object TestGraphGenerators {
     val validDeps = Producer.transitiveDependenciesOf(p).collect {
       case x: TailProducer[_, _] => x.asInstanceOf[TailProducer[P, Any]]
     }
-    if (validDeps.size == 0) summed else oneOf(validDeps)
+    if (validDeps.size == 0)
+      summed
+    else
+      oneOf(validDeps)
   }
 
   def genMerged2[P <: Platform[P]](implicit

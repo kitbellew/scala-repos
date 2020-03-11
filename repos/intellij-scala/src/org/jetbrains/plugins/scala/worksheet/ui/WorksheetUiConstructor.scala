@@ -55,8 +55,10 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     extensions.inReadAction {
       statusDisplayN = new InteractiveStatusDisplay()
       statusDisplayN.init(panel)
-      if (run) statusDisplayN.onSuccessfulCompiling()
-      else statusDisplayN.onStartCompiling()
+      if (run)
+        statusDisplayN.onSuccessfulCompiling()
+      else
+        statusDisplayN.onStartCompiling()
 
       addChild(panel, Box.createHorizontalGlue())
 
@@ -83,8 +85,10 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
       addFiller()
       new CleanWorksheetAction().init(panel)
       addFiller()
-      if (run) new RunWorksheetAction().init(panel)
-      else exec foreach (new StopWorksheetAction(_).init(panel))
+      if (run)
+        new RunWorksheetAction().init(panel)
+      else
+        exec foreach (new StopWorksheetAction(_).init(panel))
     }
 
     Option(statusDisplayN)
@@ -102,14 +106,16 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
       case nn =>
         val foundModule: Module =
           ModuleManager getInstance project findModuleByName nn
-        if (foundModule != null) modulesBox setSelectedModule foundModule
+        if (foundModule != null)
+          modulesBox setSelectedModule foundModule
     }
 
     modulesBox.addActionListener(new ActionListener {
       override def actionPerformed(e: ActionEvent) {
         val m = modulesBox.getSelectedModule
 
-        if (m == null) return
+        if (m == null)
+          return
 
         WorksheetCompiler.setModuleForCpName(
           PsiManager getInstance project findFile file,
@@ -145,9 +151,12 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
 
     createCheckBox(
       "Interactive Mode",
-      if (isSetEnabled(psiFile)) true
-      else if (isSetDisabled(psiFile)) false
-      else ScalaProjectSettings.getInstance(project).isInteractiveMode,
+      if (isSetEnabled(psiFile))
+        true
+      else if (isSetDisabled(psiFile))
+        false
+      else
+        ScalaProjectSettings.getInstance(project).isInteractiveMode,
       box =>
         new ChangeListener {
           override def stateChanged(e: ChangeEvent) {
@@ -193,7 +202,8 @@ object WorksheetUiConstructor {
     val size = if (isSquare) {
       val sqSize = Math.max(preferredSize.width, preferredSize.height)
       new Dimension(sqSize, sqSize)
-    } else new Dimension(preferredSize.width, preferredSize.height)
+    } else
+      new Dimension(preferredSize.width, preferredSize.height)
 
     comp setMaximumSize size
   }

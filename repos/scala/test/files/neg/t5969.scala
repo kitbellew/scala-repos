@@ -7,6 +7,9 @@ class A {
 
   def crash() =
     f(List[String]() flatMap { x =>
-      if (false) List(g(x)) else List[C1]() map g
+      if (false)
+        List(g(x))
+      else
+        List[C1]() map g
     })
 }

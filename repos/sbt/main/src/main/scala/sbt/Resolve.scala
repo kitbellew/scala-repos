@@ -22,14 +22,23 @@ object Resolve {
       }
   }
   def resolveTask(mask: ScopeMask)(scope: Scope): Scope =
-    if (mask.task) scope else scope.copy(task = Global)
+    if (mask.task)
+      scope
+    else
+      scope.copy(task = Global)
 
   def resolveProject(current: ScopeAxis[Reference], mask: ScopeMask)(
       scope: Scope): Scope =
-    if (mask.project) scope else scope.copy(project = current)
+    if (mask.project)
+      scope
+    else
+      scope.copy(project = current)
 
   def resolveExtra(mask: ScopeMask)(scope: Scope): Scope =
-    if (mask.extra) scope else scope.copy(extra = Global)
+    if (mask.extra)
+      scope
+    else
+      scope.copy(extra = Global)
 
   def resolveConfig[P](
       index: BuildUtil[P],

@@ -47,14 +47,20 @@ trait TreeDSL {
 
       /** logical/comparison ops **/
       def OR(other: Tree) =
-        if (target == EmptyTree) other
-        else if (other == EmptyTree) target
-        else gen.mkOr(target, other)
+        if (target == EmptyTree)
+          other
+        else if (other == EmptyTree)
+          target
+        else
+          gen.mkOr(target, other)
 
       def AND(other: Tree) =
-        if (target == EmptyTree) other
-        else if (other == EmptyTree) target
-        else gen.mkAnd(target, other)
+        if (target == EmptyTree)
+          other
+        else if (other == EmptyTree)
+          target
+        else
+          gen.mkAnd(target, other)
 
       /** Note - calling ANY_== in the matcher caused primitives to get boxed
         *  for the comparison, whereas looking up nme.EQ does not.  See #3570 for
@@ -64,9 +70,14 @@ trait TreeDSL {
         */
       def MEMBER_==(other: Tree) = {
         val opSym =
-          if (target.tpe == null) NoSymbol else target.tpe member nme.EQ
-        if (opSym == NoSymbol) ANY_==(other)
-        else fn(target, opSym, other)
+          if (target.tpe == null)
+            NoSymbol
+          else
+            target.tpe member nme.EQ
+        if (opSym == NoSymbol)
+          ANY_==(other)
+        else
+          fn(target, opSym, other)
       }
       def ANY_EQ(other: Tree) = OBJ_EQ(other AS ObjectTpe)
       def ANY_==(other: Tree) = fn(target, Any_==, other)
@@ -140,7 +151,10 @@ trait TreeDSL {
 
     def NOT(tree: Tree) = Select(tree, Boolean_not)
     def AND(guards: Tree*) =
-      if (guards.isEmpty) EmptyTree else guards reduceLeft gen.mkAnd
+      if (guards.isEmpty)
+        EmptyTree
+      else
+        guards reduceLeft gen.mkAnd
 
     def IF(tree: Tree) = new IfStart(tree, EmptyTree)
     def TRY(tree: Tree) = new TryStart(tree, Nil, EmptyTree)

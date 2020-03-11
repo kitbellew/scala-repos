@@ -52,7 +52,10 @@ object Work {
       system: Boolean) {
 
     override def toString =
-      if (system) "lichess" else userId orElse ip getOrElse "unknown"
+      if (system)
+        "lichess"
+      else
+        userId orElse ip getOrElse "unknown"
   }
 
   case class Move(

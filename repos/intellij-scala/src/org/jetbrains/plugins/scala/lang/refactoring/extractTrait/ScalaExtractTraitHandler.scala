@@ -87,12 +87,18 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val clazz =
       PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
     val allMembers = ExtractSuperUtil.possibleMembersToExtract(clazz).asScala
-    val memberInfos = if (onlyFirstMember) Seq(allMembers.head) else allMembers
-    if (onlyDeclarations) memberInfos.foreach(_.setToAbstract(true))
+    val memberInfos =
+      if (onlyFirstMember)
+        Seq(allMembers.head)
+      else
+        allMembers
+    if (onlyDeclarations)
+      memberInfos.foreach(_.setToAbstract(true))
     val extractInfo = new ExtractInfo(clazz, memberInfos)
     extractInfo.collect()
     val messages = extractInfo.conflicts.values().asScala
-    if (messages.nonEmpty) throw new RuntimeException(messages.mkString("\n"))
+    if (messages.nonEmpty)
+      throw new RuntimeException(messages.mkString("\n"))
     inWriteCommandAction(project, "Extract trait") {
       val traitText = "trait ExtractedTrait {\n\n}"
       val newTrt = ScalaPsiElementFactory.createTemplateDefinitionFromText(
@@ -116,13 +122,15 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       clazz: ScTemplateDefinition,
       project: Project,
       editor: Editor) {
-    if (clazz == null) return
+    if (clazz == null)
+      return
 
     UsageTrigger.trigger(ScalaBundle.message("extract.trait.id"))
 
     val dialog = new ScalaExtractTraitDialog(project, clazz)
     dialog.show()
-    if (!dialog.isOK) return
+    if (!dialog.isOK)
+      return
 
     val memberInfos = dialog.getSelectedMembers.asScala
     val extractInfo = new ExtractInfo(clazz, memberInfos)
@@ -132,7 +140,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       dialog,
       extractInfo.conflicts,
       clazz.getProject)
-    if (!isOk) return
+    if (!isOk)
+      return
 
     val name = dialog.getTraitName
     val packName = dialog.getPackageName
@@ -181,7 +190,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
   }
 
   private def addTypeParameters(trt: ScTrait, typeParamsText: String) {
-    if (typeParamsText == null || typeParamsText.isEmpty) return
+    if (typeParamsText == null || typeParamsText.isEmpty)
+      return
     val clause =
       ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
         typeParamsText,
@@ -204,7 +214,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         if (pckg == null || pckg.getDirectories.isEmpty)
           throw new IllegalArgumentException(
             "Cannot find directory for new trait")
-        else pckg.getDirectories()(0)
+        else
+          pckg.getDirectories()(0)
       }
     ScalaDirectoryService
       .createClassFromTemplate(
@@ -250,7 +261,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     private object inSelfType {
       def unapply(elem: PsiElement): Option[PsiClass] = {
         val selfTypeOfClazz = clazz.extendsBlock.selfType
-        if (selfTypeOfClazz.isEmpty) return None
+        if (selfTypeOfClazz.isEmpty)
+          return None
 
         forMember(elem) { m =>
           m.containingClass match {
@@ -348,11 +360,13 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         member = info.getMember
       } {
         currentMemberName = info.getDisplayName
-        if (info.isToAbstract) member.children.foreach {
-          case _: ScExpression =>
-          case other           => other.accept(visitor)
-        }
-        else member.accept(visitor)
+        if (info.isToAbstract)
+          member.children.foreach {
+            case _: ScExpression =>
+            case other           => other.accept(visitor)
+          }
+        else
+          member.accept(visitor)
       }
 
       classesForSelfType.foreach {
@@ -379,17 +393,24 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       if (classesForSelfType.nonEmpty) {
         val arrow = ScalaPsiUtil.functionArrow(clazz.getProject)
         Some(s"$alias: $typeText $arrow")
-      } else None
+      } else
+        None
     }
 
     def typeParameters: String = {
       val paramTexts = typeParams.toSeq.sortBy(_.getOffsetInFile).map(_.getText)
-      if (paramTexts.isEmpty) "" else paramTexts.mkString("[", ", ", "]")
+      if (paramTexts.isEmpty)
+        ""
+      else
+        paramTexts.mkString("[", ", ", "]")
     }
 
     def typeArgs: String = {
       val names = typeParams.toSeq.sortBy(_.getOffsetInFile).map(_.name)
-      if (names.isEmpty) "" else names.mkString("[", ", ", "]")
+      if (names.isEmpty)
+        ""
+      else
+        names.mkString("[", ", ", "]")
     }
   }
 

@@ -25,7 +25,8 @@ object SealedClassInheritance extends AnnotatorPart[ScTemplateDefinition] {
     val newInstance = definition.isInstanceOf[ScNewTemplateDefinition]
     val hasBody = definition.extendsBlock.templateBody.isDefined
 
-    if (newInstance && !hasBody) return
+    if (newInstance && !hasBody)
+      return
 
     definition.refs.foreach {
       case (refElement, Some((psiClass: ScTypeDefinition, _)))

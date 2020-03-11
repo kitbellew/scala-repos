@@ -81,8 +81,10 @@ abstract class Task(settings: Settings) extends Specification {
 
   def getjson(rb: RequestBuilder, setContentType: Boolean = true) = {
     val rb2 =
-      if (setContentType) rb <:< List("Content-Type" -> "application/json")
-      else rb
+      if (setContentType)
+        rb <:< List("Content-Type" -> "application/json")
+      else
+        rb
     JParser.parseFromString(Http(rb2 OK as.String)()).valueOr(throw _)
   }
 
@@ -245,6 +247,9 @@ abstract class Task(settings: Settings) extends Specification {
   private def host0(domain: String, port: Int) = {
     val back = host(domain, port)
     // port check is a hack to allow just accounts to run over https
-    if (secure && port != 80) back.secure else back
+    if (secure && port != 80)
+      back.secure
+    else
+      back
   }
 }

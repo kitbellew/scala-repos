@@ -104,7 +104,10 @@ private[spark] class ExternalSorter[K, V, C](
   private val numPartitions = partitioner.map(_.numPartitions).getOrElse(1)
   private val shouldPartition = numPartitions > 1
   private def getPartition(key: K): Int = {
-    if (shouldPartition) partitioner.get.getPartition(key) else 0
+    if (shouldPartition)
+      partitioner.get.getPartition(key)
+    else
+      0
   }
 
   private val blockManager = SparkEnv.get.blockManager
@@ -147,9 +150,22 @@ private[spark] class ExternalSorter[K, V, C](
   private val keyComparator: Comparator[K] =
     ordering.getOrElse(new Comparator[K] {
       override def compare(a: K, b: K): Int = {
-        val h1 = if (a == null) 0 else a.hashCode()
-        val h2 = if (b == null) 0 else b.hashCode()
-        if (h1 < h2) -1 else if (h1 == h2) 0 else 1
+        val h1 =
+          if (a == null)
+            0
+          else
+            a.hashCode()
+        val h2 =
+          if (b == null)
+            0
+          else
+            b.hashCode()
+        if (h1 < h2)
+          -1
+        else if (h1 == h2)
+          0
+        else
+          1
       }
     })
 
@@ -188,7 +204,10 @@ private[spark] class ExternalSorter[K, V, C](
       val createCombiner = aggregator.get.createCombiner
       var kv: Product2[K, V] = null
       val update = (hadValue: Boolean, oldValue: C) => {
-        if (hadValue) mergeValue(oldValue, kv._2) else createCombiner(kv._2)
+        if (hadValue)
+          mergeValue(oldValue, kv._2)
+        else
+          createCombiner(kv._2)
       }
       while (records.hasNext) {
         addElementsRead()
@@ -638,7 +657,10 @@ private[spark] class ExternalSorter[K, V, C](
   def partitionedIterator: Iterator[(Int, Iterator[Product2[K, C]])] = {
     val usingMap = aggregator.isDefined
     val collection: WritablePartitionedPairCollection[K, C] =
-      if (usingMap) map else buffer
+      if (usingMap)
+        map
+      else
+        buffer
     if (spills.isEmpty) {
       // Special case: if we have only in-memory data, we don't need to merge streams, and perhaps
       // we don't even need to sort by anything other than partition ID
@@ -678,7 +700,11 @@ private[spark] class ExternalSorter[K, V, C](
 
     if (spills.isEmpty) {
       // Case where we only have in-memory data
-      val collection = if (aggregator.isDefined) map else buffer
+      val collection =
+        if (aggregator.isDefined)
+          map
+        else
+          buffer
       val it =
         collection.destructiveSortedWritablePartitionedIterator(comparator)
       while (it.hasNext) {

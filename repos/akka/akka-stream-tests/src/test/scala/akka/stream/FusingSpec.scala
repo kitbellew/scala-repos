@@ -29,7 +29,10 @@ class FusingSpec extends AkkaSpec {
           .fold(0)(_ + _)
           .to(Sink.head.named("otherSink"))
           .addAttributes(
-            if (async) Attributes.asyncBoundary else Attributes.none))
+            if (async)
+              Attributes.asyncBoundary
+            else
+              Attributes.none))
       .via(Flow[Int].fold(1)(_ + _).named("mainSink"))
 
   def singlePath[S <: Shape, M](
@@ -43,7 +46,8 @@ class FusingSpec extends AkkaSpec {
     val owner = fg.module.info.outOwners
 
     @tailrec def rec(curr: Module): Unit = {
-      if (Debug) println(extractName(curr, "unknown"))
+      if (Debug)
+        println(extractName(curr, "unknown"))
       curr match {
         case CopiedModule(_, attributes, copyOf)
             if (attributes and copyOf.attributes).contains(to) ⇒

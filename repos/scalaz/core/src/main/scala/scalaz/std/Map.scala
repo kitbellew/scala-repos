@@ -50,7 +50,8 @@ trait MapSubInstances0 extends MapSub {
 
     override def equal(a1: XMap[K, V], a2: XMap[K, V]): Boolean = {
       import set._
-      if (equalIsNatural) a1 == a2
+      if (equalIsNatural)
+        a1 == a2
       else
         Equal[Set[K]].equal(a1.keySet, a2.keySet) && {
           a1.forall {
@@ -148,7 +149,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         val (from, to, semigroup) = {
           if (m1.size > m2Instance.size)
             (m2Instance, m1, Semigroup[V].append(_: V, _: V))
-          else (m1, m2Instance, (Semigroup[V].append(_: V, _: V)).flip)
+          else
+            (m1, m2Instance, (Semigroup[V].append(_: V, _: V)).flip)
         }
 
         from.foldLeft(to) {
@@ -227,7 +229,11 @@ trait MapSubFunctions extends MapSub {
       m2: XMap[K, A])(f: (K, A, A) => A): XMap[K, A] = {
     val diff = m2 -- m1.keySet
     val aug = m1 map {
-      case (k, v) => if (m2 contains k) k -> f(k, v, m2(k)) else (k, v)
+      case (k, v) =>
+        if (m2 contains k)
+          k -> f(k, v, m2(k))
+        else
+          (k, v)
     }
     aug ++ diff
   }
@@ -246,7 +252,10 @@ trait MapSubFunctions extends MapSub {
     */
   final def insertWith[K: BuildKeyConstraint, A](m1: XMap[K, A], k: K, v: A)(
       f: (A, A) => A): XMap[K, A] =
-    if (m1 contains k) ab_+(m1, k, f(m1(k), v)) else ab_+(m1, k, v)
+    if (m1 contains k)
+      ab_+(m1, k, f(m1(k), v))
+    else
+      ab_+(m1, k, v)
 
   /** Grab a value out of Map if it's present. Otherwise evaluate
     * a value to be placed at that key in the Map.

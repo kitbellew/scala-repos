@@ -197,7 +197,8 @@ object TestBuild {
   lazy val keysGen: Gen[Keys] =
     for (env <- mkEnv;
          keyCount <- chooseShrinkable(1, KeysPerEnv);
-         keys <- listOfN(keyCount, scope(env))) yield new Keys(env, keys)
+         keys <- listOfN(keyCount, scope(env)))
+      yield new Keys(env, keys)
 
   def scope(env: Env): Gen[Scope] =
     for {
@@ -284,7 +285,8 @@ object TestBuild {
       uGen: Gen[URI],
       pGen: URI => Gen[Seq[Proj]]): Gen[Build] =
     for (u <- uGen;
-         ps <- pGen(u)) yield new Build(u, ps)
+         ps <- pGen(u))
+      yield new Build(u, ps)
 
   def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] = igen flatMap {
     ig => listOfN(ig, g)
@@ -296,14 +298,15 @@ object TestBuild {
       count: Gen[Int],
       confs: Gen[Seq[Config]]): Gen[Seq[Proj]] =
     genAcyclic(maxDeps, genID, count) { (id: String) =>
-      for (cs <- confs) yield { (deps: Seq[Proj]) =>
-        new Proj(
-          id,
-          deps.map { dep =>
-            ProjectRef(build, dep.id)
-          },
-          cs)
-      }
+      for (cs <- confs)
+        yield { (deps: Seq[Proj]) =>
+          new Proj(
+            id,
+            deps.map { dep =>
+              ProjectRef(build, dep.id)
+            },
+            cs)
+        }
     }
   def genConfigs(implicit
       genName: Gen[String],

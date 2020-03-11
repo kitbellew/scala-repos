@@ -65,7 +65,11 @@ class LeaderProxyFilter @Inject() (
 
   def init(filterConfig: FilterConfig): Unit = {}
 
-  private[this] val scheme = if (httpConf.disableHttp()) "https" else "http"
+  private[this] val scheme =
+    if (httpConf.disableHttp())
+      "https"
+    else
+      "http"
 
   private[this] def buildUrl(
       leaderData: String,

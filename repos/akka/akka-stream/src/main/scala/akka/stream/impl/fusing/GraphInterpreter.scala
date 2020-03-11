@@ -235,7 +235,8 @@ private[akka] object GraphInterpreter {
         if (i.hasNext) {
           a(idx) = i.next()
           add(i, a, idx + 1)
-        } else a
+        } else
+          a
 
       // fill array slots with Boundary
       def markBoundary(owners: Array[Int], from: Int, to: Int): Array[Int] = {
@@ -427,7 +428,8 @@ private[stream] final class GraphInterpreter(
     if (_Name eq null) {
       _Name = f"${System.identityHashCode(this)}%08X"
       _Name
-    } else _Name
+    } else
+      _Name
 
   /**
     * INTERNAL API
@@ -494,7 +496,11 @@ private[stream] final class GraphInterpreter(
     * materializer for the GraphInterpreter—fusing is only an optimization.
     */
   def init(subMat: Materializer): Unit = {
-    _subFusingMaterializer = if (subMat == null) materializer else subMat
+    _subFusingMaterializer =
+      if (subMat == null)
+        materializer
+      else
+        subMat
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -523,7 +529,8 @@ private[stream] final class GraphInterpreter(
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic)) finalizeStage(logic)
+      if (!isStageCompleted(logic))
+        finalizeStage(logic)
       i += 1
     }
   }
@@ -559,8 +566,10 @@ private[stream] final class GraphInterpreter(
   private def shutdownCounters: String =
     shutdownCounter
       .map(x ⇒
-        if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
-        else x.toString)
+        if (x >= KeepGoingFlag)
+          s"${x & KeepGoingMask}(KeepGoing)"
+        else
+          x.toString)
       .mkString(",")
 
   /**
@@ -581,7 +590,8 @@ private[stream] final class GraphInterpreter(
         try processEvent(connection)
         catch {
           case NonFatal(e) ⇒
-            if (activeStage == null) throw e
+            if (activeStage == null)
+              throw e
             else {
               val stage = assembly.stages(activeStage.stageId)
 
@@ -625,8 +635,10 @@ private[stream] final class GraphInterpreter(
   // Decodes and processes a single event for the given connection
   private def processEvent(connection: Int): Unit = {
     def safeLogics(id: Int) =
-      if (id == Boundary) null
-      else logics(id)
+      if (id == Boundary)
+        null
+      else
+        logics(id)
 
     def processElement(): Unit = {
       if (Debug)
@@ -650,8 +662,9 @@ private[stream] final class GraphInterpreter(
 
       // PULL
     } else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
-      if (Debug) println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
-        connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+      if (Debug)
+        println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
+          connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) ^= PullEndFlip
       activeStage = safeLogics(assembly.outOwners(connection))
       outHandlers(connection).onPull()
@@ -739,8 +752,10 @@ private[stream] final class GraphInterpreter(
   private[stream] def setKeepGoing(
       logic: GraphStageLogic,
       enabled: Boolean): Unit =
-    if (enabled) shutdownCounter(logic.stageId) |= KeepGoingFlag
-    else shutdownCounter(logic.stageId) &= KeepGoingMask
+    if (enabled)
+      shutdownCounter(logic.stageId) |= KeepGoingFlag
+    else
+      shutdownCounter(logic.stageId) &= KeepGoingMask
 
   private def finalizeStage(logic: GraphStageLogic): Unit = {
     try {
@@ -775,7 +790,8 @@ private[stream] final class GraphInterpreter(
 
   private[stream] def complete(connection: Int): Unit = {
     val currentState = portStates(connection)
-    if (Debug) println(s"$Name   complete($connection) [$currentState]")
+    if (Debug)
+      println(s"$Name   complete($connection) [$currentState]")
     portStates(connection) = currentState | OutClosed
     if ((currentState & (InClosed | Pushing | Pulling | OutClosed)) == 0)
       enqueue(connection)
@@ -785,12 +801,14 @@ private[stream] final class GraphInterpreter(
 
   private[stream] def fail(connection: Int, ex: Throwable): Unit = {
     val currentState = portStates(connection)
-    if (Debug) println(s"$Name   fail($connection, $ex) [$currentState]")
+    if (Debug)
+      println(s"$Name   fail($connection, $ex) [$currentState]")
     portStates(connection) = currentState | OutClosed
     if ((currentState & (InClosed | OutClosed)) == 0) {
       portStates(connection) = currentState | (OutClosed | InFailed)
       connectionSlots(connection) = Failed(ex, connectionSlots(connection))
-      if ((currentState & (Pulling | Pushing)) == 0) enqueue(connection)
+      if ((currentState & (Pulling | Pushing)) == 0)
+        enqueue(connection)
     }
     if ((currentState & OutClosed) == 0)
       completeConnection(assembly.outOwners(connection))
@@ -798,7 +816,8 @@ private[stream] final class GraphInterpreter(
 
   private[stream] def cancel(connection: Int): Unit = {
     val currentState = portStates(connection)
-    if (Debug) println(s"$Name   cancel($connection) [$currentState]")
+    if (Debug)
+      println(s"$Name   cancel($connection) [$currentState]")
     portStates(connection) = currentState | InClosed
     if ((currentState & OutClosed) == 0) {
       connectionSlots(connection) = Empty
@@ -825,14 +844,18 @@ private[stream] final class GraphInterpreter(
 
     def nameIn(port: Int): String = {
       val owner = assembly.inOwners(port)
-      if (owner == Boundary) "Out" + port
-      else "N" + owner
+      if (owner == Boundary)
+        "Out" + port
+      else
+        "N" + owner
     }
 
     def nameOut(port: Int): String = {
       val owner = assembly.outOwners(port)
-      if (owner == Boundary) "In" + port
-      else "N" + owner
+      if (owner == Boundary)
+        "In" + port
+      else
+        "N" + owner
     }
 
     for (i ← portStates.indices) {

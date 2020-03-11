@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object NumberStringConverter {
   implicit def sfxNumberStringConverter2jfx(
       c: NumberStringConverter): jfxuc.NumberStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class NumberStringConverter(

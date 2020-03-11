@@ -7,22 +7,44 @@ object Math {
   final val E = 2.718281828459045
   final val PI = 3.141592653589793
 
-  @inline def abs(a: scala.Int): scala.Int = if (a < 0) -a else a
-  @inline def abs(a: scala.Long): scala.Long = if (a < 0) -a else a
+  @inline def abs(a: scala.Int): scala.Int =
+    if (a < 0)
+      -a
+    else
+      a
+  @inline def abs(a: scala.Long): scala.Long =
+    if (a < 0)
+      -a
+    else
+      a
   @inline def abs(a: scala.Float): scala.Float = js.Math.abs(a).toFloat
   @inline def abs(a: scala.Double): scala.Double = js.Math.abs(a)
 
-  @inline def max(a: scala.Int, b: scala.Int): scala.Int = if (a > b) a else b
+  @inline def max(a: scala.Int, b: scala.Int): scala.Int =
+    if (a > b)
+      a
+    else
+      b
   @inline def max(a: scala.Long, b: scala.Long): scala.Long =
-    if (a > b) a else b
+    if (a > b)
+      a
+    else
+      b
   @inline def max(a: scala.Float, b: scala.Float): scala.Float =
     js.Math.max(a, b).toFloat
   @inline def max(a: scala.Double, b: scala.Double): scala.Double =
     js.Math.max(a, b)
 
-  @inline def min(a: scala.Int, b: scala.Int): scala.Int = if (a < b) a else b
+  @inline def min(a: scala.Int, b: scala.Int): scala.Int =
+    if (a < b)
+      a
+    else
+      b
   @inline def min(a: scala.Long, b: scala.Long): scala.Long =
-    if (a < b) a else b
+    if (a < b)
+      a
+    else
+      b
   @inline def min(a: scala.Float, b: scala.Float): scala.Float =
     js.Math.min(a, b).toFloat
   @inline def min(a: scala.Double, b: scala.Double): scala.Double =
@@ -37,8 +59,10 @@ object Math {
     // The following test is also false for specials (0's, Infinities and NaN)
     if (mod == 0.5 || mod == -0.5) {
       // js.Math.round(a) rounds up but we have to round to even
-      if (rounded % 2.0 == 0.0) rounded
-      else rounded - 1.0
+      if (rounded % 2.0 == 0.0)
+        rounded
+      else
+        rounded - 1.0
     } else {
       rounded
     }
@@ -71,22 +95,32 @@ object Math {
   @inline def toRadians(a: scala.Double): scala.Double = a / 180.0 * PI
 
   @inline def signum(a: scala.Double): scala.Double = {
-    if (a > 0) 1.0
-    else if (a < 0) -1.0
-    else a
+    if (a > 0)
+      1.0
+    else if (a < 0)
+      -1.0
+    else
+      a
   }
 
   @inline def signum(a: scala.Float): scala.Float = {
-    if (a > 0) 1.0f
-    else if (a < 0) -1.0f
-    else a
+    if (a > 0)
+      1.0f
+    else if (a < 0)
+      -1.0f
+    else
+      a
   }
 
   def cbrt(a: scala.Double): scala.Double = {
     if (a == 0 || a.isNaN) {
       a
     } else {
-      val sign = if (a < 0.0) -1.0 else 1.0
+      val sign =
+        if (a < 0.0)
+          -1.0
+        else
+          1.0
       val value = sign * a
 
       //Initial Approximation
@@ -127,16 +161,22 @@ object Math {
               x + (xi - x) / 2
             else
               c0
-          if (n == c) xi
-          else if (a < c) iter(x = x, xi = c, n = c)
-          else iter(x = c, xi = xi, n = c)
-        } else xi
+          if (n == c)
+            xi
+          else if (a < c)
+            iter(x = x, xi = c, n = c)
+          else
+            iter(x = c, xi = xi, n = c)
+        } else
+          xi
       }
       val d = Math.max(Math.abs(a) * 2e-16, MinPositiveValue)
       val ad = a + d
       val xi0 =
-        if (ad == PositiveInfinity) MaxValue
-        else ad
+        if (ad == PositiveInfinity)
+          MaxValue
+        else
+          ad
       iter(x = a, xi = xi0, n = a)
     }
   }
@@ -233,29 +273,37 @@ object Math {
   def addExact(a: scala.Int, b: scala.Int): scala.Int = {
     val res = a + b
     val resSgnBit = res < 0
-    if (resSgnBit == (a < 0) || resSgnBit == (b < 0)) res
-    else throw new ArithmeticException("Integer overflow")
+    if (resSgnBit == (a < 0) || resSgnBit == (b < 0))
+      res
+    else
+      throw new ArithmeticException("Integer overflow")
   }
 
   def addExact(a: scala.Long, b: scala.Long): scala.Long = {
     val res = a + b
     val resSgnBit = res < 0
-    if (resSgnBit == (a < 0) || resSgnBit == (b < 0)) res
-    else throw new ArithmeticException("Long overflow")
+    if (resSgnBit == (a < 0) || resSgnBit == (b < 0))
+      res
+    else
+      throw new ArithmeticException("Long overflow")
   }
 
   def subtractExact(a: scala.Int, b: scala.Int): scala.Int = {
     val res = a - b
     val resSgnBit = res < 0
-    if (resSgnBit == (a < 0) || resSgnBit == (b > 0)) res
-    else throw new ArithmeticException("Integer overflow")
+    if (resSgnBit == (a < 0) || resSgnBit == (b > 0))
+      res
+    else
+      throw new ArithmeticException("Integer overflow")
   }
 
   def subtractExact(a: scala.Long, b: scala.Long): scala.Long = {
     val res = a - b
     val resSgnBit = res < 0
-    if (resSgnBit == (a < 0) || resSgnBit == (b > 0)) res
-    else throw new ArithmeticException("Long overflow")
+    if (resSgnBit == (a < 0) || resSgnBit == (b > 0))
+      res
+    else
+      throw new ArithmeticException("Long overflow")
   }
 
   def multiplyExact(a: scala.Int, b: scala.Int): scala.Int = {
@@ -269,8 +317,10 @@ object Math {
       else
         false
     }
-    if (!overflow) a * b
-    else throw new ArithmeticException("Integer overflow")
+    if (!overflow)
+      a * b
+    else
+      throw new ArithmeticException("Integer overflow")
   }
 
   def multiplyExact(a: scala.Long, b: scala.Long): scala.Long = {
@@ -284,60 +334,84 @@ object Math {
       else
         false
     }
-    if (!overflow) a * b
-    else throw new ArithmeticException("Long overflow")
+    if (!overflow)
+      a * b
+    else
+      throw new ArithmeticException("Long overflow")
   }
 
   def incrementExact(a: scala.Int): scala.Int =
-    if (a != Integer.MAX_VALUE) a + 1
-    else throw new ArithmeticException("Integer overflow")
+    if (a != Integer.MAX_VALUE)
+      a + 1
+    else
+      throw new ArithmeticException("Integer overflow")
 
   def incrementExact(a: scala.Long): scala.Long =
-    if (a != Long.MAX_VALUE) a + 1
-    else throw new ArithmeticException("Long overflow")
+    if (a != Long.MAX_VALUE)
+      a + 1
+    else
+      throw new ArithmeticException("Long overflow")
 
   def decrementExact(a: scala.Int): scala.Int =
-    if (a != Integer.MIN_VALUE) a - 1
-    else throw new ArithmeticException("Integer overflow")
+    if (a != Integer.MIN_VALUE)
+      a - 1
+    else
+      throw new ArithmeticException("Integer overflow")
 
   def decrementExact(a: scala.Long): scala.Long =
-    if (a != Long.MIN_VALUE) a - 1
-    else throw new ArithmeticException("Long overflow")
+    if (a != Long.MIN_VALUE)
+      a - 1
+    else
+      throw new ArithmeticException("Long overflow")
 
   def negateExact(a: scala.Int): scala.Int =
-    if (a != Integer.MIN_VALUE) -a
-    else throw new ArithmeticException("Integer overflow")
+    if (a != Integer.MIN_VALUE)
+      -a
+    else
+      throw new ArithmeticException("Integer overflow")
 
   def negateExact(a: scala.Long): scala.Long =
-    if (a != Long.MIN_VALUE) -a
-    else throw new ArithmeticException("Long overflow")
+    if (a != Long.MIN_VALUE)
+      -a
+    else
+      throw new ArithmeticException("Long overflow")
 
   def toIntExact(a: scala.Long): scala.Int =
-    if (a >= Integer.MIN_VALUE && a <= Integer.MAX_VALUE) a.toInt
-    else throw new ArithmeticException("Integer overflow")
+    if (a >= Integer.MIN_VALUE && a <= Integer.MAX_VALUE)
+      a.toInt
+    else
+      throw new ArithmeticException("Integer overflow")
 
   def floorDiv(a: scala.Int, b: scala.Int): scala.Int = {
     val quot = a / b
-    if ((a < 0) == (b < 0) || quot * b == a) quot
-    else quot - 1
+    if ((a < 0) == (b < 0) || quot * b == a)
+      quot
+    else
+      quot - 1
   }
 
   def floorDiv(a: scala.Long, b: scala.Long): scala.Long = {
     val quot = a / b
-    if ((a < 0) == (b < 0) || quot * b == a) quot
-    else quot - 1
+    if ((a < 0) == (b < 0) || quot * b == a)
+      quot
+    else
+      quot - 1
   }
 
   def floorMod(a: scala.Int, b: scala.Int): scala.Int = {
     val rem = a % b
-    if ((a < 0) == (b < 0) || rem == 0) rem
-    else rem + b
+    if ((a < 0) == (b < 0) || rem == 0)
+      rem
+    else
+      rem + b
   }
 
   def floorMod(a: scala.Long, b: scala.Long): scala.Long = {
     val rem = a % b
-    if ((a < 0) == (b < 0) || rem == 0) rem
-    else rem + b
+    if ((a < 0) == (b < 0) || rem == 0)
+      rem
+    else
+      rem + b
   }
 
   // TODO

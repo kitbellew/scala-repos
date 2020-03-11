@@ -84,19 +84,24 @@ class ScalaControlFlowBuilder(
     val instr = new InstructionImpl(inc, element)
     addNode(instr)
     body(instr)
-    if (checkPending) checkPendingEdges(instr)
+    if (checkPending)
+      checkPendingEdges(instr)
   }
 
   private def addNode(instr: InstructionImpl) {
     myInstructions += instr
-    if (myHead != null) addEdge(myHead, instr)
+    if (myHead != null)
+      addEdge(myHead, instr)
     myHead = instr
   }
 
   private def addEdge(from: InstructionImpl, to: InstructionImpl) {
-    if (from == null || to == null) return
-    if (!from.succ().contains(to)) from.addSucc(to)
-    if (!to.pred().contains(from)) to.addPred(from)
+    if (from == null || to == null)
+      return
+    if (!from.succ().contains(to))
+      from.addSucc(to)
+    if (!to.pred().contains(from))
+      to.addPred(from)
   }
 
   private def checkPendingEdges(instruction: InstructionImpl) {
@@ -112,9 +117,11 @@ class ScalaControlFlowBuilder(
           }
         }
         // remove registered pending edges
-        for (k <- ab) myPending.remove(k)
+        for (k <- ab)
+          myPending.remove(k)
       case None =>
-        for ((from, _) <- myPending) addEdge(from, instruction)
+        for ((from, _) <- myPending)
+          addEdge(from, instruction)
         myPending.clear()
     }
   }
@@ -122,7 +129,8 @@ class ScalaControlFlowBuilder(
   private def addPendingEdge(
       scopeWhenAdded: ScalaPsiElement,
       instruction: InstructionImpl) {
-    if (instruction == null) return
+    if (instruction == null)
+      return
     var index = 0
     if (scopeWhenAdded != null) {
       index = myPending.indexWhere {
@@ -267,7 +275,8 @@ class ScalaControlFlowBuilder(
       }
       checkPendingEdges(instr)
       // add backward edge
-      if (myHead != null) addEdge(myHead, instr)
+      if (myHead != null)
+        addEdge(myHead, instr)
       moveHead(instr)
     }
   }
@@ -298,9 +307,11 @@ class ScalaControlFlowBuilder(
 
   override def visitGenerator(gen: ScGenerator) {
     val rv = gen.rvalue
-    if (rv != null) rv.accept(this)
+    if (rv != null)
+      rv.accept(this)
     val pat = gen.pattern
-    if (pat != null) pat.accept(this)
+    if (pat != null)
+      pat.accept(this)
   }
 
   override def visitGuard(guard: ScGuard) {
@@ -322,9 +333,11 @@ class ScalaControlFlowBuilder(
 
   override def visitEnumerator(enum: ScEnumerator) {
     val rv = enum.rvalue
-    if (rv != null) rv.accept(this)
+    if (rv != null)
+      rv.accept(this)
     val pat = enum.pattern
-    if (pat != null) pat.accept(this)
+    if (pat != null)
+      pat.accept(this)
   }
 
   override def visitForExpression(forStmt: ScForStatement) {
@@ -389,10 +402,12 @@ class ScalaControlFlowBuilder(
       case Some(e) => e.accept(this)
       case None    =>
     }
-    if (isNodeNeeded) startNode(Some(ret)) { rs =>
+    if (isNodeNeeded)
+      startNode(Some(ret)) { rs =>
+        addPendingEdge(null, myHead)
+      }
+    else
       addPendingEdge(null, myHead)
-    }
-    else addPendingEdge(null, myHead)
 
     // add edge to finally block
     getClosestFinallyInfo.map { finfo =>
@@ -402,7 +417,8 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitFunctionExpression(stmt: ScFunctionExpr) {
-    if (policy == ExtractMethodControlFlowPolicy) addFreeVariables(stmt)
+    if (policy == ExtractMethodControlFlowPolicy)
+      addFreeVariables(stmt)
   }
 
   override def visitTypeDefinition(typedef: ScTypeDefinition) {
@@ -412,7 +428,8 @@ class ScalaControlFlowBuilder(
   override def visitBlockExpression(block: ScBlockExpr) {
     if (block.isAnonymousFunction) {
       // Do not visit closures
-    } else super.visitBlockExpression(block)
+    } else
+      super.visitBlockExpression(block)
   }
 
   override def visitInfixExpression(infix: ScInfixExpr): Unit = {
@@ -425,7 +442,8 @@ class ScalaControlFlowBuilder(
         infix.getBaseExpr.accept(this)
         infix.operation.accept(this)
         infix.getArgExpr.accept(this)
-        if (myHead == null) moveHead(infixInstr)
+        if (myHead == null)
+          moveHead(infixInstr)
       }
     } else {
       infix.getBaseExpr.accept(this)
@@ -435,7 +453,8 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitFunction(fun: ScFunction) {
-    if (policy != ExtractMethodControlFlowPolicy) return
+    if (policy != ExtractMethodControlFlowPolicy)
+      return
 
     if (policy.isElementAccepted(fun)) {
       val instr = new DefinitionInstruction(inc, fun, DefinitionType.DEF)
@@ -454,7 +473,8 @@ class ScalaControlFlowBuilder(
     val collectedRefs = ArrayBuffer[ScReferenceExpression]()
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitReferenceExpression(ref: ScReferenceExpression) {
-        if (ref.qualifier.nonEmpty) return
+        if (ref.qualifier.nonEmpty)
+          return
 
         ref.resolve() match {
           case p: ScParameter if parameters.contains(p) =>
@@ -486,10 +506,12 @@ class ScalaControlFlowBuilder(
       case None    => false
     })
     throwStmt.body.map(_.accept(this))
-    if (isNodeNeeded) startNode(Some(throwStmt)) { rs =>
+    if (isNodeNeeded)
+      startNode(Some(throwStmt)) { rs =>
+        addPendingEdge(null, myHead)
+      }
+    else
       addPendingEdge(null, myHead)
-    }
-    else addPendingEdge(null, myHead)
     interruptFlow()
   }
 

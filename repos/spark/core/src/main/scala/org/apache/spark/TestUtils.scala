@@ -56,21 +56,25 @@ private[spark] object TestUtils {
       classNamesWithBase: Seq[(String, String)] = Seq(),
       classpathUrls: Seq[URL] = Seq()): URL = {
     val tempDir = Utils.createTempDir()
-    val files1 = for (name <- classNames) yield {
-      createCompiledClass(
-        name,
-        tempDir,
-        toStringValue,
-        classpathUrls = classpathUrls)
-    }
-    val files2 = for ((childName, baseName) <- classNamesWithBase) yield {
-      createCompiledClass(
-        childName,
-        tempDir,
-        toStringValue,
-        baseName,
-        classpathUrls)
-    }
+    val files1 =
+      for (name <- classNames)
+        yield {
+          createCompiledClass(
+            name,
+            tempDir,
+            toStringValue,
+            classpathUrls = classpathUrls)
+        }
+    val files2 =
+      for ((childName, baseName) <- classNamesWithBase)
+        yield {
+          createCompiledClass(
+            childName,
+            tempDir,
+            toStringValue,
+            baseName,
+            classpathUrls)
+        }
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     createJar(files1 ++ files2, jarFile)

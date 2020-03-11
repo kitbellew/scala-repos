@@ -38,9 +38,11 @@ private[routing] object RouterBuilderHelper {
               if (matcher.matches()) {
 
                 // Extract groups into a Seq
-                val groups = for (i <- 1 to matcher.groupCount()) yield {
-                  matcher.group(i)
-                }
+                val groups =
+                  for (i <- 1 to matcher.groupCount())
+                    yield {
+                      matcher.group(i)
+                    }
 
                 // Bind params if required
                 val params = groups.zip(route.params).map {
@@ -93,8 +95,10 @@ private[routing] object RouterBuilderHelper {
                 }
 
                 Some(action)
-              } else None
-            } else None))
+              } else
+                None
+            } else
+              None))
       })
       .asJava
   }

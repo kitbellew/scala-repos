@@ -144,7 +144,10 @@ trait SQLServerProfile extends JdbcProfile {
       sym.flatMap(
         _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
         case Some(l) =>
-          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
+          if (l.varying)
+            s"VARCHAR(${l.length})"
+          else
+            s"CHAR(${l.length})"
         case None =>
           defaultStringType match {
             case Some(s) => s
@@ -153,7 +156,8 @@ trait SQLServerProfile extends JdbcProfile {
                     .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
                     .isDefined)
                 "VARCHAR(254)"
-              else "VARCHAR(MAX)"
+              else
+                "VARCHAR(MAX)"
           }
       }
     case java.sql.Types.BOOLEAN => "BIT"
@@ -175,7 +179,9 @@ trait SQLServerProfile extends JdbcProfile {
         case (Some(t), Some(d)) =>
           b"top (${QueryParameter.constOp[Long]("+")(_ + _)(t, d)}) "
         case (Some(t), None) => b"top ($t) "
-        case (None, _)       => if (!c.orderBy.isEmpty) b"top 100 percent "
+        case (None, _) =>
+          if (!c.orderBy.isEmpty)
+            b"top 100 percent "
       }
     }
 
@@ -189,7 +195,8 @@ trait SQLServerProfile extends JdbcProfile {
       else if (o.nulls.first && o.direction.desc)
         b"case when ($n) is null then 0 else 1 end,"
       expr(n)
-      if (o.direction.desc) b" desc"
+      if (o.direction.desc)
+        b" desc"
     }
 
     override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
@@ -243,20 +250,26 @@ trait SQLServerProfile extends JdbcProfile {
       // SQLServer has no RESTRICT. Equivalent is NO ACTION. http://technet.microsoft.com/en-us/library/aa902684%28v=sql.80%29.aspx
       sb append ") on update " append (if (updateAction == "RESTRICT")
                                          "NO ACTION"
-                                       else updateAction)
+                                       else
+                                         updateAction)
       sb append " on delete " append (if (deleteAction == "RESTRICT")
                                         "NO ACTION"
-                                      else deleteAction)
+                                      else
+                                        deleteAction)
     }
   }
 
   class ColumnDDLBuilder(column: FieldSymbol)
       extends super.ColumnDDLBuilder(column) {
     override protected def appendOptions(sb: StringBuilder) {
-      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
-      if (notNull) sb append " NOT NULL"
-      if (primaryKey) sb append " PRIMARY KEY"
-      if (autoIncrement) sb append " IDENTITY"
+      if (defaultLiteral ne null)
+        sb append " DEFAULT " append defaultLiteral
+      if (notNull)
+        sb append " NOT NULL"
+      if (primaryKey)
+        sb append " PRIMARY KEY"
+      if (autoIncrement)
+        sb append " IDENTITY"
     }
   }
 
@@ -273,7 +286,11 @@ trait SQLServerProfile extends JdbcProfile {
     /* SQL Server does not have a proper BOOLEAN type. The suggested workaround is
      * BIT with constants 1 and 0 for TRUE and FALSE. */
     class BooleanJdbcType extends super.BooleanJdbcType {
-      override def valueToSQLLiteral(value: Boolean) = if (value) "1" else "0"
+      override def valueToSQLLiteral(value: Boolean) =
+        if (value)
+          "1"
+        else
+          "0"
     }
     /* Selecting a straight Date or Timestamp literal fails with a NPE (probably
      * because the type information gets lost along the way), so we cast all Date
@@ -289,7 +306,8 @@ trait SQLServerProfile extends JdbcProfile {
       override def getValue(r: ResultSet, idx: Int) = {
         val s = r.getString(idx)
         val sep = s.indexOf('.')
-        if (sep == -1) Time.valueOf(s)
+        if (sep == -1)
+          Time.valueOf(s)
         else {
           val t = Time.valueOf(s.substring(0, sep))
           val millis = (("0." + s.substring(sep + 1)).toDouble * 1000.0).toInt
@@ -354,7 +372,8 @@ class ProtectGroupBy extends Phase {
                 case _                  => false
               }.isDefined)
             logger.debug("All columns reference the source: " + refsOK)
-            if (refsOK) n
+            if (refsOK)
+              n
             else
               n.copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
                 .infer()

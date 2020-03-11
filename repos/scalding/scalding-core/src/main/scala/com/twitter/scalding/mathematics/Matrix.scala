@@ -306,7 +306,10 @@ trait WrappedPipe {
       fd: FlowDef,
       mode: Mode) {
     val toWrite =
-      if (outFields.isNone) pipe else pipe.rename(fields -> outFields)
+      if (outFields.isNone)
+        pipe
+      else
+        pipe.rename(fields -> outFields)
     toWrite.write(src)
   }
 }
@@ -710,7 +713,10 @@ class Matrix[RowT, ColT, ValT](
     boolMat
       .zip(vec.transpose)
       .mapValues { boolT =>
-        if (boolT._1) boolT._2 else monT.zero
+        if (boolT._1)
+          boolT._2
+        else
+          monT.zero
       }
       .sumColVectors
   }
@@ -762,10 +768,16 @@ class Matrix[RowT, ColT, ValT](
     joinedPipe
     //Make sure the zeros are set correctly:
       .map(valSym -> valSym) { (x: ValT) =>
-        if (null == x) pairMonoid.zero._1 else x
+        if (null == x)
+          pairMonoid.zero._1
+        else
+          x
       }
       .map(otherVSym -> otherVSym) { (x: ValU) =>
-        if (null == x) pairMonoid.zero._2 else x
+        if (null == x)
+          pairMonoid.zero._2
+        else
+          x
       }
       //Put the pair into a single item, ugly in scalding sadly...
       .map(valSym.append(otherVSym) -> valSym) { tup: (ValT, ValU) =>

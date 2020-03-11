@@ -78,7 +78,10 @@ class ArrayBoolColumn(val defined: BitSet, values: BitSet)
 
   def update(row: Int, value: Boolean) = {
     defined.set(row)
-    if (value) values.set(row) else values.clear(row)
+    if (value)
+      values.set(row)
+    else
+      values.clear(row)
   }
 }
 
@@ -223,7 +226,10 @@ class MutableEmptyArrayColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with EmptyArrayColumn {
   def update(row: Int, value: Boolean) = {
-    if (value) defined.set(row) else defined.clear(row)
+    if (value)
+      defined.set(row)
+    else
+      defined.clear(row)
   }
 }
 
@@ -235,7 +241,10 @@ class MutableEmptyObjectColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with EmptyObjectColumn {
   def update(row: Int, value: Boolean) = {
-    if (value) defined.set(row) else defined.clear(row)
+    if (value)
+      defined.set(row)
+    else
+      defined.clear(row)
   }
 }
 
@@ -248,7 +257,10 @@ class MutableNullColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with NullColumn {
   def update(row: Int, value: Boolean) = {
-    if (value) defined.set(row) else defined.clear(row)
+    if (value)
+      defined.set(row)
+    else
+      defined.clear(row)
   }
 }
 

@@ -14,7 +14,10 @@ class TensorPairs[K, V, +This](
   def size = tensor.size
 
   def iterator = {
-    if (active) tensor.activeIterator else tensor.iterator
+    if (active)
+      tensor.activeIterator
+    else
+      tensor.iterator
   }.filter(f)
 
   def foreach[U](fn: ((K, V)) => U) = iterator foreach fn

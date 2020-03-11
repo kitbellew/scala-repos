@@ -95,7 +95,8 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
     */
   def concat(that: UnrolledBuffer[T]) = {
     // bind the two together
-    if (!lastptr.bind(that.headptr)) lastptr = that.lastPtr
+    if (!lastptr.bind(that.headptr))
+      lastptr = that.lastPtr
 
     // update size
     sz += that.sz
@@ -131,7 +132,8 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
       while (pos >= node.size) {
         pos = 0
         node = node.next
-        if (node eq null) return
+        if (node eq null)
+          return
       }
     }
     def hasNext = node ne null
@@ -140,7 +142,8 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
         val r = node.array(pos)
         scan()
         r
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   // this should be faster than the iterator
@@ -151,18 +154,23 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
   def length = sz
 
   def apply(idx: Int) =
-    if (idx >= 0 && idx < sz) headptr(idx)
-    else throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= 0 && idx < sz)
+      headptr(idx)
+    else
+      throw new IndexOutOfBoundsException(idx.toString)
 
   def update(idx: Int, newelem: T) =
-    if (idx >= 0 && idx < sz) headptr(idx) = newelem
-    else throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= 0 && idx < sz)
+      headptr(idx) = newelem
+    else
+      throw new IndexOutOfBoundsException(idx.toString)
 
   def remove(idx: Int) =
     if (idx >= 0 && idx < sz) {
       sz -= 1
       headptr.remove(idx, this)
-    } else throw new IndexOutOfBoundsException(idx.toString)
+    } else
+      throw new IndexOutOfBoundsException(idx.toString)
 
   def +=:(elem: T) = {
     headptr = headptr prepend elem
@@ -174,12 +182,14 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
     if (idx >= 0 && idx <= sz) {
       headptr.insertAll(idx, elems, this)
       sz += elems.size
-    } else throw new IndexOutOfBoundsException(idx.toString)
+    } else
+      throw new IndexOutOfBoundsException(idx.toString)
 
   private def writeObject(out: java.io.ObjectOutputStream) {
     out.defaultWriteObject
     out writeInt sz
-    for (elem <- this) out writeObject elem
+    for (elem <- this)
+      out writeObject elem
   }
 
   private def readObject(in: java.io.ObjectInputStream) {
@@ -229,7 +239,10 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       this(0, new Array[T](unrolledlength), null, b)
 
     private def nextlength =
-      if (buff eq null) unrolledlength else buff.calcNextLength(array.length)
+      if (buff eq null)
+        unrolledlength
+      else
+        buff.calcNextLength(array.length)
 
     // adds and returns itself or the new unrolled if full
     @tailrec final def append(elem: T): Unrolled[T] =
@@ -257,11 +270,20 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       }
     }
     @tailrec final def apply(idx: Int): T =
-      if (idx < size) array(idx) else next.apply(idx - size)
+      if (idx < size)
+        array(idx)
+      else
+        next.apply(idx - size)
     @tailrec final def update(idx: Int, newelem: T): Unit =
-      if (idx < size) array(idx) = newelem else next.update(idx - size, newelem)
+      if (idx < size)
+        array(idx) = newelem
+      else
+        next.update(idx - size, newelem)
     @tailrec final def locate(idx: Int): Unrolled[T] =
-      if (idx < size) this else next.locate(idx - size)
+      if (idx < size)
+        this
+      else
+        next.locate(idx - size)
     def prepend(elem: T) =
       if (size < array.length) {
         // shift the elements of the array right
@@ -294,9 +316,11 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         val r = array(idx)
         shiftleft(idx)
         size -= 1
-        if (tryMergeWithNext()) buffer.lastPtr = this
+        if (tryMergeWithNext())
+          buffer.lastPtr = this
         r
-      } else next.remove(idx - size, buffer)
+      } else
+        next.remove(idx - size, buffer)
     // shifts left elements after `leftb` (overwrites `leftb`)
     private def shiftleft(leftb: Int) {
       var i = leftb
@@ -312,8 +336,12 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         Array.copy(next.array, 0, array, size, next.size)
         size = size + next.size
         next = next.next
-        if (next eq null) true else false // checks if last node was thrown out
-      } else false
+        if (next eq null)
+          true
+        else
+          false // checks if last node was thrown out
+      } else
+        false
 
     @tailrec final def insertAll(
         idx: Int,
@@ -335,16 +363,21 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
 
         // insert everything from iterable to this
         var curr = this
-        for (elem <- t) curr = curr append elem
+        for (elem <- t)
+          curr = curr append elem
         curr.next = newnextnode
 
         // try to merge the last node of this with the newnextnode and fix tail pointer if needed
-        if (curr.tryMergeWithNext()) buffer.lastPtr = curr
-        else if (newnextnode.next eq null) buffer.lastPtr = newnextnode
+        if (curr.tryMergeWithNext())
+          buffer.lastPtr = curr
+        else if (newnextnode.next eq null)
+          buffer.lastPtr = newnextnode
       } else if (idx == size || (next eq null)) {
         var curr = this
-        for (elem <- t) curr = curr append elem
-      } else next.insertAll(idx - size, t, buffer)
+        for (elem <- t)
+          curr = curr append elem
+      } else
+        next.insertAll(idx - size, t, buffer)
     }
     private def nullout(from: Int, until: Int) {
       var idx = from
@@ -372,7 +405,10 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
             System.identityHashCode(
               this)) + "[" + size + "/" + array.length + "](",
           ", ",
-          ")") + " -> " + (if (next ne null) next.toString else "")
+          ")") + " -> " + (if (next ne null)
+                             next.toString
+                           else
+                             "")
   }
 
 }

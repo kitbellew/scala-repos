@@ -57,6 +57,7 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
 
   def delete(id: String): Unit = {
     val m = new File(f, s"${prefix}${id}")
-    if (!m.delete) error(s"Unable to delete ${m.getCanonicalPath}!")
+    if (!m.delete)
+      error(s"Unable to delete ${m.getCanonicalPath}!")
   }
 }

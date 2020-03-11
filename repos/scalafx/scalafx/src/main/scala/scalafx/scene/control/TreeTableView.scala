@@ -54,7 +54,10 @@ object TreeTableView {
     */
   implicit def sfxTreeTableView2jfx[T](
       v: TreeTableView[T]): jfxsc.TreeTableView[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Object companion for [[scalafx.scene.control.TreeTableView.ResizeFeatures]]
@@ -69,7 +72,10 @@ object TreeTableView {
       */
     implicit def sfxTreeTableViewResizeFeatures2jfx[S](
         rf: ResizeFeatures[S]): jfxsc.TreeTableView.ResizeFeatures[S] =
-      if (rf != null) rf.delegate else null
+      if (rf != null)
+        rf.delegate
+      else
+        null
 
   }
 
@@ -129,7 +135,10 @@ object TreeTableView {
       */
     implicit def sfxTreeTableViewEditEvent2jfx[T](
         v: EditEvent[T]): jfxsc.TreeTableView.EditEvent[T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
 
     /**
       * Common supertype for all edit event types.
@@ -206,7 +215,10 @@ object TreeTableView {
       */
     implicit def sfxTableViewFocusModel2jfx[S](tvfm: TreeTableViewFocusModel[S])
         : jfxsc.TreeTableView.TreeTableViewFocusModel[S] =
-      if (tvfm != null) tvfm.delegate else null
+      if (tvfm != null)
+        tvfm.delegate
+      else
+        null
 
   }
 

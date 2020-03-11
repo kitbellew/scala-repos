@@ -149,10 +149,13 @@ class Receiver extends Actor {
   def receive = {
     case SimpleOrderedRedeliverer.Ackable(from, msg, uuid) =>
       val goingToSendAck = shouldSendAck
-      println(s"""  [Receiver] got "$msg"; ${if (goingToSendAck) ""
-      else " ***NOT***"} going to send Ack this time""")
+      println(s"""  [Receiver] got "$msg"; ${if (goingToSendAck)
+        ""
+      else
+        " ***NOT***"} going to send Ack this time""")
       // Send a [[SimpleOrderedRedeliverer.Ack]] -- if they're lucky!
-      if (goingToSendAck) sender() ! SimpleOrderedRedeliverer.Ack(uuid)
+      if (goingToSendAck)
+        sender() ! SimpleOrderedRedeliverer.Ack(uuid)
   }
 }
 

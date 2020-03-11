@@ -20,7 +20,11 @@ object DievTest extends SpecLite {
 
   "fixIntervalOrder" ! forAll { (tuple: (Int, Int)) =>
     {
-      val expectedResult = if (tuple._1 > tuple._2) tuple.swap else tuple
+      val expectedResult =
+        if (tuple._1 > tuple._2)
+          tuple.swap
+        else
+          tuple
       DievInterval.fixIntervalOrder(tuple) must_=== (expectedResult)
     }
   }

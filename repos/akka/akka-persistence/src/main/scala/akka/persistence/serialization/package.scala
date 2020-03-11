@@ -21,7 +21,8 @@ package object serialization {
       if (n != -1) {
         out.write(buf, 0, n);
         copy()
-      } else out.toByteArray
+      } else
+        out.toByteArray
     }
 
     copy()

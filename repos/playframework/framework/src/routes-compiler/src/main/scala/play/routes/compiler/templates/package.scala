@@ -119,14 +119,18 @@ package object templates {
               """Param[""" + p.typeName + """]("""" + paramName + """", Right(""" + v + """))"""
             }
             .getOrElse {
-              """params.""" + (if (route.path.has(paramName)) "fromPath"
+              """params.""" + (if (route.path.has(paramName))
+                                 "fromPath"
                                else
                                  "fromQuery") + """[""" + p.typeName + """]("""" + paramName + """", """ + p.default
                 .map("Some(" + _ + ")")
                 .getOrElse("None") + """)"""
             }
         }
-        if (ps.size < 22) ps.mkString(", ") else ps
+        if (ps.size < 22)
+          ps.mkString(", ")
+        else
+          ps
       }
       .map("(" + _ + ")")
       .getOrElse("")
@@ -162,8 +166,10 @@ package object templates {
     * Extract the local names out from the route
     */
   def localNames(route: Route) =
-    if (route.call.parameters.map(_.size).getOrElse(0) < 22) tupleNames(route)
-    else listNames(route)
+    if (route.call.parameters.map(_.size).getOrElse(0) < 22)
+      tupleNames(route)
+    else
+      listNames(route)
 
   /**
     * The code to statically get the Play injector
@@ -258,7 +264,11 @@ package object templates {
   def reverseMatchParameters(
       params: Seq[(Parameter, Int)],
       annotateUnchecked: Boolean) = {
-    val annotation = if (annotateUnchecked) ": @unchecked" else ""
+    val annotation =
+      if (annotateUnchecked)
+        ": @unchecked"
+      else
+        ""
     params.map(x => safeKeyword(x._1.name) + annotation).mkString(", ")
   }
 
@@ -354,7 +364,11 @@ package object templates {
     */
   def reverseCall(route: Route, localNames: Map[String, String] = Map()) = {
 
-    val df = if (route.path.parts.isEmpty) "" else " + { _defaultPrefix } + "
+    val df =
+      if (route.path.parts.isEmpty)
+        ""
+      else
+        " + { _defaultPrefix } + "
     val callPath = "_prefix" + df + route.path.parts
       .map {
         case StaticPart(part) => "\"" + part + "\""
@@ -463,7 +477,10 @@ package object templates {
     */
   def javascriptCall(route: Route, localNames: Map[String, String] = Map()) = {
     val path = "\"\"\"\" + _prefix + " + {
-      if (route.path.parts.isEmpty) "" else "{ _defaultPrefix } + "
+      if (route.path.parts.isEmpty)
+        ""
+      else
+        "{ _defaultPrefix } + "
     } + "\"\"\"\"" + route.path.parts.map {
       case StaticPart(part) => " + \"" + part + "\""
       case DynamicPart(name, _, encode) => {

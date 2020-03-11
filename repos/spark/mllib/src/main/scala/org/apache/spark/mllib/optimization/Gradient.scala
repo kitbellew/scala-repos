@@ -219,7 +219,8 @@ class LogisticGradient(numClasses: Int) extends Gradient {
             if (value != 0.0)
               margin += value * weightsArray((i * dataSize) + index)
           }
-          if (i == label.toInt - 1) marginY = margin
+          if (i == label.toInt - 1)
+            marginY = margin
           if (margin > maxMargin) {
             maxMargin = margin
             maxMarginIndex = i
@@ -254,7 +255,10 @@ class LogisticGradient(numClasses: Int) extends Gradient {
 
         for (i <- 0 until numClasses - 1) {
           val multiplier = math.exp(margins(i)) / (sum + 1.0) - {
-            if (label != 0.0 && label == i + 1) 1.0 else 0.0
+            if (label != 0.0 && label == i + 1)
+              1.0
+            else
+              0.0
           }
           data.foreachActive { (index, value) =>
             if (value != 0.0)
@@ -263,7 +267,10 @@ class LogisticGradient(numClasses: Int) extends Gradient {
         }
 
         val loss =
-          if (label > 0.0) math.log1p(sum) - marginY else math.log1p(sum)
+          if (label > 0.0)
+            math.log1p(sum) - marginY
+          else
+            math.log1p(sum)
 
         if (maxMargin > 0) {
           loss + maxMargin

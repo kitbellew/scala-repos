@@ -62,7 +62,8 @@ class ScalaScriptConfugurationProducer extends {
         val module = ModuleUtilCore.findModuleForFile(
           scalaFile.getVirtualFile,
           scalaFile.getProject)
-        if (module == null || !module.hasScala) return null
+        if (module == null || !module.hasScala)
+          return null
         conf.setModule(module)
         conf.setScriptPath(scalaFile.getVirtualFile.getPath)
         settings
@@ -77,7 +78,8 @@ class ScalaScriptConfugurationProducer extends {
     configuration match {
       case conf: ScalaScriptRunConfiguration => {
         val file: PsiFile = location.getPsiElement.getContainingFile
-        if (file == null || !file.isInstanceOf[ScalaFile]) return false
+        if (file == null || !file.isInstanceOf[ScalaFile])
+          return false
         conf.getScriptPath.trim == file.getVirtualFile.getPath.trim
       }
       case _ => false

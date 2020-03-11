@@ -54,8 +54,10 @@ class ScriptRunner extends HasCompileSocket {
 
   /** Choose a jar filename to hold the compiled version of a script. */
   private def jarFileFor(scriptFile: String) = File(
-    if (scriptFile endsWith ".jar") scriptFile
-    else scriptFile.stripSuffix(".scala") + ".jar"
+    if (scriptFile endsWith ".jar")
+      scriptFile
+    else
+      scriptFile.stripSuffix(".scala") + ".jar"
   )
 
   /** Compile a script using the fsc compilation daemon.
@@ -111,9 +113,14 @@ class ScriptRunner extends HasCompileSocket {
         val compiler = newGlobal(settings, reporter)
 
         new compiler.Run compile List(scriptFile)
-        if (reporter.hasErrors) None else Some(compiledPath)
-      } else if (compileWithDaemon(settings, scriptFile)) Some(compiledPath)
-      else None
+        if (reporter.hasErrors)
+          None
+        else
+          Some(compiledPath)
+      } else if (compileWithDaemon(settings, scriptFile))
+        Some(compiledPath)
+      else
+        None
     }
 
     def hasClassToRun(d: Directory): Boolean = {
@@ -153,7 +160,8 @@ class ScriptRunner extends HasCompileSocket {
                   handler(jarFile.toAbsolute.path)
                 }
                 // jar failed; run directly from the class files
-                else handler(compiledPath.path)
+                else
+                  handler(compiledPath.path)
               }
             case _ => false
           }
@@ -161,10 +169,12 @@ class ScriptRunner extends HasCompileSocket {
 
         if (jarOK)
           handler(jarFile.toAbsolute.path) // pre-compiled jar is current
-        else recompile() // jar old - recompile the script.
+        else
+          recompile() // jar old - recompile the script.
       }
       // don't use a cache jar at all--just use the class files, if they exist
-      else compile exists (cp => !hasClassToRun(cp) || handler(cp.path))
+      else
+        compile exists (cp => !hasClassToRun(cp) || handler(cp.path))
     }
   }
 

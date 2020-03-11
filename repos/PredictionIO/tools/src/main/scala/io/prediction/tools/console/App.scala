@@ -104,7 +104,10 @@ object App extends Logging {
       val keys = accessKeys.getByAppid(app.id)
       keys foreach { k =>
         val events =
-          if (k.events.size > 0) k.events.sorted.mkString(",") else "(all)"
+          if (k.events.size > 0)
+            k.events.sorted.mkString(",")
+          else
+            "(all)"
         info(f"${app.name}%20s | ${app.id}%4d | ${k.key}%64s | $events%s")
       }
     }
@@ -125,7 +128,10 @@ object App extends Logging {
       var firstKey = true
       keys foreach { k =>
         val events =
-          if (k.events.size > 0) k.events.sorted.mkString(",") else "(all)"
+          if (k.events.size > 0)
+            k.events.sorted.mkString(",")
+          else
+            "(all)"
         if (firstKey) {
           info(f"  Access Key: ${k.key}%s | ${events}%s")
           firstKey = false
@@ -176,7 +182,10 @@ object App extends Logging {
       }
 
       val choice =
-        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+        if (ca.app.force)
+          "YES"
+        else
+          readLine("Enter 'YES' to proceed: ")
       choice match {
         case "YES" => {
           // delete channels
@@ -287,7 +296,10 @@ object App extends Logging {
       }
 
       val choice =
-        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+        if (ca.app.force)
+          "YES"
+        else
+          readLine("Enter 'YES' to proceed: ")
 
       choice match {
         case "YES" => {
@@ -368,7 +380,10 @@ object App extends Logging {
       }
 
       val choice =
-        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+        if (ca.app.force)
+          "YES"
+        else
+          readLine("Enter 'YES' to proceed: ")
       choice match {
         case "YES" => {
           // delete channels
@@ -413,7 +428,8 @@ object App extends Logging {
             }
             info("Done.")
             r1 + r2
-          } else 1
+          } else
+            1
         }
         case _ =>
           info("Aborted.")
@@ -517,7 +533,10 @@ object App extends Logging {
         info(s"        App Name: ${app.name}")
         info(s"          App ID: ${app.id}")
         val choice =
-          if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+          if (ca.app.force)
+            "YES"
+          else
+            readLine("Enter 'YES' to proceed: ")
         choice match {
           case "YES" => {
             // NOTE: remove storage first before remove meta data (in case remove storage failed)

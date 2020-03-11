@@ -119,7 +119,10 @@ final case class VectorClock(
       that: VectorClock,
       order: Ordering): Ordering = {
     def nextOrElse[T](iter: Iterator[T], default: T): T =
-      if (iter.hasNext) iter.next() else default
+      if (iter.hasNext)
+        iter.next()
+      else
+        default
 
     def compare(
         i1: Iterator[(Node, Long)],
@@ -132,14 +135,21 @@ final case class VectorClock(
           currentOrder: Ordering): Ordering =
         if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (currentOrder ne requestedOrder))
           currentOrder
-        else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker)) currentOrder
+        else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker))
+          currentOrder
         // i1 is empty but i2 is not, so i1 can only be Before
         else if (nt1 eq cmpEndMarker) {
-          if (currentOrder eq After) Concurrent else Before
+          if (currentOrder eq After)
+            Concurrent
+          else
+            Before
         }
         // i2 is empty but i1 is not, so i1 can only be After
         else if (nt2 eq cmpEndMarker) {
-          if (currentOrder eq Before) Concurrent else After
+          if (currentOrder eq Before)
+            Concurrent
+          else
+            After
         } else {
           // compare the nodes
           val nc = nt1._1 compareTo nt2._1
@@ -153,7 +163,8 @@ final case class VectorClock(
                 currentOrder)
             else if (nt1._2 < nt2._2) {
               // t1 is less than t2, so i1 can only be Before
-              if (currentOrder eq After) Concurrent
+              if (currentOrder eq After)
+                Concurrent
               else
                 compareNext(
                   nextOrElse(i1, cmpEndMarker),
@@ -161,7 +172,8 @@ final case class VectorClock(
                   Before)
             } else {
               // t2 is less than t1, so i1 can only be After
-              if (currentOrder eq Before) Concurrent
+              if (currentOrder eq Before)
+                Concurrent
               else
                 compareNext(
                   nextOrElse(i1, cmpEndMarker),
@@ -170,12 +182,16 @@ final case class VectorClock(
             }
           } else if (nc < 0) {
             // this node only exists in i1 so i1 can only be After
-            if (currentOrder eq Before) Concurrent
-            else compareNext(nextOrElse(i1, cmpEndMarker), nt2, After)
+            if (currentOrder eq Before)
+              Concurrent
+            else
+              compareNext(nextOrElse(i1, cmpEndMarker), nt2, After)
           } else {
             // this node only exists in i2 so i1 can only be Before
-            if (currentOrder eq After) Concurrent
-            else compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
+            if (currentOrder eq After)
+              Concurrent
+            else
+              compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
           }
         }
 
@@ -185,12 +201,16 @@ final case class VectorClock(
         Same)
     }
 
-    if ((this eq that) || (this.versions eq that.versions)) Same
+    if ((this eq that) || (this.versions eq that.versions))
+      Same
     else
       compare(
         this.versions.iterator,
         that.versions.iterator,
-        if (order eq Concurrent) FullOrder else order)
+        if (order eq Concurrent)
+          FullOrder
+        else
+          order)
   }
 
   /**

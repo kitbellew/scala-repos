@@ -32,7 +32,8 @@ object Test {
           node.label.toLowerCase,
           node.label.toLowerCase,
           attributes(node.attributes))
-        for (m <- node.child) serialize(m, serializer)
+        for (m <- node.child)
+          serialize(m, serializer)
         serializer.endElement(
           "",
           node.label.toLowerCase,

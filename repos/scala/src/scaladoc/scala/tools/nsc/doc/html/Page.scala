@@ -51,7 +51,11 @@ abstract class Page {
 
   def kindToString(mbr: MemberEntity) =
     mbr match {
-      case c: Class                => if (c.isCaseClass) "case class" else "class"
+      case c: Class =>
+        if (c.isCaseClass)
+          "case class"
+        else
+          "class"
       case _: Trait                => "trait"
       case _: Package              => "package"
       case _: Object               => "object"
@@ -69,11 +73,18 @@ abstract class Page {
 
   def templateToPath(tpl: TemplateEntity): List[String] = {
     def doName(tpl: TemplateEntity): String =
-      (if (tpl.inPackageObject) "package$$" else "") + NameTransformer.encode(
-        tpl.name) + (if (tpl.isObject) "$" else "")
+      (if (tpl.inPackageObject)
+         "package$$"
+       else
+         "") + NameTransformer.encode(tpl.name) + (if (tpl.isObject)
+                                                     "$"
+                                                   else
+                                                     "")
     def downPacks(pack: Package): List[String] =
-      if (pack.isRootPackage) Nil
-      else (doName(pack) :: downPacks(pack.inTemplate))
+      if (pack.isRootPackage)
+        Nil
+      else
+        (doName(pack) :: downPacks(pack.inTemplate))
     def downInner(nme: String, tpl: TemplateEntity): (String, Package) = {
       tpl.inTemplate match {
         case inPkg: Package => (nme + ".html", inPkg)

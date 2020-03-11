@@ -27,9 +27,18 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
        * jsRegExp and create a new one from there.
        */
       val jsFlags = {
-        (if (jsRegExp.global) "g" else "") +
-          (if (jsRegExp.ignoreCase) "i" else "") +
-          (if (jsRegExp.multiline) "m" else "")
+        (if (jsRegExp.global)
+           "g"
+         else
+           "") +
+          (if (jsRegExp.ignoreCase)
+             "i"
+           else
+             "") +
+          (if (jsRegExp.multiline)
+             "m"
+           else
+             "")
       }
       new js.RegExp(jsRegExp.source, jsFlags)
     }
@@ -42,7 +51,11 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
     split(input, 0)
 
   def split(input: CharSequence, limit: Int): Array[String] = {
-    val lim = if (limit > 0) limit else Int.MaxValue
+    val lim =
+      if (limit > 0)
+        limit
+      else
+        Int.MaxValue
 
     val result = js.Array[String]()
     val inputStr = input.toString
@@ -98,8 +111,14 @@ object Pattern {
 
     val jsFlags = {
       "g" +
-        (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
-        (if ((flags1 & MULTILINE) != 0) "m" else "")
+        (if ((flags1 & CASE_INSENSITIVE) != 0)
+           "i"
+         else
+           "") +
+        (if ((flags1 & MULTILINE) != 0)
+           "m"
+         else
+           "")
     }
 
     val jsRegExp = new js.RegExp(jsPattern, jsFlags)

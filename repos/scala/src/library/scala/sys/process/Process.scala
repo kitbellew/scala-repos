@@ -150,7 +150,12 @@ trait ProcessCreation {
     * to force an exit value.
     */
   def apply(value: Boolean): ProcessBuilder =
-    apply(value.toString, if (value) 0 else 1)
+    apply(
+      value.toString,
+      if (value)
+        0
+      else
+        1)
 
   /** Creates a [[scala.sys.process.ProcessBuilder]] from a `String` name and a
     * `Boolean`. This can be used to force an exit value, with the name being

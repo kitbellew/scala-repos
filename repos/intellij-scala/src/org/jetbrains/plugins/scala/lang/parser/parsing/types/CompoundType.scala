@@ -44,7 +44,8 @@ object CompoundType {
           val hasRefinement = Refinement parse builder
           if (isCompound || hasRefinement) {
             compoundMarker.done(ScalaElementTypes.COMPOUND_TYPE)
-          } else compoundMarker.drop()
+          } else
+            compoundMarker.drop()
           true
         }
     }

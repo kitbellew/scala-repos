@@ -11,8 +11,10 @@ object Test extends App {
   object Twice {
     def apply(x: Int) = x * 2
     def unapply(x: Int): Option[Tuple1[Int]] =
-      if (x % 2 == 0) Some(Tuple1(x / 2))
-      else None
+      if (x % 2 == 0)
+        Some(Tuple1(x / 2))
+      else
+        None
   }
 
   def test(x: Int) = x match {

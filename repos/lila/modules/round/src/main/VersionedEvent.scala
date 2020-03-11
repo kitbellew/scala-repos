@@ -22,15 +22,22 @@ case class VersionedEvent(
 
   def jsFor(m: Member): JsObject =
     if (visibleBy(m)) {
-      if (decoded == JsNull) Json.obj("v" -> version, "t" -> typ)
-      else Json.obj("v" -> version, "t" -> typ, "d" -> decoded)
-    } else Json.obj("v" -> version)
+      if (decoded == JsNull)
+        Json.obj("v" -> version, "t" -> typ)
+      else
+        Json.obj("v" -> version, "t" -> typ, "d" -> decoded)
+    } else
+      Json.obj("v" -> version)
 
   private def visibleBy(m: Member): Boolean =
-    if (watcher && m.owner) false
-    else if (owner && m.watcher) false
-    else if (troll && !m.troll) false
-    else only.fold(true)(_ == m.color)
+    if (watcher && m.owner)
+      false
+    else if (owner && m.watcher)
+      false
+    else if (troll && !m.troll)
+      false
+    else
+      only.fold(true)(_ == m.color)
 
   override def toString = s"Event $version $typ"
 }

@@ -103,7 +103,8 @@ class ChannelTransport[In, Out](ch: Channel)
     val writeFuture = new DefaultChannelFuture(ch, false /* cancellable */ )
     writeFuture.addListener(new ChannelFutureListener {
       def operationComplete(f: ChannelFuture): Unit = {
-        if (f.isSuccess) p.setDone()
+        if (f.isSuccess)
+          p.setDone()
         else {
           // since we can't cancel, `f` must be an exception.
           p.setException(ChannelException(f.getCause, ch.getRemoteAddress))
@@ -147,8 +148,10 @@ class ChannelTransport[In, Out](ch: Channel)
   }
 
   def status: Status =
-    if (failed.get || !ch.isOpen) Status.Closed
-    else Status.Open
+    if (failed.get || !ch.isOpen)
+      Status.Closed
+    else
+      Status.Open
 
   def close(deadline: Time): Future[Unit] = {
     if (ch.isOpen)

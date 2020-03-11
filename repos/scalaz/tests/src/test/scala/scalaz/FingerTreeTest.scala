@@ -114,7 +114,10 @@ object FingerTreeTest extends SpecLite {
     "traverseTree through the option effect yielding none" in {
       val tree =
         streamToTree(intStream.take(20)).traverseTree[Option, Int, Int](i =>
-          if (i < 10) Some(i * 2) else None)
+          if (i < 10)
+            Some(i * 2)
+          else
+            None)
       tree must_=== (None)
     }
 

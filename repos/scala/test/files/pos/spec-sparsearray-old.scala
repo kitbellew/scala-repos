@@ -5,7 +5,10 @@ class SparseArray[@specialized(Int) T: ClassManifest]
     with collection.mutable.MapLike[Int, T, SparseArray[T]] {
   override def get(x: Int) = {
     val ind = findOffset(x)
-    if (ind < 0) None else Some(sys.error("ignore"))
+    if (ind < 0)
+      None
+    else
+      Some(sys.error("ignore"))
   }
 
   /**

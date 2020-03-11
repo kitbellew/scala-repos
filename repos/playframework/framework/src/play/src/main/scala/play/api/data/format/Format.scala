@@ -102,8 +102,10 @@ object Formats {
       convert: String => T,
       real: Boolean = false): Formatter[T] = {
     val (formatString, errorString) =
-      if (real) ("format.real", "error.real")
-      else ("format.numeric", "error.number")
+      if (real)
+        ("format.real", "error.real")
+      else
+        ("format.numeric", "error.number")
     new Formatter[T] {
       override val format = Some(formatString -> Nil)
       def bind(key: String, data: Map[String, String]) =

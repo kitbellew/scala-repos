@@ -42,6 +42,8 @@ private class SoftReferenceWithWrapper[T <: AnyRef](
     val wrapper: SoftReference[T])
     extends java.lang.ref.SoftReference[T](
       value,
-      if (queue == null) null
-      else queue.underlying.asInstanceOf[java.lang.ref.ReferenceQueue[T]])
+      if (queue == null)
+        null
+      else
+        queue.underlying.asInstanceOf[java.lang.ref.ReferenceQueue[T]])
     with ReferenceWithWrapper[T]

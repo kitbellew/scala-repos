@@ -41,7 +41,8 @@ private[akka] abstract class SinkModule[-In, Mat](val shape: SinkShape[In])
     if (s != shape)
       throw new UnsupportedOperationException(
         "cannot replace the shape of a Sink, you need to wrap it in a Graph for that")
-    else this
+    else
+      this
 
   // This is okay since we the only caller of this method is right below.
   protected def newInstance(
@@ -54,8 +55,10 @@ private[akka] abstract class SinkModule[-In, Mat](val shape: SinkShape[In])
     val thisN = attributes.nameOrDefault(null)
     val thatN = attr.nameOrDefault(null)
 
-    if ((thatN eq null) || thisN == thatN) shape
-    else shape.copy(in = Inlet(thatN + ".in"))
+    if ((thatN eq null) || thisN == thatN)
+      shape
+    else
+      shape.copy(in = Inlet(thatN + ".in"))
   }
 
   protected def label: String = Logging.simpleName(this)
@@ -415,9 +418,11 @@ final private[stream] class QueueSink[T]()
               promise.failure(new IllegalStateException(
                 "You have to wait for previous future to be resolved to send another request"))
             case None ⇒
-              if (buffer.isEmpty) currentRequest = Some(promise)
+              if (buffer.isEmpty)
+                currentRequest = Some(promise)
               else {
-                if (buffer.used == maxBuffer) tryPull(in)
+                if (buffer.used == maxBuffer)
+                  tryPull(in)
                 sendDownstream(promise)
               }
           })
@@ -447,7 +452,8 @@ final private[stream] class QueueSink[T]()
         new InHandler {
           override def onPush(): Unit = {
             enqueueAndNotify(Success(Some(grab(in))))
-            if (buffer.used < maxBuffer) pull(in)
+            if (buffer.used < maxBuffer)
+              pull(in)
           }
           override def onUpstreamFinish(): Unit =
             enqueueAndNotify(Success(None))

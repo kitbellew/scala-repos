@@ -67,7 +67,8 @@ abstract class Plugin {
 
   @deprecated("use Plugin#init instead", since = "2.11")
   def processOptions(options: List[String], error: String => Unit): Unit = {
-    if (!options.isEmpty) error(s"Error: $name takes no options")
+    if (!options.isEmpty)
+      error(s"Error: $name takes no options")
   }
 
   /** A description of this plugin's options, suitable as a response
@@ -166,8 +167,10 @@ object Plugin {
         case p :: rest =>
           if (p.isDirectory)
             loadDescriptionFromFile(p.toDirectory / PluginXML) orElse loop(rest)
-          else if (p.isFile) loadDescriptionFromJar(p.toFile) orElse loop(rest)
-          else loop(rest)
+          else if (p.isFile)
+            loadDescriptionFromJar(p.toFile) orElse loop(rest)
+          else
+            loop(rest)
       }
       loop(ps)
     }

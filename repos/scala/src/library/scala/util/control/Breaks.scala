@@ -38,7 +38,8 @@ class Breaks {
       op
     } catch {
       case ex: BreakControl =>
-        if (ex ne breakException) throw ex
+        if (ex ne breakException)
+          throw ex
     }
   }
 
@@ -64,7 +65,8 @@ class Breaks {
         op
       } catch {
         case ex: BreakControl =>
-          if (ex ne breakException) throw ex
+          if (ex ne breakException)
+            throw ex
           onBreak
       }
   }

@@ -293,7 +293,8 @@ object ClusterEvent {
       oldGossip: Gossip,
       newGossip: Gossip,
       selfUniqueAddress: UniqueAddress): immutable.Seq[UnreachableMember] =
-    if (newGossip eq oldGossip) Nil
+    if (newGossip eq oldGossip)
+      Nil
     else {
       val oldUnreachableNodes =
         oldGossip.overview.reachability.allUnreachableOrTerminated
@@ -312,7 +313,8 @@ object ClusterEvent {
       oldGossip: Gossip,
       newGossip: Gossip,
       selfUniqueAddress: UniqueAddress): immutable.Seq[ReachableMember] =
-    if (newGossip eq oldGossip) Nil
+    if (newGossip eq oldGossip)
+      Nil
     else {
       (oldGossip.overview.reachability.allUnreachable.collect {
         case node
@@ -329,7 +331,8 @@ object ClusterEvent {
   private[cluster] def diffMemberEvents(
       oldGossip: Gossip,
       newGossip: Gossip): immutable.Seq[MemberEvent] =
-    if (newGossip eq oldGossip) Nil
+    if (newGossip eq oldGossip)
+      Nil
     else {
       val newMembers = newGossip.members diff oldGossip.members
       val membersGroupedByAddress =
@@ -367,7 +370,8 @@ object ClusterEvent {
     val newLeader = newGossip.leader(selfUniqueAddress)
     if (newLeader != oldGossip.leader(selfUniqueAddress))
       List(LeaderChanged(newLeader.map(_.address)))
-    else Nil
+    else
+      Nil
   }
 
   /**
@@ -391,14 +395,16 @@ object ClusterEvent {
       oldGossip: Gossip,
       newGossip: Gossip,
       selfUniqueAddress: UniqueAddress): immutable.Seq[SeenChanged] =
-    if (newGossip eq oldGossip) Nil
+    if (newGossip eq oldGossip)
+      Nil
     else {
       val newConvergence = newGossip.convergence(selfUniqueAddress)
       val newSeenBy = newGossip.seenBy
       if (newConvergence != oldGossip.convergence(
             selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
         List(SeenChanged(newConvergence, newSeenBy.map(_.address)))
-      else Nil
+      else
+        Nil
     }
 
   /**
@@ -407,8 +413,10 @@ object ClusterEvent {
   private[cluster] def diffReachability(
       oldGossip: Gossip,
       newGossip: Gossip): immutable.Seq[ReachabilityChanged] =
-    if (newGossip.overview.reachability eq oldGossip.overview.reachability) Nil
-    else List(ReachabilityChanged(newGossip.overview.reachability))
+    if (newGossip.overview.reachability eq oldGossip.overview.reachability)
+      Nil
+    else
+      List(ReachabilityChanged(newGossip.overview.reachability))
 
 }
 

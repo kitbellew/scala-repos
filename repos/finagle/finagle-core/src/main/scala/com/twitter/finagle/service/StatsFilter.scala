@@ -202,8 +202,10 @@ private[finagle] object StatsServiceFactory {
           _stats: param.Stats,
           next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
         val param.Stats(statsReceiver) = _stats
-        if (statsReceiver.isNull) next
-        else new StatsServiceFactory(next, statsReceiver)
+        if (statsReceiver.isNull)
+          next
+        else
+          new StatsServiceFactory(next, statsReceiver)
       }
     }
 }
@@ -213,6 +215,9 @@ class StatsServiceFactory[Req, Rep](
     statsReceiver: StatsReceiver)
     extends ServiceFactoryProxy[Req, Rep](factory) {
   private[this] val availableGauge = statsReceiver.addGauge("available") {
-    if (isAvailable) 1f else 0f
+    if (isAvailable)
+      1f
+    else
+      0f
   }
 }

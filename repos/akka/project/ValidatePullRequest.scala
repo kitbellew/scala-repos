@@ -194,7 +194,8 @@ object ValidatePullRequest extends AutoPlugin {
           .toSet
 
       val dirtyModuleNames: Set[String] =
-        if (runningOnJenkins) Set.empty
+        if (runningOnJenkins)
+          Set.empty
         else {
           val statusOutput = s"git status --short".!!.split("\n")
           val dirtyDirectories = statusOutput

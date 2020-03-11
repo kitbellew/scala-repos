@@ -22,8 +22,10 @@ class ScalaMethodDescriptor(val fun: ScMethodLike)
     extends MethodDescriptor[ScalaParameterInfo, String] {
   override def getName: String = fun match {
     case fun: ScFunction =>
-      if (fun.isConstructor) fun.containingClass.name
-      else fun.name
+      if (fun.isConstructor)
+        fun.containingClass.name
+      else
+        fun.name
     case pc: ScPrimaryConstructor => pc.containingClass.name
     case _                        => ""
   }
@@ -39,7 +41,10 @@ class ScalaMethodDescriptor(val fun: ScMethodLike)
   override def getParametersCount: Int = parameters.flatten.size
 
   override def canChangeReturnType: ReadWriteOption =
-    if (fun.isConstructor) ReadWriteOption.None else ReadWriteOption.ReadWrite
+    if (fun.isConstructor)
+      ReadWriteOption.None
+    else
+      ReadWriteOption.ReadWrite
 
   override def canChangeParameters: Boolean = true
 

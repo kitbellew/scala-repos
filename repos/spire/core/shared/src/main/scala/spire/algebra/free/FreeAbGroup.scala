@@ -31,9 +31,12 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     @tailrec def loop(total: B): Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
-        if (n < 0) None
-        else loop(B.op(total, B.combinen(f(a), n)))
-      } else Some(total)
+        if (n < 0)
+          None
+        else
+          loop(B.op(total, B.combinen(f(a), n)))
+      } else
+        Some(total)
 
     loop(B.id)
   }
@@ -50,18 +53,26 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     @tailrec def loop1(total: B): Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
-        if (n == 0) loop1(total)
-        else if (n < 0) None
-        else loop1(B.op(total, B.combinen(f(a), n)))
-      } else Some(total)
+        if (n == 0)
+          loop1(total)
+        else if (n < 0)
+          None
+        else
+          loop1(B.op(total, B.combinen(f(a), n)))
+      } else
+        Some(total)
 
     @tailrec def loop0: Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
-        if (n == 0) loop0
-        else if (n < 0) None
-        else loop1(B.combinen(f(a), n))
-      } else None
+        if (n == 0)
+          loop0
+        else if (n < 0)
+          None
+        else
+          loop1(B.combinen(f(a), n))
+      } else
+        None
 
     loop0
   }
@@ -75,9 +86,12 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
   def split[B](f: A => B)(implicit B: CMonoid[B]): (B, B) =
     terms.foldLeft((B.id, B.id)) {
       case ((ltotal, rtotal), (a, n)) =>
-        if (n < 0) (B.op(ltotal, B.combinen(f(a), -n)), rtotal)
-        else if (n > 0) (ltotal, B.op(rtotal, B.combinen(f(a), n)))
-        else (ltotal, rtotal)
+        if (n < 0)
+          (B.op(ltotal, B.combinen(f(a), -n)), rtotal)
+        else if (n > 0)
+          (ltotal, B.op(rtotal, B.combinen(f(a), n)))
+        else
+          (ltotal, rtotal)
     }
 
   /**
@@ -103,7 +117,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     new FreeAbGroup(-terms)
 
   override def toString: String =
-    if (terms.isEmpty) "e"
+    if (terms.isEmpty)
+      "e"
     else
       terms
         .filter(_._2 != 0)

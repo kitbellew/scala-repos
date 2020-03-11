@@ -161,7 +161,8 @@ object AbcdStringGen {
 
   def pickN(n: Int, elems: List[String]) =
     Arbitrary {
-      for (string <- pick(n, elems)) yield string.mkString("")
+      for (string <- pick(n, elems))
+        yield string.mkString("")
     }
 }
 
@@ -174,7 +175,8 @@ object WhiteStringGen {
              (1, Gen.const(" ")),
              (1, Gen.const("\t")),
              (1, Gen.const("\r")),
-             (1, Gen.const("\n"))))) yield string.mkString("")
+             (1, Gen.const("\n")))))
+      yield string.mkString("")
 
   implicit def genWhiteString: Arbitrary[String] =
     Arbitrary {

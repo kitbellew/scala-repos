@@ -65,12 +65,17 @@ class GcdBenchmarks extends MyBenchmark {
 
   @tailrec
   final def euclidGcdLong(x: Long, y: Long): Long = {
-    if (y == 0L) Math.abs(x) else euclidGcdLong(y, x % y)
+    if (y == 0L)
+      Math.abs(x)
+    else
+      euclidGcdLong(y, x % y)
   }
 
   def binaryGcdLong(_x: Long, _y: Long): Long = {
-    if (_x == 0L) return _y
-    if (_y == 0L) return _x
+    if (_x == 0L)
+      return _y
+    if (_y == 0L)
+      return _x
 
     var x = Math.abs(_x)
     var xz = numberOfTrailingZeros(x)
@@ -90,6 +95,9 @@ class GcdBenchmarks extends MyBenchmark {
       }
     }
 
-    if (xz < yz) x << xz else x << yz
+    if (xz < yz)
+      x << xz
+    else
+      x << yz
   }
 }

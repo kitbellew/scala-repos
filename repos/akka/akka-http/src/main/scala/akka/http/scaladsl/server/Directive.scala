@@ -93,8 +93,10 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
   def tfilter(predicate: L ⇒ Boolean, rejections: Rejection*): Directive[L] =
     Directive[L] { inner ⇒
       tapply { values ⇒ ctx ⇒
-        if (predicate(values)) inner(values)(ctx)
-        else ctx.reject(rejections: _*)
+        if (predicate(values))
+          inner(values)(ctx)
+        else
+          ctx.reject(rejections: _*)
       }
     }
 

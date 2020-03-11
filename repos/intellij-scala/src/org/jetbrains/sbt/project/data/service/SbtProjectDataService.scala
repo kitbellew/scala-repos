@@ -157,7 +157,8 @@ object SbtProjectDataService {
       def removePair(name: String, options: Seq[String]): Seq[String] = {
         val index = options.indexOf(name)
 
-        if (index == -1) options
+        if (index == -1)
+          options
         else {
           val (prefix, suffix) = options.splitAt(index)
           prefix ++ suffix.drop(2)

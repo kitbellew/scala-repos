@@ -102,8 +102,10 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
     // Update the idle timeout if given
     if (!newSettings.idleMins.isDefault) {
       val mins = newSettings.idleMins.value
-      if (mins == 0) echo("Disabling idle timeout on compile server.")
-      else echo("Setting idle timeout to " + mins + " minutes.")
+      if (mins == 0)
+        echo("Disabling idle timeout on compile server.")
+      else
+        echo("Setting idle timeout to " + mins + " minutes.")
 
       this.idleMinutes = mins
     }

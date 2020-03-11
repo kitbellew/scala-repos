@@ -10,7 +10,8 @@ class Input {
       print(x)
     }
     /*end*/
-    if (x == 1) return
+    if (x == 1)
+      return
   }
 }
 /*

@@ -84,10 +84,14 @@ case class Assessible(analysed: Analysed) {
       case _ => NotCheating
     }
 
-    if (flags.suspiciousHoldAlert) assessment
-    else if (~game.wonBy(color)) assessment
-    else if (assessment == Cheating || assessment == LikelyCheating) Unclear
-    else assessment
+    if (flags.suspiciousHoldAlert)
+      assessment
+    else if (~game.wonBy(color))
+      assessment
+    else if (assessment == Cheating || assessment == LikelyCheating)
+      Unclear
+    else
+      assessment
   }
 
   def sfAvg(color: Color): Int =

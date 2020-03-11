@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object Hyperlink {
   implicit def sfxHyperlink2jfx(h: Hyperlink): jfxsc.Hyperlink =
-    if (h != null) h.delegate else null
+    if (h != null)
+      h.delegate
+    else
+      null
 }
 
 class Hyperlink(override val delegate: jfxsc.Hyperlink = new jfxsc.Hyperlink)

@@ -93,7 +93,8 @@ class LBFGSB(
     val (cauchyPoint, c) = getGeneralizedCauchyPoint(state.history, x, g)
 
     val dirk =
-      if (0 == state.iter) cauchyPoint - x
+      if (0 == state.iter)
+        cauchyPoint - x
       else {
         //step3:compute a search direction d_k by the primal method
         val subspaceMin =
@@ -164,7 +165,11 @@ class LBFGSB(
         } else {
           (x(i) - lowerBounds(i)) / gi
         }
-        d(i) = if (0 == ti) 0 else -gi
+        d(i) =
+          if (0 == ti)
+            0
+          else
+            -gi
         (i, ti)
       }
     }
@@ -187,7 +192,11 @@ class LBFGSB(
 
     //examination of subsequent  segments
     while (deltaT <= dtMin && (i < n)) {
-      xCauchy(b) = if (0 < d(b)) upperBounds(b) else lowerBounds(b)
+      xCauchy(b) =
+        if (0 < d(b))
+          upperBounds(b)
+        else
+          lowerBounds(b)
 
       val zb = xCauchy(b) - x(b)
       c = c + p :* deltaT

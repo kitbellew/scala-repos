@@ -225,7 +225,10 @@ final class Decimal extends Ordered[Decimal] with Serializable {
         val droppedDigits = longVal % POW_10(diff)
         longVal /= POW_10(diff)
         if (math.abs(droppedDigits) * 2 >= POW_10(diff)) {
-          longVal += (if (longVal < 0) -1L else 1L)
+          longVal += (if (longVal < 0)
+                        -1L
+                      else
+                        1L)
         }
       } else if (scale > _scale) {
         // We might be able to multiply longVal by a power of 10 and not overflow, but if not,
@@ -270,9 +273,12 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   override def compare(other: Decimal): Int = {
     if (decimalVal.eq(null) && other.decimalVal.eq(
           null) && _scale == other._scale) {
-      if (longVal < other.longVal) -1
-      else if (longVal == other.longVal) 0
-      else 1
+      if (longVal < other.longVal)
+        -1
+      else if (longVal == other.longVal)
+        0
+      else
+        1
     } else {
       toBigDecimal.compare(other.toBigDecimal)
     }
@@ -288,7 +294,10 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   override def hashCode(): Int = toBigDecimal.hashCode()
 
   def isZero: Boolean =
-    if (decimalVal.ne(null)) decimalVal == BIG_DEC_ZERO else longVal == 0
+    if (decimalVal.ne(null))
+      decimalVal == BIG_DEC_ZERO
+    else
+      longVal == 0
 
   def +(that: Decimal): Decimal = {
     if (decimalVal.eq(null) && that.decimalVal.eq(
@@ -319,11 +328,14 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     Decimal(toJavaBigDecimal.multiply(that.toJavaBigDecimal, MATH_CONTEXT))
 
   def /(that: Decimal): Decimal =
-    if (that.isZero) null
-    else Decimal(toJavaBigDecimal.divide(that.toJavaBigDecimal, MATH_CONTEXT))
+    if (that.isZero)
+      null
+    else
+      Decimal(toJavaBigDecimal.divide(that.toJavaBigDecimal, MATH_CONTEXT))
 
   def %(that: Decimal): Decimal =
-    if (that.isZero) null
+    if (that.isZero)
+      null
     else
       Decimal(toJavaBigDecimal.remainder(that.toJavaBigDecimal, MATH_CONTEXT))
 
@@ -337,10 +349,15 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     }
   }
 
-  def abs: Decimal = if (this.compare(Decimal.ZERO) < 0) this.unary_- else this
+  def abs: Decimal =
+    if (this.compare(Decimal.ZERO) < 0)
+      this.unary_-
+    else
+      this
 
   def floor: Decimal =
-    if (scale == 0) this
+    if (scale == 0)
+      this
     else {
       val value = this.clone()
       value.changePrecision(
@@ -351,7 +368,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     }
 
   def ceil: Decimal =
-    if (scale == 0) this
+    if (scale == 0)
+      this
     else {
       val value = this.clone()
       value.changePrecision(

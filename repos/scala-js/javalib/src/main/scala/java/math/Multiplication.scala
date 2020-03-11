@@ -86,8 +86,10 @@ private[math] object Multiplication {
       val res: Long = unsignedMultAddAdd(aDigits(0), factor, 0, 0)
       val resLo = res.toInt
       val resHi = (res >>> 32).toInt
-      if (resHi == 0) new BigInteger(resSign, resLo)
-      else new BigInteger(resSign, 2, Array(resLo, resHi))
+      if (resHi == 0)
+        new BigInteger(resSign, resLo)
+      else
+        new BigInteger(resSign, 2, Array(resLo, resHi))
     } else {
       val resLength = aNumberLength + 1
       val resDigits = new Array[Int](resLength)
@@ -108,8 +110,10 @@ private[math] object Multiplication {
     *  @return {@code val * 10<sup>exp</sup>}
     */
   def multiplyByTenPow(bi: BigInteger, exp: Long): BigInteger = {
-    if (exp < TenPows.length) multiplyByPosInt(bi, TenPows(exp.toInt))
-    else bi.multiply(powerOf10(exp))
+    if (exp < TenPows.length)
+      multiplyByPosInt(bi, TenPows(exp.toInt))
+    else
+      bi.multiply(powerOf10(exp))
   }
 
   /** Performs a<sup>2</sup>.
@@ -176,8 +180,10 @@ private[math] object Multiplication {
     */
   def karatsuba(val1: BigInteger, val2: BigInteger): BigInteger = {
     val (op1, op2) =
-      if (val2.numberLength > val1.numberLength) (val2, val1)
-      else (val1, val2)
+      if (val2.numberLength > val1.numberLength)
+        (val2, val1)
+      else
+        (val1, val2)
 
     if (op2.numberLength < whenUseKaratsuba) {
       multiplyPAP(op1, op2)
@@ -314,15 +320,19 @@ private[math] object Multiplication {
     val bLen = b.numberLength
     val resLength = aLen + bLen
     val resSign =
-      if (a.sign != b.sign) -1
-      else 1
+      if (a.sign != b.sign)
+        -1
+      else
+        1
 
     if (resLength == 2) {
       val v = unsignedMultAddAdd(a.digits(0), b.digits(0), 0, 0)
       val valueLo = v.toInt
       val valueHi = (v >>> 32).toInt
-      if (valueHi == 0) new BigInteger(resSign, valueLo)
-      else new BigInteger(resSign, 2, Array(valueLo, valueHi))
+      if (valueHi == 0)
+        new BigInteger(resSign, valueLo)
+      else
+        new BigInteger(resSign, 2, Array(valueLo, valueHi))
     } else {
       val aDigits = a.digits
       val bDigits = b.digits
@@ -340,8 +350,10 @@ private[math] object Multiplication {
     def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger = {
       if (exp > 1) {
         val res2 =
-          if ((exp & 1) != 0) res.multiply(acc)
-          else res
+          if ((exp & 1) != 0)
+            res.multiply(acc)
+          else
+            res
         val acc2 = {
           if (acc.numberLength == 1) {
             acc.multiply(acc)
@@ -403,9 +415,12 @@ private[math] object Multiplication {
     *  @return {@code val * 5<sup>exp</sup>}
     */
   def multiplyByFivePow(bi: BigInteger, exp: Int): BigInteger = {
-    if (exp < FivePows.length) multiplyByPosInt(bi, FivePows(exp))
-    else if (exp < BigFivePows.length) bi.multiply(BigFivePows(exp))
-    else bi.multiply(BigFivePows(1).pow(exp))
+    if (exp < FivePows.length)
+      multiplyByPosInt(bi, FivePows(exp))
+    else if (exp < BigFivePows.length)
+      bi.multiply(BigFivePows(exp))
+    else
+      bi.multiply(BigFivePows(1).pow(exp))
   }
 
   private def initialiseArrays(): Unit = {

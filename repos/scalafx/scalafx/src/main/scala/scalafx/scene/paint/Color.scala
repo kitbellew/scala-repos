@@ -34,7 +34,10 @@ import scalafx.scene.paint.PaintIncludes._
 
 object Color {
   implicit def sfxColor2jfx(c: Color): jfxsp.Color =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 
   def apply(red: Double, green: Double, blue: Double, opacity: Double) =
     new Color(new jfxsp.Color(red, green, blue, opacity))

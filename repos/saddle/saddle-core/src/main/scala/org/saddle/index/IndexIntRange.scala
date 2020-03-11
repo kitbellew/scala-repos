@@ -54,8 +54,16 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
     }
 
     def contains(key: Int) = key >= from && key < from + length
-    def get(key: Int) = if (contains(key)) key - from else -1
-    def count(key: Int) = if (contains(key)) 1 else 0
+    def get(key: Int) =
+      if (contains(key))
+        key - from
+      else
+        -1
+    def count(key: Int) =
+      if (contains(key))
+        1
+      else
+        0
 
     def put(key: Int, value: Int) {
       sys.error("Not supported")
@@ -78,8 +86,12 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
 
   // take values of index at certain locations
   def take(locs: Array[Int]) =
-    Index(new VecInt(locs).map(i =>
-      if (i == -1) IndexImpl.sentinelErr else guardLoc(i) + from))
+    Index(
+      new VecInt(locs).map(i =>
+        if (i == -1)
+          IndexImpl.sentinelErr
+        else
+          guardLoc(i) + from))
 
   def without(locs: Array[Int]): Index[Int] =
     array.remove(asArr, locs)

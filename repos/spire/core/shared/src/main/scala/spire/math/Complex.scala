@@ -54,13 +54,17 @@ object Complex extends ComplexInstances {
   def rootOfUnity[@sp(Float, Double) T](
       n: Int,
       x: Int)(implicit f: Field[T], t: Trig[T], r: IsReal[T]): Complex[T] = {
-    if (x == 0) return one[T]
+    if (x == 0)
+      return one[T]
 
     if (n % 2 == 0) {
-      if (x == n / 2) return -one[T]
+      if (x == n / 2)
+        return -one[T]
       if (n % 4 == 0) {
-        if (x == n / 4) return i[T]
-        if (x == n * 3 / 4) return -i[T]
+        if (x == n / 4)
+          return i[T]
+        if (x == n * 3 / 4)
+          return -i[T]
       }
     }
 
@@ -75,9 +79,21 @@ object Complex extends ComplexInstances {
     var sum = one[T]
     roots(0) = sum
 
-    val west = if (n % 2 == 0) n / 2 else -1
-    val north = if (n % 4 == 0) n / 4 else -1
-    val south = if (n % 4 == 0) 3 * n / 4 else -1
+    val west =
+      if (n % 2 == 0)
+        n / 2
+      else
+        -1
+    val north =
+      if (n % 4 == 0)
+        n / 4
+      else
+        -1
+    val south =
+      if (n % 4 == 0)
+        3 * n / 4
+      else
+        -1
 
     var x = 1
     val last = n - 1
@@ -124,13 +140,19 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       f: Field[T],
       o: IsReal[T],
       n: NRoot[T]): Complex[T] =
-    if (isZero) this else this / abs
+    if (isZero)
+      this
+    else
+      this / abs
 
   def abs(implicit f: Field[T], o: IsReal[T], n: NRoot[T]): T =
     (real * real + imag * imag).sqrt
 
   def arg(implicit f: Field[T], t: Trig[T], o: IsReal[T]): T =
-    if (isZero) f.zero else t.atan2(imag, real)
+    if (isZero)
+      f.zero
+    else
+      t.atan2(imag, real)
 
   def norm(implicit f: Field[T], n: NRoot[T], o: Order[T]): T =
     hypot(real, imag)
@@ -210,13 +232,15 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     val abs_bimag = b.imag.abs
 
     if (abs_breal >= abs_bimag) {
-      if (abs_breal === f.zero) throw new Exception("/ by zero")
+      if (abs_breal === f.zero)
+        throw new Exception("/ by zero")
       val ratio = b.imag / b.real
       val denom = b.real + b.imag * ratio
       new Complex((real + imag * ratio) / denom, (imag - real * ratio) / denom)
 
     } else {
-      if (abs_bimag === f.zero) throw new Exception("/ by zero")
+      if (abs_bimag === f.zero)
+        throw new Exception("/ by zero")
       val ratio = b.real / b.imag
       val denom = b.real * ratio + b.imag
       new Complex((real * ratio + imag) / denom, (imag * ratio - real) / denom)
@@ -249,14 +273,20 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
-    if (isZero) Complex.zero else pow(Complex(f.fromInt(k).reciprocal, f.zero))
+    if (isZero)
+      Complex.zero
+    else
+      pow(Complex(f.fromInt(k).reciprocal, f.zero))
 
   def pow(b: Int)(implicit
       f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
-    if (isZero) Complex.zero else Complex.polar(abs.pow(b), arg * b)
+    if (isZero)
+      Complex.zero
+    else
+      Complex.polar(abs.pow(b), arg * b)
 
   def **(b: Complex[T])(implicit
       f: Field[T],
@@ -289,7 +319,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = {
-    if (isZero) throw new IllegalArgumentException("log(0) undefined")
+    if (isZero)
+      throw new IllegalArgumentException("log(0) undefined")
     new Complex(t.log(abs), arg)
   }
 
@@ -301,10 +332,16 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       val a = ((abs + real.abs) / two).sqrt
       imag.signum match {
         case 0 =>
-          if (real < f.zero) Complex(f.zero, a) else Complex(a, f.zero)
+          if (real < f.zero)
+            Complex(f.zero, a)
+          else
+            Complex(a, f.zero)
         case n =>
           val b = ((abs - real.abs) / two).sqrt
-          if (n < 0) Complex(a, -b) else Complex(a, b)
+          if (n < 0)
+            Complex(a, -b)
+          else
+            Complex(a, b)
       }
     }
   }
@@ -406,8 +443,10 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
 
   // important to keep in sync with Quaternion[_]
   override def hashCode: Int =
-    if (anyIsZero(imag)) real.##
-    else (19 * real.##) + (41 * imag.##) + 97
+    if (anyIsZero(imag))
+      real.##
+    else
+      (19 * real.##) + (41 * imag.##) + 97
 
   // not typesafe, so this is the best we can do :(
   override def equals(that: Any): Boolean = that match {
@@ -587,7 +626,10 @@ object FastComplex {
   // get the complex sign of the complex number
   final def complexSignum(d: Long): Long = {
     val m = abs(d)
-    if (m == 0.0f) zero else divide(d, encode(m, 0.0f))
+    if (m == 0.0f)
+      zero
+    else
+      divide(d, encode(m, 0.0f))
   }
 
   // negation
@@ -621,13 +663,15 @@ object FastComplex {
     val abs_im_b = Math.abs(im_b)
 
     if (abs_re_b >= abs_im_b) {
-      if (abs_re_b == 0.0f) throw new ArithmeticException("/0")
+      if (abs_re_b == 0.0f)
+        throw new ArithmeticException("/0")
       val ratio = im_b / re_b
       val denom = re_b + im_b * ratio
       encode((re_a + im_a * ratio) / denom, (im_a - re_a * ratio) / denom)
 
     } else {
-      if (abs_im_b == 0.0f) throw new ArithmeticException("/0")
+      if (abs_im_b == 0.0f)
+        throw new ArithmeticException("/0")
       val ratio = re_b / im_b
       val denom = re_b * ratio + im_b
       encode((re_a * ratio + im_a) / denom, (im_a * ratio - re_a) / denom)
@@ -716,7 +760,10 @@ private[math] trait ComplexIsField[@sp(Float, Double) A]
     a /% b
   def gcd(a: Complex[A], b: Complex[A]): Complex[A] = {
     @tailrec def _gcd(a: Complex[A], b: Complex[A]): Complex[A] =
-      if (b.isZero) a else _gcd(b, a - (a / b).round * b)
+      if (b.isZero)
+        a
+      else
+        _gcd(b, a - (a / b).round * b)
     _gcd(a, b)
   }
 }

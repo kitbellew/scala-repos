@@ -37,7 +37,10 @@ object AbstractFile {
     * abstract regular file backed by it. Otherwise, returns `null`.
     */
   def getFile(file: File): AbstractFile =
-    if (file.isFile) new PlainFile(file) else null
+    if (file.isFile)
+      new PlainFile(file)
+    else
+      null
 
   /** Returns "getDirectory(new File(path))". */
   def getDirectory(path: Path): AbstractFile = getDirectory(path.toFile)
@@ -48,10 +51,12 @@ object AbstractFile {
     * backed by it. Otherwise, returns `null`.
     */
   def getDirectory(file: File): AbstractFile =
-    if (file.isDirectory) new PlainFile(file)
+    if (file.isDirectory)
+      new PlainFile(file)
     else if (file.isFile && Path.isExtensionJarOrZip(file.jfile))
       ZipArchive fromFile file
-    else null
+    else
+      null
 
   /**
     * If the specified URL exists and is a regular file or a directory, returns an
@@ -61,9 +66,12 @@ object AbstractFile {
   def getURL(url: URL): AbstractFile =
     if (url.getProtocol == "file") {
       val f = new java.io.File(url.getPath)
-      if (f.isDirectory) getDirectory(f)
-      else getFile(f)
-    } else null
+      if (f.isDirectory)
+        getDirectory(f)
+      else
+        getFile(f)
+    } else
+      null
 
   def getResources(url: URL): AbstractFile = ZipArchive fromManifestURL url
 }
@@ -103,7 +111,11 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
   def path: String
 
   /** Returns the path of this abstract file in a canonical form. */
-  def canonicalPath: String = if (file == null) path else file.getCanonicalPath
+  def canonicalPath: String =
+    if (file == null)
+      path
+    else
+      file.getCanonicalPath
 
   /** Checks extension case insensitively. */
   def hasExtension(other: String) = extension == other.toLowerCase
@@ -123,7 +135,8 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
 
   /** Does this abstract file denote an existing file? */
   def exists: Boolean = {
-    if (Statistics.canEnable) Statistics.incCounter(IOStats.fileExistsCount)
+    if (Statistics.canEnable)
+      Statistics.incCounter(IOStats.fileExistsCount)
     (file eq null) || file.exists
   }
 
@@ -158,7 +171,11 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
   /** size of this file if it is a concrete file. */
   def sizeOption: Option[Int] = None
 
-  def toURL: URL = if (file == null) null else file.toURI.toURL
+  def toURL: URL =
+    if (file == null)
+      null
+    else
+      file.toURI.toURL
 
   /** Returns contents of file (if applicable) in a Char array.
     *  warning: use `Global.getSourceFile()` to use the proper
@@ -224,7 +241,11 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
       directory: Boolean): AbstractFile = {
     val separator = java.io.File.separatorChar
     // trim trailing '/'s
-    val path: String = if (path0.last == separator) path0 dropRight 1 else path0
+    val path: String =
+      if (path0.last == separator)
+        path0 dropRight 1
+      else
+        path0
     val length = path.length()
     assert(length > 0 && !(path.last == separator), path)
     var file = this
@@ -232,9 +253,21 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
     while (true) {
       val index = path.indexOf(separator, start)
       assert(index < 0 || start < index, ((path, directory, start, index)))
-      val name = path.substring(start, if (index < 0) length else index)
-      file = getFile(file, name, if (index < 0) directory else true)
-      if ((file eq null) || index < 0) return file
+      val name = path.substring(
+        start,
+        if (index < 0)
+          length
+        else
+          index)
+      file = getFile(
+        file,
+        name,
+        if (index < 0)
+          directory
+        else
+          true)
+      if ((file eq null) || index < 0)
+        return file
       start = index + 1
     }
     file
@@ -244,10 +277,14 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
       name: String,
       isDir: Boolean): AbstractFile = {
     val lookup = lookupName(name, isDir)
-    if (lookup != null) lookup
+    if (lookup != null)
+      lookup
     else {
       val jfile = new JFile(file, name)
-      if (isDir) jfile.mkdirs() else jfile.createNewFile()
+      if (isDir)
+        jfile.mkdirs()
+      else
+        jfile.createNewFile()
       new PlainFile(jfile)
     }
   }

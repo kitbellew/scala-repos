@@ -95,8 +95,10 @@ class ScaldingILoop(in: Option[BufferedReader], out: JPrintWriter)
   override def prompt: String = Console.BLUE + "\nscalding> " + Console.RESET
 
   private[this] def addImports(ids: String*): IR.Result =
-    if (ids.isEmpty) IR.Success
-    else intp.interpret("import " + ids.mkString(", "))
+    if (ids.isEmpty)
+      IR.Success
+    else
+      intp.interpret("import " + ids.mkString(", "))
 
   /**
     * Gets the list of commands that this REPL supports.

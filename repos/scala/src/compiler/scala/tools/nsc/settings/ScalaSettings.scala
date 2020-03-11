@@ -141,7 +141,8 @@ trait ScalaSettings
   val noassertions = BooleanSetting(
     "-Xdisable-assertions",
     "Generate no assertions or assumptions.") andThen (flag =>
-    if (flag) elidebelow.value = elidable.ASSERTION + 1)
+    if (flag)
+      elidebelow.value = elidable.ASSERTION + 1)
   val elidebelow = IntSetting(
     "-Xelide-below",
     "Calls to @elidable methods are omitted if method priority is lower than argument",
@@ -656,7 +657,12 @@ trait ScalaSettings
     "off",
     20,
     Some((10, Int.MaxValue)),
-    str => Some(if (str.equalsIgnoreCase("off")) Int.MaxValue else str.toInt))
+    str =>
+      Some(
+        if (str.equalsIgnoreCase("off"))
+          Int.MaxValue
+        else
+          str.toInt))
   val Yquasiquotedebug =
     BooleanSetting("-Yquasiquote-debug", "Trace quasiquote-related activities.")
 

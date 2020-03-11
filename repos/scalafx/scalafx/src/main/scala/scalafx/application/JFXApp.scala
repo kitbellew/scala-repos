@@ -80,13 +80,19 @@ object JFXApp {
 
   object Parameters {
     implicit def sfxParameters2jfx(p: Parameters): Application.Parameters =
-      if (p != null) p.delegate else null
+      if (p != null)
+        p.delegate
+      else
+        null
 
     /**
       * Creates a new instance of Parameters
       */
     private[application] def apply(arguments: Seq[String]): Parameters =
-      if (arguments.isEmpty) EmptyParameters else new ParametersImpl(arguments)
+      if (arguments.isEmpty)
+        EmptyParameters
+      else
+        new ParametersImpl(arguments)
 
   }
 
@@ -311,7 +317,8 @@ trait JFXApp extends DelayedInit {
     * to delayedInit() by the compiler.
     */
   private[application] final def init(): Unit =
-    for (initCode <- subClassInitCode) initCode()
+    for (initCode <- subClassInitCode)
+      initCode()
 
   def hostServices: HostServices =
     ApplicationIncludes.jfxHostServices2sfx(JFXApp.ActiveJFXApp.getHostServices)

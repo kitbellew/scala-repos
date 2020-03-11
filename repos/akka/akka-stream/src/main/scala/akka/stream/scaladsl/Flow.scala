@@ -65,8 +65,10 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
       val m = flow.module
       val mat =
         if (combine == Keep.left) {
-          if (IgnorableMatValComp(m)) Ignore
-          else Transform(_ => NotUsed, Atomic(m))
+          if (IgnorableMatValComp(m))
+            Ignore
+          else
+            Transform(_ => NotUsed, Atomic(m))
         } else
           Combine(combine.asInstanceOf[(Any, Any) => Any], Ignore, Atomic(m))
       new Flow(
@@ -238,7 +240,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
   private[stream] override def deprecatedAndThen[U](
       op: StageModule): Repr[U] = {
     //No need to copy here, op is a fresh instance
-    if (this.isIdentity) new Flow(op).asInstanceOf[Repr[U]]
+    if (this.isIdentity)
+      new Flow(op).asInstanceOf[Repr[U]]
     else
       new Flow(
         module
@@ -251,7 +254,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
       processorFactory: () ⇒ (Processor[O, U], Mat2)): ReprMat[U, Mat2] = {
     val op = DirectProcessor(
       processorFactory.asInstanceOf[() ⇒ (Processor[Any, Any], Any)])
-    if (this.isIdentity) new Flow(op).asInstanceOf[ReprMat[U, Mat2]]
+    if (this.isIdentity)
+      new Flow(op).asInstanceOf[ReprMat[U, Mat2]]
     else
       new Flow[In, U, Mat2](
         module
@@ -267,8 +271,10 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     * only to the contained processing stages).
     */
   override def withAttributes(attr: Attributes): Repr[Out] =
-    if (isIdentity) this
-    else new Flow(module.withAttributes(attr))
+    if (isIdentity)
+      this
+    else
+      new Flow(module.withAttributes(attr))
 
   /**
     * Add the given attributes to this Flow. Further calls to `withAttributes`

@@ -43,11 +43,16 @@ trait InfoTransformers {
       *  higher pid.
       */
     def nextFrom(from: Phase#Id): InfoTransformer =
-      if (from == this.pid) this
+      if (from == this.pid)
+        this
       else if (from < this.pid)
-        if (prev.pid < from) this
-        else prev.nextFrom(from)
-      else if (next.pid == NoPhase.id) next
-      else next.nextFrom(from)
+        if (prev.pid < from)
+          this
+        else
+          prev.nextFrom(from)
+      else if (next.pid == NoPhase.id)
+        next
+      else
+        next.nextFrom(from)
   }
 }

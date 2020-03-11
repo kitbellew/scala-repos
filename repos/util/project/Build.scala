@@ -7,7 +7,11 @@ import scoverage.ScoverageSbtPlugin
 object Util extends Build {
   val branch = Process(
     "git" :: "rev-parse" :: "--abbrev-ref" :: "HEAD" :: Nil).!!.trim
-  val suffix = if (branch == "master") "" else "-SNAPSHOT"
+  val suffix =
+    if (branch == "master")
+      ""
+    else
+      "-SNAPSHOT"
 
   val libVersion = "6.33.0" + suffix
   val zkVersion = "3.5.0-alpha"

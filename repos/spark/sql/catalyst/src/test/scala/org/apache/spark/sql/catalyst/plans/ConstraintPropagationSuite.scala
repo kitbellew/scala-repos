@@ -43,9 +43,14 @@ class ConstraintPropagationSuite extends SparkFunSuite {
            |Found: ${found.mkString(",")}
            |Expected: ${expected.mkString(",")}
            |== Result ==
-           |Missing: ${if (missing.isEmpty) "N/A" else missing.mkString(",")}
-           |Found but not expected: ${if (extra.isEmpty) "N/A"
-              else extra.mkString(",")}
+           |Missing: ${if (missing.isEmpty)
+                "N/A"
+              else
+                missing.mkString(",")}
+           |Found but not expected: ${if (extra.isEmpty)
+                "N/A"
+              else
+                extra.mkString(",")}
          """.stripMargin)
     }
   }

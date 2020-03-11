@@ -51,7 +51,10 @@ trait JoinOptimizerModule[M[+_]]
           eq: DepGraph,
           lifted: DepGraph): DepGraph =
         transformBottomUp(graph) { g =>
-          if (g == eq) lifted else g
+          if (g == eq)
+            lifted
+          else
+            g
         }
 
       def rewrite(
@@ -118,7 +121,10 @@ trait JoinOptimizerModule[M[+_]]
           case other => other
         }
 
-        if (rewritten == body) filter else rewritten
+        if (rewritten == body)
+          filter
+        else
+          rewritten
       }
 
       transformBottomUp(graph) {

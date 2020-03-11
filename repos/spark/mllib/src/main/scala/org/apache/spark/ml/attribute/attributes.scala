@@ -265,7 +265,8 @@ class NumericAttribute private[ml] (
       withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder()
-    if (withType) bldr.putString(TYPE, attrType.name)
+    if (withType)
+      bldr.putString(TYPE, attrType.name)
     name.foreach(bldr.putString(NAME, _))
     index.foreach(bldr.putLong(INDEX, _))
     min.foreach(bldr.putDouble(MIN, _))
@@ -326,19 +327,35 @@ object NumericAttribute extends AttributeFactory {
       metadata: Metadata): NumericAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val name =
-      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+      if (metadata.contains(NAME))
+        Some(metadata.getString(NAME))
+      else
+        None
     val index =
-      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
-      else None
+      if (metadata.contains(INDEX))
+        Some(metadata.getLong(INDEX).toInt)
+      else
+        None
     val min =
-      if (metadata.contains(MIN)) Some(metadata.getDouble(MIN)) else None
+      if (metadata.contains(MIN))
+        Some(metadata.getDouble(MIN))
+      else
+        None
     val max =
-      if (metadata.contains(MAX)) Some(metadata.getDouble(MAX)) else None
+      if (metadata.contains(MAX))
+        Some(metadata.getDouble(MAX))
+      else
+        None
     val std =
-      if (metadata.contains(STD)) Some(metadata.getDouble(STD)) else None
+      if (metadata.contains(STD))
+        Some(metadata.getDouble(STD))
+      else
+        None
     val sparsity =
-      if (metadata.contains(SPARSITY)) Some(metadata.getDouble(SPARSITY))
-      else None
+      if (metadata.contains(SPARSITY))
+        Some(metadata.getDouble(SPARSITY))
+      else
+        None
     new NumericAttribute(name, index, min, max, std, sparsity)
   }
 }
@@ -450,7 +467,8 @@ class NominalAttribute private[ml] (
       withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder()
-    if (withType) bldr.putString(TYPE, attrType.name)
+    if (withType)
+      bldr.putString(TYPE, attrType.name)
     name.foreach(bldr.putString(NAME, _))
     index.foreach(bldr.putLong(INDEX, _))
     isOrdinal.foreach(bldr.putBoolean(ORDINAL, _))
@@ -497,20 +515,30 @@ object NominalAttribute extends AttributeFactory {
       metadata: Metadata): NominalAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val name =
-      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+      if (metadata.contains(NAME))
+        Some(metadata.getString(NAME))
+      else
+        None
     val index =
-      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
-      else None
+      if (metadata.contains(INDEX))
+        Some(metadata.getLong(INDEX).toInt)
+      else
+        None
     val isOrdinal =
-      if (metadata.contains(ORDINAL)) Some(metadata.getBoolean(ORDINAL))
-      else None
+      if (metadata.contains(ORDINAL))
+        Some(metadata.getBoolean(ORDINAL))
+      else
+        None
     val numValues =
       if (metadata.contains(NUM_VALUES))
         Some(metadata.getLong(NUM_VALUES).toInt)
-      else None
+      else
+        None
     val values =
-      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES))
-      else None
+      if (metadata.contains(VALUES))
+        Some(metadata.getStringArray(VALUES))
+      else
+        None
     new NominalAttribute(name, index, isOrdinal, numValues, values)
   }
 }
@@ -571,7 +599,8 @@ class BinaryAttribute private[ml] (
       withType: Boolean): Metadata = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val bldr = new MetadataBuilder
-    if (withType) bldr.putString(TYPE, attrType.name)
+    if (withType)
+      bldr.putString(TYPE, attrType.name)
     name.foreach(bldr.putString(NAME, _))
     index.foreach(bldr.putLong(INDEX, _))
     values.foreach(v => bldr.putStringArray(VALUES, v))
@@ -612,13 +641,20 @@ object BinaryAttribute extends AttributeFactory {
       metadata: Metadata): BinaryAttribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val name =
-      if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
+      if (metadata.contains(NAME))
+        Some(metadata.getString(NAME))
+      else
+        None
     val index =
-      if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt)
-      else None
+      if (metadata.contains(INDEX))
+        Some(metadata.getLong(INDEX).toInt)
+      else
+        None
     val values =
-      if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES))
-      else None
+      if (metadata.contains(VALUES))
+        Some(metadata.getStringArray(VALUES))
+      else
+        None
     new BinaryAttribute(name, index, values)
   }
 }

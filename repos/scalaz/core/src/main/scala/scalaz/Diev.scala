@@ -46,18 +46,25 @@ object DievInterval {
   def subtractInterval[A](minuend: (A, A), subtraend: (A, A))(
       implicit E: Enum[A]): Vector[(A, A)] = {
     val startOverlap =
-      if (subtraend._1 > minuend._1) Vector((minuend._1, subtraend._1.pred))
-      else Vector()
+      if (subtraend._1 > minuend._1)
+        Vector((minuend._1, subtraend._1.pred))
+      else
+        Vector()
     //println("startOverlap = " + startOverlap)
     val endOverlap =
-      if (subtraend._2 < minuend._2) Vector((subtraend._2.succ, minuend._2))
-      else Vector()
+      if (subtraend._2 < minuend._2)
+        Vector((subtraend._2.succ, minuend._2))
+      else
+        Vector()
     //println("endOverlap = " + endOverlap)
     startOverlap ++ endOverlap
   }
 
   def fixIntervalOrder[A](interval: (A, A))(implicit E: Enum[A]): (A, A) =
-    if (interval._2 < interval._1) interval.swap else interval
+    if (interval._2 < interval._1)
+      interval.swap
+    else
+      interval
 }
 
 trait DievImplementation {
@@ -99,7 +106,8 @@ trait DievImplementation {
           val adjustedPosition = 0.max(min.min(max).min(intervals.size - 1))
           liftedIntervals(adjustedPosition) match {
             case Some((start, end)) => {
-              if (start <= value && value <= end) Coincidence(adjustedPosition)
+              if (start <= value && value <= end)
+                Coincidence(adjustedPosition)
               else {
                 if (value < start)
                   Between(
@@ -120,10 +128,13 @@ trait DievImplementation {
 
           intervals(mid) match {
             case (start, end) => {
-              if (start <= value && value <= end) Coincidence(mid)
+              if (start <= value && value <= end)
+                Coincidence(mid)
               else {
-                if (value < start) innerSearch(min, mid - 1)
-                else innerSearch(mid + 1, max)
+                if (value < start)
+                  innerSearch(min, mid - 1)
+                else
+                  innerSearch(mid + 1, max)
               }
             }
           }
@@ -166,8 +177,8 @@ trait DievImplementation {
           )
         }
         case (
-            earlyBound @ Between(before, after),
-            Coincidence(endPosition)) => {
+              earlyBound @ Between(before, after),
+              Coincidence(endPosition)) => {
           val adjacentBeforeResult =
             earlyBound.adjacentBefore(correctedInterval)
           construct(
@@ -183,8 +194,8 @@ trait DievImplementation {
         }
         //(Between(None,Some(0)),Between(Some(0),Some(1)))
         case (
-            earlyBound @ Between(before, after),
-            lateBound @ Between(_, otherAfter)) => {
+              earlyBound @ Between(before, after),
+              lateBound @ Between(_, otherAfter)) => {
           val adjacentBeforeResult =
             earlyBound.adjacentBefore(correctedInterval)
           val adjacentAfterResult = lateBound.adjacentAfter(correctedInterval)
@@ -272,7 +283,10 @@ trait DievImplementation {
 
     def filter(f: A => Boolean): Diev[A] =
       foldLeft[Diev[A]](DieVector[A]())((working, value) =>
-        if (f(value)) working + value else working)
+        if (f(value))
+          working + value
+        else
+          working)
 
     def foreach(f: A => Unit): Unit = foldLeft[Unit](())((_, value) => f(value))
 

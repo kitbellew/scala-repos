@@ -100,11 +100,13 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       position,
       classOf[ScTemplateDefinition],
       false)
-    if (clazz == null) return
+    if (clazz == null)
+      return
 
     val classMembers =
       ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
-    if (classMembers.isEmpty) return
+    if (classMembers.isEmpty)
+      return
 
     handleMembers(
       classMembers,
@@ -123,16 +125,20 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     val clazz = PsiTreeUtil.getParentOfType(
       position,
       classOf[ScTemplateDefinition], /*strict = */ false)
-    if (clazz == null) return
+    if (clazz == null)
+      return
 
     val mlo = Option(
       PsiTreeUtil.getContextOfType(position, classOf[ScModifierListOwner]))
-    if (mlo.isEmpty) return
-    else if (mlo.isDefined && !mlo.get.hasModifierProperty("override")) return
+    if (mlo.isEmpty)
+      return
+    else if (mlo.isDefined && !mlo.get.hasModifierProperty("override"))
+      return
 
     val classMembers =
       ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
-    if (classMembers.isEmpty) return
+    if (classMembers.isEmpty)
+      return
 
     def membersToRender = position.getContext match {
       case m: PsiMethod => classMembers.filter(_.isInstanceOf[ScMethodMember])
@@ -224,11 +230,13 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       case _ => " "
     }
 
-    if (!full) text.indexOf(" ", 1) match { //remove val, var, def or type
-      case -1   => text
-      case part => text.substring(part + 1)
-    }
-    else "override " + text
+    if (!full)
+      text.indexOf(" ", 1) match { //remove val, var, def or type
+        case -1   => text
+        case part => text.substring(part + 1)
+      }
+    else
+      "override " + text
   }
 
   private def handleMembers(

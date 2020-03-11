@@ -37,7 +37,10 @@ import scalafx.delegate.SFXDelegate
 object MultipleSelectionModel {
   implicit def sfxMultipleSelectionModel2jfx[T](
       v: MultipleSelectionModel[T]): jfxsc.MultipleSelectionModel[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class MultipleSelectionModel[T](

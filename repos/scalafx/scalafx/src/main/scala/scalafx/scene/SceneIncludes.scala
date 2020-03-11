@@ -94,7 +94,10 @@ trait LowerPriorityIncludes {
     AccessibleRole.jfxEnum2sfx(e)
 
   implicit def jfxAmbientLight2sfx(v: jfxs.AmbientLight): AmbientLight =
-    if (v != null) new AmbientLight(v) else null
+    if (v != null)
+      new AmbientLight(v)
+    else
+      null
 
   /**
     * $START$CHI.html $CHI$END
@@ -112,8 +115,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $CAM
     */
   implicit def jfxCamera2sfx(v: jfxs.Camera): Camera =
-    if (v != null) new Camera(v) {}
-    else null
+    if (v != null)
+      new Camera(v) {}
+    else
+      null
 
   /**
     * $START$CUR.html $CUR$END
@@ -122,8 +127,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $CUR
     */
   implicit def jfxCursor2sfx(v: jfxs.Cursor): Cursor =
-    if (v != null) new Cursor(v) {}
-    else null
+    if (v != null)
+      new Cursor(v) {}
+    else
+      null
 
   /**
     * $START$DPT.html $DPT$END
@@ -141,7 +148,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $GRP
     */
   implicit def jfxGroup2sfx(v: jfxs.Group): Group =
-    if (v != null) new Group(v) else null
+    if (v != null)
+      new Group(v)
+    else
+      null
 
   /**
     * $START$IMC.html $IMC$END
@@ -150,11 +160,16 @@ trait LowerPriorityIncludes {
     * @return $SFX $IMC
     */
   implicit def jfxImageCursor2sfx(ic: jfxs.ImageCursor): ImageCursor =
-    if (ic != null) new ImageCursor(ic) else null
+    if (ic != null)
+      new ImageCursor(ic)
+    else
+      null
 
   implicit def jfxLightBase2sfx(v: jfxs.LightBase): LightBase =
-    if (v != null) new LightBase(v) {}
-    else null
+    if (v != null)
+      new LightBase(v) {}
+    else
+      null
 
   /**
     * $START$NOD.html $NOD$END
@@ -163,8 +178,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $NOD
     */
   implicit def jfxNode2sfx(v: jfxs.Node): Node =
-    if (v != null) new Node(v) {}
-    else null
+    if (v != null)
+      new Node(v) {}
+    else
+      null
 
   /**
     * $START$PRC.html $PRC$END
@@ -173,7 +190,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $PRC
     */
   implicit def jfxParallelCamera2sfx(v: jfxs.ParallelCamera): ParallelCamera =
-    if (v != null) new ParallelCamera(v) else null
+    if (v != null)
+      new ParallelCamera(v)
+    else
+      null
 
   /**
     * $START$PAR.html $PAR$END
@@ -182,8 +202,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $PAR
     */
   implicit def jfxParent2sfx(v: jfxs.Parent): Parent =
-    if (v != null) new Parent(v) {}
-    else null
+    if (v != null)
+      new Parent(v) {}
+    else
+      null
 
   /**
     * $START$PEC.html $PEC$END
@@ -193,10 +215,16 @@ trait LowerPriorityIncludes {
     */
   implicit def jfxPerspectiveCamera2sfx(
       v: jfxs.PerspectiveCamera): PerspectiveCamera =
-    if (v != null) new PerspectiveCamera(v) else null
+    if (v != null)
+      new PerspectiveCamera(v)
+    else
+      null
 
   implicit def jfxPointLight2sfx(v: jfxs.PointLight): PointLight =
-    if (v != null) new PointLight(v) else null
+    if (v != null)
+      new PointLight(v)
+    else
+      null
 
   /**
     * $START$SCE.html $SCE$END
@@ -205,7 +233,10 @@ trait LowerPriorityIncludes {
     * @return $SFX $SCE
     */
   implicit def jfxScene2sfx(v: jfxs.Scene): Scene =
-    if (v != null) new Scene(v) else null
+    if (v != null)
+      new Scene(v)
+    else
+      null
 
   /**
     * $START$SCA.html $SCA$END
@@ -218,8 +249,10 @@ trait LowerPriorityIncludes {
   implicit def jfxSceneAntialiasing2sfx(
       v: jfxs.SceneAntialiasing): SceneAntialiasing = {
     // A value of null is treated as though antialiasing is disabled.
-    if (v eq null) SceneAntialiasing.Disabled
-    else new SceneAntialiasing(v)
+    if (v eq null)
+      SceneAntialiasing.Disabled
+    else
+      new SceneAntialiasing(v)
   }
 
   /**
@@ -230,7 +263,10 @@ trait LowerPriorityIncludes {
     */
   implicit def jfxSceneProperty2sfx(
       p: ReadOnlyObjectProperty[jfxs.Scene]): SceneProperty =
-    if (p != null) new SceneProperty(p) else null
+    if (p != null)
+      new SceneProperty(p)
+    else
+      null
 
   /**
     * $START$SNP.html $SNP$END
@@ -240,7 +276,10 @@ trait LowerPriorityIncludes {
     */
   implicit def jfxSnapshotParameters2sfx(
       sp: jfxs.SnapshotParameters): SnapshotParameters =
-    if (sp != null) new SnapshotParameters(sp) else null
+    if (sp != null)
+      new SnapshotParameters(sp)
+    else
+      null
 
   /**
     * $START$SSCE.html $SSCE$END
@@ -249,5 +288,8 @@ trait LowerPriorityIncludes {
     * @return $SFX $SSCE
     */
   implicit def jfxSubScene2sfx(v: jfxs.SubScene): SubScene =
-    if (v != null) new SubScene(v) else null
+    if (v != null)
+      new SubScene(v)
+    else
+      null
 }

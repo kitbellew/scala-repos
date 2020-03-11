@@ -39,9 +39,11 @@ class ScalaCopyPastePostProcessor
       editor: Editor,
       startOffsets: Array[Int],
       endOffsets: Array[Int]): Associations = {
-    if (DumbService.getInstance(file.getProject).isDumb) return null
+    if (DumbService.getInstance(file.getProject).isDumb)
+      return null
 
-    if (!file.isInstanceOf[ScalaFile]) return null
+    if (!file.isInstanceOf[ScalaFile])
+      return null
 
     val timeBound = System.currentTimeMillis + Timeout
 
@@ -121,16 +123,19 @@ class ScalaCopyPastePostProcessor
       caretColumn: Int,
       indented: Ref[Boolean],
       value: Associations) {
-    if (DumbService.getInstance(project).isDumb) return
+    if (DumbService.getInstance(project).isDumb)
+      return
 
     if (ScalaApplicationSettings
           .getInstance()
-          .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO) return
+          .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO)
+      return
 
     val file =
       PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
 
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
@@ -185,11 +190,13 @@ class ScalaCopyPastePostProcessor
             path.substring(0, index))
       }
 
-    if (bindings.isEmpty) return
+    if (bindings.isEmpty)
+      return
 
     val bindingsToRestore = filter(bindings.distinctBy(_.path))
 
-    if (bindingsToRestore.isEmpty) return
+    if (bindingsToRestore.isEmpty)
+      return
 
     inWriteAction {
       for (Binding(ref, path) <- bindingsToRestore;
@@ -205,7 +212,8 @@ class ScalaCopyPastePostProcessor
     val range = dependency.range.shiftRight(offset)
 
     for (ref <- Option(file.findElementAt(range.getStartOffset));
-         parent <- ref.parent if parent.getTextRange == range) yield parent
+         parent <- ref.parent if parent.getTextRange == range)
+      yield parent
   }
 
   private def getElementsStrictlyInRange(

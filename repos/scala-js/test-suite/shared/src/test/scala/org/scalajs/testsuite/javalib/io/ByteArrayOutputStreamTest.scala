@@ -63,9 +63,11 @@ class ByteArrayOutputStreamTest extends CommonStreamsTests {
 
   @Test def should_support_reset(): Unit = {
     val out = new ByteArrayOutputStream()
-    for (i <- 0 to 9) out.write(i)
+    for (i <- 0 to 9)
+      out.write(i)
     out.reset()
-    for (i <- 0 to 9) out.write(i)
+    for (i <- 0 to 9)
+      out.write(i)
 
     assertArrayEquals(
       Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9),

@@ -19,7 +19,11 @@ import scala.reflect.ClassTag
 // Todo -- revisit whether inheritance is the best way to achieve this functionality
 private[mutable] class DoublingUnrolledBuffer[T](implicit t: ClassTag[T])
     extends UnrolledBuffer[T]()(t) {
-  override def calcNextLength(sz: Int) = if (sz < 10000) sz * 2 else sz
+  override def calcNextLength(sz: Int) =
+    if (sz < 10000)
+      sz * 2
+    else
+      sz
   protected override def newUnrolled =
     new Unrolled[T](0, new Array[T](4), null, this)
 }

@@ -46,6 +46,9 @@ trait SdkSelection {
 
     val components = Component.discoverIn(allFiles)
 
-    if (files.nonEmpty) Some(SdkDescriptor.from(components)) else None
+    if (files.nonEmpty)
+      Some(SdkDescriptor.from(components))
+    else
+      None
   }
 }

@@ -867,8 +867,8 @@ class LogisticRegressionSuite
         combOp = (c1, c2) =>
           (c1, c2) match {
             case (
-                classSummarizer1: MultiClassSummarizer,
-                classSummarizer2: MultiClassSummarizer) =>
+                  classSummarizer1: MultiClassSummarizer,
+                  classSummarizer2: MultiClassSummarizer) =>
               classSummarizer1.merge(classSummarizer2)
           }
       )

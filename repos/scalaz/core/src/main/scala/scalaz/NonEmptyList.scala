@@ -184,7 +184,10 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
       with Unzip[NonEmptyList]
       with Align[NonEmptyList] {
       override def findLeft[A](fa: NonEmptyList[A])(f: A => Boolean) =
-        if (f(fa.head)) Some(fa.head) else fa.tail.find(f)
+        if (f(fa.head))
+          Some(fa.head)
+        else
+          fa.tail.find(f)
 
       def traverse1Impl[G[_]: Apply, A, B](fa: NonEmptyList[A])(
           f: A => G[B]): G[NonEmptyList[B]] =

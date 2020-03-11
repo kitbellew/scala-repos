@@ -264,8 +264,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res1 <- getAccount(id, user, pass)
       } yield ((res0, res1))).copoint must beLike {
         case (
-            HttpResponse(HttpStatus(NoContent, _), _, _, _),
-            HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
+              HttpResponse(HttpStatus(NoContent, _), _, _, _),
+              HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
           ok
       }
     }
@@ -280,9 +280,9 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res2 <- getAccount(id, user, newPass)
       } yield ((res0, res1, res2))).copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, _, _),
-            HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
-            HttpResponse(HttpStatus(OK, _), _, _, _)) =>
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
           ok
       }
     }
@@ -306,8 +306,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res1 <- getAccountPlan(id, user, pass)
       } yield ((res0, res1))).copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, _, _),
-            HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
           jv \ "type" must_== JString("Root")
       }
     }
@@ -386,9 +386,9 @@ class AccountServiceSpec extends TestAccountService with Tags {
         newAuthResult <- getAccount(accountId, user, newPass)
       } yield (genToken, resetResult, newAuthResult)).copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, _, _),
-            HttpResponse(HttpStatus(OK, _), _, _, _),
-            HttpResponse(HttpStatus(OK, _), _, _, _)
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, _, _)
             ) =>
           ok
       }

@@ -27,7 +27,11 @@ object SlickBuild extends Build {
       "com.novocode" % "junit-interface" % "0.11"
     )
     def scalaTestFor(scalaVersion: String) = {
-      val v = if (scalaVersion == "2.12.0-M2") "2.2.5-M2" else "2.2.4"
+      val v =
+        if (scalaVersion == "2.12.0-M2")
+          "2.2.5-M2"
+        else
+          "2.2.4"
       "org.scalatest" %% "scalatest" % v
     }
     val slf4j = "org.slf4j" % "slf4j-api" % "1.7.18"
@@ -93,7 +97,10 @@ object SlickBuild extends Build {
   }
 
   def ifPublished(s: Seq[Setting[_]]): Seq[Setting[_]] =
-    if (scalaSettings eq publishedScalaSettings) s else Nil
+    if (scalaSettings eq publishedScalaSettings)
+      s
+    else
+      Nil
 
   def extTarget(extName: String): Seq[Setting[File]] = {
     sys.props("slick.build.target") match {
@@ -129,7 +136,10 @@ object SlickBuild extends Build {
       )),
     logBuffered := false,
     repoKind <<= (version)(v =>
-      if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases"),
+      if (v.trim.endsWith("SNAPSHOT"))
+        "snapshots"
+      else
+        "releases"),
     publishTo <<= (repoKind) {
       case "snapshots" =>
         Some(
@@ -298,10 +308,12 @@ object SlickBuild extends Build {
   /** Create an OSGi version range for standard Scala / Typesafe versioning
     * schemes that describes binary compatible versions. */
   def osgiVersionRange(version: String, requireMicro: Boolean = false): String =
-    if (version contains '-') "${@}" // M, RC or SNAPSHOT -> exact version
+    if (version contains '-')
+      "${@}" // M, RC or SNAPSHOT -> exact version
     else if (requireMicro)
       "${range;[===,=+)}" // At least the same micro version
-    else "${range;[==,=+)}" // Any binary compatible version
+    else
+      "${range;[==,=+)}" // Any binary compatible version
 
   /** Create an OSGi Import-Package version specification. */
   def osgiImport(

@@ -416,8 +416,10 @@ package play.api.mvc {
       * Transform this call to an absolute URL.
       */
     def absoluteURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "http" + (if (secure) "s"
-                else "") + "://" + request.host + this.url + this.appendFragment
+      "http" + (if (secure)
+                  "s"
+                else
+                  "") + "://" + request.host + this.url + this.appendFragment
 
     /**
       * Transform this call to an WebSocket URL.
@@ -437,7 +439,10 @@ package play.api.mvc {
       * Transform this call to an WebSocket URL.
       */
     def webSocketURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "ws" + (if (secure) "s" else "") + "://" + request.host + this.url
+      "ws" + (if (secure)
+                "s"
+              else
+                "") + "://" + request.host + this.url
 
   }
 
@@ -643,7 +648,8 @@ package play.api.mvc {
             urldecode(message)
           else
             Map.empty[String, String]
-        } else urldecode(data)
+        } else
+          urldecode(data)
       } catch {
         // fail gracefully is the session cookie is corrupted
         case NonFatal(_) => Map.empty[String, String]
@@ -669,7 +675,8 @@ package play.api.mvc {
       * Decodes the data from a `Cookie`.
       */
     def decodeFromCookie(cookie: Option[Cookie]): T =
-      if (cookie.isEmpty) emptyCookie
+      if (cookie.isEmpty)
+        emptyCookie
       else {
         val extractedCookie: Cookie = cookie.get
         if (extractedCookie.name != COOKIE_NAME)
@@ -1002,8 +1009,10 @@ package play.api.mvc {
               Cookie(
                 cookie.name,
                 cookie.value,
-                if (cookie.maxAge == Integer.MIN_VALUE) None
-                else Some(cookie.maxAge),
+                if (cookie.maxAge == Integer.MIN_VALUE)
+                  None
+                else
+                  Some(cookie.maxAge),
                 Option(cookie.path).getOrElse("/"),
                 Option(cookie.domain),
                 cookie.isSecure,

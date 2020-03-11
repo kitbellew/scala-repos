@@ -63,7 +63,8 @@ object ProdServerStartSpec extends Specification {
       hooks = hooks :+ (() => hook)
     }
     def shutdown(): Unit = {
-      for (h <- hooks) h.apply()
+      for (h <- hooks)
+        h.apply()
     }
 
     def exit(

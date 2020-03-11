@@ -109,7 +109,10 @@ object ScalaGenerationInfo {
   def defaultValue(returnType: ScType, file: PsiFile) = {
     val standardValue = ScalaPsiElementFactory.getStandardValue(returnType)
 
-    if (file.scalaLanguageLevel.exists(_ < Scala_2_10)) standardValue else "???"
+    if (file.scalaLanguageLevel.exists(_ < Scala_2_10))
+      standardValue
+    else
+      "???"
   }
 
   def positionCaret(editor: Editor, element: PsiMember) {
@@ -171,18 +174,28 @@ object ScalaGenerationInfo {
           .getOrElse(return "super.")
 
         def nonStrictInheritor(base: PsiClass, inheritor: PsiClass): Boolean = {
-          if (base == null || inheritor == null) false
-          else base == inheritor || inheritor.isInheritorDeep(base, null)
+          if (base == null || inheritor == null)
+            false
+          else
+            base == inheritor || inheritor.isInheritorDeep(base, null)
         }
 
         if (nonStrictInheritor(method.containingClass, psiClass))
           td.selfTypeElement.get.name + "."
-        else "super."
+        else
+          "super."
     }
     def paramText(param: PsiParameter) = {
       val name = ScalaNamesUtil.changeKeyword(param.name).toOption.getOrElse("")
-      val whitespace = if (name.endsWith("_")) " " else ""
-      name + (if (param.isVarArgs) whitespace + ": _*" else "")
+      val whitespace =
+        if (name.endsWith("_"))
+          " "
+        else
+          ""
+      name + (if (param.isVarArgs)
+                whitespace + ": _*"
+              else
+                "")
     }
     val methodName = ScalaNamesUtil.changeKeyword(method.name)
     val parametersText: String = {
@@ -209,8 +222,10 @@ object ScalaGenerationInfo {
       td: ScTemplateDefinition,
       isImplement: Boolean): String = {
     val templateName =
-      if (isImplement) ScalaFileTemplateUtil.SCALA_IMPLEMENTED_METHOD_TEMPLATE
-      else ScalaFileTemplateUtil.SCALA_OVERRIDDEN_METHOD_TEMPLATE
+      if (isImplement)
+        ScalaFileTemplateUtil.SCALA_IMPLEMENTED_METHOD_TEMPLATE
+      else
+        ScalaFileTemplateUtil.SCALA_OVERRIDDEN_METHOD_TEMPLATE
 
     val template =
       FileTemplateManager.getInstance().getCodeTemplate(templateName)
@@ -268,8 +283,10 @@ object ScalaGenerationInfo {
   }
 
   def toAddOverrideToImplemented =
-    if (ApplicationManager.getApplication.isUnitTestMode) false
-    else ScalaApplicationSettings.getInstance.ADD_OVERRIDE_TO_IMPLEMENTED
+    if (ApplicationManager.getApplication.isUnitTestMode)
+      false
+    else
+      ScalaApplicationSettings.getInstance.ADD_OVERRIDE_TO_IMPLEMENTED
 
   def needsInferType =
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY

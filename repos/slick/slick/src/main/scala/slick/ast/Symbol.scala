@@ -73,19 +73,28 @@ trait DefNode extends Node {
     val ch = children
     val all = ch.zipWithIndex.map[(Option[TermSymbol], Node)] {
       case (ch, idx) =>
-        val o = if (idx < gens.length) Some(gens(idx)._1) else None
+        val o =
+          if (idx < gens.length)
+            Some(gens(idx)._1)
+          else
+            None
         (o, ch)
     }
     val mapped = all.map(f.tupled)
     if (ch.zip(mapped).force.exists {
           case (n1, n2) => n1 ne n2
-        }) rebuild(mapped).asInstanceOf[Self with DefNode]
-    else this
+        })
+      rebuild(mapped).asInstanceOf[Self with DefNode]
+    else
+      this
   }
   final def mapSymbols(f: TermSymbol => TermSymbol): Node = {
     val s = generators.map(_._1)
     val s2 = s.endoMap(f)
-    if (s2 eq s) this else rebuildWithSymbols(s2)
+    if (s2 eq s)
+      this
+    else
+      rebuildWithSymbols(s2)
   }
 }
 
@@ -129,6 +138,9 @@ object SymbolNamer {
   private val dyn = new DynamicVariable[SymbolNamer](null)
   def apply(s: Symbol): String = {
     val n = dyn.value
-    if (n eq null) s.name else n(s)
+    if (n eq null)
+      s.name
+    else
+      n(s)
   }
 }

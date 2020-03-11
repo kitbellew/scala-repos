@@ -61,7 +61,10 @@ class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
   }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
-    if (draining) underlying() else get()
+    if (draining)
+      underlying()
+    else
+      get()
 
   override def close(deadline: Time) = {
     drain()

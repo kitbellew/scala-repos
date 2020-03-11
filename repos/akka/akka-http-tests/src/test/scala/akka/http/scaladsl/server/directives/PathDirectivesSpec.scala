@@ -379,8 +379,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
             }
 
             Get(uri.group(2)) ~> route ~> check {
-              if (expectedResponse eq null) handled shouldEqual false
-              else responseAs[String] shouldEqual expectedResponse
+              if (expectedResponse eq null)
+                handled shouldEqual false
+              else
+                responseAs[String] shouldEqual expectedResponse
             }
           case None ⇒
             failTest(
@@ -468,8 +470,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       status shouldBe a[Redirection]
       inside(header[Location]) {
         case Some(Location(uri)) ⇒
-          (if (expectedUri.isAbsolute) uri
-           else uri.toRelative) shouldEqual expectedUri
+          (if (expectedUri.isAbsolute)
+             uri
+           else
+             uri.toRelative) shouldEqual expectedUri
       }
     }
 }

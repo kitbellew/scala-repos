@@ -285,7 +285,10 @@ object PreferenceHelpers extends PreferenceHelpers {
 
   private def getShortName(str: String) = {
     val pos = str.lastIndexOf(".")
-    if (pos < 0) str else str.substring(pos + 1)
+    if (pos < 0)
+      str
+    else
+      str.substring(pos + 1)
   }
 
   def preferenceVarImpl[T](c: Context)(
@@ -312,7 +315,8 @@ trait WidgetHelpers {
     runOnUiThread {
       val toast = Toast.makeText(context, message, duration)
       toast.setGravity(gravity, 0, 0)
-      if (view != null) toast.setView(view)
+      if (view != null)
+        toast.setView(view)
       toast.show()
     }
   }

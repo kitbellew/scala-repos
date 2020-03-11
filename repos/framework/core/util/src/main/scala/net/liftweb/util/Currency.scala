@@ -25,7 +25,8 @@ import common._
   */
 class Currency(val amount: Long, val symbol: String, val decimals: Int) {
   override def toString = {
-    if (decimals == 0) symbol + amount
+    if (decimals == 0)
+      symbol + amount
     else {
       val d = amount.toDouble
       val pow = math.pow(10, decimals)
@@ -57,7 +58,8 @@ class Currency(val amount: Long, val symbol: String, val decimals: Int) {
   def +(other: Currency): Currency =
     if (symbol != other.symbol || decimals != other.decimals)
       throw new CurrencyMismatchException
-    else new Currency(amount + other.amount, symbol, decimals)
+    else
+      new Currency(amount + other.amount, symbol, decimals)
 
   /**
     * Subtraction on Currency objects. This compares currency symbols to prevent
@@ -67,7 +69,8 @@ class Currency(val amount: Long, val symbol: String, val decimals: Int) {
   def -(other: Currency): Currency =
     if (symbol != other.symbol || decimals != other.decimals)
       throw new CurrencyMismatchException
-    else new Currency(amount - other.amount, symbol, decimals)
+    else
+      new Currency(amount - other.amount, symbol, decimals)
 }
 
 /**

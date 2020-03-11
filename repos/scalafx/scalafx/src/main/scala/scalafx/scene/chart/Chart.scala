@@ -38,7 +38,10 @@ import scalafx.scene.layout.Region
 
 object Chart {
   implicit def sfxChart2jfx(v: Chart): jfxsc.Chart =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class Chart(override val delegate: jfxsc.Chart)

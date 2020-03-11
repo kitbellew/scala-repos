@@ -62,7 +62,8 @@ class ScTypeParamImpl private (
       return stub.asInstanceOf[ScTypeParamStub].getContainingFileName
     }
     val containingFile = getContainingFile
-    if (containingFile == null) return "NoFile"
+    if (containingFile == null)
+      return "NoFile"
     containingFile.name
   }
 
@@ -118,28 +119,32 @@ class ScTypeParamImpl private (
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScTypeParamStub].getViewTypeElement
-    } else super.viewTypeElement
+    } else
+      super.viewTypeElement
   }
 
   override def contextBoundTypeElement: Seq[ScTypeElement] = {
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScTypeParamStub].getContextBoundTypeElement
-    } else super.contextBoundTypeElement
+    } else
+      super.contextBoundTypeElement
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScTypeParamStub].getLowerTypeElement
-    } else super.lowerTypeElement
+    } else
+      super.lowerTypeElement
   }
 
   override def upperTypeElement: Option[ScTypeElement] = {
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScTypeParamStub].getUpperTypeElement
-    } else super.upperTypeElement
+    } else
+      super.upperTypeElement
   }
 
   override def getIcon(flags: Int) = {

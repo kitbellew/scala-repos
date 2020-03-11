@@ -17,12 +17,14 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 class YieldFilter extends ElementFilter {
   private def leafText(i: Int, context: PsiElement): String = {
     val elem = getLeafByOffset(i, context)
-    if (elem == null) return ""
+    if (elem == null)
+      return ""
     elem.getText
   }
 
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
@@ -30,15 +32,20 @@ class YieldFilter extends ElementFilter {
             .isInstanceOf[ScForStatement]) {
         var i = context.getTextRange.getStartOffset - 1
         while (i > 0 && (context.getContainingFile.getText.charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
-        if (leafText(i, context) == "yield") return false
+               context.getContainingFile.getText.charAt(i) == '\n'))
+          i = i - 1
+        if (leafText(i, context) == "yield")
+          return false
         i = context.getTextRange.getEndOffset
         while (i < context.getContainingFile.getText.length - 1 && (context.getContainingFile.getText
                  .charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
-        if (leafText(i, context) == "yield") return false
+               context.getContainingFile.getText.charAt(i) == '\n'))
+          i = i + 1
+        if (leafText(i, context) == "yield")
+          return false
         for (child <- parent.getParent.getNode.getChildren(null)
-             if child.getElementType == ScalaTokenTypes.kYIELD) return false
+             if child.getElementType == ScalaTokenTypes.kYIELD)
+          return false
         return ScalaCompletionUtil.checkAnyWith(
           parent.getParent,
           "yield true",

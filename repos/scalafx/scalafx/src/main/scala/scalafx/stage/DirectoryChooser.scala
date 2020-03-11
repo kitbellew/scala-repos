@@ -38,7 +38,10 @@ import scalafx.delegate.SFXDelegate
 object DirectoryChooser {
   implicit def sfxDirectoryChooser2jfx(
       dc: DirectoryChooser): jfxs.DirectoryChooser =
-    if (dc != null) dc.delegate else null
+    if (dc != null)
+      dc.delegate
+    else
+      null
 }
 
 class DirectoryChooser(

@@ -19,7 +19,11 @@ class ArrayComparisonFailure(fMessage: String) extends AssertionError {
   }
 
   override def getMessage(): String = {
-    val message = if (fMessage != null) fMessage else ""
+    val message =
+      if (fMessage != null)
+        fMessage
+      else
+        ""
     val indices = fIndices.map(index => s"[$index]").mkString
     val causeMessage = getCause.getMessage
     s"${message}arrays first differed at element $indices; $causeMessage"

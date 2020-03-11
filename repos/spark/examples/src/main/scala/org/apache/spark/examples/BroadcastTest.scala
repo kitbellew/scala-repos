@@ -26,15 +26,27 @@ import org.apache.spark.{SparkConf, SparkContext}
 object BroadcastTest {
   def main(args: Array[String]) {
 
-    val blockSize = if (args.length > 2) args(2) else "4096"
+    val blockSize =
+      if (args.length > 2)
+        args(2)
+      else
+        "4096"
 
     val sparkConf = new SparkConf()
       .setAppName("Broadcast Test")
       .set("spark.broadcast.blockSize", blockSize)
     val sc = new SparkContext(sparkConf)
 
-    val slices = if (args.length > 0) args(0).toInt else 2
-    val num = if (args.length > 1) args(1).toInt else 1000000
+    val slices =
+      if (args.length > 0)
+        args(0).toInt
+      else
+        2
+    val num =
+      if (args.length > 1)
+        args(1).toInt
+      else
+        1000000
 
     val arr1 = (0 until num).toArray
 

@@ -147,7 +147,8 @@ object FieldsProviderImpl {
         } yield
           if (namingScheme == NamedWithPrefix && prefix.nonEmpty)
             s"$prefix.$name"
-          else name
+          else
+            name
     }
 
     /**
@@ -196,7 +197,11 @@ object FieldsProviderImpl {
       c.abort(
         c.enclosingPosition,
         s"Case class ${T.tpe} has no primitive types we were able to extract")
-    val scheme = if (isNumbered(T.tpe)) Indexed else namingScheme
+    val scheme =
+      if (isNumbered(T.tpe))
+        Indexed
+      else
+        namingScheme
     val tree = FieldBuilder.toFieldsTree(builder, scheme)
     c.Expr[cascading.tuple.Fields](tree)
   }

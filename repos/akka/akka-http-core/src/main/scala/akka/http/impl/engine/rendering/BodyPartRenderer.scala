@@ -110,7 +110,8 @@ private[http] object BodyPartRenderer {
       r: Rendering,
       boundary: String,
       suppressInitialCrLf: Boolean): Unit = {
-    if (!suppressInitialCrLf) r ~~ CrLf
+    if (!suppressInitialCrLf)
+      r ~~ CrLf
     r ~~ '-' ~~ '-' ~~ boundary ~~ CrLf
   }
 

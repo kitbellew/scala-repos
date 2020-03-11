@@ -280,25 +280,32 @@ trait BlockParsers extends Parsers {
     * Parses a line of the given type T
     */
   def line[T](c: Class[T]): Parser[T] = Parser { in =>
-    if (in.first.getClass == c) Success(in.first.asInstanceOf[T], in.rest)
-    else Failure("Not a fitting line.", in)
+    if (in.first.getClass == c)
+      Success(in.first.asInstanceOf[T], in.rest)
+    else
+      Failure("Not a fitting line.", in)
   }
 
   /**
     * Parses a line of any type *but* T
     */
   def notLine[T](c: Class[T]): Parser[MarkdownLine] = Parser { in =>
-    if (in.atEnd) Failure("At end of input.", in)
-    else if (in.first.getClass == c) Failure("Not a fitting line.", in)
-    else Success(in.first, in.rest)
+    if (in.atEnd)
+      Failure("At end of input.", in)
+    else if (in.first.getClass == c)
+      Failure("Not a fitting line.", in)
+    else
+      Success(in.first, in.rest)
   }
 
   /**
     * Parses any line.
     */
   def anyLine: Parser[MarkdownLine] = Parser { in =>
-    if (in.atEnd) Failure("End of input reached.", in)
-    else Success(in.first, in.rest)
+    if (in.atEnd)
+      Failure("End of input reached.", in)
+    else
+      Success(in.first, in.rest)
   }
 
   def emptyLine: Parser[EmptyLine] = line(classOf[EmptyLine])

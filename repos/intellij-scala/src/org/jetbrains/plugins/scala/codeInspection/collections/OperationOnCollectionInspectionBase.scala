@@ -160,10 +160,12 @@ abstract class OperationOnCollectionInspectionBase
         .createDecorator(patternJBList)
         .setAddAction(new AnActionButtonRunnable {
           def addPattern(pattern: String) {
-            if (pattern == null) return
+            if (pattern == null)
+              return
             val index: Int =
               -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
-            if (index < 0) return
+            if (index < 0)
+              return
             JListCompatibility.add(listModel, index, pattern)
             resetValues()
             patternJBList.setSelectedValue(pattern, true)

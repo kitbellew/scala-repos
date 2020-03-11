@@ -132,9 +132,11 @@ private[akka] class TLSActor(
       */
     def putBack(b: ByteBuffer): Unit =
       if (b.hasRemaining) {
-        if (tracing) log.debug(s"putting back ${b.remaining} bytes into $name")
+        if (tracing)
+          log.debug(s"putting back ${b.remaining} bytes into $name")
         val bs = ByteString(b)
-        if (bs.nonEmpty) buffer = bs ++ buffer
+        if (bs.nonEmpty)
+          buffer = bs ++ buffer
         prepare(b)
       }
 
@@ -211,7 +213,8 @@ private[akka] class TLSActor(
   }
 
   def setNewSessionParameters(params: NegotiateNewSession): Unit = {
-    if (tracing) log.debug(s"applying $params")
+    if (tracing)
+      log.debug(s"applying $params")
     currentSession.invalidate()
     applySessionParameters(params)
     corkUser = true
@@ -279,16 +282,19 @@ private[akka] class TLSActor(
   val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
 
   val bidirectional = TransferPhase(outbound || inbound) { () ⇒
-    if (tracing) log.debug("bidirectional")
+    if (tracing)
+      log.debug("bidirectional")
     val continue = doInbound(isOutboundClosed = false, inbound)
     if (continue) {
-      if (tracing) log.debug("bidirectional continue")
+      if (tracing)
+        log.debug("bidirectional continue")
       doOutbound(isInboundClosed = false)
     }
   }
 
   val flushingOutbound = TransferPhase(outboundHalfClosed) { () ⇒
-    if (tracing) log.debug("flushingOutbound")
+    if (tracing)
+      log.debug("flushingOutbound")
     try doWrap()
     catch {
       case ex: SSLException ⇒ nextPhase(completedPhase)
@@ -297,7 +303,8 @@ private[akka] class TLSActor(
 
   val awaitingClose = TransferPhase(
     inputBunch.inputsAvailableFor(TransportIn) && engineInboundOpen) { () ⇒
-    if (tracing) log.debug("awaitingClose")
+    if (tracing)
+      log.debug("awaitingClose")
     transportInChoppingBlock.chopInto(transportInBuffer)
     try doUnwrap(ignoreOutput = true)
     catch {
@@ -306,10 +313,12 @@ private[akka] class TLSActor(
   }
 
   val outboundClosed = TransferPhase(outboundHalfClosed || inbound) { () ⇒
-    if (tracing) log.debug("outboundClosed")
+    if (tracing)
+      log.debug("outboundClosed")
     val continue = doInbound(isOutboundClosed = true, inbound)
     if (continue && outboundHalfClosed.isReady) {
-      if (tracing) log.debug("outboundClosed continue")
+      if (tracing)
+        log.debug("outboundClosed continue")
       try doWrap()
       catch {
         case ex: SSLException ⇒ nextPhase(completedPhase)
@@ -318,24 +327,29 @@ private[akka] class TLSActor(
   }
 
   val inboundClosed = TransferPhase(outbound || inboundHalfClosed) { () ⇒
-    if (tracing) log.debug("inboundClosed")
+    if (tracing)
+      log.debug("inboundClosed")
     val continue = doInbound(isOutboundClosed = false, inboundHalfClosed)
     if (continue) {
-      if (tracing) log.debug("inboundClosed continue")
+      if (tracing)
+        log.debug("inboundClosed continue")
       doOutbound(isInboundClosed = true)
     }
   }
 
   def completeOrFlush(): Unit =
-    if (engine.isOutboundDone) nextPhase(completedPhase)
-    else nextPhase(flushingOutbound)
+    if (engine.isOutboundDone)
+      nextPhase(completedPhase)
+    else
+      nextPhase(flushingOutbound)
 
   private def doInbound(
       isOutboundClosed: Boolean,
       inboundState: TransferState): Boolean =
     if (inputBunch.isDepleted(
           TransportIn) && transportInChoppingBlock.isEmpty) {
-      if (tracing) log.debug("closing inbound")
+      if (tracing)
+        log.debug("closing inbound")
       try engine.closeInbound()
       catch {
         case ex: SSLException ⇒ outputBunch.enqueue(UserOut, SessionTruncated)
@@ -345,10 +359,12 @@ private[akka] class TLSActor(
     } else if (inboundState != inboundHalfClosed && outputBunch.isCancelled(
                  UserOut)) {
       if (!isOutboundClosed && closing.ignoreCancel) {
-        if (tracing) log.debug("ignoring UserIn cancellation")
+        if (tracing)
+          log.debug("ignoring UserIn cancellation")
         nextPhase(inboundClosed)
       } else {
-        if (tracing) log.debug("closing inbound due to UserOut cancellation")
+        if (tracing)
+          log.debug("closing inbound due to UserOut cancellation")
         engine
           .closeOutbound() // this is the correct way of shutting down the engine
         lastHandshakeStatus = engine.getHandshakeStatus
@@ -362,51 +378,61 @@ private[akka] class TLSActor(
         true
       } catch {
         case ex: SSLException ⇒
-          if (tracing) log.debug(s"SSLException during doUnwrap: $ex")
+          if (tracing)
+            log.debug(s"SSLException during doUnwrap: $ex")
           fail(ex, closeTransport = false)
           engine.closeInbound()
           completeOrFlush()
           false
       }
-    } else true
+    } else
+      true
 
   private def doOutbound(isInboundClosed: Boolean): Unit =
     if (inputBunch.isDepleted(UserIn) && userInChoppingBlock.isEmpty) {
       if (!isInboundClosed && closing.ignoreComplete) {
-        if (tracing) log.debug("ignoring closeOutbound")
+        if (tracing)
+          log.debug("ignoring closeOutbound")
       } else {
-        if (tracing) log.debug("closing outbound directly")
+        if (tracing)
+          log.debug("closing outbound directly")
         engine.closeOutbound()
         lastHandshakeStatus = engine.getHandshakeStatus
       }
       nextPhase(outboundClosed)
     } else if (outputBunch.isCancelled(TransportOut)) {
-      if (tracing) log.debug("shutting down because TransportOut is cancelled")
+      if (tracing)
+        log.debug("shutting down because TransportOut is cancelled")
       nextPhase(completedPhase)
     } else if (outbound.isReady) {
-      if (userHasData.isReady) userInChoppingBlock.chopInto(userInBuffer)
+      if (userHasData.isReady)
+        userInChoppingBlock.chopInto(userInBuffer)
       try doWrap()
       catch {
         case ex: SSLException ⇒
-          if (tracing) log.debug(s"SSLException during doWrap: $ex")
+          if (tracing)
+            log.debug(s"SSLException during doWrap: $ex")
           fail(ex, closeTransport = false)
           completeOrFlush()
       }
     }
 
   def flushToTransport(): Unit = {
-    if (tracing) log.debug("flushToTransport")
+    if (tracing)
+      log.debug("flushToTransport")
     transportOutBuffer.flip()
     if (transportOutBuffer.hasRemaining) {
       val bs = ByteString(transportOutBuffer)
       outputBunch.enqueue(TransportOut, bs)
-      if (tracing) log.debug(s"sending ${bs.size} bytes")
+      if (tracing)
+        log.debug(s"sending ${bs.size} bytes")
     }
     transportOutBuffer.clear()
   }
 
   def flushToUser(): Unit = {
-    if (tracing) log.debug("flushToUser")
+    if (tracing)
+      log.debug("flushToUser")
     userOutBuffer.flip()
     if (userOutBuffer.hasRemaining) {
       val bs = ByteString(userOutBuffer)
@@ -421,7 +447,8 @@ private[akka] class TLSActor(
     if (tracing)
       log.debug(
         s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer.position}")
-    if (lastHandshakeStatus == FINISHED) handshakeFinished()
+    if (lastHandshakeStatus == FINISHED)
+      handshakeFinished()
     runDelegatedTasks()
     result.getStatus match {
       case OK ⇒
@@ -429,8 +456,10 @@ private[akka] class TLSActor(
         userInChoppingBlock.putBack(userInBuffer)
       case CLOSED ⇒
         flushToTransport()
-        if (engine.isInboundDone) nextPhase(completedPhase)
-        else nextPhase(awaitingClose)
+        if (engine.isInboundDone)
+          nextPhase(completedPhase)
+        else
+          nextPhase(awaitingClose)
       case s ⇒
         fail(new IllegalStateException(s"unexpected status $s in doWrap()"))
     }
@@ -439,7 +468,8 @@ private[akka] class TLSActor(
   @tailrec
   private def doUnwrap(ignoreOutput: Boolean = false): Unit = {
     val result = engine.unwrap(transportInBuffer, userOutBuffer)
-    if (ignoreOutput) userOutBuffer.clear()
+    if (ignoreOutput)
+      userOutBuffer.clear()
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
       log.debug(
@@ -454,13 +484,17 @@ private[akka] class TLSActor(
             handshakeFinished()
             transportInChoppingBlock.putBack(transportInBuffer)
           case _ ⇒
-            if (transportInBuffer.hasRemaining) doUnwrap()
-            else flushToUser()
+            if (transportInBuffer.hasRemaining)
+              doUnwrap()
+            else
+              flushToUser()
         }
       case CLOSED ⇒
         flushToUser()
-        if (engine.isOutboundDone) nextPhase(completedPhase)
-        else nextPhase(flushingOutbound)
+        if (engine.isOutboundDone)
+          nextPhase(completedPhase)
+        else
+          nextPhase(flushingOutbound)
       case BUFFER_UNDERFLOW ⇒
         flushToUser()
       case BUFFER_OVERFLOW ⇒
@@ -475,7 +509,8 @@ private[akka] class TLSActor(
   private def runDelegatedTasks(): Unit = {
     val task = engine.getDelegatedTask
     if (task != null) {
-      if (tracing) log.debug("running task")
+      if (tracing)
+        log.debug("running task")
       task.run()
       runDelegatedTasks()
     } else {
@@ -487,7 +522,8 @@ private[akka] class TLSActor(
   }
 
   private def handshakeFinished(): Unit = {
-    if (tracing) log.debug("handshake finished")
+    if (tracing)
+      log.debug("handshake finished")
     val session = engine.getSession
 
     hostInfo.map(_._1) match {
@@ -508,7 +544,8 @@ private[akka] class TLSActor(
   initialPhase(2, bidirectional)
 
   protected def fail(e: Throwable, closeTransport: Boolean = true): Unit = {
-    if (tracing) log.debug("fail {} due to: {}", self, e.getMessage)
+    if (tracing)
+      log.debug("fail {} due to: {}", self, e.getMessage)
     inputBunch.cancel()
     if (closeTransport) {
       log.debug("closing output")
@@ -519,7 +556,8 @@ private[akka] class TLSActor(
   }
 
   override def postStop(): Unit = {
-    if (tracing) log.debug("postStop")
+    if (tracing)
+      log.debug("postStop")
     super.postStop()
   }
 

@@ -53,7 +53,8 @@ object CompilationUnit {
         @tailrec
         def parsePackageSequence(completed: Boolean, k: => Unit) {
           def askType = builder.getTokenType
-          if (askType == null) k
+          if (askType == null)
+            k
           else if (askType == ScalaTokenTypes.tSEMICOLON) {
             builder.advanceLexer
             parsePackageSequence(completed = true, k)

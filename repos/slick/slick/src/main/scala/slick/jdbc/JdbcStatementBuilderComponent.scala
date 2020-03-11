@@ -121,8 +121,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   /** Create a SQL representation of a literal value. */
   def valueToSQLLiteral(v: Any, tpe: Type): String = {
     val JdbcType(ti, option) = tpe
-    if (option) v.asInstanceOf[Option[Any]].fold("null")(ti.valueToSQLLiteral)
-    else ti.valueToSQLLiteral(v)
+    if (option)
+      v.asInstanceOf[Option[Any]].fold("null")(ti.valueToSQLLiteral)
+    else
+      ti.valueToSQLLiteral(v)
   }
 
   // Immutable config options (to be overridden by subclasses)
@@ -191,18 +193,23 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       }
       buildSelectClause(c)
       buildFromClause(from)
-      if (limit0) b"\nwhere 1=0"
-      else buildWhereClause(and(c.where.toSeq ++ on))
+      if (limit0)
+        b"\nwhere 1=0"
+      else
+        buildWhereClause(and(c.where.toSeq ++ on))
       buildGroupByClause(c.groupBy)
       buildHavingClause(c.having)
       buildOrderByClause(c.orderBy)
-      if (!limit0) buildFetchOffsetClause(c.fetch, c.offset)
+      if (!limit0)
+        buildFetchOffsetClause(c.fetch, c.offset)
       currentUniqueFrom = oldUniqueFrom
     }
 
     private[this] def and(ns: Seq[Node]): Option[Node] =
-      if (ns.isEmpty) None
-      else Some(ns.reduceLeft((p1, p2) => Library.And.typed[Boolean](p1, p2)))
+      if (ns.isEmpty)
+        None
+      else
+        Some(ns.reduceLeft((p1, p2) => Library.And.typed[Boolean](p1, p2)))
 
     protected def flattenJoins(
         s: TermSymbol,
@@ -236,10 +243,12 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
               buildSelectPart(n)
               b" as `$sym"
           }
-          if (ch.isEmpty) b"1"
+          if (ch.isEmpty)
+            b"1"
         case Pure(ProductNode(ch), _) =>
           b.sep(ch, ", ")(buildSelectPart)
-          if (ch.isEmpty) b"1"
+          if (ch.isEmpty)
+            b"1"
         case Pure(n, _) => buildSelectPart(n)
       }
     }
@@ -271,7 +280,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
               case (sym, n) =>
                 buildFrom(
                   n,
-                  if (Some(sym) == currentUniqueFrom) None else Some(sym))
+                  if (Some(sym) == currentUniqueFrom)
+                    None
+                  else
+                    Some(sym))
             }
         }
       }
@@ -359,11 +371,13 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         b"\["
         buildFrom(j.right, Some(j.rightGen))
         b"\]"
-      } else buildFrom(j.right, Some(j.rightGen))
-      if (op != "cross") j.on match {
-        case LiteralNode(true) => b"\non 1=1"
-        case on                => b"\non !$on"
-      }
+      } else
+        buildFrom(j.right, Some(j.rightGen))
+      if (op != "cross")
+        j.on match {
+          case LiteralNode(true) => b"\non 1=1"
+          case on                => b"\non !$on"
+        }
     }
 
     def expr(n: Node, skipParens: Boolean = false): Unit = n match {
@@ -375,7 +389,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             case (s, (None, Nil)) => (Some(s), Nil)
             case (s, (b, r))      => (b, s :: r)
           }
-        if (base != currentUniqueFrom) b += symbolName(base.get) += '.'
+        if (base != currentUniqueFrom)
+          b += symbolName(base.get) += '.'
         rest match {
           case Nil          => b += '*'
           case field :: Nil => b += symbolName(field)
@@ -384,11 +399,15 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
               "Cannot resolve " + p + " as field or view")
         }
       case (n @ LiteralNode(v)) :@ JdbcType(ti, option) =>
-        if (n.volatileHint || !ti.hasLiteralForm) b +?= { (p, idx, param) =>
-          if (option) ti.setOption(v.asInstanceOf[Option[Any]], p, idx)
-          else ti.setValue(v, p, idx)
-        }
-        else b += valueToSQLLiteral(v, n.nodeType)
+        if (n.volatileHint || !ti.hasLiteralForm)
+          b +?= { (p, idx, param) =>
+            if (option)
+              ti.setOption(v.asInstanceOf[Option[Any]], p, idx)
+            else
+              ti.setValue(v, p, idx)
+          }
+        else
+          b += valueToSQLLiteral(v, n.nodeType)
       case ProductNode(ch) =>
         b"\("
         b.sep(ch, ", ")(expr(_))
@@ -401,7 +420,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             b"\($l is null\)"
           case Library.==(left: ProductNode, right: ProductNode) =>
             b"\("
-            if (supportsTuples) b"$left = $right"
+            if (supportsTuples)
+              b"$left = $right"
             else {
               val cols = left.children.zip(right.children).force
               b.sep(cols, " and ") {
@@ -425,8 +445,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             /* If tuples are not supported, selecting multiple individial columns
              * in exists(select ...) is probably not supported, either, so we rewrite
              * such sub-queries to "select 1". */
-            b"exists\[!${(if (supportsTuples) c
-                          else c.copy(select = Pure(LiteralNode(1))).infer()): Node}\]"
+            b"exists\[!${(if (supportsTuples)
+                            c
+                          else
+                            c.copy(select = Pure(LiteralNode(1))).infer()): Node}\]"
           case Library.Concat(l, r) if concatOperator.isDefined =>
             b"\($l${concatOperator.get}$r\)"
           case Library.User()
@@ -472,23 +494,29 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             val tn =
               if (ch.length == 2)
                 ch(1).asInstanceOf[LiteralNode].value.asInstanceOf[String]
-              else jdbcTypeFor(n.nodeType).sqlTypeName(None)
-            if (supportsCast) b"cast(${ch(0)} as $tn)"
-            else b"{fn convert(!${ch(0)},$tn)}"
+              else
+                jdbcTypeFor(n.nodeType).sqlTypeName(None)
+            if (supportsCast)
+              b"cast(${ch(0)} as $tn)"
+            else
+              b"{fn convert(!${ch(0)},$tn)}"
           case Library.SilentCast(ch) => b"$ch"
           case Apply(sym: Library.SqlOperator, ch) =>
             b"\("
             if (ch.length == 1) {
               b"${sym.name} ${ch.head}"
-            } else b.sep(ch, " " + sym.name + " ")(expr(_))
+            } else
+              b.sep(ch, " " + sym.name + " ")(expr(_))
             b"\)"
           case Apply(sym: Library.JdbcFunction, ch) =>
             val quote = quotedJdbcFns.map(_.contains(sym)).getOrElse(true)
-            if (quote) b"{fn "
+            if (quote)
+              b"{fn "
             b"${sym.name}("
             b.sep(ch, ",")(expr(_, true))
             b")"
-            if (quote) b"}"
+            if (quote)
+              b"}"
           case Apply(sym: Library.SqlFunction, ch) =>
             b"${sym.name}("
             b.sep(ch, ",")(expr(_, true))
@@ -512,17 +540,21 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         b +?= { (p, idx, param) =>
           if (option)
             ti.setOption(extractor(param).asInstanceOf[Option[Any]], p, idx)
-          else ti.setValue(extractor(param), p, idx)
+          else
+            ti.setValue(extractor(param), p, idx)
         }
       case s: SimpleFunction =>
-        if (s.scalar) b"{fn "
+        if (s.scalar)
+          b"{fn "
         b"${s.name}("
         b.sep(s.children, ",")(expr(_, true))
         b")"
-        if (s.scalar) b += '}'
+        if (s.scalar)
+          b += '}'
       case RowNumber(by) =>
         b"row_number() over(order by "
-        if (by.isEmpty) b"(select 1)"
+        if (by.isEmpty)
+          b"(select 1)"
         else
           b.sep(by, ", ") {
             case (n, o) => buildOrdering(n, o)
@@ -535,7 +567,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       case Union(left, right, all) =>
         b"\{"
         buildFrom(left, None, true)
-        if (all) b"\nunion all " else b"\nunion "
+        if (all)
+          b"\nunion all "
+        else
+          b"\nunion "
         buildFrom(right, None, true)
         b"\}"
       case SimpleLiteral(w)        => b += w
@@ -548,24 +583,27 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
     protected def buildOrdering(n: Node, o: Ordering) {
       expr(n)
-      if (o.direction.desc) b" desc"
-      if (o.nulls.first) b" nulls first"
-      else if (o.nulls.last) b" nulls last"
+      if (o.direction.desc)
+        b" desc"
+      if (o.nulls.first)
+        b" nulls first"
+      else if (o.nulls.last)
+        b" nulls last"
     }
 
     def buildUpdate: SQLBuilder.Result = {
       val (gen, from, where, select) = tree match {
         case Comprehension(
-            sym,
-            from: TableNode,
-            Pure(select, _),
-            where,
-            None,
-            _,
-            None,
-            None,
-            None,
-            None) =>
+              sym,
+              from: TableNode,
+              Pure(select, _),
+              where,
+              None,
+              _,
+              None,
+              None,
+              None,
+              None) =>
           select match {
             case f @ Select(Ref(struct), _) if struct == sym =>
               (sym, from, where, ConstArray(f.field))
@@ -606,16 +644,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         throw new SlickException("Invalid query for DELETE statement: " + msg)
       val (gen, from, where) = tree match {
         case Comprehension(
-            sym,
-            from,
-            Pure(select, _),
-            where,
-            _,
-            _,
-            None,
-            distinct,
-            fetch,
-            offset) =>
+              sym,
+              from,
+              Pure(select, _),
+              where,
+              _,
+              _,
+              None,
+              distinct,
+              fetch,
+              offset) =>
           if (fetch.isDefined || offset.isDefined || distinct.isDefined)
             fail(".take, .drop and .distinct are not supported for deleting")
           from match {
@@ -656,7 +694,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
     def buildInsert: InsertBuilderResult = {
       val start = buildInsertStart
-      if (syms.isEmpty) new InsertBuilderResult(table, emptyInsert, syms)
+      if (syms.isEmpty)
+        new InsertBuilderResult(table, emptyInsert, syms)
       else
         new InsertBuilderResult(table, s"$start values $allVars", syms) {
           override def buildInsert(compiledQuery: Node) = {
@@ -672,7 +711,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       allNames.iterator.mkString(s"insert into $tableName (", ",", ") ")
 
     protected def emptyInsert: String =
-      if (allFields.isEmpty) s"insert into $tableName default values"
+      if (allFields.isEmpty)
+        s"insert into $tableName default values"
       else
         s"insert into $tableName (${quoteIdentifier(allFields.head.name)}) values (default)"
 
@@ -687,9 +727,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       n.replace(
         {
           case InsertColumn(
-              ConstArray(Select(ref, ElementSymbol(idx))),
-              fs,
-              tpe) =>
+                ConstArray(Select(ref, ElementSymbol(idx))),
+                fs,
+                tpe) =>
             val newPaths =
               reordering(idx - 1).map(i => Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe
@@ -797,7 +837,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         tableNode) append " ("
       var first = true
       for (c <- columns) {
-        if (first) first = false else b append ","
+        if (first)
+          first = false
+        else
+          b append ","
         c.appendColumn(b)
       }
       addTableOptions(b)
@@ -811,7 +854,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
     protected def createIndex(idx: Index): String = {
       val b = new StringBuilder append "create "
-      if (idx.unique) b append "unique "
+      if (idx.unique)
+        b append "unique "
       b append "index " append quoteIdentifier(
         idx.name) append " on " append quoteTableName(tableNode) append " ("
       addIndexColumnList(idx.on, b, idx.table.tableName)
@@ -888,18 +932,21 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         requiredTableName: String,
         typeInfo: String) {
       var first = true
-      for (c <- columns) c match {
-        case Select(t: TableNode, field: FieldSymbol) =>
-          if (first) first = false
-          else sb append ","
-          sb append quoteIdentifier(field.name)
-          if (requiredTableName != t.tableName)
+      for (c <- columns)
+        c match {
+          case Select(t: TableNode, field: FieldSymbol) =>
+            if (first)
+              first = false
+            else
+              sb append ","
+            sb append quoteIdentifier(field.name)
+            if (requiredTableName != t.tableName)
+              throw new SlickException(
+                "All columns in " + typeInfo + " must belong to table " + requiredTableName)
+          case _ =>
             throw new SlickException(
-              "All columns in " + typeInfo + " must belong to table " + requiredTableName)
-        case _ =>
-          throw new SlickException(
-            "Cannot use column " + c + " in " + typeInfo + " (only named columns are allowed)")
-      }
+              "Cannot use column " + c + " in " + typeInfo + " (only named columns are allowed)")
+        }
     }
   }
 
@@ -917,11 +964,13 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     init()
 
     protected def init() {
-      for (o <- column.options) handleColumnOption(o)
+      for (o <- column.options)
+        handleColumnOption(o)
       if (sqlType ne null) {
         size.foreach(l => sqlType += s"($l)")
         customSqlType = true
-      } else sqlType = jdbcType.sqlTypeName(Some(column))
+      } else
+        sqlType = jdbcType.sqlTypeName(Some(column))
     }
 
     protected def handleColumnOption(o: ColumnOption[_]): Unit = o match {
@@ -946,11 +995,14 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     }
 
     protected def appendOptions(sb: StringBuilder) {
-      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
+      if (defaultLiteral ne null)
+        sb append " DEFAULT " append defaultLiteral
       if (autoIncrement)
         sb append " GENERATED BY DEFAULT AS IDENTITY(START WITH 1)"
-      if (notNull) sb append " NOT NULL"
-      if (primaryKey) sb append " PRIMARY KEY"
+      if (notNull)
+        sb append " NOT NULL"
+      if (primaryKey)
+        sb append " PRIMARY KEY"
     }
   }
 
@@ -972,7 +1024,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       seq._start.foreach {
         b append " start " append _
       }
-      if (seq._cycle) b append " cycle"
+      if (seq._cycle)
+        b append " cycle"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
     }
   }

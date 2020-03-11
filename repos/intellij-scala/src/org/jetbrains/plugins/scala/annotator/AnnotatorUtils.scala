@@ -31,7 +31,8 @@ private[annotator] object AnnotatorUtils {
       fixes: IntentionAction*) {
     val annotation = holder.createErrorAnnotation(range, error)
     annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-    for (fix <- fixes) annotation.registerFix(fix)
+    for (fix <- fixes)
+      annotation.registerFix(fix)
   }
 
   def proccessWarning(
@@ -49,7 +50,8 @@ private[annotator] object AnnotatorUtils {
       fixes: IntentionAction*) {
     val annotation: Annotation = holder.createWarningAnnotation(range, error)
     annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-    for (fix <- fixes) annotation.registerFix(fix)
+    for (fix <- fixes)
+      annotation.registerFix(fix)
   }
 
   def checkConformance(

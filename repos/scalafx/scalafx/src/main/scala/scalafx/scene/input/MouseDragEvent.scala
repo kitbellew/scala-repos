@@ -36,7 +36,10 @@ import scalafx.event.EventType
 object MouseDragEvent {
   implicit def sfxMouseDragEvent2jfx(
       mde: MouseDragEvent): jfxsi.MouseDragEvent =
-    if (mde != null) mde.delegate else null
+    if (mde != null)
+      mde.delegate
+    else
+      null
 
   /**
     * Common supertype for all mouse event types.

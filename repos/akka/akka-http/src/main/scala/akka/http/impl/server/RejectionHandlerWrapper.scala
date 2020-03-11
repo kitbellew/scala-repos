@@ -23,7 +23,8 @@ private[http] class RejectionHandlerWrapper(
 
     import javaHandler._
     def handle(): RouteResult =
-      if (rejs.isEmpty) handleEmptyRejection(ctx)
+      if (rejs.isEmpty)
+        handleEmptyRejection(ctx)
       else
         rejs.head match {
           case MethodRejection(supported) ⇒
@@ -61,8 +62,8 @@ private[http] class RejectionHandlerWrapper(
           case UnsupportedRequestEncodingRejection(supported) ⇒
             handleUnsupportedRequestEncodingRejection(ctx, supported.asJava)
           case UnsatisfiableRangeRejection(
-              unsatisfiableRanges,
-              actualEntityLength) ⇒
+                unsatisfiableRanges,
+                actualEntityLength) ⇒
             handleUnsatisfiableRangeRejection(
               ctx,
               unsatisfiableRanges.asJava,

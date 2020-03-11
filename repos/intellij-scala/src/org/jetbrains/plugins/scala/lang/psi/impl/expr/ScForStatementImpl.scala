@@ -60,7 +60,8 @@ class ScForStatementImpl(node: ASTNode)
       case None    => return true
       case Some(x) => x
     }
-    if (lastParent == enumerators) return true
+    if (lastParent == enumerators)
+      return true
     enumerators.processDeclarations(processor, state, null, place)
   }
 
@@ -86,13 +87,18 @@ class ScForStatementImpl(node: ASTNode)
     }
     if (guards.isEmpty && enums.isEmpty && gens.length == 1) {
       val gen = gens.head
-      if (gen.rvalue == null) return None
+      if (gen.rvalue == null)
+        return None
       exprText
         .append("(")
         .append(gen.rvalue.getText)
         .append(")")
         .append(".")
-        .append(if (isYield) "map" else "foreach")
+        .append(
+          if (isYield)
+            "map"
+          else
+            "foreach")
         .append(" { case ")
       gen.pattern.desugarizedPatternIndex = exprText.length
       exprText.append(gen.pattern.getText).append(s" $arrow ")
@@ -103,7 +109,8 @@ class ScForStatementImpl(node: ASTNode)
       exprText.append(" } ")
     } else if (gens.nonEmpty) {
       val gen = gens.head
-      if (gen.rvalue == null) return None
+      if (gen.rvalue == null)
+        return None
       var next = nextEnumerator(gen)
       next match {
         case null =>
@@ -126,11 +133,13 @@ class ScForStatementImpl(node: ASTNode)
                 if (!levelSet.isEmpty) {
                   filterFound = true
                   false
-                } else true
+                } else
+                  true
               }
             }
           processor.processType(tp, this)
-          if (!filterFound) filterText = "filter"
+          if (!filterFound)
+            filterText = "filter"
           exprText
             .append(gen.pattern.getText)
             .append(" <- ((")
@@ -149,7 +158,8 @@ class ScForStatementImpl(node: ASTNode)
           exprText.append("})")
 
           next = nextEnumerator(next)
-          if (next != null) exprText.append(" ; ")
+          if (next != null)
+            exprText.append(" ; ")
           while (next != null) {
             next match {
               case gen: ScGenerator =>
@@ -160,7 +170,8 @@ class ScForStatementImpl(node: ASTNode)
             next = next.getNextSibling
           }
           exprText.append("\n} ")
-          if (isYield) exprText.append("yield ")
+          if (isYield)
+            exprText.append("yield ")
           body match {
             case Some(x) => exprText append bodyToText(x)
             case _       => exprText append "{}"
@@ -171,7 +182,11 @@ class ScForStatementImpl(node: ASTNode)
             .append(gen.rvalue.getText)
             .append(")")
             .append(".")
-            .append(if (isYield) "flatMap " else "foreach ")
+            .append(
+              if (isYield)
+                "flatMap "
+              else
+                "foreach ")
             .append("{ case ")
           gen.pattern.desugarizedPatternIndex = exprText.length
           exprText
@@ -188,14 +203,16 @@ class ScForStatementImpl(node: ASTNode)
             next = next.getNextSibling
           }
           exprText.append("\n} ")
-          if (isYield) exprText.append("yield ")
+          if (isYield)
+            exprText.append("yield ")
           body match {
             case Some(x) => exprText append bodyToText(x)
             case _       => exprText append "{}"
           }
           exprText.append("\n}")
         case enum: ScEnumerator =>
-          if (enum.rvalue == null) return None
+          if (enum.rvalue == null)
+            return None
           exprText.append("for {(").append(enum.pattern.getText).append(", ")
           gen.pattern.desugarizedPatternIndex = exprText.length
           exprText.append(gen.pattern.getText)
@@ -225,7 +242,8 @@ class ScForStatementImpl(node: ASTNode)
             .append(freshName1)
             .append(")})")
           next = nextEnumerator(next)
-          if (next != null) exprText.append(" ; ")
+          if (next != null)
+            exprText.append(" ; ")
           while (next != null) {
             next match {
               case gen: ScGenerator =>
@@ -236,7 +254,8 @@ class ScForStatementImpl(node: ASTNode)
             next = next.getNextSibling
           }
           exprText.append("\n} ")
-          if (isYield) exprText.append("yield ")
+          if (isYield)
+            exprText.append("yield ")
           body match {
             case Some(x) => exprText append bodyToText(x)
             case _       => exprText append "{}"
@@ -251,7 +270,8 @@ class ScForStatementImpl(node: ASTNode)
   def getDesugarizedExpr: Option[ScExpression] = {
     val res = getDesugarizedExprText(forDisplay = false) match {
       case Some(text) =>
-        if (text == "") None
+        if (text == "")
+          None
         else {
           try {
             Option(ScalaPsiElementFactory

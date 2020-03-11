@@ -155,7 +155,10 @@ class UpgradedImageIExtractor(
             mainImage.imageExtractionType = "bigimage"
             mainImage.bytes = highScoreImage._1.bytes
             mainImage.confidenceScore =
-              if (scoredImages.size > 0) (100 / scoredImages.size) else 0
+              if (scoredImages.size > 0)
+                (100 / scoredImages.size)
+              else
+                0
             trace(
               "IMAGE COMPLETE: High Score Image is: " + mainImage.imageSrc + " Score is: " + highScoreImage._2)
             return Some(mainImage)
@@ -195,7 +198,8 @@ class UpgradedImageIExtractor(
       node: Element,
       parentDepth: Int,
       siblingDepth: Int): Option[DepthTraversal] = {
-    if (node == null) return None
+    if (node == null)
+      return None
 
     val MAX_PARENT_DEPTH = 2
     if (parentDepth > MAX_PARENT_DEPTH) {
@@ -326,7 +330,10 @@ class UpgradedImageIExtractor(
         image.remove()
       }
     }
-    if (goodImages == null || goodImages.isEmpty) None else Some(goodImages)
+    if (goodImages == null || goodImages.isEmpty)
+      None
+    else
+      Some(goodImages)
   }
 
   /**
@@ -406,12 +413,18 @@ class UpgradedImageIExtractor(
     })
 
     trace(" Now leaving findImagesThatPassByteSizeTest")
-    if (goodImages == null || goodImages.isEmpty) None else Some(goodImages)
+    if (goodImages == null || goodImages.isEmpty)
+      None
+    else
+      Some(goodImages)
 
   }
 
   def getNode(node: Element): Option[Element] = {
-    if (node == null) None else Some(node)
+    if (node == null)
+      None
+    else
+      Some(node)
   }
 
   /**
@@ -420,7 +433,8 @@ class UpgradedImageIExtractor(
     * @return
     */
   private def checkForLinkTag: Option[Image] = {
-    if (article.rawDoc == null) return None
+    if (article.rawDoc == null)
+      return None
 
     try {
       val meta: Elements = article.rawDoc.select("link[rel~=image_src]")
@@ -514,7 +528,8 @@ class UpgradedImageIExtractor(
     * //todo enable this to use a series of settings files so people can define what the image ids/classes are on specific sites
     */
   def checkForKnownElements(): Option[Image] = {
-    if (article.rawDoc == null) return None
+    if (article.rawDoc == null)
+      return None
 
     val domain = getCleanDomain
     customSiteMapping
@@ -604,10 +619,11 @@ object UpgradedImageIExtractor {
         getClass.getResourceAsStream(
           "/com/gravity/goose/images/known-image-css.txt"))
       .getLines()
-    (for (line <- lines) yield {
-      val Array(domain, css) = delimRegex.split(line)
-      domain -> css
-    }).toMap
+    (for (line <- lines)
+      yield {
+        val Array(domain, css) = delimRegex.split(line)
+        domain -> css
+      }).toMap
   }
 
   val KNOWN_IMG_DOM_NAMES = ListBuffer(

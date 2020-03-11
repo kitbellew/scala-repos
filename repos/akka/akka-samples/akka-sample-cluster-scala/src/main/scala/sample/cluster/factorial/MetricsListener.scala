@@ -39,12 +39,12 @@ class MetricsListener extends Actor with ActorLogging {
 
   def logCpu(nodeMetrics: NodeMetrics): Unit = nodeMetrics match {
     case Cpu(
-        address,
-        timestamp,
-        Some(systemLoadAverage),
-        cpuCombined,
-        cpuStolen,
-        processors) =>
+          address,
+          timestamp,
+          Some(systemLoadAverage),
+          cpuCombined,
+          cpuStolen,
+          processors) =>
       log.info("Load: {} ({} processors)", systemLoadAverage, processors)
     case _ => // No cpu info.
   }

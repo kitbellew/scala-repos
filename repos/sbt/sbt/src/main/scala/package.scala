@@ -27,7 +27,10 @@ package object sbt
   type CompileOrder = xsbti.compile.CompileOrder
 
   implicit def maybeToOption[S](m: xsbti.Maybe[S]): Option[S] =
-    if (m.isDefined) Some(m.get) else None
+    if (m.isDefined)
+      Some(m.get)
+    else
+      None
   def uri(s: String): URI = new URI(s)
   def file(s: String): File = new File(s)
   def url(s: String): URL = new URL(s)

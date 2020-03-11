@@ -133,13 +133,14 @@ object StrictForm {
       : FromEntityUnmarshaller[StrictForm] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit fm ⇒ entity ⇒
       def tryUnmarshalToQueryForm: Future[StrictForm] =
-        for (formData ← formDataUM(entity).fast) yield {
-          new StrictForm {
-            val fields = formData.fields.map {
-              case (name, value) ⇒ name -> Field.FromString(value)
-            }(collection.breakOut)
+        for (formData ← formDataUM(entity).fast)
+          yield {
+            new StrictForm {
+              val fields = formData.fields.map {
+                case (name, value) ⇒ name -> Field.FromString(value)
+              }(collection.breakOut)
+            }
           }
-        }
 
       def tryUnmarshalToMultipartForm: Future[StrictForm] =
         for {

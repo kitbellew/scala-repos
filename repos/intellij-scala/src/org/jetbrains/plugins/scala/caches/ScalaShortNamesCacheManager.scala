@@ -35,7 +35,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     "#org.jetbrains.plugins.scala.caches.ScalaShortNamesCacheManager")
 
   def getClassByFQName(name: String, scope: GlobalSearchScope): PsiClass = {
-    if (DumbService.getInstance(project).isDumb) return null
+    if (DumbService.getInstance(project).isDumb)
+      return null
 
     val classes =
       StubIndex.getElements[java.lang.Integer, PsiClass](
@@ -50,7 +51,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       if (name == clazz.qualifiedName) {
         clazz.getContainingFile match {
           case file: ScalaFile =>
-            if (!file.isScriptFile(withCaching = true)) return clazz
+            if (!file.isScriptFile(withCaching = true))
+              return clazz
           case _ => return clazz
         }
       }
@@ -61,7 +63,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
   def getClassesByFQName(
       fqn: String,
       scope: GlobalSearchScope): Seq[PsiClass] = {
-    if (DumbService.getInstance(project).isDumb) return Seq.empty
+    if (DumbService.getInstance(project).isDumb)
+      return Seq.empty
 
     val classes =
       StubIndex.getElements[java.lang.Integer, PsiClass](
@@ -92,8 +95,10 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
         }
       }
     }
-    if (count == 0) return Seq.empty
-    if (count == 1) return Seq(psiClass)
+    if (count == 0)
+      return Seq.empty
+    if (count == 1)
+      return Seq(psiClass)
     buffer.toSeq
   }
 
@@ -158,8 +163,10 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
         count += 1
       }
     }
-    if (count == 0) return Seq.empty
-    if (count == 1) return Seq(member)
+    if (count == 0)
+      return Seq.empty
+    if (count == 1)
+      return Seq(member)
     list.toSeq
   }
 
@@ -193,8 +200,10 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
           count += 1
         }
       }
-      if (count == 0) Seq.empty
-      if (count == 1) Seq(method)
+      if (count == 0)
+        Seq.empty
+      if (count == 1)
+        Seq(method)
       list.toSeq
     }
     def javaMethods: Seq[PsiMethod] = {
@@ -242,7 +251,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
   def getPackageObjectByName(
       fqn: String,
       scope: GlobalSearchScope): ScTypeDefinition = {
-    if (DumbService.getInstance(project).isDumb) return null
+    if (DumbService.getInstance(project).isDumb)
+      return null
 
     val classes =
       StubIndex.getElements[java.lang.Integer, PsiClass](
@@ -300,8 +310,10 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     val result: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]()
     for (clazzName <- otherClassNames) {
       val qualName =
-        if (psiPackage.getQualifiedName.isEmpty) clazzName
-        else psiPackage.getQualifiedName + "." + clazzName
+        if (psiPackage.getQualifiedName.isEmpty)
+          clazzName
+        else
+          psiPackage.getQualifiedName + "." + clazzName
       val c =
         ScalaPsiManager.instance(project).getCachedClasses(scope, qualName)
       result ++= c

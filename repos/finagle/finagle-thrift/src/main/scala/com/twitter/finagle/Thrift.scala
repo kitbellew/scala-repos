@@ -179,8 +179,10 @@ object Thrift
 
     protected def newTransporter(): Transporter[In, Out] = {
       val pipeline =
-        if (framed) ThriftClientFramedPipelineFactory
-        else ThriftClientBufferedPipelineFactory(protocolFactory)
+        if (framed)
+          ThriftClientFramedPipelineFactory
+        else
+          ThriftClientBufferedPipelineFactory(protocolFactory)
       Netty3Transporter(pipeline, params)
     }
 
@@ -343,12 +345,17 @@ object Thrift
 
     protected def newListener(): Listener[In, Out] = {
       val pipeline =
-        if (framed) thrift.ThriftServerFramedPipelineFactory
-        else thrift.ThriftServerBufferedPipelineFactory(protocolFactory)
+        if (framed)
+          thrift.ThriftServerFramedPipelineFactory
+        else
+          thrift.ThriftServerBufferedPipelineFactory(protocolFactory)
 
       Netty3Listener(
         pipeline,
-        if (params.contains[Label]) params else params + Label("thrift"))
+        if (params.contains[Label])
+          params
+        else
+          params + Label("thrift"))
     }
 
     protected def newDispatcher(

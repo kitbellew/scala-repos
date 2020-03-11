@@ -91,13 +91,15 @@ object JasmineRunner {
   }
 
   private def handleArgs(args: Array[String]): Unit = {
-    val tags = for (arg <- args) yield {
-      if (arg.startsWith("-t"))
-        arg.stripPrefix("-t")
-      else
-        throw new IllegalArgumentException(
-          s"Unknown argument for JasmineFramework: $arg")
-    }
+    val tags =
+      for (arg <- args)
+        yield {
+          if (arg.startsWith("-t"))
+            arg.stripPrefix("-t")
+          else
+            throw new IllegalArgumentException(
+              s"Unknown argument for JasmineFramework: $arg")
+        }
 
     TestSuiteContext.setTags(tags.toSet)
   }

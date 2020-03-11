@@ -19,7 +19,8 @@ private[reflect] trait ThreadLocalStorage {
     private val values = java.util.Collections
       .synchronizedMap(new java.util.WeakHashMap[Thread, T]())
     def get: T = {
-      if (values containsKey currentThread) values.get(currentThread)
+      if (values containsKey currentThread)
+        values.get(currentThread)
       else {
         val value = initialValue
         // since the key is currentThread, and `values` is private, it

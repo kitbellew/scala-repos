@@ -119,7 +119,8 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
                 maybeVolumeMatch)
           }
         }
-      } else None
+      } else
+        None
 
     def maybeReserveAndCreateVolumes =
       if (needToReserve) {
@@ -137,7 +138,8 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
             offer,
             resourceMatch)
         }
-      } else None
+      } else
+        None
 
     maybeLaunchOnReservation orElse maybeReserveAndCreateVolumes
   }

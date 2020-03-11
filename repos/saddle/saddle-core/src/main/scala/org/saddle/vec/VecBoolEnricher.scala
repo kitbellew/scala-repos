@@ -29,11 +29,21 @@ trait VecBoolEnricher {
     /**
       * Number of elements which are true
       */
-    def countT: Int = v.foldLeft(0)((a, b) => a + (if (b) 1 else 0))
+    def countT: Int =
+      v.foldLeft(0)((a, b) =>
+        a + (if (b)
+               1
+             else
+               0))
 
     /**
       * Number of elements which are false
       */
-    def countF: Int = v.foldLeft(0)((a, b) => a + (if (b) 0 else 1))
+    def countF: Int =
+      v.foldLeft(0)((a, b) =>
+        a + (if (b)
+               0
+             else
+               1))
   }
 }

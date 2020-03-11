@@ -18,8 +18,10 @@ class ZkNodeDataCacheTest extends FunSuite {
     var shouldThrow = false
     override def loadEntity(path: String) = {
       parseNodeCalledCount += 1
-      if (shouldThrow) Future.exception(new Exception)
-      else Future.value(Seq("a", "b"))
+      if (shouldThrow)
+        Future.exception(new Exception)
+      else
+        Future.value(Seq("a", "b"))
     }
     override def parseNode(path: String, data: String) = Seq.empty
   }

@@ -126,9 +126,11 @@ class ShowImplicitParametersAction
     val context = e.getDataContext
     val project = CommonDataKeys.PROJECT.getData(context)
     val editor = CommonDataKeys.EDITOR.getData(context)
-    if (editor == null) return
+    if (editor == null)
+      return
     val file = PsiUtilBase.getPsiFileInEditor(editor, project)
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     def forExpr(expr: PsiElement) {
       val implicitParameters = implicitParams(expr)
@@ -171,9 +173,12 @@ class ShowImplicitParametersAction
               parent match {
                 case constr: ScConstructor =>
                   var p = constr.getParent
-                  if (p != null) p = p.getParent
-                  if (p != null) p = p.getParent
-                  if (!p.isInstanceOf[ScNewTemplateDefinition]) res += parent
+                  if (p != null)
+                    p = p.getParent
+                  if (p != null)
+                    p = p.getParent
+                  if (!p.isInstanceOf[ScNewTemplateDefinition])
+                    res += parent
                 case _ =>
                   res += parent
               }
@@ -321,7 +326,8 @@ class ShowImplicitParametersAction
     new ClickListener {
       def onClick(e: MouseEvent, clickCount: Int): Boolean = {
         val path: TreePath = jTree.getPathForLocation(e.getX, e.getY)
-        if (path == null) return false
+        if (path == null)
+          return false
         navigateSelectedElement(popup, jTree, project)
         true
       }

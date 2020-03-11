@@ -54,7 +54,12 @@ class JavapClass(
       args partition (s => (s startsWith "-") && s.length > 1)
     val (options, filter) = {
       val (opts, flag) = toolArgs(options0)
-      (if (opts.isEmpty) DefaultOptions else opts, flag)
+      (
+        if (opts.isEmpty)
+          DefaultOptions
+        else
+          opts,
+        flag)
     }
 
     if ((options contains "-help") || targets.isEmpty)
@@ -118,16 +123,26 @@ class JavapClass(
         val tran = intp translatePath name
         def loadableOrNone(strip: Boolean) = {
           def suffix(strip: Boolean)(x: String) =
-            (if (strip && (x endsWith "$")) x.init else x) + sufx
+            (if (strip && (x endsWith "$"))
+               x.init
+             else
+               x) + sufx
           val res = tran map (suffix(strip) _)
-          if (res.isDefined && loadable(res.get)) res else None
+          if (res.isDefined && loadable(res.get))
+            res
+          else
+            None
         }
         // try loading translated+suffix
         val res = loadableOrNone(strip = false)
         // some synthetics lack a dollar, (e.g., suffix = delayedInit$body)
         // so as a hack, if prefix$$suffix fails, also try prefix$suffix
-        if (res.isDefined) res else loadableOrNone(strip = true)
-      } else None
+        if (res.isDefined)
+          res
+        else
+          loadableOrNone(strip = true)
+      } else
+        None
     }
     val p = path.asClassName // scrub any suffix
     // if repl, translate the name to something replish
@@ -153,7 +168,11 @@ class JavapClass(
     type Input = Tuple2[String, Try[ByteAry]]
 
     implicit protected class Failer[A](a: => A) {
-      def orFailed[B >: A](b: => B) = if (failed) b else a
+      def orFailed[B >: A](b: => B) =
+        if (failed)
+          b
+        else
+          a
     }
     protected def noToolError =
       new JpError(
@@ -171,7 +190,10 @@ class JavapClass(
     def filterLines(target: String, text: String): String = {
       // take Foo# as Foo#apply for purposes of filtering.
       val filterOn = target.splitHashMember._2 map { s =>
-        if (s.isEmpty) "apply" else s
+        if (s.isEmpty)
+          "apply"
+        else
+          s
       }
       var filtering = false // true if in region matching filter
       // turn filtering on/off given the pattern of interest
@@ -188,7 +210,8 @@ class JavapClass(
         def isOurMethod = {
           val lparen = line lastIndexOf '('
           val blank = line.lastIndexOf(' ', lparen)
-          if (blank < 0) false
+          if (blank < 0)
+            false
           else {
             val method = line.substring(blank + 1, lparen)
             (method == pattern || isSpecialized(method) || isAnonymized(method))
@@ -256,7 +279,10 @@ class JavapClass(
 
       def reportable(): String = {
         clear()
-        if (messages.nonEmpty) messages mkString ("", EOL, EOL) else ""
+        if (messages.nonEmpty)
+          messages mkString ("", EOL, EOL)
+        else
+          ""
       }
     }
     val reporter = new JavaReporter
@@ -333,7 +359,8 @@ class JavapClass(
       new Showable {
         val output = filterLines(target, s"${reporter.reportable()}${written}")
         def show() =
-          if (filter) intp.withoutTruncating(printWriter.write(output))
+          if (filter)
+            intp.withoutTruncating(printWriter.write(output))
           else
             intp.withoutUnwrapping(printWriter.write(output, 0, output.length))
       }
@@ -421,17 +448,28 @@ object JavapClass {
     private def suffix = ".class"
     def asClassName = (s stripSuffix suffix).replace('/', '.')
     def asClassResource =
-      if (s endsWith suffix) s else s.replace('.', '/') + suffix
+      if (s endsWith suffix)
+        s
+      else
+        s.replace('.', '/') + suffix
     def splitSuffix: (String, String) =
-      if (s endsWith suffix) (s dropRight suffix.length, suffix) else (s, "")
+      if (s endsWith suffix)
+        (s dropRight suffix.length, suffix)
+      else
+        (s, "")
     def strippingSuffix(f: String => String): String =
-      if (s endsWith suffix) f(s dropRight suffix.length) else s
+      if (s endsWith suffix)
+        f(s dropRight suffix.length)
+      else
+        s
     // e.g. Foo#bar. Foo# yields zero-length member part.
     def splitHashMember: (String, Option[String]) = {
       val i = s lastIndexOf '#'
-      if (i < 0) (s, None)
+      if (i < 0)
+        (s, None)
       //else if (i >= s.length - 1) (s.init, None)
-      else (s take i, Some(s drop i + 1))
+      else
+        (s take i, Some(s drop i + 1))
     }
   }
   implicit class ClassLoaderOps(val loader: ScalaClassLoader) extends AnyVal {
@@ -530,20 +568,27 @@ object Javap {
     // one candidate or one single-char candidate
     def uniqueOf(maybes: Seq[String]) = {
       def single(s: String) = s.length == 2
-      if (maybes.length == 1) maybes
-      else if ((maybes count single) == 1) maybes filter single
-      else Nil
+      if (maybes.length == 1)
+        maybes
+      else if ((maybes count single) == 1)
+        maybes filter single
+      else
+        Nil
     }
     // each optchar must decode to exactly one option
     def unpacked(s: String): Try[Seq[String]] = {
       val ones = (s drop 1) map { c =>
         val maybes = uniqueOf(candidates(s"-$c"))
-        if (maybes.length == 1) Some(maybes.head) else None
+        if (maybes.length == 1)
+          Some(maybes.head)
+        else
+          None
       }
       Try(ones) filter (_ forall (_.isDefined)) map (_.flatten)
     }
     val res = uniqueOf(candidates(arg))
-    if (res.nonEmpty) res
+    if (res.nonEmpty)
+      res
     else
       (unpacked(arg)
         getOrElse (Seq("-help"))) // or else someone needs help

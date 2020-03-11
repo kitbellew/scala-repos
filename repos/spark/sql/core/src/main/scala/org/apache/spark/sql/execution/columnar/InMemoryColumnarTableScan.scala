@@ -106,7 +106,10 @@ private[sql] case class InMemoryRelation(
   private def statisticsToBePropagated =
     if (_statistics == null) {
       val updatedStats = statistics
-      if (_statistics == null) null else updatedStats
+      if (_statistics == null)
+        null
+      else
+        updatedStats
     } else {
       _statistics
     }

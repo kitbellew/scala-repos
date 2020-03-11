@@ -212,7 +212,8 @@ case class ExpressionEncoder[T](
     clsTag: ClassTag[T])
     extends Encoder[T] {
 
-  if (flat) require(toRowExpressions.size == 1)
+  if (flat)
+    require(toRowExpressions.size == 1)
 
   @transient
   private lazy val extractProjection =
@@ -310,7 +311,8 @@ case class ExpressionEncoder[T](
     var maxOrdinal = -1
     fromRowExpression.foreach {
       case b: BoundReference =>
-        if (b.ordinal > maxOrdinal) maxOrdinal = b.ordinal
+        if (b.ordinal > maxOrdinal)
+          maxOrdinal = b.ordinal
       case _ =>
     }
     if (maxOrdinal >= 0 && maxOrdinal != schema.length - 1) {

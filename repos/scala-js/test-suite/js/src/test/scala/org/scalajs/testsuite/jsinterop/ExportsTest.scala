@@ -303,7 +303,10 @@ class ExportsTest {
     class Foo {
       @JSExport
       def foo(switch: Boolean): Any =
-        if (switch) 1 else new A
+        if (switch)
+          1
+        else
+          new A
     }
 
     val foo = (new Foo).asInstanceOf[js.Dynamic]

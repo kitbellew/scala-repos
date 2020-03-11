@@ -59,8 +59,10 @@ abstract class NumericRange[T](
   override def length = numRangeElements
   override def isEmpty = length == 0
   override lazy val last: T =
-    if (length == 0) Nil.last
-    else locationAfterN(length - 1)
+    if (length == 0)
+      Nil.last
+    else
+      locationAfterN(length - 1)
 
   /** Create a new range with the start and end values of this range and
     *  a new `step`.
@@ -113,36 +115,49 @@ abstract class NumericRange[T](
   private def newEmptyRange(value: T) = NumericRange(value, value, step)
 
   final override def take(n: Int): NumericRange[T] = (
-    if (n <= 0 || length == 0) newEmptyRange(start)
-    else if (n >= length) this
-    else new NumericRange.Inclusive(start, locationAfterN(n - 1), step)
+    if (n <= 0 || length == 0)
+      newEmptyRange(start)
+    else if (n >= length)
+      this
+    else
+      new NumericRange.Inclusive(start, locationAfterN(n - 1), step)
   )
 
   final override def drop(n: Int): NumericRange[T] = (
-    if (n <= 0 || length == 0) this
-    else if (n >= length) newEmptyRange(end)
-    else copy(locationAfterN(n), end, step)
+    if (n <= 0 || length == 0)
+      this
+    else if (n >= length)
+      newEmptyRange(end)
+    else
+      copy(locationAfterN(n), end, step)
   )
 
   def apply(idx: Int): T = {
     if (idx < 0 || idx >= length)
       throw new IndexOutOfBoundsException(idx.toString)
-    else locationAfterN(idx)
+    else
+      locationAfterN(idx)
   }
 
   import NumericRange.defaultOrdering
 
   override def min[T1 >: T](implicit ord: Ordering[T1]): T =
     if (ord eq defaultOrdering(num)) {
-      if (num.signum(step) > 0) start
-      else last
-    } else super.min(ord)
+      if (num.signum(step) > 0)
+        start
+      else
+        last
+    } else
+      super.min(ord)
 
   override def max[T1 >: T](implicit ord: Ordering[T1]): T =
     if (ord eq defaultOrdering(num)) {
-      if (num.signum(step) > 0) last
-      else start
-    } else super.max(ord)
+      if (num.signum(step) > 0)
+        last
+      else
+        start
+    } else
+      super.max(ord)
 
   // Motivated by the desire for Double ranges with BigDecimal precision,
   // we need some way to map a Range and get another Range.  This can't be
@@ -173,8 +188,10 @@ abstract class NumericRange[T](
     // XXX This may be incomplete.
     new NumericRange[A](fm(start), fm(end), fm(step), isInclusive) {
       def copy(start: A, end: A, step: A): NumericRange[A] =
-        if (isInclusive) NumericRange.inclusive(start, end, step)
-        else NumericRange(start, end, step)
+        if (isInclusive)
+          NumericRange.inclusive(start, end, step)
+        else
+          NumericRange(start, end, step)
 
       private lazy val underlyingRange: NumericRange[T] = self
       override def foreach[U](f: A => U) {
@@ -199,8 +216,10 @@ abstract class NumericRange[T](
 
   final override def sum[B >: T](implicit num: Numeric[B]): B = {
     import num.Ops
-    if (isEmpty) this.num fromInt 0
-    else if (numRangeElements == 1) head
+    if (isEmpty)
+      this.num fromInt 0
+    else if (numRangeElements == 1)
+      head
     else
       ((this.num fromInt numRangeElements) * (head + last) / (this.num fromInt 2))
   }
@@ -217,7 +236,11 @@ abstract class NumericRange[T](
   }
 
   override def toString() = {
-    val endStr = if (length > Range.MAX_PRINT) ", ... )" else ")"
+    val endStr =
+      if (length > Range.MAX_PRINT)
+        ", ... )"
+      else
+        ")"
     take(Range.MAX_PRINT).mkString("NumericRange(", ", ", endStr)
   }
 }
@@ -236,15 +259,24 @@ object NumericRange {
     val upward = num.lt(start, end)
     val posStep = num.gt(step, zero)
 
-    if (step == zero) throw new IllegalArgumentException("step cannot be 0.")
-    else if (start == end) if (isInclusive) 1 else 0
-    else if (upward != posStep) 0
+    if (step == zero)
+      throw new IllegalArgumentException("step cannot be 0.")
+    else if (start == end)
+      if (isInclusive)
+        1
+      else
+        0
+    else if (upward != posStep)
+      0
     else {
       val diff = num.minus(end, start)
       val jumps = num.toLong(num.quot(diff, step))
       val remainder = num.rem(diff, step)
       val longCount = jumps + (
-        if (!isInclusive && zero == remainder) 0 else 1
+        if (!isInclusive && zero == remainder)
+          0
+        else
+          1
       )
 
       /** The edge cases keep coming.  Since e.g.
@@ -257,7 +289,11 @@ object NumericRange {
         longCount == 0 && num.lt(num.plus(start, step), end) == upward
 
       if (longCount > scala.Int.MaxValue || longCount < 0L || isOverflow) {
-        val word = if (isInclusive) "to" else "until"
+        val word =
+          if (isInclusive)
+            "to"
+          else
+            "until"
         val descr = List(start, word, end, "by", step) mkString " "
 
         throw new IllegalArgumentException(

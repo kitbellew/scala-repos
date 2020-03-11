@@ -53,7 +53,10 @@ object JobSettings {
     * @return JavaFX JobSettings
     */
   implicit def sfxJobSettings2jfx(js: JobSettings): jfxp.JobSettings =
-    if (js != null) js.delegate else null
+    if (js != null)
+      js.delegate
+    else
+      null
 
 }
 

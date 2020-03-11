@@ -36,7 +36,10 @@ import scalafx.scene.image.Image
 object BackgroundImage {
   implicit def sfxBackgroundImage2jfx(
       v: BackgroundImage): jfxsl.BackgroundImage =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

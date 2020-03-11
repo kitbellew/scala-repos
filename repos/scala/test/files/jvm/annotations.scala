@@ -216,7 +216,11 @@ object Test6 {
   import scala.beans.BooleanBeanProperty
   class C(@BeanProperty var text: String)
   class D(@BooleanBeanProperty var prop: Boolean) {
-    @BeanProperty val m: Int = if (prop) 1 else 2
+    @BeanProperty val m: Int =
+      if (prop)
+        1
+      else
+        2
   }
 
   def run {

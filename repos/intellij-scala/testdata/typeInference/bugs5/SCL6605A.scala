@@ -11,7 +11,11 @@ trait SCL6605A {
   type FF <: T[DD]
   val bb: BB
   val ff: FF
-  val gg = if (true) bb else ff
+  val gg =
+    if (true)
+      bb
+    else
+      ff
   /*start*/
   gg /*end*/
 }

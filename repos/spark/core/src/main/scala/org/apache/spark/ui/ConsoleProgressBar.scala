@@ -95,7 +95,12 @@ private[spark] class ConsoleProgressBar(sc: SparkContext) extends Logging {
           val percent = w * s.numCompletedTasks() / total
           (0 until w)
             .map { i =>
-              if (i < percent) "=" else if (i == percent) ">" else " "
+              if (i < percent)
+                "="
+              else if (i == percent)
+                ">"
+              else
+                " "
             }
             .mkString("")
         } else {

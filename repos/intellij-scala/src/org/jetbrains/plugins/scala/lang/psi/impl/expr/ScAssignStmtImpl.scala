@@ -132,8 +132,10 @@ class ScAssignStmtImpl(node: ASTNode)
                     }
                 }
                 val candidates = processor.candidatesS
-                if (candidates.size == 1) Some(candidates.toArray.apply(0))
-                else None
+                if (candidates.size == 1)
+                  Some(candidates.toArray.apply(0))
+                else
+                  None
               case _ => None
             }
           case _ => None

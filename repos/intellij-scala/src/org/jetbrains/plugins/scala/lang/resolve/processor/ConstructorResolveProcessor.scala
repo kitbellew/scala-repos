@@ -50,12 +50,15 @@ class ConstructorResolveProcessor(
     def nameShadow0: Option[String] = Option(state.get(ResolverEnv.nameKey))
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
       named match {
         case clazz: PsiClass =>
           val constructors: Array[PsiMethod] =
-            if (accessibility) clazz.constructors.filter(isAccessible(_, ref))
-            else clazz.constructors
+            if (accessibility)
+              clazz.constructors.filter(isAccessible(_, ref))
+            else
+              clazz.constructors
           if (constructors.isEmpty) {
             //this is for Traits for example. They can be in constructor position.
             // But they haven't constructors.
@@ -111,8 +114,10 @@ class ConstructorResolveProcessor(
               val constructors: Array[PsiMethod] =
                 if (accessibility)
                   clazz.constructors.filter(isAccessible(_, ref))
-                else clazz.constructors
-              if (constructors.isEmpty) addResult(r)
+                else
+                  clazz.constructors
+              if (constructors.isEmpty)
+                addResult(r)
               else {
                 addResults(
                   constructors.toSeq.map(constr =>
@@ -138,7 +143,8 @@ class ConstructorResolveProcessor(
   override def candidatesS: Set[ScalaResolveResult] = {
     if (!allConstructors) {
       val superCandidates = super.candidatesS
-      if (superCandidates.size <= 1) superCandidates
+      if (superCandidates.size <= 1)
+        superCandidates
       else {
         superCandidates.map(constr =>
           new ScalaResolveResult(

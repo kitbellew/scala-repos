@@ -48,8 +48,10 @@ class AllProjectHighlightingTest
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =
-      if (internalSdk == null) IdeaTestUtil.getMockJdk17
-      else internalSdk
+      if (internalSdk == null)
+        IdeaTestUtil.getMockJdk17
+      else
+        internalSdk
     val sdkType = sdk.getSdkType.asInstanceOf[JavaSdkType]
     settings.setJdk(sdk.getName)
     settings.setCreateEmptyContentRootDirectories(true)
@@ -82,8 +84,10 @@ class AllProjectHighlightingTest
       val internalSdk =
         JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
       val sdk =
-        if (internalSdk == null) IdeaTestUtil.getMockJdk17
-        else internalSdk
+        if (internalSdk == null)
+          IdeaTestUtil.getMockJdk17
+        else
+          internalSdk
 
       //todo: why we need this??? Looks like SBT integration problem, as we attached SDK as setting
       if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null) {
@@ -146,7 +150,8 @@ class AllProjectHighlightingTest
       }
 
       if ((index + 1) * 100 >= (percent + 1) * size) {
-        while ((index + 1) * 100 >= (percent + 1) * size) percent += 1
+        while ((index + 1) * 100 >= (percent + 1) * size)
+          percent += 1
         println(s"Analyzing... $percent%")
       }
 
@@ -174,7 +179,8 @@ class AllProjectHighlightingTest
   override protected def setUpInWriteAction(): Unit = {
     super.setUpInWriteAction()
     val projectDir: File = new File(getRootDir, getTestName(false))
-    if (!projectDir.exists()) return
+    if (!projectDir.exists())
+      return
     myProjectRoot =
       LocalFileSystem.getInstance.refreshAndFindFileByIoFile(projectDir)
     setUpSbtLauncherAndStructure(myProject)

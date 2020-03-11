@@ -83,7 +83,10 @@ class JobTest(cons: (Args) => Job) {
       s: Source,
       tups: Iterable[T]): JobTest = {
     source { src =>
-      if (src == s) Some(tups) else None
+      if (src == s)
+        Some(tups)
+      else
+        None
     }
     this
   }

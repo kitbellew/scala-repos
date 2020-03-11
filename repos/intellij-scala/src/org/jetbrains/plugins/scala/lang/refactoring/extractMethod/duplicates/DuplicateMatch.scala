@@ -61,8 +61,10 @@ class DuplicateMatch(
       subCandidates: Seq[PsiElement]): Boolean = {
     val filteredP = filtered(subPatterns)
     val filteredC = filtered(subCandidates)
-    if (filteredC.size != filteredP.size) return false
-    if (filteredP.size == 0) return true
+    if (filteredC.size != filteredP.size)
+      return false
+    if (filteredP.size == 0)
+      return true
     filteredP.zip(filteredC).forall {
       case (e1, e2) => checkElement(e1, e2)
       case _        => false
@@ -78,14 +80,16 @@ class DuplicateMatch(
   private def checkElement(
       subPattern: PsiElement,
       candidate: PsiElement): Boolean = {
-    if (!canBeEquivalent(subPattern, candidate)) return false
+    if (!canBeEquivalent(subPattern, candidate))
+      return false
 
     (subPattern, candidate) match {
       case (td: ScTypedDefinition, tdCand: ScTypedDefinition) =>
         if (checkChildren(td, tdCand)) {
           definitionCorrespondence += (td -> tdCand)
           true
-        } else false
+        } else
+          false
       case (ref: ScReferenceExpression, expr: ScExpression)
           if pattern.paramOccurences.contains(ref) =>
         val p = pattern.paramOccurences(ref)
@@ -94,27 +98,27 @@ class DuplicateMatch(
           paramValue,
           expr) && typesEquiv(ref, expr)
       case Both(
-          (ref1: ScReferenceExpression, ref2: ScReferenceExpression),
-          (
-            ResolvesTo(td1: ScTypedDefinition),
-            ResolvesTo(td2: ScTypedDefinition)))
+            (ref1: ScReferenceExpression, ref2: ScReferenceExpression),
+            (
+              ResolvesTo(td1: ScTypedDefinition),
+              ResolvesTo(td2: ScTypedDefinition)))
           if pattern.definitions.contains(td1) =>
         definitionCorrespondence.get(td1) == Some(td2) && typesEquiv(ref1, ref2)
       case Both(
-          (ref1: ScReferenceElement, ref2: ScReferenceElement),
-          (ResolvesTo(res1), ResolvesTo(res2))) if res1 != res2 =>
+            (ref1: ScReferenceElement, ref2: ScReferenceElement),
+            (ResolvesTo(res1), ResolvesTo(res2))) if res1 != res2 =>
         (res1, res2) match {
           case (sf1: ScSyntheticFunction, sf2: ScSyntheticFunction) =>
             sf1.isStringPlusMethod && sf2.isStringPlusMethod
           case _ => false
         }
       case (
-          intd1: ScInterpolatedStringLiteral,
-          intd2: ScInterpolatedStringLiteral) =>
+            intd1: ScInterpolatedStringLiteral,
+            intd2: ScInterpolatedStringLiteral) =>
         checkChildren(intd1, intd2)
       case (
-          ElementType(ScalaTokenTypes.tINTERPOLATED_STRING),
-          ElementType(ScalaTokenTypes.tINTERPOLATED_STRING)) =>
+            ElementType(ScalaTokenTypes.tINTERPOLATED_STRING),
+            ElementType(ScalaTokenTypes.tINTERPOLATED_STRING)) =>
         subPattern.getText == candidate.getText
       case (lit1: ScLiteral, lit2: ScLiteral) => lit1.getValue == lit2.getValue
       case _                                  => checkChildren(subPattern, candidate)
@@ -127,7 +131,8 @@ class DuplicateMatch(
         def extractFromSingletonType(t: ScType) =
           if (ScType.isSingletonType(t))
             ScType.extractDesignatorSingletonType(t)
-          else Some(t)
+          else
+            Some(t)
         val Seq(newTp1, newTp2) = Seq(t1, t2).map(extractFromSingletonType)
         newTp1.zip(newTp2).forall {
           case (tp1, tp2) => tp1.equiv(tp2)

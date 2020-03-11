@@ -439,7 +439,10 @@ class ZookeeperCacheNodeGroup(
       case inst if inst.getStatus == ALIVE =>
         val ep = inst.getServiceEndpoint
         val shardInfo =
-          if (inst.isSetShard) Some(inst.getShard.toString) else None
+          if (inst.isSetShard)
+            Some(inst.getShard.toString)
+          else
+            None
         CacheNode(ep.getHost, ep.getPort, 1, shardInfo)
     }
 

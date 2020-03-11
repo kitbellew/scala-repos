@@ -38,5 +38,6 @@ object T {
        hh <- y;
        ii <- y;
        jj <- y;
-       kk <- y) yield a + b + c + d + e
+       kk <- y)
+    yield a + b + c + d + e
 }

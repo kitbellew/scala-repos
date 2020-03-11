@@ -27,11 +27,13 @@ object ScalaNamesUtil {
       text: String,
       predicate: ScalaLexer => Boolean): Boolean = {
 //    ApplicationManager.getApplication.assertReadAccessAllowed() - looks like we don't need it
-    if (text == null || text == "") return false
+    if (text == null || text == "")
+      return false
 
     val lexer = lexerCache.get()
     lexer.start(text, 0, text.length(), 0)
-    if (!predicate(lexer)) return false
+    if (!predicate(lexer))
+      return false
     lexer.advance()
     lexer.getTokenType == null
   }
@@ -75,7 +77,8 @@ object ScalaNamesUtil {
             Seq(containingClass.qualifiedName, named.name)
               .filter(_ != "")
               .mkString("."))
-        } else None
+        } else
+          None
       case _ => None
     }
   }
@@ -91,7 +94,8 @@ object ScalaNamesUtil {
     def unapply(name: String): Option[String] = {
       if (name.startsWith("`") && name.endsWith("`"))
         Some(name.substring(1, name.length - 1))
-      else None
+      else
+        None
     }
   }
 
@@ -104,7 +108,9 @@ object ScalaNamesUtil {
   }
 
   def changeKeyword(s: String): String = {
-    if (ScalaNamesUtil.isKeyword(s)) "`" + s + "`"
-    else s
+    if (ScalaNamesUtil.isKeyword(s))
+      "`" + s + "`"
+    else
+      s
   }
 }

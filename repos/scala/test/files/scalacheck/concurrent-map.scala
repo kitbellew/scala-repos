@@ -25,17 +25,19 @@ object Test extends Properties("concurrent.TrieMap") {
   /* helpers */
 
   def inParallel[T](totalThreads: Int)(body: Int => T): Seq[T] = {
-    val threads = for (idx <- 0 until totalThreads) yield new Thread {
-      setName("ParThread-" + idx)
-      private var res: T = _
-      override def run() {
-        res = body(idx)
-      }
-      def result = {
-        this.join()
-        res
-      }
-    }
+    val threads =
+      for (idx <- 0 until totalThreads)
+        yield new Thread {
+          setName("ParThread-" + idx)
+          private var res: T = _
+          override def run() {
+            res = body(idx)
+          }
+          def result = {
+            this.join()
+            res
+          }
+        }
 
     threads foreach (_.start())
     threads map (_.result)
@@ -46,10 +48,13 @@ object Test extends Properties("concurrent.TrieMap") {
       val chm = new ConcurrentHashMap[Wrap, Int]().asScala
 
       val results = inParallel(p) { idx =>
-        for (i <- 0 until sz) yield chm.getOrElseUpdate(new Wrap(i), idx)
+        for (i <- 0 until sz)
+          yield chm.getOrElseUpdate(new Wrap(i), idx)
       }
 
-      val resultSets = for (i <- 0 until sz) yield results.map(_(i)).toSet
+      val resultSets =
+        for (i <- 0 until sz)
+          yield results.map(_(i)).toSet
       val largerThanOne = resultSets.zipWithIndex.find(_._1.size != 1)
       val allThreadsAgreeOnWhoInserted = {
         largerThanOne == None

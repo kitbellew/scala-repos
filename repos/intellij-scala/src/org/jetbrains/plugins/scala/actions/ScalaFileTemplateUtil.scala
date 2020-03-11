@@ -23,10 +23,12 @@ object ScalaFileTemplateUtil {
       aClass: PsiClass,
       method: PsiMethod) {
     var className: String = aClass.qualifiedName
-    if (className == null) className = ""
+    if (className == null)
+      className = ""
     properties.setProperty(FileTemplate.ATTRIBUTE_CLASS_NAME, className)
     var classSimpleName: String = aClass.name
-    if (classSimpleName == null) classSimpleName = ""
+    if (classSimpleName == null)
+      classSimpleName = ""
     properties.setProperty(
       FileTemplate.ATTRIBUTE_SIMPLE_CLASS_NAME,
       classSimpleName)

@@ -85,7 +85,8 @@ object CompilerData {
               .map(_.getProperties)
           }
 
-        if (jvmSdk.contains(moduleJdk)) Right(None)
+        if (jvmSdk.contains(moduleJdk))
+          Right(None)
         else {
           val directory = new File(moduleJdk.getHomePath)
           Either.cond(

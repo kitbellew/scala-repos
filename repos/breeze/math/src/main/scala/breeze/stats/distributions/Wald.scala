@@ -50,8 +50,10 @@ case class Wald(mean: Double, shape: Double)(implicit rand: RandBasis = Rand)
         4 * mean * shape * y + mean * mean * y * y))
     z <- rand.uniform
   } yield {
-    if (z <= mean / (mean + x)) x
-    else mean * mean / x
+    if (z <= mean / (mean + x))
+      x
+    else
+      mean * mean / x
   }
 
 }

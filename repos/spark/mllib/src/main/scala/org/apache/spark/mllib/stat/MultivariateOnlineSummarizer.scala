@@ -66,7 +66,8 @@ class MultivariateOnlineSummarizer
 
   private[spark] def add(instance: Vector, weight: Double): this.type = {
     require(weight >= 0.0, s"sample weight, ${weight} has to be >= 0.0")
-    if (weight == 0.0) return this
+    if (weight == 0.0)
+      return this
 
     if (n == 0) {
       require(
@@ -249,7 +250,8 @@ class MultivariateOnlineSummarizer
 
     var i = 0
     while (i < n) {
-      if ((nnz(i) < weightSum) && (currMax(i) < 0.0)) currMax(i) = 0.0
+      if ((nnz(i) < weightSum) && (currMax(i) < 0.0))
+        currMax(i) = 0.0
       i += 1
     }
     Vectors.dense(currMax)
@@ -265,7 +267,8 @@ class MultivariateOnlineSummarizer
 
     var i = 0
     while (i < n) {
-      if ((nnz(i) < weightSum) && (currMin(i) > 0.0)) currMin(i) = 0.0
+      if ((nnz(i) < weightSum) && (currMin(i) > 0.0))
+        currMin(i) = 0.0
       i += 1
     }
     Vectors.dense(currMin)

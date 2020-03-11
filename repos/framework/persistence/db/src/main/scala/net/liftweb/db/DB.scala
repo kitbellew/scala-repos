@@ -202,7 +202,10 @@ trait DB extends Loggable {
     def jndiSuperConnection: Box[SuperConnection] =
       jndiConnection(name).map(c => {
         val uniqueId =
-          if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
+          if (logger.isDebugEnabled)
+            Helpers.nextNum.toString
+          else
+            ""
         logger.debug(
           "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
         new SuperConnection(
@@ -239,7 +242,8 @@ trait DB extends Loggable {
       if (connections.contains(conn)) {
         used += conn
         1
-      } else 0
+      } else
+        0
   }
 
   private object CurrentConnectionSet
@@ -277,7 +281,8 @@ trait DB extends Loggable {
       private object DepthCnt extends DynoVar[Boolean]
 
       def apply[T](f: => T): T =
-        if (DepthCnt.is == Full(true)) f
+        if (DepthCnt.is == Full(true))
+          f
         else
           DepthCnt.run(true) {
 
@@ -369,8 +374,10 @@ trait DB extends Loggable {
         // stale and unexpectedly closed connections may throw here
         try {
           if (!(c.getAutoCommit() || manualRollback)) {
-            if (rollback) c.rollback
-            else c.commit
+            if (rollback)
+              c.rollback
+            else
+              c.commit
           }
         } catch {
           case e: SQLException =>
@@ -496,8 +503,10 @@ trait DB extends Loggable {
    If the column is null, return null rather than the boxed primitive
    */
   def checkNull[T](rs: ResultSet, pos: Int, res: => T): T = {
-    if (null eq rs.getObject(pos)) null.asInstanceOf[T]
-    else res
+    if (null eq rs.getObject(pos))
+      null.asInstanceOf[T]
+    else
+      res
   }
 
   private def asAny(pos: Int, rs: ResultSet, md: ResultSetMetaData): Any = {
@@ -1374,7 +1383,8 @@ trait ProtoDBVendor extends ConnectionManager {
 
   private def _closeAllConnections_!(cnt: Int): Unit = synchronized {
     logger.info("Closing all connections")
-    if (poolSize <= 0 || cnt > 10) ()
+    if (poolSize <= 0 || cnt > 10)
+      ()
     else {
       pool.foreach { c =>
         tryo(c.close);
@@ -1382,7 +1392,8 @@ trait ProtoDBVendor extends ConnectionManager {
       }
       pool = Nil
 
-      if (poolSize > 0) wait(250)
+      if (poolSize > 0)
+        wait(250)
 
       _closeAllConnections_!(cnt + 1)
     }

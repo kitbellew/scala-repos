@@ -162,7 +162,8 @@ class QueueingHandlerTest
           val prefix =
             if (record.getSourceClassName != null)
               record.getSourceClassName + ": "
-            else ""
+            else
+              ""
 
           prefix + formatText(record) + lineTerminator
         }
@@ -177,7 +178,10 @@ class QueueingHandlerTest
         helper.logSomething(logger)
 
         val expectedMessagePrefix =
-          if (infer) helper.getClass.getName + ": " else ""
+          if (infer)
+            helper.getClass.getName + ": "
+          else
+            ""
         val expectedMessage = expectedMessagePrefix + helper.message + "\n"
 
         eventually {

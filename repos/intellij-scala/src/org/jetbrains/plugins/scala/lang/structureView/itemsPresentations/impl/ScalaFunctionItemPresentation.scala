@@ -20,6 +20,9 @@ class ScalaFunctionItemPresentation(
       myElement.asInstanceOf[ScFunction])
   }
   override def getTextAttributesKey: TextAttributesKey = {
-    if (isInherited) CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES else null
+    if (isInherited)
+      CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES
+    else
+      null
   }
 }

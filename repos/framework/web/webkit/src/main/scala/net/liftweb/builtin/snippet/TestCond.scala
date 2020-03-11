@@ -32,8 +32,14 @@ object TestCond extends DispatchSnippet {
   }
 
   def loggedIn(xhtml: NodeSeq): NodeSeq =
-    if (S.loggedIn_?) xhtml else NodeSeq.Empty
+    if (S.loggedIn_?)
+      xhtml
+    else
+      NodeSeq.Empty
 
   def loggedOut(xhtml: NodeSeq): NodeSeq =
-    if (S.loggedIn_?) NodeSeq.Empty else xhtml
+    if (S.loggedIn_?)
+      NodeSeq.Empty
+    else
+      xhtml
 }

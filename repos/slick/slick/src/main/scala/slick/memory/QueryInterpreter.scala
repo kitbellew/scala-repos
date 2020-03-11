@@ -35,7 +35,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
   }
 
   def run(n: Node): Any = {
-    if (logger.isDebugEnabled) logDebug("Evaluating " + n)
+    if (logger.isDebugEnabled)
+      logDebug("Evaluating " + n)
     indent += 1
     val res = n match {
       case Ref(sym) =>
@@ -117,7 +118,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 Vector(
                   l,
                   createNullRow(right.nodeType.asCollectionType.elementType))))
-          else inner
+          else
+            inner
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -140,7 +142,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 Vector(
                   createNullRow(left.nodeType.asCollectionType.elementType),
                   r)))
-          else inner
+          else
+            inner
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -163,7 +166,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 Vector(
                   l,
                   createNullRow(right.nodeType.asCollectionType.elementType))))
-          else inner
+          else
+            inner
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -202,7 +206,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         val res = fromV.filter { v =>
           scope(gen) = v
           val onV = run(on)
-          if (seen contains onV) false
+          if (seen contains onV)
+            false
           else {
             seen += onV
             true
@@ -228,7 +233,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             var i = 0
             while (i < ords.length) {
               val v = ords(i).compare(x(i), y(i))
-              if (v != 0) return v
+              if (v != 0)
+                return v
               i += 1
             }
             0
@@ -267,7 +273,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Union(left, right, all) =>
         val leftV = run(left).asInstanceOf[Coll]
         val rightV = run(right).asInstanceOf[Coll]
-        if (all) leftV ++ rightV
+        if (all)
+          leftV ++ rightV
         else
           leftV ++ {
             val s = leftV.toSet
@@ -287,13 +294,16 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             val res = run(r)
             if (opt && !r.nodeType.asInstanceOf[ScalaType[_]].nullable)
               Option(res)
-            else res
+            else
+              res
           case _ =>
             val res = run(c.elseClause)
             if (opt && !c.elseClause.nodeType
                   .asInstanceOf[ScalaType[_]]
-                  .nullable) Option(res)
-            else res
+                  .nullable)
+              Option(res)
+            else
+              res
         }
       case QueryParameter(extractor, _, _) =>
         extractor(params)
@@ -311,11 +321,15 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
           val defaultV = run(default)
           if (n.nodeType.isInstanceOf[OptionType] && !default.nodeType
-                .isInstanceOf[OptionType]) Some(defaultV)
-          else defaultV
+                .isInstanceOf[OptionType])
+            Some(defaultV)
+          else
+            defaultV
         } else if (n.nodeType.isInstanceOf[OptionType] && !cond.nodeType
-                     .isInstanceOf[OptionType]) Some(condV)
-        else condV
+                     .isInstanceOf[OptionType])
+          Some(condV)
+        else
+          condV
       case Library.In(what, where) =>
         val whatV = run(what)
         val whereV = run(where)
@@ -324,7 +338,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           None
         else {
           val whatBase =
-            if (whatOpt) whatV.asInstanceOf[Option[Any]].get else whatV
+            if (whatOpt)
+              whatV.asInstanceOf[Option[Any]].get
+            else
+              whatV
           where.nodeType match {
             case ProductType(elTypes) =>
               val p = whereV.asInstanceOf[ProductValue]
@@ -334,7 +351,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                     case Some(v) => whatBase == v
                     case None    => false
                   }
-                } else whatBase == p(i)
+                } else
+                  whatBase == p(i)
               } contains true
             case ct: CollectionType =>
               val (els, singleType) =
@@ -344,7 +362,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                    case Some(v) => whatBase == v
                    case None    => false
                  })
-               else els.map(whatBase.==)) contains true
+               else
+                 els.map(whatBase.==)) contains true
           }
         }
       case Library.Sum(ch) =>
@@ -374,7 +393,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           case (count, sum) =>
             if (num.isInstanceOf[Fractional[_]])
               num.asInstanceOf[Fractional[Any]].div(sum, num.fromInt(count))
-            else num.fromInt(num.toInt(sum) / count)
+            else
+              num.fromInt(num.toInt(sum) / count)
         }
       case Library.Min(ch) =>
         val coll = run(ch).asInstanceOf[Coll]
@@ -388,7 +408,11 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           it,
           opt,
           identity,
-          (a, b) => if (ord.lt(b, a)) b else a)
+          (a, b) =>
+            if (ord.lt(b, a))
+              b
+            else
+              a)
       case Library.Max(ch) =>
         val coll = run(ch).asInstanceOf[Coll]
         val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
@@ -401,7 +425,11 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           it,
           opt,
           identity,
-          (a, b) => if (ord.gt(b, a)) b else a)
+          (a, b) =>
+            if (ord.gt(b, a))
+              b
+            else
+              a)
       case Library.==(ch, LiteralNode(null)) =>
         val chV = run(ch)
         chV == null || chV.asInstanceOf[Option[_]].isEmpty
@@ -411,7 +439,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         if (n.nodeType.isInstanceOf[OptionType]) {
           if (chV.exists {
                 case (t, v) => t.isInstanceOf[OptionType] && (v == None)
-              }) None
+              })
+            None
           else {
             val chPlainV = chV.map {
               case (t: OptionType, v) =>
@@ -425,14 +454,16 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 chPlainV.toSeq,
                 n.nodeType.asOptionType.elementType))
           }
-        } else evalFunction(sym, chV.toSeq, n.nodeType)
+        } else
+          evalFunction(sym, chV.toSeq, n.nodeType)
       //case Library.CountAll(ch) => run(ch).asInstanceOf[Coll].size
       case l: LiteralNode        => l.value
       case CollectionCast(ch, _) => run(ch)
       case Subquery(ch, _)       => run(ch)
     }
     indent -= 1
-    if (logger.isDebugEnabled) logDebug("Result: " + res)
+    if (logger.isDebugEnabled)
+      logDebug("Result: " + res)
     res
   }
 
@@ -521,15 +552,22 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Library.Like =>
         val pat = compileLikePattern(
           args(1)._2.toString,
-          if (args.length > 2) Some(args(2)._2.toString.charAt(0)) else None)
+          if (args.length > 2)
+            Some(args(2)._2.toString.charAt(0))
+          else
+            None)
         val mat = pat.matcher(args(0)._2.toString())
         mat.matches()
       case Library.LTrim =>
         val s = args(0)._2.asInstanceOf[String]
         val len = s.length
         var start = 0
-        while (start < len && s.charAt(start) == ' ') start += 1
-        if (start == 0) s else s.substring(start)
+        while (start < len && s.charAt(start) == ' ')
+          start += 1
+        if (start == 0)
+          s
+        else
+          s.substring(start)
       case Library.Not => !args(0)._2.asInstanceOf[Boolean]
       case Library.Or =>
         args(0)._2.asInstanceOf[Boolean] || args(1)._2.asInstanceOf[Boolean]
@@ -540,8 +578,12 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Library.RTrim =>
         val s = args(0)._2.asInstanceOf[String]
         var len = s.length
-        while (len > 0 && s.charAt(len - 1) == ' ') len -= 1
-        if (len == s.length) s else s.substring(0, len)
+        while (len > 0 && s.charAt(len - 1) == ' ')
+          len -= 1
+        if (len == s.length)
+          s
+        else
+          s.substring(0, len)
       case Library.Sign =>
         args(0)._1
           .asInstanceOf[ScalaNumericType[Any]]
@@ -591,26 +633,38 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       opt: Boolean,
       map: Any => T,
       reduce: (T, T) => T): Option[T] = {
-    if (!it.hasNext) None
+    if (!it.hasNext)
+      None
     else {
-      val it2 = if (opt) it.collect {
-        case Some(b) => b
-      }
-      else it
+      val it2 =
+        if (opt)
+          it.collect {
+            case Some(b) => b
+          }
+        else
+          it
       var res: T = null.asInstanceOf[T]
       var first = true
       it2.foreach { b =>
         if (first) {
           first = false
           res = map(b)
-        } else res = reduce(res, map(b))
+        } else
+          res = reduce(res, map(b))
       }
-      if (first) None else Some(res)
+      if (first)
+        None
+      else
+        Some(res)
     }
   }
 
   def createNullRow(tpe: Type): Any = tpe match {
-    case t: ScalaType[_] => if (t.nullable) None else null
+    case t: ScalaType[_] =>
+      if (t.nullable)
+        None
+      else
+        null
     case StructType(el) =>
       new StructValue(
         el.toSeq.map {

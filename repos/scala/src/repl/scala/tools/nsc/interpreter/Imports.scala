@@ -171,7 +171,9 @@ trait Imports {
       currentImps.clear()
     }
 
-    def maybeWrap(names: Name*) = if (names exists currentImps) addWrapper()
+    def maybeWrap(names: Name*) =
+      if (names exists currentImps)
+        addWrapper()
 
     def wrapBeforeAndAfter[T](op: => T): T = {
       addWrapper()
@@ -235,7 +237,11 @@ trait Imports {
       }
     }
 
-    val computedHeader = if (predefEscapes) header.toString else ""
+    val computedHeader =
+      if (predefEscapes)
+        header.toString
+      else
+        ""
     ComputedImports(
       computedHeader,
       code.toString,

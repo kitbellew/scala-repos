@@ -262,13 +262,21 @@ object ISetTest extends SpecLite {
 
   "minView" ! forAll { (a: ISet[Int]) =>
     val l = a.toList.sorted
-    val target = if (l.isEmpty) none else (l.head, fromList(l.tail)).some
+    val target =
+      if (l.isEmpty)
+        none
+      else
+        (l.head, fromList(l.tail)).some
     a.minView must_=== target
   }
 
   "maxView" ! forAll { (a: ISet[Int]) =>
     val l = a.toList.sortWith(_ > _)
-    val target = if (l.isEmpty) none else (l.head, fromList(l.tail)).some
+    val target =
+      if (l.isEmpty)
+        none
+      else
+        (l.head, fromList(l.tail)).some
     a.maxView must_=== target
   }
 

@@ -35,6 +35,8 @@ private[finagle] class CloseOnReleaseService[Req, Rep](
   }
 
   override def status =
-    if (wasReleased.get) Status.Closed
-    else super.status
+    if (wasReleased.get)
+      Status.Closed
+    else
+      super.status
 }

@@ -109,7 +109,8 @@ abstract class SuperAccessors
               sel.pos,
               s"Internal error: unable to store accessor definition in ${clazz}. clazz.hasPackageFlag=${clazz.hasPackageFlag}. Accessor required for ${sel} (${showRaw(sel)})"
             )
-          else storeAccessorDefinition(clazz, DefDef(acc, EmptyTree))
+          else
+            storeAccessorDefinition(clazz, DefDef(acc, EmptyTree))
           acc
         }
 
@@ -121,7 +122,8 @@ abstract class SuperAccessors
       treeInfo.mapMethodParamsAndArgs(params, args) { (param, arg) =>
         if (isByNameParamType(param.tpe))
           withInvalidOwner(transform(arg))
-        else transform(arg)
+        else
+          transform(arg)
       }
     }
 
@@ -186,7 +188,8 @@ abstract class SuperAccessors
 
       if (needAccessor)
         ensureAccessor(sel, mix.toTermName)
-      else sel
+      else
+        sel
     }
 
     // Disallow some super.XX calls targeting Any methods which would
@@ -214,8 +217,10 @@ abstract class SuperAccessors
           debuglog("Adding protected accessor for " + tree)
 
           transform(makeAccessor(sel, args))
-        } else if (goToSuper) super.transform(tree)
-        else tree
+        } else if (goToSuper)
+          super.transform(tree)
+        else
+          tree
 
       try tree match {
         // Don't transform patterns or strange trees will reach the matcher (ticket #4062)
@@ -447,11 +452,15 @@ abstract class SuperAccessors
       */
     override def atOwner[A](tree: Tree, owner: Symbol)(trans: => A): A = {
       val savedValid = validCurrentOwner
-      if (owner.isClass) validCurrentOwner = true
+      if (owner.isClass)
+        validCurrentOwner = true
       val savedLocalTyper = localTyper
       localTyper = localTyper.atOwner(
         tree,
-        if (owner.isModuleNotMethod) owner.moduleClass else owner)
+        if (owner.isModuleNotMethod)
+          owner.moduleClass
+        else
+          owner)
       typers = typers updated (owner, localTyper)
       val result = super.atOwner(tree, owner)(trans)
       localTyper = savedLocalTyper
@@ -486,8 +495,10 @@ abstract class SuperAccessors
       // if the result type depends on the this type of an enclosing class, the accessor
       // has to take an object of exactly this type, otherwise it's more general
       val objType =
-        if (isThisType(memberType.finalResultType)) clazz.thisType
-        else clazz.typeOfThis
+        if (isThisType(memberType.finalResultType))
+          clazz.thisType
+        else
+          clazz.typeOfThis
       val accType = (protAcc: Symbol) =>
         memberType match {
           case PolyType(tparams, restpe) =>
@@ -536,7 +547,10 @@ abstract class SuperAccessors
         }
       }
       debuglog(s"Replaced $tree with $res")
-      if (hasArgs) localTyper.typedOperator(res) else localTyper.typed(res)
+      if (hasArgs)
+        localTyper.typedOperator(res)
+      else
+        localTyper.typed(res)
     }
 
     /** Adapt the given argument in call to protected member.
@@ -657,7 +671,8 @@ abstract class SuperAccessors
         referencingClass
       } else if (referencingClass.owner.enclClass != NoSymbol)
         hostForAccessorOf(sym, referencingClass.owner.enclClass)
-      else referencingClass
+      else
+        referencingClass
     }
 
     /** For a path-dependent type, return the this type. */

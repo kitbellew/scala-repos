@@ -69,7 +69,8 @@ trait Encoder[T] {
       if (ki < 0) {
         if (!ignoreOutOfIndex)
           throw new RuntimeException("Error, not in index: " + k)
-      } else vec(ki) = v
+      } else
+        vec(ki) = v
     }
     vec
   }
@@ -88,7 +89,8 @@ trait Encoder[T] {
       if (ki < 0) {
         if (!ignoreOutOfIndex)
           throw new RuntimeException("Error, not in index: " + k)
-      } else vec.add(ki, v)
+      } else
+        vec.add(ki, v)
     }
     vec.toSparseVector
   }
@@ -106,7 +108,8 @@ trait Encoder[T] {
       if (ki < 0) {
         if (!ignoreOutOfIndex)
           throw new RuntimeException("Error, not in index: " + k)
-      } else vec(ki) = v
+      } else
+        vec(ki) = v
     }
     vec
   }
@@ -120,8 +123,10 @@ trait Encoder[T] {
     for (((k, l), v) <- c.active.pairs) {
       val ki = index(k)
       val li = index(l)
-      if (ki < 0) throw new RuntimeException("Error, not in index: " + k)
-      if (li < 0) throw new RuntimeException("Error, not in index: " + k)
+      if (ki < 0)
+        throw new RuntimeException("Error, not in index: " + k)
+      if (li < 0)
+        throw new RuntimeException("Error, not in index: " + k)
 
       vec(ki, li) = v
     }

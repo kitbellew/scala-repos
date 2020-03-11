@@ -65,14 +65,18 @@ object Route {
       exceptionHandler: ExceptionHandler = null)
       : HttpRequest ⇒ Future[HttpResponse] = {
     val effectiveEC =
-      if (executionContext ne null) executionContext
-      else materializer.executionContext
+      if (executionContext ne null)
+        executionContext
+      else
+        materializer.executionContext
 
     {
       implicit val executionContext = effectiveEC // overrides parameter
       val effectiveParserSettings =
-        if (parserSettings ne null) parserSettings
-        else ParserSettings(ActorMaterializer.downcast(materializer).system)
+        if (parserSettings ne null)
+          parserSettings
+        else
+          ParserSettings(ActorMaterializer.downcast(materializer).system)
 
       val sealedRoute = seal(route)
       request ⇒

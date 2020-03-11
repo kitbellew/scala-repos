@@ -51,7 +51,11 @@ abstract class TreeBuilder {
 
   /** Tree for `od op`, start is start0 if od.pos is borked. */
   def makePostfixSelect(start0: Int, end: Int, od: Tree, op: Name): Tree = {
-    val start = if (od.pos.isDefined) od.pos.start else start0
+    val start =
+      if (od.pos.isDefined)
+        od.pos.start
+      else
+        start0
     atPos(r2p(start, end, end + op.length)) {
       new PostfixSelect(od, op.encode)
     }
@@ -136,10 +140,14 @@ abstract class TreeBuilder {
       owner: Name,
       vparamss: List[List[ValDef]],
       contextBounds: List[Tree]): List[List[ValDef]] = {
-    if (contextBounds.isEmpty) vparamss
+    if (contextBounds.isEmpty)
+      vparamss
     else {
       val mods = Modifiers(
-        if (owner.isTypeName) PARAMACCESSOR | LOCAL | PRIVATE else PARAM)
+        if (owner.isTypeName)
+          PARAMACCESSOR | LOCAL | PRIVATE
+        else
+          PARAM)
       def makeEvidenceParam(tpt: Tree) =
         ValDef(
           mods | IMPLICIT | SYNTHETIC,
@@ -148,7 +156,11 @@ abstract class TreeBuilder {
           EmptyTree)
       val evidenceParams = contextBounds map makeEvidenceParam
 
-      val vparamssLast = if (vparamss.nonEmpty) vparamss.last else Nil
+      val vparamssLast =
+        if (vparamss.nonEmpty)
+          vparamss.last
+        else
+          Nil
       if (vparamssLast.nonEmpty && vparamssLast.head.mods.hasFlag(IMPLICIT))
         vparamss.init ::: List(evidenceParams ::: vparamssLast)
       else

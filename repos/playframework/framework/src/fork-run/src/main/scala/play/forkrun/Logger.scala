@@ -60,11 +60,13 @@ class Logger(out: PrintStream, logLevel: Logger.Level) extends LoggerProxy {
   def success(message: => String): Unit = printLog(Label.success, message)
 
   def log(level: Level, message: => String): Unit = {
-    if (level.value >= logLevel.value) printLog(level.label, message)
+    if (level.value >= logLevel.value)
+      printLog(level.label, message)
   }
 
   def log(level: String, message: => String): Unit = {
-    for (logLevel <- Logger.Level(level)) log(logLevel, message)
+    for (logLevel <- Logger.Level(level))
+      log(logLevel, message)
   }
 
   def printLog(

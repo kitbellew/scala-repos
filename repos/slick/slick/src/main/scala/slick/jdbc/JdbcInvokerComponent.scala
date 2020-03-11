@@ -50,7 +50,10 @@ trait JdbcInvokerComponent { self: JdbcProfile =>
       }
 
     protected def getStatement =
-      if (overrideSql ne null) overrideSql else sres.sql
+      if (overrideSql ne null)
+        overrideSql
+      else
+        sres.sql
     protected def setParam(st: PreparedStatement): Unit =
       sres.setter(st, 1, param)
     def extractValue(pr: PositionedResult): R = converter.read(pr.rs)

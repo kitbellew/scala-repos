@@ -141,7 +141,8 @@ object Extraction {
               mkObject(x.getClass, uniqueFields ++ args)
           }
       }
-    } else prependTypeHint(any.getClass, serializer(any))
+    } else
+      prependTypeHint(any.getClass, serializer(any))
   }
 
   /** Flattens the JSON to a key/value map.
@@ -192,9 +193,12 @@ object Extraction {
       case "[]"    => JArray(Nil)
       case x @ _ =>
         if (value.charAt(0).isDigit) {
-          if (value.indexOf('.') == -1) JInt(BigInt(value))
-          else JDouble(JsonParser.parseDouble(value))
-        } else JString(JsonParser.unquote(value.substring(1)))
+          if (value.indexOf('.') == -1)
+            JInt(BigInt(value))
+          else
+            JDouble(JsonParser.parseDouble(value))
+        } else
+          JString(JsonParser.unquote(value.substring(1)))
     }
 
     def submap(prefix: String): Map[String, String] =
@@ -310,7 +314,8 @@ object Extraction {
                             case (t, idx) =>
                               if (t == classOf[java.lang.Object])
                                 ScalaSigReader.readField(name, a.getClass, idx)
-                              else t
+                              else
+                                t
                           })
                       val value =
                         extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
@@ -341,7 +346,8 @@ object Extraction {
                 .map(a =>
                   if (a != null)
                     a.asInstanceOf[AnyRef].getClass.getName
-                  else "null")
+                  else
+                    "null")
                 .mkString(",") +
                 "\nconstructor=" + jconstructor)
         }
@@ -362,7 +368,8 @@ object Extraction {
             .map(_.getActualTypeArguments.toList.map(Meta.rawClassOf))
             .getOrElse(Nil)
           build(obj, mappingOf(concreteClass, typeArgs))
-        } else deserializer(typeHint, obj)
+        } else
+          deserializer(typeHint, obj)
       }
 
       val custom = formats.customDeserializer(formats)
@@ -380,7 +387,8 @@ object Extraction {
 
     object TypeHint {
       def unapply(fs: List[JField]): Option[(String, List[JField])] =
-        if (formats.typeHints == NoTypeHints) None
+        if (formats.typeHints == NoTypeHints)
+          None
         else {
           val grouped = fs groupBy (_.name == formats.typeHintFieldName)
           if (grouped.isDefinedAt(true))
@@ -388,7 +396,8 @@ object Extraction {
               (
                 grouped(true).head.value.values.toString,
                 grouped.get(false).getOrElse(Nil)))
-          else None
+          else
+            None
         }
     }
 
@@ -425,14 +434,20 @@ object Extraction {
       case Col(targetType, m) =>
         val custom = formats.customDeserializer(formats)
         val c = targetType.clazz
-        if (custom.isDefinedAt(targetType, root)) custom(targetType, root)
-        else if (c == classOf[List[_]]) newCollection(root, m, a => List(a: _*))
-        else if (c == classOf[Set[_]]) newCollection(root, m, a => Set(a: _*))
-        else if (c.isArray) newCollection(root, m, mkTypedArray(c))
+        if (custom.isDefinedAt(targetType, root))
+          custom(targetType, root)
+        else if (c == classOf[List[_]])
+          newCollection(root, m, a => List(a: _*))
+        else if (c == classOf[Set[_]])
+          newCollection(root, m, a => Set(a: _*))
+        else if (c.isArray)
+          newCollection(root, m, mkTypedArray(c))
         else if (classOf[Seq[_]].isAssignableFrom(c))
           newCollection(root, m, a => List(a: _*))
-        else if (c == classOf[Option[_]]) newOption(root, m)
-        else fail("Expected collection but got " + m + " for class " + c)
+        else if (c == classOf[Option[_]])
+          newOption(root, m)
+        else
+          fail("Expected collection but got " + m + " for class " + c)
       case Dict(m) =>
         root match {
           case JObject(xs) => Map(xs.map(x => (x.name, build(x.value, m))): _*)
@@ -468,7 +483,10 @@ object Extraction {
       } else {
         try {
           val x = build(root, mapping)
-          if (optional) Option(x) else x
+          if (optional)
+            Option(x)
+          else
+            x
         } catch {
           case e @ MappingException(msg, _) =>
             if (optional && (root == JNothing || root == JNull)) {

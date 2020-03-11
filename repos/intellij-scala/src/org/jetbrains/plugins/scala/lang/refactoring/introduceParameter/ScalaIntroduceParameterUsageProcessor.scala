@@ -45,14 +45,16 @@ class ScalaIntroduceParameterUsageProcessor
       usageInfo: UsageInfo,
       beforeMethodChange: Boolean,
       usages: Array[UsageInfo]): Boolean = {
-    if (!beforeMethodChange) return false
+    if (!beforeMethodChange)
+      return false
 
     changeInfo match {
       case isIntroduceParameter(data) =>
         val textRangeUsages = usages.collect {
           case t: TextRangeUsageInfo => t
         }
-        if (textRangeUsages.headOption.forall(_.processed)) return false
+        if (textRangeUsages.headOption.forall(_.processed))
+          return false
 
         val pName = data.paramName
         val args = data.functionalArgParams.getOrElse("")

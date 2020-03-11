@@ -99,7 +99,11 @@ private[mllib] class SlidingRDD[T: ClassTag](
       var partitionIndex = 0
       while (i < n) {
         val mod = cumSize % step
-        val offset = if (mod == 0) 0 else step - mod
+        val offset =
+          if (mod == 0)
+            0
+          else
+            step - mod
         val size = sizes(i)
         if (offset < size) {
           val tail = mutable.ListBuffer.empty[T]

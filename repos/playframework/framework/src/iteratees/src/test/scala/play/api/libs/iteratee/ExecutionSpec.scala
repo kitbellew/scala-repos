@@ -60,7 +60,8 @@ object ExecutionSpec extends Specification {
       case class TestRunnable(id: Int, children: Runnable*) extends Runnable {
         def run() = {
           runRecord += id
-          for (c <- children) trampoline.execute(c)
+          for (c <- children)
+            trampoline.execute(c)
         }
       }
 

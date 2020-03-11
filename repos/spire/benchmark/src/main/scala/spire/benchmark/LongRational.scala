@@ -93,5 +93,11 @@ final class LongRational private (val n: Long, val d: Long) {
       java.lang.Math.signum((r.d / dgcd) * n - (d / dgcd) * r.n).toInt
   }
 
-  def signum: Int = if (n < 0) -1 else if (n > 0) 1 else 0
+  def signum: Int =
+    if (n < 0)
+      -1
+    else if (n > 0)
+      1
+    else
+      0
 }

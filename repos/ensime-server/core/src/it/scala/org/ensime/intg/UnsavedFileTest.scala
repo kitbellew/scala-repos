@@ -46,8 +46,8 @@ class UnsavedFileTest
             SourceSymbol.allSymbols)
           expectMsgPF() {
             case SymbolDesignations(
-                inMemory.file,
-                syms: List[SymbolDesignation]) if syms.nonEmpty =>
+                  inMemory.file,
+                  syms: List[SymbolDesignation]) if syms.nonEmpty =>
           }
 
           project ! CompletionsReq(inMemory, 27, 0, false, false)

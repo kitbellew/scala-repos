@@ -14,8 +14,10 @@ class InetResolverTest extends FunSuite {
 
   val resolver = new InetResolver(statsReceiver, None) {
     override def resolveHost(host: String): Future[Seq[InetAddress]] = {
-      if (host.equals("localhost")) super.resolveHost(host)
-      else Future.exception(new UnknownHostException())
+      if (host.equals("localhost"))
+        super.resolveHost(host)
+      else
+        Future.exception(new UnknownHostException())
     }
   }
 

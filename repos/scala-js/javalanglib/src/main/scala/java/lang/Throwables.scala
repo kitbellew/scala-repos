@@ -117,8 +117,10 @@ class Throwable(s: String, private var e: Throwable)
   override def toString(): String = {
     val className = getClass.getName
     val message = getMessage()
-    if (message eq null) className
-    else className + ": " + message
+    if (message eq null)
+      className
+    else
+      className + ": " + message
   }
 }
 

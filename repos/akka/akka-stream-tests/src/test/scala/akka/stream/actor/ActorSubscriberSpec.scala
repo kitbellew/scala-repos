@@ -202,7 +202,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
       Source(1 to 17).runWith(
         Sink.actorSubscriber(
           requestStrategySubscriberProps(testActor, OneByOneRequestStrategy)))
-      for (n ← 1 to 17) expectMsg(OnNext(n))
+      for (n ← 1 to 17)
+        expectMsg(OnNext(n))
       expectMsg(OnComplete)
     }
 
@@ -212,7 +213,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
           requestStrategySubscriberProps(
             testActor,
             WatermarkRequestStrategy(highWatermark = 10))))
-      for (n ← 1 to 17) expectMsg(OnNext(n))
+      for (n ← 1 to 17)
+        expectMsg(OnNext(n))
       expectMsg(OnComplete)
     }
 

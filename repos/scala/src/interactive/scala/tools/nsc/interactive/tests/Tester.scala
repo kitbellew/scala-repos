@@ -18,7 +18,8 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
   val compiler = new Global(settings, reporter)
 
   def askAndListen[T, U](msg: String, arg: T, op: (T, Response[U]) => Unit) {
-    if (settings.verbose) print(msg + " " + arg + ": ")
+    if (settings.verbose)
+      print(msg + " " + arg + ": ")
     val TIMEOUT = 10 // ms
     val limit = System.currentTimeMillis() + randomDelayMillis
     val res = new Response[U]
@@ -31,7 +32,8 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
         res.get(TIMEOUT.toLong) match {
           case Some(Left(t)) =>
             /**/
-            if (settings.verbose) println(t)
+            if (settings.verbose)
+              println(t)
           case Some(Right(ex)) =>
             ex.printStackTrace()
             println(ex)
@@ -84,7 +86,10 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
 
     override def toString =
       "In " + inputs(sfidx) + " at " + start + " take " + nchars + " to " +
-        (if (toLeft) "left" else "right")
+        (if (toLeft)
+           "left"
+         else
+           "right")
 
     def deleteOne() {
       val sf = inputs(sfidx)
@@ -113,7 +118,10 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     }
 
     def insertAll() {
-      for (chr <- if (toLeft) deleted else deleted.reverse) {
+      for (chr <- if (toLeft)
+             deleted
+           else
+             deleted.reverse) {
         val sf = inputs(sfidx)
         val (pre, post) = sf. /**/ content splitAt pos
         pos += 1

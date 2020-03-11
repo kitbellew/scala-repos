@@ -73,11 +73,14 @@ object ReplVals {
 
     class AppliedTypeFromTags(sym: Symbol) {
       def apply[M](implicit m1: ru.TypeTag[M]): Type =
-        if (sym eq NoSymbol) NoType
-        else appliedType(sym, compilerTypeFromTag(m1).asInstanceOf[Type])
+        if (sym eq NoSymbol)
+          NoType
+        else
+          appliedType(sym, compilerTypeFromTag(m1).asInstanceOf[Type])
 
       def apply[M1, M2](implicit m1: ru.TypeTag[M1], m2: ru.TypeTag[M2]): Type =
-        if (sym eq NoSymbol) NoType
+        if (sym eq NoSymbol)
+          NoType
         else
           appliedType(
             sym,

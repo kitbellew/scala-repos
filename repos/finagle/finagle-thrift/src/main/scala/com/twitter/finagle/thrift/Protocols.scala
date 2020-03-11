@@ -179,12 +179,14 @@ object Protocols {
       val u = unsafe.get
       val chars = u.getObject(str, StringValueOffset).asInstanceOf[Array[Char]]
       val offset =
-        if (OffsetValueOffset == Long.MinValue) 0
+        if (OffsetValueOffset == Long.MinValue)
+          0
         else {
           u.getInt(str, OffsetValueOffset)
         }
       val count =
-        if (CountValueOffset == Long.MinValue) chars.length
+        if (CountValueOffset == Long.MinValue)
+          chars.length
         else {
           u.getInt(str, CountValueOffset)
         }

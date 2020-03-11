@@ -38,7 +38,10 @@ import scalafx.scene.paint.Paint
 
 object SubScene {
   implicit def sfxSubScene2jfx(v: SubScene): jfxs.SubScene =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /** Wraps [[http://docs.oracle.com/javafx/8/api/javafx/scene/SubScene.html]]. */

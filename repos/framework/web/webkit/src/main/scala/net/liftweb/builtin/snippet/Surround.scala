@@ -36,11 +36,13 @@ object Surround extends DispatchSnippet {
       ctx <- S.session ?~ ("FIX" + "ME: Invalid session")
     } yield {
       def eatDiv(in: NodeSeq): NodeSeq =
-        if (S.attr("eat").isDefined) in.flatMap {
-          case e: Elem => e.child
-          case n       => n
-        }
-        else in
+        if (S.attr("eat").isDefined)
+          in.flatMap {
+            case e: Elem => e.child
+            case n       => n
+          }
+        else
+          in
 
       WithParamVar.doWith(Map()) {
         lazy val mainParam = (

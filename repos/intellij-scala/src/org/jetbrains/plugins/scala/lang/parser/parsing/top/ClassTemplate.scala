@@ -59,7 +59,8 @@ object ClassTemplate {
       //if we find nl => it could be TemplateBody only, but we can't find nl after extends keyword
       //In this case of course it's ClassParents
       case _ =>
-        if (ClassParents parse builder) empty = false
+        if (ClassParents parse builder)
+          empty = false
         else if (nonEmpty) {
           extendsMarker.drop()
           return false

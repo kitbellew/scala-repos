@@ -45,8 +45,10 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             processor.execute(c.fakeCompanionModule.get, state)
           }
           c.getSyntheticImplicitMethod match {
-            case Some(impl) => if (!processElement(impl, state)) return false
-            case _          =>
+            case Some(impl) =>
+              if (!processElement(impl, state))
+                return false
+            case _ =>
           }
           true
         case t: ScTrait =>
@@ -61,7 +63,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
           var i = 0
           while (i < elements.length) {
             ProgressManager.checkCanceled()
-            if (!processor.execute(elements(i), state)) return false
+            if (!processor.execute(elements(i), state))
+              return false
             i = i + 1
           }
           true
@@ -81,9 +84,13 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             run match {
               case po: ScObject
                   if po.isPackageObject && id.qualName == po.qualifiedName => // do nothing
-              case _                                                       => if (!processElement(run, state)) return false
+              case _ =>
+                if (!processElement(run, state))
+                  return false
             }
-          case _ => if (!processElement(run, state)) return false
+          case _ =>
+            if (!processElement(run, state))
+              return false
         }
         run = run.getPrevSibling
       }
@@ -94,7 +101,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
         state.put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
       while (run != null) {
         ProgressManager.checkCanceled()
-        if (!processElement(run, forwardState)) return false
+        if (!processElement(run, forwardState))
+          return false
         run = run.getNextSibling
       }
     }

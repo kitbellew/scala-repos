@@ -224,7 +224,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     // problems if the map fails to group together the objects with the same code (SPARK-2043).
     val toInsert =
       for (i <- 1 to 10;
-           j <- 1 to size) yield (FixedHashObject(j, j % 2), 1)
+           j <- 1 to size)
+        yield (FixedHashObject(j, j % 2), 1)
     sorter.insertAll(toInsert.iterator)
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
@@ -607,7 +608,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test", conf)
     val diskBlockManager = sc.env.blockManager.diskBlockManager
     val ord = implicitly[Ordering[Int]]
-    val expectedSize = if (withFailures) size - 1 else size
+    val expectedSize =
+      if (withFailures)
+        size - 1
+      else
+        size
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
     val sorter = new ExternalSorter[Int, Int, Int](
       context,
@@ -693,7 +698,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       } else {
         None
       }
-    val ord = if (withOrdering) Some(implicitly[Ordering[Int]]) else None
+    val ord =
+      if (withOrdering)
+        Some(implicitly[Ordering[Int]])
+      else
+        None
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
     val sorter =
       new ExternalSorter[Int, Int, Int](
@@ -747,8 +756,16 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val rand = new Random(100L)
     val wrongOrdering = new Ordering[String] {
       override def compare(a: String, b: String): Int = {
-        val h1 = if (a == null) 0 else a.hashCode()
-        val h2 = if (b == null) 0 else b.hashCode()
+        val h1 =
+          if (a == null)
+            0
+          else
+            a.hashCode()
+        val h2 =
+          if (b == null)
+            0
+          else
+            b.hashCode()
         h1 - h2
       }
     }

@@ -55,7 +55,8 @@ object InterpreterSupervisionSpec {
       else {
         val elem = buf.head
         buf = buf.tail
-        if (elem == 3) throw TE
+        if (elem == 3)
+          throw TE
         ctx.push(elem)
       }
     }
@@ -92,7 +93,14 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "emit failure when op throws" in new OneBoundedSetup[Int](
-      Seq(Map((x: Int) ⇒ if (x == 0) throw TE else x, stoppingDecider))) {
+      Seq(
+        Map(
+          (x: Int) ⇒
+            if (x == 0)
+              throw TE
+            else
+              x,
+          stoppingDecider))) {
       downstream.requestOne()
       lastEvents() should be(Set(RequestOne))
       upstream.onNext(2)
@@ -108,7 +116,13 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       Int](
       Seq(
         Map((x: Int) ⇒ x + 1, stoppingDecider),
-        Map((x: Int) ⇒ if (x == 0) throw TE else x + 10, stoppingDecider),
+        Map(
+          (x: Int) ⇒
+            if (x == 0)
+              throw TE
+            else
+              x + 10,
+          stoppingDecider),
         Map((x: Int) ⇒ x + 100, stoppingDecider))) {
 
       downstream.requestOne()
@@ -123,7 +137,14 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "resume when Map throws" in new OneBoundedSetup[Int](
-      Seq(Map((x: Int) ⇒ if (x == 0) throw TE else x, resumingDecider))) {
+      Seq(
+        Map(
+          (x: Int) ⇒
+            if (x == 0)
+              throw TE
+            else
+              x,
+          resumingDecider))) {
       downstream.requestOne()
       lastEvents() should be(Set(RequestOne))
       upstream.onNext(2)
@@ -150,7 +171,13 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "resume when Map throws in middle of the chain" in new OneBoundedSetup[Int](
       Seq(
         Map((x: Int) ⇒ x + 1, resumingDecider),
-        Map((x: Int) ⇒ if (x == 0) throw TE else x + 10, resumingDecider),
+        Map(
+          (x: Int) ⇒
+            if (x == 0)
+              throw TE
+            else
+              x + 10,
+          resumingDecider),
         Map((x: Int) ⇒ x + 100, resumingDecider))) {
 
       downstream.requestOne()
@@ -170,7 +197,13 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "resume when Map throws before Grouped" in new OneBoundedSetup[Int](
       Seq(
         Map((x: Int) ⇒ x + 1, resumingDecider),
-        Map((x: Int) ⇒ if (x <= 0) throw TE else x + 10, resumingDecider),
+        Map(
+          (x: Int) ⇒
+            if (x <= 0)
+              throw TE
+            else
+              x + 10,
+          resumingDecider),
         Grouped(3))) {
 
       downstream.requestOne()
@@ -192,7 +225,13 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       Int](
       Seq(
         Map((x: Int) ⇒ x + 1, resumingDecider),
-        Map((x: Int) ⇒ if (x <= 0) throw TE else x + 10, resumingDecider),
+        Map(
+          (x: Int) ⇒
+            if (x <= 0)
+              throw TE
+            else
+              x + 10,
+          resumingDecider),
         Grouped(1000))) {
 
       downstream.requestOne()
@@ -213,8 +252,10 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "restart when onPush throws" in {
       val stage = new RestartTestStage {
         override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-          if (elem <= 0) throw TE
-          else super.onPush(elem, ctx)
+          if (elem <= 0)
+            throw TE
+          else
+            super.onPush(elem, ctx)
         }
       }
 
@@ -243,7 +284,8 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       val stage = new RestartTestStage {
         override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
           val ret = ctx.push(elem)
-          if (elem <= 0) throw TE
+          if (elem <= 0)
+            throw TE
           ret
         }
       }
@@ -276,7 +318,8 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "fail when onPull throws" in {
       val stage = new RestartTestStage {
         override def onPull(ctx: Context[Int]): SyncDirective = {
-          if (sum < 0) throw TE
+          if (sum < 0)
+            throw TE
           super.onPull(ctx)
         }
       }
@@ -305,7 +348,14 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "resume when Filter throws" in new OneBoundedSetup[Int](
-      Seq(Filter((x: Int) ⇒ if (x == 0) throw TE else true, resumingDecider))) {
+      Seq(
+        Filter(
+          (x: Int) ⇒
+            if (x == 0)
+              throw TE
+            else
+              true,
+          resumingDecider))) {
       downstream.requestOne()
       lastEvents() should be(Set(RequestOne))
       upstream.onNext(2)
@@ -323,7 +373,11 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "restart when Collect throws" in {
       // TODO can't get type inference to work with `pf` inlined
       val pf: PartialFunction[Int, Int] = {
-        case x: Int ⇒ if (x == 0) throw TE else x
+        case x: Int ⇒
+          if (x == 0)
+            throw TE
+          else
+            x
       }
       new OneBoundedSetup[Int](Seq(Collect(pf, restartingDecider))) {
         downstream.requestOne()
@@ -345,7 +399,11 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       Seq(
         Scan(
           1,
-          (acc: Int, x: Int) ⇒ if (x == 10) throw TE else acc + x,
+          (acc: Int, x: Int) ⇒
+            if (x == 10)
+              throw TE
+            else
+              acc + x,
           resumingDecider))) {
       downstream.requestOne()
       lastEvents() should be(Set(OnNext(1)))
@@ -367,7 +425,11 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       Seq(
         Scan(
           1,
-          (acc: Int, x: Int) ⇒ if (x == 10) throw TE else acc + x,
+          (acc: Int, x: Int) ⇒
+            if (x == 10)
+              throw TE
+            else
+              acc + x,
           restartingDecider))) {
       downstream.requestOne()
       lastEvents() should be(Set(OnNext(1)))
@@ -394,8 +456,10 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "fail when Expand `seed` throws" in new OneBoundedSetup[Int](
       new Expand((in: Int) ⇒
-        if (in == 2) throw TE
-        else Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
+        if (in == 2)
+          throw TE
+        else
+          Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
 
       lastEvents() should be(Set(RequestOne))
 
@@ -417,8 +481,10 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "fail when Expand `extrapolate` throws" in new OneBoundedSetup[Int](
       new Expand((in: Int) ⇒
-        if (in == 2) Iterator.continually(throw TE)
-        else Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
+        if (in == 2)
+          Iterator.continually(throw TE)
+        else
+          Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
 
       lastEvents() should be(Set(RequestOne))
 

@@ -48,7 +48,10 @@ object TreeTablePosition {
     */
   implicit def sfxTreeTablePosition2jfx[S, T](
       ttp: TreeTablePosition[S, T]): jfxsc.TreeTablePosition[S, T] =
-    if (ttp != null) ttp.delegate else null
+    if (ttp != null)
+      ttp.delegate
+    else
+      null
 
 }
 

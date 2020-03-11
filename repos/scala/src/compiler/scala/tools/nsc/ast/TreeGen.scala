@@ -60,14 +60,19 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   // Builds a tree of the form "{ lhs = rhs ; lhs  }"
   def mkAssignAndReturn(lhs: Symbol, rhs: Tree): Tree = {
     def lhsRef =
-      if (lhs.owner.isClass) Select(This(lhs.owner), lhs) else Ident(lhs)
+      if (lhs.owner.isClass)
+        Select(This(lhs.owner), lhs)
+      else
+        Ident(lhs)
     Block(Assign(lhsRef, rhs) :: Nil, lhsRef)
   }
 
   def newModule(accessor: Symbol, tpe: Type) = {
     val ps = tpe.typeSymbol.primaryConstructor.info.paramTypes
-    if (ps.isEmpty) New(tpe)
-    else New(tpe, This(accessor.owner.enclClass))
+    if (ps.isEmpty)
+      New(tpe)
+    else
+      New(tpe, This(accessor.owner.enclClass))
   }
 
   def mkRuntimeCall(meth: Name, args: List[Tree]): Tree =
@@ -93,7 +98,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       tparg: Type,
       args: List[Tree]): Tree =
     mkMethodCall(
-      if (full) FullManifestModule else PartialManifestModule,
+      if (full)
+        FullManifestModule
+      else
+        PartialManifestModule,
       newTermName(constructor),
       List(tparg),
       args
@@ -105,7 +113,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
   def mkAppliedTypeForCase(clazz: Symbol): Tree = {
     val numParams = clazz.typeParams.size
-    if (clazz.typeParams.isEmpty) Ident(clazz)
+    if (clazz.typeParams.isEmpty)
+      Ident(clazz)
     else
       AppliedTypeTree(
         Ident(clazz),
@@ -116,8 +125,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       patVar,
       Typed(
         Ident(nme.WILDCARD),
-        if (targs.isEmpty) mkAppliedTypeForCase(clazz)
-        else AppliedTypeTree(Ident(clazz), targs map TypeTree)))
+        if (targs.isEmpty)
+          mkAppliedTypeForCase(clazz)
+        else
+          AppliedTypeTree(Ident(clazz), targs map TypeTree)))
   }
 
   def wildcardStar(tree: Tree) =
@@ -132,7 +143,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     paramToArg(Ident(vparam.name), treeInfo.isRepeatedParamType(vparam.tpt))
 
   def paramToArg(arg: Ident, isRepeatedParam: Boolean): Tree =
-    if (isRepeatedParam) wildcardStar(arg) else arg
+    if (isRepeatedParam)
+      wildcardStar(arg)
+    else
+      arg
 
   /** Make forwarder to method `target`, passing all parameters in `params` */
   def mkForwarder(target: Tree, vparamss: List[List[Symbol]]) =
@@ -146,7 +160,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     mkMethodCall(
       PredefModule,
       wrapArrayMethodName(elemtp),
-      if (isPrimitiveValueType(elemtp)) Nil else List(elemtp),
+      if (isPrimitiveValueType(elemtp))
+        Nil
+      else
+        List(elemtp),
       List(tree)
     )
   }
@@ -231,7 +248,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     var used = false
     if (treeInfo.isExprSafeToInline(expr)) {
       within(() =>
-        if (used) expr.duplicate
+        if (used)
+          expr.duplicate
         else {
           used = true;
           expr
@@ -256,7 +274,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
         exprs1 += {
           val idx = i
           () =>
-            if (used(idx)) expr.duplicate
+            if (used(idx))
+              expr.duplicate
             else {
               used(idx) = true;
               expr
@@ -273,8 +292,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     val prefix = vdefs.toList
     val containing = within(exprs1.toList)
     ensureNonOverlapping(containing, exprs)
-    if (prefix.isEmpty) containing
-    else Block(prefix, containing) setPos (prefix.head.pos union containing.pos)
+    if (prefix.isEmpty)
+      containing
+    else
+      Block(prefix, containing) setPos (prefix.head.pos union containing.pos)
   }
 
   /** Return the synchronized part of the double-checked locking idiom around the syncBody tree. It guards with `cond` and
@@ -310,7 +331,11 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     *  if there are no stats, a () is added.
     */
   def mkAnonymousNew(stats: List[Tree]): Tree = {
-    val stats1 = if (stats.isEmpty) List(Literal(Constant(()))) else stats
+    val stats1 =
+      if (stats.isEmpty)
+        List(Literal(Constant(())))
+      else
+        stats
     mkNew(Nil, noSelfType, stats1, NoPosition, NoPosition)
   }
 

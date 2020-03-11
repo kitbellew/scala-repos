@@ -28,16 +28,20 @@ abstract class CompilerTest extends DirectTest {
   // Utility functions
   class MkType(sym: Symbol) {
     def apply[M](implicit t: ru.TypeTag[M]): Type =
-      if (sym eq NoSymbol) NoType
-      else appliedType(sym, compilerTypeFromTag(t))
+      if (sym eq NoSymbol)
+        NoType
+      else
+        appliedType(sym, compilerTypeFromTag(t))
   }
   implicit def mkMkType(sym: Symbol) = new MkType(sym)
 
   def allMembers(root: Symbol): List[Symbol] = {
     def loop(seen: Set[Symbol], roots: List[Symbol]): List[Symbol] = {
       val latest = roots flatMap (_.info.members) filterNot (seen contains _)
-      if (latest.isEmpty) seen.toList.sortWith(_ isLess _)
-      else loop(seen ++ latest, latest)
+      if (latest.isEmpty)
+        seen.toList.sortWith(_ isLess _)
+      else
+        loop(seen ++ latest, latest)
     }
     loop(Set(), List(root))
   }
@@ -100,7 +104,8 @@ package ll {
     def typeRefs(targs: List[Type]) = (
       for (p <- typeRefPrefixes;
            c <- classes filter (isPossibleEnclosure(p.typeSymbol, _));
-           a <- targs) yield typeRef(p, c, List(a))
+           a <- targs)
+        yield typeRef(p, c, List(a))
     )
 
     val wfmt = "%-" + 25 + "s"
@@ -115,7 +120,8 @@ package ll {
       val x =
         if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym.owner.isTerm)
           "."
-        else "#"
+        else
+          "#"
       sym.kindString + " " + p + x + sym.name
     }
 
@@ -160,7 +166,10 @@ package ll {
   }
 
   def pretty(xs: List[_]) =
-    if (xs.isEmpty) "" else xs.mkString("\n  ", "\n  ", "\n")
+    if (xs.isEmpty)
+      ""
+    else
+      xs.mkString("\n  ", "\n  ", "\n")
 
   def signaturesIn(info: Type): List[String] = (
     info.members.toList

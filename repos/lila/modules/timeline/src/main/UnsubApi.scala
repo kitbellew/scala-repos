@@ -12,8 +12,10 @@ private[timeline] final class UnsubApi(coll: Coll) {
     BSONDocument("_id" -> makeId(channel, userId))
 
   def set(channel: String, userId: String, v: Boolean): Funit = {
-    if (v) coll.insert(select(channel, userId)).void
-    else coll.remove(select(channel, userId)).void
+    if (v)
+      coll.insert(select(channel, userId)).void
+    else
+      coll.remove(select(channel, userId)).void
   } recover {
     case e: Exception => ()
   }

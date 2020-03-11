@@ -55,8 +55,10 @@ case class Sort(
   override def outputOrdering: Seq[SortOrder] = sortOrder
 
   override def requiredChildDistribution: Seq[Distribution] =
-    if (global) OrderedDistribution(sortOrder) :: Nil
-    else UnspecifiedDistribution :: Nil
+    if (global)
+      OrderedDistribution(sortOrder) :: Nil
+    else
+      UnspecifiedDistribution :: Nil
 
   override private[sql] lazy val metrics = Map(
     "dataSize" -> SQLMetrics.createSizeMetric(sparkContext, "data size"),

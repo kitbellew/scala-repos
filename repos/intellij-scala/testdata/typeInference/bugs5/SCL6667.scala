@@ -23,9 +23,12 @@ object SCL6667 {
       extends Expression.Aux[AddNumeric]
 
   val x =
-    if (true) SubtractNumeric(null, null)
-    else if (true) DivideNumeric(null, null)
-    else AddNumeric(null)
+    if (true)
+      SubtractNumeric(null, null)
+    else if (true)
+      DivideNumeric(null, null)
+    else
+      AddNumeric(null)
 
   /*start*/
   x.foo /*end*/

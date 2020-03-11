@@ -61,7 +61,8 @@ object DevModeBuild {
         val c = IO.readStream(is)
         is.close()
         c
-      } else ""
+      } else
+        ""
       conn.disconnect()
 
       assertions.foreach { assertion =>

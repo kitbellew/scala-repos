@@ -47,7 +47,10 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
       import result.compiler._
       val tree = new Locator(pos1) locateIn result.unit.body match {
         case Template(_, _, constructor :: (rest :+ last)) =>
-          if (rest.isEmpty) last else Block(rest, last)
+          if (rest.isEmpty)
+            last
+          else
+            Block(rest, last)
         case t => t
       }
       val printed = showCode(tree) + " // : " + tree.tpe.safeToString
@@ -115,10 +118,12 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
                   r.name.newName(
                     StringOps.longestCommonPrefix(memberCompletions)))
             )
-            if (memberCompletions.isEmpty) Completion.NoCandidates
+            if (memberCompletions.isEmpty)
+              Completion.NoCandidates
             else if (allowCompletion)
               Candidates(cursor - r.positionDelta, memberCompletions)
-            else Candidates(cursor, "" :: memberCompletions)
+            else
+              Candidates(cursor, "" :: memberCompletions)
           } else if (matching.nonEmpty && matching.forall(
                        _.symNameDropLocal == r.name))
             Completion.NoCandidates // don't offer completion if the only option has been fully typed already
@@ -154,7 +159,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
       }
     } catch {
       case NonFatal(e) =>
-        if (isReplDebug) e.printStackTrace()
+        if (isReplDebug)
+          e.printStackTrace()
         Completion.NoCandidates
     }
   }

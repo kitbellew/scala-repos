@@ -32,8 +32,10 @@ trait Api {
   val & = parsers.Combinators.Lookahead
 
   implicit def wspStr(s: String): P0 =
-    if (s.length == 1) parsers.Terminals.CharLiteral(s(0))
-    else parsers.Terminals.Literal(s)
+    if (s.length == 1)
+      parsers.Terminals.CharLiteral(s(0))
+    else
+      parsers.Terminals.Literal(s)
 
   def P[T](p: => Parser[T])(implicit name: sourcecode.Name): Parser[T] =
     parsers.Combinators.Rule(name.value, () => p)

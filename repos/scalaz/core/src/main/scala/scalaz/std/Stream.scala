@@ -36,7 +36,8 @@ trait StreamInstances {
       val it = fa.iterator
       while (it.hasNext && k.isEmpty) {
         val z = it.next()
-        if (n == i) k = Some(z)
+        if (n == i)
+          k = Some(z)
         n = n + 1
       }
 
@@ -60,9 +61,14 @@ trait StreamInstances {
 
     override def zipWithL[A, B, C](fa: Stream[A], fb: Stream[B])(
         f: (A, Option[B]) => C) =
-      if (fa.isEmpty) Stream.Empty
+      if (fa.isEmpty)
+        Stream.Empty
       else {
-        val bTail = if (fb.isEmpty) Stream.Empty else fb.tail
+        val bTail =
+          if (fb.isEmpty)
+            Stream.Empty
+          else
+            fb.tail
         Stream.cons(f(fa.head, fb.headOption), zipWithL(fa.tail, bTail)(f))
       }
 
@@ -80,8 +86,10 @@ trait StreamInstances {
     def point[A](a: => A) = scala.Stream(a)
     def zip[A, B](a: => Stream[A], b: => Stream[B]) = {
       val _a = a
-      if (_a.isEmpty) Stream.Empty
-      else _a zip b
+      if (_a.isEmpty)
+        Stream.Empty
+      else
+        _a zip b
     }
     def unzip[A, B](a: Stream[(A, B)]) = a.unzip
 
@@ -127,7 +135,8 @@ trait StreamInstances {
       def point[A](a: => A) = Zip(Stream.continually(a))
       def ap[A, B](fa: => (Stream[A] @@ Zip))(f: => (Stream[A => B] @@ Zip)) = {
         Zip(
-          if (Tag.unwrap(f).isEmpty || Tag.unwrap(fa).isEmpty) Stream.empty[B]
+          if (Tag.unwrap(f).isEmpty || Tag.unwrap(fa).isEmpty)
+            Stream.empty[B]
           else
             Stream.cons(
               (Tag.unwrap(f).head)(Tag.unwrap(fa).head),
@@ -152,10 +161,13 @@ trait StreamInstances {
       @annotation.tailrec
       override final def order(a: Stream[A], b: Stream[A]): Ordering =
         if (a.isEmpty) {
-          if (b.isEmpty) EQ
-          else LT
+          if (b.isEmpty)
+            EQ
+          else
+            LT
         } else {
-          if (b.isEmpty) GT
+          if (b.isEmpty)
+            GT
           else {
             A.order(a.head, b.head) match {
               case EQ => order(a.tail, b.tail)
@@ -176,8 +188,10 @@ trait StreamInstances {
 
 trait StreamFunctions {
   final def interleave[A](s1: Stream[A], s2: Stream[A]): Stream[A] =
-    if (s1.isEmpty) s2
-    else s1.head #:: interleave(s2, s1.tail)
+    if (s1.isEmpty)
+      s2
+    else
+      s1.head #:: interleave(s2, s1.tail)
 
   import scala.Stream.{Empty, empty}
 
@@ -213,8 +227,10 @@ trait StreamFunctions {
       f: Stream[A => B => C]): Stream[B => C] = {
     val ff = f
     val aa = a
-    if (ff.isEmpty || aa.isEmpty) empty
-    else scala.Stream.cons((ff.head)(aa.head), zapp(aa.tail)(ff.tail))
+    if (ff.isEmpty || aa.isEmpty)
+      empty
+    else
+      scala.Stream.cons((ff.head)(aa.head), zapp(aa.tail)(ff.tail))
   }
 
   final def unfoldForest[A, B](as: Stream[A])(

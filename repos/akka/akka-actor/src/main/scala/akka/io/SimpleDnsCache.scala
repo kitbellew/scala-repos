@@ -27,8 +27,10 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup {
 
   protected def clock(): Long = {
     val now = System.nanoTime()
-    if (now - nanoBase < 0) 0
-    else (now - nanoBase) / 1000000
+    if (now - nanoBase < 0)
+      0
+    else
+      (now - nanoBase) / 1000000
   }
 
   @tailrec

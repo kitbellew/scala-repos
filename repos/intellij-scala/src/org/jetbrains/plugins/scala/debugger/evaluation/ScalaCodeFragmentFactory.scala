@@ -104,7 +104,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
       return contextElement.getContext != null && contextElement.getContext.getContext != null &&
         contextElement.getContext.getContext.getLanguage == ScalaFileType.SCALA_LANGUAGE
     }
-    if (contextElement == null) return false
+    if (contextElement == null)
+      return false
     contextElement.getLanguage == ScalaFileType.SCALA_LANGUAGE
   }
 
@@ -115,7 +116,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
   private def wrapContext(
       project: Project,
       originalContext: PsiElement): PsiElement = {
-    if (project.isDefault) return originalContext
+    if (project.isDefault)
+      return originalContext
     var context: PsiElement = originalContext
     val session: XDebugSession =
       XDebuggerManager.getInstance(project).getCurrentSession
@@ -123,7 +125,10 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
       val markers: XValueMarkers[_, _] =
         session.asInstanceOf[XDebugSessionImpl].getValueMarkers
       val markupMap =
-        if (markers != null) markers.getAllMarkers.asScala.toMap else null
+        if (markers != null)
+          markers.getAllMarkers.asScala.toMap
+        else
+          null
       if (markupMap != null && markupMap.nonEmpty) {
         val (variablesText, reverseMap): (String, Map[String, Value]) =
           markupVariablesText(markupMap)

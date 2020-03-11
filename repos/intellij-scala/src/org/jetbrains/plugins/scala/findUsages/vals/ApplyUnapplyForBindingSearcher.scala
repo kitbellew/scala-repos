@@ -73,9 +73,11 @@ class ApplyUnapplyForBindingSearcher
           inReadAction {
             ref match {
               case IsApply(reference) if checkApply =>
-                if (!consumer.process(reference)) return false
+                if (!consumer.process(reference))
+                  return false
               case IsUnapply(reference) if checkUnapply =>
-                if (!consumer.process(reference)) return false
+                if (!consumer.process(reference))
+                  return false
               case _ =>
             }
           }
@@ -109,7 +111,7 @@ class ApplyUnapplyForBindingSearcher
         case (sref: ScStableCodeReferenceElement, x: ScConstructorPattern) =>
           sref.bind() match {
             case Some(
-                resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
+                  resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
                 if Set("unapply", "unapplySeq").contains(fun.name) =>
               resolve.innerResolveResult match {
                 case Some(ScalaResolveResult(`binding`, _)) => Some(sref)
@@ -169,7 +171,8 @@ class ApplyUnapplyForBindingSearcher
                 .flatMap(Some(_, checkApply, checkUnapply))
             case _ => None
           }
-        } else None
+        } else
+          None
       }
   }
 

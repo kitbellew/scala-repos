@@ -236,8 +236,10 @@ private final class Analyzer(
     }
 
     lazy val ancestorCount: Int =
-      if (superClass == null) 0
-      else superClass.ancestorCount + 1
+      if (superClass == null)
+        0
+      else
+        superClass.ancestorCount + 1
 
     lazy val descendentClasses = descendants.filter(_.isScalaClass)
 
@@ -333,8 +335,10 @@ private final class Analyzer(
         }
       }
       val existing =
-        if (isScalaClass) tryLookupInherited(this)
-        else methodInfos.get(methodName).filter(!_.isAbstract)
+        if (isScalaClass)
+          tryLookupInherited(this)
+        else
+          methodInfos.get(methodName).filter(!_.isAbstract)
 
       if (!allowAddingSyntheticMethods) {
         existing
@@ -520,8 +524,8 @@ private final class Analyzer(
         case (ClassType(leftCls), ClassType(rightCls)) =>
           classIsMoreSpecific(leftCls, rightCls)
         case (
-            ArrayType(leftBase, leftDepth),
-            ArrayType(rightBase, rightDepth)) =>
+              ArrayType(leftBase, leftDepth),
+              ArrayType(rightBase, rightDepth)) =>
           leftDepth == rightDepth && classIsMoreSpecific(leftBase, rightBase)
         case (ArrayType(_, _), ClassType(ObjectClass)) =>
           true
@@ -542,11 +546,15 @@ private final class Analyzer(
         encodedName = proxyName,
         methodsCalled = Map(this.encodedName -> List(targetName)),
         methodsCalledStatically =
-          (if (returnsChar) Map(BoxedCharacterClass -> List("init___C"))
-           else Map.empty),
+          (if (returnsChar)
+             Map(BoxedCharacterClass -> List("init___C"))
+           else
+             Map.empty),
         instantiatedClasses =
-          (if (returnsChar) List(BoxedCharacterClass)
-           else Nil)
+          (if (returnsChar)
+             List(BoxedCharacterClass)
+           else
+             Nil)
       )
       val m = new MethodInfo(this, syntheticInfo)
       m.syntheticKind = MethodSyntheticKind.ReflectiveProxy(targetName)
@@ -575,8 +583,10 @@ private final class Analyzer(
 
       // Myself
       if (isExported) {
-        if (isStaticModule) accessModule()
-        else instantiated()
+        if (isStaticModule)
+          accessModule()
+        else
+          instantiated()
       }
 
       // My methods

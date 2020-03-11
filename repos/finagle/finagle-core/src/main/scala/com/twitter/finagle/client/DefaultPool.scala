@@ -139,7 +139,8 @@ case class DefaultPool[Req, Rep](
 ) extends (StatsReceiver => Transformer[Req, Rep]) {
   def apply(statsReceiver: StatsReceiver) = inputFactory => {
     val factory =
-      if (idleTime <= 0.seconds || high <= low) inputFactory
+      if (idleTime <= 0.seconds || high <= low)
+        inputFactory
       else
         new CachingPool(
           inputFactory,
@@ -152,6 +153,9 @@ case class DefaultPool[Req, Rep](
     // CachingPool only caches the last "high - low", and WatermarkPool caches the first
     // "low".
     val pool = new WatermarkPool(factory, low, high, statsReceiver, maxWaiters)
-    if (bufferSize <= 0) pool else new BufferingPool(pool, bufferSize)
+    if (bufferSize <= 0)
+      pool
+    else
+      new BufferingPool(pool, bufferSize)
   }
 }

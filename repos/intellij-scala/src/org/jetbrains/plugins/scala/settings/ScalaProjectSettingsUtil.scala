@@ -78,14 +78,16 @@ object ScalaProjectSettingsUtil {
     def addPattern(
         pattern: String,
         patternJBList: JListCompatibility.JListContainer) {
-      if (pattern == null) return
+      if (pattern == null)
+        return
       val listModel = JListCompatibility.getDefaultListModel(
         patternJBList.getList.getModel) match {
         case null    => return
         case default => default
       }
       val index: Int = -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
-      if (index < 0) return
+      if (index < 0)
+        return
       JListCompatibility.add(listModel, index, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
@@ -121,7 +123,8 @@ object ScalaProjectSettingsUtil {
     def addPattern(
         pattern: String,
         patternJBList: JListCompatibility.JListContainer) {
-      if (pattern == null) return
+      if (pattern == null)
+        return
       val listModel = JListCompatibility.getDefaultListModel(
         patternJBList.getList.getModel) match {
         case null    => return
@@ -168,10 +171,15 @@ object ScalaProjectSettingsUtil {
           val index = patternJBList.getList.getSelectedIndex
           if (index != -1) {
             if (listModel.get(
-                  index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) return
+                  index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+              return
             val size = listModel.size()
             listModel.remove(index)
-            val to = if (index == size - 1) index - 1 else index
+            val to =
+              if (index == size - 1)
+                index - 1
+              else
+                index
             patternJBList.getList.setSelectedIndex(to)
             ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
             IdeFocusManager.getGlobalInstance

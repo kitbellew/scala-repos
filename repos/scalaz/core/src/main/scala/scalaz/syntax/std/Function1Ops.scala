@@ -18,7 +18,11 @@ final class Function1Ops[T, R](val self: T => R) extends AnyVal {
 
   def toValidation[E](e: => E)(
       implicit ev: R =:= Boolean): T => Validation[NonEmptyList[E], T] =
-    (t: T) => (if (self(t): Boolean) Success(t) else Failure(NonEmptyList(e)))
+    (t: T) =>
+      (if (self(t): Boolean)
+         Success(t)
+       else
+         Failure(NonEmptyList(e)))
 
   def byName: (=> T) => R = t => self(t)
 

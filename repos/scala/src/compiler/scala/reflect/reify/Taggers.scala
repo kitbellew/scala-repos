@@ -52,7 +52,11 @@ abstract class Taggers {
       mirror: Tree,
       tpe: Type,
       concrete: Boolean): Tree = {
-    val tagType = if (concrete) TypeTagClass else WeakTypeTagClass
+    val tagType =
+      if (concrete)
+        TypeTagClass
+      else
+        WeakTypeTagClass
     // what we need here is to compose a type Universe # TypeTag[$tpe]
     // to look for an implicit that conforms to this type
     // that's why neither appliedType(tagType, List(tpe)) aka TypeRef(TypeTagsClass.thisType, tagType, List(tpe))
@@ -74,7 +78,11 @@ abstract class Taggers {
               universe,
               c.callsiteTyper)))
       case _ =>
-        val tagModule = if (concrete) TypeTagModule else WeakTypeTagModule
+        val tagModule =
+          if (concrete)
+            TypeTagModule
+          else
+            WeakTypeTagModule
         materializeTag(
           universe,
           tpe,
@@ -92,8 +100,10 @@ abstract class Taggers {
       tpe match {
         case coreTpe if coreTags contains coreTpe =>
           val ref =
-            if (tagModule.isTopLevel) Ident(tagModule)
-            else Select(prefix, tagModule.name)
+            if (tagModule.isTopLevel)
+              Ident(tagModule)
+            else
+              Select(prefix, tagModule.name)
           Select(ref, coreTags(coreTpe))
         case _ =>
           translatingReificationErrors(materializer)

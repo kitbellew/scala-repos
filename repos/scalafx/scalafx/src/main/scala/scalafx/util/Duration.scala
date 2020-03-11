@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
   */
 object Duration {
   implicit def sfxDuration2jfx(d: Duration): jfxu.Duration =
-    if (d != null) d.delegate else null
+    if (d != null)
+      d.delegate
+    else
+      null
 
   def apply(millis: Double) = new Duration(millis)
 

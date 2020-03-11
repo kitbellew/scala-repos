@@ -2931,7 +2931,10 @@ object hlist {
       def compare(x: H :: T, y: H :: T): Int = {
         val compareH = hOrdering.compare(x.head, y.head)
 
-        if (compareH != 0) compareH else tOrdering.compare(x.tail, y.tail)
+        if (compareH != 0)
+          compareH
+        else
+          tOrdering.compare(x.tail, y.tail)
       }
     }
 

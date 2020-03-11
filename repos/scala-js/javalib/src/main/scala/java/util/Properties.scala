@@ -29,16 +29,20 @@ class Properties(protected val defaults: Properties)
       case value: String => value
 
       case _ =>
-        if (defaults != null) defaults.getProperty(key, defaultValue)
-        else defaultValue
+        if (defaults != null)
+          defaults.getProperty(key, defaultValue)
+        else
+          defaultValue
     }
   }
 
   def propertyNames(): ju.Enumeration[_] = {
     val thisSet: ju.Set[String] = keySet().map(_.asInstanceOf[String])
     val defaultsIterator =
-      if (defaults != null) defaults.propertyNames().toIterator
-      else scala.collection.Iterator.empty
+      if (defaults != null)
+        defaults.propertyNames().toIterator
+      else
+        scala.collection.Iterator.empty
     val filteredDefaults = defaultsIterator.collect {
       case k: String if !thisSet(k) => k
     }

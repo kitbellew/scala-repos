@@ -153,7 +153,11 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
     def explicitQValue(coding: String) = codings collectFirst {
       case (q, c) if c equalsIgnoreCase coding => q
     }
-    def defaultQValue(coding: String) = if (coding == "identity") 0.001d else 0d
+    def defaultQValue(coding: String) =
+      if (coding == "identity")
+        0.001d
+      else
+        0d
     def qvalue(coding: String) =
       explicitQValue(coding) orElse explicitQValue("*") getOrElse defaultQValue(
         coding)

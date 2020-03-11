@@ -188,7 +188,8 @@ class FileHandler(
 
   private def openStream(): OutputStream = {
     val dir = new File(filename).getParentFile
-    if ((dir ne null) && !dir.exists) dir.mkdirs
+    if ((dir ne null) && !dir.exists)
+      dir.mkdirs
     new FileOutputStream(filename, append)
   }
 
@@ -300,14 +301,16 @@ class FileHandler(
         // Only allow a single thread at a time to do a roll
         synchronized {
           nextRollTime foreach { time =>
-            if (Time.now.inMilliseconds > time) roll()
+            if (Time.now.inMilliseconds > time)
+              roll()
           }
         }
       }
 
       maxFileSize foreach { size =>
         synchronized {
-          if (bytesWrittenToFile + lineSizeBytes > size.bytes) roll()
+          if (bytesWrittenToFile + lineSizeBytes > size.bytes)
+            roll()
         }
       }
 

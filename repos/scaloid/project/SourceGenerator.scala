@@ -9,9 +9,12 @@ object SourceGenerator {
 
   private def recursiveListFiles(dir: File, filter: FileFilter): Seq[File] = {
     def step(f: File, files: List[File] = Nil): List[File] =
-      if (f.isDirectory) f.listFiles.map(step(_, files)).flatten.toList
-      else if (filter.accept(f)) f :: files
-      else files
+      if (f.isDirectory)
+        f.listFiles.map(step(_, files)).flatten.toList
+      else if (filter.accept(f))
+        f :: files
+      else
+        files
 
     step(dir).toSeq
   }
@@ -35,7 +38,8 @@ object SourceGenerator {
           s) =>
         import NameFilter._
 
-        if (mName == "parent") Nil
+        if (mName == "parent")
+          Nil
         else {
           val stGroupsDir = baseDir / ".." / "project" / "st"
           val templateDir = srcDir / "st"

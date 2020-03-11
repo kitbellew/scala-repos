@@ -28,8 +28,10 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
   private implicit object BoxOrdering extends Ordering[Box[E]] {
 
     val cmp = {
-      if (_comparator ne null) _comparator
-      else defaultOrdering[E]
+      if (_comparator ne null)
+        _comparator
+      else
+        defaultOrdering[E]
     }
 
     def compare(a: Box[E], b: Box[E]): Int = cmp.compare(a.inner, b.inner)
@@ -237,7 +239,8 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       val elem = polled.get.inner
       remove(elem)
       elem
-    } else null.asInstanceOf[E]
+    } else
+      null.asInstanceOf[E]
   }
 
   def pollLast(): E = {
@@ -246,7 +249,8 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       val elem = polled.get.inner
       remove(elem)
       elem
-    } else null.asInstanceOf[E]
+    } else
+      null.asInstanceOf[E]
   }
 
   override def clone(): TreeSet[E] =

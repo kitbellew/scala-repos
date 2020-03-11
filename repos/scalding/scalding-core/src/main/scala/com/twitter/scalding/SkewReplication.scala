@@ -45,13 +45,25 @@ case class SkewReplicationA(replicationFactor: Int = 1)
       leftCount: Int,
       rightCount: Int,
       reducers: Int) = {
-    val numReducers = if (reducers <= 0) DEFAULT_NUM_REDUCERS else reducers
+    val numReducers =
+      if (reducers <= 0)
+        DEFAULT_NUM_REDUCERS
+      else
+        reducers
 
     val left = scala.math.min(rightCount * replicationFactor, numReducers)
     val right = scala.math.min(leftCount * replicationFactor, numReducers)
 
     // Keys with sampled counts of zero still need to be kept, so we set their replication to 1.
-    (if (left == 0) 1 else left, if (right == 0) 1 else right)
+    (
+      if (left == 0)
+        1
+      else
+        left,
+      if (right == 0)
+        1
+      else
+        right)
   }
 
 }
@@ -68,13 +80,22 @@ case class SkewReplicationB(
       leftCount: Int,
       rightCount: Int,
       reducers: Int) = {
-    val numReducers = if (reducers <= 0) DEFAULT_NUM_REDUCERS else reducers
+    val numReducers =
+      if (reducers <= 0)
+        DEFAULT_NUM_REDUCERS
+      else
+        reducers
 
     val left = scala.math.max(1, rightCount / maxKeysInMemory)
     val right = scala.math
       .min(numReducers, (leftCount * rightCount) / (maxReducerOutput * left))
 
-    (left, if (right == 0) 1 else right)
+    (
+      left,
+      if (right == 0)
+        1
+      else
+        right)
   }
 
 }

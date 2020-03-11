@@ -16,7 +16,11 @@ class RicherString(orig: String) {
 
   @deprecated("Use blankOption instead", "2.0")
   def toOption: Option[String] = blankOption
-  def blankOption: Option[String] = if (isBlank) None else Some(orig)
+  def blankOption: Option[String] =
+    if (isBlank)
+      None
+    else
+      Some(orig)
   def nonBlank: Boolean = !isBlank
 
   def urlEncode: String = UrlCodingUtils.urlEncode(orig)

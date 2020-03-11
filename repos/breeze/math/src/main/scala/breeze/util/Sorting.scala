@@ -72,13 +72,19 @@ object Sorting {
     }
     def med3(a: Int, b: Int, c: Int) = {
       if (order(x(a)) < order(x(b))) {
-        if (order(x(b)) < order(x(c))) b
-        else if (order(x(a)) < order(x(c))) c
-        else a
+        if (order(x(b)) < order(x(c)))
+          b
+        else if (order(x(a)) < order(x(c)))
+          c
+        else
+          a
       } else {
-        if (order(x(b)) > order(x(c))) b
-        else if (order(x(a)) > order(x(c))) c
-        else a
+        if (order(x(b)) > order(x(c)))
+          b
+        else if (order(x(a)) > order(x(c)))
+          c
+        else
+          a
       }
     }
     def sort2(off: Int, len: Int) {

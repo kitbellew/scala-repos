@@ -110,7 +110,8 @@ class SearchService(
         base: FileObject,
         fileCheck: Option[FileCheck]): Future[Option[Int]] = {
       val outOfDate = fileCheck.map(_.changed).getOrElse(true)
-      if (!outOfDate) Future.successful(None)
+      if (!outOfDate)
+        Future.successful(None)
       else {
         val check = FileCheck(base)
         extractSymbolsFromClassOrJar(base).flatMap(
@@ -213,7 +214,8 @@ class SearchService(
         val sourceUri = source.map(_.getName.getURI)
 
         // TODO: other types of visibility when we get more sophisticated
-        if (clazz.access != Public) Nil
+        if (clazz.access != Public)
+          Nil
         else
           FqnSymbol(
             None,
@@ -367,8 +369,10 @@ class IndexingQueueActor(searchService: SearchService)
       Future
         .sequence(batch.map {
           case (_, f) =>
-            if (!f.exists()) Future.successful(f -> Nil)
-            else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
+            if (!f.exists())
+              Future.successful(f -> Nil)
+            else
+              searchService.extractSymbolsFromClassOrJar(f).map(f ->)
         })
         .onComplete {
           case Failure(t) =>

@@ -159,7 +159,8 @@ abstract class ControllerBase
                   request.getRequestURI.substring(
                     request.getContextPath.length) + (if (queryString != null)
                                                         "?" + queryString
-                                                      else "")
+                                                      else
+                                                        "")
                 }
               )))
         }
@@ -176,8 +177,10 @@ abstract class ControllerBase
       withSessionId: Boolean = true)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String =
-    if (path.startsWith("http")) path
-    else baseUrl + super.url(path, params, false, false, false)
+    if (path.startsWith("http"))
+      path
+    else
+      baseUrl + super.url(path, params, false, false, false)
 
   /**
     * Use this method to response the raw data against XSS.
@@ -288,8 +291,10 @@ trait AccountManagementControllerBase extends ControllerBase {
           messages: Messages): Option[String] =
         getAccountByMailAddress(value, true)
           .filter { x =>
-            if (paramName.isEmpty) true
-            else Some(x.userName) != params.get(paramName)
+            if (paramName.isEmpty)
+              true
+            else
+              Some(x.userName) != params.get(paramName)
           }
           .map { _ =>
             "Mail address is already registered."

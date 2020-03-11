@@ -44,7 +44,10 @@ abstract sealed case class Formatter(description: String) {
   protected def formatWithoutAlpha(c: Color): String
 
   def format(c: Color, hasAlpha: Boolean): String =
-    if (hasAlpha) formatWithAlpha(c) else formatWithoutAlpha(c)
+    if (hasAlpha)
+      formatWithAlpha(c)
+    else
+      formatWithoutAlpha(c)
 
 }
 

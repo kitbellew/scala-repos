@@ -66,18 +66,28 @@ final class ByteBufferPool(
 
     if (buffer == null) {
       var ref = flexBufferQueue.poll()
-      buffer = if (ref != null) ref.get else null
+      buffer =
+        if (ref != null)
+          ref.get
+        else
+          null
       while (ref != null && buffer == null) {
         ref = flexBufferQueue.poll()
-        buffer = if (ref != null) ref.get else null
+        buffer =
+          if (ref != null)
+            ref.get
+          else
+            null
       }
     }
 
     if (buffer == null) {
       _misses.incrementAndGet()
       buffer =
-        if (direct) ByteBuffer.allocateDirect(capacity)
-        else ByteBuffer.allocate(capacity)
+        if (direct)
+          ByteBuffer.allocateDirect(capacity)
+        else
+          ByteBuffer.allocate(capacity)
     } else {
       _hits.incrementAndGet()
     }

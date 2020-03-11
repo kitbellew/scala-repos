@@ -618,7 +618,8 @@ trait ProtoUser {
   }
 
   protected def snarfLastItem: String =
-    (for (r <- S.request) yield r.path.wholePath.last) openOr ""
+    (for (r <- S.request)
+      yield r.path.wholePath.last) openOr ""
 
   lazy val ItemList: List[MenuItem] =
     List(
@@ -644,7 +645,8 @@ trait ProtoUser {
 
   def loggedIn_? = {
     if (!currentUserId.isDefined)
-      for (f <- autologinFunc) f()
+      for (f <- autologinFunc)
+        f()
     currentUserId.isDefined
   }
 

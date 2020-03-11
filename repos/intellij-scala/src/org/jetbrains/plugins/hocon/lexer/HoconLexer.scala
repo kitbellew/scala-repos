@@ -46,7 +46,8 @@ class HoconLexer extends LexerBase {
     def matchToken(seq: CharSequence, state: State) =
       if (condition(state) && seq.startsWith(str))
         Some(TokenMatch(token, str.length, transitionFun(state)))
-      else None
+      else
+        None
   }
 
   class RegexTokenMatcher(
@@ -61,7 +62,8 @@ class HoconLexer extends LexerBase {
         regex
           .findPrefixMatchOf(seq)
           .map(m => TokenMatch(token, m.end, transitionFun(state)))
-      else None
+      else
+        None
   }
 
   def forceState(state: State): State => State =
@@ -154,13 +156,15 @@ class HoconLexer extends LexerBase {
               case '\\' if !escaping => drain(offset + 1, escaping = true)
               case _                 => drain(offset + 1, escaping = false)
             }
-          } else offset
+          } else
+            offset
         Some(
           TokenMatch(
             QuotedString,
             drain(1, escaping = false),
             onContents(state)))
-      } else None
+      } else
+        None
   }
 
   object MultilineStringMatcher extends TokenMatcher {
@@ -173,7 +177,8 @@ class HoconLexer extends LexerBase {
           .getOrElse(seq.length)
 
         Some(TokenMatch(MultilineString, length, onContents(state)))
-      } else None
+      } else
+        None
   }
 
   object UnquotedCharsMatcher extends TokenMatcher {
@@ -182,7 +187,10 @@ class HoconLexer extends LexerBase {
       while (continuesUnquotedChars(seq, c)) {
         c += 1
       }
-      if (c > 0) Some(TokenMatch(UnquotedChars, c, onContents(state))) else None
+      if (c > 0)
+        Some(TokenMatch(UnquotedChars, c, onContents(state)))
+      else
+        None
     }
   }
 
@@ -196,9 +204,14 @@ class HoconLexer extends LexerBase {
         c += 1
       }
       if (c > 0) {
-        val token = if (nl) LineBreakingWhitespace else InlineWhitespace
+        val token =
+          if (nl)
+            LineBreakingWhitespace
+          else
+            InlineWhitespace
         Some(TokenMatch(token, c, newState(state, nl)))
-      } else None
+      } else
+        None
     }
 
     def newState(state: State, newLine: Boolean) = state match {

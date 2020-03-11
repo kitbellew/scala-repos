@@ -78,8 +78,10 @@ object SparseNaiveBayes {
     Logger.getRootLogger.setLevel(Level.WARN)
 
     val minPartitions =
-      if (params.minPartitions > 0) params.minPartitions
-      else sc.defaultMinPartitions
+      if (params.minPartitions > 0)
+        params.minPartitions
+      else
+        sc.defaultMinPartitions
 
     val examples =
       MLUtils.loadLibSVMFile(

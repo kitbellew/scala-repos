@@ -28,8 +28,10 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
     val command = new OfflineCompilerCommand(args.toList, settings)
     val shutdown = settings.shutdown.value
     val extraVmArgs =
-      if (settings.preferIPv4) List("-D%s=true".format(preferIPv4Stack.key))
-      else Nil
+      if (settings.preferIPv4)
+        List("-D%s=true".format(preferIPv4Stack.key))
+      else
+        Nil
 
     val vmArgs =
       settings.jvmargs.unparse ++ settings.defines.unparse ++ extraVmArgs
@@ -51,14 +53,17 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
           vmArgs mkString " ",
           !shutdown,
           settings.port.value)
-      else compileSocket.getSocket(settings.server.value)
+      else
+        compileSocket.getSocket(settings.server.value)
 
     socket match {
       case Some(sock) => compileOnServer(sock, fscArgs)
       case _ =>
         echo(
-          if (shutdown) "[No compilation server running.]"
-          else "Compilation failed."
+          if (shutdown)
+            "[No compilation server running.]"
+          else
+            "Compilation failed."
         )
         shutdown
     }
@@ -68,7 +73,10 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
 object CompileClient extends StandardCompileClient {
   def main(args: Array[String]): Unit = sys exit {
     try {
-      if (process(args)) 0 else 1
+      if (process(args))
+        0
+      else
+        1
     } catch {
       case _: Exception => 1
     }

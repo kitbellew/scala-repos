@@ -25,7 +25,11 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("concat") {
     def testConcat(inputs: String*): Unit = {
-      val expected = if (inputs.contains(null)) null else inputs.mkString
+      val expected =
+        if (inputs.contains(null))
+          null
+        else
+          inputs.mkString
       checkEvaluation(
         Concat(inputs.map(Literal.create(_, StringType))),
         expected,

@@ -55,7 +55,8 @@ abstract class AbstractActor extends Actor {
     */
   @throws(classOf[IllegalActorStateException])
   protected def receive(receive: Receive): Unit =
-    if (_receive == null) _receive = receive
+    if (_receive == null)
+      _receive = receive
     else
       throw IllegalActorStateException(
         "Actor behavior has already been set with receive(...), " +
@@ -70,7 +71,8 @@ abstract class AbstractActor extends Actor {
     context.asInstanceOf[AbstractActorContext]
 
   override def receive =
-    if (_receive != null) _receive
+    if (_receive != null)
+      _receive
     else
       throw IllegalActorStateException(
         "Actor behavior has not been set with receive(...)")

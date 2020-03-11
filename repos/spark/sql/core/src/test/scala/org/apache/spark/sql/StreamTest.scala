@@ -224,7 +224,11 @@ trait StreamTest extends QueryTest with Timeouts {
       actions
         .takeWhile(!_.isInstanceOf[StreamMustBeRunning])
         .contains(StartStream)
-    val startedTest = if (startedManually) actions else StartStream +: actions
+    val startedTest =
+      if (startedManually)
+        actions
+      else
+        StartStream +: actions
 
     def testActions =
       actions.zipWithIndex
@@ -239,13 +243,16 @@ trait StreamTest extends QueryTest with Timeouts {
         .mkString("\n")
 
     def currentOffsets =
-      if (currentStream != null) currentStream.streamProgress.toString
-      else "not started"
+      if (currentStream != null)
+        currentStream.streamProgress.toString
+      else
+        "not started"
 
     def threadState =
       if (currentStream != null && currentStream.microBatchThread.isAlive)
         "alive"
-      else "dead"
+      else
+        "dead"
 
     def testState =
       s"""
@@ -255,14 +262,19 @@ trait StreamTest extends QueryTest with Timeouts {
          |== Stream ==
          |Stream state: $currentOffsets
          |Thread state: $threadState
-         |${if (streamDeathCause != null) stackTraceToString(streamDeathCause)
-         else ""}
+         |${if (streamDeathCause != null)
+           stackTraceToString(streamDeathCause)
+         else
+           ""}
          |
          |== Sink ==
          |${sink.toDebugString}
          |
          |== Plan ==
-         |${if (currentStream != null) currentStream.lastExecution else ""}
+         |${if (currentStream != null)
+           currentStream.lastExecution
+         else
+           ""}
          """.stripMargin
 
     def verify(condition: => Boolean, message: String): Unit = {
@@ -300,7 +312,11 @@ trait StreamTest extends QueryTest with Timeouts {
         }
       }
       val c = Option(cause).map(exceptionToString(_))
-      val m = if (message != null && message.size > 0) Some(message) else None
+      val m =
+        if (message != null && message.size > 0)
+          Some(message)
+        else
+          None
       fail(s"""
            |${(m ++ c).mkString(": ")}
            |$testState

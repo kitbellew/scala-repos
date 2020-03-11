@@ -8,7 +8,10 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   */
 abstract class IntermediateNode {
   def escapeKeyword(name: String): String =
-    if (ScalaNamesUtil.isKeyword(name)) "`" + name + "`" else name
+    if (ScalaNamesUtil.isKeyword(name))
+      "`" + name + "`"
+    else
+      name
 }
 
 case class EmptyConstruction() extends IntermediateNode

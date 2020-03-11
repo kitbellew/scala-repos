@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Point2D {
   implicit def sfxPoint2D2jfx(p: Point2D): jfxg.Point2D =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 
   /**
     * Point or vector with both coordinates set to zero.

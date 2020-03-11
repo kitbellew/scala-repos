@@ -31,6 +31,7 @@ class ScalaProblemHighlightFilter extends ProblemHighlightFilter {
         }
       }
       true
-    } else false
+    } else
+      false
   }
 }

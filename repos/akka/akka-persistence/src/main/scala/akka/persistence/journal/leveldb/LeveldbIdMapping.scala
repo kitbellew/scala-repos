@@ -51,11 +51,13 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore â
   private def readIdMap(
       pathMap: Map[String, Int],
       iter: DBIterator): Map[String, Int] = {
-    if (!iter.hasNext) pathMap
+    if (!iter.hasNext)
+      pathMap
     else {
       val nextEntry = iter.next()
       val nextKey = keyFromBytes(nextEntry.getKey)
-      if (!isMappingKey(nextKey)) pathMap
+      if (!isMappingKey(nextKey))
+        pathMap
       else {
         val nextVal = new String(nextEntry.getValue, UTF_8)
         readIdMap(pathMap + (nextVal -> nextKey.mappingId), iter)

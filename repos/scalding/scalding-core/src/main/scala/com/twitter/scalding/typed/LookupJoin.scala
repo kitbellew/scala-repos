@@ -180,7 +180,11 @@ object LookupJoin extends Serializable {
             // "lastJoined" value sitting in scanLeft's state. This
             // is equivalent to a lookup on the data in the right
             // pipe at time "thisTime".
-            val filteredJoined = if (gate(time, oldt)) Some(jv) else None
+            val filteredJoined =
+              if (gate(time, oldt))
+                Some(jv)
+              else
+                None
             (prev, Some((time, v, filteredJoined)))
           }
 
@@ -195,7 +199,10 @@ object LookupJoin extends Serializable {
             // described in the comments above
             // did it fall out of cache?
             val nextJoined =
-              if (gate(time, oldt)) Semigroup.plus(oldJ, joined) else joined
+              if (gate(time, oldt))
+                Semigroup.plus(oldJ, joined)
+              else
+                joined
             (Some((time, nextJoined)), None)
           }
         }

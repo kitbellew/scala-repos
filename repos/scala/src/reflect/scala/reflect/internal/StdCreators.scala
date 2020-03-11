@@ -14,7 +14,8 @@ trait StdCreators {
       extends TreeCreator {
     def apply[U <: ApiUniverse with Singleton](
         m: scala.reflect.api.Mirror[U]): U#Tree =
-      if (m eq mirror) tree.asInstanceOf[U#Tree]
+      if (m eq mirror)
+        tree.asInstanceOf[U#Tree]
       else
         throw new IllegalArgumentException(
           s"Expr defined in $mirror cannot be migrated to other mirrors.")
@@ -26,7 +27,8 @@ trait StdCreators {
       extends TypeCreator {
     def apply[U <: ApiUniverse with Singleton](
         m: scala.reflect.api.Mirror[U]): U#Type =
-      if (m eq mirror) tpe.asInstanceOf[U#Type]
+      if (m eq mirror)
+        tpe.asInstanceOf[U#Type]
       else
         throw new IllegalArgumentException(
           s"Type tag defined in $mirror cannot be migrated to other mirrors.")

@@ -34,8 +34,10 @@ object Test {
       List(showsCovariance, showsInvariance, showsContravariance)
 
     def showsExpectedVariance =
-      if (isUnrelated) allContainerVariances forall (_ == false)
-      else if (isSame) allContainerVariances forall (_ == true)
+      if (isUnrelated)
+        allContainerVariances forall (_ == false)
+      else if (isSame)
+        allContainerVariances forall (_ == true)
       else
         expected match {
           case CO => showsCovariance && !showsContravariance && !showsInvariance

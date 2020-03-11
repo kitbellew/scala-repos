@@ -52,7 +52,10 @@ class MutableList[A]
   /** Returns the first element in this list
     */
   override def head: A =
-    if (nonEmpty) first0.head else throw new NoSuchElementException
+    if (nonEmpty)
+      first0.head
+    else
+      throw new NoSuchElementException
 
   /** Returns the rest of this list
     */
@@ -66,7 +69,11 @@ class MutableList[A]
     require(nonEmpty, "tail of empty list")
     tl.first0 = first0.tail
     tl.len = len - 1
-    tl.last0 = if (tl.len == 0) tl.first0 else last0
+    tl.last0 =
+      if (tl.len == 0)
+        tl.first0
+      else
+        last0
   }
 
   /** Prepends a single element to this list. This operation takes constant
@@ -100,7 +107,8 @@ class MutableList[A]
 
   protected def prependElem(elem: A) {
     first0 = new LinkedList[A](elem, first0)
-    if (len == 0) last0 = first0
+    if (len == 0)
+      last0 = first0
     len = len + 1
   }
 
@@ -120,23 +128,30 @@ class MutableList[A]
   /** Returns an iterator over up to `length` elements of this list.
     */
   override def iterator: Iterator[A] =
-    if (isEmpty) Iterator.empty
+    if (isEmpty)
+      Iterator.empty
     else
       new AbstractIterator[A] {
         var elems = first0
         var count = len
         def hasNext = count > 0 && elems.nonEmpty
         def next() = {
-          if (!hasNext) throw new NoSuchElementException
+          if (!hasNext)
+            throw new NoSuchElementException
           count = count - 1
           val e = elems.elem
-          elems = if (count == 0) null else elems.next
+          elems =
+            if (count == 0)
+              null
+            else
+              elems.next
           e
         }
       }
 
   override def last = {
-    if (isEmpty) throw new NoSuchElementException("MutableList.empty.last")
+    if (isEmpty)
+      throw new NoSuchElementException("MutableList.empty.last")
     last0.elem
   }
 

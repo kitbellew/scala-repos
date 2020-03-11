@@ -37,7 +37,10 @@ import scalafx.scene.Node
 
 object PickResult {
   implicit def sfxPickResult2jfx(m: PickResult): jfxsi.PickResult =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 
   /** An undefined face. This value is used for the intersected face if the picked node has no user-specified faces. */
   val FaceUndefined: Int = jfxsi.PickResult.FACE_UNDEFINED

@@ -214,9 +214,11 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
           organ.senderFuture)
       else if (organ.sender.isDefined)
         recipient.postMessageToMailbox(organ.message, organ.sender)
-      else recipient.postMessageToMailbox(organ.message, None)
+      else
+        recipient.postMessageToMailbox(organ.message, None)
       true
-    } else false
+    } else
+      false
   }
 
   /**

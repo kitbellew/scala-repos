@@ -25,8 +25,10 @@ object TypeParam {
     while (Annotation.parse(builder)) {
       exist = true
     }
-    if (exist) annotationMarker.done(ScalaElementTypes.ANNOTATIONS)
-    else annotationMarker.drop()
+    if (exist)
+      annotationMarker.done(ScalaElementTypes.ANNOTATIONS)
+    else
+      annotationMarker.drop()
 
     if (mayHaveVariance) {
       builder.getTokenText match {
@@ -61,7 +63,8 @@ object TypeParam {
     builder.getTokenText match {
       case x if x == bound =>
         builder.advanceLexer
-        if (!Type.parse(builder)) builder error ErrMsg("wrong.type")
+        if (!Type.parse(builder))
+          builder error ErrMsg("wrong.type")
         true
       case _ => false
     }

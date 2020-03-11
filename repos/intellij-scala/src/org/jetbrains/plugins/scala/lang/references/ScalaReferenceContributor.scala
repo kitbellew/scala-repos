@@ -103,7 +103,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
   @NotNull def getRoots(
       thisModule: Module,
       includingClasses: Boolean): java.util.Collection[PsiFileSystemItem] = {
-    if (thisModule == null) return Collections.emptyList[PsiFileSystemItem]
+    if (thisModule == null)
+      return Collections.emptyList[PsiFileSystemItem]
     val modules: java.util.List[Module] = new util.ArrayList[Module]
     modules.add(thisModule)
     var moduleRootManager: ModuleRootManager =
@@ -247,7 +248,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       case literal: ScLiteral =>
         literal.getValue match {
           case text: String =>
-            if (text == null) return PsiReference.EMPTY_ARRAY
+            if (text == null)
+              return PsiReference.EMPTY_ARRAY
             return getReferencesByElement(element, text, 1, soft = true)
           case _ =>
         }

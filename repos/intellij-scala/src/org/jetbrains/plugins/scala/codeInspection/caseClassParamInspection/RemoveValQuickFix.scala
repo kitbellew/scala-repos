@@ -15,7 +15,8 @@ class RemoveValQuickFix(param: ScClassParameter)
     extends AbstractFixOnPsiElement(ScalaBundle.message("remove.val"), param) {
   def doApplyFix(project: Project) {
     val p = getElement
-    if (!p.isValid) return
+    if (!p.isValid)
+      return
     p.findChildrenByType(ScalaTokenTypes.kVAL).foreach(_.delete())
     CodeStyleManager
       .getInstance(p.getProject)
@@ -33,7 +34,8 @@ class RemoveValFromEnumeratorIntentionAction(enum: ScEnumerator)
   def isAvailable(project: Project, editor: Editor, file: PsiFile) = true
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!enum.isValid) return
+    if (!enum.isValid)
+      return
     enum.findChildrenByType(ScalaTokenTypes.kVAL).foreach(_.delete())
   }
 
@@ -49,7 +51,8 @@ class RemoveValFromGeneratorIntentionAction(enum: ScGenerator)
   def isAvailable(project: Project, editor: Editor, file: PsiFile) = true
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!enum.isValid) return
+    if (!enum.isValid)
+      return
     enum.findChildrenByType(ScalaTokenTypes.kVAL).foreach(_.delete())
   }
 

@@ -15,13 +15,14 @@ trait ReplStrings {
     *  codes. It does not add the surrounding " marks.  */
   def string2code(str: String): String = {
     val res = new StringBuilder
-    for (c <- str) c match {
-      case '"' | '\'' | '\\' =>
-        res += '\\';
-        res += c
-      case _ if c.isControl => res ++= Chars.char2uescape(c)
-      case _                => res += c
-    }
+    for (c <- str)
+      c match {
+        case '"' | '\'' | '\\' =>
+          res += '\\';
+          res += c
+        case _ if c.isControl => res ++= Chars.char2uescape(c)
+        case _                => res += c
+      }
     res.toString
   }
 

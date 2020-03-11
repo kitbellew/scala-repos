@@ -8,7 +8,8 @@ object Test extends App {
           val v = i;
           i += 1;
           v
-        } else throw new IndexOutOfBoundsException("empty iterator")
+        } else
+          throw new IndexOutOfBoundsException("empty iterator")
     }
   }
   {

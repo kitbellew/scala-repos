@@ -284,7 +284,10 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
     override def uncompressedSize: Int = _uncompressedSize
 
     override def compressedSize: Int =
-      if (overflow) Int.MaxValue else dictionarySize + count * 2
+      if (overflow)
+        Int.MaxValue
+      else
+        dictionarySize + count * 2
   }
 
   class Decoder[T <: AtomicType](
@@ -376,7 +379,11 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
     override def uncompressedSize: Int = _uncompressedSize
 
     override def compressedSize: Int = {
-      val extra = if (_uncompressedSize % BITS_PER_LONG == 0) 0 else 1
+      val extra =
+        if (_uncompressedSize % BITS_PER_LONG == 0)
+          0
+        else
+          1
       (_uncompressedSize / BITS_PER_LONG + extra) * 8 + 4
     }
   }
@@ -485,8 +492,10 @@ private[columnar] case object IntDelta extends CompressionScheme {
     override def next(row: MutableRow, ordinal: Int): Unit = {
       val delta = buffer.get()
       prev =
-        if (delta > Byte.MinValue) prev + delta
-        else ByteBufferHelper.getInt(buffer)
+        if (delta > Byte.MinValue)
+          prev + delta
+        else
+          ByteBufferHelper.getInt(buffer)
       row.setInt(ordinal, prev)
     }
   }
@@ -571,8 +580,10 @@ private[columnar] case object LongDelta extends CompressionScheme {
     override def next(row: MutableRow, ordinal: Int): Unit = {
       val delta = buffer.get()
       prev =
-        if (delta > Byte.MinValue) prev + delta
-        else ByteBufferHelper.getLong(buffer)
+        if (delta > Byte.MinValue)
+          prev + delta
+        else
+          ByteBufferHelper.getLong(buffer)
       row.setLong(ordinal, prev)
     }
   }

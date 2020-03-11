@@ -263,13 +263,21 @@ object IListTest extends SpecLite {
 
     Foldable[IList].all(xs.zipWithIndex) {
       case (x, i) =>
-        val index = if (i <= min) i * 2 else (min * 2) + i - min
+        val index =
+          if (i <= min)
+            i * 2
+          else
+            (min * 2) + i - min
         a.index(index) == Some(x)
     } must_=== true
 
     Foldable[IList].all(ys.zipWithIndex) {
       case (y, i) =>
-        val index = if (i < min) (i * 2) + 1 else (min * 2) + i - min
+        val index =
+          if (i < min)
+            (i * 2) + 1
+          else
+            (min * 2) + i - min
         a.index(index) == Some(y)
     } must_=== true
 

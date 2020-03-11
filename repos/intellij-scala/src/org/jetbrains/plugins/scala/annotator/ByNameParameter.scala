@@ -26,11 +26,13 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
       typeAware: Boolean) {
     if (!ScalaProjectSettings
           .getInstance(exp.getProject)
-          .isShowArgumentsToByNameParams) return
+          .isShowArgumentsToByNameParams)
+      return
 
     if (!ScalaProjectSettings
           .getInstance(exp.getProject)
-          .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr]) return
+          .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr])
+      return
 
     val parameter =
       ScalaPsiUtil.parameterOf(exp) //.orElse(conversionParameterOf(exp))
@@ -42,7 +44,8 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
       val ranges =
         if (ScalaProjectSettings.getInstance(exp.getProject).isIncludeLiterals)
           Seq(exp.getTextRange)
-        else nonLiteralRangesIn(exp)
+        else
+          nonLiteralRangesIn(exp)
 
       ranges.foreach { r =>
         val annotation =

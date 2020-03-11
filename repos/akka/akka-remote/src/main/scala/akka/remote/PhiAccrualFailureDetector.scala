@@ -132,8 +132,10 @@ class PhiAccrualFailureDetector(
         // this is a known connection
         val interval = timestamp - latestTimestamp
         // don't use the first heartbeat after failure for the history, since a long pause will skew the stats
-        if (isAvailable(timestamp)) oldState.history :+ interval
-        else oldState.history
+        if (isAvailable(timestamp))
+          oldState.history :+ interval
+        else
+          oldState.history
     }
 
     val newState = oldState.copy(
@@ -142,7 +144,8 @@ class PhiAccrualFailureDetector(
     ) // record new timestamp
 
     // if we won the race then update else try again
-    if (!state.compareAndSet(oldState, newState)) heartbeat() // recur
+    if (!state.compareAndSet(oldState, newState))
+      heartbeat() // recur
   }
 
   /**

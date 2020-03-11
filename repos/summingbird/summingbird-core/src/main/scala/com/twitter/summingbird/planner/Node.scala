@@ -42,7 +42,10 @@ sealed trait Node[P <: Platform[P]] {
         case NamedProducer(_, n) => sanitize(n)
       }
       .mkString(",")
-    if (membersCombined.size > 0) "|" + membersCombined + "|" else ""
+    if (membersCombined.size > 0)
+      "|" + membersCombined + "|"
+    else
+      ""
   }
 
   def shortName(sanitize: String => String): NodeIdentifier
@@ -70,7 +73,10 @@ case class FlatMapNode[P <: Platform[P]](
     override val members: List[Producer[P, _]] = List())
     extends Node[P] {
   def add(node: Producer[P, _]): Node[P] =
-    if (members.contains(node)) this else this.copy(members = node :: members)
+    if (members.contains(node))
+      this
+    else
+      this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
   override def shortName(sanitize: String => String) =
     NodeIdentifier("FlatMap" + collapseNamedNodes(sanitize))
@@ -80,7 +86,10 @@ case class SummerNode[P <: Platform[P]](
     override val members: List[Producer[P, _]] = List())
     extends Node[P] {
   def add(node: Producer[P, _]): Node[P] =
-    if (members.contains(node)) this else this.copy(members = node :: members)
+    if (members.contains(node))
+      this
+    else
+      this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
   override def shortName(sanitize: String => String) =
     NodeIdentifier("Summer" + collapseNamedNodes(sanitize))
@@ -90,7 +99,10 @@ case class SourceNode[P <: Platform[P]](
     override val members: List[Producer[P, _]] = List())
     extends Node[P] {
   def add(node: Producer[P, _]): Node[P] =
-    if (members.contains(node)) this else this.copy(members = node :: members)
+    if (members.contains(node))
+      this
+    else
+      this.copy(members = node :: members)
   def reverse = this.copy(members.reverse)
   override def shortName(sanitize: String => String) =
     NodeIdentifier("Source" + collapseNamedNodes(sanitize))
@@ -121,14 +133,18 @@ case class Dag[P <: Platform[P]](
       // and nodes on which each node depends
       val oldSrcDependants = dependantsOfM.getOrElse(src, List[Node[P]]())
       val newSrcDependants =
-        if (oldSrcDependants.contains(dest)) oldSrcDependants
-        else (dest :: oldSrcDependants)
+        if (oldSrcDependants.contains(dest))
+          oldSrcDependants
+        else
+          (dest :: oldSrcDependants)
       val newDependantsOfM = dependantsOfM + (src -> newSrcDependants)
 
       val oldDestDependencies = dependenciesOfM.getOrElse(dest, List[Node[P]]())
       val newDestDependencies =
-        if (oldDestDependencies.contains(src)) oldDestDependencies
-        else (src :: oldDestDependencies)
+        if (oldDestDependencies.contains(src))
+          oldDestDependencies
+        else
+          (src :: oldDestDependencies)
       val newDependenciesOfM = dependenciesOfM + (dest -> newDestDependencies)
 
       copy(
@@ -235,11 +251,15 @@ object Dag {
         indxOpt: Option[Int] = None): String = {
       indxOpt match {
         case None =>
-          if (seen.contains(name)) tryGetName(name, seen, Some(2)) else name
+          if (seen.contains(name))
+            tryGetName(name, seen, Some(2))
+          else
+            name
         case Some(indx) =>
           if (seen.contains(name + "." + indx))
             tryGetName(name, seen, Some(indx + 1))
-          else name + "." + indx
+          else
+            name + "." + indx
       }
     }
 
@@ -255,8 +275,10 @@ object Dag {
           val useName = nodeToName.get(n) match {
             case None => name
             case Some(otherName) =>
-              if (otherName.split("-").size > name.split("-").size) name
-              else otherName
+              if (otherName.split("-").size > name.split("-").size)
+                name
+              else
+                otherName
           }
           genNames(n, dag, nodeToName + (n -> useName), taken + useName)
       }

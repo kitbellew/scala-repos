@@ -37,8 +37,10 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       // Just leaving it on the stack is not valid in MSIL (stack is cleaned when leaving try-blocks).
       val hasResult = (expectedType != UNIT)
       val monitorResult: Symbol =
-        if (hasResult) locals.makeLocal(tpeTK(args.head), "monitorResult")
-        else null;
+        if (hasResult)
+          locals.makeLocal(tpeTK(args.head), "monitorResult")
+        else
+          null;
 
       /* ------ (1) pushing and entering the monitor, also keeping a reference to it in a local var. ------ */
       genLoadQualifier(fun)
@@ -189,14 +191,15 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       val kind = tpeTK(tree)
 
       val caseHandlers: List[EHClause] =
-        for (CaseDef(pat, _, caseBody) <- catches) yield {
-          pat match {
-            case Typed(Ident(nme.WILDCARD), tpt) =>
-              NamelessEH(tpeTK(tpt).asClassBType, caseBody)
-            case Ident(nme.WILDCARD) => NamelessEH(jlThrowableRef, caseBody)
-            case Bind(_, _)          => BoundEH(pat.symbol, caseBody)
+        for (CaseDef(pat, _, caseBody) <- catches)
+          yield {
+            pat match {
+              case Typed(Ident(nme.WILDCARD), tpt) =>
+                NamelessEH(tpeTK(tpt).asClassBType, caseBody)
+              case Ident(nme.WILDCARD) => NamelessEH(jlThrowableRef, caseBody)
+              case Bind(_, _)          => BoundEH(pat.symbol, caseBody)
+            }
           }
-        }
 
       // ------ (0) locals used later ------
 
@@ -222,13 +225,21 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
        * please notice `tmp` has type tree.tpe, while `earlyReturnVar` has the method return type.
        * Because those two types can be different, dedicated vars are needed.
        */
-      val tmp = if (guardResult) locals.makeLocal(tpeTK(tree), "tmp") else null;
+      val tmp =
+        if (guardResult)
+          locals.makeLocal(tpeTK(tree), "tmp")
+        else
+          null;
 
       /*
        * upon early return from the try-body or one of its EHs (but not the EH-version of the finally-clause)
        * AND hasFinally, a cleanup is needed.
        */
-      val finCleanup = if (hasFinally) new asm.Label else null
+      val finCleanup =
+        if (hasFinally)
+          new asm.Label
+        else
+          null
 
       /* ------ (1) try-block, protected by:
        *                       (1.a) the EHs due to case-clauses,   emitted in (2),
@@ -380,8 +391,10 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
         handler: asm.Label,
         excType: ClassBType) {
       val excInternalName: String =
-        if (excType == null) null
-        else excType.internalName
+        if (excType == null)
+          null
+        else
+          excType.internalName
       assert(
         start != end,
         "protecting a range of zero instructions leads to illegal class format. Solution: add a NOP to that range.")

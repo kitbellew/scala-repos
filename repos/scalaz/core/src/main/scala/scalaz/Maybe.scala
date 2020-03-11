@@ -116,7 +116,11 @@ sealed abstract class Maybe[A] {
     } yield f(a, b)
 
   final def filter(f: A => Boolean): Maybe[A] =
-    flatMap(a => if (f(a)) this else empty)
+    flatMap(a =>
+      if (f(a))
+        this
+      else
+        empty)
 
   final def filterNot(f: A => Boolean): Maybe[A] =
     filter(f.andThen(!_))
@@ -160,7 +164,10 @@ object Maybe extends MaybeInstances {
 
   /** Wrap a value in Just, or return Empty if the value is null */
   final def fromNullable[A](a: A): Maybe[A] =
-    if (null == a) empty else just(a)
+    if (null == a)
+      empty
+    else
+      just(a)
 
   final def empty[A]: Maybe[A] = Empty()
 

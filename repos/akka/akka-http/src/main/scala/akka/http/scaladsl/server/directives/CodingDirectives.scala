@@ -26,8 +26,10 @@ trait CodingDirectives {
     */
   def responseEncodingAccepted(encoding: HttpEncoding): Directive0 =
     extractRequest.flatMap { request ⇒
-      if (EncodingNegotiator(request.headers).isAccepted(encoding)) pass
-      else reject(UnacceptedResponseEncodingRejection(Set(encoding)))
+      if (EncodingNegotiator(request.headers).isAccepted(encoding))
+        pass
+      else
+        reject(UnacceptedResponseEncodingRejection(Set(encoding)))
     }
 
   /**
@@ -63,7 +65,8 @@ trait CodingDirectives {
     */
   def decodeRequestWith(decoder: Decoder): Directive0 = {
     def applyDecoder =
-      if (decoder == NoCoding) pass
+      if (decoder == NoCoding)
+        pass
       else
         extractSettings flatMap { settings ⇒
           val effectiveDecoder =
@@ -135,7 +138,10 @@ object CodingDirectives extends CodingDirectives {
     immutable.Seq(NoCoding, Gzip, Deflate)
 
   def theseOrDefault[T >: Coder](these: Seq[T]): Seq[T] =
-    if (these.isEmpty) DefaultCoders else these
+    if (these.isEmpty)
+      DefaultCoders
+    else
+      these
 
   import BasicDirectives._
   import RouteDirectives._
@@ -152,8 +158,10 @@ object CodingDirectives extends CodingDirectives {
         case Some(encoder) ⇒ mapResponse(encoder.encode(_))
         case _ ⇒
           if (encoders.contains(NoCoding) && !negotiator.hasMatchingFor(
-                HttpEncodings.identity)) pass
-          else reject(UnacceptedResponseEncodingRejection(encodings.toSet))
+                HttpEncodings.identity))
+            pass
+          else
+            reject(UnacceptedResponseEncodingRejection(encodings.toSet))
       }
     }
 }

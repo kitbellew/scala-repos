@@ -36,7 +36,8 @@ class CompileServerLauncher extends ApplicationComponent {
   def initComponent() {}
 
   def disposeComponent() {
-    if (running) stop()
+    if (running)
+      stop()
   }
 
   def tryToStart(project: Project): Boolean = {
@@ -50,7 +51,8 @@ class CompileServerLauncher extends ApplicationComponent {
         }
       }
       started
-    } else true
+    } else
+      true
   }
 
   private def start(project: Project): Boolean = {
@@ -113,7 +115,8 @@ class CompileServerLauncher extends ApplicationComponent {
         val bootCp = bootClasspath(project)
         val bootClassPathLibs = bootCp.map(_.getAbsolutePath)
         val bootclasspathArg =
-          if (bootClassPathLibs.isEmpty) Nil
+          if (bootClassPathLibs.isEmpty)
+            Nil
           else
             Seq(
               "-Xbootclasspath/a:" + bootClassPathLibs.mkString(
@@ -137,7 +140,8 @@ class CompileServerLauncher extends ApplicationComponent {
         val shutdownDelayArg =
           if (settings.COMPILE_SERVER_SHUTDOWN_IDLE && shutdownDelay >= 0) {
             Seq(s"-Dshutdown.delay=$shutdownDelay")
-          } else Nil
+          } else
+            Nil
 
         val commands =
           jdk.executable.canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
@@ -231,7 +235,8 @@ object CompileServerLauncher {
   def pluginPath: String = {
     if (ApplicationManager.getApplication.isUnitTestMode)
       new File(System.getProperty("plugin.path"), "lib").getCanonicalPath
-    else new File(PathUtil.getJarPathForClass(getClass)).getParent
+    else
+      new File(PathUtil.getJarPathForClass(getClass)).getParent
   }
 
   def dottyInterfacesJar: File = {
@@ -251,7 +256,10 @@ object CompileServerLauncher {
   def jvmParameters: Seq[String] = {
     val settings = ScalaCompileServerSettings.getInstance
     val xmx = settings.COMPILE_SERVER_MAXIMUM_HEAP_SIZE |> { size =>
-      if (size.isEmpty) Nil else List("-Xmx%sm".format(size))
+      if (size.isEmpty)
+        Nil
+      else
+        List("-Xmx%sm".format(size))
     }
 
     val (userMaxPermSize, otherParams) = settings.COMPILE_SERVER_JVM_PARAMETERS
@@ -261,8 +269,10 @@ object CompileServerLauncher {
     val defaultMaxPermSize = Some("-XX:MaxPermSize=256m")
     val needMaxPermSize = settings.COMPILE_SERVER_SDK < "1.8"
     val maxPermSize =
-      if (needMaxPermSize) userMaxPermSize.headOption.orElse(defaultMaxPermSize)
-      else None
+      if (needMaxPermSize)
+        userMaxPermSize.headOption.orElse(defaultMaxPermSize)
+      else
+        None
 
     xmx ++ otherParams ++ maxPermSize
   }
@@ -270,9 +280,11 @@ object CompileServerLauncher {
   def ensureServerRunning(project: Project) {
     val launcher = CompileServerLauncher.instance
 
-    if (needRestart(project)) launcher.stop()
+    if (needRestart(project))
+      launcher.stop()
 
-    if (!launcher.running) launcher.tryToStart(project)
+    if (!launcher.running)
+      launcher.tryToStart(project)
   }
 
   def needRestart(project: Project): Boolean = {
@@ -292,14 +304,16 @@ object CompileServerLauncher {
 
   def ensureNotRunning(project: Project) {
     val launcher = CompileServerLauncher.instance
-    if (launcher.running) launcher.stop(project)
+    if (launcher.running)
+      launcher.stop(project)
   }
 
   def findFreePort: Int = {
     val port = ScalaCompileServerSettings.getInstance().COMPILE_SERVER_PORT
     if (NetUtils.canConnectToSocket("localhost", port))
       NetUtils.findAvailableSocketPort()
-    else port
+    else
+      port
   }
 
   private def projectHome(project: Project): Option[File] = {

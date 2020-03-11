@@ -63,7 +63,8 @@ object KuhnMunkres extends BipartiteMatching {
       val mins =
         for (i <- 0 until n iterator;
              j <- 0 until n iterator;
-             if !rowCovered(i) && !colCovered(j)) yield C(i)(j);
+             if !rowCovered(i) && !colCovered(j))
+          yield C(i)(j);
       mins.reduceLeft(_ min _)
     }
 
@@ -227,8 +228,10 @@ object KuhnMunkres extends BipartiteMatching {
         r <- 0 until n;
         c <- 0 until n
       } {
-        if (rowCovered(r)) C(r)(c) += min;
-        if (!colCovered(c)) C(r)(c) -= min;
+        if (rowCovered(r))
+          C(r)(c) += min;
+        if (!colCovered(c))
+          C(r)(c) -= min;
       }
 
       4
@@ -276,9 +279,12 @@ object KuhnMunkres extends BipartiteMatching {
     val cols = costs(0).length;
     val n = rows max cols;
     val ret = Array.tabulate(n, n) { (i, j) =>
-      if (i >= rows) 0.0;
-      else if (j >= costs(i).length) 0.0
-      else costs(i)(j);
+      if (i >= rows)
+        0.0;
+      else if (j >= costs(i).length)
+        0.0
+      else
+        costs(i)(j);
     }
 
     ret

@@ -21,9 +21,12 @@ object VersionVector {
   def apply(): VersionVector = empty
 
   def apply(versions: TreeMap[UniqueAddress, Long]): VersionVector =
-    if (versions.isEmpty) empty
-    else if (versions.size == 1) apply(versions.head._1, versions.head._2)
-    else ManyVersionVector(versions)
+    if (versions.isEmpty)
+      empty
+    else if (versions.size == 1)
+      apply(versions.head._1, versions.head._2)
+    else
+      ManyVersionVector(versions)
 
   def apply(node: UniqueAddress, version: Long): VersionVector =
     OneVersionVector(node, version)
@@ -31,9 +34,12 @@ object VersionVector {
   /** INTERNAL API */
   private[akka] def apply(
       versions: List[(UniqueAddress, Long)]): VersionVector =
-    if (versions.isEmpty) empty
-    else if (versions.tail.isEmpty) apply(versions.head._1, versions.head._2)
-    else apply(emptyVersions ++ versions)
+    if (versions.isEmpty)
+      empty
+    else if (versions.tail.isEmpty)
+      apply(versions.head._1, versions.head._2)
+    else
+      apply(emptyVersions ++ versions)
 
   /**
     * Java API
@@ -183,7 +189,10 @@ sealed abstract class VersionVector
       that: VersionVector,
       order: Ordering): Ordering = {
     def nextOrElse[A](iter: Iterator[A], default: A): A =
-      if (iter.hasNext) iter.next() else default
+      if (iter.hasNext)
+        iter.next()
+      else
+        default
 
     def compare(
         i1: Iterator[(UniqueAddress, Long)],
@@ -196,14 +205,21 @@ sealed abstract class VersionVector
           currentOrder: Ordering): Ordering =
         if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (currentOrder ne requestedOrder))
           currentOrder
-        else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker)) currentOrder
+        else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker))
+          currentOrder
         // i1 is empty but i2 is not, so i1 can only be Before
         else if (nt1 eq cmpEndMarker) {
-          if (currentOrder eq After) Concurrent else Before
+          if (currentOrder eq After)
+            Concurrent
+          else
+            Before
         }
         // i2 is empty but i1 is not, so i1 can only be After
         else if (nt2 eq cmpEndMarker) {
-          if (currentOrder eq Before) Concurrent else After
+          if (currentOrder eq Before)
+            Concurrent
+          else
+            After
         } else {
           // compare the nodes
           val nc = nt1._1 compareTo nt2._1
@@ -217,7 +233,8 @@ sealed abstract class VersionVector
                 currentOrder)
             else if (nt1._2 < nt2._2) {
               // t1 is less than t2, so i1 can only be Before
-              if (currentOrder eq After) Concurrent
+              if (currentOrder eq After)
+                Concurrent
               else
                 compareNext(
                   nextOrElse(i1, cmpEndMarker),
@@ -225,7 +242,8 @@ sealed abstract class VersionVector
                   Before)
             } else {
               // t2 is less than t1, so i1 can only be After
-              if (currentOrder eq Before) Concurrent
+              if (currentOrder eq Before)
+                Concurrent
               else
                 compareNext(
                   nextOrElse(i1, cmpEndMarker),
@@ -234,12 +252,16 @@ sealed abstract class VersionVector
             }
           } else if (nc < 0) {
             // this node only exists in i1 so i1 can only be After
-            if (currentOrder eq Before) Concurrent
-            else compareNext(nextOrElse(i1, cmpEndMarker), nt2, After)
+            if (currentOrder eq Before)
+              Concurrent
+            else
+              compareNext(nextOrElse(i1, cmpEndMarker), nt2, After)
           } else {
             // this node only exists in i2 so i1 can only be Before
-            if (currentOrder eq After) Concurrent
-            else compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
+            if (currentOrder eq After)
+              Concurrent
+            else
+              compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
           }
         }
 
@@ -249,12 +271,16 @@ sealed abstract class VersionVector
         Same)
     }
 
-    if (this eq that) Same
+    if (this eq that)
+      Same
     else
       compare(
         this.versionsIterator,
         that.versionsIterator,
-        if (order eq Concurrent) FullOrder else order)
+        if (order eq Concurrent)
+          FullOrder
+        else
+          order)
   }
 
   /**
@@ -305,14 +331,18 @@ final case class OneVersionVector private[akka] (
   /** INTERNAL API */
   private[akka] override def increment(n: UniqueAddress): VersionVector = {
     val v = Timestamp.counter.getAndIncrement()
-    if (n == node) copy(version = v)
-    else ManyVersionVector(TreeMap(node -> version, n -> v))
+    if (n == node)
+      copy(version = v)
+    else
+      ManyVersionVector(TreeMap(node -> version, n -> v))
   }
 
   /** INTERNAL API */
   private[akka] override def versionAt(n: UniqueAddress): Long =
-    if (n == node) version
-    else Timestamp.Zero
+    if (n == node)
+      version
+    else
+      Timestamp.Zero
 
   /** INTERNAL API */
   private[akka] override def contains(n: UniqueAddress): Boolean =
@@ -325,13 +355,20 @@ final case class OneVersionVector private[akka] (
   override def merge(that: VersionVector): VersionVector = {
     that match {
       case OneVersionVector(n2, v2) ⇒
-        if (node == n2) if (version >= v2) this else OneVersionVector(n2, v2)
-        else ManyVersionVector(TreeMap(node -> version, n2 -> v2))
+        if (node == n2)
+          if (version >= v2)
+            this
+          else
+            OneVersionVector(n2, v2)
+        else
+          ManyVersionVector(TreeMap(node -> version, n2 -> v2))
       case ManyVersionVector(vs2) ⇒
         val v2 = vs2.getOrElse(node, Timestamp.Zero)
         val mergedVersions =
-          if (v2 >= version) vs2
-          else vs2.updated(node, version)
+          if (v2 >= version)
+            vs2
+          else
+            vs2.updated(node, version)
         VersionVector(mergedVersions)
     }
   }
@@ -342,10 +379,16 @@ final case class OneVersionVector private[akka] (
   override def prune(
       removedNode: UniqueAddress,
       collapseInto: UniqueAddress): VersionVector =
-    (if (node == removedNode) VersionVector.empty else this) + collapseInto
+    (if (node == removedNode)
+       VersionVector.empty
+     else
+       this) + collapseInto
 
   override def pruningCleanup(removedNode: UniqueAddress): VersionVector =
-    if (node == removedNode) VersionVector.empty else this
+    if (node == removedNode)
+      VersionVector.empty
+    else
+      this
 
   override def toString: String =
     s"VersionVector($node -> $version)"
@@ -396,8 +439,10 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
       case OneVersionVector(n2, v2) ⇒
         val v1 = versions.getOrElse(n2, Timestamp.Zero)
         val mergedVersions =
-          if (v1 >= v2) versions
-          else versions.updated(n2, v2)
+          if (v1 >= v2)
+            versions
+          else
+            versions.updated(n2, v2)
         VersionVector(mergedVersions)
     }
   }

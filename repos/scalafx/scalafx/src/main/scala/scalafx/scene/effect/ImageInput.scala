@@ -36,7 +36,10 @@ import scalafx.scene.image.Image
 
 object ImageInput {
   implicit def sfxImageInput2jfx(ii: ImageInput): jfxse.ImageInput =
-    if (ii != null) ii.delegate else null
+    if (ii != null)
+      ii.delegate
+    else
+      null
 }
 
 class ImageInput(override val delegate: jfxse.ImageInput = new jfxse.ImageInput)

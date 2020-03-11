@@ -303,8 +303,10 @@ trait IntroduceTypeAlias {
         }
       }
 
-      if (ScalaRefactoringUtil.isInplaceAvailable(editor)) runInplace()
-      else runWithDialog(fromInplace = false, null)
+      if (ScalaRefactoringUtil.isInplaceAvailable(editor))
+        runInplace()
+      else
+        runWithDialog(fromInplace = false, null)
     } catch {
       case _: IntroduceException =>
     }
@@ -587,7 +589,8 @@ trait IntroduceTypeAlias {
       def valueChanged(e: ListSelectionEvent) {
         highlighter.dropHighlight()
         val index: Int = list.getSelectedIndex
-        if (index < 0) return
+        if (index < 0)
+          return
       }
     })
 

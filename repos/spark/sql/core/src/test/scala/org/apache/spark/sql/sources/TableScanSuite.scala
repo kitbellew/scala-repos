@@ -389,7 +389,8 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
       .map { field =>
         if (field.metadata.contains("comment"))
           field.metadata.getString("comment")
-        else "NO_COMMENT"
+        else
+          "NO_COMMENT"
       }
       .mkString(",")
 

@@ -324,9 +324,10 @@ class KMeans private (
 
           val contribs =
             for (i <- 0 until runs;
-                 j <- 0 until k) yield {
-              ((i, j), (sums(i)(j), counts(i)(j)))
-            }
+                 j <- 0 until k)
+              yield {
+                ((i, j), (sums(i)(j), counts(i)(j)))
+              }
           contribs.iterator
         }
         .reduceByKey(mergeContribs)
@@ -479,7 +480,10 @@ class KMeans private (
               val rs = (0 until runs).filter { r =>
                 rand.nextDouble() < 2.0 * c(r) * k / sumCosts(r)
               }
-              if (rs.length > 0) Some((p, rs)) else None
+              if (rs.length > 0)
+                Some((p, rs))
+              else
+                None
           }
         }
         .collect()

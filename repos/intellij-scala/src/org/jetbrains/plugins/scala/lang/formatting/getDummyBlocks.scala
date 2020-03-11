@@ -56,8 +56,10 @@ object getDummyBlocks {
       firstNode: ASTNode,
       lastNode: ASTNode,
       block: ScalaBlock): util.ArrayList[Block] =
-    if (lastNode != null) applyInner(firstNode, lastNode, block)
-    else applyInner(firstNode, block)
+    if (lastNode != null)
+      applyInner(firstNode, lastNode, block)
+    else
+      applyInner(firstNode, block)
 
   private def applyInner(
       node: ASTNode,
@@ -83,8 +85,10 @@ object getDummyBlocks {
         return subBlocks
       case _: ScIfStmt =>
         val alignment =
-          if (scalaSettings.ALIGN_IF_ELSE) Alignment.createAlignment
-          else null
+          if (scalaSettings.ALIGN_IF_ELSE)
+            Alignment.createAlignment
+          else
+            null
         subBlocks.addAll(getIfSubBlocks(node, block, alignment))
         return subBlocks
       case _: ScInfixExpr | _: ScInfixPattern | _: ScInfixTypeElement =>
@@ -168,7 +172,10 @@ object getDummyBlocks {
         val hasValidTail =
           afterOpenBrace.nonEmpty && afterOpenBrace.head.getElementType == ScalaTokenTypes.tLBRACE &&
             afterOpenBrace.last.getElementType == ScalaTokenTypes.tRBRACE
-        for (child <- if (hasValidTail) beforeOpenBrace else correctChildren) {
+        for (child <- if (hasValidTail)
+               beforeOpenBrace
+             else
+               correctChildren) {
           subBlocks.add(
             getSubBlock(
               block,
@@ -190,8 +197,10 @@ object getDummyBlocks {
         var scalaDocPrevChildTag: Option[String] = None
         var contextAlignment: Alignment = Alignment.createAlignment(true)
         val alignment =
-          if (mustAlignment(node, block.getSettings)) Alignment.createAlignment
-          else null
+          if (mustAlignment(node, block.getSettings))
+            Alignment.createAlignment
+          else
+            null
         for (child <- children if isCorrectBlock(child)) {
           val context = (child.getElementType match {
             case ScalaDocElementTypes.DOC_TAG =>
@@ -252,7 +261,10 @@ object getDummyBlocks {
                 block,
                 scalaSettings,
                 tagParameter,
-                if (tail.isEmpty) null else tail.last))
+                if (tail.isEmpty)
+                  null
+                else
+                  tail.last))
           case tagName :: tail
               if Option(docTag.getNameElement)
                 .map(_.getNode)
@@ -282,7 +294,8 @@ object getDummyBlocks {
     val alignment: Alignment =
       if (mustAlignment(node, block.getSettings))
         Alignment.createAlignment
-      else null
+      else
+        null
     var alternateAlignment: Alignment = null
     for (child <- children if isCorrectBlock(child)) {
       val indent = ScalaIndentProcessor.getChildIndent(block, child)
@@ -308,7 +321,8 @@ object getDummyBlocks {
                     alternateAlignment = Alignment.createAlignment
                   }
                   alternateAlignment
-                } else null
+                } else
+                  null
               case ScalaElementTypes.BLOCK_EXPR
                   if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS =>
                 null
@@ -329,7 +343,8 @@ object getDummyBlocks {
                     alternateAlignment = Alignment.createAlignment
                   }
                   alternateAlignment
-                } else null
+                } else
+                  null
               case ScalaElementTypes.BLOCK_EXPR
                   if scalaSettings.DO_NOT_ALIGN_BLOCK_EXPR_PARAMS =>
                 null
@@ -343,9 +358,12 @@ object getDummyBlocks {
                 child.getPsi.getParent
                   .asInstanceOf[ScReferenceExpression]
                   .qualifier
-                  .isEmpty) null
-            else if (child.getPsi.isInstanceOf[ScExpression]) null
-            else alignment
+                  .isEmpty)
+              null
+            else if (child.getPsi.isInstanceOf[ScExpression])
+              null
+            else
+              alignment
           case _: ScXmlStartTag | _: ScXmlEmptyTag =>
             child.getElementType match {
               case ScalaElementTypes.XML_ATTRIBUTE => alignment
@@ -463,18 +481,23 @@ object getDummyBlocks {
                   case "@param" | "@tparam" =>
                     if (scalaSettings.SD_ALIGN_PARAMETERS_COMMENTS)
                       normalAlignment
-                    else null
+                    else
+                      null
                   case "@return" =>
-                    if (scalaSettings.SD_ALIGN_RETURN_COMMENTS) normalAlignment
-                    else null
+                    if (scalaSettings.SD_ALIGN_RETURN_COMMENTS)
+                      normalAlignment
+                    else
+                      null
                   case "@throws" =>
                     if (scalaSettings.SD_ALIGN_EXCEPTION_COMMENTS)
                       normalAlignment
-                    else null
+                    else
+                      null
                   case _ =>
                     if (scalaSettings.SD_ALIGN_OTHER_TAGS_COMMENTS)
                       normalAlignment
-                    else null
+                    else
+                      null
                 },
                 wrap)
             } else
@@ -572,7 +595,9 @@ object getDummyBlocks {
         def isOk(psi: PsiElement): Boolean = {
           if (psi.isInstanceOf[PsiWhiteSpace] || ScalaPsiUtil.isLineTerminator(
                 psi)) {
-            psi.getText.foreach(c => if (c == '\n') breaks += 1)
+            psi.getText.foreach(c =>
+              if (c == '\n')
+                breaks += 1)
             return false
           }
           psi match {
@@ -587,8 +612,10 @@ object getDummyBlocks {
         while (prev != null && breaks <= 1 && !isOk(prev)) {
           prev = prev.getPrevSibling
         }
-        if (breaks != 1) return null
-        if (prev == null) return null
+        if (breaks != 1)
+          return null
+        if (prev == null)
+          return null
         prev.getNode
       }
       def getChildAlignment(node: ASTNode, child: ASTNode): Alignment = {
@@ -601,20 +628,24 @@ object getDummyBlocks {
         def getAlignment(node: ASTNode): Alignment = {
           val alignment = node.getPsi.getUserData(fieldGroupAlignmentKey)
           val newAlignment =
-            if (alignment == null) createNewAlignment
-            else alignment
+            if (alignment == null)
+              createNewAlignment
+            else
+              alignment
           child.getPsi.putUserData(fieldGroupAlignmentKey, newAlignment)
           newAlignment
         }
         if (child.getElementType == ScalaTokenTypes.tFUNTYPE ||
             child.getElementType == ScalaTokenTypes.tFUNTYPE_ASCII) {
-          if (prev == null) return createNewAlignment
+          if (prev == null)
+            return createNewAlignment
           val prevChild =
             prev.findChildByType(TokenSet
               .create(ScalaTokenTypes.tFUNTYPE, ScalaTokenTypes.tFUNTYPE_ASCII))
           if (prevChild == null) {
             return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          } else
+            return getAlignment(prevChild)
         }
         null
       }
@@ -655,7 +686,9 @@ object getDummyBlocks {
         def isOk(psi: PsiElement): Boolean = {
           if (psi.isInstanceOf[PsiWhiteSpace] || ScalaPsiUtil.isLineTerminator(
                 psi)) {
-            psi.getText.foreach(c => if (c == '\n') breaks += 1)
+            psi.getText.foreach(c =>
+              if (c == '\n')
+                breaks += 1)
             return false
           }
           if (psi.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
@@ -698,8 +731,10 @@ object getDummyBlocks {
         while (prev != null && breaks <= 1 && !isOk(prev)) {
           prev = prev.getPrevSibling
         }
-        if (breaks != 1) return null
-        if (prev == null) return null
+        if (breaks != 1)
+          return null
+        if (prev == null)
+          return null
         prev.getNode
       }
       def getChildAlignment(node: ASTNode, child: ASTNode): Alignment = {
@@ -712,31 +747,39 @@ object getDummyBlocks {
         def getAlignment(node: ASTNode): Alignment = {
           val alignment = node.getPsi.getUserData(fieldGroupAlignmentKey)
           val newAlignment =
-            if (alignment == null) createNewAlignment
-            else alignment
+            if (alignment == null)
+              createNewAlignment
+            else
+              alignment
           child.getPsi.putUserData(fieldGroupAlignmentKey, newAlignment)
           newAlignment
         }
         if (child.getElementType == ScalaTokenTypes.tCOLON) {
-          if (prev == null) return createNewAlignment
+          if (prev == null)
+            return createNewAlignment
           val prevChild = prev.findChildByType(ScalaTokenTypes.tCOLON)
           if (prevChild == null) {
             return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          } else
+            return getAlignment(prevChild)
         } else if (child.getElementType == ScalaTokenTypes.tASSIGN) {
-          if (prev == null) return createNewAlignment
+          if (prev == null)
+            return createNewAlignment
           val prevChild = prev.findChildByType(ScalaTokenTypes.tASSIGN)
           if (prevChild == null) {
             return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          } else
+            return getAlignment(prevChild)
         } else if (child.getElementType == ScalaTokenTypes.kVAL ||
                    child.getElementType == ScalaTokenTypes.kVAR) {
-          if (prev == null) return createNewAlignment
+          if (prev == null)
+            return createNewAlignment
           val prevChild = prev.findChildByType(
             TokenSet.create(ScalaTokenTypes.kVAL, ScalaTokenTypes.kVAR))
           if (prevChild == null) {
             return getChildAlignment(prev, child)
-          } else return getAlignment(prevChild)
+          } else
+            return getAlignment(prevChild)
         }
         null
       }
@@ -772,7 +815,8 @@ object getDummyBlocks {
     val alignment =
       if (mustAlignment(node, settings))
         Alignment.createAlignment(true)
-      else null
+      else
+        null
     for (child <- children) {
       if (isCorrectBlock(child)) {
         val indent = ScalaIndentProcessor.getChildIndent(block, child)
@@ -804,7 +848,8 @@ object getDummyBlocks {
       block.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
     val subBlocks = new util.ArrayList[Block]
     val extBlock: ScExtendsBlock = node.getPsi.asInstanceOf[ScExtendsBlock]
-    if (extBlock.getFirstChild == null) return subBlocks
+    if (extBlock.getFirstChild == null)
+      return subBlocks
     val tempBody = extBlock.templateBody
     val first = extBlock.getFirstChild
     val last = tempBody match {
@@ -901,7 +946,8 @@ object getDummyBlocks {
         val closingType =
           if (lParen.getElementType == ScalaTokenTypes.tLPARENTHESIS)
             ScalaTokenTypes.tRPARENTHESIS
-          else ScalaTokenTypes.tRBRACE
+          else
+            ScalaTokenTypes.tRBRACE
         val (_, after) =
           tail.span(elem => elem.getElementType != closingType)
         if (after.isEmpty) {
@@ -1022,7 +1068,8 @@ object getDummyBlocks {
       marginIndent +
         (if (node.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING)
            1
-         else 0),
+         else
+           0),
       true)
 
     val lines = node.getText.split("\n")
@@ -1057,7 +1104,10 @@ object getDummyBlocks {
             line.length > linePrefixLength + 1 && line.charAt(
               linePrefixLength + 1) != ' ') {
           val suffixOffset =
-            if (line.charAt(linePrefixLength + 1) == ' ') 2 else 1
+            if (line.charAt(linePrefixLength + 1) == ' ')
+              2
+            else
+              1
 
           subBlocks.add(
             new StringLineScalaBlock(
@@ -1144,7 +1194,8 @@ object getDummyBlocks {
         parentAlignment
       else if (mustAlignment(node, settings))
         Alignment.createAlignment
-      else null
+      else
+        null
     for (child <- children) {
       def checkSamePriority: Boolean = {
         import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils.priority
@@ -1206,7 +1257,8 @@ object getDummyBlocks {
         parentAlignment
       else if (mustAlignment(node, settings))
         Alignment.createAlignment
-      else null
+      else
+        null
     def addSubBlock(
         node: ASTNode,
         lastNode: ASTNode,

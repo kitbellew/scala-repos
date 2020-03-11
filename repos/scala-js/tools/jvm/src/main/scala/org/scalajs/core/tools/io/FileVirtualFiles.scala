@@ -12,8 +12,10 @@ class FileVirtualFile(val file: File) extends VirtualFile {
   override def name: String = file.getName
 
   override def version: Option[String] = {
-    if (!file.isFile) None
-    else Some(file.lastModified.toString)
+    if (!file.isFile)
+      None
+    else
+      Some(file.lastModified.toString)
   }
 
   override def exists: Boolean = file.exists
@@ -133,8 +135,10 @@ class FileVirtualJSFile(f: File)
   val sourceMapFile: File = withExtension(file, ".js", ".js.map")
 
   override def sourceMap: Option[String] = {
-    if (sourceMapFile.exists) Some(readFileToString(sourceMapFile))
-    else None
+    if (sourceMapFile.exists)
+      Some(readFileToString(sourceMapFile))
+    else
+      None
   }
 }
 

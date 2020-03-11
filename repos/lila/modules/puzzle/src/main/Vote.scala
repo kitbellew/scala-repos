@@ -9,7 +9,8 @@ case class Vote(up: Int, down: Int, sum: Int) {
     ).computeSum
 
   def change(from: Boolean, to: Boolean) =
-    if (from == to) this
+    if (from == to)
+      this
     else
       copy(
         up = up + to.fold(1, -1),

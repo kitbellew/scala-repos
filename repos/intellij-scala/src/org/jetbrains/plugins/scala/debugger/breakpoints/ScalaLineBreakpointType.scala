@@ -63,7 +63,8 @@ class ScalaLineBreakpointType
       return false
     }
     val document: Document = FileDocumentManager.getInstance.getDocument(file)
-    if (document == null) return false
+    if (document == null)
+      return false
 
     var result: Boolean = false
     val processor: Processor[PsiElement] = new Processor[PsiElement] {
@@ -98,7 +99,8 @@ class ScalaLineBreakpointType
       Collections.emptyList[JavaLineBreakpointType#JavaBreakpointVariant]
 
     val dumbService = DumbService.getInstance(project)
-    if (dumbService.isDumb) return emptyList
+    if (dumbService.isDumb)
+      return emptyList
 
     val file =
       PsiManager.getInstance(project).findFile(position.getFile) match {
@@ -112,7 +114,8 @@ class ScalaLineBreakpointType
       return emptyList
 
     val lambdas = ScalaPositionManager.lambdasOnLine(file, line)
-    if (lambdas.isEmpty) return emptyList
+    if (lambdas.isEmpty)
+      return emptyList
 
     val elementAtLine = SourcePosition.createFromLine(file, line).getElementAt
 
@@ -133,7 +136,8 @@ class ScalaLineBreakpointType
       ordinal += 1
     }
 
-    if (res.size == 1) return emptyList
+    if (res.size == 1)
+      return emptyList
     (new JavaBreakpointVariant(position) +: res).asJava //adding all variants
   }
 
@@ -141,10 +145,12 @@ class ScalaLineBreakpointType
       @NotNull breakpoint: LineBreakpoint[_],
       @NotNull position: SourcePosition): Boolean = {
     val method = getContainingMethod(breakpoint)
-    if (method == null) return false
+    if (method == null)
+      return false
 
     if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] && lambdaOrdinal(
-          breakpoint) == null) return true
+          breakpoint) == null)
+      return true
 
     DebuggerUtil.inTheMethod(position, method)
   }
@@ -153,14 +159,16 @@ class ScalaLineBreakpointType
   override def getContainingMethod(
       @NotNull breakpoint: LineBreakpoint[_]): PsiElement = {
     val position: SourcePosition = breakpoint.getSourcePosition
-    if (position == null || position.getElementAt == null) return null
+    if (position == null || position.getElementAt == null)
+      return null
 
     val ordinal = lambdaOrdinal(breakpoint)
     val lambdas =
       ScalaPositionManager.lambdasOnLine(position.getFile, position.getLine)
     if (ordinal == null || ordinal == -1 || ordinal > lambdas.size - 1)
       DebuggerUtil.getContainingMethod(position.getElementAt).orNull
-    else lambdas(ordinal)
+    else
+      lambdas(ordinal)
   }
 
   override def getHighlightRange(
@@ -189,7 +197,8 @@ class ScalaLineBreakpointType
             case _ =>
           }
           null
-        } else Option(getContainingMethod(lineBp)).map(_.getTextRange).orNull
+        } else
+          Option(getContainingMethod(lineBp)).map(_.getTextRange).orNull
       case _ => null
     }
 
@@ -202,7 +211,8 @@ class ScalaLineBreakpointType
         case jp: JavaLineBreakpointProperties => jp.getLambdaOrdinal
         case _                                => null
       }
-    } else null
+    } else
+      null
   }
 
   override def getPriority: Int = super.getPriority + 1
@@ -216,7 +226,8 @@ class ScalaLineBreakpointType
     private val isLambda = lambdaOrdinal != null && lambdaOrdinal >= 0
 
     override def getIcon: Icon = {
-      if (isLambda) AllIcons.Nodes.Function
+      if (isLambda)
+        AllIcons.Nodes.Function
       else
         element match {
           case e @ (_: PsiMethod | _: PsiClass | _: PsiFile) => e.getIcon(0)
@@ -226,15 +237,18 @@ class ScalaLineBreakpointType
     }
 
     override def getText: String = {
-      if (isLambda) super.getText
+      if (isLambda)
+        super.getText
       else {
         element match {
           case c: ScClass => s"constructor of ${c.name}"
           case ed: ScEarlyDefinitions =>
             val clazz =
               PsiTreeUtil.getParentOfType(ed, classOf[ScTypeDefinition])
-            if (clazz != null) s"early definitions of ${clazz.name}"
-            else "line in containing block"
+            if (clazz != null)
+              s"early definitions of ${clazz.name}"
+            else
+              "line in containing block"
           case Both(f: ScFunction, named: ScNamedElement) =>
             s"line in function ${named.name}"
           case f: ScalaFile => "line in containing file"

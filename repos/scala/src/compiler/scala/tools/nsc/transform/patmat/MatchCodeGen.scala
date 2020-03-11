@@ -106,7 +106,10 @@ trait MatchCodeGen extends Interface {
         def needsRuntime =
           (tgt.tpe ne null) && (typeOfMemberNamedDrop(tgt.tpe) == NoType)
 
-        if (needsRuntime) callRuntime else callDirect
+        if (needsRuntime)
+          callRuntime
+        else
+          callDirect
       }
 
       // NOTE: checker must be the target of the ==, that's the patmat semantics for ya
@@ -115,8 +118,10 @@ trait MatchCodeGen extends Interface {
 
       // the force is needed mainly to deal with the GADT typing hack (we can't detect it otherwise as tp nor pt need contain an abstract type, we're just casting wildly)
       def _asInstanceOf(b: Symbol, tp: Type): Tree =
-        if (b.info <:< tp) REF(b)
-        else gen.mkCastPreservingAnnotations(REF(b), tp)
+        if (b.info <:< tp)
+          REF(b)
+        else
+          gen.mkCastPreservingAnnotations(REF(b), tp)
       def _isInstanceOf(b: Symbol, tp: Type): Tree =
         gen.mkIsInstanceOf(
           REF(b),
@@ -309,7 +314,8 @@ trait MatchCodeGen extends Interface {
               // only emit a local val for `nextBinder` if it's actually referenced in `next`
               if (next.exists(_.symbol eq nextBinder))
                 BLOCK(ValDef(nextBinder, res), next)
-              else next
+              else
+                next
             )
           ifThenElseZero(cond, rest)
         }

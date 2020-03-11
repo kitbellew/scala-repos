@@ -57,7 +57,8 @@ class ConcurrentRingBufferTest extends FunSuite {
     val N = 128
     val b = new ConcurrentRingBuffer[Int](N)
 
-    for (i <- 0 until N / 2) assert(b.tryPut(i))
+    for (i <- 0 until N / 2)
+      assert(b.tryPut(i))
 
     assert(b.size == 64)
 
@@ -87,7 +88,8 @@ class ConcurrentRingBufferTest extends FunSuite {
     assert(b.tryGet() == None)
     assert(b.size == 0)
 
-    for (i <- N / 2 until N) b.tryGet() // fully drain
+    for (i <- N / 2 until N)
+      b.tryGet() // fully drain
 
     assert(b.tryPeek == None)
   }

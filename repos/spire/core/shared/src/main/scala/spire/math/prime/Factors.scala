@@ -37,7 +37,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   override def toString(): String = {
     def terms =
-      if (factors.isEmpty) "1"
+      if (factors.isEmpty)
+        "1"
       else
         factors.toSeq.sorted
           .map {
@@ -65,7 +66,10 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def compare(rhs: Factors): Int = {
     val n = lhs.signum - rhs.signum
-    if (n == 0) lhs.value compare rhs.value else java.lang.Integer.signum(n)
+    if (n == 0)
+      lhs.value compare rhs.value
+    else
+      java.lang.Integer.signum(n)
   }
 
   def compare(rhs: Int): Int =
@@ -139,7 +143,10 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def /(rhs: Factors): Factors = {
     val (sign, nn, dd, cc) = qm(rhs)
-    if (dd.isEmpty) Factors(nn, sign) else Factors((prod(nn) * sign) / prod(dd))
+    if (dd.isEmpty)
+      Factors(nn, sign)
+    else
+      Factors((prod(nn) * sign) / prod(dd))
   }
 
   def /(rhs: SafeLong): Factors =
@@ -150,13 +157,18 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
         Factors(factors.updated(rhs, n - 1), sign)
       case None =>
         val n = lhs.value / rhs
-        if (n < rhs) Factors(n) else lhs / Factors(rhs)
+        if (n < rhs)
+          Factors(n)
+        else
+          lhs / Factors(rhs)
     }
 
   def %(rhs: Factors): Factors = {
     val (_, nn, dd, cc) = qm(rhs)
-    if (dd.isEmpty) Factors.zero
-    else Factors(((prod(nn) * lhs.signum) % prod(dd)) * prod(cc))
+    if (dd.isEmpty)
+      Factors.zero
+    else
+      Factors(((prod(nn) * lhs.signum) % prod(dd)) * prod(cc))
   }
 
   def %(rhs: SafeLong): Factors =

@@ -53,7 +53,10 @@ class SorterSuite extends SparkFunSuite with Logging {
       rand.nextDouble()
     }
     val keyValueArray = Array.tabulate[Number](10000) { i =>
-      if (i % 2 == 0) keys(i / 2) else new Integer(i / 2)
+      if (i % 2 == 0)
+        keys(i / 2)
+      else
+        new Integer(i / 2)
     }
 
     // Map from generated keys to values, to verify correctness later

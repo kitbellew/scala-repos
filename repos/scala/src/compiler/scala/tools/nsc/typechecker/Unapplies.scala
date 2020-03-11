@@ -52,7 +52,10 @@ trait Unapplies extends ast.TreeDSL {
   private def classType(cdef: ClassDef, tparams: List[TypeDef]): Tree = {
     // SI-7033 Unattributed to avoid forcing `cdef.symbol.info`.
     val tycon = Ident(cdef.symbol)
-    if (tparams.isEmpty) tycon else AppliedTypeTree(tycon, tparams map toIdent)
+    if (tparams.isEmpty)
+      tycon
+    else
+      AppliedTypeTree(tycon, tparams map toIdent)
   }
 
   private def constrParamss(cdef: ClassDef): List[List[ValDef]] = {
@@ -111,7 +114,11 @@ trait Unapplies extends ast.TreeDSL {
       gen.scalaFunctionConstr(primaries, toIdent(cdef), abstractFun = true)
     }
 
-    def parents = if (inheritFromFun) List(createFun) else Nil
+    def parents =
+      if (inheritFromFun)
+        List(createFun)
+      else
+        Nil
     def toString =
       DefDef(
         Modifiers(OVERRIDE | FINAL | SYNTHETIC),
@@ -176,12 +183,13 @@ trait Unapplies extends ast.TreeDSL {
         classType(cdef, tparams),
         EmptyTree))
     val resultType =
-      if (!settings.isScala212) TypeTree()
+      if (!settings.isScala212)
+        TypeTree()
       else { // fix for SI-6541 under -Xsource:2.12
         def repeatedToSeq(tp: Tree) = tp match {
           case AppliedTypeTree(
-              Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
-              tps) =>
+                Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
+                tps) =>
             AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
           case _ => tp
         }
@@ -196,7 +204,10 @@ trait Unapplies extends ast.TreeDSL {
         }
       }
     val ifNull =
-      if (constrParamss(cdef).head.isEmpty) FALSE else REF(NoneModule)
+      if (constrParamss(cdef).head.isEmpty)
+        FALSE
+      else
+        REF(NoneModule)
     val body = nullSafe(
       {
         case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
@@ -240,13 +251,19 @@ trait Unapplies extends ast.TreeDSL {
       isRepeatedParamType(vd.tpt) || isByNameParamType(vd.tpt)
     val classParamss = constrParamss(cdef)
 
-    if (cdef.symbol.hasAbstractFlag || mexists(classParamss)(isDisallowed)) None
+    if (cdef.symbol.hasAbstractFlag || mexists(classParamss)(isDisallowed))
+      None
     else {
       def makeCopyParam(vd: ValDef, putDefault: Boolean) = {
-        val rhs = if (putDefault) toIdent(vd) else EmptyTree
-        val flags =
-          PARAM | (vd.mods.flags & IMPLICIT) | (if (putDefault) DEFAULTPARAM
-                                                else 0)
+        val rhs =
+          if (putDefault)
+            toIdent(vd)
+          else
+            EmptyTree
+        val flags = PARAM | (vd.mods.flags & IMPLICIT) | (if (putDefault)
+                                                            DEFAULTPARAM
+                                                          else
+                                                            0)
         // empty tpt: see comment above
         val tpt = atPos(vd.pos.focus)(TypeTree() setOriginal vd.tpt)
         treeCopy.ValDef(vd, Modifiers(flags), vd.name, tpt, rhs)

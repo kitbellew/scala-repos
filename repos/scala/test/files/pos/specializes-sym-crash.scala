@@ -20,7 +20,8 @@ trait Foo[+A, +Coll, +This <: SeqView[A, Coll] with SeqViewLike[A, Coll, This]]
 
     private def createReversedIterator = {
       var lst = List[A]()
-      for (elem <- self) lst ::= elem
+      for (elem <- self)
+        lst ::= elem
       lst.iterator
     }
   }

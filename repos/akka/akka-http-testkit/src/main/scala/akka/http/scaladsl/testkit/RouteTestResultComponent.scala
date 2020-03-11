@@ -77,7 +77,8 @@ trait RouteTestResultComponent {
               Some(Left(RejectionHandler.applyTransformations(rejections)))
           }
           latch.countDown()
-        } else failTest("Route completed/rejected more than once")
+        } else
+          failTest("Route completed/rejected more than once")
       }
 
     private[testkit] def awaitResult: this.type = {

@@ -27,16 +27,20 @@ abstract class CompilerTest extends DirectTest {
   // Utility functions
   class MkType(sym: Symbol) {
     def apply[M](implicit t: ru.TypeTag[M]): Type =
-      if (sym eq NoSymbol) NoType
-      else appliedType(sym, compilerTypeFromTag(t))
+      if (sym eq NoSymbol)
+        NoType
+      else
+        appliedType(sym, compilerTypeFromTag(t))
   }
   implicit def mkMkType(sym: Symbol) = new MkType(sym)
 
   def allMembers(root: Symbol): List[Symbol] = {
     def loop(seen: Set[Symbol], roots: List[Symbol]): List[Symbol] = {
       val latest = roots flatMap (_.info.members) filterNot (seen contains _)
-      if (latest.isEmpty) seen.toList.sortWith(_ isLess _)
-      else loop(seen ++ latest, latest)
+      if (latest.isEmpty)
+        seen.toList.sortWith(_ isLess _)
+      else
+        loop(seen ++ latest, latest)
     }
     loop(Set(), List(root))
   }

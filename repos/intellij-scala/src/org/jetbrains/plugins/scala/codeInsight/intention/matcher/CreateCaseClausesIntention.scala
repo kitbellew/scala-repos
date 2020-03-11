@@ -51,7 +51,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       case Some((action, _)) =>
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         if (!FileModificationService.getInstance.prepareFileForWrite(
-              element.getContainingFile)) return
+              element.getContainingFile))
+          return
         IdeDocumentHistory
           .getInstance(project)
           .includeCurrentPlaceAsChangePlace()
@@ -102,7 +103,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val (withoutDefault, bindTos) = inheritors.map(caseClauseText).unzip
     val defaultCaseClauseText = "case _ =>"
     val caseClauseTexts =
-      if (withoutDefault.nonEmpty) withoutDefault :+ defaultCaseClauseText
+      if (withoutDefault.nonEmpty)
+        withoutDefault :+ defaultCaseClauseText
       else
         Seq(
           s"\n$defaultCaseClauseText //could not find inherited objects or case classes\n")

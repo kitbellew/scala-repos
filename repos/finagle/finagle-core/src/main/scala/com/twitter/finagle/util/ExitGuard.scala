@@ -17,7 +17,8 @@ object ExitGuard {
             if (newGs.isEmpty) {
               guards = None
               thread.interrupt()
-            } else updateName()
+            } else
+              updateName()
           case None => ()
         }
       }

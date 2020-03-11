@@ -39,7 +39,10 @@ import scalafx.scene.Node
 
 object ScrollPane {
   implicit def sfxScrollPane2jfx(v: ScrollPane): jfxsc.ScrollPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object ScrollBarPolicy
       extends SFXEnumDelegateCompanion[

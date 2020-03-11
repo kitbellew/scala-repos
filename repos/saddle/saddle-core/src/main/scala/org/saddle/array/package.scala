@@ -83,7 +83,8 @@ package object array {
       res(i) = arr(j)
       i += 1
       j += 1
-      if (j >= n) j = 0
+      if (j >= n)
+        j = 0
     }
     res
   }
@@ -252,7 +253,11 @@ package object array {
     var i = 0
     while (i < offsets.length) {
       val idx = offsets(i)
-      res = if (idx == -1) op(res, missing) else op(res, arr(idx))
+      res =
+        if (idx == -1)
+          op(res, missing)
+        else
+          op(res, arr(idx))
       i += 1
     }
     res
@@ -298,7 +303,8 @@ package object array {
     var i = 0
     while (i < locs.length) {
       val loc = locs(i)
-      if (loc >= 0 && loc < arr.length) set.add(loc)
+      if (loc >= 0 && loc < arr.length)
+        set.add(loc)
       i += 1
     }
 
@@ -346,7 +352,8 @@ package object array {
     val res = arr.clone()
     var i = 0
     while (i < offsets.length) {
-      if (offsets(i)) res(i) = value
+      if (offsets(i))
+        res(i) = value
       i += 1
     }
     res
@@ -402,7 +409,10 @@ package object array {
       Array(start)
     else {
       val result = Array.ofDim[Double](num)
-      val step = (stop - start) / (num - (if (endpoint) 1 else 0))
+      val step = (stop - start) / (num - (if (endpoint)
+                                            1
+                                          else
+                                            0))
 
       var i = 1
       val n = num - 1
@@ -459,10 +469,12 @@ package object array {
     var count = 0
     while (i < arr.length) {
       val v = arr(i)
-      if (f(v)) count += 1
+      if (f(v))
+        count += 1
       i += 1
     }
-    if (count == arr.length) arr
+    if (count == arr.length)
+      arr
     else {
       val res = empty[T](count)
       i = 0
@@ -507,9 +519,14 @@ package object array {
   def argmin[@spec(Int, Long, Double) T: ST: ORD: NUM](arr: Array[T]): Int = {
     val sca = implicitly[ST[T]]
     val sz = arr.length
-    if (sz == 0) -1
+    if (sz == 0)
+      -1
     else {
-      var (min, arg) = if (sca.isMissing(arr(0))) (sca.inf, -1) else (arr(0), 0)
+      var (min, arg) =
+        if (sca.isMissing(arr(0)))
+          (sca.inf, -1)
+        else
+          (arr(0), 0)
       var i = 1
       while (i < sz) {
         val v = arr(i)
@@ -529,10 +546,14 @@ package object array {
   def argmax[@spec(Int, Long, Double) T: ST: ORD: NUM](arr: Array[T]): Int = {
     val sca = implicitly[ST[T]]
     val sz = arr.length
-    if (sz == 0) -1
+    if (sz == 0)
+      -1
     else {
       var (max, arg) =
-        if (sca.isMissing(arr(0))) (sca.negInf, -1) else (arr(0), 0)
+        if (sca.isMissing(arr(0)))
+          (sca.negInf, -1)
+        else
+          (arr(0), 0)
       var i = 1
       while (i < sz) {
         val v = arr(i)

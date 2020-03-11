@@ -70,7 +70,10 @@ trait BindingIncludes extends Bindings {
     * @return $SFX $BOB
     */
   implicit def jfxBooleanBinding2sfx(bb: jfxbb.BooleanBinding): BooleanBinding =
-    if (bb != null) new BooleanBinding(bb) else null
+    if (bb != null)
+      new BooleanBinding(bb)
+    else
+      null
 
   /**
     * $START$BOE.html $BOE$END
@@ -80,7 +83,10 @@ trait BindingIncludes extends Bindings {
     */
   implicit def jfxBooleanExpression2sfx(
       be: jfxbb.BooleanExpression): BooleanExpression =
-    if (be != null) new BooleanExpression(be) else null
+    if (be != null)
+      new BooleanExpression(be)
+    else
+      null
 
   /**
     * $START$NUB.html $NUB$END
@@ -89,7 +95,10 @@ trait BindingIncludes extends Bindings {
     * @return $SFX $NUB
     */
   implicit def jfxNumberBinding2sfx(nb: jfxbb.NumberBinding): NumberBinding =
-    if (nb != null) new NumberBinding(nb) else null
+    if (nb != null)
+      new NumberBinding(nb)
+    else
+      null
 
   /**
     * $START$NUE.html $NUE$END
@@ -99,7 +108,10 @@ trait BindingIncludes extends Bindings {
     */
   implicit def jfxNumberExpression2sfx(
       ne: jfxbb.NumberExpression): NumberExpression =
-    if (ne != null) new NumberExpression(ne) else null
+    if (ne != null)
+      new NumberExpression(ne)
+    else
+      null
 
   /**
     * $START$OBB.html $OBB$END
@@ -110,7 +122,10 @@ trait BindingIncludes extends Bindings {
     */
   implicit def jfxObjectBinding2sfx[T](
       ob: jfxbb.ObjectBinding[T]): ObjectBinding[T] =
-    if (ob != null) new ObjectBinding[T](ob) else null
+    if (ob != null)
+      new ObjectBinding[T](ob)
+    else
+      null
 
   /**
     * $START$OBE.html $OBE$END
@@ -121,7 +136,10 @@ trait BindingIncludes extends Bindings {
     */
   implicit def jfxObjectExpression2sfx[T](
       oe: jfxbb.ObjectExpression[T]): ObjectExpression[T] =
-    if (oe != null) new ObjectExpression[T](oe) else null
+    if (oe != null)
+      new ObjectExpression[T](oe)
+    else
+      null
 
   /**
     * $START$STB.html $STB$END
@@ -130,7 +148,10 @@ trait BindingIncludes extends Bindings {
     * @return $SFX $STB
     */
   implicit def jfxStringBinding2sfx(sb: jfxbb.StringBinding): StringBinding =
-    if (sb != null) new StringBinding(sb) else null
+    if (sb != null)
+      new StringBinding(sb)
+    else
+      null
 
   /**
     * $START$STE.html $STE$END
@@ -140,7 +161,10 @@ trait BindingIncludes extends Bindings {
     */
   implicit def jfxStringExpression2sfx(
       se: jfxbb.StringExpression): StringExpression =
-    if (se != null) new StringExpression(se) else null
+    if (se != null)
+      new StringExpression(se)
+    else
+      null
 
   // Conversion helper for variable precision numbers (e.g. 100+-.01)
 

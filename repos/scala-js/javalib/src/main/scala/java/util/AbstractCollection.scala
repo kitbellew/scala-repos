@@ -19,7 +19,8 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
 
   def toArray[T <: AnyRef](a: Array[T]): Array[T] = {
     val toFill: Array[T] =
-      if (a.size >= size) a
+      if (a.size >= size)
+        a
       else
         jlr.Array
           .newInstance(a.getClass.getComponentType, size)

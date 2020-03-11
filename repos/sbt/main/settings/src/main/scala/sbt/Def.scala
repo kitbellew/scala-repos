@@ -46,8 +46,12 @@ object Def extends Init[Scope] with TaskMacroExtra {
       current: ProjectRef,
       multi: Boolean,
       project: Reference): String = project match {
-    case BuildRef(current.build)      => "{.}/"
-    case `current`                    => if (multi) current.project + "/" else ""
+    case BuildRef(current.build) => "{.}/"
+    case `current` =>
+      if (multi)
+        current.project + "/"
+      else
+        ""
     case ProjectRef(current.build, x) => x + "/"
     case _                            => Reference.display(project) + "/"
   }
@@ -68,7 +72,8 @@ object Def extends Init[Scope] with TaskMacroExtra {
     super.deriveAllowed(s, allowDynamic) orElse
       (if (s.key.scope != ThisScope)
          Some(s"Scope cannot be defined for ${definedSettingString(s)}")
-       else None) orElse
+       else
+         None) orElse
       s.dependencies
         .find(k => k.scope != ThisScope)
         .map(k =>
@@ -76,9 +81,12 @@ object Def extends Init[Scope] with TaskMacroExtra {
 
   override def intersect(s1: Scope, s2: Scope)(
       implicit delegates: Scope => Seq[Scope]): Option[Scope] =
-    if (s2 == GlobalScope) Some(s1) // s1 is more specific
-    else if (s1 == GlobalScope) Some(s2) // s2 is more specific
-    else super.intersect(s1, s2)
+    if (s2 == GlobalScope)
+      Some(s1) // s1 is more specific
+    else if (s1 == GlobalScope)
+      Some(s2) // s2 is more specific
+    else
+      super.intersect(s1, s2)
 
   private[this] def definedSettingString(s: Setting[_]): String =
     s"derived setting ${s.key.key.label}${positionString(s)}"

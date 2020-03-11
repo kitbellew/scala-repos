@@ -55,11 +55,13 @@ package object prime {
     * up to about 14 decimal digits or so.
     */
   def factorTrialDivision(n0: SafeLong): Factors = {
-    if (n0 == 0) return Factors.zero
+    if (n0 == 0)
+      return Factors.zero
 
     val n = n0.abs
     val sign = Sign(n0.signum)
-    if (n == SafeLong.one) return Factors(Map.empty, sign)
+    if (n == SafeLong.one)
+      return Factors(Map.empty, sign)
 
     val facts = mutable.Map.empty[SafeLong, Int]
     var x = n
@@ -78,7 +80,8 @@ package object prime {
         limit = x.sqrt
       }
     }
-    if (x > 1) facts(x) = 1
+    if (x > 1)
+      facts(x) = 1
     Factors(facts.toMap, sign)
   }
 
@@ -89,11 +92,13 @@ package object prime {
     * so). It's still mostly appropriate for small-ish numbers.
     */
   def factorWheelDivision(n0: SafeLong): Factors = {
-    if (n0 == 0) return Factors.zero
+    if (n0 == 0)
+      return Factors.zero
 
     val n = n0.abs
     val sign = Sign(n0.signum)
-    if (n == 1) return Factors(Map.empty, sign)
+    if (n == 1)
+      return Factors(Map.empty, sign)
 
     val facts = mutable.Map.empty[SafeLong, Int]
     var x = n
@@ -126,7 +131,8 @@ package object prime {
       i = (i + 1) % 10
     }
 
-    if (x > 1) facts(x) = 1
+    if (x > 1)
+      facts(x) = 1
     Factors(facts.toMap, sign)
   }
 
@@ -155,19 +161,28 @@ package object prime {
             y = f(y)
             q = (q * (x - y).abs) % n
           }
-          if (q == 0) g = n else g = n gcd q
+          if (q == 0)
+            g = n
+          else
+            g = n gcd q
           k = k + m
         }
 
-        if (g == 1) fastRho(y, q, r * 2, m)
-        else if (g == n) slowRho(x, ys)
-        else g
+        if (g == 1)
+          fastRho(y, q, r * 2, m)
+        else if (g == n)
+          slowRho(x, ys)
+        else
+          g
       }
 
       @tailrec def slowRho(x: SafeLong, ys: SafeLong): SafeLong = {
         val yys = f(ys)
         val g = n gcd (x - yys).abs
-        if (g == 1) slowRho(x, yys) else g
+        if (g == 1)
+          slowRho(x, yys)
+        else
+          g
       }
 
       fastRho(rand(n), SafeLong.one, SafeLong.one, rand(n))
@@ -188,16 +203,22 @@ package object prime {
         Factors(Map(SafeLong(2) -> e), Positive) * factor(x)
       } else {
         var divisor = rho(n, rand(n))
-        while (divisor == n) divisor = rho(n, rand(n))
+        while (divisor == n)
+          divisor = rho(n, rand(n))
         factor(divisor) * factor(n / divisor)
       }
     }
 
-    if (n0 == 0) return Factors.zero
+    if (n0 == 0)
+      return Factors.zero
 
     val n = n0.abs
-    if (n == 1) return Factors(Map.empty, Sign(n0.signum))
-    if (n0 < 0) -factor(n) else factor(n)
+    if (n == 1)
+      return Factors(Map.empty, Sign(n0.signum))
+    if (n0 < 0)
+      -factor(n)
+    else
+      factor(n)
   }
 
   private val srand = new java.util.Random
@@ -205,7 +226,8 @@ package object prime {
   private def rand(n: SafeLong): SafeLong = {
     val bits = n.bitLength
     var x = new java.math.BigInteger(bits, srand)
-    while (x.signum == 0) x = new java.math.BigInteger(bits, srand)
+    while (x.signum == 0)
+      x = new java.math.BigInteger(bits, srand)
     SafeLong(x)
   }
 
@@ -233,8 +255,10 @@ package object prime {
   import SafeLong.{two, three}
 
   def fill(n: Int): Array[SafeLong] = {
-    if (n <= 0) throw new IllegalArgumentException(n.toString)
-    else if (n == 1) Array(two)
+    if (n <= 0)
+      throw new IllegalArgumentException(n.toString)
+    else if (n == 1)
+      Array(two)
     else {
       val siever = sieverUpToNth(n)
       val arr = new Array[SafeLong](n)
@@ -252,12 +276,15 @@ package object prime {
   }
 
   def fill(start: Int, limit: Int): Array[SafeLong] =
-    if (start == 0) fill(limit)
+    if (start == 0)
+      fill(limit)
     else {
       val siever = sieverUpToNth(start + limit)
       def loop(i: Int, p: SafeLong): Array[SafeLong] =
-        if (i < start) loop(i + 1, siever.nextAfter(p))
-        else siever.arrayAt(p, limit)
+        if (i < start)
+          loop(i + 1, siever.nextAfter(p))
+        else
+          siever.arrayAt(p, limit)
       loop(1, three)
     }
 

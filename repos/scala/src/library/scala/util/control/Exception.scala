@@ -39,7 +39,8 @@ object Exception {
     private def downcast(x: Throwable): Option[Ex] =
       if (classTag[Ex].runtimeClass.isAssignableFrom(x.getClass))
         Some(x.asInstanceOf[Ex])
-      else None
+      else
+        None
 
     def isDefinedAt(x: Throwable) = downcast(x) exists isDef
     def apply(x: Throwable): T = f(downcast(x).get)
@@ -233,8 +234,10 @@ object Exception {
   /** Creates a `Catch` object which unwraps any of the supplied exceptions. */
   def unwrapping[T](exceptions: Class[_]*): Catch[T] = {
     def unwrap(x: Throwable): Throwable =
-      if (wouldMatch(x, exceptions) && x.getCause != null) unwrap(x.getCause)
-      else x
+      if (wouldMatch(x, exceptions) && x.getCause != null)
+        unwrap(x.getCause)
+      else
+        x
 
     catching(exceptions: _*) withApply (x => throw unwrap(x))
   }

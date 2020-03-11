@@ -74,7 +74,8 @@ trait ScalaClassLoader extends JClassLoader {
               (c.getParameterTypes zip args).forall {
                 case (k, a) => k isAssignableFrom a.getClass
               })
-          if (maybes.size == 1) maybes.head
+          if (maybes.size == 1)
+            maybes.head
           else
             fail(
               s"Constructor must accept arg list (${args map (_.getClass.getName) mkString ", "}): ${path}")
@@ -104,8 +105,10 @@ trait ScalaClassLoader extends JClassLoader {
 
   /** An InputStream representing the given class name, or null if not found. */
   def classAsStream(className: String) = getResourceAsStream {
-    if (className endsWith ".class") className
-    else s"${className.replace('.', '/')}.class" // classNameToPath
+    if (className endsWith ".class")
+      className
+    else
+      s"${className.replace('.', '/')}.class" // classNameToPath
   }
 
   /** Run the main method of a class to be loaded by this classloader */

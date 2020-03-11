@@ -96,7 +96,8 @@ private[util] class NavigableView[E](
       val elem = polled.get.inner
       remove(elem)
       elem
-    } else null.asInstanceOf[E]
+    } else
+      null.asInstanceOf[E]
   }
 
   def pollLast(): E = {
@@ -105,7 +106,8 @@ private[util] class NavigableView[E](
       val elem = polled.get.inner
       remove(elem)
       elem
-    } else null.asInstanceOf[E]
+    } else
+      null.asInstanceOf[E]
   }
 
   def comparator(): Comparator[E] = {
@@ -119,14 +121,18 @@ private[util] class NavigableView[E](
 
   def first(): E = {
     val iter = iterator()
-    if (iter.hasNext) iter.next
-    else null.asInstanceOf[E]
+    if (iter.hasNext)
+      iter.next
+    else
+      null.asInstanceOf[E]
   }
 
   def last(): E = {
     val iter = iterator()
-    if (iter.hasNext) iter.toTraversable.last
-    else null.asInstanceOf[E]
+    if (iter.hasNext)
+      iter.toTraversable.last
+    else
+      null.asInstanceOf[E]
   }
 
   def subSet(
@@ -140,10 +146,14 @@ private[util] class NavigableView[E](
 
     val subSetFun = { () =>
       val toTs =
-        if (toInclusive) innerNow.to(boxedTo)
-        else innerNow.until(boxedTo)
-      if (fromInclusive) toTs.from(boxedFrom)
-      else toTs.from(boxedFrom) - boxedFrom
+        if (toInclusive)
+          innerNow.to(boxedTo)
+        else
+          innerNow.until(boxedTo)
+      if (fromInclusive)
+        toTs.from(boxedFrom)
+      else
+        toTs.from(boxedFrom) - boxedFrom
     }
 
     new NavigableView(
@@ -161,7 +171,8 @@ private[util] class NavigableView[E](
 
     val headSetFun =
       if (inclusive)() => innerNow.to(boxed)
-      else () => innerNow.until(boxed)
+      else
+        () => innerNow.until(boxed)
 
     new NavigableView(this, headSetFun, None, true, Some(toElement), inclusive)
   }
@@ -172,7 +183,8 @@ private[util] class NavigableView[E](
 
     val tailSetFun =
       if (inclusive)() => innerNow.from(boxed)
-      else () => innerNow.from(boxed) - boxed
+      else
+        () => innerNow.from(boxed) - boxed
 
     new NavigableView(
       this,

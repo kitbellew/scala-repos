@@ -36,7 +36,10 @@ import scalafx.scene.paint.Color
 
 object PixelWriter {
   implicit def sfxPixelWriter2jfx(pw: PixelWriter): jfxsi.PixelWriter =
-    if (pw != null) pw.delegate else null
+    if (pw != null)
+      pw.delegate
+    else
+      null
 }
 
 /**

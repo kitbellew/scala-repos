@@ -40,7 +40,10 @@ import scalafx.util.StringConverter
 object ChoiceBox {
   implicit def sfxChoiceBox2jfx[J <: Any](
       cb: ChoiceBox[J]): jfxsc.ChoiceBox[J] =
-    if (cb != null) cb.delegate else null
+    if (cb != null)
+      cb.delegate
+    else
+      null
 
   /** Called when the ChoiceBox popup has been hidden. */
   val OnHidden: EventType[jfxe.Event] = jfxsc.ChoiceBox.ON_HIDDEN
@@ -101,8 +104,10 @@ class ChoiceBox[J <: Any](
     */
   def showing: ReadOnlyBooleanProperty = delegate.showingProperty
   def showing_=(show: Boolean) {
-    if (show) delegate.show()
-    else delegate.hide()
+    if (show)
+      delegate.show()
+    else
+      delegate.hide()
   }
 
   /**

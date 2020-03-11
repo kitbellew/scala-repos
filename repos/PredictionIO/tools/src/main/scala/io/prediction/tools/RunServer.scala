@@ -89,7 +89,8 @@ object RunServer extends Logging {
           s"PredictionIO Engine Instance: ${engineInstanceId}") ++
         (if (!ca.build.uberJar) {
            Seq("--jars", jarFiles)
-         } else Seq()) ++
+         } else
+           Seq()) ++
         (if (extraFiles.size > 0) {
            Seq("--files", extraFiles.mkString(","))
          } else {
@@ -125,10 +126,18 @@ object RunServer extends Logging {
          } else {
            Seq()
          }) ++
-        (if (ca.eventServer.enabled) Seq("--feedback") else Seq()) ++
-        (if (ca.common.batch != "") Seq("--batch", ca.common.batch)
-         else Seq()) ++
-        (if (ca.common.verbose) Seq("--verbose") else Seq()) ++
+        (if (ca.eventServer.enabled)
+           Seq("--feedback")
+         else
+           Seq()) ++
+        (if (ca.common.batch != "")
+           Seq("--batch", ca.common.batch)
+         else
+           Seq()) ++
+        (if (ca.common.verbose)
+           Seq("--verbose")
+         else
+           Seq()) ++
         ca.deploy.logUrl.map(x => Seq("--log-url", x)).getOrElse(Seq()) ++
         ca.deploy.logPrefix.map(x => Seq("--log-prefix", x)).getOrElse(Seq()) ++
         Seq("--json-extractor", ca.common.jsonExtractor.toString)
@@ -176,9 +185,18 @@ object RunServer extends Logging {
        } else {
          Nil
        }) ++
-      (if (ca.eventServer.enabled) Seq("--feedback") else Nil) ++
-      (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Nil) ++
-      (if (ca.common.verbose) Seq("--verbose") else Nil) ++
+      (if (ca.eventServer.enabled)
+         Seq("--feedback")
+       else
+         Nil) ++
+      (if (ca.common.batch != "")
+         Seq("--batch", ca.common.batch)
+       else
+         Nil) ++
+      (if (ca.common.verbose)
+         Seq("--verbose")
+       else
+         Nil) ++
       ca.deploy.logUrl.map(x => Seq("--log-url", x)).getOrElse(Nil) ++
       ca.deploy.logPrefix.map(x => Seq("--log-prefix", x)).getOrElse(Nil) ++
       Seq("--json-extractor", ca.common.jsonExtractor.toString)

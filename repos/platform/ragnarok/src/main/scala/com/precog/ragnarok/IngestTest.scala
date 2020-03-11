@@ -55,8 +55,10 @@ object IngestTest {
   }
 
   private def rm(f: File, exclusive: Boolean = false) {
-    if (f.isDirectory()) f.listFiles() foreach (rm(_))
-    if (!exclusive) f.delete()
+    if (f.isDirectory())
+      f.listFiles() foreach (rm(_))
+    if (!exclusive)
+      f.delete()
   }
 
   private def deleteDataDirs(runner: NIHDBPerfTestRunner[_]) {

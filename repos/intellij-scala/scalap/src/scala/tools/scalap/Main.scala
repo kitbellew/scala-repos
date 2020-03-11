@@ -156,8 +156,10 @@ object Main {
       classname: String) {
     // find the classfile
     val encName = Names.encode(
-      if (classname == "scala.AnyRef") "java.lang.Object"
-      else classname)
+      if (classname == "scala.AnyRef")
+        "java.lang.Object"
+      else
+        classname)
     val cls = path.findClass(encName)
     if (cls.isDefined && cls.get.binary.isDefined) {
       val cfile = cls.get.binary.get

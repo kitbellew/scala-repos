@@ -90,12 +90,18 @@ object InteriorPoint {
     newA(0 until A.rows, 0 until A.cols) := A
     newA(0 until A.rows + 1, A.cols) := -1.0
 
-    val newB =
-      DenseVector.tabulate(b.size + 1)(i => if (i < b.size) b(i) else 0)
+    val newB = DenseVector.tabulate(b.size + 1)(i =>
+      if (i < b.size)
+        b(i)
+      else
+        0)
     val newC = DenseVector.zeros[Double](c.size + 1)
     newC(c.size) = 1
-    val newX =
-      DenseVector.tabulate(x0.size + 1)(i => if (i < x0.size) x0(i) else s)
+    val newX = DenseVector.tabulate(x0.size + 1)(i =>
+      if (i < x0.size)
+        x0(i)
+      else
+        s)
     if (any((newA * newX - newB) :> 0.0)) {
       throw new RuntimeException("Problem seems to be infeasible!")
     }
@@ -107,7 +113,8 @@ object InteriorPoint {
 
   private def lineSearch(x: DenseVector[Double], dx: Vector[Double]): Double = {
     var alpha = 1.0
-    while ((x + dx * alpha).valuesIterator.exists(_ < 0)) alpha *= .8
+    while ((x + dx * alpha).valuesIterator.exists(_ < 0))
+      alpha *= .8
     alpha
   }
 

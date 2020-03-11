@@ -92,7 +92,10 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
       name,
       getLevel(),
       getHandlers().toList.mkString("[", ", ", "]"),
-      if (getUseParentHandlers()) "true" else "false")
+      if (getUseParentHandlers())
+        "true"
+      else
+        "false")
   }
 
   /**
@@ -115,7 +118,8 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
       val record =
         if (items.size > 0)
           new LazyLogRecordUnformatted(level, message, items: _*)
-        else new LogRecord(level, message)
+        else
+          new LogRecord(level, message)
       record.setLoggerName(wrapped.getName)
       if (thrown ne null) {
         record.setThrown(thrown)

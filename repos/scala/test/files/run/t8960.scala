@@ -4,7 +4,10 @@ object Test extends App {
     val isDelambdafyMethod = o.getClass.getName contains "$lambda$"
     assert(
       // delambdafy:method doesn't currently emit specialized anonymous function classes
-      if (sp) (isSpecialized || isDelambdafyMethod) else !isSpecialized,
+      if (sp)
+        (isSpecialized || isDelambdafyMethod)
+      else
+        !isSpecialized,
       o.getClass.getName
     )
 

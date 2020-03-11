@@ -54,7 +54,10 @@ private[spark] class PartitionwiseSampledRDD[T: ClassTag, U: ClassTag](
     extends RDD[U](prev) {
 
   @transient override val partitioner =
-    if (preservesPartitioning) prev.partitioner else None
+    if (preservesPartitioning)
+      prev.partitioner
+    else
+      None
 
   override def getPartitions: Array[Partition] = {
     val random = new Random(seed)

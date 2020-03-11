@@ -35,7 +35,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object Translate {
   implicit def sfxTranslate2jfx(v: Translate): jfxst.Translate =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

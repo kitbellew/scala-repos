@@ -44,7 +44,10 @@ class MemoryTap[In, Out](
   }
   override def resourceExists(conf: Properties) = tupleBuffer.size > 0
   override def getModifiedTime(conf: Properties) =
-    if (resourceExists(conf)) modifiedTime else 0L
+    if (resourceExists(conf))
+      modifiedTime
+    else
+      0L
   override lazy val getIdentifier: String = scala.math.random.toString
 
   override def openForRead(flowProcess: FlowProcess[Properties], input: In) = {

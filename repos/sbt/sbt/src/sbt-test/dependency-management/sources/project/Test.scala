@@ -28,6 +28,7 @@ object Test extends Build {
     val srcs = getSources(report)
     if (srcs.nonEmpty)
       sys.error("Sources retrieved:\n\t" + srcs.mkString("\n\t"))
-    else ()
+    else
+      ()
   }
 }

@@ -28,7 +28,8 @@ class HandlerEventTest extends FunSuite with MockitoSugar {
   )
   val loop = new NioEventLoopGroup()
 
-  for (handler <- handlers) testHandler(handler)
+  for (handler <- handlers)
+    testHandler(handler)
 
   private[this] def testHandler(ch: ChannelHandler): Unit = {
     val handler = new TestDuplexHandler

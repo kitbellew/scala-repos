@@ -301,7 +301,8 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
         case (_, rs) => rs.size > 1
       }
 
-    if (dups.nonEmpty) throw new MultipleResolversPerSchemeException(dups)
+    if (dups.nonEmpty)
+      throw new MultipleResolversPerSchemeException(dups)
 
     for (r <- resolvers)
       log.info("Resolver[%s] = %s(%s)".format(r.scheme, r.getClass.getName, r))
@@ -390,7 +391,8 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     * @see [[Resolvers.eval]] for Java support
     */
   def eval(name: String): Name =
-    if (name startsWith "/") Name(name)
+    if (name startsWith "/")
+      Name(name)
     else {
       val (resolver, arg) = lex(name) match {
         case (Eq :: _) | (Bang :: _) =>

@@ -91,7 +91,8 @@ class AccountBalanceRetriever extends Actor with Aggregator {
         case Savings ⇒ fetchSavingsAccountsBalance()
         case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
       }
-    else collectBalances() // Empty type list yields empty response
+    else
+      collectBalances() // Empty type list yields empty response
 
     context.system.scheduler.scheduleOnce(1.second, self, TimedOut)
     //#expect-timeout
@@ -170,7 +171,8 @@ class ChainingSample extends Actor with Aggregator {
     val handle = expect {
       case Response(name, value) ⇒
         values += value
-        if (values.size > 3) processList()
+        if (values.size > 3)
+          processList()
       case TimedOut ⇒ processList()
     }
 
@@ -182,7 +184,8 @@ class ChainingSample extends Actor with Aggregator {
         expectOnce {
           case EvaluationResults(name, eval) ⇒ processFinal(eval)
         }
-      } else processFinal(List.empty[Int])
+      } else
+        processFinal(List.empty[Int])
     }
     //#unexpect-sample
 
@@ -350,7 +353,8 @@ class WorkListSpec extends FunSuiteLike {
 
     @tailrec
     def checkEntries(id: Int, entry: WorkList.Entry[TestEntry]): Int = {
-      if (entry == null) id
+      if (entry == null)
+        id
       else {
         assert(entry.ref.get.id === id)
         checkEntries(id + 1, entry.next)

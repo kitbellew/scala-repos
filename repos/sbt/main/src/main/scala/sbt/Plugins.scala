@@ -173,14 +173,17 @@ object Plugins extends PluginsFunctions {
       }).toSet
       val diff = allReqs diff defined0.toSet
       val defined =
-        if (diff.nonEmpty) diff.toList ::: defined0
-        else defined0
+        if (diff.nonEmpty)
+          diff.toList ::: defined0
+        else
+          defined0
 
       val byAtom = defined map { x =>
         (Atom(x.label), x)
       }
       val byAtomMap = byAtom.toMap
-      if (byAtom.size != byAtomMap.size) duplicateProvidesError(byAtom)
+      if (byAtom.size != byAtomMap.size)
+        duplicateProvidesError(byAtom)
       // Ignore clauses for plugins that does not require anything else.
       // Avoids the requirement for pure Nature strings *and* possible
       // circular dependencies in the logic.
@@ -248,7 +251,8 @@ object Plugins extends PluginsFunctions {
         s"  :: sorting:: found: ${found0.toString} not found ${notFound0.toString}")
       if (limit0 < 0)
         throw AutoPluginException(s"Failed to sort ${ns} topologically")
-      else if (notFound0.isEmpty) found0
+      else if (notFound0.isEmpty)
+        found0
       else {
         val (found1, notFound1) = notFound0 partition { n =>
           asRequirements(n).toSet subsetOf found0.toSet
@@ -281,7 +285,11 @@ object Plugins extends PluginsFunctions {
     val dupStrings =
       for ((atom, dups) <- dupsByAtom if dups.size > 1)
         yield s"${atom.label} by ${dups.mkString(", ")}"
-    val (ns, nl) = if (dupStrings.size > 1) ("s", "\n\t") else ("", " ")
+    val (ns, nl) =
+      if (dupStrings.size > 1)
+        ("s", "\n\t")
+      else
+        ("", " ")
     val message =
       s"Plugin$ns provided by multiple AutoPlugins:$nl${dupStrings.mkString(nl)}"
     throw AutoPluginException(message)
@@ -292,22 +300,29 @@ object Plugins extends PluginsFunctions {
       conflicting: Seq[AutoPlugin]): Unit = {
     def listConflicts(ns: Seq[AutoPlugin]) =
       (ns map { c =>
-        val reasons = (if (flatten(requested) contains c) List("requested")
-                       else Nil) ++
+        val reasons = (if (flatten(requested) contains c)
+                         List("requested")
+                       else
+                         Nil) ++
           (if (c.requires != empty && c.trigger == allRequirements)
              List(s"enabled by ${c.requires.toString}")
-           else Nil) ++ {
+           else
+             Nil) ++ {
           val reqs = selected filter { x =>
             asRequirements(x) contains c
           }
-          if (reqs.nonEmpty) List(s"""required by ${reqs.mkString(", ")}""")
-          else Nil
+          if (reqs.nonEmpty)
+            List(s"""required by ${reqs.mkString(", ")}""")
+          else
+            Nil
         } ++ {
           val exs = selected filter { x =>
             asExclusions(x) contains c
           }
-          if (exs.nonEmpty) List(s"""excluded by ${exs.mkString(", ")}""")
-          else Nil
+          if (exs.nonEmpty)
+            List(s"""excluded by ${exs.mkString(", ")}""")
+          else
+            Nil
         }
         s"""  - conflict: ${c.label} is ${reasons.mkString("; ")}"""
       }).mkString("\n")
@@ -340,11 +355,18 @@ ${listConflicts(conflicting)}""")
     case b: Basic => a && b
   }
   private[sbt] def remove(a: Plugins, del: Set[Basic]): Plugins = a match {
-    case b: Basic => if (del(b)) Empty else b
-    case Empty    => Empty
+    case b: Basic =>
+      if (del(b))
+        Empty
+      else
+        b
+    case Empty => Empty
     case And(ns) =>
       val removed = ns.filterNot(del)
-      if (removed.isEmpty) Empty else And(removed)
+      if (removed.isEmpty)
+        Empty
+      else
+        And(removed)
   }
 
   /** Defines enabled-by clauses for `ap`. */
@@ -352,7 +374,8 @@ ${listConflicts(conflicting)}""")
     // `ap` is the head and the required plugins for `ap` is the body.
     if (ap.trigger == AllRequirements)
       Clause(convert(ap.requires), Set(Atom(ap.label))) :: Nil
-    else Nil
+    else
+      Nil
 
   /** Defines requirements clauses for `ap`. */
   private[sbt] def asRequirementsClauses(ap: AutoPlugin): List[Clause] =

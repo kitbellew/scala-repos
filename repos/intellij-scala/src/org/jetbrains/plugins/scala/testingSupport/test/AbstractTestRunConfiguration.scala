@@ -194,9 +194,12 @@ abstract class AbstractTestRunConfiguration(
       .getCachedClasses(getScope(withDependencies), path)
     val objectClasses = classes.filter(_.isInstanceOf[ScObject])
     val nonObjectClasses = classes.filter(!_.isInstanceOf[ScObject])
-    if (nonObjectClasses.nonEmpty) nonObjectClasses(0)
-    else if (objectClasses.nonEmpty) objectClasses(0)
-    else null
+    if (nonObjectClasses.nonEmpty)
+      nonObjectClasses(0)
+    else if (objectClasses.nonEmpty)
+      objectClasses(0)
+    else
+      null
   }
 
   def getPackage(path: String): PsiPackage = {
@@ -207,12 +210,15 @@ abstract class AbstractTestRunConfiguration(
     def mScope(module: Module) = {
       if (withDependencies)
         GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module)
-      else GlobalSearchScope.moduleScope(module)
+      else
+        GlobalSearchScope.moduleScope(module)
     }
     def unionScope(moduleGuard: Module => Boolean): GlobalSearchScope = {
       var scope: GlobalSearchScope =
-        if (getModule != null) mScope(getModule)
-        else GlobalSearchScope.EMPTY_SCOPE
+        if (getModule != null)
+          mScope(getModule)
+        else
+          GlobalSearchScope.EMPTY_SCOPE
       for (module <- ModuleManager.getInstance(getProject).getModules) {
         if (moduleGuard(module)) {
           scope = scope.union(mScope(module))
@@ -234,8 +240,10 @@ abstract class AbstractTestRunConfiguration(
           case _ => unionScope(_ => true)
         }
       case _ =>
-        if (getModule != null) mScope(getModule)
-        else unionScope(_ => true)
+        if (getModule != null)
+          mScope(getModule)
+        else
+          unionScope(_ => true)
     }
   }
 
@@ -390,7 +398,8 @@ abstract class AbstractTestRunConfiguration(
     } catch {
       case e if clazz == null => classNotFoundError()
     }
-    if (clazz == null && pack == null) classNotFoundError()
+    if (clazz == null && pack == null)
+      classNotFoundError()
     if (suiteClass == null)
       throw new ExecutionException(errorMessage)
     val classes = new mutable.HashSet[PsiClass]
@@ -416,10 +425,12 @@ abstract class AbstractTestRunConfiguration(
       }
     }
 
-    if (classes.isEmpty) throw new ExecutionException("Not found suite class.")
+    if (classes.isEmpty)
+      throw new ExecutionException("Not found suite class.")
 
     val module = getModule
-    if (module == null) throw new ExecutionException("Module is not specified")
+    if (module == null)
+      throw new ExecutionException("Module is not specified")
 
     val state = new JavaCommandLineState(env)
       with AbstractTestRunConfiguration.TestCommandLinePatcher {
@@ -540,7 +551,8 @@ abstract class AbstractTestRunConfiguration(
         } else {
           if (getFailedTests == null) {
             params.getProgramParametersList.add("-s")
-            for (cl <- getClasses) params.getProgramParametersList.add(cl)
+            for (cl <- getClasses)
+              params.getProgramParametersList.add(cl)
             if (testKind == TestKind.TEST_NAME && testName != "") {
               //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
               assert(getClasses.size == 1)
@@ -590,7 +602,8 @@ abstract class AbstractTestRunConfiguration(
           runner: ProgramRunner[_ <: RunnerSettings]): ExecutionResult = {
         val processHandler = startProcess
         val runnerSettings = getRunnerSettings
-        if (getConfiguration == null) setConfiguration(currentConfiguration)
+        if (getConfiguration == null)
+          setConfiguration(currentConfiguration)
         val config = getConfiguration
         JavaRunConfigurationExtensionManager.getInstance
           .attachExtensionsToProcess(
@@ -653,7 +666,10 @@ abstract class AbstractTestRunConfiguration(
     JDOMExternalizer.write(
       element,
       "testKind",
-      if (testKind != null) testKind.toString else TestKind.CLASS.toString)
+      if (testKind != null)
+        testKind.toString
+      else
+        TestKind.CLASS.toString)
     JDOMExternalizer.write(
       element,
       "showProgressMessages",
@@ -675,7 +691,8 @@ abstract class AbstractTestRunConfiguration(
     JDOMExternalizer.readMap(element, envs, "envs", "envVar")
     val s = JDOMExternalizer.readString(element, "searchForTest")
     for (search <- SearchForTest.values()) {
-      if (search.toString == s) searchTest = search
+      if (search.toString == s)
+        searchTest = search
     }
     testName =
       Option(JDOMExternalizer.readString(element, "testName")).getOrElse("")
@@ -730,7 +747,8 @@ object AbstractTestRunConfiguration extends SuiteValidityChecker {
       if (con.isConstructor && con.getParameterList.getParametersCount == 0) {
         con match {
           case owner: ScModifierListOwner =>
-            if (owner.hasModifierProperty(PsiModifier.PUBLIC)) return false
+            if (owner.hasModifierProperty(PsiModifier.PUBLIC))
+              return false
           case _ =>
         }
       }

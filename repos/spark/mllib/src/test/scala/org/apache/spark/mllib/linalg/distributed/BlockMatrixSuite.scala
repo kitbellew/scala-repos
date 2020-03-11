@@ -205,9 +205,11 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
     // adding BlockMatrices composed of SparseMatrices
     val sparseBlocks =
-      for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
+      for (i <- 0 until 4)
+        yield ((i / 2, i % 2), SparseMatrix.speye(4))
     val denseBlocks =
-      for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
+      for (i <- 0 until 4)
+        yield ((i / 2, i % 2), DenseMatrix.eye(4))
     val sparseBM = new BlockMatrix(sc.makeRDD(sparseBlocks, 4), 4, 4, 8, 8)
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
@@ -263,9 +265,11 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
     // subtracting BlockMatrices composed of SparseMatrices
     val sparseBlocks =
-      for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
+      for (i <- 0 until 4)
+        yield ((i / 2, i % 2), SparseMatrix.speye(4))
     val denseBlocks =
-      for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
+      for (i <- 0 until 4)
+        yield ((i / 2, i % 2), DenseMatrix.eye(4))
     val sparseBM = new BlockMatrix(sc.makeRDD(sparseBlocks, 4), 4, 4, 8, 8)
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
@@ -312,9 +316,11 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
     val rand = new ju.Random(42)
     val largerAblocks =
-      for (i <- 0 until 20) yield ((i % 5, i / 5), DenseMatrix.rand(6, 4, rand))
+      for (i <- 0 until 20)
+        yield ((i % 5, i / 5), DenseMatrix.rand(6, 4, rand))
     val largerBblocks =
-      for (i <- 0 until 16) yield ((i % 4, i / 4), DenseMatrix.rand(4, 4, rand))
+      for (i <- 0 until 16)
+        yield ((i % 4, i / 4), DenseMatrix.rand(4, 4, rand))
 
     // Try it with increased number of partitions
     val largeA = new BlockMatrix(sc.parallelize(largerAblocks, 10), 6, 4)

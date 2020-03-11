@@ -110,7 +110,8 @@ class StatsReportListener(numBatchInfos: Int = 10) extends StreamingListener {
 
   override def onBatchCompleted(batchStarted: StreamingListenerBatchCompleted) {
     batchInfos.enqueue(batchStarted.batchInfo)
-    if (batchInfos.size > numBatchInfos) batchInfos.dequeue()
+    if (batchInfos.size > numBatchInfos)
+      batchInfos.dequeue()
     printStats()
   }
 

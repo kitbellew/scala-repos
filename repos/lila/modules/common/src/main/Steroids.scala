@@ -68,17 +68,35 @@ trait BooleanSteroids {
    */
   implicit final class LilaPimpedBoolean(self: Boolean) {
 
-    def ??[A](a: => A)(implicit z: Zero[A]): A = if (self) a else Zero[A].zero
+    def ??[A](a: => A)(implicit z: Zero[A]): A =
+      if (self)
+        a
+      else
+        Zero[A].zero
 
-    def !(f: => Unit) = if (self) f
+    def !(f: => Unit) =
+      if (self)
+        f
 
-    def fold[A](t: => A, f: => A): A = if (self) t else f
+    def fold[A](t: => A, f: => A): A =
+      if (self)
+        t
+      else
+        f
 
     def ?[X](t: => X) = new {
-      def |(f: => X) = if (self) t else f
+      def |(f: => X) =
+        if (self)
+          t
+        else
+          f
     }
 
-    def option[A](a: => A): Option[A] = if (self) Some(a) else None
+    def option[A](a: => A): Option[A] =
+      if (self)
+        Some(a)
+      else
+        None
   }
 }
 
@@ -107,6 +125,8 @@ trait OptionSteroids {
 
     def err(message: => String): A = self.getOrElse(sys.error(message))
 
-    def ifNone(n: => Unit): Unit = if (self.isEmpty) n
+    def ifNone(n: => Unit): Unit =
+      if (self.isEmpty)
+        n
   }
 }

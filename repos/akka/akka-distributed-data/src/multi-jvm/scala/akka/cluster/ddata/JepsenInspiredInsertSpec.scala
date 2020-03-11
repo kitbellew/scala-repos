@@ -74,7 +74,8 @@ class JepsenInspiredInsertSpec
   def sleepDelay(): Unit =
     if (delayMillis != 0) {
       val rndDelay = ThreadLocalRandom.current().nextInt(delayMillis)
-      if (rndDelay != 0) Thread.sleep(delayMillis)
+      if (rndDelay != 0)
+        Thread.sleep(delayMillis)
     }
 
   def sleepBeforePartition(): Unit = {

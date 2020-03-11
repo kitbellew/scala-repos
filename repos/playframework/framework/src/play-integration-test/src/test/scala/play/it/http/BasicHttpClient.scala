@@ -72,9 +72,10 @@ object BasicHttpClient {
           requestNo.toString,
           waitForResponses = false)
       }
-      for (i <- 0 until requests.length) yield {
-        client.readResponse(requestNo.toString)
-      }
+      for (i <- 0 until requests.length)
+        yield {
+          client.readResponse(requestNo.toString)
+        }
     } finally {
       client.close()
     }
@@ -189,7 +190,10 @@ class BasicHttpClient(port: Int) {
           val buf = new Array[Char](length)
           def readFromOffset(offset: Int): Unit = {
             val read = reader.read(buf, offset, length - offset)
-            if (read + offset < length) readFromOffset(read + offset) else ()
+            if (read + offset < length)
+              readFromOffset(read + offset)
+            else
+              ()
           }
           readFromOffset(0)
           new String(buf)

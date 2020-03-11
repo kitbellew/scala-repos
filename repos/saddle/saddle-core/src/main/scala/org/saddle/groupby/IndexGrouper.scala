@@ -34,7 +34,9 @@ class IndexGrouper[Y: ST: ORD](ix: Index[Y], sorted: Boolean = true) {
 
   def keys: Array[Y] = uniq
 
-  def groups: Array[(Y, Array[Int])] = for (k <- keys) yield (k, ix.get(k))
+  def groups: Array[(Y, Array[Int])] =
+    for (k <- keys)
+      yield (k, ix.get(k))
 }
 
 object IndexGrouper {

@@ -438,7 +438,10 @@ private trait EitherFirstLeftSemigroup[A, X]
   def append(
       f1: LeftProjection[A, X] @@ First,
       f2: => LeftProjection[A, X] @@ First) =
-    if (Tag.unwrap(f1).e.isLeft) f1 else f2
+    if (Tag.unwrap(f1).e.isLeft)
+      f1
+    else
+      f2
 }
 
 private trait EitherFirstRightSemigroup[X, A]
@@ -446,7 +449,10 @@ private trait EitherFirstRightSemigroup[X, A]
   def append(
       f1: RightProjection[X, A] @@ First,
       f2: => RightProjection[X, A] @@ First) =
-    if (Tag.unwrap(f1).e.isRight) f1 else f2
+    if (Tag.unwrap(f1).e.isRight)
+      f1
+    else
+      f2
 }
 
 private trait EitherLastLeftSemigroup[A, X]
@@ -454,7 +460,10 @@ private trait EitherLastLeftSemigroup[A, X]
   def append(
       f1: LeftProjection[A, X] @@ Last,
       f2: => LeftProjection[A, X] @@ Last) =
-    if (Tag.unwrap(f1).e.isLeft) f1 else f2
+    if (Tag.unwrap(f1).e.isLeft)
+      f1
+    else
+      f2
 }
 
 private trait EitherLastRightSemigroup[X, A]
@@ -462,7 +471,10 @@ private trait EitherLastRightSemigroup[X, A]
   def append(
       f1: RightProjection[X, A] @@ Last,
       f2: => RightProjection[X, A] @@ Last) =
-    if (Tag.unwrap(f1).e.isRight) f1 else f2
+    if (Tag.unwrap(f1).e.isRight)
+      f1
+    else
+      f2
 }
 
 private trait EitherLeftSemigroup[A, X]

@@ -63,7 +63,10 @@ object ClusterSingletonManagerSettings {
     * INTERNAL API
     */
   private[akka] def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 
 }
 
@@ -437,7 +440,8 @@ class ClusterSingletonManager(
   val removalMargin =
     if (settings.removalMargin <= Duration.Zero)
       cluster.settings.DownRemovalMargin
-    else settings.removalMargin
+    else
+      settings.removalMargin
 
   val (maxHandOverRetries, maxTakeOverRetries) = {
     val n = (removalMargin.toMillis / handOverRetryInterval.toMillis).toInt
@@ -470,13 +474,16 @@ class ClusterSingletonManager(
   }
 
   def logInfo(message: String): Unit =
-    if (LogInfo) log.info(message)
+    if (LogInfo)
+      log.info(message)
 
   def logInfo(template: String, arg1: Any): Unit =
-    if (LogInfo) log.info(template, arg1)
+    if (LogInfo)
+      log.info(template, arg1)
 
   def logInfo(template: String, arg1: Any, arg2: Any): Unit =
-    if (LogInfo) log.info(template, arg1, arg2)
+    if (LogInfo)
+      log.info(template, arg1, arg2)
 
   override def preStart(): Unit = {
     super.preStart()
@@ -595,8 +602,8 @@ class ClusterSingletonManager(
       stay
 
     case Event(
-        DelayedMemberRemoved(m),
-        BecomingOldestData(Some(previousOldest)))
+          DelayedMemberRemoved(m),
+          BecomingOldestData(Some(previousOldest)))
         if m.address == previousOldest ⇒
       logInfo("Previous oldest [{}] removed", previousOldest)
       addRemoved(m.address)
@@ -607,7 +614,8 @@ class ClusterSingletonManager(
       stay using BecomingOldestData(Some(sender().path.address))
 
     case Event(TakeOverFromMe, BecomingOldestData(Some(previousOldest))) ⇒
-      if (previousOldest == sender().path.address) sender() ! HandOverToMe
+      if (previousOldest == sender().path.address)
+        sender() ! HandOverToMe
       else
         logInfo(
           "Ignoring TakeOver request in BecomingOldest from [{}]. Expected previous oldest [{}]",
@@ -662,8 +670,8 @@ class ClusterSingletonManager(
 
   when(Oldest) {
     case Event(
-        OldestChanged(oldestOption),
-        OldestData(singleton, singletonTerminated)) ⇒
+          OldestChanged(oldestOption),
+          OldestData(singleton, singletonTerminated)) ⇒
       oldestChangedReceived = true
       logInfo(
         "Oldest observed OldestChanged: [{} -> {}]",
@@ -739,8 +747,8 @@ class ClusterSingletonManager(
       stop()
 
     case Event(
-        MemberRemoved(m, _),
-        WasOldestData(singleton, singletonTerminated, Some(newOldest)))
+          MemberRemoved(m, _),
+          WasOldestData(singleton, singletonTerminated, Some(newOldest)))
         if !selfExited && m.address == newOldest ⇒
       addRemoved(m.address)
       gotoHandingOver(singleton, singletonTerminated, None)
@@ -816,11 +824,13 @@ class ClusterSingletonManager(
       logInfo("Self removed, stopping ClusterSingletonManager")
       stop()
     case Event(MemberRemoved(m, _), _) ⇒
-      if (!selfExited) logInfo("Member removed [{}]", m.address)
+      if (!selfExited)
+        logInfo("Member removed [{}]", m.address)
       addRemoved(m.address)
       stay
     case Event(DelayedMemberRemoved(m), _) ⇒
-      if (!selfExited) logInfo("Member removed [{}]", m.address)
+      if (!selfExited)
+        logInfo("Member removed [{}]", m.address)
       addRemoved(m.address)
       stay
     case Event(TakeOverFromMe, _) ⇒

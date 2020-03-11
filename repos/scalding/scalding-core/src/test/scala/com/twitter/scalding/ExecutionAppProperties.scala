@@ -37,7 +37,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(args)
       val res =
         hadoopArgs.toArray.isEmpty && nonHadoop.toArray.sameElements(args)
-      if (!res) debugPrint(args, hadoopArgs, nonHadoop)
+      if (!res)
+        debugPrint(args, hadoopArgs, nonHadoop)
       res
     }
 
@@ -52,7 +53,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))
-      if (!res) debugPrint(totalArgStr, hadoopArgs, nonHadoop)
+      if (!res)
+        debugPrint(totalArgStr, hadoopArgs, nonHadoop)
       res
     }
 
@@ -66,7 +68,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))
-      if (!res) debugPrint(totalArgStr, hadoopArgs, nonHadoop)
+      if (!res)
+        debugPrint(totalArgStr, hadoopArgs, nonHadoop)
       res
     }
 }

@@ -75,9 +75,12 @@ class ReplicaFetcherThread(
   type PD = PartitionData
 
   private val fetchRequestVersion: Short =
-    if (brokerConfig.interBrokerProtocolVersion >= KAFKA_0_10_0_IV0) 2
-    else if (brokerConfig.interBrokerProtocolVersion >= KAFKA_0_9_0) 1
-    else 0
+    if (brokerConfig.interBrokerProtocolVersion >= KAFKA_0_10_0_IV0)
+      2
+    else if (brokerConfig.interBrokerProtocolVersion >= KAFKA_0_9_0)
+      1
+    else
+      0
   private val socketTimeout: Int = brokerConfig.replicaSocketTimeoutMs
   private val replicaId = brokerConfig.brokerId
   private val maxWait = brokerConfig.replicaFetchWaitMaxMs

@@ -20,7 +20,10 @@ object Fii {
 }
 object Faa {
   def unapply(x: Any): Option[String] =
-    if (x.isInstanceOf[Bar]) Some(x.asInstanceOf[Bar].name) else None
+    if (x.isInstanceOf[Bar])
+      Some(x.asInstanceOf[Bar].name)
+    else
+      None
 }
 object FaaPrecise {
   def unapply(x: Bar): Option[String] = Some(x.name)

@@ -61,7 +61,8 @@ object Externalizables {
      */
 
     def readTree(is: List[Int]): Tree =
-      if (is.isEmpty) q"???"
+      if (is.isEmpty)
+        q"???"
       else if (is.size == 1) {
         val argName = newTermName("x" + is.head)
         q"state += 1; $argName"
@@ -88,10 +89,12 @@ object Externalizables {
 
     // create class parameter list
     // (val x0: Int, val x1: Int, val x2: Array[Byte], val x3: Int, val x4: Long, ...)
-    val params = for ((targ, i) <- targs.zipWithIndex) yield {
-      val name = newTermName("x" + i)
-      q"val $name: $targ"
-    }
+    val params =
+      for ((targ, i) <- targs.zipWithIndex)
+        yield {
+          val name = newTermName("x" + i)
+          q"val $name: $targ"
+        }
 
     // per type a sorted list of indices
     val perType = targs.zipWithIndex
@@ -212,7 +215,8 @@ object Externalizables {
     // we assume the methods corresponding to the "writeTree" bodies are called in the right order
     def writeTree(is: List[Int], tpeName: String): Tree = {
       val fldName = newTermName(tpeName + "Arr")
-      if (is.isEmpty) q"???"
+      if (is.isEmpty)
+        q"???"
       else if (is.size == 1) {
         q"{ state += 1; $fldName(0) = x }"
       } else if (is.size == 2) {
@@ -249,14 +253,15 @@ object Externalizables {
     // create array-valued fields
     // val byteArr: Array[Int] = Array.ofDim[Int](3)
     // ...
-    val fields = (for (targ <- storage.keys) yield {
-      val TypeRef(_, classSym, _) = targ
-      val tpestr = classSym.name.toString.toLowerCase
-      val name = newTermName(tpestr + "Arr")
-      val storageTpe = storage(targ)
-      val size = perType.getOrElse(targ, List[Int]()).size
-      q"val $name: Array[$storageTpe] = Array.ofDim[$storageTpe]($size)"
-    }) ++ Seq(
+    val fields = (for (targ <- storage.keys)
+      yield {
+        val TypeRef(_, classSym, _) = targ
+        val tpestr = classSym.name.toString.toLowerCase
+        val name = newTermName(tpestr + "Arr")
+        val storageTpe = storage(targ)
+        val size = perType.getOrElse(targ, List[Int]()).size
+        q"val $name: Array[$storageTpe] = Array.ofDim[$storageTpe]($size)"
+      }) ++ Seq(
       // implementation restriction: only store a single array
       q"val arrByteArr: Array[Array[Byte]] = Array.ofDim[Array[Byte]](1)", {
         val storageTpe = storage(typeOf[AnyRef])

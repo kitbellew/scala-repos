@@ -47,7 +47,8 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
         .runWith(Sink.fromSubscriber(s))
       val sub = s.expectSubscription()
       sub.request(100)
-      for (i ← 1 to 20) s.expectNext(i)
+      for (i ← 1 to 20)
+        s.expectNext(i)
       s.expectComplete()
     }
 
@@ -55,7 +56,11 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
       val ex = new Exception("TEST") with NoStackTrace
 
       Source(1 to 5)
-        .mapConcat(x ⇒ if (x == 3) throw ex else List(x))
+        .mapConcat(x ⇒
+          if (x == 3)
+            throw ex
+          else
+            List(x))
         .withAttributes(
           ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
         .runWith(TestSink.probe[Int])

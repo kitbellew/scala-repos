@@ -497,7 +497,10 @@ private[collection] trait Wrappers {
 
     def get(k: String) = {
       val v = underlying get k
-      if (v != null) Some(v.asInstanceOf[String]) else None
+      if (v != null)
+        Some(v.asInstanceOf[String])
+      else
+        None
     }
 
     def +=(kv: (String, String)): this.type = {
@@ -511,7 +514,10 @@ private[collection] trait Wrappers {
 
     override def put(k: String, v: String): Option[String] = {
       val r = underlying.put(k, v)
-      if (r != null) Some(r.asInstanceOf[String]) else None
+      if (r != null)
+        Some(r.asInstanceOf[String])
+      else
+        None
     }
 
     override def update(k: String, v: String) {
@@ -520,7 +526,10 @@ private[collection] trait Wrappers {
 
     override def remove(k: String): Option[String] = {
       val r = underlying remove k
-      if (r != null) Some(r.asInstanceOf[String]) else None
+      if (r != null)
+        Some(r.asInstanceOf[String])
+      else
+        None
     }
 
     def iterator: Iterator[(String, String)] =

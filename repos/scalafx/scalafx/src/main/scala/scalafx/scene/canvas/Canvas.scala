@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object Canvas {
   implicit def sfxCanvas2jfx(c: Canvas): jfxsc.Canvas =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 /**

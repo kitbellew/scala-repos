@@ -22,8 +22,10 @@ package immutable {
     self =>
 
     def apply(idx: Int) =
-      if (0 <= idx && idx < length) elem
-      else throw new IndexOutOfBoundsException("" + idx)
+      if (0 <= idx && idx < length)
+        elem
+      else
+        throw new IndexOutOfBoundsException("" + idx)
     override def seq = throw new UnsupportedOperationException
     def update(idx: Int, elem: T) = throw new UnsupportedOperationException
 

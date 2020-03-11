@@ -27,7 +27,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       file: PsiFile,
       startOffset: Int,
       endOffset: Int): Array[PsiElement] = {
-    if (endOffset == startOffset) return PsiElement.EMPTY_ARRAY
+    if (endOffset == startOffset)
+      return PsiElement.EMPTY_ARRAY
 
     val validBoundElements = Set(DOC_COMMENT_DATA, DOC_WHITESPACE)
 
@@ -51,15 +52,19 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
             startElement)) { //cannot extract function because of return
         false
       } else {
-        if (checkSyntaxBoundElement(startElement, true)) true
-        else return PsiElement.EMPTY_ARRAY
+        if (checkSyntaxBoundElement(startElement, true))
+          true
+        else
+          return PsiElement.EMPTY_ARRAY
       }
 
     val isLastElementMarked = if (checkBoundElement(endElement)) {
       false
     } else {
-      if (checkSyntaxBoundElement(endElement, false)) true
-      else return PsiElement.EMPTY_ARRAY
+      if (checkSyntaxBoundElement(endElement, false))
+        true
+      else
+        return PsiElement.EMPTY_ARRAY
     }
 
     if (startElement.getParent != endElement.getParent) {
@@ -91,8 +96,10 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       (startElement.getNextSibling, ArrayBuffer(startElement))
     }
     val lastBoundElement = if (isLastElementMarked) {
-      if (endElement.getTextOffset >= startOffset) (endElement.getParent)
-      else return PsiElement.EMPTY_ARRAY
+      if (endElement.getTextOffset >= startOffset)
+        (endElement.getParent)
+      else
+        return PsiElement.EMPTY_ARRAY
     } else {
       endElement
     }
@@ -100,7 +107,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
     var hasAsterisk = false
 
     do {
-      if (nextElement == null) return PsiElement.EMPTY_ARRAY
+      if (nextElement == null)
+        return PsiElement.EMPTY_ARRAY
 
       if ((!Set(DOC_COMMENT_DATA, DOC_COMMENT_LEADING_ASTERISKS, DOC_WHITESPACE)
             .contains(nextElement.getNode.getElementType) &&
@@ -110,7 +118,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
             .indexOf("\n") != nextElement.getText.lastIndexOf("\n"))) {
         return PsiElement.EMPTY_ARRAY
       } else if (nextElement.getNode.getElementType == DOC_COMMENT_LEADING_ASTERISKS) {
-        if (hasAsterisk) return PsiElement.EMPTY_ARRAY
+        if (hasAsterisk)
+          return PsiElement.EMPTY_ARRAY
         hasAsterisk = true
       } else if (nextElement.getNode.getElementType != DOC_WHITESPACE) {
         hasAsterisk = false

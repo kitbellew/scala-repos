@@ -24,12 +24,20 @@ object Ordering extends OrderingInstances {
   }
 
   def fromLessThan[A](a1: A, a2: A)(f: (A, A) => Boolean): Ordering =
-    if (f(a1, a2)) LT
-    else if (f(a2, a1)) GT
-    else EQ
+    if (f(a1, a2))
+      LT
+    else if (f(a2, a1))
+      GT
+    else
+      EQ
 
   def fromInt(intOrdering: Int): Ordering =
-    if (intOrdering < 0) LT else if (intOrdering > 0) GT else EQ
+    if (intOrdering < 0)
+      LT
+    else if (intOrdering > 0)
+      GT
+    else
+      EQ
 }
 
 sealed abstract class OrderingInstances {

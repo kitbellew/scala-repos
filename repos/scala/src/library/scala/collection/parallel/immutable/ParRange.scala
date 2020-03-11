@@ -56,7 +56,8 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
         val r = range.apply(ind)
         ind += 1
         r
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
 
     private def rangeleft = range.drop(ind)
 
@@ -65,7 +66,8 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
     def split = {
       val rleft = rangeleft
       val elemleft = rleft.length
-      if (elemleft < 2) Seq(new ParRangeIterator(rleft))
+      if (elemleft < 2)
+        Seq(new ParRangeIterator(rleft))
       else
         Seq(
           new ParRangeIterator(rleft.take(elemleft / 2)),
@@ -75,11 +77,12 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
 
     def psplit(sizes: Int*) = {
       var rleft = rangeleft
-      for (sz <- sizes) yield {
-        val fronttaken = rleft.take(sz)
-        rleft = rleft.drop(sz)
-        new ParRangeIterator(fronttaken)
-      }
+      for (sz <- sizes)
+        yield {
+          val fronttaken = rleft.take(sz)
+          rleft = rleft.drop(sz)
+          new ParRangeIterator(fronttaken)
+        }
     }
 
     /* accessors */
@@ -111,7 +114,9 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
 
 object ParRange {
   def apply(start: Int, end: Int, step: Int, inclusive: Boolean) = new ParRange(
-    if (inclusive) new Range.Inclusive(start, end, step)
-    else new Range(start, end, step)
+    if (inclusive)
+      new Range.Inclusive(start, end, step)
+    else
+      new Range(start, end, step)
   )
 }

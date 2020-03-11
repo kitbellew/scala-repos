@@ -111,8 +111,10 @@ object CanConvolve extends SerializableLogging {
           case OptOverhang.PreserveLength => {
 
             val leftPadding: Int =
-              if (isOdd(kernel.length)) (kernel.length - 1) / 2
-              else (kernel.length / 2 - 1)
+              if (isOdd(kernel.length))
+                (kernel.length - 1) / 2
+              else
+                (kernel.length / 2 - 1)
             val rightPadding = kernel.length - leftPadding - 1
 
             //Actual padding
@@ -197,7 +199,8 @@ object CanConvolve extends SerializableLogging {
         //this is to be expanded to use the fft results within the FIRKernel1D, when using fft convolution
         if (correlateVal)
           correlate(data, kernel.kernel, range, overhang, padding, method)
-        else convolve(data, kernel.kernel, range, overhang, padding, method)
+        else
+          convolve(data, kernel.kernel, range, overhang, padding, method)
     }
   }
 

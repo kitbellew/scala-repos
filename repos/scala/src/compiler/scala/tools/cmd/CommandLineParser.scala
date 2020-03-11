@@ -32,9 +32,12 @@ object CommandLineParser {
         }
         // the only way to get out of the above loop is with an empty next or !escaped
         // require(next.isEmpty || !escaped)
-        if (next startsWith del) Some((quoted, next substring 1))
-        else None
-      } else None
+        if (next startsWith del)
+          Some((quoted, next substring 1))
+        else
+          None
+      } else
+        None
     }
   }
   private object DoubleQuoted extends QuotedExtractor('"')
@@ -56,7 +59,8 @@ object CommandLineParser {
       in: String,
       accum: List[String] = Nil): Either[String, (List[String], String)] = {
     val trimmed = in.trim
-    if (trimmed.isEmpty) Right((accum.reverse, ""))
+    if (trimmed.isEmpty)
+      Right((accum.reverse, ""))
     else
       argument(trimmed) match {
         case Right((arg, next)) =>

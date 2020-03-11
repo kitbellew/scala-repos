@@ -59,7 +59,8 @@ class SinkForeachParallelSpec extends AkkaSpec {
 
       assert(!p.isCompleted)
 
-      for (i ← 1 to 4) latch(i).countDown()
+      for (i ← 1 to 4)
+        latch(i).countDown()
 
       latch(5).countDown()
       probe.expectMsg(5)
@@ -78,7 +79,8 @@ class SinkForeachParallelSpec extends AkkaSpec {
       val p = Source(1 to 5).runWith(
         Sink
           .foreachParallel(4)((n: Int) ⇒ {
-            if (n == 3) throw new RuntimeException("err1") with NoStackTrace
+            if (n == 3)
+              throw new RuntimeException("err1") with NoStackTrace
             else {
               probe.ref ! n
               Await.ready(latch, 10.seconds)
@@ -100,7 +102,8 @@ class SinkForeachParallelSpec extends AkkaSpec {
       val p = Source(1 to 5).runWith(
         Sink
           .foreachParallel(3)((n: Int) ⇒ {
-            if (n == 3) throw new RuntimeException("err2") with NoStackTrace
+            if (n == 3)
+              throw new RuntimeException("err2") with NoStackTrace
             else {
               probe.ref ! n
               Await.ready(latch, 10.seconds)

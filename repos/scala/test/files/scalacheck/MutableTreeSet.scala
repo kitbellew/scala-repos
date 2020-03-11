@@ -23,7 +23,11 @@ package scala.collection.mutable {
     property("+=") = forAll { (set: mutable.TreeSet[K], k: K) =>
       val oldSize = set.size
       val containedKeyBefore = set.contains(k)
-      val newExpectedSize = if (containedKeyBefore) oldSize else oldSize + 1
+      val newExpectedSize =
+        if (containedKeyBefore)
+          oldSize
+        else
+          oldSize + 1
 
       set += k
       set.contains(k) && set.size == newExpectedSize
@@ -38,7 +42,11 @@ package scala.collection.mutable {
     property("-=") = forAll { (set: mutable.TreeSet[K], k: K) =>
       val oldSize = set.size
       val containedKeyBefore = set.contains(k)
-      val newExpectedSize = if (containedKeyBefore) oldSize - 1 else oldSize
+      val newExpectedSize =
+        if (containedKeyBefore)
+          oldSize - 1
+        else
+          oldSize
 
       set -= k
       !set.contains(k) && set.size == newExpectedSize
@@ -140,7 +148,11 @@ package scala.collection.mutable {
       (set: mutable.TreeSet[K], k: K, from: Option[K], until: Option[K]) =>
         val oldSize = set.size
         val containedKeyBefore = set.contains(k)
-        val newExpectedSize = if (containedKeyBefore) oldSize else oldSize + 1
+        val newExpectedSize =
+          if (containedKeyBefore)
+            oldSize
+          else
+            oldSize + 1
         val isInRange = in(k, from, until)
 
         val setView = set.rangeImpl(from, until)
@@ -167,7 +179,11 @@ package scala.collection.mutable {
       (set: mutable.TreeSet[K], k: K, from: Option[K], until: Option[K]) =>
         val oldSize = set.size
         val containedKeyBefore = set.contains(k)
-        val newExpectedSize = if (containedKeyBefore) oldSize - 1 else oldSize
+        val newExpectedSize =
+          if (containedKeyBefore)
+            oldSize - 1
+          else
+            oldSize
 
         val setView = set.rangeImpl(from, until)
         setView -= k

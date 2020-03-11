@@ -161,8 +161,10 @@ trait AssignClusterModule[M[+_]]
                 case (ColumnRef(cpath, _), _) => cpath
               } toSet
 
-              if (resPaths == featurePaths) res
-              else Map.empty[ColumnRef, Column]
+              if (resPaths == featurePaths)
+                res
+              else
+                Map.empty[ColumnRef, Column]
             }
 
             def defined(cols: Map[ColumnRef, Column]): BitSet = {
@@ -171,8 +173,10 @@ trait AssignClusterModule[M[+_]]
               }
 
               BitSetUtil.filteredRange(range) { i =>
-                if (columns.isEmpty) false
-                else columns.forall(_ isDefinedAt i)
+                if (columns.isEmpty)
+                  false
+                else
+                  columns.forall(_ isDefinedAt i)
               }
             }
 

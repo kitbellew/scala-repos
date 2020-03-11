@@ -114,7 +114,8 @@ object StableId extends ParserNode {
   }
 
   def parseClassQualifier(builder: ScalaPsiBuilder) {
-    if (builder.getTokenType != tLSQBRACKET) return
+    if (builder.getTokenType != tLSQBRACKET)
+      return
     builder.advanceLexer()
     builder.disableNewlines
     if (builder.getTokenType != tIDENTIFIER) {

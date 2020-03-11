@@ -110,11 +110,13 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
       result: CompletionResultSet): Unit = {
     val position = positionFromParameters(parameters)
     val elementType = position.getNode.getElementType
-    if (elementType != ScalaTokenTypes.tIDENTIFIER) return
+    if (elementType != ScalaTokenTypes.tIDENTIFIER)
+      return
     val call = PsiTreeUtil.getContextOfType(position, classOf[ScMethodCall])
     val args =
       PsiTreeUtil.getContextOfType(position, classOf[ScArgumentExprList])
-    if (call == null || args == null) return
+    if (call == null || args == null)
+      return
     val index = args.invocationCount - 1
     call.deepestInvokedExpr match {
       case ref: ScReferenceExpression =>
@@ -135,9 +137,11 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                         (
                           p.name,
                           subst.subst(p.getType(TypingContext.empty).getOrAny)))
-                    else Seq.empty
+                    else
+                      Seq.empty
                   case ScalaResolveResult(method: PsiMethod, subst) =>
-                    if (index != 0) Seq.empty
+                    if (index != 0)
+                      Seq.empty
                     else
                       method.getParameterList.getParameters.toSeq.map {
                         case p: PsiParameter =>
@@ -153,7 +157,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                 }
                 .filter(_.length > 1)
 
-              if (signatures.isEmpty) return
+              if (signatures.isEmpty)
+                return
 
               checkSignatures(signatures, function, result)
             }
@@ -168,7 +173,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
       result: CompletionResultSet): Unit = {
     val position = positionFromParameters(parameters)
     val elementType = position.getNode.getElementType
-    if (elementType != ScalaTokenTypes.tIDENTIFIER) return
+    if (elementType != ScalaTokenTypes.tIDENTIFIER)
+      return
     PsiTreeUtil.getContextOfType(
       position,
       classOf[ScTemplateDefinition]) match {
@@ -195,7 +201,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                               p.name,
                               subst.subst(
                                 p.getType(TypingContext.empty).getOrAny)))
-                        else Seq.empty
+                        else
+                          Seq.empty
                     }
                     .filter(_.length > 1)
                 case Some((clazz: PsiClass, subst))
@@ -204,7 +211,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                   clazz.getConstructors.toSeq
                     .map {
                       case c: PsiMethod =>
-                        if (index != 0) Seq.empty
+                        if (index != 0)
+                          Seq.empty
                         else
                           c.getParameterList.getParameters.toSeq.map {
                             case p: PsiParameter =>
@@ -221,7 +229,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                 case _ => Seq.empty
               }
 
-            if (signatures.isEmpty) return
+            if (signatures.isEmpty)
+              return
 
             c.constructor match {
               case Some(constr) => checkSignatures(signatures, constr, result)
@@ -262,13 +271,15 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
           .withInsertHandler(new InsertHandler[LookupElement] {
             def handleInsert(context: InsertionContext, item: LookupElement) {
               val completionChar = context.getCompletionChar
-              if (completionChar == ')') return
+              if (completionChar == ')')
+                return
 
               val file = context.getFile
               val element = file.findElementAt(context.getStartOffset)
               val exprs = PsiTreeUtil
                 .getContextOfType(element, classOf[ScArgumentExprList])
-              if (exprs == null) return
+              if (exprs == null)
+                return
               context.getEditor.getCaretModel.moveToOffset(
                 exprs.getTextRange.getEndOffset
               ) // put caret after )

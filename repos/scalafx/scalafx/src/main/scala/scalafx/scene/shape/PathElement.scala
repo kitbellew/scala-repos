@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object PathElement {
   implicit def sfxPathElement2jfx(v: PathElement): jfxss.PathElement =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class PathElement(override val delegate: jfxss.PathElement)

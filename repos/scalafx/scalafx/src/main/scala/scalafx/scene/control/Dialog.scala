@@ -64,7 +64,10 @@ object Dialog {
     * @return JavaFX Dialog
     */
   implicit def sfxDialog2jfx[R](v: Dialog[R]): jfxsc.Dialog[R] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**
@@ -107,7 +110,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     x
   })(implicit convert: DConvert[R, F]): Option[convert.S] = {
     val v = delegate.showAndWait()
-    if (v.isPresent) Some(convert(v.get, j2s)) else None
+    if (v.isPresent)
+      Some(convert(v.get, j2s))
+    else
+      None
   }
 
   /**

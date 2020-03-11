@@ -160,13 +160,15 @@ object StandardTestDBs {
     def assertTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
       val all = ctx.session.database.getTables.map(_.name).toSet
       for (t <- tables) {
-        if (!all.contains(t)) Assert.fail("Table " + t + " should exist")
+        if (!all.contains(t))
+          Assert.fail("Table " + t + " should exist")
       }
     }
     def assertNotTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
       val all = ctx.session.database.getTables.map(_.name).toSet
       for (t <- tables) {
-        if (all.contains(t)) Assert.fail("Table " + t + " should not exist")
+        if (all.contains(t))
+          Assert.fail("Table " + t + " should not exist")
       }
     }
   }
@@ -188,7 +190,8 @@ object StandardTestDBs {
         _ <- if (schema.isDefined) {
           println(s"[Dropping DB2 schema '$schema']")
           sqlu"call sysproc.admin_drop_schema($schema, null, ${"ERRORSCHEMA"}, ${"ERRORTABLE"})"
-        } else DBIO.successful(())
+        } else
+          DBIO.successful(())
       } yield ()
     }
 

@@ -208,8 +208,8 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
         (plans ++ Seq(right), conditions ++ cond.toSeq)
 
       case Filter(
-          filterCondition,
-          j @ Join(left, right, Inner, joinCondition)) =>
+            filterCondition,
+            j @ Join(left, right, Inner, joinCondition)) =>
         val (plans, conditions) = flattenJoin(j)
         (plans, conditions ++ splitConjunctivePredicates(filterCondition))
 
@@ -241,7 +241,8 @@ object Unions {
   private def collectUnionChildren(
       plans: mutable.Stack[LogicalPlan],
       children: Seq[LogicalPlan]): Seq[LogicalPlan] = {
-    if (plans.isEmpty) children
+    if (plans.isEmpty)
+      children
     else {
       plans.pop match {
         case Union(grandchildren) =>

@@ -43,13 +43,15 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
         } else {
           loop(acc :+ cand)
         }
-      } else acc
+      } else
+        acc
 
     new FreeGroup(loop(Vector.empty))
   }
 
   override def toString: String =
-    if (terms.isEmpty) "e"
+    if (terms.isEmpty)
+      "e"
     else {
       val init = terms.head match {
         case Left(h)  => s"($h).inverse"

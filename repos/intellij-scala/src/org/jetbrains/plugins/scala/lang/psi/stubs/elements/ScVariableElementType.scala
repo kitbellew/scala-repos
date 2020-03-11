@@ -37,14 +37,18 @@ abstract class ScVariableElementType[Variable <: ScVariable](debugName: String)
     val bodyText =
       if (!isDecl)
         psi.asInstanceOf[ScVariableDefinition].expr.map(_.getText).getOrElse("")
-      else ""
+      else
+        ""
     val containerText =
-      if (isDecl) psi.asInstanceOf[ScVariableDeclaration].getIdList.getText
-      else psi.asInstanceOf[ScVariableDefinition].pList.getText
+      if (isDecl)
+        psi.asInstanceOf[ScVariableDeclaration].getIdList.getText
+      else
+        psi.asInstanceOf[ScVariableDefinition].pList.getText
     new ScVariableStubImpl[ParentPsi](
       parentStub,
       this,
-      (for (elem <- psi.declaredElements) yield elem.name).toArray,
+      (for (elem <- psi.declaredElements)
+        yield elem.name).toArray,
       isDecl,
       typeText,
       bodyText,
@@ -56,7 +60,8 @@ abstract class ScVariableElementType[Variable <: ScVariable](debugName: String)
     dataStream.writeBoolean(stub.isDeclaration)
     val names = stub.getNames
     dataStream.writeInt(names.length)
-    for (name <- names) dataStream.writeName(name)
+    for (name <- names)
+      dataStream.writeName(name)
     dataStream.writeName(stub.getTypeText)
     dataStream.writeName(stub.getBodyText)
     dataStream.writeName(stub.getBindingsContainerText)

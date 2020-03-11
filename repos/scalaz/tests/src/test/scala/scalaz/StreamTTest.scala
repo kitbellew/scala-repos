@@ -23,7 +23,10 @@ object StreamTTest extends SpecLite {
 
       val s1 = StreamT.unfold(1)(i => {
         highestTouched = math.max(i, highestTouched)
-        if (i < 100) Some((i, i + 1)) else None
+        if (i < 100)
+          Some((i, i + 1))
+        else
+          None
       })
 
       val s2 = s1.asStream

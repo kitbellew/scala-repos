@@ -68,7 +68,8 @@ class ScalaResolveResult(
     val implicitSearchState: Option[ImplicitState] = None,
     val unresolvedTypeParameters: Option[Seq[TypeParameter]] = None)
     extends ResolveResult {
-  if (element == null) throw new NullPointerException("element is null")
+  if (element == null)
+    throw new NullPointerException("element is null")
 
   def getElement = element
 
@@ -85,8 +86,10 @@ class ScalaResolveResult(
   }
 
   def isApplicable(withExpectedType: Boolean = false): Boolean =
-    if (withExpectedType) problems.isEmpty
-    else problems.forall(_ == ExpectedTypeMismatch)
+    if (withExpectedType)
+      problems.isEmpty
+    else
+      problems.forall(_ == ExpectedTypeMismatch)
 
   def isApplicableInternal(withExpectedType: Boolean): Boolean = {
     innerResolveResult match {
@@ -154,9 +157,12 @@ class ScalaResolveResult(
   // so factor by element
   override def equals(other: Any): Boolean = other match {
     case rr: ScalaResolveResult =>
-      if (element ne rr.element) return false
-      if (nameShadow != rr.nameShadow) return false
-      if (implicitFunction != rr.implicitFunction) return false
+      if (element ne rr.element)
+        return false
+      if (nameShadow != rr.nameShadow)
+        return false
+      if (implicitFunction != rr.implicitFunction)
+        return false
       innerResolveResult == rr.innerResolveResult
     case _ => false
   }
@@ -182,14 +188,20 @@ class ScalaResolveResult(
     import org.jetbrains.plugins.scala.lang.resolve.processor.PrecedenceHelper.PrecedenceTypes._
     def getPrecedenceInner: Int = {
       def getPackagePrecedence(qualifier: String): Int = {
-        if (qualifier == null) return OTHER_MEMBERS
+        if (qualifier == null)
+          return OTHER_MEMBERS
         val index: Int = qualifier.lastIndexOf('.')
-        if (index == -1) return PACKAGE_LOCAL_PACKAGE
+        if (index == -1)
+          return PACKAGE_LOCAL_PACKAGE
         val q = qualifier.substring(0, index)
-        if (q == "java.lang") JAVA_LANG
-        else if (q == "scala") SCALA
-        else if (q == placePackageName) OTHER_MEMBERS
-        else PACKAGE_LOCAL_PACKAGE
+        if (q == "java.lang")
+          JAVA_LANG
+        else if (q == "scala")
+          SCALA
+        else if (q == placePackageName)
+          OTHER_MEMBERS
+        else
+          PACKAGE_LOCAL_PACKAGE
       }
       def getClazzPrecedence(clazz: PsiClass): Int = {
         @tailrec
@@ -201,28 +213,37 @@ class ScalaResolveResult(
               val packageSuffix: String = ".`package`"
               if (qualifier.endsWith(packageSuffix))
                 qualifier.substring(0, qualifier.length - packageSuffix.length)
-              else qualifier
+              else
+                qualifier
             case p: ScPackaging => p.fullPackageName
             case _              => getPackageName(element.getParent)
           }
         }
         val q = clazz match {
           case td: ScTypeDefinition =>
-            if (td.containingClass != null) return OTHER_MEMBERS
+            if (td.containingClass != null)
+              return OTHER_MEMBERS
             getPackageName(td)
           case p: PsiClass =>
-            if (p.getContainingClass != null) return OTHER_MEMBERS
+            if (p.getContainingClass != null)
+              return OTHER_MEMBERS
             val qualifier = p.getQualifiedName
-            if (qualifier == null) return OTHER_MEMBERS
+            if (qualifier == null)
+              return OTHER_MEMBERS
             val index: Int = qualifier.lastIndexOf('.')
-            if (index == -1) return OTHER_MEMBERS
+            if (index == -1)
+              return OTHER_MEMBERS
             qualifier.substring(0, index)
           case _ =>
         }
-        if (q == "java.lang") JAVA_LANG
-        else if (q == "scala") SCALA
-        else if (q == placePackageName) OTHER_MEMBERS
-        else PACKAGE_LOCAL
+        if (q == "java.lang")
+          JAVA_LANG
+        else if (q == "scala")
+          SCALA
+        else if (q == placePackageName)
+          OTHER_MEMBERS
+        else
+          PACKAGE_LOCAL
       }
       if (importsUsed.size == 0) {
         ScalaPsiUtil.nameContext(getActualElement) match {
@@ -245,7 +266,8 @@ class ScalaResolveResult(
               case _               => null
             }
             //val clazz = PsiTreeUtil.getParentOfType(result.getActualElement, classOf[PsiClass])
-            if (clazz == null) return OTHER_MEMBERS
+            if (clazz == null)
+              return OTHER_MEMBERS
             else {
               clazz.qualifiedName match {
                 case "scala.Predef"               => return SCALA_PREDEF
@@ -262,8 +284,10 @@ class ScalaResolveResult(
                       val packageSuffix: String = ".`package`"
                       if (q.endsWith(packageSuffix))
                         q = q.substring(0, q.length - packageSuffix.length)
-                      if (q == placePackageName) return OTHER_MEMBERS
-                      else return PACKAGE_LOCAL
+                      if (q == placePackageName)
+                        return OTHER_MEMBERS
+                      else
+                        return PACKAGE_LOCAL
                     case _ => return OTHER_MEMBERS
                   }
               }

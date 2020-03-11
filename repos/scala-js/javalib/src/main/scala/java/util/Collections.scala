@@ -82,9 +82,12 @@ object Collections {
       if (lo < hi) {
         val mid = lo + (hi - lo) / 2
         val cmp = compareToKey(get(mid))
-        if (cmp == 0) mid
-        else if (cmp > 0) binarySearch(lo, mid, get)
-        else binarySearch(mid + 1, hi, get)
+        if (cmp == 0)
+          mid
+        else if (cmp > 0)
+          binarySearch(lo, mid, get)
+        else
+          binarySearch(mid + 1, hi, get)
       } else {
         notFound(lo)
       }
@@ -346,11 +349,17 @@ object Collections {
       fromStart: Boolean): Int = {
     val targetSize = target.size
     if (targetSize == 0) {
-      if (fromStart) 0
-      else source.size
+      if (fromStart)
+        0
+      else
+        source.size
     } else {
       val indices = 0 to source.size - targetSize
-      val indicesInOrder = if (fromStart) indices else indices.reverse
+      val indicesInOrder =
+        if (fromStart)
+          indices
+        else
+          indices.reverse
       indicesInOrder
         .find { i =>
           source.subList(i, i + target.size).equals(target)
@@ -498,8 +507,10 @@ object Collections {
       def size(): Int = 1
 
       def get(index: Int): T =
-        if (index == 0) o
-        else throw new IndexOutOfBoundsException(index.toString)
+        if (index == 0)
+          o
+        else
+          throw new IndexOutOfBoundsException(index.toString)
     })
   }
 
@@ -847,12 +858,16 @@ object Collections {
       throw new UnsupportedOperationException
 
     override def remove(o: Any): Boolean =
-      if (eagerThrow || contains(o)) throw new UnsupportedOperationException
-      else false
+      if (eagerThrow || contains(o))
+        throw new UnsupportedOperationException
+      else
+        false
 
     override def addAll(c: Collection[_ <: E]): Boolean =
-      if (eagerThrow || c.nonEmpty) throw new UnsupportedOperationException
-      else false
+      if (eagerThrow || c.nonEmpty)
+        throw new UnsupportedOperationException
+      else
+        false
 
     override def removeAll(c: Collection[_]): Boolean = {
       if (eagerThrow) {
@@ -899,8 +914,10 @@ object Collections {
       with WrappedList[E] {
 
     override def addAll(index: Int, c: Collection[_ <: E]): Boolean =
-      if (eagerThrow || c.nonEmpty) throw new UnsupportedOperationException
-      else false
+      if (eagerThrow || c.nonEmpty)
+        throw new UnsupportedOperationException
+      else
+        false
 
     override def set(index: Int, element: E): E =
       throw new UnsupportedOperationException
@@ -937,7 +954,8 @@ object Collections {
     override def remove(key: scala.Any): V = {
       if (eagerThrow || containsKey(key))
         throw new UnsupportedOperationException
-      else null.asInstanceOf[V]
+      else
+        null.asInstanceOf[V]
     }
 
     override def putAll(m: Map[_ <: K, _ <: V]): Unit = {

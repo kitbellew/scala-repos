@@ -25,7 +25,10 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
         e.getNode.getElementType == ScalaTokenTypes.tSTRING &&
         a > e.getTextRange.getStartOffset && b < e.getTextRange.getEndOffset
     }
-    if (literal) StringUtil.unescapeStringCharacters(text) else null
+    if (literal)
+      StringUtil.unescapeStringCharacters(text)
+    else
+      null
   }
 
   def preprocessOnPaste(
@@ -42,7 +45,10 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
     if (e.isInstanceOf[
           PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && offset > e.getTextOffset) {
       val elementType =
-        if (e.getNode == null) null else e.getNode.getElementType
+        if (e.getNode == null)
+          null
+        else
+          e.getNode.getElementType
       if ((elementType == ScalaTokenTypes.tSTRING || elementType == ScalaTokenTypes.tCHAR)
           && rawText != null && rawText.rawText != null) {
         rawText.rawText

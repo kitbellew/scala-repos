@@ -25,7 +25,8 @@ class ScExtendsBlockElementType
 
   def serialize(stub: ScExtendsBlockStub, dataStream: StubOutputStream) {
     dataStream.writeInt(stub.getBaseClasses.length)
-    for (name <- stub.getBaseClasses) dataStream.writeName(name)
+    for (name <- stub.getBaseClasses)
+      dataStream.writeName(name)
   }
 
   def indexStub(stub: ScExtendsBlockStub, sink: IndexSink) {
@@ -39,7 +40,8 @@ class ScExtendsBlockElementType
       parentStub: Any): ScExtendsBlockStub = {
     val n = dataStream.readInt
     val baseClasses = new Array[StringRef](n)
-    for (i <- 0 until n) baseClasses(i) = dataStream.readName
+    for (i <- 0 until n)
+      baseClasses(i) = dataStream.readName
     new ScExtendsBlockStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this,

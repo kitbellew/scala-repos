@@ -111,9 +111,12 @@ class A18 {
         if ((new Object).hashCode() == 1) {
           class B {};
           new B
-        } else 2
-        if ((new Object).hashCode() == 1) new A6 {}
-        else "haifish"
+        } else
+          2
+        if ((new Object).hashCode() == 1)
+          new A6 {}
+        else
+          "haifish"
       }
     }
   }

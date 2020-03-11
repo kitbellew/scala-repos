@@ -177,7 +177,11 @@ case class Literal protected (value: Any, dataType: DataType)
   override def foldable: Boolean = true
   override def nullable: Boolean = value == null
 
-  override def toString: String = if (value != null) value.toString else "null"
+  override def toString: String =
+    if (value != null)
+      value.toString
+    else
+      "null"
 
   override def equals(other: Any): Boolean = other match {
     case o: Literal =>

@@ -92,7 +92,11 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
       port: Int): Future[Option[HealthResult]] = {
     val host = task.effectiveIpAddress(app)
     val rawPath = check.path.getOrElse("")
-    val absolutePath = if (rawPath.startsWith("/")) rawPath else s"/$rawPath"
+    val absolutePath =
+      if (rawPath.startsWith("/"))
+        rawPath
+      else
+        s"/$rawPath"
     val url = s"http://$host:$port$absolutePath"
     log.debug("Checking the health of [{}] via HTTP", url)
 
@@ -150,7 +154,11 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
 
     val host = task.effectiveIpAddress(app)
     val rawPath = check.path.getOrElse("")
-    val absolutePath = if (rawPath.startsWith("/")) rawPath else s"/$rawPath"
+    val absolutePath =
+      if (rawPath.startsWith("/"))
+        rawPath
+      else
+        s"/$rawPath"
     val url = s"https://$host:$port$absolutePath"
     log.debug("Checking the health of [{}] via HTTPS", url)
 

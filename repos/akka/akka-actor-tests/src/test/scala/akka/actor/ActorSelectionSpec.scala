@@ -270,7 +270,8 @@ class ActorSelectionSpec
               "../.." + target.path.elements
                 .mkString("/", "/", "/"))) should ===(Some(target))
       }
-      for (target ← Seq(root, syst, user)) check(target)
+      for (target ← Seq(root, syst, user))
+        check(target)
     }
 
     "return deadLetters or ActorIdentity(None), respectively, for non-existing paths" in {
@@ -289,9 +290,11 @@ class ActorSelectionSpec
                SelectPath(looker.path child "hallo") -> None, // test Java API
                SelectPath(looker.path descendant Seq("a", "b").asJava) -> None
              ) // test Java API
-             ) checkOne(looker, l, r)
+             )
+          checkOne(looker, l, r)
       }
-      for (looker ← all) check(looker)
+      for (looker ← all)
+        check(looker)
     }
 
   }

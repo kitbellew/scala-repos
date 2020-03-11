@@ -37,7 +37,8 @@ trait Node extends Dumpable {
     val len = ch.length
     var i = 0
     while (i < len) {
-      if (ch(i) ne ch2(i)) return rebuild(ch2)
+      if (ch(i) ne ch2(i))
+        return rebuild(ch2)
       i += 1
     }
     this
@@ -49,9 +50,15 @@ trait Node extends Dumpable {
   def mapChildren(f: Node => Node, keepType: Boolean = false): Self = {
     val ch = children
     val ch2 = ch.endoMap(f)
-    val n: Self = if (ch2 eq ch) this else rebuild(ch2)
-    if (!keepType || (_type eq UnassignedType)) n
-    else (n :@ _type).asInstanceOf[Self]
+    val n: Self =
+      if (ch2 eq ch)
+        this
+      else
+        rebuild(ch2)
+    if (!keepType || (_type eq UnassignedType))
+      n
+    else
+      (n :@ _type).asInstanceOf[Self]
   }
 
   /** Apply a side-effecting function to all direct children from left to right. Note that
@@ -74,11 +81,18 @@ trait Node extends Dumpable {
 
   /** Return this Node with no Type assigned (if it has not yet been observed) or an untyped copy. */
   final def untyped: Self =
-    if (seenType || _type != UnassignedType) buildCopy else this
+    if (seenType || _type != UnassignedType)
+      buildCopy
+    else
+      this
 
   /** Return this Node with a Type assigned (if no other type has been seen for it yet) or a typed copy. */
   final def :@(newType: Type): Self = {
-    val n: Self = if (seenType && newType != _type) buildCopy else this
+    val n: Self =
+      if (seenType && newType != _type)
+        buildCopy
+      else
+        this
     n._type = newType
     n
   }
@@ -90,8 +104,10 @@ trait Node extends Dumpable {
   final def infer(
       scope: Type.Scope = Map.empty,
       typeChildren: Boolean = false): Self =
-    if (hasType && !typeChildren) this
-    else withInferredType(scope, typeChildren)
+    if (hasType && !typeChildren)
+      this
+    else
+      withInferredType(scope, typeChildren)
 
   protected[this] def withInferredType(
       scope: Type.Scope,
@@ -102,8 +118,10 @@ trait Node extends Dumpable {
       case p: Product =>
         val cln = DumpInfo.simpleNameFor(getClass)
         val n =
-          if (cln.endsWith("$")) cln.substring(0, cln.length - 1)
-          else cln.replaceFirst(".*\\$", "")
+          if (cln.endsWith("$"))
+            cln.substring(0, cln.length - 1)
+          else
+            cln.replaceFirst(".*\\$", "")
         val args =
           p.productIterator.filterNot(_.isInstanceOf[Node]).mkString(", ")
         (n, args)
@@ -118,7 +136,10 @@ trait Node extends Dumpable {
     DumpInfo(
       objName,
       mainInfo,
-      if (t != UnassignedType) ": " + t.toString else "",
+      if (t != UnassignedType)
+        ": " + t.toString
+      else
+        "",
       ch)
   }
 
@@ -134,7 +155,10 @@ trait SimplyTypedNode extends Node {
 
   final def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val this2: Self = mapChildren(_.infer(scope, typeChildren), keepType = true)
-    if (!hasType) (this2 :@ this2.buildType).asInstanceOf[Self] else this2
+    if (!hasType)
+      (this2 :@ this2.buildType).asInstanceOf[Self]
+    else
+      this2
   }
 }
 
@@ -213,8 +237,10 @@ class LiteralNode(
   protected[this] def rebuild = new LiteralNode(buildType, value, volatileHint)
 
   override def hashCode =
-    buildType.hashCode() + (if (value == null) 0
-                            else value.asInstanceOf[AnyRef].hashCode)
+    buildType.hashCode() + (if (value == null)
+                              0
+                            else
+                              value.asInstanceOf[AnyRef].hashCode)
   override def equals(o: Any) = o match {
     case l: LiteralNode => buildType == l.buildType && value == l.value
     case _              => false
@@ -245,10 +271,16 @@ trait BinaryNode extends Node {
     val r = right
     val l2 = f(l)
     val r2 = f(r)
-    val n: Self = if ((l eq l2) && (r eq r2)) this else rebuild(l2, r2)
+    val n: Self =
+      if ((l eq l2) && (r eq r2))
+        this
+      else
+        rebuild(l2, r2)
     val _type = peekType
-    if (!keepType || (_type eq UnassignedType)) n
-    else (n :@ _type).asInstanceOf[Self]
+    if (!keepType || (_type eq UnassignedType))
+      n
+    else
+      (n :@ _type).asInstanceOf[Self]
   }
   override final protected[this] def buildCopy: Self = rebuild(left, right)
   override final def childrenForeach[R](f: Node => R): Unit = {
@@ -267,10 +299,16 @@ trait UnaryNode extends Node {
       keepType: Boolean = false): Self = {
     val ch = child
     val ch2 = f(child)
-    val n: Self = if (ch2 eq ch) this else rebuild(ch2)
+    val n: Self =
+      if (ch2 eq ch)
+        this
+      else
+        rebuild(ch2)
     val _type = peekType
-    if (!keepType || (_type eq UnassignedType)) n
-    else (n :@ _type).asInstanceOf[Self]
+    if (!keepType || (_type eq UnassignedType))
+      n
+    else
+      (n :@ _type).asInstanceOf[Self]
   }
   override final protected[this] def buildCopy: Self = rebuild(child)
   override final def childrenForeach[R](f: Node => R): Unit = f(child)
@@ -368,10 +406,15 @@ abstract class ComplexFilteredQuery extends FilteredQuery with DefNode {
     val genScope =
       scope + (generator -> from2.nodeType.asCollectionType.elementType)
     val this2 = mapChildren { ch =>
-      if (ch eq from) from2 else ch.infer(genScope, typeChildren)
+      if (ch eq from)
+        from2
+      else
+        ch.infer(genScope, typeChildren)
     }
-    (this2 :@ (if (!hasType) this2.from.nodeType else nodeType))
-      .asInstanceOf[Self]
+    (this2 :@ (if (!hasType)
+                 this2.from.nodeType
+               else
+                 nodeType)).asInstanceOf[Self]
   }
 }
 
@@ -472,7 +515,10 @@ final case class GroupBy(
     val from2Type = from2.nodeType.asCollectionType
     val by2 = by.infer(scope + (fromGen -> from2Type.elementType), typeChildren)
     val this2 =
-      if ((from2 eq from) && (by2 eq by)) this else copy(from = from2, by = by2)
+      if ((from2 eq from) && (by2 eq by))
+        this
+      else
+        copy(from = from2, by = by2)
     this2 :@ (if (!hasType)
                 CollectionType(
                   from2Type.cons,
@@ -482,7 +528,8 @@ final case class GroupBy(
                       CollectionType(
                         TypedCollectionTypeConstructor.seq,
                         from2Type.elementType))))
-              else nodeType)
+              else
+                nodeType)
   }
 }
 
@@ -572,7 +619,8 @@ final case class Join(
                                                                ProductType(ConstArray(
                                                                  joinedLeftType,
                                                                  joinedRightType)))
-                                                           else nodeType)
+                                                           else
+                                                             nodeType)
   }
 }
 
@@ -585,7 +633,11 @@ final case class Union(left: Node, right: Node, all: Boolean)
   protected[this] def rebuild(left: Node, right: Node) =
     copy(left = left, right = right)
   override def getDumpInfo =
-    super.getDumpInfo.copy(mainInfo = if (all) "all" else "")
+    super.getDumpInfo.copy(mainInfo =
+      if (all)
+        "all"
+      else
+        "")
   override def childNames = Seq("left", "right")
   protected def buildType = left.nodeType
 }
@@ -611,13 +663,16 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
     val select2 =
       select.infer(scope + (generator -> from2Type.elementType), typeChildren)
     val withCh =
-      if ((from2 eq from) && (select2 eq select)) this
-      else rebuild(from2, select2)
+      if ((from2 eq from) && (select2 eq select))
+        this
+      else
+        rebuild(from2, select2)
     withCh :@ (if (!hasType)
                  CollectionType(
                    from2Type.cons,
                    select2.nodeType.asCollectionType.elementType)
-               else nodeType)
+               else
+                 nodeType)
   }
 }
 
@@ -641,9 +696,14 @@ final case class Aggregate(sym: TermSymbol, from: Node, select: Node)
     val from2 :@ CollectionType(_, el) = from.infer(scope, typeChildren)
     val select2 = select.infer(scope + (sym -> el), typeChildren)
     val this2 =
-      if ((from2 eq from) && (select2 eq select)) this
-      else copy(from = from2, select = select2)
-    this2 :@ (if (!hasType) select2.nodeType else nodeType)
+      if ((from2 eq from) && (select2 eq select))
+        this
+      else
+        copy(from = from2, select = select2)
+    this2 :@ (if (!hasType)
+                select2.nodeType
+              else
+                nodeType)
   }
 }
 
@@ -670,9 +730,14 @@ final case class TableExpansion(
       scope + (generator -> table2.nodeType.asCollectionType.elementType),
       typeChildren)
     val this2 =
-      if ((table2 eq table) && (columns2 eq columns)) this
-      else copy(table = table2, columns = columns2)
-    this2 :@ (if (!hasType) table2.nodeType else nodeType)
+      if ((table2 eq table) && (columns2 eq columns))
+        this
+      else
+        copy(table = table2, columns = columns2)
+    this2 :@ (if (!hasType)
+                table2.nodeType
+              else
+                nodeType)
   }
 }
 
@@ -702,7 +767,10 @@ final case class Select(in: Node, field: TermSymbol)
   def pathString = in.asInstanceOf[PathElement].pathString + "." + field
   def untypedPath = {
     val in2 = in.asInstanceOf[PathElement].untypedPath
-    if (in2 eq in) untyped else Select(in2, field)
+    if (in2 eq in)
+      untyped
+    else
+      Select(in2, field)
   }
 }
 
@@ -720,7 +788,8 @@ final case class Apply(sym: TermSymbol, children: ConstArray[Node])(
 final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
   type Self = Ref
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self =
-    if (hasType) this
+    if (hasType)
+      this
     else {
       scope.get(sym) match {
         case Some(t) => this :@ t
@@ -841,7 +910,10 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   def children = clauses
   override def childNames =
     (0 until clauses.length - 1).map { i =>
-      if (i % 2 == 0) "if" else "then"
+      if (i % 2 == 0)
+        "if"
+      else
+        "then"
     } :+ "else"
   protected[this] def rebuild(ch: ConstArray[Node]): Self = copy(clauses = ch)
   protected def buildType = clauses(1).nodeType
@@ -853,12 +925,24 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
     var equal = true
     val mapped = clauses.zipWithIndex.map {
       case (n, i) =>
-        val n2 = if (pred(i)) f(n) else n
-        if (n2 ne n) equal = false
+        val n2 =
+          if (pred(i))
+            f(n)
+          else
+            n
+        if (n2 ne n)
+          equal = false
         n2
     }
-    val this2 = if (equal) this else rebuild(mapped)
-    if (peekType == UnassignedType || !keepType) this2 else this2 :@ peekType
+    val this2 =
+      if (equal)
+        this
+      else
+        rebuild(mapped)
+    if (peekType == UnassignedType || !keepType)
+      this2
+    else
+      this2 :@ peekType
   }
   def mapConditionClauses(f: Node => Node, keepType: Boolean = false) =
     mapClauses(f, keepType, (i => i % 2 == 0 && i != clauses.length - 1))
@@ -880,8 +964,13 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
     }
     val hasOpt = (ifThenClauses.map(_._2) ++ Iterator(elseClause)).exists(isOpt)
     if (hasOpt)
-      mapResultClauses(ch => if (isOpt(ch)) ch else OptionApply(ch)).infer()
-    else this
+      mapResultClauses(ch =>
+        if (isOpt(ch))
+          ch
+        else
+          OptionApply(ch)).infer()
+    else
+      this
   }
 }
 
@@ -918,7 +1007,8 @@ final case class OptionFold(
     val map2 = map.infer(genScope, typeChildren)
     withChildren(ConstArray[Node](from2, ifEmpty2, map2)) :@ (if (!hasType)
                                                                 map2.nodeType
-                                                              else nodeType)
+                                                              else
+                                                                nodeType)
   }
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
 }
@@ -943,7 +1033,10 @@ final case class CompiledStatement(
   def rebuild = copy()
   override def getDumpInfo =
     super.getDumpInfo.copy(mainInfo =
-      if (statement contains '\n') statement else ("\"" + statement + "\""))
+      if (statement contains '\n')
+        statement
+      else
+        ("\"" + statement + "\""))
 }
 
 /** A client-side type mapping */
@@ -993,13 +1086,13 @@ object QueryParameter {
   def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(
       implicit tpe: ScalaBaseType[T]): Node = (l, r) match {
     case (
-        LiteralNode(lv) :@ (lt: TypedType[_]),
-        LiteralNode(rv) :@ (rt: TypedType[_]))
+          LiteralNode(lv) :@ (lt: TypedType[_]),
+          LiteralNode(rv) :@ (rt: TypedType[_]))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       LiteralNode[T](op(lv.asInstanceOf[T], rv.asInstanceOf[T])).infer()
     case (
-        LiteralNode(lv) :@ (lt: TypedType[_]),
-        QueryParameter(re, rt: TypedType[_], _))
+          LiteralNode(lv) :@ (lt: TypedType[_]),
+          QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {
@@ -1009,8 +1102,8 @@ object QueryParameter {
         },
         tpe)
     case (
-        QueryParameter(le, lt: TypedType[_], _),
-        LiteralNode(rv) :@ (rt: TypedType[_]))
+          QueryParameter(le, lt: TypedType[_], _),
+          LiteralNode(rv) :@ (rt: TypedType[_]))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {
@@ -1020,8 +1113,8 @@ object QueryParameter {
         },
         tpe)
     case (
-        QueryParameter(le, lt: TypedType[_], _),
-        QueryParameter(re, rt: TypedType[_], _))
+          QueryParameter(le, lt: TypedType[_], _),
+          QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
       QueryParameter(
         new (Any => T) {

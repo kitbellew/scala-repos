@@ -585,8 +585,10 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       i2: FsApplicationHistoryInfo): Boolean = {
     val a1 = i1.attempts.head
     val a2 = i2.attempts.head
-    if (a1.endTime != a2.endTime) a1.endTime >= a2.endTime
-    else a1.startTime >= a2.startTime
+    if (a1.endTime != a2.endTime)
+      a1.endTime >= a2.endTime
+    else
+      a1.startTime >= a2.startTime
   }
 
   /**

@@ -98,7 +98,8 @@ object MacroUtil {
       .map(_.parameterList)
 
   def paramPairs(params: String): List[(String, String)] =
-    if (params.length < 2) List()
+    if (params.length < 2)
+      List()
     else
       params
         .substring(1, params.length - 1)

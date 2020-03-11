@@ -44,8 +44,10 @@ class MessageWriterTest extends JUnitSuite {
       timestampType = TimestampType.CREATE_TIME,
       magicValue = Message.MagicValue_V1) { output =>
       val out =
-        if (codec == NoCompressionCodec) output
-        else CompressionFactory(codec, output)
+        if (codec == NoCompressionCodec)
+          output
+        else
+          CompressionFactory(codec, output)
       try {
         val p = rnd.nextInt(bytes.length)
         out.write(bytes, 0, p)

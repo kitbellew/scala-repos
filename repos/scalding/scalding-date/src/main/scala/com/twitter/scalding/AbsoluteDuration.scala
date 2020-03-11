@@ -25,7 +25,11 @@ import scala.annotation.tailrec
  */
 object AbsoluteDuration extends java.io.Serializable {
 
-  def max(a: AbsoluteDuration, b: AbsoluteDuration) = if (a > b) a else b
+  def max(a: AbsoluteDuration, b: AbsoluteDuration) =
+    if (a > b)
+      a
+    else
+      b
 
   type TimeCons = ((Int) => AbsoluteDuration, Int)
 

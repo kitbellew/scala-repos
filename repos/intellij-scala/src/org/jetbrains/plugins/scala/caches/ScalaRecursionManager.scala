@@ -92,7 +92,8 @@ object ScalaRecursionManager {
       } finally {
         removeLast(element, key)
       }
-    } else None
+    } else
+      None
   }
 
   def doComputationsForTwoElements[Dom <: PsiElement, Result](
@@ -116,7 +117,8 @@ object ScalaRecursionManager {
         removeLast(element2, key)
         removeLast(element1, key)
       }
-    } else None
+    } else
+      None
   }
 
 }

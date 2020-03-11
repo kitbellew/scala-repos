@@ -248,12 +248,14 @@ private[scala] trait JavaMirrors
       new JavaInstanceMirror(obj)
 
     def reflectClass(cls: ClassSymbol): ClassMirror = {
-      if (!cls.isStatic) ErrorInnerClass(cls)
+      if (!cls.isStatic)
+        ErrorInnerClass(cls)
       new JavaClassMirror(null, cls)
     }
 
     def reflectModule(mod: ModuleSymbol): ModuleMirror = {
-      if (!mod.isStatic) ErrorInnerModule(mod)
+      if (!mod.isStatic)
+        ErrorInnerModule(mod)
       new JavaModuleMirror(null, mod)
     }
 
@@ -288,8 +290,10 @@ private[scala] trait JavaMirrors
     }
 
     private def checkConstructorOf(sym: Symbol, owner: ClassSymbol) {
-      if (!sym.isClassConstructor) ErrorNotConstructor(sym, owner)
-      if (owner == ArrayClass) ErrorArrayConstructor(sym, owner)
+      if (!sym.isClassConstructor)
+        ErrorNotConstructor(sym, owner)
+      if (owner == ArrayClass)
+        ErrorArrayConstructor(sym, owner)
       ensuringNotFree(sym) {
         if (!owner.info.decls.toList.contains(sym))
           ErrorNotConstructor(sym, owner)
@@ -299,7 +303,10 @@ private[scala] trait JavaMirrors
     private def preciseClass[T: ClassTag](instance: T) = {
       val staticClazz = classTag[T].runtimeClass
       val dynamicClazz = instance.getClass
-      if (staticClazz.isPrimitive) staticClazz else dynamicClazz
+      if (staticClazz.isPrimitive)
+        staticClazz
+      else
+        dynamicClazz
     }
 
     private class JavaInstanceMirror[T: ClassTag](val instance: T)
@@ -309,7 +316,11 @@ private[scala] trait JavaMirrors
         checkMemberOf(field, symbol)
         if ((field.isMethod && !field.isAccessor) || field.isModule)
           ErrorNotField(field)
-        val name = if (field.isAccessor) field.localName else field.name
+        val name =
+          if (field.isAccessor)
+            field.localName
+          else
+            field.name
         val field1 = (field.owner.info decl name).asTerm
         try fieldToJava(field1)
         catch {
@@ -322,12 +333,14 @@ private[scala] trait JavaMirrors
         mkMethodMirror(instance, method)
       }
       def reflectClass(cls: ClassSymbol): ClassMirror = {
-        if (cls.isStatic) ErrorStaticClass(cls)
+        if (cls.isStatic)
+          ErrorStaticClass(cls)
         checkMemberOf(cls, symbol)
         new JavaClassMirror(instance.asInstanceOf[AnyRef], cls)
       }
       def reflectModule(mod: ModuleSymbol): ModuleMirror = {
-        if (mod.isStatic) ErrorStaticModule(mod)
+        if (mod.isStatic)
+          ErrorStaticModule(mod)
         checkMemberOf(mod, symbol)
         new JavaModuleMirror(instance.asInstanceOf[AnyRef], mod)
       }
@@ -363,14 +376,20 @@ private[scala] trait JavaMirrors
       lazy val jfield = ensureAccessible(fieldToJava(symbol))
       def get = {
         val value = jfield get receiver
-        if (isDerivedValueClass) boxer.newInstance(value) else value
+        if (isDerivedValueClass)
+          boxer.newInstance(value)
+        else
+          value
       }
       def set(value: Any) = {
         // it appears useful to be able to set values of vals, therefore I'm disabling this check
         // if (!symbol.isMutable) ErrorSetImmutableField(symbol)
         jfield.set(
           receiver,
-          if (isDerivedValueClass) unboxer.invoke(value) else value)
+          if (isDerivedValueClass)
+            unboxer.invoke(value)
+          else
+            value)
       }
 
       override def toString =
@@ -456,12 +475,16 @@ private[scala] trait JavaMirrors
           ()
         else if (!symbol.isConstructor && ret.isDerivedValueClass)
           ret.boxer.newInstance(result.asInstanceOf[AnyRef])
-        else result
+        else
+          result
       }
 
       override def toString = {
         val what =
-          if (symbol.isConstructor) "constructor mirror" else "method mirror"
+          if (symbol.isConstructor)
+            "constructor mirror"
+          else
+            "method mirror"
         s"$what for ${showDecl(symbol)} (bound to $receiver)"
       }
     }
@@ -488,9 +511,12 @@ private[scala] trait JavaMirrors
       override def bind(newReceiver: Any) =
         new JavaVanillaMethodMirror0(newReceiver, symbol, ret)
       override def jinvokeraw(args: Seq[Any]) =
-        if (!symbol.isConstructor) jmeth.invoke(receiver)
-        else if (receiver == null) jconstr.newInstance()
-        else jconstr.newInstance(receiver.asInstanceOf[AnyRef])
+        if (!symbol.isConstructor)
+          jmeth.invoke(receiver)
+        else if (receiver == null)
+          jconstr.newInstance()
+        else
+          jconstr.newInstance(receiver.asInstanceOf[AnyRef])
     }
 
     private class JavaVanillaMethodMirror1(
@@ -631,12 +657,14 @@ private[scala] trait JavaMirrors
           val arg = args(i)
           args1(i) =
             (
-              if (i >= paramCount) arg // don't transform varargs
+              if (i >= paramCount)
+                arg // don't transform varargs
               else if (isByName(i))() =>
                 arg // don't transform by-name value class params
               else if (isDerivedValueClass(i))
                 paramUnboxers(i).invoke(arg) // do get the underlying value
-              else arg // don't molest anything else
+              else
+                arg // don't molest anything else
             )
           i += 1
         }
@@ -665,11 +693,15 @@ private[scala] trait JavaMirrors
           args.length >= params.length - 1 && isVarArgsList(params)
         if (!perfectMatch && !varargMatch) {
           val n_arguments =
-            if (isVarArgsList(params)) s"${params.length - 1} or more"
-            else s"${params.length}"
+            if (isVarArgsList(params))
+              s"${params.length - 1} or more"
+            else
+              s"${params.length}"
           val s_arguments =
-            if (params.length == 1 && !isVarArgsList(params)) "argument"
-            else "arguments"
+            if (params.length == 1 && !isVarArgsList(params))
+              "argument"
+            else
+              "arguments"
           abort(s"${showDecl(symbol)} takes $n_arguments $s_arguments")
         }
 
@@ -687,8 +719,10 @@ private[scala] trait JavaMirrors
           val result = jmeth.invoke(
             null,
             (objReceiver +: objArgs).asInstanceOf[Seq[AnyRef]]: _*)
-          if (jmeth.getReturnType == java.lang.Void.TYPE) ()
-          else result
+          if (jmeth.getReturnType == java.lang.Void.TYPE)
+            ()
+          else
+            result
         }
 
         symbol match {
@@ -760,7 +794,8 @@ private[scala] trait JavaMirrors
           staticSingletonInstance(classLoader, symbol.fullName)
         else if (outer == null)
           staticSingletonInstance(classToJava(symbol.moduleClass.asClass))
-        else innerSingletonInstance(outer, symbol.name.toString)
+        else
+          innerSingletonInstance(outer, symbol.name.toString)
       }
       override def toString =
         s"module mirror for ${symbol.fullName} (bound to $outer)"
@@ -798,7 +833,10 @@ private[scala] trait JavaMirrors
     /** The mirror that corresponds to the classloader that original defined the given Java class */
     def mirrorDefining(jclazz: jClass[_]): JavaMirror = {
       val cl = jclazz.getClassLoader
-      if (cl == this.classLoader) this else runtimeMirror(cl)
+      if (cl == this.classLoader)
+        this
+      else
+        runtimeMirror(cl)
     }
 
     private object unpickler extends UnPickler {
@@ -820,11 +858,14 @@ private[scala] trait JavaMirrors
       def markAbsent(tpe: Type) = setAllInfos(clazz, module, tpe)
       def handleError(ex: Exception) = {
         markAbsent(ErrorType)
-        if (settings.debug) ex.printStackTrace()
+        if (settings.debug)
+          ex.printStackTrace()
         val msg = ex.getMessage()
         MissingRequirementError.signal(
-          (if (msg eq null) "reflection error while loading " + clazz.name
-           else "error while loading " + clazz.name) + ", " + msg)
+          (if (msg eq null)
+             "reflection error while loading " + clazz.name
+           else
+             "error while loading " + clazz.name) + ", " + msg)
       }
       // don't use classOf[scala.reflect.ScalaSignature] here, because it will use getClass.getClassLoader, not mirror's classLoader
       // don't use asInstanceOf either because of the same reason (lol, I cannot believe I fell for it)
@@ -924,7 +965,8 @@ private[scala] trait JavaMirrors
         jclazz: jClass[_]): Unit = {
       val associatedFile = ReflectionUtils.associatedFile(jclazz)
       clazz.associatedFile = associatedFile
-      if (module != NoSymbol) module.associatedFile = associatedFile
+      if (module != NoSymbol)
+        module.associatedFile = associatedFile
     }
 
     /**
@@ -982,9 +1024,10 @@ private[scala] trait JavaMirrors
       /** used to avoid cycles while initializing classes */
       private var parentsLevel = 0
       private var pendingLoadActions: List[() => Unit] = Nil
-      private val relatedSymbols =
-        clazz +: (if (module != NoSymbol) List(module, module.moduleClass)
-                  else Nil)
+      private val relatedSymbols = clazz +: (if (module != NoSymbol)
+                                               List(module, module.moduleClass)
+                                             else
+                                               Nil)
 
       override def load(sym: Symbol): Unit = {
         debugInfo("completing from Java " + sym + "/" + clazz.fullName) //debug
@@ -1025,8 +1068,10 @@ private[scala] trait JavaMirrors
             else if (jclazz.isInterface)
               ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
             else
-              (if (jsuperclazz == null) AnyTpe
-               else typeToScala(jsuperclazz)) :: ifaces
+              (if (jsuperclazz == null)
+                 AnyTpe
+               else
+                 typeToScala(jsuperclazz)) :: ifaces
           } finally {
             parentsLevel -= 1
           }
@@ -1095,7 +1140,10 @@ private[scala] trait JavaMirrors
         mods: JavaAccFlags): Symbol =
       // SI-8196 `orElse(clazz)` needed for implementation details of the backend, such as the static
       //         field containing the cache for structural calls.
-      if (mods.isStatic) module.moduleClass.orElse(clazz) else clazz
+      if (mods.isStatic)
+        module.moduleClass.orElse(clazz)
+      else
+        clazz
 
     /**
       * Certain method of the Java reflection api cannot be used on classfiles created by Scala.
@@ -1222,10 +1270,14 @@ private[scala] trait JavaMirrors
       * The Scala package with given fully qualified name.
       */
     def packageNameToScala(fullname: String): ModuleSymbol = {
-      if (fullname == "") EmptyPackage
+      if (fullname == "")
+        EmptyPackage
       else {
         val jpkg = jPackage.getPackage(fullname)
-        if (jpkg != null) packageToScala(jpkg) else makeScalaPackage(fullname)
+        if (jpkg != null)
+          packageToScala(jpkg)
+        else
+          makeScalaPackage(fullname)
       }
     }
 
@@ -1237,8 +1289,10 @@ private[scala] trait JavaMirrors
       gilSynchronized {
         val split = fullname lastIndexOf '.'
         val ownerModule: ModuleSymbol =
-          if (split > 0) packageNameToScala(fullname take split)
-          else this.RootPackage
+          if (split > 0)
+            packageNameToScala(fullname take split)
+          else
+            this.RootPackage
         val owner = ownerModule.moduleClass
         val name = TermName(fullname) drop split + 1
         val opkg = owner.info decl name
@@ -1258,7 +1312,11 @@ private[scala] trait JavaMirrors
     private def scalaSimpleName(jclazz: jClass[_]): TypeName = {
       val owner = sOwner(jclazz)
       val enclosingClass = jclazz.getEnclosingClass
-      var prefix = if (enclosingClass != null) enclosingClass.getName else ""
+      var prefix =
+        if (enclosingClass != null)
+          enclosingClass.getName
+        else
+          ""
       val isObject = owner.isModuleClass && !owner.isPackageClass
       if (isObject && !prefix.endsWith(nme.MODULE_SUFFIX_STRING))
         prefix += nme.MODULE_SUFFIX_STRING
@@ -1280,8 +1338,10 @@ private[scala] trait JavaMirrors
 
     private def classToScala1(jclazz: jClass[_]): ClassSymbol = {
       val jname = newTypeName(jclazz.getName)
-      if (jname == fulltpnme.RuntimeNothing) NothingClass
-      else if (jname == fulltpnme.RuntimeNull) NullClass
+      if (jname == fulltpnme.RuntimeNothing)
+        NothingClass
+      else if (jname == fulltpnme.RuntimeNull)
+        NullClass
       else {
         val owner = sOwner(jclazz)
         val simpleName = scalaSimpleName(jclazz)
@@ -1289,8 +1349,10 @@ private[scala] trait JavaMirrors
         def lookupClass = {
           def coreLookup(name: Name): Symbol =
             owner.info.decl(name) orElse {
-              if (name.startsWith(nme.NAME_JOIN_STRING)) coreLookup(name drop 1)
-              else NoSymbol
+              if (name.startsWith(nme.NAME_JOIN_STRING))
+                coreLookup(name drop 1)
+              else
+                NoSymbol
             }
           if (nme.isModuleName(simpleName))
             coreLookup(simpleName.dropModule.toTermName) map (_.moduleClass)
@@ -1320,8 +1382,10 @@ private[scala] trait JavaMirrors
 
         assert(
           cls.isType,
-          (if (cls != NoSymbol) s"not a type: symbol $cls"
-           else "no symbol could be") +
+          (if (cls != NoSymbol)
+             s"not a type: symbol $cls"
+           else
+             "no symbol could be") +
             s" loaded from $jclazz in $owner with name $simpleName and classloader $classLoader"
         )
 
@@ -1483,7 +1547,8 @@ private[scala] trait JavaMirrors
       setMethType(meth, tparams, paramtpes, resulttpe)
       propagatePackageBoundary(jmeth.javaFlags, meth)
       copyAnnotations(meth, jmeth)
-      if (jmeth.javaFlags.isVarargs) meth modifyInfo arrayToRepeated
+      if (jmeth.javaFlags.isVarargs)
+        meth modifyInfo arrayToRepeated
       markAllCompleted(meth)
       meth
     }
@@ -1510,7 +1575,8 @@ private[scala] trait JavaMirrors
         MethodType(clazz.newSyntheticValueParams(paramtpes), clazz.tpe))
       propagatePackageBoundary(jconstr.javaFlags, constr)
       copyAnnotations(constr, jconstr)
-      if (jconstr.javaFlags.isVarargs) constr modifyInfo arrayToRepeated
+      if (jconstr.javaFlags.isVarargs)
+        constr modifyInfo arrayToRepeated
       markAllCompleted(constr)
       constr
     }
@@ -1552,7 +1618,8 @@ private[scala] trait JavaMirrors
         val ownerChildren = ownerClazz.getDeclaredClasses
 
         var fullNameOfJavaClass = ownerClazz.getName
-        if (childOfClass || childOfTopLevel) fullNameOfJavaClass += "$"
+        if (childOfClass || childOfTopLevel)
+          fullNameOfJavaClass += "$"
         fullNameOfJavaClass += clazz.name
 
         // compactify (see SI-7779)
@@ -1565,7 +1632,8 @@ private[scala] trait JavaMirrors
             compactifyName(fullNameOfJavaClass)
         }
 
-        if (clazz.isModuleClass) fullNameOfJavaClass += "$"
+        if (clazz.isModuleClass)
+          fullNameOfJavaClass += "$"
 
         // println(s"ownerChildren = ${ownerChildren.toList}")
         // println(s"fullNameOfJavaClass = $fullNameOfJavaClass")
@@ -1579,7 +1647,8 @@ private[scala] trait JavaMirrors
     private def expandedName(sym: Symbol): String =
       if (sym.isPrivate)
         nme.expandedName(sym.name.toTermName, sym.owner).toString
-      else sym.name.toString
+      else
+        sym.name.toString
 
     /** The Java field corresponding to a given Scala field.
       *  @param   fld The Scala field.
@@ -1619,7 +1688,8 @@ private[scala] trait JavaMirrors
         val effectiveParamClasses =
           if (!constr.owner.owner.isStaticOwner)
             jclazz.getEnclosingClass +: paramClasses
-          else paramClasses
+          else
+            paramClasses
         jclazz getDeclaredConstructor (effectiveParamClasses: _*)
       }
 
@@ -1649,7 +1719,10 @@ private[scala] trait JavaMirrors
   override def newPackageScope(pkgClass: Symbol) = new PackageScope(pkgClass)
 
   override def scopeTransform(owner: Symbol)(op: => Scope): Scope =
-    if (owner.isPackageClass) owner.info.decls else op
+    if (owner.isPackageClass)
+      owner.info.decls
+    else
+      op
 
   override def mirrorThatLoaded(sym: Symbol): Mirror =
     sym.enclosingRootClass match {
@@ -1672,8 +1745,10 @@ private[scala] trait JavaMirrors
         return mirror.EmptyPackageClass.info decl name
       if (name.isTermName && !owner.isEmptyPackageClass)
         return mirror.makeScalaPackage(
-          if (owner.isRootSymbol) name.toString
-          else owner.fullName + "." + name)
+          if (owner.isRootSymbol)
+            name.toString
+          else
+            owner.fullName + "." + name)
       if (name == tpnme.AnyRef && owner.owner.isRoot && owner.name == tpnme.scala_)
         // when we synthesize the scala.AnyRef symbol, we need to add it to the scope of the scala package
         // the problem is that adding to the scope implies doing something like `owner.info.decls enter anyRef`

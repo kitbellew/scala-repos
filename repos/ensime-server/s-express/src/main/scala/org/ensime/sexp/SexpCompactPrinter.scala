@@ -23,7 +23,8 @@ object SexpCompactPrinter extends SexpPrinter {
   protected def printData(
       data: Map[SexpSymbol, Sexp],
       sb: StringBuilder): Unit =
-    if (data.isEmpty) print(SexpNil, sb)
+    if (data.isEmpty)
+      print(SexpNil, sb)
     else {
       sb.append('(')
       printSeq(data, sb.append(' ')) { el =>
@@ -35,7 +36,8 @@ object SexpCompactPrinter extends SexpPrinter {
     }
 
   protected def printList(els: List[Sexp], sb: StringBuilder): Unit =
-    if (els.isEmpty) print(SexpNil, sb)
+    if (els.isEmpty)
+      print(SexpNil, sb)
     else {
       sb.append('(')
       printSeq(els, sb.append(' ')) {

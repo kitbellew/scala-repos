@@ -53,8 +53,10 @@ class MarathonLeaderInfo @Inject() (
   override def subscribe(self: ActorRef): Unit = {
     eventStream.subscribe(self, classOf[LocalLeadershipEvent])
     val currentState =
-      if (elected) LocalLeadershipEvent.ElectedAsLeader
-      else LocalLeadershipEvent.Standby
+      if (elected)
+        LocalLeadershipEvent.ElectedAsLeader
+      else
+        LocalLeadershipEvent.Standby
     self ! currentState
   }
 

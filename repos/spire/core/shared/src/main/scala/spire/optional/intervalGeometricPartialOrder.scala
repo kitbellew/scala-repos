@@ -28,7 +28,8 @@ object intervalGeometricPartialOrder {
 
     def partialCompare(i: Interval[A], j: Interval[A]): Double = {
       import Double.NaN
-      if (eqv(i, j)) return 0.0
+      if (eqv(i, j))
+        return 0.0
       if (i.isEmpty || j.isEmpty)
         return NaN
 

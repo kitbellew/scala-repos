@@ -26,9 +26,12 @@ trait ScTypeParam
   def isContravariant: Boolean
 
   def variance: Int =
-    if (isCovariant) Covariant
-    else if (isContravariant) Contravariant
-    else Invariant
+    if (isCovariant)
+      Covariant
+    else if (isContravariant)
+      Contravariant
+    else
+      Invariant
 
   def owner: ScTypeParametersOwner
 

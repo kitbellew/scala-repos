@@ -63,7 +63,10 @@ object Output {
     outputs flatMap {
       case KeyValue(key, lines) =>
         val flines = f(lines)
-        if (!single) bold(display(key)) +: flines else flines
+        if (!single)
+          bold(display(key)) +: flines
+        else
+          flines
     }
   }
 
@@ -107,6 +110,9 @@ object Output {
       val (first, tail) = lines.span { line =>
         !(line startsWith tailDelim)
       }
-      if (first.isEmpty) headLines(tail drop 1, tailDelim) else first
+      if (first.isEmpty)
+        headLines(tail drop 1, tailDelim)
+      else
+        first
     }
 }

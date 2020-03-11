@@ -35,8 +35,10 @@ private[netty] trait NettyHelpers {
       ctx: ChannelHandlerContext,
       ev: ExceptionEvent): Unit = {
     val cause =
-      if (ev.getCause ne null) ev.getCause
-      else new AkkaException("Unknown cause")
+      if (ev.getCause ne null)
+        ev.getCause
+      else
+        new AkkaException("Unknown cause")
     cause match {
       case _: ClosedChannelException ⇒ // Ignore
       case null | NonFatal(_) ⇒ onException(ctx, ev)

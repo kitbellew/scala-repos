@@ -52,8 +52,10 @@ object MappedLongForeignKeySpec
       val user = {
         def ret: User = {
           val r = User.create.saveMe
-          if (r.id.get >= dog.id.get) r
-          else ret
+          if (r.id.get >= dog.id.get)
+            r
+          else
+            ret
         }
 
         ret

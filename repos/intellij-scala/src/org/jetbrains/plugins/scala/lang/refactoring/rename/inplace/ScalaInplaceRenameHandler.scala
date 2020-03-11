@@ -44,9 +44,14 @@ trait ScalaInplaceRenameHandler {
       case _                                        => element.getLanguage.isInstanceOf[ScalaLanguage]
     }
     val processor =
-      if (isScalaElement) RenamePsiElementProcessor.forElement(element)
-      else null
-    if (processor != RenamePsiElementProcessor.DEFAULT) processor else null
+      if (isScalaElement)
+        RenamePsiElementProcessor.forElement(element)
+      else
+        null
+    if (processor != RenamePsiElementProcessor.DEFAULT)
+      processor
+    else
+      null
   }
 
   protected def doDialogRename(
@@ -140,12 +145,13 @@ trait ScalaInplaceRenameHandler {
         specialMethodPopup(fun)
         null
       case elem =>
-        if (nameId != null) nameId.getParent match {
-          case ref: ScReferenceElement if ScalaRenameUtil.isAliased(ref) =>
-            aliasedElementPopup(ref)
-            return null
-          case _ =>
-        }
+        if (nameId != null)
+          nameId.getParent match {
+            case ref: ScReferenceElement if ScalaRenameUtil.isAliased(ref) =>
+              aliasedElementPopup(ref)
+              return null
+            case _ =>
+          }
         inplaceRename(ScalaRenameUtil.findSubstituteElement(elementToRename))
     }
   }

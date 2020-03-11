@@ -1071,7 +1071,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
               (maskBytes(2) & 0xff) << 8 |
               (maskBytes(3) & 0xff) << 0
           Some(mask)
-        } else None
+        } else
+          None
 
       (Opcode.forCode(op.toByte), length, fin, mask)
     }
@@ -1109,6 +1110,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
 
   val trace = false // set to `true` for debugging purposes
   def printEvent[T](marker: String): Flow[T, T, NotUsed] =
-    if (trace) akka.http.impl.util.printEvent(marker)
-    else Flow[T]
+    if (trace)
+      akka.http.impl.util.printEvent(marker)
+    else
+      Flow[T]
 }

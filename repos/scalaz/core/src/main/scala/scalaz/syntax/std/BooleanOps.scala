@@ -238,7 +238,11 @@ final class BooleanOps(self: Boolean) {
   final def fold[A](t: => A, f: => A): A = b.fold(self, t, f)
 
   final class Conditional[X](t: => X) {
-    def |(f: => X) = if (self) t else f
+    def |(f: => X) =
+      if (self)
+        t
+      else
+        f
   }
 
   /**
@@ -259,7 +263,10 @@ final class BooleanOps(self: Boolean) {
 
   final class ConditionalEither[A](a: => A) {
     def or[B](b: => B) =
-      if (self) \/-(a) else -\/(b)
+      if (self)
+        \/-(a)
+      else
+        -\/(b)
   }
 
   /**

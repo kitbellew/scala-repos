@@ -32,7 +32,8 @@ object FromString {
   val ExistingDir: FromString[Directory] = new FromString[Directory] {
     override def isDefinedAt(s: String) = toDir(s).isDirectory
     def apply(s: String): Directory =
-      if (isDefinedAt(s)) toDir(s)
+      if (isDefinedAt(s))
+        toDir(s)
       else
         cmd.runAndExit(println("'%s' is not an existing directory." format s))
   }
@@ -41,7 +42,8 @@ object FromString {
       (toDir(s) toAbsoluteWithRoot root).toDirectory
     override def isDefinedAt(s: String) = resolve(s).isDirectory
     def apply(s: String): Directory =
-      if (isDefinedAt(s)) resolve(s)
+      if (isDefinedAt(s))
+        resolve(s)
       else
         cmd.runAndExit(
           println("'%s' is not an existing directory." format resolve(s)))

@@ -38,7 +38,9 @@ trait Monitor { self =>
   def apply(f: => Unit): Unit = Monitor.using(this) {
     try f
     catch {
-      case exc: Throwable => if (!handle(exc)) throw exc
+      case exc: Throwable =>
+        if (!handle(exc))
+          throw exc
     }
   }
 
@@ -86,8 +88,10 @@ trait Monitor { self =>
     } rescue {
       case monitorExc => Throw(MonitorException(exc, monitorExc))
     } flatMap { ok =>
-      if (ok) Return.Unit
-      else Throw(exc): Try[Unit]
+      if (ok)
+        Return.Unit
+      else
+        Throw(exc): Try[Unit]
     }
 }
 

@@ -129,9 +129,12 @@ object ScalaPluginUpdater {
   }
 
   def getScalaPluginBranch: ScalaApplicationSettings.pluginBranch = {
-    if (ScalaPluginUpdater.pluginIsEap) EAP
-    else if (ScalaPluginUpdater.pluginIsNightly) Nightly
-    else Release
+    if (ScalaPluginUpdater.pluginIsEap)
+      EAP
+    else if (ScalaPluginUpdater.pluginIsNightly)
+      Nightly
+    else
+      Release
   }
 
   def pluginIsEap = {
@@ -248,7 +251,8 @@ object ScalaPluginUpdater {
           UpdateSettings.getInstance(),
           UpdateStrategyCustomization.getInstance())
         Some(strategy.checkForUpdates())
-      } else None
+      } else
+        None
     }
     def isUpToDatePlatform(result: CheckForUpdateResult) =
       result.getUpdatedChannel.getLatestBuild.getNumber
@@ -334,7 +338,8 @@ object ScalaPluginUpdater {
   }
 
   def setupReporter(): Unit = {
-    if (ApplicationManager.getApplication.isUnitTestMode) return
+    if (ApplicationManager.getApplication.isUnitTestMode)
+      return
 
     import com.intellij.openapi.editor.EditorFactory
     EditorFactory

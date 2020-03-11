@@ -49,7 +49,10 @@ trait EventIncludes {
     * @return ScalaFX ActionEvent
     */
   implicit def jfxActionEvent2sfx(ae: jfxe.ActionEvent): ActionEvent =
-    if (ae != null) new ActionEvent(ae) else null
+    if (ae != null)
+      new ActionEvent(ae)
+    else
+      null
 
   /**
     * Converts a
@@ -60,21 +63,30 @@ trait EventIncludes {
     * @return ScalaFX Event
     */
   implicit def jfxEvent2sfx(e: jfxe.Event): Event =
-    if (e != null) new Event(e) else null
+    if (e != null)
+      new Event(e)
+    else
+      null
 
   implicit def jfxEventDispatcher2sfx(
       e: jfxe.EventDispatcher): EventDispatcher =
-    if (e != null) new EventDispatcher(e) {}
-    else null
+    if (e != null)
+      new EventDispatcher(e) {}
+    else
+      null
 
   implicit def jfxEventDispatchChain2sfx(
       e: jfxe.EventDispatchChain): EventDispatchChain =
-    if (e != null) new EventDispatchChain(e) {}
-    else null
+    if (e != null)
+      new EventDispatchChain(e) {}
+    else
+      null
 
   implicit def jfxEventTarget2sfx(e: jfxe.EventTarget): EventTarget =
-    if (e != null) new EventTarget(e) {}
-    else null
+    if (e != null)
+      new EventTarget(e) {}
+    else
+      null
 
   /**
     * Converts a
@@ -87,7 +99,10 @@ trait EventIncludes {
     */
   implicit def jfxEventType2sfx[T <: jfxe.Event](
       e: jfxe.EventType[T]): EventType[T] =
-    if (e != null) new EventType[T](e) else null
+    if (e != null)
+      new EventType[T](e)
+    else
+      null
 
   /**
     * Converts a
@@ -101,7 +116,10 @@ trait EventIncludes {
     */
   implicit def jfxWeakEventHandler2sfx[T <: jfxe.Event](
       weh: jfxe.WeakEventHandler[T]): WeakEventHandler[T] =
-    if (weh != null) new WeakEventHandler(weh) else null
+    if (weh != null)
+      new WeakEventHandler(weh)
+    else
+      null
 
   /**
     * Create a simple event handler when information about event is not be used.

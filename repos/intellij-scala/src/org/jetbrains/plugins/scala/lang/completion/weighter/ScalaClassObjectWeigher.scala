@@ -15,12 +15,15 @@ class ScalaClassObjectWeigher extends ProximityWeigher {
   def weigh(element: PsiElement, location: ProximityLocation): Comparable[_] = {
     val elem = location.getPosition
     val ref = PsiTreeUtil.getParentOfType(elem, classOf[ScReferenceElement])
-    if (ref == null) return null
+    if (ref == null)
+      return null
     element match {
       case o: ScObject =>
-        if (ref.isInstanceOf[ScReferenceExpression]) return 1
+        if (ref.isInstanceOf[ScReferenceExpression])
+          return 1
       case p: PsiClass =>
-        if (!ref.isInstanceOf[ScReferenceExpression]) return 1
+        if (!ref.isInstanceOf[ScReferenceExpression])
+          return 1
       case _ =>
     }
     0

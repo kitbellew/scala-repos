@@ -297,7 +297,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         key: A,
         hash: Int,
         level: Int): HashSet[A] =
-      if (hash == this.hash && key == this.key) this
+      if (hash == this.hash && key == this.key)
+        this
       else {
         if (hash != this.hash) {
           makeHashTrieSet(this.hash, this, hash, new HashSet1(key, hash), level)
@@ -346,17 +347,26 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         level: Int,
         buffer: Array[HashSet[A]],
         offset0: Int): HashSet[A] =
-      if (that.get0(key, hash, level)) this else null
+      if (that.get0(key, hash, level))
+        this
+      else
+        null
 
     override private[immutable] def diff0(
         that: HashSet[A],
         level: Int,
         buffer: Array[HashSet[A]],
         offset0: Int): HashSet[A] =
-      if (that.get0(key, hash, level)) null else this
+      if (that.get0(key, hash, level))
+        null
+      else
+        this
 
     override protected def removed0(key: A, hash: Int, level: Int): HashSet[A] =
-      if (hash == this.hash && key == this.key) null else this
+      if (hash == this.hash && key == this.key)
+        null
+      else
+        this
 
     override protected def filter0(
         p: A => Boolean,
@@ -364,7 +374,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         level: Int,
         buffer: Array[HashSet[A]],
         offset0: Int): HashSet[A] =
-      if (negate ^ p(key)) this else null
+      if (negate ^ p(key))
+        this
+      else
+        null
 
     override def iterator: Iterator[A] = Iterator(key)
     override def foreach[U](f: A => U): Unit = f(key)
@@ -378,7 +391,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     override def size = ks.size
 
     override protected def get0(key: A, hash: Int, level: Int): Boolean =
-      if (hash == this.hash) ks.contains(key) else false
+      if (hash == this.hash)
+        ks.contains(key)
+      else
+        false
 
     override protected def subsetOf0(that: HashSet[A], level: Int) = {
       // we have to check each element
@@ -392,7 +408,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         key: A,
         hash: Int,
         level: Int): HashSet[A] =
-      if (hash == this.hash) new HashSetCollision1(hash, ks + key)
+      if (hash == this.hash)
+        new HashSetCollision1(hash, ks + key)
       else
         makeHashTrieSet(this.hash, this, hash, new HashSet1(key, hash), level)
 
@@ -517,7 +534,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             // create a new HashSetCollision with the hash we already know and the new keys
             new HashSetCollision1(hash, ks1)
         }
-      } else this
+      } else
+        this
 
     override protected def filter0(
         p: A => Boolean,
@@ -525,7 +543,11 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         level: Int,
         buffer: Array[HashSet[A]],
         offset0: Int): HashSet[A] = {
-      val ks1 = if (negate) ks.filterNot(p) else ks.filter(p)
+      val ks1 =
+        if (negate)
+          ks.filterNot(p)
+        else
+          ks.filter(p)
       ks1.size match {
         case 0 =>
           null
@@ -629,7 +651,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       if ((bitmap & mask) != 0) {
         val sub = elems(offset)
         val subNew = sub.updated0(key, hash, level + 5)
-        if (sub eq subNew) this
+        if (sub eq subNew)
+          this
         else {
           val elemsNew = new Array[HashSet[A]](elems.length)
           Array.copy(elems, 0, elemsNew, 0, elems.length)
@@ -655,7 +678,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       if ((bitmap & mask) != 0) {
         val sub = elems(offset)
         val sub1 = sub.union0(that, level + 5)
-        if (sub eq sub1) this
+        if (sub eq sub1)
+          this
         else {
           val elems1 = new Array[HashSet[A]](elems.length)
           Array.copy(elems, 0, elems1, 0, elems.length)
@@ -937,8 +961,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         // we remove the elements using removed0 so we can use the fact that we know the hash of all elements
         // to be removed
         @tailrec def removeAll(s: HashSet[A], r: ListSet[A]): HashSet[A] =
-          if (r.isEmpty || (s eq null)) s
-          else removeAll(s.removed0(r.head, that.hash, level), r.tail)
+          if (r.isEmpty || (s eq null))
+            s
+          else
+            removeAll(s.removed0(r.head, that.hash, level), r.tail)
         removeAll(this, that.ks)
       case _ => this
     }
@@ -953,7 +979,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       if ((bitmap & mask) != 0) {
         val sub = elems(offset)
         val subNew = sub.removed0(key, hash, level + 5)
-        if (sub eq subNew) this
+        if (sub eq subNew)
+          this
         else if (subNew eq null) {
           val bitmapNew = bitmap ^ mask
           if (bitmapNew != 0) {
@@ -990,7 +1017,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     }
 
     override protected def subsetOf0(that: HashSet[A], level: Int): Boolean =
-      if (that eq this) true
+      if (that eq this)
+        true
       else
         that match {
           case that: HashTrieSet[A] if this.size0 <= that.size0 =>
@@ -1116,7 +1144,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     * null to the empty set for use in public methods
     */
   @inline private def nullToEmpty[A](s: HashSet[A]): HashSet[A] =
-    if (s eq null) empty[A] else s
+    if (s eq null)
+      empty[A]
+    else
+      s
 
   /**
     * Utility method to keep a subset of all bits in a given bitmap

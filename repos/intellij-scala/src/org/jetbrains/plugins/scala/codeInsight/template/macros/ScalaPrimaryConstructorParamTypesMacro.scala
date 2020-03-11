@@ -26,5 +26,8 @@ class ScalaPrimaryConstructorParamTypesMacro extends Macro {
     MacroUtil.scalaPresentablePrefix + "primaryConstructorParamTypes"
 
   private def addParens(text: String, doAdd: Boolean) =
-    if (doAdd) "(" + text + ")" else text
+    if (doAdd)
+      "(" + text + ")"
+    else
+      text
 }

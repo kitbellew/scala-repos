@@ -102,7 +102,11 @@ object TopicCommand extends Logging {
   def createTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topic = opts.options.valueOf(opts.topicOpt)
     val configs = parseTopicConfigsToBeAdded(opts)
-    val ifNotExists = if (opts.options.has(opts.ifNotExistsOpt)) true else false
+    val ifNotExists =
+      if (opts.options.has(opts.ifNotExistsOpt))
+        true
+      else
+        false
     if (Topic.hasCollisionChars(topic))
       println(
         "WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.")
@@ -129,8 +133,10 @@ object TopicCommand extends Logging {
         val replicas = opts.options.valueOf(opts.replicationFactorOpt).intValue
         warnOnMaxMessagesChange(configs, replicas)
         val rackAwareMode =
-          if (opts.options.has(opts.disableRackAware)) RackAwareMode.Disabled
-          else RackAwareMode.Enforced
+          if (opts.options.has(opts.disableRackAware))
+            RackAwareMode.Disabled
+          else
+            RackAwareMode.Enforced
         AdminUtils.createTopic(
           zkUtils,
           topic,
@@ -141,13 +147,19 @@ object TopicCommand extends Logging {
       }
       println("Created topic \"%s\".".format(topic))
     } catch {
-      case e: TopicExistsException => if (!ifNotExists) throw e
+      case e: TopicExistsException =>
+        if (!ifNotExists)
+          throw e
     }
   }
 
   def alterTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
-    val ifExists = if (opts.options.has(opts.ifExistsOpt)) true else false
+    val ifExists =
+      if (opts.options.has(opts.ifExistsOpt))
+        true
+      else
+        false
     if (topics.length == 0 && !ifExists) {
       throw new IllegalArgumentException(
         "Topic %s does not exist on ZK path %s".format(
@@ -207,7 +219,11 @@ object TopicCommand extends Logging {
 
   def deleteTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
-    val ifExists = if (opts.options.has(opts.ifExistsOpt)) true else false
+    val ifExists =
+      if (opts.options.has(opts.ifExistsOpt))
+        true
+      else
+        false
     if (topics.length == 0 && !ifExists) {
       throw new IllegalArgumentException(
         "Topic %s does not exist on ZK path %s".format(
@@ -241,12 +257,20 @@ object TopicCommand extends Logging {
   def describeTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
     val reportUnderReplicatedPartitions =
-      if (opts.options.has(opts.reportUnderReplicatedPartitionsOpt)) true
-      else false
+      if (opts.options.has(opts.reportUnderReplicatedPartitionsOpt))
+        true
+      else
+        false
     val reportUnavailablePartitions =
-      if (opts.options.has(opts.reportUnavailablePartitionsOpt)) true else false
+      if (opts.options.has(opts.reportUnavailablePartitionsOpt))
+        true
+      else
+        false
     val reportOverriddenConfigs =
-      if (opts.options.has(opts.topicsWithOverridesOpt)) true else false
+      if (opts.options.has(opts.topicsWithOverridesOpt))
+        true
+      else
+        false
     val liveBrokers = zkUtils.getAllBrokersInCluster().map(_.id).toSet
     for (topic <- topics) {
       zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic) match {
@@ -283,7 +307,10 @@ object TopicCommand extends Logging {
                 print("\tTopic: " + topic)
                 print("\tPartition: " + partitionId)
                 print(
-                  "\tLeader: " + (if (leader.isDefined) leader.get else "none"))
+                  "\tLeader: " + (if (leader.isDefined)
+                                    leader.get
+                                  else
+                                    "none"))
                 print("\tReplicas: " + assignedReplicas.mkString(","))
                 println("\tIsr: " + inSyncReplicas.mkString(","))
               }

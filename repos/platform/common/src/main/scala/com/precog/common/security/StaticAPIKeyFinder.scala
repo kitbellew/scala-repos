@@ -56,9 +56,17 @@ class StaticAPIKeyFinder[M[+_]](apiKey: APIKey)(implicit val M: Monad[M])
   val rootAPIKey = M.point(rootAPIKeyRecord.apiKey)
 
   def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) =
-    M.point(if (apiKey == self.apiKey) Some(rootAPIKeyRecord) else None)
+    M.point(
+      if (apiKey == self.apiKey)
+        Some(rootAPIKeyRecord)
+      else
+        None)
   def findGrant(grantId: GrantId) =
-    M.point(if (rootGrant.grantId == grantId) Some(rootGrant) else None)
+    M.point(
+      if (rootGrant.grantId == grantId)
+        Some(rootGrant)
+      else
+        None)
 
   def findAllAPIKeys(fromRoot: APIKey): M[Set[v1.APIKeyDetails]] =
     findAPIKey(fromRoot, None) map {

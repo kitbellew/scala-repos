@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Dimension2D {
   implicit def sfxDimension2D2jfx(d: Dimension2D): jfxg.Dimension2D =
-    if (d != null) d.delegate else null
+    if (d != null)
+      d.delegate
+    else
+      null
 }
 
 class Dimension2D(override val delegate: jfxg.Dimension2D)

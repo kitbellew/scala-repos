@@ -159,7 +159,8 @@ private object BucketizerSuite extends SparkFunSuite {
     var i = 0
     val n = splits.length - 1
     while (i < n) {
-      if (feature < splits(i + 1)) return i
+      if (feature < splits(i + 1))
+        return i
       i += 1
     }
     throw new RuntimeException(

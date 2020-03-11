@@ -47,7 +47,12 @@ final case class ChildRestartStats(
         maxNrOfRetriesCount <= retries
       }
       case (x, Some(window)) ⇒
-        retriesInWindowOkay(if (x.isDefined) x.get else 1, window)
+        retriesInWindowOkay(
+          if (x.isDefined)
+            x.get
+          else
+            1,
+          window)
       case (None, _) ⇒ true
     }
 
@@ -63,7 +68,8 @@ final case class ChildRestartStats(
       if (restartTimeWindowStartNanos == 0) {
         restartTimeWindowStartNanos = now
         now
-      } else restartTimeWindowStartNanos
+      } else
+        restartTimeWindowStartNanos
     val insideWindow =
       (now - windowStart) <= TimeUnit.MILLISECONDS.toNanos(window)
     if (insideWindow) {
@@ -206,7 +212,11 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * the given Throwables matches the cause and restarts, otherwise escalates.
     */
   def makeDecider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = {
-    case x ⇒ if (trapExit exists (_ isInstance x)) Restart else Escalate
+    case x ⇒
+      if (trapExit exists (_ isInstance x))
+        Restart
+      else
+        Escalate
   }
 
   /**
@@ -260,10 +270,14 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
       withinTimeRange: Duration): Option[Duration] =
     if (withinTimeRange.isFinite && withinTimeRange >= Duration.Zero)
       Some(withinTimeRange)
-    else None
+    else
+      None
 
   private[akka] def maxNrOfRetriesOption(maxNrOfRetries: Int): Option[Int] =
-    if (maxNrOfRetries < 0) None else Some(maxNrOfRetries)
+    if (maxNrOfRetries < 0)
+      None
+    else
+      Some(maxNrOfRetries)
 
   private[akka] val escalateDefault = (_: Any) ⇒ Escalate
 }
@@ -416,7 +430,8 @@ abstract class SupervisorStrategy {
       cause: Throwable,
       suspendFirst: Boolean): Unit = {
     val c = child.asInstanceOf[InternalActorRef]
-    if (suspendFirst) c.suspend()
+    if (suspendFirst)
+      c.suspend()
     c.restart(cause)
   }
 
@@ -525,7 +540,8 @@ case class AllForOneStrategy(
         children foreach (crs ⇒
           restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
       else
-        for (c ← children) context.stop(c.child)
+        for (c ← children)
+          context.stop(c.child)
     }
   }
 }

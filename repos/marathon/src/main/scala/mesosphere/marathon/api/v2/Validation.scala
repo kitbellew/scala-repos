@@ -37,7 +37,8 @@ object Validation {
               GroupViolation(item, "not valid", Some(s"($pos)"), f.violations)
           }
 
-        if (violations.isEmpty) Success
+        if (violations.isEmpty)
+          Success
         else
           Failure(
             Set(
@@ -79,7 +80,10 @@ object Validation {
       child
         .map(c =>
           parent + {
-            if (slash) "/" else ""
+            if (slash)
+              "/"
+            else
+              ""
           } + c)
         .getOrElse(parent)
     }
@@ -128,7 +132,8 @@ object Validation {
           new URL(url).openConnection() match {
             case http: HttpURLConnection =>
               http.setRequestMethod("HEAD")
-              if (http.getResponseCode == HttpURLConnection.HTTP_OK) Success
+              if (http.getResponseCode == HttpURLConnection.HTTP_OK)
+                Success
               else
                 Failure(
                   Set(RuleViolation(url, "URL could not be resolved.", None)))
@@ -198,8 +203,10 @@ object Validation {
   }
 
   private[this] def areUnique[A](seq: Seq[A], errorMessage: String): Result = {
-    if (seq.size == seq.distinct.size) Success
-    else Failure(Set(RuleViolation(seq, errorMessage, None)))
+    if (seq.size == seq.distinct.size)
+      Success
+    else
+      Failure(Set(RuleViolation(seq, errorMessage, None)))
   }
 
   def theOnlyDefinedOptionIn[A <: Product: ClassTag, B](
@@ -253,7 +260,10 @@ object Validation {
     new Validator[T] {
       import ViolationBuilder._
       override def apply(value: T): Result = {
-        if (test(value)) Success else RuleViolation(value, constraint, None)
+        if (test(value))
+          Success
+        else
+          RuleViolation(value, constraint, None)
       }
     }
 }

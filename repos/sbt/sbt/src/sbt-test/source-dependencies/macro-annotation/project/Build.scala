@@ -36,7 +36,8 @@ object MyBuild extends Build {
       libraryDependencies ++= (
         if (scalaVersion.value.startsWith("2.10"))
           List("org.scalamacros" %% "quasiquotes" % paradiseVersion)
-        else Nil
+        else
+          Nil
       )
     )
   )

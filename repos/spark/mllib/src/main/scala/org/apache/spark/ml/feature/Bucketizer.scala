@@ -113,7 +113,8 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
       var i = 0
       val n = splits.length - 1
       while (i < n) {
-        if (splits(i) >= splits(i + 1)) return false
+        if (splits(i) >= splits(i + 1))
+          return false
         i += 1
       }
       true

@@ -165,8 +165,10 @@ object Name {
   // Create a name representing the union of the passed-in names.
   // Metadata is not preserved on bound addresses.
   private[finagle] def all(names: Set[Name.Bound]): Name.Bound =
-    if (names.isEmpty) empty
-    else if (names.size == 1) names.head
+    if (names.isEmpty)
+      empty
+    else if (names.size == 1)
+      names.head
     else {
       val va = Var.collect(names map (_.addr)) map {
         case addrs if addrs.exists({

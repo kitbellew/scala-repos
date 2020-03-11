@@ -89,9 +89,12 @@ object KetamaClientStress extends App {
       .hostConnectionCoresize(config.concurrency())
       .hostConnectionLimit(config.concurrency())
 
-    if (config.stats()) builder = builder.reportTo(new OstrichStatsReceiver)
-    if (config.tracing()) com.twitter.finagle.tracing.Trace.enable()
-    else com.twitter.finagle.tracing.Trace.disable()
+    if (config.stats())
+      builder = builder.reportTo(new OstrichStatsReceiver)
+    if (config.tracing())
+      com.twitter.finagle.tracing.Trace.enable()
+    else
+      com.twitter.finagle.tracing.Trace.disable()
 
     println(builder)
 
@@ -283,7 +286,7 @@ object KetamaClientStress extends App {
             val (key, value) = nextKeyValue
             casMap.remove(key) match {
               case Some(
-                  ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
+                    ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
                 replicationClient.checkAndSet(key, value, uniques)
               case Some(ConsistentReplication(None)) =>
                 // not expecting this to ever happen

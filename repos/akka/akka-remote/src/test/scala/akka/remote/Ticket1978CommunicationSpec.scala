@@ -229,10 +229,12 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
           expectMsgType[ActorIdentity].ref.get
         }
 
-        for (i ← 1 to 1000) here ! (("ping", i))
-        for (i ← 1 to 1000) expectMsgPF() {
-          case (("pong", i), `testActor`) ⇒ true
-        }
+        for (i ← 1 to 1000)
+          here ! (("ping", i))
+        for (i ← 1 to 1000)
+          expectMsgPF() {
+            case (("pong", i), `testActor`) ⇒ true
+          }
       }
 
       "support ask" in within(timeout.duration) {

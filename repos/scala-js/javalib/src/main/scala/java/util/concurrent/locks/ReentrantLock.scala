@@ -79,8 +79,10 @@ class ReentrantLock(fair: Boolean) extends Lock with Serializable {
 
   override def toString(): String = {
     val lckString =
-      if (isLocked()) s"Locked by ${Thread.currentThread().getName()}"
-      else "Unlocked"
+      if (isLocked())
+        s"Locked by ${Thread.currentThread().getName()}"
+      else
+        "Unlocked"
 
     s"${super.toString()}[$lckString]"
   }

@@ -46,7 +46,10 @@ object FocusModel {
     * @tparam T The type of the underlying data model for the UI control.
     */
   implicit def sfxFocusModel2jfx[T](v: FocusModel[T]): jfxsc.FocusModel[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

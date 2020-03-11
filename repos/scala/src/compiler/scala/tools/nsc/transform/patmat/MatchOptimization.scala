@@ -118,7 +118,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         }
 
         val collapsedTreeMakers =
-          if (sharedPrefix.isEmpty) None
+          if (sharedPrefix.isEmpty)
+            None
           else { // even sharing prefixes of length 1 brings some benefit (overhead-percentage for compiler: 26->24%, lib: 19->16%)
             for (test <- sharedPrefix;
                  reusedTest <- test.reuses)
@@ -207,8 +208,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         // replace binder of each dropped treemaker by corresponding binder bound by the most recent reused treemaker
         var mostRecentReusedMaker: ReusedCondTreeMaker = null
         def mapToStored(droppedBinder: Symbol) =
-          if (mostRecentReusedMaker eq null) Nil
-          else List((droppedBinder, REF(mostRecentReusedMaker.nextBinder)))
+          if (mostRecentReusedMaker eq null)
+            Nil
+          else
+            List((droppedBinder, REF(mostRecentReusedMaker.nextBinder)))
         val (from, to) = sharedPrefix.flatMap { dropped =>
           dropped.reuses.map(test => toReused(test.treeMaker)).foreach {
             case reusedMaker: ReusedCondTreeMaker =>
@@ -345,8 +348,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           // jump to default case (either the user-supplied one or the synthetic one)
           // unless we're collapsing the default case: then we re-use the same body as the synthetic catchall (throwing a matcherror, rethrowing the exception)
           val jumpToDefault: Tree =
-            if (isDefault || !canJump) defaultBody
-            else Apply(Ident(defaultLabel), Nil)
+            if (isDefault || !canJump)
+              defaultBody
+            else
+              Apply(Ident(defaultLabel), Nil)
 
           val guardedBody = same.foldRight(jumpToDefault) {
             // the last case may be unguarded (we know it's the last one since fold's accum == jumpToDefault)
@@ -363,7 +368,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               x.symbol
           }
           val (pat, guardedBodySubst) =
-            if (binders.isEmpty) (commonPattern, guardedBody)
+            if (binders.isEmpty)
+              (commonPattern, guardedBody)
             else {
               // create a single fresh binder to subsume the old binders (and their types)
               // TODO: I don't think the binder's types can actually be different (due to checks in caseEquals)
@@ -404,8 +410,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             CaseDef(currCase.pat, EmptyTree, EmptyTree))
           val (impliesCurr, others) =
             // the default case is implied by all cases, no need to partition (and remainingCases better all be default cases as well)
-            if (currIsDefault) (remainingCases.tail, Nil)
-            else remainingCases.tail partition (caseImplies(currCase))
+            if (currIsDefault)
+              (remainingCases.tail, Nil)
+            else
+              remainingCases.tail partition (caseImplies(currCase))
 
           val unguardedComesLastOrAbsent =
             (!isGuardedCase(currCase) && impliesCurr.isEmpty) || {
@@ -414,7 +422,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                 // if all cases are guarded we will have to jump to the default case in the final else
                 // (except if we're collapsing the default case itself)
                 case -1 =>
-                  if (!currIsDefault) needDefault = true
+                  if (!currIsDefault)
+                    needDefault = true
                   true
 
                 // last case is not guarded, no need to jump to the default here
@@ -429,8 +438,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                 caseEquals(currCase)
               ) /*(2)*/ ) {
             collapsed += (
-              if (impliesCurr.isEmpty && !isGuardedCase(currCase)) currCase
-              else collapse(currCase :: impliesCurr, currIsDefault)
+              if (impliesCurr.isEmpty && !isGuardedCase(currCase))
+                currCase
+              else
+                collapse(currCase :: impliesCurr, currIsDefault)
             )
 
             remainingCases = others
@@ -456,8 +467,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           tpX.tpe =:= tpY.tpe
         case _ => false
       }
@@ -474,8 +485,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), _)                       => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           instanceOfTpImplies(tpY.tpe, tpX.tpe)
         case _ => false
       }
@@ -503,7 +514,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           cases: List[(Symbol, List[TreeMaker])],
           pt: Type): List[CaseDef] =
         // generate if-then-else for 1 case switch (avoids verify error... can't imagine a one-case switch being faster than if-then-else anyway)
-        if (cases.isEmpty || cases.tail.isEmpty) Nil
+        if (cases.isEmpty || cases.tail.isEmpty)
+          Nil
         else {
           val caseDefs = cases map {
             case (scrutSym, makers) =>
@@ -566,10 +578,13 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           val allReachable = unreachableCase(caseDefsWithGuards) map (cd =>
             reportUnreachable(cd.body.pos)) isEmpty
 
-          if (!allReachable) Nil
+          if (!allReachable)
+            Nil
           else if (noGuards(caseDefsWithGuards)) {
-            if (isDefault(caseDefsWithGuards.last)) caseDefsWithGuards
-            else caseDefsWithGuards :+ defaultCase()
+            if (isDefault(caseDefsWithGuards.last))
+              caseDefsWithGuards
+            else
+              caseDefsWithGuards :+ defaultCase()
           } else {
             // collapse identical cases with different guards, push guards into body for all guarded cases
             // this translation is only sound if there are no unreachable (duplicate) cases
@@ -577,23 +592,32 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             val (collapsed, needDefaultLabel) = collapseGuardedCases(
               caseDefsWithGuards)
 
-            if (collapsed.isEmpty || (needDefaultLabel && !canJump)) Nil
+            if (collapsed.isEmpty || (needDefaultLabel && !canJump))
+              Nil
             else {
               def wrapInDefaultLabelDef(cd: CaseDef): CaseDef =
-                if (needDefaultLabel) deriveCaseDef(cd) { b =>
-                  // TODO: can b.tpe ever be null? can't really use pt, see e.g. pos/t2683 or cps/match1.scala
-                  defaultLabel setInfo MethodType(
-                    Nil,
-                    if (b.tpe != null) b.tpe else pt)
-                  LabelDef(defaultLabel, Nil, b)
-                }
-                else cd
+                if (needDefaultLabel)
+                  deriveCaseDef(cd) { b =>
+                    // TODO: can b.tpe ever be null? can't really use pt, see e.g. pos/t2683 or cps/match1.scala
+                    defaultLabel setInfo MethodType(
+                      Nil,
+                      if (b.tpe != null)
+                        b.tpe
+                      else
+                        pt)
+                    LabelDef(defaultLabel, Nil, b)
+                  }
+                else
+                  cd
 
               val last = collapsed.last
               if (isDefault(last)) {
-                if (!needDefaultLabel) collapsed
-                else collapsed.init :+ wrapInDefaultLabelDef(last)
-              } else collapsed :+ wrapInDefaultLabelDef(defaultCase())
+                if (!needDefaultLabel)
+                  collapsed
+                else
+                  collapsed.init :+ wrapInDefaultLabelDef(last)
+              } else
+                collapsed :+ wrapInDefaultLabelDef(defaultCase())
             }
           }
         }
@@ -668,19 +692,23 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             (scrutSym, c)
           },
           pt)
-        if (caseDefsWithDefault isEmpty) None // not worth emitting a switch.
+        if (caseDefsWithDefault isEmpty)
+          None // not worth emitting a switch.
         else {
           // match on scrutSym -- converted to an int if necessary -- not on scrut directly (to avoid duplicating scrut)
           val scrutToInt: Tree =
-            if (scrutSym.tpe =:= IntTpe) REF(scrutSym)
-            else (REF(scrutSym) DOT (nme.toInt))
+            if (scrutSym.tpe =:= IntTpe)
+              REF(scrutSym)
+            else
+              (REF(scrutSym) DOT (nme.toInt))
           Some(
             BLOCK(
               ValDef(scrutSym, scrut),
               Match(scrutToInt, caseDefsWithDefault) // a switch
             ))
         }
-      } else None
+      } else
+        None
     }
 
     // for the catch-cases in a try/catch
@@ -742,8 +770,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         bindersAndCases: List[(Symbol, List[TreeMaker])],
         pt: Type): Option[List[CaseDef]] = {
       val caseDefsWithDefault = typeSwitchMaker(bindersAndCases, pt)
-      if (caseDefsWithDefault isEmpty) None
-      else Some(caseDefsWithDefault)
+      if (caseDefsWithDefault isEmpty)
+        None
+      else
+        Some(caseDefsWithDefault)
     }
   }
 

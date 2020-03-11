@@ -19,7 +19,8 @@ case class TypeClass(
                            " extends " + extendsList
                              .map(tc => "[[" + tc.fqn + "]]")
                              .mkString(" with ")
-                         else "")
+                         else
+                           "")
 }
 
 object TypeClass {
@@ -256,7 +257,10 @@ object GenTypeClass {
         ((o, n), i) <- oldChunks.zip(newChunks).zipWithIndex
       } yield {
         val useOld = i % 2 == 1
-        if (useOld) o else n
+        if (useOld)
+          o
+        else
+          n
       }
       updatedChunks.mkString(delimiter)
     }
@@ -284,8 +288,10 @@ object GenTypeClass {
             compose,
             profunctor,
             strong,
-            proChoice)(tc)) "=>:"
-      else "F"
+            proChoice)(tc))
+        "=>:"
+      else
+        "F"
 
     val typeShape: String = kind match {
       case Kind.*         => ""
@@ -324,7 +330,8 @@ object GenTypeClass {
 
     val syntaxPackString = tc.syntaxPack
       .map("package " + _)
-      .mkString("\n") + (if (tc.pack == Seq("scalaz")) ""
+      .mkString("\n") + (if (tc.pack == Seq("scalaz"))
+                           ""
                          else
                            "\n\n" + "import " + (tc.pack :+ tc.name)
                              .mkString("."))
@@ -335,7 +342,8 @@ object GenTypeClass {
       } else {
         s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent] { def F = $typeClassName.this }"
       }
-    } else ""
+    } else
+      ""
 
     val applyMethod = if (kind.multipleParam) {
       s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F, S]): $typeClassName[F, S] = F"""
@@ -519,7 +527,8 @@ trait ${typeClassName}Syntax[F[_], S] ${extendsListText("Syntax", cti = "F")} {
     val syntaxSourceFile = if (tc.createSyntax) {
       Some(
         SourceFile(tc.syntaxPack, typeClassName + "Syntax.scala", syntaxSource))
-    } else None
+    } else
+      None
 
     TypeClassSource(mainSourceFile, syntaxSourceFile)
   }

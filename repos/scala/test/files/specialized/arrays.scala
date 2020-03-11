@@ -30,7 +30,10 @@ object Test {
     var i = 0
     var sum = 0
     while (i < a.length) {
-      sum += (if (a(i) != null) 1 else 0)
+      sum += (if (a(i) != null)
+                1
+              else
+                0)
       i += 1
     }
     sum
@@ -40,7 +43,10 @@ object Test {
     var i = 0
     var sum = 0
     while (i < a.length) {
-      sum += (if (a(i) != null) 1 else 0)
+      sum += (if (a(i) != null)
+                1
+              else
+                0)
       i += 1
     }
     sum

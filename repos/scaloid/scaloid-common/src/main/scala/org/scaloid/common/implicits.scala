@@ -216,22 +216,46 @@ class RichCursor(c: Cursor) extends Iterable[Cursor] {
   def orm[T](body: Cursor => T) = closeAfter(_.map(body).toList)
 
   def toLong(default: Long): Long =
-    closeAfter(csr => if (c.moveToFirst()) c.getLong(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getLong(0)
+      else
+        default)
 
   def toString(default: String): String =
-    closeAfter(csr => if (c.moveToFirst()) c.getString(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getString(0)
+      else
+        default)
 
   def toShort(default: Short): Short =
-    closeAfter(csr => if (c.moveToFirst()) c.getShort(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getShort(0)
+      else
+        default)
 
   def toInt(default: Int): Int =
-    closeAfter(csr => if (c.moveToFirst()) c.getInt(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getInt(0)
+      else
+        default)
 
   def toDouble(default: Double): Double =
-    closeAfter(csr => if (c.moveToFirst()) c.getDouble(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getDouble(0)
+      else
+        default)
 
   def toFloat(default: Float): Float =
-    closeAfter(csr => if (c.moveToFirst()) c.getFloat(0) else default)
+    closeAfter(csr =>
+      if (c.moveToFirst())
+        c.getFloat(0)
+      else
+        default)
 }
 
 trait DatabaseImplicits {

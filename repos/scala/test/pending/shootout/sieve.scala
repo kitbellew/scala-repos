@@ -40,6 +40,9 @@ object sieve {
       } catch {
         case _ => 1
       }
-    if (i > 0) i; else 1;
+    if (i > 0)
+      i;
+    else
+      1;
   }
 }

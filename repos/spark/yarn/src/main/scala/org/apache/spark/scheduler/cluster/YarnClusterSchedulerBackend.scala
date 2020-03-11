@@ -53,7 +53,10 @@ private[spark] class YarnClusterSchedulerBackend(
       )
       val user = Utils.getCurrentUserName()
       val httpScheme =
-        if (yarnHttpPolicy == "HTTPS_ONLY") "https://" else "http://"
+        if (yarnHttpPolicy == "HTTPS_ONLY")
+          "https://"
+        else
+          "http://"
       val baseUrl =
         s"$httpScheme$httpAddress/node/containerlogs/$containerId/$user"
       logDebug(s"Base URL for logs: $baseUrl")

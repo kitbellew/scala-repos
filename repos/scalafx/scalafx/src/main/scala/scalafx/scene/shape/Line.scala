@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Line {
   implicit def sfxLine2jfx(v: Line): jfxss.Line =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(startX: Double, startY: Double, endX: Double, endY: Double) =
     new Line(new jfxss.Line(startX, startY, endX, endY))

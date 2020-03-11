@@ -38,8 +38,10 @@ object ActivatorDist {
             IO.readLines(AkkaBuild.root.base / ".gitignore")
           for (dir <- directories) {
             val localGitignoreLines =
-              if ((dir / ".gitignore").exists) IO.readLines(dir / ".gitignore")
-              else Nil
+              if ((dir / ".gitignore").exists)
+                IO.readLines(dir / ".gitignore")
+              else
+                Nil
             val gitignoreFileFilter =
               (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
                 .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)

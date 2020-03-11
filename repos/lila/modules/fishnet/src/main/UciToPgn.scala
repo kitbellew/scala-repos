@@ -21,8 +21,10 @@ private object UciToPgn {
     }).toSet
 
     val onlyMeaningfulVariations: List[Info] = analysis.infos map { info =>
-      if (pliesWithAdviceAndVariation(info.ply)) info
-      else info.dropVariation
+      if (pliesWithAdviceAndVariation(info.ply))
+        info
+      else
+        info.dropVariation
     }
 
     def uciToPgn(ply: Int, variation: List[String]): Valid[List[PgnMove]] =

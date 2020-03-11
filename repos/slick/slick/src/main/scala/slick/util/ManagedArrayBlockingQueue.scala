@@ -24,11 +24,20 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
   private[this] var takeIndex, putIndex, count = 0
 
   private[this] def checkNotNull(v: AnyRef): Unit =
-    if (v == null) throw new NullPointerException
+    if (v == null)
+      throw new NullPointerException
 
-  private[this] def inc(i: Int): Int = if (i + 1 == items.length) 0 else i + 1
+  private[this] def inc(i: Int): Int =
+    if (i + 1 == items.length)
+      0
+    else
+      i + 1
 
-  private[this] def dec(i: Int): Int = (if (i == 0) items.length else i) - 1
+  private[this] def dec(i: Int): Int =
+    (if (i == 0)
+       items.length
+     else
+       i) - 1
 
   private[this] def itemAt(i: Int): E = items(i).asInstanceOf[E]
 
@@ -76,7 +85,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
   def offer(e: E): Boolean = {
     checkNotNull(e)
     locked {
-      if (count == items.length || !accept(e, count)) false
+      if (count == items.length || !accept(e, count))
+        false
       else {
         insert(e);
         true
@@ -87,7 +97,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
   def put(e: E) {
     checkNotNull(e)
     lockedInterruptibly {
-      while (count == items.length || !accept(e, count)) notFull.await
+      while (count == items.length || !accept(e, count))
+        notFull.await
       insert(e)
     }
   }
@@ -97,7 +108,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     var nanos: Long = unit.toNanos(timeout)
     lockedInterruptibly {
       while (count == items.length || !accept(e, count)) {
-        if (nanos <= 0) return false
+        if (nanos <= 0)
+          return false
         nanos = notFull.awaitNanos(nanos)
       }
       insert(e)
@@ -105,10 +117,16 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     }
   }
 
-  def poll: E = locked(if ((count == 0)) null else extract)
+  def poll: E =
+    locked(
+      if ((count == 0))
+        null
+      else
+        extract)
 
   def take: E = lockedInterruptibly {
-    while (count == 0) notEmpty.await
+    while (count == 0)
+      notEmpty.await
     extract
   }
 
@@ -116,21 +134,28 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     var nanos: Long = unit.toNanos(timeout)
     lockedInterruptibly {
       while (count == 0) {
-        if (nanos <= 0) return null
+        if (nanos <= 0)
+          return null
         nanos = notEmpty.awaitNanos(nanos)
       }
       extract
     }
   }
 
-  def peek: E = locked((if (count == 0) null else itemAt(takeIndex)))
+  def peek: E =
+    locked(
+      (if (count == 0)
+         null
+       else
+         itemAt(takeIndex)))
 
   def size: Int = locked(count)
 
   def remainingCapacity: Int = locked(items.length - count)
 
   override def remove(o: AnyRef): Boolean =
-    if (o eq null) false
+    if (o eq null)
+      false
     else {
       val items = this.items
       locked {
@@ -149,13 +174,15 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     }
 
   override def contains(o: AnyRef): Boolean = {
-    if (o == null) return false
+    if (o == null)
+      return false
     val items = this.items
     locked {
       var i = takeIndex
       var k = count
       while (k > 0) {
-        if (o == items(i)) return true
+        if (o == items(i))
+          return true
         i = inc(i)
         k -= 1
       }
@@ -182,7 +209,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
 
   def drainTo(c: Collection[_ >: E]): Int = {
     checkNotNull(c)
-    if (c eq this) throw new IllegalArgumentException
+    if (c eq this)
+      throw new IllegalArgumentException
     val items = this.items
     locked {
       var i = takeIndex
@@ -206,13 +234,19 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
 
   def drainTo(c: Collection[_ >: E], maxElements: Int): Int = {
     checkNotNull(c)
-    if (c eq this) throw new IllegalArgumentException
-    if (maxElements <= 0) return 0
+    if (c eq this)
+      throw new IllegalArgumentException
+    if (maxElements <= 0)
+      return 0
     val items = this.items
     locked {
       var i: Int = takeIndex
       var n: Int = 0
-      val max: Int = if ((maxElements < count)) maxElements else count
+      val max: Int =
+        if ((maxElements < count))
+          maxElements
+        else
+          count
       while (n < max) {
         c.add(items(i).asInstanceOf[E])
         items(i) = null
@@ -247,13 +281,15 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
 
     def next: E = {
       locked {
-        if (remaining <= 0) throw new NoSuchElementException
+        if (remaining <= 0)
+          throw new NoSuchElementException
         lastRet = nextIndex
         var x: E = itemAt(nextIndex)
         if (x == null) {
           x = nextItem
           lastItem = null
-        } else lastItem = x
+        } else
+          lastItem = x
         while ({
           remaining -= 1;
           remaining > 0
@@ -261,7 +297,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
           nextIndex = inc(nextIndex);
           nextItem = itemAt(nextIndex);
           nextItem == null
-        }) ()
+        })
+          ()
         x
       }
     }

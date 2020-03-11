@@ -104,7 +104,10 @@ object StorageProvider {
       case HDFS(uri, base) =>
         new HDFSStorageProvider(
           new URI(uri),
-          if (base.isEmpty) "/" else base,
+          if (base.isEmpty)
+            "/"
+          else
+            base,
           new Configuration()
         )
 

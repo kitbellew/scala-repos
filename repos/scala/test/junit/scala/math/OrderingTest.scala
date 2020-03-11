@@ -39,7 +39,8 @@ class OrderingTest {
     }
     def checkAll[T: Ordering](ts: T*): Unit = {
       for (t1 <- ts;
-           t2 <- ts) check(t1, t2)
+           t2 <- ts)
+        check(t1, t2)
     }
     checkAll[Unit](())
     checkAll[Boolean](true, false)

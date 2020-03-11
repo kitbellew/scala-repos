@@ -44,7 +44,10 @@ import scalafx.stage.Window.sfxWindow2jfx
 
 object Stage {
   implicit def sfxStage2jfx(v: Stage): jfxs.Stage =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

@@ -29,9 +29,12 @@ abstract class AbstractList[E] protected ()
   def lastIndexOf(o: Any): Int = {
     @tailrec
     def findIndex(iter: ListIterator[E]): Int = {
-      if (!iter.hasPrevious) -1
-      else if (iter.previous() === o) iter.nextIndex
-      else findIndex(iter)
+      if (!iter.hasPrevious)
+        -1
+      else if (iter.previous() === o)
+        iter.nextIndex
+      else
+        findIndex(iter)
     }
     findIndex(listIterator(size))
   }
@@ -117,7 +120,10 @@ abstract class AbstractList[E] protected ()
 
   override def hashCode(): Int = {
     this.foldLeft(1) { (prev, elem) =>
-      31 * prev + (if (elem == null) 0 else elem.hashCode)
+      31 * prev + (if (elem == null)
+                     0
+                   else
+                     elem.hashCode)
     }
   }
 

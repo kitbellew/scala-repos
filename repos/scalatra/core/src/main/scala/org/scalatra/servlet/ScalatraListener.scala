@@ -68,7 +68,10 @@ class ScalatraListener extends ServletContextListener {
         case t: Throwable              => throw t
       }
     val cycleClass: Class[_] =
-      if (lifeCycleClass != null) lifeCycleClass else oldLifeCycleClass
+      if (lifeCycleClass != null)
+        lifeCycleClass
+      else
+        oldLifeCycleClass
 
     assert(cycleClass != null, "No lifecycle class found!")
     assert(

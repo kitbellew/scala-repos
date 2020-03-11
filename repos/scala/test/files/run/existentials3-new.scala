@@ -145,8 +145,10 @@ object Test {
 
   def printTpe(t: Type) = {
     val s =
-      if (isFreeType(t.typeSymbol)) t.typeSymbol.info.toString
-      else t.typeSymbol.toString
+      if (isFreeType(t.typeSymbol))
+        t.typeSymbol.info.toString
+      else
+        t.typeSymbol.toString
     println(
       "%s, t=%s, s=%s".format(t, t.asInstanceOf[Product].productPrefix, s))
   }

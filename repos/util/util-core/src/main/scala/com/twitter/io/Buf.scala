@@ -39,7 +39,10 @@ trait Buf { outer =>
     * Concatenate this buffer with the given buffer.
     */
   def concat(right: Buf): Buf =
-    if (right.isEmpty) outer else ConcatBuf(Vector(outer)).concat(right)
+    if (right.isEmpty)
+      outer
+    else
+      ConcatBuf(Vector(outer)).concat(right)
 
   override def hashCode = Buf.hash(this)
 
@@ -89,7 +92,8 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
       while (i < chain.length) {
         val buf = chain(i)
         val sz = buf.length
-        if (!buf.equals(other.slice(offset, offset + sz))) return false
+        if (!buf.equals(other.slice(offset, offset + sz)))
+          return false
         offset += sz
         i += 1
       }
@@ -122,7 +126,8 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
     *       slice only entails 3 necessary allocations
     */
   def slice(from: Int, until: Int): Buf = {
-    if (from == until) return Buf.Empty
+    if (from == until)
+      return Buf.Empty
     require(0 <= from && from < until)
 
     var begin = from
@@ -146,33 +151,46 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
       end -= len
       cur += 1
     }
-    if (start == -1) Buf.Empty
+    if (start == -1)
+      Buf.Empty
     else if (start == finish || (start == (cur - 1) && finish == -1)) {
       chain(start).slice(startBegin, startEnd)
     } else if (finish == -1) {
       val untrimmedFirst = chain(start)
       val first: Buf =
-        if (startBegin == 0 && startEnd >= untrimmedFirst.length) null
-        else untrimmedFirst.slice(startBegin, startEnd)
+        if (startBegin == 0 && startEnd >= untrimmedFirst.length)
+          null
+        else
+          untrimmedFirst.slice(startBegin, startEnd)
       ConcatBuf(
-        if (first == null) chain.slice(start, length)
-        else first +: chain.slice(start + 1, length))
+        if (first == null)
+          chain.slice(start, length)
+        else
+          first +: chain.slice(start + 1, length))
     } else {
       val untrimmedFirst = chain(start)
       val first: Buf =
-        if (startBegin == 0 && startEnd >= untrimmedFirst.length) null
-        else untrimmedFirst.slice(startBegin, startEnd)
+        if (startBegin == 0 && startEnd >= untrimmedFirst.length)
+          null
+        else
+          untrimmedFirst.slice(startBegin, startEnd)
 
       val untrimmedLast = chain(finish)
       val last: Buf =
-        if (finishBegin == 0 && finishEnd >= untrimmedLast.length) null
-        else untrimmedLast.slice(finishBegin, finishEnd)
+        if (finishBegin == 0 && finishEnd >= untrimmedLast.length)
+          null
+        else
+          untrimmedLast.slice(finishBegin, finishEnd)
 
       ConcatBuf(
-        if (first == null && last == null) chain.slice(start, finish + 1)
-        else if (first == null) chain.slice(start, finish) :+ last
-        else if (last == null) first +: chain.slice(start + 1, finish + 1)
-        else first +: chain.slice(start + 1, finish) :+ last)
+        if (first == null && last == null)
+          chain.slice(start, finish + 1)
+        else if (first == null)
+          chain.slice(start, finish) :+ last
+        else if (last == null)
+          first +: chain.slice(start + 1, finish + 1)
+        else
+          first +: chain.slice(start + 1, finish) :+ last)
     }
   }
 
@@ -231,8 +249,10 @@ object Buf {
     def slice(from: Int, until: Int): Buf = {
       require(from >= 0 && until >= 0, "Index out of bounds")
 
-      if (until <= from || from >= length) Buf.Empty
-      else if (from == 0 && until >= length) this
+      if (until <= from || from >= length)
+        Buf.Empty
+      else if (from == 0 && until >= length)
+        this
       else {
         val cap = math.min(until, length)
         ByteArray.Owned(bytes, begin + from, math.min(begin + cap, end))
@@ -300,8 +320,10 @@ object Buf {
         * at the given offsets.
         */
       def apply(bytes: Array[Byte], begin: Int, end: Int): Buf =
-        if (begin == end) Buf.Empty
-        else new ByteArray(bytes, begin, end)
+        if (begin == end)
+          Buf.Empty
+        else
+          new ByteArray(bytes, begin, end)
 
       /** Construct a buffer representing the provided array of bytes. */
       def apply(bytes: Array[Byte]): Buf = apply(bytes, 0, bytes.length)
@@ -330,7 +352,8 @@ object Buf {
 
       /** Construct a buffer representing a copy of an array of bytes at the given offsets. */
       def apply(bytes: Array[Byte], begin: Int, end: Int): Buf =
-        if (begin == end) Buf.Empty
+        if (begin == end)
+          Buf.Empty
         else {
           val copy = java.util.Arrays.copyOfRange(bytes, begin, end - begin)
           new ByteArray(copy, 0, end - begin)
@@ -370,12 +393,15 @@ object Buf {
 
     def slice(from: Int, until: Int): Buf = {
       require(from >= 0 && until >= 0, "Index out of bounds")
-      if (until <= from || from >= length) Buf.Empty
-      else if (from == 0 && until >= length) this
+      if (until <= from || from >= length)
+        Buf.Empty
+      else if (from == 0 && until >= length)
+        this
       else {
         val dup = underlying.duplicate()
         val limit = dup.position + math.min(until, length)
-        if (dup.limit > limit) dup.limit(limit)
+        if (dup.limit > limit)
+          dup.limit(limit)
         dup.position(dup.position + from)
         new ByteBuffer(dup)
       }
@@ -394,7 +420,8 @@ object Buf {
         val begin = underlying.arrayOffset + underlying.position
         val end = begin + underlying.remaining
         Some(new ByteArray(array, begin, end))
-      } else None
+      } else
+        None
   }
 
   object ByteBuffer {
@@ -426,8 +453,10 @@ object Buf {
         * Create a Buf.ByteBuffer by directly wrapping the provided [[java.nio.ByteBuffer]].
         */
       def apply(bb: java.nio.ByteBuffer): Buf =
-        if (bb.remaining == 0) Buf.Empty
-        else new ByteBuffer(bb)
+        if (bb.remaining == 0)
+          Buf.Empty
+        else
+          new ByteBuffer(bb)
 
       /** Extract the buffer's underlying [[java.nio.ByteBuffer]]. */
       def unapply(buf: ByteBuffer): Option[java.nio.ByteBuffer] =
@@ -464,7 +493,8 @@ object Buf {
     * Relies on Buf.ByteArray.equals.
     */
   def equals(x: Buf, y: Buf): Boolean = {
-    if (x.length != y.length) return false
+    if (x.length != y.length)
+      return false
     Buf.ByteArray.coerce(x).equals(Buf.ByteArray.coerce(y))
   }
 
@@ -613,7 +643,8 @@ object Buf {
     }
 
     def unapply(buf: Buf): Option[(Int, Buf)] =
-      if (buf.length < 4) None
+      if (buf.length < 4)
+        None
       else {
         val arr = new Array[Byte](4)
         buf.slice(0, 4).write(arr, 0)
@@ -650,7 +681,8 @@ object Buf {
     }
 
     def unapply(buf: Buf): Option[(Long, Buf)] =
-      if (buf.length < 8) None
+      if (buf.length < 8)
+        None
       else {
         val arr = new Array[Byte](8)
         buf.slice(0, 8).write(arr, 0)
@@ -687,7 +719,8 @@ object Buf {
     }
 
     def unapply(buf: Buf): Option[(Int, Buf)] =
-      if (buf.length < 4) None
+      if (buf.length < 4)
+        None
       else {
         val arr = new Array[Byte](4)
         buf.slice(0, 4).write(arr, 0)
@@ -724,7 +757,8 @@ object Buf {
     }
 
     def unapply(buf: Buf): Option[(Long, Buf)] =
-      if (buf.length < 8) None
+      if (buf.length < 8)
+        None
       else {
         val arr = new Array[Byte](8)
         buf.slice(0, 8).write(arr, 0)

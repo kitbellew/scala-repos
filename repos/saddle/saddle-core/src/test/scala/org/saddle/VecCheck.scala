@@ -92,9 +92,17 @@ class VecCheck extends Specification with ScalaCheck {
         val data = v.contents
         v.map(_ + 1.0) must_== Vec(data.map(_ + 1.0))
         v.map(d => 5.0) must_== Vec(
-          data.map(d => if (d.isNaN) na.to[Double] else 5.0))
+          data.map(d =>
+            if (d.isNaN)
+              na.to[Double]
+            else
+              5.0))
         v.map(d => 5) must_== Vec[Int](
-          data.map(d => if (d.isNaN) na.to[Int] else 5))
+          data.map(d =>
+            if (d.isNaN)
+              na.to[Int]
+            else
+              5))
       }
     }
 
@@ -177,7 +185,8 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         var c = 0
         v.forall(_ > 0.5) { i =>
-          if (!i.isNaN) c += 1
+          if (!i.isNaN)
+            c += 1
         }
         val exp = v.filter(_ > 0.5).count
         c must_== exp
@@ -188,7 +197,8 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         var c = 0
         v.foreach { i =>
-          if (!i.isNaN) c += 1
+          if (!i.isNaN)
+            c += 1
         }
         val exp = v.count
         c must_== exp
@@ -206,7 +216,12 @@ class VecCheck extends Specification with ScalaCheck {
     "fillNA works" in {
       forAll { (v: Vec[Double]) =>
         val res = v.fillNA(_ => 5.0)
-        val exp = Vec(v.contents.map(x => if (x.isNaN) 5.0 else x))
+        val exp = Vec(
+          v.contents.map(x =>
+            if (x.isNaN)
+              5.0
+            else
+              x))
         res.hasNA must beFalse
         res must_== exp
       }
@@ -227,7 +242,10 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         val res = v.foldLeft(0)((c: Int, x: Double) =>
           c + {
-            if (x.isNaN) 0 else 1
+            if (x.isNaN)
+              0
+            else
+              1
           })
         val exp = v.count
         res must_== exp
@@ -344,7 +362,8 @@ class VecCheck extends Specification with ScalaCheck {
         forAll(idx) { i =>
           val res = v.without(i.toArray)
           val tmp = Buffer[Double]()
-          for (k <- 0 until v.length if !i.toSet.contains(k)) tmp.add(v.raw(k))
+          for (k <- 0 until v.length if !i.toSet.contains(k))
+            tmp.add(v.raw(k))
           res must_== Vec(tmp.toArray)
         }
       }
@@ -364,7 +383,14 @@ class VecCheck extends Specification with ScalaCheck {
             i <- 0 until v.length - 1
             a = dat(i)
             b = dat(i + 1)
-          } yield (if (a.isNaN) 0 else a) + (if (b.isNaN) 0 else b)
+          } yield
+            (if (a.isNaN)
+               0
+             else
+               a) + (if (b.isNaN)
+                       0
+                     else
+                       b)
 
           res must_== Vec(exp: _*)
         }

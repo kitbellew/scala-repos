@@ -31,8 +31,10 @@ package object parallel {
     */
   def thresholdFromSize(sz: Int, parallelismLevel: Int) = {
     val p = parallelismLevel
-    if (p > 1) 1 + sz / (8 * p)
-    else sz
+    if (p > 1)
+      1 + sz / (8 * p)
+    else
+      sz
   }
 
   val defaultTaskSupport: TaskSupport = new ExecutionContextTaskSupport
@@ -50,11 +52,13 @@ package object parallel {
       implicit asGto: C => scala.collection.GenTraversableOnce[T]) {
     def toParArray = {
       val t = asGto(c)
-      if (t.isInstanceOf[ParArray[_]]) t.asInstanceOf[ParArray[T]]
+      if (t.isInstanceOf[ParArray[_]])
+        t.asInstanceOf[ParArray[T]]
       else {
         val it = t.toIterator
         val cb = mutable.ParArrayCombiner[T]()
-        while (it.hasNext) cb += it.next
+        while (it.hasNext)
+          cb += it.next
         cb.result
       }
     }
@@ -72,7 +76,10 @@ package parallel {
         def ifParallel[R](isbody: CanCombineFrom[From, Elem, To] => R) =
           new Otherwise[R] {
             def otherwise(notbody: => R) =
-              if (isParallel) isbody(asParallel) else notbody
+              if (isParallel)
+                isbody(asParallel)
+              else
+                notbody
           }
       }
     implicit def traversable2ops[T](t: scala.collection.GenTraversableOnce[T]) =
@@ -84,7 +91,10 @@ package parallel {
         def asParSeq = t.asInstanceOf[ParSeq[T]]
         def ifParSeq[R](isbody: ParSeq[T] => R) = new Otherwise[R] {
           def otherwise(notbody: => R) =
-            if (isParallel) isbody(asParSeq) else notbody
+            if (isParallel)
+              isbody(asParSeq)
+            else
+              notbody
         }
       }
     implicit def throwable2ops(self: Throwable) = new ThrowableOps {
@@ -181,7 +191,8 @@ package parallel {
           new BufferSplitter(buffer, index, index + divsz, signalDelegate),
           new BufferSplitter(buffer, index + divsz, until, signalDelegate)
         )
-      } else Seq(this)
+      } else
+        Seq(this)
     private[parallel] override def debugInformation = {
       buildString { append =>
         append("---------------")
@@ -240,7 +251,8 @@ package parallel {
 
     def combine[N <: Elem, NewTo >: To](
         other: Combiner[N, NewTo]): Combiner[N, NewTo] = {
-      if (this eq other) this
+      if (this eq other)
+        this
       else
         other match {
           case _: BucketCombiner[_, _, _, _] =>

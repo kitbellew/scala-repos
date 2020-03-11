@@ -117,8 +117,10 @@ class ScalaAnnotator
       case file: ScalaFile =>
         val isInSources: Boolean = ScalaUtils.isUnderSources(file)
         if (isInSources && (element eq file)) {
-          if (typeAware) Stats.trigger("scala.file.with.type.aware.annotated")
-          else Stats.trigger("scala.file.without.type.aware.annotated")
+          if (typeAware)
+            Stats.trigger("scala.file.with.type.aware.annotated")
+          else
+            Stats.trigger("scala.file.without.type.aware.annotated")
         }
         (file.isCompiled, isInSources)
       case _ => (false, false)
@@ -135,9 +137,9 @@ class ScalaAnnotator
         if (isAdvancedHighlightingEnabled(element)) {
           expr.getTypeExt(TypingContext.empty) match {
             case ExpressionTypeResult(
-                Success(t, _),
-                _,
-                Some(implicitFunction)) =>
+                  Success(t, _),
+                  _,
+                  Some(implicitFunction)) =>
               highlightImplicitView(expr, implicitFunction, t, expr, holder)
             case _ =>
           }
@@ -185,7 +187,8 @@ class ScalaAnnotator
       }
 
       override def visitMacroDefinition(fun: ScMacroDefinition): Unit = {
-        if (isInSources) Stats.trigger("scala.macro.definition")
+        if (isInSources)
+          Stats.trigger("scala.macro.definition")
         super.visitMacroDefinition(fun)
       }
 
@@ -289,12 +292,14 @@ class ScalaAnnotator
 
       override def visitMethodCallExpression(call: ScMethodCall) {
         checkMethodCallImplicitConversion(call, holder)
-        if (typeAware) annotateMethodInvocation(call, holder)
+        if (typeAware)
+          annotateMethodInvocation(call, holder)
         super.visitMethodCallExpression(call)
       }
 
       override def visitInfixExpression(infix: ScInfixExpr): Unit = {
-        if (typeAware) annotateMethodInvocation(infix, holder)
+        if (typeAware)
+          annotateMethodInvocation(infix, holder)
         super.visitInfixExpression(infix)
       }
 
@@ -334,7 +339,8 @@ class ScalaAnnotator
               .isInstanceOf[ScTemplateBody]) {
           checkOverrideMethods(fun, holder, isInSources)
         }
-        if (!fun.isConstructor) checkFunctionForVariance(fun, holder)
+        if (!fun.isConstructor)
+          checkFunctionForVariance(fun, holder)
         super.visitFunction(fun)
       }
 
@@ -353,7 +359,8 @@ class ScalaAnnotator
       }
 
       private def referencePart(ref: ScReferenceElement) {
-        if (typeAware) annotateReference(ref, holder)
+        if (typeAware)
+          annotateReference(ref, holder)
         ref.qualifier match {
           case None    => checkNotQualifiedReferenceElement(ref, holder)
           case Some(_) => checkQualifiedReferenceElement(ref, holder)
@@ -376,7 +383,8 @@ class ScalaAnnotator
       }
 
       override def visitConstructor(constr: ScConstructor) {
-        if (typeAware) annotateConstructor(constr, holder)
+        if (typeAware)
+          annotateConstructor(constr, holder)
         super.visitConstructor(constr)
       }
 
@@ -396,7 +404,8 @@ class ScalaAnnotator
 
       override def visitExistentialTypeElement(
           exist: ScExistentialTypeElement): Unit = {
-        if (isInSources) Stats.trigger("scala.existential.type")
+        if (isInSources)
+          Stats.trigger("scala.existential.type")
         super.visitExistentialTypeElement(exist)
       }
 
@@ -543,11 +552,13 @@ class ScalaAnnotator
       return false
     element.getContainingFile match {
       case file: ScalaFile =>
-        if (file.isCompiled) return false
+        if (file.isCompiled)
+          return false
         val vFile = file.getVirtualFile
         if (vFile != null && ProjectFileIndex.SERVICE
               .getInstance(element.getProject)
-              .isInLibrarySource(vFile)) return false
+              .isInLibrarySource(vFile))
+          return false
       case _ =>
     }
     val containingFile = element.getContainingFile
@@ -559,8 +570,10 @@ class ScalaAnnotator
         lastIndex = text.indexOf("/*_*/", lastIndex) + 5
         indexes += lastIndex
       }
-      if (indexes.isEmpty) return mutable.HashSet.empty
-      if (indexes.length % 2 != 0) indexes += text.length
+      if (indexes.isEmpty)
+        return mutable.HashSet.empty
+      if (indexes.length % 2 != 0)
+        indexes += text.length
 
       val res = new mutable.HashSet[TextRange]
       for (i <- indexes.indices by 2) {
@@ -590,7 +603,8 @@ class ScalaAnnotator
           .instance(expr.getProject)
           .getCachedClass(expr.getResolveScope, "java.lang.Throwable")
           .orNull
-        if (throwable == null) return
+        if (throwable == null)
+          return
         val throwableType = ScDesignatorType(throwable)
         def checkMember(memberName: String, checkReturnTypeIsBoolean: Boolean) {
           val processor = new MethodResolveProcessor(
@@ -749,7 +763,10 @@ class ScalaAnnotator
     toCheck match {
       case paramOwner: ScTypeParametersOwner =>
         val inParameterized =
-          if (paramOwner.isInstanceOf[ScTemplateDefinition]) false else true
+          if (paramOwner.isInstanceOf[ScTemplateDefinition])
+            false
+          else
+            true
         for (param <- paramOwner.typeParameters) {
           checkBoundsVariance(
             param,
@@ -793,7 +810,8 @@ class ScalaAnnotator
     def getFix: Seq[IntentionAction] = {
       val classes =
         ScalaImportTypeFix.getTypesToImport(refElement, refElement.getProject)
-      if (classes.length == 0) return Seq.empty
+      if (classes.length == 0)
+        return Seq.empty
       Seq[IntentionAction](new ScalaImportTypeFix(classes, refElement))
     }
 
@@ -908,7 +926,11 @@ class ScalaAnnotator
           resolveResult.implicitFunction match {
             case Some(fun) =>
               val inf = e.getParent.asInstanceOf[ScInfixExpr]
-              val expr = if (inf.isLeftAssoc) inf.rOp else inf.lOp
+              val expr =
+                if (inf.isLeftAssoc)
+                  inf.rOp
+                else
+                  inf.lOp
               highlightImplicitMethod(
                 expr,
                 resolveResult,
@@ -947,7 +969,8 @@ class ScalaAnnotator
             case _ =>
           }
           true
-        } else false
+        } else
+          false
       }
 
       refElement.getParent match {
@@ -956,14 +979,16 @@ class ScalaAnnotator
           val messageKey = "cannot.resolve.apply.method"
           if (addCreateApplyOrUnapplyFix(
                 messageKey,
-                td => new CreateApplyQuickFix(td, mc))) return
+                td => new CreateApplyQuickFix(td, mc)))
+            return
         case Both(
-            p: ScPattern,
-            (_: ScConstructorPattern | _: ScInfixPattern)) =>
+              p: ScPattern,
+              (_: ScConstructorPattern | _: ScInfixPattern)) =>
           val messageKey = "cannot.resolve.unapply.method"
           if (addCreateApplyOrUnapplyFix(
                 messageKey,
-                td => new CreateUnapplyQuickFix(td, p))) return
+                td => new CreateUnapplyQuickFix(td, p)))
+            return
         case scalaDocTag: ScDocTag
             if scalaDocTag.getName == MyScaladocParsing.THROWS_TAG =>
           return //see SCL-9490
@@ -1071,7 +1096,8 @@ class ScalaAnnotator
       refElement: ScReferenceElement,
       holder: AnnotationHolder) {
     if (resolve.length != 1 || refElement.isSoft || refElement
-          .isInstanceOf[ScDocResolvableCodeReferenceImpl]) return
+          .isInstanceOf[ScDocResolvableCodeReferenceImpl])
+      return
     resolve(0) match {
       case r: ScalaResolveResult if !r.isAccessible =>
         val error =
@@ -1112,8 +1138,10 @@ class ScalaAnnotator
           elementsMap += params.length -> i
           params.append(i.getText).append(",")
         }
-        if (injections.length > 0) params.setCharAt(params.length - 1, ')')
-        else params.append(')')
+        if (injections.length > 0)
+          params.setCharAt(params.length - 1, ')')
+        else
+          params.append(')')
         val expr = l.getStringContextExpression.get
         val shift = expr match {
           case ScMethodCall(invoked, _) => invoked.getTextRange.getEndOffset
@@ -1223,7 +1251,8 @@ class ScalaAnnotator
                 case _                                            =>
               }
             case param: ScParameter =>
-              if (!param.isDefaultParam) return //performance optimization
+              if (!param.isDefaultParam)
+                return //performance optimization
               param.getRealParameterType() match {
                 case Success(paramType, _)
                     if !paramType.isGenericType(Option(expr.getProject)) =>
@@ -1544,17 +1573,27 @@ class ScalaAnnotator
         name: String) = {
       if (varianceOfPosition != varianceOfElement && varianceOfElement != ScTypeParam.Invariant) {
         val pos =
-          if (toHighlight.isInstanceOf[ScVariable]) toHighlight.getText + "_="
-          else toHighlight.getText
+          if (toHighlight.isInstanceOf[ScVariable])
+            toHighlight.getText + "_="
+          else
+            toHighlight.getText
         val place =
-          if (toHighlight.isInstanceOf[ScFunction]) "method" else "value"
+          if (toHighlight.isInstanceOf[ScFunction])
+            "method"
+          else
+            "value"
         val elementVariance =
-          if (varianceOfElement == 1) "covariant"
-          else "contravariant"
+          if (varianceOfElement == 1)
+            "covariant"
+          else
+            "contravariant"
         val posVariance =
-          if (varianceOfPosition == 1) "covariant"
-          else if (varianceOfPosition == -1) "contravariant"
-          else "invariant"
+          if (varianceOfPosition == 1)
+            "covariant"
+          else if (varianceOfPosition == -1)
+            "contravariant"
+          else
+            "invariant"
         val annotation = holder.createErrorAnnotation(
           toHighlight,
           ScalaBundle.message(
@@ -1579,7 +1618,8 @@ class ScalaAnnotator
                 case Some(_: ScFunction) =>
                 case _ =>
                   def findVariance: Int = {
-                    if (!checkIfTypeIsInSameBrackets) return i
+                    if (!checkIfTypeIsInSameBrackets)
+                      return i
                     if (PsiTreeUtil.isAncestor(
                           scTypeParam.getParent,
                           toHighlight,
@@ -1588,7 +1628,8 @@ class ScalaAnnotator
                       if (!scTypeParam.getParent.getParent
                             .isInstanceOf[ScTemplateDefinition])
                         return scTypeParam.variance
-                      else return i * -1
+                      else
+                        return i * -1
                     if (toHighlight.getParent == scTypeParam.getParent.getParent)
                       return i * -1
                     i
@@ -1636,7 +1677,10 @@ class ScalaAnnotator
     val text = literal.getText
     val endsWithL = child.getText.endsWith('l') || child.getText.endsWith('L')
     val textWithoutL =
-      if (endsWithL) text.substring(0, text.length - 1) else text
+      if (endsWithL)
+        text.substring(0, text.length - 1)
+      else
+        text
     val parent = literal.getParent
     val scalaVersion = literal.scalaLanguageLevel
     val isNegative = parent match {
@@ -1662,7 +1706,11 @@ class ScalaAnnotator
         text: String,
         isNegative: Boolean): (Option[Long], Byte) = {
       var value = 0L
-      val divider = if (base == 10) 1 else 2
+      val divider =
+        if (base == 10)
+          1
+        else
+          2
       var statusCode: Byte = 0
       val limit = java.lang.Long.MAX_VALUE
       val intLimit = java.lang.Integer.MAX_VALUE
@@ -1686,8 +1734,15 @@ class ScalaAnnotator
         value = value * base + d
         i += 1
       }
-      value = if (isNegative) -value else value
-      if (statusCode == 0) (Some(value.toInt), 0) else (Some(value), statusCode)
+      value =
+        if (isNegative)
+          -value
+        else
+          value
+      if (statusCode == 0)
+        (Some(value.toInt), 0)
+      else
+        (Some(value), statusCode)
     }
 
     if (base == 8) {
@@ -1718,8 +1773,10 @@ class ScalaAnnotator
       if (status == 1 && !endsWithL) {
         val error = "Integer number is out of range for type Int"
         val annotation =
-          if (isNegative) holder.createErrorAnnotation(parent, error)
-          else holder.createErrorAnnotation(literal, error)
+          if (isNegative)
+            holder.createErrorAnnotation(parent, error)
+          else
+            holder.createErrorAnnotation(literal, error)
         annotation.setHighlightType(
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         val bigIntType = ScalaPsiElementFactory.createTypeFromText(

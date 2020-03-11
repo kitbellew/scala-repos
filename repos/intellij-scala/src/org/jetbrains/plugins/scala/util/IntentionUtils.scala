@@ -41,7 +41,8 @@ object IntentionUtils {
       onlyBoolean: Boolean): Option[() => Unit] = {
     val argList: ScArgumentExprList =
       PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
-    if (argList == null || argList.isBraceArgs) return None
+    if (argList == null || argList.isBraceArgs)
+      return None
     val currentArg = argList.exprs.find { e =>
       PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
     }
@@ -73,7 +74,8 @@ object IntentionUtils {
       case _                                    => false
     }
 
-    if (hasRepeated || !allNamesDefined || hasUnderscore) None
+    if (hasRepeated || !allNamesDefined || hasUnderscore)
+      None
     else {
       val doIt = () => {
         argsAndMatchedParams.foreach {
@@ -138,8 +140,10 @@ object IntentionUtils {
       buf: scala.StringBuilder) = {
     val parent =
       if (expr.getParent != null && expr.getParent
-            .isInstanceOf[ScParenthesisedExpr]) expr.getParent.getParent
-      else expr.getParent
+            .isInstanceOf[ScParenthesisedExpr])
+        expr.getParent.getParent
+      else
+        expr.getParent
 
     if (parent != null && parent.isInstanceOf[ScPrefixExpr] &&
         parent.asInstanceOf[ScPrefixExpr].operation.getText == "!") {
@@ -181,25 +185,30 @@ object IntentionUtils {
           val exprWithoutParentheses =
             if (e.getBaseExpr.isInstanceOf[ScParenthesisedExpr])
               e.getBaseExpr.getText.drop(1).dropRight(1)
-            else e.getBaseExpr.getText
+            else
+              e.getBaseExpr.getText
           val newExpr = ScalaPsiElementFactory.createExpressionFromText(
             exprWithoutParentheses,
             expression.getManager)
           inWriteAction {
             e.replaceExpression(newExpr, removeParenthesis = true).getText
           }
-        } else "!(" + e.getText + ")"
+        } else
+          "!(" + e.getText + ")"
       case e: ScLiteral =>
         if (e.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.kTRUE)
           "false"
         else if (e.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.kFALSE)
           "true"
-        else "!" + e.getText
+        else
+          "!" + e.getText
       case _ =>
         val exprText = expression.getText
         if (ScalaNamesUtil.isOpCharacter(exprText(0)) || expression
-              .isInstanceOf[ScInfixExpr]) "!(" + exprText + ")"
-        else "!" + expression.getText
+              .isInstanceOf[ScInfixExpr])
+          "!(" + exprText + ")"
+        else
+          "!" + expression.getText
     }
   }
 
@@ -209,7 +218,8 @@ object IntentionUtils {
       project: Project,
       editor: Editor,
       secondPart: Seq[PsiNamedElement]) {
-    if (expr == null || f == null || secondPart == null) return
+    if (expr == null || f == null || secondPart == null)
+      return
     CommandProcessor
       .getInstance()
       .executeCommand(
@@ -251,7 +261,8 @@ object IntentionUtils {
       project: Project,
       editor: Editor,
       secondPart: Seq[PsiNamedElement]) {
-    if (expr == null || f == null || secondPart == null) return
+    if (expr == null || f == null || secondPart == null)
+      return
     CommandProcessor
       .getInstance()
       .executeCommand(
@@ -308,7 +319,8 @@ object IntentionUtils {
       override def onChosen(
           selectedValue: String,
           finalChoice: Boolean): PopupStep[_] = {
-        if (selectedValue == null) return PopupStep.FINAL_CHOICE
+        if (selectedValue == null)
+          return PopupStep.FINAL_CHOICE
         if (finalChoice) {
           PsiDocumentManager.getInstance(project).commitAllDocuments()
           GoToImplicitConversionAction.getPopup.dispose()

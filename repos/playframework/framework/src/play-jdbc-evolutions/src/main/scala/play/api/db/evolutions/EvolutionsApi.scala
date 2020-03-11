@@ -132,7 +132,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         (nonConflictingDowns ++ conflictingDowns).map(e => DownScript(e))
 
       downs ++ ups
-    } else Nil
+    } else
+      Nil
   }
 
   def scripts(reader: EvolutionsReader): Seq[Script] = {
@@ -321,7 +322,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         logger.error(error)
 
         val humanScript =
-          "# --- Rev:" + revision + "," + (if (state == "applying_up") "Ups"
+          "# --- Rev:" + revision + "," + (if (state == "applying_up")
+                                             "Ups"
                                            else
                                              "Downs") + " - " + hash + "\n\n" + script
 
@@ -652,15 +654,22 @@ case class InconsistentDatabase(
   private val resolvePathJavascript =
     if (autocommit)
       s"'/@evolutions/resolve/$db/$rev?redirect=' + encodeURIComponent(window.location)"
-    else "'/@evolutions'"
+    else
+      "'/@evolutions'"
   private val redirectJavascript =
     s"""window.location = window.location.href.replace(/\\/@evolutions.*$$|\\/$$/, '') + $resolvePathJavascript"""
 
   private val sentenceEnd =
-    if (autocommit) " before marking it as resolved." else "."
+    if (autocommit)
+      " before marking it as resolved."
+    else
+      "."
 
   private val buttonLabel =
-    if (autocommit) """Mark it resolved""" else """Try again"""
+    if (autocommit)
+      """Mark it resolved"""
+    else
+      """Try again"""
 
   def htmlDescription: String = {
 

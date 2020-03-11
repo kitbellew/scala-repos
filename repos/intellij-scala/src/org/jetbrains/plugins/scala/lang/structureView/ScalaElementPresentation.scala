@@ -32,8 +32,10 @@ object ScalaElementPresentation {
 
   def getTypeDefinitionPresentableText(
       typeDefinition: ScTypeDefinition): String =
-    if (typeDefinition.nameId != null) typeDefinition.nameId.getText
-    else "unnamed"
+    if (typeDefinition.nameId != null)
+      typeDefinition.nameId.getText
+    else
+      "unnamed"
 
   def getPrimaryConstructorPresentableText(
       constructor: ScPrimaryConstructor): String = {
@@ -51,7 +53,10 @@ object ScalaElementPresentation {
       subst: ScSubstitutor = ScSubstitutor.empty): String = {
     val presentableText: StringBuffer = new StringBuffer
     presentableText.append(
-      if (!function.isConstructor) function.name else "this")
+      if (!function.isConstructor)
+        function.name
+      else
+        "this")
 
     function.typeParametersClause.foreach(clause =>
       presentableText.append(clause.getText))
@@ -80,7 +85,10 @@ object ScalaElementPresentation {
   }
 
   def getTypeAliasPresentableText(typeAlias: ScTypeAlias): String =
-    if (typeAlias.nameId != null) typeAlias.nameId.getText else "type unnamed"
+    if (typeAlias.nameId != null)
+      typeAlias.nameId.getText
+    else
+      "type unnamed"
 
   def getPresentableText(elem: PsiElement): String = elem.getText
 

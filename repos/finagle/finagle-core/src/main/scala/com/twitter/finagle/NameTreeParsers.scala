@@ -19,13 +19,17 @@ private class NameTreeParsers private (str: String) {
   private[this] var idx = 0
 
   private[this] def stringOfChar(char: Char) =
-    if (char == EOI) "end of input"
-    else "'" + char + "'"
+    if (char == EOI)
+      "end of input"
+    else
+      "'" + char + "'"
 
   private[this] def illegal(expected: String, found: String): Nothing = {
     val displayStr =
-      if (atEnd) s"$str[]"
-      else s"${str.take(idx)}[${str(idx)}]${str.drop(idx + 1)}"
+      if (atEnd)
+        s"$str[]"
+      else
+        s"${str.take(idx)}[${str(idx)}]${str.drop(idx + 1)}"
     throw new IllegalArgumentException(
       s"$expected expected but $found found at '$displayStr'")
   }
@@ -40,22 +44,26 @@ private class NameTreeParsers private (str: String) {
     illegal(stringOfChar(expected), stringOfChar(found))
 
   private[this] def peek: Char =
-    if (atEnd) EOI
-    else str(idx)
+    if (atEnd)
+      EOI
+    else
+      str(idx)
 
   private[this] def next() {
     idx += 1
   }
 
   private[this] def maybeEat(char: Char) =
-    if (peek != char) false
+    if (peek != char)
+      false
     else {
       next()
       true
     }
 
   private[this] def eat(char: Char) {
-    if (!maybeEat(char)) illegal(char, peek)
+    if (!maybeEat(char))
+      illegal(char, peek)
   }
 
   private[this] def eatWhitespace() {
@@ -120,8 +128,10 @@ private class NameTreeParsers private (str: String) {
 
     while (isNumberChar(peek)) {
       if (peek == '.') {
-        if (seenDot) illegal("number char", peek)
-        else seenDot = true
+        if (seenDot)
+          illegal("number char", peek)
+        else
+          seenDot = true
       }
       sb += peek
       next()
@@ -211,7 +221,8 @@ private class NameTreeParsers private (str: String) {
   private[this] def parseWeighted(): NameTree.Weighted[Path] = {
     eatWhitespace()
     val weight =
-      if (!isNumberChar(peek)) NameTree.Weighted.defaultWeight
+      if (!isNumberChar(peek))
+        NameTree.Weighted.defaultWeight
       else {
         val weight = parseNumber()
         eatWhitespace()

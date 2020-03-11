@@ -14,17 +14,19 @@ final class IterableSemigroupoid[A, SA <: IterableLike[A, SA]](implicit
     extends Semigroupoid[SA] {
   override def opIsDefined(x: SA, y: SA): Boolean = x.size == y.size
   def partialOp(x: SA, y: SA): Opt[SA] =
-    if (opIsDefined(x, y)) Opt({
-      val xIt = x.iterator
-      val yIt = y.iterator
-      val builder = cbf()
-      while (xIt.nonEmpty) {
-        assert(yIt.nonEmpty)
-        builder += A.op(xIt.next, yIt.next)
-      }
-      builder.result()
-    })
-    else Opt.empty[SA]
+    if (opIsDefined(x, y))
+      Opt({
+        val xIt = x.iterator
+        val yIt = y.iterator
+        val builder = cbf()
+        while (xIt.nonEmpty) {
+          assert(yIt.nonEmpty)
+          builder += A.op(xIt.next, yIt.next)
+        }
+        builder.result()
+      })
+    else
+      Opt.empty[SA]
 }
 
 final class IterableGroupoid[A, SA <: IterableLike[A, SA]](implicit
@@ -33,17 +35,19 @@ final class IterableGroupoid[A, SA <: IterableLike[A, SA]](implicit
     extends Groupoid[SA] {
   override def opIsDefined(x: SA, y: SA): Boolean = x.size == y.size
   def partialOp(x: SA, y: SA): Opt[SA] =
-    if (opIsDefined(x, y)) Opt({
-      val xIt = x.iterator
-      val yIt = y.iterator
-      val builder = cbf()
-      while (xIt.nonEmpty) {
-        assert(yIt.nonEmpty)
-        builder += A.op(xIt.next, yIt.next)
-      }
-      builder.result()
-    })
-    else Opt.empty[SA]
+    if (opIsDefined(x, y))
+      Opt({
+        val xIt = x.iterator
+        val yIt = y.iterator
+        val builder = cbf()
+        while (xIt.nonEmpty) {
+          assert(yIt.nonEmpty)
+          builder += A.op(xIt.next, yIt.next)
+        }
+        builder.result()
+      })
+    else
+      Opt.empty[SA]
   def inverse(a: SA): SA = a.map(A.inverse(_))(cbf)
   override def leftId(a: SA): SA = a.map(x => A.id)(cbf)
   override def rightId(a: SA): SA = a.map(x => A.id)(cbf)

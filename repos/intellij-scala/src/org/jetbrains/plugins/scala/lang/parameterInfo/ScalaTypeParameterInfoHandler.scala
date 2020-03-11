@@ -107,12 +107,15 @@ class ScalaTypeParameterInfoHandler
           case _ =>
         }
         val isGrey = buffer.indexOf("<g>")
-        if (isGrey != -1) buffer.replace(isGrey, isGrey + 3, "")
+        if (isGrey != -1)
+          buffer.replace(isGrey, isGrey + 3, "")
         val startOffset = buffer.indexOf("<b>")
-        if (startOffset != -1) buffer.replace(startOffset, startOffset + 3, "")
+        if (startOffset != -1)
+          buffer.replace(startOffset, startOffset + 3, "")
 
         val endOffset = buffer.indexOf("</b>")
-        if (endOffset != -1) buffer.replace(endOffset, endOffset + 4, "")
+        if (endOffset != -1)
+          buffer.replace(endOffset, endOffset + 4, "")
 
         if (buffer.toString != "")
           context.setupUIComponentPresentation(
@@ -141,13 +144,15 @@ class ScalaTypeParameterInfoHandler
         params
           .map((param: PsiTypeParameter) => {
             val isBold =
-              if (params.indexOf(param) == index) true
+              if (params.indexOf(param) == index)
+                true
               else {
                 //todo: check type
                 false
               }
             var paramText = param.name
-            if (paramText == "?") paramText = "_"
+            if (paramText == "?")
+              paramText = "_"
             val refTypes = param.getExtendsList.getReferencedTypes
             if (refTypes.nonEmpty) {
               paramText = paramText + refTypes
@@ -157,7 +162,10 @@ class ScalaTypeParameterInfoHandler
                 })
                 .mkString(" <: ", " with ", "")
             }
-            if (isBold) "<b>" + paramText + "</b>" else paramText
+            if (isBold)
+              "<b>" + paramText + "</b>"
+            else
+              paramText
           })
           .mkString(", "))
     }
@@ -174,14 +182,17 @@ class ScalaTypeParameterInfoHandler
       buffer.append(params
         .map((param: ScTypeParam) => {
           val isBold =
-            if (params.indexOf(param) == index) true
+            if (params.indexOf(param) == index)
+              true
             else {
               //todo: check type
               false
             }
           var paramText = param.name
-          if (param.isContravariant) paramText = "-" + paramText
-          else if (param.isCovariant) paramText = "+" + paramText
+          if (param.isContravariant)
+            paramText = "-" + paramText
+          else if (param.isCovariant)
+            paramText = "+" + paramText
           param.lowerBound foreach {
             case psi.types.Nothing =>
             case tp: ScType =>
@@ -202,7 +213,10 @@ class ScalaTypeParameterInfoHandler
             paramText =
               paramText + " : " + ScType.presentableText(substitutor.subst(tp))
           }
-          if (isBold) "<b>" + paramText + "</b>" else paramText
+          if (isBold)
+            "<b>" + paramText + "</b>"
+          else
+            paramText
         })
         .mkString(", "))
     }
@@ -222,12 +236,14 @@ class ScalaTypeParameterInfoHandler
       o: ScTypeArgs,
       context: UpdateParameterInfoContext): Unit = {
     //todo: join all this methods in all handlers to remove duplicates
-    if (context.getParameterOwner != o) context.removeHint()
+    if (context.getParameterOwner != o)
+      context.removeHint()
     val offset = context.getOffset
     var child = o.getNode.getFirstChildNode
     var i = 0
     while (child != null && child.getStartOffset < offset) {
-      if (child.getElementType == ScalaTokenTypes.tCOMMA) i = i + 1
+      if (child.getElementType == ScalaTokenTypes.tCOMMA)
+        i = i + 1
       child = child.getTreeNext
     }
     context.setCurrentParameter(i)
@@ -238,7 +254,8 @@ class ScalaTypeParameterInfoHandler
   private def findCall(context: ParameterInfoContext): ScTypeArgs = {
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
-    if (element == null) return null
+    if (element == null)
+      return null
     val args: ScTypeArgs =
       PsiTreeUtil.getParentOfType(element, getArgumentListClass)
     if (args != null) {
@@ -252,9 +269,9 @@ class ScalaTypeParameterInfoHandler
                   val bind = resRef.bind()
                   bind match {
                     case Some(
-                        r @ ScalaResolveResult(
-                          method: PsiMethod,
-                          substitutor)) =>
+                          r @ ScalaResolveResult(
+                            method: PsiMethod,
+                            substitutor)) =>
                       res += Tuple2(r.getElement, substitutor)
                     case _ =>
                   }
@@ -267,19 +284,19 @@ class ScalaTypeParameterInfoHandler
                     case Some(ref) =>
                       ref.bind() match {
                         case Some(
-                            r @ ScalaResolveResult(
-                              method: PsiMethod,
-                              substitutor)) =>
+                              r @ ScalaResolveResult(
+                                method: PsiMethod,
+                                substitutor)) =>
                           res += Tuple2(r.getActualElement, substitutor)
                         case Some(
-                            ScalaResolveResult(
-                              element: PsiClass,
-                              substitutor)) =>
+                              ScalaResolveResult(
+                                element: PsiClass,
+                                substitutor)) =>
                           res += Tuple2(element, substitutor)
                         case Some(
-                            ScalaResolveResult(
-                              element: ScTypeParametersOwner,
-                              substitutor)) =>
+                              ScalaResolveResult(
+                                element: ScTypeParametersOwner,
+                                substitutor)) =>
                           res += Tuple2(element, substitutor)
                         case _ =>
                       }
@@ -292,9 +309,11 @@ class ScalaTypeParameterInfoHandler
           context.setItemsToShow(res.toArray)
         case context: UpdateParameterInfoContext =>
           var el = element
-          while (el.getParent != args) el = el.getParent
+          while (el.getParent != args)
+            el = el.getParent
           var index = 1
-          for (typeElem <- args.typeArgs if typeElem != el) index += 1
+          for (typeElem <- args.typeArgs if typeElem != el)
+            index += 1
           context.setCurrentParameter(index)
           context.setHighlightedParameter(el)
         case _ =>

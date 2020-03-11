@@ -145,8 +145,12 @@ final class KafkaRelayAgent(
     if (runnable) {
       if (batch % 100 == 0)
         logger.debug(
-          "Processing kafka consumer batch %d [%s]"
-            .format(batch, if (waitCount > 0) "IDLE" else "ACTIVE"))
+          "Processing kafka consumer batch %d [%s]".format(
+            batch,
+            if (waitCount > 0)
+              "IDLE"
+            else
+              "ACTIVE"))
       val fetchRequest = new FetchRequest(localTopic, 0, offset, bufferSize)
 
       val ingestStep = for {
@@ -204,7 +208,10 @@ final class KafkaRelayAgent(
       waitCount: Long): Long = {
     if (messageBytes == 0) {
       val boundedWaitCount =
-        if (waitCount > waitCountFactor) waitCountFactor else waitCount
+        if (waitCount > waitCountFactor)
+          waitCountFactor
+        else
+          waitCount
       (maxDelay * boundedWaitCount / waitCountFactor).toLong
     } else {
       (maxDelay * (1.0 - messageBytes.toDouble / bufferSize)).toLong
@@ -234,9 +241,9 @@ final class KafkaRelayAgent(
       Future.sequence(messageFutures) map { messages: List[Authorized] =>
         val identified: List[Message] = messages.flatMap {
           case Authorized(
-              Ingest(apiKey, path, _, data, jobId, timestamp, storeMode),
-              offset,
-              Some(authorities)) =>
+                Ingest(apiKey, path, _, data, jobId, timestamp, storeMode),
+                offset,
+                Some(authorities)) =>
             def encodeIngestMessages(ev: List[IngestMessage]): List[Message] = {
               val messages = ev.map(centralCodec.toMessage)
 
@@ -278,9 +285,9 @@ final class KafkaRelayAgent(
               "Unable to establish owner account ID for ingest of event " + event)
 
           case Authorized(
-              archive @ Archive(apiKey, path, jobId, timestamp),
-              offset,
-              _) =>
+                archive @ Archive(apiKey, path, jobId, timestamp),
+                offset,
+                _) =>
             List(
               centralCodec.toMessage(
                 ArchiveMessage(
@@ -291,9 +298,9 @@ final class KafkaRelayAgent(
                   timestamp)))
 
           case Authorized(
-              StoreFile(apiKey, path, _, jobId, content, timestamp, stream),
-              offset,
-              Some(authorities)) =>
+                StoreFile(apiKey, path, _, jobId, content, timestamp, stream),
+                offset,
+                Some(authorities)) =>
             List(
               centralCodec.toMessage(
                 StoreFileMessage(
@@ -321,7 +328,8 @@ final class KafkaRelayAgent(
             ex)
       } onSuccess {
         case _ =>
-          if (messages.nonEmpty) eventIdSeq.saveState(messages.last.offset)
+          if (messages.nonEmpty)
+            eventIdSeq.saveState(messages.last.offset)
       }
     } valueOr { error =>
       Promise successful {
@@ -334,12 +342,14 @@ final class KafkaRelayAgent(
   private def deriveAuthority(event: Event): Future[Option[Authorities]] =
     event match {
       case Ingest(apiKey, path, writeAs, _, _, timestamp, _) =>
-        if (writeAs.isDefined) Promise.successful(writeAs)
+        if (writeAs.isDefined)
+          Promise.successful(writeAs)
         else
           permissionsFinder.inferWriteAuthorities(apiKey, path, Some(timestamp))
 
       case StoreFile(apiKey, path, writeAs, _, _, timestamp, _) =>
-        if (writeAs.isDefined) Promise successful writeAs
+        if (writeAs.isDefined)
+          Promise successful writeAs
         else
           permissionsFinder.inferWriteAuthorities(apiKey, path, Some(timestamp))
 

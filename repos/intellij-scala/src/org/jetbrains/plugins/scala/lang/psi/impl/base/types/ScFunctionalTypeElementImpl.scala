@@ -35,8 +35,10 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
     }
     val n = paramTypes.length
     val newTypeText =
-      s"_root_.scala.Function$n[${paramTypes.map(_.getText).mkString(",")}${if (n == 0) ""
-      else ", "}" +
+      s"_root_.scala.Function$n[${paramTypes.map(_.getText).mkString(",")}${if (n == 0)
+        ""
+      else
+        ", "}" +
         s"${returnTypeElement.map(_.getText).getOrElse("Any")}]"
     val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
       newTypeText,

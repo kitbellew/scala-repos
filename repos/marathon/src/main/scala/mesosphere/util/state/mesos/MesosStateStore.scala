@@ -23,8 +23,10 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
     futureToFuture(state.fetch(key))
       .map(throwOnNull)
       .map { variable =>
-        if (entityExists(variable)) Some(MesosStateEntity(key, variable))
-        else None
+        if (entityExists(variable))
+          Some(MesosStateEntity(key, variable))
+        else
+          None
       }
       .recover(mapException(s"Can not load entity with key $key"))
   }

@@ -333,7 +333,10 @@ object FirstOrderMinimizer {
     ConvergenceCheck.fromPartialFunction[T] {
       case s: State[T, _, _]
           if (norm(s.adjustedGradient) <= math.max(
-            tolerance * (if (relative) s.adjustedValue else 1.0),
+            tolerance * (if (relative)
+                           s.adjustedValue
+                         else
+                           1.0),
             1e-8)) =>
         GradientConverged
     }

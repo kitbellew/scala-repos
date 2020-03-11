@@ -60,7 +60,8 @@ class BuildFileChangeBrowser(
                       changeSwapped.getBeforeRevision,
                       changeSwapped.getAfterRevision,
                       newStatus))
-                } else myChange
+                } else
+                  myChange
               case _ => myChange
             }
             .getOrElse(myChange)

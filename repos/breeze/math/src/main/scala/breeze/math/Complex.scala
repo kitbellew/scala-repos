@@ -138,10 +138,13 @@ case class Complex(real: Double, imag: Double) {
   def pow(b: Double): Complex = pow(Complex(b, 0))
 
   def pow(b: Complex): Complex = {
-    if (b == Complex.zero) Complex.one
+    if (b == Complex.zero)
+      Complex.one
     else if (this == Complex.zero) {
-      if (b.imag != 0.0 || b.real < 0.0) Complex.nan
-      else Complex.zero
+      if (b.imag != 0.0 || b.real < 0.0)
+        Complex.nan
+      else
+        Complex.zero
     } else {
       val c = log * b
       val expReal = math.exp(c.real)
@@ -500,11 +503,16 @@ object Complex { outer =>
     * on the real, then on the imaginary part of the number. */
   trait ComplexOrdering extends Ordering[Complex] {
     override def compare(a: Complex, b: Complex) = {
-      if (a.real < b.real) -1
-      else if (a.real > b.real) 1
-      else if (a.imag < b.imag) -1
-      else if (a.imag > b.imag) 1
-      else 0
+      if (a.real < b.real)
+        -1
+      else if (a.real > b.real)
+        1
+      else if (a.imag < b.imag)
+        -1
+      else if (a.imag > b.imag)
+        1
+      else
+        0
     }
   }
 

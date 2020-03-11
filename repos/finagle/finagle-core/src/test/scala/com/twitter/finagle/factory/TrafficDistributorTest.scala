@@ -59,8 +59,10 @@ private object TrafficDistributorTest {
       offeredLoad += 1
       // new hotness in load balancing
       val nodes = endpoints.sample().toSeq
-      if (nodes.isEmpty) Future.exception(new NoBrokersAvailableException)
-      else nodes((math.random * nodes.size).toInt)(conn)
+      if (nodes.isEmpty)
+        Future.exception(new NoBrokersAvailableException)
+      else
+        nodes((math.random * nodes.size).toInt)(conn)
     }
     def close(deadline: Time) = Future.Done
     override def toString = s"Balancer($endpoints)"
@@ -131,7 +133,8 @@ class TrafficDistributorTest extends FunSuite {
     val dist = newDist(dest, statsReceiver = sr)
 
     val R = 100
-    for (_ <- 0 until R) dist()
+    for (_ <- 0 until R)
+      dist()
     assert(balancers.size == 1)
     assert(balancers.head.offeredLoad == R)
     assert(sr.gauges(Seq("meanweight"))() == 5.0)
@@ -152,7 +155,8 @@ class TrafficDistributorTest extends FunSuite {
 
       val dest = Var(Activity.Ok(classes))
       val dist = newDist(dest)
-      for (_ <- 0 until R) dist()
+      for (_ <- 0 until R)
+        dist()
 
       distribution(balancers).foreach {
         case ((w, _, l)) => assert(math.abs(w / weightSum - l / R.toDouble) < ε)
@@ -173,7 +177,8 @@ class TrafficDistributorTest extends FunSuite {
       val classes = weightClasses.flatMap(weightClass.tupled).toSet
       val dest = Var(Activity.Ok(classes))
       val dist = newDist(dest)
-      for (_ <- 0 until R) dist()
+      for (_ <- 0 until R)
+        dist()
 
       val result = distribution(balancers)
 
@@ -300,7 +305,9 @@ class TrafficDistributorTest extends FunSuite {
     val dist = newDist(dest)
 
     // queue on initial `Pending`
-    val q = Future.select(for (_ <- 0 to 100) yield dist())
+    val q = Future.select(
+      for (_ <- 0 to 100)
+        yield dist())
     assert(!q.isDefined)
     dest() = Activity.Ok(Set(1).map(Address(_)))
     val (first, _) = Await.result(q, 1.second)
@@ -437,21 +444,22 @@ class TrafficDistributorTest extends FunSuite {
     // step this socket address through weight classes. Previous weight
     // classes are closed during each step. This is similar to how we
     // redline a shard.
-    for (i <- 1 to 10) withClue(s"for i=$i:") {
-      val addr = WeightedAddress(
-        Address(server.boundAddress.asInstanceOf[InetSocketAddress]),
-        i.toDouble)
-      va() = Addr.Bound(addr)
-      assert(Await.result(client("hello")) == "hello".reverse)
-      assert(sr.counters(Seq("test", "requests")) == i)
-      assert(sr.counters(Seq("test", "connects")) == 1)
-      // each WC gets a new balancer which adds the addr
-      assert(sr.counters(Seq("test", "loadbalancer", "adds")) == i)
-      assert(sr.counters(Seq("test", "loadbalancer", "removes")) == i - 1)
-      assert(sr.gauges(Seq("test", "loadbalancer", "meanweight"))() == i)
-      assert(sr.numGauges(Seq("test", "loadbalancer", "meanweight")) == 1)
-      assert(sr.counters.get(Seq("test", "closes")).isEmpty)
-    }
+    for (i <- 1 to 10)
+      withClue(s"for i=$i:") {
+        val addr = WeightedAddress(
+          Address(server.boundAddress.asInstanceOf[InetSocketAddress]),
+          i.toDouble)
+        va() = Addr.Bound(addr)
+        assert(Await.result(client("hello")) == "hello".reverse)
+        assert(sr.counters(Seq("test", "requests")) == i)
+        assert(sr.counters(Seq("test", "connects")) == 1)
+        // each WC gets a new balancer which adds the addr
+        assert(sr.counters(Seq("test", "loadbalancer", "adds")) == i)
+        assert(sr.counters(Seq("test", "loadbalancer", "removes")) == i - 1)
+        assert(sr.gauges(Seq("test", "loadbalancer", "meanweight"))() == i)
+        assert(sr.numGauges(Seq("test", "loadbalancer", "meanweight")) == 1)
+        assert(sr.counters.get(Seq("test", "closes")).isEmpty)
+      }
 
     va() = Addr.Bound(Set.empty[Address])
     assert(sr.counters(Seq("test", "closes")) == 1)

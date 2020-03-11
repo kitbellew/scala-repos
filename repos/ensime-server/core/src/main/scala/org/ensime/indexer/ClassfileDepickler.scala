@@ -37,9 +37,12 @@ class ClassfileDepickler(file: FileObject) {
   }
 
   private def access(sym: Symbol): Access = {
-    if (sym.isPrivate) Private
-    else if (sym.isProtected) Protected
-    else Public
+    if (sym.isPrivate)
+      Private
+    else if (sym.isProtected)
+      Protected
+    else
+      Public
   }
 
   private def symbolName(a: Symbol): String = {

@@ -16,13 +16,15 @@ class ScalaIgnoreErrorHighlightingSurroundDescriptor
       file: PsiFile,
       startOffset: Int,
       endOffset: Int): Array[PsiElement] = {
-    if (!file.isInstanceOf[ScalaFile]) return PsiElement.EMPTY_ARRAY
+    if (!file.isInstanceOf[ScalaFile])
+      return PsiElement.EMPTY_ARRAY
     val startElement = file.findElementAt(startOffset)
     val endElement = file.findElementAt(endOffset - 1)
     if (startElement == null || endElement == null)
       return PsiElement.EMPTY_ARRAY
     val range = ScalaPsiUtil.getElementsRange(startElement, endElement)
-    if (range.length == 0) return PsiElement.EMPTY_ARRAY
+    if (range.length == 0)
+      return PsiElement.EMPTY_ARRAY
     if (range(0).getTextRange.getStartOffset != startOffset)
       return PsiElement.EMPTY_ARRAY
     if (range(range.length - 1).getTextRange.getEndOffset != endOffset)

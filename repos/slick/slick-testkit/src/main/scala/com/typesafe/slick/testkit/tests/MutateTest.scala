@@ -24,10 +24,14 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
       .flatMap { _ =>
         foreach(db.stream(data.mutate.transactionally)) { m =>
           if (!m.end) {
-            if (m.row._1 == 1) m.row = m.row.copy(_2 = "aa")
-            else if (m.row._1 == 2) m.delete
-            else if (m.row._1 == 3) m += ((5, "ee"))
-          } else seenEndMarker = true
+            if (m.row._1 == 1)
+              m.row = m.row.copy(_2 = "aa")
+            else if (m.row._1 == 2)
+              m.delete
+            else if (m.row._1 == 3)
+              m += ((5, "ee"))
+          } else
+            seenEndMarker = true
         }
       }
       .flatMap { _ =>
@@ -54,7 +58,8 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
     ) andThen tsByA(1).mutate(sendEndMarker = true).transactionally
 
     foreach(db.stream(a)) { m =>
-      if (!m.end) m.delete
+      if (!m.end)
+        m.delete
       else {
         seenEndMarker = true
         m += ((3, 9))

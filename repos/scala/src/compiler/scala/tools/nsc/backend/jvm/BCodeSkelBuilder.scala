@@ -167,14 +167,17 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         internalName,
         methodBTypeFromSymbol(_).descriptor) match {
         case Some(
-            EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
+              EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
           cnode.visitOuterClass(className, methodName, methodDescriptor)
         case _ => ()
       }
 
       val ssa = getAnnotPickle(thisName, claszSymbol)
       cnode.visitAttribute(
-        if (ssa.isDefined) pickleMarkerLocal else pickleMarkerForeign)
+        if (ssa.isDefined)
+          pickleMarkerLocal
+        else
+          pickleMarkerForeign)
       emitAnnotations(cnode, claszSymbol.annotations ++ ssa)
 
       if (isCZStaticModule || isCZParcelable) {
@@ -402,7 +405,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       def reset(isStaticMethod: Boolean) {
         slots.clear()
-        nxtIdx = if (isStaticMethod) 0 else 1
+        nxtIdx =
+          if (isStaticMethod)
+            0
+          else
+            1
       }
 
       def contains(locSym: Symbol): Boolean = {
@@ -514,7 +521,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       })
     }
     def lineNumber(tree: Tree) {
-      if (!emitLines || !tree.pos.isDefined) return;
+      if (!emitLines || !tree.pos.isDefined)
+        return;
       val nr = tree.pos.finalPosition.line
       if (nr != lastEmittedLineNr) {
         lastEmittedLineNr = nr
@@ -584,8 +592,10 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       val thrownExceptions: List[String] = getExceptions(excs)
 
       val bytecodeName =
-        if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME
-        else jMethodName
+        if (isMethSymStaticCtor)
+          CLASS_CONSTRUCTOR_NAME
+        else
+          jMethodName
 
       val mdesc = methodBTypeFromSymbol(methSymbol).descriptor
       mnode = cnode
@@ -623,7 +633,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       assert(
         vparamss.isEmpty || vparamss.tail.isEmpty,
         s"Malformed parameter list: $vparamss")
-      val params = if (vparamss.isEmpty) Nil else vparamss.head
+      val params =
+        if (vparamss.isEmpty)
+          Nil
+        else
+          vparamss.head
       for (p <- params) {
         locals.makeLocal(p.symbol)
       }
@@ -641,10 +655,18 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       val isAbstractMethod = rhs == EmptyTree
       val flags = GenBCode.mkFlags(
         javaFlags(methSymbol),
-        if (isAbstractMethod) asm.Opcodes.ACC_ABSTRACT else 0,
-        if (methSymbol.isStrictFP) asm.Opcodes.ACC_STRICT else 0,
-        if (isNative) asm.Opcodes.ACC_NATIVE
-        else 0 // native methods of objects are generated in mirror classes
+        if (isAbstractMethod)
+          asm.Opcodes.ACC_ABSTRACT
+        else
+          0,
+        if (methSymbol.isStrictFP)
+          asm.Opcodes.ACC_STRICT
+        else
+          0,
+        if (isNative)
+          asm.Opcodes.ACC_NATIVE
+        else
+          0 // native methods of objects are generated in mirror classes
       )
 
       initJMethod(flags, params.map(_.symbol))
@@ -661,8 +683,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
        * because no LabelDef ends up nested within itself after such duplication.
        */
       for (ld <- labelDefsAtOrUnder(dd.rhs);
-           ldp <- ld.params;
-           if !locals.contains(ldp.symbol)) {
+           ldp <- ld.params; if !locals.contains(ldp.symbol)) {
         // the tail-calls xform results in symbols shared btw method-params and labelDef-params, thus the guard above.
         locals.makeLocal(ldp.symbol)
       }
@@ -683,7 +704,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
                                                                 "(found: " + methSymbol.owner.info.decls.toList
                                                                   .mkString(
                                                                     ", ") + ")"
-                                                              else ""))
+                                                              else
+                                                                ""))
             case _ =>
               bc emitRETURN returnType
           }

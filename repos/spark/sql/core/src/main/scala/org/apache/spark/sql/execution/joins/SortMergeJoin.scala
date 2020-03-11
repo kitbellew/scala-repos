@@ -597,8 +597,10 @@ private[joins] class SortMergeJoinScanner(
         } else {
           assert(!bufferedRowKey.anyNull)
           comp = keyOrdering.compare(streamedRowKey, bufferedRowKey)
-          if (comp > 0) advancedBufferedToRowWithNullFreeJoinKey()
-          else if (comp < 0) advancedStreamed()
+          if (comp > 0)
+            advancedBufferedToRowWithNullFreeJoinKey()
+          else if (comp < 0)
+            advancedStreamed()
         }
       } while (streamedRow != null && bufferedRow != null && comp != 0)
       if (streamedRow == null || bufferedRow == null) {
@@ -839,7 +841,8 @@ private abstract class OneSideOuterIterator(
 
   override def advanceNext(): Boolean = {
     val r = advanceBufferUntilBoundConditionSatisfied() || advanceStream()
-    if (r) numOutputRows += 1
+    if (r)
+      numOutputRows += 1
     r
   }
 
@@ -1034,7 +1037,8 @@ private class FullOuterIterator(
 
   override def advanceNext(): Boolean = {
     val r = smjScanner.advanceNext()
-    if (r) numRows += 1
+    if (r)
+      numRows += 1
     r
   }
 

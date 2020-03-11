@@ -95,9 +95,12 @@ class TypeAnnotationInspection extends AbstractInspection {
     if (property.isLocal) {
       settings.LOCAL_PROPERTY_TYPE_ANNOTATION
     } else {
-      if (property.isPrivate) settings.PRIVATE_PROPERTY_TYPE_ANNOTATION
-      else if (property.isProtected) settings.PROTECTED_PROPERTY_TYPE_ANNOTATION
-      else settings.PUBLIC_PROPERTY_TYPE_ANNOTATION
+      if (property.isPrivate)
+        settings.PRIVATE_PROPERTY_TYPE_ANNOTATION
+      else if (property.isProtected)
+        settings.PROTECTED_PROPERTY_TYPE_ANNOTATION
+      else
+        settings.PUBLIC_PROPERTY_TYPE_ANNOTATION
     }
   }
 
@@ -107,18 +110,25 @@ class TypeAnnotationInspection extends AbstractInspection {
     if (method.isLocal) {
       settings.LOCAL_METHOD_TYPE_ANNOTATION
     } else {
-      if (method.isPrivate) settings.PRIVATE_METHOD_TYPE_ANNOTATION
-      else if (method.isProtected) settings.PROTECTED_METHOD_TYPE_ANNOTATION
-      else settings.PUBLIC_METHOD_TYPE_ANNOTATION
+      if (method.isPrivate)
+        settings.PRIVATE_METHOD_TYPE_ANNOTATION
+      else if (method.isProtected)
+        settings.PROTECTED_METHOD_TYPE_ANNOTATION
+      else
+        settings.PUBLIC_METHOD_TYPE_ANNOTATION
     }
   }
 
   private def kindOf(member: ScMember) =
-    if (member.isLocal) "Local"
+    if (member.isLocal)
+      "Local"
     else {
-      if (member.isPrivate) "Private"
-      else if (member.isProtected) "Protected"
-      else "Public"
+      if (member.isPrivate)
+        "Private"
+      else if (member.isProtected)
+        "Protected"
+      else
+        "Public"
     }
 
   private def inspect(

@@ -61,7 +61,8 @@ private[pickling] class IrScalaSymbols[
         case rtpe                              => (Nil, rtpe)
       }
       new ScalaIrClass(tpe, quantified, rawTpe)
-    } else sys.error(s"Don't know how to handle $tpe, ${tpe.typeSymbol.owner}")
+    } else
+      sys.error(s"Don't know how to handle $tpe, ${tpe.typeSymbol.owner}")
 
   // Implementation of IrClass symbol using a scala Type.
   private class ScalaIrClass(private[generator] val tpe: Type) extends IrClass {
@@ -145,10 +146,14 @@ private[pickling] class IrScalaSymbols[
         val tmp = tpe.typeSymbol.asType.companionSymbol
         if (tmp.isType) {
           val cp = tmp.asType.toType
-          if (cp != NoType) Some(new ScalaIrClass(cp, quantified, rawType))
-          else None
-        } else None
-      } else None
+          if (cp != NoType)
+            Some(new ScalaIrClass(cp, quantified, rawType))
+          else
+            None
+        } else
+          None
+      } else
+        None
     }
 
     override def isScala = !tpe.typeSymbol.isJava

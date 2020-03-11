@@ -1029,9 +1029,11 @@ abstract class PersistentActorSpec(config: Config)
     "correlate persistAsync handlers after restart" in {
       val persistentActor =
         namedPersistentActor[AsyncPersistHandlerCorrelationCheck]
-      for (n ← 1 to 100) persistentActor ! Cmd(n)
+      for (n ← 1 to 100)
+        persistentActor ! Cmd(n)
       persistentActor ! "boom"
-      for (n ← 1 to 20) persistentActor ! Cmd(n)
+      for (n ← 1 to 20)
+        persistentActor ! Cmd(n)
       persistentActor ! Cmd("done")
       expectMsg(5.seconds, "done")
     }

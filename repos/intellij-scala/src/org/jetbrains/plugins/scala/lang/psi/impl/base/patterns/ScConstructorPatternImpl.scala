@@ -43,10 +43,14 @@ class ScConstructorPatternImpl(node: ASTNode)
   override def toString: String = "ConstructorPattern"
 
   override def subpatterns: Seq[ScPattern] =
-    if (args != null) args.patterns else Seq.empty
+    if (args != null)
+      args.patterns
+    else
+      Seq.empty
 
   override def isIrrefutableFor(t: Option[ScType]): Boolean = {
-    if (t.isEmpty) return false
+    if (t.isEmpty)
+      return false
     ref.bind() match {
       case Some(ScalaResolveResult(clazz: ScClass, _)) if clazz.isCase =>
         ScType.extractClassType(t.get, Some(clazz.getProject)) match {
@@ -55,10 +59,12 @@ class ScConstructorPatternImpl(node: ASTNode)
             clazz.constructor match {
               case Some(constr: ScPrimaryConstructor) =>
                 val clauses = constr.parameterList.clauses
-                if (clauses.isEmpty) subpatterns.isEmpty
+                if (clauses.isEmpty)
+                  subpatterns.isEmpty
                 else {
                   val params = clauses.head.parameters
-                  if (params.isEmpty) return subpatterns.isEmpty
+                  if (params.isEmpty)
+                    return subpatterns.isEmpty
                   if (params.length != subpatterns.length)
                     return false //todo: repeated parameters?
                   var i = 0
@@ -117,7 +123,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                       case Some(subst) => subst followed emptySubst
                       case _           => emptySubst
                     }
-                  } else emptySubst
+                  } else
+                    emptySubst
                 case _ => emptySubst
               }
             }
@@ -137,7 +144,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                 fun.parameters.length == 1 =>
             val substitutor = r.substitutor
             val subst =
-              if (fun.typeParameters.isEmpty) substitutor
+              if (fun.typeParameters.isEmpty)
+                substitutor
               else {
                 val undefSubst: ScSubstitutor =
                   fun.typeParameters.foldLeft(ScSubstitutor.empty)((s, p) =>
@@ -151,7 +159,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                       p.upperBound.getOrAny))
                 val emptyRes = substitutor followed emptySubst
                 val result = fun.parameters(0).getType(TypingContext.empty)
-                if (result.isEmpty) emptyRes
+                if (result.isEmpty)
+                  emptyRes
                 else {
                   val funType = undefSubst.subst(result.get)
                   expectedType match {
@@ -164,7 +173,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                             newSubst followed substitutor followed emptySubst
                           case _ => emptyRes
                         }
-                      } else emptyRes
+                      } else
+                        emptyRes
                     case _ => emptyRes
                   }
                 }

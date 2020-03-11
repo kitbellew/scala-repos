@@ -9,47 +9,62 @@ object Statistics {
 
   /** If enabled, increment counter by one */
   @inline final def incCounter(c: Counter) {
-    if (_enabled && c != null) c.value += 1
+    if (_enabled && c != null)
+      c.value += 1
   }
 
   /** If enabled, increment counter by given delta */
   @inline final def incCounter(c: Counter, delta: Int) {
-    if (_enabled && c != null) c.value += delta
+    if (_enabled && c != null)
+      c.value += delta
   }
 
   /** If enabled, increment counter in map `ctrs` at index `key` by one */
   @inline final def incCounter[K](ctrs: QuantMap[K, Counter], key: K) =
-    if (_enabled && ctrs != null) ctrs(key).value += 1
+    if (_enabled && ctrs != null)
+      ctrs(key).value += 1
 
   /** If enabled, start subcounter. While active it will track all increments of
     *  its base counter.
     */
   @inline final def startCounter(sc: SubCounter): (Int, Int) =
-    if (_enabled && sc != null) sc.start() else null
+    if (_enabled && sc != null)
+      sc.start()
+    else
+      null
 
   /** If enabled, stop subcounter from tracking its base counter. */
   @inline final def stopCounter(sc: SubCounter, start: (Int, Int)) {
-    if (_enabled && sc != null) sc.stop(start)
+    if (_enabled && sc != null)
+      sc.stop(start)
   }
 
   /** If enabled, start timer */
   @inline final def startTimer(tm: Timer): TimerSnapshot =
-    if (_enabled && tm != null) tm.start() else null
+    if (_enabled && tm != null)
+      tm.start()
+    else
+      null
 
   /** If enabled, stop timer */
   @inline final def stopTimer(tm: Timer, start: TimerSnapshot) {
-    if (_enabled && tm != null) tm.stop(start)
+    if (_enabled && tm != null)
+      tm.stop(start)
   }
 
   /** If enabled, push and start a new timer in timer stack */
   @inline final def pushTimer(
       timers: TimerStack,
       timer: => StackableTimer): TimerSnapshot =
-    if (_enabled && timers != null) timers.push(timer) else null
+    if (_enabled && timers != null)
+      timers.push(timer)
+    else
+      null
 
   /** If enabled, stop and pop timer from timer stack */
   @inline final def popTimer(timers: TimerStack, prev: TimerSnapshot) {
-    if (_enabled && timers != null) timers.pop(prev)
+    if (_enabled && timers != null)
+      timers.pop(prev)
   }
 
   /** Create a new counter that shows as `prefix` and is active in given phases */
@@ -111,17 +126,24 @@ object Statistics {
 
   def allQuantities: Iterable[Quantity] =
     for ((_, q) <- qs if q.underlying == q;
-         r <- q :: q.children.toList if r.prefix.nonEmpty) yield r
+         r <- q :: q.children.toList if r.prefix.nonEmpty)
+      yield r
 
   private def showPercent(x: Long, base: Long) =
-    if (base == 0) "" else f" (${x.toDouble / base.toDouble * 100}%2.1f%%)"
+    if (base == 0)
+      ""
+    else
+      f" (${x.toDouble / base.toDouble * 100}%2.1f%%)"
 
   /** The base trait for quantities.
     *  Quantities with non-empty prefix are printed in the statistics info.
     */
   trait Quantity {
     if (enabled && prefix.nonEmpty) {
-      val key = s"${if (underlying != this) underlying.prefix else ""}/$prefix"
+      val key = s"${if (underlying != this)
+        underlying.prefix
+      else
+        ""}/$prefix"
       qs(key) = this
     }
     val prefix: String
@@ -142,9 +164,12 @@ object Statistics {
       with Ordered[Counter] {
     var value: Int = 0
     def compare(that: Counter): Int =
-      if (this.value < that.value) -1
-      else if (this.value > that.value) 1
-      else 0
+      if (this.value < that.value)
+        -1
+      else if (this.value > that.value)
+        1
+      else
+        0
     override def equals(that: Any): Boolean =
       that match {
         case that: Counter => (this compare that) == 0
@@ -163,7 +188,8 @@ object Statistics {
       extends Counter(prefix, underlying.phases)
       with SubQuantity {
     override def toString =
-      if (value == 0) "0"
+      if (value == 0)
+        "0"
       else {
         assert(underlying.value != 0, prefix + "/" + underlying.line)
         f"${value.toFloat / underlying.value}%2.1f"
@@ -209,9 +235,12 @@ object Statistics {
       with Ordered[StackableTimer] {
     var specificNanos: Long = 0
     def compare(that: StackableTimer): Int =
-      if (this.specificNanos < that.specificNanos) -1
-      else if (this.specificNanos > that.specificNanos) 1
-      else 0
+      if (this.specificNanos < that.specificNanos)
+        -1
+      else if (this.specificNanos > that.specificNanos)
+        1
+      else
+        0
     override def equals(that: Any): Boolean =
       that match {
         case that: StackableTimer => (this compare that) == 0

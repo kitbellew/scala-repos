@@ -86,8 +86,10 @@ private[evaluation] class ScalaEvaluatorBuilder(
   import org.jetbrains.plugins.scala.debugger.evaluation.ScalaEvaluatorBuilderUtil._
 
   val contextClass = {
-    if (position == null) null
-    else getContextClass(position.getElementAt, strict = false)
+    if (position == null)
+      null
+    else
+      getContextClass(position.getElementAt, strict = false)
   }
 
   def getEvaluator: Evaluator =

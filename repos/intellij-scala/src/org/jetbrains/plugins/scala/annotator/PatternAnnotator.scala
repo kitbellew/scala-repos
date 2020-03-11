@@ -115,7 +115,7 @@ object PatternAnnotator {
           exprTypeText)
         holder.createErrorAnnotation(pattern, message)
       case ScTypedPattern(
-          typeElem @ ScCompoundTypeElement(_, Some(refinement))) =>
+            typeElem @ ScCompoundTypeElement(_, Some(refinement))) =>
         val message = ScalaBundle.message("pattern.on.refinement.unchecked")
         holder.createWarningAnnotation(typeElem, message)
       case c: ScConstructorPattern if neverMatches && patType.isFinalType =>
@@ -140,8 +140,10 @@ object PatternAnnotator {
         holder.createErrorAnnotation(pattern, message)
       case (_: ScTypedPattern | _: ScConstructorPattern) if neverMatches =>
         val erasureWarn =
-          if (isEliminatedByErasure) ScalaBundle.message("erasure.warning")
-          else ""
+          if (isEliminatedByErasure)
+            ScalaBundle.message("erasure.warning")
+          else
+            ""
         val (exprTypeText, patTypeText) =
           ScTypePresentation.different(exprType, patType)
         val message = ScalaBundle.message(
@@ -308,7 +310,8 @@ object PatternAnnotatorUtil {
         if (subTypes.size == subPat.size)
           Some(
             ScTupleType(subTypes)(project, GlobalSearchScope.allScope(project)))
-        else None
+        else
+          None
       case typed: ScTypedPattern =>
         typed.typePattern.map(_.typeElement.calcType)
       case naming: ScNamingPattern =>

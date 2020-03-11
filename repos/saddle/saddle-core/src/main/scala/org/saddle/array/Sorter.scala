@@ -158,7 +158,8 @@ object Sorter {
     var i = 0
     while (i < tmp.length) {
       val ti = tmp(i)
-      if (ti != ti) tmp(i) = Double.NegativeInfinity
+      if (ti != ti)
+        tmp(i) = Double.NegativeInfinity
       i += 1
     }
     tmp
@@ -169,7 +170,8 @@ object Sorter {
     var i = 0
     while (i < tmp.length) {
       val ti = tmp(i)
-      if (ti != ti) tmp(i) = Float.NegativeInfinity
+      if (ti != ti)
+        tmp(i) = Float.NegativeInfinity
       i += 1
     }
     tmp

@@ -194,7 +194,11 @@ object SampleData extends CValueGenerators {
       } yield {
         val rows =
           for (row <- sampleData.data)
-            yield if (Random.nextDouble < 0.25) JUndefined else row
+            yield
+              if (Random.nextDouble < 0.25)
+                JUndefined
+              else
+                row
         SampleData(rows, sampleData.schema)
       }
 
@@ -207,15 +211,17 @@ object SampleData extends CValueGenerators {
     val gen = for {
       sampleData <- arbitrary(sample)
     } yield {
-      val rows = for (row <- sampleData.data) yield {
-        if (false && Random.nextDouble >= 0.25) {
-          row
-        } else if (row.get(path) != null && row.get(path) != JUndefined) {
-          row.set(path, JUndefined)
-        } else {
-          row
-        }
-      }
+      val rows =
+        for (row <- sampleData.data)
+          yield {
+            if (false && Random.nextDouble >= 0.25) {
+              row
+            } else if (row.get(path) != null && row.get(path) != JUndefined) {
+              row.set(path, JUndefined)
+            } else {
+              row
+            }
+          }
       SampleData(rows, sampleData.schema)
     }
 

@@ -37,16 +37,20 @@ trait GameHelper {
     val p1 = playerText(player, withRating = true)
     val p2 = playerText(opponent, withRating = true)
     val speedAndClock =
-      if (game.imported) "imported"
+      if (game.imported)
+        "imported"
       else
         game.clock.fold(chess.Speed.Correspondence.name) { c =>
           s"${chess.Speed(c.some).name} (${c.show})"
         }
     val mode = game.mode.name
     val variant =
-      if (game.variant == chess.variant.FromPosition) "position setup chess"
-      else if (game.variant.exotic) game.variant.name
-      else "chess"
+      if (game.variant == chess.variant.FromPosition)
+        "position setup chess"
+      else if (game.variant.exotic)
+        game.variant.name
+      else
+        "chess"
     import chess.Status._
     val result = (game.winner, game.loser, game.status) match {
       case (Some(w), _, Mate) => s"${playerText(w)} won by checkmate"
@@ -135,9 +139,12 @@ trait GameHelper {
       mod: Boolean = false,
       link: Boolean = true)(implicit ctx: UserContext) = Html {
     val statusIcon =
-      if (withStatus) statusIconSpan
-      else if (withBerserk && player.berserk) berserkIconSpan
-      else ""
+      if (withStatus)
+        statusIconSpan
+      else if (withBerserk && player.berserk)
+        berserkIconSpan
+      else
+        ""
     player.userId.flatMap(lightUser) match {
       case None =>
         val klass = cssClass.??(" " + _)
@@ -147,15 +154,26 @@ trait GameHelper {
         s"""<span class="user_link$klass">$content$statusIcon</span>"""
       case Some(user) =>
         val klass = userClass(user.id, cssClass, withOnline)
-        val href = s"${routes.User show user.name}${if (mod) "?mod" else ""}"
+        val href = s"${routes.User show user.name}${if (mod)
+          "?mod"
+        else
+          ""}"
         val content = playerUsername(player, withRating)
         val diff =
           (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
         val mark = engine ?? s"""<span class="engine_mark" title="${trans
           .thisPlayerUsesChessComputerAssistance()}"></span>"""
         val dataIcon = withOnline ?? """data-icon="r""""
-        val space = if (withOnline) "&nbsp;" else ""
-        val tag = if (link) "a" else "span"
+        val space =
+          if (withOnline)
+            "&nbsp;"
+          else
+            ""
+        val tag =
+          if (link)
+            "a"
+          else
+            "span"
         s"""<$tag $dataIcon $klass href="$href">$space$content$diff$mark</$tag>$statusIcon"""
     }
   }
@@ -211,22 +229,27 @@ trait GameHelper {
       blackUserId: String,
       finished: Boolean,
       result: Option[Boolean]) = {
-    val res = if (finished) result match {
-      case Some(true)  => "1-0"
-      case Some(false) => "0-1"
-      case None        => "½-½"
-    }
-    else "*"
+    val res =
+      if (finished)
+        result match {
+          case Some(true)  => "1-0"
+          case Some(false) => "0-1"
+          case None        => "½-½"
+        }
+      else
+        "*"
     s"${usernameOrId(whiteUserId)} $res ${usernameOrId(blackUserId)}"
   }
 
   def gameResult(game: Game) =
-    if (game.finished) game.winnerColor match {
-      case Some(chess.White) => "1-0"
-      case Some(chess.Black) => "0-1"
-      case None              => "½-½"
-    }
-    else "*"
+    if (game.finished)
+      game.winnerColor match {
+        case Some(chess.White) => "1-0"
+        case Some(chess.Black) => "0-1"
+        case None              => "½-½"
+      }
+    else
+      "*"
 
   lazy val miniBoardContent = Html(
     """<div class="cg-board-wrap"><div class="cg-board"></div></div>""")
@@ -262,7 +285,11 @@ trait GameHelper {
     val fen = Forsyth exportBoard game.toChess.board
     val lastMove = ~game.castleLastMoveTime.lastMoveString
     val variant = game.variant.key
-    val tag = if (withLink) "a" else "span"
+    val tag =
+      if (withLink)
+        "a"
+      else
+        "span"
     s"""<$tag $href $title class="mini_board mini_board_${game.id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov.color.name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
   }
 

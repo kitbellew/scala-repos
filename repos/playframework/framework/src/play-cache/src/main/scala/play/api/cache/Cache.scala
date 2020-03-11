@@ -67,7 +67,10 @@ object Cache {
   private[cache] def cacheApi(implicit app: Application) = cacheApiCache(app)
 
   private def intToDuration(seconds: Int): Duration =
-    if (seconds == 0) Duration.Inf else seconds.seconds
+    if (seconds == 0)
+      Duration.Inf
+    else
+      seconds.seconds
 
   /**
     * Set a value into the cache.

@@ -82,10 +82,14 @@ object CharUtils {
     if (long != 0) {
       @tailrec def putChar(shift: Int): JStringBuilder = {
         sb.append(upperHexDigit(long >>> shift))
-        if (shift > 0) putChar(shift - 4) else sb
+        if (shift > 0)
+          putChar(shift - 4)
+        else
+          sb
       }
       putChar((63 - java.lang.Long.numberOfLeadingZeros(long)) & 0xFC)
-    } else sb.append('0')
+    } else
+      sb.append('0')
 
   /**
     * Efficiently converts the given long into a lower-case hex string.
@@ -102,10 +106,14 @@ object CharUtils {
     if (long != 0) {
       @tailrec def putChar(shift: Int): JStringBuilder = {
         sb.append(lowerHexDigit(long >>> shift))
-        if (shift > 0) putChar(shift - 4) else sb
+        if (shift > 0)
+          putChar(shift - 4)
+        else
+          sb
       }
       putChar((63 - java.lang.Long.numberOfLeadingZeros(long)) & 0xFC)
-    } else sb.append('0')
+    } else
+      sb.append('0')
 
   /**
     * Returns a String representing the given long in signed decimal representation.
@@ -117,13 +125,22 @@ object CharUtils {
     * Computes the number of characters required for the signed decimal representation of the given integer.
     */
   def numberOfDecimalDigits(long: Long): Int =
-    if (long != Long.MinValue) _numberOfDecimalDigits(long) else 20
+    if (long != Long.MinValue)
+      _numberOfDecimalDigits(long)
+    else
+      20
 
   private def _numberOfDecimalDigits(long: Long): Int = {
     def mul10(l: Long) = (l << 3) + (l << 1)
     @tailrec def len(test: Long, l: Long, result: Int): Int =
-      if (test > l || test < 0) result else len(mul10(test), l, result + 1)
-    if (long < 0) len(10, -long, 2) else len(10, long, 1)
+      if (test > l || test < 0)
+        result
+      else
+        len(mul10(test), l, result + 1)
+    if (long < 0)
+      len(10, -long, 2)
+    else
+      len(10, long, 1)
   }
 
   val LongMinValueChars = "-9223372036854775808".toCharArray
@@ -137,7 +154,8 @@ object CharUtils {
       val buf = new Array[Char](len)
       getSignedDecimalChars(long, len, buf)
       buf
-    } else LongMinValueChars
+    } else
+      LongMinValueChars
 
   /**
     * Converts the given Long value into its signed decimal character representation.
@@ -168,15 +186,18 @@ object CharUtils {
         buf(ix - 2) = ('0' + rq).toChar
         buf(ix - 1) = ('0' + r - mul10(rq)).toChar
         phase1(q, ix - 2)
-      } else phase2(l.toInt, ix)
+      } else
+        phase2(l.toInt, ix)
 
     // for small numbers we can use the "fast-path"
     @tailrec def phase2(i: Int, ix: Int): Unit = {
       val q = div10(i)
       val r = i - mul10(q)
       buf(ix - 1) = ('0' + r).toChar
-      if (q != 0) phase2(q, ix - 1)
-      else if (long < 0) buf(ix - 2) = '-'
+      if (q != 0)
+        phase2(q, ix - 1)
+      else if (long < 0)
+        buf(ix - 2) = '-'
     }
   }
 
@@ -185,14 +206,20 @@ object CharUtils {
     * Note: only works for 7-bit ASCII letters.
     */
   def toLowerCase(c: Char): Char =
-    if (CharPredicate.UpperAlpha(c)) (c + 0x20).toChar else c
+    if (CharPredicate.UpperAlpha(c))
+      (c + 0x20).toChar
+    else
+      c
 
   /**
     * Efficiently upper-cases the given character.
     * Note: only works for 7-bit ASCII letters.
     */
   def toUpperCase(c: Char): Char =
-    if (CharPredicate.LowerAlpha(c)) (c + 0x20).toChar else c
+    if (CharPredicate.LowerAlpha(c))
+      (c + 0x20).toChar
+    else
+      c
 
   def escape(c: Char): String = c match {
     case '\t' ⇒ "\\t"
@@ -206,5 +233,8 @@ object CharUtils {
   val escapedChars = CharPredicate("\t\r\n", EOI, Character.isISOControl _)
 
   def escape(s: String): String =
-    if (escapedChars.matchesAny(s)) s.flatMap(escape(_: Char)) else s
+    if (escapedChars.matchesAny(s))
+      s.flatMap(escape(_: Char))
+    else
+      s
 }

@@ -145,8 +145,10 @@ class GraphStageDocSpec extends AkkaSpec {
           new InHandler {
             override def onPush(): Unit = {
               val elem = grab(in)
-              if (p(elem)) push(out, elem)
-              else pull(in)
+              if (p(elem))
+                push(out, elem)
+              else
+                pull(in)
             }
           })
         setHandler(
@@ -197,7 +199,8 @@ class GraphStageDocSpec extends AkkaSpec {
             }
 
             override def onUpstreamFinish(): Unit = {
-              if (lastElem.isDefined) emit(out, lastElem.get)
+              if (lastElem.isDefined)
+                emit(out, lastElem.get)
               complete(out)
             }
 
@@ -387,7 +390,8 @@ class GraphStageDocSpec extends AkkaSpec {
             new InHandler {
               override def onPush(): Unit = {
                 val elem = grab(in)
-                if (open) pull(in)
+                if (open)
+                  pull(in)
                 else {
                   push(out, elem)
                   open = true

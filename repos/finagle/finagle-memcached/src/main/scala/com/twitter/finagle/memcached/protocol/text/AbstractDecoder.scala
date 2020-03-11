@@ -18,7 +18,8 @@ object AbstractDecoder {
   private val FindCRLF = new ChannelBufferIndexFinder() {
     def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
       val enoughBytesForDelimeter = guessedIndex + Delimiter.readableBytes
-      if (buffer.writerIndex < enoughBytesForDelimeter) return false
+      if (buffer.writerIndex < enoughBytesForDelimeter)
+        return false
 
       buffer.getByte(guessedIndex) == '\r' &&
       buffer.getByte(guessedIndex + 1) == '\n'
@@ -59,7 +60,11 @@ abstract class AbstractDecoder extends FrameDecoder {
       buffer.skipBytes(frameLength + DelimiterLength)
 
       val tokens = frame.split
-      val bytesNeeded = if (tokens.nonEmpty) needsData(tokens) else -1
+      val bytesNeeded =
+        if (tokens.nonEmpty)
+          needsData(tokens)
+        else
+          -1
       if (bytesNeeded == -1) {
         start()
         continue(tokens)

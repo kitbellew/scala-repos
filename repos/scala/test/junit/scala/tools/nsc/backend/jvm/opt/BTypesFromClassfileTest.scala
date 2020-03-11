@@ -43,7 +43,8 @@ class BTypesFromClassfileTest {
       fromSym: ClassBType,
       fromClassfile: ClassBType,
       checked: Set[InternalName] = Set.empty): Set[InternalName] = {
-    if (checked(fromSym.internalName)) checked
+    if (checked(fromSym.internalName))
+      checked
     else {
       assert(fromSym == fromClassfile, s"$fromSym != $fromClassfile")
       sameInfo(
@@ -75,7 +76,8 @@ class BTypesFromClassfileTest {
         // Nested class symbols can undergo makeNotPrivate (ExplicitOuter). But this is only applied
         // for symbols of class symbols that are being compiled, not those read from a pickle.
         // So a class may be public in bytecode, but the symbol still says private.
-        if (fromSym.nestedInfo.isEmpty) fromSym.flags == fromClassfile.flags
+        if (fromSym.nestedInfo.isEmpty)
+          fromSym.flags == fromClassfile.flags
         else
           (fromSym.flags | ACC_PRIVATE | ACC_PUBLIC) == (fromClassfile.flags | ACC_PRIVATE | ACC_PUBLIC)
       },

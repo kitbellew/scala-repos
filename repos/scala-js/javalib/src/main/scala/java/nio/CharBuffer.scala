@@ -45,7 +45,8 @@ abstract class CharBuffer private[nio] (
   def read(target: CharBuffer): Int = {
     // Attention: this method must not change this buffer's position
     val n = remaining
-    if (n == 0) -1
+    if (n == 0)
+      -1
     else if (_array != null) { // even if read-only
       target.put(_array, _arrayOffset, n)
       n

@@ -13,12 +13,16 @@ trait ZippedValues[@specialized(Double) V1, @specialized(Double) V2] {
   def foreach(f: (V1, V2) => Unit)
 
   def exists(f: (V1, V2) => Boolean): Boolean = {
-    foreach((a, b) => if (f(a, b)) return true)
+    foreach((a, b) =>
+      if (f(a, b))
+        return true)
     false
   }
 
   def forall(f: (V1, V2) => Boolean): Boolean = {
-    foreach((a, b) => if (!f(a, b)) return false)
+    foreach((a, b) =>
+      if (!f(a, b))
+        return false)
     true
   }
   // TODO: define map for this.

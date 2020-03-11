@@ -209,17 +209,21 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           var elidableCopyOps = Set.empty[AbstractInsnNode]
           var replaceOK = true
           val copyOps = new CopyOpsIterator(Set(creation), finalCons, prodCons)
-          while (replaceOK && copyOps.hasNext) copyOps.next() match {
-            case vi: VarInsnNode =>
-              elidableCopyOps += vi
+          while (replaceOK && copyOps.hasNext)
+            copyOps.next() match {
+              case vi: VarInsnNode =>
+                elidableCopyOps += vi
 
-            case copyOp if copyOp.getOpcode == DUP =>
-              elidableCopyOps += copyOp
+              case copyOp if copyOp.getOpcode == DUP =>
+                elidableCopyOps += copyOp
 
-            case _ =>
-              replaceOK = false
-          }
-          if (replaceOK) Some(elidableCopyOps) else None
+              case _ =>
+                replaceOK = false
+            }
+          if (replaceOK)
+            Some(elidableCopyOps)
+          else
+            None
         }
 
         val canRewrite = keepBox || (copyOpsToEliminate match {
@@ -276,8 +280,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               val loadOps =
                 new VarInsnNode(tp.getOpcode(ILOAD), slot) :: extraction
                   .postExtractionAdaptationOps(tp)
-              if (keepBox) toReplace(extraction.consumer) = getPop(1) :: loadOps
-              else toReplace(extraction.consumer) = loadOps
+              if (keepBox)
+                toReplace(extraction.consumer) = getPop(1) :: loadOps
+              else
+                toReplace(extraction.consumer) = loadOps
               toDelete ++= extraction.allInsns - extraction.consumer
           }
         }
@@ -321,14 +327,15 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
         /** Remove box creations - leave the boxed value(s) on the stack instead. */
         def replaceCreationOps(): Unit = {
-          for (creation <- allCreations) creation.loadInitialValues match {
-            case None =>
-              toDelete ++= creation.allInsns
+          for (creation <- allCreations)
+            creation.loadInitialValues match {
+              case None =>
+                toDelete ++= creation.allInsns
 
-            case Some(ops) =>
-              toReplace(creation.valuesConsumer) = ops
-              toDelete ++= (creation.allInsns - creation.valuesConsumer)
-          }
+              case Some(ops) =>
+                toReplace(creation.valuesConsumer) = ops
+                toDelete ++= (creation.allInsns - creation.valuesConsumer)
+            }
         }
 
         /**
@@ -411,8 +418,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                   val (escapingConsumers, boxConsumers) =
                     allConsumers.partition(_.isEscaping)
                   if (boxConsumers.nonEmpty) {
-                    for (c <- allCreations) knownHandled ++= c.allInsns
-                    for (e <- allConsumers) knownHandled ++= e.allInsns
+                    for (c <- allCreations)
+                      knownHandled ++= c.allInsns
+                    for (e <- allConsumers)
+                      knownHandled ++= e.allInsns
 
                     val hasEscaping = escapingConsumers.nonEmpty
                     val hasWrite = allConsumers.exists(_.isWrite)
@@ -450,7 +459,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         method.instructions.insertBefore(location, op)
 
       for ((oldOp, newOps) <- toReplace) {
-        for (newOp <- newOps) method.instructions.insertBefore(oldOp, newOp)
+        for (newOp <- newOps)
+          method.instructions.insertBefore(oldOp, newOp)
         method.instructions.remove(oldOp)
         removeFromCallGraph(oldOp)
       }
@@ -517,8 +527,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         })
     }
 
-    if (addBoxConsumers(initialCreation)) Some((creations, consumers))
-    else None
+    if (addBoxConsumers(initialCreation))
+      Some((creations, consumers))
+    else
+      None
   }
 
   /**
@@ -568,27 +580,36 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
     var replaceOK = true
     val copyOps = new CopyOpsIterator(initialProds, finalCons, prodCons)
-    while (replaceOK && copyOps.hasNext) copyOps.next() match {
-      case vi: VarInsnNode =>
-        val isLoad = vi.getOpcode == ALOAD
-        val typedVarOp = (tp: (Type, Int)) => {
-          val opc = tp._1.getOpcode(if (isLoad) ILOAD else ISTORE)
-          new VarInsnNode(opc, tp._2)
-        }
-        val locs = newLocals(vi.`var`)
-        replacements += vi -> (if (isLoad) locs.map(typedVarOp)
-                               else locs.reverseMap(typedVarOp))
+    while (replaceOK && copyOps.hasNext)
+      copyOps.next() match {
+        case vi: VarInsnNode =>
+          val isLoad = vi.getOpcode == ALOAD
+          val typedVarOp = (tp: (Type, Int)) => {
+            val opc = tp._1.getOpcode(
+              if (isLoad)
+                ILOAD
+              else
+                ISTORE)
+            new VarInsnNode(opc, tp._2)
+          }
+          val locs = newLocals(vi.`var`)
+          replacements += vi -> (if (isLoad)
+                                   locs.map(typedVarOp)
+                                 else
+                                   locs.reverseMap(typedVarOp))
 
-      case copyOp =>
-        if (copyOp.getOpcode == DUP && valueTypes.lengthCompare(1) == 0) {
-          if (valueTypes.head.getSize == 2)
-            replacements += copyOp -> List(new InsnNode(DUP2))
-        } else {
-          replaceOK = false
-        }
-    }
-    if (replaceOK) Some((replacements, nextCopyOpLocal, reTypedLocals))
-    else None
+        case copyOp =>
+          if (copyOp.getOpcode == DUP && valueTypes.lengthCompare(1) == 0) {
+            if (valueTypes.head.getSize == 2)
+              replacements += copyOp -> List(new InsnNode(DUP2))
+          } else {
+            replaceOK = false
+          }
+      }
+    if (replaceOK)
+      Some((replacements, nextCopyOpLocal, reTypedLocals))
+    else
+      None
   }
 
   /**
@@ -721,7 +742,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       if (receiverProds.size == 1) {
         val prod = receiverProds.head
         if (isPredefLoad(prod) && prodCons.consumersOfOutputsFrom(prod) == Set(
-              mi)) return Some(prod)
+              mi))
+          return Some(prod)
       }
       None
     }
@@ -748,8 +770,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       Type.getArgumentTypes(mi.desc)(0)
 
     private def boxClass(mi: MethodInsnNode) = {
-      if (mi.name == GenBCode.INSTANCE_CONSTRUCTOR_NAME) mi.owner
-      else Type.getReturnType(mi.desc).getInternalName
+      if (mi.name == GenBCode.INSTANCE_CONSTRUCTOR_NAME)
+        mi.owner
+      else
+        Type.getReturnType(mi.desc).getInternalName
     }
 
     def checkPrimitiveBox(
@@ -759,7 +783,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       // mi is either a box factory or a box constructor invocation
       def checkKind(mi: MethodInsnNode) = expectedKind match {
         case Some(kind) =>
-          if (kind.boxClass == boxClass(mi)) expectedKind else None
+          if (kind.boxClass == boxClass(mi))
+            expectedKind
+          else
+            None
         case None => Some(PrimitiveBox(boxedType(mi), boxClass(mi)))
       }
 
@@ -771,7 +798,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             for (predefLoad <- BoxKind.checkReceiverPredefLoad(mi, prodCons);
                  kind <- checkKind(mi))
               yield (ModuleFactory(predefLoad, mi), kind)
-          else None
+          else
+            None
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
@@ -797,7 +825,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             BoxKind
               .checkReceiverPredefLoad(mi, prodCons)
               .map(ModuleGetter(_, mi))
-          else None
+          else
+            None
 
         case _ => None
       }
@@ -835,7 +864,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         prodCons: ProdConsAnalyzer): Option[(BoxCreation, Ref)] = {
       def checkKind(mi: MethodInsnNode): Option[Ref] = expectedKind match {
         case Some(kind) =>
-          if (kind.refClass == refClass(mi)) expectedKind else None
+          if (kind.refClass == refClass(mi))
+            expectedKind
+          else
+            None
         case None => Some(Ref(boxedType(mi), refClass(mi)))
       }
 
@@ -848,7 +880,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               (
                 StaticFactory(mi, loadInitialValues = Some(loadZeroValue(mi))),
                 _))
-          else None
+          else
+            None
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
@@ -866,9 +899,12 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         prodCons: ProdConsAnalyzer): Option[BoxConsumer] = insn match {
       case fi: FieldInsnNode
           if fi.owner == kind.refClass && fi.name == "elem" =>
-        if (fi.getOpcode == GETFIELD) Some(StaticGetterOrInstanceRead(fi))
-        else if (fi.getOpcode == PUTFIELD) Some(StaticSetterOrInstanceWrite(fi))
-        else None
+        if (fi.getOpcode == GETFIELD)
+          Some(StaticGetterOrInstanceRead(fi))
+        else if (fi.getOpcode == PUTFIELD)
+          Some(StaticSetterOrInstanceWrite(fi))
+        else
+          None
 
       case _ => None
     }
@@ -907,7 +943,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         prodCons: ProdConsAnalyzer): Option[(BoxCreation, Tuple)] = {
       def checkKind(mi: MethodInsnNode): Option[Tuple] = expectedKind match {
         case Some(kind) =>
-          if (kind.tupleClass == tupleClass(mi)) expectedKind else None
+          if (kind.tupleClass == tupleClass(mi))
+            expectedKind
+          else
+            None
         case None => Some(Tuple(boxedTypes(mi), tupleClass(mi)))
       }
 
@@ -951,7 +990,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             if (typeOK) {
               if (isSpecializedTupleGetter(mi))
                 return Some(StaticGetterOrInstanceRead(mi))
-              else if (isTupleGetter(mi)) return Some(PrimitiveBoxingGetter(mi))
+              else if (isTupleGetter(mi))
+                return Some(PrimitiveBoxingGetter(mi))
             }
           } else if (expectedTupleClass == tupleClass) {
             if (isSpecializedTupleGetter(mi))
@@ -1014,8 +1054,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         case _                             => producer
       }
       val cons =
-        if (ultimate) prodCons.ultimateConsumersOfOutputsFrom(startInsn)
-        else prodCons.consumersOfOutputsFrom(startInsn)
+        if (ultimate)
+          prodCons.ultimateConsumersOfOutputsFrom(startInsn)
+        else
+          prodCons.consumersOfOutputsFrom(startInsn)
       this match {
         case InstanceCreation(_, _, initCall) => cons - initCall
         case _                                => cons
@@ -1055,7 +1097,11 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       */
     def boxProducers(prodCons: ProdConsAnalyzer): Set[AbstractInsnNode] = {
       val stackTop = prodCons.frameAt(consumer).stackTop
-      val slot = if (isWrite) stackTop - 1 else stackTop
+      val slot =
+        if (isWrite)
+          stackTop - 1
+        else
+          stackTop
       prodCons.initialProducersForValueAt(consumer, slot)
     }
 

@@ -132,7 +132,12 @@ trait Pattern {
 
     /** Replaces all occurrences of one subexpression with another one */
     def replace(from: Expr[_], to: Expr[_]): Expr[T] =
-      map(EndoFunction[Expr[_]](x => if (x == from) to else x))
+      map(
+        EndoFunction[Expr[_]](x =>
+          if (x == from)
+            to
+          else
+            x))
 
     /** Returns true if this expression contains given subexpression */
     def contains(s: Expr[_]): Boolean =
@@ -140,7 +145,10 @@ trait Pattern {
 
     /** Counts number of occurrences of the given subexpression. */
     def count(condition: Expr[_] => Boolean): Int =
-      (if (condition(this)) 1 else 0) + args.map(_.count(condition)).sum
+      (if (condition(this))
+         1
+       else
+         0) + args.map(_.count(condition)).sum
 
     /** Executes some code for every subexpression in the depth-first order */
     def foreach[U](block: Expr[_] => U): Unit = {
@@ -151,7 +159,10 @@ trait Pattern {
     /** Collects subexpressions successfully transformed by the given partial function, in depth-first order. */
     def collect[U](f: PartialFunction[Expr[_], U]): List[U] = {
       val a = args.flatMap(_.collect(f)).toList
-      if (f.isDefinedAt(this)) (f(this) :: a) else a
+      if (f.isDefinedAt(this))
+        (f(this) :: a)
+      else
+        a
     }
 
     def leaves: List[Leaf[T]] = collect {
@@ -239,8 +250,10 @@ trait Pattern {
           val rest = noOnes.filter(x => !x.isInstanceOf[Const[_]]).toList
           val reduced = reduceComponents(rest)
           val args =
-            if (num.similar(constant, num.zero)) reduced
-            else reduced ::: Const(constant) :: Nil
+            if (num.similar(constant, num.zero))
+              reduced
+            else
+              reduced ::: Const(constant) :: Nil
           args.size match {
             case 0 => Zero[T]
             case 1 => args.head
@@ -375,7 +388,11 @@ trait Pattern {
   }
 
   abstract class Var[T](implicit num: NumericOps[T]) extends Leaf[T] {
-    def derivative(variable: Var[T]) = if (variable == this) One[T] else Zero[T]
+    def derivative(variable: Var[T]) =
+      if (variable == this)
+        One[T]
+      else
+        Zero[T]
     def eval(f: Any => Any) = f(this).asInstanceOf[T]
   }
 
@@ -387,7 +404,10 @@ trait Pattern {
 
   case class Add[T](args: Iterable[Expr[T]])(implicit num: NumericOps[T])
       extends ManyArg[T] {
-    def eval(f: Any => Any) = num.sum(for (i <- args.iterator) yield i.eval(f))
+    def eval(f: Any => Any) =
+      num.sum(
+        for (i <- args.iterator)
+          yield i.eval(f))
     def derivative(v: Var[T]) = Add(args.map(_.derivative(v)))
     def mapArgs(f: EndoFunction[Expr[_]]) = Add(args map (x => f(x)))
     override def toString = "(" + args.mkString(" + ") + ")"
@@ -583,7 +603,10 @@ trait Pattern {
     def derivative(v: Var[T]) =
       IfElse(condition, left.derivative(v), right.derivative(v))
     def eval(f: Any => Any) =
-      if (condition.eval(f)) left.eval(f) else right.eval(f)
+      if (condition.eval(f))
+        left.eval(f)
+      else
+        right.eval(f)
     def mapArgs(f: EndoFunction[Expr[_]]) =
       IfElse(f(condition).asInstanceOf[Expr[Boolean]], f(left), f(right))
     override def toString =
@@ -595,8 +618,10 @@ trait Pattern {
 
     /** Creates a constant expression */
     def const[T](value: T)(implicit num: NumericOps[T]): Leaf[T] =
-      if (num.zero == value) Zero[T]
-      else Const(value)
+      if (num.zero == value)
+        Zero[T]
+      else
+        Const(value)
 
     implicit def double2Constant[T](d: Double)(
         implicit num: NumericOps[T]): Leaf[T] =

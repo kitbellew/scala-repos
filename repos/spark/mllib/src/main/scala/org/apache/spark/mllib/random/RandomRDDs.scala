@@ -987,6 +987,9 @@ object RandomRDDs {
   private def numPartitionsOrDefault(
       sc: SparkContext,
       numPartitions: Int): Int = {
-    if (numPartitions > 0) numPartitions else sc.defaultMinPartitions
+    if (numPartitions > 0)
+      numPartitions
+    else
+      sc.defaultMinPartitions
   }
 }

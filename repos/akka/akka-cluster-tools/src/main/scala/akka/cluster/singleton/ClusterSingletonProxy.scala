@@ -56,7 +56,10 @@ object ClusterSingletonProxySettings {
     * INTERNAL API
     */
   private[akka] def roleOption(role: String): Option[String] =
-    if (role == "") None else Option(role)
+    if (role == "")
+      None
+    else
+      Option(role)
 
 }
 
@@ -223,7 +226,8 @@ final class ClusterSingletonProxy(
     block()
     val after = membersByAge.headOption
     // if the head has changed, I need to find the new singleton
-    if (before != after) identifySingleton()
+    if (before != after)
+      identifySingleton()
   }
 
   /**

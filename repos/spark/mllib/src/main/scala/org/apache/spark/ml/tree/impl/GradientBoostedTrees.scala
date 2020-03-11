@@ -245,9 +245,13 @@ private[ml] object GradientBoostedTrees extends Logging {
         firstTreeWeight,
         firstTreeModel,
         loss)
-    if (validate) validatePredErrorCheckpointer.update(validatePredError)
+    if (validate)
+      validatePredErrorCheckpointer.update(validatePredError)
     var bestValidateError =
-      if (validate) validatePredError.values.mean() else 0.0
+      if (validate)
+        validatePredError.values.mean()
+      else
+        0.0
     var bestM = 1
 
     var m = 1
@@ -315,7 +319,8 @@ private[ml] object GradientBoostedTrees extends Logging {
 
     predErrorCheckpointer.deleteAllCheckpoints()
     validatePredErrorCheckpointer.deleteAllCheckpoints()
-    if (persistedInput) input.unpersist()
+    if (persistedInput)
+      input.unpersist()
 
     if (validate) {
       (baseLearners.slice(0, bestM), baseLearnerWeights.slice(0, bestM))

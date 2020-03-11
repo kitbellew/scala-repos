@@ -119,7 +119,8 @@ private[http] object Handshake {
             handle(Right(handlerFlow), subprotocol)
         }
         Some(header)
-      } else None
+      } else
+        None
     }
 
     /*
@@ -173,8 +174,10 @@ private[http] object Handshake {
       random.nextBytes(keyBytes)
       val key = `Sec-WebSocket-Key`(keyBytes)
       val protocol =
-        if (subprotocols.nonEmpty) `Sec-WebSocket-Protocol`(subprotocols) :: Nil
-        else Nil
+        if (subprotocols.nonEmpty)
+          `Sec-WebSocket-Protocol`(subprotocols) :: Nil
+        else
+          Nil
       //version, protocol, extensions, origin
 
       val headers = Seq(
@@ -252,8 +255,10 @@ private[http] object Handshake {
         new Expectation {
           def apply(resp: HttpResponse): Option[String] = {
             val v = value(resp)
-            if (condition(v)) None
-            else Some(msg(v))
+            if (condition(v))
+              None
+            else
+              Some(msg(v))
           }
         }
 

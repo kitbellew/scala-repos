@@ -80,7 +80,8 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
     val len = table.length
     while (i < len) {
       val curEntry = table(i)
-      if (curEntry ne null) f(entryToElem(curEntry))
+      if (curEntry ne null)
+        f(entryToElem(curEntry))
       i += 1
     }
   }
@@ -99,8 +100,10 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
     */
   def useSizeMap(t: Boolean) =
     if (t) {
-      if (!isSizeMapDefined) sizeMapInitAndRebuild()
-    } else sizeMapDisable()
+      if (!isSizeMapDefined)
+        sizeMapInitAndRebuild()
+    } else
+      sizeMapDisable()
 
 }
 

@@ -51,8 +51,10 @@ trait TakeRangeSpec[M[+_]]
 
       val result = toJson(takeRangeTable).copoint
       val expected =
-        if (start < 0) Stream()
-        else sample.data.toSeq.drop(start).take(count)
+        if (start < 0)
+          Stream()
+        else
+          sample.data.toSeq.drop(start).take(count)
 
       result must_== expected
     }

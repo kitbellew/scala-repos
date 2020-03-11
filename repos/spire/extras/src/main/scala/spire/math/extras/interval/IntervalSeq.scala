@@ -55,7 +55,10 @@ final class IntervalSeq[T] private (
   def apply(value: T): Boolean = at(value)
 
   def aboveAll: Boolean =
-    if (values.isEmpty) belowAll else valueAbove(kinds.last)
+    if (values.isEmpty)
+      belowAll
+    else
+      valueAbove(kinds.last)
 
   def unary_~ : IntervalSeq[T] =
     copy(belowAll = !belowAll, kinds = negateKinds(kinds))
@@ -158,7 +161,11 @@ final class IntervalSeq[T] private (
   def intervalIterator: Iterator[Interval[T]] = new IntervalIterator[T](lhs)
 
   private def foreachInterval[U](f: Interval[T] => U): Unit = {
-    var prev: Option[Bound[T]] = if (belowAll) Some(Unbound()) else None
+    var prev: Option[Bound[T]] =
+      if (belowAll)
+        Some(Unbound())
+      else
+        None
     for (i <- values.indices) {
       val vi = values(i)
       val ki = kinds(i)
@@ -402,12 +409,22 @@ object IntervalSeq {
     protected[this] def valueAbove(kind: Byte): Boolean = (kind & 2) != 0
 
     protected[this] def aBelow(i: Int) =
-      if (i > 0) valueAbove(ak(i - 1)) else a0
+      if (i > 0)
+        valueAbove(ak(i - 1))
+      else
+        a0
 
     protected[this] def bBelow(i: Int) =
-      if (i > 0) valueAbove(bk(i - 1)) else b0
+      if (i > 0)
+        valueAbove(bk(i - 1))
+      else
+        b0
 
-    protected[this] def rBelow = if (ri > 0) valueAbove(rk(ri - 1)) else r0
+    protected[this] def rBelow =
+      if (ri > 0)
+        valueAbove(rk(ri - 1))
+      else
+        r0
 
     def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit = {
       if (a0 == a1) {
@@ -534,10 +551,16 @@ object IntervalSeq {
     protected[this] def valueAbove(kind: Byte): Boolean = (kind & 2) != 0
 
     protected[this] def aBelow(i: Int) =
-      if (i > 0) valueAbove(ak(i - 1)) else a0
+      if (i > 0)
+        valueAbove(ak(i - 1))
+      else
+        a0
 
     protected[this] def bBelow(i: Int) =
-      if (i > 0) valueAbove(bk(i - 1)) else b0
+      if (i > 0)
+        valueAbove(bk(i - 1))
+      else
+        b0
 
     def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Boolean = {
       if (a0 == a1 && b0 == b1) {
@@ -607,7 +630,11 @@ object IntervalSeq {
 
     private[this] val kinds = s.kinds
 
-    private[this] var lower: Bound[T] = if (s.belowAll) Unbound() else null
+    private[this] var lower: Bound[T] =
+      if (s.belowAll)
+        Unbound()
+      else
+        null
 
     private[this] var i = 0
 
@@ -617,18 +644,19 @@ object IntervalSeq {
         val kind = kinds(i)
         val value = values(i)
         i += 1
-        if (lower eq null) (kind: @switch) match {
-          case K10 =>
-            result = Interval.point(value)
-            lower = null
-          case K11 =>
-            result = null
-            lower = Closed(value)
-          case K01 =>
-            result = null
-            lower = Open(value)
-          case _ => wrong
-        }
+        if (lower eq null)
+          (kind: @switch) match {
+            case K10 =>
+              result = Interval.point(value)
+              lower = null
+            case K11 =>
+              result = null
+              lower = Closed(value)
+            case K01 =>
+              result = null
+              lower = Open(value)
+            case _ => wrong
+          }
         else
           (kind: @switch) match {
             case K01 =>

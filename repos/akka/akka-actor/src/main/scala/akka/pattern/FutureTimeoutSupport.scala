@@ -57,8 +57,10 @@ trait FutureTimeoutSupport {
           val future = value
           future.whenComplete(new BiConsumer[T, Throwable] {
             override def accept(t: T, ex: Throwable): Unit = {
-              if (t != null) p.complete(t)
-              if (ex != null) p.completeExceptionally(ex)
+              if (t != null)
+                p.complete(t)
+              if (ex != null)
+                p.completeExceptionally(ex)
             }
           })
         } catch {

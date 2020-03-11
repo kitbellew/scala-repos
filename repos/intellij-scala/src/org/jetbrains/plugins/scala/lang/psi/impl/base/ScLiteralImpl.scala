@@ -49,11 +49,15 @@ class ScLiteralImpl(node: ASTNode)
     val inner = child.getElementType match {
       case ScalaTokenTypes.kNULL => Null
       case ScalaTokenTypes.tINTEGER =>
-        if (child.getText.endsWith('l') || child.getText.endsWith('L')) Long
-        else Int //but a conversion exists to narrower types in case range fits
+        if (child.getText.endsWith('l') || child.getText.endsWith('L'))
+          Long
+        else
+          Int //but a conversion exists to narrower types in case range fits
       case ScalaTokenTypes.tFLOAT =>
-        if (child.getText.endsWith('f') || child.getText.endsWith('F')) Float
-        else Double
+        if (child.getText.endsWith('f') || child.getText.endsWith('F'))
+          Float
+        else
+          Double
       case ScalaTokenTypes.tCHAR => Char
       case ScalaTokenTypes.tSYMBOL =>
         val sym = ScalaPsiManager
@@ -62,7 +66,10 @@ class ScLiteralImpl(node: ASTNode)
             "scala.Symbol",
             getResolveScope,
             ScalaPsiManager.ClassCategory.TYPE)
-        if (sym != null) ScType.designator(sym) else Nothing
+        if (sym != null)
+          ScType.designator(sym)
+        else
+          Nothing
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING |
           ScalaTokenTypes.tMULTILINE_STRING =>
         val str = ScalaPsiManager
@@ -81,7 +88,8 @@ class ScLiteralImpl(node: ASTNode)
     val textLength = getTextLength
     child.getElementType match {
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING =>
-        if (!text.startsWith('"')) return null
+        if (!text.startsWith('"'))
+          return null
         text = text.substring(1)
         if (text.endsWith('"')) {
           text = text.substring(0, text.length - 1)
@@ -92,7 +100,8 @@ class ScLiteralImpl(node: ASTNode)
             StringUtil.unescapeStringCharacters(text)
         }
       case ScalaTokenTypes.tMULTILINE_STRING =>
-        if (!text.startsWith("\"\"\"")) return null
+        if (!text.startsWith("\"\"\""))
+          return null
         text = text.substring(3)
         if (text.endsWith("\"\"\"")) {
           text = text.substring(0, text.length - 3)
@@ -102,7 +111,8 @@ class ScLiteralImpl(node: ASTNode)
       case ScalaTokenTypes.kFALSE => java.lang.Boolean.FALSE
       case ScalaTokenTypes.tCHAR =>
         if (StringUtil.endsWithChar(getText, '\'')) {
-          if (textLength == 1) return null
+          if (textLength == 1)
+            return null
           text = text.substring(1, textLength - 1)
         } else {
           text = text.substring(1, textLength)
@@ -110,13 +120,19 @@ class ScLiteralImpl(node: ASTNode)
         val chars: StringBuilder = new StringBuilder
         val success: Boolean =
           PsiLiteralExpressionImpl.parseStringCharacters(text, chars, null)
-        if (!success) return null
-        if (chars.length != 1) return null
+        if (!success)
+          return null
+        if (chars.length != 1)
+          return null
         Character.valueOf(chars.charAt(0))
       case ScalaTokenTypes.tINTEGER =>
         val endsWithL =
           child.getText.endsWith('l') || child.getText.endsWith('L')
-        text = if (endsWithL) text.substring(0, text.length - 1) else text
+        text =
+          if (endsWithL)
+            text.substring(0, text.length - 1)
+          else
+            text
         val (number, base) = text match {
           case t if t.startsWith("0x") || t.startsWith("0X") =>
             (t.substring(2), 16)
@@ -124,9 +140,15 @@ class ScLiteralImpl(node: ASTNode)
           case t                                       => (t, 10)
         }
         val limit =
-          if (endsWithL) java.lang.Long.MAX_VALUE
-          else java.lang.Integer.MAX_VALUE
-        val divider = if (base == 10) 1 else 2
+          if (endsWithL)
+            java.lang.Long.MAX_VALUE
+          else
+            java.lang.Integer.MAX_VALUE
+        val divider =
+          if (base == 10)
+            1
+          else
+            2
         var value = 0L
         for (d <- number.map(_.asDigit)) {
           if (value < 0 ||
@@ -136,8 +158,10 @@ class ScLiteralImpl(node: ASTNode)
           }
           value = value * base + d
         }
-        if (endsWithL) java.lang.Long.valueOf(value)
-        else Integer.valueOf(value.toInt)
+        if (endsWithL)
+          java.lang.Long.valueOf(value)
+        else
+          Integer.valueOf(value.toInt)
       case ScalaTokenTypes.tFLOAT =>
         if (child.getText.endsWith('f') || child.getText.endsWith('F'))
           try {
@@ -152,7 +176,8 @@ class ScLiteralImpl(node: ASTNode)
             case e: Exception => null
           }
       case ScalaTokenTypes.tSYMBOL =>
-        if (!text.startsWith('\'')) return null
+        if (!text.startsWith('\''))
+          return null
         Symbol(text.substring(1))
       case _ => null
     }
@@ -161,7 +186,8 @@ class ScLiteralImpl(node: ASTNode)
   def getInjectedPsi =
     if (getValue.isInstanceOf[String])
       InjectedLanguageManager.getInstance(getProject).getInjectedPsiFiles(this)
-    else null
+    else
+      null
 
   def processInjectedPsi(visitor: PsiLanguageInjectionHost.InjectedPsiVisitor) {
     InjectedLanguageUtil.enumerate(this, visitor)
@@ -175,8 +201,10 @@ class ScLiteralImpl(node: ASTNode)
   }
 
   def createLiteralTextEscaper =
-    if (isMultiLineString) new PassthroughLiteralEscaper(this)
-    else new ScLiteralEscaper(this)
+    if (isMultiLineString)
+      new PassthroughLiteralEscaper(this)
+    else
+      new ScLiteralEscaper(this)
 
   def isString = getFirstChild.getNode.getElementType match {
     case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
@@ -201,7 +229,11 @@ class ScLiteralImpl(node: ASTNode)
   def contentRange: TextRange = {
     val range = getTextRange
     if (isString) {
-      val quote = if (isMultiLineString) "\"\"\"" else "\""
+      val quote =
+        if (isMultiLineString)
+          "\"\"\""
+        else
+          "\""
       val prefix = this match {
         case intrp: ScInterpolatedStringLiteral =>
           intrp.reference.fold("")(_.refName)
@@ -214,7 +246,8 @@ class ScLiteralImpl(node: ASTNode)
       new TextRange(range.getStartOffset + 1, range.getEndOffset - 1)
     } else if (isSymbol) {
       new TextRange(range.getStartOffset + 1, range.getEndOffset)
-    } else range
+    } else
+      range
   }
 
   override def accept(visitor: ScalaElementVisitor) {
@@ -248,7 +281,8 @@ class ScLiteralImpl(node: ASTNode)
       ignoreBaseTypes: Boolean,
       fromUnderscore: Boolean): TypeResult[ScType] = {
     val tp = typeWithoutImplicits
-    if (tp != None) return Success(tp.get, None)
+    if (tp != None)
+      return Success(tp.get, None)
     super.getTypeWithoutImplicits(ignoreBaseTypes, fromUnderscore)
   }
 
@@ -276,7 +310,8 @@ class ScLiteralImpl(node: ASTNode)
   def getAnnotationOwner(
       annotationOwnerLookUp: ScLiteral => Option[
         PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner] = {
-    if (!isString) return None
+    if (!isString)
+      return None
 
     if (System.currentTimeMillis() > expirationTime || myAnnotationOwner.exists(
           !_.isValid)) {
@@ -292,6 +327,9 @@ class ScLiteralImpl(node: ASTNode)
 object ScLiteralImpl {
   object string {
     def unapply(lit: ScLiteralImpl): Option[String] =
-      if (lit.isString) Some(lit.getValue.asInstanceOf[String]) else None
+      if (lit.isString)
+        Some(lit.getValue.asInstanceOf[String])
+      else
+        None
   }
 }

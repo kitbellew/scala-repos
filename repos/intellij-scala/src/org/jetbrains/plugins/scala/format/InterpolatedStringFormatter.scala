@@ -24,9 +24,16 @@ object InterpolatedStringFormatter extends StringFormatter {
         case it: Injection => it.isFormattingRequired
         case _             => false
       }
-      if (formattingRequired) "f" else "s"
+      if (formattingRequired)
+        "f"
+      else
+        "s"
     }
-    val quote = if (toMultiline) "\"\"\"" else "\""
+    val quote =
+      if (toMultiline)
+        "\"\"\""
+      else
+        "\""
     s"$prefix$quote$content$quote"
   }
 
@@ -39,15 +46,20 @@ object InterpolatedStringFormatter extends StringFormatter {
         StringUtil.escapeStringCharacters(s.replaceAll("\\$", "\\$\\$"))
       case it: Injection =>
         val text = it.value
-        if (it.isLiteral && !it.isFormattingRequired) text
+        if (it.isLiteral && !it.isFormattingRequired)
+          text
         else {
           val presentation =
             if ((it.isComplexBlock || (!it.isLiteral && it.isAlphanumericIdentifier)) && noBraces(
                   parts,
-                  it)) "$" + text
-            else "${" + text + "}"
-          if (it.isFormattingRequired) presentation + it.format
-          else presentation
+                  it))
+              "$" + text
+            else
+              "${" + text + "}"
+          if (it.isFormattingRequired)
+            presentation + it.format
+          else
+            presentation
         }
     }
     strings.mkString

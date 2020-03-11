@@ -62,8 +62,10 @@ object Unidoc {
     val aggregate =
       Project.getProject(projectRef, structure).toSeq.flatMap(_.aggregate)
     aggregate flatMap { ref =>
-      if (exclude contains ref.project) Seq.empty
-      else ref.project +: aggregated(ref, structure, exclude)
+      if (exclude contains ref.project)
+        Seq.empty
+      else
+        ref.project +: aggregated(ref, structure, exclude)
     }
   }
 

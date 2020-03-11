@@ -49,7 +49,10 @@ class SbtProjectResolver
       : DataNode[ProjectData] = {
     val root = {
       val file = new File(settings.realProjectPath)
-      if (file.isDirectory) file.getPath else file.getParent
+      if (file.isDirectory)
+        file.getPath
+      else
+        file.getParent
     }
 
     runner = new SbtRunner(
@@ -213,7 +216,8 @@ class SbtProjectResolver
 
     val modulesWithDocumentation =
       modulesWithoutBinaries.filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
-    if (modulesWithDocumentation.isEmpty) return libs
+    if (modulesWithDocumentation.isEmpty)
+      return libs
 
     val unmanagedSourceLibrary =
       new LibraryNode(Sbt.UnmanagedSourcesAndDocsName, true)
@@ -283,7 +287,10 @@ class SbtProjectResolver
 
   private def nameFor(id: sbtStructure.ModuleIdentifier) = {
     val classifierOption =
-      if (id.classifier.isEmpty) None else Some(id.classifier)
+      if (id.classifier.isEmpty)
+        None
+      else
+        Some(id.classifier)
     s"${id.organization}:${id.name}:${id.revision}" + classifierOption
       .map(":" + _)
       .getOrElse("") + s":${id.artifactType}"
@@ -368,7 +375,8 @@ class SbtProjectResolver
       Option(project.target.listFiles()).toList.flatten.filter { child =>
         child.isDirectory && !isRelevant(child)
       }
-    } else List(project.target)
+    } else
+      List(project.target)
   }
 
   private def createBuildModule(

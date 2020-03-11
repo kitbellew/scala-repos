@@ -50,7 +50,10 @@ object FadeTransition extends AnimationStatics {
     * @return Delegated JavaFX $FT extracted from `v`.
     */
   implicit def sfxFadeTransition2jfx(v: FadeTransition): jfxa.FadeTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

@@ -36,8 +36,10 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
             if (Set(ScalaTokenTypes.tRPARENTHESIS, ScalaTokenTypes.tRSQBRACKET)
                   .contains(
                     e.getNode.getLastChildNode.getElementType
-                  )) range.getEndOffset - 1
-            else range.getEndOffset
+                  ))
+              range.getEndOffset - 1
+            else
+              range.getEndOffset
           result.add(new TextRange(start, end))
         }
       //case for selecting extends block
@@ -51,16 +53,19 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         def isEmptyChar(c: Char): Boolean = c == ' ' || c == '\n'
         while (isEmptyChar(ext.getContainingFile.getText.charAt(end - 1)))
           end = end - 1
-        if (start <= end) result.add(new TextRange(start, end))
+        if (start <= end)
+          result.add(new TextRange(start, end))
       //case for references
       case x: ScReferenceElement =>
         //choosing end offset, another to method call
         val offset =
           if (!x.getParent.isInstanceOf[ScMethodCall])
             x.getTextRange.getEndOffset
-          else x.getParent.getTextRange.getEndOffset
+          else
+            x.getParent.getTextRange.getEndOffset
         //clear result if method call
-        if (x.getParent.isInstanceOf[ScMethodCall]) result.clear()
+        if (x.getParent.isInstanceOf[ScMethodCall])
+          result.clear()
         x.qualifier match {
           case Some(qual) => {
             //get ranges for previos qualifier

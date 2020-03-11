@@ -60,13 +60,19 @@ class File(jfile: JFile)(implicit constructorCodec: Codec)
 
   override def addExtension(ext: String): File = super.addExtension(ext).toFile
   override def toAbsolute: File =
-    if (isAbsolute) this else super.toAbsolute.toFile
+    if (isAbsolute)
+      this
+    else
+      super.toAbsolute.toFile
   override def toDirectory: Directory = new Directory(jfile)
   override def toFile: File = this
   override def normalize: File = super.normalize.toFile
   override def length = super[Path].length
   override def walkFilter(cond: Path => Boolean): Iterator[Path] =
-    if (cond(this)) Iterator.single(this) else Iterator.empty
+    if (cond(this))
+      Iterator.single(this)
+    else
+      Iterator.empty
 
   /** Obtains an InputStream. */
   def inputStream() = new FileInputStream(jfile)

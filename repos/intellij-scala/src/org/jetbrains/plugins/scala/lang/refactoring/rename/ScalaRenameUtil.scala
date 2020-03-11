@@ -97,8 +97,10 @@ object ScalaRenameUtil {
 
               def resolve(): PsiElement = multiResolve.apply(0).getElement
             }
-          } else ref
-        } else ref
+          } else
+            ref
+        } else
+          ref
       case ref: PsiReference => ref
     }
     result
@@ -131,10 +133,12 @@ object ScalaRenameUtil {
 
     val encodeNames: UsagesWithName => Seq[UsagesWithName] = {
       case UsagesWithName(name, usagez) =>
-        if (usagez.isEmpty) Nil
+        if (usagez.isEmpty)
+          Nil
         else {
           val encodedName = ScalaNamesUtil.toJavaName(newName)
-          if (encodedName == name) Seq(UsagesWithName(name, usagez))
+          if (encodedName == name)
+            Seq(UsagesWithName(name, usagez))
           else {
             val needEncodedName: UsageInfo => Boolean = { u =>
               val ref = u.getReference.getElement
@@ -151,7 +155,8 @@ object ScalaRenameUtil {
 
     val modifyScObjectName: UsagesWithName => Seq[UsagesWithName] = {
       case UsagesWithName(name, usagez) =>
-        if (usagez.isEmpty) Nil
+        if (usagez.isEmpty)
+          Nil
         else {
           val needDollarSign: UsageInfo => Boolean = { u =>
             !u.getReference.isInstanceOf[ResolvableReferenceElement]
@@ -165,7 +170,8 @@ object ScalaRenameUtil {
 
     val modifySetterName: UsagesWithName => Seq[UsagesWithName] = {
       case arg @ UsagesWithName(name, usagez) =>
-        if (usagez.isEmpty) Nil
+        if (usagez.isEmpty)
+          Nil
         else {
           val newNameWithoutSuffix = name.stripSuffix(setterSuffix(name))
           val grouped = usagez.groupBy(u => setterSuffix(u.getElement.getText))
@@ -204,9 +210,12 @@ object ScalaRenameUtil {
   }
 
   def setterSuffix(name: String) = {
-    if (name.endsWith("_=")) "_="
-    else if (name.endsWith("_$eq")) "_$eq"
-    else ""
+    if (name.endsWith("_="))
+      "_="
+    else if (name.endsWith("_$eq"))
+      "_$eq"
+    else
+      ""
   }
 
   def sameElement(range: RangeMarker, element: PsiElement): Boolean = {

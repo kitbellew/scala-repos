@@ -33,14 +33,16 @@ trait Connector {
           case e: Throwable =>
             log.error(e, "Exception in connection event listener")
         }
-      } else log.debug("listener does not handle %s", event)
+      } else
+        log.debug("listener does not handle %s", event)
     }
   }
 
   @tailrec
   final def onSessionEvent(f: EventHandler) {
     val list = listeners.get()
-    if (!listeners.compareAndSet(list, f :: list)) onSessionEvent(f)
+    if (!listeners.compareAndSet(list, f :: list))
+      onSessionEvent(f)
   }
 
   /** Connect to a ZooKeeper cluster and yield a handle once the connection is complete. */

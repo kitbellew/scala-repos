@@ -14,7 +14,8 @@ object Test {
     val values = keys.map(_ + valueSuffix)
     val entries = keys.zip(values)
 
-    for (k <- keys) m(k) = k + valueSuffix
+    for (k <- keys)
+      m(k) = k + valueSuffix
 
     assertForeach(keys, m.keySet.iterator)
     assertForeach(keys, m.keysIterator)

@@ -42,8 +42,10 @@ class ScImportSelectorsImpl private (
   }
 
   def wildcardElement: Option[PsiElement] = {
-    if (hasWildcard) Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
-    else None
+    if (hasWildcard)
+      Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
+    else
+      None
   }
 
   def selectors: Array[ScImportSelector] =

@@ -137,7 +137,8 @@ object DiningHakkersOnBecome {
   def run(): Unit = {
     //Create 5 chopsticks
     val chopsticks =
-      for (i <- 1 to 5) yield system.actorOf(Props[Chopstick], "Chopstick" + i)
+      for (i <- 1 to 5)
+        yield system.actorOf(Props[Chopstick], "Chopstick" + i)
 
     //Create 5 awesome hakkers and assign them their left and right chopstick
     val hakkers = for {

@@ -14,12 +14,14 @@ object Test extends InteractiveTest {
   }
 
   def fireAsks() {
-    val jobs1 = for (i <- 1 until Reps) yield {
-      if (i % 10 == 0) {
-        askReload(sourceFiles)
-      }
-      askSomething
-    }
+    val jobs1 =
+      for (i <- 1 until Reps)
+        yield {
+          if (i % 10 == 0) {
+            askReload(sourceFiles)
+          }
+          askSomething
+        }
 
     for ((j, i) <- jobs1.zipWithIndex) {
       j.get(40000) match {

@@ -51,7 +51,10 @@ object TreeTableRow {
     */
   implicit def sfxTreeTableRow2jfx[T](
       ttr: TreeTableRow[T]): jfxsc.TreeTableRow[T] =
-    if (ttr != null) ttr.delegate else null
+    if (ttr != null)
+      ttr.delegate
+    else
+      null
 
 }
 

@@ -44,7 +44,10 @@ final class RemoteSettings(val config: Config) {
   val Dispatcher: String = getString("akka.remote.use-dispatcher")
 
   def configureDispatcher(props: Props): Props =
-    if (Dispatcher.isEmpty) props else props.withDispatcher(Dispatcher)
+    if (Dispatcher.isEmpty)
+      props
+    else
+      props.withDispatcher(Dispatcher)
 
   val ShutdownTimeout: Timeout = {
     Timeout(config.getMillisDuration("akka.remote.shutdown-timeout"))

@@ -83,10 +83,12 @@ class RemoteRouterSpec
       val probe = TestProbe()(masterSystem)
       val router =
         masterSystem.actorOf(RoundRobinPool(2).props(Props[Echo]), "blub")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 2
       children.map(_.parent) should have size 1
@@ -103,10 +105,12 @@ class RemoteRouterSpec
           Seq(Address("akka.tcp", sysName, "localhost", port)))
           .props(Props[Echo]),
         "blub2")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 2
       children.map(_.parent) should have size 1
@@ -119,10 +123,12 @@ class RemoteRouterSpec
       val probe = TestProbe()(masterSystem)
       val router =
         masterSystem.actorOf(FromConfig.props(Props[Echo]), "elastic-blub")
-      val replies = for (i ← 1 to 5000) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5000)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children.size should be >= 2
       children.map(_.parent) should have size 1
@@ -137,10 +143,12 @@ class RemoteRouterSpec
         masterSystem.actorOf(FromConfig.props(Props[Echo]), "remote-blub")
       router.path.address.toString should ===(
         s"akka.tcp://${sysName}@localhost:${port}")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 2
       val parents = children.map(_.parent)
@@ -162,10 +170,12 @@ class RemoteRouterSpec
       )
       router.path.address.toString should ===(
         s"akka.tcp://${sysName}@localhost:${port}")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 2
       val parents = children.map(_.parent)
@@ -186,10 +196,12 @@ class RemoteRouterSpec
         "local-blub"
       )
       router.path.address.toString should ===("akka://MasterRemoteRouterSpec")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 2
       val parents = children.map(_.parent)
@@ -212,10 +224,12 @@ class RemoteRouterSpec
       )
       router.path.address.toString should ===(
         s"akka.tcp://${sysName}@localhost:${port}")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 4
       val parents = children.map(_.parent)
@@ -237,10 +251,12 @@ class RemoteRouterSpec
       )
       router.path.address.toString should ===(
         s"akka.tcp://${sysName}@localhost:${port}")
-      val replies = for (i ← 1 to 5) yield {
-        router.tell("", probe.ref)
-        probe.expectMsgType[ActorRef].path
-      }
+      val replies =
+        for (i ← 1 to 5)
+          yield {
+            router.tell("", probe.ref)
+            probe.expectMsgType[ActorRef].path
+          }
       val children = replies.toSet
       children should have size 4
       val parents = children.map(_.parent)

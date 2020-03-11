@@ -125,7 +125,10 @@ class Plot() {
       // TODO this is such a pain. There has to be a better way.
       val oldAxis = _xaxis
       _xaxis =
-        if (value) new LogarithmicAxis(xlabel) else new NumberAxis(xlabel)
+        if (value)
+          new LogarithmicAxis(xlabel)
+        else
+          new NumberAxis(xlabel)
       plot.setDomainAxis(_xaxis)
       xlim = oldAxis.getLowerBound -> oldAxis.getUpperBound
       _xaxis.setStandardTickUnits(oldAxis.getStandardTickUnits)
@@ -138,7 +141,10 @@ class Plot() {
       // TODO this is such a pain. There has to be a better way.
       val oldAxis = _yaxis
       _yaxis =
-        if (value) new LogarithmicAxis(ylabel) else new NumberAxis(ylabel)
+        if (value)
+          new LogarithmicAxis(ylabel)
+        else
+          new NumberAxis(ylabel)
       plot.setRangeAxis(_yaxis)
       ylim = oldAxis.getLowerBound -> oldAxis.getUpperBound
       _yaxis.setStandardTickUnits(oldAxis.getStandardTickUnits)
@@ -333,8 +339,10 @@ object Plot {
 
     def getSeriesKey(series: Int): Comparable[_] = {
       val name = delegate(series)(_ getSeriesKey _)
-      if (name == null) "Series " + series
-      else name
+      if (name == null)
+        "Series " + series
+      else
+        name
     }
   }
 
@@ -420,8 +428,10 @@ object Plot {
     }
 
     override def getItemPaint(series: Int, column: Int): Paint = {
-      if (autopaint(series)) Plot.paint(series)
-      else delegate(series)(_.getItemPaint(_, column))
+      if (autopaint(series))
+        Plot.paint(series)
+      else
+        delegate(series)(_.getItemPaint(_, column))
     }
 
     override def getSeriesVisibleInLegend(series: Int): lang.Boolean = {
@@ -440,8 +450,10 @@ object Plot {
     }
 
     override def getSeriesPaint(series: Int): Paint = {
-      if (autopaint(series)) Plot.paint(series)
-      else delegate(series)(_.getSeriesPaint(_))
+      if (autopaint(series))
+        Plot.paint(series)
+      else
+        delegate(series)(_.getSeriesPaint(_))
     }
 
     override def setSeriesPaint(series: Int, paint: Paint) {
@@ -450,8 +462,10 @@ object Plot {
     }
 
     override def getItemOutlinePaint(series: Int, column: Int): Paint = {
-      if (autopaint(series)) Plot.paint(series)
-      else delegate(series)(_.getItemOutlinePaint(_, column))
+      if (autopaint(series))
+        Plot.paint(series)
+      else
+        delegate(series)(_.getItemOutlinePaint(_, column))
     }
 
     override def setSeriesOutlinePaint(series: Int, paint: Paint) {
@@ -459,13 +473,17 @@ object Plot {
     }
 
     override def getSeriesOutlinePaint(series: Int): Paint = {
-      if (autopaint(series)) Plot.paint(series)
-      else delegate(series)(_.getSeriesOutlinePaint(_))
+      if (autopaint(series))
+        Plot.paint(series)
+      else
+        delegate(series)(_.getSeriesOutlinePaint(_))
     }
 
     override def getItemStroke(series: Int, column: Int): Stroke = {
-      if (autostroke(series)) Plot.stroke(series)
-      else delegate(series)(_.getItemStroke(_, column))
+      if (autostroke(series))
+        Plot.stroke(series)
+      else
+        delegate(series)(_.getItemStroke(_, column))
 
       //    renderer.setSeriesStroke(0, Plot.stroke(series))
       //    renderer.setSeriesShape(0, Plot.shape(series))
@@ -473,8 +491,10 @@ object Plot {
     }
 
     override def getSeriesStroke(series: Int): Stroke = {
-      if (autostroke(series)) Plot.stroke(series)
-      else delegate(series)(_.getSeriesStroke(_))
+      if (autostroke(series))
+        Plot.stroke(series)
+      else
+        delegate(series)(_.getSeriesStroke(_))
     }
 
     override def setSeriesStroke(series: Int, stroke: Stroke) {
@@ -482,8 +502,10 @@ object Plot {
     }
 
     override def getItemOutlineStroke(series: Int, column: Int): Stroke = {
-      if (autostroke(series)) Plot.outlineStroke(series)
-      else delegate(series)(_.getItemOutlineStroke(_, column))
+      if (autostroke(series))
+        Plot.outlineStroke(series)
+      else
+        delegate(series)(_.getItemOutlineStroke(_, column))
     }
 
     override def setSeriesOutlineStroke(series: Int, stroke: Stroke) {
@@ -491,13 +513,17 @@ object Plot {
     }
 
     override def getSeriesOutlineStroke(series: Int): Stroke = {
-      if (autostroke(series)) Plot.outlineStroke(series)
-      else delegate(series)(_.getSeriesOutlineStroke(_))
+      if (autostroke(series))
+        Plot.outlineStroke(series)
+      else
+        delegate(series)(_.getSeriesOutlineStroke(_))
     }
 
     override def getSeriesShape(series: Int): Shape = {
-      if (autostroke(series)) Plot.shape(series)
-      else delegate(series)(_.getSeriesShape(_))
+      if (autostroke(series))
+        Plot.shape(series)
+      else
+        delegate(series)(_.getSeriesShape(_))
     }
 
     override def setSeriesShape(series: Int, shape: Shape) {
@@ -505,8 +531,10 @@ object Plot {
     }
 
     override def getItemShape(series: Int, column: Int): Shape = {
-      if (autostroke(series)) Plot.shape(series)
-      else delegate(series)(_.getItemShape(_, column))
+      if (autostroke(series))
+        Plot.shape(series)
+      else
+        delegate(series)(_.getItemShape(_, column))
     }
 
     override def isItemLabelVisible(series: Int, column: Int): Boolean = {

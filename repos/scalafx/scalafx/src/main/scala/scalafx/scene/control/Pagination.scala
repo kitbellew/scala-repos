@@ -38,7 +38,10 @@ import scalafx.scene.Node
 
 object Pagination {
   implicit def sfxPagination2jfx(p: Pagination): jfxsc.Pagination =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 
   /**
     * The style class to change the numeric page indicators to bullet indicators.

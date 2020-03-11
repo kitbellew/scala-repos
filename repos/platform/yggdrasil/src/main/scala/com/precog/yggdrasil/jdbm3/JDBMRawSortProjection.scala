@@ -67,7 +67,11 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
     DB.close()
   }
 
-  val keyAfterDelta = if (sortOrder.isAscending) 1 else -1
+  val keyAfterDelta =
+    if (sortOrder.isAscending)
+      1
+    else
+      -1
 
   val rowFormat = RowFormat.forValues(valRefs)
   val keyFormat = RowFormat.forSortingKey(sortKeyRefs)
@@ -108,7 +112,8 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
           val rawIterator = constrainedMap.entrySet.iterator.asScala
           // Since our key to retrieve after was the last key we retrieved, we know it exists,
           // so we can safely discard it
-          if (id.isDefined && rawIterator.hasNext) rawIterator.next();
+          if (id.isDefined && rawIterator.hasNext)
+            rawIterator.next();
           rawIterator
         }
 

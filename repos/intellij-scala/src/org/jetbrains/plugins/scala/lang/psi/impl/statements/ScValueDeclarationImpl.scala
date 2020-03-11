@@ -53,7 +53,8 @@ class ScValueDeclarationImpl private (
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScValueStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    } else
+      findChild(classOf[ScTypeElement])
   }
 
   def getIdList: ScIdList = {
@@ -64,7 +65,8 @@ class ScValueDeclarationImpl private (
           ScalaElementTypes.IDENTIFIER_LIST,
           JavaArrayFactoryUtil.ScIdListFactory)
         .apply(0)
-    } else findChildByClass(classOf[ScIdList])
+    } else
+      findChildByClass(classOf[ScIdList])
   }
 
   override def accept(visitor: ScalaElementVisitor) {

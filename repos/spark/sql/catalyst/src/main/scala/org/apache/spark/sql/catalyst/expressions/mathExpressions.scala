@@ -90,7 +90,10 @@ abstract class UnaryLogExpression(f: Double => Double, name: String)
 
   protected override def nullSafeEval(input: Any): Any = {
     val d = input.asInstanceOf[Double]
-    if (d <= yAsymptote) null else f(d)
+    if (d <= yAsymptote)
+      null
+    else
+      f(d)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -287,7 +290,10 @@ case class Floor(child: Expression)
 object Factorial {
 
   def factorial(n: Int): Long = {
-    if (n < factorials.length) factorials(n) else Long.MaxValue
+    if (n < factorials.length)
+      factorials(n)
+    else
+      Long.MaxValue
   }
 
   private val factorials: Array[Long] = Array[Long](
@@ -689,8 +695,10 @@ case class Logarithm(left: Expression, right: Expression)
     val dLeft = input1.asInstanceOf[Double]
     val dRight = input2.asInstanceOf[Double]
     // Unlike Hive, we support Log base in (0.0, 1.0]
-    if (dLeft <= 0.0 || dRight <= 0.0) null
-    else math.log(dRight) / math.log(dLeft)
+    if (dLeft <= 0.0 || dRight <= 0.0)
+      null
+    else
+      math.log(dRight) / math.log(dLeft)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -756,7 +764,12 @@ case class Round(child: Expression, scale: Expression)
     // if the new scale is bigger which means we are scaling up,
     // keep the original scale as `Decimal` does
     case DecimalType.Fixed(p, s) =>
-      DecimalType(p, if (_scale > s) s else _scale)
+      DecimalType(
+        p,
+        if (_scale > s)
+          s
+        else
+          _scale)
     case t => t
   }
 
@@ -799,8 +812,10 @@ case class Round(child: Expression, scale: Expression)
     child.dataType match {
       case _: DecimalType =>
         val decimal = input1.asInstanceOf[Decimal]
-        if (decimal.changePrecision(decimal.precision, _scale)) decimal
-        else null
+        if (decimal.changePrecision(decimal.precision, _scale))
+          decimal
+        else
+          null
       case ByteType =>
         BigDecimal(input1.asInstanceOf[Byte]).setScale(_scale, HALF_UP).toByte
       case ShortType =>

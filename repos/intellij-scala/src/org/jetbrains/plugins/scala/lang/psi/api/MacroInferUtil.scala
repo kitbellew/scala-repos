@@ -41,13 +41,17 @@ object MacroInferUtil {
           classFqn: String,
           typeEval: () => Option[ScType]): Checker = {
         withCheck(() => {
-          if (f.name != functionName) None
+          if (f.name != functionName)
+            None
           else {
             val clazz = f.containingClass
-            if (clazz == null) None
+            if (clazz == null)
+              None
             else {
-              if (clazz.qualifiedName != classFqn) None
-              else typeEval()
+              if (clazz.qualifiedName != classFqn)
+                None
+              else
+                typeEval()
             }
           }
         })
@@ -73,7 +77,8 @@ object MacroInferUtil {
           clazz match {
             case c: ScTypeDefinition =>
               val tpt = c.typeParameters
-              if (tpt.length == 0) return None
+              if (tpt.length == 0)
+                return None
               val undef = new ScUndefinedType(
                 new ScTypeParameterType(tpt(0), ScSubstitutor.empty))
               val genericType =
@@ -83,23 +88,27 @@ object MacroInferUtil {
                 tp,
                 Set.empty,
                 new ScUndefinedSubstitutor())
-              if (!res) return None
+              if (!res)
+                return None
               undefSubst.getSubstitutor match {
                 case Some(subst) =>
                   val productLikeType = subst.subst(undef)
                   val parts =
                     ScPattern.extractProductParts(productLikeType, place)
-                  if (parts.length == 0) return None
+                  if (parts.length == 0)
+                    return None
                   val coloncolon = manager.getCachedClass(
                     "shapeless.::",
                     place.getResolveScope,
                     ClassCategory.TYPE)
-                  if (coloncolon == null) return None
+                  if (coloncolon == null)
+                    return None
                   val hnil = manager.getCachedClass(
                     "shapeless.HNil",
                     place.getResolveScope,
                     ClassCategory.TYPE)
-                  if (hnil == null) return None
+                  if (hnil == null)
+                    return None
                   val repr = parts.foldRight(ScDesignatorType(hnil): ScType) {
                     case (part, resultType) =>
                       ScParameterizedType(
@@ -112,7 +121,8 @@ object MacroInferUtil {
                         case a: ScTypeAlias if a.name == "Aux" => true
                         case _                                 => false
                       }
-                      if (!elem.isDefined) return None
+                      if (!elem.isDefined)
+                        return None
                       Some(
                         ScParameterizedType(
                           ScProjectionType(

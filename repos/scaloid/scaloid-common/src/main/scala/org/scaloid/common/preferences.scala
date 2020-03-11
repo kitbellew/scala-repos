@@ -85,7 +85,10 @@ class Preferences(val preferences: SharedPreferences) extends Dynamic {
   abstract class TypedPreferences[T] extends Dynamic {
     def get(name: String): T
     def selectDynamic(name: String): Option[T] =
-      if (preferences.contains(name)) Some(get(name)) else None
+      if (preferences.contains(name))
+        Some(get(name))
+      else
+        None
   }
 
   val String = new TypedPreferences[String] {

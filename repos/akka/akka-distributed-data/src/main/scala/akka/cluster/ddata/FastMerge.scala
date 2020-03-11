@@ -25,7 +25,11 @@ private[akka] trait FastMerge { self: ReplicatedData ⇒
 
   /** INTERNAL API: should be called from "updating" methods */
   private[akka] def assignAncestor(newData: T with FastMerge): T = {
-    newData.ancestor = if (this.ancestor eq null) this else this.ancestor
+    newData.ancestor =
+      if (this.ancestor eq null)
+        this
+      else
+        this.ancestor
     this.ancestor = null // only one level, for GC
     newData
   }

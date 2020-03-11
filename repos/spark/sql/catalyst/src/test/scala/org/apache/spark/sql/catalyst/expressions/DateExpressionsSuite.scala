@@ -707,18 +707,30 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       checkEvaluation(
         ToUTCTimestamp(
           Literal.create(
-            if (t != null) Timestamp.valueOf(t) else null,
+            if (t != null)
+              Timestamp.valueOf(t)
+            else
+              null,
             TimestampType),
           Literal.create(tz, StringType)),
-        if (expected != null) Timestamp.valueOf(expected) else null
+        if (expected != null)
+          Timestamp.valueOf(expected)
+        else
+          null
       )
       checkEvaluation(
         ToUTCTimestamp(
           Literal.create(
-            if (t != null) Timestamp.valueOf(t) else null,
+            if (t != null)
+              Timestamp.valueOf(t)
+            else
+              null,
             TimestampType),
           NonFoldableLiteral.create(tz, StringType)),
-        if (expected != null) Timestamp.valueOf(expected) else null
+        if (expected != null)
+          Timestamp.valueOf(expected)
+        else
+          null
       )
     }
     test("2015-07-24 00:00:00", "PST", "2015-07-24 07:00:00")
@@ -733,18 +745,30 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       checkEvaluation(
         FromUTCTimestamp(
           Literal.create(
-            if (t != null) Timestamp.valueOf(t) else null,
+            if (t != null)
+              Timestamp.valueOf(t)
+            else
+              null,
             TimestampType),
           Literal.create(tz, StringType)),
-        if (expected != null) Timestamp.valueOf(expected) else null
+        if (expected != null)
+          Timestamp.valueOf(expected)
+        else
+          null
       )
       checkEvaluation(
         FromUTCTimestamp(
           Literal.create(
-            if (t != null) Timestamp.valueOf(t) else null,
+            if (t != null)
+              Timestamp.valueOf(t)
+            else
+              null,
             TimestampType),
           NonFoldableLiteral.create(tz, StringType)),
-        if (expected != null) Timestamp.valueOf(expected) else null
+        if (expected != null)
+          Timestamp.valueOf(expected)
+        else
+          null
       )
     }
     test("2015-07-24 00:00:00", "PST", "2015-07-23 17:00:00")

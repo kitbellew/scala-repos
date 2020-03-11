@@ -75,7 +75,10 @@ object Lexer {
 
   private def toUDigit(ch: Int): Char = {
     val d = ch & 0xF
-    (if (d < 10) d + '0' else d - 10 + 'A').toChar
+    (if (d < 10)
+       d + '0'
+     else
+       d - 10 + 'A').toChar
   }
 
   private def addToStr(buf: StringBuilder, ch: Char) {
@@ -88,7 +91,8 @@ object Lexer {
       case '\t' => buf ++= "\\t"
       case '\\' => buf ++= "\\\\"
       case _ =>
-        if (' ' <= ch && ch < 128) buf += ch
+        if (' ' <= ch && ch < 128)
+          buf += ch
         else
           buf ++= "\\u" += toUDigit(ch >>> 12) += toUDigit(
             ch >>> 8) += toUDigit(ch >>> 4) += toUDigit(ch.toInt)
@@ -168,7 +172,10 @@ class Lexer(rd: Reader) {
     *  @throws  MalformedInput if character does not match
     */
   def acceptChar(c: Char) =
-    if (ch == c) nextChar() else error("'" + c + "' expected")
+    if (ch == c)
+      nextChar()
+    else
+      error("'" + c + "' expected")
 
   private val sb = new StringBuilder
 
@@ -187,9 +194,11 @@ class Lexer(rd: Reader) {
     */
   def nextToken() {
     sb.clear()
-    while (!atEOF && ch <= ' ') nextChar()
+    while (!atEOF && ch <= ' ')
+      nextChar()
     tokenPos = pos - 1
-    if (atEOF) token = EOF
+    if (atEOF)
+      token = EOF
     else
       ch match {
         case '(' =>
@@ -240,10 +249,14 @@ class Lexer(rd: Reader) {
   def getString() {
     def udigit() = {
       nextChar()
-      if ('0' <= ch && ch <= '9') ch - '9'
-      else if ('A' <= ch && ch <= 'F') ch - 'A' + 10
-      else if ('a' <= ch && ch <= 'f') ch - 'a' + 10
-      else error("illegal unicode escape character: '" + ch + "'")
+      if ('0' <= ch && ch <= '9')
+        ch - '9'
+      else if ('A' <= ch && ch <= 'F')
+        ch - 'A' + 10
+      else if ('a' <= ch && ch <= 'f')
+        ch - 'a' + 10
+      else
+        error("illegal unicode escape character: '" + ch + "'")
     }
     val delim = ch
     nextChar()
@@ -279,16 +292,21 @@ class Lexer(rd: Reader) {
     */
   def getNumber() {
     def digit() =
-      if ('0' <= ch && ch <= '9') putChar()
-      else error("<digit> expected")
+      if ('0' <= ch && ch <= '9')
+        putChar()
+      else
+        error("<digit> expected")
     def digits() =
       do {
         digit()
       } while ('0' <= ch && ch <= '9')
     var isFloating = false
-    if (ch == '-') putChar()
-    if (ch == '0') digit()
-    else digits()
+    if (ch == '-')
+      putChar()
+    if (ch == '0')
+      digit()
+    else
+      digits()
     if (ch == '.') {
       isFloating = true
       putChar()
@@ -297,10 +315,15 @@ class Lexer(rd: Reader) {
     if (ch == 'e' || ch == 'E') {
       isFloating = true
       putChar()
-      if (ch == '+' || ch == '-') putChar()
+      if (ch == '+' || ch == '-')
+        putChar()
       digits()
     }
-    token = if (isFloating) FloatLit(sb.toString) else IntLit(sb.toString)
+    token =
+      if (isFloating)
+        FloatLit(sb.toString)
+      else
+        IntLit(sb.toString)
   }
 
   /** If current token equals given token, reads next token, otherwise raises an error.
@@ -308,8 +331,10 @@ class Lexer(rd: Reader) {
     *  @throws MalformedInput  if the two tokens do not match.
     */
   def accept(t: Token) {
-    if (token == t) nextToken()
-    else error(t + " expected, but " + token + " found")
+    if (token == t)
+      nextToken()
+    else
+      error(t + " expected, but " + token + " found")
   }
 
   /** The current token is a delimiter consisting of given character, reads next token,

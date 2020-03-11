@@ -150,7 +150,11 @@ object FoldableTest extends SpecLite {
       (x: Int, xs: List[Int]) =>
         !xs.contains(x) ==> {
           (xs ++ List(x))
-            .findMapM[StateInt, Int](z => if (z == x) found(z) else notfound)
+            .findMapM[StateInt, Int](z =>
+              if (z == x)
+                found(z)
+              else
+                notfound)
             .run(0) must_==
             ((xs.length + 1) -> Some(x * 2))
         }
@@ -191,7 +195,11 @@ object FoldableTests {
         i = i + 1
         true
       }
-      val expected = if (fa.empty) 0 else 1
+      val expected =
+        if (fa.empty)
+          0
+        else
+          1
       i === expected
     }
 
@@ -202,7 +210,11 @@ object FoldableTests {
         i = i + 1
         false
       }
-      val expected = if (fa.empty) 0 else 1
+      val expected =
+        if (fa.empty)
+          0
+        else
+          1
       i === expected
     }
 

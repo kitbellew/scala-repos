@@ -27,7 +27,8 @@ object UndefinedMember extends AnnotatorPart[ScTemplateDefinition] {
     val isNew = definition.isInstanceOf[ScNewTemplateDefinition]
     val isObject = definition.isInstanceOf[ScObject]
 
-    if (!isNew && !isObject) return
+    if (!isNew && !isObject)
+      return
 
     definition.members.foreach {
       case declaration: ScDeclaration =>
@@ -36,7 +37,8 @@ object UndefinedMember extends AnnotatorPart[ScTemplateDefinition] {
             a.hasAnnotation("scala.native").isDefined
           case _ => false
         }
-        if (!isNative) holder.createErrorAnnotation(declaration, Message)
+        if (!isNative)
+          holder.createErrorAnnotation(declaration, Message)
       case _ =>
     }
   }

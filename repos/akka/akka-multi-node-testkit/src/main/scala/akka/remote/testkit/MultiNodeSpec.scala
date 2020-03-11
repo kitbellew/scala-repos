@@ -106,7 +106,8 @@ abstract class MultiNodeConfig {
           """
            akka.remote.netty.tcp.applied-adapters = [trttl, gremlin]
         """)
-      else ConfigFactory.empty
+      else
+        ConfigFactory.empty
 
     val configs =
       (_nodeConf get myself).toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
@@ -405,8 +406,10 @@ abstract class MultiNodeSpec(
       def mute(clazz: Class[_]): Unit =
         sys.eventStream.publish(
           Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
-      if (messageClasses.isEmpty) mute(classOf[AnyRef])
-      else messageClasses foreach mute
+      if (messageClasses.isEmpty)
+        mute(classOf[AnyRef])
+      else
+        messageClasses foreach mute
     }
 
   /*
@@ -420,7 +423,8 @@ abstract class MultiNodeSpec(
     val startFuture =
       if (selfIndex == 0)
         tc.startController(initialParticipants, myself, controllerAddr)
-      else tc.startClient(myself, controllerAddr)
+      else
+        tc.startClient(myself, controllerAddr)
     try Await.result(startFuture, timeout)
     catch {
       case NonFatal(x) ⇒

@@ -88,7 +88,10 @@ final class Algebraic private (val expr: Algebraic.Expr)
     * Return a non-negative `Algebraic` with the same magnitude as this one.
     */
   def abs: Algebraic =
-    if (this.signum < 0) -this else this
+    if (this.signum < 0)
+      -this
+    else
+      this
 
   def unary_- : Algebraic =
     new Algebraic(Expr.Neg(expr))
@@ -258,9 +261,12 @@ final class Algebraic private (val expr: Algebraic.Expr)
     */
   def intValue: Int = {
     val n = toBigInt
-    if (n < MinIntValue) Int.MinValue
-    else if (n > MaxIntValue) Int.MaxValue
-    else n.intValue
+    if (n < MinIntValue)
+      Int.MinValue
+    else if (n > MaxIntValue)
+      Int.MaxValue
+    else
+      n.intValue
   }
 
   /**
@@ -274,9 +280,12 @@ final class Algebraic private (val expr: Algebraic.Expr)
     */
   def longValue: Long = {
     val n = toBigInt
-    if (n < MinLongValue) Long.MinValue
-    else if (n > MaxLongValue) Long.MaxValue
-    else n.longValue
+    if (n < MinLongValue)
+      Long.MinValue
+    else if (n > MaxLongValue)
+      Long.MaxValue
+    else
+      n.longValue
   }
 
   /**
@@ -388,7 +397,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
     val adjustedApprox =
       if (newScale <= approx.scale)
         approx.setScale(newScale + 1, RoundingMode.DOWN)
-      else approx
+      else
+        approx
     roundExact(this, adjustedApprox, newScale, roundingMode)
       .round(mc) // We perform a final round, since roundExact uses scales.
   }
@@ -808,9 +818,12 @@ object Algebraic extends AlgebraicInstances {
       def flagBits: Int = Flags.IntegerLeaf.bits
 
       def upperBound: BitBound =
-        if (value == 0L) new BitBound(0L)
-        else if (value == Long.MinValue) new BitBound(64)
-        else new BitBound(64 - numberOfLeadingZeros(abs(value) - 1))
+        if (value == 0L)
+          new BitBound(0L)
+        else if (value == Long.MinValue)
+          new BitBound(64)
+        else
+          new BitBound(64 - numberOfLeadingZeros(abs(value) - 1))
 
       def signum: Int = value.signum
 
@@ -830,9 +843,12 @@ object Algebraic extends AlgebraicInstances {
         }
 
       def signum: Int =
-        if (value < 0d) -1
-        else if (value > 0d) 1
-        else 0
+        if (value < 0d)
+          -1
+        else if (value > 0d)
+          1
+        else
+          0
 
       def toBigDecimal(digits: Int): JBigDecimal =
         new JBigDecimal(value).setScale(digits, RoundingMode.HALF_UP)
@@ -895,8 +911,10 @@ object Algebraic extends AlgebraicInstances {
         }
 
       def signum: Int =
-        if (lb.signum != 0) lb.signum
-        else ub.signum
+        if (lb.signum != 0)
+          lb.signum
+        else
+          ub.signum
 
       private val refinement: AtomicReference[BigDecimalRootRefinement] = {
         val poly0 = poly.map { n =>
@@ -1023,8 +1041,10 @@ object Algebraic extends AlgebraicInstances {
 
       def signum: Int = {
         val s = sub.signum
-        if (s >= 0) s
-        else throw new ArithmeticException(s"$k-root of negative number")
+        if (s >= 0)
+          s
+        else
+          throw new ArithmeticException(s"$k-root of negative number")
       }
 
       def toBigDecimal(digits: Int): JBigDecimal = {
@@ -1056,11 +1076,17 @@ object Algebraic extends AlgebraicInstances {
       def signum: Int = {
         val s = sub.signum
         if (s == 0) {
-          if (k < 0) throw new ArithmeticException("divide by 0")
-          else if (k == 0) throw new ArithmeticException("indeterminate")
-          else 0
+          if (k < 0)
+            throw new ArithmeticException("divide by 0")
+          else if (k == 0)
+            throw new ArithmeticException("indeterminate")
+          else
+            0
         } else if (k % 2 == 0) {
-          if (s < 0) 1 else s
+          if (s < 0)
+            1
+          else
+            s
         } else {
           s
         }
@@ -1112,7 +1138,10 @@ object Algebraic extends AlgebraicInstances {
     def /(rhs: Int): BitBound = new BitBound(this.bitBound / rhs)
 
     def min(that: BitBound): BitBound =
-      if (bitBound < that.bitBound) this else that
+      if (bitBound < that.bitBound)
+        this
+      else
+        that
 
     override def toString: String = s"BitBound($bitBound)"
   }
@@ -1182,20 +1211,26 @@ object Algebraic extends AlgebraicInstances {
         prevEps: JBigDecimal): JBigDecimal = {
       val digits = getEps(prev)
       val eps =
-        if (digits == prevDigits) prevEps
-        else JBigDecimal.ONE.movePointLeft(digits)
+        if (digits == prevDigits)
+          prevEps
+        else
+          JBigDecimal.ONE.movePointLeft(digits)
       val prevExp = prev.pow(k - 1)
       val delta = value
         .divide(prevExp, digits, RoundingMode.HALF_UP)
         .subtract(prev)
         .divide(n, digits, RoundingMode.HALF_UP)
-      if (delta.abs.compareTo(eps) <= 0) prev
-      else loop(prev.add(delta), digits, eps)
+      if (delta.abs.compareTo(eps) <= 0)
+        prev
+      else
+        loop(prev.add(delta), digits, eps)
     }
     val init = nrootApprox(value, k)
     val unsignedResult = loop(init, Int.MinValue, JBigDecimal.ZERO)
-    if (signedValue.signum < 0) unsignedResult.negate
-    else unsignedResult
+    if (signedValue.signum < 0)
+      unsignedResult.negate
+    else
+      unsignedResult
   }
 
   private val bits2dec: Double = log(2, 10)
@@ -1334,8 +1369,10 @@ object Algebraic extends AlgebraicInstances {
               case HALF_EVEN =>
                 cmp > 0 || cmp == 0 && truncatedUnscaledValue.testBit(0)
             }
-            if (roundUp) truncated.add(epsilon)
-            else truncated
+            if (roundUp)
+              truncated.add(epsilon)
+            else
+              truncated
           } else if (remainder < dangerZoneStart) {
             truncated
           } else {
@@ -1492,8 +1529,10 @@ object Algebraic extends AlgebraicInstances {
           val sub = subExpr.getBound(this)
           val lb = sub.lb / k
           val ub =
-            if (sub.ub % k == 0) (sub.ub / k)
-            else ((sub.ub / k) + 1)
+            if (sub.ub % k == 0)
+              (sub.ub / k)
+            else
+              ((sub.ub / k) + 1)
           Bound(sub.lc, sub.tc, sub.measure, lb, ub)
 
         case Pow(subExpr, k) =>
@@ -1614,8 +1653,10 @@ object Algebraic extends AlgebraicInstances {
           checked(acc + extra)
         } else {
           val x =
-            if ((k & 1) == 1) checked(acc + extra)
-            else extra
+            if ((k & 1) == 1)
+              checked(acc + extra)
+            else
+              extra
           sum(checked(acc + acc), k >>> 1, x)
         }
 

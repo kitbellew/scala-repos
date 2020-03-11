@@ -39,14 +39,20 @@ package object math {
     * choose (binomial coefficient)
     */
   def choose(n: Long, k: Long): BigInt = {
-    if (n < 0 || k < 0) throw new IllegalArgumentException(s"n=$n, k=$k")
-    if (k == 0L || k == n) return BigInt(1)
-    if (k > n) return BigInt(0)
-    if (n - k > k) return choose(n, n - k)
+    if (n < 0 || k < 0)
+      throw new IllegalArgumentException(s"n=$n, k=$k")
+    if (k == 0L || k == n)
+      return BigInt(1)
+    if (k > n)
+      return BigInt(0)
+    if (n - k > k)
+      return choose(n, n - k)
 
     @tailrec def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
-      if (lo > hi) prod
-      else loop(lo + 1L, hi - 1L, BigInt(lo) * BigInt(hi) * prod)
+      if (lo > hi)
+        prod
+      else
+        loop(lo + 1L, hi - 1L, BigInt(lo) * BigInt(hi) * prod)
 
     if (((n - k) & 1) == 1)
       loop(k + 1, n - 1L, BigInt(n)) / fact(n - k)
@@ -59,26 +65,37 @@ package object math {
     */
   def fact(n: Long): BigInt = {
     @tailrec def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
-      if (lo > hi) prod
-      else loop(lo + 1L, hi - 1L, BigInt(lo) * BigInt(hi) * prod)
-    if (n < 0) throw new IllegalArgumentException(n.toString)
-    else if (n == 0) BigInt(1)
-    else if ((n & 1) == 1) loop(1L, n - 1L, BigInt(n))
-    else loop(2L, n - 1L, BigInt(n))
+      if (lo > hi)
+        prod
+      else
+        loop(lo + 1L, hi - 1L, BigInt(lo) * BigInt(hi) * prod)
+    if (n < 0)
+      throw new IllegalArgumentException(n.toString)
+    else if (n == 0)
+      BigInt(1)
+    else if ((n & 1) == 1)
+      loop(1L, n - 1L, BigInt(n))
+    else
+      loop(2L, n - 1L, BigInt(n))
   }
 
   /**
     * fibonacci
     */
   def fib(n: Long): BigInt = {
-    if (n < 0) throw new IllegalArgumentException(n.toString)
+    if (n < 0)
+      throw new IllegalArgumentException(n.toString)
     var i = 63
-    while (((n >>> i) & 1) == 0 && i >= 0) i -= 1
+    while (((n >>> i) & 1) == 0 && i >= 0)
+      i -= 1
     @tailrec def loop(a: BigInt, b: BigInt, i: Int): BigInt = {
       val c = a + b
-      if (i < 0) b
-      else if (((n >>> i) & 1) == 1) loop((a + c) * b, b * b + c * c, i - 1)
-      else loop(a * a + b * b, (a + c) * b, i - 1)
+      if (i < 0)
+        b
+      else if (((n >>> i) & 1) == 1)
+        loop((a + c) * b, b * b + c * c, i - 1)
+      else
+        loop(a * a + b * b, (a + c) * b, i - 1)
     }
     loop(BigInt(1), BigInt(0), i)
   }
@@ -95,9 +112,15 @@ package object math {
     * round
     */
   final def round(a: Float): Float =
-    if (Math.abs(a) >= 16777216.0f) a else Math.round(a).toFloat
+    if (Math.abs(a) >= 16777216.0f)
+      a
+    else
+      Math.round(a).toFloat
   final def round(a: Double): Double =
-    if (Math.abs(a) >= 4503599627370496.0) a else Math.round(a).toDouble
+    if (Math.abs(a) >= 4503599627370496.0)
+      a
+    else
+      Math.round(a).toDouble
   final def round(a: BigDecimal): BigDecimal =
     a.setScale(0, HALF_UP)
   final def round[A](a: A)(implicit ev: IsReal[A]): A = ev.round(a)
@@ -130,14 +153,18 @@ package object math {
         result: BigDecimal,
         base: BigDecimal,
         exponent: BigInt): BigDecimal =
-      if (exponent.signum == 0) result
+      if (exponent.signum == 0)
+        result
       else if (exponent.testBit(0))
         power(result * base, base * base, exponent >> 1)
-      else power(result, base * base, exponent >> 1)
+      else
+        power(result, base * base, exponent >> 1)
 
-    if (k.signum == 0) return BigDecimal(1)
+    if (k.signum == 0)
+      return BigDecimal(1)
 
-    if (k.signum == -1) return BigDecimal(1) / exp(-k)
+    if (k.signum == -1)
+      return BigDecimal(1) / exp(-k)
 
     val whole = k.setScale(0, FLOOR)
 
@@ -196,7 +223,10 @@ package object math {
       @tailrec def loop(x: BigDecimal): BigDecimal = {
         val xp = exp(x)
         val term = (xp - n) / xp
-        if (term > limit) loop(x - term) else x - term
+        if (term > limit)
+          loop(x - term)
+        else
+          x - term
       }
 
       loop(n.setScale(scale2, HALF_UP)).setScale(scale, HALF_UP)
@@ -206,7 +236,10 @@ package object math {
       throw new IllegalArgumentException("argument <= 0")
 
     @tailrec def rescale(x: BigDecimal, n: Int): (BigDecimal, Int) =
-      if (x < 64) (x, n) else rescale(x.sqrt, n + 1)
+      if (x < 64)
+        (x, n)
+      else
+        rescale(x.sqrt, n + 1)
 
     val (x, i) = rescale(n, 0)
 
@@ -235,16 +268,25 @@ package object math {
 
   final def pow(base: BigInt, ex: BigInt): BigInt = {
     @tailrec def bigIntPow(t: BigInt, b: BigInt, e: BigInt): BigInt =
-      if (e.signum == 0) t
-      else if (e.testBit(0)) bigIntPow(t * b, b * b, e >> 1)
-      else bigIntPow(t, b * b, e >> 1)
+      if (e.signum == 0)
+        t
+      else if (e.testBit(0))
+        bigIntPow(t * b, b * b, e >> 1)
+      else
+        bigIntPow(t, b * b, e >> 1)
 
     if (ex.signum < 0) {
       if (base.signum == 0)
         throw new ArithmeticException("zero can't be raised to negative power")
-      else if (base == 1) base
-      else if (base == -1) if (ex.testBit(0)) BigInt(1) else base
-      else BigInt(0)
+      else if (base == 1)
+        base
+      else if (base == -1)
+        if (ex.testBit(0))
+          BigInt(1)
+        else
+          base
+      else
+        BigInt(0)
     } else if (ex.isValidInt) {
       base.pow(ex.toInt)
     } else {
@@ -260,16 +302,25 @@ package object math {
     */
   final def pow(base: Long, exponent: Long): Long = {
     @tailrec def longPow(t: Long, b: Long, e: Long): Long =
-      if (e == 0L) t
-      else if ((e & 1) == 1) longPow(t * b, b * b, e >> 1L)
-      else longPow(t, b * b, e >> 1L)
+      if (e == 0L)
+        t
+      else if ((e & 1) == 1)
+        longPow(t * b, b * b, e >> 1L)
+      else
+        longPow(t, b * b, e >> 1L)
 
     if (exponent < 0L) {
       if (base == 0L)
         throw new ArithmeticException("zero can't be raised to negative power")
-      else if (base == 1L) 1L
-      else if (base == -1L) if ((exponent & 1L) == 0L) -1L else 1L
-      else 0L
+      else if (base == 1L)
+        1L
+      else if (base == -1L)
+        if ((exponent & 1L) == 0L)
+          -1L
+        else
+          1L
+      else
+        0L
     } else {
       longPow(1L, base, exponent)
     }
@@ -282,10 +333,14 @@ package object math {
     * gcd
     */
   final def gcd(_x: Long, _y: Long): Long = {
-    if (_x == 0L) return Math.abs(_y)
-    if (_x == 1L) return 1L
-    if (_y == 0L) return Math.abs(_x)
-    if (_y == 1L) return 1L
+    if (_x == 0L)
+      return Math.abs(_y)
+    if (_x == 1L)
+      return 1L
+    if (_y == 0L)
+      return Math.abs(_x)
+    if (_y == 1L)
+      return 1L
 
     var x = _x
     var xz = numberOfTrailingZeros(x)
@@ -305,7 +360,10 @@ package object math {
       }
     }
 
-    if (xz < yz) x << xz else x << yz
+    if (xz < yz)
+      x << xz
+    else
+      x << yz
   }
 
   final def gcd(a: BigInt, b: BigInt): BigInt = a.gcd(b)
@@ -421,8 +479,10 @@ package object math {
       x: A,
       y: A)(implicit f: Field[A], n: NRoot[A], o: Order[A]): A = {
     import spire.implicits._
-    if (x > y) x.abs * (1 + (y / x) ** 2).sqrt
-    else y.abs * (1 + (x / y) ** 2).sqrt
+    if (x > y)
+      x.abs * (1 + (y / x) ** 2).sqrt
+    else
+      y.abs * (1 + (x / y) ** 2).sqrt
   }
 
   // ugly internal scala.math.ScalaNumber utilities follow

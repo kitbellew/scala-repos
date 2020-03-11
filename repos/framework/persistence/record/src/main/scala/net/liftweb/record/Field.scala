@@ -34,7 +34,8 @@ trait BaseField extends FieldIdentifier with util.BaseField {
   protected def dirty_?(b: Boolean) = dirty = b
 
   def resetDirty {
-    if (safe_?) dirty_?(false)
+    if (safe_?)
+      dirty_?(false)
   }
 
   def dirty_? : Boolean = dirty
@@ -103,7 +104,8 @@ trait BaseField extends FieldIdentifier with util.BaseField {
     * Set the name of this field
     */
   private[record] final def setName_!(newName: String): String = {
-    if (safe_?) fieldName = newName
+    if (safe_?)
+      fieldName = newName
     fieldName
   }
 
@@ -350,8 +352,10 @@ trait TypedField[ThisType] extends BaseField {
       data = defaultValueBox
     }
 
-    if (canRead_?) data
-    else data.flatMap(obscure)
+    if (canRead_?)
+      data
+    else
+      data.flatMap(obscure)
   }
 
   /** Clear the value of this field */
@@ -401,13 +405,20 @@ trait MandatoryTypedField[ThisType]
   def defaultValue: MyType
 
   def defaultValueBox: Box[MyType] =
-    if (optional_?) Empty else Full(defaultValue)
+    if (optional_?)
+      Empty
+    else
+      Full(defaultValue)
 
   override def toString = valueBox match {
     case Full(null) | null => "null"
     case Full(v)           => v.toString
     case _ =>
-      defaultValueBox.map(v => if (v != null) v.toString else "null") openOr ""
+      defaultValueBox.map(v =>
+        if (v != null)
+          v.toString
+        else
+          "null") openOr ""
   }
 }
 
@@ -458,7 +469,11 @@ trait OptionalTypedField[ThisType]
     case Full(null) | null => "null"
     case Full(v)           => v.toString
     case _ =>
-      defaultValueBox.map(v => if (v != null) v.toString else "null") openOr ""
+      defaultValueBox.map(v =>
+        if (v != null)
+          v.toString
+        else
+          "null") openOr ""
   }
 
 }
@@ -522,8 +537,10 @@ trait KeyField[
 object FieldHelpers {
   def expectedA(what: String, notA: AnyRef): Failure =
     Failure(
-      "Expected a " + what + ", not a " + (if (notA == null) "null"
-                                           else notA.getClass.getName))
+      "Expected a " + what + ", not a " + (if (notA == null)
+                                             "null"
+                                           else
+                                             notA.getClass.getName))
 }
 
 trait LifecycleCallbacks {

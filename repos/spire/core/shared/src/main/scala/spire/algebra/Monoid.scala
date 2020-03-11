@@ -28,9 +28,12 @@ trait Monoid[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
     if (n < 0)
       throw new IllegalArgumentException(
         "Repeated combination for monoids must have repetitions >= 0")
-    else if (n == 0) id
-    else if (n == 1) a
-    else combinenAboveOne(a, n)
+    else if (n == 0)
+      id
+    else if (n == 1)
+      a
+    else
+      combinenAboveOne(a, n)
 
   /**
     *  Given a sequence of `as`, combine them using the monoid and return the total.

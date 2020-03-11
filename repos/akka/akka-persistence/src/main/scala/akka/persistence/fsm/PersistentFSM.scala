@@ -243,8 +243,10 @@ object PersistentFSM {
 
     def schedule(actor: ActorRef, timeout: FiniteDuration): Unit =
       ref = Some(
-        if (repeat) scheduler.schedule(timeout, timeout, actor, this)
-        else scheduler.scheduleOnce(timeout, actor, this))
+        if (repeat)
+          scheduler.schedule(timeout, timeout, actor, this)
+        else
+          scheduler.scheduleOnce(timeout, actor, this))
 
     def cancel(): Unit =
       if (ref.isDefined) {

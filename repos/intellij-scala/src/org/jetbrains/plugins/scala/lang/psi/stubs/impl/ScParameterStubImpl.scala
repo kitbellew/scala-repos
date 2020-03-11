@@ -114,7 +114,8 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createTypeElementFromText(getTypeText, getPsi, null))
-      else None
+      else
+        None
     myTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
   }

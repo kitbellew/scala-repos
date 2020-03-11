@@ -591,13 +591,18 @@ private[akka] final class PromiseActorRef private (
     watchedBy match {
       case null ⇒ ()
       case other ⇒
-        if (!updateWatchedBy(other, other - watcher)) remWatcher(watcher)
+        if (!updateWatchedBy(other, other - watcher))
+          remWatcher(watcher)
     }
 
   @tailrec
   private[this] final def clearWatchers(): Set[ActorRef] = watchedBy match {
     case null ⇒ ActorCell.emptyActorRefSet
-    case other ⇒ if (!updateWatchedBy(other, null)) clearWatchers() else other
+    case other ⇒
+      if (!updateWatchedBy(other, null))
+        clearWatchers()
+      else
+        other
   }
 
   @inline
@@ -634,7 +639,8 @@ private[akka] final class PromiseActorRef private (
         } finally {
           setState(p)
         }
-      } else path
+      } else
+        path
     case p: ActorPath ⇒ p
     case StoppedWithPath(p) ⇒ p
     case Stopped ⇒
@@ -648,12 +654,14 @@ private[akka] final class PromiseActorRef private (
       implicit sender: ActorRef = Actor.noSender): Unit = state match {
     case Stopped | _: StoppedWithPath ⇒ provider.deadLetters ! message
     case _ ⇒
-      if (message == null) throw new InvalidMessageException("Message is null")
+      if (message == null)
+        throw new InvalidMessageException("Message is null")
       if (!(result.tryComplete(message match {
             case Status.Success(r) ⇒ Success(r)
             case Status.Failure(f) ⇒ Failure(f)
             case other ⇒ Success(other)
-          }))) provider.deadLetters ! message
+          })))
+        provider.deadLetters ! message
   }
 
   override def sendSystemMessage(message: SystemMessage): Unit = message match {
@@ -673,7 +681,8 @@ private[akka] final class PromiseActorRef private (
         System.err.println(
           "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, this))
     case Unwatch(watchee, watcher) ⇒
-      if (watchee == this && watcher != this) remWatcher(watcher)
+      if (watchee == this && watcher != this)
+        remWatcher(watcher)
       else
         System.err.println(
           "BUG: illegal Unwatch(%s,%s) for %s".format(watchee, watcher, this))
@@ -706,12 +715,16 @@ private[akka] final class PromiseActorRef private (
     }
     state match {
       case null ⇒ // if path was never queried nobody can possibly be watching us, so we don't have to publish termination either
-        if (updateState(null, Stopped)) ensureCompleted() else stop()
+        if (updateState(null, Stopped))
+          ensureCompleted()
+        else
+          stop()
       case p: ActorPath ⇒
         if (updateState(p, StoppedWithPath(p))) {
           try ensureCompleted()
           finally provider.unregisterTempActor(p)
-        } else stop()
+        } else
+          stop()
       case Stopped | _: StoppedWithPath ⇒ // already stopped
       case Registering ⇒
         stop() // spin until registration is completed before stopping

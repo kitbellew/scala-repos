@@ -56,7 +56,8 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
 
   def doApplyFix(project: Project) {
     val syntElem = getElement
-    if (!syntElem.isValid) return
+    if (!syntElem.isValid)
+      return
 
     val replaceText = if (syntElem.getFirstChild.getText.contains("=")) {
       StringUtils.repeat(

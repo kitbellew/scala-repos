@@ -105,15 +105,21 @@ final class ClosureLinkerBackend(
       result: Result,
       compiler: ClosureCompiler,
       output: WritableVirtualJSFile): Unit = {
-    def withNewLine(str: String): String = if (str == "") "" else str + "\n"
+    def withNewLine(str: String): String =
+      if (str == "")
+        ""
+      else
+        str + "\n"
 
     val (header0, footer0) = config.customOutputWrapper
     val header = withNewLine(header0) + "(function(){'use strict';\n"
     val footer = "}).call(this);\n" + withNewLine(footer0)
 
     val outputContent =
-      if (result.errors.nonEmpty) "// errors while producing source\n"
-      else compiler.toSource + "\n"
+      if (result.errors.nonEmpty)
+        "// errors while producing source\n"
+      else
+        compiler.toSource + "\n"
 
     val sourceMap = Option(compiler.getSourceMap())
 

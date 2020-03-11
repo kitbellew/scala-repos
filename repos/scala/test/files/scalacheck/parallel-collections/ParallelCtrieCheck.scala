@@ -27,7 +27,8 @@ abstract class ParallelConcurrentTrieMapCheck[K, V](tp: String)
   def ofSize(vals: Seq[Gen[(K, V)]], sz: Int) = {
     val ct = new concurrent.TrieMap[K, V]
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) ct += sample(gen)
+    for (i <- 0 until sz)
+      ct += sample(gen)
     ct
   }
 

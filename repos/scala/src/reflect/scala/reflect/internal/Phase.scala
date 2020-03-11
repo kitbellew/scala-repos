@@ -12,7 +12,11 @@ abstract class Phase(val prev: Phase) {
     prev.nx = this
 
   type Id = Int
-  val id: Id = if (prev eq null) 0 else prev.id + 1
+  val id: Id =
+    if (prev eq null)
+      0
+    else
+      prev.id + 1
 
   /** New flags visible after this phase has completed */
   def nextFlags: Long = 0L
@@ -22,15 +26,21 @@ abstract class Phase(val prev: Phase) {
 
   val fmask =
     (
-      if (prev eq null) Flags.InitialFlags
-      else prev.flagMask | prev.nextFlags | newFlags
+      if (prev eq null)
+        Flags.InitialFlags
+      else
+        prev.flagMask | prev.nextFlags | newFlags
     )
   def flagMask: Long = fmask
 
   private var nx: Phase = NoPhase
 
   // does anyone rely on next == this for terminus?
-  def next: Phase = if (nx eq NoPhase) this else nx
+  def next: Phase =
+    if (nx eq NoPhase)
+      this
+    else
+      nx
   def hasNext = next != this
   // this definition excludes the terminal phase
   //def iterator = Iterator.iterate(this)(_.nx) takeWhile (p => p.next != p)

@@ -65,7 +65,11 @@ object Uniform {
           })
         } else {
           val mask0 = (1 << (width % 8)) - 1
-          val mask = if (mask0 == 0) 255 else mask0
+          val mask =
+            if (mask0 == 0)
+              255
+            else
+              mask0
           new DistFromGen[BigInt]({ gen =>
             val bytes = new Array[Byte]((width + 7) / 8)
 
@@ -73,7 +77,10 @@ object Uniform {
               gen.fillBytes(bytes)
               bytes(0) = (bytes(0) & mask).toByte
               val n = BigInt(1, bytes)
-              if (n > range) loop() else n
+              if (n > range)
+                loop()
+              else
+                n
             }
 
             min + loop()

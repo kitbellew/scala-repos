@@ -58,7 +58,8 @@ trait PasswordTypedField extends TypedField[String] {
     if (!validatePassword(in)) {
       val hashed = in.map(s => PasswordField.hashpw(s) openOr s)
       setBox(hashed)
-    } else setBox(defaultValueBox)
+    } else
+      setBox(defaultValueBox)
   }
 
   /**
@@ -89,9 +90,12 @@ trait PasswordTypedField extends TypedField[String] {
   }
 
   override def validate: List[FieldError] = {
-    if (!invalidPw && valueBox != defaultValueBox) Nil
-    else if (invalidPw) List(FieldError(this, Text(invalidMsg)))
-    else List(FieldError(this, Text(notOptionalErrorMessage)))
+    if (!invalidPw && valueBox != defaultValueBox)
+      Nil
+    else if (invalidPw)
+      List(FieldError(this, Text(invalidMsg)))
+    else
+      List(FieldError(this, Text(notOptionalErrorMessage)))
   }
 
   override def notOptionalErrorMessage = S.?("password.must.be.set")

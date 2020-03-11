@@ -464,7 +464,10 @@ object UserRepo {
       F.createdWithApiVersion -> mobileApiVersion,
       F.seenAt -> DateTime.now
     ) ++ {
-      if (blind) BSONDocument("blind" -> true) else BSONDocument()
+      if (blind)
+        BSONDocument("blind" -> true)
+      else
+        BSONDocument()
     }
   }
 

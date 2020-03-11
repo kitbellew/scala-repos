@@ -20,7 +20,10 @@ object Directory {
 
   private def normalizePath(s: String) = Some(apply(Path(s).normalize))
   def Current: Option[Directory] =
-    if (userDir == "") None else normalizePath(userDir)
+    if (userDir == "")
+      None
+    else
+      normalizePath(userDir)
 
   def apply(path: Path): Directory = path.toDirectory
 
@@ -44,7 +47,10 @@ object Directory {
   */
 class Directory(jfile: JFile) extends Path(jfile) {
   override def toAbsolute: Directory =
-    if (isAbsolute) this else super.toAbsolute.toDirectory
+    if (isAbsolute)
+      this
+    else
+      super.toAbsolute.toDirectory
   override def toDirectory: Directory = this
   override def toFile: File = new File(jfile)
   override def normalize: Directory = super.normalize.toDirectory
@@ -73,7 +79,10 @@ class Directory(jfile: JFile) extends Path(jfile) {
     *  until it runs out of contents.
     */
   def deepList(depth: Int = -1): Iterator[Path] =
-    if (depth < 0) list ++ (dirs flatMap (_ deepList (depth)))
-    else if (depth == 0) Iterator.empty
-    else list ++ (dirs flatMap (_ deepList (depth - 1)))
+    if (depth < 0)
+      list ++ (dirs flatMap (_ deepList (depth)))
+    else if (depth == 0)
+      Iterator.empty
+    else
+      list ++ (dirs flatMap (_ deepList (depth - 1)))
 }

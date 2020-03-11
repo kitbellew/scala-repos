@@ -32,7 +32,8 @@ object Test {
 
   type Cs = List[Char]
   def all_strings(n: Int): List[Cs] = {
-    if (n == 0) List(Nil)
+    if (n == 0)
+      List(Nil)
     else {
       val sufs = all_strings(n - 1)
       chars.flatMap((c) => sufs.map(c :: _))

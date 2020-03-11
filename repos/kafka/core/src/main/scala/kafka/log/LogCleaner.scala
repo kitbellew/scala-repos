@@ -465,7 +465,10 @@ private[log] class Cleaner(
               log.name,
               new Date(old.lastModified),
               cleaned.baseOffset,
-              if (retainDeletes) "retaining" else "discarding"))
+              if (retainDeletes)
+                "retaining"
+              else
+                "discarding"))
         cleanInto(
           log.topicAndPartition,
           old,
@@ -561,9 +564,11 @@ private[log] class Cleaner(
                     messageAndOffset.message.toFormatVersion(
                       messageFormatVersion),
                     messageAndOffset.offset)
-                } else messageAndOffset
+                } else
+                  messageAndOffset
               }
-            } else writeOriginalMessageSet = false
+            } else
+              writeOriginalMessageSet = false
           }
 
           // There are no messages compacted out and no message format conversion, write the original message set back

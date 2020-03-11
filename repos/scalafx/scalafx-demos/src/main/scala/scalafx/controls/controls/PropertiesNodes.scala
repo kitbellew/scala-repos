@@ -145,13 +145,21 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
   protected def getCheckBox(property: BooleanProperty, tip: String = "") =
     new CheckBox {
       selected <==> property
-      tooltip = if (tip.isEmpty) null else Tooltip(tip)
+      tooltip =
+        if (tip.isEmpty)
+          null
+        else
+          Tooltip(tip)
     }
 
   protected def getTextField(property: StringProperty, tip: String = "") =
     new TextField {
       text <==> property
-      tooltip = if (tip.isEmpty) null else Tooltip(tip)
+      tooltip =
+        if (tip.isEmpty)
+          null
+        else
+          Tooltip(tip)
     }
 
   protected def getLabel(property: StringProperty) = new Label {

@@ -183,7 +183,10 @@ class LocalCluster(mutex: Boolean = true) {
     } else {
       LOG.debug("Not yet on Hadoop classpath: " + resourceDir)
       val localJarFile =
-        if (resourceDir.isDirectory) MakeJar(resourceDir) else resourceDir
+        if (resourceDir.isDirectory)
+          MakeJar(resourceDir)
+        else
+          resourceDir
       val hdfsJarPath =
         new Path(LocalCluster.HADOOP_CLASSPATH_DIR, localJarFile.getName)
       fileSystem.copyFromLocalFile(
@@ -203,7 +206,8 @@ class LocalCluster(mutex: Boolean = true) {
   def putFile(file: File, location: String): Boolean = {
     val hdfsLocation = new Path(location)
     val exists = fileSystem.exists(hdfsLocation)
-    if (!exists) FileUtil.copy(file, fileSystem, hdfsLocation, false, jobConf)
+    if (!exists)
+      FileUtil.copy(file, fileSystem, hdfsLocation, false, jobConf)
     exists
   }
 

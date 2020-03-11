@@ -32,7 +32,11 @@ class Bernoulli(p: Double, rand: RandBasis = Rand)
     with Moments[Double, Double] {
   require(p >= 0.0)
   require(p <= 1.0)
-  def probabilityOf(b: Boolean) = if (b) p else (1 - p)
+  def probabilityOf(b: Boolean) =
+    if (b)
+      p
+    else
+      (1 - p)
 
   override def draw() = {
     rand.uniform.get < p
@@ -57,8 +61,10 @@ object Bernoulli
 
   def posterior(prior: Beta.Parameter, evidence: TraversableOnce[Boolean]) = {
     evidence.foldLeft(prior) { (acc, ev) =>
-      if (ev) acc.copy(_1 = acc._1 + 1)
-      else acc.copy(_2 = acc._2 + 1)
+      if (ev)
+        acc.copy(_1 = acc._1 + 1)
+      else
+        acc.copy(_2 = acc._2 + 1)
     }
   }
 

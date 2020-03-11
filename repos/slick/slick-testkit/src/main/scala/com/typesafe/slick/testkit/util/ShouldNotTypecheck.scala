@@ -39,7 +39,8 @@ object ShouldNotTypecheck {
             ctx.enclosingPosition,
             "Type-checking failed in an unexpected way.\n" +
               expMsg + "\nActual error: " + msg)
-        else return reify(())
+        else
+          return reify(())
     }
 
     ctx.abort(

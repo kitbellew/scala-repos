@@ -30,7 +30,8 @@ class WorksheetFoldGroup(
   def left2rightOffset(left: Int) = {
     val key: Int = unfolded floorKey left
 
-    if (key == 0) left
+    if (key == 0)
+      left
     else {
       unfolded.get(key) + left
     }
@@ -63,11 +64,11 @@ class WorksheetFoldGroup(
 
   def getCorrespondInfo = regions map {
     case FoldRegionInfo(
-        region: WorksheetFoldRegionDelegate,
-        _,
-        leftStart,
-        spaces,
-        lsLength) =>
+          region: WorksheetFoldRegionDelegate,
+          _,
+          leftStart,
+          spaces,
+          lsLength) =>
       (region.getStartOffset, region.getEndOffset, leftStart, spaces, lsLength)
   }
 
@@ -81,9 +82,11 @@ class WorksheetFoldGroup(
       case (all, info, _) => (all.unzip, info)
     }
 
-    if (targetInfo == null || targetInfo.expanded == expand) return false
+    if (targetInfo == null || targetInfo.expanded == expand)
+      return false
 
-    if (splitter != null) splitter.update(fromTo, offsetsSpaces)
+    if (splitter != null)
+      splitter.update(fromTo, offsetsSpaces)
 
     targetInfo.expanded = expand
 
@@ -134,7 +137,8 @@ class WorksheetFoldGroup(
 
   private def traverseRegions(target: WorksheetFoldRegionDelegate)
       : (mutable.Iterable[((Int, Int), (Int, Int))], FoldRegionInfo, Int) = {
-    if (regions.isEmpty) return (mutable.ArrayBuffer.empty, null, 0)
+    if (regions.isEmpty)
+      return (mutable.ArrayBuffer.empty, null, 0)
 
     def numbers(reg: FoldRegionInfo, stored: Int) =
       (
@@ -163,7 +167,10 @@ class WorksheetFoldGroup(
 
     val spaces = target.spaces
     if (unfolded.get(key) == 0) {
-      if (expand) unfolded.put(line, spaces) else unfolded remove line
+      if (expand)
+        unfolded.put(line, spaces)
+      else
+        unfolded remove line
       return
     }
 
@@ -172,11 +179,16 @@ class WorksheetFoldGroup(
       val t = lower.next()
       unfolded.put(
         t.getKey,
-        if (expand) t.getValue + spaces else t.getValue - spaces)
+        if (expand)
+          t.getValue + spaces
+        else
+          t.getValue - spaces)
     }
 
-    if (expand) unfolded.put(line, unfolded.get(key) + spaces)
-    else unfolded.remove(line)
+    if (expand)
+      unfolded.put(line, unfolded.get(key) + spaces)
+    else
+      unfolded.remove(line)
   }
 
   private case class FoldRegionInfo(
@@ -200,7 +212,8 @@ object WorksheetFoldGroup {
 
   def save(file: ScalaFile, group: WorksheetFoldGroup) {
     val virtualFile = file.getVirtualFile
-    if (!virtualFile.isValid) return
+    if (!virtualFile.isValid)
+      return
     FileAttributeUtilCache.writeAttribute(
       WORKSHEET_PERSISTENT_FOLD_KEY,
       file,
@@ -215,7 +228,8 @@ object WorksheetFoldGroup {
       file: PsiFile) {
     val bytes =
       FileAttributeUtilCache.readAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file)
-    if (bytes == null) return
+    if (bytes == null)
+      return
 
     lazy val group =
       new WorksheetFoldGroup(viewerEditor, originalEditor, project, splitter)

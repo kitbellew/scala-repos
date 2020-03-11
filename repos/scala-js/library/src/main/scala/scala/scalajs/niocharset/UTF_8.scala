@@ -126,13 +126,18 @@ private[niocharset] object UTF_8
               val decoded = {
                 @inline
                 def inArrayOr0(offset: Int): Int =
-                  if (inPos + offset < inEnd) inArray(inPos + offset)
-                  else 0 // 0 is not a valid next byte
+                  if (inPos + offset < inEnd)
+                    inArray(inPos + offset)
+                  else
+                    0 // 0 is not a valid next byte
 
                 val b2 = inArrayOr0(1)
-                if (length == 2) decode2(leading, b2)
-                else if (length == 3) decode3(leading, b2, inArrayOr0(2))
-                else decode4(leading, b2, inArrayOr0(2), inArrayOr0(3))
+                if (length == 2)
+                  decode2(leading, b2)
+                else if (length == 3)
+                  decode3(leading, b2, inArrayOr0(2))
+                else
+                  decode4(leading, b2, inArrayOr0(2), inArrayOr0(3))
               }
 
               if (decoded.failure != null) {
@@ -201,11 +206,15 @@ private[niocharset] object UTF_8
                   if (in.hasRemaining) {
                     bytesRead += 1;
                     in.get()
-                  } else 0 // 0 is not a valid next byte
+                  } else
+                    0 // 0 is not a valid next byte
 
-                if (length == 2) decode2(leading, getOr0())
-                else if (length == 3) decode3(leading, getOr0(), getOr0())
-                else decode4(leading, getOr0(), getOr0(), getOr0())
+                if (length == 2)
+                  decode2(leading, getOr0())
+                else if (length == 3)
+                  decode3(leading, getOr0(), getOr0())
+                else
+                  decode4(leading, getOr0(), getOr0(), getOr0())
               }
 
               if (decoded.failure != null) {

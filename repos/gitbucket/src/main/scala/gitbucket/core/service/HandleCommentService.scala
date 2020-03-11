@@ -34,8 +34,10 @@ trait HandleCommentService {
             case "close" if (!issue.closed) =>
               true ->
                 (Some("close") -> Some(
-                  if (issue.isPullRequest) recordClosePullRequestActivity _
-                  else recordCloseIssueActivity _))
+                  if (issue.isPullRequest)
+                    recordClosePullRequestActivity _
+                  else
+                    recordCloseIssueActivity _))
             case "reopen" if (issue.closed) =>
               false ->
                 (Some("reopen") -> Some(recordReopenIssueActivity _))
@@ -71,8 +73,10 @@ trait HandleCommentService {
 
         // record comment activity if comment is entered
         content foreach {
-          (if (issue.isPullRequest) recordCommentPullRequestActivity _
-           else recordCommentIssueActivity _)
+          (if (issue.isPullRequest)
+             recordCommentPullRequestActivity _
+           else
+             recordCommentIssueActivity _)
           (owner, name, userName, issue.issueId, _)
         }
         recordActivity foreach (_(
@@ -132,8 +136,10 @@ trait HandleCommentService {
             content foreach {
               f.toNotify(repository, issue, _) {
                 Notifier.msgComment(
-                  s"${context.baseUrl}/${owner}/${name}/${if (issue.isPullRequest) "pull"
-                  else "issues"}/${issue.issueId}#comment-${commentId.get}")
+                  s"${context.baseUrl}/${owner}/${name}/${if (issue.isPullRequest)
+                    "pull"
+                  else
+                    "issues"}/${issue.issueId}#comment-${commentId.get}")
               }
             }
             action foreach {

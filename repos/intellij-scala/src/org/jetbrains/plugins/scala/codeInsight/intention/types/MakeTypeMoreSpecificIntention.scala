@@ -47,7 +47,8 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     if (element == null || !IntentionAvailabilityChecker.checkIntention(
           this,
-          element)) false
+          element))
+      false
     else {
       var isAvailable = false
       def text(s: String): Unit = {

@@ -42,6 +42,10 @@ import simulacrum.typeclass
     * `if` lifted into monad.
     */
   def ifM[B](fa: F[Boolean])(ifTrue: => F[B], ifFalse: => F[B]): F[B] = {
-    flatMap(fa)(if (_) ifTrue else ifFalse)
+    flatMap(fa)(
+      if (_)
+        ifTrue
+      else
+        ifFalse)
   }
 }

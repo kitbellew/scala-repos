@@ -91,13 +91,29 @@ object DumpLogSegments {
 
     CommandLineUtils.checkRequiredArgs(parser, options, filesOpt)
 
-    val print = if (options.has(printOpt)) true else false
-    val verifyOnly = if (options.has(verifyOpt)) true else false
-    val indexSanityOnly = if (options.has(indexSanityOpt)) true else false
+    val print =
+      if (options.has(printOpt))
+        true
+      else
+        false
+    val verifyOnly =
+      if (options.has(verifyOpt))
+        true
+      else
+        false
+    val indexSanityOnly =
+      if (options.has(indexSanityOpt))
+        true
+      else
+        false
 
     val files = options.valueOf(filesOpt).split(",")
     val maxMessageSize = options.valueOf(maxMessageSizeOpt).intValue()
-    val isDeepIteration = if (options.has(deepIterationOpt)) true else false
+    val isDeepIteration =
+      if (options.has(deepIterationOpt))
+        true
+      else
+        false
 
     val messageParser = if (options.has(offsetsOpt)) {
       new OffsetsMessageParser

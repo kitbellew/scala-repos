@@ -333,7 +333,8 @@ class DenseVectorTest extends FunSuite with Checkers {
 
     // foreach
     s = 0.0
-    for (v <- a) s += v
+    for (v <- a)
+      s += v
     assert(s === sum(a))
 
 //    filter
@@ -342,7 +343,9 @@ class DenseVectorTest extends FunSuite with Checkers {
 //    assert(s === 1 + 2)
 
     // map
-    val b1: DenseVector[Int] = for (v <- a) yield v * 2
+    val b1: DenseVector[Int] =
+      for (v <- a)
+        yield v * 2
     assert(b1 === DenseVector(2, 4, 6, 8, 10))
 
 //    map with filter

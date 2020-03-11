@@ -24,7 +24,8 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
       assert(p.toList.length == parts.length)
       assert(p.lastOption == util.Try(parts.last).toOption)
       assert(p.startsWith(util.Try(Path(parts.init)).getOrElse(Root)))
-      if (p != Root) assert(p.toString == parts.mkString("/", "/", ""))
+      if (p != Root)
+        assert(p.toString == parts.mkString("/", "/", ""))
     }
   }
 

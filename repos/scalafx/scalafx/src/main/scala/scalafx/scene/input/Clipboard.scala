@@ -41,7 +41,10 @@ import scalafx.scene.input.InputIncludes.jfxClipboard2sfx
 
 object Clipboard {
   implicit def sfxClipboard2jfx(c: Clipboard): jfxsi.Clipboard =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 
   /**
     * Gets the current system clipboard, through which data can be stored and retrieved.

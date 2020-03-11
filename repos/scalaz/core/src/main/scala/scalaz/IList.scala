@@ -52,8 +52,10 @@ sealed abstract class IList[A] extends Product with Serializable {
     @tailrec def go(as: IList[A], acc: IList[B]): IList[B] =
       as match {
         case ICons(h, t) =>
-          if (pf isDefinedAt h) go(t, ICons(pf(h), acc))
-          else go(t, acc)
+          if (pf isDefinedAt h)
+            go(t, ICons(pf(h), acc))
+          else
+            go(t, acc)
         case INil() => acc
       }
     go(this, empty).reverse
@@ -71,7 +73,11 @@ sealed abstract class IList[A] extends Product with Serializable {
     indexOfSlice(as).isDefined
 
   def count(f: A => Boolean): Int =
-    foldLeft(0)((n, a) => if (f(a)) n + 1 else n)
+    foldLeft(0)((n, a) =>
+      if (f(a))
+        n + 1
+      else
+        n)
 
   def distinct(implicit A: Order[A]): IList[A] = {
     @tailrec def loop(src: IList[A], seen: ISet[A], acc: IList[A]): IList[A] =
@@ -90,7 +96,8 @@ sealed abstract class IList[A] extends Product with Serializable {
 
   def drop(n: Int): IList[A] = {
     @tailrec def drop0(as: IList[A], n: Int): IList[A] =
-      if (n < 1) as
+      if (n < 1)
+        as
       else
         as match {
           case INil()      => empty
@@ -120,7 +127,11 @@ sealed abstract class IList[A] extends Product with Serializable {
   // no exists; use Foldable#any
 
   def filter(f: A => Boolean): IList[A] =
-    foldRight(IList.empty[A])((a, as) => if (f(a)) a :: as else as)
+    foldRight(IList.empty[A])((a, as) =>
+      if (f(a))
+        a :: as
+      else
+        as)
 
   def filterNot(f: A => Boolean): IList[A] =
     filter(a => !f(a))
@@ -128,8 +139,12 @@ sealed abstract class IList[A] extends Product with Serializable {
   def find(f: A => Boolean): Option[A] = {
     @tailrec def find0[A](as: IList[A])(f: A => Boolean): Option[A] =
       as match {
-        case INil()       => none
-        case ICons(a, as) => if (f(a)) some(a) else find0[A](as)(f)
+        case INil() => none
+        case ICons(a, as) =>
+          if (f(a))
+            some(a)
+          else
+            find0[A](as)(f)
       }
     find0(this)(f)
   }
@@ -178,7 +193,8 @@ sealed abstract class IList[A] extends Product with Serializable {
 
   def indexOfSlice(slice: IList[A])(implicit ev: Equal[A]): Option[Int] = {
     @tailrec def indexOfSlice0(i: Int, as: IList[A]): Option[Int] =
-      if (as.startsWith(slice)) Some(i)
+      if (as.startsWith(slice))
+        Some(i)
       else
         as match {
           case INil()      => None
@@ -190,8 +206,12 @@ sealed abstract class IList[A] extends Product with Serializable {
   def indexWhere(f: A => Boolean): Option[Int] = {
     @tailrec def indexWhere0(i: Int, as: IList[A]): Option[Int] =
       as match {
-        case INil()      => None
-        case ICons(h, t) => if (f(h)) Some(i) else indexWhere0(i + 1, t)
+        case INil() => None
+        case ICons(h, t) =>
+          if (f(h))
+            Some(i)
+          else
+            indexWhere0(i + 1, t)
       }
     indexWhere0(0, this)
   }
@@ -271,7 +291,8 @@ sealed abstract class IList[A] extends Product with Serializable {
 
   def padTo(n: Int, a: A): IList[A] = {
     @tailrec def padTo0(n: Int, init: IList[A], tail: IList[A]): IList[A] =
-      if (n < 1) init reverse_::: tail
+      if (n < 1)
+        init reverse_::: tail
       else
         tail match {
           case INil()      => padTo0(n - 1, a :: init, empty)
@@ -282,7 +303,11 @@ sealed abstract class IList[A] extends Product with Serializable {
 
   def partition(f: A => Boolean): (IList[A], IList[A]) =
     BFT.umap(foldLeft((IList.empty[A], IList.empty[A])) {
-      case ((ts, fs), a) => if (f(a)) (a :: ts, fs) else (ts, a :: fs)
+      case ((ts, fs), a) =>
+        if (f(a))
+          (a :: ts, fs)
+        else
+          (ts, a :: fs)
     })(_.reverse)
 
   def patch(from: Int, patch: IList[A], replaced: Int): IList[A] = {
@@ -347,7 +372,10 @@ sealed abstract class IList[A] extends Product with Serializable {
       as match {
         case INil() => (this, empty)
         case ICons(h, t) =>
-          if (f(h)) span0(t, h :: accum) else (accum.reverse, as)
+          if (f(h))
+            span0(t, h :: accum)
+          else
+            (accum.reverse, as)
       }
     span0(this, empty)
   }
@@ -357,7 +385,8 @@ sealed abstract class IList[A] extends Product with Serializable {
         n: Int,
         as: IList[A],
         accum: IList[A]): (IList[A], IList[A]) =
-      if (n < 1) (accum.reverse, as)
+      if (n < 1)
+        (accum.reverse, as)
       else
         as match {
           case INil()      => (this, empty)
@@ -393,7 +422,8 @@ sealed abstract class IList[A] extends Product with Serializable {
 
   def take(n: Int): IList[A] = {
     @tailrec def take0(n: Int, as: IList[A], accum: IList[A]): IList[A] =
-      if (n < 1) accum.reverse
+      if (n < 1)
+        accum.reverse
       else
         as match {
           case ICons(h, t) => take0(n - 1, t, h :: accum)
@@ -483,8 +513,10 @@ sealed abstract class IList[A] extends Product with Serializable {
         case (ICons(a, as), ICons(b, bs)) => zaccum(as, bs, (a, b) :: accum)
         case _                            => accum
       }
-    if (this.isEmpty) empty
-    else zaccum(this, b, empty).reverse
+    if (this.isEmpty)
+      empty
+    else
+      zaccum(this, b, empty).reverse
   }
 
   // IList is invariant in behavior but covariant by nature, so we can safely widen to IList[B]
@@ -525,11 +557,15 @@ object IList extends IListInstances {
 
   def fill[A](n: Int)(a: A): IList[A] = {
     @tailrec def go(i: Int, list: IList[A]): IList[A] = {
-      if (i > 0) go(i - 1, ICons(a, list))
-      else list
+      if (i > 0)
+        go(i - 1, ICons(a, list))
+      else
+        list
     }
-    if (n <= 0) empty
-    else go(n, empty)
+    if (n <= 0)
+      empty
+    else
+      go(n, empty)
   }
 
   import Isomorphism._
@@ -575,7 +611,12 @@ sealed abstract class IListInstances extends IListInstance0 {
         @tailrec def loop(a: IList[A], x: Option[A]): Option[A] =
           a match {
             case ICons(h, t) =>
-              loop(t, if (f(h)) Some(h) else x)
+              loop(
+                t,
+                if (f(h))
+                  Some(h)
+                else
+                  x)
             case INil() =>
               x
           }
@@ -668,11 +709,17 @@ sealed abstract class IListInstances extends IListInstance0 {
 
       override def index[A](fa: IList[A], i: Int) = {
         @tailrec def go(as: IList[A], n: Int): Option[A] = as match {
-          case ICons(h, t) => if (n == i) Some(h) else go(t, n + 1)
-          case INil()      => None
+          case ICons(h, t) =>
+            if (n == i)
+              Some(h)
+            else
+              go(t, n + 1)
+          case INil() => None
         }
-        if (i < 0) None
-        else go(fa, 0)
+        if (i < 0)
+          None
+        else
+          go(fa, 0)
       }
 
       override def reverse[A](fa: IList[A]) =

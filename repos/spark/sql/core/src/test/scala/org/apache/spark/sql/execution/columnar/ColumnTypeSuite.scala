@@ -154,7 +154,8 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
       val b = buff.get()
       sb.append(Integer.toHexString(b & 0xff)).append(' ')
     }
-    if (sb.nonEmpty) sb.setLength(sb.length - 1)
+    if (sb.nonEmpty)
+      sb.setLength(sb.length - 1)
     sb.toString()
   }
 

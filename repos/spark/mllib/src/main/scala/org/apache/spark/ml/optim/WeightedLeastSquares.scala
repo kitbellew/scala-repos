@@ -84,7 +84,11 @@ private[ml] class WeightedLeastSquares(
     val summary = instances.treeAggregate(new Aggregator)(_.add(_), _.merge(_))
     summary.validate()
     logInfo(s"Number of instances: ${summary.count}.")
-    val k = if (fitIntercept) summary.k + 1 else summary.k
+    val k =
+      if (fitIntercept)
+        summary.k + 1
+      else
+        summary.k
     val triK = summary.triK
     val wSum = summary.wSum
     val bBar = summary.bBar

@@ -37,7 +37,10 @@ import scalafx.event.{Event, EventType}
 object WorkerStateEvent {
   implicit def sfxWorkerStateEvent2jfx(
       w: WorkerStateEvent): jfxc.WorkerStateEvent =
-    if (w != null) w.delegate else null
+    if (w != null)
+      w.delegate
+    else
+      null
 
   /**
     * Common supertype for all worker state event types.

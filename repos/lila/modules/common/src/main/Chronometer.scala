@@ -7,7 +7,8 @@ object Chronometer {
     def millis = (nanos / 1000000).toInt
 
     def logIfSlow(threshold: Int, logger: lila.log.Logger)(msg: A => String) = {
-      if (millis >= threshold) logger.debug(s"<${millis}ms> ${msg(result)}")
+      if (millis >= threshold)
+        logger.debug(s"<${millis}ms> ${msg(result)}")
       this
     }
   }

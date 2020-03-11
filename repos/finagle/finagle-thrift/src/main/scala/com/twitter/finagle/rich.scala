@@ -80,8 +80,10 @@ private[twitter] object ThriftUtil {
       meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
     } yield { k: Class[_] =>
       try {
-        if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
-        else None
+        if (meth.invoke(null, k).asInstanceOf[Boolean])
+          Some(k)
+        else
+          None
       } catch {
         case NonFatal(_) => None
       }
@@ -449,7 +451,11 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
       builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = {
     val thriftService = newService(dest, label)
-    val statsLabel = if (label.isEmpty) defaultClientName else label
+    val statsLabel =
+      if (label.isEmpty)
+        defaultClientName
+      else
+        label
     val scopedStats = stats.scope(statsLabel)
     builder.newServiceIface(thriftService, protocolFactory, scopedStats)
   }
@@ -458,7 +464,11 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
       builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = {
     val thriftService = newService(dest, label)
-    val statsLabel = if (label.isEmpty) defaultClientName else label
+    val statsLabel =
+      if (label.isEmpty)
+        defaultClientName
+      else
+        label
     val scopedStats = stats.scope(statsLabel)
     builder.newServiceIface(thriftService, protocolFactory, scopedStats)
   }

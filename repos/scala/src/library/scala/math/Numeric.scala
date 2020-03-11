@@ -236,11 +236,18 @@ trait Numeric[T] extends Ordering[T] {
   def zero = fromInt(0)
   def one = fromInt(1)
 
-  def abs(x: T): T = if (lt(x, zero)) negate(x) else x
+  def abs(x: T): T =
+    if (lt(x, zero))
+      negate(x)
+    else
+      x
   def signum(x: T): Int =
-    if (lt(x, zero)) -1
-    else if (gt(x, zero)) 1
-    else 0
+    if (lt(x, zero))
+      -1
+    else if (gt(x, zero))
+      1
+    else
+      0
 
   class Ops(lhs: T) {
     def +(rhs: T) = plus(lhs, rhs)

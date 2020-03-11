@@ -37,7 +37,10 @@ object TimePathedSource extends java.io.Serializable {
     { (dr: DateRange) =>
       val newStart = dr.start - sdiff
       val newEnd = dr.end - ediff
-      if (newStart > newEnd) None else Some(DateRange(newStart, newEnd))
+      if (newStart > newEnd)
+        None
+      else
+        Some(DateRange(newStart, newEnd))
     }
   }
 

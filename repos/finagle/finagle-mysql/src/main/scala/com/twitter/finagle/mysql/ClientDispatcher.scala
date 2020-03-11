@@ -260,7 +260,8 @@ class ClientDispatcher(
   private[this] def readTx(
       limit: Int = Int.MaxValue): Future[(Seq[Packet], EOF)] = {
     def aux(numRead: Int, xs: List[Packet]): Future[(List[Packet], EOF)] = {
-      if (numRead > limit) Future.exception(lostSyncExc)
+      if (numRead > limit)
+        Future.exception(lostSyncExc)
       else
         trans.read() flatMap { packet =>
           packet.body.headOption match {
@@ -279,7 +280,9 @@ class ClientDispatcher(
         }
     }
 
-    if (limit <= 0) Future.value(emptyTx)
-    else aux(0, Nil)
+    if (limit <= 0)
+      Future.value(emptyTx)
+    else
+      aux(0, Nil)
   }
 }

@@ -61,7 +61,11 @@ P <: Product2[K, V]: ClassTag] @DeveloperApi() (self: RDD[P])
     self.withScope {
       val part = new RangePartitioner(numPartitions, self, ascending)
       new ShuffledRDD[K, V, V](self, part)
-        .setKeyOrdering(if (ascending) ordering else ordering.reverse)
+        .setKeyOrdering(
+          if (ascending)
+            ordering
+          else
+            ordering.reverse)
     }
 
   /**

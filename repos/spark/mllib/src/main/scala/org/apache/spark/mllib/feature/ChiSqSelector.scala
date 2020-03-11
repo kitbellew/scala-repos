@@ -54,7 +54,8 @@ class ChiSqSelectorModel @Since("1.3.0") (
     var i = 1
     val len = array.length
     while (i < len) {
-      if (array(i) < array(i - 1)) return false
+      if (array(i) < array(i - 1))
+        return false
       i += 1
     }
     true

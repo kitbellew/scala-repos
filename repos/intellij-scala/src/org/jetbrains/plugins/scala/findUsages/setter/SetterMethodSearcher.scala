@@ -67,7 +67,8 @@ class SetterMethodSearcher
                 case Some(res) if res.element.getNavigationElement == element =>
                   Option(assign.getLExpression).foreach {
                     case ref: ScReferenceElement =>
-                      if (!consumer.process(ref)) return false
+                      if (!consumer.process(ref))
+                        return false
                   }
                 case _ =>
               }
@@ -100,10 +101,12 @@ class SetterMethodSearcher
               ref.resolve() match {
                 case fakeMethod: FakePsiMethod
                     if fakeMethod.navElement == element =>
-                  if (!consumer.process(ref)) return false
+                  if (!consumer.process(ref))
+                    return false
                 case wrapper: PsiTypedDefinitionWrapper
                     if wrapper.typedDefinition == element =>
-                  if (!consumer.process(ref)) return false
+                  if (!consumer.process(ref))
+                    return false
                 case _ =>
               }
             case _ =>

@@ -100,8 +100,10 @@ class Jetty7AsyncProvider(req: HTTPRequest) extends ServletAsyncProvider {
   def suspendResumeSupport_? : Boolean = hasContinuations_?
 
   def resumeInfo: Option[(Req, LiftResponse)] =
-    if (!hasContinuations_?) None
-    else if (Props.inGAE) None
+    if (!hasContinuations_?)
+      None
+    else if (Props.inGAE)
+      None
     else {
       val cont = getContinuation.invoke(contSupport, servletReq)
       val ret = getAttribute.invoke(cont, "__liftCometState")

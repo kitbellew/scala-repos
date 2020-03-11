@@ -48,7 +48,10 @@ case class MemcacheResponse(
   def writeAscii(): Option[ChannelBuffer] = {
     if (lineData.size > 0) {
       val dataSize =
-        if (data.isDefined) (data.get.remaining + MemcacheCodec.END.size) else 0
+        if (data.isDefined)
+          (data.get.remaining + MemcacheCodec.END.size)
+        else
+          0
       val size = lineData.size + MemcacheCodec.CRLF.size + dataSize
       val buffer = ChannelBuffers.buffer(size)
       buffer.writeBytes(lineData)

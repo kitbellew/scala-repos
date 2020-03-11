@@ -34,7 +34,8 @@ object Expr {
             pssm.done(ScalaElementTypes.PARAM_CLAUSES)
 
             builder.advanceLexer() //Ate =>
-            if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
+            if (!Expr.parse(builder))
+              builder error ErrMsg("wrong.expression")
             exprMarker.done(ScalaElementTypes.FUNCTION_EXPR)
             return true
           }
@@ -49,7 +50,8 @@ object Expr {
           builder.getTokenType match {
             case ScalaTokenTypes.tFUNTYPE => {
               builder.advanceLexer() //Ate =>
-              if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
+              if (!Expr.parse(builder))
+                builder error ErrMsg("wrong.expression")
               exprMarker.done(ScalaElementTypes.FUNCTION_EXPR)
               return true
             }

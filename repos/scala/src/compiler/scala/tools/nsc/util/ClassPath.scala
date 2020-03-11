@@ -38,8 +38,10 @@ object ClassPath {
       dir.list filter (x =>
         filt(x.name) && (x.isDirectory || isJarOrZip(x))) map (_.path) toList
 
-    if (pattern == "*") lsDir(Directory("."))
-    else if (pattern endsWith wildSuffix) lsDir(Directory(pattern dropRight 2))
+    if (pattern == "*")
+      lsDir(Directory("."))
+    else if (pattern endsWith wildSuffix)
+      lsDir(Directory(pattern dropRight 2))
     else if (pattern contains '*') {
       try {
         val regexp =
@@ -48,7 +50,8 @@ object ClassPath {
       } catch {
         case _: PatternSyntaxException => List(pattern)
       }
-    } else List(pattern)
+    } else
+      List(pattern)
   }
 
   /** Split classpath using platform-dependent path separator */
@@ -64,8 +67,10 @@ object ClassPath {
 
   /** Expand path and possibly expanding stars */
   def expandPath(path: String, expandStar: Boolean = true): List[String] =
-    if (expandStar) split(path) flatMap expandS
-    else split(path)
+    if (expandStar)
+      split(path) flatMap expandS
+    else
+      split(path)
 
   /** Expand dir out to contents, a la extdir */
   def expandDir(extdir: String): List[String] = {
@@ -82,7 +87,8 @@ object ClassPath {
     */
   def expandManifestPath(jarPath: String): List[URL] = {
     val file = File(jarPath)
-    if (!file.isFile) return Nil
+    if (!file.isFile)
+      return Nil
 
     val baseDir = file.parent
     new Jar(file).classPathElements map (elem =>

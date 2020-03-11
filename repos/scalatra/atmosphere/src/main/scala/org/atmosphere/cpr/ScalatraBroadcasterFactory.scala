@@ -82,7 +82,8 @@ class ScalatraBroadcasterFactory(
         b.destroy()
         bc = b.getBroadcasterConfig
     }
-    if (bc != null) bc.forceDestroy()
+    if (bc != null)
+      bc.forceDestroy()
 
     store.clear()
     BroadcasterFactory.factory = null

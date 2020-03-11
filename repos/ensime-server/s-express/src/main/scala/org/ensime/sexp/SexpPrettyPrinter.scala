@@ -39,7 +39,8 @@ trait SexpPrettyPrinter extends SexpPrinter {
       data: Map[SexpSymbol, Sexp],
       sb: StringBuilder,
       indent: Int): Unit =
-    if (data.isEmpty) print(SexpNil, sb)
+    if (data.isEmpty)
+      print(SexpNil, sb)
     else {
       sb.append("(\n")
       printSeq(data, sb.append('\n')) { el =>
@@ -57,7 +58,8 @@ trait SexpPrettyPrinter extends SexpPrinter {
       els: List[Sexp],
       sb: StringBuilder,
       indent: Int): Unit =
-    if (els.isEmpty) print(SexpNil, sb)
+    if (els.isEmpty)
+      print(SexpNil, sb)
     else {
       sb.append('(')
       printSeq(

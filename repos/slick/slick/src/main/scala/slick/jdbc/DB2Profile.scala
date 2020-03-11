@@ -92,7 +92,8 @@ trait DB2Profile extends JdbcProfile {
     override def expr(c: Node, skipParens: Boolean = false): Unit = c match {
       case RowNumber(by) =>
         b += "row_number() over("
-        if (!by.isEmpty) buildOrderByClause(by)
+        if (!by.isEmpty)
+          buildOrderByClause(by)
         b += ")"
       case Library.IfNull(l, r) =>
         /* DB2 does not support IFNULL so we use COALESCE instead */
@@ -124,7 +125,8 @@ trait DB2Profile extends JdbcProfile {
         b += ") is null then 1 else 0 end,"
       }
       expr(n)
-      if (o.direction.desc) b += " desc"
+      if (o.direction.desc)
+        b += " desc"
     }
   }
 
@@ -142,7 +144,8 @@ trait DB2Profile extends JdbcProfile {
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
-      } else super.createIndex(idx)
+      } else
+        super.createIndex(idx)
     }
   }
 
@@ -179,7 +182,8 @@ trait DB2Profile extends JdbcProfile {
       seq._maxValue.foreach {
         b append " maxvalue " append _
       }
-      if (seq._cycle) b append " cycle"
+      if (seq._cycle)
+        b append " cycle"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
     }
   }
@@ -198,7 +202,11 @@ trait DB2Profile extends JdbcProfile {
      * a constrained CHAR with constants 1 and 0 for TRUE and FALSE. */
     class BooleanJdbcType extends super.BooleanJdbcType {
       override def sqlTypeName(sym: Option[FieldSymbol]) = "CHAR(1)"
-      override def valueToSQLLiteral(value: Boolean) = if (value) "1" else "0"
+      override def valueToSQLLiteral(value: Boolean) =
+        if (value)
+          "1"
+        else
+          "0"
     }
   }
 }

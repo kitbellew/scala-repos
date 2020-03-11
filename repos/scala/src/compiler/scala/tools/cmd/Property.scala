@@ -37,9 +37,12 @@ class PropertyMapper(reference: Reference)
   def translate(key: String, value: String): List[String] = {
     val opt = toOpt(key)
 
-    if (isUnaryOption(key) && isTrue(value)) List(opt)
-    else if (isBinaryOption(key)) List(opt, value)
-    else returning(Nil)(_ => onError(key, value))
+    if (isUnaryOption(key) && isTrue(value))
+      List(opt)
+    else if (isBinaryOption(key))
+      List(opt, value)
+    else
+      returning(Nil)(_ => onError(key, value))
   }
   def isTrue(value: String) =
     List("yes", "on", "true") contains value.toLowerCase
@@ -47,7 +50,8 @@ class PropertyMapper(reference: Reference)
   def apply(kv: (String, String)): List[String] = {
     val (k, v) = kv
 
-    if (isPassThrough(k)) toArgs(v)
+    if (isPassThrough(k))
+      toArgs(v)
     else
       propNameToOptionName(k) match {
         case Some(optName) => translate(optName, v)

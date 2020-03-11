@@ -46,7 +46,8 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
       case Some((origPattern, newPatternText)) =>
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         if (!FileModificationService.getInstance.prepareFileForWrite(
-              element.getContainingFile)) return
+              element.getContainingFile))
+          return
         IdeDocumentHistory
           .getInstance(project)
           .includeCurrentPlaceAsChangePlace()

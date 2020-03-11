@@ -31,13 +31,16 @@ private[akka] final case class GraphStageModule(
     CopiedModule(shape.deepCopy(), Attributes.none, this)
 
   override def replaceShape(s: Shape): Module =
-    if (s != shape) CompositeModule(this, s)
-    else this
+    if (s != shape)
+      CompositeModule(this, s)
+    else
+      this
 
   override def withAttributes(attributes: Attributes): Module =
     if (attributes ne this.attributes)
       new GraphStageModule(shape, attributes, stage)
-    else this
+    else
+      this
 
   override def toString: String =
     f"GraphStage($stage) [${System.identityHashCode(this)}%08x]"
@@ -103,7 +106,8 @@ object GraphStages {
               }
             }
             override def onUpstreamFinish(): Unit = {
-              if (!isAvailable(in)) completeStage()
+              if (!isAvailable(in))
+                completeStage()
             }
           }
         )
@@ -114,8 +118,10 @@ object GraphStages {
             override def onPull(): Unit = {
               if (isAvailable(in)) {
                 push(out, grab(in))
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in))
+                  completeStage()
+                else
+                  pull(in)
               }
             }
           })
@@ -316,7 +322,8 @@ object GraphStages {
       def cancelFuture: Future[Done] = cancelPromise.future
 
       override def cancel(): Boolean = {
-        if (!isCancelled) cancelPromise.trySuccess(Done)
+        if (!isCancelled)
+          cancelPromise.trySuccess(Done)
         true
       }
 
@@ -357,7 +364,8 @@ object GraphStages {
         setHandler(out, eagerTerminateOutput)
 
         override protected def onTimer(timerKey: Any) =
-          if (isAvailable(out)) push(out, tick)
+          if (isAvailable(out))
+            push(out, tick)
 
         override def toString: String = "TickSourceLogic"
       }

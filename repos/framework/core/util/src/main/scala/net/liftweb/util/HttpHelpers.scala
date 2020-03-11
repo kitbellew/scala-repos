@@ -649,7 +649,10 @@ trait HttpHelpers {
   def appendFuncToURL(url: String, funcStr: String): String =
     splitAtHash(url) { to =>
       to +
-        (if (to.indexOf("?") >= 0) "&" else "?") + funcStr
+        (if (to.indexOf("?") >= 0)
+           "&"
+         else
+           "?") + funcStr
     }
 
   /**
@@ -675,7 +678,10 @@ trait HttpHelpers {
       case ps =>
         splitAtHash(url) { to =>
           to +
-            (if (to.indexOf("?") >= 0) "&" else "?") +
+            (if (to.indexOf("?") >= 0)
+               "&"
+             else
+               "?") +
             ps.map {
                 case (n, v) => urlEncode(n) + "=" + urlEncode(v)
               }
@@ -707,7 +713,8 @@ trait HttpHelpers {
       what.foreach {
         case Group(g) => find(g)
         case e: Elem =>
-          if (f(e)) ret += e
+          if (f(e))
+            ret += e
           find(e.child)
 
         case n => find(n.child)

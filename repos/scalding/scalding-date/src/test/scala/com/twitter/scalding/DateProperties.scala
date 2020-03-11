@@ -35,11 +35,13 @@ object DateProperties extends Properties("Date Properties") {
     }
 
   implicit val richDateArb: Arbitrary[RichDate] = Arbitrary {
-    for (v <- choose(0L, 1L << 32)) yield RichDate(v)
+    for (v <- choose(0L, 1L << 32))
+      yield RichDate(v)
   }
   implicit val dateRangeArb: Arbitrary[DateRange] = Arbitrary {
     for (v1 <- choose(0L, 1L << 33);
-         v2 <- choose(v1, 1L << 33)) yield DateRange(RichDate(v1), RichDate(v2))
+         v2 <- choose(v1, 1L << 33))
+      yield DateRange(RichDate(v1), RichDate(v2))
   }
   implicit val absdur: Arbitrary[AbsoluteDuration] =
     Arbitrary {
@@ -68,7 +70,11 @@ object DateProperties extends Properties("Date Properties") {
     (fromMillisecs(ms) == ad)
   }
 
-  def asInt(b: Boolean) = if (b) 1 else 0
+  def asInt(b: Boolean) =
+    if (b)
+      1
+    else
+      0
 
   property("Before/After works") = forAll { (dr: DateRange, rd: RichDate) =>
     (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(
@@ -136,7 +142,10 @@ object DateProperties extends Properties("Date Properties") {
 
   def toRegex(glob: String) =
     (glob.flatMap { c =>
-      if (c == '*') ".*" else c.toString
+      if (c == '*')
+        ".*"
+      else
+        c.toString
     }).r
 
   def matches(l: List[String], arg: String): Int =

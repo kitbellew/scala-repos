@@ -238,7 +238,8 @@ object expand {
     types.foldLeft(Seq(Map.empty[c.Name, c.Type])) { (acc, pair) =>
       val (nme, types) = pair
       for (t <- types;
-           map <- acc) yield map + (nme -> t)
+           map <- acc)
+        yield map + (nme -> t)
     }
   }
 

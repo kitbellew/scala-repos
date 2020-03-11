@@ -86,7 +86,8 @@ object JobStats {
     }
 
   def toJsonValue(a: Any): String =
-    if (a == null) "null"
+    if (a == null)
+      "null"
     else {
       Try(a.toString.toInt)
         .recoverWith {

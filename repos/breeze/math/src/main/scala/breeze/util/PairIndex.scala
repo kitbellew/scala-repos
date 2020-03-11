@@ -8,13 +8,16 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
     extends Index[(T, U)] {
   def iterator =
     for (t <- tIndex iterator;
-         u <- uIndex iterator) yield (t, u);
+         u <- uIndex iterator)
+      yield (t, u);
 
   def pairs = iterator.zipWithIndex;
 
   def mapIndex(indexInT: Int, indexInU: Int) = {
-    if (indexInT < 0 || indexInU < 0) -1
-    else indexInT * uIndex.size + indexInU
+    if (indexInT < 0 || indexInU < 0)
+      -1
+    else
+      indexInT * uIndex.size + indexInU
   }
 
   def unapply(i: Int) =
@@ -22,7 +25,8 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
       val ti = i / uIndex.size;
       val ui = i % uIndex.size;
       for (t <- tIndex.unapply(ti);
-           u <- uIndex.unapply(ui)) yield t -> u;
+           u <- uIndex.unapply(ui))
+        yield t -> u;
     } else {
       None
     }

@@ -13,7 +13,8 @@ package object util {
       def appendIfPositive(value: Long, unit: TimeUnit, res: String): String =
         if (value > 0) {
           s"$res $value ${unit.name().toLowerCase}"
-        } else res
+        } else
+          res
 
       @tailrec
       def loop(unit: TimeUnit, res: String = ""): String = {

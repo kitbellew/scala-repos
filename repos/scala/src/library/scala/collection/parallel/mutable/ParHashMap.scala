@@ -73,13 +73,16 @@ class ParHashMap[K, V] private[collection] (
 
   def get(key: K): Option[V] = {
     val e = findEntry(key)
-    if (e eq null) None
-    else Some(e.value)
+    if (e eq null)
+      None
+    else
+      Some(e.value)
   }
 
   def put(key: K, value: V): Option[V] = {
     val e = findOrAddEntry(key, value)
-    if (e eq null) None
+    if (e eq null)
+      None
     else {
       val v = e.value;
       e.value = value;
@@ -91,13 +94,16 @@ class ParHashMap[K, V] private[collection] (
 
   def remove(key: K): Option[V] = {
     val e = removeEntry(key)
-    if (e ne null) Some(e.value)
-    else None
+    if (e ne null)
+      Some(e.value)
+    else
+      None
   }
 
   def +=(kv: (K, V)): this.type = {
     val e = findOrAddEntry(kv._1, kv._2)
-    if (e ne null) e.value = kv._2
+    if (e ne null)
+      e.value = kv._2
     this
   }
 
@@ -148,17 +154,23 @@ class ParHashMap[K, V] private[collection] (
   private[parallel] override def brokenInvariants = {
     // bucket by bucket, count elements
     val buckets =
-      for (i <- 0 until (table.length / sizeMapBucketSize)) yield checkBucket(i)
+      for (i <- 0 until (table.length / sizeMapBucketSize))
+        yield checkBucket(i)
 
     // check if each element is in the position corresponding to its key
-    val elems = for (i <- 0 until table.length) yield checkEntry(i)
+    val elems =
+      for (i <- 0 until table.length)
+        yield checkEntry(i)
 
     buckets.flatMap(x => x) ++ elems.flatMap(x => x)
   }
 
   private def checkBucket(i: Int) = {
     def count(e: HashEntry[K, DefaultEntry[K, V]]): Int =
-      if (e eq null) 0 else 1 + count(e.next)
+      if (e eq null)
+        0
+      else
+        1 + count(e.next)
     val expected = sizemap(i)
     val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
       .foldLeft(0) { (acc, c) =>
@@ -166,13 +178,16 @@ class ParHashMap[K, V] private[collection] (
       }
     if (found != expected)
       List("Found " + found + " elements, while sizemap showed " + expected)
-    else Nil
+    else
+      Nil
   }
 
   private def checkEntry(i: Int) = {
     def check(e: HashEntry[K, DefaultEntry[K, V]]): List[String] =
-      if (e eq null) Nil
-      else if (index(elemHashCode(e.key)) == i) check(e.next)
+      if (e eq null)
+        Nil
+      else if (index(elemHashCode(e.key)) == i)
+        check(e.next)
       else
         ("Element " + e.key + " at " + i + " with " + elemHashCode(
           e.key) + " maps to " + index(elemHashCode(e.key))) :: check(e.next)
@@ -225,7 +240,11 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
     if (size >= (ParHashMapCombiner.numblocks * sizeMapBucketSize)) { // 1024
       // construct table
       val table = new AddingHashTable(size, tableLoadFactor, seedvalue)
-      val bucks = buckets.map(b => if (b ne null) b.headPtr else null)
+      val bucks = buckets.map(b =>
+        if (b ne null)
+          b.headPtr
+        else
+          null)
       val insertcount = combinerTaskSupport.executeAndWaitResult(
         new FillBlocks(bucks, table, 0, bucks.length))
       table.setSize(insertcount)
@@ -247,7 +266,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       var i = 0
       while (i < ParHashMapCombiner.numblocks) {
         if (buckets(i) ne null) {
-          for (elem <- buckets(i)) table.insertEntry(elem)
+          for (elem <- buckets(i))
+            table.insertEntry(elem)
         }
         i += 1
       }
@@ -288,7 +308,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
         if (ce.key == e.key) {
           h = -1
           ce = null
-        } else ce = ce.next
+        } else
+          ce = ce.next
       }
 
       // if key does not already exist
@@ -297,7 +318,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
         table(h) = e
         nnSizeMapAdd(h)
         true
-      } else false
+      } else
+        false
     }
     protected def createNewEntry[X](key: K, x: X) = ???
   }
@@ -332,7 +354,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
         val chunksz = unrolled.size
         while (i < chunksz) {
           val elem = chunkarr(i)
-          if (t.insertEntry(elem)) insertcount += 1
+          if (t.insertEntry(elem))
+            insertcount += 1
           i += 1
         }
         i = 0

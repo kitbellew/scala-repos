@@ -56,11 +56,16 @@ sealed abstract class ImmutableArrayInstances {
         fa.foldRight(z)((a, b) => f(a, b))
       def zip[A, B](a: => ImmutableArray[A], b: => ImmutableArray[B]) = {
         val _a = a
-        if (_a.isEmpty) new ImmutableArray.ofRef(Array[(A, B)]())
-        else new ImmutableArray.ofRef((_a.iterator zip b.iterator).toArray)
+        if (_a.isEmpty)
+          new ImmutableArray.ofRef(Array[(A, B)]())
+        else
+          new ImmutableArray.ofRef((_a.iterator zip b.iterator).toArray)
       }
       override def index[A](fa: ImmutableArray[A], i: Int) =
-        if (0 <= i && i < fa.length) Some(fa(i)) else None
+        if (0 <= i && i < fa.length)
+          Some(fa(i))
+        else
+          None
       override def length[A](fa: ImmutableArray[A]) =
         fa.length
       override def empty[A](fa: ImmutableArray[A]) =
@@ -69,8 +74,10 @@ sealed abstract class ImmutableArrayInstances {
         val len = fa.length
         @annotation.tailrec
         def loop(i: Int): Boolean = {
-          if (i < len) f(fa(i)) && loop(i + 1)
-          else true
+          if (i < len)
+            f(fa(i)) && loop(i + 1)
+          else
+            true
         }
         loop(0)
       }
@@ -78,8 +85,10 @@ sealed abstract class ImmutableArrayInstances {
         val len = fa.length
         @annotation.tailrec
         def loop(i: Int): Boolean = {
-          if (i < len) f(fa(i)) || loop(i + 1)
-          else false
+          if (i < len)
+            f(fa(i)) || loop(i + 1)
+          else
+            false
         }
         loop(0)
       }

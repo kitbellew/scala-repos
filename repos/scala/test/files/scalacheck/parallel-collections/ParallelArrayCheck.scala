@@ -27,7 +27,8 @@ abstract class ParallelArrayCheck[T](tp: String)
   def ofSize(vals: Seq[Gen[T]], sz: Int) = {
     val a = new mutable.ArrayBuffer[T](sz)
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) a += sample(gen)
+    for (i <- 0 until sz)
+      a += sample(gen)
     a
   }
 

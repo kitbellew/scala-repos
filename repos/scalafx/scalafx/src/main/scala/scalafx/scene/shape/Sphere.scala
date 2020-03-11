@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Sphere {
   implicit def sfxSphere2jfx(s: Sphere): jfxss.Sphere =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 }
 
 /** Wraps [[http://docs.oracle.com/javafx/8/api/javafx/scene/shape/Sphere.html]].

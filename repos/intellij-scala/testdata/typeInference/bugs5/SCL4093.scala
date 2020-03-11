@@ -13,7 +13,8 @@ object SCL4093 {
       * which as of this writing, intellij thinks is wrong, but actually compiles and works fine.
       */
     def setIfNotNull[T](setter: T => Unit, value: T) {
-      if (value != null) setter(value)
+      if (value != null)
+        setter(value)
     }
   }
 

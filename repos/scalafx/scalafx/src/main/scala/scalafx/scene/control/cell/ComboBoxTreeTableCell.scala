@@ -71,7 +71,10 @@ object ComboBoxTreeTableCell {
   implicit def sfxComboBoxTreeTableCell2jfx[S, T](
       cell: ComboBoxTreeTableCell[S, T])
       : jfxsc.cell.ComboBoxTreeTableCell[S, T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FTCINIT

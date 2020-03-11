@@ -58,7 +58,10 @@ object ChoiceBoxTableCell {
     */
   implicit def sfxChoiceBoxTableCell2jfx[S, T](
       cell: ChoiceBoxTableCell[S, T]): jfxscc.ChoiceBoxTableCell[S, T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FTCINIT

@@ -34,7 +34,8 @@ class SbtProjectSettingsControl(
       override def value(sdk: Sdk): Boolean = {
         inWriteAction {
           val table = ProjectJdkTable.getInstance()
-          if (!table.getAllJdks.contains(sdk)) table.addJdk(sdk)
+          if (!table.getAllJdks.contains(sdk))
+            table.addJdk(sdk)
         }
         true
       }

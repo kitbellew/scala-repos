@@ -35,8 +35,10 @@ object ExternalCompile {
 
       val allMyDependencies =
         classpath filterNot (_ == classesDirectory) flatMap { cpFile =>
-          if (cpFile.isDirectory) (cpFile ** "*.class").get
-          else Seq(cpFile)
+          if (cpFile.isDirectory)
+            (cpFile ** "*.class").get
+          else
+            Seq(cpFile)
         }
 
       // Compile

@@ -346,7 +346,11 @@ private[ui] class BlockPagedTable(
               s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
               s"&block.desc=${!desc}" +
               s"&block.pageSize=$pageSize")
-          val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
+          val arrow =
+            if (desc)
+              "&#x25BE;"
+            else
+              "&#x25B4;" // UP or DOWN
           <th>
             <a href={
             headerLink

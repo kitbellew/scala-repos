@@ -10,7 +10,11 @@ class Rank private[Rank] (val value: Int) extends AnyVal {
     new Rank(value - 1)
   }
   def succ = new Rank(value + 1)
-  override def toString = if (value == 0) "no dots" else "." * (value + 1)
+  override def toString =
+    if (value == 0)
+      "no dots"
+    else
+      "." * (value + 1)
 }
 
 object Rank {
@@ -21,9 +25,12 @@ object Rank {
     def unapply(rank: Rank) = rank != NoDot
   }
   def parseDots(part: String) = {
-    if (part.endsWith("...")) (part.stripSuffix("..."), DotDotDot)
-    else if (part.endsWith("..")) (part.stripSuffix(".."), DotDot)
-    else (part, NoDot)
+    if (part.endsWith("..."))
+      (part.stripSuffix("..."), DotDotDot)
+    else if (part.endsWith(".."))
+      (part.stripSuffix(".."), DotDot)
+    else
+      (part, NoDot)
   }
 }
 
@@ -51,16 +58,20 @@ trait Holes { self: Quasiquotes =>
   private def extractIterableTParam(tpe: Type) =
     IterableTParam.asSeenFrom(tpe, IterableClass)
   private def stripIterable(tpe: Type, limit: Rank = DotDotDot): (Rank, Type) =
-    if (limit == NoDot) (NoDot, tpe)
-    else if (tpe != null && !isIterableType(tpe)) (NoDot, tpe)
-    else if (isBottomType(tpe)) (NoDot, tpe)
+    if (limit == NoDot)
+      (NoDot, tpe)
+    else if (tpe != null && !isIterableType(tpe))
+      (NoDot, tpe)
+    else if (isBottomType(tpe))
+      (NoDot, tpe)
     else {
       val targ = extractIterableTParam(tpe)
       val (rank, innerTpe) = stripIterable(targ, limit.pred)
       (rank.succ, innerTpe)
     }
   private def iterableTypeFromRank(n: Rank, tpe: Type): Type = {
-    if (n == NoDot) tpe
+    if (n == NoDot)
+      tpe
     else
       appliedType(IterableClass.toType, List(iterableTypeFromRank(n.pred, tpe)))
   }
@@ -77,8 +88,10 @@ trait Holes { self: Quasiquotes =>
 
   object Hole {
     def apply(rank: Rank, tree: Tree): Hole =
-      if (method != nme.unapply) new ApplyHole(rank, tree)
-      else new UnapplyHole(rank, tree)
+      if (method != nme.unapply)
+        new ApplyHole(rank, tree)
+      else
+        new UnapplyHole(rank, tree)
     def unapply(hole: Hole): Some[(Tree, Rank)] = Some((hole.tree, hole.rank))
   }
 
@@ -86,23 +99,32 @@ trait Holes { self: Quasiquotes =>
     val (strippedTpe, tpe): (Type, Type) = {
       val (strippedRank, strippedTpe) =
         stripIterable(unquotee.tpe, limit = annotatedRank)
-      if (isBottomType(strippedTpe)) cantSplice()
+      if (isBottomType(strippedTpe))
+        cantSplice()
       else if (isNativeType(strippedTpe)) {
         if (strippedRank != NoDot && !(strippedTpe <:< treeType) && !isLiftableType(
-              strippedTpe)) cantSplice()
-        else (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
+              strippedTpe))
+          cantSplice()
+        else
+          (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
       } else if (isLiftableType(strippedTpe))
         (strippedTpe, iterableTypeFromRank(annotatedRank, treeType))
-      else cantSplice()
+      else
+        cantSplice()
     }
 
     val tree = {
       def inner(itpe: Type)(tree: Tree) =
-        if (isNativeType(itpe)) tree
-        else if (isLiftableType(itpe)) lifted(itpe)(tree)
-        else global.abort("unreachable")
-      if (annotatedRank == NoDot) inner(strippedTpe)(unquotee)
-      else iterated(annotatedRank, unquotee, unquotee.tpe)
+        if (isNativeType(itpe))
+          tree
+        else if (isLiftableType(itpe))
+          lifted(itpe)(tree)
+        else
+          global.abort("unreachable")
+      if (annotatedRank == NoDot)
+        inner(strippedTpe)(unquotee)
+      else
+        iterated(annotatedRank, unquotee, unquotee.tpe)
     }
 
     val pos = unquotee.pos
@@ -112,22 +134,35 @@ trait Holes { self: Quasiquotes =>
     private def cantSplice(): Nothing = {
       val (iterableRank, iterableType) = stripIterable(unquotee.tpe)
       val holeRankMsg =
-        if (annotatedRank != NoDot) s" with $annotatedRank" else ""
+        if (annotatedRank != NoDot)
+          s" with $annotatedRank"
+        else
+          ""
       val action = "unquote " + unquotee.tpe + holeRankMsg
       val suggestRank = annotatedRank != iterableRank || annotatedRank != NoDot
       val unquoteeRankMsg =
         if (annotatedRank != iterableRank && iterableRank != NoDot)
           s"using $iterableRank"
-        else "omitting the dots"
-      val rankSuggestion = if (suggestRank) unquoteeRankMsg else ""
+        else
+          "omitting the dots"
+      val rankSuggestion =
+        if (suggestRank)
+          unquoteeRankMsg
+        else
+          ""
       val suggestLifting =
         (annotatedRank == NoDot || iterableRank != NoDot) && !(iterableType <:< treeType) && !isLiftableType(
           iterableType)
-      val liftedTpe = if (annotatedRank != NoDot) iterableType else unquotee.tpe
+      val liftedTpe =
+        if (annotatedRank != NoDot)
+          iterableType
+        else
+          unquotee.tpe
       val liftSuggestion =
         if (suggestLifting)
           s"providing an implicit instance of Liftable[$liftedTpe]"
-        else ""
+        else
+          ""
       val advice =
         if (isBottomType(iterableType))
           "bottom type values often indicate programmer mistake"
@@ -154,11 +189,14 @@ trait Holes { self: Quasiquotes =>
         tree :: Nil)
 
     private def toList(tree: Tree, tpe: Type): Tree =
-      if (isListType(tpe)) tree
-      else Select(tree, nme.toList)
+      if (isListType(tpe))
+        tree
+      else
+        Select(tree, nme.toList)
 
     private def mapF(tree: Tree, f: Tree => Tree): Tree =
-      if (f(Ident(TermName("x"))) equalsStructure Ident(TermName("x"))) tree
+      if (f(Ident(TermName("x"))) equalsStructure Ident(TermName("x")))
+        tree
       else {
         val x = TermName(c.freshName())
         // q"$tree.map { $x => ${f(Ident(x))} }"
@@ -171,14 +209,20 @@ trait Holes { self: Quasiquotes =>
 
     private object IterableType {
       def unapply(tpe: Type): Option[Type] =
-        if (isIterableType(tpe)) Some(extractIterableTParam(tpe)) else None
+        if (isIterableType(tpe))
+          Some(extractIterableTParam(tpe))
+        else
+          None
     }
 
     private object LiftedType {
       def unapply(tpe: Type): Option[Tree => Tree] =
-        if (tpe <:< treeType) Some(t => t)
-        else if (isLiftableType(tpe)) Some(lifted(tpe)(_))
-        else None
+        if (tpe <:< treeType)
+          Some(t => t)
+        else if (isLiftableType(tpe))
+          Some(lifted(tpe)(_))
+        else
+          None
     }
 
     /** Map high-rank unquotee onto an expression that evaluates as a list of given rank.
@@ -235,7 +279,8 @@ trait Holes { self: Quasiquotes =>
               pat.pos,
               s"Can't extract $tpe with $rank, consider using $iterableRank")
           val (_, strippedTpe) = stripIterable(tpe, limit = rank)
-          if (strippedTpe <:< treeType) treeNoUnlift
+          if (strippedTpe <:< treeType)
+            treeNoUnlift
           else
             unlifters
               .spawn(strippedTpe, rank)
@@ -267,14 +312,17 @@ trait Holes { self: Quasiquotes =>
     // unlifting for corresponding rank and type.
     def spawn(tpe: Type, rank: Rank): Option[Tree] = {
       val unlifter = inferUnliftable(tpe)
-      if (unlifter == EmptyTree) None
-      else if (rank == NoDot) Some(unlifter)
+      if (unlifter == EmptyTree)
+        None
+      else if (rank == NoDot)
+        Some(unlifter)
       else {
         val idx = records.indexWhere { p =>
           p._1 =:= tpe && p._2 == rank
         }
         val resIdx =
-          if (idx != -1) idx
+          if (idx != -1)
+            idx
           else {
             records +:= ((tpe, rank));
             records.length - 1

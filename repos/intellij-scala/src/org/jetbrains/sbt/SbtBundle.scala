@@ -19,7 +19,8 @@ object SbtBundle {
 
   private def get(): ResourceBundle = {
     var bundle: ResourceBundle = null
-    if (ourBundle != null) bundle = ourBundle.get
+    if (ourBundle != null)
+      bundle = ourBundle.get
     if (bundle == null) {
       bundle = ResourceBundle.getBundle(BUNDLE)
       ourBundle = new SoftReference[ResourceBundle](bundle)

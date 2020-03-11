@@ -56,7 +56,8 @@ class SetupScalaSdkNotificationProvider(
 
     if (hasSdk.contains(false))
       createPanel(project, PsiManager.getInstance(project).findFile(file))
-    else null
+    else
+      null
   }
 }
 

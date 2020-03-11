@@ -69,7 +69,8 @@ class ConstructorParamsInConstructorPatternSearcher
   private object parameterOfClassWithIndex {
     def unapply(param: ScClassParameter): Option[(ScClass, Int)] = {
       inReadAction {
-        if (!param.isValid) return None
+        if (!param.isValid)
+          return None
 
         PsiTreeUtil.getParentOfType(
           param,

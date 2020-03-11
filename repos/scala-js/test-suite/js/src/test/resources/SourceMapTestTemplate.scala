@@ -301,7 +301,8 @@ trait Writer {
     case JsArray(vs) =>
       /**/
       sb.append("[")
-      if (vs.length > 0) writeToBuffer(vs(0), sb)
+      if (vs.length > 0)
+        writeToBuffer(vs(0), sb)
       var i = 1
       while (i < vs.length) {
         sb.append(", ")
@@ -491,7 +492,8 @@ class Json extends Writer2 {
     var charPos = 1
 
     def getDigits() = {
-      while (chKind == Digit) chNext()
+      while (chKind == Digit)
+        chNext()
     }
 
     def handleDigit() {
@@ -529,7 +531,8 @@ class Json extends Writer2 {
       val first = chMark
       var state = 0
       do {
-        if (chKind == Eof) chError("EOF encountered in raw string")
+        if (chKind == Eof)
+          chError("EOF encountered in raw string")
         state = (ch, state) match {
           case ('}', _) => 1
           case ('"', 1) => 2
@@ -584,13 +587,15 @@ class Json extends Writer2 {
                     chNext()
 
                   case None =>
-                    if (ch != 'u'.toInt) chError("Illegal escape")
+                    if (ch != 'u'.toInt)
+                      chError("Illegal escape")
                     chNext()
                     var code = 0
                     for (i <- 1 to 4) {
                       val ch1 = ch.toChar.toString
                       val i = "0123456789abcdef".indexOf(ch1.toLowerCase)
-                      if (i == -1) chError("Illegal hex character")
+                      if (i == -1)
+                        chError("Illegal hex character")
                       code = code * 16 + i
                       chNext()
                     }
@@ -601,7 +606,8 @@ class Json extends Writer2 {
                 chNext()
               }
             }
-            if (ch != '"') chError("Unexpected string character: " + ch.toChar)
+            if (ch != '"')
+              chError("Unexpected string character: " + ch.toChar)
 
             sb.append(chSubstr(first))
 
@@ -631,7 +637,8 @@ class Json extends Writer2 {
             tokenValue = ""
 
           case Slash =>
-            if (chKind != Slash) chError("Expecting Slash")
+            if (chKind != Slash)
+              chError("Expecting Slash")
             do chNext() while (ch != '\n' && chKind != Eof)
             tokenKind = BLANK
             tokenValue = ""
@@ -682,7 +689,8 @@ class Json extends Writer2 {
           tokenError("Expecting string or name")
         val name = tokenValue
         tokenNext()
-        if (tokenKind != COLON) tokenError("Expecting :")
+        if (tokenKind != COLON)
+          tokenError("Expecting :")
         tokenNext()
         result = (name -> getJson()) :: result
         tokenKind match {
@@ -741,7 +749,8 @@ class Json extends Writer2 {
       chNext()
       tokenNext()
       val result = getJson
-      if (tokenKind != EOF) tokenError("Excess input")
+      if (tokenKind != EOF)
+        tokenError("Excess input")
       result
     }
     parse()

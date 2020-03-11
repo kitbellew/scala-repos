@@ -20,8 +20,10 @@ trait Dispatcher { this: Actor =>
     case Routing.Broadcast(message) =>
       broadcast(message)
     case a if routes.isDefinedAt(a) =>
-      if (isSenderDefined) routes(a).forward(transform(a))(someSelf)
-      else routes(a).!(transform(a))(None)
+      if (isSenderDefined)
+        routes(a).forward(transform(a))(someSelf)
+      else
+        routes(a).!(transform(a))(None)
   }
 
   def receive = dispatch
@@ -51,8 +53,10 @@ abstract class UntypedDispatcher extends UntypedActor {
       val r = route(msg)
       if (r eq null)
         throw new IllegalStateException("No route for " + msg + " defined!")
-      if (isSenderDefined) r.forward(transform(msg))(someSelf)
-      else r.!(transform(msg))(None)
+      if (isSenderDefined)
+        r.forward(transform(msg))(someSelf)
+      else
+        r.!(transform(msg))(None)
     }
   }
 }
@@ -81,8 +85,10 @@ abstract class UntypedLoadBalancer extends UntypedDispatcher {
   protected def seq: InfiniteIterator[ActorRef]
 
   protected def route(msg: Any) =
-    if (seq.hasNext) seq.next
-    else null
+    if (seq.hasNext)
+      seq.next
+    else
+      null
 
   override def broadcast(message: Any) = seq.items.foreach(_ ! message)
 

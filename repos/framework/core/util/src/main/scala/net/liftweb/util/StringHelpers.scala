@@ -166,14 +166,19 @@ trait StringHelpers {
       lastLetter: Boolean,
       lastSymbol: Boolean,
       out: GoodSB): Unit = {
-    if (pos >= max || pos >= in.length) return
+    if (pos >= max || pos >= in.length)
+      return
     else {
       in.charAt(pos) match {
         case c if Character.isDigit(c) =>
           out.append(c);
           capify(in, pos + 1, max, false, false, out)
         case c if Character.isLetter(c) =>
-          out.append(if (lastLetter) c else Character.toUpperCase(c));
+          out.append(
+            if (lastLetter)
+              c
+            else
+              Character.toUpperCase(c));
           capify(in, pos + 1, max, true, false, out)
         case c if (c == ' ' || c == '_') && !lastSymbol =>
           out.append(c);
@@ -188,7 +193,10 @@ trait StringHelpers {
     * @return the cleaned string and an empty string if the input is null
     */
   def clean(in: String) =
-    if (in == null) "" else in.replaceAll("[^a-zA-Z0-9_]", "")
+    if (in == null)
+      ""
+    else
+      in.replaceAll("[^a-zA-Z0-9_]", "")
 
   /**
     * Create a random string of a given size.  5 bits of randomness per character
@@ -197,7 +205,8 @@ trait StringHelpers {
     */
   def randomString(size: Int): String = {
     def addChar(pos: Int, lastRand: Int, sb: GoodSB): GoodSB = {
-      if (pos >= size) sb
+      if (pos >= size)
+        sb
       else {
         val randNum = if ((pos % 6) == 0) {
           _random.synchronized(_random.nextInt)
@@ -249,7 +258,10 @@ trait StringHelpers {
 
   /** @return an Empty can if the node seq is empty and a full can with the NodeSeq text otherwise */
   implicit def nodeSeqToOptionString(in: NodeSeq): Box[String] =
-    if (in.length == 0) Empty else Full(in.text)
+    if (in.length == 0)
+      Empty
+    else
+      Full(in.text)
 
   /**
     * Parse a string and return the Long value of that string.<p/>
@@ -261,7 +273,8 @@ trait StringHelpers {
     def p(in: List[Char]) =
       in.takeWhile(isDigit).foldLeft(0L)((acc, c) => (acc * 10L) + cToL(c))
 
-    if (tin eq null) 0L
+    if (tin eq null)
+      0L
     else {
       tin.trim.toList match {
         case '-' :: xs => -p(xs)
@@ -347,7 +360,8 @@ trait StringHelpers {
     * @return the encoded string inserted into quotes
     */
   def encJs(what: String): String = {
-    if (what eq null) "null"
+    if (what eq null)
+      "null"
     else {
       val len = what.length
       val sb = new GoodSB(len * 2)
@@ -373,7 +387,8 @@ trait StringHelpers {
     * @return the string with commas
     */
   def commafy(what: String): String = {
-    if (null eq what) null
+    if (null eq what)
+      null
     else {
       val toDo = what.toList.reverse
 
@@ -398,7 +413,11 @@ trait StringHelpers {
   /**
     * Test for null and return either the given String if not null or the blank String.
     */
-  def blankForNull(s: String) = if (s != null) s else ""
+  def blankForNull(s: String) =
+    if (s != null)
+      s
+    else
+      ""
 
   /**
     * Turn a String into a Box[String], with Empty for the blank string.

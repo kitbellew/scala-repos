@@ -170,7 +170,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         JGitUtil.getCommitLog(git, branchName, page, 30, path) match {
           case Right((logs, hasNext)) =>
             html.commits(
-              if (path.isEmpty) Nil else path.split("/").toList,
+              if (path.isEmpty)
+                Nil
+              else
+                path.split("/").toList,
               branchName,
               repository,
               logs.splitWith { (commit1, commit2) =>
@@ -197,7 +200,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     html.editor(
       branch,
       repository,
-      if (path.length == 0) Nil else path.split("/").toList,
+      if (path.length == 0)
+        Nil
+      else
+        path.split("/").toList,
       None,
       JGitUtil.ContentInfo("text", None, Some("UTF-8")),
       protectedBranch)
@@ -262,8 +268,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       )
 
       redirect(
-        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
-        else s"${form.path}/${urlEncode(form.newFileName)}"}")
+        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0)
+          urlEncode(form.newFileName)
+        else
+          s"${form.path}/${urlEncode(form.newFileName)}"}")
   })
 
   post("/:owner/:repository/update", editorForm)(collaboratorsOnly {
@@ -287,8 +295,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       )
 
       redirect(
-        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
-        else s"${form.path}/${urlEncode(form.newFileName)}"}")
+        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0)
+          urlEncode(form.newFileName)
+        else
+          s"${form.path}/${urlEncode(form.newFileName)}"}")
   })
 
   post("/:owner/:repository/remove", deleteForm)(collaboratorsOnly {
@@ -304,8 +314,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         form.message.getOrElse(s"Delete ${form.fileName}"))
 
       redirect(
-        s"/${repository.owner}/${repository.name}/tree/${form.branch}${if (form.path.length == 0) ""
-        else form.path}")
+        s"/${repository.owner}/${repository.name}/tree/${form.branch}${if (form.path.length == 0)
+          ""
+        else
+          form.path}")
   })
 
   get("/:owner/:repository/raw/*")(referrersOnly { repository =>
@@ -583,7 +595,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   )
                 ))
             }
-          } else Unauthorized
+          } else
+            Unauthorized
       } getOrElse NotFound
   })
 
@@ -596,7 +609,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               updateCommitComment(comment.commentId, form.content)
               redirect(
                 s"/${owner}/${name}/commit_comments/_data/${comment.commentId}")
-            } else Unauthorized
+            } else
+              Unauthorized
           } getOrElse NotFound
       }
     })
@@ -608,7 +622,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           getCommitComment(owner, name, params("id")).map { comment =>
             if (isEditable(owner, name, comment.commentedUserName)) {
               Ok(deleteCommitComment(comment.commentId))
-            } else Unauthorized
+            } else
+              Unauthorized
           } getOrElse NotFound
       }
   })
@@ -795,12 +810,17 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               defining(JGitUtil.getRevCommitFromId(git, objectId)) {
                 revCommit =>
                   val lastModifiedCommit =
-                    if (path == ".") revCommit
-                    else JGitUtil.getLastModifiedCommit(git, revCommit, path)
+                    if (path == ".")
+                      revCommit
+                    else
+                      JGitUtil.getLastModifiedCommit(git, revCommit, path)
                   // get files
                   val files = JGitUtil.getFileList(git, revision, path)
                   val parentPath =
-                    if (path == ".") Nil else path.split("/").toList
+                    if (path == ".")
+                      Nil
+                    else
+                      path.split("/").toList
                   // process README.md or README.markdown
                   val readme = files
                     .find { file =>
@@ -823,8 +843,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   html.files(
                     revision,
                     repository,
-                    if (path == ".") Nil
-                    else path.split("/").toList, // current path
+                    if (path == ".")
+                      Nil
+                    else
+                      path.split("/").toList, // current path
                     new JGitUtil.CommitInfo(
                       lastModifiedCommit
                     ), // last modified commit
@@ -859,10 +881,16 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       message: String) = {
 
     val newPath = newFileName.map { newFileName =>
-      if (path.length == 0) newFileName else s"${path}/${newFileName}"
+      if (path.length == 0)
+        newFileName
+      else
+        s"${path}/${newFileName}"
     }
     val oldPath = oldFileName.map { oldFileName =>
-      if (path.length == 0) oldFileName else s"${path}/${oldFileName}"
+      if (path.length == 0)
+        oldFileName
+      else
+        s"${path}/${oldFileName}"
     }
 
     LockUtil.lock(s"${repository.owner}/${repository.name}") {
@@ -991,8 +1019,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     workDir.mkdirs
 
     val filename = repository.name + "-" +
-      (if (revision.length == 40) revision.substring(0, 10) else revision)
-        .replace('/', '_') + suffix
+      (if (revision.length == 40)
+         revision.substring(0, 10)
+       else
+         revision).replace('/', '_') + suffix
 
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>

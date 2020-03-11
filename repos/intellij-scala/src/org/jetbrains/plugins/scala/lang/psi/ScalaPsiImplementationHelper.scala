@@ -27,10 +27,12 @@ object ScalaPsiImplementationHelper {
     val project: Project = psiClass.getProject
     val idx: ProjectFileIndex =
       ProjectRootManager.getInstance(project).getFileIndex
-    if (vFile == null || !idx.isInLibrarySource(vFile)) return psiClass
+    if (vFile == null || !idx.isInLibrarySource(vFile))
+      return psiClass
     val orderEntries: List[OrderEntry] = idx.getOrderEntriesForFile(vFile)
     val fqn: String = psiClass.qualifiedName
-    if (fqn == null) return psiClass
+    if (fqn == null)
+      return psiClass
     val classes: Array[PsiClass] = ScalaPsiManager
       .instance(project)
       .getCachedClasses(
@@ -42,7 +44,8 @@ object ScalaPsiImplementationHelper {
             while (i < entries.size) {
               {
                 val entry: OrderEntry = entries.get(i)
-                if (orderEntries.contains(entry)) return true
+                if (orderEntries.contains(entry))
+                  return true
               }
               i += 1
             }
@@ -53,8 +56,10 @@ object ScalaPsiImplementationHelper {
         },
         fqn
       )
-    if (classes.length == 0) psiClass
-    else if (classes.length == 1) classes(0)
+    if (classes.length == 0)
+      psiClass
+    else if (classes.length == 1)
+      classes(0)
     else {
       psiClass match {
         case _: ScTrait | _: ScClass =>

@@ -110,7 +110,13 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
   object ExtensionMethodType {
     def unapply(tp: Type) = tp match {
       case MethodType(thiz :: rest, restpe) if thiz.name == nme.SELF =>
-        Some((thiz, if (rest.isEmpty) restpe else MethodType(rest, restpe)))
+        Some(
+          (
+            thiz,
+            if (rest.isEmpty)
+              restpe
+            else
+              MethodType(rest, restpe)))
       case _ =>
         None
     }
@@ -225,7 +231,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             super.transform(tree)
           } else if (currentOwner.isStaticOwner) {
             super.transform(tree)
-          } else tree
+          } else
+            tree
         case DefDef(_, _, tparams, vparamss, _, rhs)
             if tree.symbol.isMethodWithExtension =>
           val origMeth = tree.symbol
@@ -321,7 +328,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
                   localTyper.typedPos(md.pos.focus)(defn.duplicate)))
             case _ => Nil
           }
-          if (extraStats.isEmpty) md
+          if (extraStats.isEmpty)
+            md
           else
             deriveModuleDef(md)(tmpl => deriveTemplate(tmpl)(_ ++ extraStats))
         case stat =>

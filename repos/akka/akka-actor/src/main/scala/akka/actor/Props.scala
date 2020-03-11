@@ -178,7 +178,11 @@ final case class Props(
     */
   def withDispatcher(d: String): Props = deploy.dispatcher match {
     case NoDispatcherGiven ⇒ copy(deploy = deploy.copy(dispatcher = d))
-    case x ⇒ if (x == d) this else copy(deploy = deploy.copy(dispatcher = d))
+    case x ⇒
+      if (x == d)
+        this
+      else
+        copy(deploy = deploy.copy(dispatcher = d))
   }
 
   /**
@@ -186,7 +190,11 @@ final case class Props(
     */
   def withMailbox(m: String): Props = deploy.mailbox match {
     case NoMailboxGiven ⇒ copy(deploy = deploy.copy(mailbox = m))
-    case x ⇒ if (x == m) this else copy(deploy = deploy.copy(mailbox = m))
+    case x ⇒
+      if (x == m)
+        this
+      else
+        copy(deploy = deploy.copy(mailbox = m))
   }
 
   /**

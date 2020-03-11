@@ -113,7 +113,8 @@ class ScFunctionWrapper(
   val elementFactory =
     JavaPsiFacade.getInstance(function.getProject).getElementFactory
   val containingClass = {
-    if (cClass.isDefined) cClass.get
+    if (cClass.isDefined)
+      cClass.get
     else {
       var res: PsiClass = function.containingClass
       if (isStatic) {
@@ -197,8 +198,10 @@ with LightScalaMethod {
                     ScDesignatorType(parameter))
               }
             new ScSubstitutor(tvs.toMap, Map.empty, None)
-          } else ScSubstitutor.empty
-        } else ScSubstitutor.empty
+          } else
+            ScSubstitutor.empty
+        } else
+          ScSubstitutor.empty
       forDefault match {
         case Some(i) =>
           val param = function.parameters(i - 1)
@@ -227,8 +230,10 @@ with LightScalaMethod {
   override def isWritable: Boolean = getContainingFile.isWritable
 
   override def setName(name: String) = {
-    if (forDefault.isEmpty && !function.isConstructor) function.setName(name)
-    else this
+    if (forDefault.isEmpty && !function.isConstructor)
+      function.setName(name)
+    else
+      this
   }
 }
 
@@ -323,8 +328,10 @@ object ScFunctionWrapper {
       case _ =>
         function match {
           case fun: ScFunction if !fun.isConstructor =>
-            if (fun.hasExplicitType) evalType(fun.returnType)
-            else builder.append("FromTypeInference")
+            if (fun.hasExplicitType)
+              evalType(fun.returnType)
+            else
+              builder.append("FromTypeInference")
           case _ =>
         }
     }
@@ -356,8 +363,10 @@ object ScFunctionWrapper {
             if (!paramAnnotations.isEmpty)
               builder.append(paramAnnotations).append(" ")
             val tt =
-              if (varargs) param.getType(TypingContext.empty)
-              else param.getRealParameterType(TypingContext.empty)
+              if (varargs)
+                param.getType(TypingContext.empty)
+              else
+                param.getRealParameterType(TypingContext.empty)
             tt match {
               case Success(tp, _) if param.isCallByNameParameter =>
                 builder.append("scala.Function0<")
@@ -377,7 +386,8 @@ object ScFunctionWrapper {
               case _ => builder.append("java.lang.Object")
             }
 
-            if (varargs) builder.append("...")
+            if (varargs)
+              builder.append("...")
 
             builder.append(" ").append(param.getName)
             builder.toString()

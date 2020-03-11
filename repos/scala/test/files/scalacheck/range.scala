@@ -7,8 +7,10 @@ class Counter(r: Range) {
   var cnt = 0L
   var last: Option[Int] = None
   val str =
-    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive) "]"
-                                                         else ")")
+    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
+                                                           "]"
+                                                         else
+                                                           ")")
   def apply(x: Int) = {
     cnt += 1L
     if (cnt % 500000000L == 0L) {
@@ -39,7 +41,13 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       start <- choose(Int.MinValue, Int.MaxValue)
       end <- choose(Int.MinValue, Int.MaxValue)
       step <- choose(-Int.MaxValue, Int.MaxValue)
-    } yield Range(start, end, if (step == 0) 100 else step)
+    } yield Range(
+      start,
+      end,
+      if (step == 0)
+        100
+      else
+        step)
 
   def genBoundaryRange =
     for {
@@ -48,10 +56,15 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       size <- choose(1, 100)
       step <- choose(1, 101)
     } yield {
-      val signum = if (boundary == 0) 1 else boundary.signum
+      val signum =
+        if (boundary == 0)
+          1
+        else
+          boundary.signum
       if (isStart)
         Range(boundary, boundary - size * boundary.signum, -step * signum)
-      else Range(boundary - size * boundary.signum, boundary, step * signum)
+      else
+        Range(boundary - size * boundary.signum, boundary, step * signum)
     }
 
   def genSmallRange =
@@ -60,7 +73,10 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       end <- choose(-100, 100)
       step <- choose(1, 1)
     } yield
-      if (start < end) Range(start, end, step) else Range(start, end, -step)
+      if (start < end)
+        Range(start, end, step)
+      else
+        Range(start, end, -step)
 
   def genRangeByOne = oneOf(genRangeOpenByOne, genRangeClosedByOne)
 
@@ -69,20 +85,31 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       r <- oneOf(genSmallRange, genBoundaryRange)
       if (r.end.toLong - r.start.toLong).abs <= 10000000L
     } yield
-      if (r.start < r.end) Range(r.start, r.end) else Range(r.end, r.start)
+      if (r.start < r.end)
+        Range(r.start, r.end)
+      else
+        Range(r.end, r.start)
 
-  def genRangeClosedByOne = for (r <- genRangeOpenByOne) yield r.start to r.end
+  def genRangeClosedByOne =
+    for (r <- genRangeOpenByOne)
+      yield r.start to r.end
 
   def str(r: Range) =
-    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive) "]"
-                                                         else ")")
+    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
+                                                           "]"
+                                                         else
+                                                           ")")
 
   def expectedSize(r: Range): Long =
     if (r.isInclusive) {
       (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
         case (true, true) | (false, false) =>
           (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong + 1L
-        case _ => if (r.start == r.end) 1L else 0L
+        case _ =>
+          if (r.start == r.end)
+            1L
+          else
+            0L
       }
     } else {
       (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
@@ -91,7 +118,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
             (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
               + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
                    1L
-                 else 0L)
+                 else
+                   0L)
           )
         case _ => 0L
       }
@@ -99,9 +127,15 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 
   def within(r: Range, x: Int) =
     if (r.step > 0)
-      r.start <= x && (if (r.isInclusive) x <= r.end else x < r.end)
+      r.start <= x && (if (r.isInclusive)
+                         x <= r.end
+                       else
+                         x < r.end)
     else
-      r.start >= x && (if (r.isInclusive) x >= r.end else x > r.end)
+      r.start >= x && (if (r.isInclusive)
+                         x >= r.end
+                       else
+                         x > r.end)
 
   def multiple(r: Range, x: Int) = (x.toLong - r.start) % r.step == 0
 
@@ -250,13 +284,19 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
     arbInt.arbitrary) { (r, x) =>
 //    println("takeWhile "+str(r))
-    val t = (if (r.step > 0) r takeWhile (_ <= x) else r takeWhile (_ >= x))
+    val t =
+      (if (r.step > 0)
+         r takeWhile (_ <= x)
+       else
+         r takeWhile (_ >= x))
     if (r.size == 0) {
       (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
     } else {
       val t2 =
-        (if (r.step > 0) Range(r.start, x min r.last, r.step).inclusive
-         else Range(r.start, x max r.last, r.step).inclusive)
+        (if (r.step > 0)
+           Range(r.start, x min r.last, r.step).inclusive
+         else
+           Range(r.start, x max r.last, r.step).inclusive)
       (t.start == r.start && t.size == t2.size && t.step == r.step) :| str(
         r) + " / " + str(t) + " / " + str(t2) + ": " + x
     }
@@ -284,14 +324,22 @@ object NormalRangeTest extends RangeTest("normal") {
       start <- arbitrary[Int]
       end <- arbitrary[Int]
       if (start.toLong - end.toLong).abs < Int.MaxValue.toLong
-    } yield Range(start, end, if (start < end) 1 else -1)
+    } yield Range(
+      start,
+      end,
+      if (start < end)
+        1
+      else
+        -1)
   property("by 1.size + 1 == inclusive.size") = forAll(genOne) { r =>
     (r.size + 1 == r.inclusive.size) :| str(r)
   }
 }
 
 object InclusiveRangeTest extends RangeTest("inclusive") {
-  override def myGen = for (r <- genReasonableSizeRange) yield r.inclusive
+  override def myGen =
+    for (r <- genReasonableSizeRange)
+      yield r.inclusive
 }
 
 object ByOneRangeTest extends RangeTest("byOne") {
@@ -299,7 +347,9 @@ object ByOneRangeTest extends RangeTest("byOne") {
 }
 
 object InclusiveByOneRangeTest extends RangeTest("inclusiveByOne") {
-  override def myGen = for (r <- genRangeByOne) yield r.inclusive
+  override def myGen =
+    for (r <- genRangeByOne)
+      yield r.inclusive
 }
 
 object SmallValuesRange extends RangeTest("smallValues") {

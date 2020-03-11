@@ -68,8 +68,10 @@ class ScalaLookupItem(
     containingClass0: Option[PsiClass] = None)
     extends {
   val name: String =
-    if (ScalaNamesUtil.isKeyword(_name) && _name != "this") "`" + _name + "`"
-    else _name
+    if (ScalaNamesUtil.isKeyword(_name) && _name != "this")
+      "`" + _name + "`"
+    else
+      _name
 } with LookupItem[PsiNamedElement](element, name) {
 
   var isClassName: Boolean = false
@@ -106,7 +108,8 @@ class ScalaLookupItem(
     })
 
   override def equals(o: Any): Boolean = {
-    if (!super.equals(o)) return false
+    if (!super.equals(o))
+      return false
     o match {
       case s: ScalaLookupItem =>
         if (isNamedParameter != s.isNamedParameter || containingClass != s.containingClass)
@@ -123,7 +126,8 @@ class ScalaLookupItem(
           t.typeParameters
             .map(param => presentationString(param, substitutor))
             .mkString("[", ", ", "]")
-        else ""
+        else
+          ""
       case t: ScTypeParametersOwner =>
         t.typeParametersClause match {
           case Some(tp) => presentationString(tp, substitutor)
@@ -140,8 +144,10 @@ class ScalaLookupItem(
       //scala
       case fun: ScFunction =>
         val scType =
-          if (!etaExpanded) fun.returnType.getOrAny
-          else fun.getType(TypingContext.empty).getOrAny
+          if (!etaExpanded)
+            fun.returnType.getOrAny
+          else
+            fun.getType(TypingContext.empty).getOrAny
         presentation.setTypeText(presentationString(scType, substitutor))
         val tailText1 = if (isAssignment) {
           " = " + presentationString(fun.paramClauses, substitutor)
@@ -149,18 +155,21 @@ class ScalaLookupItem(
           tailText + (
             if (!isOverloadedForClassName)
               presentationString(fun.paramClauses, substitutor)
-            else "(...)"
+            else
+              "(...)"
           ) + (
             if (shouldImport && isClassName && containingClass != null)
               " " + containingClass.getPresentation.getLocationString
             else if (isClassName && containingClass != null)
               " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
-            else ""
+            else
+              ""
           )
         }
         if (!etaExpanded)
           presentation.setTailText(tailText1)
-        else presentation.setTailText(" _")
+        else
+          presentation.setTailText(" _")
       case fun: ScFun =>
         presentation.setTypeText(presentationString(fun.retType, substitutor))
         val paramClausesText = fun.paramClauses
@@ -216,13 +225,15 @@ class ScalaLookupItem(
           val params =
             if (!isOverloadedForClassName)
               presentationString(method.getParameterList, substitutor)
-            else "(...)"
+            else
+              "(...)"
           val tailText1 = tailText + params + (
             if (shouldImport && isClassName && containingClass != null)
               " " + containingClass.getPresentation.getLocationString
             else if (isClassName && containingClass != null)
               " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
-            else ""
+            else
+              ""
           )
           presentation.setTailText(tailText1)
         }
@@ -233,14 +244,21 @@ class ScalaLookupItem(
     }
     if (presentation.isReal)
       presentation.setIcon(element.getIcon(0))
-    else presentation.setIcon(IconUtil.getEmptyIcon(false))
+    else
+      presentation.setIcon(IconUtil.getEmptyIcon(false))
     var itemText: String =
-      if (isRenamed.isEmpty) if (isClassName && shouldImport) {
-        if (containingClass != null) containingClass.name + "." + name
-        else name
-      } else name
-      else name + " <= " + element.name
-    if (someSmartCompletion) itemText = "Some(" + itemText + ")"
+      if (isRenamed.isEmpty)
+        if (isClassName && shouldImport) {
+          if (containingClass != null)
+            containingClass.name + "." + name
+          else
+            name
+        } else
+          name
+      else
+        name + " <= " + element.name
+    if (someSmartCompletion)
+      itemText = "Some(" + itemText + ")"
     presentation.setItemText(itemText)
     presentation.setStrikeout(isDeprecated)
     presentation.setItemTextBold(bold)
@@ -257,16 +275,25 @@ class ScalaLookupItem(
 
   override def handleInsert(context: InsertionContext) {
     def shift: Int = {
-      val smartAdd = if (someSmartCompletion) 5 else 0
+      val smartAdd =
+        if (someSmartCompletion)
+          5
+        else
+          0
       val simpleStringAdd =
-        if (isInSimpleString && isInSimpleStringNoBraces) 1
-        else if (isInSimpleString) 2
-        else if (isInInterpolatedString) 1
-        else 0
+        if (isInSimpleString && isInSimpleStringNoBraces)
+          1
+        else if (isInSimpleString)
+          2
+        else if (isInInterpolatedString)
+          1
+        else
+          0
       smartAdd + simpleStringAdd
     }
 
-    if (getInsertHandler != null) super.handleInsert(context)
+    if (getInsertHandler != null)
+      super.handleInsert(context)
     else if (isClassName || prefixCompletion) {
       context.commitDocument()
       element match {
@@ -307,7 +334,8 @@ class ScalaLookupItem(
               PsiTreeUtil.getParentOfType(
                 ref,
                 classOf[ScImportSelectors]) == null //do not complete in sel
-          if (ref == null) return
+          if (ref == null)
+            return
           while (ref.getParent != null && ref.getParent
                    .isInstanceOf[ScReferenceElement] &&
                  (ref.getParent
@@ -370,7 +398,8 @@ class ScalaLookupItem(
               context.getStartOffset + shift,
               classOf[ScReferenceElement],
               false)
-          if (ref == null) return
+          if (ref == null)
+            return
           ScalaImportTypeFix
             .getImportHolder(ref, ref.getProject)
             .addImportForPath(p.getQualifiedName)
@@ -400,9 +429,11 @@ class ScalaLookupItem(
                 elem.getParent match {
                   case ref: ScReferenceExpression
                       if !usedImportStaticQuickfix =>
-                    if (shouldImport) qualifyReference(ref)
+                    if (shouldImport)
+                      qualifyReference(ref)
                   case ref: ScReferenceExpression =>
-                    if (!shouldImport) qualifyReference(ref)
+                    if (!shouldImport)
+                      qualifyReference(ref)
                     else {
                       if (elementToImport == null) {
                         //import static
@@ -428,7 +459,8 @@ class ScalaLookupItem(
             }
           }
       }
-    } else simpleInsert(context)
+    } else
+      simpleInsert(context)
   }
 }
 

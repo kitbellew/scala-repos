@@ -46,8 +46,10 @@ sealed trait TableSize {
 object TableSize {
   def apply(size: Long): TableSize = ExactSize(size)
   def apply(minSize: Long, maxSize: Long): TableSize =
-    if (minSize != maxSize) EstimateSize(minSize, maxSize)
-    else ExactSize(minSize)
+    if (minSize != maxSize)
+      EstimateSize(minSize, maxSize)
+    else
+      ExactSize(minSize)
 }
 
 case class ExactSize(minSize: Long) extends TableSize {

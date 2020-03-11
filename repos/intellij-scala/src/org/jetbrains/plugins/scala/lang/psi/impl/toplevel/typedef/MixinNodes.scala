@@ -57,9 +57,12 @@ abstract class MixinNodes {
       mutable.HashMap.empty
     def addToMap(key: T, node: Node) {
       val name = ScalaPsiUtil.convertMemberName(elemName(key))
-      (if (!isPrivate(key)) this else privatesMap)
-        .getOrElseUpdate(name, new ArrayBuffer) += ((key, node))
-      if (isImplicit(key)) implicitNames.add(name)
+      (if (!isPrivate(key))
+         this
+       else
+         privatesMap).getOrElseUpdate(name, new ArrayBuffer) += ((key, node))
+      if (isImplicit(key))
+        implicitNames.add(name)
     }
 
     @volatile
@@ -109,12 +112,14 @@ abstract class MixinNodes {
     @volatile
     private var forImplicitsCache: List[(T, Node)] = null
     def forImplicits(): List[(T, Node)] = {
-      if (forImplicitsCache != null) return forImplicitsCache
+      if (forImplicitsCache != null)
+        return forImplicitsCache
       val res = new ArrayBuffer[(T, Node)]()
       for (name <- implicitNames) {
         val map = forName(name)._1
         for (elem <- map) {
-          if (isImplicit(elem._1)) res += elem
+          if (isImplicit(elem._1))
+            res += elem
         }
       }
       forImplicitsCache = res.toList
@@ -135,7 +140,8 @@ abstract class MixinNodes {
     private def forAll(): (
         mutable.HashMap[String, AllNodes],
         mutable.HashMap[String, AllNodes]) = {
-      for (name <- allNames()) forName(name)
+      for (name <- allNames())
+        forName(name)
       synchronized {
         (calculated, calculatedSupers)
       }
@@ -253,7 +259,10 @@ abstract class MixinNodes {
         def hasNext: Boolean = iter1.hasNext || iter2.hasNext
 
         def next(): (T, Node) =
-          if (iter1.hasNext) iter1.next() else iter2.next()
+          if (iter1.hasNext)
+            iter1.next()
+          else
+            iter2.next()
       }
     }
 
@@ -275,7 +284,8 @@ abstract class MixinNodes {
       val iterator = list.iterator
       while (iterator.hasNext) {
         val next = iterator.next()
-        if (same(s, next._1)) return Some(next._2)
+        if (same(s, next._1))
+          return Some(next._2)
       }
       None
     }
@@ -289,7 +299,8 @@ abstract class MixinNodes {
           val iterator = e.iterator
           while (iterator.hasNext) {
             val next = iterator.next()
-            if (same(key, next._1)) return Some(next._2)
+            if (same(key, next._1))
+              return Some(next._2)
           }
           None
       }
@@ -307,11 +318,14 @@ abstract class MixinNodes {
       //todo: possible optimization to filter without types first then if only one variant left, get it.
       val h = index(elemHashCode(key))
       var e = table(h).asInstanceOf[Entry]
-      if (e != null && e.next == null) return Some(e.value)
+      if (e != null && e.next == null)
+        return Some(e.value)
       while (e != null) {
-        if (elemEquals(e.key, key)) return Some(e.value)
+        if (elemEquals(e.key, key))
+          return Some(e.value)
         e = e.next
-        if (e.next == null) return Some(e.value)
+        if (e.next == null)
+          return Some(e.value)
       }
       None
     }
@@ -324,15 +338,18 @@ abstract class MixinNodes {
           if (e != null && e.next == null) {
             e.value.info match {
               case p2: PhysicalSignature =>
-                if (p.method == p2.method) return Some(e.value)
-                else return None
+                if (p.method == p2.method)
+                  return Some(e.value)
+                else
+                  return None
               case _ => return None
             }
           }
           while (e != null) {
             e.value.info match {
               case p2: PhysicalSignature =>
-                if (p.method == p2.method) return Some(e.value)
+                if (p.method == p2.method)
+                  return Some(e.value)
               case _ =>
             }
             e = e.next
@@ -369,11 +386,13 @@ abstract class MixinNodes {
           case ScProjectionType(_, clazz: PsiClass, _) => clazz
           case _                                       => null
         }
-        if (clazz == null) (Seq.empty, ScSubstitutor.empty, ScSubstitutor.empty)
+        if (clazz == null)
+          (Seq.empty, ScSubstitutor.empty, ScSubstitutor.empty)
         else
           clazz match {
             case template: ScTypeDefinition =>
-              if (template.qualifiedName == "scala.Predef") isPredef = true
+              if (template.qualifiedName == "scala.Predef")
+                isPredef = true
               place = Option(template.extendsBlock)
               processScala(
                 template,
@@ -401,7 +420,10 @@ abstract class MixinNodes {
                 placer = placer.getContext
               }
               (
-                if (!lin.isEmpty) lin.tail else lin,
+                if (!lin.isEmpty)
+                  lin.tail
+                else
+                  lin,
                 Bounds.putAliases(template, ScSubstitutor.empty),
                 zSubst)
             case template: ScTemplateDefinition =>
@@ -449,7 +471,10 @@ abstract class MixinNodes {
               processJava(clazz, ScSubstitutor.empty, map, place)
               val lin = MixinNodes.linearization(clazz)
               (
-                if (!lin.isEmpty) lin.tail else lin,
+                if (!lin.isEmpty)
+                  lin.tail
+                else
+                  lin,
                 ScSubstitutor.empty,
                 ScSubstitutor.empty)
             case _ =>
@@ -570,7 +595,8 @@ object MixinNodes {
       ProgressManager.checkCanceled()
       val tp = {
         def default =
-          if (clazz.getTypeParameters.isEmpty) ScType.designator(clazz)
+          if (clazz.getTypeParameters.isEmpty)
+            ScType.designator(clazz)
           else
             ScParameterizedType(
               ScType.designator(clazz),
@@ -591,7 +617,8 @@ object MixinNodes {
                 val cl = ctp.resolve()
                 if (cl != null && cl.qualifiedName == "java.lang.Object")
                   ScDesignatorType(cl)
-                else ScType.create(ctp, clazz.getProject)
+                else
+                  ScType.create(ctp, clazz.getProject)
               case ctp => ScType.create(ctp, clazz.getProject)
             }.toSeq
         }
@@ -648,7 +675,8 @@ object MixinNodes {
           })
           if (i != -1) {
             val newTp = buffer.apply(i)
-            if (tp.conforms(newTp)) buffer.update(i, tp)
+            if (tp.conforms(newTp))
+              buffer.update(i, tp)
           }
         case _ =>
           (tp.isAliasType match {
@@ -704,7 +732,8 @@ object MixinNodes {
           }
       }
     }
-    if (addTp) add(tp)
+    if (addTp)
+      add(tp)
     buffer.toSeq
   }
 }

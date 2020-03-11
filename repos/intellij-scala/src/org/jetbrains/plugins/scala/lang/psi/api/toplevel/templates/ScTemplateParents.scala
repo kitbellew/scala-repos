@@ -83,7 +83,8 @@ object ScTemplateParents {
                   }
                 case _ => tail()
               }
-            } else tail()
+            } else
+              tail()
           }
           element match {
             case s: ScSimpleTypeElement =>

@@ -17,8 +17,10 @@ object Benchmark {
 
     for (len <- config) {
       val jdkOptions =
-        if (javaVersion.startsWith("1.8")) Seq("-XX:+UseParallelGC")
-        else Seq("-XX:MaxPermSize=512M", "-XX:+UseParallelGC")
+        if (javaVersion.startsWith("1.8"))
+          Seq("-XX:+UseParallelGC")
+        else
+          Seq("-XX:MaxPermSize=512M", "-XX:+UseParallelGC")
       var shellCommand =
         Seq(
           "java",

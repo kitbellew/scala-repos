@@ -175,7 +175,8 @@ object InferUtil {
                   (param, paramType)
               }
               .toMap
-          } else Map.empty
+          } else
+            Map.empty
         })
         resInner = dependentSubst.subst(resInner)
       case mt @ ScMethodType(retType, params, isImplicit) if !isImplicit =>
@@ -216,7 +217,8 @@ object InferUtil {
                   (param, paramType)
               }
               .toMap
-          } else Map.empty
+          } else
+            Map.empty
         })
         resInner = dependentSubst.subst(resInner)
       case _ =>
@@ -259,7 +261,8 @@ object InferUtil {
       val collector = new ImplicitCollector(implicitState)
       val results = collector.collect()
       if (results.length == 1) {
-        if (check && !results.head.isApplicable()) throw new SafeCheckException
+        if (check && !results.head.isApplicable())
+          throw new SafeCheckException
         resolveResults += results.head
         def updateExpr() {
           exprs += new Expression(
@@ -298,7 +301,8 @@ object InferUtil {
             //todo: should be added for infer to
             //todo: what if paramInCode is null?
             resolveResults += new ScalaResolveResult(param.paramInCode.get)
-          } else if (r == null && check) throw new SafeCheckException
+          } else if (r == null && check)
+            throw new SafeCheckException
           else if (r == null) {
             val parameter = ScalaPsiElementFactory.createParameterFromText(
               s"$notFoundParameterName: Int",
@@ -306,7 +310,8 @@ object InferUtil {
             resolveResults += new ScalaResolveResult(
               parameter,
               implicitSearchState = Some(implicitState))
-          } else resolveResults += r
+          } else
+            resolveResults += r
         })
       }
     }
@@ -334,10 +339,10 @@ object InferUtil {
     var nonValueType = _nonValueType
     nonValueType match {
       case Success(
-          ScTypePolymorphicType(
-            m @ ScMethodType(internal, params, impl),
-            typeParams),
-          _) if expectedType.isDefined && (!fromImplicitParameters || impl) =>
+            ScTypePolymorphicType(
+              m @ ScMethodType(internal, params, impl),
+              typeParams),
+            _) if expectedType.isDefined && (!fromImplicitParameters || impl) =>
         def updateRes(expected: ScType) {
           if (expected.equiv(types.Unit))
             return //do not update according to Unit type
@@ -401,7 +406,8 @@ object InferUtil {
       case _ =>
     }
 
-    if (!expr.isInstanceOf[ScExpression]) return nonValueType
+    if (!expr.isInstanceOf[ScExpression])
+      return nonValueType
 
     // interim fix for SCL-3905.
     def applyImplicitViewToResult(
@@ -538,8 +544,10 @@ object InferUtil {
     // See SCL-3052, SCL-3058
     // This corresponds to use of `isCompatible` in `Infer#methTypeArgs` in scalac, where `isCompatible` uses `weak_<:<`
     val s: ScSubstitutor =
-      if (shouldUndefineParameters) undefineSubstitutor(typeParams)
-      else ScSubstitutor.empty
+      if (shouldUndefineParameters)
+        undefineSubstitutor(typeParams)
+      else
+        ScSubstitutor.empty
     val abstractSubst =
       ScTypePolymorphicType(retType, typeParams).abstractTypeSubstitutor
     val paramsWithUndefTypes = params.map(p =>
@@ -608,10 +616,12 @@ object InferUtil {
                           _addLower,
                           tp.typeParams.map(
                             ScTypeParameterType.toTypeParameterType))
-                      else _addLower
+                      else
+                        _addLower
                     if (hasRecursiveTypeParameters(substedLowerType))
                       lower = addLower
-                    else lower = Bounds.lub(substedLowerType, addLower)
+                    else
+                      lower = Bounds.lub(substedLowerType, addLower)
                   case None =>
                     lower = unSubst.subst(lower)
                 }
@@ -627,10 +637,12 @@ object InferUtil {
                           _addUpper,
                           tp.typeParams.map(
                             ScTypeParameterType.toTypeParameterType))
-                      else _addUpper
+                      else
+                        _addUpper
                     if (hasRecursiveTypeParameters(substedUpperType))
                       upper = addUpper
-                    else upper = Bounds.glb(substedUpperType, addUpper)
+                    else
+                      upper = Bounds.glb(substedUpperType, addUpper)
                   case None =>
                     upper = unSubst.subst(upper)
                 }
@@ -705,7 +717,8 @@ object InferUtil {
                             tp: => ScType): Boolean = {
                           val typeParams: Seq[ScTypeParam] =
                             typeParam.typeParameters
-                          if (typeParams.isEmpty) return true
+                          if (typeParams.isEmpty)
+                            return true
                           tp match {
                             case ScParameterizedType(_, typeArgs) =>
                               if (typeArgs.length != typeParams.length)
@@ -726,7 +739,8 @@ object InferUtil {
                                       case (p1: ScTypeParam, p2: ScTypeParam) =>
                                         if (p1.typeParameters.nonEmpty)
                                           checkNamed(p2, p1.typeParameters)
-                                        else true
+                                        else
+                                          true
                                     }
                                   case p: PsiTypeParameterListOwner =>
                                     if (typeParams.length != p.getTypeParameters.length)
@@ -780,7 +794,8 @@ object InferUtil {
           }
         case None => throw new SafeCheckException
       }
-    } else ScTypePolymorphicType(retType, typeParams)
+    } else
+      ScTypePolymorphicType(retType, typeParams)
     (tpe, c.problems, c.matchedArgs, c.matchedTypes)
   }
 }

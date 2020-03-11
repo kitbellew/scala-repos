@@ -57,8 +57,10 @@ object CachedInsidePsiElement {
           transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
 
         val analyzeCachesEnterCacheArea =
-          if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-          else EmptyTree
+          if (analyzeCaches)
+            q"$cacheStatsName.aboutToEnterCachedArea()"
+          else
+            EmptyTree
         val updatedRhs = q"""
           def $cachedFunName(): $retTp = $actualCalculation
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
@@ -71,7 +73,8 @@ object CachedInsidePsiElement {
           private val $key = $cachesUtilFQN.getOrCreateKey[$keyTypeFQN[$cachedValueTypeFQN[$retTp]]]($keyId)
           ${if (analyzeCaches)
           q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-        else EmptyTree}
+        else
+          EmptyTree}
 
           ..$updatedDef
           """

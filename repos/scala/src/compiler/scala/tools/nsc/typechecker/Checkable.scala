@@ -125,8 +125,10 @@ trait Checkable {
     val tps = tp match {
       case RefinedType(parents, _) => parents flatMap typeArgsInTopLevelType
       case TypeRef(_, ArrayClass, arg :: Nil) =>
-        if (arg.typeSymbol.isAbstractType) arg :: Nil
-        else typeArgsInTopLevelType(arg)
+        if (arg.typeSymbol.isAbstractType)
+          arg :: Nil
+        else
+          typeArgsInTopLevelType(arg)
       case TypeRef(pre, sym, args) => typeArgsInTopLevelType(pre) ++ args
       case ExistentialType(tparams, underlying) =>
         tparams.map(_.tpe) ++ typeArgsInTopLevelType(underlying)
@@ -138,7 +140,10 @@ trait Checkable {
   private def scrutConformsToPatternType(scrut: Type, pattTp: Type): Boolean = {
     def typeVarToWildcard(tp: Type) = {
       // The need for typeSymbolDirect is demonstrated in neg/t8597b.scala
-      if (tp.typeSymbolDirect.isPatternTypeVariable) WildcardType else tp
+      if (tp.typeSymbolDirect.isPatternTypeVariable)
+        WildcardType
+      else
+        tp
     }
     val pattTpWild = pattTp.map(typeVarToWildcard)
     scrut <:< pattTpWild
@@ -154,7 +159,11 @@ trait Checkable {
         case _ => existentialAbstraction(Psym.typeParams, Psym.tpe_*)
       }
     }
-    def XR = if (Xsym == AnyClass) PErased else propagateKnownTypes(X, Psym)
+    def XR =
+      if (Xsym == AnyClass)
+        PErased
+      else
+        propagateKnownTypes(X, Psym)
 
     // sadly the spec says (new java.lang.Boolean(true)).isInstanceOf[scala.Boolean]
     def P1 = scrutConformsToPatternType(X, P)
@@ -172,19 +181,25 @@ trait Checkable {
 
     val result =
       (
-        if (X.isErroneous || P.isErroneous) CheckabilityError
-        else if (P1) StaticallyTrue
-        else if (P2) StaticallyFalse
-        else if (P3) RuntimeCheckable
+        if (X.isErroneous || P.isErroneous)
+          CheckabilityError
+        else if (P1)
+          StaticallyTrue
+        else if (P2)
+          StaticallyFalse
+        else if (P3)
+          RuntimeCheckable
         else if (uncheckableType == NoType) {
           // Avoid warning (except ourselves) if we can't pinpoint the uncheckable type
           debuglog(
             "Checkability checker says 'Uncheckable', but uncheckable type cannot be found:\n" + summaryString)
           CheckabilityError
-        } else Uncheckable
+        } else
+          Uncheckable
       )
     lazy val uncheckableType =
-      if (Psym.isAbstractType) P
+      if (Psym.isAbstractType)
+        P
       else {
         val possibles = typeArgsInTopLevelType(P).toSet
         val opt = possibles find { targ =>
@@ -192,7 +207,10 @@ trait Checkable {
           // with a WildcardType, except for 'targ'. If !(XR <: derived) then
           // 'targ' is uncheckable.
           val derived = P map (tp =>
-            if (possibles(tp) && !(tp =:= targ)) WildcardType else tp)
+            if (possibles(tp) && !(tp =:= targ))
+              WildcardType
+            else
+              tp)
           !(XR <:< derived)
         }
         opt getOrElse NoType
@@ -272,10 +290,14 @@ trait Checkable {
         tparams: List[Symbol]): Boolean =
       /*logResult(s"isNeverSubArgs($tps1, $tps2, $tparams)")*/ {
         def isNeverSubArg(t1: Type, t2: Type, variance: Variance) = (
-          if (variance.isInvariant) isNeverSameType(t1, t2)
-          else if (variance.isCovariant) isNeverSubType(t2, t1)
-          else if (variance.isContravariant) isNeverSubType(t1, t2)
-          else false
+          if (variance.isInvariant)
+            isNeverSameType(t1, t2)
+          else if (variance.isCovariant)
+            isNeverSubType(t2, t1)
+          else if (variance.isContravariant)
+            isNeverSubType(t1, t2)
+          else
+            false
         )
         exists3(tps1, tps2, tparams map (_.variance))(isNeverSubArg)
       }
@@ -329,14 +351,23 @@ trait Checkable {
         X0: Type,
         inPattern: Boolean,
         canRemedy: Boolean = false) {
-      if (uncheckedOk(P0)) return
-      def where = if (inPattern) "pattern " else ""
+      if (uncheckedOk(P0))
+        return
+      def where =
+        if (inPattern)
+          "pattern "
+        else
+          ""
 
       // singleton types not considered here, dealias the pattern for SI-XXXX
       val P = P0.dealiasWiden
       val X = X0.widen
 
-      def PString = if (P eq P0) P.toString else s"$P (the underlying of $P0)"
+      def PString =
+        if (P eq P0)
+          P.toString
+        else
+          s"$P (the underlying of $P0)"
 
       P match {
         // Prohibit top-level type tests for these, but they are ok nested (e.g. case Foldable[Nothing] => ... )
@@ -360,8 +391,10 @@ trait Checkable {
 
           if (checker.neverMatches) {
             val addendum =
-              if (checker.neverSubClass) ""
-              else " (but still might match its erasure)"
+              if (checker.neverSubClass)
+                ""
+              else
+                " (but still might match its erasure)"
             reporter.warning(
               tree.pos,
               s"fruitless type test: a value of type $X cannot also be a $PString$addendum")
@@ -370,7 +403,8 @@ trait Checkable {
               (
                 if (checker.uncheckableType =:= P)
                   s"abstract type $where$PString"
-                else s"${checker.uncheckableMessage} in type $where$PString"
+                else
+                  s"${checker.uncheckableMessage} in type $where$PString"
               )
             reporter.warning(
               tree.pos,

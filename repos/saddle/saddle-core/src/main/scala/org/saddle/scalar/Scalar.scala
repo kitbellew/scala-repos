@@ -28,13 +28,20 @@ sealed abstract class Scalar[+T] {
   def get: T
 
   @inline final def map[B: ST](f: T => B): Scalar[B] =
-    if (isNA) NA else Value(f(get))
+    if (isNA)
+      NA
+    else
+      Value(f(get))
 
   @inline final def flatMap[B](f: T => Scalar[B]): Scalar[B] =
-    if (isNA) NA else f(this.get)
+    if (isNA)
+      NA
+    else
+      f(this.get)
 
   @inline final def foreach[U](f: T => U) {
-    if (!isNA) f(this.get)
+    if (!isNA)
+      f(this.get)
   }
 }
 
@@ -47,7 +54,10 @@ object Scalar {
     *  @return Value(value) if value not null or NA primitive; otherwise NA
     *  */
   def apply[T: ST](x: T): Scalar[T] =
-    if (x == null || implicitly[ST[T]].isMissing(x)) NA else Value(x)
+    if (x == null || implicitly[ST[T]].isMissing(x))
+      NA
+    else
+      Value(x)
 
   /**
     * Provides comparisons of Scalars, where NA always evaluates as less than non-NA
@@ -70,21 +80,30 @@ object Scalar {
     * Provides implicit unboxing from double scalar to primitive
     */
   implicit def scalarUnboxD(ds: Scalar[Double]): Double = {
-    if (ds.isNA) Double.NaN else ds.get
+    if (ds.isNA)
+      Double.NaN
+    else
+      ds.get
   }
 
   /**
     * Provides implicit unboxing from float scalar to primitive
     */
   implicit def scalarUnboxF(ds: Scalar[Float]): Float = {
-    if (ds.isNA) Float.NaN else ds.get
+    if (ds.isNA)
+      Float.NaN
+    else
+      ds.get
   }
 
   /**
     * Scalar is isomorphic to Option
     */
   implicit def scalarToOption[T](sc: Scalar[T]): Option[T] =
-    if (sc.isNA) None else Some(sc.get)
+    if (sc.isNA)
+      None
+    else
+      Some(sc.get)
   implicit def optionToScalar[T: ST](op: Option[T]): Scalar[T] =
     op.map {
       Scalar(_)

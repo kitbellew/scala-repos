@@ -155,8 +155,10 @@ class SecurityServiceHandlers(
           apiKeyFinder
             .findAPIKey(apiKey, request.parameters.get('authkey))
             .map { k =>
-              if (k.isDefined) ok(k)
-              else notFound("Unable to find API key " + apiKey)
+              if (k.isDefined)
+                ok(k)
+              else
+                notFound("Unable to find API key " + apiKey)
             }
         } getOrElse {
           Promise successful badRequest("Missing API key from request URL.")
@@ -174,8 +176,10 @@ class SecurityServiceHandlers(
       Success {
         request.parameters.get('apikey) map { apiKey =>
           apiKeyManager.deleteAPIKey(apiKey) map { k =>
-            if (k.isDefined) noContent
-            else notFound("Unable to find API key " + apiKey)
+            if (k.isDefined)
+              noContent
+            else
+              notFound("Unable to find API key " + apiKey)
           }
         } getOrElse {
           Promise successful badRequest("Missing API key from request URL.")
@@ -212,7 +216,8 @@ class SecurityServiceHandlers(
       requestBody.validated[GrantId]("grantId") match {
         case Success(grantId) =>
           apiKeyManager.addGrants(apiKey, Set(grantId)) map { g =>
-            if (g.isDefined) created[JValue](None)
+            if (g.isDefined)
+              created[JValue](None)
             else
               badRequest(
                 "unable to add grant " + grantId + " to API key " + apiKey)
@@ -255,7 +260,8 @@ class SecurityServiceHandlers(
           request.parameters.get('apikey),
           request.parameters.get('grantId)) { (apiKey, grantId) =>
           apiKeyManager.removeGrants(apiKey, Set(grantId)) map { k =>
-            if (k.isDefined) noContent
+            if (k.isDefined)
+              noContent
             else
               badRequest(
                 "Invalid remove grant request.",
@@ -296,7 +302,8 @@ class SecurityServiceHandlers(
             authAPIKey,
             request.permissions,
             request.expirationDate) map { g =>
-            if (g.isDefined) ok(g map grantDetails)
+            if (g.isDefined)
+              ok(g map grantDetails)
             else
               badRequest(
                 "Error creating new grant.",
@@ -325,8 +332,10 @@ class SecurityServiceHandlers(
       Success {
         request.parameters.get('grantId) map { grantId =>
           apiKeyManager.findGrant(grantId) map { g =>
-            if (g.isDefined) ok(g map grantDetails)
-            else notFound("Unable to find grant " + grantId)
+            if (g.isDefined)
+              ok(g map grantDetails)
+            else
+              notFound("Unable to find grant " + grantId)
           }
         } getOrElse {
           Promise successful badRequest("Missing grant ID from request URL.")
@@ -371,7 +380,8 @@ class SecurityServiceHandlers(
             parentId,
             r.permissions,
             r.expirationDate) map { g =>
-            if (g.isDefined) ok(g map grantDetails)
+            if (g.isDefined)
+              ok(g map grantDetails)
             else
               badRequest(
                 "Error creating new child grant.",
@@ -410,8 +420,10 @@ class SecurityServiceHandlers(
     private def deleteGrant(grantId: GrantId) =
       apiKeyManager.deleteGrant(grantId) map { s =>
         //TODO: Is the badRequest message here really appropriate?
-        if (s.nonEmpty) noContent
-        else badRequest("Unable to find grant " + grantId + " for deletion.")
+        if (s.nonEmpty)
+          noContent
+        else
+          badRequest("Unable to find grant " + grantId + " for deletion.")
       }
 
     val service = (request: HttpRequest[Future[JValue]]) =>
@@ -419,7 +431,8 @@ class SecurityServiceHandlers(
         request.parameters.get('grantId) map { grantId =>
           apiKeyManager.findGrant(grantId) flatMap {
             case Some(grant) =>
-              if (grant.issuerKey == authAPIKey) deleteGrant(grantId)
+              if (grant.issuerKey == authAPIKey)
+                deleteGrant(grantId)
               else {
                 apiKeyManager.findAPIKeyAncestry(grant.issuerKey) flatMap {
                   ancestry =>

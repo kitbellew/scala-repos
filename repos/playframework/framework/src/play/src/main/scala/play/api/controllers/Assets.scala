@@ -176,8 +176,10 @@ private[controllers] class AssetInfo(
   import ResponseHeader._
 
   def addCharsetIfNeeded(mimeType: String): String =
-    if (MimeTypes.isText(mimeType)) s"$mimeType; charset=$defaultCharSet"
-    else mimeType
+    if (MimeTypes.isText(mimeType))
+      s"$mimeType; charset=$defaultCharSet"
+    else
+      mimeType
 
   val configuredCacheControl = config(
     _.getString("\"assets.cache." + name + "\""))
@@ -185,7 +187,10 @@ private[controllers] class AssetInfo(
   def cacheControl(aggressiveCaching: Boolean): String = {
     configuredCacheControl.getOrElse {
       if (isProd) {
-        if (aggressiveCaching) aggressiveCacheControl else defaultCacheControl
+        if (aggressiveCaching)
+          aggressiveCacheControl
+        else
+          defaultCacheControl
       } else {
         "no-cache"
       }
@@ -229,8 +234,12 @@ private[controllers] class AssetInfo(
 
   def url(gzipAvailable: Boolean): URL = {
     gzipUrl match {
-      case Some(x) => if (gzipAvailable) x else url
-      case None    => url
+      case Some(x) =>
+        if (gzipAvailable)
+          x
+        else
+          url
+      case None => url
     }
   }
 }
@@ -287,7 +296,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         val maybeDigestUrl: Option[URL] = resource(path + "." + digestAlgorithm)
         val maybeDigest: Option[String] =
           maybeDigestUrl.map(Source.fromURL(_).mkString)
-        if (!isDev && maybeDigest.isDefined) digestCache.put(path, maybeDigest)
+        if (!isDev && maybeDigest.isDefined)
+          digestCache.put(path, maybeDigest)
         maybeDigest
       }
     )
@@ -313,7 +323,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
         } else {
           path
         }
-        if (!isDev) minifiedPathsCache.put(path, maybeMinifiedPath)
+        if (!isDev)
+          minifiedPathsCache.put(path, maybeMinifiedPath)
         maybeMinifiedPath
       }
     )

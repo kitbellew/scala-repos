@@ -108,8 +108,10 @@ object TellOnlyBenchmark {
     @volatile var dropping = false
 
     override def enqueue(receiver: ActorRef, handle: Envelope): Unit = {
-      if (handle.message == flipDrop) dropping = !dropping
-      else if (!dropping) super.enqueue(receiver, handle)
+      if (handle.message == flipDrop)
+        dropping = !dropping
+      else if (!dropping)
+        super.enqueue(receiver, handle)
     }
   }
 

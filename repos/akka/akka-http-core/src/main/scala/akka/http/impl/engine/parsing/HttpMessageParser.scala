@@ -41,7 +41,8 @@ private[http] abstract class HttpMessageParser[
   def initialHeaderBuffer: ListBuffer[HttpHeader] =
     if (settings.includeTlsSessionInfoHeader && tlsSessionInfoHeader != null)
       ListBuffer(tlsSessionInfoHeader)
-    else ListBuffer()
+    else
+      ListBuffer()
 
   def isTerminated = terminated
 
@@ -60,7 +61,10 @@ private[http] abstract class HttpMessageParser[
         }
       override def onUpstreamFinish(
           ctx: Context[Output]): TerminationDirective =
-        if (self.onUpstreamFinish()) ctx.finish() else ctx.absorbTermination()
+        if (self.onUpstreamFinish())
+          ctx.finish()
+        else
+          ctx.absorbTermination()
     }
 
   final def parseSessionBytes(input: SessionBytes): Output = {
@@ -85,7 +89,8 @@ private[http] abstract class HttpMessageParser[
         case x ⇒ x
       }
 
-    if (result.nonEmpty) throw new IllegalStateException("Unexpected `onPush`")
+    if (result.nonEmpty)
+      throw new IllegalStateException("Unexpected `onPush`")
     run(state)
     onPull()
   }
@@ -95,8 +100,10 @@ private[http] abstract class HttpMessageParser[
       val head = result.head
       result.remove(0) // faster than `ListBuffer::drop`
       head
-    } else if (terminated) StreamEnd
-    else NeedMoreData
+    } else if (terminated)
+      StreamEnd
+    else
+      NeedMoreData
 
   final def onUpstreamFinish(): Boolean = {
     completionHandling() match {
@@ -130,7 +137,8 @@ private[http] abstract class HttpMessageParser[
         case _ ⇒ badProtocol
       }
       cursor + 8
-    } else badProtocol
+    } else
+      badProtocol
   }
 
   def badProtocol: Nothing
@@ -394,8 +402,10 @@ private[http] abstract class HttpMessageParser[
         emit(EntityPart(input.slice(bodyStart, offset).compact))
         emit(MessageEnd)
         setCompletionHandling(CompletionOk)
-        if (isLastMessage) terminate()
-        else startNewMessage(input, offset)
+        if (isLastMessage)
+          terminate()
+        else
+          startNewMessage(input, offset)
       }
     } else
       continue(input, bodyStart)(
@@ -424,20 +434,25 @@ private[http] abstract class HttpMessageParser[
         headerParser.resultHeader match {
           case EmptyHeader ⇒
             val lastChunk =
-              if (extension.isEmpty && headers.isEmpty) HttpEntity.LastChunk
-              else HttpEntity.LastChunk(extension, headers)
+              if (extension.isEmpty && headers.isEmpty)
+                HttpEntity.LastChunk
+              else
+                HttpEntity.LastChunk(extension, headers)
             emit(EntityChunk(lastChunk))
             emit(MessageEnd)
             setCompletionHandling(CompletionOk)
-            if (isLastMessage) terminate()
-            else startNewMessage(input, lineEnd)
+            if (isLastMessage)
+              terminate()
+            else
+              startNewMessage(input, lineEnd)
           case header if headerCount < maxHeaderCount ⇒
             parseTrailer(extension, lineEnd, header :: headers, headerCount + 1)
           case _ ⇒
             failEntityStream(
               s"Chunk trailer contains more than the configured limit of $maxHeaderCount headers")
         }
-      } else failEntityStream(errorInfo)
+      } else
+        failEntityStream(errorInfo)
     }
 
     def parseChunkBody(
@@ -463,7 +478,8 @@ private[http] abstract class HttpMessageParser[
           case '\n' ⇒ result(1)
           case x ⇒ failEntityStream("Illegal chunk termination")
         }
-      } else parseTrailer(extension, cursor)
+      } else
+        parseTrailer(extension, cursor)
 
     @tailrec def parseChunkExtensions(chunkSize: Int, cursor: Int)(
         startIx: Int = cursor): StateResult =
@@ -566,8 +582,10 @@ private[http] abstract class HttpMessageParser[
 
   def emptyEntity(cth: Option[`Content-Type`]) =
     StrictEntityCreator(
-      if (cth.isDefined) HttpEntity.empty(cth.get.contentType)
-      else HttpEntity.Empty)
+      if (cth.isDefined)
+        HttpEntity.empty(cth.get.contentType)
+      else
+        HttpEntity.Empty)
 
   def strictEntity(
       cth: Option[`Content-Type`],

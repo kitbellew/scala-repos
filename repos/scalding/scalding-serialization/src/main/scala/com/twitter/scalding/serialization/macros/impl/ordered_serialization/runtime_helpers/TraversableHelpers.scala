@@ -34,8 +34,10 @@ object TraversableHelpers {
       incr = incr + 1
     }
 
-    if (curIncr != 0) curIncr
-    else java.lang.Integer.compare(lenA, lenB)
+    if (curIncr != 0)
+      curIncr
+    else
+      java.lang.Integer.compare(lenA, lenB)
   }
 
   final def iteratorCompare[T](iteratorA: Iterator[T], iteratorB: Iterator[T])(
@@ -43,14 +45,19 @@ object TraversableHelpers {
     @annotation.tailrec
     def result: Int =
       if (iteratorA.isEmpty) {
-        if (iteratorB.isEmpty) 0
-        else -1 // a is shorter
+        if (iteratorB.isEmpty)
+          0
+        else
+          -1 // a is shorter
       } else {
-        if (iteratorB.isEmpty) 1 // a is longer
+        if (iteratorB.isEmpty)
+          1 // a is longer
         else {
           val cmp = ord.compare(iteratorA.next, iteratorB.next)
-          if (cmp != 0) cmp
-          else result
+          if (cmp != 0)
+            cmp
+          else
+            result
         }
       }
 
@@ -61,9 +68,12 @@ object TraversableHelpers {
       implicit eq: Equiv[T]): Boolean = {
     @annotation.tailrec
     def result: Boolean =
-      if (iteratorA.isEmpty) iteratorB.isEmpty
-      else if (iteratorB.isEmpty) false // not empty != empty
-      else eq.equiv(iteratorA.next, iteratorB.next) && result
+      if (iteratorA.isEmpty)
+        iteratorB.isEmpty
+      else if (iteratorB.isEmpty)
+        false // not empty != empty
+      else
+        eq.equiv(iteratorA.next, iteratorB.next) && result
 
     result
   }
@@ -88,9 +98,12 @@ object TraversableHelpers {
         endB: Int,
         b: Buffer[T]): Int =
       if (startA == endA) {
-        if (startB == endB) 0 // both empty
-        else -1 // empty is smaller than non-empty
-      } else if (startB == endB) 1 // non-empty is bigger than empty
+        if (startB == endB)
+          0 // both empty
+        else
+          -1 // empty is smaller than non-empty
+      } else if (startB == endB)
+        1 // non-empty is bigger than empty
       else {
         @annotation.tailrec
         def partition(
@@ -99,7 +112,8 @@ object TraversableHelpers {
             pivotEnd: Int,
             endX: Int,
             x: Buffer[T]): (Int, Int) = {
-          if (pivotEnd >= endX) (pivotStart, pivotEnd)
+          if (pivotEnd >= endX)
+            (pivotStart, pivotEnd)
           else {
             val t = x(pivotEnd)
             val cmp = ord.compare(t, pivot)
@@ -165,7 +179,8 @@ object TraversableHelpers {
         } else {
           // the prefixes are the same size
           val cmp = compare(startA, aps, a, startB, bps, b)
-          if (cmp != 0) cmp
+          if (cmp != 0)
+            cmp
           else {
             // we need to look into the pivot area. We don't need to check
             // for equality on the overlapped pivot range
@@ -192,7 +207,8 @@ object TraversableHelpers {
       * this is useful because often scala will build identical sets
       * exactly the same way, so this fast check will work.
       */
-    if (iteratorEquiv(travA.iterator, travB.iterator)(ord)) 0
+    if (iteratorEquiv(travA.iterator, travB.iterator)(ord))
+      0
     else {
       // Let's do the more expensive, potentially full sort, algorithm
       val a = travA.toBuffer

@@ -388,8 +388,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       if (deadline.exists(_.isOverdue)) {
         // join attempt failed, retry
         becomeUninitialized()
-        if (seedNodes.nonEmpty) joinSeedNodes(seedNodes)
-        else join(joinWith)
+        if (seedNodes.nonEmpty)
+          joinSeedNodes(seedNodes)
+        else
+          join(joinWith)
       }
   }
 
@@ -639,7 +641,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     if (latestGossip.members.exists(m ⇒
           m.address == address && m.status == Up)) {
       val newMembers = latestGossip.members map { m ⇒
-        if (m.address == address) m.copy(status = Leaving) else m
+        if (m.address == address)
+          m.copy(status = Leaving)
+        else
+          m
       } // mark node as LEAVING
       val newGossip = latestGossip copy (members = newMembers)
 
@@ -888,7 +893,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   }
 
   def gossipSpeedupTick(): Unit =
-    if (isGossipSpeedupNeeded) gossip()
+    if (isGossipSpeedupNeeded)
+      gossip()
 
   def isGossipSpeedupNeeded: Boolean =
     (latestGossip.overview.seen.size < latestGossip.members.size / 2)
@@ -912,7 +918,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
                   m.uniqueAddress) && validNodeForGossip(m.uniqueAddress) ⇒
               m.uniqueAddress
           }(breakOut)
-        } else Vector.empty
+        } else
+          Vector.empty
 
       if (preferredGossipTargets.nonEmpty) {
         val peer = selectRandomNode(preferredGossipTargets)
@@ -924,8 +931,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           case m if validNodeForGossip(m.uniqueAddress) ⇒ m.uniqueAddress
         })
         peer foreach { node ⇒
-          if (localGossip.seenByNode(node)) gossipStatusTo(node)
-          else gossipTo(node)
+          if (localGossip.seenByNode(node))
+            gossipStatusTo(node)
+          else
+            gossipTo(node)
         }
       }
     }
@@ -1062,8 +1071,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             // It is alright to use same upNumber as already used by a removed member, since the upNumber
             // is only used for comparing age of current cluster members (Member.isOlderThan)
             val youngest = localGossip.youngestMember
-            upNumber = 1 + (if (youngest.upNumber == Int.MaxValue) 0
-                            else youngest.upNumber)
+            upNumber = 1 + (if (youngest.upNumber == Int.MaxValue)
+                              0
+                            else
+                              youngest.upNumber)
           } else {
             upNumber += 1
           }
@@ -1107,7 +1118,11 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
       // log the removal of the unreachable nodes
       removedUnreachable foreach { m ⇒
-        val status = if (m.status == Exiting) "exiting" else "unreachable"
+        val status =
+          if (m.status == Exiting)
+            "exiting"
+          else
+            "unreachable"
         logInfo("Leader is removing {} node [{}]", status, m.address)
       }
 
@@ -1123,7 +1138,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         // for downing. However, if those final gossip messages never arrive it is
         // alright to require the downing, because that is probably caused by a
         // network failure anyway.
-        for (_ ← 1 to NumberOfGossipsBeforeShutdownWhenLeaderExits) gossip()
+        for (_ ← 1 to NumberOfGossipsBeforeShutdownWhenLeaderExits)
+          gossip()
         shutdown()
       }
 
@@ -1231,8 +1247,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
   def selectRandomNode(
       nodes: IndexedSeq[UniqueAddress]): Option[UniqueAddress] =
-    if (nodes.isEmpty) None
-    else Some(nodes(ThreadLocalRandom.current nextInt nodes.size))
+    if (nodes.isEmpty)
+      None
+    else
+      Some(nodes(ThreadLocalRandom.current nextInt nodes.size))
 
   def isSingletonCluster: Boolean = latestGossip.isSingletonCluster
 
@@ -1288,7 +1306,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
   def publish(newGossip: Gossip): Unit = {
     publisher ! PublishChanges(newGossip)
-    if (PublishStatsInterval == Duration.Zero) publishInternalStats()
+    if (PublishStatsInterval == Duration.Zero)
+      publishInternalStats()
   }
 
   def publishInternalStats(): Unit = {

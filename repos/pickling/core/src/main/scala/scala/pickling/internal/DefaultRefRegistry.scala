@@ -58,7 +58,8 @@ class DefaultRefUnpicklingRegistry(maxRefs: Int = 655536)
       System.arraycopy(refs, 0, newArr, 0, len)
       refs = newArr
       newArr
-    } else refs
+    } else
+      refs
     target(index) = null
     idx += 1
     index

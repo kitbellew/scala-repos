@@ -198,7 +198,8 @@ object ShardCoordinator {
           Future.successful(Set(mostShards.head))
         else
           emptyRebalanceResult
-      } else emptyRebalanceResult
+      } else
+        emptyRebalanceResult
     }
   }
 
@@ -368,8 +369,10 @@ object ShardCoordinator {
             regions.contains(region),
             s"Terminated region $region not registered: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards ++ regions(region))
-            else unallocatedShards
+            if (rememberEntities)
+              (unallocatedShards ++ regions(region))
+            else
+              unallocatedShards
           copy(
             regions = regions - region,
             shards = shards -- regions(region),
@@ -387,8 +390,10 @@ object ShardCoordinator {
             !shards.contains(shard),
             s"Shard [$shard] already allocated: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards - shard)
-            else unallocatedShards
+            if (rememberEntities)
+              (unallocatedShards - shard)
+            else
+              unallocatedShards
           copy(
             shards = shards.updated(shard, region),
             regions = regions.updated(region, regions(region) :+ shard),
@@ -402,8 +407,10 @@ object ShardCoordinator {
             regions.contains(region),
             s"Region $region for shard [$shard] not registered: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards + shard)
-            else unallocatedShards
+            if (rememberEntities)
+              (unallocatedShards + shard)
+            else
+              unallocatedShards
           copy(
             shards = shards - shard,
             regions =
@@ -712,7 +719,8 @@ abstract class ShardCoordinator(
                 val address: Address =
                   if (regionAddress.hasLocalScope && regionAddress.system == cluster.selfAddress.system)
                     cluster.selfAddress
-                  else regionAddress
+                  else
+                    regionAddress
 
                 address -> stats
             }.toMap)
@@ -735,8 +743,10 @@ abstract class ShardCoordinator(
 
       case ShardRegion.GetCurrentRegions ⇒
         val reply = ShardRegion.CurrentRegions(state.regions.keySet.map { ref ⇒
-          if (ref.path.address.host.isEmpty) cluster.selfAddress
-          else ref.path.address
+          if (ref.path.address.host.isEmpty)
+            cluster.selfAddress
+          else
+            ref.path.address
         })
         sender() ! reply
 

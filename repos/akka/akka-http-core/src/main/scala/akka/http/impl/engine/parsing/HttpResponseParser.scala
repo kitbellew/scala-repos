@@ -40,14 +40,16 @@ private[http] class HttpResponseParser(
       if (byteChar(input, cursor) == ' ') {
         cursor = parseStatus(input, cursor + 1)
         parseHeaderLines(input, cursor)
-      } else badProtocol
+      } else
+        badProtocol
     } else {
       emit(NeedNextRequestMethod)
       continue(input, offset)(startNewMessage)
     }
 
   override def emit(output: ResponseOutput): Unit = {
-    if (output == MessageEnd) contextForCurrentResponse = None
+    if (output == MessageEnd)
+      contextForCurrentResponse = None
     super.emit(output)
   }
 
@@ -60,7 +62,10 @@ private[http] class HttpResponseParser(
     def parseStatusCode() = {
       def intValue(offset: Int): Int = {
         val c = byteChar(input, cursor + offset)
-        if (CharacterClasses.DIGIT(c)) c - '0' else badStatusCode
+        if (CharacterClasses.DIGIT(c))
+          c - '0'
+        else
+          badStatusCode
       }
       val code = intValue(0) * 100 + intValue(1) * 10 + intValue(2)
       statusCode = code match {
@@ -79,7 +84,8 @@ private[http] class HttpResponseParser(
         if (idx - startIdx <= maxResponseReasonLength)
           if (byteChar(input, idx) == '\r' && byteChar(input, idx + 1) == '\n')
             idx + 2
-          else skipReason(idx + 1)
+          else
+            skipReason(idx + 1)
         else
           throw new ParsingException(
             "Response reason phrase exceeds the configured limit of " +
@@ -89,7 +95,8 @@ private[http] class HttpResponseParser(
                  input,
                  cursor + 4) == '\n') {
       throw new ParsingException("Status code misses trailing space")
-    } else badStatusCode
+    } else
+      badStatusCode
   }
 
   def handleInformationalResponses: Boolean = true
@@ -147,7 +154,8 @@ private[http] class HttpResponseParser(
         case None ⇒
           clh match {
             case Some(`Content-Length`(contentLength)) ⇒
-              if (contentLength == 0) finishEmptyResponse()
+              if (contentLength == 0)
+                finishEmptyResponse()
               else if (contentLength <= input.size - bodyStart) {
                 val cl = contentLength.toInt
                 emitResponseStart(strictEntity(cth, input, bodyStart, cl))
@@ -202,7 +210,8 @@ private[http] class HttpResponseParser(
               hostHeaderPresent,
               closeAfterResponseCompletion)
       }
-    } else finishEmptyResponse()
+    } else
+      finishEmptyResponse()
   }
 
   def parseToCloseBody(

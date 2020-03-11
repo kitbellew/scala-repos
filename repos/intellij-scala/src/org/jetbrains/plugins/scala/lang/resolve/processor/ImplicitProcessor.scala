@@ -57,11 +57,13 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
     if (withoutPrecedence) {
       candidatesSet ++= results
       true
-    } else super.addResults(results)
+    } else
+      super.addResults(results)
   }
 
   override def changedLevel: Boolean = {
-    if (levelMap.isEmpty) return true
+    if (levelMap.isEmpty)
+      return true
     val iterator = levelMap.values().iterator()
     while (iterator.hasNext) {
       val setIterator = iterator.next().iterator()

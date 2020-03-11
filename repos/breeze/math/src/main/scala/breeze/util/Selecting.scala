@@ -45,8 +45,10 @@ object quickSelect extends UFunc {
           while (pivotIndex != position && right >= left) {
             val rand = Rand.randInt(right - left + 1)
             pivotIndex = partition(x, left, right, rand.get() + left)
-            if (pivotIndex < position) left = pivotIndex + 1
-            else if (pivotIndex > position) right = pivotIndex - 1
+            if (pivotIndex < position)
+              left = pivotIndex + 1
+            else if (pivotIndex > position)
+              right = pivotIndex - 1
           }
         }
 
@@ -114,8 +116,10 @@ object quickSelect extends UFunc {
           while (pivotIndex != position && right >= left) {
             val rand = Rand.randInt(right - left + 1)
             pivotIndex = partition(x, left, right, rand.get() + left)
-            if (pivotIndex < position) left = pivotIndex + 1
-            else if (pivotIndex > position) right = pivotIndex - 1
+            if (pivotIndex < position)
+              left = pivotIndex + 1
+            else if (pivotIndex > position)
+              right = pivotIndex - 1
           }
         }
 
@@ -191,8 +195,10 @@ object quickSelectImpl extends UFunc {
           while (pivotIndex != position && right >= left) {
             val rand = Rand.randInt(right - left + 1)
             pivotIndex = partition(x, left, right, rand.get() + left)
-            if (pivotIndex < position) left = pivotIndex + 1
-            else if (pivotIndex > position) right = pivotIndex - 1
+            if (pivotIndex < position)
+              left = pivotIndex + 1
+            else if (pivotIndex > position)
+              right = pivotIndex - 1
           }
         }
 

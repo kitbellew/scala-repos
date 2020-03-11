@@ -233,7 +233,8 @@ private[finagle] class FailFastFactory[Req, Rep](
   }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
-    if (state != Ok) futureExc
+    if (state != Ok)
+      futureExc
     else {
       underlying(conn).respond {
         case Throw(_)                 => update(Observation.Fail)

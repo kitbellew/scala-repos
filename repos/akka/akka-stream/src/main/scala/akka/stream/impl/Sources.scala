@@ -48,7 +48,8 @@ final private[stream] class QueueSource[T](
       var terminating = false
 
       override def preStart(): Unit = {
-        if (maxBuffer > 0) buffer = Buffer(maxBuffer, materializer)
+        if (maxBuffer > 0)
+          buffer = Buffer(maxBuffer, materializer)
         initCallback(callback.invoke)
       }
       override def postStop(): Unit = stopCallback {
@@ -103,7 +104,8 @@ final private[stream] class QueueSource[T](
         case offer @ Offer(elem, promise) ⇒
           if (maxBuffer != 0) {
             bufferElem(offer)
-            if (isAvailable(out)) push(out, buffer.dequeue())
+            if (isAvailable(out))
+              push(out, buffer.dequeue())
           } else if (isAvailable(out)) {
             push(out, elem)
             promise.success(QueueOfferResult.Enqueued)

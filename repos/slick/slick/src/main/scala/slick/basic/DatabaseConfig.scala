@@ -75,7 +75,11 @@ object DatabaseConfig {
       config: Config = ConfigFactory.load(),
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
       : DatabaseConfig[P] = {
-    val basePath = (if (path.isEmpty) "" else path + ".")
+    val basePath =
+      (if (path.isEmpty)
+         ""
+       else
+         path + ".")
     val n = config.getStringOpt(basePath + "profile").getOrElse {
       val nOld = config.getStringOpt(basePath + "driver").map {
         case "slick.driver.DerbyDriver$"    => "slick.jdbc.DerbyProfile$"
@@ -99,7 +103,8 @@ object DatabaseConfig {
       try {
         if (n.endsWith("$"))
           classLoader.loadClass(n).getField("MODULE$").get(null)
-        else classLoader.loadClass(n).newInstance()
+        else
+          classLoader.loadClass(n).newInstance()
       } catch {
         case NonFatal(ex) =>
           throw new SlickException(
@@ -113,12 +118,24 @@ object DatabaseConfig {
     val root = config
     new DatabaseConfig[P] {
       lazy val db: P#Backend#Database =
-        profile.backend
-          .createDatabase(root, (if (path.isEmpty) "" else path + ".") + "db")
+        profile.backend.createDatabase(
+          root,
+          (if (path.isEmpty)
+             ""
+           else
+             path + ".") + "db")
       val profile: P = untypedP.asInstanceOf[P]
       val driver: P = untypedP.asInstanceOf[P]
-      lazy val config: Config = if (path.isEmpty) root else root.getConfig(path)
-      def profileName = if (profileIsObject) n.substring(0, n.length - 1) else n
+      lazy val config: Config =
+        if (path.isEmpty)
+          root
+        else
+          root.getConfig(path)
+      def profileName =
+        if (profileIsObject)
+          n.substring(0, n.length - 1)
+        else
+          n
       def profileIsObject = n.endsWith("$")
     }
   }
@@ -135,14 +152,20 @@ object DatabaseConfig {
     val (base, path) = {
       val f = uri.getRawFragment
       val s = uri.toString
-      if (s.isEmpty) (null, "")
-      else if (f eq null) (s, "")
-      else if (s.startsWith("#")) (null, uri.getFragment)
-      else (s.substring(0, s.length - f.length - 1), uri.getFragment)
+      if (s.isEmpty)
+        (null, "")
+      else if (f eq null)
+        (s, "")
+      else if (s.startsWith("#"))
+        (null, uri.getFragment)
+      else
+        (s.substring(0, s.length - f.length - 1), uri.getFragment)
     }
     val root =
-      if (base eq null) ConfigFactory.load()
-      else ConfigFactory.parseURL(new URL(base)).resolve()
+      if (base eq null)
+        ConfigFactory.load()
+      else
+        ConfigFactory.parseURL(new URL(base)).resolve()
     forConfig[P](path, root, classLoader)
   }
 

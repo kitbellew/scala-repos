@@ -163,8 +163,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
 
   private def liftMerger[A1, B1](
       mergef: MergeFunction[A1, B1]): Merger[A1, B1] =
-    if (mergef == null) defaultMerger.asInstanceOf[Merger[A1, B1]]
-    else liftMerger0(mergef)
+    if (mergef == null)
+      defaultMerger.asInstanceOf[Merger[A1, B1]]
+    else
+      liftMerger0(mergef)
 
   private[this] val defaultMerger: Merger[Any, Any] = liftMerger0((a, b) => a)
 
@@ -232,7 +234,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     private[collection] def computeHashFor(k: A) = computeHash(k)
 
     override def get0(key: A, hash: Int, level: Int): Option[B] =
-      if (hash == this.hash && key == this.key) Some(value) else None
+      if (hash == this.hash && key == this.key)
+        Some(value)
+      else
+        None
 
     private[collection] override def updated0[B1 >: B](
         key: A,
@@ -245,7 +250,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         if (merger eq null) {
           if (this.value.asInstanceOf[AnyRef] eq value.asInstanceOf[AnyRef])
             this
-          else new HashMap1(key, hash, value, kv)
+          else
+            new HashMap1(key, hash, value, kv)
         } else {
           val nkv = merger(this.kv, kv)
           new HashMap1(nkv._1, hash, nkv._2, nkv)
@@ -264,7 +270,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       }
 
     override def removed0(key: A, hash: Int, level: Int): HashMap[A, B] =
-      if (hash == this.hash && key == this.key) HashMap.empty[A, B] else this
+      if (hash == this.hash && key == this.key)
+        HashMap.empty[A, B]
+      else
+        this
 
     override protected def filter0(
         p: ((A, B)) => Boolean,
@@ -272,13 +281,17 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         level: Int,
         buffer: Array[HashMap[A, B @uV]],
         offset0: Int): HashMap[A, B] =
-      if (negate ^ p(ensurePair)) this else null
+      if (negate ^ p(ensurePair))
+        this
+      else
+        null
 
     override def iterator: Iterator[(A, B)] = Iterator(ensurePair)
     override def foreach[U](f: ((A, B)) => U): Unit = f(ensurePair)
     // this method may be called multiple times in a multithreaded environment, but that's ok
     private[HashMap] def ensurePair: (A, B) =
-      if (kv ne null) kv
+      if (kv ne null)
+        kv
       else {
         kv = (key, value);
         kv
@@ -300,7 +313,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     override def size = kvs.size
 
     override def get0(key: A, hash: Int, level: Int): Option[B] =
-      if (hash == this.hash) kvs.get(key) else None
+      if (hash == this.hash)
+        kvs.get(key)
+      else
+        None
 
     private[collection] override def updated0[B1 >: B](
         key: A,
@@ -312,7 +328,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       if (hash == this.hash) {
         if ((merger eq null) || !kvs.contains(key))
           new HashMapCollision1(hash, kvs.updated(key, value))
-        else new HashMapCollision1(hash, kvs + merger((key, kvs(key)), kv))
+        else
+          new HashMapCollision1(hash, kvs + merger((key, kvs(key)), kv))
       } else {
         val that = new HashMap1(key, hash, value, kv)
         makeHashTrieMap(this.hash, this, hash, that, level, size + 1)
@@ -332,7 +349,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
           case _ =>
             new HashMapCollision1(hash, kvs1)
         }
-      } else this
+      } else
+        this
 
     override protected def filter0(
         p: ((A, B)) => Boolean,
@@ -340,7 +358,11 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         level: Int,
         buffer: Array[HashMap[A, B @uV]],
         offset0: Int): HashMap[A, B] = {
-      val kvs1 = if (negate) kvs.filterNot(p) else kvs.filter(p)
+      val kvs1 =
+        if (negate)
+          kvs.filterNot(p)
+        else
+          kvs.filter(p)
       kvs1.size match {
         case 0 =>
           null
@@ -367,7 +389,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         merger: Merger[A, B1]): HashMap[A, B1] = {
       // this can be made more efficient by passing the entire ListMap at once
       var m = that
-      for (p <- kvs) m = m.updated0(p._1, this.hash, level, p._2, p, merger)
+      for (p <- kvs)
+        m = m.updated0(p._1, this.hash, level, p._2, p, merger)
       m
     }
   }
@@ -408,7 +431,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       if ((bitmap & mask) != 0) {
         val sub = elems(offset)
         val subNew = sub.updated0(key, hash, level + 5, value, kv, merger)
-        if (subNew eq sub) this
+        if (subNew eq sub)
+          this
         else {
           val elemsNew = new Array[HashMap[A, B1]](elems.length)
           Array.copy(elems, 0, elemsNew, 0, elems.length)
@@ -431,7 +455,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       if ((bitmap & mask) != 0) {
         val sub = elems(offset)
         val subNew = sub.removed0(key, hash, level + 5)
-        if (subNew eq sub) this
+        if (subNew eq sub)
+          this
         else if (subNew.isEmpty) {
           val bitmapNew = bitmap ^ mask
           if (bitmapNew != 0) {
@@ -540,14 +565,16 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       var b = bm
       while (left >= 0) {
         i += 1
-        if ((b & 1) != 0) left -= 1
+        if ((b & 1) != 0)
+          left -= 1
         b = b >>> 1
       }
       i
     }
 
     override def split: Seq[HashMap[A, B]] =
-      if (size == 1) Seq(this)
+      if (size == 1)
+        Seq(this)
       else {
         val nodesize = Integer.bitCount(bitmap)
         if (nodesize > 1) {
@@ -561,7 +588,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
           val hm2 = new HashTrieMap(bm2, e2, e2.foldLeft(0)(_ + _.size))
 
           List(hm1, hm2)
-        } else elems(0).split
+        } else
+          elems(0).split
       }
 
     protected override def merge0[B1 >: B](
@@ -648,7 +676,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     * null to the empty map for use in public methods
     */
   @inline private def nullToEmpty[A, B](m: HashMap[A, B]): HashMap[A, B] =
-    if (m eq null) empty[A, B] else m
+    if (m eq null)
+      empty[A, B]
+    else
+      m
 
   /**
     * Utility method to keep a subset of all bits in a given bitmap

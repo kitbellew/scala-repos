@@ -33,8 +33,10 @@ private[akka] trait Dispatch { this: ActorCell ⇒
           this,
           AbstractActorCell.mailboxOffset,
           oldMailbox,
-          newMailbox)) swapMailbox(newMailbox)
-    else oldMailbox
+          newMailbox))
+      swapMailbox(newMailbox)
+    else
+      oldMailbox
   }
 
   final def hasMessages: Boolean = mailbox.hasMessages
@@ -69,11 +71,14 @@ private[akka] trait Dispatch { this: ActorCell ⇒
       case _: ProducesMessageQueue[_]
           if system.mailboxes.hasRequiredType(actorClass) ⇒
         val req = system.mailboxes.getRequiredType(actorClass)
-        if (req isInstance mbox.messageQueue) Create(None)
+        if (req isInstance mbox.messageQueue)
+          Create(None)
         else {
           val gotType =
-            if (mbox.messageQueue == null) "null"
-            else mbox.messageQueue.getClass.getName
+            if (mbox.messageQueue == null)
+              "null"
+            else
+              mbox.messageQueue.getClass.getName
           Create(
             Some(
               ActorInitializationException(

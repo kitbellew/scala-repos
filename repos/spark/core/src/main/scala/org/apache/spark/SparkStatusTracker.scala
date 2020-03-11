@@ -92,17 +92,18 @@ class SparkStatusTracker private[spark] (sc: SparkContext) {
     jobProgressListener.synchronized {
       for (info <- jobProgressListener.stageIdToInfo.get(stageId);
            data <- jobProgressListener.stageIdToData.get(
-             (stageId, info.attemptId))) yield {
-        new SparkStageInfoImpl(
-          stageId,
-          info.attemptId,
-          info.submissionTime.getOrElse(0),
-          info.name,
-          info.numTasks,
-          data.numActiveTasks,
-          data.numCompleteTasks,
-          data.numFailedTasks)
-      }
+             (stageId, info.attemptId)))
+        yield {
+          new SparkStageInfoImpl(
+            stageId,
+            info.attemptId,
+            info.submissionTime.getOrElse(0),
+            info.name,
+            info.numTasks,
+            data.numActiveTasks,
+            data.numCompleteTasks,
+            data.numFailedTasks)
+        }
     }
   }
 }

@@ -79,7 +79,11 @@ object KMeansDataGenerator {
     val k = args(3).toInt
     val d = args(4).toInt
     val r = args(5).toDouble
-    val parts = if (args.length >= 7) args(6).toInt else 2
+    val parts =
+      if (args.length >= 7)
+        args(6).toInt
+      else
+        2
 
     val sc = new SparkContext(sparkMaster, "KMeansDataGenerator")
     val data = generateKMeansRDD(sc, numPoints, k, d, r, parts)

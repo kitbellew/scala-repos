@@ -283,8 +283,10 @@ trait StatsLibModule[M[+_]]
             row: Int,
             end: Int): Option[BigDecimal] = {
           if (row < end) {
-            if (col.isDefinedAt(row)) Some(col(row))
-            else findFirst(col, row + 1, end)
+            if (col.isDefinedAt(row))
+              Some(col(row))
+            else
+              findFirst(col, row + 1, end)
           } else {
             None
           }
@@ -368,8 +370,10 @@ trait StatsLibModule[M[+_]]
             row: Int,
             end: Int): Option[(Int, BigDecimal)] = {
           if (row < end) {
-            if (col.isDefinedAt(row)) Some(row -> col(row))
-            else findFirst(col, row + 1, end)
+            if (col.isDefinedAt(row))
+              Some(row -> col(row))
+            else
+              findFirst(col, row + 1, end)
           } else {
             None
           }
@@ -523,7 +527,8 @@ trait StatsLibModule[M[+_]]
 
           val cross =
             for (l <- left;
-                 r <- right) yield (l, r)
+                 r <- right)
+              yield (l, r)
 
           val result: Set[Result] = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -544,8 +549,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -575,8 +580,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -606,8 +611,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -637,8 +642,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -668,8 +673,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -699,8 +704,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -730,8 +735,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -761,8 +766,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -792,8 +797,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -808,8 +813,10 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 
@@ -872,7 +879,8 @@ trait StatsLibModule[M[+_]]
 
           val cross =
             for (l <- left;
-                 r <- right) yield (l, r)
+                 r <- right)
+              yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1059,8 +1067,10 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 
@@ -1117,7 +1127,8 @@ trait StatsLibModule[M[+_]]
 
           val cross =
             for (l <- left;
-                 r <- right) yield (l, r)
+                 r <- right)
+              yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1358,8 +1369,10 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 
@@ -1426,7 +1439,8 @@ trait StatsLibModule[M[+_]]
 
           val cross =
             for (l <- left;
-                 r <- right) yield (l, r)
+                 r <- right)
+              yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1712,8 +1726,10 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 
@@ -1796,17 +1812,20 @@ trait StatsLibModule[M[+_]]
               case col: LongColumn =>
                 val bs2 = col.definedAt(start, end)
                 Loop.range(0, len)(j =>
-                  if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
+                  if (bs2.get(j))
+                    arr(j) = BigDecimal(col(j + start)))
                 bs.or(bs2)
               case col: DoubleColumn =>
                 val bs2 = col.definedAt(start, end)
                 Loop.range(0, len)(j =>
-                  if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
+                  if (bs2.get(j))
+                    arr(j) = BigDecimal(col(j + start)))
                 bs.or(bs2)
               case col: NumColumn =>
                 val bs2 = col.definedAt(start, end)
                 Loop.range(0, r.size)(j =>
-                  if (bs2.get(j)) arr(j) = col(j + start))
+                  if (bs2.get(j))
+                    arr(j) = col(j + start))
                 bs.or(bs2)
               case col =>
                 sys.error("unexpected column found: %s" format col)
@@ -1858,7 +1877,8 @@ trait StatsLibModule[M[+_]]
         */
       def initDefined(definedCols: Array[BitSet]): BitSet = {
         val ncols = definedCols.length
-        if (ncols == 0) return new BitSet()
+        if (ncols == 0)
+          return new BitSet()
         val arr = definedCols(0).copy()
         var i = 1
         while (i < ncols) {
@@ -1871,7 +1891,8 @@ trait StatsLibModule[M[+_]]
       def findFirstDefined(defined: BitSet, r: Range): Int = {
         var row = r.start
         val end = r.end
-        while (row < end && !defined.get(row)) row += 1
+        while (row < end && !defined.get(row))
+          row += 1
         row
       }
 
@@ -1892,7 +1913,10 @@ trait StatsLibModule[M[+_]]
 
       // TODO: seems like shifting shouldn't need to return an Option.
       def shiftColumn(col: Column, start: Int): Column =
-        if (start == 0) col else (col |> cf.util.Shift(start)).get
+        if (start == 0)
+          col
+        else
+          (col |> cf.util.Shift(start)).get
     }
 
     /**
@@ -2043,7 +2067,8 @@ trait StatsLibModule[M[+_]]
           val col = cols(i)
           if (col.isDefinedAt(row)) {
             val opt = m.remove(refs(i))
-            if (!opt.isDefined || opt.get != col.cValue(row)) return false
+            if (!opt.isDefined || opt.get != col.cValue(row))
+              return false
           }
           i += 1
         }
@@ -2157,7 +2182,8 @@ trait StatsLibModule[M[+_]]
 
         while (i < len) {
           if (defined.get(i)) {
-            if (!duplicateRows.get(i)) curr = next
+            if (!duplicateRows.get(i))
+              curr = next
             values(i) = curr
             next += 1L
           }
@@ -2184,7 +2210,8 @@ trait StatsLibModule[M[+_]]
 
         while (i < len) {
           if (defined.get(i)) {
-            if (!duplicateRows.get(i)) curr += 1L
+            if (!duplicateRows.get(i))
+              curr += 1L
             values(i) = curr
           }
           i += 1
@@ -2223,7 +2250,11 @@ trait StatsLibModule[M[+_]]
 
         def makeColumn(idx: Int) = new LongColumn {
           def isDefinedAt(row: Int) = defined(row)
-          def apply(row: Int) = if (indices(row) == idx) 1L else 0L
+          def apply(row: Int) =
+            if (indices(row) == idx)
+              1L
+            else
+              0L
         }
 
         val cols0: Map[ColumnRef, Column] = (0 until length.toInt).map({ idx =>

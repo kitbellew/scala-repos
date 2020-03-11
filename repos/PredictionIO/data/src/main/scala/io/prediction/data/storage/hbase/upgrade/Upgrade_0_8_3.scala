@@ -136,7 +136,8 @@ object Upgrade_0_8_3 {
                 val nK = k.stripPrefix("pio_")
                 logger.info(s"property ${k} will be renamed to ${nK}")
                 nK
-              } else k
+              } else
+                k
               (newK, v)
           })
 

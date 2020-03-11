@@ -20,7 +20,10 @@ object SudokuSolver extends App {
   // Looping over a half-closed range of consecutive integers [l..u)
   // is factored out into a higher-order function
   def fold(f: (Int, Int) => Int, accu: Int, l: Int, u: Int): Int =
-    if (l == u) accu else fold(f, f(accu, l), l + 1, u)
+    if (l == u)
+      accu
+    else
+      fold(f, f(accu, l), l + 1, u)
 
   // The search function examines each position on the board in turn,
   // trying the numbers 1..9 in each unfilled position
@@ -31,11 +34,13 @@ object SudokuSolver extends App {
     case (9, y) => search(0, y + 1, f, accu) // next row
     case (0, 9) => f(accu) // found a solution
     case (x, y) =>
-      if (m(y)(x) != '0') search(x + 1, y, f, accu)
+      if (m(y)(x) != '0')
+        search(x + 1, y, f, accu)
       else
         fold(
           (accu: Int, n: Int) =>
-            if (invalid(0, x, y, (n + 48).toChar)) accu
+            if (invalid(0, x, y, (n + 48).toChar))
+              accu
             else {
               m(y)(x) = (n + 48).toChar;
               val newaccu = search(x + 1, y, f, accu);

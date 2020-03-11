@@ -120,7 +120,8 @@ object JGitUtil {
     val description = defining(fullMessage.trim.indexOf("\n")) { i =>
       if (i >= 0) {
         Some(fullMessage.trim.substring(i).trim)
-      } else None
+      } else
+        None
     }
 
     def isDifferentFromAuthor: Boolean =
@@ -158,7 +159,10 @@ object JGitUtil {
       * the line separator of this content ("LF" or "CRLF")
       */
     val lineSeparator: String =
-      if (content.exists(_.indexOf("\r\n") >= 0)) "CRLF" else "LF"
+      if (content.exists(_.indexOf("\r\n") >= 0))
+        "CRLF"
+      else
+        "LF"
   }
 
   /**
@@ -271,7 +275,8 @@ object JGitUtil {
       path: String = "."): List[FileInfo] = {
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(revision)
-      if (objectId == null) return Nil
+      if (objectId == null)
+        return Nil
       val revCommit = revWalk.parseCommit(objectId)
 
       def useTreeWalk(rev: RevCommit)(f: TreeWalk => Any): Unit =
@@ -383,7 +388,8 @@ object JGitUtil {
             getSubmodules(git, revCommit.getTree)
               .find(_.path == treeWalk.getPathString)
               .map(_.url)
-          } else None
+          } else
+            None
           fileList +:= (treeWalk.getObjectId(0), treeWalk.getFileMode(
             0), treeWalk.getNameString, linkUrl)
         }
@@ -429,10 +435,14 @@ object JGitUtil {
       shortMessage: String): String = {
     defining(fullMessage.trim.indexOf("\n")) { i =>
       defining(
-        if (i >= 0) fullMessage.trim.substring(0, i).trim else fullMessage) {
-        firstLine =>
-          if (firstLine.length > shortMessage.length) shortMessage
-          else firstLine
+        if (i >= 0)
+          fullMessage.trim.substring(0, i).trim
+        else
+          fullMessage) { firstLine =>
+        if (firstLine.length > shortMessage.length)
+          shortMessage
+        else
+          firstLine
       }
     }
   }
@@ -443,7 +453,8 @@ object JGitUtil {
   def getTreeId(git: Git, revision: String): Option[String] = {
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(revision)
-      if (objectId == null) return None
+      if (objectId == null)
+        return None
       val revCommit = revWalk.parseCommit(objectId)
       Some(revCommit.getTree.name)
     }
@@ -455,7 +466,8 @@ object JGitUtil {
   def getAllFileListByTreeId(git: Git, treeId: String): List[String] = {
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(treeId + "^{tree}")
-      if (objectId == null) return Nil
+      if (objectId == null)
+        return Nil
       using(new TreeWalk(git.getRepository)) { treeWalk =>
         treeWalk.addTree(objectId)
         treeWalk.setRecursive(true)
@@ -486,7 +498,11 @@ object JGitUtil {
       page: Int = 1,
       limit: Int = 0,
       path: String = ""): Either[String, (List[CommitInfo], Boolean)] = {
-    val fixedPage = if (page <= 0) 1 else page
+    val fixedPage =
+      if (page <= 0)
+        1
+      else
+        page
 
     @scala.annotation.tailrec
     def getCommitLog(
@@ -501,7 +517,8 @@ object JGitUtil {
             count + 1,
             if (limit <= 0 || (fixedPage - 1) * limit <= count)
               logs :+ new CommitInfo(commit)
-            else logs)
+            else
+              logs)
         }
         case _ => (logs, i.hasNext)
       }
@@ -536,7 +553,10 @@ object JGitUtil {
         case true => {
           val revCommit = i.next
           if (endCondition(revCommit)) {
-            if (includesLastCommit) logs :+ new CommitInfo(revCommit) else logs
+            if (includesLastCommit)
+              logs :+ new CommitInfo(revCommit)
+            else
+              logs
           } else {
             getCommitLog(i, logs :+ new CommitInfo(revCommit))
           }
@@ -833,7 +853,11 @@ object JGitUtil {
       repository: RepositoryService.RepositoryInfo,
       revstr: String = ""): Option[(ObjectId, String)] = {
     Seq(
-      Some(if (revstr.isEmpty) repository.repository.defaultBranch else revstr),
+      Some(
+        if (revstr.isEmpty)
+          repository.repository.defaultBranch
+        else
+          revstr),
       repository.branchList.headOption
     ).flatMap {
         case Some(rev) => Some((git.getRepository.resolve(rev), rev))
@@ -958,10 +982,17 @@ object JGitUtil {
       val loader = db.open(objectId)
       val large = FileUtil.isLarge(loader.getSize)
       val viewer =
-        if (FileUtil.isImage(path)) "image" else if (large) "large" else "other"
+        if (FileUtil.isImage(path))
+          "image"
+        else if (large)
+          "large"
+        else
+          "other"
       val bytes =
-        if (viewer == "other") JGitUtil.getContentFromId(git, objectId, false)
-        else None
+        if (viewer == "other")
+          JGitUtil.getContentFromId(git, objectId, false)
+        else
+          None
 
       if (viewer == "other") {
         if (bytes.isDefined && FileUtil.isText(bytes.get)) {

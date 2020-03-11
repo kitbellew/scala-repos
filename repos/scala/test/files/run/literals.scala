@@ -18,12 +18,15 @@ object Test {
     val res: Option[String] =
       try {
         val actual: A = closure
-        if (actual == expected) None //print(" was successful")
-        else Some(s" failed: expected $expected, found $actual")
+        if (actual == expected)
+          None //print(" was successful")
+        else
+          Some(s" failed: expected $expected, found $actual")
       } catch {
         case exception: Throwable => Some(s" raised exception $exception")
       }
-    for (e <- res) println(s"test $name $e")
+    for (e <- res)
+      println(s"test $name $e")
   }
 
   def main(args: Array[String]) {

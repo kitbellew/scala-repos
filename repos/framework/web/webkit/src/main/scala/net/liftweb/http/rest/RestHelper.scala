@@ -121,7 +121,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply(r: Req): Option[(List[String], (RequestType, Req))] =
       if (testResponse_?(r))
         Some(r.path.partPath -> (r.requestType -> r))
-      else None
+      else
+        None
 
     def testResponse_?(r: Req): Boolean
   }
@@ -160,7 +161,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply(r: Req): Option[(List[String], Req)] =
       if (r.get_? && testResponse_?(r))
         Some(r.path.partPath -> r)
-      else None
+      else
+        None
 
     def testResponse_?(r: Req): Boolean
   }
@@ -193,7 +195,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply(r: Req): Option[(List[String], Req)] =
       if (r.requestType.delete_? && testResponse_?(r))
         Some(r.path.partPath -> r)
-      else None
+      else
+        None
 
     def testResponse_?(r: Req): Boolean
   }
@@ -226,7 +229,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply(r: Req): Option[(List[String], (T, Req))] =
       if (r.post_? && testResponse_?(r))
         body(r).toOption.map(t => (r.path.partPath -> (t -> r)))
-      else None
+      else
+        None
 
     def testResponse_?(r: Req): Boolean
 
@@ -259,7 +263,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected object Get {
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.get_?) Some(r.path.partPath -> r) else None
+      if (r.get_?)
+        Some(r.path.partPath -> r)
+      else
+        None
 
   }
 
@@ -273,7 +280,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected object Post {
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.post_?) Some(r.path.partPath -> r) else None
+      if (r.post_?)
+        Some(r.path.partPath -> r)
+      else
+        None
 
   }
 
@@ -287,7 +297,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected object Put {
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.put_?) Some(r.path.partPath -> r) else None
+      if (r.put_?)
+        Some(r.path.partPath -> r)
+      else
+        None
 
   }
 
@@ -301,7 +314,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected object Delete {
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.requestType.delete_?) Some(r.path.partPath -> r) else None
+      if (r.requestType.delete_?)
+        Some(r.path.partPath -> r)
+      else
+        None
 
   }
 
@@ -315,7 +331,10 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected object Options {
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.requestType.options_?) Some(r.path.partPath -> r) else None
+      if (r.requestType.options_?)
+        Some(r.path.partPath -> r)
+      else
+        None
 
   }
 
@@ -324,9 +343,12 @@ trait RestHelper extends LiftRules.DispatchPF {
     * Use with serveType
     */
   implicit def jxSel(req: Req): BoxOrRaw[JsonXmlSelect] =
-    if (jsonResponse_?(req)) JsonSelect
-    else if (xmlResponse_?(req)) XmlSelect
-    else None
+    if (jsonResponse_?(req))
+      JsonSelect
+    else if (xmlResponse_?(req))
+      XmlSelect
+    else
+      None
 
   /**
     * Serve a given request by determining the request type, computing
@@ -486,7 +508,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply(r: Req): Option[(List[String], (T, Req))] =
       if (r.put_? && testResponse_?(r))
         body(r).toOption.map(b => (r.path.partPath -> (b -> r)))
-      else None
+      else
+        None
 
     def testResponse_?(r: Req): Boolean
 
@@ -517,7 +540,10 @@ trait RestHelper extends LiftRules.DispatchPF {
   private lazy val nonDevDispatch = _dispatch.reverse
 
   private def dispatch: List[LiftRules.DispatchPF] =
-    if (Props.devMode) _dispatch.reverse else nonDevDispatch
+    if (Props.devMode)
+      _dispatch.reverse
+    else
+      nonDevDispatch
 
   /**
     * Is the Rest helper defined for a given request

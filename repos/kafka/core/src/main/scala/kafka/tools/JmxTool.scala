@@ -98,12 +98,14 @@ object JmxTool extends Logging {
     val attributesWhitelist =
       if (attributesWhitelistExists)
         Some(options.valueOf(attributesOpt).split(","))
-      else None
+      else
+        None
     val dateFormatExists = options.has(dateFormatOpt)
     val dateFormat =
       if (dateFormatExists)
         Some(new SimpleDateFormat(options.valueOf(dateFormatOpt)))
-      else None
+      else
+        None
     val jmxc = JMXConnectorFactory.connect(url, null)
     val mbsc = jmxc.getMBeanServerConnection()
 

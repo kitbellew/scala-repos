@@ -97,7 +97,8 @@ class ExpandTables extends Phase {
 
           // Perform star expansion in Distinct
           val tree3 =
-            if (!expandDistinct) tree2
+            if (!expandDistinct)
+              tree2
             else {
               logger.debug("Expanding tables in Distinct")
               tree2
@@ -114,7 +115,8 @@ class ExpandTables extends Phase {
           if (!tree.nodeType.existsType {
                 case NominalType(_: TableIdentitySymbol, _) => true;
                 case _                                      => false
-              }) tree3
+              })
+            tree3
           else {
             logger.debug("Expanding tables in result type")
             // Create a mapping that expands the tables
@@ -135,6 +137,7 @@ class ExpandTables extends Phase {
         .get(Phase.assignUniqueSymbols)
         .get
         .copy(nonPrimitiveOption = true))
-    else s2
+    else
+      s2
   }
 }

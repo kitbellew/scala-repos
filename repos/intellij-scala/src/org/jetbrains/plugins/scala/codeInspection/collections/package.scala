@@ -225,8 +225,8 @@ package object collections {
           def checkResolve(left: ScExpression, right: ScExpression) =
             (stripped(left), stripped(right)) match {
               case (
-                  leftRef: ScReferenceExpression,
-                  rightRef: ScReferenceExpression) =>
+                    leftRef: ScReferenceExpression,
+                    rightRef: ScReferenceExpression) =>
                 Set(leftRef.resolve(), rightRef.resolve()) equals Set(x, y)
               case _ => false
             }
@@ -240,8 +240,8 @@ package object collections {
           }
         case ScInfixExpr(underscore(), oper, underscore()) => Some(oper)
         case ScMethodCall(
-            refExpr: ScReferenceExpression,
-            Seq(underscore(), underscore())) =>
+              refExpr: ScReferenceExpression,
+              Seq(underscore(), underscore())) =>
           Some(refExpr)
         case _ => None
       }
@@ -437,7 +437,8 @@ package object collections {
     val name = parameter.getName
     val visitor = new ScalaRecursiveElementVisitor() {
       override def visitReferenceExpression(ref: ScReferenceExpression) {
-        if (ref.refName == name && ref.resolve() == parameter) result = false
+        if (ref.refName == name && ref.resolve() == parameter)
+          result = false
         super.visitReferenceExpression(ref)
       }
     }
@@ -453,8 +454,10 @@ package object collections {
             nameFitToPatterns(obj.qualifiedName, patterns)
           case member: ScMember =>
             val clazz = member.containingClass
-            if (clazz == null || clazz.qualifiedName == null) false
-            else nameFitToPatterns(clazz.qualifiedName, patterns)
+            if (clazz == null || clazz.qualifiedName == null)
+              false
+            else
+              nameFitToPatterns(clazz.qualifiedName, patterns)
           case _ => false
         }
       case _ => false
@@ -462,7 +465,8 @@ package object collections {
   }
 
   def isOfClassFrom(expr: ScExpression, patterns: Array[String]): Boolean = {
-    if (expr == null) return false
+    if (expr == null)
+      return false
 
     expr.getType() match {
       case Success(tp, _) =>
@@ -597,12 +601,11 @@ package object collections {
               _) if infix.isAssignmentOperator =>
           infix
         case MethodRepr(
-            itself,
-            Some(
-              definedOutside(
+              itself,
+              Some(definedOutside(
                 ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
-            Some(ref),
-            _)
+              Some(ref),
+              _)
             if isSideEffectCollectionMethod(ref) || isSetter(
               ref) || hasUnitReturnType(ref) =>
           itself
@@ -621,7 +624,8 @@ package object collections {
   def rightRangeInParent(
       expr: ScExpression,
       parent: ScExpression): TextRange = {
-    if (expr == parent) return TextRange.create(0, expr.getTextLength)
+    if (expr == parent)
+      return TextRange.create(0, expr.getTextLength)
 
     val endOffset = parent.getTextRange.getEndOffset
 

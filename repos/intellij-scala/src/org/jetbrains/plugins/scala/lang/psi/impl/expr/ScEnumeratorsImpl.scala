@@ -51,19 +51,22 @@ class ScEnumeratorsImpl(node: ASTNode)
               case _              => 0
             }
           ))
-      else reverseChildren
+      else
+        reverseChildren
     for (c <- children) {
       c match {
         case c: ScGenerator =>
           for (b <- c.pattern.bindings)
-            if (!processor.execute(b, state)) return false
+            if (!processor.execute(b, state))
+              return false
           processor match {
             case b: BaseProcessor => b.changedLevel
             case _                =>
           }
         case c: ScEnumerator =>
           for (b <- c.pattern.bindings)
-            if (!processor.execute(b, state)) return false
+            if (!processor.execute(b, state))
+              return false
         case _ =>
       }
     }

@@ -20,9 +20,16 @@ abstract class TreeCheckers extends Analyzer {
 
   case class DiffResult[T](lost: List[T], gained: List[T]) {
     def isEmpty = lost.isEmpty && gained.isEmpty
-    def lost_s = if (lost.isEmpty) "" else lost.mkString("lost: ", ", ", "")
+    def lost_s =
+      if (lost.isEmpty)
+        ""
+      else
+        lost.mkString("lost: ", ", ", "")
     def gained_s =
-      if (gained.isEmpty) "" else gained.mkString("gained: ", ", ", "")
+      if (gained.isEmpty)
+        ""
+      else
+        gained.mkString("gained: ", ", ", "")
     override def toString = ojoin(lost_s, gained_s)
   }
 
@@ -59,8 +66,10 @@ abstract class TreeCheckers extends Analyzer {
   private def ownerstr(s: Symbol) = "'" + s + "'" + s.locationString
   private def wholetreestr(t: Tree) = nodeToString(t) + "\n"
   private def truncate(str: String, len: Int): String = (
-    if (str.length <= len) str
-    else (str takeWhile (_ != '\n') take len - 3) + "..."
+    if (str.length <= len)
+      str
+    else
+      (str takeWhile (_ != '\n') take len - 3) + "..."
   )
   private def signature(sym: Symbol) =
     clean_s(sym match {
@@ -85,8 +94,10 @@ abstract class TreeCheckers extends Analyzer {
 
   private def beststr(t: Tree) =
     "<" + {
-      if (t.symbol != null && t.symbol != NoSymbol) "sym=" + ownerstr(t.symbol)
-      else if (t.tpe.isComplete) "tpe=" + typestr(t.tpe)
+      if (t.symbol != null && t.symbol != NoSymbol)
+        "sym=" + ownerstr(t.symbol)
+      else if (t.tpe.isComplete)
+        "tpe=" + typestr(t.tpe)
       else
         t match {
           case x: DefTree => "name=" + x.name
@@ -112,10 +123,15 @@ abstract class TreeCheckers extends Analyzer {
 
     def record(tree: Tree) {
       val sym = tree.symbol
-      if ((sym eq null) || (sym eq NoSymbol)) return
+      if ((sym eq null) || (sym eq NoSymbol))
+        return
 
       val prevMap = maps.tail.head._2
-      val prevTrees = if (prevMap eq null) Nil else prevMap(sym)
+      val prevTrees =
+        if (prevMap eq null)
+          Nil
+        else
+          prevMap(sym)
 
       tree match {
         case t: DefTree => defSyms(sym) ::= t
@@ -129,7 +145,8 @@ abstract class TreeCheckers extends Analyzer {
       else {
         val s1 = (prevTrees map wholetreestr).sorted.distinct
         val s2 = wholetreestr(tree)
-        if (s1 contains s2) ()
+        if (s1 contains s2)
+          ()
         else
           movedMsgs += ("\n** %s moved:\n** Previously:\n%s\n** Currently:\n%s"
             .format(ownerstr(sym), s1 mkString ", ", s2))
@@ -140,7 +157,11 @@ abstract class TreeCheckers extends Analyzer {
       // new symbols
       if (newSyms.nonEmpty) {
         informFn(newSyms.size + " new symbols.")
-        val toPrint = if (settings.debug) sortedNewSyms mkString " " else ""
+        val toPrint =
+          if (settings.debug)
+            sortedNewSyms mkString " "
+          else
+            ""
 
         newSyms.clear()
         if (toPrint != "")
@@ -178,7 +199,8 @@ abstract class TreeCheckers extends Analyzer {
   private lazy val reportedAlready = mutable.HashSet[(Tree, Symbol)]()
 
   def posstr(p: Position): String = (
-    if (p eq null) ""
+    if (p eq null)
+      ""
     else {
       try p.source.path + ":" + p.line
       catch {
@@ -197,7 +219,8 @@ abstract class TreeCheckers extends Analyzer {
   }
 
   def assertFn(cond: Boolean, msg: => Any) =
-    if (!cond) errorFn(msg)
+    if (!cond)
+      errorFn(msg)
 
   private def wrap[T](msg: => Any)(body: => T): T = {
     try body
@@ -364,7 +387,8 @@ abstract class TreeCheckers extends Analyzer {
             checkSym(tree)
           case This(_) =>
             checkSym(tree)
-            if (sym.isStatic && sym.hasModuleFlag) ()
+            if (sym.isStatic && sym.hasModuleFlag)
+              ()
             else if (currentOwner.ownerChain takeWhile (_ != sym) exists (_ == NoSymbol))
               return fail(
                 "tree symbol " + sym + " does not point to enclosing class; tree = ")
@@ -411,8 +435,15 @@ abstract class TreeCheckers extends Analyzer {
           enclosingMemberDefs: List[MemberDef],
           tree: Tree) {
         def symbolOf(t: Tree): Symbol =
-          if (t.symbol eq null) NoSymbol else t.symbol
-        def typeOf(t: Tree): Type = if (t.tpe eq null) NoType else t.tpe
+          if (t.symbol eq null)
+            NoSymbol
+          else
+            t.symbol
+        def typeOf(t: Tree): Type =
+          if (t.tpe eq null)
+            NoType
+          else
+            t.tpe
         def infoOf(t: Tree): Type = symbolOf(t).info
         def referencesInType(tp: Type) = tp collect {
           case TypeRef(_, sym, _) => sym

@@ -36,7 +36,8 @@ sealed class InstructionImpl(
     builder.append(num)
     builder.append("(")
     for (i <- 0 until mySucc.size) {
-      if (i > 0) builder.append(",")
+      if (i > 0)
+        builder.append(",")
       builder.append(mySucc(i).num)
     }
     builder.append(") ").append(getPresentation)
@@ -71,5 +72,8 @@ case class ReadWriteVariableInstruction(
   private val myName = ref.getText
   def getName = myName
   override protected def getPresentation =
-    (if (write) "WRITE " else "READ ") + getName
+    (if (write)
+       "WRITE "
+     else
+       "READ ") + getName
 }

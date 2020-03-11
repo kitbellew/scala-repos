@@ -23,7 +23,8 @@ class PrepareCacheTest extends FunSuite with MockitoSugar {
     svc(r0)
     verify(dispatcher, times(1)).apply(r0)
 
-    for (i <- 1 to 10) svc(PrepareRequest("SELECT %d".format(i)))
+    for (i <- 1 to 10)
+      svc(PrepareRequest("SELECT %d".format(i)))
     svc(PrepareRequest("SELECT 5"))
     verify(dispatcher, times(1)).apply(PrepareRequest("SELECT 5"))
 

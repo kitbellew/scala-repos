@@ -45,7 +45,11 @@ class FixedPointCheck
 
   def build(x: Long, y0: Long, z: Byte, noZero: Boolean)
       : (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
-    val y = if (y0 == 0L && noZero) 1L else y0
+    val y =
+      if (y0 == 0L && noZero)
+        1L
+      else
+        y0
     val d = z.toInt.abs % 11
     val denom = 10 ** (d)
     val (fx, fy) = (new FixedPoint(x), new FixedPoint(y))
@@ -134,7 +138,11 @@ class FixedPointCheck
       g: FH2[Rational]) =
     property(name) {
       forAll { (x: Long, y0: Long, z: Byte) =>
-        val y = if (noZero && y0 == 0) 1L else y0
+        val y =
+          if (noZero && y0 == 0)
+            1L
+          else
+            y0
         val (d, denom, fx, ax) = buildHalf(x, z)
         val az = g(ax, y)
 

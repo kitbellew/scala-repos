@@ -46,9 +46,21 @@ trait PatternExpander[Pattern, Type] {
       repeatedType: Type) {
     def exists = elementType != NoType
 
-    def elementList = if (exists) elementType :: Nil else Nil
-    def sequenceList = if (exists) sequenceType :: Nil else Nil
-    def repeatedList = if (exists) repeatedType :: Nil else Nil
+    def elementList =
+      if (exists)
+        elementType :: Nil
+      else
+        Nil
+    def sequenceList =
+      if (exists)
+        sequenceType :: Nil
+      else
+        Nil
+    def repeatedList =
+      if (exists)
+        repeatedType :: Nil
+      else
+        Nil
 
     override def toString = s"${elementType}*"
   }
@@ -58,10 +70,18 @@ trait PatternExpander[Pattern, Type] {
 
   final case class Patterns(fixed: List[Pattern], star: Pattern) {
     def hasStar = star != NoPattern
-    def starArity = if (hasStar) 1 else 0
+    def starArity =
+      if (hasStar)
+        1
+      else
+        0
     def nonStarArity = fixed.length
     def totalArity = nonStarArity + starArity
-    def starPatterns = if (hasStar) star :: Nil else Nil
+    def starPatterns =
+      if (hasStar)
+        star :: Nil
+      else
+        Nil
     def all = fixed ::: starPatterns
 
     override def toString = all mkString ", "
@@ -122,10 +142,14 @@ trait PatternExpander[Pattern, Type] {
     def isErroneous = allTypes contains NoType
 
     private def typeStrings =
-      fixed.map("" + _) ::: (if (hasSeq) List("" + repeated) else Nil)
+      fixed.map("" + _) ::: (if (hasSeq)
+                               List("" + repeated)
+                             else
+                               Nil)
 
     def offeringString =
-      if (isErroneous) "<error>"
+      if (isErroneous)
+        "<error>"
       else
         typeStrings match {
           case Nil       => "Boolean"

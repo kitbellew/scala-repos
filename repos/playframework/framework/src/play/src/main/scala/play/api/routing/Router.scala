@@ -130,7 +130,11 @@ trait SimpleRouter extends Router { self =>
     } else {
       new Router {
         def routes = {
-          val p = if (prefix.endsWith("/")) prefix else prefix + "/"
+          val p =
+            if (prefix.endsWith("/"))
+              prefix
+            else
+              prefix + "/"
           val prefixed: PartialFunction[RequestHeader, RequestHeader] = {
             case rh: RequestHeader if rh.path.startsWith(p) =>
               rh.copy(path = rh.path.drop(p.length - 1))

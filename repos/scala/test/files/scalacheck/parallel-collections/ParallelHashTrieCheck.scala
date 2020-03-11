@@ -27,7 +27,8 @@ abstract class ParallelHashMapCheck[K, V](tp: String)
   def ofSize(vals: Seq[Gen[(K, V)]], sz: Int) = {
     var hm = new immutable.HashMap[K, V]
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) hm += sample(gen)
+    for (i <- 0 until sz)
+      hm += sample(gen)
     hm
   }
 
@@ -80,7 +81,8 @@ abstract class ParallelHashSetCheck[T](tp: String)
   def ofSize(vals: Seq[Gen[T]], sz: Int) = {
     var hm = new immutable.HashSet[T]
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) hm += sample(gen)
+    for (i <- 0 until sz)
+      hm += sample(gen)
     hm
   }
 

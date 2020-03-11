@@ -117,7 +117,8 @@ trait ResolvableStableCodeReferenceElement
       case s: ScalaFile if s.isCompiled =>
         val count =
           ProjectRootManager.getInstance(getProject).getModificationCount
-        if (count == resolveResultCount) resolveResult
+        if (count == resolveResultCount)
+          resolveResult
         else {
           val res = resolver.resolve(this, incomplete)
           resolveResult = res
@@ -249,7 +250,8 @@ trait ResolvableStableCodeReferenceElement
         }
       }
     }
-    if (!accessibilityCheck) processor.doNotCheckAccessibility()
+    if (!accessibilityCheck)
+      processor.doNotCheckAccessibility()
     var x = false
     //performance improvement
     ScalaPsiUtil.fileContext(ref) match {
@@ -266,12 +268,15 @@ trait ResolvableStableCodeReferenceElement
           val manager = ScalaPsiManager.instance(getProject)
           val classes = manager.getCachedClasses(ref.getResolveScope, refText)
           val pack = facade.findPackage(refText)
-          if (pack != null) processor.execute(pack, ResolveState.initial)
-          for (clazz <- classes) processor.execute(clazz, ResolveState.initial)
+          if (pack != null)
+            processor.execute(pack, ResolveState.initial)
+          for (clazz <- classes)
+            processor.execute(clazz, ResolveState.initial)
           val candidates = processor.candidatesS
           val filtered = candidates.filter(candidatesFilter)
 
-          if (filtered.nonEmpty) return filtered.toArray
+          if (filtered.nonEmpty)
+            return filtered.toArray
         }
 
       case _ =>
@@ -304,10 +309,13 @@ trait ResolvableStableCodeReferenceElement
                     processor,
                     ResolveState.initial,
                     lastParent,
-                    ref)) return
+                    ref))
+                return
               place match {
                 case (_: ScTemplateBody | _: ScExtendsBlock) => // template body and inherited members are at the same level.
-                case _                                       => if (!processor.changedLevel) return
+                case _ =>
+                  if (!processor.changedLevel)
+                    return
               }
               treeWalkUp(place.getContext, place)
           }

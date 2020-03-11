@@ -360,15 +360,16 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
       log: Log): Seq[(Int, Int)] = {
     var counter = 0
     for (dup <- 0 until numDups;
-         key <- 0 until numKeys) yield {
-      val count = counter
-      log.append(
-        TestUtils.singleMessageSet(
-          payload = counter.toString.getBytes,
-          key = key.toString.getBytes),
-        assignOffsets = true)
-      counter += 1
-      (key, count)
-    }
+         key <- 0 until numKeys)
+      yield {
+        val count = counter
+        log.append(
+          TestUtils.singleMessageSet(
+            payload = counter.toString.getBytes,
+            key = key.toString.getBytes),
+          assignOffsets = true)
+        counter += 1
+        (key, count)
+      }
   }
 }

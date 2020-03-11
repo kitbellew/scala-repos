@@ -33,7 +33,10 @@ import scalafx.beans.value.ObservableValue
 
 object BooleanBinding {
   implicit def sfxBooleanBinding2jfx(bb: BooleanBinding): jfxbb.BooleanBinding =
-    if (bb != null) bb.delegate else null
+    if (bb != null)
+      bb.delegate
+    else
+      null
 }
 
 class BooleanBinding(override val delegate: jfxbb.BooleanBinding)

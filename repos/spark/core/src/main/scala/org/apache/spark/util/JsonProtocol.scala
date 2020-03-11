@@ -139,7 +139,10 @@ private[spark] object JsonProtocol {
     val taskInfo = taskEnd.taskInfo
     val taskMetrics = taskEnd.taskMetrics
     val taskMetricsJson =
-      if (taskMetrics != null) taskMetricsToJson(taskMetrics) else JNothing
+      if (taskMetrics != null)
+        taskMetricsToJson(taskMetrics)
+      else
+        JNothing
     ("Event" -> Utils.getFormattedClassName(taskEnd)) ~
       ("Stage ID" -> taskEnd.stageId) ~
       ("Stage Attempt ID" -> taskEnd.stageAttemptId) ~

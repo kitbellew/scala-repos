@@ -123,7 +123,10 @@ class AFTSurvivalRegressionSuite
       exponentialMean: Double): Seq[AFTPoint] = {
 
     def censor(x: Double, y: Double): Double = {
-      if (x <= y) 1.0 else 0.0
+      if (x <= y)
+        1.0
+      else
+        0.0
     }
 
     val weibull = new WeibullGenerator(weibullShape, weibullScale)

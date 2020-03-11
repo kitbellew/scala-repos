@@ -21,7 +21,11 @@ class LoggingStatement(st: Statement) extends Statement {
       what: String = "statement")(f: => T) = {
     if (doStatement && (sql ne null))
       JdbcBackend.statementLogger.debug("Executing " + what + ": " + sql)
-    val t0 = if (doBenchmark) System.nanoTime() else 0L
+    val t0 =
+      if (doBenchmark)
+        System.nanoTime()
+      else
+        0L
     val res = f
     if (doBenchmark)
       JdbcBackend.benchmarkLogger.debug(
@@ -30,10 +34,14 @@ class LoggingStatement(st: Statement) extends Statement {
   }
 
   private[this] def formatNS(ns: Long): String = {
-    if (ns < 1000L) ns + "ns"
-    else if (ns < 1000000L) (ns / 1000L) + "µs"
-    else if (ns < 1000000000L) (ns / 1000000L) + "ms"
-    else (ns / 1000000000L) + "s"
+    if (ns < 1000L)
+      ns + "ns"
+    else if (ns < 1000000L)
+      (ns / 1000L) + "µs"
+    else if (ns < 1000000000L)
+      (ns / 1000000L) + "ms"
+    else
+      (ns / 1000000000L) + "s"
   }
 
   def addBatch(sql: String) = {

@@ -182,7 +182,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       val jobGroup =
         for (props <- Option(jobStart.properties);
              group <- Option(
-               props.getProperty(SparkContext.SPARK_JOB_GROUP_ID))) yield group
+               props.getProperty(SparkContext.SPARK_JOB_GROUP_ID)))
+          yield group
       val jobData: JobUIData =
         new JobUIData(
           jobId = jobStart.jobId,

@@ -62,7 +62,10 @@ class BitSet(protected final var elems: Array[Long])
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
   protected def word(idx: Int): Long =
-    if (idx < nwords) elems(idx) else 0L
+    if (idx < nwords)
+      elems(idx)
+    else
+      0L
 
   protected final def updateWord(idx: Int, w: Long) {
     ensureCapacity(idx)
@@ -73,7 +76,8 @@ class BitSet(protected final var elems: Array[Long])
     require(idx < MaxSize)
     if (idx >= nwords) {
       var newlen = nwords
-      while (idx >= newlen) newlen = (newlen * 2) min MaxSize
+      while (idx >= newlen)
+        newlen = (newlen * 2) min MaxSize
       val elems1 = new Array[Long](newlen)
       Array.copy(elems, 0, elems1, 0, nwords)
       elems = elems1
@@ -85,7 +89,8 @@ class BitSet(protected final var elems: Array[Long])
 
   override def add(elem: Int): Boolean = {
     require(elem >= 0)
-    if (contains(elem)) false
+    if (contains(elem))
+      false
     else {
       val idx = elem >> LogWL
       updateWord(idx, word(idx) | (1L << elem))
@@ -99,7 +104,8 @@ class BitSet(protected final var elems: Array[Long])
       val idx = elem >> LogWL
       updateWord(idx, word(idx) & ~(1L << elem))
       true
-    } else false
+    } else
+      false
   }
 
   @deprecatedOverriding(

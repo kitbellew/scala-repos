@@ -252,7 +252,9 @@ object Promise {
     */
   def interrupts[A](fs: Future[_]*): Promise[A] = {
     val handler: PartialFunction[Throwable, Unit] = {
-      case intr => for (f <- fs) f.raise(intr)
+      case intr =>
+        for (f <- fs)
+          f.raise(intr)
     }
     new Promise[A](handler)
   }
@@ -295,7 +297,8 @@ object Promise {
       case _ =>
         val p = new DetachableFuture[A]()
         parent.respond { t =>
-          if (p.detach()) p.update(t)
+          if (p.detach())
+            p.update(t)
         }
         p
     }
@@ -459,7 +462,11 @@ class Promise[A]
       case Linked(p) => p.setInterruptHandler(f)
 
       case s @ Waiting(first, rest) =>
-        val waitq = if (first eq null) rest else first :: rest
+        val waitq =
+          if (first eq null)
+            rest
+          else
+            first :: rest
         if (!cas(s, Interruptible(waitq, f)))
           setInterruptHandler(f)
 
@@ -498,12 +505,17 @@ class Promise[A]
     */
   @tailrec final def forwardInterruptsTo(other: Future[_]): Unit = {
     // This reduces allocations in the common case.
-    if (other.isDefined) return
+    if (other.isDefined)
+      return
     state match {
       case Linked(p) => p.forwardInterruptsTo(other)
 
       case s @ Waiting(first, rest) =>
-        val waitq = if (first eq null) rest else first :: rest
+        val waitq =
+          if (first eq null)
+            rest
+          else
+            first :: rest
         if (!cas(s, Transforming(waitq, other)))
           forwardInterruptsTo(other)
 
@@ -525,13 +537,15 @@ class Promise[A]
   @tailrec final def raise(intr: Throwable): Unit = state match {
     case Linked(p) => p.raise(intr)
     case s @ Interruptible(waitq, handler) =>
-      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
+      if (!cas(s, Interrupted(waitq, intr)))
+        raise(intr)
       else {
         handler.applyOrElse(intr, Promise.AlwaysUnit)
       }
 
     case s @ Transforming(waitq, other) =>
-      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
+      if (!cas(s, Interrupted(waitq, intr)))
+        raise(intr)
       else {
         other.raise(intr)
       }
@@ -541,7 +555,11 @@ class Promise[A]
         raise(intr)
 
     case s @ Waiting(first, rest) =>
-      val waitq = if (first eq null) rest else first :: rest
+      val waitq =
+        if (first eq null)
+          rest
+        else
+          first :: rest
       if (!cas(s, Interrupted(waitq, intr)))
         raise(intr)
 
@@ -572,13 +590,19 @@ class Promise[A]
           waitq.contains(k)
 
       case s @ Waiting(first, rest) =>
-        val waitq = if (first eq null) rest else first :: rest
+        val waitq =
+          if (first eq null)
+            rest
+          else
+            first :: rest
         val next = (waitq filterNot (_ eq k)) match {
           case Nil          => initState[A]
           case head :: tail => Waiting(head, tail)
         }
-        if (!cas(s, next)) detach(k)
-        else waitq.contains(k)
+        if (!cas(s, next))
+          detach(k)
+        else
+          waitq.contains(k)
 
       case Done(_) => false
     }
@@ -601,8 +625,10 @@ class Promise[A]
           condition.countDown()
         }
         Scheduler.flush()
-        if (condition.await(timeout.inNanoseconds, TimeUnit.NANOSECONDS)) this
-        else throw new TimeoutException(timeout.toString)
+        if (condition.await(timeout.inNanoseconds, TimeUnit.NANOSECONDS))
+          this
+        else
+          throw new TimeoutException(timeout.toString)
     }
 
   @throws(classOf[Exception])
@@ -732,25 +758,29 @@ class Promise[A]
   final def updateIfEmpty(result: Try[A]): Boolean = state match {
     case Done(_) => false
     case s @ Waiting(first, rest) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
+      if (!cas(s, Done(result)))
+        updateIfEmpty(result)
       else {
         runq(first, rest, result)
         true
       }
     case s @ Interruptible(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
+      if (!cas(s, Done(result)))
+        updateIfEmpty(result)
       else {
         runq(null, waitq, result)
         true
       }
     case s @ Transforming(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
+      if (!cas(s, Done(result)))
+        updateIfEmpty(result)
       else {
         runq(null, waitq, result)
         true
       }
     case s @ Interrupted(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
+      if (!cas(s, Done(result)))
+        updateIfEmpty(result)
       else {
         runq(null, waitq, result)
         true
@@ -804,7 +834,8 @@ class Promise[A]
 
   @tailrec
   protected final def link(target: Promise[A]): Unit = {
-    if (this eq target) return
+    if (this eq target)
+      return
 
     state match {
       case s @ Linked(p) =>
@@ -820,7 +851,8 @@ class Promise[A]
         }
 
       case s @ Waiting(first, rest) =>
-        if (!cas(s, Linked(target))) link(target)
+        if (!cas(s, Linked(target)))
+          link(target)
         else {
           if (first != null)
             target.continue(first)
@@ -832,7 +864,8 @@ class Promise[A]
         }
 
       case s @ Interruptible(waitq, handler) =>
-        if (!cas(s, Linked(target))) link(target)
+        if (!cas(s, Linked(target)))
+          link(target)
         else {
           var ks = waitq
           while (ks ne Nil) {
@@ -843,7 +876,8 @@ class Promise[A]
         }
 
       case s @ Transforming(waitq, other) =>
-        if (!cas(s, Linked(target))) link(target)
+        if (!cas(s, Linked(target)))
+          link(target)
         else {
           var ks = waitq
           while (ks ne Nil) {
@@ -854,7 +888,8 @@ class Promise[A]
         }
 
       case s @ Interrupted(waitq, signal) =>
-        if (!cas(s, Linked(target))) link(target)
+        if (!cas(s, Linked(target)))
+          link(target)
         else {
           var ks = waitq
           while (ks ne Nil) {

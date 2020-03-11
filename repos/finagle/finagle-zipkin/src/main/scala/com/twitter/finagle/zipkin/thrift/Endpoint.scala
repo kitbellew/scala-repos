@@ -18,7 +18,8 @@ case class Endpoint(ipv4: Int, port: Short) {
   def boundEndpoint: Endpoint = {
     if (ipv4 == 0 || ipv4 == Endpoint.Loopback)
       this.copy(ipv4 = Endpoint.getLocalHost)
-    else this
+    else
+      this
   }
 
   def toThrift: thrift.Endpoint = {

@@ -245,7 +245,10 @@ private[camel] object DurationTypeConverter extends TypeConverterSupport {
   def convertTo[T](valueType: Class[T], exchange: Exchange, value: AnyRef): T =
     valueType.cast(try {
       val d = Duration(value.toString)
-      if (valueType.isInstance(d)) d else null
+      if (valueType.isInstance(d))
+        d
+      else
+        null
     } catch {
       case NonFatal(throwable) ⇒
         throw new TypeConversionException(value, valueType, throwable)
@@ -265,7 +268,10 @@ private[camel] case class ActorEndpointPath private (actorPath: String) {
   def findActorIn(system: ActorSystem): Option[ActorRef] = {
     // FIXME #3074 how do we solve this with actorSelection?
     val ref = system.actorFor(actorPath)
-    if (ref.isTerminated) None else Some(ref)
+    if (ref.isTerminated)
+      None
+    else
+      Some(ref)
   }
 }
 

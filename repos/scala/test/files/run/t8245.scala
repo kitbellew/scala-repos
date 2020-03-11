@@ -2,7 +2,8 @@ object Test {
   def foo(o: Option[Int]): Int = {
     lazy val i: Int = {
       def local: Int = {
-        if ("".isEmpty) return 42;
+        if ("".isEmpty)
+          return 42;
         -42
       }
       assert(local == 42)

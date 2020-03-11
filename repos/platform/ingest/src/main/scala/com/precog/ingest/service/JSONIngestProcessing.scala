@@ -205,7 +205,10 @@ final class JSONIngestProcessing(
         var ko: Vector[Int] = Vector()
         var i = 0
         as foreach { a =>
-          if (f(a)) ko = ko :+ i else ok = ok :+ a
+          if (f(a))
+            ko = ko :+ i
+          else
+            ok = ok :+ a
           i += 1
         }
 

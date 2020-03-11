@@ -61,7 +61,8 @@ private[akka] final case class MaybePublisher[T](
     }
 
     override def request(elements: Long): Unit = {
-      if (elements < 1) rejectDueToNonPositiveDemand(subscriber)
+      if (elements < 1)
+        rejectDueToNonPositiveDemand(subscriber)
       if (!done) {
         done = true
         promise.future foreach {

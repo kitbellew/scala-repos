@@ -111,7 +111,10 @@ object Origins {
     type Rep = StackTraceElement
     def isCutoff(el: StackTraceElement) = id matches el
     def newRep(xs: StackSlice): Rep =
-      if ((xs eq null) || (xs.length == 0)) null else xs(0)
+      if ((xs eq null) || (xs.length == 0))
+        null
+      else
+        xs(0)
     def repString(rep: Rep) = "  " + rep
   }
   class MultiLine(val tag: String, id: OriginId, numLines: Int)

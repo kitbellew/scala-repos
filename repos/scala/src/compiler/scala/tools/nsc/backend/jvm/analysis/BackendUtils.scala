@@ -141,16 +141,17 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     var map = Map.empty[AbstractInsnNode, AbstractInsnNode]
     var hasSerializableClosureInstantiation = false
     for (ins <- methodNode.instructions.iterator.asScala) {
-      if (!hasSerializableClosureInstantiation) ins match {
-        case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
-          indy.bsmArgs match {
-            case Array(_, _, _, flags: Integer, xs @ _*)
-                if (flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE) != 0 =>
-              hasSerializableClosureInstantiation = true
-            case _ =>
-          }
-        case _ =>
-      }
+      if (!hasSerializableClosureInstantiation)
+        ins match {
+          case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
+            indy.bsmArgs match {
+              case Array(_, _, _, flags: Integer, xs @ _*)
+                  if (flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE) != 0 =>
+                hasSerializableClosureInstantiation = true
+              case _ =>
+            }
+          case _ =>
+        }
       val cloned = ins.clone(javaLabelMap)
       result add cloned
       map += ((ins, cloned))
@@ -347,7 +348,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     def visitInternalName(internalName: InternalName): Unit =
       if (internalName != null) {
         val t = classBTypeFromParsedClassfile(internalName)
-        if (t.isNestedClass.get) innerClasses += t
+        if (t.isNestedClass.get)
+          innerClasses += t
       }
 
     // either an internal/Name or [[Linternal/Name; -- there are certain references in classfiles
@@ -356,7 +358,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     def visitInternalNameOrArrayReference(ref: String): Unit =
       if (ref != null) {
         val bracket = ref.lastIndexOf('[')
-        if (bracket == -1) visitInternalName(ref)
+        if (bracket == -1)
+          visitInternalName(ref)
         else if (ref.charAt(bracket + 1) == 'L')
           visitInternalName(ref.substring(bracket + 2, ref.length - 1))
       }
@@ -370,7 +373,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         while (i < desc.length) {
           if (desc.charAt(i) == 'L') {
             val start = i + 1 // skip the L
-            while (desc.charAt(i) != ';') i += 1
+            while (desc.charAt(i) != ';')
+              i += 1
             internalNames append desc.substring(start, i)
           }
           // skips over '[', ')', primitives
@@ -398,13 +402,16 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     // large comment in class BTypes.
     def visitAnnotation(annot: AnnotationNode): Unit = {
       visitDescriptor(annot.desc)
-      if (annot.values != null) annot.values.asScala foreach visitConstant
+      if (annot.values != null)
+        annot.values.asScala foreach visitConstant
     }
 
     def visitAnnotations(annots: java.util.List[_ <: AnnotationNode]) =
-      if (annots != null) annots.asScala foreach visitAnnotation
+      if (annots != null)
+        annots.asScala foreach visitAnnotation
     def visitAnnotationss(annotss: Array[java.util.List[AnnotationNode]]) =
-      if (annotss != null) annotss foreach visitAnnotations
+      if (annotss != null)
+        annotss foreach visitAnnotations
 
     def visitHandle(handle: Handle): Unit = {
       visitInternalNameOrArrayReference(handle.getOwner)
@@ -445,25 +452,27 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       visitAnnotations(m.invisibleLocalVariableAnnotations)
 
       m.exceptions.asScala foreach visitInternalName
-      for (tcb <- m.tryCatchBlocks.asScala) visitInternalName(tcb.`type`)
+      for (tcb <- m.tryCatchBlocks.asScala)
+        visitInternalName(tcb.`type`)
 
       val iter = m.instructions.iterator()
-      while (iter.hasNext) iter.next() match {
-        case ti: TypeInsnNode => visitInternalNameOrArrayReference(ti.desc)
-        case fi: FieldInsnNode =>
-          visitInternalNameOrArrayReference(fi.owner);
-          visitDescriptor(fi.desc)
-        case mi: MethodInsnNode =>
-          visitInternalNameOrArrayReference(mi.owner);
-          visitDescriptor(mi.desc)
-        case id: InvokeDynamicInsnNode =>
-          visitDescriptor(id.desc);
-          visitHandle(id.bsm);
-          id.bsmArgs foreach visitConstant
-        case ci: LdcInsnNode            => visitConstant(ci.cst)
-        case ma: MultiANewArrayInsnNode => visitDescriptor(ma.desc)
-        case _                          =>
-      }
+      while (iter.hasNext)
+        iter.next() match {
+          case ti: TypeInsnNode => visitInternalNameOrArrayReference(ti.desc)
+          case fi: FieldInsnNode =>
+            visitInternalNameOrArrayReference(fi.owner);
+            visitDescriptor(fi.desc)
+          case mi: MethodInsnNode =>
+            visitInternalNameOrArrayReference(mi.owner);
+            visitDescriptor(mi.desc)
+          case id: InvokeDynamicInsnNode =>
+            visitDescriptor(id.desc);
+            visitHandle(id.bsm);
+            id.bsmArgs foreach visitConstant
+          case ci: LdcInsnNode            => visitConstant(ci.cst)
+          case ma: MultiANewArrayInsnNode => visitDescriptor(ma.desc)
+          case _                          =>
+        }
     }
     innerClasses.toList
   }
@@ -533,7 +542,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       while (tcbIt.hasNext) {
         val tcb = tcbIt.next()
         enqInsn(tcb.handler, 1)
-        if (maxStack == 0) maxStack = 1
+        if (maxStack == 0)
+          maxStack = 1
       }
 
       enq(0)
@@ -548,12 +558,17 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         } else {
           val stackGrowth = InstructionStackEffect.maxStackGrowth(insn)
           val heightAfter = initHeight + stackGrowth
-          if (heightAfter > maxStack) maxStack = heightAfter
+          if (heightAfter > maxStack)
+            maxStack = heightAfter
 
           // update maxLocals
           insn match {
             case v: VarInsnNode =>
-              val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
+              val longSize =
+                if (isSize2LoadOrStore(v.getOpcode))
+                  1
+                else
+                  0
               maxLocals = math.max(
                 maxLocals,
                 v.`var` + longSize + 1
@@ -569,7 +584,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
             case j: JumpInsnNode =>
               if (j.getOpcode == JSR) {
                 val jsrTargetHeight = heightAfter + 1
-                if (jsrTargetHeight > maxStack) maxStack = jsrTargetHeight
+                if (jsrTargetHeight > maxStack)
+                  maxStack = jsrTargetHeight
                 subroutineRetTargets.push(j.getNext)
                 enqInsn(j.label, jsrTargetHeight)
               } else {

@@ -25,7 +25,8 @@ trait ListenerManagement {
     * The <code>listener</code> is started by this method if manageLifeCycleOfListeners yields true.
     */
   def addListener(listener: ActorRef) {
-    if (manageLifeCycleOfListeners) listener.start()
+    if (manageLifeCycleOfListeners)
+      listener.start()
     listeners add listener
   }
 
@@ -35,7 +36,8 @@ trait ListenerManagement {
     */
   def removeListener(listener: ActorRef) {
     listeners remove listener
-    if (manageLifeCycleOfListeners) listener.stop()
+    if (manageLifeCycleOfListeners)
+      listener.stop()
   }
 
   /*
@@ -61,7 +63,8 @@ trait ListenerManagement {
           listener ! msg
         } catch {
           case e: ActorInitializationException =>
-            if (listener.isShutdown) iterator.remove()
+            if (listener.isShutdown)
+              iterator.remove()
         }
       }
     }
@@ -74,7 +77,8 @@ trait ListenerManagement {
     val iterator = listeners.iterator
     while (iterator.hasNext) {
       val listener = iterator.next
-      if (listener.isRunning) f(listener)
+      if (listener.isRunning)
+        f(listener)
     }
   }
 }

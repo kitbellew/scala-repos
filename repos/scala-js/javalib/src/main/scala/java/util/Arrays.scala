@@ -125,13 +125,19 @@ object Arrays {
       // Find index of median of first, central, and last elements
       var pL = {
         if (ord.compare(a(i0), a(iN - 1)) <= 0) {
-          if (ord.compare(a(i0), a(iK)) >= 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) < 0) iN - 1
-          else iK
+          if (ord.compare(a(i0), a(iK)) >= 0)
+            i0
+          else if (ord.compare(a(iN - 1), a(iK)) < 0)
+            iN - 1
+          else
+            iK
         } else {
-          if (ord.compare(a(i0), a(iK)) < 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
-          else iK
+          if (ord.compare(a(i0), a(iK)) < 0)
+            i0
+          else if (ord.compare(a(iN - 1), a(iK)) <= 0)
+            iN - 1
+          else
+            iK
         }
       }
       val pivot = a(pL)
@@ -237,7 +243,10 @@ object Arrays {
             else
               iA = ix
           }
-          val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
+          val ix = iA + (if (ord.compare(next, a(iA)) < 0)
+                           0
+                         else
+                           1)
           var i = i0 + m
           while (i > ix) {
             a(i) = a(i - 1)
@@ -260,13 +269,19 @@ object Arrays {
       // Find index of median of first, central, and last elements
       var pL = {
         if (ord.compare(a(i0), a(iN - 1)) <= 0) {
-          if (ord.compare(a(i0), a(iK)) >= 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) < 0) iN - 1
-          else iK
+          if (ord.compare(a(i0), a(iK)) >= 0)
+            i0
+          else if (ord.compare(a(iN - 1), a(iK)) < 0)
+            iN - 1
+          else
+            iK
         } else {
-          if (ord.compare(a(i0), a(iK)) < 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
-          else iK
+          if (ord.compare(a(i0), a(iK)) < 0)
+            i0
+          else if (ord.compare(a(iN - 1), a(iK)) <= 0)
+            iN - 1
+          else
+            iK
         }
       }
       val pivot = a(pL)
@@ -367,7 +382,10 @@ object Arrays {
             else
               iA = ix
           }
-          val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
+          val ix = iA + (if (ord.compare(next, a(iA)) < 0)
+                           0
+                         else
+                           1)
           var i = i0 + m
           while (i > ix) {
             a(i) = a(i - 1)
@@ -880,10 +898,14 @@ object Arrays {
       a: Array[T],
       elementHashCode: T => Int = (x: T) => x.asInstanceOf[AnyRef].hashCode)
       : Int = {
-    if (a == null) 0
+    if (a == null)
+      0
     else
       a.foldLeft(1)((acc, x) =>
-        31 * acc + (if (x == null) 0 else elementHashCode(x)))
+        31 * acc + (if (x == null)
+                      0
+                    else
+                      elementHashCode(x)))
   }
 
   @noinline def deepHashCode(a: Array[AnyRef]): Int = {
@@ -906,9 +928,12 @@ object Arrays {
   }
 
   @noinline def deepEquals(a1: Array[AnyRef], a2: Array[AnyRef]): Boolean = {
-    if (a1 eq a2) true
-    else if (a1 == null || a2 == null || a1.length != a2.length) false
-    else a1.indices.forall(i => Objects.deepEquals(a1(i), a2(i)))
+    if (a1 eq a2)
+      true
+    else if (a1 == null || a2 == null || a1.length != a2.length)
+      false
+    else
+      a1.indices.forall(i => Objects.deepEquals(a1(i), a2(i)))
   }
 
   @noinline def toString(a: Array[Long]): String =
@@ -940,8 +965,10 @@ object Arrays {
 
   @inline
   private def toStringImpl[T](a: Array[T]): String = {
-    if (a == null) "null"
-    else a.mkString("[", ", ", "]")
+    if (a == null)
+      "null"
+    else
+      a.mkString("[", ", ", "]")
   }
 
   @noinline def deepToString(a: Array[AnyRef]): String =
@@ -952,7 +979,8 @@ object Arrays {
       branch: immutable.Set[AsRef]): String = {
     @inline
     def valueToString(e: AnyRef): String = {
-      if (e == null) "null"
+      if (e == null)
+        "null"
       else {
         e match {
           case e: Array[AnyRef]  => deepToStringImpl(e, branch + new AsRef(a))
@@ -968,9 +996,12 @@ object Arrays {
         }
       }
     }
-    if (a == null) "null"
-    else if (branch.contains(new AsRef(a))) "[...]"
-    else a.iterator.map(valueToString).mkString("[", ", ", "]")
+    if (a == null)
+      "null"
+    else if (branch.contains(new AsRef(a)))
+      "[...]"
+    else
+      a.iterator.map(valueToString).mkString("[", ", ", "]")
   }
 
   @inline

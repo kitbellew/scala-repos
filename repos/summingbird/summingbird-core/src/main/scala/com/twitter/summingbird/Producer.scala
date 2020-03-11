@@ -303,7 +303,10 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
   /** Builds a new KeyedProvider by applying a partial function to values of elements of this one on which the function is defined.*/
   def collectValues[V2](pf: PartialFunction[V, V2]): KeyedProducer[P, K, V2] =
     flatMapValues { v =>
-      if (pf.isDefinedAt(v)) Iterator(pf(v)) else Iterator.empty
+      if (pf.isDefinedAt(v))
+        Iterator(pf(v))
+      else
+        Iterator.empty
     }
 
   /**
@@ -325,7 +328,10 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
     */
   def filterValues(pred: V => Boolean): KeyedProducer[P, K, V] =
     flatMapValues { v =>
-      if (pred(v)) Iterator(v) else Iterator.empty
+      if (pred(v))
+        Iterator(v)
+      else
+        Iterator.empty
     }
 
   /**

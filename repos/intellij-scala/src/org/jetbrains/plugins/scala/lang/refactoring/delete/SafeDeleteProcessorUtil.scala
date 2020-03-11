@@ -107,7 +107,8 @@ object SafeDeleteProcessorUtil {
                   false
                 )
               ) // delete with review
-          } else Seq() // don't delete
+          } else
+            Seq() // don't delete
 
           usages.addAll(usagesToAdd)
         }
@@ -209,7 +210,8 @@ object SafeDeleteProcessorUtil {
 
     new Condition[PsiElement] {
       def value(usage: PsiElement): Boolean = {
-        if (usage.isInstanceOf[PsiFile]) return false
+        if (usage.isInstanceOf[PsiFile])
+          return false
         isInside(usage, allElementsToDelete) || isInside(usage, validOverriding)
       }
     }
@@ -236,7 +238,8 @@ object SafeDeleteProcessorUtil {
         : util.HashMap[PsiMethod, util.Collection[PsiReference]] =
       new util.HashMap[PsiMethod, util.Collection[PsiReference]]
     val newConstructors: util.HashSet[PsiMethod] = new util.HashSet[PsiMethod]
-    if (isTheOnlyEmptyDefaultConstructor(constructor)) return null
+    if (isTheOnlyEmptyDefaultConstructor(constructor))
+      return null
     newConstructors.add(constructor)
     constructorsToRefs.put(constructor, originalReferences)
     val passConstructors: util.HashSet[PsiMethod] = new util.HashSet[PsiMethod]
@@ -271,16 +274,19 @@ object SafeDeleteProcessorUtil {
       allElementsToDelete)
     new Condition[PsiElement] {
       def value(usage: PsiElement): Boolean = {
-        if (usage.isInstanceOf[PsiFile]) return false
+        if (usage.isInstanceOf[PsiFile])
+          return false
         isInside(usage, allElementsToDelete) || isInside(usage, validOverriding)
       }
     }
   }
 
   def isTheOnlyEmptyDefaultConstructor(constructor: PsiMethod): Boolean = {
-    if (constructor.getParameterList.getParameters.length > 0) return false
+    if (constructor.getParameterList.getParameters.length > 0)
+      return false
     val body: PsiCodeBlock = constructor.getBody
-    if (body != null && body.getStatements.length > 0) return false
+    if (body != null && body.getStatements.length > 0)
+      return false
     constructor.containingClass.getConstructors.length == 1
   }
 
@@ -608,13 +614,15 @@ object SafeDeleteProcessorUtil {
       place: PsiElement,
       ancestors: util.Collection[_ <: PsiElement]): Boolean = {
     for (element <- ancestors) {
-      if (isInside(place, element)) return true
+      if (isInside(place, element))
+        return true
     }
     false
   }
 
   def isInside(place: PsiElement, ancestor: PsiElement): Boolean = {
-    if (SafeDeleteProcessor.isInside(place, ancestor)) return true
+    if (SafeDeleteProcessor.isInside(place, ancestor))
+      return true
     if (place.isInstanceOf[PsiComment] && ancestor.isInstanceOf[PsiClass]) {
       val aClass: PsiClass = ancestor.asInstanceOf[PsiClass]
       aClass.getParent match {

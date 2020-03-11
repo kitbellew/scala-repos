@@ -343,7 +343,10 @@ class DenseMatrix @Since("1.3.0") (
   private[mllib] def index(i: Int, j: Int): Int = {
     require(i >= 0 && i < numRows, s"Expected 0 <= i < $numRows, got i = $i.")
     require(j >= 0 && j < numCols, s"Expected 0 <= j < $numCols, got j = $j.")
-    if (!isTransposed) i + numRows * j else j + numCols * i
+    if (!isTransposed)
+      i + numRows * j
+    else
+      j + numCols * i
   }
 
   private[mllib] def update(i: Int, j: Int, v: Double): Unit = {
@@ -658,7 +661,10 @@ class SparseMatrix @Since("1.3.0") (
   @Since("1.3.0")
   override def apply(i: Int, j: Int): Double = {
     val ind = index(i, j)
-    if (ind < 0) 0.0 else values(ind)
+    if (ind < 0)
+      0.0
+    else
+      values(ind)
   }
 
   private[mllib] def index(i: Int, j: Int): Int = {

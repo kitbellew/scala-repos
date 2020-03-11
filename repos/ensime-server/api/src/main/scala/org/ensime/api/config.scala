@@ -49,7 +49,10 @@ case class EnsimeConfig(
   def compileClasspath: Set[File] =
     modules.values.toSet.flatMap { m: EnsimeModule =>
       m.compileDeps ++ m.testDeps
-    } ++ (if (sourceMode) List.empty else targetClasspath)
+    } ++ (if (sourceMode)
+            List.empty
+          else
+            targetClasspath)
 
   def targetClasspath: Set[File] = modules.values.toSet.flatMap {
     m: EnsimeModule => m.targetDirs ++ m.testTargetDirs

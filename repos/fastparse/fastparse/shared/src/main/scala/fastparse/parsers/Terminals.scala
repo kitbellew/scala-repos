@@ -33,8 +33,10 @@ object Terminals {
   case object AnyChar extends Parser[Unit] {
     def parseRec(cfg: ParseCtx, index: Int) = {
       val input = cfg.input
-      if (index >= input.length) fail(cfg.failure, index)
-      else success(cfg.success, input(index), index + 1, Set.empty, false)
+      if (index >= input.length)
+        fail(cfg.failure, index)
+      else
+        success(cfg.success, input(index), index + 1, Set.empty, false)
     }
   }
 
@@ -43,8 +45,10 @@ object Terminals {
     */
   case object Start extends Parser[Unit] {
     def parseRec(cfg: ParseCtx, index: Int) = {
-      if (index == 0) success(cfg.success, (), index, Set.empty, false)
-      else fail(cfg.failure, index)
+      if (index == 0)
+        success(cfg.success, (), index, Set.empty, false)
+      else
+        fail(cfg.failure, index)
     }
   }
 
@@ -55,7 +59,8 @@ object Terminals {
     def parseRec(cfg: ParseCtx, index: Int) = {
       if (index == cfg.input.length)
         success(cfg.success, (), index, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
   }
 
@@ -66,10 +71,14 @@ object Terminals {
   def startsWith(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
     @tailrec def rec(i: Int): Boolean = {
-      if (i >= prefix.length) true
-      else if (i + offset >= src.length) false
-      else if (src.charAt(i + offset) != prefix.charAt(i)) false
-      else rec(i + 1)
+      if (i >= prefix.length)
+        true
+      else if (i + offset >= src.length)
+        false
+      else if (src.charAt(i + offset) != prefix.charAt(i))
+        false
+      else
+        rec(i + 1)
     }
     rec(0)
   }
@@ -77,13 +86,17 @@ object Terminals {
   def startsWithIgnoreCase(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
     @tailrec def rec(i: Int): Boolean = {
-      if (i >= prefix.length) true
-      else if (i + offset >= src.length) false
+      if (i >= prefix.length)
+        true
+      else if (i + offset >= src.length)
+        false
       else {
         val c1: Char = src.charAt(i + offset)
         val c2: Char = prefix.charAt(i)
-        if (c1 != c2 && c1.toLower != c2.toLower) false
-        else rec(i + 1)
+        if (c1 != c2 && c1.toLower != c2.toLower)
+          false
+        else
+          rec(i + 1)
       }
     }
     rec(0)
@@ -97,7 +110,8 @@ object Terminals {
 
       if (startsWith(cfg.input, s, index))
         success(cfg.success, (), index + s.length, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
     override def toString = literalize(s).toString
   }
@@ -110,7 +124,8 @@ object Terminals {
     def parseRec(cfg: ParseCtx, index: Int) = {
       if (startsWithIgnoreCase(cfg.input, s, index))
         success(cfg.success, (), index + s.length, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
     override def toString = literalize(s).toString
   }
@@ -121,10 +136,12 @@ object Terminals {
   case class CharLiteral(c: Char) extends Parser[Unit] {
     def parseRec(cfg: ParseCtx, index: Int) = {
       val input = cfg.input
-      if (index >= input.length) fail(cfg.failure, index)
+      if (index >= input.length)
+        fail(cfg.failure, index)
       else if (input(index) == c)
         success(cfg.success, c.toString, index + 1, Set.empty, false)
-      else fail(cfg.failure, index)
+      else
+        fail(cfg.failure, index)
     }
     override def toString = literalize(c.toString).toString
   }

@@ -59,11 +59,15 @@ class ScAnnotationElementType[Func <: ScAnnotation]
     }
     val typeText = psi.typeElement.getText
     val nameRef =
-      if (name.isEmpty) ScAnnotationStubImpl.EMPTY_STRING_REF
-      else StringRef.fromString(name)
+      if (name.isEmpty)
+        ScAnnotationStubImpl.EMPTY_STRING_REF
+      else
+        StringRef.fromString(name)
     val typeTextRef =
-      if (typeText.isEmpty) ScAnnotationStubImpl.EMPTY_STRING_REF
-      else StringRef.fromString(typeText)
+      if (typeText.isEmpty)
+        ScAnnotationStubImpl.EMPTY_STRING_REF
+      else
+        StringRef.fromString(typeText)
     new ScAnnotationStubImpl(parentStub, this, nameRef, typeTextRef)
   }
 

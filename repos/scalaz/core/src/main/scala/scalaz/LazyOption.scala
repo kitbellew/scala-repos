@@ -70,7 +70,13 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
     fold(f, ())
 
   def filter(f: (=> A) => Boolean): LazyOption[A] =
-    fold(a => if (f(a)) this else lazyNone, lazyNone)
+    fold(
+      a =>
+        if (f(a))
+          this
+        else
+          lazyNone,
+      lazyNone)
 
   def flatMap[B](f: (=> A) => LazyOption[B]): LazyOption[B] =
     fold(f, lazyNone)
@@ -220,5 +226,8 @@ object LazyOption extends LazyOptionInstances {
     * Returns the given argument in `lazySome` if this is `true`, `lazyNone` otherwise.
     */
   def condLazyOption[A](value: Boolean, a: => A): LazyOption[A] =
-    if (value) lazySome(a) else lazyNone
+    if (value)
+      lazySome(a)
+    else
+      lazyNone
 }

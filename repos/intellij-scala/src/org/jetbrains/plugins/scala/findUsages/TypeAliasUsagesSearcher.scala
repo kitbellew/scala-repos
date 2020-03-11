@@ -48,7 +48,8 @@ class TypeAliasUsagesSearcher
       case _ => return
     }
     val name: String = ta.name
-    if (name == null || StringUtil.isEmptyOrSpaces(name)) return
+    if (name == null || StringUtil.isEmptyOrSpaces(name))
+      return
     val scope: SearchScope =
       inReadAction(
         parameters.getEffectiveSearchScope

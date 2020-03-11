@@ -4,7 +4,11 @@ package test1 {
 
     def apply(seconds: Int) = {
       val n = seconds % SecondsPerDay
-      new TOD(if (n >= 0) n else n + SecondsPerDay)
+      new TOD(
+        if (n >= 0)
+          n
+        else
+          n + SecondsPerDay)
     }
   }
 
@@ -22,7 +26,11 @@ package test2 {
 
     def apply(seconds: Int) = {
       val n = seconds % SecondsPerDay
-      new TOD(if (n >= 0) n else n + SecondsPerDay)
+      new TOD(
+        if (n >= 0)
+          n
+        else
+          n + SecondsPerDay)
     }
   }
 
@@ -45,7 +53,11 @@ package test3 {
 
     def apply(seconds: Int) = {
       val n = seconds % SecondsPerDay
-      new TOD(if (n >= 0) n else n + SecondsPerDay)
+      new TOD(
+        if (n >= 0)
+          n
+        else
+          n + SecondsPerDay)
     }
   }
 

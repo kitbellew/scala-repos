@@ -26,19 +26,27 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       x = buffer.append("final ")
     if ((flags & 0x0400) != 0)
       x =
-        if (clazz) buffer.append("abstract ")
-        else buffer.append("/*deferred*/ ")
+        if (clazz)
+          buffer.append("abstract ")
+        else
+          buffer.append("/*deferred*/ ")
     buffer.toString()
   }
 
   def nameToClass(str: String): String = {
     val res = Names.decode(str.replace('/', '.'))
-    if (res == "java.lang.Object") "scala.Any" else res
+    if (res == "java.lang.Object")
+      "scala.Any"
+    else
+      res
   }
 
   def nameToClass0(str: String) = {
     val res = Names.decode(str.replace('/', '.'))
-    if (res == "java.lang.Object") "scala.AnyRef" else res
+    if (res == "java.lang.Object")
+      "scala.AnyRef"
+    else
+      res
   }
 
   def nameToSimpleClass(str: String) =
@@ -46,7 +54,11 @@ class JavaWriter(classfile: Classfile, writer: Writer)
 
   def nameToPackage(str: String) = {
     val inx = str.lastIndexOf('/')
-    val name = if (inx == -1) str else str.substring(0, inx).replace('/', '.')
+    val name =
+      if (inx == -1)
+        str
+      else
+        str.substring(0, inx).replace('/', '.')
     Names.decode(name)
   }
 
@@ -170,7 +182,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
                2 * (x + 1)
              }) {
           val inx = ((data(i) & 0xff) << 8) + (data(i + 1) & 0xff)
-          if (i > 2) print(", ")
+          if (i > 2)
+            print(", ")
           print(getClassName(inx).trim())
         }
         undent.newline

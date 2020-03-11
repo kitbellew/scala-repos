@@ -588,7 +588,10 @@ class Flags(
   }
 
   private[this] def resolveGlobalFlag(f: String) =
-    if (includeGlobal) GlobalFlag.get(f) else None
+    if (includeGlobal)
+      GlobalFlag.get(f)
+    else
+      None
 
   private[this] def resolveFlag(f: String): Option[Flag[_]] =
     synchronized {
@@ -824,7 +827,8 @@ class Flags(
       for (k <- flags.keys.toArray.sorted)
         yield flags(k).usageString
     val globalLines =
-      if (!includeGlobal) Seq.empty
+      if (!includeGlobal)
+        Seq.empty
       else {
         GlobalFlag
           .getAllOrEmptyArray(getClass.getClassLoader)
@@ -832,12 +836,17 @@ class Flags(
           .sorted
       }
 
-    val cmd = if (cmdUsage.nonEmpty) cmdUsage + "\n" else "usage: "
+    val cmd =
+      if (cmdUsage.nonEmpty)
+        cmdUsage + "\n"
+      else
+        "usage: "
 
     cmd + argv0 + " [<flag>...]\n" +
       "flags:\n" +
       (lines mkString "\n") + (
-      if (globalLines.isEmpty) ""
+      if (globalLines.isEmpty)
+        ""
       else {
         "\nglobal flags:\n" +
           (globalLines mkString "\n")
@@ -1020,18 +1029,19 @@ private object GlobalFlag {
     // Search for Scala objects annotated with GlobalFlagVisible:
     // Since Scala object classnames end with $, filter by name first
     // before attempting to load the class.
-    for (info <- ClassPath.browse(loader) if (info.name endsWith "$")) try {
-      val cls = info.load()
-      if (cls.isAnnotationPresent(markerClass)) {
-        get(info.name.dropRight(1)) match {
-          case Some(f) => flags += f
-          case None    => println("failed for " + info.name)
+    for (info <- ClassPath.browse(loader) if (info.name endsWith "$"))
+      try {
+        val cls = info.load()
+        if (cls.isAnnotationPresent(markerClass)) {
+          get(info.name.dropRight(1)) match {
+            case Some(f) => flags += f
+            case None    => println("failed for " + info.name)
+          }
         }
+      } catch {
+        case _: IllegalStateException | _: NoClassDefFoundError |
+            _: ClassNotFoundException =>
       }
-    } catch {
-      case _: IllegalStateException | _: NoClassDefFoundError |
-          _: ClassNotFoundException =>
-    }
 
     flags
   }

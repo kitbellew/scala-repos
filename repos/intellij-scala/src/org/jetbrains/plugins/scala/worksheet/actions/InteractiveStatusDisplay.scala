@@ -66,7 +66,8 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
   private def isBorderEnabled = false //right now we don't need it (?)
 
   private def setCurrentIcon(icon: AnimatedIcon) {
-    if (current == icon) return
+    if (current == icon)
+      return
 
     current = icon
     clearAndAdd()
@@ -89,8 +90,8 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
 
     val i = new AnimatedIcon(
       "Compiling...",
-      (for (i <- 0 to steps) yield new RotatedIcon(icon1, step * i))
-        .toArray[Icon],
+      (for (i <- 0 to steps)
+        yield new RotatedIcon(icon1, step * i)).toArray[Icon],
       icon2,
       ICON_CYCLE_LENGTH
     )

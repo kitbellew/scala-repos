@@ -148,7 +148,8 @@ object EvaluateConfigurations {
     val name = file.getPath
     val parsed = parseConfiguration(file, lines, imports, offset)
     val (importDefs, definitions) =
-      if (parsed.definitions.isEmpty) (Nil, DefinedSbtValues.empty)
+      if (parsed.definitions.isEmpty)
+        (Nil, DefinedSbtValues.empty)
       else {
         val definitions = evaluateDefinitions(
           eval,
@@ -318,7 +319,8 @@ object EvaluateConfigurations {
   private[sbt] def splitExpressions(
       file: File,
       lines: Seq[String]): (Seq[(String, Int)], Seq[(String, LineRange)]) = {
-    if (useOldParser) splitExpressions(lines)
+    if (useOldParser)
+      splitExpressions(lines)
     else {
       val split = SbtParser(file, lines)
       // TODO - Look at pulling the parsed expression trees from the SbtParser and stitch them back into a different
@@ -350,14 +352,16 @@ object EvaluateConfigurations {
     @tailrec def group0(
         lines: Seq[(String, Int)],
         accum: Seq[(String, LineRange)]): Seq[(String, LineRange)] =
-      if (lines.isEmpty) accum.reverse
+      if (lines.isEmpty)
+        accum.reverse
       else {
         val start = lines dropWhile fstS(skipInitial)
         val (next, tail) = start.span {
           case (s, _) => !delimiter(s)
         }
         val grouped =
-          if (next.isEmpty) accum
+          if (next.isEmpty)
+            accum
           else
             (
               next.map(_._1).mkString("\n"),
@@ -414,7 +418,11 @@ object Index {
   }
   def allKeys(settings: Seq[Setting[_]]): Set[ScopedKey[_]] =
     settings
-      .flatMap(s => if (s.key.key.isLocal) Nil else s.key +: s.dependencies)
+      .flatMap(s =>
+        if (s.key.key.isLocal)
+          Nil
+        else
+          s.key +: s.dependencies)
       .filter(!_.key.isLocal)
       .toSet
   def attributeKeys(settings: Settings[Scope]): Set[AttributeKey[_]] =

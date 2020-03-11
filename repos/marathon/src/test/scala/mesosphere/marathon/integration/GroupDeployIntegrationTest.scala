@@ -321,7 +321,8 @@ class GroupDeployIntegrationTest
     When("The group gets deployed")
     var ping = Map.empty[PathId, DateTime]
     def storeFirst(health: IntegrationHealthCheck) {
-      if (!ping.contains(health.appId)) ping += health.appId -> DateTime.now
+      if (!ping.contains(health.appId))
+        ping += health.appId -> DateTime.now
     }
     val dbHealth =
       appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
@@ -357,7 +358,8 @@ class GroupDeployIntegrationTest
     When("The group gets deployed")
     var ping = Map.empty[PathId, DateTime]
     def storeFirst(health: IntegrationHealthCheck) {
-      if (!ping.contains(health.appId)) ping += health.appId -> DateTime.now
+      if (!ping.contains(health.appId))
+        ping += health.appId -> DateTime.now
     }
     val dbHealth =
       appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
@@ -379,7 +381,8 @@ class GroupDeployIntegrationTest
     def key(health: IntegrationHealthCheck) =
       s"${health.appId}_${health.versionId}"
     def storeFirst(health: IntegrationHealthCheck) {
-      if (!ping.contains(key(health))) ping += key(health) -> DateTime.now
+      if (!ping.contains(key(health)))
+        ping += key(health) -> DateTime.now
     }
     def create(version: String, initialState: Boolean) = {
       val db = appProxy("/test/db".toTestPath, version, 1)

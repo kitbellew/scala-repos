@@ -27,7 +27,13 @@ object Test {
     case `bippy`       => 2
     case _             => 3
   }
-  def gDirect(s: Symbol) = if (bippy eq s) 1 else if (bippy == s) 2 else 3
+  def gDirect(s: Symbol) =
+    if (bippy eq s)
+      1
+    else if (bippy == s)
+      2
+    else
+      3
 
   def main(args: Array[String]): Unit = {
     // `syms map f` should be: true false false

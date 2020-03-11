@@ -41,7 +41,8 @@ trait BaseTypeSeqs {
       private[BaseTypeSeqs] val parents: List[Type],
       private[BaseTypeSeqs] val elems: Array[Type]) {
     self =>
-    if (Statistics.canEnable) Statistics.incCounter(baseTypeSeqCount)
+    if (Statistics.canEnable)
+      Statistics.incCounter(baseTypeSeqCount)
     if (Statistics.canEnable)
       Statistics.incCounter(baseTypeSeqLenTotal, elems.length)
 
@@ -175,20 +176,28 @@ trait BaseTypeSeqs {
       for (p <- parents) {
         val parentBts = p.dealias.baseTypeSeq // dealias need for SI-8046.
         pbtss(i) =
-          if (parentBts eq undetBaseTypeSeq) AnyClass.info.baseTypeSeq
-          else parentBts
+          if (parentBts eq undetBaseTypeSeq)
+            AnyClass.info.baseTypeSeq
+          else
+            parentBts
         index(i) = 0
         i += 1
       }
       def nextTypeSymbol(i: Int): Symbol = {
         val j = index(i)
         val pbts = pbtss(i)
-        if (j < pbts.length) pbts.typeSymbol(j) else AnyClass
+        if (j < pbts.length)
+          pbts.typeSymbol(j)
+        else
+          AnyClass
       }
       def nextRawElem(i: Int): Type = {
         val j = index(i)
         val pbts = pbtss(i)
-        if (j < pbts.length) pbts.rawElem(j) else AnyTpe
+        if (j < pbts.length)
+          pbts.rawElem(j)
+        else
+          AnyTpe
       }
       var minSym: Symbol = NoSymbol
       while (minSym != AnyClass) {
@@ -216,9 +225,11 @@ trait BaseTypeSeqs {
             nextRawElem(i) match {
               case RefinedType(variants, decls) =>
                 for (tp <- variants)
-                  if (!alreadyInMinTypes(tp)) minTypes ::= tp
+                  if (!alreadyInMinTypes(tp))
+                    minTypes ::= tp
               case tp =>
-                if (!alreadyInMinTypes(tp)) minTypes ::= tp
+                if (!alreadyInMinTypes(tp))
+                  minTypes ::= tp
             }
             index(i) = index(i) + 1
           }

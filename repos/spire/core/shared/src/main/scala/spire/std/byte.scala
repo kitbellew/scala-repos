@@ -45,7 +45,11 @@ trait ByteIsNRoot extends NRoot[Byte] {
 
 trait ByteIsSigned extends Signed[Byte] {
   def signum(a: Byte): Int = a
-  def abs(a: Byte): Byte = (if (a < 0) -a else a).toByte
+  def abs(a: Byte): Byte =
+    (if (a < 0)
+       -a
+     else
+       a).toByte
 }
 
 trait ByteOrder extends Order[Byte] {
@@ -85,7 +89,10 @@ class ByteIsBitString extends BitString[Byte] with Serializable {
   def numberOfLeadingZeros(n: Byte): Int =
     Integer.numberOfLeadingZeros(n & 0xff) - 24
   def numberOfTrailingZeros(n: Byte): Int =
-    if (n == 0) 8 else Integer.numberOfTrailingZeros(n & 0xff)
+    if (n == 0)
+      8
+    else
+      Integer.numberOfTrailingZeros(n & 0xff)
 
   def leftShift(n: Byte, i: Int): Byte = (((n & 0xff) << (i & 7)) & 0xff).toByte
   def rightShift(n: Byte, i: Int): Byte =

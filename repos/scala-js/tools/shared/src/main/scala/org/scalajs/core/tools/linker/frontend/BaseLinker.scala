@@ -144,7 +144,11 @@ final class BaseLinker(
         case _                                      => false
       }
 
-      val linkingErrLevel = if (fatal) Level.Error else Level.Warn
+      val linkingErrLevel =
+        if (fatal)
+          Level.Error
+        else
+          Level.Warn
       analysis.errors.foreach(logError(_, logger, linkingErrLevel))
 
       if (fatal)
@@ -180,8 +184,10 @@ final class BaseLinker(
       val encodedName = analyzerInfo.encodedName
 
       def optDummyParent =
-        if (!analyzerInfo.isAnySubclassInstantiated) None
-        else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
+        if (!analyzerInfo.isAnySubclassInstantiated)
+          None
+        else
+          Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
       infoByName
         .get(encodedName)
@@ -328,8 +334,10 @@ final class BaseLinker(
       memberInfoByName.get(Definitions.ExportedConstructorsName)
 
     val kind =
-      if (analyzerInfo.isModuleAccessed) classDef.kind
-      else classDef.kind.withoutModuleAccessor
+      if (analyzerInfo.isModuleAccessed)
+        classDef.kind
+      else
+        classDef.kind.withoutModuleAccessor
 
     val ancestors = analyzerInfo.ancestors.map(_.encodedName)
 

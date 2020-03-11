@@ -69,8 +69,10 @@ object GUI {
 
     /* Glyph methods */
     override def draw() {
-      if (enabled) scr.drawRect(getRect, Color.black)
-      else scr.fillRect(getRect, Color.grey);
+      if (enabled)
+        scr.drawRect(getRect, Color.black)
+      else
+        scr.fillRect(getRect, Color.grey);
       label.draw();
     }
     def setLoc(p: Geom.Point) = label.setLoc(p);
@@ -84,7 +86,10 @@ object GUI {
     }
     def getGlyph = label
     final def mouseDown(p: Geom.Point) {
-      if (enabled) doit() else Console.println("button is disabled");
+      if (enabled)
+        doit()
+      else
+        Console.println("button is disabled");
     }
     /* deferred method to be specified by client */
     def doit(): Unit

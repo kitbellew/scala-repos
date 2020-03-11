@@ -80,9 +80,9 @@ object ScalaConsoleInfo {
         case list =>
           list.find {
             case (
-                console: ScalaLanguageConsole,
-                model: ConsoleHistoryController,
-                handler: ProcessHandler) =>
+                  console: ScalaLanguageConsole,
+                  model: ConsoleHistoryController,
+                  handler: ProcessHandler) =>
               console.getConsoleEditor == editor
           } match {
             case Some(res) => res
@@ -99,9 +99,9 @@ object ScalaConsoleInfo {
         case list =>
           list.find {
             case (
-                console: ScalaLanguageConsole,
-                model: ConsoleHistoryController,
-                handler: ProcessHandler) =>
+                  console: ScalaLanguageConsole,
+                  model: ConsoleHistoryController,
+                  handler: ProcessHandler) =>
               console.getFile == file
           } match {
             case Some(res) => res

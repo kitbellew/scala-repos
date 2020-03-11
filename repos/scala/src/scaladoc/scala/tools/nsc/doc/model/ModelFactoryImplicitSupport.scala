@@ -58,8 +58,12 @@ trait ModelFactoryImplicitSupport {
   // debugging:
   val DEBUG: Boolean = settings.docImplicitsDebug.value
   val ERROR: Boolean = true // currently we show all errors
-  @inline final def debug(msg: => String) = if (DEBUG) settings.printMsg(msg)
-  @inline final def error(msg: => String) = if (ERROR) settings.printMsg(msg)
+  @inline final def debug(msg: => String) =
+    if (DEBUG)
+      settings.printMsg(msg)
+  @inline final def error(msg: => String) =
+    if (ERROR)
+      settings.printMsg(msg)
 
   /** This is a flag that indicates whether to eliminate implicits that cannot be satisfied within the current scope.
     * For example, if an implicit conversion requires that there is a Numeric[T] in scope:
@@ -168,7 +172,8 @@ trait ModelFactoryImplicitSupport {
       constrs: List[TypeConstraint],
       context: Context,
       inTpl: DocTemplateImpl): List[ImplicitConversionImpl] =
-    if (result.tree == EmptyTree) Nil
+    if (result.tree == EmptyTree)
+      Nil
     else {
       // `result` will contain the type of the view (= implicit conversion method)
       // the search introduces untouchable type variables, but we want to get back to type parameters
@@ -656,6 +661,7 @@ trait ModelFactoryImplicitSupport {
       // def foo(b: Left[T1]): Int = 6
       // a.foo(Right(4.5d)) prints out 3 :)
       false
-    } else true // the member structure is different foo(3, 5) vs foo(3)(5)
+    } else
+      true // the member structure is different foo(3, 5) vs foo(3)(5)
   }
 }

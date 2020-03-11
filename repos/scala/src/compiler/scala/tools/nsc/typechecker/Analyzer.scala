@@ -89,13 +89,17 @@ trait Analyzer
       undoLog.clear()
       override def run() {
         val start =
-          if (Statistics.canEnable) Statistics.startTimer(typerNanos) else null
+          if (Statistics.canEnable)
+            Statistics.startTimer(typerNanos)
+          else
+            null
         global.echoPhaseSummary(this)
         for (unit <- currentRun.units) {
           applyPhase(unit)
           undoLog.clear()
         }
-        if (Statistics.canEnable) Statistics.stopTimer(typerNanos, start)
+        if (Statistics.canEnable)
+          Statistics.stopTimer(typerNanos, start)
       }
       def apply(unit: CompilationUnit) {
         try {
@@ -103,7 +107,8 @@ trait Analyzer
           unit.body = typer.typed(unit.body)
           if (global.settings.Yrangepos && !global.reporter.hasErrors)
             global.validatePositions(unit.body)
-          for (workItem <- unit.toCheck) workItem()
+          for (workItem <- unit.toCheck)
+            workItem()
           if (settings.warnUnusedImport)
             warnUnusedImports(unit)
           if (settings.warnUnused)

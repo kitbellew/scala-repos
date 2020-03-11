@@ -109,8 +109,10 @@ object CatalystTypeConverters {
       * Given a Catalyst row, convert the value at column `column` to its Scala equivalent.
       */
     final def toScala(row: InternalRow, column: Int): ScalaOutputType = {
-      if (row.isNullAt(column)) null.asInstanceOf[ScalaOutputType]
-      else toScalaImpl(row, column)
+      if (row.isNullAt(column))
+        null.asInstanceOf[ScalaOutputType]
+      else
+        toScalaImpl(row, column)
     }
 
     /**
@@ -146,7 +148,10 @@ object CatalystTypeConverters {
     override def toCatalystImpl(scalaValue: A): Any = udt.serialize(scalaValue)
 
     override def toScala(catalystValue: Any): A = {
-      if (catalystValue == null) null else udt.deserialize(catalystValue)
+      if (catalystValue == null)
+        null
+      else
+        udt.deserialize(catalystValue)
     }
 
     override def toScalaImpl(row: InternalRow, column: Int): A =
@@ -240,10 +245,15 @@ object CatalystTypeConverters {
         val keys = catalystValue.keyArray().toArray[Any](keyType)
         val values = catalystValue.valueArray().toArray[Any](valueType)
         val convertedKeys =
-          if (isPrimitive(keyType)) keys else keys.map(keyConverter.toScala)
+          if (isPrimitive(keyType))
+            keys
+          else
+            keys.map(keyConverter.toScala)
         val convertedValues =
-          if (isPrimitive(valueType)) values
-          else values.map(valueConverter.toScala)
+          if (isPrimitive(valueType))
+            values
+          else
+            values.map(valueConverter.toScala)
 
         convertedKeys.zip(convertedValues).toMap
       }
@@ -308,7 +318,10 @@ object CatalystTypeConverters {
         case utf8: UTF8String => utf8
       }
     override def toScala(catalystValue: UTF8String): String =
-      if (catalystValue == null) null else catalystValue.toString
+      if (catalystValue == null)
+        null
+      else
+        catalystValue.toString
     override def toScalaImpl(row: InternalRow, column: Int): String =
       row.getUTF8String(column).toString
   }
@@ -317,8 +330,10 @@ object CatalystTypeConverters {
     override def toCatalystImpl(scalaValue: Date): Int =
       DateTimeUtils.fromJavaDate(scalaValue)
     override def toScala(catalystValue: Any): Date =
-      if (catalystValue == null) null
-      else DateTimeUtils.toJavaDate(catalystValue.asInstanceOf[Int])
+      if (catalystValue == null)
+        null
+      else
+        DateTimeUtils.toJavaDate(catalystValue.asInstanceOf[Int])
     override def toScalaImpl(row: InternalRow, column: Int): Date =
       DateTimeUtils.toJavaDate(row.getInt(column))
   }
@@ -328,8 +343,10 @@ object CatalystTypeConverters {
     override def toCatalystImpl(scalaValue: Timestamp): Long =
       DateTimeUtils.fromJavaTimestamp(scalaValue)
     override def toScala(catalystValue: Any): Timestamp =
-      if (catalystValue == null) null
-      else DateTimeUtils.toJavaTimestamp(catalystValue.asInstanceOf[Long])
+      if (catalystValue == null)
+        null
+      else
+        DateTimeUtils.toJavaTimestamp(catalystValue.asInstanceOf[Long])
     override def toScalaImpl(row: InternalRow, column: Int): Timestamp =
       DateTimeUtils.toJavaTimestamp(row.getLong(column))
   }
@@ -349,8 +366,10 @@ object CatalystTypeConverters {
       }
     }
     override def toScala(catalystValue: Decimal): JavaBigDecimal = {
-      if (catalystValue == null) null
-      else catalystValue.toJavaBigDecimal
+      if (catalystValue == null)
+        null
+      else
+        catalystValue.toJavaBigDecimal
     }
     override def toScalaImpl(row: InternalRow, column: Int): JavaBigDecimal =
       row

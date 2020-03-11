@@ -44,11 +44,15 @@ trait SortedMap[A, +B]
       extends super.DefaultKeySortedSet
       with immutable.SortedSet[A] {
     override def +(elem: A): SortedSet[A] =
-      if (this(elem)) this
-      else SortedSet[A]() ++ this + elem
+      if (this(elem))
+        this
+      else
+        SortedSet[A]() ++ this + elem
     override def -(elem: A): SortedSet[A] =
-      if (this(elem)) SortedSet[A]() ++ this - elem
-      else this
+      if (this(elem))
+        SortedSet[A]() ++ this - elem
+      else
+        this
     override def rangeImpl(from: Option[A], until: Option[A]): SortedSet[A] = {
       val map = self.rangeImpl(from, until)
       new map.DefaultKeySortedSet
@@ -151,7 +155,8 @@ object SortedMap extends ImmutableSortedMapFactory[SortedMap] {
 
     override def -(key: A): SortedMap[A, B] = {
       val b = newBuilder
-      for (kv <- this; if kv._1 != key) b += kv
+      for (kv <- this; if kv._1 != key)
+        b += kv
       b.result()
     }
   }

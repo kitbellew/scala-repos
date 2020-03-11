@@ -76,15 +76,21 @@ object Test extends InteractiveTest {
       originalTyper.splitAt(originalTyper.indexOf("import global._"))
     val changedTyper = prefix + " a\n " + postfix
 
-    val usedMem = for (i <- 1 to N) yield {
-      val src = if (i % 2 == 0) originalTyper else changedTyper
+    val usedMem =
+      for (i <- 1 to N)
+        yield {
+          val src =
+            if (i % 2 == 0)
+              originalTyper
+            else
+              changedTyper
 
-      val usedMem = withGC {
-        typeCheckWith(typerUnit, src)
-      }
+          val usedMem = withGC {
+            typeCheckWith(typerUnit, src)
+          }
 
-      usedMem / mega // report size in MB
-    }
+          usedMem / mega // report size in MB
+        }
 
     //dumpDataToFile(filename, usedMem)
     // drop the first two measurements, since the compiler needs some memory when initializing

@@ -131,12 +131,13 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
   def unapply(str: String): Option[A] = {
     if (!str.isEmpty &&
         (str.head == '-' || Character.isDigit(str.head)) &&
-        str.drop(1).forall(Character.isDigit)) try {
-      Some(cast(str))
-    } catch {
-      case _: NumberFormatException =>
-        None
-    }
+        str.drop(1).forall(Character.isDigit))
+      try {
+        Some(cast(str))
+      } catch {
+        case _: NumberFormatException =>
+          None
+      }
     else
       None
   }

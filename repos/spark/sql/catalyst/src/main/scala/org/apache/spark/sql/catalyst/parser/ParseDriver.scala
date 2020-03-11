@@ -77,8 +77,10 @@ object ParseDriver extends Logging {
       // Find the non null token tree in the result.
       @tailrec
       def nonNullToken(tree: CommonTree): CommonTree = {
-        if (tree.token != null || tree.getChildCount == 0) tree
-        else nonNullToken(tree.getChild(0).asInstanceOf[CommonTree])
+        if (tree.token != null || tree.getChildCount == 0)
+          tree
+        else
+          nonNullToken(tree.getChild(0).asInstanceOf[CommonTree])
       }
       val tree = nonNullToken(result)
 
@@ -129,8 +131,10 @@ private[parser] class ANTLRNoCaseStringStream(input: String)
     extends ANTLRStringStream(input) {
   override def LA(i: Int): Int = {
     val la = super.LA(i)
-    if (la == 0 || la == CharStream.EOF) la
-    else Character.toUpperCase(la)
+    if (la == 0 || la == CharStream.EOF)
+      la
+    else
+      Character.toUpperCase(la)
   }
 }
 

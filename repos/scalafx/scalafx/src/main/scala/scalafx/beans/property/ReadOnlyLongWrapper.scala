@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyLongWrapper {
   implicit def sfxReadOnlyLongWrapper2jfx(
       w: ReadOnlyLongWrapper): jfxbp.ReadOnlyLongWrapper =
-    if (w != null) w.delegate else null
+    if (w != null)
+      w.delegate
+    else
+      null
 
   /** Creates a new ReadOnlyLongWrapper instance.
     * @param value the initial value of the wrapped value

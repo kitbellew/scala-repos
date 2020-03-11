@@ -444,7 +444,10 @@ class ALS(@Since("1.4.0") override val uid: String)
   override def fit(dataset: DataFrame): ALSModel = {
     import dataset.sqlContext.implicits._
     val r =
-      if ($(ratingCol) != "") col($(ratingCol)).cast(FloatType) else lit(1.0f)
+      if ($(ratingCol) != "")
+        col($(ratingCol)).cast(FloatType)
+      else
+        lit(1.0f)
     val ratings = dataset
       .select(
         col($(userCol)).cast(IntegerType),
@@ -679,7 +682,11 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     val itemPart = new ALSPartitioner(numItemBlocks)
     val userLocalIndexEncoder = new LocalIndexEncoder(userPart.numPartitions)
     val itemLocalIndexEncoder = new LocalIndexEncoder(itemPart.numPartitions)
-    val solver = if (nonnegative) new NNLSSolver else new CholeskySolver
+    val solver =
+      if (nonnegative)
+        new NNLSSolver
+      else
+        new CholeskySolver
     val blockRatings = partitionRatings(ratings, userPart, itemPart)
       .persist(intermediateRDDStorageLevel)
     val (userInBlocks, userOutBlocks) =
@@ -693,8 +700,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     userOutBlocks.count()
     val swappedBlockRatings = blockRatings.map {
       case (
-          (userBlockId, itemBlockId),
-          RatingBlock(userIds, itemIds, localRatings)) =>
+            (userBlockId, itemBlockId),
+            RatingBlock(userIds, itemIds, localRatings)) =>
         (
           (itemBlockId, userBlockId),
           RatingBlock(itemIds, userIds, localRatings))
@@ -1349,7 +1356,10 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       solver: LeastSquaresNESolver): RDD[(Int, FactorBlock)] = {
     val numSrcBlocks = srcFactorBlocks.partitions.length
     val YtY =
-      if (implicitPrefs) Some(computeYtY(srcFactorBlocks, rank)) else None
+      if (implicitPrefs)
+        Some(computeYtY(srcFactorBlocks, rank))
+      else
+        None
     val srcOut = srcOutBlocks.join(srcFactorBlocks).flatMap {
       case (srcBlockId, (srcOutBlock, srcFactors)) =>
         srcOutBlock.view.zipWithIndex.map {

@@ -79,7 +79,10 @@ object KeyCombination {
 
   object Modifier {
     implicit def sfxModifier2jfx(m: Modifier): jfxsi.KeyCombination.Modifier =
-      if (m != null) m.delegate else null
+      if (m != null)
+        m.delegate
+      else
+        null
   }
 
   class Modifier(override val delegate: jfxsi.KeyCombination.Modifier)
@@ -98,7 +101,10 @@ object KeyCombination {
   }
 
   implicit def sfxKeyCombination2jfx(kc: KeyCombination): jfxsi.KeyCombination =
-    if (kc != null) kc.delegate else null
+    if (kc != null)
+      kc.delegate
+    else
+      null
 
   /**
     * Modifier which specifies that the alt key can be either up or down.

@@ -56,7 +56,8 @@ case class ScalaMethodEvaluator(
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val debugProcess: DebugProcessImpl = context.getDebugProcess
-    if (!debugProcess.isAttached) return null
+    if (!debugProcess.isAttached)
+      return null
     if (debugProcess != prevProcess) {
       initCache(debugProcess)
     }
@@ -80,8 +81,10 @@ case class ScalaMethodEvaluator(
     }
     val args = argumentEvaluators.flatMap { ev =>
       val result = ev.evaluate(context)
-      if (result == FromLocalArgEvaluator.skipMarker) None
-      else Some(result)
+      if (result == FromLocalArgEvaluator.skipMarker)
+        None
+      else
+        Some(result)
     }
     try {
       val referenceType: ReferenceType =
@@ -100,7 +103,8 @@ case class ScalaMethodEvaluator(
       val sign: String =
         if (signature != null && args.size == argumentEvaluators.size)
           signature.getName(debugProcess)
-        else null
+        else
+          null
       var mName: String =
         DebuggerUtilsEx.methodName(referenceType.name, methodName, sign)
       def findMethod(referenceType: ReferenceType): Method = {
@@ -144,7 +148,8 @@ case class ScalaMethodEvaluator(
               jdiMethod = referenceType
                 .asInstanceOf[ClassType]
                 .concreteMethodByName(mName, signature.getName(debugProcess))
-              if (jdiMethod != null) return jdiMethod
+              if (jdiMethod != null)
+                return jdiMethod
             }
           }
         }
@@ -152,14 +157,18 @@ case class ScalaMethodEvaluator(
           if (sortedMethodCandidates.length > 1) {
             val filtered = sortedMethodCandidates.filter { m =>
               try {
-                if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
-                else args.length == m.argumentTypeNames().size()
+                if (m.isVarArgs)
+                  args.length >= m.argumentTypeNames().size()
+                else
+                  args.length == m.argumentTypeNames().size()
               } catch {
                 case a: AbsentInformationException => true
               }
             }
-            if (filtered.isEmpty) jdiMethod = sortedMethodCandidates.head
-            else if (filtered.length == 1) jdiMethod = filtered.head
+            if (filtered.isEmpty)
+              jdiMethod = sortedMethodCandidates.head
+            else if (filtered.length == 1)
+              jdiMethod = filtered.head
             else {
               val newFiltered = filtered.filter(m => {
                 var result = true
@@ -181,7 +190,8 @@ case class ScalaMethodEvaluator(
               })
               if (newFiltered.isEmpty)
                 jdiMethod = filtered.head
-              else jdiMethod = newFiltered.head
+              else
+                jdiMethod = newFiltered.head
             }
           } else if (sortedMethodCandidates.length == 1)
             jdiMethod = sortedMethodCandidates.head
@@ -228,7 +238,8 @@ case class ScalaMethodEvaluator(
                 case _ =>
                   _refType = referenceType.asInstanceOf[ClassType].superclass
               }
-            } else _refType = referenceType.asInstanceOf[ClassType].superclass
+            } else
+              _refType = referenceType.asInstanceOf[ClassType].superclass
           case _ =>
             _refType = referenceType.asInstanceOf[ClassType].superclass
         }

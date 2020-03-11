@@ -184,8 +184,10 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     val config = ahcConfig.wsClientConfig
 
     def toMillis(duration: Duration): Int = {
-      if (duration.isFinite()) duration.toMillis.toInt
-      else -1
+      if (duration.isFinite())
+        duration.toMillis.toInt
+      else
+        -1
     }
 
     builder

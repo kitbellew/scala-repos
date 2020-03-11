@@ -7,7 +7,13 @@ import scala.reflect.ClassTag
 
 class SortingTest {
   case class N(i: Int, j: Int) extends Ordered[N] {
-    def compare(n: N) = if (i < n.i) -1 else if (i > n.i) 1 else 0
+    def compare(n: N) =
+      if (i < n.i)
+        -1
+      else if (i > n.i)
+        1
+      else
+        0
   }
 
   def mkA(n: Int, max: Int) =
@@ -36,7 +42,8 @@ class SortingTest {
   def isSorted(a: Array[N]): Boolean = {
     var i = 1;
     while (i < a.length) {
-      if (a(i).i < a(i - 1).i) return false;
+      if (a(i).i < a(i - 1).i)
+        return false;
       i += 1
     };
     true
@@ -45,7 +52,8 @@ class SortingTest {
   def isAntisorted(a: Array[N]): Boolean = {
     var i = 1;
     while (i < a.length) {
-      if (a(i).i > a(i - 1).i) return false;
+      if (a(i).i > a(i - 1).i)
+        return false;
       i += 1
     };
     true

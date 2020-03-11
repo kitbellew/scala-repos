@@ -18,17 +18,26 @@ final class Bug {
   // So we get two symbols for `universe`, the original on the ValDef
   // and a clone in the MethodType of `f`.
   def f(universe: Universe, l: Alias): universe.T = {
-    if (stop()) null.asInstanceOf[universe.T] else f(universe, null)
+    if (stop())
+      null.asInstanceOf[universe.T]
+    else
+      f(universe, null)
   }
 
   @tailrec
   def g(universe: Universe)(l: Alias): universe.T = {
-    if (stop()) null.asInstanceOf[universe.T] else g(universe)(l)
+    if (stop())
+      null.asInstanceOf[universe.T]
+    else
+      g(universe)(l)
   }
 
   @tailrec
   def h(universe: Universe)(l: List[universe.T]): List[universe.T] = {
-    if (stop()) Nil else h(universe)(l)
+    if (stop())
+      Nil
+    else
+      h(universe)(l)
   }
 }
 

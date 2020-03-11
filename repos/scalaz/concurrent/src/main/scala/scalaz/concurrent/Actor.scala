@@ -34,8 +34,10 @@ final case class Actor[A](
   def !(a: A): Unit = {
     val n = new Node(a)
     val h = head.getAndSet(n)
-    if (h ne null) h.lazySet(n)
-    else schedule(n)
+    if (h ne null)
+      h.lazySet(n)
+    else
+      schedule(n)
   }
 
   /** Pass the message `a` to the mailbox of this actor */
@@ -53,21 +55,27 @@ final case class Actor[A](
       case ex: Throwable => onError(ex)
     }
     val n2 = n.get
-    if (n2 eq null) scheduleLastTry(n)
-    else if (i == 0) schedule(n2)
-    else act(n2, i - 1)
+    if (n2 eq null)
+      scheduleLastTry(n)
+    else if (i == 0)
+      schedule(n2)
+    else
+      act(n2, i - 1)
   }
 
   private def scheduleLastTry(n: Node[A]): Unit = strategy(lastTry(n))
 
   private def lastTry(n: Node[A]): Unit =
-    if (!head.compareAndSet(n, null)) act(next(n))
+    if (!head.compareAndSet(n, null))
+      act(next(n))
 
   @annotation.tailrec
   private def next(n: Node[A]): Node[A] = {
     val n2 = n.get
-    if (n2 ne null) n2
-    else next(n)
+    if (n2 ne null)
+      n2
+    else
+      next(n)
   }
 }
 

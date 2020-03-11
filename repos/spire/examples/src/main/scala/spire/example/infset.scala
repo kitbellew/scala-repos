@@ -23,7 +23,10 @@ object SetUtil {
           done
       }
       val nth = nthLoop(as, i)
-      if (nth.isEmpty) nth else nth #::: powerLoop(as, i + 1)
+      if (nth.isEmpty)
+        nth
+      else
+        nth #::: powerLoop(as, i + 1)
     }
 
     Set.empty[A] #:: powerLoop(members, 0)
@@ -120,8 +123,10 @@ object MathSet {
     def unary_~(): MathSet[A] = Fin(outsiders)
 
     override def toString: String =
-      if (outsiders.isEmpty) "(U)"
-      else outsiders.mkString("(U -- {", ", ", "})")
+      if (outsiders.isEmpty)
+        "(U)"
+      else
+        outsiders.mkString("(U -- {", ", ", "})")
   }
 
   implicit def monoid[A] = new Monoid[MathSet[A]] {
@@ -173,8 +178,12 @@ sealed trait MathSet[A] extends Function1[A, Boolean] { lhs =>
 
   private def xor(x: Set[A], y: Set[A]): Set[A] = {
     val builder = new mutable.SetBuilder[A, Set[A]](Set.empty)
-    x.foreach(a => if (!y(a)) builder += a)
-    y.foreach(a => if (!x(a)) builder += a)
+    x.foreach(a =>
+      if (!y(a))
+        builder += a)
+    y.foreach(a =>
+      if (!x(a))
+        builder += a)
     builder.result()
   }
 

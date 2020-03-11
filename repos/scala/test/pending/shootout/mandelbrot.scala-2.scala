@@ -57,7 +57,8 @@ object mandelbrot {
         } while (!(tr + ti > limitSquared) && j > 0)
 
         bits = bits << 1
-        if (!(tr + ti > limitSquared)) bits = bits + 1
+        if (!(tr + ti > limitSquared))
+          bits = bits + 1
         bitnum = bitnum + 1
 
         if (x == side - 1) {

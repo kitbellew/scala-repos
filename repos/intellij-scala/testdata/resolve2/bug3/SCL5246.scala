@@ -5,7 +5,10 @@ object NullResultHighlight extends App {
       def foo(x: Int) = 2
     }
     A. /* line: 5 */ foo(null)
-    if (t == null) null else t
+    if (t == null)
+      null
+    else
+      t
   }
 
   def goo(x: Nothing) = 1

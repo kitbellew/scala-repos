@@ -191,7 +191,11 @@ case class Alias(child: Expression, name: String)(
   }
 
   override def sql: String = {
-    val qualifiersString = if (qualifiers.isEmpty) "" else qualifiers.head + "."
+    val qualifiersString =
+      if (qualifiers.isEmpty)
+        ""
+      else
+        qualifiers.head + "."
     s"${child.sql} AS $qualifiersString${quoteIdentifier(name)}"
   }
 }
@@ -322,7 +326,11 @@ case class AttributeReference(
     s"$name#${exprId.id}: ${dataType.simpleString}"
 
   override def sql: String = {
-    val qualifiersString = if (qualifiers.isEmpty) "" else qualifiers.head + "."
+    val qualifiersString =
+      if (qualifiers.isEmpty)
+        ""
+      else
+        qualifiers.head + "."
     s"$qualifiersString${quoteIdentifier(name)}"
   }
 }

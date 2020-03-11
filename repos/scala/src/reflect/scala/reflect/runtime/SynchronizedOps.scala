@@ -20,7 +20,8 @@ private[reflect] trait SynchronizedOps
     // only need to synchronize BaseTypeSeqs if they contain refined types
     if (elems.exists(_.isInstanceOf[RefinedType]))
       new BaseTypeSeq(parents, elems) with SynchronizedBaseTypeSeq
-    else new BaseTypeSeq(parents, elems)
+    else
+      new BaseTypeSeq(parents, elems)
 
   trait SynchronizedBaseTypeSeq extends BaseTypeSeq {
     override def apply(i: Int): Type = gilSynchronized {
@@ -55,7 +56,8 @@ private[reflect] trait SynchronizedOps
       // only need to synchronize BaseTypeSeqs if they contain refined types
       if (map(f).toList.exists(_.isInstanceOf[RefinedType]))
         new MappedBaseTypeSeq(this, f) with SynchronizedBaseTypeSeq
-      else new MappedBaseTypeSeq(this, f)
+      else
+        new MappedBaseTypeSeq(this, f)
   }
 
 // Scopes
@@ -67,7 +69,8 @@ private[reflect] trait SynchronizedOps
     // fancy subclasses of internal.Scopes#Scope should do synchronization themselves (e.g. see PackageScope for an example)
     private lazy val syncLock = new Object
     def syncLockSynchronized[T](body: => T): T =
-      if (isCompilerUniverse) body
+      if (isCompilerUniverse)
+        body
       else
         syncLock.synchronized {
           body

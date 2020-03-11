@@ -43,7 +43,8 @@ trait TypeAdaptingTransformer {
 
     @inline def box(tree: Tree, target: => String): Tree = {
       val result = box1(tree)
-      if (tree.tpe =:= UnitTpe) ()
+      if (tree.tpe =:= UnitTpe)
+        ()
       else
         log(
           s"boxing ${tree.summaryString}: ${tree.tpe} into $target: ${result.tpe}")
@@ -62,8 +63,10 @@ trait TypeAdaptingTransformer {
           case _ =>
             tree.tpe.typeSymbol match {
               case UnitClass =>
-                if (treeInfo isExprSafeToInline tree) REF(BoxedUnit_UNIT)
-                else BLOCK(tree, REF(BoxedUnit_UNIT))
+                if (treeInfo isExprSafeToInline tree)
+                  REF(BoxedUnit_UNIT)
+                else
+                  BLOCK(tree, REF(BoxedUnit_UNIT))
               case NothingClass =>
                 tree // a non-terminating expression doesn't need boxing
               case x =>
@@ -129,8 +132,10 @@ trait TypeAdaptingTransformer {
           case _ =>
             pt.typeSymbol match {
               case UnitClass =>
-                if (treeInfo isExprSafeToInline tree) UNIT
-                else BLOCK(tree, UNIT)
+                if (treeInfo isExprSafeToInline tree)
+                  UNIT
+                else
+                  BLOCK(tree, UNIT)
               case x =>
                 assert(x != ArrayClass)
                 // don't `setType pt` the Apply tree, as the Apply's fun won't be typechecked if the Apply tree already has a type
@@ -148,11 +153,16 @@ trait TypeAdaptingTransformer {
     def cast(tree: Tree, pt: Type): Tree = {
       if ((tree.tpe ne null) && !(tree.tpe =:= ObjectTpe)) {
         def word = (
-          if (tree.tpe <:< pt) "upcast"
-          else if (pt <:< tree.tpe) "downcast"
-          else if (pt weak_<:< tree.tpe) "coerce"
-          else if (tree.tpe weak_<:< pt) "widen"
-          else "cast"
+          if (tree.tpe <:< pt)
+            "upcast"
+          else if (pt <:< tree.tpe)
+            "downcast"
+          else if (pt weak_<:< tree.tpe)
+            "coerce"
+          else if (tree.tpe weak_<:< pt)
+            "widen"
+          else
+            "cast"
         )
         log(s"erasure ${word}s from ${tree.tpe} to $pt")
       }
@@ -165,10 +175,13 @@ trait TypeAdaptingTransformer {
         val needsExtraCast = isPrimitiveValueType(
           tree.tpe.typeArgs.head) && !isPrimitiveValueType(pt.typeArgs.head)
         val tree1 =
-          if (needsExtraCast) gen.mkRuntimeCall(nme.toObjectArray, List(tree))
-          else tree
+          if (needsExtraCast)
+            gen.mkRuntimeCall(nme.toObjectArray, List(tree))
+          else
+            tree
         gen.mkAttributedCast(tree1, pt)
-      } else gen.mkAttributedCast(tree, pt)
+      } else
+        gen.mkAttributedCast(tree, pt)
     }
 
     /** Adapt `tree` to expected type `pt`.

@@ -28,13 +28,15 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   }
 
   def ensureCapacity(capacity: Int) =
-    while (bytes.length < writeIndex + capacity) dble()
+    while (bytes.length < writeIndex + capacity)
+      dble()
 
   // -- Basic output routines --------------------------------------------
 
   /** Write a byte of data */
   def writeByte(b: Int) {
-    if (writeIndex == bytes.length) dble()
+    if (writeIndex == bytes.length)
+      dble()
     bytes(writeIndex) = b.toByte
     writeIndex += 1
   }
@@ -55,11 +57,13 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   def writeLongNat(x: Long) {
     def writeNatPrefix(x: Long) {
       val y = x >>> 7
-      if (y != 0L) writeNatPrefix(y)
+      if (y != 0L)
+        writeNatPrefix(y)
       writeByte(((x & 0x7f) | 0x80).toInt)
     }
     val y = x >>> 7
-    if (y != 0L) writeNatPrefix(y)
+    if (y != 0L)
+      writeNatPrefix(y)
     writeByte((x & 0x7f).toInt)
   }
 
@@ -72,11 +76,13 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
       Array.copy(bytes, pos, bytes, pos + 1, writeIndex - (pos + 1))
       bytes(pos) = ((x & 0x7f) | 0x80).toByte
       val y = x >>> 7
-      if (y != 0) patchNatPrefix(y)
+      if (y != 0)
+        patchNatPrefix(y)
     }
     bytes(pos) = (x & 0x7f).toByte
     val y = x >>> 7
-    if (y != 0) patchNatPrefix(y)
+    if (y != 0)
+      patchNatPrefix(y)
   }
 
   /** Write a long number `x` in signed big endian format, base 256.
@@ -86,7 +92,8 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   def writeLong(x: Long) {
     val y = x >> 8
     val z = x & 0xff
-    if (-y != (z >> 7)) writeLong(y)
+    if (-y != (z >> 7))
+      writeLong(y)
     writeByte(z.toInt)
   }
 
@@ -153,13 +160,19 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
     *  Concatenate results into a list.
     */
   def until[T](end: Int, op: () => T): List[T] =
-    if (readIndex == end) List() else op() :: until(end, op)
+    if (readIndex == end)
+      List()
+    else
+      op() :: until(end, op)
 
   /** Perform operation `op` the number of
     *  times specified.  Concatenate the results into a list.
     */
   def times[T](n: Int, op: () => T): List[T] =
-    if (n == 0) List() else op() :: times(n - 1, op)
+    if (n == 0)
+      List()
+    else
+      op() :: times(n - 1, op)
 
   /** Pickle = majorVersion_Nat minorVersion_Nat nbEntries_Nat {Entry}
     *  Entry  = type_Nat length_Nat [actual entries]

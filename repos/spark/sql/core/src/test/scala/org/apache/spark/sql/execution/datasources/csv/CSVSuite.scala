@@ -61,7 +61,11 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       checkTypes: Boolean = false): Unit = {
 
     val numColumns = numFields
-    val numRows = if (withHeader) numCars else numCars + 1
+    val numRows =
+      if (withHeader)
+        numCars
+      else
+        numCars + 1
     // schema
     assert(df.schema.fieldNames.length === numColumns)
     assert(df.count === numRows)
@@ -82,10 +86,16 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
     if (checkValues) {
       val yearValues = List("2012", "1997", "2015")
-      val actualYears = if (!withHeader) "year" :: yearValues else yearValues
+      val actualYears =
+        if (!withHeader)
+          "year" :: yearValues
+        else
+          yearValues
       val years =
-        if (withHeader) df.select("year").collect()
-        else df.select("C0").collect()
+        if (withHeader)
+          df.select("year").collect()
+        else
+          df.select("C0").collect()
 
       years.zipWithIndex.foreach {
         case (year, index) =>

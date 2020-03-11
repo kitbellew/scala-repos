@@ -60,7 +60,10 @@ private[collections] abstract class ObservableArrayCompanionBase[
     * @return JavaFX $OA inside parameter.
     */
   implicit def sfxObservableArray2jfxObservableArray(oa: T): D =
-    if (oa != null) oa.delegate else null.asInstanceOf[D]
+    if (oa != null)
+      oa.delegate
+    else
+      null.asInstanceOf[D]
 
   /**
     * Create new $OA from a vararg list.

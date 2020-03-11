@@ -136,7 +136,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                   (getCollaborators(owner, name) ::: (if (getAccountByUserName(
                                                             owner).get.isGroupAccount)
                                                         Nil
-                                                      else List(owner))).sorted,
+                                                      else
+                                                        List(owner))).sorted,
                   getMilestonesWithIssueCount(owner, name),
                   getLabels(owner, name),
                   commits,
@@ -651,35 +652,36 @@ trait PullRequestsControllerBase extends ControllerBase {
             };
             originRepository <- getRepository(
               originOwner,
-              originRepositoryName)) yield {
-        using(
-          Git.open(
-            getRepositoryDir(originRepository.owner, originRepository.name)),
-          Git.open(
-            getRepositoryDir(forkedRepository.owner, forkedRepository.name))
-        ) {
-          case (oldGit, newGit) =>
-            val originBranch = JGitUtil
-              .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
-              .get
-              ._2
-            val forkedBranch = JGitUtil
-              .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
-              .get
-              ._2
-            val conflict = LockUtil.lock(
-              s"${originRepository.owner}/${originRepository.name}") {
-              checkConflict(
-                originRepository.owner,
-                originRepository.name,
-                originBranch,
-                forkedRepository.owner,
-                forkedRepository.name,
-                forkedBranch)
-            }
-            html.mergecheck(conflict)
-        }
-      }) getOrElse NotFound
+              originRepositoryName))
+        yield {
+          using(
+            Git.open(
+              getRepositoryDir(originRepository.owner, originRepository.name)),
+            Git.open(
+              getRepositoryDir(forkedRepository.owner, forkedRepository.name))
+          ) {
+            case (oldGit, newGit) =>
+              val originBranch = JGitUtil
+                .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
+                .get
+                ._2
+              val forkedBranch = JGitUtil
+                .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
+                .get
+                ._2
+              val conflict = LockUtil.lock(
+                s"${originRepository.owner}/${originRepository.name}") {
+                checkConflict(
+                  originRepository.owner,
+                  originRepository.name,
+                  originBranch,
+                  forkedRepository.owner,
+                  forkedRepository.name,
+                  forkedBranch)
+              }
+              html.mergecheck(conflict)
+          }
+        }) getOrElse NotFound
   })
 
   post("/:owner/:repository/pulls/new", pullRequestForm)(referrersOnly {
@@ -695,8 +697,16 @@ trait PullRequestsControllerBase extends ControllerBase {
             loginUser = loginUserName,
             title = form.title,
             content = form.content,
-            assignedUserName = if (writable) form.assignedUserName else None,
-            milestoneId = if (writable) form.milestoneId else None,
+            assignedUserName =
+              if (writable)
+                form.assignedUserName
+              else
+                None,
+            milestoneId =
+              if (writable)
+                form.milestoneId
+              else
+                None,
             isPullRequest = true
           )
 
@@ -835,7 +845,8 @@ trait PullRequestsControllerBase extends ControllerBase {
         // retrieve search condition
         val condition = session.putAndGet(
           sessionKey,
-          if (request.hasQueryString) IssueSearchCondition(request)
+          if (request.hasQueryString)
+            IssueSearchCondition(request)
           else
             session
               .getAs[IssueSearchCondition](sessionKey)

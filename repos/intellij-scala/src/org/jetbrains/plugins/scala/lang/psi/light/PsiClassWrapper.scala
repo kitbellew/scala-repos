@@ -256,7 +256,11 @@ class PsiClassWrapper(
   def setName(name: String): PsiElement = {
     this.name = name
     val packageName = StringUtil.getPackageName(this.qualName)
-    this.qualName = if (packageName.isEmpty) name else packageName + "." + name
+    this.qualName =
+      if (packageName.isEmpty)
+        name
+      else
+        packageName + "." + name
     this
   }
 

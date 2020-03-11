@@ -74,7 +74,11 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     if (i < -size || i >= size)
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
-    val trueI = if (i < 0) i + size else i
+    val trueI =
+      if (i < 0)
+        i + size
+      else
+        i
     if (noOffsetOrStride) {
       data(trueI)
     } else {
@@ -86,7 +90,11 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     if (i < -size || i >= size)
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
-    val trueI = if (i < 0) i + size else i
+    val trueI =
+      if (i < 0)
+        i + size
+      else
+        i
     if (noOffsetOrStride) {
       data(trueI) = v
     } else {
@@ -97,11 +105,15 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
   private[linalg] val noOffsetOrStride = offset == 0 && stride == 1
   @deprecated("This isn't actually any faster any more", "0.12-SNAPSHOT")
   def unsafeUpdate(i: Int, v: V): Unit =
-    if (noOffsetOrStride) data(i) = v else data(offset + i * stride) = v
+    if (noOffsetOrStride)
+      data(i) = v
+    else
+      data(offset + i * stride) = v
 
   private def checkIfSpecialized(): Unit = {
     if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseVector") throw new Exception("...")
+          .getName() == "breeze.linalg.DenseVector")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
   //  checkIfSpecialized()
@@ -777,11 +789,15 @@ object DenseVector
           a.length)
       } else {
         val boff =
-          if (b.stride >= 0) b.offset
-          else (b.offset + b.stride * (b.length - 1))
+          if (b.stride >= 0)
+            b.offset
+          else
+            (b.offset + b.stride * (b.length - 1))
         val aoff =
-          if (a.stride >= 0) a.offset
-          else (a.offset + a.stride * (a.length - 1))
+          if (a.stride >= 0)
+            a.offset
+          else
+            (a.offset + a.stride * (a.length - 1))
         blas.ddot(a.length, b.data, boff, b.stride, a.data, aoff, a.stride)
       }
     }
@@ -818,7 +834,8 @@ object DenseVector
           var max = 0.0
           foreach(v => {
             val nn = v.abs.toDouble;
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {
@@ -854,7 +871,9 @@ object DenseVector
           max
         } else if (p == 0) {
           var nnz = 0
-          v.foreach(x => if (x != 0) nnz += 1)
+          v.foreach(x =>
+            if (x != 0)
+              nnz += 1)
           nnz
         } else {
           var sum = 0.0

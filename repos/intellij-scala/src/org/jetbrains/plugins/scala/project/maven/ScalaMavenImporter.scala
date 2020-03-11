@@ -64,7 +64,11 @@ class ScalaMavenImporter
       defaultDir: String,
       result: java.util.List[String]) {
     val goalConfigValue = findGoalConfigValue(mavenProject, goal, goalPath)
-    result.add(if (goalConfigValue == null) defaultDir else goalConfigValue)
+    result.add(
+      if (goalConfigValue == null)
+        defaultDir
+      else
+        goalConfigValue)
   }
 
   // exclude "default" plugins, should be done inside IDEA's MavenImporter itself
@@ -206,7 +210,10 @@ private class ScalaConfiguration(project: MavenProject) {
 
   def compilerClasspath: Seq[MavenId] = {
     val basicIds = Seq(scalaCompilerId, scalaLibraryId)
-    if (usesReflect) basicIds :+ scalaReflectId else basicIds
+    if (usesReflect)
+      basicIds :+ scalaReflectId
+    else
+      basicIds
   }
 
   def compilerVersion: Option[Version] =

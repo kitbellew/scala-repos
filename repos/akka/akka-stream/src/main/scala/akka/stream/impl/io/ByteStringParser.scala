@@ -53,12 +53,15 @@ private[akka] abstract class ByteStringParser[T]
           } catch {
             case NeedMoreData ⇒
               acceptUpstreamFinish = false
-              if (current.canWorkWithPartialData) buffer = reader.remainingData
+              if (current.canWorkWithPartialData)
+                buffer = reader.remainingData
               pull(bytesIn)
               false
           }
-        if (cont) doParse()
-      } else pull(bytesIn)
+        if (cont)
+          doParse()
+      } else
+        pull(bytesIn)
 
     setHandler(
       bytesIn,
@@ -69,8 +72,10 @@ private[akka] abstract class ByteStringParser[T]
           doParse()
         }
         override def onUpstreamFinish(): Unit =
-          if (buffer.isEmpty && acceptUpstreamFinish) completeStage()
-          else current.onTruncation()
+          if (buffer.isEmpty && acceptUpstreamFinish)
+            completeStage()
+          else
+            current.onTruncation()
       }
     )
   }
@@ -129,7 +134,8 @@ private[akka] object ByteStringParser {
         val o = off
         off = o + n
         input.slice(o, off)
-      } else throw NeedMoreData
+      } else
+        throw NeedMoreData
     def takeAll(): ByteString = {
       val ret = remainingData
       off = input.size
@@ -141,7 +147,8 @@ private[akka] object ByteStringParser {
         val x = input(off)
         off += 1
         x & 0xFF
-      } else throw NeedMoreData
+      } else
+        throw NeedMoreData
     def readShortLE(): Int = readByte() | (readByte() << 8)
     def readIntLE(): Int = readShortLE() | (readShortLE() << 16)
     def readLongLE(): Long =
@@ -153,8 +160,10 @@ private[akka] object ByteStringParser {
       ((readIntBE() & 0xFFFFFFFFL) << 32) | (readIntBE() & 0xFFFFFFFFL)
 
     def skip(numBytes: Int): Unit =
-      if (off + numBytes <= input.length) off += numBytes
-      else throw NeedMoreData
+      if (off + numBytes <= input.length)
+        off += numBytes
+      else
+        throw NeedMoreData
     def skipZeroTerminatedString(): Unit = while (readByte() != 0) {}
   }
 }

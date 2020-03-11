@@ -39,8 +39,10 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
   def websocketHandler(target: ActorRef): ActorRef = probe.ref
 
   def docJarContent(filename: String, entry: String): Option[ByteString] =
-    if (filename != "foo-1.0-javadoc.jar" || entry != "bar/Baz.html") None
-    else Some(ByteString("hello"))
+    if (filename != "foo-1.0-javadoc.jar" || entry != "bar/Baz.html")
+      None
+    else
+      Some(ByteString("hello"))
 
   def docJars(): Set[File] =
     Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))

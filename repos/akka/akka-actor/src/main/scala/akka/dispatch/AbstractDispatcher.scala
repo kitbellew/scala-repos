@@ -22,10 +22,14 @@ final case class Envelope private (val message: Any, val sender: ActorRef)
 
 object Envelope {
   def apply(message: Any, sender: ActorRef, system: ActorSystem): Envelope = {
-    if (message == null) throw new InvalidMessageException("Message is null")
+    if (message == null)
+      throw new InvalidMessageException("Message is null")
     new Envelope(
       message,
-      if (sender ne Actor.noSender) sender else system.deadLetters)
+      if (sender ne Actor.noSender)
+        sender
+      else
+        system.deadLetters)
   }
 }
 
@@ -79,7 +83,11 @@ private[akka] object MessageDispatcher {
           actors.valueIterator(d)
         }
       } {
-        val status = if (a.isTerminated) " (terminated)" else " (alive)"
+        val status =
+          if (a.isTerminated)
+            " (terminated)"
+          else
+            " (alive)"
         val messages = a match {
           case r: ActorRefWithCell ⇒
             " " + r.underlying.numberOfMessages + " messages"
@@ -189,16 +197,20 @@ abstract class MessageDispatcher(
 
   @tailrec
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
-    if (inhabitants <= 0) shutdownSchedule match {
-      case UNSCHEDULED ⇒
-        if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED))
-          scheduleShutdownAction()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case SCHEDULED ⇒
-        if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) ()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case RESCHEDULED ⇒
-    }
+    if (inhabitants <= 0)
+      shutdownSchedule match {
+        case UNSCHEDULED ⇒
+          if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED))
+            scheduleShutdownAction()
+          else
+            ifSensibleToDoSoThenScheduleShutdown()
+        case SCHEDULED ⇒
+          if (updateShutdownSchedule(SCHEDULED, RESCHEDULED))
+            ()
+          else
+            ifSensibleToDoSoThenScheduleShutdown()
+        case RESCHEDULED ⇒
+      }
   }
 
   private def scheduleShutdownAction(): Unit = {
@@ -215,7 +227,8 @@ abstract class MessageDispatcher(
   }
 
   private final val taskCleanup: () ⇒ Unit = () ⇒
-    if (addInhabitants(-1) == 0) ifSensibleToDoSoThenScheduleShutdown()
+    if (addInhabitants(-1) == 0)
+      ifSensibleToDoSoThenScheduleShutdown()
 
   /**
     * If you override it, you must call it. But only ever once. See "attach" for only invocation.
@@ -223,7 +236,8 @@ abstract class MessageDispatcher(
     * INTERNAL API
     */
   protected[akka] def register(actor: ActorCell) {
-    if (debug) actors.put(this, actor.self)
+    if (debug)
+      actors.put(this, actor.self)
     addInhabitants(+1)
   }
 
@@ -233,7 +247,8 @@ abstract class MessageDispatcher(
     * INTERNAL API
     */
   protected[akka] def unregister(actor: ActorCell) {
-    if (debug) actors.remove(this, actor.self)
+    if (debug)
+      actors.remove(this, actor.self)
     addInhabitants(-1)
     val mailBox = actor.swapMailbox(mailboxes.deadLetterMailbox)
     mailBox.becomeClosed()
@@ -246,14 +261,16 @@ abstract class MessageDispatcher(
       shutdownSchedule match {
         case SCHEDULED ⇒
           try {
-            if (inhabitants == 0) shutdown() //Warning, racy
+            if (inhabitants == 0)
+              shutdown() //Warning, racy
           } finally {
             while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
           }
         case RESCHEDULED ⇒
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED))
             scheduleShutdownAction()
-          else run()
+          else
+            run()
         case UNSCHEDULED ⇒
       }
     }
@@ -491,8 +508,10 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new AkkaForkJoinTask(r))
-            .asInstanceOf[ForkJoinTask[Any]])
+          (if (r.isInstanceOf[ForkJoinTask[_]])
+             r
+           else
+             new AkkaForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 

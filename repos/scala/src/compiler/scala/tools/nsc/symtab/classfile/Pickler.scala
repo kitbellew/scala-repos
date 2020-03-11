@@ -68,7 +68,8 @@ abstract class Pickler extends SubComponent {
             //
             // OPT: do this only as a recovery after fatal error. Checking in advance was expensive.
             if (t.isErroneous) {
-              if (settings.debug) e.printStackTrace()
+              if (settings.debug)
+                e.printStackTrace()
               reporter.error(t.pos, "erroneous or inaccessible type")
               return
             }
@@ -106,8 +107,10 @@ abstract class Pickler extends SubComponent {
         // however, they would suddenly be considered by asSeenFrom if their localized owner became a class (causing the crashes of #4079, #2741)
         (if ((sym.isTypeParameter || sym.isValueParameter) && !sym.owner.isClass)
            nonClassRoot
-         else root)
-      else sym.owner
+         else
+           root)
+      else
+        sym.owner
 
     /** Is root in symbol.owner*, or should it be treated as a local symbol
       *  anyway? This is the case if symbol is a refinement class,
@@ -169,7 +172,8 @@ abstract class Pickler extends SubComponent {
           s"deskolemizing $what in $where"
         })
         sym1
-      } else sym
+      } else
+        sym
     }
 
     /** Store symbol in index. If symbol is local, also store everything it references.
@@ -189,7 +193,8 @@ abstract class Pickler extends SubComponent {
           if (!sym.children.isEmpty) {
             val (locals, globals) = sym.children partition (_.isLocalClass)
             val children =
-              if (locals.isEmpty) globals
+              if (locals.isEmpty)
+                globals
               else {
                 // The LOCAL_CHILD was introduced in 12a2b3b to fix Aladdin bug 1055. When a sealed
                 // class/trait has local subclasses, a single <local child> class symbol is added
@@ -197,8 +202,10 @@ abstract class Pickler extends SubComponent {
                 // initially, but seems not to work, as the bug shows).
                 // Adding the LOCAL_CHILD is necessary to retain exhaustivity warnings under separate
                 // compilation. See test neg/aladdin1055.
-                val parents = (if (sym.isTrait) List(definitions.ObjectTpe)
-                               else Nil) ::: List(sym.tpe)
+                val parents = (if (sym.isTrait)
+                                 List(definitions.ObjectTpe)
+                               else
+                                 Nil) ::: List(sym.tpe)
                 globals + sym.newClassWithInfo(
                   tpnme.LOCAL_CHILD,
                   parents,
@@ -212,8 +219,13 @@ abstract class Pickler extends SubComponent {
                  ann.isStatic && !ann.isErroneous)).reverse)
             putAnnotation(sym, annot)
         } else if (sym != NoSymbol) {
-          putEntry(if (sym.isModuleClass) sym.name.toTermName else sym.name)
-          if (!sym.owner.isRoot) putSymbol(sym.owner)
+          putEntry(
+            if (sym.isModuleClass)
+              sym.name.toTermName
+            else
+              sym.name)
+          if (!sym.owner.isRoot)
+            putSymbol(sym.owner)
         }
       }
     }
@@ -274,7 +286,8 @@ abstract class Pickler extends SubComponent {
       // Only used when pickling trees, i.e. in an argument of some Annotation
       // annotations in Modifiers are removed by the typechecker
       override def traverseModifiers(mods: Modifiers): Unit =
-        if (putEntry(mods)) putEntry(mods.privateWithin)
+        if (putEntry(mods))
+          putEntry(mods.privateWithin)
       override def traverseName(name: Name): Unit = putEntry(name)
       override def traverseConstant(const: Constant): Unit = putEntry(const)
       override def traverse(tree: Tree): Unit = putTree(tree)
@@ -297,9 +310,12 @@ abstract class Pickler extends SubComponent {
       */
     private def putConstant(c: Constant) {
       if (putEntry(c)) {
-        if (c.tag == StringTag) putEntry(newTermName(c.stringValue))
-        else if (c.tag == ClazzTag) putType(c.typeValue)
-        else if (c.tag == EnumTag) putSymbol(c.symbolValue)
+        if (c.tag == StringTag)
+          putEntry(newTermName(c.stringValue))
+        else if (c.tag == ClazzTag)
+          putType(c.typeValue)
+        else if (c.tag == EnumTag)
+          putSymbol(c.symbolValue)
       }
     }
 
@@ -333,7 +349,8 @@ abstract class Pickler extends SubComponent {
         (carg: @unchecked) match {
           case LiteralAnnotArg(const) => putConstant(const)
           case ArrayAnnotArg(args) =>
-            if (putEntry(carg)) args foreach putClassfileAnnotArg
+            if (putEntry(carg))
+              args foreach putClassfileAnnotArg
           case NestedAnnotArg(annInfo) => putAnnotation(annInfo)
         }
       }
@@ -366,7 +383,8 @@ abstract class Pickler extends SubComponent {
       writeRef(sym.name)
       writeRef(localizedOwner(sym))
       writeLongNat((rawToPickledFlags(sym.rawflags & PickledFlags)))
-      if (sym.hasAccessBoundary) writeRef(sym.privateWithin)
+      if (sym.hasAccessBoundary)
+        writeRef(sym.privateWithin)
       writeRef(sym.info)
     }
 
@@ -418,7 +436,10 @@ abstract class Pickler extends SubComponent {
         finally refs = saved
       }
       override def traverseModifiers(mods: Modifiers): Unit =
-        if (refs) writeRef(mods) else super.traverseModifiers(mods)
+        if (refs)
+          writeRef(mods)
+        else
+          super.traverseModifiers(mods)
       override def traverseName(name: Name): Unit = writeRef(name)
       override def traverseConstant(const: Constant): Unit = writeRef(const)
       override def traverseParams(params: List[Tree]): Unit =
@@ -451,7 +472,11 @@ abstract class Pickler extends SubComponent {
         }
       }
       def writeExtSymbolBody(sym: Symbol) {
-        val name = if (sym.isModuleClass) sym.name.toTermName else sym.name
+        val name =
+          if (sym.isModuleClass)
+            sym.name.toTermName
+          else
+            sym.name
         writeRef(name)
         if (!sym.owner.isRoot)
           writeRef(sym.owner)
@@ -517,13 +542,20 @@ abstract class Pickler extends SubComponent {
       }
 
       def writeConstant(c: Constant): Unit = c.tag match {
-        case BooleanTag => writeLong(if (c.booleanValue) 1 else 0)
-        case FloatTag   => writeLong(floatToIntBits(c.floatValue).toLong)
-        case DoubleTag  => writeLong(doubleToLongBits(c.doubleValue))
-        case StringTag  => writeRef(newTermName(c.stringValue))
-        case ClazzTag   => writeRef(c.typeValue)
-        case EnumTag    => writeRef(c.symbolValue)
-        case tag        => if (ByteTag <= tag && tag <= LongTag) writeLong(c.longValue)
+        case BooleanTag =>
+          writeLong(
+            if (c.booleanValue)
+              1
+            else
+              0)
+        case FloatTag  => writeLong(floatToIntBits(c.floatValue).toLong)
+        case DoubleTag => writeLong(doubleToLongBits(c.doubleValue))
+        case StringTag => writeRef(newTermName(c.stringValue))
+        case ClazzTag  => writeRef(c.typeValue)
+        case EnumTag   => writeRef(c.symbolValue)
+        case tag =>
+          if (ByteTag <= tag && tag <= LongTag)
+            writeLong(c.longValue)
       }
 
       def writeModifiers(mods: Modifiers) {
@@ -561,7 +593,10 @@ abstract class Pickler extends SubComponent {
       // The picklerTag method can't determine if it's an external symbol reference
       val tag = entry match {
         case sym: Symbol if isExternalSymbol(sym) =>
-          if (sym.isModuleClass) EXTMODCLASSref else EXTref
+          if (sym.isModuleClass)
+            EXTMODCLASSref
+          else
+            EXTref
         case _ => picklerTag(entry)
       }
       writeNat(tag)

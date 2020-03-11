@@ -37,7 +37,8 @@ object CanFilterMedian {
         require(data.length >= 3, "data must be longer than 3")
         require(windowLength >= 1, "window length must be longer than 1")
 
-        if (windowLength == 1) data.copy
+        if (windowLength == 1)
+          data.copy
         else {
 
           var tempret = new Array[T](data.length)

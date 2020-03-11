@@ -163,8 +163,10 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     * @param inclusive If true (default), include upper bound in slice
     */
   def sliceBy(from: T, to: T, inclusive: Boolean = true): Index[T] =
-    if (inclusive) slice(lsearch(from), rsearch(to))
-    else slice(lsearch(from), lsearch(to))
+    if (inclusive)
+      slice(lsearch(from), rsearch(to))
+    else
+      slice(lsearch(from), lsearch(to))
 
   /**
     * Returns a slice of Index between two keys, including both the lower and
@@ -231,7 +233,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
       var i = loc + 1
       var c = locator.count(key)
       while (c > 1 && i < length) {
-        if (raw(i) == key) c -= 1
+        if (raw(i) == key)
+          c -= 1
         i += 1
       }
       i - 1
@@ -285,12 +288,20 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
   /**
     * Returns the first element of the Index, or NA if there is none
     */
-  def first: Scalar[T] = if (length > 0) at(0) else NA
+  def first: Scalar[T] =
+    if (length > 0)
+      at(0)
+    else
+      NA
 
   /**
     * Returns the last element of the Index, or NA if there is none
     */
-  def last: Scalar[T] = if (length > 0) at(length - 1) else NA
+  def last: Scalar[T] =
+    if (length > 0)
+      at(length - 1)
+    else
+      NA
 
   /**
     * Returns the index in sorted (ascending) order

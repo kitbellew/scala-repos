@@ -48,7 +48,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   }
 
   override def withFixture(test: NoArgTest): Outcome = {
-    if (server1.isDefined && server2.isDefined) test()
+    if (server1.isDefined && server2.isDefined)
+      test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()

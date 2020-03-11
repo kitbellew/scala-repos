@@ -178,7 +178,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         case "activity" =>
           gitbucket.core.account.html.activity(
             account,
-            if (account.isGroupAccount) Nil else getGroupsByUserName(userName),
+            if (account.isGroupAccount)
+              Nil
+            else
+              getGroupsByUserName(userName),
             getActivitiesByUser(userName, true))
 
         // Members
@@ -198,7 +201,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           val members = getGroupMembers(account.userName)
           gitbucket.core.account.html.repositories(
             account,
-            if (account.isGroupAccount) Nil else getGroupsByUserName(userName),
+            if (account.isGroupAccount)
+              Nil
+            else
+              getGroupsByUserName(userName),
             getVisibleRepositories(context.loginAccount, Some(userName)),
             context.loginAccount.exists(x =>
               members.exists { member =>
@@ -339,7 +345,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       } else {
         html.register()
       }
-    } else NotFound
+    } else
+      NotFound
   }
 
   post("/register", newForm) { form =>
@@ -353,7 +360,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         form.url)
       updateImage(form.userName, form.fileId, false)
       redirect("/signin")
-    } else NotFound
+    } else
+      NotFound
   }
 
   get("/groups/new")(usersOnly {
@@ -560,7 +568,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         messages: Messages): Option[String] =
       if (getAccountByUserName(value).isEmpty)
         Some("User or group does not exist.")
-      else None
+      else
+        None
   }
 
   private def uniqueRepository: Constraint = new Constraint() {
@@ -585,8 +594,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
             _.split(":") match {
               case Array(userName, isManager) => isManager.toBoolean
             }
-          }) None
-      else Some("Must select one manager at least.")
+          })
+        None
+      else
+        Some("Must select one manager at least.")
     }
   }
 

@@ -26,7 +26,8 @@ private[http] class EnhancedByteArray(val underlying: Array[Byte])
     @tailrec def xor(ix: Int = 0, result: Int = 0): Int =
       if (ix < underlying.length)
         xor(ix + 1, result | (underlying(ix) ^ other(ix)))
-      else result
+      else
+        result
 
     other.length == underlying.length && xor() == 0
   }

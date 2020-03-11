@@ -195,7 +195,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
           Seq(
             "play.filters.csrf.errorHandler" -> classOf[
               CustomErrorHandler].getName)
-        else Nil
+        else
+          Nil
       }
       withServer(config) {
         case _ => Action(Results.Ok)

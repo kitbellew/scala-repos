@@ -56,7 +56,8 @@ object MetricsBasedResizerSpec {
       val latches = Latches(first, l)
       target.send(latches, Actor.noSender)
       msgs = msgs + l
-      if (await) Await.ready(first, timeout.duration)
+      if (await)
+        Await.ready(first, timeout.duration)
       latches
     }
 

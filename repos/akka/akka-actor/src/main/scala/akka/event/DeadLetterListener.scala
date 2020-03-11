@@ -29,7 +29,11 @@ class DeadLetterListener extends Actor {
     case DeadLetter(message, snd, rcp) ⇒
       count += 1
       val done = maxCount != Int.MaxValue && count >= maxCount
-      val doneMsg = if (done) ", no more dead letters will be logged" else ""
+      val doneMsg =
+        if (done)
+          ", no more dead letters will be logged"
+        else
+          ""
       eventStream.publish(
         Info(
           rcp.path.toString,
@@ -38,7 +42,8 @@ class DeadLetterListener extends Actor {
             "This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' " +
             "and 'akka.log-dead-letters-during-shutdown'."
         ))
-      if (done) context.stop(self)
+      if (done)
+        context.stop(self)
   }
 
 }

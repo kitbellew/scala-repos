@@ -303,7 +303,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     // local address might be used if grabbed from actorRef.path.address
     if (address.hasLocalScope && address.system == selfAddress.system)
       selfAddress
-    else address
+    else
+      address
   }
 
   /**
@@ -456,7 +457,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   private[cluster] object InfoLogger {
 
     def logInfo(message: String): Unit =
-      if (LogInfo) log.info("Cluster Node [{}] - {}", selfAddress, message)
+      if (LogInfo)
+        log.info("Cluster Node [{}] - {}", selfAddress, message)
 
     def logInfo(template: String, arg1: Any): Unit =
       if (LogInfo)

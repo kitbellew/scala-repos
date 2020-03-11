@@ -21,7 +21,11 @@ abstract class BridgeBase(frameworkName: String) {
 
   private def handleMsg(msg: String): Unit = {
     val pos = msg.indexOf(':')
-    val cmd = if (pos == -1) msg else msg.substring(0, pos)
+    val cmd =
+      if (pos == -1)
+        msg
+      else
+        msg.substring(0, pos)
 
     def strArg = {
       if (pos == -1)

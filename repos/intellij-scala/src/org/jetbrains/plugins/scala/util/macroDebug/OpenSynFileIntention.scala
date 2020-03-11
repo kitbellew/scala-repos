@@ -16,7 +16,8 @@ class OpenSynFileIntention extends PsiElementBaseIntentionAction {
 
   def invoke(project: Project, editor: Editor, element: PsiElement) {
     val file = ScalaMacroDebuggingUtil loadCode element.getContainingFile
-    if (file != null) file navigate true
+    if (file != null)
+      file navigate true
   }
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =

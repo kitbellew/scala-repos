@@ -254,7 +254,11 @@ object Sink {
         java.lang.Integer,
         Graph[UniformFanOutShape[T, U], NotUsed]]): Sink[T, NotUsed] = {
     import scala.collection.JavaConverters._
-    val seq = if (rest != null) rest.asScala.map(_.asScala) else Seq()
+    val seq =
+      if (rest != null)
+        rest.asScala.map(_.asScala)
+      else
+        Seq()
     new Sink(
       scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num ⇒
         strategy.apply(num)))

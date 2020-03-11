@@ -18,7 +18,10 @@ case class SimulPairing(
     copy(status = s, wins = w map player.is)
 
   def winnerColor = wins.map { w =>
-    if (w) !hostColor else hostColor
+    if (w)
+      !hostColor
+    else
+      hostColor
   }
 }
 

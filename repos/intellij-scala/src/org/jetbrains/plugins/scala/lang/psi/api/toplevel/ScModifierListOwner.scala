@@ -32,7 +32,8 @@ trait ScModifierListOwner extends ScalaPsiElement with PsiModifierListOwner {
             }
             throw new Throwable(
               "Stub hasn't ScModifierList child: " + faultyContainer)
-          } else return array.apply(0)
+          } else
+            return array.apply(0)
         }
       case _ =>
     }
@@ -70,7 +71,8 @@ trait ScModifierListOwner extends ScalaPsiElement with PsiModifierListOwner {
     }
     if (getModifierList != null)
       getModifierList.hasModifierProperty(name: String)
-    else false
+    else
+      false
   }
 
   def setModifierProperty(name: String, value: Boolean) {

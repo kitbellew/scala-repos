@@ -109,7 +109,8 @@ class ReplaceSequence {
     * @return the resulting {@link String} after all replacements have been applied
     */
   def replaceAll(input: String): String = {
-    if (string.isNullOrEmpty(input)) return string.empty
+    if (string.isNullOrEmpty(input))
+      return string.empty
     var mutatedString = input
     import scala.collection.JavaConversions._
     for (rp <- replacements) {

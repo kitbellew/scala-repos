@@ -110,7 +110,11 @@ case class OptionToFlat[A, B](optionMap: A => Option[B])
 case class FlatAsFilter[A](useAsFilter: A => TraversableOnce[Nothing])
     extends (A => Option[A])
     with IrreducibleContainer {
-  def apply(a: A) = if (useAsFilter(a).isEmpty) None else Some(a)
+  def apply(a: A) =
+    if (useAsFilter(a).isEmpty)
+      None
+    else
+      Some(a)
   def irreducibles = IrreducibleContainer.flatten(useAsFilter)
 }
 

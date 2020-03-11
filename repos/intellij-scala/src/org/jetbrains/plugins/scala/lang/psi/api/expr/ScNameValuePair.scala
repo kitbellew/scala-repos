@@ -18,13 +18,16 @@ trait ScNameValuePair
     with ScNamedElement
     with PsiNameValuePair {
   override def getName: String = {
-    if (nameId == null) ""
-    else super.getName
+    if (nameId == null)
+      ""
+    else
+      super.getName
   }
 
   def nameId: PsiElement = {
     val node = getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER)
-    if (node == null) return null
+    if (node == null)
+      return null
     node.getPsi
   }
 

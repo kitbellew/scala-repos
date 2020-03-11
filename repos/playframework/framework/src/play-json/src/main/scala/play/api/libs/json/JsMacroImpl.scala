@@ -62,8 +62,14 @@ object JsMacroImpl {
     // Helper function to create parameter lists for function invocations based on whether this is a reads,
     // writes or both.
     def conditionalList[T](ifReads: T, ifWrites: T): List[T] =
-      (if (reads) List(ifReads) else Nil) :::
-        (if (writes) List(ifWrites) else Nil)
+      (if (reads)
+         List(ifReads)
+       else
+         Nil) :::
+        (if (writes)
+           List(ifWrites)
+         else
+           Nil)
 
     import c.universe._
 
@@ -116,9 +122,12 @@ object JsMacroImpl {
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
               if (!TupleClass.seq.exists(tupleSym =>
-                    t.baseType(tupleSym) ne NoType)) Some(List(t))
-              else if (t <:< typeOf[Product]) Some(args)
-              else None
+                    t.baseType(tupleSym) ne NoType))
+                Some(List(t))
+              else if (t <:< typeOf[Product])
+                Some(args)
+              else
+                None
             case _ => None
           }
         case _ => None
@@ -179,7 +188,8 @@ object JsMacroImpl {
           val tp =
             if (implType.typeConstructor <:< typeOf[Option[_]].typeConstructor)
               args.head
-            else implType
+            else
+              implType
           (isRec, tp)
         case TypeRef(_, t, _) =>
           (false, implType)
@@ -201,7 +211,8 @@ object JsMacroImpl {
         applyParamImplicits.last.paramName,
         unapplyReturnTypes.get.last)
       applyParamImplicits.init :+ varArgsImplicit
-    } else applyParamImplicits
+    } else
+      applyParamImplicits
 
     // if any implicit is missing, abort
     val missingImplicits = effectiveInferredImplicits.collect {
@@ -250,7 +261,8 @@ object JsMacroImpl {
                 else if (tpe.typeConstructor <:< typeOf[
                            Map[_, _]].typeConstructor)
                   readsWritesHelper("map")
-                else List(q"this.lazyStuff")
+                else
+                  List(q"this.lazyStuff")
 
               q"$jspathTree.$lazyCall(..$arg)"
             }
@@ -279,7 +291,11 @@ object JsMacroImpl {
 
     // if case class has one single field, needs to use map/contramap/inmap on the Reads/Writes/Format instead of
     // canbuild.apply
-    val applyOrMap = TermName(if (params.length > 1) "apply" else mapLikeMethod)
+    val applyOrMap = TermName(
+      if (params.length > 1)
+        "apply"
+      else
+        mapLikeMethod)
     val finalTree = q"""
       import $syntax._
 

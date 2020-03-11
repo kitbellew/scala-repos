@@ -41,31 +41,37 @@ private[collection] trait AugmentedIterableIterator[+T]
 
   override def count(p: T => Boolean): Int = {
     var i = 0
-    while (hasNext) if (p(next())) i += 1
+    while (hasNext)
+      if (p(next()))
+        i += 1
     i
   }
 
   override def reduce[U >: T](op: (U, U) => U): U = {
     var r: U = next()
-    while (hasNext) r = op(r, next())
+    while (hasNext)
+      r = op(r, next())
     r
   }
 
   override def fold[U >: T](z: U)(op: (U, U) => U): U = {
     var r = z
-    while (hasNext) r = op(r, next())
+    while (hasNext)
+      r = op(r, next())
     r
   }
 
   override def sum[U >: T](implicit num: Numeric[U]): U = {
     var r: U = num.zero
-    while (hasNext) r = num.plus(r, next())
+    while (hasNext)
+      r = num.plus(r, next())
     r
   }
 
   override def product[U >: T](implicit num: Numeric[U]): U = {
     var r: U = num.one
-    while (hasNext) r = num.times(r, next())
+    while (hasNext)
+      r = num.times(r, next())
     r
   }
 
@@ -73,7 +79,8 @@ private[collection] trait AugmentedIterableIterator[+T]
     var r = next()
     while (hasNext) {
       val curr = next()
-      if (ord.lteq(curr, r)) r = curr
+      if (ord.lteq(curr, r))
+        r = curr
     }
     r
   }
@@ -82,7 +89,8 @@ private[collection] trait AugmentedIterableIterator[+T]
     var r = next()
     while (hasNext) {
       val curr = next()
-      if (ord.gteq(curr, r)) r = curr
+      if (ord.gteq(curr, r))
+        r = curr
     }
     r
   }
@@ -112,8 +120,10 @@ private[collection] trait AugmentedIterableIterator[+T]
       f: T => S,
       cb: Combiner[S, That]): Combiner[S, That] = {
     //val cb = pbf(repr)
-    if (isRemainingCheap) cb.sizeHint(remaining)
-    while (hasNext) cb += f(next())
+    if (isRemainingCheap)
+      cb.sizeHint(remaining)
+    while (hasNext)
+      cb += f(next())
     cb
   }
 
@@ -137,14 +147,17 @@ private[collection] trait AugmentedIterableIterator[+T]
       val traversable = f(next()).seq
       if (traversable.isInstanceOf[Iterable[_]])
         cb ++= traversable.asInstanceOf[Iterable[S]].iterator
-      else cb ++= traversable
+      else
+        cb ++= traversable
     }
     cb
   }
 
   def copy2builder[U >: T, Coll, Bld <: Builder[U, Coll]](b: Bld): Bld = {
-    if (isRemainingCheap) b.sizeHint(remaining)
-    while (hasNext) b += next
+    if (isRemainingCheap)
+      b.sizeHint(remaining)
+    while (hasNext)
+      b += next
     b
   }
 
@@ -153,7 +166,8 @@ private[collection] trait AugmentedIterableIterator[+T]
       cb: Combiner[U, This]): Combiner[U, This] = {
     while (hasNext) {
       val curr = next()
-      if (pred(curr)) cb += curr
+      if (pred(curr))
+        cb += curr
     }
     cb
   }
@@ -163,7 +177,8 @@ private[collection] trait AugmentedIterableIterator[+T]
       cb: Combiner[U, This]): Combiner[U, This] = {
     while (hasNext) {
       val curr = next()
-      if (!pred(curr)) cb += curr
+      if (!pred(curr))
+        cb += curr
     }
     cb
   }
@@ -174,8 +189,10 @@ private[collection] trait AugmentedIterableIterator[+T]
       bfalse: Combiner[U, This]) = {
     while (hasNext) {
       val curr = next()
-      if (pred(curr)) btrue += curr
-      else bfalse += curr
+      if (pred(curr))
+        btrue += curr
+      else
+        bfalse += curr
     }
     (btrue, bfalse)
   }
@@ -196,8 +213,10 @@ private[collection] trait AugmentedIterableIterator[+T]
       n: Int,
       cb: Combiner[U, This]): Combiner[U, This] = {
     drop(n)
-    if (isRemainingCheap) cb.sizeHint(remaining)
-    while (hasNext) cb += next
+    if (isRemainingCheap)
+      cb.sizeHint(remaining)
+    while (hasNext)
+      cb += next
     cb
   }
 
@@ -220,13 +239,15 @@ private[collection] trait AugmentedIterableIterator[+T]
       before: Combiner[U, This],
       after: Combiner[U, This]) = {
     before.sizeHint(at)
-    if (isRemainingCheap) after.sizeHint(remaining - at)
+    if (isRemainingCheap)
+      after.sizeHint(remaining - at)
     var left = at
     while (left > 0) {
       before += next
       left -= 1
     }
-    while (hasNext) after += next
+    while (hasNext)
+      after += next
     (before, after)
   }
 
@@ -236,8 +257,10 @@ private[collection] trait AugmentedIterableIterator[+T]
     var loop = true
     while (hasNext && loop) {
       val curr = next()
-      if (p(curr)) cb += curr
-      else loop = false
+      if (p(curr))
+        cb += curr
+      else
+        loop = false
     }
     (cb, loop)
   }
@@ -249,14 +272,17 @@ private[collection] trait AugmentedIterableIterator[+T]
     var isBefore = true
     while (hasNext && isBefore) {
       val curr = next()
-      if (p(curr)) before += curr
+      if (p(curr))
+        before += curr
       else {
-        if (isRemainingCheap) after.sizeHint(remaining + 1)
+        if (isRemainingCheap)
+          after.sizeHint(remaining + 1)
         after += curr
         isBefore = false
       }
     }
-    while (hasNext) after += next
+    while (hasNext)
+      after += next
     (before, after)
   }
 
@@ -319,9 +345,12 @@ private[collection] trait AugmentedIterableIterator[+T]
       cb: Combiner[(U, S), That]): Combiner[(U, S), That] = {
     if (isRemainingCheap && that.isRemainingCheap)
       cb.sizeHint(remaining max that.remaining)
-    while (this.hasNext && that.hasNext) cb += ((this.next(), that.next()))
-    while (this.hasNext) cb += ((this.next(), thatelem))
-    while (that.hasNext) cb += ((thiselem, that.next()))
+    while (this.hasNext && that.hasNext)
+      cb += ((this.next(), that.next()))
+    while (this.hasNext)
+      cb += ((this.next(), thatelem))
+    while (that.hasNext)
+      cb += ((thiselem, that.next()))
     cb
   }
 
@@ -341,8 +370,10 @@ private[collection] trait AugmentedSeqIterator[+T]
     var total = 0
     var loop = true
     while (hasNext && loop) {
-      if (pred(next())) total += 1
-      else loop = false
+      if (pred(next()))
+        total += 1
+      else
+        loop = false
     }
     total
   }
@@ -351,17 +382,23 @@ private[collection] trait AugmentedSeqIterator[+T]
     var i = 0
     var loop = true
     while (hasNext && loop) {
-      if (pred(next())) loop = false
-      else i += 1
+      if (pred(next()))
+        loop = false
+      else
+        i += 1
     }
-    if (loop) -1 else i
+    if (loop)
+      -1
+    else
+      i
   }
 
   def lastIndexWhere(pred: T => Boolean): Int = {
     var pos = -1
     var i = 0
     while (hasNext) {
-      if (pred(next())) pos = i
+      if (pred(next()))
+        pos = i
       i += 1
     }
     pos
@@ -369,7 +406,8 @@ private[collection] trait AugmentedSeqIterator[+T]
 
   def corresponds[S](corr: (T, S) => Boolean)(that: Iterator[S]): Boolean = {
     while (hasNext && that.hasNext) {
-      if (!corr(next(), that.next())) return false
+      if (!corr(next(), that.next()))
+        return false
     }
     hasNext == that.hasNext
   }
@@ -378,9 +416,11 @@ private[collection] trait AugmentedSeqIterator[+T]
 
   def reverse2combiner[U >: T, This](
       cb: Combiner[U, This]): Combiner[U, This] = {
-    if (isRemainingCheap) cb.sizeHint(remaining)
+    if (isRemainingCheap)
+      cb.sizeHint(remaining)
     var lst = List[T]()
-    while (hasNext) lst ::= next
+    while (hasNext)
+      lst ::= next
     while (lst != Nil) {
       cb += lst.head
       lst = lst.tail
@@ -392,9 +432,11 @@ private[collection] trait AugmentedSeqIterator[+T]
       f: T => S,
       cb: Combiner[S, That]): Combiner[S, That] = {
     //val cb = cbf(repr)
-    if (isRemainingCheap) cb.sizeHint(remaining)
+    if (isRemainingCheap)
+      cb.sizeHint(remaining)
     var lst = List[S]()
-    while (hasNext) lst ::= f(next())
+    while (hasNext)
+      lst ::= f(next())
     while (lst != Nil) {
       cb += lst.head
       lst = lst.tail
@@ -407,13 +449,15 @@ private[collection] trait AugmentedSeqIterator[+T]
       elem: U,
       cb: Combiner[U, That]): Combiner[U, That] = {
     //val cb = cbf(repr)
-    if (isRemainingCheap) cb.sizeHint(remaining)
+    if (isRemainingCheap)
+      cb.sizeHint(remaining)
     var j = 0
     while (hasNext) {
       if (j == index) {
         cb += elem
         next()
-      } else cb += next
+      } else
+        cb += next
       j += 1
     }
     cb
@@ -501,7 +545,11 @@ trait IterableSplitter[+T]
       val sizes = sq.scanLeft(0)(_ + _.remaining)
       val shortened =
         for ((it, (from, until)) <- sq zip (sizes.init zip sizes.tail))
-          yield if (until < remaining) it else taker(it, remaining - from)
+          yield
+            if (until < remaining)
+              it
+            else
+              taker(it, remaining - from)
       shortened filter {
         _.remaining > 0
       }
@@ -552,22 +600,31 @@ trait IterableSplitter[+T]
     signalDelegate = self.signalDelegate
     protected var curr: IterableSplitter[U] = self
     def hasNext =
-      if (curr.hasNext) true
+      if (curr.hasNext)
+        true
       else if (curr eq self) {
         curr = that
         curr.hasNext
-      } else false
+      } else
+        false
     def next =
       if (curr eq self) {
         hasNext
         curr.next()
-      } else curr.next()
+      } else
+        curr.next()
     def remaining =
-      if (curr eq self) curr.remaining + that.remaining else curr.remaining
+      if (curr eq self)
+        curr.remaining + that.remaining
+      else
+        curr.remaining
     protected def firstNonEmpty = (curr eq self) && curr.hasNext
     def dup: IterableSplitter[U] = self.dup.appendParIterable[U, PI](that)
     def split: Seq[IterableSplitter[U]] =
-      if (firstNonEmpty) Seq(curr, that) else curr.split
+      if (firstNonEmpty)
+        Seq(curr, that)
+      else
+        curr.split
   }
 
   def appendParIterable[U >: T, PI <: IterableSplitter[U]](that: PI) =
@@ -601,9 +658,12 @@ trait IterableSplitter[+T]
     def hasNext = self.hasNext || that.hasNext
     def next =
       if (self.hasNext) {
-        if (that.hasNext) (self.next(), that.next())
-        else (self.next(), thatelem)
-      } else (thiselem, that.next())
+        if (that.hasNext)
+          (self.next(), that.next())
+        else
+          (self.next(), thatelem)
+      } else
+        (thiselem, that.next())
 
     def remaining = self.remaining max that.remaining
     def dup: IterableSplitter[(U, S)] =
@@ -615,11 +675,13 @@ trait IterableSplitter[+T]
         if (selfrem < thatrem)
           self.appendParIterable[U, SeqSplitter[U]](
             repetition[U](thiselem, thatrem - selfrem).splitter)
-        else self
+        else
+          self
       val thatit =
         if (selfrem > thatrem)
           that.appendParSeq(repetition(thatelem, selfrem - thatrem).splitter)
-        else that
+        else
+          that
       val zipped = thisit zipParSeq thatit
       zipped.split
     }
@@ -715,7 +777,8 @@ trait SeqSplitter[+T]
           if (from < selfrem && until > selfrem) {
             appendMiddle = true
             Seq(selfrem - from, until - selfrem)
-          } else Seq(sz)
+          } else
+            Seq(sz)
         }
         val (selfszfrom, thatszfrom) =
           splitsizes.zip(szcum.init).span(_._2 < selfrem)
@@ -736,8 +799,10 @@ trait SeqSplitter[+T]
           selfs.init ++ Seq(
             selfs.last.appendParSeq[U, SeqSplitter[U]](
               thats.head)) ++ thats.tail
-        else selfs ++ thats
-      } else curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
+        else
+          selfs ++ thats
+      } else
+        curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
   }
 
   def appendParSeq[U >: T, PI <: SeqSplitter[U]](that: PI) =
@@ -768,11 +833,13 @@ trait SeqSplitter[+T]
         if (selfrem < thatrem)
           self.appendParSeq[U, SeqSplitter[U]](
             repetition[U](thiselem, thatrem - selfrem).splitter)
-        else self
+        else
+          self
       val thatit =
         if (selfrem > thatrem)
           that.appendParSeq(repetition(thatelem, selfrem - thatrem).splitter)
-        else that
+        else
+          that
       (thisit, thatit)
     }
     override def split: Seq[SeqSplitter[(U, S)]] = {

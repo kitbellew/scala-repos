@@ -101,7 +101,11 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
       zkUtils,
       topic,
       partitionId,
-      oldLeaderOpt = if (leader1.get == 0) None else leader1)
+      oldLeaderOpt =
+        if (leader1.get == 0)
+          None
+        else
+          leader1)
     val leaderEpoch2 = zkUtils.getEpochForPartition(topic, partitionId)
     debug("Leader is elected to be: %s".format(leader1.getOrElse(-1)))
     debug("leader Epoc: " + leaderEpoch2)
@@ -124,7 +128,11 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
       zkUtils,
       topic,
       partitionId,
-      oldLeaderOpt = if (leader2.get == 1) None else leader2)
+      oldLeaderOpt =
+        if (leader2.get == 1)
+          None
+        else
+          leader2)
     val leaderEpoch3 = zkUtils.getEpochForPartition(topic, partitionId)
     debug("leader Epoc: " + leaderEpoch3)
     debug("Leader is elected to be: %s".format(leader3.getOrElse(-1)))

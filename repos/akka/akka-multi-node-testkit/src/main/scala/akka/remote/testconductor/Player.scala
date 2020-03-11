@@ -262,7 +262,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
                     "wrong barrier " + b + " received while waiting for " + barrier))
                 else if (!success)
                   Status.Failure(new RuntimeException("barrier failed: " + b))
-                else b
+                else
+                  b
               requester ! response
             case None ⇒
               log.warning("did not expect {}", op)
@@ -277,8 +278,10 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
         case t: ThrottleMsg ⇒
           import context.dispatcher // FIXME is this the right EC for the future below?
           val mode =
-            if (t.rateMBit < 0.0f) Unthrottled
-            else if (t.rateMBit == 0.0f) Blackhole
+            if (t.rateMBit < 0.0f)
+              Unthrottled
+            else if (t.rateMBit == 0.0f)
+              Blackhole
             // Conversion needed as the TokenBucket measures in octets: 125000 Octets/s = 1Mbit/s
             // FIXME: Initial capacity should be carefully chosen
             else

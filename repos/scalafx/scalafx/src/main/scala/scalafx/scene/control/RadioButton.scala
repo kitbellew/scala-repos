@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object RadioButton {
   implicit def sfxRadioButton2jfx(rb: RadioButton): jfxsc.RadioButton =
-    if (rb != null) rb.delegate else null
+    if (rb != null)
+      rb.delegate
+    else
+      null
 }
 
 class RadioButton(

@@ -35,20 +35,28 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
     val commentText: String = comment.getText
     val docComment: Boolean = isDocComment(comment, commenter)
     val expectedCommentEnd: String =
-      if (docComment) commenter.getDocumentationCommentSuffix
-      else commenter.getBlockCommentSuffix
-    if (!commentText.endsWith(expectedCommentEnd)) return false
+      if (docComment)
+        commenter.getDocumentationCommentSuffix
+      else
+        commenter.getBlockCommentSuffix
+    if (!commentText.endsWith(expectedCommentEnd))
+      return false
     val containingFile: PsiFile = comment.getContainingFile
     val language: Language = comment.getParent.getLanguage
     val lexer: Lexer = LanguageParserDefinitions.INSTANCE
       .forLanguage(language)
       .createLexer(containingFile.getProject)
     val commentPrefix: String =
-      if (docComment) commenter.getDocumentationCommentPrefix
-      else commenter.getBlockCommentPrefix
+      if (docComment)
+        commenter.getDocumentationCommentPrefix
+      else
+        commenter.getBlockCommentPrefix
     lexer.start(
       commentText,
-      if (commentPrefix eq null) 0 else commentPrefix.length,
+      if (commentPrefix eq null)
+        0
+      else
+        commentPrefix.length,
       commentText.length)
     val fileTypeHandler: QuoteHandler =
       TypedHandler.getQuoteHandler(containingFile, editor)
@@ -101,7 +109,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
   private def isDocComment(
       element: PsiElement,
       commenter: CodeDocumentationAwareCommenter): Boolean = {
-    if (!element.isInstanceOf[PsiComment]) return false
+    if (!element.isInstanceOf[PsiComment])
+      return false
     val comment: PsiComment = element.asInstanceOf[PsiComment]
     commenter.isDocumentationComment(comment)
   }

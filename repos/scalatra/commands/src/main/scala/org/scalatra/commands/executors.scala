@@ -64,7 +64,11 @@ abstract class BlockingExecutor[T <: Command, S](
 
       res match {
         case Succ(r) ⇒
-          def plur(count: Int) = if (count == 1) "failure" else "failures"
+          def plur(count: Int) =
+            if (count == 1)
+              "failure"
+            else
+              "failures"
           val resultLog = r.fold(
             { failures ⇒
               s"with ${failures.size} ${plur(failures.size)}\n${failures.list}"
@@ -84,7 +88,11 @@ abstract class BlockingExecutor[T <: Command, S](
       val f = cmd.errors.map(_.validation) collect {
         case Failure(e) ⇒ e
       }
-      def failures = if (f.size == 1) "failure" else "failures"
+      def failures =
+        if (f.size == 1)
+          "failure"
+        else
+          "failures"
       logger.debug(
         s"Command [${cmd.getClass.getName}}] executed with ${f.size} $failures.\n${f.toList}")
       NonEmptyList(f.head, f.tail: _*).failure
@@ -132,7 +140,11 @@ abstract class AsyncExecutor[T <: Command, S](
 
       res onSuccess {
         case r ⇒
-          def plur(count: Int) = if (count == 1) "failure" else "failures"
+          def plur(count: Int) =
+            if (count == 1)
+              "failure"
+            else
+              "failures"
           val resultLog = r.fold(
             { failures ⇒
               s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
@@ -154,7 +166,11 @@ abstract class AsyncExecutor[T <: Command, S](
       val f = cmd.errors.map(_.validation) collect {
         case Failure(e) ⇒ e
       }
-      def failures = if (f.size == 1) "failure" else "failures"
+      def failures =
+        if (f.size == 1)
+          "failure"
+        else
+          "failures"
       logger.debug(
         s"Command [${cmd.getClass.getName}] executed with ${f.size} $failures.\n${f.toList}")
       Future.successful(NonEmptyList(f.head, f.tail: _*).failure)

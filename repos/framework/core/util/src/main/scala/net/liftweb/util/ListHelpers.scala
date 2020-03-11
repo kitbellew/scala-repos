@@ -191,7 +191,11 @@ trait ListHelpers {
   /**
     * Return a list containing the element f if the expression is true
     */
-  def listIf[T](expr: Boolean)(f: => T): List[T] = if (expr) List(f) else Nil
+  def listIf[T](expr: Boolean)(f: => T): List[T] =
+    if (expr)
+      List(f)
+    else
+      Nil
 
   /**
     * Given an incoming list, return a set of lists that is the original list rotated through all its positions
@@ -271,7 +275,11 @@ trait ListHelpers {
     def headOr(other: => T): T = head(what, other)
 
     /** return the list if not empty or another list */
-    def or(other: => List[T]): List[T] = if (!what.isEmpty) what else other
+    def or(other: => List[T]): List[T] =
+      if (!what.isEmpty)
+        what
+      else
+        other
 
     /** return a string with all elements toString values appended */
     def str: String = what.mkString("")

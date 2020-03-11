@@ -48,7 +48,10 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
         i2 = fileText.indexOf(FOLD_END_MARKER, i2Old + 1)
         myFileText append fileText.substring(
           i2Old + FOLD_MARKER_LENGTH,
-          if (i2 > 0) Math.min(i2, i1) else i1)
+          if (i2 > 0)
+            Math.min(i2, i1)
+          else
+            i1)
 
         increaseOverall()
       } else if (i1 < i2 && i1 > -1) {
@@ -61,7 +64,10 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
 
         myFileText append fileText.substring(
           i1Old + FOLD_MARKER_LENGTH,
-          if (i1 > -1) Math.min(i2, i1) else i2)
+          if (i1 > -1)
+            Math.min(i2, i1)
+          else
+            i2)
       } else if (i1 < i2) { //i1 == -1
         appendPair("#1.5")
 
@@ -70,10 +76,13 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
         val i2Old = i2
         i2 = fileText.indexOf(FOLD_END_MARKER, i2Old + 1)
         myFileText.append(
-          if (i2 == -1) fileText.substring(i2Old + FOLD_MARKER_LENGTH)
-          else fileText.substring(i2Old + FOLD_MARKER_LENGTH, i2)
+          if (i2 == -1)
+            fileText.substring(i2Old + FOLD_MARKER_LENGTH)
+          else
+            fileText.substring(i2Old + FOLD_MARKER_LENGTH, i2)
         )
-      } else assert(assertion = false, "Unbalanced fold markers #2")
+      } else
+        assert(assertion = false, "Unbalanced fold markers #2")
     }
 
     assert(

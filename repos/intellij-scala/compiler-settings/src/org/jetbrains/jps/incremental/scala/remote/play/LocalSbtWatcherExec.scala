@@ -13,7 +13,8 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
   private var state = false
 
   override def startSbtExec(args: Array[String], consumer: MessageConsumer) {
-    if (isRunning) return
+    if (isRunning)
+      return
 
     val builder = new ProcessBuilder(args.tail: _*)
     builder.directory(new File(args.head))
@@ -23,11 +24,13 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
         createDescriptor(p, consumer).startListening()
     }
 
-    if (isRunning) state = true
+    if (isRunning)
+      state = true
   }
 
   override def endSbtExec() {
-    if (!isRunning) return
+    if (!isRunning)
+      return
 
     descriptor.foreach(_.stopListening())
 

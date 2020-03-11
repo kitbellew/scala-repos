@@ -68,7 +68,10 @@ object ShardServiceCombinators extends Logging {
       case BigIntPattern(num) =>
         val big = BigInt(num)
         val n = big.toLong
-        if (big == BigInt(n)) Some(n) else None
+        if (big == BigInt(n))
+          Some(n)
+        else
+          None
       case _ => None
     }
   }

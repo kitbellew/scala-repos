@@ -28,9 +28,12 @@ trait StringOps {
     case _ =>
       def lcp(ss: List[String]): String = {
         val w :: ws = ss
-        if (w == "") ""
-        else if (ws exists (s => s == "" || (s charAt 0) != (w charAt 0))) ""
-        else w.substring(0, 1) + lcp(ss map (_ substring 1))
+        if (w == "")
+          ""
+        else if (ws exists (s => s == "" || (s charAt 0) != (w charAt 0)))
+          ""
+        else
+          w.substring(0, 1) + lcp(ss map (_ substring 1))
       }
       lcp(xs)
   }
@@ -42,8 +45,10 @@ trait StringOps {
     while (end > 0 && s.charAt(end - 1).isWhitespace)
       end -= 1
 
-    if (end == s.length) s
-    else s.substring(0, end)
+    if (end == s.length)
+      s
+    else
+      s.substring(0, end)
   }
 
   /** Breaks the string into lines and strips each line before reassembling. */
@@ -52,12 +57,16 @@ trait StringOps {
 
   def decompose(str: String, sep: Char): List[String] = {
     def ws(start: Int): List[String] =
-      if (start == str.length) List()
-      else if (str.charAt(start) == sep) ws(start + 1)
+      if (start == str.length)
+        List()
+      else if (str.charAt(start) == sep)
+        ws(start + 1)
       else {
         val end = str.indexOf(sep, start)
-        if (end < 0) List(str.substring(start))
-        else str.substring(start, end) :: ws(end + 1)
+        if (end < 0)
+          List(str.substring(start))
+        else
+          str.substring(start, end) :: ws(end + 1)
       }
     ws(0)
   }
@@ -74,8 +83,16 @@ trait StringOps {
       str: String,
       idx: Int,
       doDropIndex: Boolean = false): Option[(String, String)] =
-    if (idx == -1) None
-    else Some((str take idx, str drop (if (doDropIndex) idx + 1 else idx)))
+    if (idx == -1)
+      None
+    else
+      Some(
+        (
+          str take idx,
+          str drop (if (doDropIndex)
+                      idx + 1
+                    else
+                      idx)))
 
   /** Returns a string meaning "n elements".
     */

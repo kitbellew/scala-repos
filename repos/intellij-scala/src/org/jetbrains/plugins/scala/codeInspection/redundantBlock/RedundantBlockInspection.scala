@@ -87,6 +87,7 @@ object RedundantBlockInspection {
             .startsWith("`")
         case _ => false
       }
-    } else false
+    } else
+      false
   }
 }

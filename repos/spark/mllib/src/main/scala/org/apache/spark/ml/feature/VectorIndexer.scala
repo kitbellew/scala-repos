@@ -192,7 +192,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
           otherValSet.iterator.foreach { x =>
             // Once we have found > maxCategories values, we know the feature is continuous
             // and do not need to collect more values for it.
-            if (thisValSet.size <= maxCategories) thisValSet.add(x)
+            if (thisValSet.size <= maxCategories)
+              thisValSet.add(x)
           }
       }
       this

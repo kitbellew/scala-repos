@@ -278,7 +278,8 @@ class NodeJSEnv private (
             """
           )
         )
-      else Seq()
+      else
+        Seq()
     }
 
     /** File(s) to hack console.log to prevent if from changing `%%` to `%`.

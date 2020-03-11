@@ -21,7 +21,8 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
 
   @tailrec
   private[this] def drain(buf: Buf): Unit = {
-    if (buf.isEmpty) out.flush()
+    if (buf.isEmpty)
+      out.flush()
     else {
       // The source length is min(buf.length, bytes.length).
       val b = buf.slice(0, bytes.length)
@@ -41,7 +42,8 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
       }
 
   def write(buf: Buf): Future[Unit] =
-    if (done.isDefined) done
+    if (done.isDefined)
+      done
     else
       (
         done or writeOp.getAndSet(_ => Future.exception(WriteExc))(buf)
@@ -52,7 +54,8 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
 
         case Throw(cause) =>
           // We don't need to wait for the close, we care only that it is called.
-          if (cause != WriteExc) close()
+          if (cause != WriteExc)
+            close()
           Future.exception(cause)
       }
 
@@ -60,10 +63,12 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
     done.updateIfEmpty(Throw(cause))
 
   def close(deadline: Time): Future[Unit] =
-    if (done.updateIfEmpty(Throw(CloseExc))) FuturePool.unboundedPool {
-      out.close()
-    }
-    else Future.Done
+    if (done.updateIfEmpty(Throw(CloseExc)))
+      FuturePool.unboundedPool {
+        out.close()
+      }
+    else
+      Future.Done
 }
 
 private object OutputStreamWriter {

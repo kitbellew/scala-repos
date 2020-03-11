@@ -19,9 +19,10 @@ object QaQuestion extends QaController {
 
   def search = Open { implicit ctx =>
     val query = (~get("q")).trim
-    if (query.isEmpty) fuccess {
-      Redirect(routes.QaQuestion.index())
-    }
+    if (query.isEmpty)
+      fuccess {
+        Redirect(routes.QaQuestion.index())
+      }
     else
       Env.qa search query zip fetchPopular map {
         case (questions, popular) =>
@@ -50,8 +51,10 @@ object QaQuestion extends QaController {
     }
 
   def ask = Auth { implicit ctx => _ =>
-    if (QaAuth.canAsk) renderAsk(forms.question, Results.Ok)
-    else renderN00b
+    if (QaAuth.canAsk)
+      renderAsk(forms.question, Results.Ok)
+    else
+      renderN00b
   }
 
   def doAsk = AuthBody { implicit ctx => me =>
@@ -64,7 +67,8 @@ object QaQuestion extends QaController {
             Redirect(routes.QaQuestion.show(q.id, q.slug))
           }
       )
-    } else renderN00b
+    } else
+      renderN00b
   }
 
   def edit(id: QuestionId, slug: String) = Auth { implicit ctx => me =>

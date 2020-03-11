@@ -51,7 +51,10 @@ object ParallelTransition extends AnimationStatics {
     */
   implicit def sfxParallelTransition2jfx(
       v: ParallelTransition): jfxa.ParallelTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

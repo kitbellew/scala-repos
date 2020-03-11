@@ -144,7 +144,8 @@ private[play] class PollingFileWatchService(val pollDelayMillis: Int)
               distinctPathFinder(filesToWatch.***),
               pollDelayMillis,
               state)(stopped)
-            if (triggered) onChange()
+            if (triggered)
+              onChange()
             state = newState
           }
         }
@@ -334,7 +335,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
         logger.warn(
           "PlayKeys.fileWatchService := play.runsupport.FileWatchService.jnotify(target.value)")
         false
-      } else false
+      } else
+        false
     }
 
     val watcher = FileSystems.getDefault.newWatchService()

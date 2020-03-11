@@ -91,7 +91,11 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ServerSettings = ServerSettings(system),
       log: LoggingAdapter = system.log)(implicit
       fm: Materializer): Source[IncomingConnection, Future[ServerBinding]] = {
-    val effectivePort = if (port >= 0) port else connectionContext.defaultPort
+    val effectivePort =
+      if (port >= 0)
+        port
+      else
+        connectionContext.defaultPort
     val tlsStage = sslTlsStage(connectionContext, Server)
     val connections: Source[Tcp.IncomingConnection, Future[Tcp.ServerBinding]] =
       Tcp().bind(
@@ -302,8 +306,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter)
       : Flow[HttpRequest, HttpResponse, Future[OutgoingConnection]] = {
     val hostHeader =
-      if (port == connectionContext.defaultPort) Host(host)
-      else Host(host, port)
+      if (port == connectionContext.defaultPort)
+        Host(host)
+      else
+        Host(host, port)
     val layer = clientLayer(hostHeader, settings, log)
     layer.joinMat(
       _outgoingTlsConnectionLayer(
@@ -696,8 +702,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter)(implicit fm: Materializer): Future[PoolGateway] =
     if (request.uri.scheme.nonEmpty && request.uri.authority.nonEmpty) {
       val httpsCtx =
-        if (request.uri.scheme.equalsIgnoreCase("https")) connectionContext
-        else ConnectionContext.noEncryption()
+        if (request.uri.scheme.equalsIgnoreCase("https"))
+          connectionContext
+        else
+          ConnectionContext.noEncryption()
       val setup = ConnectionPoolSetup(settings, httpsCtx, log)
       val host = request.uri.authority.host.toString()
       val hcps = HostConnectionPoolSetup(host, request.uri.effectivePort, setup)

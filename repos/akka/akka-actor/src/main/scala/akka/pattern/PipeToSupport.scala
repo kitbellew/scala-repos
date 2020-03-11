@@ -49,8 +49,10 @@ trait PipeToSupport {
         implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
       future whenComplete new BiConsumer[T, Throwable] {
         override def accept(t: T, ex: Throwable) {
-          if (t != null) recipient ! t
-          if (ex != null) recipient ! Status.Failure(ex)
+          if (t != null)
+            recipient ! t
+          if (ex != null)
+            recipient ! Status.Failure(ex)
         }
       }
     }
@@ -58,8 +60,10 @@ trait PipeToSupport {
         implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
       future whenComplete new BiConsumer[T, Throwable] {
         override def accept(t: T, ex: Throwable) {
-          if (t != null) recipient ! t
-          if (ex != null) recipient ! Status.Failure(ex)
+          if (t != null)
+            recipient ! t
+          if (ex != null)
+            recipient ! Status.Failure(ex)
         }
       }
     }

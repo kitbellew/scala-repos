@@ -101,7 +101,8 @@ object Compatibility {
                           .getSubstitutor match {
                           case Some(subst) =>
                             val rt = subst.subst(secondArg)
-                            if (rt.isInstanceOf[ScUndefinedType]) defaultResult
+                            if (rt.isInstanceOf[ScUndefinedType])
+                              defaultResult
                             else {
                               (Success(rt, Some(place)), res.importsUsed)
                             }
@@ -112,7 +113,8 @@ object Compatibility {
                   case _ => defaultResult
                 }
             }
-          } else defaultResult
+          } else
+            defaultResult
         case _ => (Success(typez, None), Set.empty)
       }
     }
@@ -134,8 +136,10 @@ object Compatibility {
         def default: (Success[ScType], Set[ImportUsed]) =
           (Success(typez, None), Set.empty)
 
-        if (isShape || !checkImplicits || place == null) default
-        else eval(typez, expectedOption)
+        if (isShape || !checkImplicits || place == null)
+          default
+        else
+          eval(typez, expectedOption)
       }
     }
   }
@@ -156,8 +160,10 @@ object Compatibility {
   def seqClassFor(expr: ScTypedStmt): PsiClass = {
     seqClass match {
       case Some(clazz) =>
-        if (ApplicationManager.getApplication.isUnitTestMode) clazz
-        else throw new RuntimeException("Illegal state for seqClass variable")
+        if (ApplicationManager.getApplication.isUnitTestMode)
+          clazz
+        else
+          throw new RuntimeException("Illegal state for seqClass variable")
       case _ =>
         ScalaPsiManager
           .instance(expr.getProject)
@@ -218,7 +224,10 @@ object Compatibility {
     //optimization:
     val hasRepeated = parameters.exists(_.isRepeated)
     val maxParams: Int =
-      if (hasRepeated) scala.Int.MaxValue else parameters.length
+      if (hasRepeated)
+        scala.Int.MaxValue
+      else
+        parameters.length
 
     val excess = exprs.length - maxParams
 
@@ -241,7 +250,10 @@ object Compatibility {
 
     if (parameters.isEmpty)
       return ConformanceExtResult(
-        if (exprs.isEmpty) Seq.empty else Seq(new ApplicabilityProblem("5")),
+        if (exprs.isEmpty)
+          Seq.empty
+        else
+          Seq(new ApplicabilityProblem("5")),
         undefSubst)
 
     var k = 0
@@ -312,23 +324,26 @@ object Compatibility {
                      checkWithImplicits,
                      isShapesResolve,
                      Some(expectedType))
-                   .tr) yield {
-              val conforms =
-                Conformance.conforms(tp, exprType, checkWeak = true)
-              if (!conforms) {
-                return ConformanceExtResult(
-                  Seq(new TypeMismatch(expr, tp)),
-                  undefSubst,
-                  defaultParameterUsed,
-                  matched,
-                  matchedTypes)
-              } else {
-                matched ::= (param, expr)
-                matchedTypes ::= (param, exprType)
-                undefSubst += Conformance
-                  .undefinedSubst(tp, exprType, checkWeak = true)
+                   .tr)
+              yield {
+                val conforms =
+                  Conformance.conforms(tp, exprType, checkWeak = true)
+                if (!conforms) {
+                  return ConformanceExtResult(
+                    Seq(new TypeMismatch(expr, tp)),
+                    undefSubst,
+                    defaultParameterUsed,
+                    matched,
+                    matchedTypes)
+                } else {
+                  matched ::= (param, expr)
+                  matchedTypes ::= (param, exprType)
+                  undefSubst += Conformance.undefinedSubst(
+                    tp,
+                    exprType,
+                    checkWeak = true)
+                }
               }
-            }
           } else {
             problems :::= doNoNamed(Expression(expr)).reverse
           }
@@ -339,8 +354,10 @@ object Compatibility {
           }
           if (index == -1 || used(index)) {
             def extractExpression(assign: ScAssignStmt): ScExpression = {
-              if (ScUnderScoreSectionUtil.isUnderscoreFunction(assign)) assign
-              else assign.getRExpression.getOrElse(assign)
+              if (ScUnderScoreSectionUtil.isUnderscoreFunction(assign))
+                assign
+              else
+                assign.getRExpression.getOrElse(assign)
             }
             problems :::= doNoNamed(
               Expression(extractExpression(assign))).reverse
@@ -532,7 +549,10 @@ object Compatibility {
   def toParameter(p: PsiParameter) = {
     val tp = p.paramType
     new Parameter(
-      if (p.isInstanceOf[ClsParameterImpl]) "" else p.name,
+      if (p.isInstanceOf[ClsParameterImpl])
+        ""
+      else
+        p.name,
       None,
       tp,
       tp,
@@ -591,7 +611,10 @@ object Compatibility {
         //optimization:
         val hasRepeated = parameters.exists(_.isRepeatedParameter)
         val maxParams: Int =
-          if (hasRepeated) scala.Int.MaxValue else parameters.length
+          if (hasRepeated)
+            scala.Int.MaxValue
+          else
+            parameters.length
 
         val excess = exprs.length - maxParams
 
@@ -632,7 +655,10 @@ object Compatibility {
         //optimization:
         val hasRepeated = parameters.exists(_.isRepeatedParameter)
         val maxParams: Int =
-          if (hasRepeated) scala.Int.MaxValue else parameters.length
+          if (hasRepeated)
+            scala.Int.MaxValue
+          else
+            parameters.length
 
         val excess = exprs.length - maxParams
 

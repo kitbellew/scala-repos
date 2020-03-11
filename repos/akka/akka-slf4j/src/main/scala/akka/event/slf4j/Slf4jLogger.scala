@@ -72,11 +72,16 @@ class Slf4jLogger
         cause match {
           case Error.NoCause | null ⇒
             Logger(logClass, logSource).error(
-              if (message != null) message.toString else null)
+              if (message != null)
+                message.toString
+              else
+                null)
           case _ ⇒
             Logger(logClass, logSource).error(
-              if (message != null) message.toString
-              else cause.getLocalizedMessage,
+              if (message != null)
+                message.toString
+              else
+                cause.getLocalizedMessage,
               cause)
         }
       }

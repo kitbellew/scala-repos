@@ -14,7 +14,8 @@ final class DfaEngine[E](
 
   def performDFA: collection.mutable.Map[Instruction, E] = {
     val initial: Seq[(Instruction, E)] =
-      for (v <- cfg) yield (v, l.bottom) // (vertex, after)
+      for (v <- cfg)
+        yield (v, l.bottom) // (vertex, after)
     val after = mutable.HashMap(initial: _*)
     val forward = dfa.isForward
 
@@ -27,11 +28,18 @@ final class DfaEngine[E](
 
       val fv = dfa.fun(v) _
       val newAfter = fv(
-        l.join((if (forward) v.pred() else v.succ()).map(after(_))))
+        l.join(
+          (if (forward)
+             v.pred()
+           else
+             v.succ()).map(after(_))))
       if (!l.eq(newAfter, after(v))) {
         after(v) = newAfter
-        workList addAll java.util.Arrays
-          .asList((if (forward) v.succ().toArray else v.pred().toArray): _*)
+        workList addAll java.util.Arrays.asList(
+          (if (forward)
+             v.succ().toArray
+           else
+             v.pred().toArray): _*)
       }
     }
     after

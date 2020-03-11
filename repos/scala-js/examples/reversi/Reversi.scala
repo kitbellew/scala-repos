@@ -117,7 +117,11 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
 
       // Pawn
       if (square.owner != NoPlayer) {
-        context.fillStyle = if (square.owner == White) "white" else "black"
+        context.fillStyle =
+          if (square.owner == White)
+            "white"
+          else
+            "black"
         context.beginPath()
         context.arc(
           x + HalfSquareSizePx,
@@ -198,9 +202,12 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       } else {
         // End of game
         val winnerText =
-          if (scoreWhite > scoreBlack) "White won!"
-          else if (scoreBlack > scoreWhite) "Black won!"
-          else "Draw"
+          if (scoreWhite > scoreBlack)
+            "White won!"
+          else if (scoreBlack > scoreWhite)
+            "Black won!"
+          else
+            "Draw"
         status.text(
           "Game finished -- White: " + scoreWhite +
             " -- Black: " + scoreBlack + " -- " + winnerText)
@@ -230,7 +237,8 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
   }
 
   def computeFlips(square: Square): List[Square] = {
-    if (square.owner != NoPlayer) Nil
+    if (square.owner != NoPlayer)
+      Nil
     else {
       for {
         i <- (-1 to 1).toList
@@ -252,8 +260,10 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       allInDir.span(_.owner == currentPlayer.opponent)
 
     val success = remaining.headOption.exists(_.owner == currentPlayer)
-    if (success) toFlip
-    else Nil
+    if (success)
+      toFlip
+    else
+      Nil
   }
 
   def allSquaresInDirection(

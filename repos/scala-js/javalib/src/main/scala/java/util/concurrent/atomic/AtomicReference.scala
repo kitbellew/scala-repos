@@ -14,7 +14,8 @@ class AtomicReference[T <: AnyRef](private[this] var value: T)
     set(newValue)
 
   final def compareAndSet(expect: T, update: T): Boolean = {
-    if (expect ne value) false
+    if (expect ne value)
+      false
     else {
       value = update
       true

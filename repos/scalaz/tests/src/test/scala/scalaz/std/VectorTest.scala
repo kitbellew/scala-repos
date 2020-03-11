@@ -74,8 +74,10 @@ object VectorTest extends SpecLite {
     type W[A] = Writer[Vector[Int], A]
     val wxs = findM[Int, W](xs)(x => WriterT.writer(Vector(x) -> evenp(x)))
     (wxs.written, wxs.value) must_=== {
-      if (i < 0) (xs, None)
-      else (xs take (i + 1), Some(xs(i)))
+      if (i < 0)
+        (xs, None)
+      else
+        (xs take (i + 1), Some(xs(i)))
     }
   }
 
@@ -102,7 +104,10 @@ object VectorTest extends SpecLite {
   }
 
   "index" ! forAll { (xs: Vector[Int], n: Int) =>
-    (xs index n) must_=== (if (n >= 0 && xs.size > n) Some(xs(n)) else None)
+    (xs index n) must_=== (if (n >= 0 && xs.size > n)
+                             Some(xs(n))
+                           else
+                             None)
   }
 
   "groupWhen is groupWhenM[Id]" ! forAll { xs: Vector[Int] =>

@@ -17,7 +17,8 @@ class ScalaComponentTypeOfMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    if (params.length != 1) return null
+    if (params.length != 1)
+      return null
     params.head.calculateResult(context) match {
       case scTypeRes: ScalaTypeResult =>
         MacroUtil
@@ -37,9 +38,11 @@ class ScalaComponentTypeOfMacro extends Macro {
   override def calculateLookupItems(
       params: Array[Expression],
       context: ExpressionContext): Array[LookupElement] = {
-    if (params.length != 1) return null
+    if (params.length != 1)
+      return null
     val outerItems = params(0).calculateLookupItems(context)
-    if (outerItems == null) return null
+    if (outerItems == null)
+      return null
 
     outerItems
       .flatMap {

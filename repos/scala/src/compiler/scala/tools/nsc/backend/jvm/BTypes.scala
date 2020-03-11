@@ -275,7 +275,8 @@ abstract class BTypes {
     */
   def inlineInfoFromClassfile(classNode: ClassNode): InlineInfo = {
     def fromClassfileAttribute: Option[InlineInfo] = {
-      if (classNode.attrs == null) None
+      if (classNode.attrs == null)
+        None
       else
         classNode.attrs.asScala
           .collect({
@@ -290,8 +291,10 @@ abstract class BTypes {
         val isScala =
           classNode.attrs != null && classNode.attrs.asScala.exists(a =>
             a.`type` == BTypes.ScalaAttributeName || a.`type` == BTypes.ScalaSigAttributeName)
-        if (isScala) Some(NoInlineInfoAttribute(classNode.name))
-        else None
+        if (isScala)
+          Some(NoInlineInfoAttribute(classNode.name))
+        else
+          None
       }
       // when building MethodInlineInfos for the members of a ClassSymbol, we exclude those methods
       // in scalaPrimitives. This is necessary because some of them have non-erased types, which would
@@ -320,8 +323,10 @@ abstract class BTypes {
     // The InlineInfo is built from the classfile (not from the symbol) for all classes that are NOT
     // being compiled. For those classes, the info is only needed if the inliner is enabled, othewise
     // we can save the memory.
-    if (!compilerSettings.YoptInlinerEnabled) BTypes.EmptyInlineInfo
-    else fromClassfileAttribute getOrElse fromClassfileWithoutAttribute
+    if (!compilerSettings.YoptInlinerEnabled)
+      BTypes.EmptyInlineInfo
+    else
+      fromClassfileAttribute getOrElse fromClassfileWithoutAttribute
   }
 
   /**
@@ -410,8 +415,10 @@ abstract class BTypes {
 
           case classType: ClassBType =>
             if (isBoxed) {
-              if (other.isBoxed) this == other
-              else if (other == ObjectRef) true
+              if (other.isBoxed)
+                this == other
+              else if (other == ObjectRef)
+                true
               else
                 other match {
                   case otherClassType: ClassBType =>
@@ -421,8 +428,10 @@ abstract class BTypes {
                   case _ => false
                 }
             } else if (isNullType) {
-              if (other.isNothingType) false
-              else if (other.isPrimitive) false
+              if (other.isNothingType)
+                false
+              else if (other.isPrimitive)
+                false
               else
                 true // Null conforms to all classes (except Nothing) and arrays.
             } else if (isNothingType) {
@@ -457,9 +466,12 @@ abstract class BTypes {
       case pt: PrimitiveBType => pt.maxValueType(other)
 
       case _: ArrayBType | _: ClassBType =>
-        if (isNothingType) return other
-        if (other.isNothingType) return this
-        if (this == other) return this
+        if (isNothingType)
+          return other
+        if (other.isNothingType)
+          return this
+        if (this == other)
+          return this
 
         assert(other.isRef, s"Cannot compute maxType: $this, $other")
         // Approximate `lub`. The common type of two references is always ObjectReference.
@@ -561,16 +573,22 @@ abstract class BTypes {
       def uncomparable: Nothing =
         assertionError(s"Cannot compute maxValueType: $this, $other")
 
-      if (!other.isPrimitive && !other.isNothingType) uncomparable
+      if (!other.isPrimitive && !other.isNothingType)
+        uncomparable
 
-      if (other.isNothingType) return this
-      if (this == other) return this
+      if (other.isNothingType)
+        return this
+      if (this == other)
+        return this
 
       this match {
         case BYTE =>
-          if (other == CHAR) INT
-          else if (other.isNumericType) other
-          else uncomparable
+          if (other == CHAR)
+            INT
+          else if (other.isNumericType)
+            other
+          else
+            uncomparable
 
         case SHORT =>
           other match {
@@ -595,18 +613,26 @@ abstract class BTypes {
           }
 
         case LONG =>
-          if (other.isIntegralType) LONG
-          else if (other.isRealType) DOUBLE
-          else uncomparable
+          if (other.isIntegralType)
+            LONG
+          else if (other.isRealType)
+            DOUBLE
+          else
+            uncomparable
 
         case FLOAT =>
-          if (other == DOUBLE) DOUBLE
-          else if (other.isNumericType) FLOAT
-          else uncomparable
+          if (other == DOUBLE)
+            DOUBLE
+          else if (other.isNumericType)
+            FLOAT
+          else
+            uncomparable
 
         case DOUBLE =>
-          if (other.isNumericType) DOUBLE
-          else uncomparable
+          if (other.isNumericType)
+            DOUBLE
+          else
+            uncomparable
 
         case UNIT | BOOL => uncomparable
       }
@@ -931,7 +957,8 @@ abstract class BTypes {
     classBTypeFromInternalName(internalName) = this
 
     private def checkInfoConsistency(): Unit = {
-      if (info.isLeft) return
+      if (info.isLeft)
+        return
 
       // we assert some properties. however, some of the linked ClassBType (members, superClass,
       // interfaces) may not yet have an `_info` (initialization of cyclic structures). so we do a
@@ -949,7 +976,8 @@ abstract class BTypes {
         if (info.get.superClass.isEmpty) {
           isJLO(this) || (isCompilingPrimitive && ClassBType.hasNoSuper(
             internalName))
-        } else if (isInterface.get) isJLO(info.get.superClass.get)
+        } else if (isInterface.get)
+          isJLO(info.get.superClass.get)
         else
           !isJLO(this) && ifInit(info.get.superClass.get)(!_.isInterface.get),
         s"Invalid superClass in $this: ${info.get.superClass}"
@@ -1003,7 +1031,8 @@ abstract class BTypes {
         if (isNested)
           info.get.nestedInfo.get.enclosingClass.enclosingNestedClassesChain
             .map(this :: _)
-        else Right(Nil)
+        else
+          Right(Nil)
       })
     }
 
@@ -1019,7 +1048,10 @@ abstract class BTypes {
               GenBCode.mkFlags(
                 // the static flag in the InnerClass table has a special meaning, see InnerClass comment
                 i.flags & ~Opcodes.ACC_STATIC,
-                if (isStaticNestedClass) Opcodes.ACC_STATIC else 0
+                if (isStaticNestedClass)
+                  Opcodes.ACC_STATIC
+                else
+                  0
               ) & BCodeHelpers.INNER_CLASSES_FLAGS
             )
         })
@@ -1037,7 +1069,8 @@ abstract class BTypes {
 
     def isSubtypeOf(other: ClassBType): Either[NoClassBTypeInfo, Boolean] =
       try {
-        if (this == other) return Right(true)
+        if (this == other)
+          return Right(true)
         if (isInterface.orThrow) {
           if (other == ObjectRef)
             return Right(true) // interfaces conform to Object
@@ -1081,15 +1114,24 @@ abstract class BTypes {
           (this.isInterface.orThrow, other.isInterface.orThrow) match {
             case (true, true) =>
               // exercised by test/files/run/t4761.scala
-              if (other.isSubtypeOf(this).orThrow) this
-              else if (this.isSubtypeOf(other).orThrow) other
-              else ObjectRef
+              if (other.isSubtypeOf(this).orThrow)
+                this
+              else if (this.isSubtypeOf(other).orThrow)
+                other
+              else
+                ObjectRef
 
             case (true, false) =>
-              if (other.isSubtypeOf(this).orThrow) this else ObjectRef
+              if (other.isSubtypeOf(this).orThrow)
+                this
+              else
+                ObjectRef
 
             case (false, true) =>
-              if (this.isSubtypeOf(other).orThrow) other else ObjectRef
+              if (this.isSubtypeOf(other).orThrow)
+                other
+              else
+                ObjectRef
 
             case _ =>
               // TODO @lry I don't really understand the reasoning here.
@@ -1114,8 +1156,10 @@ abstract class BTypes {
       var chainB = bs
       var fcs: ClassBType = null
       do {
-        if (chainB contains chainA.head) fcs = chainA.head
-        else if (chainA contains chainB.head) fcs = chainB.head
+        if (chainB contains chainA.head)
+          fcs = chainA.head
+        else if (chainA contains chainB.head)
+          fcs = chainB.head
         else {
           chainA = chainA.tail
           chainB = chainB.tail

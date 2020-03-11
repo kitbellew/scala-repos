@@ -36,7 +36,10 @@ import scalafx.scene.Node._
 
 object AnchorPane {
   implicit def sfxAnchorPane2jfx(ap: AnchorPane): jfxsl.AnchorPane =
-    if (ap != null) ap.delegate else null
+    if (ap != null)
+      ap.delegate
+    else
+      null
 
   /**
     * Removes all anchorpane constraints from the child node.

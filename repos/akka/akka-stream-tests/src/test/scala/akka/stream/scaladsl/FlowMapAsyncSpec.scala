@@ -58,7 +58,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
         .run()
       val sub = c.expectSubscription()
       sub.request(1000)
-      for (n ← 1 to 50) c.expectNext(n)
+      for (n ← 1 to 50)
+        c.expectNext(n)
       c.expectComplete()
     }
 
@@ -86,7 +87,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
       probe.receiveN(9).toSet should be((12 to 20).toSet)
       probe.expectNoMsg(200.millis)
 
-      for (n ← 1 to 13) c.expectNext(n)
+      for (n ← 1 to 13)
+        c.expectNext(n)
       c.expectNoMsg(200.millis)
     }
 
@@ -97,7 +99,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
       val p = Source(1 to 5)
         .mapAsync(4)(n ⇒
           Future {
-            if (n == 3) throw new RuntimeException("err1") with NoStackTrace
+            if (n == 3)
+              throw new RuntimeException("err1") with NoStackTrace
             else {
               Await.ready(latch, 10.seconds)
               n
@@ -117,7 +120,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
       implicit val ec = system.dispatcher
       val p = Source(1 to 5)
         .mapAsync(4)(n ⇒
-          if (n == 3) throw new RuntimeException("err2") with NoStackTrace
+          if (n == 3)
+            throw new RuntimeException("err2") with NoStackTrace
           else {
             Future {
               Await.ready(latch, 10.seconds)
@@ -138,15 +142,18 @@ class FlowMapAsyncSpec extends AkkaSpec {
       val p = Source(1 to 5)
         .mapAsync(4)(n ⇒
           Future {
-            if (n == 3) throw new RuntimeException("err3") with NoStackTrace
-            else n
+            if (n == 3)
+              throw new RuntimeException("err3") with NoStackTrace
+            else
+              n
           })
         .withAttributes(supervisionStrategy(resumingDecider))
         .to(Sink.fromSubscriber(c))
         .run()
       val sub = c.expectSubscription()
       sub.request(10)
-      for (n ← List(1, 2, 4, 5)) c.expectNext(n)
+      for (n ← List(1, 2, 4, 5))
+        c.expectNext(n)
       c.expectComplete()
     }
 
@@ -174,8 +181,10 @@ class FlowMapAsyncSpec extends AkkaSpec {
         Source(1 to 3)
           .mapAsync(1)(n ⇒
             Future {
-              if (n == 3) throw new RuntimeException("err3b") with NoStackTrace
-              else n
+              if (n == 3)
+                throw new RuntimeException("err3b") with NoStackTrace
+              else
+                n
             })
           .withAttributes(supervisionStrategy(resumingDecider))
           .grouped(10)
@@ -189,14 +198,17 @@ class FlowMapAsyncSpec extends AkkaSpec {
       implicit val ec = system.dispatcher
       val p = Source(1 to 5)
         .mapAsync(4)(n ⇒
-          if (n == 3) throw new RuntimeException("err4") with NoStackTrace
-          else Future(n))
+          if (n == 3)
+            throw new RuntimeException("err4") with NoStackTrace
+          else
+            Future(n))
         .withAttributes(supervisionStrategy(resumingDecider))
         .to(Sink.fromSubscriber(c))
         .run()
       val sub = c.expectSubscription()
       sub.request(10)
-      for (n ← List(1, 2, 4, 5)) c.expectNext(n)
+      for (n ← List(1, 2, 4, 5))
+        c.expectNext(n)
       c.expectComplete()
     }
 
@@ -216,13 +228,17 @@ class FlowMapAsyncSpec extends AkkaSpec {
       val c = TestSubscriber.manualProbe[String]()
       val p = Source(List("a", "b", "c"))
         .mapAsync(4)(elem ⇒
-          if (elem == "b") Future.successful(null) else Future.successful(elem))
+          if (elem == "b")
+            Future.successful(null)
+          else
+            Future.successful(elem))
         .withAttributes(supervisionStrategy(resumingDecider))
         .to(Sink.fromSubscriber(c))
         .run()
       val sub = c.expectSubscription()
       sub.request(10)
-      for (elem ← List("a", "c")) c.expectNext(elem)
+      for (elem ← List("a", "c"))
+        c.expectNext(elem)
       c.expectComplete()
     }
 
@@ -266,7 +282,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
             } catch {
               case _: InterruptedException ⇒ false
             }
-          if (cont) run()
+          if (cont)
+            run()
         }
       }
       timer.start

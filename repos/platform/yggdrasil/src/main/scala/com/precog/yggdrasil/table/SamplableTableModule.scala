@@ -104,7 +104,8 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
                           }
                           loop(i + 1, len + 1)
                         }
-                      } else len
+                      } else
+                        len
 
                     val newLength = loop(0, len0)
 
@@ -247,8 +248,9 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
               def unsafeMove(from: Int, to: Int) = dest.update(to, true)
             }
           case (
-              src: HomogeneousArrayColumn[a],
-              dest0: ArrayHomogeneousArrayColumn[_]) if src.tpe == dest0.tpe =>
+                src: HomogeneousArrayColumn[a],
+                dest0: ArrayHomogeneousArrayColumn[_])
+              if src.tpe == dest0.tpe =>
             val dest = dest0.asInstanceOf[ArrayHomogeneousArrayColumn[a]]
             new ColumnOps(src, dest) {
               def unsafeInsert(srcRow: Int, destRow: Int) =

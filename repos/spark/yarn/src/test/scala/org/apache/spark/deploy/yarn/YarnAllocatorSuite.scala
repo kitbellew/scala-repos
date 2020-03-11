@@ -38,8 +38,10 @@ import org.apache.spark.scheduler.SplitInfo
 class MockResolver extends DNSToSwitchMapping {
 
   override def resolve(names: JList[String]): JList[String] = {
-    if (names.size > 0 && names.get(0) == "host3") Arrays.asList("/rack2")
-    else Arrays.asList("/rack1")
+    if (names.size > 0 && names.get(0) == "host3")
+      Arrays.asList("/rack2")
+    else
+      Arrays.asList("/rack1")
   }
 
   override def reloadCachedMappings() {}

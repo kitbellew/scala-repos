@@ -21,14 +21,22 @@ case class Opening(
 
   lazy val qualityMoves: List[QualityMove] = {
     val bestCp = moves.foldLeft(Int.MaxValue) {
-      case (cp, move) => if (move.cp < cp) move.cp else cp
+      case (cp, move) =>
+        if (move.cp < cp)
+          move.cp
+        else
+          cp
     }
     moves.map { move =>
       QualityMove(move, Quality(move.cp - bestCp))
     }
   }
 
-  def winPercent = if (attempts == 0) 0 else wins * 100 / attempts
+  def winPercent =
+    if (attempts == 0)
+      0
+    else
+      wins * 100 / attempts
 }
 
 sealed abstract class Quality(val threshold: Int) {
@@ -40,9 +48,12 @@ object Quality {
   case object Bad extends Quality(Int.MaxValue)
 
   def apply(cp: Int) =
-    if (cp < Good.threshold) Good
-    else if (cp < Dubious.threshold) Dubious
-    else Bad
+    if (cp < Good.threshold)
+      Good
+    else if (cp < Dubious.threshold)
+      Dubious
+    else
+      Bad
 }
 
 case class QualityMove(move: Move, quality: Quality)

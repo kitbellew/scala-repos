@@ -105,7 +105,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           val cx = schema.columns(JType.JUniverseT).toArray
           var count = 0L
           RangeUtil.loop(range) { i =>
-            if (Column.isDefinedAt(cx, i)) count += 1L
+            if (Column.isDefinedAt(cx, i))
+              count += 1L
           }
           count
         }
@@ -127,8 +128,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             r <- right
           } yield {
             val res = NumericComparisons.compare(l, r)
-            if (res > 0) l
-            else r
+            if (res > 0)
+              l
+            else
+              r
           }) orElse left orElse right
         }
       }
@@ -148,14 +151,21 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               }
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (NumericComparisons.compare(z, zmax) > 0) zmax = z
+                if (NumericComparisons.compare(z, zmax) > 0)
+                  zmax = z
               }
-              if (seen) Some(zmax) else None
+              if (seen)
+                Some(zmax)
+              else
+                None
 
             case _ => None
           }
 
-          if (maxs.isEmpty) None else maxs.suml(monoid)
+          if (maxs.isEmpty)
+            None
+          else
+            maxs.suml(monoid)
         }
       }
 
@@ -180,8 +190,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             r <- right
           } yield {
             val res = NumericComparisons.compare(l, r)
-            if (res < 0) l
-            else r
+            if (res < 0)
+              l
+            else
+              r
           }) orElse left orElse right
         }
       }
@@ -201,14 +213,21 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               }
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (NumericComparisons.compare(z, zmax) < 0) zmax = z
+                if (NumericComparisons.compare(z, zmax) < 0)
+                  zmax = z
               }
-              if (seen) Some(zmax) else None
+              if (seen)
+                Some(zmax)
+              else
+                None
 
             case _ => None
           }
 
-          if (maxs.isEmpty) None else maxs.suml(monoid)
+          if (maxs.isEmpty)
+            None
+          else
+            maxs.suml(monoid)
         }
       }
 
@@ -230,7 +249,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def zero = None
         def append(left: Result, right: => Result): Result = {
           (for (l <- left;
-                r <- right) yield l max r) orElse left orElse right
+                r <- right)
+            yield l max r) orElse left orElse right
         }
       }
 
@@ -245,9 +265,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmax = Long.MinValue
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (z > zmax) zmax = z
+                if (z > zmax)
+                  zmax = z
               }
-              if (seen) Some(BigDecimal(zmax)) else None
+              if (seen)
+                Some(BigDecimal(zmax))
+              else
+                None
 
             case col: DoubleColumn =>
               // since -inf is not a legal value, it's a great starting point for
@@ -255,10 +279,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmax = Double.NegativeInfinity
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (z > zmax) zmax = z
+                if (z > zmax)
+                  zmax = z
               }
-              if (zmax > Double.NegativeInfinity) Some(BigDecimal(zmax))
-              else None
+              if (zmax > Double.NegativeInfinity)
+                Some(BigDecimal(zmax))
+              else
+                None
 
             case col: NumColumn =>
               // we can just use a null BigDecimal to signal that we haven't
@@ -266,15 +293,22 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmax: BigDecimal = null
               RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (zmax == null || z > zmax) zmax = z
+                if (zmax == null || z > zmax)
+                  zmax = z
               }
-              if (zmax != null) Some(zmax) else None
+              if (zmax != null)
+                Some(zmax)
+              else
+                None
 
             case _ => None
           }
 
           // now we just find the max out of all of our column types
-          if (maxs.isEmpty) None else maxs.suml(monoid)
+          if (maxs.isEmpty)
+            None
+          else
+            maxs.suml(monoid)
         }
       }
 
@@ -296,7 +330,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def zero = None
         def append(left: Result, right: => Result): Result = {
           (for (l <- left;
-                r <- right) yield l min r) orElse left orElse right
+                r <- right)
+            yield l min r) orElse left orElse right
         }
       }
 
@@ -311,9 +346,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmin = Long.MaxValue
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (z < zmin) zmin = z
+                if (z < zmin)
+                  zmin = z
               }
-              if (seen) Some(BigDecimal(zmin)) else None
+              if (seen)
+                Some(BigDecimal(zmin))
+              else
+                None
 
             case col: DoubleColumn =>
               // since +inf is not a legal value, it's a great starting point for
@@ -321,10 +360,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmin = Double.PositiveInfinity
               RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (z < zmin) zmin = z
+                if (z < zmin)
+                  zmin = z
               }
-              if (zmin < Double.PositiveInfinity) Some(BigDecimal(zmin))
-              else None
+              if (zmin < Double.PositiveInfinity)
+                Some(BigDecimal(zmin))
+              else
+                None
 
             case col: NumColumn =>
               // we can just use a null BigDecimal to signal that we haven't
@@ -332,15 +374,22 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var zmin: BigDecimal = null
               RangeUtil.loopDefined(range, col) { i =>
                 val z = col(i)
-                if (zmin == null || z < zmin) zmin = z
+                if (zmin == null || z < zmin)
+                  zmin = z
               }
-              if (zmin != null) Some(zmin) else None
+              if (zmin != null)
+                Some(zmin)
+              else
+                None
 
             case _ => None
           }
 
           // now we just find the min out of all of our column types
-          if (mins.isEmpty) None else mins.suml(monoid)
+          if (mins.isEmpty)
+            None
+          else
+            mins.suml(monoid)
         }
       }
 
@@ -372,7 +421,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 ls.add(col(i))
               }
-              if (seen) Some(ls.total) else None
+              if (seen)
+                Some(ls.total)
+              else
+                None
 
             // TODO: exactness + overflow
             case col: DoubleColumn =>
@@ -380,19 +432,28 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               var seen = RangeUtil.loopDefined(range, col) { i =>
                 t += col(i)
               }
-              if (seen) Some(BigDecimal(t)) else None
+              if (seen)
+                Some(BigDecimal(t))
+              else
+                None
 
             case col: NumColumn =>
               var t = BigDecimal(0)
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 t += col(i)
               }
-              if (seen) Some(t) else None
+              if (seen)
+                Some(t)
+              else
+                None
 
             case _ => None
           }
 
-          if (sum.isEmpty) None else sum.suml(monoid)
+          if (sum.isEmpty)
+            None
+          else
+            sum.suml(monoid)
         }
       }
 
@@ -426,7 +487,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 ls.add(col(i))
                 count += 1L
               }
-              if (count > 0L) Some((ls.total, count)) else None
+              if (count > 0L)
+                Some((ls.total, count))
+              else
+                None
 
             case col: DoubleColumn =>
               var count = 0L
@@ -435,7 +499,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 t += col(i)
                 count += 1L
               }
-              if (count > 0L) Some((t, count)) else None
+              if (count > 0L)
+                Some((t, count))
+              else
+                None
 
             case col: NumColumn =>
               var count = 0L
@@ -444,12 +511,18 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 t += col(i)
                 count += 1L
               }
-              if (count > 0L) Some((t, count)) else None
+              if (count > 0L)
+                Some((t, count))
+              else
+                None
 
             case _ => None
           }
 
-          if (results.isEmpty) None else results.suml(monoid)
+          if (results.isEmpty)
+            None
+          else
+            results.suml(monoid)
         }
       }
 
@@ -477,7 +550,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def append(left: Result, right: => Result) = {
           val both =
             for ((l1, l2) <- left;
-                 (r1, r2) <- right) yield (l1 * r1, l2 + r2)
+                 (r1, r2) <- right)
+              yield (l1 * r1, l2 + r2)
           both orElse left orElse right
         }
       }
@@ -495,7 +569,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   prod *= col(i)
                   count += 1L
                 }
-                if (count > 0) Some((prod, count)) else None
+                if (count > 0)
+                  Some((prod, count))
+                else
+                  None
 
               case col: DoubleColumn =>
                 var prod = BigDecimal(1)
@@ -504,7 +581,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   prod *= col(i)
                   count += 1L
                 }
-                if (count > 0) Some((prod, count)) else None
+                if (count > 0)
+                  Some((prod, count))
+                else
+                  None
 
               case col: NumColumn =>
                 var prod = BigDecimal(1)
@@ -513,12 +593,18 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   prod *= col(i)
                   count += 1L
                 }
-                if (count > 0) Some((prod, count)) else None
+                if (count > 0)
+                  Some((prod, count))
+                else
+                  None
 
               case _ => None
             }
 
-            if (results.isEmpty) None else results.suml(monoid)
+            if (results.isEmpty)
+              None
+            else
+              results.suml(monoid)
           }
         }
 
@@ -554,26 +640,38 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 ls.addSquare(col(i))
               }
-              if (seen) Some(ls.total) else None
+              if (seen)
+                Some(ls.total)
+              else
+                None
 
             case col: DoubleColumn =>
               var t = BigDecimal(0)
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 t += BigDecimal(col(i)) pow 2
               }
-              if (seen) Some(t) else None
+              if (seen)
+                Some(t)
+              else
+                None
 
             case col: NumColumn =>
               var t = BigDecimal(0)
               val seen = RangeUtil.loopDefined(range, col) { i =>
                 t += col(i) pow 2
               }
-              if (seen) Some(t) else None
+              if (seen)
+                Some(t)
+              else
+                None
 
             case _ => None
           }
 
-          if (result.isEmpty) None else result.suml(monoid)
+          if (result.isEmpty)
+            None
+          else
+            result.suml(monoid)
         }
       }
 
@@ -604,7 +702,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               sumsq.addSquare(z)
             }
 
-            if (seen) Some((count, sum.total, sumsq.total)) else None
+            if (seen)
+              Some((count, sum.total, sumsq.total))
+            else
+              None
 
           case col: DoubleColumn =>
             var count = 0L
@@ -617,7 +718,10 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               sumsq += z pow 2
             }
 
-            if (seen) Some((count, sum, sumsq)) else None
+            if (seen)
+              Some((count, sum, sumsq))
+            else
+              None
 
           case col: NumColumn =>
             var count = 0L
@@ -630,12 +734,18 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               sumsq += z pow 2
             }
 
-            if (seen) Some((count, sum, sumsq)) else None
+            if (seen)
+              Some((count, sum, sumsq))
+            else
+              None
 
           case _ => None
         }
 
-        if (result.isEmpty) None else result.suml
+        if (result.isEmpty)
+          None
+        else
+          result.suml
       }
     }
 
@@ -712,7 +822,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def append(left: Option[Boolean], right: => Option[Boolean]) = {
           val both =
             for (l <- left;
-                 r <- right) yield l && r
+                 r <- right)
+              yield l && r
           both orElse left orElse right
         }
       }
@@ -767,7 +878,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def append(left: Option[Boolean], right: => Option[Boolean]) = {
           val both =
             for (l <- left;
-                 r <- right) yield l || r
+                 r <- right)
+              yield l || r
           both orElse left orElse right
         }
       }

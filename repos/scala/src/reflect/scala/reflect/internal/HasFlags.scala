@@ -130,7 +130,8 @@ trait HasFlags {
 
   def flagBitsToString(bits: Long): String = {
     // Fast path for common case
-    if (bits == 0L) ""
+    if (bits == 0L)
+      ""
     else {
       var sb: StringBuilder = null
       var i = 0
@@ -139,36 +140,56 @@ trait HasFlags {
         if ((bits & flag) != 0L) {
           val s = resolveOverloadedFlag(flag)
           if (s.length > 0) {
-            if (sb eq null) sb = new StringBuilder append s
-            else if (sb.length == 0) sb append s
-            else sb append " " append s
+            if (sb eq null)
+              sb = new StringBuilder append s
+            else if (sb.length == 0)
+              sb append s
+            else
+              sb append " " append s
           }
         }
         i += 1
       }
-      if (sb eq null) "" else sb.toString
+      if (sb eq null)
+        ""
+      else
+        sb.toString
     }
   }
 
   def accessString: String = {
-    val pw = if (hasAccessBoundary) privateWithin.toString else ""
+    val pw =
+      if (hasAccessBoundary)
+        privateWithin.toString
+      else
+        ""
 
     if (pw == "") {
-      if (hasAllFlags(PrivateLocal)) "private[this]"
-      else if (hasAllFlags(ProtectedLocal)) "protected[this]"
-      else if (hasFlag(PRIVATE)) "private"
-      else if (hasFlag(PROTECTED)) "protected"
-      else ""
-    } else if (hasFlag(PROTECTED)) "protected[" + pw + "]"
-    else "private[" + pw + "]"
+      if (hasAllFlags(PrivateLocal))
+        "private[this]"
+      else if (hasAllFlags(ProtectedLocal))
+        "protected[this]"
+      else if (hasFlag(PRIVATE))
+        "private"
+      else if (hasFlag(PROTECTED))
+        "protected"
+      else
+        ""
+    } else if (hasFlag(PROTECTED))
+      "protected[" + pw + "]"
+    else
+      "private[" + pw + "]"
   }
   protected def calculateFlagString(basis: Long): String = {
     val access = accessString
     val nonAccess = flagBitsToString(basis & ~AccessFlags)
 
-    if (access == "") nonAccess
-    else if (nonAccess == "") access
-    else nonAccess + " " + access
+    if (access == "")
+      nonAccess
+    else if (nonAccess == "")
+      access
+    else
+      nonAccess + " " + access
   }
 
   // Guess this can't be deprecated seeing as it's in the reflect API.

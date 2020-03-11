@@ -16,7 +16,8 @@ final case class LinkValue(uri: Uri, params: immutable.Seq[LinkParam])
     with ValueRenderable {
   def render[R <: Rendering](r: R): r.type = {
     r ~~ '<' ~~ uri ~~ '>'
-    if (params.nonEmpty) r ~~ "; " ~~ params
+    if (params.nonEmpty)
+      r ~~ "; " ~~ params
     r
   }
 
@@ -55,7 +56,10 @@ object LinkParams {
   final case class rel(value: String) extends LinkParam {
     def render[R <: Rendering](r: R): r.type = {
       r ~~ "rel="
-      if (reserved matchesAny value) r ~~ '"' ~~ value ~~ '"' else r ~~ value
+      if (reserved matchesAny value)
+        r ~~ '"' ~~ value ~~ '"'
+      else
+        r ~~ value
     }
   }
 
@@ -71,7 +75,10 @@ object LinkParams {
   final case class rev(value: String) extends LinkParam {
     def render[R <: Rendering](r: R): r.type = {
       r ~~ "rev="
-      if (reserved matchesAny value) r ~~ '"' ~~ value ~~ '"' else r ~~ value
+      if (reserved matchesAny value)
+        r ~~ '"' ~~ value ~~ '"'
+      else
+        r ~~ value
     }
   }
 
@@ -88,7 +95,10 @@ object LinkParams {
 
     def render[R <: Rendering](r: R): r.type = {
       r ~~ "media="
-      if (reserved matchesAny desc) r ~~ '"' ~~ desc ~~ '"' else r ~~ desc
+      if (reserved matchesAny desc)
+        r ~~ '"' ~~ desc ~~ '"'
+      else
+        r ~~ desc
     }
   }
 
@@ -105,7 +115,10 @@ object LinkParams {
 
     def render[R <: Rendering](r: R): r.type = {
       r ~~ "title*="
-      if (reserved matchesAny title) r ~~ '"' ~~ title ~~ '"' else r ~~ title
+      if (reserved matchesAny title)
+        r ~~ '"' ~~ title ~~ '"'
+      else
+        r ~~ title
     }
   }
 
@@ -117,7 +130,8 @@ object LinkParams {
       r ~~ "type="
       if (reserved matchesAny mediaType.value)
         r ~~ '"' ~~ mediaType.value ~~ '"'
-      else r ~~ mediaType.value
+      else
+        r ~~ mediaType.value
     }
   }
 }

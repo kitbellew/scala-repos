@@ -83,7 +83,8 @@ class Decoder extends AbstractDecoder with StateMachine {
         decodeLine(buffer, needsData) { tokens =>
           if (isEnd(tokens)) {
             ValueLines(valuesSoFar)
-          } else NeedMoreData
+          } else
+            NeedMoreData
         }
     }
   }
@@ -127,12 +128,15 @@ class Decoder extends AbstractDecoder with StateMachine {
     if (responseName == VALUE) {
       validateValueResponse(tokens)
       tokens(3).toInt
-    } else -1
+    } else
+      -1
   }
 
   private[this] def validateValueResponse(args: Seq[ChannelBuffer]) {
-    if (args.length < 4) throw new ServerError("Too few arguments")
-    if (args.length > 5) throw new ServerError("Too many arguments")
+    if (args.length < 4)
+      throw new ServerError("Too few arguments")
+    if (args.length > 5)
+      throw new ServerError("Too many arguments")
     if (args.length == 5 && !ParserUtils.isDigits(args(4)))
       throw new ServerError("CAS must be a number")
     if (!ParserUtils.isDigits(args(3)))

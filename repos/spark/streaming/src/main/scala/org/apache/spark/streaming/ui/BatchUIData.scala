@@ -132,7 +132,8 @@ private[ui] case class OutputOperationUIData(
 
   def duration: Option[Long] =
     for (s <- startTime;
-         e <- endTime) yield e - s
+         e <- endTime)
+      yield e - s
 }
 
 private[ui] object OutputOperationUIData {

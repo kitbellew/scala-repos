@@ -66,7 +66,10 @@ class MessageTest extends JUnitSuite {
     }
 
     def ensureValid(magicValue: Byte, timestamp: Long): Long =
-      if (magicValue > Message.MagicValue_V0) timestamp else Message.NoTimestamp
+      if (magicValue > Message.MagicValue_V0)
+        timestamp
+      else
+        Message.NoTimestamp
   }
 
   @Test

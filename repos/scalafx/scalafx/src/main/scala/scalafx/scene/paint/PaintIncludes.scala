@@ -143,7 +143,10 @@ trait PaintIncludes {
     * @return $SFX $CLR
     */
   implicit def jfxColor2sfx(c: jfxsp.Color): Color =
-    if (c != null) new Color(c) else null
+    if (c != null)
+      new Color(c)
+    else
+      null
 
   /**
     * $START$CMT.html $CMT$END
@@ -161,7 +164,10 @@ trait PaintIncludes {
     * @return $SFX $LGD
     */
   implicit def jfxLinearGradient2sfx(lg: jfxsp.LinearGradient): LinearGradient =
-    if (lg != null) new LinearGradient(lg) else null
+    if (lg != null)
+      new LinearGradient(lg)
+    else
+      null
 
   /**
     * $START$PHM.html $PHM$END
@@ -170,7 +176,10 @@ trait PaintIncludes {
     * @return $SFX $PHM
     */
   implicit def jfxPhongMaterial2sfx(pm: jfxsp.PhongMaterial): PhongMaterial =
-    if (pm != null) new PhongMaterial(pm) else null
+    if (pm != null)
+      new PhongMaterial(pm)
+    else
+      null
 
   /**
     * $START$RGD.html $RGD$END
@@ -179,7 +188,10 @@ trait PaintIncludes {
     * @return $SFX $RGD
     */
   implicit def jfxRadialGradient2sfx(rg: jfxsp.RadialGradient): RadialGradient =
-    if (rg != null) new RadialGradient(rg) else null
+    if (rg != null)
+      new RadialGradient(rg)
+    else
+      null
 
   /**
     * $START$STP.html $STP$END
@@ -188,7 +200,10 @@ trait PaintIncludes {
     * @return $SFX $STP
     */
   implicit def jfxStop2sfx(c: jfxsp.Stop): Stop =
-    if (c != null) new Stop(c) else null
+    if (c != null)
+      new Stop(c)
+    else
+      null
 
   /**
     * $START$PNT.html $PNT$END
@@ -197,7 +212,9 @@ trait PaintIncludes {
     * @return $SFX $PNT
     */
   implicit def jfxPaint2sfx(p: jfxsp.Paint): Paint =
-    if (p != null) new Paint(p) {}
-    else null
+    if (p != null)
+      new Paint(p) {}
+    else
+      null
 
 }

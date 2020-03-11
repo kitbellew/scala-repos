@@ -423,7 +423,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       private def build(c: StrColumn) = new Map1Column(c) with NumColumn {
         override def isDefinedAt(row: Int): Boolean = {
-          if (!super.isDefinedAt(row)) return false
+          if (!super.isDefinedAt(row))
+            return false
           val s = c(row)
           s != null && decPattern.matcher(s).matches
         }
@@ -509,7 +510,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             if (left.isDefinedAt(row) && right.isDefinedAt(row)) {
               try {
                 val pattern =
-                  if (quote) Pattern.quote(right(row)) else right(row)
+                  if (quote)
+                    Pattern.quote(right(row))
+                  else
+                    right(row)
 
                 // TOOD cache compiled patterns for awesome sauce
                 result(row) = Pattern.compile(pattern).split(left(row), -1)

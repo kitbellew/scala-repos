@@ -40,7 +40,8 @@ private object PostgresDialect extends JdbcDialect {
       val scale = md.build.getLong("scale").toInt
       // postgres array type names start with underscore
       toCatalystType(typeName.drop(1), size, scale).map(ArrayType(_))
-    } else None
+    } else
+      None
   }
 
   private def toCatalystType(

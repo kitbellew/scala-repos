@@ -92,31 +92,43 @@ class ScalaFileImpl(
       DecompilerUtil
         .decompile(virtualFile, virtualFile.contentsToByteArray)
         .sourceName
-    } else ""
+    } else
+      ""
   }
 
   override def getName: String = {
-    if (virtualFile != null) virtualFile.getName
-    else super.getName
+    if (virtualFile != null)
+      virtualFile.getName
+    else
+      super.getName
   }
 
   override def getVirtualFile: VirtualFile = {
-    if (virtualFile != null) virtualFile
-    else super.getVirtualFile
+    if (virtualFile != null)
+      virtualFile
+    else
+      super.getVirtualFile
   }
 
   override def getNavigationElement: PsiElement = {
-    if (!isCompiled) this
+    if (!isCompiled)
+      this
     else {
       val inner: String = getPackageNameInner
       val pName = inner + typeDefinitions
         .find(_.isPackageObject)
-        .map((if (inner.length > 0) "." else "") + _.name)
+        .map(
+          (if (inner.length > 0)
+             "."
+           else
+             "") + _.name)
         .getOrElse("")
       val sourceFile = sourceName
       val relPath =
-        if (pName.length == 0) sourceFile
-        else pName.replace(".", "/") + "/" + sourceFile
+        if (pName.length == 0)
+          sourceFile
+        else
+          pName.replace(".", "/") + "/" + sourceFile
 
       // Look in libraries' sources
       val vFile = getContainingFile.getVirtualFile
@@ -144,7 +156,8 @@ class ScalaFileImpl(
       entryIterator = entries.iterator
 
       //Look in libraries sources if file not relative to path
-      if (typeDefinitions.isEmpty) return this
+      if (typeDefinitions.isEmpty)
+        return this
       val qual = typeDefinitions.head.qualifiedName
       var result: Option[PsiFile] = None
 
@@ -209,7 +222,8 @@ class ScalaFileImpl(
               _: ScTypeAlias =>
             return true
           case _ =>
-            if (n.getElementType == ScalaTokenTypes.tSH_COMMENT) return true
+            if (n.getElementType == ScalaTokenTypes.tSH_COMMENT)
+              return true
         }
       }
       false
@@ -224,8 +238,10 @@ class ScalaFileImpl(
   private def isScriptFileCached: Boolean = isScriptFileImpl
 
   def isScriptFile(withCaching: Boolean): Boolean = {
-    if (!withCaching) isScriptFileImpl
-    else isScriptFileCached
+    if (!withCaching)
+      isScriptFileImpl
+    else
+      isScriptFileCached
   }
 
   def isWorksheetFile: Boolean = {
@@ -265,7 +281,8 @@ class ScalaFileImpl(
   }
 
   def setPackageName(base: String, name: String) {
-    if (packageName == null) return
+    if (packageName == null)
+      return
 
     val vector = ScalaFileImpl.toVector(name)
 
@@ -355,25 +372,33 @@ class ScalaFileImpl(
       stub.getChildrenByType(
         ScalaElementTypes.PACKAGING,
         JavaArrayFactoryUtil.ScPackagingFactory)
-    } else findChildrenByClass(classOf[ScPackaging])
+    } else
+      findChildrenByClass(classOf[ScPackaging])
   }
 
   def getPackageName: String = {
     val res = packageName
-    if (res == null) ""
-    else res
+    if (res == null)
+      ""
+    else
+      res
   }
 
   @Nullable
   def packageName: String = {
-    if (isScriptFile(withCaching = false) || isWorksheetFile) return null
+    if (isScriptFile(withCaching = false) || isWorksheetFile)
+      return null
     var res: String = ""
     var x: ScToplevelElement = this
     while (true) {
       val packs: Seq[ScPackaging] = x.packagings
-      if (packs.length > 1) return null
+      if (packs.length > 1)
+        return null
       else if (packs.isEmpty)
-        return if (res.length == 0) res else res.substring(1)
+        return if (res.length == 0)
+          res
+        else
+          res.substring(1)
       res += "." + packs.head.getPackageName
       x = packs.head
     }
@@ -387,13 +412,15 @@ class ScalaFileImpl(
       val subs = p.packagings
       if (subs.nonEmpty && !subs.head.isExplicit)
         inner(subs.head, prefix + "." + subs.head.getPackageName)
-      else prefix
+      else
+        prefix
     }
 
     if (ps.length > 0 && !ps(0).isExplicit) {
       val prefix = ps(0).getPackageName
       inner(ps(0), prefix)
-    } else ""
+    } else
+      ""
   }
 
   override def getClasses: Array[PsiClass] = {
@@ -425,7 +452,8 @@ class ScalaFileImpl(
         }
       }
       arrayBuffer.toArray
-    } else PsiClass.EMPTY_ARRAY
+    } else
+      PsiClass.EMPTY_ARRAY
   }
 
   def icon = Icons.FILE_TYPE_LOGO
@@ -473,7 +501,8 @@ class ScalaFileImpl(
 
   def getFileResolveScope: GlobalSearchScope = {
     val vFile = getOriginalFile.getVirtualFile
-    if (vFile == null) GlobalSearchScope.allScope(getProject)
+    if (vFile == null)
+      GlobalSearchScope.allScope(getProject)
     else {
       val resolveScopeManager = ResolveScopeManager.getInstance(getProject)
       if (isCompiled) {
@@ -482,7 +511,8 @@ class ScalaFileImpl(
           .getFileIndex
           .getOrderEntriesForFile(vFile)
         LibraryScopeCache.getInstance(getProject).getLibraryScope(orderEntries)
-      } else resolveScopeManager.getDefaultResolveScope(vFile)
+      } else
+        resolveScopeManager.getDefaultResolveScope(vFile)
     }
   }
 
@@ -552,14 +582,18 @@ object ScalaFileImpl {
       case s: ScalaPsiElement => s.getDeepSameElementInContext
       case _                  => _place
     }
-    if (place == null) return false
+    if (place == null)
+      return false
     val containingFile: PsiFile = place.getContainingFile
-    if (containingFile == null) return false
+    if (containingFile == null)
+      return false
     containingFile match {
       case s: ScalaFile =>
-        if (s.isWorksheetFile) return true
+        if (s.isWorksheetFile)
+          return true
         val file: VirtualFile = s.getVirtualFile
-        if (file == null) return false
+        if (file == null)
+          return false
         val index =
           ProjectRootManager.getInstance(place.getProject).getFileIndex
         !(index.isInSourceContent(file) || index.isInLibraryClasses(
@@ -584,7 +618,8 @@ object ScalaFileImpl {
   def splitAt(
       path: List[List[String]],
       vector: List[String]): List[List[String]] = {
-    if (vector.isEmpty) path
+    if (vector.isEmpty)
+      path
     else
       path match {
         case h :: t if h == vector => h :: t
@@ -597,7 +632,10 @@ object ScalaFileImpl {
   }
 
   def toVector(name: String): List[String] =
-    if (name.isEmpty) Nil else name.split('.').toList
+    if (name.isEmpty)
+      Nil
+    else
+      name.split('.').toList
 
   private[this] var duringMoveRefactoring: Boolean = false
 

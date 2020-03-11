@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object CheckBox {
   implicit def sfxCheckBox2jfx(v: CheckBox): jfxsc.CheckBox =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class CheckBox(override val delegate: jfxsc.CheckBox = new jfxsc.CheckBox)

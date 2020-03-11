@@ -18,9 +18,17 @@ abstract class ComparisonCriteria {
     if (expecteds != actuals &&
         !java.util.Arrays.deepEquals(Array(expecteds), Array(actuals))) {
 
-      val header = if (message == null) "" else s"$message: "
+      val header =
+        if (message == null)
+          ""
+        else
+          s"$message: "
 
-      val exceptionMessage = if (outer) header else ""
+      val exceptionMessage =
+        if (outer)
+          header
+        else
+          ""
       val expectedsLength =
         assertArraysAreSameLength(expecteds, actuals, exceptionMessage)
 

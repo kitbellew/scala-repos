@@ -34,7 +34,8 @@ class ScalaKindCompletionWeigher extends CompletionWeigher {
       val cclass = inMember.getContainingClass
       val noClass = cclass == null
 
-      if (noClass) return normal
+      if (noClass)
+        return normal
       inMember match {
         case f: ScValue    => field
         case f: ScVariable => field

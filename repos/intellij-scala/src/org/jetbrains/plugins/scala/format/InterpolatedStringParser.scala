@@ -19,10 +19,11 @@ object InterpolatedStringParser extends StringParser {
   def parse(
       element: PsiElement,
       checkStripMargin: Boolean): Option[Seq[StringPart]] = {
-    if (checkStripMargin) element match {
-      case WithStrippedMargin(_, _) => return StripMarginParser.parse(element)
-      case _                        =>
-    }
+    if (checkStripMargin)
+      element match {
+        case WithStrippedMargin(_, _) => return StripMarginParser.parse(element)
+        case _                        =>
+      }
     Some(element) collect {
       case literal: ScInterpolatedStringLiteral =>
         val formatted = literal.firstChild.exists(_.getText == "f")
@@ -36,12 +37,15 @@ object InterpolatedStringParser extends StringParser {
           case (expression: ScExpression, next) =>
             val actualExpression = expression match {
               case block: ScBlockExpr =>
-                if (block.exprs.length > 1) block
-                else block.exprs.headOption.getOrElse(block)
+                if (block.exprs.length > 1)
+                  block
+                else
+                  block.exprs.headOption.getOrElse(block)
               case it => it
             }
             val specifier =
-              if (!formatted) None
+              if (!formatted)
+                None
               else
                 next match {
                   case Some(e) if isTextElement(e) =>
@@ -56,7 +60,8 @@ object InterpolatedStringParser extends StringParser {
           case (e, _) if isTextElement(e) =>
             val text = {
               val s = textIn(e)
-              if (!formatted) s
+              if (!formatted)
+                s
               else
                 FormatSpecifierPattern
                   .findFirstIn(s)
@@ -71,7 +76,11 @@ object InterpolatedStringParser extends StringParser {
 
         (parts match {
           case (Text(s) :: t) =>
-            val edgeLength = if (literal.isMultiLineString) 3 else 1
+            val edgeLength =
+              if (literal.isMultiLineString)
+                3
+              else
+                1
             Text(s.drop(edgeLength)) :: t
           case it => it
         }) flatMap {

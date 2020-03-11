@@ -14,15 +14,28 @@ import StatusCodes.ClientError
 final case class ErrorInfo(summary: String = "", detail: String = "") {
   def withSummary(newSummary: String) = copy(summary = newSummary)
   def withSummaryPrepended(prefix: String) =
-    withSummary(if (summary.isEmpty) prefix else prefix + ": " + summary)
+    withSummary(
+      if (summary.isEmpty)
+        prefix
+      else
+        prefix + ": " + summary)
   def withFallbackSummary(fallbackSummary: String) =
-    if (summary.isEmpty) withSummary(fallbackSummary) else this
+    if (summary.isEmpty)
+      withSummary(fallbackSummary)
+    else
+      this
   def formatPretty =
-    if (summary.isEmpty) detail
-    else if (detail.isEmpty) summary
-    else summary + ": " + detail
+    if (summary.isEmpty)
+      detail
+    else if (detail.isEmpty)
+      summary
+    else
+      summary + ": " + detail
   def format(withDetail: Boolean): String =
-    if (withDetail) formatPretty else summary
+    if (withDetail)
+      formatPretty
+    else
+      summary
 }
 
 object ErrorInfo {

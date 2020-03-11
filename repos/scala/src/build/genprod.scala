@@ -38,7 +38,11 @@ object genprod extends App {
     def typeArgsString(xs: Seq[String]) = xs.mkString("[", ", ", "]")
 
     def to = (1 to i).toList
-    def s = if (i == 1) "" else "s"
+    def s =
+      if (i == 1)
+        ""
+      else
+        "s"
     def className = name + i
     def classAnnotation = ""
     def fileName = className + ".scala"
@@ -287,7 +291,11 @@ class Function(val i: Int) extends Group("Function") with Arity {
   }
 
   def curryMethod = {
-    val body = if (i < 5) shortCurry else longCurry
+    val body =
+      if (i < 5)
+        shortCurry
+      else
+        longCurry
 
     curryComment +
       "\n  @annotation.unspecialized def curried: %s => R = {\n    %s\n  }\n"
@@ -340,7 +348,8 @@ object TupleThree extends Tuple(3) {
 
 class Tuple(val i: Int) extends Group("Tuple") with Arity {
   private def idiomatic =
-    if (i < 2) ""
+    if (i < 2)
+      ""
     else
       " Note that it is more idiomatic to create a %s via `(%s)`".format(
         className,
@@ -355,7 +364,8 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
   // prettifies it a little if it's overlong
   def mkToString() = {
     def str(xs: List[String]) = xs.mkString(""" + "," + """)
-    if (i <= MAX_ARITY / 2) str(mdefs)
+    if (i <= MAX_ARITY / 2)
+      str(mdefs)
     else {
       val s1 = str(mdefs take (i / 2))
       val s2 = str(mdefs drop (i / 2))
@@ -445,7 +455,8 @@ class Product(val i: Int) extends Group("Product") with Arity {
 
   def cases = {
     val xs =
-      for ((x, i) <- mdefs.zipWithIndex) yield "case %d => %s".format(i, x)
+      for ((x, i) <- mdefs.zipWithIndex)
+        yield "case %d => %s".format(i, x)
     val default = "case _ => throw new IndexOutOfBoundsException(n.toString())"
     "\n" + ((xs ::: List(default)) map ("    " + _ + "\n") mkString)
   }

@@ -17,8 +17,10 @@ final class Env(
   private val Endpoint = config getString "endpoint"
 
   val makeClient = (index: Index) =>
-    if (Enabled) new ESClientHttp(Endpoint, index, Writeable)
-    else new ESClientStub
+    if (Enabled)
+      new ESClientHttp(Endpoint, index, Writeable)
+    else
+      new ESClientStub
 }
 
 object Env {

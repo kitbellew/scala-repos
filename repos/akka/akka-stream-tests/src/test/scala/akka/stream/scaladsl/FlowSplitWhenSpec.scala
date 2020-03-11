@@ -237,7 +237,11 @@ class FlowSplitWhenSpec extends AkkaSpec {
       val exc = TE("test")
       val publisher = Source
         .fromPublisher(publisherProbeProbe)
-        .splitWhen(elem ⇒ if (elem == 3) throw exc else elem % 3 == 0)
+        .splitWhen(elem ⇒
+          if (elem == 3)
+            throw exc
+          else
+            elem % 3 == 0)
         .lift
         .runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[Source[Int, NotUsed]]()
@@ -327,7 +331,11 @@ class FlowSplitWhenSpec extends AkkaSpec {
       val exc = TE("test")
       val publisher = Source
         .fromPublisher(publisherProbeProbe)
-        .splitWhen(elem ⇒ if (elem == 3) throw exc else elem % 3 == 0)
+        .splitWhen(elem ⇒
+          if (elem == 3)
+            throw exc
+          else
+            elem % 3 == 0)
         .lift
         .withAttributes(ActorAttributes.supervisionStrategy(resumingDecider))
         .runWith(Sink.asPublisher(false))

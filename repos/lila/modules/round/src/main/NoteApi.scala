@@ -14,7 +14,8 @@ final class NoteApi(coll: Coll) {
     }
 
   def set(gameId: String, userId: String, text: String) = {
-    if (text.isEmpty) coll.remove(BSONDocument("_id" -> makeId(gameId, userId)))
+    if (text.isEmpty)
+      coll.remove(BSONDocument("_id" -> makeId(gameId, userId)))
     else
       coll.update(
         BSONDocument("_id" -> makeId(gameId, userId)),

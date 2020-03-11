@@ -124,7 +124,11 @@ private[akka] trait SubscriberManagement[T]
           case eos @ (NotReached | Completed) ⇒
             val d = subscription.totalDemand + elements
             // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
-            val demand = if (d < 1) Long.MaxValue else d
+            val demand =
+              if (d < 1)
+                Long.MaxValue
+              else
+                d
             subscription.totalDemand = demand
             // returns Long.MinValue if the subscription is to be terminated
             @tailrec def dispatchFromBufferAndReturnRemainingRequested(
@@ -134,7 +138,8 @@ private[akka] trait SubscriberManagement[T]
                 // if we are at end-of-stream and have nothing more to read we complete now rather than after the next `requestMore`
                 if ((eos ne NotReached) && buffer.count(subscription) == 0)
                   Long.MinValue
-                else 0
+                else
+                  0
               } else if (buffer.count(subscription) > 0) {
                 val goOn =
                   try {
@@ -149,9 +154,12 @@ private[akka] trait SubscriberManagement[T]
                   dispatchFromBufferAndReturnRemainingRequested(
                     requested - 1,
                     eos)
-                else Long.MinValue
-              } else if (eos ne NotReached) Long.MinValue
-              else requested
+                else
+                  Long.MinValue
+              } else if (eos ne NotReached)
+                Long.MinValue
+              else
+                requested
 
             dispatchFromBufferAndReturnRemainingRequested(demand, eos) match {
               case Long.MinValue ⇒
@@ -202,7 +210,8 @@ private[akka] trait SubscriberManagement[T]
             head.dispatch(element)
             head.totalDemand -= 1
             dispatch(tail, sent = true)
-          } else dispatch(tail, sent)
+          } else
+            dispatch(tail, sent)
         case _ ⇒ sent
       }
 
@@ -211,7 +220,8 @@ private[akka] trait SubscriberManagement[T]
         pendingFromUpstream -= 1
         if (!buffer.write(value))
           throw new IllegalStateException("Output buffer overflow")
-        if (dispatch(subscriptions)) requestFromUpstreamIfRequired()
+        if (dispatch(subscriptions))
+          requestFromUpstreamIfRequired()
       case _ ⇒
         throw new IllegalStateException(
           "pushToDownStream(...) after completeDownstream() or abortDownstream(...)")
@@ -233,12 +243,14 @@ private[akka] trait SubscriberManagement[T]
               head.active = false
               Completed(head.subscriber)
               completeDoneSubscriptions(tail, result)
-            } else completeDoneSubscriptions(tail, head :: result)
+            } else
+              completeDoneSubscriptions(tail, head :: result)
           case _ ⇒ result
         }
       endOfStream = Completed
       subscriptions = completeDoneSubscriptions(subscriptions)
-      if (subscriptions.isEmpty) shutdown(completed = true)
+      if (subscriptions.isEmpty)
+        shutdown(completed = true)
     } // else ignore, we need to be idempotent
   }
 
@@ -288,8 +300,10 @@ private[akka] trait SubscriberManagement[T]
         result: Subscriptions = Nil): Subscriptions =
       remaining match {
         case head :: tail ⇒
-          if (head eq subscription) tail reverse_::: result
-          else removeFrom(tail, head :: result)
+          if (head eq subscription)
+            tail reverse_::: result
+          else
+            removeFrom(tail, head :: result)
         case _ ⇒
           throw new IllegalStateException(
             "Subscription to unregister not found")

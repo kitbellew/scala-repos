@@ -284,7 +284,8 @@ package object project {
       val module: Module = ProjectFileIndex.SERVICE
         .getInstance(element.getProject)
         .getModuleForFile(file.getVirtualFile)
-      if (module == null) return ScalaLanguageLevel.Default
+      if (module == null)
+        return ScalaLanguageLevel.Default
       module.scalaSdk.map(_.languageLevel).getOrElse(ScalaLanguageLevel.Default)
     }
 

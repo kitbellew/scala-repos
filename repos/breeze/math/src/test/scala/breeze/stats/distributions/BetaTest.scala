@@ -41,7 +41,8 @@ class BetaTest
          };
          std <- arbitrary[Double].map { x =>
            math.abs(x) % 100 + 1e-4
-         }) yield (mean, std)
+         })
+      yield (mean, std)
   }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
@@ -62,7 +63,8 @@ class BetaTest
          };
          b <- arbitrary[Double].map { x =>
            math.abs(x) % 8.0 + 1.1
-         }) yield new Beta(a, b);
+         })
+      yield new Beta(a, b);
   }
 
   test("#15 test 1: Small a and b") {

@@ -29,7 +29,8 @@ abstract class InterruptReq {
       case t: Throwable => result = Some(Right(t))
     } finally {
       notify()
-      for (k <- waiting.reverse) k(result.get)
+      for (k <- waiting.reverse)
+        k(result.get)
     }
   }
 

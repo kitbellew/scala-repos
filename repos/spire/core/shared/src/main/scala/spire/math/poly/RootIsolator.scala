@@ -105,17 +105,29 @@ object RootIsolator {
                 val exp = Roots.upperBound(p)
                 // This is an upper bound for p, but not for the initial poly.
                 val ub0 =
-                  if (exp >= 0) Rational(BigInt(1) << exp)
-                  else Rational(1, BigInt(1) << -exp)
+                  if (exp >= 0)
+                    Rational(BigInt(1) << exp)
+                  else
+                    Rational(1, BigInt(1) << -exp)
                 // We map the upper bound for p back to a bound for the initial
                 // polynomial by using the inverse Mobius transformation.
                 (Rational(d) * ub0 - Rational(b)) / (Rational(
                   -c) * ub0 + Rational(a))
               }
-              val i0 = if (c == 0) ub else Rational(a, c)
-              val i1 = if (d == 0) ub else Rational(b, d)
-              if (i0 < i1) rec(rest, acc :+ Interval.open(i0, i1))
-              else rec(rest, acc :+ Interval.open(i1, i0))
+              val i0 =
+                if (c == 0)
+                  ub
+                else
+                  Rational(a, c)
+              val i1 =
+                if (d == 0)
+                  ub
+                else
+                  Rational(b, d)
+              if (i0 < i1)
+                rec(rest, acc :+ Interval.open(i0, i1))
+              else
+                rec(rest, acc :+ Interval.open(i1, i0))
 
             case _ => // Exists 0 or 2 or more roots.
               val lb = Roots.lowerBound(p)

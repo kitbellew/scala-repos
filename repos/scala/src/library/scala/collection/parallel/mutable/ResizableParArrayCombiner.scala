@@ -17,7 +17,9 @@ import scala.collection.parallel.Task
 trait ResizableParArrayCombiner[T]
     extends LazyCombiner[T, ParArray[T], ExposedArrayBuffer[T]] {
 
-  override def sizeHint(sz: Int) = if (chain.length == 1) chain(0).sizeHint(sz)
+  override def sizeHint(sz: Int) =
+    if (chain.length == 1)
+      chain(0).sizeHint(sz)
 
   // public method with private[mutable] type ExposedArrayBuffer in parameter type; cannot be overridden.
   final def newLazyCombiner(c: ArrayBuffer[ExposedArrayBuffer[T]]) =
@@ -52,8 +54,10 @@ trait ResizableParArrayCombiner[T]
       while (totalleft > 0) {
         val currbuff = chain(buffind)
         val chunksize =
-          if (totalleft < (currbuff.size - ind)) totalleft
-          else currbuff.size - ind
+          if (totalleft < (currbuff.size - ind))
+            totalleft
+          else
+            currbuff.size - ind
         val until = ind + chunksize
 
         copyChunk(currbuff.internalArray, ind, array, arrayIndex, until)

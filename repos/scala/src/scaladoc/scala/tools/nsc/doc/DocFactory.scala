@@ -53,7 +53,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       return None
 
     val extraTemplatesToDocument: Set[compiler.Symbol] = {
-      if (settings.docUncompilable.isDefault) Set()
+      if (settings.docUncompilable.isDefault)
+        Set()
       else {
         val uncompilable = new {
           val global: compiler.type = compiler

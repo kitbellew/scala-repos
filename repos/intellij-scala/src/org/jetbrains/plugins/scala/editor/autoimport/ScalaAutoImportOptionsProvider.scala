@@ -22,10 +22,12 @@ class ScalaAutoImportOptionsProvider extends AutoImportOptionsProvider {
       return true
     if (ScalaApplicationSettings
           .getInstance()
-          .ADD_IMPORTS_ON_PASTE != form.getImportOnPasteOption) return true
+          .ADD_IMPORTS_ON_PASTE != form.getImportOnPasteOption)
+      return true
     if (ScalaApplicationSettings
           .getInstance()
-          .OPTIMIZE_IMPORTS_ON_THE_FLY != form.isOptimizeImports) return true
+          .OPTIMIZE_IMPORTS_ON_THE_FLY != form.isOptimizeImports)
+      return true
     false
   }
 

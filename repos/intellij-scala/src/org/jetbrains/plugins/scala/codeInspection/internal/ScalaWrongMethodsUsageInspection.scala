@@ -36,7 +36,8 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,
       isOnTheFly: Boolean): PsiElementVisitor = {
-    if (!holder.getFile.isInstanceOf[ScalaFile]) return new PsiElementVisitor {}
+    if (!holder.getFile.isInstanceOf[ScalaFile])
+      return new PsiElementVisitor {}
     new ScalaElementVisitor {
       override def visitReferenceExpression(ref: ScReferenceExpression) {
         val resolve = ref.resolve()
@@ -71,8 +72,10 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                               cachedClass,
                               containingClass)) {
                         true
-                      } else false
-                    } else false
+                      } else
+                        false
+                    } else
+                      false
                 } match {
                   case Some(clazz) =>
                     var parent: PsiElement = ref.getParent
@@ -81,7 +84,8 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                         case f: ScDocCommentOwner =>
                           f.docComment match {
                             case Some(d) =>
-                              if (d.getText.contains("for Java only")) return
+                              if (d.getText.contains("for Java only"))
+                                return
                             case _ =>
                           }
                         case _ =>

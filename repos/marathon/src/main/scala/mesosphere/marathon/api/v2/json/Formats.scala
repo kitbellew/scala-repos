@@ -69,8 +69,10 @@ trait Formats
       "taskId" -> failure.taskId.getValue,
       "timestamp" -> failure.timestamp,
       "version" -> failure.version,
-      "slaveId" -> (if (failure.slaveId.isDefined) failure.slaveId.get.getValue
-                    else JsNull)
+      "slaveId" -> (if (failure.slaveId.isDefined)
+                      failure.slaveId.get.getValue
+                    else
+                      JsNull)
     )
   }
 
@@ -615,7 +617,8 @@ trait AppAndGroupFormats {
                 .newBuilder()
                 .setField(seq(0))
                 .setOperator(Operator.valueOf(seq(1)))
-              if (seq.size == 3) builder.setValue(seq(2))
+              if (seq.size == 3)
+                builder.setValue(seq(2))
               JsSuccess(builder.build())
             } else {
               JsError(
@@ -632,7 +635,8 @@ trait AppAndGroupFormats {
       val builder = Seq.newBuilder[JsString]
       builder += JsString(constraint.getField)
       builder += JsString(constraint.getOperator.name)
-      if (constraint.hasValue) builder += JsString(constraint.getValue)
+      if (constraint.hasValue)
+        builder += JsString(constraint.getValue)
       JsArray(builder.result())
     }
   )
@@ -743,12 +747,17 @@ trait AppAndGroupFormats {
         def upgradeStrategyOrDefault: UpgradeStrategy = {
           import UpgradeStrategy.{forResidentTasks, empty}
           upgradeStrategy.getOrElse(
-            if (residency.isDefined) forResidentTasks else empty)
+            if (residency.isDefined)
+              forResidentTasks
+            else
+              empty)
         }
         def residencyOrDefault: Option[Residency] = {
           residency.orElse(
-            if (app.persistentVolumes.nonEmpty) Some(Residency.defaultResidency)
-            else None)
+            if (app.persistentVolumes.nonEmpty)
+              Some(Residency.defaultResidency)
+            else
+              None)
         }
       }
 
@@ -797,7 +806,8 @@ trait AppAndGroupFormats {
         // Normally, our default is one port. If an ipAddress is defined that would lead to an error
         // if left unchanged.
         def fetch: Seq[FetchUri] =
-          if (extra.fetch.nonEmpty) extra.fetch
+          if (extra.fetch.nonEmpty)
+            extra.fetch
           else
             extra.uris.map { uri =>
               FetchUri(uri = uri, extract = FetchUri.isExtract(uri))
@@ -846,7 +856,8 @@ trait AppAndGroupFormats {
         healthCheck.port.isEmpty && healthCheck.portIndex.isEmpty && healthCheck.protocol != Protocol.COMMAND
       if (portIndexesMakeSense && needsDefaultPortIndex)
         healthCheck.copy(portIndex = Some(0))
-      else healthCheck
+      else
+        healthCheck
     })
   }
 
@@ -856,8 +867,10 @@ trait AppAndGroupFormats {
       healthChecks.map { healthCheck =>
         def needsDefaultPortIndex =
           healthCheck.port.isEmpty && healthCheck.portIndex.isEmpty && healthCheck.protocol != Protocol.COMMAND
-        if (needsDefaultPortIndex) healthCheck.copy(portIndex = Some(0))
-        else healthCheck
+        if (needsDefaultPortIndex)
+          healthCheck.copy(portIndex = Some(0))
+        else
+          healthCheck
       }
     })
   }

@@ -21,8 +21,10 @@ class SCL6417_Performance {
 
   def validateOptionalX(x: Option[Int]): ValidationNel[String, Int] = x match {
     case Some(p) =>
-      if (p < 0) Failure("Errror!").toValidationNel
-      else Success(p)
+      if (p < 0)
+        Failure("Errror!").toValidationNel
+      else
+        Success(p)
     case None => Success(0)
   }
 

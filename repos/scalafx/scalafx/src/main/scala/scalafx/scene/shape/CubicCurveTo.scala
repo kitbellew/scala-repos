@@ -35,7 +35,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object CubicCurveTo {
   implicit def sfxCubicCurveTo2jfx(v: CubicCurveTo): jfxss.CubicCurveTo =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(
       controlX1: Double,

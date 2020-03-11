@@ -51,7 +51,10 @@ class Random private (rng64: () => Long) {
     */
   @tailrec final def nextNonNegInt: Int = {
     val tmp = nextInt
-    if (tmp >= 0) tmp else nextNonNegInt
+    if (tmp >= 0)
+      tmp
+    else
+      nextNonNegInt
   }
 
   /**
@@ -59,7 +62,10 @@ class Random private (rng64: () => Long) {
     */
   @tailrec final def nextNonNegLong: Long = {
     val tmp = nextLong
-    if (tmp >= 0) tmp else nextNonNegLong
+    if (tmp >= 0)
+      tmp
+    else
+      nextNonNegLong
   }
 
   /**
@@ -67,7 +73,10 @@ class Random private (rng64: () => Long) {
     */
   @tailrec final def nextNonNegFloat: Float = {
     val tmp = nextFloat
-    if (tmp >= 0) tmp else nextNonNegFloat
+    if (tmp >= 0)
+      tmp
+    else
+      nextNonNegFloat
   }
 
   /**
@@ -75,7 +84,10 @@ class Random private (rng64: () => Long) {
     */
   @tailrec final def nextNonNegDouble: Double = {
     val tmp = nextDouble
-    if (tmp >= 0) tmp else nextNonNegDouble
+    if (tmp >= 0)
+      tmp
+    else
+      nextNonNegDouble
   }
 
   private var next = Double.NaN
@@ -96,11 +108,13 @@ class Random private (rng64: () => Long) {
       val u2 = 2.0 * nextDouble - 1.0
       val s = u1 * u1 + u2 * u2
 
-      if (s >= 1) nextGaussian
+      if (s >= 1)
+        nextGaussian
       else {
         val bm = if (s != 0) {
           math.sqrt(-2.0 * math.log(s) / s)
-        } else s
+        } else
+          s
         next = u1 * bm
         u2 * bm
       }
@@ -161,7 +175,8 @@ object LFib4 {
   def makeRNG(seed: Long): () => Long = {
     val jrand = new java.util.Random(seed)
     val state = Array.ofDim[Long](256) // 2K of memory
-    for (i <- 0 until 256) state(i) = jrand.nextLong
+    for (i <- 0 until 256)
+      state(i) = jrand.nextLong
     var c = 0
 
     () => {
@@ -193,7 +208,8 @@ object Ziff98 {
     val state = Array.ofDim[Long](m + 1) // 128K of memory
 
     var nd = 0
-    for (i <- 0 until m) state(i) = jrand.nextLong
+    for (i <- 0 until m)
+      state(i) = jrand.nextLong
 
     () => {
       nd += 1

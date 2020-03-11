@@ -33,7 +33,8 @@ class SuggestScalaVariableNameMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Array[LookupElement] = {
     val a = SuggestNamesUtil.getNames(params, context)
-    if (a.length < 2) return null
+    if (a.length < 2)
+      return null
     a.map((s: String) => LookupElementBuilder.create(s, s))
   }
 
@@ -41,7 +42,8 @@ class SuggestScalaVariableNameMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Result = {
     val a = SuggestNamesUtil.getNames(params, context)
-    if (a.length == 0) return null
+    if (a.length == 0)
+      return null
     new TextResult(a(0))
   }
 
@@ -88,7 +90,8 @@ object SuggestNamesUtil {
             .filter(_.isInstanceOf[PsiNamedElement])
             .map(_.asInstanceOf[PsiNamedElement])
             .filter(_.name == x(1))
-          if (items.length == 0) return Array[String]("x")
+          if (items.length == 0)
+            return Array[String]("x")
           items(0) match {
             case typed: ScTypedDefinition =>
               typed.getType(TypingContext.empty) match {

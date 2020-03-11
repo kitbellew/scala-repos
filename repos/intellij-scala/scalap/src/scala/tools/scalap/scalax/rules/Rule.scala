@@ -45,7 +45,10 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   }
 
   def filter(f: A => Boolean) = flatMap { a => out =>
-    if (f(a)) Success(out, a) else Failure
+    if (f(a))
+      Success(out, a)
+    else
+      Failure
   }
 
   def mapResult[Out2, B, Y](f: Result[Out, A, X] => Result[Out2, B, Y]) = rule {
@@ -100,41 +103,50 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
 
   def ~[Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next) yield new ~(a, b)
+         b <- next)
+      yield new ~(a, b)
 
   def ~-[Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next) yield a
+         b <- next)
+      yield a
 
   def -~[Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next) yield b
+         b <- next)
+      yield b
 
   def ~++[Out2, B >: A, X2 >: X](next: => Rule[Out, Out2, Seq[B], X2]) =
     for (a <- this;
-         b <- next) yield a :: b.toList
+         b <- next)
+      yield a :: b.toList
 
   /** Apply the result of this rule to the function returned by the next rule */
   def ~>[Out2, B, X2 >: X](next: => Rule[Out, Out2, A => B, X2]) =
     for (a <- this;
-         fa2b <- next) yield fa2b(a)
+         fa2b <- next)
+      yield fa2b(a)
 
   /** Apply the result of this rule to the function returned by the previous rule */
   def <~:[InPrev, B, X2 >: X](prev: => Rule[InPrev, In, A => B, X2]) =
     for (fa2b <- prev;
-         a <- this) yield fa2b(a)
+         a <- this)
+      yield fa2b(a)
 
   def ~![Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next orError) yield new ~(a, b)
+         b <- next orError)
+      yield new ~(a, b)
 
   def ~-![Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next orError) yield a
+         b <- next orError)
+      yield a
 
   def -~![Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
     for (a <- this;
-         b <- next orError) yield b
+         b <- next orError)
+      yield b
 
   def -[In2 <: In](exclude: => Rule[In2, Any, Any, Any]) = !exclude -~ this
 

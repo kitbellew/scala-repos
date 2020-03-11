@@ -20,7 +20,10 @@ class DefaultPoolTest extends FunSuite {
     @volatile var closed = false
 
     override def apply(unit: Unit): Future[Unit] =
-      if (closed) Future.exception(new Exception) else Future.Done
+      if (closed)
+        Future.exception(new Exception)
+      else
+        Future.Done
 
     override def close(deadline: Time): Future[Unit] = {
       closed = true
@@ -28,7 +31,10 @@ class DefaultPoolTest extends FunSuite {
     }
 
     override def status: Status =
-      if (closed) Status.Closed else Status.Open
+      if (closed)
+        Status.Closed
+      else
+        Status.Open
   }
 
   trait DefaultPoolHelper {

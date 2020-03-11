@@ -89,10 +89,16 @@ final class IRFileCache {
           val newValue = new PersistedFiles(file.path)
           val oldValue = globalCache.putIfAbsent(file.path, newValue)
 
-          val contents = if (oldValue != null) oldValue else newValue
+          val contents =
+            if (oldValue != null)
+              oldValue
+            else
+              newValue
 
-          if (contents.reference()) contents
-          else putContents()
+          if (contents.reference())
+            contents
+          else
+            putContents()
         }
 
         val contents = putContents()
@@ -163,8 +169,10 @@ final class IRFileCache {
         false
       } else {
         // try to increase ref count
-        if (_references.compareAndSet(refs, refs + 1)) true // done
-        else reference() // something changed, try again
+        if (_references.compareAndSet(refs, refs + 1))
+          true // done
+        else
+          reference() // something changed, try again
       }
     }
 

@@ -103,7 +103,8 @@ class Scentry[UserType <: AnyRef](
           request(scentryAuthKey) = res
           res
         }
-        if (o.isEmpty) request(scentryAuthKey) = null
+        if (o.isEmpty)
+          request(scentryAuthKey) = null
         o
       }
     }
@@ -127,7 +128,8 @@ class Scentry[UserType <: AnyRef](
         _.afterSetUser(v)
       }
       res
-    } else ""
+    } else
+      ""
   }
 
   def fromSession: PartialFunction[String, UserType] =
@@ -165,19 +167,23 @@ class Scentry[UserType <: AnyRef](
         user_=(usr)
         user
     }
-    if (names.isEmpty) r orElse {
-      defaultUnauthenticated foreach (_.apply());
-      None
-    }
-    else r
+    if (names.isEmpty)
+      r orElse {
+        defaultUnauthenticated foreach (_.apply());
+        None
+      }
+    else
+      r
   }
 
   private[this] def runAuthentication(names: String*)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse) = {
     val subset =
-      if (names.isEmpty) strategies.values
-      else strategies.filterKeys(names.contains).values
+      if (names.isEmpty)
+        strategies.values
+      else
+        strategies.filterKeys(names.contains).values
     (subset filter (_.isValid) map { strat =>
       logger.debug("Authenticating with: %s" format strat.name)
       runCallbacks(_.isValid) {

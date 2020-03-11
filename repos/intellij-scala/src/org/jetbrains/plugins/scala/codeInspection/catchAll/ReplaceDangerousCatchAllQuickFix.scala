@@ -20,10 +20,12 @@ class ReplaceDangerousCatchAllQuickFix(caseClause: ScCaseClause)
       caseClause) {
   def doApplyFix(project: Project) {
     val cc = getElement
-    if (!cc.isValid) return
+    if (!cc.isValid)
+      return
 
     val pattern = cc.pattern.orNull
-    if (pattern == null) return
+    if (pattern == null)
+      return
 
     val strategy = AddOnlyStrategy.withoutEditor
     pattern match {

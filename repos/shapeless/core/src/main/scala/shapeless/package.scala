@@ -136,8 +136,10 @@ package shapeless {
       val application = casted.macroApplication
       val tpe = {
         val tpe0 =
-          if (tTpe.typeSymbol.isParameter) owner.tpe.asInstanceOf[Type]
-          else tTpe
+          if (tTpe.typeSymbol.isParameter)
+            owner.tpe.asInstanceOf[Type]
+          else
+            tTpe
         tpe0.finalResultType
       }.asInstanceOf[global.Type]
 

@@ -173,7 +173,9 @@ class AgentSpec extends AkkaSpec {
 
     "be able to be used in a 'map' for comprehension" in {
       val agent1 = Agent(5)
-      val agent2 = for (value ← agent1) yield value * 2
+      val agent2 =
+        for (value ← agent1)
+          yield value * 2
 
       agent1() should ===(5)
       agent2() should ===(10)

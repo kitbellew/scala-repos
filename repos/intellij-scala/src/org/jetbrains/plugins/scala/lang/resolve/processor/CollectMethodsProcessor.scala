@@ -29,7 +29,8 @@ class CollectMethodsProcessor(place: PsiElement, name: String)
     }
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
       val s = getSubst(state)
       element match {
         case m: PsiMethod =>

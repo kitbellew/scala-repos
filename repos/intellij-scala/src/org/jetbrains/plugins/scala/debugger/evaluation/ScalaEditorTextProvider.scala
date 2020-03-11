@@ -51,8 +51,10 @@ class ScalaEditorTextProvider extends EditorTextProvider {
       element: PsiElement,
       allowMethodCalls: Boolean): Option[PsiElement] = {
     def allowed(expr: ScExpression) =
-      if (SideEffectsUtil.hasNoSideEffects(expr) || allowMethodCalls) Some(expr)
-      else None
+      if (SideEffectsUtil.hasNoSideEffects(expr) || allowMethodCalls)
+        Some(expr)
+      else
+        None
 
     PsiTreeUtil.getParentOfType(
       element,

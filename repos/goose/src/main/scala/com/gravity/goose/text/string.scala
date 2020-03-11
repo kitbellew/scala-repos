@@ -25,8 +25,10 @@ package com.gravity.goose.text
   */
 object string {
   def isNullOrEmpty(input: String): Boolean = {
-    if (input == null) return true
-    if (input.length == 0) return true
+    if (input == null)
+      return true
+    if (input.length == 0)
+      return true
     false
   }
 

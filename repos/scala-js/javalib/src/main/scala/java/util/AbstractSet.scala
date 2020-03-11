@@ -7,7 +7,8 @@ abstract class AbstractSet[E] protected ()
     extends AbstractCollection[E]
     with Set[E] {
   override def equals(that: Any): Boolean = {
-    if (that.asInstanceOf[AnyRef] eq this) true
+    if (that.asInstanceOf[AnyRef] eq this)
+      true
     else {
       that match {
         case that: Collection[_] => that.size == this.size && containsAll(that)

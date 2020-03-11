@@ -32,7 +32,11 @@ object Timing {
     Foo(i % 2 == 0, i.toByte, i.toShort, i.toChar, i, i, 1.1, 1.1f, this, this)
 
   def main(args: Array[String]): Unit = {
-    val reps = if (args.isEmpty) 100000000 else args(0).toInt
+    val reps =
+      if (args.isEmpty)
+        100000000
+      else
+        args(0).toInt
     val start = System.nanoTime
 
     println("Warmup.")

@@ -19,7 +19,11 @@ trait LongIsEuclideanRing extends EuclideanRing[Long] {
     case _ =>
       if (b > 0) {
         val e = b >> 1
-        val c = if ((b & 1) == 1) a else 1
+        val c =
+          if ((b & 1) == 1)
+            a
+          else
+            1
         c * pow(a, e) * pow(a, e)
       } else {
         0
@@ -51,9 +55,12 @@ trait LongIsNRoot extends NRoot[Long] {
       }
     }
 
-    if (n < 1) throw new IllegalArgumentException(s"nroot($n)")
-    else if (n == 1) x
-    else findnroot(0, 1L << ((65 - n) / n))
+    if (n < 1)
+      throw new IllegalArgumentException(s"nroot($n)")
+    else if (n == 1)
+      x
+    else
+      findnroot(0, 1L << ((65 - n) / n))
   }
   def log(a: Long): Long = Math.log(a.toDouble).toLong
   def fpow(a: Long, b: Long): Long = spire.math.pow(a, b) // xyz
@@ -66,12 +73,22 @@ trait LongOrder extends Order[Long] {
   override def gteqv(x: Long, y: Long): Boolean = x >= y
   override def lt(x: Long, y: Long): Boolean = x < y
   override def lteqv(x: Long, y: Long): Boolean = x <= y
-  def compare(x: Long, y: Long): Int = if (x < y) -1 else if (x == y) 0 else 1
+  def compare(x: Long, y: Long): Int =
+    if (x < y)
+      -1
+    else if (x == y)
+      0
+    else
+      1
 }
 
 trait LongIsSigned extends Signed[Long] {
   def signum(a: Long): Int = java.lang.Long.signum(a)
-  def abs(a: Long): Long = if (a < 0L) -a else a
+  def abs(a: Long): Long =
+    if (a < 0L)
+      -a
+    else
+      a
 }
 
 trait LongIsReal extends IsIntegral[Long] with LongOrder with LongIsSigned {

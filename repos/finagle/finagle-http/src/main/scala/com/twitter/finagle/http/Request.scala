@@ -56,7 +56,8 @@ abstract class Request extends Message with HttpRequestProxy {
   private[this] lazy val _multipart: Option[Multipart] =
     if (!isChunked && method == Method.Post)
       Some(Multipart.decodeNonChunked(this))
-    else None
+    else
+      None
 
   /**
     * Returns the HTTP method of this request.

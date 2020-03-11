@@ -86,7 +86,10 @@ class CommonLogFormatter extends LogFormatter {
 
     val contentLength = response.length
     val contentLengthStr =
-      if (contentLength > 0) contentLength.toString else "-"
+      if (contentLength > 0)
+        contentLength.toString
+      else
+        "-"
 
     val uaStr = request.userAgent.getOrElse("-")
 

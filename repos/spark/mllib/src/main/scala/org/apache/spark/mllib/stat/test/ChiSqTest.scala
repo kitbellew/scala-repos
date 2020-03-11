@@ -187,8 +187,10 @@ private[stat] object ChiSqTest extends Logging {
     }
     val obsArr = observed.toArray
     val expArr =
-      if (expected.size == 0) Array.tabulate(size)(_ => 1.0 / size)
-      else expected.toArray
+      if (expected.size == 0)
+        Array.tabulate(size)(_ => 1.0 / size)
+      else
+        expected.toArray
     if (!obsArr.forall(_ >= 0.0)) {
       throw new IllegalArgumentException(
         "Negative entries disallowed in the observed vector.")
@@ -200,8 +202,16 @@ private[stat] object ChiSqTest extends Logging {
 
     // Determine the scaling factor for expected
     val obsSum = obsArr.sum
-    val expSum = if (expected.size == 0.0) 1.0 else expArr.sum
-    val scale = if (math.abs(obsSum - expSum) < 1e-7) 1.0 else obsSum / expSum
+    val expSum =
+      if (expected.size == 0.0)
+        1.0
+      else
+        expArr.sum
+    val scale =
+      if (math.abs(obsSum - expSum) < 1e-7)
+        1.0
+      else
+        obsSum / expSum
 
     // compute chi-squared statistic
     val statistic = obsArr.zip(expArr).foldLeft(0.0) {

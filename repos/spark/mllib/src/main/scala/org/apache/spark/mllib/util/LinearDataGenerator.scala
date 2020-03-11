@@ -228,9 +228,21 @@ object LinearDataGenerator {
 
     val sparkMaster: String = args(0)
     val outputPath: String = args(1)
-    val nexamples: Int = if (args.length > 2) args(2).toInt else 1000
-    val nfeatures: Int = if (args.length > 3) args(3).toInt else 100
-    val parts: Int = if (args.length > 4) args(4).toInt else 2
+    val nexamples: Int =
+      if (args.length > 2)
+        args(2).toInt
+      else
+        1000
+    val nfeatures: Int =
+      if (args.length > 3)
+        args(3).toInt
+      else
+        100
+    val parts: Int =
+      if (args.length > 4)
+        args(4).toInt
+      else
+        2
     val eps = 10
 
     val sc = new SparkContext(sparkMaster, "LinearDataGenerator")

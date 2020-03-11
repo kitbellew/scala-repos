@@ -105,7 +105,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             val resultsIter =
               if (results.isEmpty)
                 Iterator.fill(atomicWriteCount)(AsyncWriteJournal.successUnit)
-              else results.iterator
+              else
+                results.iterator
             var n = cctr + 1
             messages.foreach {
               case a: AtomicWrite ⇒
@@ -181,7 +182,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                 replayFilterWindowSize,
                 replayFilterMaxOldWriters,
                 replayDebugEnabled))
-          else persistentActor
+          else
+            persistentActor
 
         val readHighestSequenceNrFrom = math.max(0L, fromSequenceNr - 1)
         breaker
@@ -216,7 +218,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
           }
           .pipeTo(replyTo)
           .onSuccess {
-            case _ ⇒ if (publish) context.system.eventStream.publish(r)
+            case _ ⇒
+              if (publish)
+                context.system.eventStream.publish(r)
           }
 
       case d @ DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
@@ -226,7 +230,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
         } recover {
           case e ⇒ DeleteMessagesFailure(e, toSequenceNr)
         } pipeTo persistentActor onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
+          case _ ⇒
+            if (publish)
+              context.system.eventStream.publish(d)
         }
     }
   }
@@ -357,7 +363,8 @@ private[persistence] object AsyncWriteJournal {
         delayed += (d.snr -> d)
       }
       val ro = delayed.remove(delivered + 1)
-      if (ro.isDefined) resequence(ro.get)
+      if (ro.isDefined)
+        resequence(ro.get)
     }
   }
 }

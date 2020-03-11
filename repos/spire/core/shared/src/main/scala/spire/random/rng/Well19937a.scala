@@ -65,7 +65,10 @@ final class Well19937a protected[random] (state: Array[Int], i0: Int)
 
   def setSeedBytes(bytes: Array[Byte]): Unit = {
     val bs =
-      if (bytes.length < BYTES) util.Arrays.copyOf(bytes, BYTES) else bytes
+      if (bytes.length < BYTES)
+        util.Arrays.copyOf(bytes, BYTES)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bs)
 
     cfor(0)(_ < R, _ + 1) { i =>

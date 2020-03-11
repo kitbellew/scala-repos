@@ -47,12 +47,13 @@ object SideEffectsUtil {
     case ScParenthesisedExpr(inner)                          => hasNoSideEffects(inner)
     case typed: ScTypedStmt                                  => hasNoSideEffects(typed.expr)
     case ref: ScReferenceExpression =>
-      if (hasImplicitConversion(ref)) false
+      if (hasImplicitConversion(ref))
+        false
       else {
         ref.qualifier.forall(hasNoSideEffects) && (ref.resolve() match {
           case Both(
-              b: ScBindingPattern,
-              ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
+                b: ScBindingPattern,
+                ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
               if pd.hasModifierProperty("lazy") =>
             false
           case bp: ScBindingPattern =>

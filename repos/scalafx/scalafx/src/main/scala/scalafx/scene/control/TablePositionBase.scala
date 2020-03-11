@@ -46,7 +46,10 @@ object TablePositionBase {
     */
   implicit def sfxTablePositionBase2jfx[TC <: jfxsc.TableColumnBase[_, _]](
       tpb: TablePositionBase[TC]): jfxsc.TablePositionBase[TC] =
-    if (tpb != null) tpb.delegate else null
+    if (tpb != null)
+      tpb.delegate
+    else
+      null
 
 }
 

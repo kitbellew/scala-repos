@@ -65,7 +65,10 @@ object TaskSerial extends Properties("task serial") {
       val success = results.forall(idFun[Boolean])
       assert(
         success == shouldSucceed,
-        if (shouldSucceed) unschedulableMsg else scheduledMsg)
+        if (shouldSucceed)
+          unschedulableMsg
+        else
+          scheduledMsg)
     }
     checkResult(evalRestricted(tasks)(restrictions), ())
   }

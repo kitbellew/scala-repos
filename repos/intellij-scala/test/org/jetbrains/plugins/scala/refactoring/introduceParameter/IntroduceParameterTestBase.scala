@@ -70,7 +70,8 @@ abstract class IntroduceParameterTestBase
     //getting settings
     def getSetting(marker: String, default: String): String = {
       val offset = fileText.indexOf(marker)
-      if (offset == -1) default
+      if (offset == -1)
+        default
       else {
         val comment = scalaFile.findElementAt(offset)
         comment.getText.substring(marker.length)

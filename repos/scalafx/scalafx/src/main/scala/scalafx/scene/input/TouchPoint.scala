@@ -34,7 +34,10 @@ import scalafx.delegate.{SFXDelegate, SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 object TouchPoint {
   implicit def sfxTouchPoint2jfx(tp: TouchPoint): jfxsi.TouchPoint =
-    if (tp != null) tp.delegate else null
+    if (tp != null)
+      tp.delegate
+    else
+      null
 
   object State extends SFXEnumDelegateCompanion[jfxsi.TouchPoint.State, State] {
 

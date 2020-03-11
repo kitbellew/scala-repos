@@ -29,7 +29,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null) return false
+    if (ifStmt == null)
+      return false
 
     val thenBranch = ifStmt.thenBranch.orNull
     val elseBranch = ifStmt.elseBranch.orNull
@@ -44,13 +45,18 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
     thenBranch match {
       case tb: ScBlockExpr =>
         val lastExpr = tb.lastExpr.orNull
-        if (lastExpr == null) return false
-        if (lastExpr.isInstanceOf[ScReturnStmt]) return true
-        if (lastExpr.isInstanceOf[ScThrowStmt]) return true
+        if (lastExpr == null)
+          return false
+        if (lastExpr.isInstanceOf[ScReturnStmt])
+          return true
+        if (lastExpr.isInstanceOf[ScThrowStmt])
+          return true
         false
       case e: ScExpression =>
-        if (e.isInstanceOf[ScReturnStmt]) return true
-        if (e.isInstanceOf[ScThrowStmt]) return true
+        if (e.isInstanceOf[ScReturnStmt])
+          return true
+        if (e.isInstanceOf[ScThrowStmt])
+          return true
         false
       case _ => false
     }
@@ -60,7 +66,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
     val manager: PsiManager = PsiManager.getInstance(project)
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null || !ifStmt.isValid) return
+    if (ifStmt == null || !ifStmt.isValid)
+      return
 
     val thenBranch = ifStmt.thenBranch.getOrElse(return
     )
@@ -75,7 +82,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       .getOrElse(return
       )
     if (ScalaTokenTypes.WHITES_SPACES_TOKEN_SET.contains(
-          from.getNode.getElementType)) from = from.getNextSibling
+          from.getNode.getElementType))
+      from = from.getNextSibling
     val to = children.reverse
       .find(_.getNode.getElementType != ScalaTokenTypes.tRBRACE)
       .getOrElse(return

@@ -45,7 +45,8 @@ trait DocUsecaseHandling { self: DocResolver =>
           }
         case _ => sig
       }
-    } else sig
+    } else
+      sig
   }
 
   private val UseCasePrefixes = Set(

@@ -2,7 +2,8 @@
 object Test {
   def f: Unit =
     try return
-    finally while (true) ()
+    finally while (true)
+      ()
 
   def main(args: Array[String]) {
     f

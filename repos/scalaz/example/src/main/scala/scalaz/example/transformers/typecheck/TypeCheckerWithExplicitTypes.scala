@@ -16,7 +16,10 @@ object TypeCheckerWithExplicitTypes {
       .getOrElse(sys.error("not found: " + s))
 
   def compare(t1: Type, t2: Type, resultType: Type, errorMsg: String): Type =
-    if (t1 == t2) success(resultType) else typeError(errorMsg)
+    if (t1 == t2)
+      success(resultType)
+    else
+      typeError(errorMsg)
 
   // the real type check function, which works with the type environment.
   def typeCheck(expr: Exp, env: TypeEnv = predef): Type = expr match {

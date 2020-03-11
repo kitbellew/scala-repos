@@ -112,7 +112,8 @@ class BucketedReadSuite
         case (index, iter) =>
           if (matchedBuckets.get(index % numBuckets) && iter.nonEmpty)
             Iterator(index)
-          else Iterator()
+          else
+            Iterator()
       }
       // TODO: These tests are not testing the right columns.
 //      // checking if all the pruned buckets are empty

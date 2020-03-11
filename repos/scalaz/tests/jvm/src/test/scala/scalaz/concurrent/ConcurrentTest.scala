@@ -39,7 +39,8 @@ object ConcurrentTest extends SpecLite {
       latch: CountDownLatch,
       hint: String,
       timeout: Long = 1000): Prop = {
-    if (latch.await(timeout, TimeUnit.MILLISECONDS)) ()
+    if (latch.await(timeout, TimeUnit.MILLISECONDS))
+      ()
     else
       sys.error("Failed to count down within " + timeout + " millis: " + hint)
   }
@@ -60,8 +61,10 @@ object ConcurrentTest extends SpecLite {
         result = test
         latch.countDown
       }
-      if (latch.await(timeout, TimeUnit.MILLISECONDS)) result
-      else sys.error("Timeout occured, possible deadlock.")
+      if (latch.await(timeout, TimeUnit.MILLISECONDS))
+        result
+      else
+        sys.error("Timeout occured, possible deadlock.")
     }
   }
 

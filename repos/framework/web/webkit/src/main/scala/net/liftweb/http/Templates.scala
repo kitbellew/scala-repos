@@ -40,20 +40,26 @@ object Templates {
     if (what.isDefinedAt(part)) {
       what(part) match {
         case Right(lv) =>
-          if (lv.dispatch.isDefinedAt(last)) lv.dispatch(last)() else Empty
+          if (lv.dispatch.isDefinedAt(last))
+            lv.dispatch(last)()
+          else
+            Empty
         case _ => Empty
       }
-    } else Empty
+    } else
+      Empty
   }
 
   private def checkForFunc(
       whole: List[String],
       what: LiftRules.ViewDispatchPF): Box[NodeSeq] =
-    if (what.isDefinedAt(whole)) what(whole) match {
-      case Left(func) => func()
-      case _          => Empty
-    }
-    else Empty
+    if (what.isDefinedAt(whole))
+      what(whole) match {
+        case Left(func) => func()
+        case _          => Empty
+      }
+    else
+      Empty
 
   private def findInViews(
       whole: List[String],
@@ -187,12 +193,15 @@ object Templates {
     } else {
       val lrCache = LiftRules.templateCache
       val cache =
-        if (lrCache.isDefined) lrCache.openOrThrowException("passes isDefined")
-        else NoCache
+        if (lrCache.isDefined)
+          lrCache.openOrThrowException("passes isDefined")
+        else
+          NoCache
 
       val tr = cache.get(key)
 
-      if (tr.isDefined) tr
+      if (tr.isDefined)
+        tr
       else {
         val part = places.dropRight(1)
         val last = places.last
@@ -215,8 +224,10 @@ object Templates {
               val le = sl.iterator
               while (!found && le.hasNext) {
                 val p = le.next
-                val name =
-                  pls + p + (if (suffix.length > 0) "." + suffix else "")
+                val name = pls + p + (if (suffix.length > 0)
+                                        "." + suffix
+                                      else
+                                        "")
                 import scala.xml.dtd.ValidationException
                 val xmlb =
                   try {
@@ -248,8 +259,10 @@ object Templates {
                   found = true
                   val rawElems = xmlb.openOrThrowException("passes isDefined")
                   val possiblySurrounded =
-                    if (needAutoSurround) parser.surround(rawElems)
-                    else rawElems
+                    if (needAutoSurround)
+                      parser.surround(rawElems)
+                    else
+                      rawElems
                   ret = (cache(key) = possiblySurrounded)
                 } else if (xmlb.isInstanceOf[Failure] &&
                            (Props.devMode | Props.testMode)) {
@@ -277,8 +290,10 @@ object Templates {
               }
             }
 
-            if (found) Full(ret)
-            else lookForClasses(places)
+            if (found)
+              Full(ret)
+            else
+              lookForClasses(places)
         }
       }
     }

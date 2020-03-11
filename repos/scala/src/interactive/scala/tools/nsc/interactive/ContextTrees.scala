@@ -74,7 +74,8 @@ trait ContextTrees { self: Global =>
   def locateContextTree(
       contexts: Contexts,
       pos: Position): Option[ContextTree] = {
-    if (contexts.isEmpty) None
+    if (contexts.isEmpty)
+      None
     else {
       // binary search on contexts, loop invar: lo <= hi, recursion metric: `hi - lo`
       @tailrec
@@ -83,7 +84,8 @@ trait ContextTrees { self: Global =>
           hi: Int,
           previousSibling: Option[ContextTree]): Option[ContextTree] = {
         // [SI-8239] enforce loop invariant & ensure recursion metric decreases monotonically on every recursion
-        if (lo > hi) previousSibling
+        if (lo > hi)
+          previousSibling
         else if (pos properlyPrecedes contexts(lo).pos)
           previousSibling
         else if (contexts(hi).pos properlyPrecedes pos)
@@ -105,7 +107,8 @@ trait ContextTrees { self: Global =>
             // since ((lo + hi)/2) - lo - (hi - lo) = ((lo + hi)/2) - hi < 0
             // since 2 * (((lo + hi)/2) - hi) = lo - hi < 0 since lo < hi
             loop(lo, mid, previousSibling)
-          else previousSibling
+          else
+            previousSibling
         }
       }
       loop(0, contexts.length - 1, None)
@@ -161,7 +164,8 @@ trait ContextTrees { self: Global =>
                   contexts.slice(start, last + 1))
                 contexts.remove(start + 1, last - start)
                 true
-              } else false
+              } else
+                false
             }
             def loop(lo: Int, hi: Int) {
               if (hi - lo > 1) {

@@ -148,8 +148,12 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
       YarnConfiguration.RM_AM_MAX_ATTEMPTS,
       YarnConfiguration.DEFAULT_RM_AM_MAX_ATTEMPTS)
     val retval: Int = sparkMaxAttempts match {
-      case Some(x) => if (x <= yarnMaxAttempts) x else yarnMaxAttempts
-      case None    => yarnMaxAttempts
+      case Some(x) =>
+        if (x <= yarnMaxAttempts)
+          x
+        else
+          yarnMaxAttempts
+      case None => yarnMaxAttempts
     }
 
     retval

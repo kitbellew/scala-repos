@@ -27,7 +27,8 @@ abstract class ParallelHashSetCheck[T](tp: String)
   def ofSize(vals: Seq[Gen[T]], sz: Int) = {
     val hm = new mutable.HashSet[T]
     val gen = vals(rnd.nextInt(vals.size))
-    for (i <- 0 until sz) hm += sample(gen)
+    for (i <- 0 until sz)
+      hm += sample(gen)
     hm
   }
 

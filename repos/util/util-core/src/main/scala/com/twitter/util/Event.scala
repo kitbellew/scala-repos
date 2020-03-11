@@ -162,8 +162,10 @@ trait Event[+T] { self =>
             case Some(Left(q)) =>
               state = Some(Left(q enqueue t))
             case Some(Right(Queue(u, rest @ _*))) =>
-              if (rest.isEmpty) state = None
-              else state = Some(Right(Queue(rest: _*)))
+              if (rest.isEmpty)
+                state = None
+              else
+                state = Some(Right(Queue(rest: _*)))
               s.notify((t, u))
           }
         }
@@ -177,8 +179,10 @@ trait Event[+T] { self =>
             case Some(Right(q)) =>
               state = Some(Right(q enqueue u))
             case Some(Left(Queue(t, rest @ _*))) =>
-              if (rest.isEmpty) state = None
-              else state = Some(Left(Queue(rest: _*)))
+              if (rest.isEmpty)
+                state = None
+              else
+                state = Some(Left(Queue(rest: _*)))
               s.notify((t, u))
           }
         }
@@ -241,8 +245,10 @@ trait Event[+T] { self =>
       val n = new AtomicInteger(0)
       val c = new AtomicReference(Closable.nop)
       c.set(self.respond { t =>
-        if (n.incrementAndGet() <= howmany) s.notify(t)
-        else c.getAndSet(Closable.nop).close()
+        if (n.incrementAndGet() <= howmany)
+          s.notify(t)
+        else
+          c.getAndSet(Closable.nop).close()
       })
 
       if (n.get() == howmany)

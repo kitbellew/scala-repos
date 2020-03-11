@@ -297,11 +297,12 @@ final class RhinoJSEnv private (
     val PackagesObject =
       ScriptableObject.getProperty(scope, "Packages").asInstanceOf[Scriptable]
     val topLevelPackageIds = ScriptableObject.getPropertyIds(PackagesObject)
-    for (id <- topLevelPackageIds) (id: Any) match {
-      case name: String => ScriptableObject.deleteProperty(scope, name)
-      case index: Int   => ScriptableObject.deleteProperty(scope, index)
-      case _            => // should not happen, I think, but with Rhino you never know
-    }
+    for (id <- topLevelPackageIds)
+      (id: Any) match {
+        case name: String => ScriptableObject.deleteProperty(scope, name)
+        case index: Int   => ScriptableObject.deleteProperty(scope, index)
+        case _            => // should not happen, I think, but with Rhino you never know
+      }
   }
 
   private def setupConsole(
@@ -525,7 +526,8 @@ final class RhinoJSEnv private (
       if (Thread.interrupted())
         throw new InterruptedException()
 
-      if (taskQ.isEmpty || !continue()) None
+      if (taskQ.isEmpty || !continue())
+        None
       else {
         val task = taskQ.head
         if (task.canceled) {
@@ -622,8 +624,10 @@ object RhinoJSEnv {
           expired = true
       }
 
-      if (expired) None
-      else Some(jvm2js.dequeue())
+      if (expired)
+        None
+      else
+        Some(jvm2js.dequeue())
     }
 
     def closeJS(): Unit = synchronized {

@@ -99,7 +99,8 @@ class MessageWriter(segmentSize: Int)
       crc.update(seg.bytes, offset, seg.written - offset)
     seg = seg.next
     while (seg != null) {
-      if (seg.written > 0) crc.update(seg.bytes, 0, seg.written)
+      if (seg.written > 0)
+        crc.update(seg.bytes, 0, seg.written)
       seg = seg.next
     }
     // write CRC32
@@ -143,7 +144,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
     private[this] var len = length
 
     override def write(value: Int) = {
-      if (len <= 0) throw new IndexOutOfBoundsException()
+      if (len <= 0)
+        throw new IndexOutOfBoundsException()
       if (cur.bytes.length <= off) {
         cur = cur.next
         off = 0
@@ -161,7 +163,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
   def size(): Int = filled + currentSegment.written
 
   override def write(b: Int): Unit = {
-    if (currentSegment.freeSpace <= 0) addSegment()
+    if (currentSegment.freeSpace <= 0)
+      addSegment()
     currentSegment.bytes(currentSegment.written) = b.toByte
     currentSegment.written += 1
   }
@@ -171,7 +174,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
       var remaining = len
       var offset = off
       while (remaining > 0) {
-        if (currentSegment.freeSpace <= 0) addSegment()
+        if (currentSegment.freeSpace <= 0)
+          addSegment()
 
         val amount = math.min(currentSegment.freeSpace, remaining)
         System.arraycopy(
@@ -193,7 +197,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
     var amount = 0
     while (amount >= 0) {
       currentSegment.written += amount
-      if (currentSegment.freeSpace <= 0) addSegment()
+      if (currentSegment.freeSpace <= 0)
+        addSegment()
       amount = in.read(
         currentSegment.bytes,
         currentSegment.written,
@@ -212,7 +217,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
     if (len >= 0) {
       var remaining = len
       while (remaining > 0) {
-        if (currentSegment.freeSpace <= 0) addSegment()
+        if (currentSegment.freeSpace <= 0)
+          addSegment()
 
         val amount = math.min(currentSegment.freeSpace, remaining)
         currentSegment.written += amount

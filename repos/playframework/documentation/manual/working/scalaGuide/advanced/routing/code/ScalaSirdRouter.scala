@@ -109,7 +109,7 @@ object ScalaSirdRouter extends Specification {
       //#multiple
       val router = Router.from {
         case GET(
-            p"/items" ? q_o"page=$page"
+              p"/items" ? q_o"page=$page"
               & q_o"per_page=$perPage") =>
           Action {
             val thisPage = page.getOrElse("1")
@@ -161,7 +161,7 @@ object ScalaSirdRouter extends Specification {
       val router = Router.from {
         case rh @ GET(
               p"/items/${idString @ int(id)}" ?
-                q"price=${int(price)}") if price > 200 =>
+              q"price=${int(price)}") if price > 200 =>
           Action {
             Results.Ok(s"Expensive item $id")
           }

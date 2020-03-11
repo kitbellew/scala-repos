@@ -133,7 +133,8 @@ trait BaseGetPoster {
   protected def slurpApacheHeaders(
       in: Array[Header]): Map[String, List[String]] = {
     val headerSet: List[(String, String)] =
-      for (e <- in.toList) yield (e.getName -> e.getValue)
+      for (e <- in.toList)
+        yield (e.getName -> e.getValue)
 
     headerSet.foldLeft[Map[String, List[String]]](Map.empty)((acc, e) =>
       acc + (e._1 -> (e._2 :: acc.getOrElse(e._1, Nil))))
@@ -162,7 +163,8 @@ trait BaseGetPoster {
     })
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) getter.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      getter.setRequestHeader(name, value)
 
     capture(fullUrl, httpClient, getter)
   }
@@ -190,7 +192,8 @@ trait BaseGetPoster {
     })
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) getter.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      getter.setRequestHeader(name, value)
 
     capture(fullUrl, httpClient, getter)
   }
@@ -212,8 +215,10 @@ trait BaseGetPoster {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
-    for ((name, value) <- params) poster.setParameter(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
+    for ((name, value) <- params)
+      poster.setParameter(name, value)
 
     capture(url, httpClient, poster)
   }
@@ -264,7 +269,8 @@ trait BaseGetPoster {
       bodyToRequestEntity: RT => RequestEntity): ResponseType = {
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
     poster.setRequestEntity(bodyToRequestEntity(body))
 
     capture(url, httpClient, poster)
@@ -288,7 +294,8 @@ trait BaseGetPoster {
       : ResponseType = {
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
     poster.setRequestEntity(new RequestEntity {
       private val bytes = body
 
@@ -316,7 +323,8 @@ trait BaseGetPoster {
       : ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
 
     capture(url, httpClient, poster)
   }
@@ -337,7 +345,8 @@ trait BaseGetPoster {
       bodyToRequestEntity: RT => RequestEntity): ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
     poster.setRequestEntity(bodyToRequestEntity(body))
 
     capture(url, httpClient, poster)
@@ -361,7 +370,8 @@ trait BaseGetPoster {
       : ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
-    for ((name, value) <- headers) poster.setRequestHeader(name, value)
+    for ((name, value) <- headers)
+      poster.setRequestHeader(name, value)
     poster.setRequestEntity(new RequestEntity {
       private val bytes = body
 
@@ -557,15 +567,17 @@ trait TestFramework extends TestKit {
   // protected lazy val httpClient = new HttpClient(new MultiThreadedHttpConnectionManager)
 
   def fork(cnt: Int)(f: Int => Any) {
-    val threads = for (t <- (1 to cnt).toList) yield {
-      val th = new Thread(new Runnable {
-        def run {
-          f(t)
+    val threads =
+      for (t <- (1 to cnt).toList)
+        yield {
+          val th = new Thread(new Runnable {
+            def run {
+              f(t)
+            }
+          })
+          th.start
+          th
         }
-      })
-      th.start
-      th
-    }
 
     def waitAll(in: List[Thread]) {
       in match {
@@ -595,8 +607,10 @@ object TestHelpers {
     val p =
       Pattern.compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
-    if (m.find) Full(m.group(1))
-    else Empty
+    if (m.find)
+      Full(m.group(1))
+    else
+      Empty
   }
 
   /**
@@ -954,7 +968,8 @@ abstract class BaseResponse(
     } yield new String(b, "UTF-8")
 
   def !@(msg: => String)(implicit errorFunc: ReportFailure): SelfType =
-    if (code == 200) this.asInstanceOf[SelfType]
+    if (code == 200)
+      this.asInstanceOf[SelfType]
     else {
       errorFunc.fail(msg)
     }
@@ -964,7 +979,10 @@ abstract class BaseResponse(
 
   def !(code: Int, msg: => String)(
       implicit errorFunc: ReportFailure): SelfType =
-    if (this.code != code) errorFunc.fail(msg) else this.asInstanceOf[SelfType]
+    if (this.code != code)
+      errorFunc.fail(msg)
+    else
+      this.asInstanceOf[SelfType]
 
   def xmlMatch(
       findFunc: Elem => NodeSeq,

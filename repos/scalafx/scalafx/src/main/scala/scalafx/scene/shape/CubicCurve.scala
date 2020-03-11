@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object CubicCurve {
   implicit def sfxCubicCurve2jfx(v: CubicCurve): jfxss.CubicCurve =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class CubicCurve(

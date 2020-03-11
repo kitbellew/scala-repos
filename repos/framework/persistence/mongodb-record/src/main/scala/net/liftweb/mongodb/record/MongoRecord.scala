@@ -63,7 +63,11 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
     * @param safe - if true will use WriteConcern ACKNOWLEDGED else UNACKNOWLEDGED
     */
   def save(safe: Boolean = true): MyType = {
-    save(if (safe) WriteConcern.ACKNOWLEDGED else WriteConcern.UNACKNOWLEDGED)
+    save(
+      if (safe)
+        WriteConcern.ACKNOWLEDGED
+      else
+        WriteConcern.UNACKNOWLEDGED)
   }
 
   /**

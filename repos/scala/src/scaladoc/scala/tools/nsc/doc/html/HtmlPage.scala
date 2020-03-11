@@ -318,13 +318,24 @@ abstract class HtmlPage extends Page { thisPage =>
         } class="extype" name={
           dTpl.qualifiedName
         }>{
-          if (name eq null) dTpl.name else name
+          if (name eq null)
+            dTpl.name
+          else
+            name
         }</a>
       } else {
-        scala.xml.Text(if (name eq null) dTpl.name else name)
+        scala.xml.Text(
+          if (name eq null)
+            dTpl.name
+          else
+            name)
       }
     case ndTpl: NoDocTemplate =>
-      scala.xml.Text(if (name eq null) ndTpl.name else name)
+      scala.xml.Text(
+        if (name eq null)
+          ndTpl.name
+        else
+          name)
   }
 
   /** Returns the HTML code that represents the templates in `tpls` as a list of hyperlinked names. */
@@ -344,11 +355,16 @@ abstract class HtmlPage extends Page { thisPage =>
     *  corresponding to the DocTemplate Entity (upper left icon) */
   def docEntityKindToBigImage(ety: DocTemplateEntity) = {
     def entityToImage(e: DocTemplateEntity) =
-      if (e.isTrait) Image.Trait
-      else if (e.isClass) Image.Class
-      else if (e.isAbstractType || e.isAliasType) Image.Type
-      else if (e.isObject) Image.Object
-      else if (e.isPackage) Image.Package
+      if (e.isTrait)
+        Image.Trait
+      else if (e.isClass)
+        Image.Class
+      else if (e.isAbstractType || e.isAliasType)
+        Image.Type
+      else if (e.isObject)
+        Image.Object
+      else if (e.isPackage)
+        Image.Package
       else {
         // FIXME: an entity *should* fall into one of the above categories,
         // but AnyRef is somehow not
@@ -384,10 +400,14 @@ abstract class HtmlPage extends Page { thisPage =>
       baseString: String = "See companion") =
     ety.companion match {
       case Some(companion) =>
-        s"$baseString${if (companion.isObject) " object"
-        else if (companion.isTrait) " trait"
-        else if (companion.isClass) " class"
-        else ""}"
+        s"$baseString${if (companion.isObject)
+          " object"
+        else if (companion.isTrait)
+          " trait"
+        else if (companion.isClass)
+          " class"
+        else
+          ""}"
       case None => baseString
     }
 
@@ -396,9 +416,12 @@ abstract class HtmlPage extends Page { thisPage =>
       tpl.companion match {
         case Some(companionTpl) =>
           val objClassTrait =
-            if (companionTpl.isObject) s"object ${tpl.name}"
-            else if (companionTpl.isTrait) s"trait ${companionTpl.name}"
-            else s"class ${companionTpl.name}"
+            if (companionTpl.isObject)
+              s"object ${tpl.name}"
+            else if (companionTpl.isTrait)
+              s"trait ${companionTpl.name}"
+            else
+              s"class ${companionTpl.name}"
           <div>
             Companion <a href={
             relativeLinkTo(companionTpl)

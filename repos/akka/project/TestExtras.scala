@@ -60,8 +60,10 @@ object TestExtras {
       Seq(
         excludeTestNames := Params.testNamesExclude,
         excludeTestTags := {
-          if (onlyTestTags.value.isEmpty) Params.testTagsExlcude
-          else Set.empty
+          if (onlyTestTags.value.isEmpty)
+            Params.testTagsExlcude
+          else
+            Set.empty
         },
         onlyTestTags := Params.testTagsOnly,
         // add filters for tests excluded by name
@@ -70,13 +72,17 @@ object TestExtras {
         },
         // add arguments for tests excluded by tag
         testOptions in Test <++= excludeTestTags map { tags =>
-          if (tags.isEmpty) Seq.empty
-          else Seq(Tests.Argument("-l", tags.mkString(" ")))
+          if (tags.isEmpty)
+            Seq.empty
+          else
+            Seq(Tests.Argument("-l", tags.mkString(" ")))
         },
         // add arguments for running only tests by tag
         testOptions in Test <++= onlyTestTags map { tags =>
-          if (tags.isEmpty) Seq.empty
-          else Seq(Tests.Argument("-n", tags.mkString(" ")))
+          if (tags.isEmpty)
+            Seq.empty
+          else
+            Seq(Tests.Argument("-n", tags.mkString(" ")))
         }
       )
     }
@@ -87,7 +93,10 @@ object TestExtras {
 
     def systemPropertyAsSeq(name: String): Seq[String] = {
       val prop = sys.props.get(name).getOrElse("")
-      if (prop.isEmpty) Seq.empty else prop.split(",").toSeq
+      if (prop.isEmpty)
+        Seq.empty
+      else
+        prop.split(",").toSeq
     }
   }
 

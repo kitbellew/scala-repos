@@ -40,12 +40,15 @@ object CacheDirective {
         r ~~ productPrefix ~~ '=' ~~ '"'
         @tailrec def rec(i: Int = 0): r.type =
           if (i < fieldNames.length) {
-            if (i > 0) r ~~ ','
+            if (i > 0)
+              r ~~ ','
             r.putEscaped(fieldNames(i))
             rec(i + 1)
-          } else r ~~ '"'
+          } else
+            r ~~ '"'
         rec()
-      } else r ~~ productPrefix
+      } else
+        r ~~ productPrefix
   }
 }
 

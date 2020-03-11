@@ -161,7 +161,8 @@ class ApplicationEvolutions @Inject() (
         s.executeQuery(applySchema(script, dbConfig.schema))
     } catch {
       case e: SQLException =>
-        if (attempts == 0) throw e
+        if (attempts == 0)
+          throw e
         else {
           logger.warn(
             "Exception while attempting to lock evolutions (other node probably has lock), sleeping for 1 sec")

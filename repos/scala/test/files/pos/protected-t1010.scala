@@ -17,8 +17,10 @@ package pkg1 {
     trait ProjectImpl {
       trait FileImpl
       protected def lockTyper[T](f: => T) = {
-        if (this == null) None
-        else Some(f)
+        if (this == null)
+          None
+        else
+          Some(f)
       }
     }
   }

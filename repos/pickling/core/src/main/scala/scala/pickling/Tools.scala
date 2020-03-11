@@ -26,8 +26,12 @@ object Tools {
     def unapply[T](optRef: Option[WeakReference[T]]): Option[T] =
       if (optRef.nonEmpty) {
         val result = optRef.get.get
-        if (result != null) Some(result) else None
-      } else None
+        if (result != null)
+          Some(result)
+        else
+          None
+      } else
+        None
   }
 
   def subclassCache(key: AnyRef, valueThunk: => AnyRef): AnyRef = {
@@ -101,8 +105,15 @@ class Tools[C <: Context](val c: C) {
       allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(subtpe =>
         subtpe.typeSymbol != tpe.typeSymbol)
     val selfTpe =
-      if (isRelevantSubclass(tpe.typeSymbol, tpe.typeSymbol)) List(tpe) else Nil
-    val result = if (excludeSelf) subtypes else subtypes ++ selfTpe
+      if (isRelevantSubclass(tpe.typeSymbol, tpe.typeSymbol))
+        List(tpe)
+      else
+        Nil
+    val result =
+      if (excludeSelf)
+        subtypes
+      else
+        subtypes ++ selfTpe
     // println(s"$tpe => $result")
     result
   }
@@ -124,7 +135,8 @@ class Tools[C <: Context](val c: C) {
     def sourcepathScan(): List[Symbol] = {
       val subclasses = MutableList[Symbol]()
       def analyze(sym: Symbol) =
-        if (isRelevantSubclass(baseSym, sym)) subclasses += sym
+        if (isRelevantSubclass(baseSym, sym))
+          subclasses += sym
       def loop(tree: Tree): Unit = tree match {
         // NOTE: only looking for classes defined in objects or top-level classes!
         case PackageDef(_, stats) => stats.foreach(loop)
@@ -164,9 +176,12 @@ class Tools[C <: Context](val c: C) {
       }
       if (baseSym.isClass) {
         val sealedHierarchy = loop(baseSym.asClass)
-        if (hierarchyIsSealed) sealedHierarchy
-        else sealedHierarchy ++ sourcepathScan() //sourcepathAndClasspathScan()
-      } else sourcepathScan() //sourcepathAndClasspathScan()
+        if (hierarchyIsSealed)
+          sealedHierarchy
+        else
+          sealedHierarchy ++ sourcepathScan() //sourcepathAndClasspathScan()
+      } else
+        sourcepathScan() //sourcepathAndClasspathScan()
     }
 
     def sourcepathAndClasspathScan(): List[Symbol] = {
@@ -187,11 +202,14 @@ class Tools[C <: Context](val c: C) {
               val pkgMembers = pkg.typeSignature.members
               pkgMembers foreach (m => {
                 def analyze(m: Symbol): Unit = {
-                  if (m.name.decoded.contains("$")) () // SI-7251
+                  if (m.name.decoded.contains("$"))
+                    () // SI-7251
                   else if (m.isClass)
                     m.asClass.baseClasses foreach (bc => updateCache(bc, m))
-                  else if (m.isModule) analyze(m.asModule.moduleClass)
-                  else ()
+                  else if (m.isModule)
+                    analyze(m.asModule.moduleClass)
+                  else
+                    ()
                 }
                 analyze(m)
               })
@@ -216,12 +234,14 @@ class Tools[C <: Context](val c: C) {
 
     if (baseSym.isFinal || baseSym.isModuleClass)
       Nil // FIXME: http://groups.google.com/group/scala-internals/browse_thread/thread/e2b786120b6d118d
-    else if (blackList(baseSym)) Nil
+    else if (blackList(baseSym))
+      Nil
     else {
       var unsorted = {
         if (baseSym.isClass && treatAsSealed(baseSym.asClass))
           sealedHierarchyScan()
-        else sourcepathScan() // sourcepathAndClasspathScan()
+        else
+          sourcepathScan() // sourcepathAndClasspathScan()
       }
       // NOTE: need to order the list: children first, parents last
       // otherwise pattern match which uses this list might work funnily
@@ -240,7 +260,8 @@ class Tools[C <: Context](val c: C) {
           // see http://groups.google.com/group/scala-internals/browse_thread/thread/3a43a6364b97b521 for more information
           if (tparamsMatch && targsAreConcrete)
             appliedType(subSym.toTypeConstructor, baseTargs)
-          else existentialAbstraction(subSym.typeParams, subSym.toType)
+          else
+            existentialAbstraction(subSym.typeParams, subSym.toType)
         })
       subTpes
     }
@@ -264,9 +285,14 @@ trait RichTypes {
           TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
-            (if (sym.isModuleClass) ".type" else "") +
-            (if (targs.isEmpty) ""
-             else targs.map(_.key).mkString("[", ",", "]"))
+            (if (sym.isModuleClass)
+               ".type"
+             else
+               "") +
+            (if (targs.isEmpty)
+               ""
+             else
+               targs.map(_.key).mkString("[", ",", "]"))
         case _ =>
           tpe.toString
       }
@@ -307,7 +333,8 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
           if (visited(currTpe)) {
             if (tpe <:< currTpe)
               true // TODO: make sure this sanely works for polymorphic types
-            else loop(rest, visited)
+            else
+              loop(rest, visited)
           } else if (currTpe.isNotNullable || currTpe.isEffectivelyPrimitive || currSym == StringClass || currSym.isModuleClass)
             loop(rest, visited)
           // TODO: extend the traversal logic to support sealed classes
@@ -327,20 +354,26 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
   }
 
   def shouldBotherAboutSharing(tpe: Type): Boolean = {
-    if (shareNothing) false
+    if (shareNothing)
+      false
     else if (shareEverything)
       !tpe.isEffectivelyPrimitive || (tpe.typeSymbol.asType == StringClass)
-    else canCauseLoops(tpe)
+    else
+      canCauseLoops(tpe)
   }
 
   def shouldBotherAboutLooping(tpe: Type): Boolean = {
-    if (shareNothing) false
-    else canCauseLoops(tpe)
+    if (shareNothing)
+      false
+    else
+      canCauseLoops(tpe)
   }
 
   def shouldBotherAboutCleaning(tpe: Type): Boolean = {
-    if (shareNothing) false
-    else true // TODO: need to be more precise here
+    if (shareNothing)
+      false
+    else
+      true // TODO: need to be more precise here
   }
 }
 
@@ -523,8 +556,10 @@ abstract class Macro extends RichTypes { self =>
     }
     // val field = fir.field.get
     val owner =
-      if (fir.param.nonEmpty) fir.param.get.owner
-      else fir.accessor.get.owner
+      if (fir.param.nonEmpty)
+        fir.param.get.owner
+      else
+        fir.accessor.get.owner
     val ownerSymbol = c.fresh(newTermName(fir.name + "Owner"))
     val firSymbol = c.fresh(newTermName(fir.name + "Symbol"))
     // TODO: make sure this works for:
@@ -595,7 +630,8 @@ trait PickleTools extends Hintable {
 
   def withHints[T](body: Hints => T): T = {
     val hints = this.hints.head
-    if (!hints.pinned) this.hints = Hints() :: this.hints.tail
+    if (!hints.pinned)
+      this.hints = Hints() :: this.hints.tail
     body(hints)
   }
 }

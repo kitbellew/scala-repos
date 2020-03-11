@@ -37,7 +37,10 @@ object ReliableProxy {
       targetPath,
       retryAfter,
       Option(reconnectAfter),
-      if (maxReconnects > 0) Some(maxReconnects) else None)
+      if (maxReconnects > 0)
+        Some(maxReconnects)
+      else
+        None)
   }
 
   /**
@@ -144,10 +147,12 @@ private[akka] trait ReliableProxyDebugLogging extends ActorLogging {
   def addSelf(template: String): String = s"$template [$self]"
 
   def logDebug(template: String, arg1: Any, arg2: Any): Unit =
-    if (enabled) log.debug(addSelf(template), arg1, arg2)
+    if (enabled)
+      log.debug(addSelf(template), arg1, arg2)
 
   def logDebug(template: String, arg1: Any): Unit =
-    if (enabled) log.debug(addSelf(template), arg1)
+    if (enabled)
+      log.debug(addSelf(template), arg1)
 }
 
 import ReliableProxy._
@@ -332,10 +337,13 @@ class ReliableProxy(
       terminated()
     case Event(Ack(serial), queue) ⇒
       val q = queue dropWhile (m ⇒ compare(m.serial, serial) <= 0)
-      if (compare(serial, lastAckSerial) > 0) lastAckSerial = serial
+      if (compare(serial, lastAckSerial) > 0)
+        lastAckSerial = serial
       scheduleTick()
-      if (q.isEmpty) goto(Idle) using Vector.empty
-      else stay using q
+      if (q.isEmpty)
+        goto(Idle) using Vector.empty
+      else
+        stay using q
     case Event(Tick, queue) ⇒
       logResend(queue.size)
       queue foreach {
@@ -356,8 +364,12 @@ class ReliableProxy(
       val curr = currentTarget
       cancelTimer(reconnectTimer)
       createTunnel(actor)
-      if (currentTarget != curr) gossip(TargetChanged(currentTarget))
-      if (queue.isEmpty) goto(Idle) else goto(Active) using resend(queue)
+      if (currentTarget != curr)
+        gossip(TargetChanged(currentTarget))
+      if (queue.isEmpty)
+        goto(Idle)
+      else
+        goto(Active) using resend(queue)
     case Event(ActorIdentity(_, None), _) ⇒
       stay()
     case Event(ReconnectTick, _) ⇒
@@ -409,8 +421,10 @@ class ReliableProxy(
 
   def terminated(): State = {
     logDebug("Terminated: {}", targetPath)
-    if (reconnectAfter.isDefined) goto(Connecting)
-    else stop()
+    if (reconnectAfter.isDefined)
+      goto(Connecting)
+    else
+      stop()
   }
 
   def scheduleReconnectTick(): Unit = {

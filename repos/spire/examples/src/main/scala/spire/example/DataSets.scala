@@ -211,7 +211,10 @@ object Variable {
 
         { s =>
           orderedCategories map (cat =>
-            if (cat == s) Ring[F].one else Ring[F].zero)
+            if (cat == s)
+              Ring[F].one
+            else
+              Ring[F].zero)
         }
       }
     }
@@ -245,7 +248,10 @@ object Variable {
         val mostCommon = occurences.maxBy(_._2)._1
 
         { s =>
-          if (s == sentinel) mostCommon else real(s)
+          if (s == sentinel)
+            mostCommon
+          else
+            real(s)
         }
       }
     }
@@ -297,7 +303,10 @@ object CrossValidation {
     def accuracy(results: List[Result[V, K]]): F = {
       results.foldLeft(field.zero) {
         case (acc, Result(_, output, predicted)) =>
-          acc + (if (predicted == output) field.one else field.zero)
+          acc + (if (predicted == output)
+                   field.one
+                 else
+                   field.zero)
       } / results.size
     }
 

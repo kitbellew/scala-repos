@@ -38,63 +38,84 @@ object util {
     case (c1: BoolColumn, c2: BoolColumn) =>
       new UnionColumn(c1, c2) with BoolColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: LongColumn, c2: LongColumn) =>
       new UnionColumn(c1, c2) with LongColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: DoubleColumn, c2: DoubleColumn) =>
       new UnionColumn(c1, c2) with DoubleColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: NumColumn, c2: NumColumn) =>
       new UnionColumn(c1, c2) with NumColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: StrColumn, c2: StrColumn) =>
       new UnionColumn(c1, c2) with StrColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: DateColumn, c2: DateColumn) =>
       new UnionColumn(c1, c2) with DateColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
     case (c1: PeriodColumn, c2: PeriodColumn) =>
       new UnionColumn(c1, c2) with PeriodColumn {
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
@@ -104,9 +125,12 @@ object util {
       new UnionColumn(c1, c2) with HomogeneousArrayColumn[a] {
         val tpe = c1.tpe
         def apply(row: Int) = {
-          if (c2.isDefinedAt(row)) c2(row)
-          else if (c1.isDefinedAt(row)) c1(row)
-          else sys.error("Attempt to retrieve undefined value for row: " + row)
+          if (c2.isDefinedAt(row))
+            c2(row)
+          else if (c1.isDefinedAt(row))
+            c1(row)
+          else
+            sys.error("Attempt to retrieve undefined value for row: " + row)
         }
       }
 
@@ -254,37 +278,65 @@ object util {
   def Concat(at: Int) = CF2P("builtin::ct::concat") {
     case (c1: BoolColumn, c2: BoolColumn) =>
       new ConcatColumn(at, c1, c2) with BoolColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: LongColumn, c2: LongColumn) =>
       new ConcatColumn(at, c1, c2) with LongColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: DoubleColumn, c2: DoubleColumn) =>
       new ConcatColumn(at, c1, c2) with DoubleColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: NumColumn, c2: NumColumn) =>
       new ConcatColumn(at, c1, c2) with NumColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: StrColumn, c2: StrColumn) =>
       new ConcatColumn(at, c1, c2) with StrColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: DateColumn, c2: DateColumn) =>
       new ConcatColumn(at, c1, c2) with DateColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: PeriodColumn, c2: PeriodColumn) =>
       new ConcatColumn(at, c1, c2) with PeriodColumn {
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: HomogeneousArrayColumn[a], _c2: HomogeneousArrayColumn[_])
@@ -292,7 +344,11 @@ object util {
       val c2 = _c2.asInstanceOf[HomogeneousArrayColumn[a]]
       new ConcatColumn(at, c1, c2) with HomogeneousArrayColumn[a] {
         val tpe = c1.tpe
-        def apply(row: Int) = if (row < at) c1(row) else c2(row - at)
+        def apply(row: Int) =
+          if (row < at)
+            c1(row)
+          else
+            c2(row - at)
       }
 
     case (c1: EmptyArrayColumn, c2: EmptyArrayColumn) =>
@@ -723,37 +779,65 @@ object util {
   def MaskedUnion(leftMask: BitSet) = CF2P("builtin::ct::maskedUnion") {
     case (left: BoolColumn, right: BoolColumn) =>
       new UnionColumn(left, right) with BoolColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: LongColumn, right: LongColumn) =>
       new UnionColumn(left, right) with LongColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: DoubleColumn, right: DoubleColumn) =>
       new UnionColumn(left, right) with DoubleColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: NumColumn, right: NumColumn) =>
       new UnionColumn(left, right) with NumColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: StrColumn, right: StrColumn) =>
       new UnionColumn(left, right) with StrColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: DateColumn, right: DateColumn) =>
       new UnionColumn(left, right) with DateColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: PeriodColumn, right: PeriodColumn) =>
       new UnionColumn(left, right) with PeriodColumn {
-        def apply(row: Int) = if (leftMask.get(row)) left(row) else right(row)
+        def apply(row: Int) =
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row)
       }
 
     case (left: HomogeneousArrayColumn[a], right: HomogeneousArrayColumn[b])
@@ -761,8 +845,10 @@ object util {
       new UnionColumn(left, right) with HomogeneousArrayColumn[a] {
         val tpe = left.tpe
         def apply(row: Int) =
-          if (leftMask.get(row)) left(row)
-          else right(row).asInstanceOf[Array[a]]
+          if (leftMask.get(row))
+            left(row)
+          else
+            right(row).asInstanceOf[Array[a]]
       }
 
     case (left: EmptyArrayColumn, right: EmptyArrayColumn) =>

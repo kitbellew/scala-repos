@@ -47,15 +47,20 @@ sealed abstract class ISet[A] {
         case Tip() =>
           some(best)
         case Bin(y, l, r) =>
-          if (o.lessThanOrEqual(x, y)) withBest(x, best, l)
-          else withBest(x, y, r)
+          if (o.lessThanOrEqual(x, y))
+            withBest(x, best, l)
+          else
+            withBest(x, y, r)
       }
 
     this match {
       case Tip() =>
         none
       case Bin(y, l, r) =>
-        if (o.lessThanOrEqual(x, y)) l.lookupLT(x) else withBest(x, y, r)
+        if (o.lessThanOrEqual(x, y))
+          l.lookupLT(x)
+        else
+          withBest(x, y, r)
     }
   }
 
@@ -67,14 +72,20 @@ sealed abstract class ISet[A] {
         case Tip() =>
           some(best)
         case Bin(y, l, r) =>
-          if (o.lessThan(x, y)) withBest(x, y, l) else withBest(x, best, r)
+          if (o.lessThan(x, y))
+            withBest(x, y, l)
+          else
+            withBest(x, best, r)
       }
 
     this match {
       case Tip() =>
         none
       case Bin(y, l, r) =>
-        if (o.lessThan(x, y)) withBest(x, y, l) else r.lookupGT(x)
+        if (o.lessThan(x, y))
+          withBest(x, y, l)
+        else
+          r.lookupGT(x)
     }
   }
 
@@ -281,7 +292,10 @@ sealed abstract class ISet[A] {
           val bmi = some(x)
           val l2 = hedgeInt(blo, bmi, l, t2.trim(blo, bmi))
           val r2 = hedgeInt(bmi, bhi, r, t2.trim(bmi, bhi))
-          if (t2.member(x)) join(x, l2, r2) else l2 merge r2
+          if (t2.member(x))
+            join(x, l2, r2)
+          else
+            l2 merge r2
       }
 
     (this, other) match {
@@ -299,8 +313,10 @@ sealed abstract class ISet[A] {
     this match {
       case Tip() => this
       case Bin(x, l, r) =>
-        if (p(x)) join(x, l.filter(p), r.filter(p))
-        else l.filter(p) merge r.filter(p)
+        if (p(x))
+          join(x, l.filter(p), r.filter(p))
+        else
+          l.filter(p) merge r.filter(p)
     }
 
   final def partition(p: A => Boolean): (ISet[A], ISet[A]) =
@@ -310,8 +326,10 @@ sealed abstract class ISet[A] {
       case Bin(x, l, r) =>
         val (l1, l2) = l.partition(p)
         val (r1, r2) = r.partition(p)
-        if (p(x)) (join(x, l1, r1), l2 merge r2)
-        else (l1 merge r1, join(x, l2, r2))
+        if (p(x))
+          (join(x, l1, r1), l2 merge r2)
+        else
+          (l1 merge r1, join(x, l2, r2))
     }
 
   final def split(x: A)(implicit o: Order[A]): (ISet[A], ISet[A]) =
@@ -534,9 +552,12 @@ sealed abstract class ISet[A] {
       case (Tip(), r) => r.insertMin(x)
       case (l, Tip()) => l.insertMax(x)
       case (Bin(y, ly, ry), Bin(z, lz, rz)) =>
-        if (delta * l.size < r.size) balanceL(z, join(x, l, lz), rz)
-        else if (delta * r.size < l.size) balanceR(y, ly, join(x, ry, r))
-        else Bin(x, l, r)
+        if (delta * l.size < r.size)
+          balanceL(z, join(x, l, lz), rz)
+        else if (delta * r.size < l.size)
+          balanceR(y, ly, join(x, ry, r))
+        else
+          Bin(x, l, r)
     }
 
   private def insertMax(x: A): ISet[A] =
@@ -560,9 +581,12 @@ sealed abstract class ISet[A] {
       case (Tip(), r) => r
       case (l, Tip()) => l
       case (l @ Bin(x, lx, rx), r @ Bin(y, ly, ry)) =>
-        if (delta * l.size < r.size) balanceL(y, l merge ly, ry)
-        else if (delta * r.size < l.size) balanceR(x, lx, rx merge r)
-        else glue(l, r)
+        if (delta * l.size < r.size)
+          balanceL(y, l merge ly, ry)
+        else if (delta * r.size < l.size)
+          balanceR(x, lx, rx merge r)
+        else
+          glue(l, r)
     }
 
   final def trim(a: Option[A], b: Option[A])(implicit o: Order[A]): ISet[A] =
@@ -573,7 +597,10 @@ sealed abstract class ISet[A] {
         def greater(lo: A, t: ISet[A]): ISet[A] =
           t match {
             case Bin(x, _, r) =>
-              if (o.lessThanOrEqual(x, lo)) greater(lo, r) else t
+              if (o.lessThanOrEqual(x, lo))
+                greater(lo, r)
+              else
+                t
             case _ => t
           }
         greater(lx, this)
@@ -581,7 +608,10 @@ sealed abstract class ISet[A] {
         def lesser(hi: A, t: ISet[A]): ISet[A] =
           t match {
             case Bin(x, l, _) =>
-              if (o.greaterThanOrEqual(x, hi)) lesser(hi, l) else t
+              if (o.greaterThanOrEqual(x, hi))
+                lesser(hi, l)
+              else
+                t
             case _ => t
           }
         lesser(hx, this)
@@ -589,9 +619,12 @@ sealed abstract class ISet[A] {
         def middle(lo: A, hi: A, t: ISet[A]): ISet[A] =
           t match {
             case Bin(x, l, r) =>
-              if (o.lessThanOrEqual(x, lo)) middle(lo, hi, r)
-              else if (o.greaterThanOrEqual(x, hi)) middle(lo, hi, l)
-              else t
+              if (o.lessThanOrEqual(x, lo))
+                middle(lo, hi, r)
+              else if (o.greaterThanOrEqual(x, hi))
+                middle(lo, hi, l)
+              else
+                t
             case _ => t
           }
         middle(lx, rx, this)
@@ -803,8 +836,10 @@ object ISet extends ISetInstances {
           case Bin(lx, ll @ Bin(_, _, _), Tip()) =>
             Bin(lx, ll, singleton(x))
           case Bin(lx, ll @ Bin(_, _, _), lr @ Bin(lrx, lrl, lrr)) =>
-            if (lr.size < ratio * ll.size) Bin(lx, ll, Bin(x, lr, Tip()))
-            else Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, Tip()))
+            if (lr.size < ratio * ll.size)
+              Bin(lx, ll, Bin(x, lr, Tip()))
+            else
+              Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, Tip()))
         }
       case Bin(_, _, _) =>
         l match {
@@ -814,11 +849,14 @@ object ISet extends ISetInstances {
             if (l.size > delta * r.size) {
               (ll, lr) match {
                 case (Bin(_, _, _), Bin(lrx, lrl, lrr)) =>
-                  if (lr.size < ratio * ll.size) Bin(lx, ll, Bin(x, lr, r))
-                  else Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, r))
+                  if (lr.size < ratio * ll.size)
+                    Bin(lx, ll, Bin(x, lr, r))
+                  else
+                    Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, r))
                 case _ => sys.error("Failure in ISet.balanceL")
               }
-            } else Bin(x, l, r)
+            } else
+              Bin(x, l, r)
         }
     }
 
@@ -835,8 +873,10 @@ object ISet extends ISetInstances {
           case Bin(rx, Bin(rlx, _, _), Tip()) =>
             Bin(rlx, singleton(x), singleton(rx))
           case Bin(rx, rl @ Bin(rlx, rll, rlr), rr @ Bin(_, _, _)) =>
-            if (rl.size < ratio * rr.size) Bin(rx, Bin(x, Tip(), rl), rr)
-            else Bin(rlx, Bin(x, Tip(), rll), Bin(rx, rlr, rr))
+            if (rl.size < ratio * rr.size)
+              Bin(rx, Bin(x, Tip(), rl), rr)
+            else
+              Bin(rlx, Bin(x, Tip(), rll), Bin(rx, rlr, rr))
         }
       case Bin(_, _, _) =>
         r match {
@@ -846,11 +886,14 @@ object ISet extends ISetInstances {
             if (r.size > delta * l.size) {
               (rl, rr) match {
                 case (Bin(rlx, rll, rlr), Bin(_, _, _)) =>
-                  if (rl.size < ratio * rr.size) Bin(rx, Bin(x, l, rl), rr)
-                  else Bin(rlx, Bin(x, l, rll), Bin(rx, rlr, rr))
+                  if (rl.size < ratio * rr.size)
+                    Bin(rx, Bin(x, l, rl), rr)
+                  else
+                    Bin(rlx, Bin(x, l, rll), Bin(rx, rlr, rr))
                 case _ => sys.error("Failure in ISet.balanceR")
               }
-            } else Bin(x, l, r)
+            } else
+              Bin(x, l, r)
         }
     }
 

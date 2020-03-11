@@ -25,7 +25,10 @@ final class MapIntIntGroup extends Group[Map[Int, Int]] {
       case (prevMap, preimage) =>
         val imageX = x.getOrElse(preimage, preimage)
         val image = y.getOrElse(imageX, imageX)
-        if (preimage != image) prevMap + ((preimage, image)) else prevMap
+        if (preimage != image)
+          prevMap + ((preimage, image))
+        else
+          prevMap
     }
   }
   def inverse(a: Map[Int, Int]): Map[Int, Int] = a.map(_.swap).toMap
@@ -36,8 +39,10 @@ final class MapIntIntSeqPartialAction[A, SA <: SeqLike[A, SA]](
     extends PartialAction[SA, Map[Int, Int]] {
   import mapIntIntPermutation._
   def partialActl(perm: Map[Int, Int], sa: SA): Opt[SA] = {
-    if (perm.isEmpty) return Opt(sa)
-    if (perm.keys.max >= sa.size) return Opt.empty[SA]
+    if (perm.isEmpty)
+      return Opt(sa)
+    if (perm.keys.max >= sa.size)
+      return Opt.empty[SA]
     val builder = cbf()
     cforRange(0 until sa.size) { k =>
       builder += sa(perm.getOrElse(k, k))

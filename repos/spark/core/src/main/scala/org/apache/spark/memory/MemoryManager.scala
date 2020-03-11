@@ -200,7 +200,10 @@ private[spark] abstract class MemoryManager(
     val minPageSize = 1L * 1024 * 1024 // 1MB
     val maxPageSize = 64L * minPageSize // 64MB
     val cores =
-      if (numCores > 0) numCores else Runtime.getRuntime.availableProcessors()
+      if (numCores > 0)
+        numCores
+      else
+        Runtime.getRuntime.availableProcessors()
     // Because of rounding to next power of 2, we may have safetyFactor as 8 in worst case
     val safetyFactor = 16
     val maxTungstenMemory: Long = tungstenMemoryMode match {

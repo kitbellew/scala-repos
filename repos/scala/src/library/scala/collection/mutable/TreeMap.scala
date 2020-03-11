@@ -158,7 +158,10 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
       new TreeMapView(pickLowerBound(from), pickUpperBound(until))
 
     override def get(key: A) =
-      if (isInsideViewBounds(key)) RB.get(tree, key) else None
+      if (isInsideViewBounds(key))
+        RB.get(tree, key)
+      else
+        None
 
     override def iterator = RB.iterator(tree, from, until)
     override def iteratorFrom(start: A) =
@@ -176,7 +179,10 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
     override def head = headOption.get
     override def headOption = {
       val entry =
-        if (from.isDefined) RB.minAfter(tree, from.get) else RB.min(tree)
+        if (from.isDefined)
+          RB.minAfter(tree, from.get)
+        else
+          RB.min(tree)
       (entry, until) match {
         case (Some(e), Some(unt)) if ordering.compare(e._1, unt) >= 0 => None
         case _                                                        => entry
@@ -186,7 +192,10 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
     override def last = lastOption.get
     override def lastOption = {
       val entry =
-        if (until.isDefined) RB.maxBefore(tree, until.get) else RB.max(tree)
+        if (until.isDefined)
+          RB.maxBefore(tree, until.get)
+        else
+          RB.max(tree)
       (entry, from) match {
         case (Some(e), Some(fr)) if ordering.compare(e._1, fr) < 0 => None
         case _                                                     => entry

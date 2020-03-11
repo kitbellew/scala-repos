@@ -167,7 +167,11 @@ object GBTExample {
     // Set up Pipeline
     val stages = new mutable.ArrayBuffer[PipelineStage]()
     // (1) For classification, re-index classes.
-    val labelColName = if (algo == "classification") "indexedLabel" else "label"
+    val labelColName =
+      if (algo == "classification")
+        "indexedLabel"
+      else
+        "label"
     if (algo == "classification") {
       val labelIndexer = new StringIndexer()
         .setInputCol("label")

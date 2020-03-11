@@ -116,7 +116,8 @@ class MetricsReporterService @Inject() (
       case "udp" =>
         val transport = new UdpTransport.Builder()
         transport.withStatsdHost(url.getHost)
-        if (url.getPort > 0) transport.withPort(url.getPort)
+        if (url.getPort > 0)
+          transport.withPort(url.getPort)
         transport.build()
       case unknown: String =>
         throw new WrongConfigurationException(

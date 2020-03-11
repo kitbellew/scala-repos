@@ -145,7 +145,11 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
       topics: Set[String],
       protocol: SecurityProtocol): Seq[MetadataResponse.TopicMetadata] = {
     inReadLock(partitionMetadataLock) {
-      val topicsRequested = if (topics.isEmpty) cache.keySet else topics
+      val topicsRequested =
+        if (topics.isEmpty)
+          cache.keySet
+        else
+          topics
       topicsRequested.toSeq.flatMap { topic =>
         getPartitionMetadata(topic, protocol).map { partitionMetadata =>
           new MetadataResponse.TopicMetadata(
@@ -274,7 +278,8 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
       .get(topic)
       .map { infos =>
         infos.remove(partitionId)
-        if (infos.isEmpty) cache.remove(topic)
+        if (infos.isEmpty)
+          cache.remove(topic)
         true
       }
       .getOrElse(false)

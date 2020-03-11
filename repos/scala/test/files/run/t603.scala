@@ -14,8 +14,10 @@ object forceDelay {
     }
 
     override def toString() =
-      if (func == null) "Susp(" + value + ")"
-      else "Susp(?)"
+      if (func == null)
+        "Susp(" + value + ")"
+      else
+        "Susp(?)"
   }
 
   def delay[A](value: => A) = new Susp[A](value)

@@ -29,7 +29,8 @@ class PerformanceSpec
               Static { msg ⇒
                 if (msg.x == 0) {
                   msg.report ! Pong(0, self, msg.report)
-                } else msg.pong ! Pong(msg.x - 1, self, msg.report)
+                } else
+                  msg.pong ! Pong(msg.x - 1, self, msg.report)
               })).withDispatcher(executor)
 
             val ponger = Props(SelfAware[Pong](self ⇒

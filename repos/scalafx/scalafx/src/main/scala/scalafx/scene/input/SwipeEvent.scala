@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object SwipeEvent {
   implicit def sfxSwipeEvent2jfx(se: SwipeEvent): jfxsi.SwipeEvent =
-    if (se != null) se.delegate else null
+    if (se != null)
+      se.delegate
+    else
+      null
 
   /**
     * Common supertype for all Swipe event types.

@@ -83,7 +83,8 @@ class DocResolver(
   def scalaFqnToPath(fqn: DocFqn): String = {
     if (fqn.typeName == "package") {
       fqn.pack.replace(".", "/") + "/package.html"
-    } else fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
+    } else
+      fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
   }
 
   private def makeLocalUri(jar: File, sig: DocSigPair): String = {
@@ -95,7 +96,10 @@ class DocResolver(
       val anchor = sig.java.member
         .map { s =>
           "#" + {
-            if (docType == Javadoc8) toJava8Anchor(s) else s
+            if (docType == Javadoc8)
+              toJava8Anchor(s)
+            else
+              s
           }
         }
         .getOrElse("")
@@ -154,13 +158,19 @@ class DocResolver(
       val rawVersion =
         forceJavaVersion.getOrElse(scala.util.Properties.javaVersion)
       val version =
-        if (rawVersion.startsWith("1.8")) "8"
-        else if (rawVersion.startsWith("1.7")) "7"
-        else "6"
+        if (rawVersion.startsWith("1.8"))
+          "8"
+        else if (rawVersion.startsWith("1.7"))
+          "7"
+        else
+          "6"
       val anchor = sig.java.member
         .map { m =>
           "#" + {
-            if (version == "8") toJava8Anchor(m) else m
+            if (version == "8")
+              toJava8Anchor(m)
+            else
+              m
           }
         }
         .getOrElse("")
@@ -175,7 +185,8 @@ class DocResolver(
         .getOrElse("")
       Some(s"http://developer.android.com/reference/$path$anchor")
 
-    } else None
+    } else
+      None
   }
 
   def resolve(sig: DocSigPair): Option[String] =

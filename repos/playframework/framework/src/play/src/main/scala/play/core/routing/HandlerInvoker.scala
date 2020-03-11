@@ -93,7 +93,11 @@ object HandlerInvokerFactory {
   private[routing] def taggedRequest(
       rh: RequestHeader,
       tags: Map[String, String]): RequestHeader = {
-    val newTags = if (rh.tags.isEmpty) tags else rh.tags ++ tags
+    val newTags =
+      if (rh.tags.isEmpty)
+        tags
+      else
+        rh.tags ++ tags
     rh.copy(tags = newTags)
   }
 
@@ -124,7 +128,8 @@ object HandlerInvokerFactory {
           } catch {
             case NonFatal(_) => throw e
           }
-        } else throw e
+        } else
+          throw e
     }
   }
 

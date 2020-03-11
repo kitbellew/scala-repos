@@ -47,9 +47,11 @@ object Test {
 
   def testAddFewElements {
     val mlist = new MutableList[Int]
-    for (i <- 0 until 2) mlist += i
+    for (i <- 0 until 2)
+      mlist += i
 //    mlist.printState
-    for (i <- 0 until 2) assert(mlist(i) == i)
+    for (i <- 0 until 2)
+      assert(mlist(i) == i)
     assert(mlist.length == 2)
     assert(mlist.nonEmpty)
     assert(mlist.tail.length == 1)
@@ -59,10 +61,12 @@ object Test {
 
   def testAddMoreElements {
     val mlist = new MutableList[Int]
-    for (i <- 0 until 10) mlist += i * i
+    for (i <- 0 until 10)
+      mlist += i * i
     assert(mlist.nonEmpty)
     assert(mlist.length == 10)
-    for (i <- 0 until 10) assert(mlist(i) == i * i)
+    for (i <- 0 until 10)
+      assert(mlist(i) == i * i)
     assert(mlist(5) == 5 * 5)
     assert(mlist(9) == 9 * 9)
     var sometail = mlist
@@ -90,11 +94,14 @@ object Test {
 
   def testTraversables {
     val mlist = new MutableList[Int]
-    for (i <- 0 until 10) mlist += i * i
+    for (i <- 0 until 10)
+      mlist += i * i
     var lst = mlist.drop(5)
-    for (i <- 0 until 5) assert(lst(i) == (i + 5) * (i + 5))
+    for (i <- 0 until 5)
+      assert(lst(i) == (i + 5) * (i + 5))
     lst = lst.take(3)
-    for (i <- 0 until 3) assert(lst(i) == (i + 5) * (i + 5))
+    for (i <- 0 until 3)
+      assert(lst(i) == (i + 5) * (i + 5))
     lst += 129
     assert(lst(3) == 129)
     assert(lst.last == 129)
@@ -104,7 +111,8 @@ object Test {
     assert(lst.length == 5)
     lst.clear
     assert(lst.length == 0)
-    for (i <- 0 until 5) lst += i
+    for (i <- 0 until 5)
+      lst += i
     assert(lst.reduceLeft(_ + _) == 10)
   }
 

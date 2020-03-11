@@ -110,14 +110,21 @@ package object util {
   }
 
   private[http] def humanReadableByteCount(bytes: Long, si: Boolean): String = {
-    val unit = if (si) 1000 else 1024
+    val unit =
+      if (si)
+        1000
+      else
+        1024
     if (bytes >= unit) {
       val exp = (math.log(bytes) / math.log(unit)).toInt
       val pre =
-        if (si) "kMGTPE".charAt(exp - 1).toString
-        else "KMGTPE".charAt(exp - 1).toString + 'i'
+        if (si)
+          "kMGTPE".charAt(exp - 1).toString
+        else
+          "KMGTPE".charAt(exp - 1).toString + 'i'
       "%.1f %sB" format (bytes / math.pow(unit, exp), pre)
-    } else bytes.toString + "  B"
+    } else
+      bytes.toString + "  B"
   }
 }
 
@@ -139,8 +146,10 @@ package util {
         override def onPush(): Unit = push(out, grab(in))
 
         override def onUpstreamFailure(ex: Throwable): Unit =
-          if (f.isDefinedAt(ex)) super.onUpstreamFailure(f(ex))
-          else super.onUpstreamFailure(ex)
+          if (f.isDefinedAt(ex))
+            super.onUpstreamFailure(f(ex))
+          else
+            super.onUpstreamFailure(ex)
 
         override def onPull(): Unit = pull(in)
 
@@ -175,7 +184,8 @@ package util {
               if (emptyStream) {
                 push(out, HttpEntity.Strict(contentType, ByteString.empty))
                 completeStage()
-              } else pull(in)
+              } else
+                pull(in)
             }
           })
 
@@ -190,7 +200,8 @@ package util {
               if (isAvailable(out)) {
                 push(out, HttpEntity.Strict(contentType, bytes.result()))
                 completeStage()
-              } else emptyStream = true
+              } else
+                emptyStream = true
             }
           }
         )

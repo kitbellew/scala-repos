@@ -9,5 +9,8 @@ abstract class RecordedDoctest extends RecordedTest {
       .replaceAll("^.*\\.", "")
 
   override def mask(line: String) =
-    if (line.startsWith("select ")) "select..." else line
+    if (line.startsWith("select "))
+      "select..."
+    else
+      line
 }

@@ -34,8 +34,10 @@ object I18n extends LilaController {
                       val pageUrl = new java.net.URL(str);
                       val path = pageUrl.getPath
                       val query = pageUrl.getQuery
-                      if (query == null) path
-                      else path + "?" + query
+                      if (query == null)
+                        path
+                      else
+                        path + "?" + query
                     } catch {
                       case e: java.net.MalformedURLException =>
                         routes.Lobby.home.url

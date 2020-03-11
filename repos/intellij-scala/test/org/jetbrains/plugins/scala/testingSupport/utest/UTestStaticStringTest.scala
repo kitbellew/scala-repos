@@ -18,7 +18,10 @@ trait UTestStaticStringTest extends UTestTestCase {
       checkConfigAndSettings(
         createTestFromLocation(lineNumber, position, staticStringTestFileName),
         staticStringTestName,
-        "tests" + (if (expectedName.isEmpty) "" else "\\" + expectedName)))
+        "tests" + (if (expectedName.isEmpty)
+                     ""
+                   else
+                     "\\" + expectedName)))
   }
 
   protected def addTest(): Unit = {

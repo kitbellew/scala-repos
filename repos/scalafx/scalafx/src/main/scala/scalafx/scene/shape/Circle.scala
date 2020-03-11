@@ -36,7 +36,10 @@ import scalafx.scene.paint.Paint
 
 object Circle {
   implicit def sfxCircle2jfx(v: Circle): jfxss.Circle =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(radius: Double) = new Circle(new jfxss.Circle(radius))
   def apply(centerX: Double, centerY: Double, radius: Double) =

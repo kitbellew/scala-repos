@@ -67,7 +67,8 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def pollFirst(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
+    if (inner.isEmpty)
+      null.asInstanceOf[E]
     else {
       val res = inner.remove(0)
       status += 1
@@ -76,8 +77,10 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def pollLast(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.pop()
+    if (inner.isEmpty)
+      null.asInstanceOf[E]
+    else
+      inner.pop()
   }
 
   def getFirst(): E = {
@@ -95,13 +98,17 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def peekFirst(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.head
+    if (inner.isEmpty)
+      null.asInstanceOf[E]
+    else
+      inner.head
   }
 
   def peekLast(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.last
+    if (inner.isEmpty)
+      null.asInstanceOf[E]
+    else
+      inner.last
   }
 
   def removeFirstOccurrence(o: Any): Boolean = {
@@ -189,7 +196,8 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   override def remove(o: Any): Boolean = removeFirstOccurrence(o)
 
   override def clear(): Unit = {
-    if (!inner.isEmpty) status += 1
+    if (!inner.isEmpty)
+      status += 1
     inner.clear()
   }
 }

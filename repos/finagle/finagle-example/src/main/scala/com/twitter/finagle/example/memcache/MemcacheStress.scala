@@ -66,9 +66,12 @@ object MemcacheStress extends App {
         )
       )
 
-    if (config.stats()) builder = builder.reportTo(new OstrichStatsReceiver)
-    if (config.tracing()) com.twitter.finagle.tracing.Trace.enable()
-    else com.twitter.finagle.tracing.Trace.disable()
+    if (config.stats())
+      builder = builder.reportTo(new OstrichStatsReceiver)
+    if (config.tracing())
+      com.twitter.finagle.tracing.Trace.enable()
+    else
+      com.twitter.finagle.tracing.Trace.disable()
 
     val key = "x" * config.keysize()
     val value = Buf.Utf8("y" * config.valuesize())

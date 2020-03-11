@@ -66,13 +66,16 @@ object TestDB {
     try {
       var in: InputStream = new FileInputStream(src)
       try {
-        if (src.getName.endsWith(".gz")) in = new GZIPInputStream(in)
+        if (src.getName.endsWith(".gz"))
+          in = new GZIPInputStream(in)
         val buf = new Array[Byte](4096)
         var cont = true
         while (cont) {
           val len = in.read(buf)
-          if (len < 0) cont = false
-          else out.write(buf, 0, len)
+          if (len < 0)
+            cont = false
+          else
+            out.write(buf, 0, len)
         }
       } finally in.close()
     } finally out.close()
@@ -82,23 +85,29 @@ object TestDB {
   def deleteDBFiles(prefix: String) {
     assert(!prefix.isEmpty, "prefix must not be empty")
     def deleteRec(f: File): Boolean = {
-      if (f.isDirectory()) f.listFiles.forall(deleteRec _) && f.delete()
-      else f.delete()
+      if (f.isDirectory())
+        f.listFiles.forall(deleteRec _) && f.delete()
+      else
+        f.delete()
     }
     val dir = new File(TestkitConfig.testDir)
     if (!dir.isDirectory)
       throw new IOException("Directory " + TestkitConfig.testDir + " not found")
     for (f <- dir.listFiles if f.getName startsWith prefix) {
       val p = TestkitConfig.testDir + "/" + f.getName
-      if (deleteRec(f)) println("[Deleted database file " + p + "]")
-      else throw new IOException("Couldn't delete database file " + p)
+      if (deleteRec(f))
+        println("[Deleted database file " + p + "]")
+      else
+        throw new IOException("Couldn't delete database file " + p)
     }
   }
 
   def mapToProps(m: Map[String, String]) = {
     val p = new Properties
     if (m ne null)
-      for ((k, v) <- m) if (k.ne(null) && v.ne(null)) p.setProperty(k, v)
+      for ((k, v) <- m)
+        if (k.ne(null) && v.ne(null))
+          p.setProperty(k, v)
     p
   }
 }
@@ -152,7 +161,10 @@ trait TestDB {
     profile.capabilities ++ TestDB.capabilities.all
 
   def confOptionalString(path: String) =
-    if (config.hasPath(path)) Some(config.getString(path)) else None
+    if (config.hasPath(path))
+      Some(config.getString(path))
+    else
+      None
   def confString(path: String) = confOptionalString(path).getOrElse(null)
   def confStrings(path: String) =
     TestkitConfig.getStrings(config, path).getOrElse(Nil)

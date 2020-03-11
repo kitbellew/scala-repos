@@ -35,7 +35,11 @@ package object graph {
           val newStack = nf(h).filterNot(acc).foldLeft(tail) { (s, it) =>
             it :: s
           }
-          val newDeps = if (acc(h)) deps else h :: deps
+          val newDeps =
+            if (acc(h))
+              deps
+            else
+              h :: deps
           loop(newStack, newDeps, acc + h)
       }
     }

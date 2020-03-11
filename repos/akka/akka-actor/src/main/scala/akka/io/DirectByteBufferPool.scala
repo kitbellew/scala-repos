@@ -45,7 +45,8 @@ private[akka] class DirectByteBufferPool(
       if (buffersInPool > 0) {
         buffersInPool -= 1
         pool(buffersInPool)
-      } else null
+      } else
+        null
     }
 
     // allocate new and clear outside the lock

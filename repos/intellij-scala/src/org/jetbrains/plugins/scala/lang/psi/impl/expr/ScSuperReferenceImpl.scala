@@ -39,12 +39,14 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   def isHardCoded: Boolean = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
-    if (id == null) false
+    if (id == null)
+      false
     else {
       ScalaPsiUtil.fileContext(id) match {
         case file: ScalaFile if file.isCompiled =>
           val next = id.getNode.getTreeNext
-          if (next == null) false
+          if (next == null)
+            false
           else
             next.getPsi match {
               case comment: PsiComment =>
@@ -84,12 +86,16 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   def staticSuper: Option[ScType] = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
-    if (id == null) None else findSuper(id)
+    if (id == null)
+      None
+    else
+      findSuper(id)
   }
 
   override def getReference = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
-    if (id == null) null
+    if (id == null)
+      null
     else
       new PsiReference {
         def getElement = ScSuperReferenceImpl.this
@@ -138,7 +144,8 @@ class ScSuperReferenceImpl(node: ASTNode)
           ScalaPsiUtil.fileContext(id) match {
             case file: ScalaFile if file.isCompiled =>
               val next = id.getNode.getTreeNext
-              if (next == null) resolveNoHack
+              if (next == null)
+                resolveNoHack
               else
                 next.getPsi match {
                   case comment: PsiComment =>
@@ -147,7 +154,8 @@ class ScSuperReferenceImpl(node: ASTNode)
                     val classes = ScalaPsiManager
                       .instance(getProject)
                       .getCachedClasses(getResolveScope, path)
-                    if (classes.length == 1) classes(0)
+                    if (classes.length == 1)
+                      classes(0)
                     else
                       classes
                         .find(!_.isInstanceOf[ScObject])

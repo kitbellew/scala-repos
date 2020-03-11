@@ -78,7 +78,10 @@ object IvyConsole {
     arg match {
       case DepPattern(group, cross, name, version) =>
         val crossV =
-          if (cross.trim.isEmpty) CrossVersion.Disabled else CrossVersion.binary
+          if (cross.trim.isEmpty)
+            CrossVersion.Disabled
+          else
+            CrossVersion.binary
         ModuleID(
           group.trim,
           name.trim,

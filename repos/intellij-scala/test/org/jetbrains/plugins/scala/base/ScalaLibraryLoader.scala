@@ -101,9 +101,10 @@ class ScalaLibraryLoader(
     val libraryPath = TestUtils.getScalaLibraryPath(sdkVersion)
     val reflectPath = TestUtils.getScalaReflectPath(sdkVersion)
 
-    val scalaSdkJars =
-      Seq(libraryPath, compilerPath) ++ (if (loadReflect) Seq(reflectPath)
-                                         else Seq.empty)
+    val scalaSdkJars = Seq(libraryPath, compilerPath) ++ (if (loadReflect)
+                                                            Seq(reflectPath)
+                                                          else
+                                                            Seq.empty)
     val classRoots = scalaSdkJars
       .map(path =>
         JarFileSystem.getInstance.refreshAndFindFileByPath(path + "!/"))
@@ -140,7 +141,8 @@ class ScalaLibraryLoader(
       module: Module,
       libraryName: String,
       mockLib: String): Unit = {
-    if (module.libraries.exists(_.getName == libraryName)) return
+    if (module.libraries.exists(_.getName == libraryName))
+      return
 
     VfsRootAccess.allowRootAccess(mockLib)
 

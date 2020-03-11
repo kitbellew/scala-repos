@@ -37,8 +37,10 @@ class ArrayInput[A](val array: Array[A], val index: Int) extends Input[A] {
   def this(array: Array[A]) = this(array, 0)
 
   lazy val next: Result[ArrayInput[A], A, Nothing] =
-    if (index >= array.length) Failure
-    else Success(new ArrayInput[A](array, index + 1), array(index))
+    if (index >= array.length)
+      Failure
+    else
+      Success(new ArrayInput[A](array, index + 1), array(index))
 
   override lazy val toString = this.iterator.mkString("\"", "", "\"")
 }
@@ -47,8 +49,10 @@ class IterableInput[A](iterator: Iterator[A], val index: Int) extends Input[A] {
   def this(iterable: Iterable[A]) = this(iterable.iterator, 0)
 
   lazy val next: Result[IterableInput[A], A, Nothing] =
-    if (!iterator.hasNext) Failure
-    else Success(new IterableInput(iterator, index + 1), iterator.next)
+    if (!iterator.hasNext)
+      Failure
+    else
+      Success(new IterableInput(iterator, index + 1), iterator.next)
 
   override lazy val toString = this.iterator.mkString("\"", "", "\"")
 }

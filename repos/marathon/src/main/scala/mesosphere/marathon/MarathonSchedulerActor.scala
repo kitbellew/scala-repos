@@ -298,7 +298,8 @@ class MarathonSchedulerActor private (
 
     res match {
       case Success(_) =>
-        if (origSender != Actor.noSender) origSender ! cmd.answer
+        if (origSender != Actor.noSender)
+          origSender ! cmd.answer
       case Failure(e: LockingFailedException) if cmd.force =>
         deploymentManager ! CancelConflictingDeployments(plan)
         val cancellationHandler = context.system.scheduler
@@ -483,7 +484,8 @@ class SchedulerActions(
       .map(_.toSet)
       .andThen {
         case Success(appIds) =>
-          for (appId <- appIds) schedulerActor ! ScaleApp(appId)
+          for (appId <- appIds)
+            schedulerActor ! ScaleApp(appId)
         case Failure(t) => log.warn("Failed to get task names", t)
       }
       .map(_ => ())

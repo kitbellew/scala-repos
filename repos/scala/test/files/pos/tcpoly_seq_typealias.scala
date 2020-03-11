@@ -27,7 +27,8 @@ trait HOSeq {
       val elems = iterator
       while (elems.hasNext) {
         val x = elems.next;
-        if (p(x)) buf += x
+        if (p(x))
+          buf += x
       }
       buf.result
     }
@@ -35,7 +36,8 @@ trait HOSeq {
     def map[s](f: t => s): m[s] = {
       val buf = accumulator[s]
       val elems = iterator
-      while (elems.hasNext) buf += f(elems.next)
+      while (elems.hasNext)
+        buf += f(elems.next)
       buf.result
     }
 
@@ -50,7 +52,8 @@ trait HOSeq {
       val elems = iterator
       while (elems.hasNext) {
         val elemss: Iterator[s] = f(elems.next).iterator
-        while (elemss.hasNext) buf += elemss.next
+        while (elemss.hasNext)
+          buf += elemss.next
       }
       buf.result
     }
@@ -66,7 +69,8 @@ trait HOSeq {
       *  @param x  the element to append.
       */
     def +=(x: A) {
-      if (exported) copy
+      if (exported)
+        copy
       if (start.isEmpty) {
         last = new HOSeq.this.::(x, Nil)
         start = last
@@ -136,7 +140,11 @@ trait HOSeq {
   // TODO: the var tl approach does not seem to work because subtyping isn't fully working yet
   final case class ::[+b](hd: b, private val tl: List[b]) extends List[b] {
     def head = hd
-    def tail = if (tl == null) this else tl // hack
+    def tail =
+      if (tl == null)
+        this
+      else
+        tl // hack
     override def isEmpty: Boolean = false
   }
 

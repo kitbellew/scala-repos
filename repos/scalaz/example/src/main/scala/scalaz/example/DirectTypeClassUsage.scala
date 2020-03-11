@@ -19,7 +19,11 @@ object DirectTypeClassUsage extends App {
     // Import the members of the type class instance for Option.
     import std.option.optionInstance.{join, bind}
 
-    bind(o1)(x => if (x > 0) Some(2) else None)
+    bind(o1)(x =>
+      if (x > 0)
+        Some(2)
+      else
+        None)
     join(o2)
   }
 
@@ -31,7 +35,11 @@ object DirectTypeClassUsage extends App {
     import std.option.{optionInstance, optionMonoid}
     import std.list.listInstance
 
-    optionInstance.bind(o1)(x => if (x > 0) Some(2) else None)
+    optionInstance.bind(o1)(x =>
+      if (x > 0)
+        Some(2)
+      else
+        None)
     optionInstance.join(o2)
     listInstance.join(l2)
 

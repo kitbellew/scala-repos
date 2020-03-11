@@ -70,17 +70,25 @@ case class PlayerAggregateAssessment(
     val exceptionalDif: Boolean = difs map (sigDif(30) _).tupled exists (~_)
 
     if (actionable) {
-      if (markable && bannable) EngineAndBan
-      else if (markable) Engine
+      if (markable && bannable)
+        EngineAndBan
+      else if (markable)
+        Engine
       else if (reportable
                && exceptionalDif
-               && cheatingSum >= 1) Engine
-      else if (reportable) Report
-      else Nothing
+               && cheatingSum >= 1)
+        Engine
+      else if (reportable)
+        Report
+      else
+        Nothing
     } else {
-      if (markable) Report
-      else if (reportable) Report
-      else Nothing
+      if (markable)
+        Report
+      else if (reportable)
+        Report
+      else
+        Nothing
     }
   }
 
@@ -95,7 +103,11 @@ case class PlayerAggregateAssessment(
     case 0 => 1
     case a => a
   }
-  val relationModifier = if (relatedUsersCount >= 1) 0.02 else 0
+  val relationModifier =
+    if (relatedUsersCount >= 1)
+      0.02
+    else
+      0
   val cheatingSum = countAssessmentValue(Cheating)
   val likelyCheatingSum = countAssessmentValue(LikelyCheating)
 
@@ -103,7 +115,10 @@ case class PlayerAggregateAssessment(
   def sfAvgGiven(predicate: PlayerAssessment => Boolean): Option[Int] = {
     val avg = listAverage(
       playerAssessments.filter(predicate).map(_.sfAvg)).toInt
-    if (playerAssessments.exists(predicate)) Some(avg) else none
+    if (playerAssessments.exists(predicate))
+      Some(avg)
+    else
+      none
   }
 
   // Average SF Avg given blur rate

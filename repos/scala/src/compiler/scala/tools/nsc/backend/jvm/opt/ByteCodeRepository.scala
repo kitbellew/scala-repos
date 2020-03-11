@@ -84,7 +84,8 @@ class ByteCodeRepository[BT <: BTypes](
   }
 
   def add(classNode: ClassNode, source: Source) = {
-    if (source == CompilationUnit) compilingClasses(classNode.name) = classNode
+    if (source == CompilationUnit)
+      compilingClasses(classNode.name) = classNode
     else
       parsedClasses(classNode.name) = Right(
         (classNode, lruCounter.incrementAndGet()))
@@ -98,8 +99,10 @@ class ByteCodeRepository[BT <: BTypes](
       : Either[ClassNotFound, (ClassNode, Source)] = {
     classNode(internalName) map (n => {
       val source =
-        if (compilingClasses contains internalName) CompilationUnit
-        else Classfile
+        if (compilingClasses contains internalName)
+          CompilationUnit
+        else
+          Classfile
       (n, source)
     })
   }
@@ -151,7 +154,8 @@ class ByteCodeRepository[BT <: BTypes](
             case None =>
               if (c.superName == null)
                 Left(FieldNotFound(name, descriptor, classInternalName, None))
-              else fieldNode(c.superName, name, descriptor)
+              else
+                fieldNode(c.superName, name, descriptor)
           }
       }
     }

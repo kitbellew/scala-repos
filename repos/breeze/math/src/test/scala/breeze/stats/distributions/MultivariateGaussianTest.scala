@@ -95,7 +95,8 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
         if (max(abs(vari - distr.variance)) > VARIANCE_TOLERANCE) {
           println("Expected " + distr.variance + " but got " + vari)
           false
-        } else true
+        } else
+          true
       }
     })
   }

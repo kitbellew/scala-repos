@@ -115,8 +115,10 @@ class ProtobufReadOptional {
 
     // handle missing field by assigning "Unknown" value
     private def seatType(p: FlightAppModels.SeatReserved): SeatType =
-      if (p.hasSeatType) SeatType.fromString(p.getSeatType)
-      else SeatType.Unknown
+      if (p.hasSeatType)
+        SeatType.fromString(p.getSeatType)
+      else
+        SeatType.Unknown
 
   }
   //#protobuf-read-optional

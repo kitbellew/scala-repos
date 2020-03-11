@@ -110,7 +110,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createTypeElementFromText(getReturnTypeText, getPsi, null))
-      } else None
+      } else
+        None
     myReturnTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
   }
@@ -126,7 +127,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createExpressionWithContextFromText(getBodyText, getPsi, null))
-      } else None
+      } else
+        None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res
   }

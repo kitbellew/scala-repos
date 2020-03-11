@@ -36,7 +36,10 @@ import scalafx.scene.paint.Color
 
 object Shadow {
   implicit def sfxShadow2jfx(s: Shadow): jfxse.Shadow =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 }
 
 /**

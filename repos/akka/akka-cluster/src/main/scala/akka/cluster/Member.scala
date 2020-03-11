@@ -51,7 +51,8 @@ class Member private[cluster] (
 
   def copy(status: MemberStatus): Member = {
     val oldStatus = this.status
-    if (status == oldStatus) this
+    if (status == oldStatus)
+      this
     else {
       require(
         allowedTransitions(oldStatus)(status),
@@ -93,11 +94,14 @@ object Member {
   implicit val addressOrdering: Ordering[Address] =
     Ordering.fromLessThan[Address] { (a, b) ⇒
       // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
-      if (a eq b) false
+      if (a eq b)
+        false
       else if (a.host != b.host)
         a.host.getOrElse("").compareTo(b.host.getOrElse("")) < 0
-      else if (a.port != b.port) a.port.getOrElse(0) < b.port.getOrElse(0)
-      else false
+      else if (a.port != b.port)
+        a.port.getOrElse(0) < b.port.getOrElse(0)
+      else
+        false
     }
 
   /**
@@ -143,11 +147,14 @@ object Member {
     // pick highest MemberStatus
     (Member.none /: groupedByAddress) {
       case (acc, (_, members)) ⇒
-        if (members.size == 2) acc + members.reduceLeft(highestPriorityOf)
+        if (members.size == 2)
+          acc + members.reduceLeft(highestPriorityOf)
         else {
           val m = members.head
-          if (Gossip.removeUnreachableWithMemberStatus(m.status)) acc // removed
-          else acc + m
+          if (Gossip.removeUnreachableWithMemberStatus(m.status))
+            acc // removed
+          else
+            acc + m
         }
     }
   }
@@ -158,7 +165,10 @@ object Member {
   def highestPriorityOf(m1: Member, m2: Member): Member = {
     if (m1.status == m2.status)
       // preserve the oldest in case of different upNumber
-      if (m1.isOlderThan(m2)) m1 else m2
+      if (m1.isOlderThan(m2))
+        m1
+      else
+        m2
     else
       (m1.status, m2.status) match {
         case (Removed, _) ⇒ m1
@@ -266,7 +276,13 @@ final case class UniqueAddress(address: Address, uid: Int)
   def compare(that: UniqueAddress): Int = {
     val result = Member.addressOrdering.compare(this.address, that.address)
     if (result == 0)
-      if (this.uid < that.uid) -1 else if (this.uid == that.uid) 0 else 1
-    else result
+      if (this.uid < that.uid)
+        -1
+      else if (this.uid == that.uid)
+        0
+      else
+        1
+    else
+      result
   }
 }

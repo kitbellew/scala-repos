@@ -51,7 +51,10 @@ object SequentialTransition extends AnimationStatics {
     */
   implicit def sfxSequentialTransition2jfx(
       v: SequentialTransition): jfxa.SequentialTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

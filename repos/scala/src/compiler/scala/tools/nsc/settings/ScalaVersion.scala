@@ -45,13 +45,20 @@ case class SpecificScalaVersion(
     case SpecificScalaVersion(thatMajor, thatMinor, thatRev, thatBuild) =>
       // this could be done more cleanly by importing scala.math.Ordering.Implicits, but we have to do these
       // comparisons a lot so I'm using brute force direct style code
-      if (major < thatMajor) -1
-      else if (major > thatMajor) 1
-      else if (minor < thatMinor) -1
-      else if (minor > thatMinor) 1
-      else if (rev < thatRev) -1
-      else if (rev > thatRev) 1
-      else build compare thatBuild
+      if (major < thatMajor)
+        -1
+      else if (major > thatMajor)
+        1
+      else if (minor < thatMinor)
+        -1
+      else if (minor > thatMinor)
+        1
+      else if (rev < thatRev)
+        -1
+      else if (rev > thatRev)
+        1
+      else
+        build compare thatBuild
     case AnyScalaVersion => 1
     case NoScalaVersion  => -1
   }

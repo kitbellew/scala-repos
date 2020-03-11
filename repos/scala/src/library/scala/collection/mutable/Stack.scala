@@ -95,8 +95,10 @@ class Stack[A] private (var elems: List[A])
     *  @throws   IndexOutOfBoundsException if the index is not valid
     */
   def update(n: Int, newelem: A) =
-    if (n < 0 || n >= length) throw new IndexOutOfBoundsException(n.toString)
-    else elems = elems.take(n) ++ (newelem :: elems.drop(n + 1))
+    if (n < 0 || n >= length)
+      throw new IndexOutOfBoundsException(n.toString)
+    else
+      elems = elems.take(n) ++ (newelem :: elems.drop(n + 1))
 
   /** Push an element on the stack.
     *

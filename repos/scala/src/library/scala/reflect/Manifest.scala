@@ -183,7 +183,8 @@ object ManifestFactory {
     override protected def arrayClass[T](tp: Class[_]): Class[Array[T]] =
       if (tp eq runtimeClass)
         classOf[Array[scala.runtime.BoxedUnit]].asInstanceOf[Class[Array[T]]]
-      else super.arrayClass(tp)
+      else
+        super.arrayClass(tp)
     private def readResolve(): Any = Manifest.Unit
   }
 
@@ -286,8 +287,14 @@ object ManifestFactory {
       override val typeArguments: List[Manifest[_]])
       extends Manifest[T] {
     override def toString =
-      (if (prefix.isEmpty) "" else prefix.get.toString + "#") +
-        (if (runtimeClass.isArray) "Array" else runtimeClass.getName) +
+      (if (prefix.isEmpty)
+         ""
+       else
+         prefix.get.toString + "#") +
+        (if (runtimeClass.isArray)
+           "Array"
+         else
+           runtimeClass.getName) +
         argString
   }
 
@@ -317,8 +324,14 @@ object ManifestFactory {
       def runtimeClass = upperBound.runtimeClass
       override def toString =
         "_" +
-          (if (lowerBound eq Nothing) "" else " >: " + lowerBound) +
-          (if (upperBound eq Nothing) "" else " <: " + upperBound)
+          (if (lowerBound eq Nothing)
+             ""
+           else
+             " >: " + lowerBound) +
+          (if (upperBound eq Nothing)
+             ""
+           else
+             " <: " + upperBound)
     }
 
   /** Manifest for the intersection type `parents_0 with ... with parents_n`. */

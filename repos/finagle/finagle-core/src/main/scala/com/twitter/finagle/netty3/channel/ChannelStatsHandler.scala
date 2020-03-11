@@ -116,7 +116,10 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
       ctx: ChannelHandlerContext,
       evt: ExceptionEvent) {
     val m =
-      if (evt.getCause != null) evt.getCause.getClass.getName else "unknown"
+      if (evt.getCause != null)
+        evt.getCause.getClass.getName
+      else
+        "unknown"
     exceptions.counter(m).incr()
     // If no Monitor is active, then log the exception so we don't fail silently.
     if (!Monitor.isActive) {
@@ -142,7 +145,11 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelInterestChanged(ctx, e)
     val isWritable = ctx.getChannel.isWritable()
     if (isWritable != hasBeenWritable) {
-      val stat = if (hasBeenWritable) writable else unwritable
+      val stat =
+        if (hasBeenWritable)
+          writable
+        else
+          unwritable
       stat.incr(socketDuration(now).inMillis.toInt)
 
       hasBeenWritable = isWritable

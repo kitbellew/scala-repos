@@ -38,8 +38,10 @@ case class ASTNode(
   lazy val line: Int = {
     val line = token.getLine
     if (line == 0) {
-      if (children.nonEmpty) children.head.line
-      else 0
+      if (children.nonEmpty)
+        children.head.line
+      else
+        0
     } else {
       line
     }
@@ -49,8 +51,10 @@ case class ASTNode(
   lazy val positionInLine: Int = {
     val line = token.getCharPositionInLine
     if (line == -1) {
-      if (children.nonEmpty) children.head.positionInLine
-      else 0
+      if (children.nonEmpty)
+        children.head.positionInLine
+      else
+        0
     } else {
       line
     }

@@ -310,7 +310,10 @@ private[spark] object NewHadoopRDD {
       extends RDD[U](prev) {
 
     override val partitioner =
-      if (preservesPartitioning) firstParent[T].partitioner else None
+      if (preservesPartitioning)
+        firstParent[T].partitioner
+      else
+        None
 
     override def getPartitions: Array[Partition] = firstParent[T].partitions
 

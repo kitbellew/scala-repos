@@ -7,7 +7,10 @@ final class IdOps[A](val self: A) extends AnyVal {
 
   /**Returns `self` if it is non-null, otherwise returns `d`. */
   final def ??(d: => A)(implicit ev: Null <:< A): A =
-    if (self == null) d else self
+    if (self == null)
+      d
+    else
+      self
 
   /**Applies `self` to the provided function. The Thrush combinator. */
   final def |>[B](f: A => B): B =
@@ -34,7 +37,10 @@ final class IdOps[A](val self: A) extends AnyVal {
     @tailrec
     def loop(value: A): A = {
       val x = f(value)
-      if (p(x)) loop(x) else x
+      if (p(x))
+        loop(x)
+      else
+        x
     }
     loop(self)
   }
@@ -43,7 +49,10 @@ final class IdOps[A](val self: A) extends AnyVal {
   final def whileDo(f: A => A, p: A => Boolean): A = {
     @tailrec
     def loop(value: A): A = {
-      if (p(value)) loop(f(value)) else value
+      if (p(value))
+        loop(f(value))
+      else
+        value
     }
     loop(self)
   }
@@ -53,8 +62,10 @@ final class IdOps[A](val self: A) extends AnyVal {
     * otherwise lift `self` into `F` with the provided [[scalaz.Applicative]].
     */
   def visit[F[_]: Applicative](p: PartialFunction[A, F[A]]): F[A] =
-    if (p isDefinedAt self) p(self)
-    else Applicative[F].point(self)
+    if (p isDefinedAt self)
+      p(self)
+    else
+      Applicative[F].point(self)
 }
 
 trait ToIdOps {

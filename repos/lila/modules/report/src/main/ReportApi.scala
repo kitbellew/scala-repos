@@ -33,7 +33,8 @@ private[report] final class ReportApi {
             ) flatMap { res =>
               (res.n == 0) ?? $insert(report)
             }
-          else $insert(report)
+          else
+            $insert(report)
         }
       } >>- monitorUnprocessed
   }

@@ -28,7 +28,11 @@ object det extends UFunc {
           piv._1 != piv._2
         }
 
-        var acc = if (numExchangedRows % 2 == 1) -1.0 else 1.0
+        var acc =
+          if (numExchangedRows % 2 == 1)
+            -1.0
+          else
+            1.0
         cforRange(0 until m.rows) { i =>
           acc *= m(i, i)
         }

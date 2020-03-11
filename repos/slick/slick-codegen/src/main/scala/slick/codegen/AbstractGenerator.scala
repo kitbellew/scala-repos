@@ -203,14 +203,16 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           if (collidingTerms.nonEmpty)
             "\nNOTE: The following names collided with Scala keywords and were escaped: " + collidingTerms
               .mkString(", ")
-          else ""
+          else
+            ""
         } + {
           val collidingTerms =
             columns.map(_.rawName) intersect slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
             "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
               .mkString(", ")
-          else ""
+          else
+            ""
         }
       def rawName: String = tableName(model.name.table)
       def code: Code
@@ -285,11 +287,17 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Possibly Option-wrapped Scala type of this column. @see rawType and @see exposedType */
       final def actualType: Code =
-        if (model.nullable) optionType(rawType) else rawType
+        if (model.nullable)
+          optionType(rawType)
+        else
+          rawType
 
       /** Option of actualType if fakeNullable else actualType. Useful to expose autoInc columns as nullable. */
       final def exposedType: Code =
-        if (fakeNullable) optionType(actualType) else actualType
+        if (fakeNullable)
+          optionType(actualType)
+        else
+          actualType
 
       /** Indicates whether this column should be user facing as a nullable column with default None even though it is not. Useful for autoInc columns. */
       final def fakeNullable = autoIncLastAsOption && autoInc
@@ -414,7 +422,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           )
           val baseName = referencedTable.TableClass.rawName.uncapitalize + "Fk"
           disambiguateTerm(
-            if (fksToSameTable.size > 1) baseName + id else baseName)
+            if (fksToSameTable.size > 1)
+              baseName + id
+            else
+              baseName)
         })
       def doc =
         s"Foreign key referencing ${referencedTable.TableValue.name} (database name ${dbName})"
@@ -449,7 +460,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       val dbName = model.name.getOrElse(table.model.name.table + "_INDEX_" + id)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
-        (if (model.unique) "Uniqueness " else "") +
+        (if (model.unique)
+           "Uniqueness "
+         else
+           "") +
           "Index over " + columns
           .map(_.name)
           .mkString("(", ",", ")") + s" (database name ${dbName})"
@@ -463,7 +477,11 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def enabled = true
 
       /** Returns Some(this) if enabled else None */
-      final def getEnabled = if (enabled) Some(this) else None
+      final def getEnabled =
+        if (enabled)
+          Some(this)
+        else
+          None
 
       /** Scala doc comment with code */
       def docWithCode: Code = codegen.docWithCode(doc, code)
@@ -487,10 +505,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         val newdoc = doc +
           (if (scalaKeywords.contains(rawName))
              s"\nNOTE: The name was escaped because it collided with a Scala keyword."
-           else "") +
+           else
+             "") +
           (if (slickTableTermMembersNoArgs.contains(rawName))
              s"\nNOTE: The name was disambiguated because it collided with Slick's method Table#$rawName."
-           else "")
+           else
+             "")
         codegen.docWithCode(newdoc, code)
       }
 
@@ -498,14 +518,17 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def name: TermName = termName {
         if (slickTableTermMembersNoArgs.contains(rawName)) {
           disambiguateTerm(rawName)
-        } else rawName
+        } else
+          rawName
       }
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */
       def disambiguateTerm(name: String, postfix: String = "X"): String =
         if ((columns.map(_.rawName) ++ slickTableTermMembersNoArgs)
-              .contains(name)) disambiguateTerm(name + postfix)
-        else name
+              .contains(name))
+          disambiguateTerm(name + postfix)
+        else
+          name
     }
 
     /** Common interface for definitions that define a type (class, case class, ...) within the generated code */
@@ -527,7 +550,10 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
     val lines = code.split("\n")
     lines.tail.foldLeft(lines.head) { (out, line) =>
       out + '\n' +
-        (if (line.isEmpty) line else "  " + line)
+        (if (line.isEmpty)
+           line
+         else
+           "  " + line)
     }
   }
 

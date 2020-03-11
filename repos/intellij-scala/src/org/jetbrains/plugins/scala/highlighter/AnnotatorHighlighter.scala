@@ -72,7 +72,8 @@ object AnnotatorHighlighter {
     val stub: StubElement[_ <: PsiElement] = el.getStub
     if (stub != null) {
       stub.getParentStub.getPsi
-    } else el.getParent
+    } else
+      el.getParent
   }
 
   private def getParentByStub(x: PsiElement): PsiElement = {
@@ -114,8 +115,10 @@ object AnnotatorHighlighter {
               textName,
               refElement.getResolveScope,
               ClassCategory.TYPE)
-          if (cachedClass == null) false
-          else tp.conforms(ScType.designator(cachedClass))
+          if (cachedClass == null)
+            false
+          else
+            tp.conforms(ScType.designator(cachedClass))
         })
       }
 
@@ -131,7 +134,8 @@ object AnnotatorHighlighter {
       }
 
       val text = resolvedType.canonicalText
-      if (text == null) return
+      if (text == null)
+        return
 
       if (text.startsWith(
             SCALA_COLLECTION_IMMUTABLE_BASE) || SCALA_PREDEF_IMMUTABLE_BASES
@@ -190,7 +194,8 @@ object AnnotatorHighlighter {
 
     val c = ScalaPsiUtil.getParentOfType(refElement, classOf[ScConstructor])
 
-    if (c != null && c.getParent.isInstanceOf[ScAnnotationExpr]) return
+    if (c != null && c.getParent.isInstanceOf[ScAnnotationExpr])
+      return
 
     val resolvedElement = refElement.resolve()
     if (PsiTreeUtil.getParentOfType(
@@ -284,7 +289,8 @@ object AnnotatorHighlighter {
       case x: PsiField =>
         if (!x.hasModifierProperty("final"))
           annotation.setTextAttributes(DefaultHighlighter.VARIABLES)
-        else annotation.setTextAttributes(DefaultHighlighter.VALUES)
+        else
+          annotation.setTextAttributes(DefaultHighlighter.VALUES)
       case x: ScParameter if x.isAnonymousParameter =>
         annotation.setTextAttributes(DefaultHighlighter.ANONYMOUS_PARAMETER)
       case x: ScParameter =>
@@ -330,7 +336,8 @@ object AnnotatorHighlighter {
         if (x.isConstructor) {
           val clazz: PsiClass =
             PsiTreeUtil.getParentOfType(x, classOf[PsiClass])
-          if (clazz != null) annotateCollection(clazz)
+          if (clazz != null)
+            annotateCollection(clazz)
         }
         if (x.getModifierList != null && x.getModifierList.hasModifierProperty(
               "static")) {
@@ -456,8 +463,10 @@ object AnnotatorHighlighter {
       holder: AnnotationHolder): Unit = {
     val annotation = holder.createInfoAnnotation(param.nameId, null)
     val attributesKey =
-      if (param.isAnonymousParameter) DefaultHighlighter.ANONYMOUS_PARAMETER
-      else DefaultHighlighter.PARAMETER
+      if (param.isAnonymousParameter)
+        DefaultHighlighter.ANONYMOUS_PARAMETER
+      else
+        DefaultHighlighter.PARAMETER
     annotation.setTextAttributes(attributesKey)
   }
 

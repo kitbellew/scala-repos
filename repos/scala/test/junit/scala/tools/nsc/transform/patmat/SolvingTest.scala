@@ -175,7 +175,11 @@ object TestSolver extends Logic with Solving {
             // (c1 /\ ... /\ cn) \/ d = ((c1 \/ d) /\ ... /\ (cn \/ d))
             // d \/ (c1 /\ ... /\ cn) = ((d \/ c1) /\ ... /\ (d \/ cn))
             case (cs, ds) =>
-              val (big, small) = if (cs.size > ds.size) (cs, ds) else (ds, cs)
+              val (big, small) =
+                if (cs.size > ds.size)
+                  (cs, ds)
+                else
+                  (ds, cs)
               big flatMap (c => distribute(formula(c), small))
           }
 
@@ -240,7 +244,11 @@ class SolvingTest {
     (for {
       (SymName(name), value) <- model
     } yield {
-      val v = if (value) "T" else "F"
+      val v =
+        if (value)
+          "T"
+        else
+          "F"
       s"$name -> $v"
     }).mkString(", ")
   }

@@ -64,7 +64,8 @@ object SigarLoader {
         Seq(
           javaOptions in Test += sigarOptions.value
         )
-      else Seq()
+      else
+        Seq()
     )
   }
 

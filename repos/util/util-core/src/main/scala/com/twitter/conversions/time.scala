@@ -50,7 +50,13 @@ object time {
   }
 
   implicit def intToTimeableNumber(i: Int): RichWholeNumber =
-    if (i == 0) ZeroRichWholeNumber else new RichWholeNumber(i)
+    if (i == 0)
+      ZeroRichWholeNumber
+    else
+      new RichWholeNumber(i)
   implicit def longToTimeableNumber(l: Long): RichWholeNumber =
-    if (l == 0) ZeroRichWholeNumber else new RichWholeNumber(l)
+    if (l == 0)
+      ZeroRichWholeNumber
+    else
+      new RichWholeNumber(l)
 }

@@ -54,11 +54,13 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       editor: Editor,
       file: PsiFile): Result = {
-    if (!file.isInstanceOf[ScalaFile]) return Result.CONTINUE
+    if (!file.isInstanceOf[ScalaFile])
+      return Result.CONTINUE
 
     val offset = editor.getCaretModel.getOffset
     val element = file.findElementAt(offset - 1)
-    if (element == null) return Result.CONTINUE
+    if (element == null)
+      return Result.CONTINUE
 
     val document = editor.getDocument
     val text = document.getText
@@ -132,7 +134,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     }
 
-    if (myTask == null) return Result.CONTINUE
+    if (myTask == null)
+      return Result.CONTINUE
 
     extensions.inWriteAction {
       PsiDocumentManager.getInstance(project).commitDocument(document)
@@ -153,12 +156,14 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       editor: Editor,
       file: PsiFile,
       fileType: FileType): Result = {
-    if (!file.isInstanceOf[ScalaFile]) return Result.CONTINUE
+    if (!file.isInstanceOf[ScalaFile])
+      return Result.CONTINUE
 
     val offset = editor.getCaretModel.getOffset
     val element = file.findElementAt(offset)
     val prevElement = file.findElementAt(offset - 1)
-    if (element == null) return Result.CONTINUE
+    if (element == null)
+      return Result.CONTINUE
     val elementType = element.getNode.getElementType
 
     val settings = ScalaCodeStyleSettings.getInstance(project)
@@ -215,7 +220,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         .getCommonSettings(ScalaLanguage.Instance)
         .getIndentOptions
         .CONTINUATION_INDENT_SIZE
-      val indentString = (for (i <- 1 to indent) yield " ").foldLeft("")(_ + _)
+      val indentString = (for (i <- 1 to indent)
+        yield " ").foldLeft("")(_ + _)
       extensions.inWriteAction {
         val document = editor.getDocument
         document.insertString(offset, indentString)
@@ -232,11 +238,13 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
   private def isInPlace(
       element: PsiElement,
       place: Class[_ <: PsiElement]*): Boolean = {
-    if (element == null || place == null) return false
+    if (element == null || place == null)
+      return false
 
     var nextParent = element.getParent
     while (nextParent != null) {
-      if (place.exists(_.isAssignableFrom(nextParent.getClass))) return true
+      if (place.exists(_.isAssignableFrom(nextParent.getClass)))
+        return true
       nextParent = nextParent.getParent
     }
     false
@@ -269,7 +277,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (element == null) return
+    if (element == null)
+      return
 
     def doInsert(tag: ScXmlStartTag) {
       insertAndCommit(offset, insert(tag), document, project)
@@ -302,7 +311,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (element == null) return
+    if (element == null)
+      return
     import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes._
 
     if (element.getNode.getElementType == tLBRACE &&
@@ -352,7 +362,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       text: String,
       offset: Int): (Document, Project, PsiElement, Int) => Unit = {
     import org.jetbrains.plugins.scala.editor.typedHandler.ScalaTypedHandler._
-    if (offset < 3 || text.length < offset) return null
+    if (offset < 3 || text.length < offset)
+      return null
 
     text.charAt(offset) match {
       case ' ' | '\n' | '\t' | '\r' | ''' =>

@@ -130,11 +130,17 @@ object PageRank extends Logging {
       .mapTriplets(e => 1.0 / e.srcAttr, TripletFields.Src)
       // Set the vertex attributes to the initial pagerank values
       .mapVertices { (id, attr) =>
-        if (!(id != src && personalized)) resetProb else 0.0
+        if (!(id != src && personalized))
+          resetProb
+        else
+          0.0
       }
 
     def delta(u: VertexId, v: VertexId): Double = {
-      if (u == v) 1.0 else 0.0
+      if (u == v)
+        1.0
+      else
+        0.0
     }
 
     var iteration = 0
@@ -238,7 +244,10 @@ object PageRank extends Logging {
       .mapTriplets(e => 1.0 / e.srcAttr)
       // Set the vertex attributes to (initialPR, delta = 0)
       .mapVertices { (id, attr) =>
-        if (id == src) (resetProb, Double.NegativeInfinity) else (0.0, 0.0)
+        if (id == src)
+          (resetProb, Double.NegativeInfinity)
+        else
+          (0.0, 0.0)
       }
       .cache()
 
@@ -259,12 +268,19 @@ object PageRank extends Logging {
         msgSum: Double): (Double, Double) = {
       val (oldPR, lastDelta) = attr
       var teleport = oldPR
-      val delta = if (src == id) 1.0 else 0.0
+      val delta =
+        if (src == id)
+          1.0
+        else
+          0.0
       teleport = oldPR * delta
 
       val newPR = teleport + (1.0 - resetProb) * msgSum
       val newDelta =
-        if (lastDelta == Double.NegativeInfinity) newPR else newPR - oldPR
+        if (lastDelta == Double.NegativeInfinity)
+          newPR
+        else
+          newPR - oldPR
       (newPR, newDelta)
     }
 
@@ -280,7 +296,10 @@ object PageRank extends Logging {
 
     // The initial message received by all vertices in PageRank
     val initialMessage =
-      if (personalized) 0.0 else resetProb / (1.0 - resetProb)
+      if (personalized)
+        0.0
+      else
+        resetProb / (1.0 - resetProb)
 
     // Execute a dynamic version of Pregel.
     val vp = if (personalized) {

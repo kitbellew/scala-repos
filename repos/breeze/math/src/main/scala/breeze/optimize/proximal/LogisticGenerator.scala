@@ -41,7 +41,10 @@ object LogisticGenerator {
     val rand = Rand.gaussian(0, 1)
     val data = DenseMatrix.rand[Double](ndim, ndim, rand)
     val labels = DenseVector.rand[Double](ndim, rand).map { x =>
-      if (x > 0.5) 1.0 else 0.0
+      if (x > 0.5)
+        1.0
+      else
+        0.0
     }
     Cost(data, labels)
   }

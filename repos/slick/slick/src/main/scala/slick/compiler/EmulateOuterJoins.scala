@@ -20,7 +20,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
     state.map(tree =>
       ClientSideOp.mapServerSide(tree, true) { n =>
         val n2 = convert(n)
-        if (n2 eq n) n2 else Phase.forceOuterBinds.apply(n2)
+        if (n2 eq n)
+          n2
+        else
+          Phase.forceOuterBinds.apply(n2)
       })
 
   def convert(n: Node): Node = n match {
@@ -31,9 +34,12 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
       val on2 = on.replace(
         {
           case r @ Ref(sym) =>
-            if (sym == leftGen) Ref(lgen2)
-            else if (sym == rightGen) Ref(rgen2)
-            else r
+            if (sym == leftGen)
+              Ref(lgen2)
+            else if (sym == rightGen)
+              Ref(rgen2)
+            else
+              r
         },
         true)
       convert(
@@ -77,9 +83,12 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
       val on2 = on.replace(
         {
           case r @ Ref(sym) =>
-            if (sym == leftGen) Ref(lgen2)
-            else if (sym == rightGen) Ref(rgen2)
-            else r
+            if (sym == leftGen)
+              Ref(lgen2)
+            else if (sym == rightGen)
+              Ref(rgen2)
+            else
+              r
         },
         true)
       convert(

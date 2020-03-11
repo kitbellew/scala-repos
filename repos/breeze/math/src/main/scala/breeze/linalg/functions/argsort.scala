@@ -17,7 +17,11 @@ object argsort extends UFunc with LowPriorityArgSort {
     new Impl[DenseVector[T], IndexedSeq[Int]] {
       override def apply(v: DenseVector[T]): IndexedSeq[Int] = {
         val arr = VectorBuilder.range(v.length)
-        val data = if (v.noOffsetOrStride) v.data else v.toArray
+        val data =
+          if (v.noOffsetOrStride)
+            v.data
+          else
+            v.toArray
         Sorting.indexSort(arr, 0, arr.length, data)
         arr
       }

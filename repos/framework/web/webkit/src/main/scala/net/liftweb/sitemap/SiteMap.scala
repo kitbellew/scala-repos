@@ -56,7 +56,8 @@ case class SiteMap(
       throw new SiteMapException(
         "Location " + name + " defined twice " +
           locs(name) + " and " + in)
-    else locs = locs + (name -> in.asInstanceOf[Loc[_]])
+    else
+      locs = locs + (name -> in.asInstanceOf[Loc[_]])
 
     if (SiteMap.enforceUniqueLinks && !in.link.external_? &&
         locPath.contains(in.link.uriList))
@@ -65,13 +66,18 @@ case class SiteMap(
           " defines a duplicate link " +
           in.link.uriList)
 
-    if (!in.link.external_?) locPath += in.link.uriList
+    if (!in.link.external_?)
+      locPath += in.link.uriList
   }
 
   def globalParams: List[Loc.AnyLocParam] = {
     val r = S.request
 
-    globalParamFuncs.flatMap(f => if (f.isDefinedAt(r)) List(f(r)) else Nil)
+    globalParamFuncs.flatMap(f =>
+      if (f.isDefinedAt(r))
+        List(f(r))
+      else
+        Nil)
   }
 
   def findLoc(name: String): Box[Loc[_]] = Box(locs.get(name))
@@ -131,7 +137,8 @@ sealed class SiteMapSingleton {
 
   def findLoc(name: String): Box[Loc[_]] =
     for (sm <- LiftRules.siteMap;
-         loc <- sm.findLoc(name)) yield loc
+         loc <- sm.findLoc(name))
+      yield loc
 
   /**
     * Builds a function that successively tests the partial function against the Menu.  If the PartialFunction is
@@ -158,7 +165,8 @@ sealed class SiteMapSingleton {
           } else if (pf.isDefinedAt(menu)) {
             fired = true
             pf(menu)
-          } else List(menu.rebuild(doAMenuItem _))
+          } else
+            List(menu.rebuild(doAMenuItem _))
         }
 
       def doAMenuItem(in: List[Menu]): List[Menu] =
@@ -166,7 +174,10 @@ sealed class SiteMapSingleton {
 
       val ret = sm.rebuild(_.flatMap(theFunc))
 
-      if (fired) ret else or(sm)
+      if (fired)
+        ret
+      else
+        or(sm)
     }
 
   /**

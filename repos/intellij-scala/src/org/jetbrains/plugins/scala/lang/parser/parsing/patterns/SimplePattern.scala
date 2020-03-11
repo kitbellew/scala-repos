@@ -139,7 +139,8 @@ object SimplePattern extends ParserNode {
                     ScalaTokenTypes.tUNDER,
                     ScalaTokenTypes.tIDENTIFIER)) {
               val wild = builder.mark
-              if (withComma) builder.advanceLexer()
+              if (withComma)
+                builder.advanceLexer()
               builder.getTokenType
               builder.advanceLexer()
               if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && "*"
@@ -184,7 +185,8 @@ object SimplePattern extends ParserNode {
                     ScalaTokenTypes.tUNDER,
                     ScalaTokenTypes.tIDENTIFIER)) {
               val wild = builder.mark
-              if (withComma) builder.advanceLexer() // ,
+              if (withComma)
+                builder.advanceLexer() // ,
               builder.getTokenType
               if (isVarId) {
                 builder.advanceLexer() // id

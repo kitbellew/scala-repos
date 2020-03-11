@@ -131,8 +131,16 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException((
         row,
         col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
-    val trueRow = if (row < 0) row + rows else row
-    val trueCol = if (col < 0) col + cols else col
+    val trueRow =
+      if (row < 0)
+        row + rows
+      else
+        row
+    val trueCol =
+      if (col < 0)
+        col + cols
+      else
+        col
     data(linearIndex(trueRow, trueCol))
   }
 
@@ -166,8 +174,16 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException((
         row,
         col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
-    val trueRow = if (row < 0) row + rows else row
-    val trueCol = if (col < 0) col + cols else col
+    val trueRow =
+      if (row < 0)
+        row + rows
+      else
+        row
+    val trueCol =
+      if (col < 0)
+        col + cols
+      else
+        col
     data(linearIndex(trueRow, trueCol)) = v
   }
 
@@ -223,9 +239,15 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   }
 
   private def canFlattenView =
-    if (isTranspose) majorStride == cols else majorStride == rows
+    if (isTranspose)
+      majorStride == cols
+    else
+      majorStride == rows
   private def canReshapeView =
-    if (isTranspose) majorStride == cols else majorStride == rows
+    if (isTranspose)
+      majorStride == cols
+    else
+      majorStride == rows
 
   /** Reshapes this matrix to have the given number of rows and columns
     * If view = true (or View.Require), throws an exception if we cannot return a view. otherwise returns a view.
@@ -259,7 +281,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
             _cols,
             data,
             offset,
-            if (isTranspose) cols else rows,
+            if (isTranspose)
+              cols
+            else
+              rows,
             isTranspose)
       case View.Copy =>
         // calling copy directly gives a verify error. TODO: submit bug
@@ -324,8 +349,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     implicit val man =
       ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
     require(row >= 0 && row < rows, s"row $row is not in bounds: [0, $rows)")
-    if (row == 0) this(1 until rows, ::).copy
-    else if (row == rows - 1) this(0 until rows - 1, ::).copy
+    if (row == 0)
+      this(1 until rows, ::).copy
+    else if (row == rows - 1)
+      this(0 until rows - 1, ::).copy
     else
       DenseMatrix.vertcat(this(0 until row, ::), this((row + 1) until rows, ::))
   }
@@ -334,8 +361,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     implicit val man =
       ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
     require(col >= 0 && col < cols, s"col $col is not in bounds: [0, $cols)")
-    if (col == 0) this(::, 1 until cols).copy
-    else if (col == cols - 1) this(::, 0 until cols - 1).copy
+    if (col == 0)
+      this(::, 1 until cols).copy
+    else if (col == cols - 1)
+      this(::, 0 until cols - 1).copy
     else
       DenseMatrix.horzcat(this(::, 0 until col), this(::, (col + 1) until cols))
   }
@@ -343,8 +372,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def delete(rows: Seq[Int], axis: Axis._0.type): DenseMatrix[V] = {
     implicit val man =
       ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
-    if (rows.isEmpty) copy
-    else if (rows.size == 1) delete(rows(0), axis)
+    if (rows.isEmpty)
+      copy
+    else if (rows.size == 1)
+      delete(rows(0), axis)
     else {
       val sorted = rows.sorted
       require(
@@ -369,8 +400,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def delete(cols: Seq[Int], axis: Axis._1.type): DenseMatrix[V] = {
     implicit val man =
       ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
-    if (cols.isEmpty) copy
-    else if (cols.size == 1) delete(cols(0), axis)
+    if (cols.isEmpty)
+      copy
+    else if (cols.size == 1)
+      delete(cols(0), axis)
     else {
       val sorted = cols.sorted
       require(
@@ -392,7 +425,11 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     }
   }
 
-  private def majorSize = if (isTranspose) rows else cols
+  private def majorSize =
+    if (isTranspose)
+      rows
+    else
+      cols
   private def footprint = majorSize * majorStride
 
   /** Returns true if this dense matrix takes up a contiguous segment of the array */
@@ -414,7 +451,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   private def checkIsSpecialized(): Unit = {
     if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseMatrix") throw new Exception("...")
+          .getName() == "breeze.linalg.DenseMatrix")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
 //  checkIsSpecialized()
@@ -531,7 +569,8 @@ object DenseMatrix
       opset: OpSet.InPlaceImpl2[DenseMatrix[V], M],
       vman: ClassTag[V],
       zero: Zero[V]) = {
-    if (matrices.isEmpty) zeros[V](0, 0)
+    if (matrices.isEmpty)
+      zeros[V](0, 0)
     else {
       require(
         matrices.forall(m => m.rows == matrices(0).rows),
@@ -553,7 +592,8 @@ object DenseMatrix
       opset: OpSet.InPlaceImpl2[DenseMatrix[V], DenseMatrix[V]],
       vman: ClassTag[V],
       zero: Zero[V]) = {
-    if (matrices.isEmpty) zeros[V](0, 0)
+    if (matrices.isEmpty)
+      zeros[V](0, 0)
     else {
       require(
         matrices.forall(m => m.cols == matrices(0).cols),
@@ -589,7 +629,11 @@ object DenseMatrix
         if (colWNegative < -m.cols || colWNegative >= m.cols)
           throw new ArrayIndexOutOfBoundsException(
             "Column must be in bounds for slice!")
-        val col = if (colWNegative < 0) colWNegative + m.cols else colWNegative
+        val col =
+          if (colWNegative < 0)
+            colWNegative + m.cols
+          else
+            colWNegative
 
         if (!m.isTranspose)
           DenseVector.create(
@@ -623,7 +667,8 @@ object DenseMatrix
 
         val rows = rowsWNegative.getRangeWithoutNegativeIndexes(m.rows)
 
-        if (rows.isEmpty) DenseMatrix.create(0, m.cols, m.data, 0, 0)
+        if (rows.isEmpty)
+          DenseMatrix.create(0, m.cols, m.data, 0, 0)
         else if (!m.isTranspose) {
           require(
             rows.step == 1,
@@ -736,7 +781,11 @@ object DenseMatrix
         if (colWNegative < -m.cols || colWNegative >= m.cols)
           throw new ArrayIndexOutOfBoundsException(
             "Row must be in bounds for slice!")
-        val col = if (colWNegative < 0) colWNegative + m.cols else colWNegative
+        val col =
+          if (colWNegative < 0)
+            colWNegative + m.cols
+          else
+            colWNegative
 
         if (rows.isEmpty) {
           DenseVector.create(m.data, 0, 0, 0)
@@ -804,7 +853,10 @@ object DenseMatrix
             from.cols,
             data,
             0,
-            if (isTranspose) from.cols else from.rows,
+            if (isTranspose)
+              from.cols
+            else
+              from.rows,
             isTranspose)
         } else {
           val data = new Array[R](from.size)
@@ -835,7 +887,11 @@ object DenseMatrix
       /** Iterates all key-value pairs from the given collection. */
       def traverse(from: DenseMatrix[V], fn: ValuesVisitor[V]): Unit = {
         import from._
-        val idealMajorStride = if (isTranspose) cols else rows
+        val idealMajorStride =
+          if (isTranspose)
+            cols
+          else
+            rows
 
         if (majorStride == idealMajorStride) {
           fn.visitArray(data, offset, rows * cols, 1)
@@ -872,7 +928,11 @@ object DenseMatrix
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[(Int, Int), V])
           : Unit = {
         import from._
-        val idealMajorStride = if (isTranspose) cols else rows
+        val idealMajorStride =
+          if (isTranspose)
+            cols
+          else
+            rows
 
         if (majorStride == idealMajorStride) {
           fn.visitArray(

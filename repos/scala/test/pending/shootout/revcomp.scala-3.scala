@@ -51,7 +51,8 @@ final class FastaInputStream(in: InputStream)
           return (header, lines)
         }
       } else {
-        if (c != sc) lines push line // ';'
+        if (c != sc)
+          lines push line // ';'
       }
       line = readLine()
     }
@@ -60,19 +61,23 @@ final class FastaInputStream(in: InputStream)
 
   def readLine() = {
     var bytes: Line = null
-    if (in == null) bytes
+    if (in == null)
+      bytes
     else {
       mark(128) // mark the start of the line
-      if (count == 0) read() // fill buffer
+      if (count == 0)
+        read() // fill buffer
 
       var i = markpos
-      while (i < count && buf(i) != nl) i = i + 1
+      while (i < count && buf(i) != nl)
+        i = i + 1
 
       if (i >= count) { // line extends past end of buffer
         pos = i;
         read();
         i = pos; // fill buffer again
-        while (i < count && buf(i) != nl) i = i + 1
+        while (i < count && buf(i) != nl)
+          i = i + 1
       }
 
       if (i < count) {
@@ -118,7 +123,8 @@ final class FastaOutputStream(in: OutputStream)
         i = i + 1
         j = j - 1
       }
-      if (i == j) b(i) = IUB(b(i))
+      if (i == j)
+        b(i) = IUB(b(i))
     }
 
     sequence match {
@@ -127,7 +133,11 @@ final class FastaOutputStream(in: OutputStream)
         write(header);
         write(nl)
 
-        val k = if (lines.isEmpty) 0 else lines.top.length
+        val k =
+          if (lines.isEmpty)
+            0
+          else
+            lines.top.length
         val LineLength = 60
         val isSplitLine = k < LineLength
         var isFirstLine = true
@@ -151,7 +161,8 @@ final class FastaOutputStream(in: OutputStream)
           }
         }
 
-        if (isSplitLine && !isFirstLine) write(nl)
+        if (isSplitLine && !isFirstLine)
+          write(nl)
       }
     }
   }

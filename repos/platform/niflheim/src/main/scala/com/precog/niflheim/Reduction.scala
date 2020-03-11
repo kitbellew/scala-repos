@@ -36,7 +36,10 @@ object Reductions {
   private def bitsOrBust[A](defined: BitSet, mask: Option[BitSet])(
       f: BitSet => A): Option[A] = {
     val bits = mask map (_ & defined) getOrElse defined
-    if (bits.isEmpty) None else Some(f(bits))
+    if (bits.isEmpty)
+      None
+    else
+      Some(f(bits))
   }
 
   object count extends Reduction[Long] {

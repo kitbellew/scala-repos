@@ -97,8 +97,10 @@ class ScUnderscoreSectionImpl(node: ASTNode)
           case Some(expr: ScExpression) =>
             val unders = ScUnderScoreSectionUtil.underscores(expr)
             var startOffset =
-              if (expr.getTextRange != null) expr.getTextRange.getStartOffset
-              else 0
+              if (expr.getTextRange != null)
+                expr.getTextRange.getStartOffset
+              else
+                0
             var e: PsiElement = this
             while (e != expr) {
               startOffset += e.startOffsetInParent
@@ -106,7 +108,8 @@ class ScUnderscoreSectionImpl(node: ASTNode)
             }
             val i =
               unders.indexWhere(_.getTextRange.getStartOffset == startOffset)
-            if (i < 0) return Failure("Not found under", None)
+            if (i < 0)
+              return Failure("Not found under", None)
             var result: Option[ScType] =
               null //strange logic to handle problems with detecting type
             var forEqualsParamLength: Boolean =
@@ -119,7 +122,8 @@ class ScUnderscoreSectionImpl(node: ASTNode)
                   if (params.length == unders.length && !forEqualsParamLength) {
                     result = Some(params(i))
                     forEqualsParamLength = true
-                  } else if (params.length == unders.length) result = None
+                  } else if (params.length == unders.length)
+                    result = None
                 } else if (params.length > unders.length)
                   result = Some(params(i))
                 else {

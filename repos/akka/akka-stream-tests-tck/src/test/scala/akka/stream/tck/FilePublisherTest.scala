@@ -34,7 +34,8 @@ class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
     val f = File.createTempFile("file-source-tck", ".tmp")
     val chunk = "x" * ChunkSize
     val fw = new FileWriter(f)
-    for (i ← 1 to Elements) fw.append(chunk)
+    for (i ← 1 to Elements)
+      fw.append(chunk)
     fw.close()
     f
   }

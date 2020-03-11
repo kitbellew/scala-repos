@@ -181,7 +181,11 @@ abstract class HiveComparisonTest
           .map(_.replaceAll("None", ""))
           .map(_.trim)
           .filterNot(_ == "")
-      case plan => if (isSorted(plan)) answer else answer.sorted
+      case plan =>
+        if (isSorted(plan))
+          answer
+        else
+          answer.sorted
     }
     orderedAnswer.map(cleanPaths)
   }
@@ -390,8 +394,10 @@ abstract class HiveComparisonTest
                     // from Seq("").
                     stringToFile(
                       cachedAnswerFile,
-                      answer.mkString("\n") + (if (answer.nonEmpty) "\n"
-                                               else ""))
+                      answer.mkString("\n") + (if (answer.nonEmpty)
+                                                 "\n"
+                                               else
+                                                 ""))
                     answer
                   } catch {
                     case e: Exception =>

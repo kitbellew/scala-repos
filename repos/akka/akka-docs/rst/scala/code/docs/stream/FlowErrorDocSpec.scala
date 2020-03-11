@@ -76,8 +76,10 @@ class FlowErrorDocSpec extends AkkaSpec {
     }
     val flow = Flow[Int]
       .scan(0) { (acc, elem) =>
-        if (elem < 0) throw new IllegalArgumentException("negative not allowed")
-        else acc + elem
+        if (elem < 0)
+          throw new IllegalArgumentException("negative not allowed")
+        else
+          acc + elem
       }
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
     val source = Source(List(1, 3, -1, 5, 7)).via(flow)

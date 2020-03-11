@@ -37,7 +37,10 @@ import scalafx.event.Event
 
 object InputEvent {
   implicit def sfxInputEvent2jfx(ie: InputEvent): jfxsi.InputEvent =
-    if (ie != null) ie.delegate else null
+    if (ie != null)
+      ie.delegate
+    else
+      null
 
   val Any: jfxe.EventType[jfxsi.InputEvent] = jfxsi.InputEvent.ANY
 }

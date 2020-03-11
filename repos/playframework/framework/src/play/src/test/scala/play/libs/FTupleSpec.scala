@@ -47,7 +47,10 @@ object FTupleSpec extends Specification with ScalaCheck {
 
       "obey hashCode contract" in prop { (a1: A, a2: A) =>
         // (a1 equals a2) ==> (a1.hashCode == a2.hashCode)
-        if (a1 equals a2) (a1.hashCode == a2.hashCode) else true
+        if (a1 equals a2)
+          (a1.hashCode == a2.hashCode)
+        else
+          true
       }
     }
   }
@@ -56,7 +59,8 @@ object FTupleSpec extends Specification with ScalaCheck {
     implicit def arbTuple[A: Arbitrary, B: Arbitrary]
         : Arbitrary[F.Tuple[A, B]] = Arbitrary {
       for (a <- arbitrary[A];
-           b <- arbitrary[B]) yield F.Tuple(a, b)
+           b <- arbitrary[B])
+        yield F.Tuple(a, b)
     }
 
     implicit def arbTuple3[A: Arbitrary, B: Arbitrary, C: Arbitrary]
@@ -75,7 +79,8 @@ object FTupleSpec extends Specification with ScalaCheck {
       for (a <- arbitrary[A];
            b <- arbitrary[B];
            c <- arbitrary[C];
-           d <- arbitrary[D]) yield F.Tuple4(a, b, c, d)
+           d <- arbitrary[D])
+        yield F.Tuple4(a, b, c, d)
     }
 
     implicit def arbTuple5[
@@ -88,7 +93,8 @@ object FTupleSpec extends Specification with ScalaCheck {
            b <- arbitrary[B];
            c <- arbitrary[C];
            d <- arbitrary[D];
-           e <- arbitrary[E]) yield F.Tuple5(a, b, c, d, e)
+           e <- arbitrary[E])
+        yield F.Tuple5(a, b, c, d, e)
     }
   }
 }

@@ -123,7 +123,11 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
             barrier.setOp(BarrierOp.Enter)
             w.setBarrier(barrier)
           case BarrierResult(name, success) ⇒
-            val res = if (success) BarrierOp.Succeeded else BarrierOp.Failed
+            val res =
+              if (success)
+                BarrierOp.Succeeded
+              else
+                BarrierOp.Failed
             w.setBarrier(TCP.EnterBarrier.newBuilder.setName(name).setOp(res))
           case FailBarrier(name) ⇒
             w.setBarrier(
@@ -140,7 +144,10 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
               TCP.InjectFailure.newBuilder
                 .setAddress(target)
                 .setFailure(
-                  if (abort) TCP.FailType.Abort else TCP.FailType.Disconnect))
+                  if (abort)
+                    TCP.FailType.Abort
+                  else
+                    TCP.FailType.Disconnect))
           case TerminateMsg(Right(exitValue)) ⇒
             w.setFailure(
               TCP.InjectFailure.newBuilder
@@ -194,7 +201,8 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
                 barrier.getName,
                 if (barrier.hasTimeout)
                   Option(Duration.fromNanos(barrier.getTimeout))
-                else None)
+                else
+                  None)
           }
         } else if (w.hasFailure) {
           val f = w.getFailure
@@ -210,8 +218,10 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
           }
         } else if (w.hasAddr) {
           val a = w.getAddr
-          if (a.hasAddr) AddressReply(RoleName(a.getNode), a.getAddr)
-          else GetAddress(RoleName(a.getNode))
+          if (a.hasAddr)
+            AddressReply(RoleName(a.getNode), a.getAddr)
+          else
+            GetAddress(RoleName(a.getNode))
         } else if (w.hasDone) {
           Done
         } else {

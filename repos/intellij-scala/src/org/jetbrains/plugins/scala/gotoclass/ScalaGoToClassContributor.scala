@@ -33,8 +33,10 @@ class ScalaGoToClassContributor extends ChooseByNameContributor {
       project: Project,
       includeNonProjectItems: Boolean): Array[NavigationItem] = {
     val scope =
-      if (includeNonProjectItems) GlobalSearchScope.allScope(project)
-      else GlobalSearchScope.projectScope(project)
+      if (includeNonProjectItems)
+        GlobalSearchScope.allScope(project)
+      else
+        GlobalSearchScope.projectScope(project)
     val classes = StubIndex.getElements(
       ScalaIndexKeys.NOT_VISIBLE_IN_JAVA_SHORT_NAME_KEY,
       name,

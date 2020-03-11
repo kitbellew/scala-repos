@@ -39,7 +39,8 @@ object BigInt {
         cache(offset) = n
       }
       n
-    } else new BigInt(BigInteger.valueOf(i.toLong))
+    } else
+      new BigInt(BigInteger.valueOf(i.toLong))
 
   /** Constructs a `BigInt` whose value is equal to that of the
     *  specified long value.
@@ -48,8 +49,10 @@ object BigInt {
     *  @return  the constructed `BigInt`
     */
   def apply(l: Long): BigInt =
-    if (minCached <= l && l <= maxCached) apply(l.toInt)
-    else new BigInt(BigInteger.valueOf(l))
+    if (minCached <= l && l <= maxCached)
+      apply(l.toInt)
+    else
+      new BigInt(BigInteger.valueOf(l))
 
   /** Translates a byte array containing the two's-complement binary
     *  representation of a BigInt into a BigInt.
@@ -120,8 +123,10 @@ final class BigInt(val bigInteger: BigInteger)
 
   /** Returns the hash code for this BigInt. */
   override def hashCode(): Int =
-    if (isValidLong) unifiedPrimitiveHashcode()
-    else bigInteger.##
+    if (isValidLong)
+      unifiedPrimitiveHashcode()
+    else
+      bigInteger.##
 
   /** Compares this BigInt with the specified value for equality.
     */

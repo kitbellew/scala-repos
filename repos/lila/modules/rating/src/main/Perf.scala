@@ -24,8 +24,10 @@ case class Perf(
       glicko = g,
       nb = nb + 1,
       recent =
-        if (nb < 10) recent
-        else (g.intRating :: recent) take Perf.recentMaxSize,
+        if (nb < 10)
+          recent
+        else
+          (g.intRating :: recent) take Perf.recentMaxSize,
       latest = date.some)
 
   def add(r: Rating, date: DateTime): Option[Perf] = {

@@ -85,9 +85,16 @@ class RingTest extends FunSuite {
 
   {
     class XRing extends Ring[String] {
-      def toX(n: Int) = if (n > 0) "x" * n else "-" + "x" * -n
+      def toX(n: Int) =
+        if (n > 0)
+          "x" * n
+        else
+          "-" + "x" * -n
       def fromX(s: String) =
-        if (s.startsWith("-")) -(s.length - 1) else s.length
+        if (s.startsWith("-"))
+          -(s.length - 1)
+        else
+          s.length
 
       private def unop(s: String)(f: Int => Int): String = toX(f(fromX(s)))
       private def binop(s1: String, s2: String)(f: (Int, Int) => Int): String =

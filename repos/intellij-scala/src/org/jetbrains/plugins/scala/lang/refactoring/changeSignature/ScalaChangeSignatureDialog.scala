@@ -215,7 +215,8 @@ class ScalaChangeSignatureDialog(
 
   override def calculateSignature(): String = {
     def nameAndType(item: ScalaParameterTableModelItem) = {
-      if (item.parameter.name == "") ""
+      if (item.parameter.name == "")
+        ""
       else
         ScalaExtractMethodUtils.typedName(
           item.parameter.name,
@@ -229,7 +230,11 @@ class ScalaChangeSignatureDialog(
 
     val prefix = method.fun match {
       case fun: ScFunction =>
-        val name = if (!fun.isConstructor) getMethodName else "this"
+        val name =
+          if (!fun.isConstructor)
+            getMethodName
+          else
+            "this"
         s"$getVisibility def $name"
       case pc: ScPrimaryConstructor =>
         s"class ${pc.getClassNameText} $getVisibility"
@@ -240,7 +245,11 @@ class ScalaChangeSignatureDialog(
 
     val retTypeText = returnTypeText
 
-    val typeAnnot = if (retTypeText.isEmpty) "" else s": $retTypeText"
+    val typeAnnot =
+      if (retTypeText.isEmpty)
+        ""
+      else
+        s": $retTypeText"
     s"$prefix$paramsText$typeAnnot"
   }
 
@@ -259,7 +268,10 @@ class ScalaChangeSignatureDialog(
 
     val paramNames = paramItems.map(_.parameter.name)
     val names =
-      if (myNameField.isEnabled) getMethodName +: paramNames else paramNames
+      if (myNameField.isEnabled)
+        getMethodName +: paramNames
+      else
+        paramNames
     problems ++= names.collect {
       case name if !ScalaNamesUtil.isIdentifier(name) =>
         s"$name is not a valid scala identifier"
@@ -287,8 +299,10 @@ class ScalaChangeSignatureDialog(
       case _ =>
     }
 
-    if (problems.isEmpty) null
-    else problems.distinct.mkString("\n")
+    if (problems.isEmpty)
+      null
+    else
+      problems.distinct.mkString("\n")
   }
 
   protected override def doValidate(): ValidationInfo = {
@@ -299,7 +313,10 @@ class ScalaChangeSignatureDialog(
           item.defaultValueCodeFragment.getText)
       } {
         val stuff =
-          if (isAddDefaultArgs) "Default arguments" else "Method calls"
+          if (isAddDefaultArgs)
+            "Default arguments"
+          else
+            "Method calls"
         val message =
           s"Default value is missing. $stuff will contain blanks instead of the new parameter value."
         return new ValidationInfo(message)
@@ -314,7 +331,8 @@ class ScalaChangeSignatureDialog(
     if (getDefaultValuesPanel != null) {
       if (parameterItems.exists(_.typeText.endsWith("*")))
         getDefaultValuesPanel.forceIsModifyCalls()
-      else getDefaultValuesPanel.release()
+      else
+        getDefaultValuesPanel.release()
     }
   }
 
@@ -355,7 +373,8 @@ class ScalaChangeSignatureDialog(
     Option(myReturnTypeCodeFragment).fold("")(_.getText)
 
   protected def returnType: ScType = {
-    if (myReturnTypeCodeFragment == null) StdType.ANY
+    if (myReturnTypeCodeFragment == null)
+      StdType.ANY
     else {
       val fragment = myReturnTypeCodeFragment
       ScalaPsiElementFactory.createTypeFromText(
@@ -368,10 +387,12 @@ class ScalaChangeSignatureDialog(
   protected def splittedItems: Seq[Seq[ScalaParameterTableModelItem]] = {
     def inner(items: Seq[ScalaParameterTableModelItem])
         : Seq[Seq[ScalaParameterTableModelItem]] = {
-      if (items.isEmpty) return Seq(items)
+      if (items.isEmpty)
+        return Seq(items)
 
       val index = items.tail.indexWhere(_.startsNewClause)
-      if (index < 0) Seq(items)
+      if (index < 0)
+        Seq(items)
       else {
         val (firstClause, rest) = items.splitAt(index + 1)
         firstClause +: inner(rest)
@@ -442,7 +463,8 @@ class ScalaChangeSignatureDialog(
     override def run(t: AnActionButton): Unit = {
       val table = parametersTable
       val selected = table.getSelectedRow
-      if (selected < 0 || selected >= table.getModel.getRowCount - 1) return
+      if (selected < 0 || selected >= table.getModel.getRowCount - 1)
+        return
       val editedColumn = editingColumn(table)
       TableUtil.stopEditing(table)
 
@@ -450,7 +472,8 @@ class ScalaChangeSignatureDialog(
       val item = myParametersTableModel.getItem(selected)
       if (itemBelow.startsNewClause) {
         itemBelow.startsNewClause = false
-        if (selected > 0) item.startsNewClause = true
+        if (selected > 0)
+          item.startsNewClause = true
         myParametersTableModel.fireTableDataChanged()
       } else {
         if (item.startsNewClause) {
@@ -468,7 +491,8 @@ class ScalaChangeSignatureDialog(
     override def run(t: AnActionButton): Unit = {
       val table = parametersTable
       val selected = table.getSelectedRow
-      if (selected <= 0 || selected >= table.getModel.getRowCount) return
+      if (selected <= 0 || selected >= table.getModel.getRowCount)
+        return
       val editedColumn = editingColumn(table)
       TableUtil.stopEditing(table)
       val item = myParametersTableModel.getItem(selected)
@@ -522,12 +546,17 @@ class ScalaChangeSignatureDialog(
 
   def clauseSeparatorColor = {
     val background = getContentPane.getBackground
-    if (UIUtil.isUnderDarcula) background.brighter.brighter
-    else background.darker()
+    if (UIUtil.isUnderDarcula)
+      background.brighter.brighter
+    else
+      background.darker()
   }
 
   private def editingColumn(table: JTable) =
-    if (table.isEditing) Some(table.getEditingColumn) else None
+    if (table.isEditing)
+      Some(table.getEditingColumn)
+    else
+      None
 
   class ScalaParametersListTable extends ParametersListTable {
     protected def getRowRenderer(row: Int): JBTableRowRenderer = {
@@ -541,7 +570,8 @@ class ScalaChangeSignatureDialog(
           val name = nameText(item)
           val typeTxt = typeText(item)
           val nameAndType =
-            if (name == "" && typeTxt == "") ""
+            if (name == "" && typeTxt == "")
+              ""
             else
               ScalaExtractMethodUtils.typedName(
                 name,
@@ -567,9 +597,12 @@ class ScalaChangeSignatureDialog(
           }
 
           val color =
-            if (item.startsNewClause) clauseSeparatorColor
-            else if (selected && focused) parametersTable.getSelectionBackground
-            else parametersTable.getBackground
+            if (item.startsNewClause)
+              clauseSeparatorColor
+            else if (selected && focused)
+              parametersTable.getSelectionBackground
+            else
+              parametersTable.getBackground
 
           comp.setBorder(new MatteBorder(2, 0, 0, 0, color))
           comp
@@ -597,7 +630,10 @@ class ScalaChangeSignatureDialog(
 
     protected def defaultText(item: ScalaParameterTableModelItem) = {
       val defaultValue: String = item.defaultValueCodeFragment.getText
-      if (StringUtil.isNotEmpty(defaultValue)) " = " + defaultValue else ""
+      if (StringUtil.isNotEmpty(defaultValue))
+        " = " + defaultValue
+      else
+        ""
     }
 
     override protected def isRowEmpty(row: Int): Boolean = false

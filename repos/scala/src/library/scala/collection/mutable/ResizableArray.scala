@@ -42,12 +42,14 @@ trait ResizableArray[A]
   def length: Int = size0
 
   def apply(idx: Int) = {
-    if (idx >= size0) throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= size0)
+      throw new IndexOutOfBoundsException(idx.toString)
     array(idx).asInstanceOf[A]
   }
 
   def update(idx: Int, elem: A) {
-    if (idx >= size0) throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= size0)
+      throw new IndexOutOfBoundsException(idx.toString)
     array(idx) = elem.asInstanceOf[AnyRef]
   }
 
@@ -76,7 +78,8 @@ trait ResizableArray[A]
     */
   override def copyToArray[B >: A](xs: Array[B], start: Int, len: Int) {
     val len1 = len min (xs.length - start) min length
-    if (len1 > 0) Array.copy(array, 0, xs, start, len1)
+    if (len1 > 0)
+      Array.copy(array, 0, xs, start, len1)
   }
 
   //##########################################################################
@@ -100,7 +103,8 @@ trait ResizableArray[A]
       while (n > newSize)
         newSize = newSize * 2
       // Clamp newSize to Int.MaxValue
-      if (newSize > Int.MaxValue) newSize = Int.MaxValue
+      if (newSize > Int.MaxValue)
+        newSize = Int.MaxValue
 
       val newArray: Array[AnyRef] = new Array(newSize.toInt)
       scala.compat.Platform.arraycopy(array, 0, newArray, 0, size0)

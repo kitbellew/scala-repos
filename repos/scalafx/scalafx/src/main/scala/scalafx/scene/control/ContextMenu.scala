@@ -37,7 +37,10 @@ import scalafx.scene.Node
 
 object ContextMenu {
   implicit def sfxContextMenu2jfx(cm: ContextMenu): jfxsc.ContextMenu =
-    if (cm != null) cm.delegate else null
+    if (cm != null)
+      cm.delegate
+    else
+      null
 }
 
 /**

@@ -28,7 +28,10 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
     Arbitrary(
       arbitrary[A]
         .map { a =>
-          if (a === Ring[A].zero) Ring[A].one else a
+          if (a === Ring[A].zero)
+            Ring[A].one
+          else
+            a
         }
         .map(NonZero[A](_)))
   }
@@ -40,7 +43,10 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
     Arbitrary(
       arbitrary[A]
         .map { a =>
-          if (a === Ring[A].zero) Ring[A].one else a.abs
+          if (a === Ring[A].zero)
+            Ring[A].one
+          else
+            a.abs
         }
         .filter(_.sign == Sign.Positive)
         .map(Positive(_)))
@@ -465,10 +471,14 @@ trait BaseSyntaxTest {
 
 object IntDivisibility extends PartialOrder[Int] {
   def partialCompare(a: Int, b: Int) =
-    if (a == b) 0.0
-    else if (b % a == 0) -1.0
-    else if (a % b == 0) 1.0
-    else Double.NaN
+    if (a == b)
+      0.0
+    else if (b % a == 0)
+      -1.0
+    else if (a % b == 0)
+      1.0
+    else
+      Double.NaN
 }
 
 class PartialOrderSyntaxTest extends SpireProperties {

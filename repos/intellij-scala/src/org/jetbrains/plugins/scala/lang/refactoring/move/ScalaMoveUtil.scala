@@ -128,7 +128,8 @@ object ScalaMoveUtil {
 
         case _ =>
       }
-      if (fileWasDeleted) newClass.navigate(true)
+      if (fileWasDeleted)
+        newClass.navigate(true)
       newClass
     }
 
@@ -149,7 +150,10 @@ object ScalaMoveUtil {
         Array[Int](range.getEndOffset))
       clazz.putCopyableUserData(
         ASSOCIATIONS_KEY,
-        if (associations.isEmpty) null else associations.get(0))
+        if (associations.isEmpty)
+          null
+        else
+          associations.get(0))
     }
     val alreadyMoved = getMoveDestination(
       aClass) == aClass.getContainingFile.getContainingDirectory

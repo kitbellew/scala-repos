@@ -98,7 +98,8 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
         def slice(ptile: Double) = {
           val end = math.floor(ptile * n).toInt
           val start = math.ceil(end - ((1.0 - ptile) * n)).toInt
-          for (i <- start to end) yield xs(i)
+          for (i <- start to end)
+            yield xs(i)
         }
         (
           variableName(k),
@@ -129,7 +130,10 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
     "# counters\n" + fmtCounters.mkString("\n") +
       "\n# gauges\n" + fmtGauges.sorted.mkString("\n") +
       "\n# stats\n" + fmtStats.mkString("\n") +
-      (if (includeTails) "\n# stats-tails\n" + (fmtTails mkString "\n") else "")
+      (if (includeTails)
+         "\n# stats-tails\n" + (fmtTails mkString "\n")
+       else
+         "")
   }
 
   def print() = println(summary(false))

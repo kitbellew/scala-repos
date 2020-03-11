@@ -56,8 +56,10 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
         new SbtCompiler(javac, scalac, fileToStore)
 
       case IncrementalityType.IDEA =>
-        if (scalac.isDefined) new IdeaIncrementalCompiler(scalac.get)
-        else throw new IllegalStateException("Could not create scalac instance")
+        if (scalac.isDefined)
+          new IdeaIncrementalCompiler(scalac.get)
+        else
+          throw new IllegalStateException("Could not create scalac instance")
 
     }
 

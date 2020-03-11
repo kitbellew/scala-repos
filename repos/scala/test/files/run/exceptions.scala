@@ -17,11 +17,21 @@ object exceptions {
 
   def check(what: String, actual: Any, expected: Any): Unit = {
     val success: Boolean = actual == expected;
-    Console.print(if (success) "ok" else "KO");
-    var value: String = if (actual == null) "null" else actual.toString();
-    if (value == "\u0000") value = "\\u0000";
+    Console.print(
+      if (success)
+        "ok"
+      else
+        "KO");
+    var value: String =
+      if (actual == null)
+        "null"
+      else
+        actual.toString();
+    if (value == "\u0000")
+      value = "\\u0000";
     Console.print(": " + what + " = " + value);
-    if (!success) Console.print(" != " + expected);
+    if (!success)
+      Console.print(" != " + expected);
     Console.println;
     Console.flush;
   }

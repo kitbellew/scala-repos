@@ -32,7 +32,10 @@ final class PersistenceSettings(config: Config) {
       posMax(config.getLong("view.auto-update-replay-max"))
 
     private def posMax(v: Long) =
-      if (v < 0) Long.MaxValue else v
+      if (v < 0)
+        Long.MaxValue
+      else
+        v
   }
 
   object atLeastOnceDelivery {
@@ -169,7 +172,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
           "To configure a default snapshot-store plugin set the `akka.persistence.snapshot-store.plugin` key. " +
           "For details see 'reference.conf'")
       NoSnapshotStorePluginId
-    } else configPath
+    } else
+      configPath
   }
 
   // Lazy, so user is not forced to configure defaults when she is not using them.
@@ -219,7 +223,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     */
   final def adaptersFor(journalPluginId: String): EventAdapters = {
     val configPath =
-      if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
+      if (isEmpty(journalPluginId))
+        defaultJournalPluginId
+      else
+        journalPluginId
     pluginHolderFor(configPath, journalFallbackConfigPath).adapters
   }
 
@@ -245,7 +252,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     */
   private[akka] final def journalConfigFor(journalPluginId: String): Config = {
     val configPath =
-      if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
+      if (isEmpty(journalPluginId))
+        defaultJournalPluginId
+      else
+        journalPluginId
     pluginHolderFor(configPath, journalFallbackConfigPath).config
   }
 
@@ -272,7 +282,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     */
   private[akka] final def journalFor(journalPluginId: String): ActorRef = {
     val configPath =
-      if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
+      if (isEmpty(journalPluginId))
+        defaultJournalPluginId
+      else
+        journalPluginId
     pluginHolderFor(configPath, journalFallbackConfigPath).actor
   }
 
@@ -287,8 +300,10 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   private[akka] final def snapshotStoreFor(
       snapshotPluginId: String): ActorRef = {
     val configPath =
-      if (isEmpty(snapshotPluginId)) defaultSnapshotPluginId
-      else snapshotPluginId
+      if (isEmpty(snapshotPluginId))
+        defaultSnapshotPluginId
+      else
+        snapshotPluginId
     pluginHolderFor(configPath, snapshotStoreFallbackConfigPath).actor
   }
 

@@ -29,11 +29,12 @@ trait InteractiveTestSettings
     */
   override protected def prepareSettings(settings: Settings) {
     def adjustPaths(paths: settings.PathSetting*) {
-      for (p <- paths if argsString.contains(p.name)) p.value = p.value.map {
-        case '/' => separatorChar
-        case ':' => pathSeparatorChar
-        case c   => c
-      }
+      for (p <- paths if argsString.contains(p.name))
+        p.value = p.value.map {
+          case '/' => separatorChar
+          case ':' => pathSeparatorChar
+          case c   => c
+        }
     }
 
     // need this so that the classpath comes from what partest

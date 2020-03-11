@@ -50,8 +50,10 @@ object LiftSession {
     LiftRules.sessionCreator(session, contextPath)
 
   def apply(request: Req): LiftSession =
-    if (request.stateless_?) LiftRules.statelessSession.vend.apply(request)
-    else this.apply(request.request.session, request.request.contextPath)
+    if (request.stateless_?)
+      LiftRules.statelessSession.vend.apply(request)
+    else
+      this.apply(request.request.session, request.request.contextPath)
 
   /**
     * Holds user's functions that will be called when the session is activated
@@ -531,7 +533,8 @@ class LiftSession(
   private[http] def enterComet(what: (LiftActor, Req)): Unit =
     asyncSync.synchronized {
       LiftRules.makeCometBreakoutDecision(this, what._2)
-      if (!running_?) what._1 ! BreakOut()
+      if (!running_?)
+        what._1 ! BreakOut()
       cometList = cometList :+ what
     }
 
@@ -637,7 +640,10 @@ class LiftSession(
       case (name, func) =>
         nmessageCallback.put(
           name,
-          if (func.owner == Full(uniqueId)) func else func.duplicate(uniqueId))
+          if (func.owner == Full(uniqueId))
+            func
+          else
+            func.duplicate(uniqueId))
     }
   }
 
@@ -975,7 +981,8 @@ class LiftSession(
     */
   private[http] def locTemplate: Box[NodeSeq] =
     for (loc <- S.location;
-         template <- loc.template) yield template
+         template <- loc.template)
+      yield template
 
   /**
     * Define the context path for this session.  This allows different
@@ -1185,7 +1192,8 @@ class LiftSession(
   private[http] def handleRedirect(
       re: ResponseShortcutException,
       request: Req): LiftResponse = {
-    if (re.doNotices) notices = S.getAllNotices
+    if (re.doNotices)
+      notices = S.getAllNotices
 
     re.response
   }
@@ -1409,10 +1417,10 @@ class LiftSession(
   }
 
   private[liftweb] def findTemplate(name: String): Box[NodeSeq] = {
-    val splits = (if (name.startsWith("/")) name else "/" + name)
-      .split("/")
-      .toList
-      .drop(1) match {
+    val splits = (if (name.startsWith("/"))
+                    name
+                  else
+                    "/" + name).split("/").toList.drop(1) match {
       case Nil => List("index")
       case s   => s
     }
@@ -1464,8 +1472,10 @@ class LiftSession(
   private object DotSplit {
     def unapply(in: String): Option[List[String]] = {
       val i = in.lastIndexOf('.')
-      if (i >= 0) Some(List(in.substring(0, i), in.substring(i + 1)))
-      else None
+      if (i >= 0)
+        Some(List(in.substring(0, i), in.substring(i + 1)))
+      else
+        None
     }
   }
 
@@ -1478,11 +1488,13 @@ class LiftSession(
         val c = in.charAt(x)
         if (c == '/') {
           ret.append('.')
-        } else ret.append(c)
+        } else
+          ret.append(c)
         x += 1
       }
       ret.toString
-    } else in
+    } else
+      in
   }
 
   /**
@@ -1522,7 +1534,8 @@ class LiftSession(
   }
 
   private def processAttributes(in: MetaData, allow: Boolean): MetaData = {
-    if (!allow) in
+    if (!allow)
+      in
     else {
       in match {
         case Null => Null
@@ -1749,12 +1762,16 @@ class LiftSession(
         findNSAttr(attrs, "l", "eager_eval").map(toBoolean)) getOrElse false
 
     val kids =
-      if (eagerEval) processSurroundAndInclude(page, passedKids) else passedKids
+      if (eagerEval)
+        processSurroundAndInclude(page, passedKids)
+      else
+        passedKids
 
     // Locate a snippet as defined by our SiteMap Loc
     def locSnippet(snippet: String): Box[NodeSeq] =
       for (loc <- S.location;
-           func <- loc.snippet(snippet)) yield func(kids)
+           func <- loc.snippet(snippet))
+        yield func(kids)
 
     def locateAndCacheSnippet(tagName: String): Box[AnyRef] =
       snippetMap.is.get(tagName) orElse {
@@ -1784,7 +1801,8 @@ class LiftSession(
           LiftRules.SnippetFailures.MethodNotFound,
           NodeSeq.Empty,
           wholeTag)
-      } else f
+      } else
+        f
     }
 
     val ret: NodeSeq =
@@ -1804,7 +1822,8 @@ class LiftSession(
                     case Full(inst: StatelessBehavior) if !stateful_? =>
                       if (inst.statelessDispatch.isDefinedAt(method))
                         inst.statelessDispatch(method)(kids)
-                      else NodeSeq.Empty
+                      else
+                        NodeSeq.Empty
 
                     case Full(inst: StatefulSnippet) if !stateful_? =>
                       reportSnippetError(
@@ -1877,10 +1896,12 @@ class LiftSession(
                               isNodeSeq(pt.getActualTypeArguments()(0)) &&
                               isNodeSeq(pt.getActualTypeArguments()(1)))
                             true
-                          else testGeneric(pt.getRawType)
+                          else
+                            testGeneric(pt.getRawType)
 
                         case clz: Class[_] =>
-                          if (clz == classOf[Object]) false
+                          if (clz == classOf[Object])
+                            false
                           else
                             clz.getGenericInterfaces.find(testGeneric) match {
                               case Some(_) => true
@@ -1931,13 +1952,15 @@ class LiftSession(
                                 Helpers.camelify(method),
                                 Helpers.camelifyMethod(method))
                               methodNames intersect methodAlts
-                            } else Nil
+                            } else
+                              Nil
 
                             reportSnippetError(
                               page,
                               snippetName,
                               LiftRules.SnippetFailures.MethodNotFound,
-                              if (intersection.isEmpty) NodeSeq.Empty
+                              if (intersection.isEmpty)
+                                NodeSeq.Empty
                               else
                                 <div>There are possible matching methods (
                                 {
@@ -2017,7 +2040,8 @@ class LiftSession(
           new UnprefixedAttribute(attr_name, Text(x.head.value.text), base)
       }
 
-    if (ret.isEmpty) ret
+    if (ret.isEmpty)
+      ret
     else
       attrs.get("form").map(_.text.trim.toLowerCase) match {
         case Some("post") =>
@@ -2210,7 +2234,8 @@ class LiftSession(
       })
 
       theNode
-    } else f
+    } else
+      f
   }
 
   private object _lastFoundSnippet extends ThreadGlobal[String]
@@ -2554,7 +2579,8 @@ class LiftSession(
     * throw a StateInStatelessException
     */
   def testStatefulFeature[T](f: => T): T = {
-    if (this.stateful_?) f
+    if (this.stateful_?)
+      f
     else
       throw new StateInStatelessException(
         "Accessing stateful feature outside of a stateful session")
@@ -2865,7 +2891,11 @@ class LiftSession(
       templateName: Box[String],
       atWhat: => Map[String, NodeSeq]): NodeSeq = {
     val name: String = templateName
-      .map(s => if (s.startsWith("/")) s else "/" + s)
+      .map(s =>
+        if (s.startsWith("/"))
+          s
+        else
+          "/" + s)
       .openOr("/templates-hidden/default")
 
     findTemplate(name) match {
@@ -2989,7 +3019,8 @@ class LiftSession(
             JString(name) <- in \ "name"
             func <- map.get(name)
             payload = in \ "payload"
-            reified <- if (func.manifest == jvmanifest) Some(payload)
+            reified <- if (func.manifest == jvmanifest)
+              Some(payload)
             else {
               try {
                 Some(payload.extract(defaultFormats, func.manifest))

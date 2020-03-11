@@ -21,12 +21,18 @@ class RuntimeTypeInfo(
     ru.runtimeMirror(classLoader)
 
   val sym =
-    if (clazz != null) mirror.classSymbol(clazz) else NullClass
+    if (clazz != null)
+      mirror.classSymbol(clazz)
+    else
+      NullClass
   // debug(s"sym: $sym")
 
   val tpe = {
     val elemClass: Class[_] =
-      if (clazz != null) clazz.getComponentType() else null
+      if (clazz != null)
+        clazz.getComponentType()
+      else
+        null
 
     if (elemClass != null) // assume it's an array
       appliedType(
@@ -76,7 +82,11 @@ class RuntimePickler(
         val fldMirror = im.reflectField(fir.field.get)
         fldMirror.get
       }
-      val fldClass = if (fldValue != null) fldValue.getClass else null
+      val fldClass =
+        if (fldValue != null)
+          fldValue.getClass
+        else
+          null
 
       //debug(s"pickling field of type: ${fir.tpe.toString}")
       //debug(s"isEffFinal: $isEffFinal")
@@ -162,7 +172,11 @@ class RuntimePickler(
         im: ru.InstanceMirror): Unit = {
       field.setAccessible(true)
       val fldValue = field.get(picklee)
-      val fldClass = if (fldValue != null) fldValue.getClass else null
+      val fldClass =
+        if (fldValue != null)
+          fldValue.getClass
+        else
+          null
 
       //debug(s"pickling field of type: ${fir.tpe.toString}")
       //debug(s"isEffFinal: $isEffFinal")
@@ -245,7 +259,8 @@ class RuntimePickler(
               new EffectivelyFinalLogic(fir)
             else if (fir.tpe.typeSymbol.asType.isAbstractType)
               new AbstractLogic(fir)
-            else new DefaultLogic(fir)
+            else
+              new DefaultLogic(fir)
           )
         else
           try {
@@ -253,7 +268,8 @@ class RuntimePickler(
             List(
               if (fir.tpe.typeSymbol.isEffectivelyFinal)
                 new PrivateEffectivelyFinalJavaFieldLogic(fir, javaField)
-              else new PrivateJavaFieldLogic(fir, javaField)
+              else
+                new PrivateJavaFieldLogic(fir, javaField)
             )
           } catch {
             case e: java.lang.NoSuchFieldException => List()

@@ -53,8 +53,10 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
   }
 
   private def filterAnsiIfNeeded(l: Logger, s: String): String =
-    if (l.ansiCodesSupported() && settings.color) s
-    else filterAnsi(s)
+    if (l.ansiCodesSupported() && settings.color)
+      s
+    else
+      filterAnsi(s)
 
   private def logStackTrace(t: Throwable): Unit = {
     val trace = t.getStackTrace.dropWhile { p =>
@@ -65,13 +67,19 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     }
     val testClassName = currentTestClassName.head
     val testFileName = {
-      if (settings.color) findTestFileName(trace, testClassName)
-      else null
+      if (settings.color)
+        findTestFileName(trace, testClassName)
+      else
+        null
     }
     val i = trace.indexWhere { p =>
       p.getFileName != null && p.getFileName.contains("JUnitExecuteTest.scala")
     } - 1
-    val m = if (i > 0) i else trace.length - 1
+    val m =
+      if (i > 0)
+        i
+      else
+        trace.length - 1
     logStackTracePart(
       trace,
       m,
@@ -175,16 +183,34 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     r += '('
 
     if (e.isNativeMethod) {
-      r += c("Native Method", if (highlight) TESTFILE2 else null)
+      r += c(
+        "Native Method",
+        if (highlight)
+          TESTFILE2
+        else
+          null)
     } else if (e.getFileName == null) {
-      r += c("Unknown Source", if (highlight) TESTFILE2 else null)
+      r += c(
+        "Unknown Source",
+        if (highlight)
+          TESTFILE2
+        else
+          null)
     } else {
-      r += c(e.getFileName, if (highlight) TESTFILE1 else null)
+      r += c(
+        e.getFileName,
+        if (highlight)
+          TESTFILE1
+        else
+          null)
       if (e.getLineNumber >= 0) {
         r += ':'
         r += c(
           String.valueOf(e.getLineNumber),
-          if (highlight) TESTFILE2 else null)
+          if (highlight)
+            TESTFILE2
+          else
+            null)
       }
     }
     r += ')'

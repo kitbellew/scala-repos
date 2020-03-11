@@ -52,7 +52,8 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
   override def buildVisitor(
       holder: ProblemsHolder,
       isOnTheFly: Boolean): PsiElementVisitor = {
-    if (!holder.getFile.isInstanceOf[ScalaFile]) return new PsiElementVisitor {}
+    if (!holder.getFile.isInstanceOf[ScalaFile])
+      return new PsiElementVisitor {}
 
     def addInfo(
         paramType: ScParameterizedTypeElement,
@@ -79,8 +80,8 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
                 case (Seq(), Some(refinement)) =>
                   (refinement.holders, refinement.types) match {
                     case (
-                        Seq(),
-                        Seq(typeAliasDefinition: ScTypeAliasDefinition)) =>
+                          Seq(),
+                          Seq(typeAliasDefinition: ScTypeAliasDefinition)) =>
                       val name1 = typeProjection.nameId
                       val name2 = typeAliasDefinition.nameId
                       if (name1.getText == name2.getText) {

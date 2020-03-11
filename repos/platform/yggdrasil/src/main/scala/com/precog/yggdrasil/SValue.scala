@@ -99,13 +99,17 @@ sealed trait SValue {
   }
 
   def set(selector: JPath, cv: CValue): Option[SValue] =
-    if (cv eq null) None else set(selector, SValue.fromCValue(cv))
+    if (cv eq null)
+      None
+    else
+      set(selector, SValue.fromCValue(cv))
 
   def structure: Seq[(JPath, CType)] = {
     import SValue._
     val s = this match {
       case SObject(m) =>
-        if (m.isEmpty) List((JPath(), CEmptyObject))
+        if (m.isEmpty)
+          List((JPath(), CEmptyObject))
         else {
           m.toSeq.flatMap {
             case (name, value) =>
@@ -116,7 +120,8 @@ sealed trait SValue {
         }
 
       case SArray(a) =>
-        if (a.isEmpty) List((JPath(), CEmptyArray))
+        if (a.isEmpty)
+          List((JPath(), CEmptyArray))
         else {
           a.zipWithIndex.flatMap {
             case (value, index) =>
@@ -380,7 +385,11 @@ case object SString extends SType with (String => SString) {
 }
 
 case object SBoolean extends SType with (Boolean => SValue) {
-  def apply(v: Boolean) = if (v) STrue else SFalse
+  def apply(v: Boolean) =
+    if (v)
+      STrue
+    else
+      SFalse
   def unapply(v: SValue): Option[Boolean] = v match {
     case STrue  => Some(true)
     case SFalse => Some(false)

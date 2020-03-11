@@ -14,7 +14,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.synthetic.SyntheticNam
   */
 object ExtractMethodControlFlowPolicy extends ScControlFlowPolicy {
   override def isElementAccepted(named: PsiNamedElement): Boolean = {
-    if (named.isInstanceOf[SyntheticNamedElement]) return false
+    if (named.isInstanceOf[SyntheticNamedElement])
+      return false
 
     ScalaPsiUtil.nameContext(named) match {
       case cp: ScClassParameter => false

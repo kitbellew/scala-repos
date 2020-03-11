@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object PerspectiveCamera {
   implicit def sfxPerspectiveCamera2jfx(
       c: PerspectiveCamera): jfxs.PerspectiveCamera =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class PerspectiveCamera(

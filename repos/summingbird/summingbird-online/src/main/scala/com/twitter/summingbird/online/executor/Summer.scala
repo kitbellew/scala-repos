@@ -100,7 +100,10 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
     store.toString // Do the lazy evaluation now so we can connect before tuples arrive.
 
     successHandlerOpt =
-      if (includeSuccessHandler.get) Some(successHandlerBox.get) else None
+      if (includeSuccessHandler.get)
+        Some(successHandlerBox.get)
+      else
+        None
   }
 
   override def notifyFailure(

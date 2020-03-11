@@ -17,7 +17,8 @@ object Assume {
     assumeTrue(!b)
 
   def assumeTrue(message: String, b: Boolean): Unit =
-    if (!b) throw new AssumptionViolatedException(message)
+    if (!b)
+      throw new AssumptionViolatedException(message)
 
   def assumeFalse(message: String, b: Boolean): Unit =
     assumeTrue(message, !b)

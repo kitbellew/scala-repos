@@ -350,7 +350,11 @@ case class Field(
     form(
       Option(name)
         .filterNot(_.isEmpty)
-        .map(_ + (if (key(0) == '[') "" else "."))
+        .map(
+          _ + (if (key(0) == '[')
+                 ""
+               else
+                 "."))
         .getOrElse("") + key)
   }
 
@@ -600,7 +604,10 @@ trait Mapping[T] {
     */
   def verifying(error: => String, constraint: (T => Boolean)): Mapping[T] = {
     verifying(Constraint { t: T =>
-      if (constraint(t)) Valid else Invalid(Seq(ValidationError(error)))
+      if (constraint(t))
+        Valid
+      else
+        Invalid(Seq(ValidationError(error)))
     })
   }
 

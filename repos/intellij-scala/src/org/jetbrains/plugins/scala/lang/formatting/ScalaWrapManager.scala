@@ -62,7 +62,8 @@ object ScalaWrapManager {
               block.getWrap,
               WrapType.byLegacyRepresentation(settings.BINARY_OPERATION_WRAP),
               false)
-          } else Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
+          } else
+            Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
         case _ => Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
       }
     }
@@ -93,7 +94,8 @@ object ScalaWrapManager {
               parentSuggestedWrap,
               WrapType.byLegacyRepresentation(settings.CALL_PARAMETERS_WRAP),
               false)
-          else Wrap.createWrap(settings.CALL_PARAMETERS_WRAP, false)
+          else
+            Wrap.createWrap(settings.CALL_PARAMETERS_WRAP, false)
         if (settings.PREFER_PARAMETERS_WRAP) {
           wrap.ignoreParentWraps()
         }
@@ -158,11 +160,16 @@ object ScalaWrapManager {
         elementLeftSide: PsiElement => PsiElement): Wrap = {
       childPsi.getParent match {
         case parent: PsiElement if elementMatch(parent) =>
-          if (elementOperation(parent) == childPsi) return null
-          if (parent != parentPsi) suggestedWrap
-          else if (elementLeftSide(parentPsi) == childPsi) suggestedWrap
-          else if (elementRightSide(parentPsi) == childPsi) suggestedWrap
-          else null
+          if (elementOperation(parent) == childPsi)
+            return null
+          if (parent != parentPsi)
+            suggestedWrap
+          else if (elementLeftSide(parentPsi) == childPsi)
+            suggestedWrap
+          else if (elementRightSide(parentPsi) == childPsi)
+            suggestedWrap
+          else
+            null
         case _ => null //hasn't to be
       }
     }
@@ -189,17 +196,25 @@ object ScalaWrapManager {
           _.asInstanceOf[ScInfixTypeElement].lOp
         )
       case psi: ScCompositePattern =>
-        if (childPsi.isInstanceOf[ScPattern]) return suggestedWrap
-        else return null
+        if (childPsi.isInstanceOf[ScPattern])
+          return suggestedWrap
+        else
+          return null
       case call: ScMethodCall =>
-        if (child.getElementType == ScalaTokenTypes.tDOT) return suggestedWrap
-        else return null
+        if (child.getElementType == ScalaTokenTypes.tDOT)
+          return suggestedWrap
+        else
+          return null
       case ref: ScReferenceExpression =>
-        if (child.getElementType == ScalaTokenTypes.tDOT) return suggestedWrap
-        else return null
+        if (child.getElementType == ScalaTokenTypes.tDOT)
+          return suggestedWrap
+        else
+          return null
       case args: ScArgumentExprList =>
-        if (childPsi.isInstanceOf[ScExpression]) return suggestedWrap
-        else return null
+        if (childPsi.isInstanceOf[ScExpression])
+          return suggestedWrap
+        else
+          return null
       case patt: ScPatternArgumentList =>
         childPsi match {
           case _: ScPattern     => return suggestedWrap
@@ -207,16 +222,21 @@ object ScalaWrapManager {
           case _                => return null
         }
       case params: ScParameterClause =>
-        if (childPsi.isInstanceOf[ScParameter]) return suggestedWrap
-        else return null
+        if (childPsi.isInstanceOf[ScParameter])
+          return suggestedWrap
+        else
+          return null
       case params: ScParameters =>
         if (childPsi.isInstanceOf[
               ScParameterClause] && params.clauses.head != childPsi)
           return suggestedWrap
-        else return null
+        else
+          return null
       case annot: ScAnnotations =>
-        if (childPsi.isInstanceOf[ScAnnotation]) return suggestedWrap
-        else return null
+        if (childPsi.isInstanceOf[ScAnnotation])
+          return suggestedWrap
+        else
+          return null
       case _
           if parentNode.getElementType == ScalaTokenTypes.kEXTENDS && parent.myLastNode != null =>
         val e: ScExtendsBlock =
@@ -229,12 +249,15 @@ object ScalaWrapManager {
               case _                                    => null
             }
         }
-        if (first == null) return null
-        if (childPsi == first) return suggestedWrap
+        if (first == null)
+          return null
+        if (childPsi == first)
+          return suggestedWrap
         if (scalaSettings.WRAP_BEFORE_WITH_KEYWORD) {
           if (child.getElementType == ScalaTokenTypes.kWITH)
             return suggestedWrap
-          else return null
+          else
+            return null
         } else {
           e.templateParents match {
             case Some(tp) if tp.typeElements.contains(childPsi) =>

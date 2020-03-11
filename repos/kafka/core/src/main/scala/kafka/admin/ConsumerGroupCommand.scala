@@ -65,7 +65,8 @@ object ConsumerGroupCommand {
     val consumerGroupService = {
       if (opts.options.has(opts.newConsumerOpt))
         new KafkaConsumerGroupService(opts)
-      else new ZkConsumerGroupService(opts)
+      else
+        new ZkConsumerGroupService(opts)
     }
 
     try {
@@ -198,7 +199,8 @@ object ConsumerGroupCommand {
       val props =
         if (opts.options.has(opts.commandConfigOpt))
           Utils.loadProps(opts.options.valueOf(opts.commandConfigOpt))
-        else new Properties()
+        else
+          new Properties()
       val channelSocketTimeoutMs =
         props.getProperty("channelSocketTimeoutMs", "600").toInt
       val channelRetryBackoffMs =
@@ -475,14 +477,16 @@ object ConsumerGroupCommand {
 
     def close() {
       adminClient.close()
-      if (consumer != null) consumer.close()
+      if (consumer != null)
+        consumer.close()
     }
 
     private def createAdminClient(): AdminClient = {
       val props =
         if (opts.options.has(opts.commandConfigOpt))
           Utils.loadProps(opts.options.valueOf(opts.commandConfigOpt))
-        else new Properties()
+        else
+          new Properties()
       props.put(
         CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
         opts.options.valueOf(opts.bootstrapServerOpt))

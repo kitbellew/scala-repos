@@ -43,7 +43,10 @@ object Paper {
     * @return JavaFX Paper
     */
   implicit def sfxPaper2jfx(pp: Paper): jfxp.Paper =
-    if (pp != null) pp.delegate else null
+    if (pp != null)
+      pp.delegate
+    else
+      null
 
   /** Specifies the ISO A0 size, 841 mm by 1189 mm. */
   val A0 = new Paper(jfxp.Paper.A0)

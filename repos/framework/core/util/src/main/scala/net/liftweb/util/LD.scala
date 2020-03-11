@@ -24,7 +24,11 @@ import common._
   * Calculate the edit distance between words
   */
 object LD {
-  private def min(a: Int, b: Int): Int = if (a < b) a else b
+  private def min(a: Int, b: Int): Int =
+    if (a < b)
+      a
+    else
+      b
   private def min(a: Int, b: Int, c: Int): Int = min(min(a, b), c)
 
   /**
@@ -54,8 +58,10 @@ object LD {
       case w :: ws =>
         val tv = this(root, f(w))
         val rest = this(root, ws, f)
-        if (tv < rest._2) (w, tv)
-        else rest
+        if (tv < rest._2)
+          (w, tv)
+        else
+          rest
     }
 
   /**
@@ -81,7 +87,11 @@ object LD {
       word match {
         case Nil => acc.toList
         case c :: cs =>
-          val cost = if (c == ch) 0 else 1
+          val cost =
+            if (c == ch)
+              0
+            else
+              1
           val i = dist.head
           val calc = min(left + cost, i + 1, top + 1)
           acc += calc

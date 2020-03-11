@@ -433,7 +433,8 @@ class TopicDeletionManager(
     debug("Delete topic callback invoked for %s".format(stopReplicaResponse))
     val responseMap = stopReplicaResponse.responses.asScala
     val partitionsInError =
-      if (stopReplicaResponse.errorCode != Errors.NONE.code) responseMap.keySet
+      if (stopReplicaResponse.errorCode != Errors.NONE.code)
+        responseMap.keySet
       else
         responseMap
           .filter {

@@ -84,9 +84,11 @@ final object Aggregation {
       case Inc(_)   => false
     }
     results.toEither.right.foreach { r =>
-      if (show.taskValues) printSettings(r, show.print)
+      if (show.taskValues)
+        printSettings(r, show.print)
     }
-    if (show.success) printSuccess(start, stop, extracted, success, log)
+    if (show.success)
+      printSuccess(start, stop, extracted, success, log)
   }
   def timedRun[T](
       s: State,
@@ -140,7 +142,10 @@ final object Aggregation {
     if (get(showSuccess)) {
       if (get(showTiming)) {
         val msg = timingString(start, stop, "", structure.data, currentRef, log)
-        if (success) log.success(msg) else log.error(msg)
+        if (success)
+          log.success(msg)
+        else
+          log.error(msg)
       } else if (success)
         log.success("")
     }
@@ -161,7 +166,11 @@ final object Aggregation {
       endTime: Long,
       s: String,
       log: Logger): String = {
-    val ss = if (s.isEmpty) "" else s + " "
+    val ss =
+      if (s.isEmpty)
+        ""
+      else
+        s + " "
     val nowString = format.format(new java.util.Date(endTime))
     "Total " + ss + "time: " + (endTime - startTime + 500) / 1000 + " s, completed " + nowString
   }
@@ -225,7 +234,8 @@ final object Aggregation {
           applyDynamicTasks(s, structure, maps(inputTasks)(castToAny), show)
       } else {
         val base =
-          if (tasks.isEmpty) success(() => s)
+          if (tasks.isEmpty)
+            success(() => s)
           else
             applyTasks(
               s,
@@ -255,8 +265,10 @@ final object Aggregation {
       reverse: Boolean): Seq[ProjectRef] = {
     val resRef = proj.map(p => extra.projectRefFor(extra.resolveRef(p)))
     resRef.toList.flatMap(ref =>
-      if (reverse) extra.aggregates.reverse(ref)
-      else extra.aggregates.forward(ref))
+      if (reverse)
+        extra.aggregates.reverse(ref)
+      else
+        extra.aggregates.forward(ref))
   }
 
   def aggregate[T, Proj](
@@ -285,7 +297,10 @@ final object Aggregation {
       val toResolve = key.scope.copy(project = Select(ref))
       val resolved = Resolve(extra, Global, key.key, mask)(toResolve)
       val skey = ScopedKey(resolved, key.key)
-      if (aggregationEnabled(skey, extra.data)) skey :: Nil else Nil
+      if (aggregationEnabled(skey, extra.data))
+        skey :: Nil
+      else
+        Nil
     }
 
   def aggregatedKeys[T](

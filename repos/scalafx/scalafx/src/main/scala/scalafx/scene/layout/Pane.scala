@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object Pane {
   implicit def sfxPane2jfx(v: Pane): jfxsl.Pane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

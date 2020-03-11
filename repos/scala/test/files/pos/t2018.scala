@@ -12,7 +12,10 @@ class A {
         case None    => p
       }
 
-      if (c == p) p else c.b.getAncestor(c)
+      if (c == p)
+        p
+      else
+        c.b.getAncestor(c)
     }
   }
 }

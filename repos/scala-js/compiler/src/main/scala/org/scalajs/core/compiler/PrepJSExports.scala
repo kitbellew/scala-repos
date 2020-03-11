@@ -47,7 +47,11 @@ trait PrepJSExports { this: PrepJSInterop =>
       Nil
     }
 
-    def memType = if (baseSym.isConstructor) "constructor" else "method"
+    def memType =
+      if (baseSym.isConstructor)
+        "constructor"
+      else
+        "method"
 
     if (exports.isEmpty)
       Nil
@@ -131,15 +135,24 @@ trait PrepJSExports { this: PrepJSInterop =>
       if (!hasLegalExportVisibility(sym)) {
         err(
           "You may only export public and protected " +
-            (if (isMod) "objects" else "classes"))
+            (if (isMod)
+               "objects"
+             else
+               "classes"))
       } else if (sym.isLocalToBlock) {
         err(
           "You may not export a local " +
-            (if (isMod) "object" else "class"))
+            (if (isMod)
+               "object"
+             else
+               "class"))
       } else if (!sym.owner.hasPackageFlag) {
         err(
           "You may not export a nested " +
-            (if (isMod) "object" else s"class. $createFactoryInOuterClassHint"))
+            (if (isMod)
+               "object"
+             else
+               s"class. $createFactoryInOuterClassHint"))
       } else if (sym.isAbstractClass) {
         err("You may not export an abstract class")
       } else if (!isMod && !hasAnyNonPrivateCtor) {
@@ -154,7 +167,10 @@ trait PrepJSExports { this: PrepJSInterop =>
           reporter.error(
             exp.pos,
             "You may not use @JSNamedExport on " +
-              (if (isMod) "an object" else "a Scala.js-defined JS class"))
+              (if (isMod)
+                 "an object"
+               else
+                 "a Scala.js-defined JS class"))
         }
 
         jsInterop.registerForExport(sym, normal)
@@ -189,10 +205,13 @@ trait PrepJSExports { this: PrepJSInterop =>
       def isOwnerScalaClass = !sym.owner.isModuleClass && !isJSAny(sym.owner)
 
       // For accessors, look on the val/var def
-      if (sym.isAccessor) sym.accessed
+      if (sym.isAccessor)
+        sym.accessed
       // For primary Scala class constructors, look on the class itself
-      else if (sym.isPrimaryConstructor && isOwnerScalaClass) sym.owner
-      else sym
+      else if (sym.isPrimaryConstructor && isOwnerScalaClass)
+        sym.owner
+      else
+        sym
     }
 
     // Annotations that are directly on the member
@@ -228,10 +247,14 @@ trait PrepJSExports { this: PrepJSInterop =>
       }
 
       val name = {
-        if (hasExplicitName) explicitName
-        else if (sym.isConstructor) decodedFullName(sym.owner)
-        else if (sym.isClass) decodedFullName(sym)
-        else sym.unexpandedName.decoded.stripSuffix("_=")
+        if (hasExplicitName)
+          explicitName
+        else if (sym.isConstructor)
+          decodedFullName(sym.owner)
+        else if (sym.isClass)
+          decodedFullName(sym)
+        else
+          sym.unexpandedName.decoded.stripSuffix("_=")
       }
 
       // Enforce proper setter signature
@@ -241,7 +264,11 @@ trait PrepJSExports { this: PrepJSInterop =>
       // Enforce no __ in name
       if (name.contains("__")) {
         // Get position for error message
-        val pos = if (hasExplicitName) annot.args.head.pos else trgSym.pos
+        val pos =
+          if (hasExplicitName)
+            annot.args.head.pos
+          else
+            trgSym.pos
 
         reporter.error(
           pos,
@@ -274,7 +301,11 @@ trait PrepJSExports { this: PrepJSInterop =>
       // Don't allow apply without explicit name
       if (isIllegalApplyExport) {
         // Get position for error message
-        val pos = if (isExportAll) trgSym.pos else annot.pos
+        val pos =
+          if (isExportAll)
+            trgSym.pos
+          else
+            annot.pos
 
         reporter.warning(
           pos,
@@ -313,8 +344,10 @@ trait PrepJSExports { this: PrepJSInterop =>
       Nil
     } else {
       val trgAnnot =
-        if (sym.isModuleClass) JSExportDescendentObjectsAnnotation
-        else JSExportDescendentClassesAnnotation
+        if (sym.isModuleClass)
+          JSExportDescendentObjectsAnnotation
+        else
+          JSExportDescendentClassesAnnotation
 
       val forcingSymInfos = for {
         forcingSym <- trgSym.ancestors
@@ -357,9 +390,12 @@ trait PrepJSExports { this: PrepJSInterop =>
 
   /** Just like sym.fullName, but does not encode components */
   private def decodedFullName(sym: Symbol): String = {
-    if (sym.isRoot || sym.isRootPackage || sym == NoSymbol) sym.name.decoded
-    else if (sym.owner.isEffectiveRoot) sym.name.decoded
-    else decodedFullName(sym.effectiveOwner.enclClass) + '.' + sym.name.decoded
+    if (sym.isRoot || sym.isRootPackage || sym == NoSymbol)
+      sym.name.decoded
+    else if (sym.owner.isEffectiveRoot)
+      sym.name.decoded
+    else
+      decodedFullName(sym.effectiveOwner.enclClass) + '.' + sym.name.decoded
   }
 
   /** generate an exporter for a DefDef including default parameter methods */
@@ -478,7 +514,8 @@ trait PrepJSExports { this: PrepJSInterop =>
 
       genProxyDefDef(clsSym, trgGetter, expGetter, pos)
 
-    } else EmptyTree
+    } else
+      EmptyTree
   }
 
   /** generate a DefDef tree (from [[proxySym]]) that calls [[trgSym]] */

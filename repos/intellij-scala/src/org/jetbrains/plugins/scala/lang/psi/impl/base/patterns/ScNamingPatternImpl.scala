@@ -46,7 +46,8 @@ class ScNamingPatternImpl(node: ASTNode)
         case _       => Failure("No expected type for wildcard naming", Some(this))
       }
     }
-    if (named == null) Failure("Cannot infer type", Some(this))
+    if (named == null)
+      Failure("Cannot infer type", Some(this))
     else {
       expectedType match {
         case Some(expectedType) =>
@@ -68,7 +69,8 @@ class ScNamingPatternImpl(node: ASTNode)
         place,
         lastParent,
         getType(TypingContext.empty))
-    } else true
+    } else
+      true
   }
 
   override def getOriginalElement: PsiElement =

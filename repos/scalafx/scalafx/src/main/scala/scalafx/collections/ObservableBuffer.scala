@@ -62,7 +62,10 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
     */
   implicit def observableBuffer2ObservableList[T](
       ob: ObservableBuffer[T]): ObservableList[T] =
-    if (ob != null) ob.delegate else null
+    if (ob != null)
+      ob.delegate
+    else
+      null
 
   /**
     * The standard `CanBuildFrom` instance for $OB objects.
@@ -563,7 +566,12 @@ class ObservableBuffer[T](
       delegate,
       new ju.Comparator[T] {
         def compare(p1: T, p2: T) =
-          if (lt(p1, p2)) -1 else if (lt(p2, p1)) 1 else 0
+          if (lt(p1, p2))
+            -1
+          else if (lt(p2, p1))
+            1
+          else
+            0
       })
   }
 

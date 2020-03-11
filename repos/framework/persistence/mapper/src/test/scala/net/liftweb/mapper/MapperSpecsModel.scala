@@ -76,7 +76,10 @@ object MapperSpecsModel {
 
     Schemifier.destroyTables_!!(
       DefaultConnectionIdentifier,
-      if (doLog) Schemifier.infoF _ else ignoreLogger _,
+      if (doLog)
+        Schemifier.infoF _
+      else
+        ignoreLogger _,
       SampleTag,
       SampleModel,
       Dog,
@@ -87,12 +90,18 @@ object MapperSpecsModel {
       Thing)
     Schemifier.destroyTables_!!(
       DbProviders.SnakeConnectionIdentifier,
-      if (doLog) Schemifier.infoF _ else ignoreLogger _,
+      if (doLog)
+        Schemifier.infoF _
+      else
+        ignoreLogger _,
       SampleTagSnake,
       SampleModelSnake)
     Schemifier.schemify(
       true,
-      if (doLog) Schemifier.infoF _ else ignoreLogger _,
+      if (doLog)
+        Schemifier.infoF _
+      else
+        ignoreLogger _,
       DefaultConnectionIdentifier,
       SampleModel,
       SampleTag,
@@ -104,7 +113,10 @@ object MapperSpecsModel {
       Thing)
     Schemifier.schemify(
       true,
-      if (doLog) Schemifier.infoF _ else ignoreLogger _,
+      if (doLog)
+        Schemifier.infoF _
+      else
+        ignoreLogger _,
       DbProviders.SnakeConnectionIdentifier,
       SampleModelSnake,
       SampleTagSnake)
@@ -118,7 +130,8 @@ object SampleTag extends SampleTag with LongKeyedMetaMapper[SampleTag] {
     val samp = SampleModel.findAll()
     val tags = List("Hello", "Moose", "Frog", "WooHoo", "Sloth", "Meow", "Moof")
     for (t <- tags;
-         m <- samp) SampleTag.create.tag(t).model(m).save
+         m <- samp)
+      SampleTag.create.tag(t).model(m).save
   }
 }
 
@@ -185,7 +198,8 @@ object SampleTagSnake
     val samp = SampleModelSnake.findAll()
     val tags = List("Hello", "Moose", "Frog", "WooHoo", "Sloth", "Meow", "Moof")
     for (t <- tags;
-         m <- samp) SampleTagSnake.create.tag(t).model(m).save
+         m <- samp)
+      SampleTagSnake.create.tag(t).model(m).save
   }
 
   override def dbDefaultConnectionIdentifier =

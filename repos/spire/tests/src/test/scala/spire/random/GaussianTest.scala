@@ -57,7 +57,8 @@ object AndersonDarlingTest {
         val y = cdf(xs(i), mean, stdDev)
         val k = a * y.log + b * (1 - y).log
         loop(sum + k, i + 1, a + 2, b - 2)
-      } else sum
+      } else
+        sum
 
     xs.qsort
     val n = Field[A].fromInt(xs.length)

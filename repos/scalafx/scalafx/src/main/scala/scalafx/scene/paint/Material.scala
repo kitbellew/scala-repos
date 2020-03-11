@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Material {
   implicit def sfxMaterial2jfx(c: Material): jfxsp.Material =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 abstract class Material(override val delegate: jfxsp.Material)

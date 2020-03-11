@@ -38,8 +38,16 @@ class IntegralComparator
   def isIntegral(boxed: AnyRef) = integralTypes(boxed.getClass)
 
   override def compare(a1: AnyRef, a2: AnyRef): Int = {
-    val a1IsNull = if (null == a1) 1 else 0
-    val a2IsNull = if (null == a2) 1 else 0
+    val a1IsNull =
+      if (null == a1)
+        1
+      else
+        0
+    val a2IsNull =
+      if (null == a2)
+        1
+      else
+        0
     if (a1IsNull + a2IsNull > 0) {
       //if a2IsNull, but a1IsNot, a2 is less:
       a2IsNull - a1IsNull

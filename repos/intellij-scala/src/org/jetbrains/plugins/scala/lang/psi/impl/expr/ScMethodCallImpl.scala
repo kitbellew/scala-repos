@@ -22,7 +22,10 @@ class ScMethodCallImpl(node: ASTNode)
     findChildByClassScala(classOf[ScExpression])
 
   def argumentExpressions: Seq[ScExpression] =
-    if (args != null) args.exprs else Nil
+    if (args != null)
+      args.exprs
+    else
+      Nil
 
   override def getEffectiveInvokedExpr: ScExpression = {
     findChildByClassScala(classOf[ScExpression]) match {

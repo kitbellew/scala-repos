@@ -103,8 +103,16 @@ object Test {
   def check(test0: Boolean, actual: Any, expected: Any) {
     val test1: Boolean = actual == expected;
     if (!test0 || !test1) {
-      val s0 = if (test0) "ok" else "KO";
-      val s1 = if (test1) "ok" else "KO";
+      val s0 =
+        if (test0)
+          "ok"
+        else
+          "KO";
+      val s1 =
+        if (test1)
+          "ok"
+        else
+          "KO";
       val s2 = actual.toString();
       val s3 = expected.toString();
       error(s0 + " - " + s1 + ": " + s2 + " != " + s3);

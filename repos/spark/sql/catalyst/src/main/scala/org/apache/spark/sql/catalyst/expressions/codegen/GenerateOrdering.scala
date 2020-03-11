@@ -105,16 +105,25 @@ object GenerateOrdering
           if ($isNullA && $isNullB) {
             // Nothing
           } else if ($isNullA) {
-            return ${if (order.direction == Ascending) "-1" else "1"};
+            return ${if (order.direction == Ascending)
+          "-1"
+        else
+          "1"};
           } else if ($isNullB) {
-            return ${if (order.direction == Ascending) "1" else "-1"};
+            return ${if (order.direction == Ascending)
+          "1"
+        else
+          "-1"};
           } else {
             int comp = ${ctx.genComp(
           order.child.dataType,
           primitiveA,
           primitiveB)};
             if (comp != 0) {
-              return ${if (asc) "comp" else "-comp"};
+              return ${if (asc)
+          "comp"
+        else
+          "-comp"};
             }
           }
       """

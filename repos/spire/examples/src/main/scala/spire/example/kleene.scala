@@ -39,7 +39,11 @@ object KleeneDemo {
     def show(a: Double) = a.toString
   }
   implicit object BooleanHasShow extends Show[Boolean] {
-    def show(a: Boolean) = if (a) "x" else "."
+    def show(a: Boolean) =
+      if (a)
+        "x"
+      else
+        "."
   }
   implicit def optionHasShow[A](implicit ev: Show[A]) = new Show[Option[A]] {
     def show(a: Option[A]) = a.map(ev.show).getOrElse("-")
@@ -49,7 +53,10 @@ object KleeneDemo {
   }
   implicit def streamHasShow[A](implicit ev: Show[A]) = new Show[Stream[A]] {
     def show(s: Stream[A]) =
-      if (s.isEmpty) "[]" else "[%s,...]" format ev.show(s.head)
+      if (s.isEmpty)
+        "[]"
+      else
+        "[%s,...]" format ev.show(s.head)
   }
 
   /**
@@ -88,7 +95,10 @@ object KleeneDemo {
           m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
         }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
-          if (i >= 0) loop(f(i, m), i - 1) else m
+          if (i >= 0)
+            loop(f(i, m), i - 1)
+          else
+            m
         loop(m, dim.n - 1)
       }
     }
@@ -160,7 +170,11 @@ object KleeneDemo {
       * Given an implicit Dim, builds the identity matrix (diagonal ones).
       */
     def one[A: Rig: ClassTag](implicit dim: Dim): Matrix[A] =
-      apply((x, y) => if (x == y) Rig[A].one else Rig[A].zero)
+      apply((x, y) =>
+        if (x == y)
+          Rig[A].one
+        else
+          Rig[A].zero)
   }
 
   /**
@@ -225,7 +239,10 @@ object KleeneDemo {
           m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
         }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
-          if (i >= 0) loop(f(i, m), i - 1) else m
+          if (i >= 0)
+            loop(f(i, m), i - 1)
+          else
+            m
         loop(m, dim.n - 1)
       }
     }
@@ -258,7 +275,11 @@ object KleeneDemo {
   }
   object LabeledGraph {
     def apply(m: Matrix[Boolean])(implicit dim: Dim) = Matrix[Option[Edge]] {
-      (x, y) => if (m(x, y)) Some(Edge(y, x)) else None
+      (x, y) =>
+        if (m(x, y))
+          Some(Edge(y, x))
+        else
+          None
     }
   }
 
@@ -406,7 +427,12 @@ object KleeneDemo {
         ShortestPath(x.a * y.a, x.b * y.b)
 
       override def kstar(x: ShortestPath[A, B]) =
-        ShortestPath(rig.one, if (x.a === rig.one) x.b.kstar else kb.one)
+        ShortestPath(
+          rig.one,
+          if (x.a === rig.one)
+            x.b.kstar
+          else
+            kb.one)
     }
 
   /**
@@ -437,7 +463,10 @@ object KleeneDemo {
 
     def plus(x: Language[W], y: Language[W]): Language[W] = {
       def interleave(ws1: SS[W], ws2: SS[W]): SS[W] =
-        if (ws1.isEmpty) ws2 else ws1.head #:: interleave(ws2, ws1.tail)
+        if (ws1.isEmpty)
+          ws2
+        else
+          ws1.head #:: interleave(ws2, ws1.tail)
       Language(interleave(x.wss, y.wss))
     }
 

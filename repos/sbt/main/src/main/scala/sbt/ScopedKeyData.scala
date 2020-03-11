@@ -22,6 +22,7 @@ final case class ScopedKeyData[A](scoped: ScopedKey[A], value: Any) {
       targ(key.manifest.typeArguments.head)
     else if (key.manifest.runtimeClass == classOf[InputTask[_]])
       itarg(key.manifest.typeArguments.head)
-    else s
+    else
+      s
   def fmtMf(s: String): OptManifest[_] => String = s format _
 }

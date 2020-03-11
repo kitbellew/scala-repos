@@ -67,8 +67,10 @@ trait ScalaPsiElement
     while (node != null && node.getElementType != t) {
       node = node.getTreePrev
     }
-    if (node == null) null.asInstanceOf[T]
-    else node.getPsi.asInstanceOf[T]
+    if (node == null)
+      null.asInstanceOf[T]
+    else
+      node.getPsi.asInstanceOf[T]
   }
 
   def findFirstChildByType(t: IElementType) = {
@@ -76,14 +78,18 @@ trait ScalaPsiElement
     while (node != null && node.getElementType != t) {
       node = node.getTreeNext
     }
-    if (node == null) null else node.getPsi
+    if (node == null)
+      null
+    else
+      node.getPsi
   }
 
   def findChildrenByType(t: IElementType): List[PsiElement] = {
     val buffer = new collection.mutable.ArrayBuffer[PsiElement]
     var node = getNode.getFirstChildNode
     while (node != null) {
-      if (node.getElementType == t) buffer += node.getPsi
+      if (node.getElementType == t)
+        buffer += node.getPsi
       node = node.getTreeNext
     }
     buffer.toList
@@ -94,7 +100,10 @@ trait ScalaPsiElement
     while (node != null && !set.contains(node.getElementType)) {
       node = node.getTreePrev
     }
-    if (node == null) null else node.getPsi
+    if (node == null)
+      null
+    else
+      node.getPsi
   }
 
   protected def findLastChild[T >: Null <: ScalaPsiElement](
@@ -103,7 +112,10 @@ trait ScalaPsiElement
     while (child != null && !clazz.isInstance(child)) {
       child = child.getPrevSibling
     }
-    if (child == null) None else Some(child.asInstanceOf[T])
+    if (child == null)
+      None
+    else
+      Some(child.asInstanceOf[T])
   }
 
   protected def lock(handler: => Unit): Unit = {}

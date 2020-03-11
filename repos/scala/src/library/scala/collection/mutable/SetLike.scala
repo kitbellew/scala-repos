@@ -118,7 +118,10 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
     *  @param included a flag indicating whether element should be included or excluded.
     */
   def update(elem: A, included: Boolean) {
-    if (included) this += elem else this -= elem
+    if (included)
+      this += elem
+    else
+      this -= elem
   }
 
   // abstract methods from Growable/Shrinkable
@@ -134,7 +137,8 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
     */
   def retain(p: A => Boolean): Unit =
     for (elem <- this.toList) // SI-7269 toList avoids ConcurrentModificationException
-      if (!p(elem)) this -= elem
+      if (!p(elem))
+        this -= elem
 
   /** Removes all elements from the set. After this operation is completed,
     *  the set will be empty.

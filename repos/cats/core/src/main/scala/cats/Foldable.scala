@@ -210,7 +210,10 @@ import simulacrum.typeclass
     */
   def find[A](fa: F[A])(f: A => Boolean): Option[A] =
     foldRight(fa, Now(Option.empty[A])) { (a, lb) =>
-      if (f(a)) Now(Some(a)) else lb
+      if (f(a))
+        Now(Some(a))
+      else
+        lb
     }.value
 
   /**
@@ -220,7 +223,10 @@ import simulacrum.typeclass
     */
   def exists[A](fa: F[A])(p: A => Boolean): Boolean =
     foldRight(fa, Eval.False) { (a, lb) =>
-      if (p(a)) Eval.True else lb
+      if (p(a))
+        Eval.True
+      else
+        lb
     }.value
 
   /**
@@ -230,7 +236,10 @@ import simulacrum.typeclass
     */
   def forall[A](fa: F[A])(p: A => Boolean): Boolean =
     foldRight(fa, Eval.True) { (a, lb) =>
-      if (p(a)) lb else Eval.False
+      if (p(a))
+        lb
+      else
+        Eval.False
     }.value
 
   /**
@@ -246,7 +255,10 @@ import simulacrum.typeclass
     */
   def filter_[A](fa: F[A])(p: A => Boolean): List[A] =
     foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
-      if (p(a)) buf += a else buf
+      if (p(a))
+        buf += a
+      else
+        buf
     }.toList
 
   /**
@@ -255,7 +267,10 @@ import simulacrum.typeclass
     */
   def takeWhile_[A](fa: F[A])(p: A => Boolean): List[A] =
     foldRight(fa, Now(List.empty[A])) { (a, llst) =>
-      if (p(a)) llst.map(a :: _) else Now(Nil)
+      if (p(a))
+        llst.map(a :: _)
+      else
+        Now(Nil)
     }.value
 
   /**
@@ -264,7 +279,10 @@ import simulacrum.typeclass
     */
   def dropWhile_[A](fa: F[A])(p: A => Boolean): List[A] =
     foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
-      if (buf.nonEmpty || !p(a)) buf += a else buf
+      if (buf.nonEmpty || !p(a))
+        buf += a
+      else
+        buf
     }.toList
 
   /**
@@ -312,7 +330,11 @@ object Foldable {
   def iterateRight[A, B](it: Iterator[A], lb: Eval[B])(
       f: (A, Eval[B]) => Eval[B]): Eval[B] = {
     def loop(): Eval[B] =
-      Eval.defer(if (it.hasNext) f(it.next, loop()) else lb)
+      Eval.defer(
+        if (it.hasNext)
+          f(it.next, loop())
+        else
+          lb)
     loop()
   }
 }

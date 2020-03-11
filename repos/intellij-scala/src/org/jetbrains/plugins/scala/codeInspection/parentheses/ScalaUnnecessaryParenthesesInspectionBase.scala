@@ -69,7 +69,8 @@ class UnnecessaryParenthesesQuickFix(
 
   def doApplyFix(project: Project) {
     val parenthExpr = getElement
-    if (!parenthExpr.isValid) return
+    if (!parenthExpr.isValid)
+      return
 
     val newExpr = ScalaPsiElementFactory.createExpressionFromText(
       textOfStripped,

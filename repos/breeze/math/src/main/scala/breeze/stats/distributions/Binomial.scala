@@ -39,8 +39,10 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
   override def logProbabilityOf(k: Int) = {
     require(n >= k)
     require(k >= 0)
-    if (p == 0) logI(k == 0)
-    else if (p == 1) logI(k == n)
+    if (p == 0)
+      logI(k == 0)
+    else if (p == 1)
+      logI(k == n)
     else {
       lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1) + k * log(
         p) + (n - k) * log(1 - p)
@@ -53,7 +55,8 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
     if (n < 25) {
       var j = 0
       while (j < n) {
-        if (rand.uniform.get < pp) bnl += 1
+        if (rand.uniform.get < pp)
+          bnl += 1
         j += 1
       }
     } else if (np < 1.0) {
@@ -63,10 +66,16 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
       var ok = true
       while (j < n && ok) {
         t *= rand.uniform.draw()
-        if (t < g) ok = false
-        else j += 1
+        if (t < g)
+          ok = false
+        else
+          j += 1
       }
-      bnl = if (j <= n) j else n
+      bnl =
+        if (j <= n)
+          j
+        else
+          n
     } else {
       var y = 1.0
       var t = 1.0
@@ -84,11 +93,16 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
         )
       } while (rand.uniform.get > t)
     }
-    if (p != pp) bnl = n - bnl
+    if (p != pp)
+      bnl = n - bnl
     bnl.toInt
   }
 
-  private val pp = if (p <= 0.5) p else 1.0 - p
+  private val pp =
+    if (p <= 0.5)
+      p
+    else
+      1.0 - p
   private val np = n * pp
   // data for the generator {
   private val nfact = breeze.numerics.lgamma(n + 1.0)

@@ -19,9 +19,12 @@ abstract class Tree[+a <% Ordered[a]] {
     case Empty =>
       new Node(x, Empty, Empty)
     case Node(elem, l, r) =>
-      if (x == elem) this
-      else if (x < elem) Node(elem, l insert x, r)
-      else Node(elem, l, r insert x)
+      if (x == elem)
+        this
+      else if (x < elem)
+        Node(elem, l insert x, r)
+      else
+        Node(elem, l, r insert x)
   }
   def elements: List[a] = this match {
     case Empty => List()

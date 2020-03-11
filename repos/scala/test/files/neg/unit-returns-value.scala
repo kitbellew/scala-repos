@@ -1,7 +1,8 @@
 object Test {
   def f {
     var b = false
-    if (b) return 5
+    if (b)
+      return 5
   }
 
   // no warning

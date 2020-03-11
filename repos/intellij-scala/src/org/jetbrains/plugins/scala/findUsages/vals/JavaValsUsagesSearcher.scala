@@ -45,13 +45,16 @@ class JavaValsUsagesSearcher
                       if ref.getRangeInElement.contains(offsetInElement) =>
                     refElement.resolve match {
                       case f: FakePsiMethod if f.navElement == vals =>
-                        if (!consumer.process(refElement)) return false
+                        if (!consumer.process(refElement))
+                          return false
                       case t: StaticPsiTypedDefinitionWrapper
                           if t.typedDefinition == vals =>
-                        if (!consumer.process(refElement)) return false
+                        if (!consumer.process(refElement))
+                          return false
                       case t: PsiTypedDefinitionWrapper
                           if t.typedDefinition == vals =>
-                        if (!consumer.process(refElement)) return false
+                        if (!consumer.process(refElement))
+                          return false
                       case _ =>
                     }
                   case _ =>
@@ -83,11 +86,13 @@ class JavaValsUsagesSearcher
                       case t: PsiTypedDefinitionWrapper
                           if t.typedDefinition == wrapper.typedDefinition &&
                             t.getName == wrapper.getName =>
-                        if (!consumer.process(refElement)) return false
+                        if (!consumer.process(refElement))
+                          return false
                       case t: StaticPsiTypedDefinitionWrapper
                           if t.typedDefinition == wrapper.typedDefinition &&
                             t.getName == wrapper.getName =>
-                        if (!consumer.process(refElement)) return false
+                        if (!consumer.process(refElement))
+                          return false
                       case _ =>
                     }
                   case _ =>

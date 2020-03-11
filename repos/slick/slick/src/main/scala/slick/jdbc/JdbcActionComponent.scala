@@ -105,8 +105,11 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       SynchronousDatabaseAction.fuseUnsafe(
         StartTransaction
           .andThen(a)
-          .cleanUp(eo => if (eo.isEmpty) Commit else Rollback)(
-            DBIO.sameThreadExecutionContext)
+          .cleanUp(eo =>
+            if (eo.isEmpty)
+              Commit
+            else
+              Rollback)(DBIO.sameThreadExecutionContext)
           .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]]
       )
 
@@ -122,7 +125,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       val fused =
         if (a.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
           SynchronousDatabaseAction.fuseUnsafe(isolated)
-        else isolated
+        else
+          isolated
       fused.withPinnedSession
     }
 
@@ -197,10 +201,13 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       /** The state of the stream. 0 = in result set, 1 = before end marker, 2 = after end marker. */
       var state = 0
       def row =
-        if (state > 0) throw new SlickException("After end of result set")
-        else current
+        if (state > 0)
+          throw new SlickException("After end of result set")
+        else
+          current
       def row_=(value: T): Unit = {
-        if (state > 0) throw new SlickException("After end of result set")
+        if (state > 0)
+          throw new SlickException("After end of result set")
         pr.restart
         inv.updateRowValues(pr, value)
         rs.updateRow()
@@ -210,18 +217,26 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         pr.restart
         inv.updateRowValues(pr, value)
         rs.insertRow()
-        if (state == 0) rs.moveToCurrentRow()
+        if (state == 0)
+          rs.moveToCurrentRow()
       }
       def delete: Unit = {
-        if (state > 0) throw new SlickException("After end of result set")
+        if (state > 0)
+          throw new SlickException("After end of result set")
         rs.deleteRow()
-        if (invokerPreviousAfterDelete) rs.previous()
+        if (invokerPreviousAfterDelete)
+          rs.previous()
       }
       def emitStream(ctx: Backend#StreamingContext, limit: Long): this.type = {
         var count = 0L
         try {
           while (count < limit && state == 0) {
-            if (!pr.nextRow) state = if (sendEndMarker) 1 else 2
+            if (!pr.nextRow)
+              state =
+                if (sendEndMarker)
+                  1
+                else
+                  2
             if (state == 0) {
               current = inv.extractValue(pr)
               count += 1
@@ -238,11 +253,16 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
             catch ignoreFollowOnError
             throw ex
         }
-        if (state < 2) this else null
+        if (state < 2)
+          this
+        else
+          null
       }
       def end =
-        if (state > 1) throw new SlickException("After end of result set")
-        else state > 0
+        if (state > 1)
+          throw new SlickException("After end of result set")
+        else
+          state > 0
       override def toString = s"Mutator(state = $state, current = $current)"
     }
     type StreamState = Mutator
@@ -255,7 +275,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         limit: Long,
         state: StreamState): StreamState = {
       val mu =
-        if (state ne null) state
+        if (state ne null)
+          state
         else {
           val inv = createQueryInvoker[T](rsm, param, sql)
           new Mutator(
@@ -414,7 +435,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         "schema.create",
         schema.createStatements.toVector) {
         def run(ctx: Backend#Context, sql: Vector[String]): Unit =
-          for (s <- sql) ctx.session.withPreparedStatement(s)(_.execute)
+          for (s <- sql)
+            ctx.session.withPreparedStatement(s)(_.execute)
       }
 
     def drop: ProfileAction[Unit, NoStream, Effect.Schema] =
@@ -422,7 +444,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         "schema.drop",
         schema.dropStatements.toVector) {
         def run(ctx: Backend#Context, sql: Vector[String]): Unit =
-          for (s <- sql) ctx.session.withPreparedStatement(s)(_.execute)
+          for (s <- sql)
+            ctx.session.withPreparedStatement(s)(_.execute)
       }
   }
 
@@ -746,7 +769,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
     class InsertOrUpdateAction(value: U)
         extends SimpleJdbcProfileAction[SingleInsertOrUpdateResult](
           "InsertOrUpdateAction",
-          if (useServerSideUpsert) Vector(compiled.upsert.sql)
+          if (useServerSideUpsert)
+            Vector(compiled.upsert.sql)
           else
             Vector(
               compiled.checkInsert.sql,
@@ -755,8 +779,10 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         def f: SingleInsertOrUpdateResult =
-          if (useServerSideUpsert) nativeUpsert(value, sql.head)(ctx.session)
-          else emulate(value, sql(0), sql(1), sql(2))(ctx.session)
+          if (useServerSideUpsert)
+            nativeUpsert(value, sql.head)(ctx.session)
+          else
+            emulate(value, sql(0), sql(1), sql(2))(ctx.session)
         if (useTransactionForUpsert) {
           ctx.session.startInTransaction
           var done = false
@@ -770,7 +796,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
               try ctx.session.endInTransaction(ctx.session.conn.rollback())
               catch ignoreFollowOnError
           }
-        } else f
+        } else
+          f
       }
 
       protected def nativeUpsert(value: U, sql: String)(
@@ -795,12 +822,13 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           try rs.next()
           finally rs.close()
         }
-        if (found) preparedOther(updateSql, session) { st =>
-          st.clearParameters()
-          compiled.updateInsert.converter.set(value, st)
-          st.executeUpdate()
-          retOneInsertOrUpdateFromUpdate
-        }
+        if (found)
+          preparedOther(updateSql, session) { st =>
+            st.clearParameters()
+            compiled.updateInsert.converter.set(value, st)
+            st.executeUpdate()
+            retOneInsertOrUpdateFromUpdate
+          }
         else
           preparedInsert(insertSql, session) { st =>
             st.clearParameters()
@@ -856,13 +884,17 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         updateCounts: Array[Int]) = {
       var unknown = false
       var count = 0
-      for ((res, idx) <- updateCounts.zipWithIndex) res match {
-        case Statement.SUCCESS_NO_INFO => unknown = true
-        case Statement.EXECUTE_FAILED =>
-          throw new SlickException("Failed to insert row #" + (idx + 1))
-        case i => count += i
-      }
-      if (unknown) None else Some(count)
+      for ((res, idx) <- updateCounts.zipWithIndex)
+        res match {
+          case Statement.SUCCESS_NO_INFO => unknown = true
+          case Statement.EXECUTE_FAILED =>
+            throw new SlickException("Failed to insert row #" + (idx + 1))
+          case i => count += i
+        }
+      if (unknown)
+        None
+      else
+        Some(count)
     }
   }
 
@@ -927,8 +959,10 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         st: Statement,
         value: U,
         updateCount: Int): SingleInsertOrUpdateResult =
-      if (updateCount != 1) None
-      else buildKeysResult(st).firstOption(null).map(r => mux(value, r))
+      if (updateCount != 1)
+        None
+      else
+        buildKeysResult(st).firstOption(null).map(r => mux(value, r))
 
     protected def retOneInsertOrUpdateFromInsert(
         st: Statement,

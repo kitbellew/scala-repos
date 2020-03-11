@@ -101,8 +101,10 @@ object BigDecimal {
     */
   def exact(repr: BigDec): BigDecimal = {
     val mc =
-      if (repr.precision <= defaultMathContext.getPrecision) defaultMathContext
-      else new MathContext(repr.precision, java.math.RoundingMode.HALF_EVEN)
+      if (repr.precision <= defaultMathContext.getPrecision)
+        defaultMathContext
+      else
+        new MathContext(repr.precision, java.math.RoundingMode.HALF_EVEN)
     new BigDecimal(repr, mc)
   }
 
@@ -207,7 +209,8 @@ object BigDecimal {
         cache(offset) = n
       }
       n
-    } else apply(i.toLong, mc)
+    } else
+      apply(i.toLong, mc)
 
   /** Constructs a `BigDecimal` whose value is equal to that of the
     *  specified long value.
@@ -216,8 +219,10 @@ object BigDecimal {
     *  @return  the constructed `BigDecimal`
     */
   def apply(l: Long): BigDecimal =
-    if (minCached <= l && l <= maxCached) apply(l.toInt)
-    else new BigDecimal(BigDec.valueOf(l), defaultMathContext)
+    if (minCached <= l && l <= maxCached)
+      apply(l.toInt)
+    else
+      new BigDecimal(BigDec.valueOf(l), defaultMathContext)
 
   /** Constructs a `BigDecimal` whose value is equal to that of the
     *  specified long value, but rounded if necessary.
@@ -439,7 +444,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     computedHashCode =
       if (isWhole && (precision - scale) < BigDecimal.maximumHashScale)
         toBigInt.hashCode
-      else if (isDecimalDouble) doubleValue.##
+      else if (isDecimalDouble)
+        doubleValue.##
       else {
         val temp = bigDecimal.stripTrailingZeros
         scala.util.hashing.MurmurHash3.mixLast(
@@ -459,7 +465,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     *  with large exponents.
     */
   override def hashCode(): Int = {
-    if (computedHashCode == BigDecimal.hashCodeNotComputed) computeHashCode
+    if (computedHashCode == BigDecimal.hashCodeNotComputed)
+      computeHashCode
     computedHashCode
   }
 
@@ -637,7 +644,11 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   /** Returns the absolute value of this BigDecimal
     */
-  def abs: BigDecimal = if (signum < 0) unary_- else this
+  def abs: BigDecimal =
+    if (signum < 0)
+      unary_-
+    else
+      this
 
   /** Returns the sign of this BigDecimal;
     *   -1 if it is less than 0,
@@ -655,13 +666,19 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     */
   def round(mc: MathContext): BigDecimal = {
     val r = this.bigDecimal round mc
-    if (r eq bigDecimal) this else new BigDecimal(r, this.mc)
+    if (r eq bigDecimal)
+      this
+    else
+      new BigDecimal(r, this.mc)
   }
 
   /** Returns a `BigDecimal` rounded according to its own `MathContext` */
   def rounded: BigDecimal = {
     val r = bigDecimal round mc
-    if (r eq bigDecimal) this else new BigDecimal(r, mc)
+    if (r eq bigDecimal)
+      this
+    else
+      new BigDecimal(r, mc)
   }
 
   /** Returns the scale of this `BigDecimal`.
@@ -681,12 +698,16 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     *  numerically equal to this BigDecimal's.
     */
   def setScale(scale: Int): BigDecimal =
-    if (this.scale == scale) this
-    else new BigDecimal(this.bigDecimal setScale scale, mc)
+    if (this.scale == scale)
+      this
+    else
+      new BigDecimal(this.bigDecimal setScale scale, mc)
 
   def setScale(scale: Int, mode: RoundingMode): BigDecimal =
-    if (this.scale == scale) this
-    else new BigDecimal(this.bigDecimal.setScale(scale, mode.id), mc)
+    if (this.scale == scale)
+      this
+    else
+      new BigDecimal(this.bigDecimal.setScale(scale, mode.id), mc)
 
   /** Converts this BigDecimal to a Byte.
     *  If the BigDecimal is too big to fit in a Byte, only the low-order 8 bits are returned.
@@ -810,7 +831,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
       catch {
         case _: ArithmeticException => None
       }
-    } else None
+    } else
+      None
 
   /** Returns the decimal String representation of this BigDecimal.
     */

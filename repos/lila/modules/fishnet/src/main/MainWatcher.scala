@@ -30,8 +30,10 @@ private final class MainWatcher(
     repo.lichessClients map { clients =>
       clients foreach { client =>
         client.instance foreach { instance =>
-          if (!instance.seenRecently) alert(client)
-          else unalert(client)
+          if (!instance.seenRecently)
+            alert(client)
+          else
+            unalert(client)
         }
       }
     } andThenAnyway scheduleWatch

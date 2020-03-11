@@ -63,7 +63,8 @@ object PlayForkProcess {
     val command = (java +: options).toArray
     val builder = new JProcessBuilder(command: _*)
     builder.directory(workingDirectory)
-    for (cp <- classpathEnv) builder.environment.put("CLASSPATH", cp)
+    for (cp <- classpathEnv)
+      builder.environment.put("CLASSPATH", cp)
     val process = builder.start()
     val stopLatch = new CountDownLatch(1)
     val inputThread = spawn {

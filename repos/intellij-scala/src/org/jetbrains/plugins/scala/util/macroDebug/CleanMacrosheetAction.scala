@@ -38,18 +38,21 @@ class CleanMacrosheetAction() extends AnAction with TopComponentAction {
     val file: VirtualFile =
       CommonDataKeys.VIRTUAL_FILE.getData(e.getDataContext)
 
-    if (editor == null || file == null) return
+    if (editor == null || file == null)
+      return
 
     val psiFile: PsiFile = PsiDocumentManager
       .getInstance(e.getProject)
       .getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
 
-    if (psiFile == null || viewer == null) return
+    if (psiFile == null || viewer == null)
+      return
 
     val splitPane = viewer.getComponent.getParent.asInstanceOf[JBSplitter]
     val parent = splitPane.getParent
-    if (parent == null) return
+    if (parent == null)
+      return
 
     invokeLater {
       inWriteAction {

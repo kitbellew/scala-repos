@@ -198,7 +198,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         classSym.info.member(jsInterop.scalaExportName(jsName, !isProp))
 
       if (conflicting != NoSymbol) {
-        val kind = if (isProp) "property" else "method"
+        val kind =
+          if (isProp)
+            "property"
+          else
+            "method"
         val alts = conflicting.alternatives
 
         reporter.error(
@@ -280,11 +284,14 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         s"Found more than one getter to export for name ${jsName}.")
 
       val getTree =
-        if (getter.isEmpty) js.EmptyTree
-        else genApplyForSym(0, false, getter.head)
+        if (getter.isEmpty)
+          js.EmptyTree
+        else
+          genApplyForSym(0, false, getter.head)
 
       val setTree =
-        if (setters.isEmpty) js.EmptyTree
+        if (setters.isEmpty)
+          js.EmptyTree
         else
           genExportSameArgc(
             1,
@@ -338,8 +345,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           val dParam = params.indexWhere {
             _.hasFlag(Flags.DEFAULTPARAM)
           }
-          if (dParam == -1) Seq(params.size)
-          else dParam to params.size
+          if (dParam == -1)
+            Seq(params.size)
+          else
+            dParam to params.size
         case ex: ExportedBody =>
           List(ex.params.size)
       }
@@ -534,7 +543,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                 genSubAlts // note: elsep is discarded, obviously
               } { cond =>
                 val condOrUndef =
-                  if (!hasDefaultParam) cond
+                  if (!hasDefaultParam)
+                    cond
                   else {
                     js.If(
                       cond,
@@ -578,8 +588,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           // Compute the number of captured parameters that are added to the front
           val paramsNamesUncurry = paramsUncurry.map(_.name)
           val numCapturesFront = enteringPhase(currentRun.posterasurePhase) {
-            if (paramsNamesUncurry.isEmpty) paramsPosterasure.size
-            else paramsPosterasure.map(_.name).indexOfSlice(paramsNamesUncurry)
+            if (paramsNamesUncurry.isEmpty)
+              paramsPosterasure.size
+            else
+              paramsPosterasure.map(_.name).indexOfSlice(paramsNamesUncurry)
           }
           // get parameter type while resolving repeated params
           if (paramIndex < numCapturesFront) {
@@ -623,8 +635,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       implicit val pos = sym.pos
 
       val restArg =
-        if (hasRestParam) js.JSSpread(genRestArgRef()) :: Nil
-        else Nil
+        if (hasRestParam)
+          js.JSSpread(genRestArgRef()) :: Nil
+        else
+          Nil
 
       val allArgs =
         (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
@@ -660,7 +674,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
 
       val normalArgc = sym.tpe.params.size -
-        (if (repeatedTpe.isDefined) 1 else 0)
+        (if (repeatedTpe.isDefined)
+           1
+         else
+           0)
 
       // optional repeated parameter list
       val jsVarArgPrep = repeatedTpe map { tpe =>
@@ -735,8 +752,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
               assert(!defaultGetter.isOverloaded)
 
               val trgTree = {
-                if (sym.isClassConstructor) genLoadModule(trgSym)
-                else js.This()(encodeClassType(trgSym))
+                if (sym.isClassConstructor)
+                  genLoadModule(trgSym)
+                else
+                  js.This()(encodeClassType(trgSym))
               }
 
               // Pass previous arguments to defaultGetter
@@ -779,7 +798,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val thisType =
         if (sym.owner == ObjectClass)
           jstpe.ClassType(ir.Definitions.ObjectClass)
-        else encodeClassType(sym.owner)
+        else
+          encodeClassType(sym.owner)
       val receiver = js.This()(thisType)
       val call = {
         if (isScalaJSDefinedJSClass(currentClassSym)) {
@@ -854,9 +874,15 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
   private object RTTypeTest {
     implicit object Ordering extends PartialOrdering[RTTypeTest] {
       override def tryCompare(lhs: RTTypeTest, rhs: RTTypeTest): Option[Int] = {
-        if (lteq(lhs, rhs)) if (lteq(rhs, lhs)) Some(0) else Some(-1)
-        else if (lteq(rhs, lhs)) Some(1)
-        else None
+        if (lteq(lhs, rhs))
+          if (lteq(rhs, lhs))
+            Some(0)
+          else
+            Some(-1)
+        else if (lteq(rhs, lhs))
+          Some(1)
+        else
+          None
       }
 
       override def lteq(lhs: RTTypeTest, rhs: RTTypeTest): Boolean = {
@@ -888,8 +914,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
     @scala.annotation.tailrec
     def loop(coll: List[A], acc: List[A]): List[A] = {
-      if (coll.isEmpty) acc
-      else if (coll.tail.isEmpty) coll.head :: acc
+      if (coll.isEmpty)
+        acc
+      else if (coll.tail.isEmpty)
+        coll.head :: acc
       else {
         val (lhs, rhs) =
           coll.span(x => !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
@@ -926,8 +954,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
               case StringClass    => HijackedTypeTest(Defs.StringClass, 7)
               case ObjectClass    => NoTypeTest
               case _ =>
-                if (isRawJSType(tpe)) NoTypeTest
-                else InstanceOfTypeTest(tpe)
+                if (isRawJSType(tpe))
+                  NoTypeTest
+                else
+                  InstanceOfTypeTest(tpe)
             }
 
           case ARRAY(_) => InstanceOfTypeTest(tpe)
@@ -946,8 +976,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     for (elem <- coll) {
       val key = f(elem)
       val index = m.indexWhere(_._1 == key)
-      if (index < 0) m += ((key, List(elem)))
-      else m(index) = (key, elem :: m(index)._2)
+      if (index < 0)
+        m += ((key, List(elem)))
+      else
+        m(index) = (key, elem :: m(index)._2)
     }
 
     m.toList
@@ -961,8 +993,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
   private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(
       implicit pos: Position): List[js.ParamDef] = {
     val fixedParams = (1 to minArgc map genFormalArg).toList
-    if (needsRestParam) fixedParams :+ genRestFormalArg()
-    else fixedParams
+    if (needsRestParam)
+      fixedParams :+ genRestFormalArg()
+    else
+      fixedParams
   }
 
   private def genFormalArg(index: Int)(implicit pos: Position): js.ParamDef = {
@@ -993,7 +1027,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       implicit pos: Position): js.Tree = {
     val restParam = genRestArgRef()
     assert(fixedParamCount >= minArgc)
-    if (fixedParamCount == minArgc) restParam
+    if (fixedParamCount == minArgc)
+      restParam
     else {
       js.JSBracketMethodApply(
         restParam,

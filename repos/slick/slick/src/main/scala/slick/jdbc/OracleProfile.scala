@@ -148,7 +148,10 @@ trait OracleProfile extends JdbcProfile {
       val size =
         sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
       size.fold("VARCHAR2(254)")(l =>
-        if (l.varying) s"VARCHAR2(${l.length})" else s"CHAR(${l.length})")
+        if (l.varying)
+          s"VARCHAR2(${l.length})"
+        else
+          s"CHAR(${l.length})")
     case java.sql.Types.INTEGER  => "NUMBER(10)"
     case java.sql.Types.BIGINT   => "NUMBER(19)"
     case java.sql.Types.SMALLINT => "NUMBER(5)"
@@ -240,7 +243,8 @@ trait OracleProfile extends JdbcProfile {
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
-      } else super.createIndex(idx)
+      } else
+        super.createIndex(idx)
     }
   }
 
@@ -260,9 +264,12 @@ trait OracleProfile extends JdbcProfile {
     }
 
     override protected def appendOptions(sb: StringBuilder) {
-      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
-      if (notNull) sb append " NOT NULL"
-      if (primaryKey) sb append " PRIMARY KEY"
+      if (defaultLiteral ne null)
+        sb append " DEFAULT " append defaultLiteral
+      if (notNull)
+        sb append " NOT NULL"
+      if (primaryKey)
+        sb append " PRIMARY KEY"
     }
 
     override protected def handleColumnOption(o: ColumnOption[_]): Unit =
@@ -274,15 +281,20 @@ trait OracleProfile extends JdbcProfile {
       }
 
     def createSequenceAndTrigger(t: Table[_]): Iterable[String] =
-      if (!autoIncrement) Nil
+      if (!autoIncrement)
+        Nil
       else {
         val tab = quoteIdentifier(t.tableName)
         val seq = quoteIdentifier(
-          if (sequenceName eq null) t.tableName + "__" + column.name + "_seq"
-          else sequenceName)
+          if (sequenceName eq null)
+            t.tableName + "__" + column.name + "_seq"
+          else
+            sequenceName)
         val trg = quoteIdentifier(
-          if (triggerName eq null) t.tableName + "__" + column.name + "_trg"
-          else triggerName)
+          if (triggerName eq null)
+            t.tableName + "__" + column.name + "_trg"
+          else
+            triggerName)
         val col = quoteIdentifier(column.name)
         Seq(
           s"create sequence $seq start with 1 increment by 1",
@@ -292,14 +304,19 @@ trait OracleProfile extends JdbcProfile {
       }
 
     def dropTriggerAndSequence(t: Table[_]): Iterable[String] =
-      if (!autoIncrement) Nil
+      if (!autoIncrement)
+        Nil
       else {
         val seq = quoteIdentifier(
-          if (sequenceName eq null) t.tableName + "__" + column.name + "_seq"
-          else sequenceName)
+          if (sequenceName eq null)
+            t.tableName + "__" + column.name + "_seq"
+          else
+            sequenceName)
         val trg = quoteIdentifier(
-          if (triggerName eq null) t.tableName + "__" + column.name + "_trg"
-          else triggerName)
+          if (triggerName eq null)
+            t.tableName + "__" + column.name + "_trg"
+          else
+            triggerName)
         Seq(
           s"drop trigger $trg",
           s"drop sequence $seq"
@@ -325,7 +342,8 @@ trait OracleProfile extends JdbcProfile {
       seq._start.foreach {
         b append " start with " append _
       }
-      if (seq._cycle) b append " cycle nocache"
+      if (seq._cycle)
+        b append " cycle nocache"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
     }
   }
@@ -343,7 +361,11 @@ trait OracleProfile extends JdbcProfile {
     class BooleanJdbcType extends super.BooleanJdbcType {
       override def sqlType = java.sql.Types.CHAR
       override def sqlTypeName(sym: Option[FieldSymbol]) = "CHAR(1)"
-      override def valueToSQLLiteral(value: Boolean) = if (value) "1" else "0"
+      override def valueToSQLLiteral(value: Boolean) =
+        if (value)
+          "1"
+        else
+          "0"
     }
 
     class BlobJdbcType extends super.BlobJdbcType {
@@ -359,14 +381,17 @@ trait OracleProfile extends JdbcProfile {
               var cont = true
               while (cont) {
                 val len = in.read(buf)
-                if (len < 0) cont = false
-                else out.write(buf, 0, len)
+                if (len < 0)
+                  cont = false
+                else
+                  out.write(buf, 0, len)
               }
               p.setBlob(idx, ob)
               added = true
             } finally in.close()
           } finally out.close()
-        } finally if (!added) ob.free()
+        } finally if (!added)
+          ob.free()
       }
       override def updateValue(v: Blob, r: ResultSet, idx: Int) =
         throw new SlickException(
@@ -385,7 +410,10 @@ trait OracleProfile extends JdbcProfile {
        * to distinguish that from a proper NULL. */
       override def getValue(r: ResultSet, idx: Int) = {
         val v = super.getValue(r, idx)
-        if (v eq null) "" else v
+        if (v eq null)
+          ""
+        else
+          v
       }
     }
 
@@ -395,7 +423,10 @@ trait OracleProfile extends JdbcProfile {
         p.setTimestamp(idx, new Timestamp(v.getTime))
       override def getValue(r: ResultSet, idx: Int) = {
         val v = r.getTimestamp(idx)
-        if (v eq null) null else new Time(v.getTime)
+        if (v eq null)
+          null
+        else
+          new Time(v.getTime)
       }
       override def updateValue(v: Time, r: ResultSet, idx: Int) =
         r.updateTimestamp(idx, new Timestamp(v.getTime))
@@ -427,14 +458,16 @@ trait OracleProfile extends JdbcProfile {
         "schema.create",
         schema.createStatements.toVector) {
         def run(ctx: Backend#Context, sql: Vector[String]): Unit =
-          for (s <- sql) ctx.session.withStatement()(_.execute(s))
+          for (s <- sql)
+            ctx.session.withStatement()(_.execute(s))
       }
     override def drop: ProfileAction[Unit, NoStream, Effect.Schema] =
       new SimpleJdbcProfileAction[Unit](
         "schema.drop",
         schema.dropStatements.toVector) {
         def run(ctx: Backend#Context, sql: Vector[String]): Unit =
-          for (s <- sql) ctx.session.withStatement()(_.execute(s))
+          for (s <- sql)
+            ctx.session.withStatement()(_.execute(s))
       }
   }
 
@@ -447,10 +480,14 @@ trait OracleProfile extends JdbcProfile {
         idx) {
         override def read(pr: ResultSet) = {
           val v = ti.getValue(pr, idx)
-          if ((v eq null) || v.length == 0) None else Some(v)
+          if ((v eq null) || v.length == 0)
+            None
+          else
+            Some(v)
         }
       }).asInstanceOf[ResultConverter[JdbcResultConverterDomain, Option[T]]]
-    else super.createOptionResultConverter(ti, idx)
+    else
+      super.createOptionResultConverter(ti, idx)
 
   // Does not work to get around the ORA-00904 issue when returning columns
   // with lower-case names

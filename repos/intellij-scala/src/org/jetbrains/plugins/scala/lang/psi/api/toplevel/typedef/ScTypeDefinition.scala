@@ -46,7 +46,10 @@ trait ScTypeDefinition
   def getPath: String = {
     val qualName = qualifiedName
     val index = qualName.lastIndexOf('.')
-    if (index < 0) "" else qualName.substring(0, index)
+    if (index < 0)
+      ""
+    else
+      qualName.substring(0, index)
   }
 
   def getQualifiedNameForDebugger: String
@@ -84,7 +87,8 @@ trait ScTypeDefinition
     SyntheticMembersInjector.inject(this, withOverride = true)
 
   def fakeCompanionModule: Option[ScObject] = {
-    if (this.isInstanceOf[ScObject]) return None
+    if (this.isInstanceOf[ScObject])
+      return None
     val baseCompanion = ScalaPsiUtil.getBaseCompanionModule(this)
     baseCompanion match {
       case Some(td: ScObject) => return None
@@ -116,7 +120,8 @@ trait ScTypeDefinition
                           "_root_.scala.Nothing")(_.getText)
                         if (parameter.isRepeatedParameter)
                           s"_root_.scala.Seq[$parameterText]"
-                        else parameterText
+                        else
+                          parameterText
                       })
                       .mkString("(", ", ", ")")
                   }
@@ -146,7 +151,10 @@ trait ScTypeDefinition
       ScalaPsiElementFactory.createObjectWithContext(
         objText,
         getContext,
-        if (next != null) next else this)
+        if (next != null)
+          next
+        else
+          this)
     import org.jetbrains.plugins.scala.extensions._
     val objOption: Option[ScObject] = obj.toOption
     objOption.foreach { (obj: ScObject) =>

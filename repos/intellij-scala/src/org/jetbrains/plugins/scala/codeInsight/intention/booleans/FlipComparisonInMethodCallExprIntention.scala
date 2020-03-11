@@ -34,7 +34,8 @@ class FlipComparisonInMethodCallExprIntention
       element: PsiElement): Boolean = {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null) return false
+    if (methodCallExpr == null)
+      return false
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
 
@@ -65,7 +66,8 @@ class FlipComparisonInMethodCallExprIntention
 
     if (methodCallExpr.getInvokedExpr
           .asInstanceOf[ScReferenceExpression]
-          .isQualified) return true
+          .isQualified)
+      return true
 
     false
   }
@@ -73,7 +75,8 @@ class FlipComparisonInMethodCallExprIntention
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null || !methodCallExpr.isValid) return
+    if (methodCallExpr == null || !methodCallExpr.isValid)
+      return
 
     val start = methodCallExpr.getTextRange.getStartOffset
     val diff = editor.getCaretModel.getOffset - methodCallExpr.getInvokedExpr

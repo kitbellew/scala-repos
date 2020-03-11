@@ -60,8 +60,10 @@ trait MarkupParsers {
 
     def truncatedError(msg: String): Nothing = throw TruncatedXMLControl
     def xHandleError(that: Char, msg: String) =
-      if (ch == SU) throw TruncatedXMLControl
-      else reportSyntaxError(msg)
+      if (ch == SU)
+        throw TruncatedXMLControl
+      else
+        reportSyntaxError(msg)
 
     var input: CharArrayReader = _
     def lookahead(): BufferedIterator[Char] =
@@ -199,16 +201,20 @@ trait MarkupParsers {
         ts append tree
       }
       val clean =
-        if (preserveWS) txt
+        if (preserveWS)
+          txt
         else {
           val sb = new StringBuilder()
           txt foreach { c =>
-            if (!isSpace(c)) sb append c
-            else if (sb.isEmpty || !isSpace(sb.last)) sb append ' '
+            if (!isSpace(c))
+              sb append c
+            else if (sb.isEmpty || !isSpace(sb.last))
+              sb append ' '
           }
           sb.toString.trim
         }
-      if (!clean.isEmpty) append(clean)
+      if (!clean.isEmpty)
+        append(clean)
     }
 
     /** adds entity/character to ts as side-effect
@@ -236,8 +242,10 @@ trait MarkupParsers {
       *  @postcond: xEmbeddedBlock == false!
       */
     def content_BRACE(p: Position, ts: ArrayBuffer[Tree]): Unit =
-      if (xCheckEmbeddedBlock) ts append xEmbeddedExpr
-      else appendText(p, ts, xText)
+      if (xCheckEmbeddedBlock)
+        ts append xEmbeddedExpr
+      else
+        appendText(p, ts, xText)
 
     /** At an open angle-bracket, detects an end tag
       *  or consumes CDATA, comment, PI or element.
@@ -249,7 +257,10 @@ trait MarkupParsers {
         val toAppend = ch match {
           case '!' =>
             nextch();
-            if (ch == '[') xCharData else xComment // CDATA or Comment
+            if (ch == '[')
+              xCharData
+            else
+              xComment // CDATA or Comment
           case '?' =>
             nextch();
             xProcInstr // PI
@@ -271,7 +282,8 @@ trait MarkupParsers {
           ch match {
             case '<' => // end tag, cdata, comment, pi or child node
               nextch()
-              if (!content_LT(ts)) loopContent()
+              if (!content_LT(ts))
+                loopContent()
             case '{' => // } literal brace or embedded Scala block
               content_BRACE(tmppos, ts)
               loopContent()
@@ -297,7 +309,8 @@ trait MarkupParsers {
           for (t <- ts)
             t.attachments.get[handle.TextAttache] match {
               case Some(ta) =>
-                if (acc.isEmpty) pos = ta.pos
+                if (acc.isEmpty)
+                  pos = ta.pos
                 acc append ta.text
               case _ =>
                 emit()
@@ -307,12 +320,19 @@ trait MarkupParsers {
           buf
         }
         val res =
-          if (ts.count(_.hasAttachment[handle.TextAttache]) > 1) copy() else ts
-        for (t <- res) t.removeAttachment[handle.TextAttache]
+          if (ts.count(_.hasAttachment[handle.TextAttache]) > 1)
+            copy()
+          else
+            ts
+        for (t <- res)
+          t.removeAttachment[handle.TextAttache]
         res
       }
       loopContent()
-      if (coalescing) coalesce() else ts
+      if (coalescing)
+        coalesce()
+      else
+        ts
     }
 
     /** '<' element ::= xmlTag1 '>'  { xmlExpr | '{' simpleExpr '}' } ETag
@@ -355,8 +375,10 @@ trait MarkupParsers {
       if (ch != SU)
         do {
           if (ch == '}') {
-            if (charComingAfter(nextch()) == '}') nextch()
-            else errorBraces()
+            if (charComingAfter(nextch()) == '}')
+              nextch()
+            else
+              errorBraces()
           }
           buf append ch
           nextch()
@@ -485,13 +507,16 @@ trait MarkupParsers {
         // recurses until it hits a termination condition, then returns
         def doPattern: Boolean = {
           val start1 = curOffset
-          if (xEmbeddedBlock) ts ++= xScalaPatterns
+          if (xEmbeddedBlock)
+            ts ++= xScalaPatterns
           else
             ch match {
               case '<' => // tag
                 nextch()
-                if (ch != '/') ts append xPattern // child
-                else return false // terminate
+                if (ch != '/')
+                  ts append xPattern // child
+                else
+                  return false // terminate
 
               case '{'
                   if xCheckEmbeddedBlock => // embedded Scala patterns, if not double brace

@@ -52,8 +52,10 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def observableList2ObservableBuffer[T](
       ol: jfxc.ObservableList[T]): ObservableBuffer[T] =
-    if (ol != null) new ObservableBuffer[T](ol)
-    else null
+    if (ol != null)
+      new ObservableBuffer[T](ol)
+    else
+      null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableMap.html `ObservableMap`]]
@@ -66,10 +68,12 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def jfxObservableMap2sfxObservableMap[K, V](
       om: jfxc.ObservableMap[K, V]): ObservableMap[K, V] =
-    if (om != null) new ObservableMap[K, V] {
-      override val delegate = om
-    }
-    else null
+    if (om != null)
+      new ObservableMap[K, V] {
+        override val delegate = om
+      }
+    else
+      null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableSet.html `ObservableSet`]]
@@ -81,10 +85,12 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def jfxObservableSet2sfxObservableSet[T](
       os: jfxc.ObservableSet[T]): ObservableHashSet[T] =
-    if (os != null) new ObservableHashSet[T] {
-      override val delegate = os
-    }
-    else null
+    if (os != null)
+      new ObservableHashSet[T] {
+        override val delegate = os
+      }
+    else
+      null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableFloatArray.html]] `ObservableFloatArray` to a ScalaFX [[scalafx.collections.ObservableFloatArray]].
@@ -94,7 +100,10 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def jfxObservableFloatArray2sfxObservableFloatArray(
       ofa: jfxc.ObservableFloatArray): ObservableFloatArray =
-    if (ofa != null) new ObservableFloatArray(ofa) else null
+    if (ofa != null)
+      new ObservableFloatArray(ofa)
+    else
+      null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableIntegerArray.html]] `ObservableIntegerArray` to a ScalaFX [[scalafx.collections.ObservableIntegerArray]].
@@ -104,5 +113,8 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def jfxObservableIntegerArray2sfxObservableIntegerArray(
       oia: jfxc.ObservableIntegerArray): ObservableIntegerArray =
-    if (oia != null) new ObservableIntegerArray(oia) else null
+    if (oia != null)
+      new ObservableIntegerArray(oia)
+    else
+      null
 }

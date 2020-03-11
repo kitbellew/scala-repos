@@ -41,7 +41,8 @@ object ScalaLightKeyword {
 
   def apply(manager: PsiManager, text: String): ScalaLightKeyword = {
     var res = keywords.get((manager, text))
-    if (res != null && res.isValid) return res
+    if (res != null && res.isValid)
+      return res
     res = new ScalaLightKeyword(manager, text)
     keywords.put((manager, text), res)
     res

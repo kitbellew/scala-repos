@@ -113,7 +113,8 @@ class MapInnerProductSpace[K, V: Field]
 @SerialVersionUID(0L)
 class MapEq[K, V](implicit V: Eq[V]) extends Eq[Map[K, V]] with Serializable {
   def eqv(x: Map[K, V], y: Map[K, V]): Boolean = {
-    if (x.size != y.size) false
+    if (x.size != y.size)
+      false
     else {
       x forall {
         case (k, v) =>

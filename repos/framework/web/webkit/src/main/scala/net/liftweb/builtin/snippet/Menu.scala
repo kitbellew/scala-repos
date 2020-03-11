@@ -108,7 +108,8 @@ object Menu extends DispatchSnippet {
 
     val level: Box[Int] =
       for (lvs <- S.attr("level");
-           i <- Helpers.asInt(lvs)) yield i
+           i <- Helpers.asInt(lvs))
+        yield i
 
     val toRender: Seq[MenuItem] = (S.attr("item"), S.attr("group")) match {
       case (Full(item), _) =>
@@ -130,9 +131,15 @@ object Menu extends DispatchSnippet {
     }
 
     def ifExpandCurrent(f: => NodeSeq): NodeSeq =
-      if (expandAny || expandAll) f else NodeSeq.Empty
+      if (expandAny || expandAll)
+        f
+      else
+        NodeSeq.Empty
     def ifExpandAll(f: => NodeSeq): NodeSeq =
-      if (expandAll) f else NodeSeq.Empty
+      if (expandAll)
+        f
+      else
+        NodeSeq.Empty
 
     toRender.toList match {
       case Nil if S.attr("group").isDefined => NodeSeq.Empty
@@ -164,10 +171,14 @@ object Menu extends DispatchSnippet {
                     buildUlLine(kids)
                   }</xml:group>
                 ) %
-                  (if (m.path) S.prefixedAttrsToMetaData("li_path", liMap)
-                   else Null) %
-                  (if (m.current) S.prefixedAttrsToMetaData("li_item", liMap)
-                   else Null)
+                  (if (m.path)
+                     S.prefixedAttrsToMetaData("li_path", liMap)
+                   else
+                     Null) %
+                  (if (m.current)
+                     S.prefixedAttrsToMetaData("li_item", liMap)
+                   else
+                     Null)
               )
 
             case MenuItem(text, uri, kids, true, _, _) if linkToSelf =>
@@ -268,8 +279,10 @@ object Menu extends DispatchSnippet {
         val realMenuItems = level match {
           case Full(lvl) if lvl > 0 =>
             def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
-              if (depth == 0) cur
-              else findKids(cur.flatMap(mi => mi.kids), depth - 1)
+              if (depth == 0)
+                cur
+              else
+                findKids(cur.flatMap(mi => mi.kids), depth - 1)
 
             findKids(xs, lvl)
 
@@ -289,17 +302,22 @@ object Menu extends DispatchSnippet {
       currLoc: Box[Loc[_]],
       expandAll: Boolean): List[MenuItem] = {
     val kids: List[MenuItem] =
-      if (expandAll) loc.buildKidMenuItems(loc.menu.kids) else Nil
+      if (expandAll)
+        loc.buildKidMenuItems(loc.menu.kids)
+      else
+        Nil
 
     loc.buildItem(kids, currLoc == Full(loc), currLoc == Full(loc)).toList
   }
 
   private def renderWhat(expandAll: Boolean): Seq[MenuItem] =
-    (if (expandAll) for {
-       sm <- LiftRules.siteMap;
-       req <- S.request
-     } yield sm.buildMenu(req.location).lines
-     else S.request.map(_.buildMenu.lines)) openOr Nil
+    (if (expandAll)
+       for {
+         sm <- LiftRules.siteMap;
+         req <- S.request
+       } yield sm.buildMenu(req.location).lines
+     else
+       S.request.map(_.buildMenu.lines)) openOr Nil
 
   def jsonMenu(ignore: NodeSeq): NodeSeq = {
     val toRender = renderWhat(true)
@@ -354,7 +372,8 @@ object Menu extends DispatchSnippet {
   def title(text: NodeSeq): NodeSeq = {
     val r =
       for (request <- S.request;
-           loc <- request.location) yield loc.title
+           loc <- request.location)
+        yield loc.title
 
     text match {
       case TitleText(attrs, str) => {
@@ -390,9 +409,12 @@ object Menu extends DispatchSnippet {
             Some(e.attributes -> "")
           } else if (e.child.length == 1 && e.child(0).isInstanceOf[Atom[_]]) {
             Some(e.attributes -> e.child.text)
-          } else None
-        } else None
-      } else None
+          } else
+            None
+        } else
+          None
+      } else
+        None
   }
 
   /**

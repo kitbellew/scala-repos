@@ -79,8 +79,10 @@ class ScalaPullUpProcessor(
           anchor)
         val added =
           templateBody.addBefore(memberCopy, anchor).asInstanceOf[ScMember]
-        if (info.isToAbstract) TypeAdjuster.markToAdjust(added)
-        else movedDefinitions += added
+        if (info.isToAbstract)
+          TypeAdjuster.markToAdjust(added)
+        else
+          movedDefinitions += added
       }
       templateBody.addBefore(
         ScalaPsiElementFactory.createNewLine(manager),

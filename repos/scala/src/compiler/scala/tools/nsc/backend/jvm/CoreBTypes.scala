@@ -160,7 +160,11 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       name: Name,
       static: Boolean = false,
       filterOverload: Symbol => Boolean = _ => true): MethodNameAndType = {
-    val holder = if (static) cls.companionModule.moduleClass else cls
+    val holder =
+      if (static)
+        cls.companionModule.moduleClass
+      else
+        cls
     val method = holder.info.member(name).suchThat(filterOverload)
     assert(!method.isOverloaded, method)
     MethodNameAndType(name.toString, methodBTypeFromSymbol(method))

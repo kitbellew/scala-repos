@@ -89,11 +89,15 @@ trait ScalacPatternExpanders {
         whole: Type,
         result: Type,
         isSeq: Boolean): Extractor = {
-      if (result =:= BooleanTpe) newExtractor(whole, Nil, NoRepeated)
+      if (result =:= BooleanTpe)
+        newExtractor(whole, Nil, NoRepeated)
       else {
         val getResult = typeOfMemberNamedGet(result)
         def noGetError() = {
-          val name = "unapply" + (if (isSeq) "Seq" else "")
+          val name = "unapply" + (if (isSeq)
+                                    "Seq"
+                                  else
+                                    "")
           context.error(
             context.tree.pos,
             s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in ${result}"
@@ -125,9 +129,15 @@ trait ScalacPatternExpanders {
       def offering = extractor.offeringString
       def symString = tree.symbol.fullLocationString
       def offerString =
-        if (extractor.isErroneous) "" else s" offering $offering"
+        if (extractor.isErroneous)
+          ""
+        else
+          s" offering $offering"
       def arityExpected =
-        (if (extractor.hasSeq) "at least " else "") + productArity
+        (if (extractor.hasSeq)
+           "at least "
+         else
+           "") + productArity
 
       def err(msg: String) = context.error(tree.pos, msg)
       def warn(msg: String) = context.warning(tree.pos, msg)
@@ -182,8 +192,10 @@ trait ScalacPatternExpanders {
         */
       def productArity = extractor.productArity
       def acceptMessage =
-        if (extractor.isErroneous) ""
-        else s" to hold ${extractor.offeringString}"
+        if (extractor.isErroneous)
+          ""
+        else
+          s" to hold ${extractor.offeringString}"
       val requiresTupling =
         isUnapply && patterns.totalArity == 1 && productArity > 1
 
@@ -198,7 +210,8 @@ trait ScalacPatternExpanders {
             s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
         }
         tupled
-      } else extractor
+      } else
+        extractor
       validateAligned(context, fn, Aligned(patterns, normalizedExtractor))
     }
 

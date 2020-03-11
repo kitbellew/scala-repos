@@ -81,8 +81,10 @@ trait StdNames {
       prefix + marker + md5chars + marker + suffix
     }
     def apply(s: String): String = (
-      if (s.length <= MaxNameLength) s
-      else toMD5(s, MaxNameLength / 4)
+      if (s.length <= MaxNameLength)
+        s
+      else
+        toMD5(s, MaxNameLength / 4)
     )
   }
 
@@ -480,7 +482,8 @@ trait StdNames {
       // DUPLICATED LOGIC WITH `splitSpecializedName`
       if (name endsWith SPECIALIZED_SUFFIX)
         name.subName(0, name.lastIndexOf('m') - 1)
-      else name
+      else
+        name
     )
 
     /** Return the original name and the types on which this name
@@ -530,7 +533,10 @@ trait StdNames {
       newTermName(LOCALDUMMY_PREFIX + clazz.name + ">")
     def superName(name: Name, mix: Name = EMPTY): TermName =
       newTermName(
-        SUPER_PREFIX_STRING + name + (if (mix.isEmpty) "" else "$" + mix))
+        SUPER_PREFIX_STRING + name + (if (mix.isEmpty)
+                                        ""
+                                      else
+                                        "$" + mix))
 
     /** The name of an accessor for protected symbols. */
     def protName(name: Name): TermName = newTermName(PROTECTED_PREFIX + name)
@@ -1062,12 +1068,18 @@ trait StdNames {
       */
     def segments(name: String, assumeTerm: Boolean): List[Name] = {
       def mkName(str: String, term: Boolean): Name =
-        if (term) newTermName(str) else newTypeName(str)
+        if (term)
+          newTermName(str)
+        else
+          newTypeName(str)
 
       name.indexWhere(ch => ch == '.' || ch == '#') match {
         // it's the last segment: the parameter tells us whether type or term
         case -1 =>
-          if (name == "") scala.Nil else scala.List(mkName(name, assumeTerm))
+          if (name == "")
+            scala.Nil
+          else
+            scala.List(mkName(name, assumeTerm))
         // otherwise, we can tell based on whether '#' or '.' is the following char.
         case idx =>
           val (simple, div, rest) =

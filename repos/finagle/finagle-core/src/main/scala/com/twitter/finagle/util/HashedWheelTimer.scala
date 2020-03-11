@@ -36,9 +36,10 @@ private class HashedWheelTimer(underlying: netty.Timer) extends Timer {
     def loop(): Unit = {
       f
       synchronized {
-        if (!isCancelled) ref = schedule(period.fromNow) {
-          loop()
-        }
+        if (!isCancelled)
+          ref = schedule(period.fromNow) {
+            loop()
+          }
       }
     }
 

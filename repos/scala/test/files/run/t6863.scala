@@ -43,7 +43,11 @@ object Test {
     }.apply == "42")
   }
   def `throw`() = {
-    var x = if (true) "42" else throw new Exception("42")
+    var x =
+      if (true)
+        "42"
+      else
+        throw new Exception("42")
     assert({ () =>
       x
     }.apply == "42")
@@ -64,7 +68,11 @@ object Test {
     }.apply == ())
   }
   def `return`(): String = {
-    var x = if (true) return "42" else ()
+    var x =
+      if (true)
+        return "42"
+      else
+        ()
     assert({ () =>
       x
     }.apply == ())
@@ -91,13 +99,19 @@ object Test {
     }.apply == "42")
   }
   def `if`() = {
-    var x = if (true) ()
+    var x =
+      if (true)
+        ()
     assert({ () =>
       x
     }.apply == ())
   }
   def ifElse() = {
-    var x = if (true) "42" else "43"
+    var x =
+      if (true)
+        "42"
+      else
+        "43"
     assert({ () =>
       x
     }.apply == "42")
@@ -138,7 +152,8 @@ object Test {
         catch {
           case _: Throwable => "43"
         }
-      else "44"
+      else
+        "44"
     }
     assert({ () =>
       x

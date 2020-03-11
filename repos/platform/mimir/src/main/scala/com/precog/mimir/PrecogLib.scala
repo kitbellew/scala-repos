@@ -177,8 +177,10 @@ trait PrecogLibModule[M[+_]]
                       if (row < slice.size) {
                         if (members(row))
                           Stream.cons(xs.head, sparseStream(row + 1, xs.tail))
-                        else Stream.cons(CUndefined, sparseStream(row + 1, xs))
-                      } else Stream.empty
+                        else
+                          Stream.cons(CUndefined, sparseStream(row + 1, xs))
+                      } else
+                        Stream.empty
 
                     val sparseData =
                       sparseStream(0, data map (RValue.fromJValue(_)))

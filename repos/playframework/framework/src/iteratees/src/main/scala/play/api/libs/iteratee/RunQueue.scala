@@ -115,7 +115,8 @@ private[play] final class RunQueue {
           execute(op)
         case _ =>
       }
-    } else schedule(op) // Try again
+    } else
+      schedule(op) // Try again
   }
 
   private def execute(op: Op): Unit = {
@@ -145,7 +146,8 @@ private[play] final class RunQueue {
         case pending if !pending.isEmpty => execute(pending.head)
         case _                           =>
       }
-    } else opExecutionComplete() // Try again
+    } else
+      opExecutionComplete() // Try again
   }
 
 }

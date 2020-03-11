@@ -126,8 +126,10 @@ trait PatternTypers {
         mode: Mode): List[Tree] = {
       def typedArgWithFormal(arg: Tree, pt: Type) = {
         val newMode =
-          if (isByNameParamType(pt)) mode.onlySticky
-          else mode.onlySticky | BYVALmode
+          if (isByNameParamType(pt))
+            mode.onlySticky
+          else
+            mode.onlySticky | BYVALmode
         typedArg(arg, mode, newMode, dropByName(pt))
       }
       val FixedAndRepeatedTypes(fixed, elem) = formals
@@ -209,9 +211,12 @@ trait PatternTypers {
         case tp @ TypeRef(NoPrefix, tpSym, Nil) if eligible(tpSym) =>
           val bounds =
             (
-              if (variance.isInvariant) tpSym.tpeHK.bounds
-              else if (variance.isPositive) TypeBounds.upper(tpSym.tpeHK)
-              else TypeBounds.lower(tpSym.tpeHK)
+              if (variance.isInvariant)
+                tpSym.tpeHK.bounds
+              else if (variance.isPositive)
+                TypeBounds.upper(tpSym.tpeHK)
+              else
+                TypeBounds.lower(tpSym.tpeHK)
             )
           // origin must be the type param so we can deskolemize
           val skolem = context.owner
@@ -267,7 +272,11 @@ trait PatternTypers {
       val caseConstructorType =
         caseClassType memberType caseClass.primaryConstructor
       val tree1 = TypeTree(caseConstructorType) setOriginal tree
-      val pt = if (untrustworthyPt) caseClassType else ptIn
+      val pt =
+        if (untrustworthyPt)
+          caseClassType
+        else
+          ptIn
 
       // have to open up the existential and put the skolems in scope
       // can't simply package up pt in an ExistentialType, because that takes us back to square one (List[_ <: T] == List[T] due to covariance)
@@ -292,8 +301,8 @@ trait PatternTypers {
       // tree1's remaining type-slack skolems will be deskolemized (to the method type parameter skolems)
       tree1 modifyType {
         case MethodType(
-            ctorArgs,
-            restpe
+              ctorArgs,
+              restpe
             ) => // ctorArgs are actually in a covariant position, since this is the type of the subpatterns of the pattern represented by this Apply node
           copyMethodType(
             tree1.tpe,
@@ -364,8 +373,10 @@ trait PatternTypers {
           nme.SELECTOR_DUMMY,
           fun.pos,
           Flags.SYNTHETIC) setInfo (
-          if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType)) pt
-          else freshUnapplyArgType()
+          if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType))
+            pt
+          else
+            freshUnapplyArgType()
         )
       )
       val unapplyArgTree =
@@ -397,7 +408,8 @@ trait PatternTypers {
       else if (unapplyMethod.isMacro && !fun1.isInstanceOf[Apply]) {
         if (isBlackbox(unapplyMethod))
           duplErrorTree(BlackboxExtractorExpansion(tree))
-        else duplErrorTree(WrongShapeExtractorExpansion(tree))
+        else
+          duplErrorTree(WrongShapeExtractorExpansion(tree))
       } else
         makeTypedUnapply()
     }
@@ -437,7 +449,8 @@ trait PatternTypers {
     // if there's a ClassTag that allows us to turn the unchecked type test for `pt` into a checked type test
     // return the corresponding extractor (an instance of ClassTag[`pt`])
     def extractorForUncheckedType(pos: Position, pt: Type): Tree = {
-      if (isPastTyper || (pt eq NoType)) EmptyTree
+      if (isPastTyper || (pt eq NoType))
+        EmptyTree
       else {
         pt match {
           case RefinedType(parents, decls)
@@ -457,7 +470,8 @@ trait PatternTypers {
             ) // replace actual type args with dummies
           case pt1 => pt1
         }
-        if (isCheckable(pt1)) EmptyTree
+        if (isCheckable(pt1))
+          EmptyTree
         else
           resolveClassTag(pos, pt1) match {
             case tree if unapplyMember(tree.tpe).exists => tree

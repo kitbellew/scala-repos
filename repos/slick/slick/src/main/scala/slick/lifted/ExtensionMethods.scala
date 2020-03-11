@@ -49,7 +49,8 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
       implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.In, n, e.toNode)
   def inSet[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
-    if (seq.isEmpty) om(LiteralColumn(false))
+    if (seq.isEmpty)
+      om(LiteralColumn(false))
     else
       om.column(
         Library.In,
@@ -58,7 +59,8 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
           LiteralNode(implicitly[TypedType[B1]], v)
         })))
   def inSetBind[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
-    if (seq.isEmpty) om(LiteralColumn(false))
+    if (seq.isEmpty)
+      om(LiteralColumn(false))
     else
       om.column(
         Library.In,
@@ -161,8 +163,10 @@ final class StringColumnExtensionMethods[P1](val c: Rep[P1])
     om.column(Library.Length, n)
   def like[P2, R](e: Rep[P2], esc: Char = '\u0000')(
       implicit om: o#arg[String, P2]#to[Boolean, R]) =
-    if (esc == '\u0000') om.column(Library.Like, n, e.toNode)
-    else om.column(Library.Like, n, e.toNode, LiteralNode(esc))
+    if (esc == '\u0000')
+      om.column(Library.Like, n, e.toNode)
+    else
+      om.column(Library.Like, n, e.toNode, LiteralNode(esc))
   def ++[P2, R](e: Rep[P2])(implicit om: o#arg[String, P2]#to[String, R]) =
     om.column(Library.Concat, n, e.toNode)
   def startsWith[R](s: String)(implicit om: o#to[Boolean, R]) =

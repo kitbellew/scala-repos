@@ -87,7 +87,10 @@ private[spark] object UIUtils extends Logging {
       }
 
       val millisecondsString =
-        if (ms >= second && ms % second == 0) "" else s"${ms % second} ms"
+        if (ms >= second && ms % second == 0)
+          ""
+        else
+          s"${ms % second} ms"
       val secondString = toString((ms % minute) / second, "second")
       val minuteString = toString((ms % hour) / minute, "minute")
       val hourString = toString((ms % day) / hour, "hour")
@@ -260,10 +263,16 @@ private[spark] object UIUtils extends Logging {
 
     val appName = activeTab.appName
     val shortAppName =
-      if (appName.length < 36) appName else appName.take(32) + "..."
+      if (appName.length < 36)
+        appName
+      else
+        appName.take(32) + "..."
     val header = activeTab.headerTabs.map { tab =>
       <li class={
-        if (tab == activeTab) "active" else ""
+        if (tab == activeTab)
+          "active"
+        else
+          ""
       }>
         <a href={
         prependBaseUri(activeTab.basePath, "/" + tab.prefix + "/")
@@ -281,7 +290,10 @@ private[spark] object UIUtils extends Logging {
       commonHeaderNodes
     }
         {
-      if (showVisualization) vizHeaderNodes else Seq.empty
+      if (showVisualization)
+        vizHeaderNodes
+      else
+        Seq.empty
     }
         <title>{
       appName
@@ -348,7 +360,10 @@ private[spark] object UIUtils extends Logging {
       commonHeaderNodes
     }
         {
-      if (useDataTables) dataTablesHeaderNodes else Seq.empty
+      if (useDataTables)
+        dataTablesHeaderNodes
+      else
+        Seq.empty
     }
         <title>{
       title
@@ -397,7 +412,10 @@ private[spark] object UIUtils extends Logging {
 
     val listingTableClass = {
       val _tableClass =
-        if (stripeRowsWithCss) TABLE_CLASS_STRIPED else TABLE_CLASS_NOT_STRIPED
+        if (stripeRowsWithCss)
+          TABLE_CLASS_STRIPED
+        else
+          TABLE_CLASS_NOT_STRIPED
       if (sortable) {
         _tableClass + " sortable"
       } else {
@@ -405,7 +423,11 @@ private[spark] object UIUtils extends Logging {
       }
     }
     val colWidth = 100.toDouble / headers.size
-    val colWidthAttr = if (fixedWidth) colWidth + "%" else ""
+    val colWidthAttr =
+      if (fixedWidth)
+        colWidth + "%"
+      else
+        ""
 
     def getClass(index: Int): String = {
       if (index < headerClasses.size) {
@@ -480,10 +502,12 @@ private[spark] object UIUtils extends Logging {
       total
     }
         {
-      if (failed > 0) s"($failed failed)"
+      if (failed > 0)
+        s"($failed failed)"
     }
         {
-      if (skipped > 0) s"($skipped skipped)"
+      if (skipped > 0)
+        s"($skipped skipped)"
     }
       </span>
       <div class="bar bar-completed" style={
@@ -521,14 +545,20 @@ private[spark] object UIUtils extends Logging {
       forJob: Boolean): Seq[Node] = {
     <div>
       <span id={
-      if (forJob) "job-dag-viz" else "stage-dag-viz"
+      if (forJob)
+        "job-dag-viz"
+      else
+        "stage-dag-viz"
     }
             class="expand-dag-viz" onclick={
       s"toggleDagViz($forJob);"
     }>
         <span class="expand-dag-viz-arrow arrow-closed"></span>
         <a data-toggle="tooltip" title={
-      if (forJob) ToolTips.JOB_DAG else ToolTips.STAGE_DAG
+      if (forJob)
+        ToolTips.JOB_DAG
+      else
+        ToolTips.STAGE_DAG
     }
            data-placement="right">
           DAG Visualization

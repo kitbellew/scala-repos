@@ -168,8 +168,10 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
     capture(
       oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
         SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
-      if (sym == "nil") SexpNil
-      else SexpSymbol(sym)
+      if (sym == "nil")
+        SexpNil
+      else
+        SexpSymbol(sym)
     }
   }
 

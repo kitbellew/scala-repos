@@ -78,7 +78,8 @@ class KindProjectorUseCorrectLambdaKeywordQuickFix(
     extends AbstractFixOnPsiElement(inspectionName, e) {
   override def doApplyFix(project: Project): Unit = {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
 
     val repl = ScalaPsiElementFactory.createTypeElementFromText(
       replacement,
@@ -92,8 +93,10 @@ class ChangeLambdaCodeStyleSetting(useGreekLambda: Boolean)
   override def getFamilyName: String = getName
 
   override def getName: String =
-    if (useGreekLambda) codeStyleSettingUseGreekLambda
-    else codeStyleSettingUseWordLambda
+    if (useGreekLambda)
+      codeStyleSettingUseGreekLambda
+    else
+      codeStyleSettingUseWordLambda
 
   override def applyFix(project: Project, d: ProblemDescriptor): Unit = {
     ScalaCodeStyleSettings

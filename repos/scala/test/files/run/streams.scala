@@ -38,7 +38,11 @@ object Test extends App {
   println(s3.length)
 
   // ticket #153
-  def powers(x: Int) = if ((x & (x - 1)) == 0) Some(x) else None
+  def powers(x: Int) =
+    if ((x & (x - 1)) == 0)
+      Some(x)
+    else
+      None
   println(s3.flatMap(powers).reverse.head)
 
   // large enough to generate StackOverflows (on most systems)

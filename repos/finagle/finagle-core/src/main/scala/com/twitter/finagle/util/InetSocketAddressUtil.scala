@@ -84,7 +84,8 @@ object InetSocketAddressUtil {
     * @throws IllegalArgumentException if host and port are not both present
     */
   def parseHosts(hosts: String): Seq[InetSocketAddress] = {
-    if (hosts == ":*") return Seq(new InetSocketAddress(0))
+    if (hosts == ":*")
+      return Seq(new InetSocketAddress(0))
 
     (parseHostPorts(hosts) map {
       case (host, port) =>

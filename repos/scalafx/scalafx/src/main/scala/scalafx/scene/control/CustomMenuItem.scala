@@ -41,7 +41,10 @@ import scalafx.scene.Node
   */
 object CustomMenuItem {
   implicit def sfxCustomMenuItem2jfx(c: CustomMenuItem): jfxsc.CustomMenuItem =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 /**

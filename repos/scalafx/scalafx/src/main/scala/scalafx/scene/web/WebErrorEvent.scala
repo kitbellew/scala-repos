@@ -46,7 +46,10 @@ object WebErrorEvent {
     * @return JavaFX WebErrorEvent
     */
   implicit def sfxWebErrorEventsjfx(wee: WebErrorEvent): jfxsw.WebErrorEvent =
-    if (wee != null) wee.delegate else null
+    if (wee != null)
+      wee.delegate
+    else
+      null
 
   /**
     * Common supertype for all WebErrorEvent types.

@@ -157,14 +157,16 @@ abstract class ClusterShardingCustomShardAllocationSpec(
   override protected def atStartup() {
     runOn(first) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(first) {
       storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+        if (dir.exists)
+          FileUtils.deleteDirectory(dir))
     }
   }
 

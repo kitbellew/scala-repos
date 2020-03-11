@@ -56,8 +56,10 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
     val colName = MongoRules.collectionName.vend
       .apply(connectionIdentifier, _collectionName)
 
-    if (colName.contains("$")) colName.replaceAllLiterally("$", "_d_")
-    else colName
+    if (colName.contains("$"))
+      colName.replaceAllLiterally("$", "_d_")
+    else
+      colName
   }
 
   /**
@@ -148,7 +150,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   @deprecated("use createIndex(JObject, Boolean) instead.", "2.6")
   def ensureIndex(keys: JObject, unique: Boolean): Unit = {
     val options = new BasicDBObject
-    if (unique) options.put("unique", true)
+    if (unique)
+      options.put("unique", true)
     useColl { coll =>
       coll.createIndex(JObjectParser.parse(keys), options)
     }
@@ -156,7 +159,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
 
   def createIndex(keys: JObject, unique: Boolean = false): Unit = {
     val options = new BasicDBObject
-    if (unique) options.put("unique", true)
+    if (unique)
+      options.put("unique", true)
     useColl { coll =>
       coll.createIndex(JObjectParser.parse(keys), options)
     }

@@ -12,6 +12,7 @@ private[pickling] object ScalaSingleton extends PicklingAlgorithm {
           PickleBehavior(Seq(PickleEntry(Seq()))),
           UnpickleBehavior(Seq(UnpickleSingleton(tpe)))
         ))
-    } else AlgorithmFailure(s"$tpe is not a singleton scala object")
+    } else
+      AlgorithmFailure(s"$tpe is not a singleton scala object")
   }
 }

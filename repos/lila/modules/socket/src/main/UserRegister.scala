@@ -40,7 +40,8 @@ private final class UserRegister extends Actor {
       member.userId foreach { userId =>
         users get userId foreach { members =>
           members -= uid
-          if (members.isEmpty) users -= userId
+          if (members.isEmpty)
+            users -= userId
         }
       }
   }

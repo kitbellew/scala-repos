@@ -76,7 +76,8 @@ object Writer {
       if (t.isDefined) {
         os.write(1: Byte)
         w.write(os, t.get)
-      } else os.write(0: Byte)
+      } else
+        os.write(0: Byte)
   }
 
   implicit def either[L: Writer, R: Writer]: Writer[Either[L, R]] =
@@ -118,7 +119,8 @@ object Writer {
         os.writePosVarInt(size)
         @annotation.tailrec
         def go(p: Int): Unit =
-          if (p == size) ()
+          if (p == size)
+            ()
           else {
             writerT.write(os, a(p));
             go(p + 1)

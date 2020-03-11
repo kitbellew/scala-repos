@@ -136,8 +136,10 @@ object ActorContextSpec {
             Same
           case Stop ⇒ Stopped
           case Kill(ref, replyTo) ⇒
-            if (ctx.stop(ref)) replyTo ! Killed
-            else replyTo ! NotKilled
+            if (ctx.stop(ref))
+              replyTo ! Killed
+            else
+              replyTo ! NotKilled
             Same
           case Watch(ref, replyTo) ⇒
             ctx.watch[Nothing](ref)
@@ -248,7 +250,8 @@ class ActorContextSpec
               (subj, child)
             }
 
-        if (!inert) s
+        if (!inert)
+          s
         else
           s.keep {
               case (subj, child) ⇒
@@ -370,8 +373,10 @@ class ActorContextSpec
           }
           .expectTermination(500.millis) {
             case (t, (subj, child)) ⇒
-              if (t.ref === child) subj
-              else if (t.ref === subj) child
+              if (t.ref === child)
+                subj
+              else if (t.ref === subj)
+                child
               else
                 fail(
                   s"expected termination of either $subj or $child but got $t")

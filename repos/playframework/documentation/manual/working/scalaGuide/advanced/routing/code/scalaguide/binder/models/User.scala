@@ -17,7 +17,8 @@ object User {
   // designed to be lightweight operation
   def findById(id: Int): Option[User] = {
     Logger.info("findById: " + id.toString)
-    if (id > 3) None
+    if (id > 3)
+      None
     var user = new User(id, "User " + String.valueOf(id))
     Some(user)
   }

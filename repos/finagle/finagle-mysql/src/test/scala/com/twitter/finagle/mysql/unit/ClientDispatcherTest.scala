@@ -168,7 +168,9 @@ class ClientDispatcherTest extends FunSuite {
     Packet(0, bw)
   }
 
-  val rowPackets = for (i <- 1 to numRows) yield rowPacket
+  val rowPackets =
+    for (i <- 1 to numRows)
+      yield rowPacket
 
   test("Decode a ResultSet") {
     val ctx = newCtx

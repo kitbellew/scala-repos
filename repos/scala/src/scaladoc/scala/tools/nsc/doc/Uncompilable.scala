@@ -29,7 +29,10 @@ trait Uncompilable {
   import global.rootMirror.RootClass
 
   private implicit def translateName(name: Global#Name) =
-    if (name.isTypeName) newTypeName("" + name) else newTermName("" + name)
+    if (name.isTypeName)
+      newTypeName("" + name)
+    else
+      newTermName("" + name)
 
   def docSymbol(p: DocParser.Parsed) =
     p.nameChain.foldLeft(RootClass: Symbol)(_.tpe member _)

@@ -51,7 +51,11 @@ class StringConverterSpec extends FlatSpec {
 
   // Just For Fun
   object TFBooleanConverter extends StringConverter[Boolean] {
-    def toString(b: Boolean) = if (b) "t" else "f"
+    def toString(b: Boolean) =
+      if (b)
+        "t"
+      else
+        "f"
 
     def fromString(s: String) = s match {
       case "t" => true

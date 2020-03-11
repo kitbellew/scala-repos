@@ -164,7 +164,8 @@ private[remote] class FailureInjectorTransportAdapter(
             remoteAddress,
             debugMessage)
         true
-      } else false
+      } else
+        false
   }
 
   def shouldDropOutbound(
@@ -181,13 +182,17 @@ private[remote] class FailureInjectorTransportAdapter(
             remoteAddress,
             debugMessage)
         true
-      } else false
+      } else
+        false
   }
 
   def chaosMode(remoteAddress: Address): GremlinMode = {
     val mode =
       addressChaosTable.get(remoteAddress.copy(protocol = "", system = ""))
-    if (mode eq null) PassThru else mode
+    if (mode eq null)
+      PassThru
+    else
+      mode
   }
 }
 
@@ -216,8 +221,10 @@ private[remote] final case class FailureInjectorHandle(
     if (!gremlinAdapter.shouldDropOutbound(
           wrappedHandle.remoteAddress,
           payload,
-          "handler.write")) wrappedHandle.write(payload)
-    else true
+          "handler.write"))
+      wrappedHandle.write(payload)
+    else
+      true
 
   override def disassociate(): Unit = wrappedHandle.disassociate()
 

@@ -39,7 +39,10 @@ class OutputStreamWriter(
     this(out, Charset.forName(charsetName))
 
   def getEncoding(): String =
-    if (closed) null else enc.charset.name
+    if (closed)
+      null
+    else
+      enc.charset.name
 
   override def write(c: Int): Unit =
     write(c.toChar.toString, 0, 1)
@@ -57,13 +60,15 @@ class OutputStreamWriter(
       val fullInput = CharBuffer.wrap(inBuf + cbuf.toString)
       inBuf = ""
       fullInput
-    } else cbuf
+    } else
+      cbuf
 
     @inline
     @tailrec
     def loopEncode(): Unit = {
       val result = enc.encode(cbuf1, outBuf, false)
-      if (result.isUnderflow) ()
+      if (result.isUnderflow)
+        ()
       else if (result.isOverflow) {
         makeRoomInOutBuf()
         loopEncode()

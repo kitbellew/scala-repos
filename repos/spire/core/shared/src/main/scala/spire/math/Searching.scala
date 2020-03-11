@@ -19,9 +19,12 @@ object Searching {
       val middle = (first + last) >>> 1
 
       val compare = as(middle).compare(item)
-      if (compare < 0) first = middle + 1
-      else if (compare > 0) last = middle - 1
-      else return middle
+      if (compare < 0)
+        first = middle + 1
+      else if (compare > 0)
+        last = middle - 1
+      else
+        return middle
     }
     -first - 1
   }
@@ -40,9 +43,12 @@ object Searching {
       val middle = (first + last) >>> 1
 
       val compare = as(middle).compare(item)
-      if (compare < 0) first = middle + 1
-      else if (compare > 0) last = middle - 1
-      else return middle
+      if (compare < 0)
+        first = middle + 1
+      else if (compare > 0)
+        last = middle - 1
+      else
+        return middle
     }
     -first - 1
   }

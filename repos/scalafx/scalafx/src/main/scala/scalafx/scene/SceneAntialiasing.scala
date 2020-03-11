@@ -44,7 +44,10 @@ object SceneAntialiasing {
     */
   implicit def sfxSceneAntialiasing2jfx(
       v: SceneAntialiasing): jfxs.SceneAntialiasing =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Disables antialiasing.

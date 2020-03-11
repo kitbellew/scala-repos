@@ -55,7 +55,10 @@ object GroupVersioningUtil {
     val originalApps = from.transitiveApps.map(app => app.id -> app).toMap
     val updatedTargetApps = to.transitiveApps.flatMap { newApp =>
       val updated = updateAppVersionInfo(originalApps.get(newApp.id), newApp)
-      if (updated.versionInfo != newApp.versionInfo) Some(updated) else None
+      if (updated.versionInfo != newApp.versionInfo)
+        Some(updated)
+      else
+        None
     }
     updatedTargetApps.foldLeft(to) { (resultGroup, updatedApp) =>
       resultGroup.updateApp(updatedApp.id, _ => updatedApp, version)

@@ -34,8 +34,10 @@ object Lift extends App {
       folder: MapFolder[OInL, Boolean, isDefined.type],
       fnfromp: FnFromProduct.Aux[OInL => Option[R], OutF]
   ): OutF = { (o: OInL) =>
-    if (o.foldMap(true)(isDefined)(_ && _)) Some(f.toProduct(o map get))
-    else None
+    if (o.foldMap(true)(isDefined)(_ && _))
+      Some(f.toProduct(o map get))
+    else
+      None
   }.fromProduct
 
   object isDefined extends (Option ~>> Boolean) {

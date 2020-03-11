@@ -98,7 +98,11 @@ final case class Info[T](
   def postTransform[A](f: (T, AttributeMap) => AttributeMap) =
     copy(post = (t: T) => f(t, post(t)))
 
-  override def toString = if (attributes.isEmpty) "_" else attributes.toString
+  override def toString =
+    if (attributes.isEmpty)
+      "_"
+    else
+      attributes.toString
 }
 object Info {
   val Name = AttributeKey[String]("name")

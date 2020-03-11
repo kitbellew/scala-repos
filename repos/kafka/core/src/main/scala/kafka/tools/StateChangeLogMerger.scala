@@ -127,7 +127,10 @@ object StateChangeLogMerger extends Logging {
       val regex = options.valueOf(regexOpt)
       val fileNameIndex = regex.lastIndexOf('/') + 1
       val dirName =
-        if (fileNameIndex == 0) "." else regex.substring(0, fileNameIndex - 1)
+        if (fileNameIndex == 0)
+          "."
+        else
+          regex.substring(0, fileNameIndex - 1)
       val fileNameRegex = new Regex(regex.substring(fileNameIndex))
       files :::= new java.io.File(dirName).listFiles
         .filter(f => fileNameRegex.findFirstIn(f.getName) != None)
@@ -169,7 +172,8 @@ object StateChangeLogMerger extends Logging {
       if (!lineItr.isEmpty)
         lines ::= lineItr
     }
-    if (!lines.isEmpty) pqueue.enqueue(lines: _*)
+    if (!lines.isEmpty)
+      pqueue.enqueue(lines: _*)
 
     while (!pqueue.isEmpty) {
       val lineItr = pqueue.dequeue()

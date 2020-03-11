@@ -43,8 +43,10 @@ private[stream] class Throttle[T](
           val scaledMaximumBurst = scale(maximumBurst)
 
           override def onUpstreamFinish(): Unit =
-            if (isAvailable(out) && isTimerActive(timerName)) willStop = true
-            else completeStage()
+            if (isAvailable(out) && isTimerActive(timerName))
+              willStop = true
+            else
+              completeStage()
 
           override def onPush(): Unit = {
             val elem = grab(in)
@@ -84,7 +86,8 @@ private[stream] class Throttle[T](
         push(out, currentElement.get)
         currentElement = None
         lastTokens = 0
-        if (willStop) completeStage()
+        if (willStop)
+          completeStage()
       }
 
       setHandler(

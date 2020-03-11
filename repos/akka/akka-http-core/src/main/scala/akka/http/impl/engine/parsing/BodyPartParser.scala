@@ -87,16 +87,21 @@ private[http] final class BodyPartParser(
             "unexpected NotEnoughDataException",
             NotEnoughDataException)
       }
-      if (output.nonEmpty) ctx.push(dequeue())
-      else if (!terminated) ctx.pull()
-      else ctx.finish()
-    } else ctx.finish()
+      if (output.nonEmpty)
+        ctx.push(dequeue())
+      else if (!terminated)
+        ctx.pull()
+      else
+        ctx.finish()
+    } else
+      ctx.finish()
 
   override def onPull(ctx: Context[Output]): SyncDirective = {
     if (output.nonEmpty)
       ctx.push(dequeue())
     else if (ctx.isFinishing) {
-      if (terminated) ctx.finish()
+      if (terminated)
+        ctx.finish()
       else
         ctx.pushAndFinish(
           ParseError(ErrorInfo("Unexpected end of multipart entity")))
@@ -113,10 +118,14 @@ private[http] final class BodyPartParser(
     try {
       if (boundary(input, 0)) {
         val ix = boundaryLength
-        if (crlf(input, ix)) parseHeaderLines(input, ix + 2)
-        else if (doubleDash(input, ix)) terminate()
-        else parsePreamble(input, 0)
-      } else parsePreamble(input, 0)
+        if (crlf(input, ix))
+          parseHeaderLines(input, ix + 2)
+        else if (doubleDash(input, ix))
+          terminate()
+        else
+          parsePreamble(input, 0)
+      } else
+        parsePreamble(input, 0)
     } catch {
       case NotEnoughDataException ⇒
         continue(input, 0)((newInput, _) ⇒ tryParseInitialBoundary(newInput))
@@ -126,9 +135,12 @@ private[http] final class BodyPartParser(
     try {
       @tailrec def rec(index: Int): StateResult = {
         val needleEnd = boyerMoore.nextIndex(input, index) + needle.length
-        if (crlf(input, needleEnd)) parseHeaderLines(input, needleEnd + 2)
-        else if (doubleDash(input, needleEnd)) terminate()
-        else rec(needleEnd)
+        if (crlf(input, needleEnd))
+          parseHeaderLines(input, needleEnd + 2)
+        else if (doubleDash(input, needleEnd))
+          terminate()
+        else
+          rec(needleEnd)
       }
       rec(offset)
     } catch {
@@ -154,7 +166,8 @@ private[http] final class BodyPartParser(
         if (!boundary(input, lineStart)) {
           lineEnd = headerParser.parseHeaderLine(input, lineStart)()
           headerParser.resultHeader
-        } else BoundaryHeader
+        } else
+          BoundaryHeader
       } catch {
         case NotEnoughDataException ⇒ null
       }
@@ -166,9 +179,12 @@ private[http] final class BodyPartParser(
       case BoundaryHeader ⇒
         emit(BodyPartStart(headers.toList, _ ⇒ HttpEntity.empty(contentType)))
         val ix = lineStart + boundaryLength
-        if (crlf(input, ix)) parseHeaderLines(input, ix + 2)
-        else if (doubleDash(input, ix)) terminate()
-        else fail("Illegal multipart boundary in message content")
+        if (crlf(input, ix))
+          parseHeaderLines(input, ix + 2)
+        else if (doubleDash(input, ix))
+          terminate()
+        else
+          fail("Illegal multipart boundary in message content")
 
       case EmptyHeader ⇒
         parseEntity(headers.toList, contentType)(input, lineEnd)
@@ -241,7 +257,8 @@ private[http] final class BodyPartParser(
         } else if (doubleDash(input, needleEnd)) {
           emitFinalChunk()
           terminate()
-        } else rec(needleEnd)
+        } else
+          rec(needleEnd)
       }
       rec(offset)
     } catch {
@@ -264,7 +281,8 @@ private[http] final class BodyPartParser(
     }
 
   def emit(bytes: ByteString): Unit =
-    if (bytes.nonEmpty) emit(EntityPart(bytes))
+    if (bytes.nonEmpty)
+      emit(EntityPart(bytes))
 
   def emit(element: Output): Unit = output = output.enqueue(element)
 

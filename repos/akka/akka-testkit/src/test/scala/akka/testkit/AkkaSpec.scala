@@ -114,8 +114,10 @@ abstract class AkkaSpec(_system: ActorSystem)
       def mute(clazz: Class[_]): Unit =
         sys.eventStream.publish(
           Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
-      if (messageClasses.isEmpty) mute(classOf[AnyRef])
-      else messageClasses foreach mute
+      if (messageClasses.isEmpty)
+        mute(classOf[AnyRef])
+      else
+        messageClasses foreach mute
     }
 
   // for ScalaTest === compare of Class objects

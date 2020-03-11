@@ -60,8 +60,10 @@ class ScalaAnnotatedMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Array[LookupElement] = {
     val secondParamName =
-      if (params.length > 1) params(1).calculateResult(context).toString
-      else null
+      if (params.length > 1)
+        params(1).calculateResult(context).toString
+      else
+        null
     val isShortName = secondParamName != null && !secondParamName.toBoolean
     val project = context.getProject
     val outerClass: Option[PsiClass] = Option(secondParamName).flatMap {

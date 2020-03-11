@@ -64,7 +64,10 @@ trait BlockSortSpec[M[+_]]
 
     val jvalueOrdering = Order[JValue].toScalaOrdering
     val desiredJValueOrder =
-      if (sortOrder.isAscending) jvalueOrdering else jvalueOrdering.reverse
+      if (sortOrder.isAscending)
+        jvalueOrdering
+      else
+        jvalueOrdering.reverse
 
     val globalIdPath = JPath(".globalId")
 

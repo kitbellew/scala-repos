@@ -48,7 +48,10 @@ object KeyValue {
     * @return JavaFX $KV extracted from `v`.
     */
   implicit def sfxKeyValue2jfx(v: KeyValue[_, _]): jfxa.KeyValue =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   // Need to separately capture the Number/primitive combinations since JavaFX does not go down to primitives in its generics (wow, this is ugly!)
   def apply[T >: Int <: Int, J >: Number <: Number](

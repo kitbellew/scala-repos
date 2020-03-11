@@ -102,7 +102,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
     val state =
       UnusedPassState(annotationHolder, annotations, readConfig(sFile))
     val config = state.config
-    if (!config.checkLocalAssign && !config.checkLocalUnused) return
+    if (!config.checkLocalAssign && !config.checkLocalUnused)
+      return
 
     sFile.depthFirst.foreach {
       case x: ScDeclaredElementsHolder => processDeclaredElementHolder(x, state)
@@ -211,7 +212,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
             annotation.registerFix(new DeleteElementFix(elem), range, key)
             state.annotations += annotation
           }
-          if (hasAssign) hasAtLeastOneAssign = true
+          if (hasAssign)
+            hasAtLeastOneAssign = true
         case _ =>
       }
     }
@@ -284,7 +286,8 @@ class DeleteElementFix(element: PsiElement) extends IntentionAction {
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+    if (!FileModificationService.getInstance.prepareFileForWrite(file))
+      return
     PsiDocumentManager.getInstance(project).commitAllDocuments()
     IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
     element.delete()
@@ -309,8 +312,10 @@ class VarToValFix(varDef: ScVariableDefinition, name: Option[String])
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!varDef.isValid) return
-    if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+    if (!varDef.isValid)
+      return
+    if (!FileModificationService.getInstance.prepareFileForWrite(file))
+      return
     varDef.replace(
       ScalaPsiElementFactory
         .createValFromVarDefinition(varDef, varDef.getManager))

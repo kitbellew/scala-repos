@@ -51,7 +51,8 @@ trait SetInstances {
     }
 
     override def equal(a1: Set[A], a2: Set[A]) = {
-      if (equalIsNatural) a1 == a2
+      if (equalIsNatural)
+        a1 == a2
       else {
         implicit val x = Order[A].toScalaOrdering
         import scala.collection.immutable.TreeSet

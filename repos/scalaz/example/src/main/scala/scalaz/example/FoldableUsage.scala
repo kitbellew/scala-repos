@@ -82,7 +82,10 @@ object FoldableUsage extends App {
   val sumEvens: (Int, Int) => Option[Int] = { (x, y) =>
     // if the right int is even, add it to the left
     // otherwise return None
-    if ((y % 2) == 0) Some(x + y) else None
+    if ((y % 2) == 0)
+      Some(x + y)
+    else
+      None
   }
 
   // all numbers are even, so we end up with Some

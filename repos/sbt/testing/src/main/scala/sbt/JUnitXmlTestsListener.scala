@@ -92,55 +92,56 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
         properties
       }
                      {
-        for (e <- events) yield <testcase classname={
-          name
-        } name={
-          e.selector match {
-            case selector: TestSelector => selector.testName.split('.').last
-            case _                      => "(It is not a test)"
-          }
-        } time={
-          (e.duration() / 1000.0).toString
-        }>
+        for (e <- events)
+          yield <testcase classname={
+            name
+          } name={
+            e.selector match {
+              case selector: TestSelector => selector.testName.split('.').last
+              case _                      => "(It is not a test)"
+            }
+          } time={
+            (e.duration() / 1000.0).toString
+          }>
                                                  {
-          val trace: String = if (e.throwable.isDefined) {
-            val stringWriter = new StringWriter()
-            val writer = new PrintWriter(stringWriter)
-            e.throwable.get.printStackTrace(writer)
-            writer.flush()
-            stringWriter.toString
-          } else {
-            ""
+            val trace: String = if (e.throwable.isDefined) {
+              val stringWriter = new StringWriter()
+              val writer = new PrintWriter(stringWriter)
+              e.throwable.get.printStackTrace(writer)
+              writer.flush()
+              stringWriter.toString
+            } else {
+              ""
+            }
+            e.status match {
+              case TStatus.Error if (e.throwable.isDefined) =>
+                <error message={
+                  e.throwable.get.getMessage
+                } type={
+                  e.throwable.get.getClass.getName
+                }>{
+                  trace
+                }</error>
+              case TStatus.Error =>
+                <error message={
+                  "No Exception or message provided"
+                }/>
+              case TStatus.Failure if (e.throwable.isDefined) =>
+                <failure message={
+                  e.throwable.get.getMessage
+                } type={
+                  e.throwable.get.getClass.getName
+                }>{
+                  trace
+                }</failure>
+              case TStatus.Failure =>
+                <failure message={
+                  "No Exception or message provided"
+                }/>
+              case TStatus.Skipped => <skipped/>
+              case _               => {}
+            }
           }
-          e.status match {
-            case TStatus.Error if (e.throwable.isDefined) =>
-              <error message={
-                e.throwable.get.getMessage
-              } type={
-                e.throwable.get.getClass.getName
-              }>{
-                trace
-              }</error>
-            case TStatus.Error =>
-              <error message={
-                "No Exception or message provided"
-              }/>
-            case TStatus.Failure if (e.throwable.isDefined) =>
-              <failure message={
-                e.throwable.get.getMessage
-              } type={
-                e.throwable.get.getClass.getName
-              }>{
-                trace
-              }</failure>
-            case TStatus.Failure =>
-              <failure message={
-                "No Exception or message provided"
-              }/>
-            case TStatus.Skipped => <skipped/>
-            case _               => {}
-          }
-        }
                                                </testcase>
 
       }

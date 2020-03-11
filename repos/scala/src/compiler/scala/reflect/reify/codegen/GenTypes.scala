@@ -76,10 +76,14 @@ trait GenTypes {
 
   def spliceType(tpe: Type): Tree = {
     if (tpe.isSpliceable && !(boundSymbolsInCallstack contains tpe.typeSymbol)) {
-      if (reifyDebug) println("splicing " + tpe)
+      if (reifyDebug)
+        println("splicing " + tpe)
 
       val tagFlavor =
-        if (concrete) tpnme.TypeTag.toString else tpnme.WeakTypeTag.toString
+        if (concrete)
+          tpnme.TypeTag.toString
+        else
+          tpnme.WeakTypeTag.toString
       // if this fails, it might produce the dreaded "erroneous or inaccessible type" error
       // to find out the whereabouts of the error run scalac with -Ydebug
       if (reifyDebug)
@@ -94,11 +98,14 @@ trait GenTypes {
           concrete = concrete,
           allowMaterialization = false) match {
           case failure if failure.isEmpty =>
-            if (reifyDebug) println("implicit search was fruitless")
-            if (reifyDebug) println("trying to splice as manifest")
+            if (reifyDebug)
+              println("implicit search was fruitless")
+            if (reifyDebug)
+              println("trying to splice as manifest")
             val splicedAsManifest = spliceAsManifest(tpe)
             if (splicedAsManifest.isEmpty) {
-              if (reifyDebug) println("no manifest in scope")
+              if (reifyDebug)
+                println("no manifest in scope")
               EmptyTree
             } else {
               if (reifyDebug)
@@ -114,7 +121,8 @@ trait GenTypes {
               Apply(Select(success, nme.in), List(Ident(nme.MIRROR_SHORT))),
               nme.tpe)
         }
-      if (result != EmptyTree) return result
+      if (result != EmptyTree)
+        return result
       state.reificationIsConcrete = false
     }
 
@@ -210,7 +218,8 @@ trait GenTypes {
 
   /** Reify a tough type, i.e. the one that leads to creation of auxiliary symbols */
   private def reifyToughType(tpe: Type): Tree = {
-    if (reifyDebug) println("tough type: %s (%s)".format(tpe, tpe.kind))
+    if (reifyDebug)
+      println("tough type: %s (%s)".format(tpe, tpe.kind))
 
     def reifyScope(scope: Scope): Tree = {
       scope foreach reifySymDef

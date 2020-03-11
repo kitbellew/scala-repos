@@ -44,7 +44,11 @@ class BooleanBitSetSuite extends SparkFunSuite {
 
     // Compression scheme ID + element count + bitset words
     val compressedSize = 4 + 4 + {
-      val extra = if (count % BITS_PER_LONG == 0) 0 else 1
+      val extra =
+        if (count % BITS_PER_LONG == 0)
+          0
+        else
+          1
       (count / BITS_PER_LONG + extra) * 8
     }
 
@@ -61,7 +65,11 @@ class BooleanBitSetSuite extends SparkFunSuite {
     var word = 0: Long
     for (i <- 0 until count) {
       val bit = i % BITS_PER_LONG
-      word = if (bit == 0) buffer.getLong() else word
+      word =
+        if (bit == 0)
+          buffer.getLong()
+        else
+          word
       assertResult(values(i), s"Wrong value in compressed buffer, index=$i") {
         (word & ((1: Long) << bit)) != 0
       }

@@ -120,7 +120,10 @@ class SortedMapperPaginator[T <: Mapper[T]](
         headers(fieldIndex) match {
           case (_, f) => f
         },
-        if (ascending) Ascending else Descending
+        if (ascending)
+          Ascending
+        else
+          Descending
       )
   }
 }

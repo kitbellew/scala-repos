@@ -731,7 +731,11 @@ private[hive] object HiveContext {
   /** Constructs a configuration for hive, where the metastore is located in a temp directory. */
   def newTemporaryConfiguration(
       useInMemoryDerby: Boolean): Map[String, String] = {
-    val withInMemoryMode = if (useInMemoryDerby) "memory:" else ""
+    val withInMemoryMode =
+      if (useInMemoryDerby)
+        "memory:"
+      else
+        ""
 
     val tempDir = Utils.createTempDir()
     val localMetastore = new File(tempDir, "metastore")

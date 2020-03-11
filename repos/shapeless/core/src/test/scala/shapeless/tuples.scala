@@ -1195,7 +1195,11 @@ class TupleTests {
     val r9 = sl.updateWith[Int](i => (i + 1).toString)
     assertEquals(("2", true, "foo", 2.0), r9)
 
-    val r10 = sl.updateWith[Boolean](b => if (b) 3.0 else 2.0)
+    val r10 = sl.updateWith[Boolean](b =>
+      if (b)
+        3.0
+      else
+        2.0)
     assertEquals((1, 3.0, "foo", 2.0), r10)
 
     val r11 = sl.updateWith[String](s => s.length)
@@ -1411,7 +1415,11 @@ class TupleTests {
   object combine extends Poly {
     implicit def caseCharString = use((c: Char, s: String) => s.indexOf(c))
     implicit def caseIntBoolean =
-      use((i: Int, b: Boolean) => if ((i >= 0) == b) "pass" else "fail")
+      use((i: Int, b: Boolean) =>
+        if ((i >= 0) == b)
+          "pass"
+        else
+          "fail")
   }
 
   @Test

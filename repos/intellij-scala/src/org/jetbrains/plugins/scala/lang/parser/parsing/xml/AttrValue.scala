@@ -36,7 +36,10 @@ object AttrValue {
                  patched = patcher parse builder;
                  patched
                }) {
-          if (!patched) builder.advanceLexer() else patched = false
+          if (!patched)
+            builder.advanceLexer()
+          else
+            patched = false
         }
         builder.getTokenType match {
           case ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER =>

@@ -24,7 +24,8 @@ case class PathPattern(regex: Regex, captureGroupNames: List[String] = Nil) {
         }
       }
       Some(multiParams)
-    } else None
+    } else
+      None
   }
 
   def +(pathPattern: PathPattern): PathPattern = PathPattern(

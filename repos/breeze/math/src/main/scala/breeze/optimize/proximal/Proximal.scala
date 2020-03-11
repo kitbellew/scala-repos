@@ -159,8 +159,10 @@ case class ProximalL2() extends Proximal {
   def prox(x: DenseVector[Double], rho: Double) = {
     val xnorm = norm(x)
     cforRange(0 until x.length) { i =>
-      if (xnorm >= 1 / rho) x.update(i, x(i) * (1 - 1 / (rho * xnorm)))
-      else x.update(i, 0)
+      if (xnorm >= 1 / rho)
+        x.update(i, x(i) * (1 - 1 / (rho * xnorm)))
+      else
+        x.update(i, 0)
     }
   }
 }
@@ -234,7 +236,11 @@ case class ProximalHuber() extends Proximal {
     if (abs(x) <= 1) {
       2 * x
     } else {
-      val projx = if (x > 0) x else -x
+      val projx =
+        if (x > 0)
+          x
+        else
+          -x
       2 * projx
     }
   }

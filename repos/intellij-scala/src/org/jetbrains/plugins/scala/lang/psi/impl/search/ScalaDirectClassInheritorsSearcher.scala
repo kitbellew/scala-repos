@@ -70,14 +70,16 @@ class ScalaDirectClassInheritorsSearcher
             if (qualName == null) {
               anonymousClasses += clazz
               return
-            } else qualName
+            } else
+              qualName
         }
       }
       val buffer = map.getOrElseUpdate(id, new ArrayBuffer[PsiClass]())
       buffer += clazz
     }
     val candidates: Seq[ScTemplateDefinition] = inReadAction {
-      if (!clazz.isValid) return true
+      if (!clazz.isValid)
+        return true
 
       ScalaStubsUtil.getClassInheritors(clazz, scope)
     }
@@ -86,7 +88,8 @@ class ScalaDirectClassInheritorsSearcher
       ProgressManager.checkCanceled()
       if (inReadAction {
             candidate.isInheritor(clazz, deep = false)
-          }) add(candidate)
+          })
+        add(candidate)
     }
 
     if (map.nonEmpty) {
@@ -102,28 +105,33 @@ class ScalaDirectClassInheritorsSearcher
           Comparing.equal(getJarFile(inheritor), clazzJar)
         } match {
           case Some(inheritor) =>
-            if (!consumer.process(inheritor)) return false
+            if (!consumer.process(inheritor))
+              return false
           case _ if clazzJar == null => //this is possible during completion
             for (inheritor <- sameNameInheritors) {
-              if (!consumer.process(inheritor)) return false
+              if (!consumer.process(inheritor))
+                return false
             }
           case _ =>
             val closestClass = sameNameInheritors.maxBy { inheritor =>
               val jarFile = getJarFile(inheritor)
-              if (jarFile == null) 0
+              if (jarFile == null)
+                0
               else
                 StringUtil.commonPrefixLength(
                   jarFile.getCanonicalPath,
                   clazzJar.getCanonicalPath)
             }
-            if (!consumer.process(closestClass)) return false
+            if (!consumer.process(closestClass))
+              return false
         }
       }
     }
 
     if (anonymousClasses.nonEmpty && queryParameters.includeAnonymous()) {
       for (clazz <- anonymousClasses) {
-        if (!consumer.process(clazz)) return false
+        if (!consumer.process(clazz))
+          return false
       }
     }
 

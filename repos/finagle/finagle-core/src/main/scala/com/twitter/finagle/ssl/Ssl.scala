@@ -50,7 +50,10 @@ object Ssl {
       val jsseInstance = JSSE.server(
         certificatePath,
         keyPath,
-        if (caCertPath == null) None else Some(caCertPath),
+        if (caCertPath == null)
+          None
+        else
+          Some(caCertPath),
         cacheContexts
       )
 

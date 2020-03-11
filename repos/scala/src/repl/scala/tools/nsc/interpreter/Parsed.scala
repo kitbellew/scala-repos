@@ -17,7 +17,8 @@ trait Delimited {
   /** Break String into args based on delimiting function.
     */
   protected def toArgs(s: String): List[String] =
-    if (s == "") Nil
+    if (s == "")
+      Nil
     else
       (s indexWhere isDelimiterChar) match {
         case -1  => List(s)
@@ -58,9 +59,12 @@ class Parsed private (
   def currentChar = buffer(cursor)
   def currentArg = args.last
   def position =
-    if (isEmpty) 0
-    else if (isLastDelimiter) cursor
-    else cursor - currentArg.length
+    if (isEmpty)
+      0
+    else if (isLastDelimiter)
+      cursor
+    else
+      cursor - currentArg.length
 
   def isFirstDelimiter = !isEmpty && isDelimiterChar(buffer.head)
   def isLastDelimiter = !isEmpty && isDelimiterChar(buffer.last)
@@ -76,7 +80,11 @@ class Parsed private (
 object Parsed {
   val DefaultDelimiters = "[]{},`; \t".toSet
 
-  private def onull(s: String) = if (s == null) "" else s
+  private def onull(s: String) =
+    if (s == null)
+      ""
+    else
+      s
 
   def apply(s: String, cursor: Int): Parsed =
     apply(onull(s), cursor, DefaultDelimiters)

@@ -107,14 +107,20 @@ object LogManager {
         backingTrace))
   }
   def defaultTraceLevel(state: State): Int =
-    if (state.interactive) -1 else Int.MaxValue
+    if (state.interactive)
+      -1
+    else
+      Int.MaxValue
   def suppressedMessage(
       key: ScopedKey[_],
       state: State): SuppressedTraceContext => Option[String] = {
     lazy val display = Project.showContextKey(state)
     def commandBase = "last " + display(unwrapStreamsKey(key))
     def command(useColor: Boolean) =
-      if (useColor) BLUE + commandBase + RESET else "'" + commandBase + "'"
+      if (useColor)
+        BLUE + commandBase + RESET
+      else
+        "'" + commandBase + "'"
     context =>
       Some(
         "Stack trace suppressed: run %s for the full output.".format(

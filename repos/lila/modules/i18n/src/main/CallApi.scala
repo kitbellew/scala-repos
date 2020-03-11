@@ -14,8 +14,10 @@ private final class CallApi(
 
   def apply(userOption: Option[User], req: RequestHeader): Option[TransInfo] =
     userOption.flatMap { user =>
-      if (req.cookies.get(hideCallsCookieName).isDefined) None
-      else if (user.count.game < minGames) None
+      if (req.cookies.get(hideCallsCookieName).isDefined)
+        None
+      else if (user.count.game < minGames)
+        None
       else
         shuffle {
           (req.acceptLanguages map transInfos.get).flatten filterNot { i =>

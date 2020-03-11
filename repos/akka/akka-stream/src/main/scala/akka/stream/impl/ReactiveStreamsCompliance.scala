@@ -68,16 +68,20 @@ private[stream] object ReactiveStreamsCompliance {
     tryOnError(subscriber, numberOfElementsInRequestMustBePositiveException)
 
   final def requireNonNullSubscriber[T](subscriber: Subscriber[T]): Unit =
-    if (subscriber eq null) throw subscriberMustNotBeNullException
+    if (subscriber eq null)
+      throw subscriberMustNotBeNullException
 
   final def requireNonNullException(cause: Throwable): Unit =
-    if (cause eq null) throw exceptionMustNotBeNullException
+    if (cause eq null)
+      throw exceptionMustNotBeNullException
 
   final def requireNonNullElement[T](element: T): Unit =
-    if (element == null) throw elementMustNotBeNullException
+    if (element == null)
+      throw elementMustNotBeNullException
 
   final def requireNonNullSubscription(subscription: Subscription): Unit =
-    if (subscription == null) throw subscriptionMustNotBeNullException
+    if (subscription == null)
+      throw subscriptionMustNotBeNullException
 
   @SerialVersionUID(1L)
   sealed trait SpecViolation extends Throwable

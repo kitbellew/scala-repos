@@ -11,17 +11,19 @@ object Test {
   }
 
   def main(args: Array[String]): Unit = {
-    val threads = for (i <- (1 to 16)) yield {
-      val t = new Thread {
-        override def run(): Unit = {
-          import reflect.runtime.universe._
-          typeOf[List[String]] <:< typeOf[Seq[_]]
+    val threads =
+      for (i <- (1 to 16))
+        yield {
+          val t = new Thread {
+            override def run(): Unit = {
+              import reflect.runtime.universe._
+              typeOf[List[String]] <:< typeOf[Seq[_]]
+            }
+          }
+          t.start()
+          t.join()
+          WeakReference(t)
         }
-      }
-      t.start()
-      t.join()
-      WeakReference(t)
-    }
     forceGc()
     val nonGCdThreads = threads.filter(_.get.nonEmpty).length
     assert(

@@ -40,7 +40,8 @@ class BigIntConvertorCheck
   }
 
   implicit def arbitraryBitSet: Arbitrary[BitSet] = Arbitrary {
-    for (seq <- positiveIntStream.arbitrary) yield BitSet(seq: _*)
+    for (seq <- positiveIntStream.arbitrary)
+      yield BitSet(seq: _*)
   }
 
   "BigIntConvertor" should "round-trip BigInt <=> BitSet" in {

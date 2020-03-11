@@ -153,7 +153,11 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
       implicit M: Monoid[EE]): Validation[EE, A] =
     this match {
       case Failure(_) => this
-      case Success(e) => if (p(e)) this else Failure(M.zero)
+      case Success(e) =>
+        if (p(e))
+          this
+        else
+          Failure(M.zero)
     }
 
   /** Return `true` if this validation is a success value satisfying the given predicate. */

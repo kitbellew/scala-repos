@@ -68,7 +68,11 @@ abstract class MutableValue extends Serializable {
 
 final class MutableInt extends MutableValue {
   var value: Int = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = {
     isNull = false
     value = v.asInstanceOf[Int]
@@ -83,7 +87,11 @@ final class MutableInt extends MutableValue {
 
 final class MutableFloat extends MutableValue {
   var value: Float = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = {
     isNull = false
     value = v.asInstanceOf[Float]
@@ -98,7 +106,11 @@ final class MutableFloat extends MutableValue {
 
 final class MutableBoolean extends MutableValue {
   var value: Boolean = false
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = {
     isNull = false
     value = v.asInstanceOf[Boolean]
@@ -113,7 +125,11 @@ final class MutableBoolean extends MutableValue {
 
 final class MutableDouble extends MutableValue {
   var value: Double = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = {
     isNull = false
     value = v.asInstanceOf[Double]
@@ -128,7 +144,11 @@ final class MutableDouble extends MutableValue {
 
 final class MutableShort extends MutableValue {
   var value: Short = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = value = {
     isNull = false
     v.asInstanceOf[Short]
@@ -143,7 +163,11 @@ final class MutableShort extends MutableValue {
 
 final class MutableLong extends MutableValue {
   var value: Long = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = value = {
     isNull = false
     v.asInstanceOf[Long]
@@ -158,7 +182,11 @@ final class MutableLong extends MutableValue {
 
 final class MutableByte extends MutableValue {
   var value: Byte = 0
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = value = {
     isNull = false
     v.asInstanceOf[Byte]
@@ -173,7 +201,11 @@ final class MutableByte extends MutableValue {
 
 final class MutableAny extends MutableValue {
   var value: Any = _
-  override def boxed: Any = if (isNull) null else value
+  override def boxed: Any =
+    if (isNull)
+      null
+    else
+      value
   override def update(v: Any): Unit = {
     isNull = false
     value = v.asInstanceOf[Any]

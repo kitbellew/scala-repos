@@ -3,7 +3,8 @@ package lila.rating
 object Regulator {
 
   def apply(perfType: PerfType, before: Perf, after: Perf) =
-    if (before.nb >= after.nb) after
+    if (before.nb >= after.nb)
+      after
     else {
       val diff = (after.glicko.rating - before.glicko.rating).abs
       val extra = diff / regulationDivider(perfType)

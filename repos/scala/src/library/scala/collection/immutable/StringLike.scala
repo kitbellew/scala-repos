@@ -62,15 +62,18 @@ trait StringLike[+Repr]
     val start = from max 0
     val end = until min length
 
-    if (start >= end) newBuilder.result()
-    else (newBuilder ++= toString.substring(start, end)).result()
+    if (start >= end)
+      newBuilder.result()
+    else
+      (newBuilder ++= toString.substring(start, end)).result()
   }
 
   /** Return the current string concatenated `n` times.
     */
   def *(n: Int): String = {
     val buf = new StringBuilder
-    for (i <- 0 until n) buf append toString
+    for (i <- 0 until n)
+      buf append toString
     buf.toString
   }
 
@@ -90,14 +93,17 @@ trait StringLike[+Repr]
     */
   def stripLineEnd: String = {
     val len = toString.length
-    if (len == 0) toString
+    if (len == 0)
+      toString
     else {
       val last = apply(len - 1)
       if (isLineBreak(last))
         toString.substring(
           0,
-          if (last == LF && len >= 2 && apply(len - 2) == CR) len - 2
-          else len - 1)
+          if (last == LF && len >= 2 && apply(len - 2) == CR)
+            len - 2
+          else
+            len - 1)
       else
         toString
     }
@@ -121,7 +127,8 @@ trait StringLike[+Repr]
       if (index >= len)
         throw new NoSuchElementException("next on empty iterator")
       val start = index
-      while (index < len && !isLineBreak(apply(index))) index += 1
+      while (index < len && !isLineBreak(apply(index)))
+        index += 1
       index += 1
       str.substring(start, index min len)
     }
@@ -146,9 +153,12 @@ trait StringLike[+Repr]
     * If the first character of the string is capitalized, it is returned unchanged.
     */
   def capitalize: String =
-    if (toString == null) null
-    else if (toString.length == 0) ""
-    else if (toString.charAt(0).isUpper) toString
+    if (toString == null)
+      null
+    else if (toString.length == 0)
+      ""
+    else if (toString.charAt(0).isUpper)
+      toString
     else {
       val chars = toString.toCharArray
       chars(0) = chars(0).toUpper
@@ -159,8 +169,10 @@ trait StringLike[+Repr]
     *  start with `prefix`, it is returned unchanged.
     */
   def stripPrefix(prefix: String) =
-    if (toString.startsWith(prefix)) toString.substring(prefix.length)
-    else toString
+    if (toString.startsWith(prefix))
+      toString.substring(prefix.length)
+    else
+      toString
 
   /** Returns this string with the given `suffix` stripped. If this string does not
     *  end with `suffix`, it is returned unchanged.
@@ -168,7 +180,8 @@ trait StringLike[+Repr]
   def stripSuffix(suffix: String) =
     if (toString.endsWith(suffix))
       toString.substring(0, toString.length() - suffix.length)
-    else toString
+    else
+      toString
 
   /** Replace all literal occurrences of `literal` with the string `replacement`.
     *  This is equivalent to [[java.lang.String#replaceAll]] except that both arguments
@@ -195,11 +208,13 @@ trait StringLike[+Repr]
     for (line <- linesWithSeparators) {
       val len = line.length
       var index = 0
-      while (index < len && line.charAt(index) <= ' ') index += 1
+      while (index < len && line.charAt(index) <= ' ')
+        index += 1
       buf append
         (if (index < len && line.charAt(index) == marginChar)
            line.substring(index + 1)
-         else line)
+         else
+           line)
     }
     buf.toString
   }
@@ -214,8 +229,10 @@ trait StringLike[+Repr]
   private def escape(ch: Char): String =
     if ((ch >= 'a') && (ch <= 'z') ||
         (ch >= 'A') && (ch <= 'Z') ||
-        (ch >= '0' && ch <= '9')) ch.toString
-    else "\\" + ch
+        (ch >= '0' && ch <= '9'))
+      ch.toString
+    else
+      "\\" + ch
 
   /** Split this string around the separator character
     *
@@ -327,12 +344,13 @@ trait StringLike[+Repr]
   def toDouble: Double = java.lang.Double.parseDouble(toString)
 
   private def parseBoolean(s: String): Boolean =
-    if (s != null) s.toLowerCase match {
-      case "true"  => true
-      case "false" => false
-      case _ =>
-        throw new IllegalArgumentException("For input string: \"" + s + "\"")
-    }
+    if (s != null)
+      s.toLowerCase match {
+        case "true"  => true
+        case "false" => false
+        case _ =>
+          throw new IllegalArgumentException("For input string: \"" + s + "\"")
+      }
     else
       throw new IllegalArgumentException("For input string: \"null\"")
 

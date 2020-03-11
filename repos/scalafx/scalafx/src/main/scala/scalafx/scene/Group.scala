@@ -37,7 +37,10 @@ import scalafx.delegate.SFXDelegate
 
 object Group {
   implicit def sfxGroup2jfx(v: Group): jfxs.Group =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

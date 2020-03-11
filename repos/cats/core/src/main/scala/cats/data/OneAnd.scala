@@ -27,7 +27,10 @@ final case class OneAnd[F[_], A](head: A, tail: F[A]) {
     */
   def filter(f: A => Boolean)(implicit F: MonadCombine[F]): F[A] = {
     val rest = F.filter(tail)(f)
-    if (f(head)) F.combineK(F.pure(head), rest) else rest
+    if (f(head))
+      F.combineK(F.pure(head), rest)
+    else
+      rest
   }
 
   /**
@@ -40,7 +43,10 @@ final case class OneAnd[F[_], A](head: A, tail: F[A]) {
     * find the first element matching the predicate, if one exists
     */
   def find(f: A => Boolean)(implicit F: Foldable[F]): Option[A] =
-    if (f(head)) Some(head) else F.find(tail)(f)
+    if (f(head))
+      Some(head)
+    else
+      F.find(tail)(f)
 
   /**
     * Check whether at least one element satisfies the predicate.

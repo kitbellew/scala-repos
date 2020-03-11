@@ -29,14 +29,22 @@ trait Zero[@specialized T] extends Serializable {
 
 object Zero extends ZeroLowPriority {
   def forClass(clazz: Class[_]): Zero[_] = {
-    if (clazz == Integer.TYPE) IntZero
-    else if (clazz == java.lang.Float.TYPE) FloatZero
-    else if (clazz == java.lang.Double.TYPE) DoubleZero
-    else if (clazz == java.lang.Short.TYPE) ShortZero
-    else if (clazz == java.lang.Byte.TYPE) ByteZero
-    else if (clazz == java.lang.Boolean.TYPE) BooleanZero
-    else if (clazz == java.lang.Character.TYPE) CharZero
-    else refDefault
+    if (clazz == Integer.TYPE)
+      IntZero
+    else if (clazz == java.lang.Float.TYPE)
+      FloatZero
+    else if (clazz == java.lang.Double.TYPE)
+      DoubleZero
+    else if (clazz == java.lang.Short.TYPE)
+      ShortZero
+    else if (clazz == java.lang.Byte.TYPE)
+      ByteZero
+    else if (clazz == java.lang.Boolean.TYPE)
+      BooleanZero
+    else if (clazz == java.lang.Character.TYPE)
+      CharZero
+    else
+      refDefault
   }
 
   def apply[T](v: T): Zero[T] = new Zero[T] {

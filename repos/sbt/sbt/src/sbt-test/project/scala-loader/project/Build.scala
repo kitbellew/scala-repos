@@ -19,7 +19,8 @@ object Build extends Build {
   lazy val root = Project("root", file("."))
     .settings(checkLoader <<= checkTask, concurrentRestrictions := Nil)
 
-  lazy val subs = (for (i <- 1 to 20) yield newProject(i)).toSeq
+  lazy val subs = (for (i <- 1 to 20)
+    yield newProject(i)).toSeq
 
   def newProject(i: Int): Project =
     Project("x" + i.toString, file(i.toString)).settings(

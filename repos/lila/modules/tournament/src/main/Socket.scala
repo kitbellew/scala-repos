@@ -69,7 +69,8 @@ private[tournament] final class Socket(
 
     case Broom => {
       broom
-      if (timeBomb.boom) self ! PoisonPill
+      if (timeBomb.boom)
+        self ! PoisonPill
     }
 
     case lila.chat.actorApi.ChatLine(_, line) =>

@@ -51,7 +51,10 @@ object ScaleTransition extends AnimationStatics {
     */
   implicit def sfxScaleTransition2jfx(
       v: ScaleTransition): jfxa.ScaleTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

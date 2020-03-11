@@ -85,7 +85,8 @@ object Definitions {
     if (Trees.isKeyword(encoded) || encoded.charAt(0).isDigit ||
         encoded.charAt(0) == '$') {
       "$" + encoded
-    } else encoded
+    } else
+      encoded
   }
 
   // !!! Duplicate logic: this code must be in sync with runtime.StackTrace
@@ -93,8 +94,10 @@ object Definitions {
   /** Decodes a class name encoded with [[encodeClassName]]. */
   def decodeClassName(encodedName: String): String = {
     val encoded =
-      if (encodedName.charAt(0) == '$') encodedName.substring(1)
-      else encodedName
+      if (encodedName.charAt(0) == '$')
+        encodedName.substring(1)
+      else
+        encodedName
     val base = decompressedClasses.getOrElse(
       encoded, {
         decompressedPrefixes collectFirst {
@@ -165,29 +168,37 @@ object Definitions {
     val (simpleName, privateAndSigString) =
       if (isConstructorName(encodedName)) {
         val privateAndSigString =
-          if (encodedName == "init___") ""
-          else encodedName.stripPrefix("init___") + "__"
+          if (encodedName == "init___")
+            ""
+          else
+            encodedName.stripPrefix("init___") + "__"
         ("<init>", privateAndSigString)
       } else {
         val pos = encodedName.indexOf("__")
         val pos2 =
-          if (!encodedName.substring(pos + 2).startsWith("p")) pos
-          else encodedName.indexOf("__", pos + 2)
+          if (!encodedName.substring(pos + 2).startsWith("p"))
+            pos
+          else
+            encodedName.indexOf("__", pos + 2)
         (encodedName.substring(0, pos), encodedName.substring(pos2 + 2))
       }
 
     // -1 preserves trailing empty strings
     val parts = privateAndSigString.split("__", -1).toSeq
     val paramsAndResultStrings =
-      if (parts.headOption.exists(_.startsWith("p"))) parts.tail
-      else parts
+      if (parts.headOption.exists(_.startsWith("p")))
+        parts.tail
+      else
+        parts
 
     val paramStrings :+ resultString = paramsAndResultStrings
 
     val paramTypes = paramStrings.map(decodeReferenceType).toList
     val resultType =
-      if (resultString == "") None // constructor or reflective proxy
-      else Some(decodeReferenceType(resultString))
+      if (resultString == "")
+        None // constructor or reflective proxy
+      else
+        Some(decodeReferenceType(resultString))
 
     (simpleName, paramTypes, resultType)
   }

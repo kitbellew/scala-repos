@@ -91,7 +91,8 @@ private[io] class UdpConnection(
       context.stop(self)
 
     case send: Send if writePending ⇒
-      if (TraceLogging) log.debug("Dropping write because queue is full")
+      if (TraceLogging)
+        log.debug("Dropping write because queue is full")
       sender() ! CommandFailed(send)
 
     case send: Send if send.payload.isEmpty ⇒
@@ -132,11 +133,14 @@ private[io] class UdpConnection(
       send.payload.copyToBuffer(buffer)
       buffer.flip()
       val writtenBytes = channel.write(buffer)
-      if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
+      if (TraceLogging)
+        log.debug("Wrote [{}] bytes to channel", writtenBytes)
 
       // Datagram channel either sends the whole message, or nothing
-      if (writtenBytes == 0) commander ! CommandFailed(send)
-      else if (send.wantsAck) commander ! send.ack
+      if (writtenBytes == 0)
+        commander ! CommandFailed(send)
+      else if (send.wantsAck)
+        commander ! send.ack
     } finally {
       udpConn.bufferPool.release(buffer)
       pendingSend = null

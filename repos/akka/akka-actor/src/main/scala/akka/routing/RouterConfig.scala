@@ -101,7 +101,8 @@ trait RouterConfig extends Serializable {
 private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
 
   final def overrideUnsetConfig(other: RouterConfig): RouterConfig =
-    if (other == NoRouter) this // NoRouter is the default, hence “neutral”
+    if (other == NoRouter)
+      this // NoRouter is the default, hence “neutral”
     else {
 
       other match {
@@ -112,7 +113,8 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
               this
                 .withSupervisorStrategy(p.supervisorStrategy)
                 .asInstanceOf[PoolOverrideUnsetConfig[T]]
-            else this
+            else
+              this
 
           if (wssConf.resizer.isEmpty && p.resizer.isDefined)
             wssConf.withResizer(p.resizer.get)
@@ -137,8 +139,10 @@ abstract class GroupBase extends Group {
   @deprecated("Use paths with ActorSystem parameter instead", "2.4")
   override final def paths: immutable.Iterable[String] = {
     val tmp = getPaths
-    if (tmp != null) immutableSeq(tmp)
-    else null
+    if (tmp != null)
+      immutableSeq(tmp)
+    else
+      null
   }
 
   def getPaths(system: ActorSystem): java.lang.Iterable[String]

@@ -127,8 +127,10 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
                   "cannot increment or decrement non-numeric value")
 
               val existingValue: Long =
-                if (existingString.isEmpty) 0L
-                else existingString.toLong
+                if (existingString.isEmpty)
+                  0L
+                else
+                  existingString.toLong
 
               val result: Long = existingValue + delta
               data(key) = Entry(Buf.Utf8(result.toString), entry.expiry)

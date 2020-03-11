@@ -56,15 +56,18 @@ trait Errors extends Traces {
       val diagnostic =
         if (macroImpl.typeParams.length > targs.length)
           "has too few type arguments"
-        else "has too many arguments"
+        else
+          "has too many arguments"
       implRefError(
         s"macro implementation reference $diagnostic for " + treeSymTypeMsg(
           macroImplRef))
     }
 
     private def macroImplementationWording =
-      if (isImplBundle) "bundle implementation"
-      else "macro implementation"
+      if (isImplBundle)
+        "bundle implementation"
+      else
+        "macro implementation"
 
     def MacroImplNotPublicError() =
       implRefError(s"${macroImplementationWording} must be public")
@@ -81,10 +84,18 @@ trait Errors extends Traces {
     // helpers
 
     private def lengthMsg(flavor: String, violation: String, extra: Symbol) = {
-      val noun = if (flavor == "value") "parameter" else "type parameter"
+      val noun =
+        if (flavor == "value")
+          "parameter"
+        else
+          "type parameter"
       val message =
         noun + " lists have different length, " + violation + " extra " + noun
-      val suffix = if (extra ne NoSymbol) " " + extra.defString else ""
+      val suffix =
+        if (extra ne NoSymbol)
+          " " + extra.defString
+        else
+          ""
       message + suffix
     }
 
@@ -99,12 +110,17 @@ trait Errors extends Traces {
         restpe: Type,
         abbreviate: Boolean,
         untype: Boolean) = {
-      def preprocess(tpe: Type) = if (untype) untypeMetalevel(tpe) else tpe
+      def preprocess(tpe: Type) =
+        if (untype)
+          untypeMetalevel(tpe)
+        else
+          tpe
       var pssPart = (pss map (ps =>
         ps map (p =>
           p.defStringSeenAs(
             preprocess(p.info))) mkString ("(", ", ", ")"))).mkString
-      if (abbreviate) pssPart = abbreviateCoreAliases(pssPart)
+      if (abbreviate)
+        pssPart = abbreviateCoreAliases(pssPart)
       var retPart = preprocess(restpe).toString
       if (abbreviate || macroDdef.tpt.tpe == null)
         retPart = abbreviateCoreAliases(retPart)
@@ -118,14 +134,15 @@ trait Errors extends Traces {
 
       def check(rtpe: Type, atpe: Type): Boolean = {
         def success() = {
-          if (verbose) println(rtpe + " <: " + atpe + "?" + EOL + "true");
+          if (verbose)
+            println(rtpe + " <: " + atpe + "?" + EOL + "true");
           true
         }
         (rtpe, atpe) match {
           case _ if rtpe eq atpe => success()
           case (
-              TypeRef(_, RepeatedParamClass, rtpe :: Nil),
-              TypeRef(_, RepeatedParamClass, atpe :: Nil)) =>
+                TypeRef(_, RepeatedParamClass, rtpe :: Nil),
+                TypeRef(_, RepeatedParamClass, atpe :: Nil)) =>
             check(rtpe, atpe)
           case (ExprClassOf(_), TreeType()) if rtpe.prefix =:= atpe.prefix =>
             success()
@@ -136,10 +153,13 @@ trait Errors extends Traces {
       }
 
       val ok =
-        if (verbose) withTypesExplained(check(rtpe, atpe))
-        else check(rtpe, atpe)
+        if (verbose)
+          withTypesExplained(check(rtpe, atpe))
+        else
+          check(rtpe, atpe)
       if (!ok) {
-        if (!verbose) explainTypes(rtpe, atpe)
+        if (!verbose)
+          explainTypes(rtpe, atpe)
         val msg = {
           val ss = Seq(rtpe, atpe) map (this abbreviateCoreAliases _.toString)
           s"type mismatch for $slot: ${ss(0)} does not conform to ${ss(1)}"
@@ -197,8 +217,10 @@ trait Errors extends Traces {
       def fail(paramName: Name) =
         compatibilityError(
           "types incompatible for parameter " + paramName + ": corresponding is not a vararg parameter")
-      if (isRepeated(rparam) && !isRepeated(aparam)) fail(rparam.name)
-      if (!isRepeated(rparam) && isRepeated(aparam)) fail(aparam.name)
+      if (isRepeated(rparam) && !isRepeated(aparam))
+        fail(rparam.name)
+      if (!isRepeated(rparam) && isRepeated(aparam))
+        fail(aparam.name)
     }
 
     def MacroImplTargMismatchError(atargs: List[Type], atparams: List[Symbol]) =

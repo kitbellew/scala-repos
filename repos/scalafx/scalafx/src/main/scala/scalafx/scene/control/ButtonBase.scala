@@ -37,7 +37,10 @@ import scalafx.scene.input.MouseEvent
 
 object ButtonBase {
   implicit def sfxButtonBase2jfx(v: ButtonBase): jfxsc.ButtonBase =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)

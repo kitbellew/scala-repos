@@ -96,7 +96,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
     table = new Array[Entry](newSize)
     mask = newSize - 1
     oldTable.foreach(entry =>
-      if (entry != null && entry.value != None) addEntry(entry))
+      if (entry != null && entry.value != None)
+        addEntry(entry))
     deleted = 0
   }
 
@@ -128,7 +129,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
   }
 
   private[this] def addEntry(entry: Entry) =
-    if (entry != null) table(findIndex(entry.key, entry.hash)) = entry
+    if (entry != null)
+      table(findIndex(entry.key, entry.hash)) = entry
 
   override def update(key: Key, value: Value) {
     put(key, hashOf(key), value)
@@ -154,7 +156,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
     put(key, hashOf(key), value)
 
   private def put(key: Key, hash: Int, value: Value): Option[Value] = {
-    if (2 * (size + deleted) > mask) growTable()
+    if (2 * (size + deleted) > mask)
+      growTable()
     val index = findIndex(key, hash)
     val entry = table(index)
     if (entry == null) {
@@ -182,7 +185,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
       size -= 1
       deleted += 1
       res
-    } else None
+    } else
+      None
   }
 
   def get(key: Key): Option[Value] = {
@@ -216,9 +220,11 @@ class OpenHashMap[Key, Value](initialSize: Int)
     val initialModCount = modCount
 
     private[this] def advance() {
-      if (initialModCount != modCount) sys.error("Concurrent modification")
+      if (initialModCount != modCount)
+        sys.error("Concurrent modification")
       while ((index <= mask) && (table(index) == null || table(
-               index).value == None)) index += 1
+               index).value == None))
+        index += 1
     }
 
     def hasNext = {
@@ -254,13 +260,16 @@ class OpenHashMap[Key, Value](initialSize: Int)
   override def foreach[U](f: ((Key, Value)) => U) {
     val startModCount = modCount
     foreachUndeletedEntry(entry => {
-      if (modCount != startModCount) sys.error("Concurrent Modification")
+      if (modCount != startModCount)
+        sys.error("Concurrent Modification")
       f((entry.key, entry.value.get))
     })
   }
 
   private[this] def foreachUndeletedEntry(f: Entry => Unit) {
-    table.foreach(entry => if (entry != null && entry.value != None) f(entry))
+    table.foreach(entry =>
+      if (entry != null && entry.value != None)
+        f(entry))
   }
 
   override def transform(f: (Key, Value) => Value) = {

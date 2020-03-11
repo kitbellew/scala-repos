@@ -32,7 +32,8 @@ final class Importer(
         game: Game,
         result: Option[Result],
         situation: Situation): Game =
-      if (game.finished) game
+      if (game.finished)
+        game
       else
         situation.status match {
           case Some(status) => game.finish(status, situation.winner).game

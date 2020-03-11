@@ -63,7 +63,8 @@ final class ShutupApi(
                 BSONDocument(
                   "pub" -> BSONDocument("$each" -> List(text), "$slice" -> -20)
                 )
-              else BSONDocument()
+              else
+                BSONDocument()
             val push = BSONDocument(
               textType.key -> BSONDocument(
                 "$each" -> List(BSONDouble(analysed.ratio)),

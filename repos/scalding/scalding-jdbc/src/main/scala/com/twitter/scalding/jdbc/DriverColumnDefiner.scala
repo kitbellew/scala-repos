@@ -14,7 +14,10 @@ case object DOUBLE extends JdbcType
 
 object IsNullable {
   def apply(isNullable: Boolean): IsNullable =
-    if (isNullable) Nullable else NotNullable
+    if (isNullable)
+      Nullable
+    else
+      NotNullable
 }
 sealed abstract class IsNullable(val get: String)
 case object Nullable extends IsNullable("NULL")

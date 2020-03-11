@@ -269,7 +269,8 @@ object Array extends FallbackArrayBuilding {
   /** Creates a 2-dimensional array */
   def ofDim[T: ClassTag](n1: Int, n2: Int): Array[Array[T]] = {
     val arr: Array[Array[T]] = (new Array[Array[T]](n1): Array[Array[T]])
-    for (i <- 0 until n1) arr(i) = new Array[T](n2)
+    for (i <- 0 until n1)
+      arr(i) = new Array[T](n2)
     arr
     // tabulate(n1)(_ => ofDim[T](n2))
   }
@@ -303,7 +304,8 @@ object Array extends FallbackArrayBuilding {
   def concat[T: ClassTag](xss: Array[T]*): Array[T] = {
     val b = newBuilder[T]
     b.sizeHint(xss.map(_.size).sum)
-    for (xs <- xss) b ++= xs
+    for (xs <- xss)
+      b ++= xs
     b.result
   }
 
@@ -466,12 +468,16 @@ object Array extends FallbackArrayBuilding {
     *  @return      the array with values in `start, start + step, ...` up to, but excluding `end`
     */
   def range(start: Int, end: Int, step: Int): Array[Int] = {
-    if (step == 0) throw new IllegalArgumentException("zero step")
+    if (step == 0)
+      throw new IllegalArgumentException("zero step")
     val b = newBuilder[Int]
     b.sizeHint(immutable.Range.count(start, end, step, false))
 
     var i = start
-    while (if (step < 0) end < i else i < end) {
+    while (if (step < 0)
+             end < i
+           else
+             i < end) {
       b += i
       i += step
     }
@@ -509,7 +515,10 @@ object Array extends FallbackArrayBuilding {
     *  @return  sequence wrapped in a [[scala.Some]], if `x` is a Seq, otherwise `None`
     */
   def unapplySeq[T](x: Array[T]): Option[IndexedSeq[T]] =
-    if (x == null) None else Some(x.toIndexedSeq)
+    if (x == null)
+      None
+    else
+      Some(x.toIndexedSeq)
   // !!! the null check should to be necessary, but without it 2241 fails. Seems to be a bug
   // in pattern matcher.  @PP: I noted in #4364 I think the behavior is correct.
 }

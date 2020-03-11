@@ -461,7 +461,10 @@ class IntervalCheck
 
       def nextf(): Rational = {
         val r = underlyingf()
-        if (int.contains(r)) r else nextf()
+        if (int.contains(r))
+          r
+        else
+          nextf()
       }
 
       Array.fill(n)(nextf())
@@ -475,7 +478,8 @@ class IntervalCheck
       val c: Interval[Rational] = f(a)
       sample(a, tries).foreach { x =>
         val ok = c.contains(g(x))
-        if (!ok) println("%s failed on %s" format (a, x.toString))
+        if (!ok)
+          println("%s failed on %s" format (a, x.toString))
         ok shouldBe true
       }
     }
@@ -488,8 +492,10 @@ class IntervalCheck
       val c: Interval[Rational] = f(a, b)
       sample(a, tries).zip(sample(b, tries)).foreach {
         case (x, y) =>
-          if (!a.contains(x)) println("%s does not contain %s" format (a, x))
-          if (!b.contains(y)) println("%s does not contain %s" format (b, y))
+          if (!a.contains(x))
+            println("%s does not contain %s" format (a, x))
+          if (!b.contains(y))
+            println("%s does not contain %s" format (b, y))
           val ok = c.contains(g(x, y))
           if (!ok)
             println(
@@ -623,7 +629,11 @@ class IntervalIteratorCheck
 
   property("bounded intervals are ok") {
     forAll { (n1: Rational, n2: Rational, num0: Byte) =>
-      val (x, y) = if (n1 <= n2) (n1, n2) else (n2, n1)
+      val (x, y) =
+        if (n1 <= n2)
+          (n1, n2)
+        else
+          (n2, n1)
 
       val num = ((num0 & 255) % 13) + 1
 
@@ -636,7 +646,12 @@ class IntervalIteratorCheck
         ns(x) shouldBe hasLower
         ns(y) shouldBe hasUpper
         val extra =
-          if (hasLower && hasUpper) 2 else if (hasLower || hasUpper) 1 else 0
+          if (hasLower && hasUpper)
+            2
+          else if (hasLower || hasUpper)
+            1
+          else
+            0
         ns.size shouldBe (num - 1 + extra)
       }
 
@@ -686,7 +701,11 @@ class IntervalIteratorCheck
           case (interval, hasN, mult) =>
             val step = step0 * mult
             val it = interval.iterator(step)
-            val expected = if (hasN) n else n + step
+            val expected =
+              if (hasN)
+                n
+              else
+                n + step
             it.next() shouldBe expected
             Try(interval.iterator(-step)).isFailure shouldBe true
         }

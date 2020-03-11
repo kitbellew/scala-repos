@@ -26,7 +26,10 @@ private[server] class NettyHeadersWrapper(nettyHeaders: HttpHeaders)
   override def get(key: String): Option[String] = Option(nettyHeaders.get(key))
   override def apply(key: String): String = {
     val value = nettyHeaders.get(key)
-    if (value == null) scala.sys.error("Header doesn't exist") else value
+    if (value == null)
+      scala.sys.error("Header doesn't exist")
+    else
+      value
   }
   override def getAll(key: String): Seq[String] =
     nettyHeaders.getAll(key).asScala

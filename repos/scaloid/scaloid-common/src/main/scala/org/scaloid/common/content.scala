@@ -490,7 +490,9 @@ class LocalServiceConnection[S <: LocalService](
     * //...
     * val foo = service.ifAvailable(_.foo)
     */
-  def ifAvailable[T](f: S => T): Unit = if (service.nonEmpty) f(service.get)
+  def ifAvailable[T](f: S => T): Unit =
+    if (service.nonEmpty)
+      f(service.get)
 
   /**
     * for example:
@@ -499,7 +501,10 @@ class LocalServiceConnection[S <: LocalService](
     * val result = service(_.foo > 3, "3 < " + _.foo, "fail")
     */
   def apply[T](test: S => Boolean, ifTrue: S => T, ifFalse: => T) =
-    if (service.nonEmpty && test(service.get)) ifTrue(service.get) else ifFalse
+    if (service.nonEmpty && test(service.get))
+      ifTrue(service.get)
+    else
+      ifFalse
 
   /**
     * Internal implementation for handling the service connection. You do not need to call this method.

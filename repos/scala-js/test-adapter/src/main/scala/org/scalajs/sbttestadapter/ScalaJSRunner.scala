@@ -120,8 +120,10 @@ final class ScalaJSRunner private[testadapter] (
         master.send(s"msg:$msg")
         ComUtils.receiveResponse(master) {
           case ("ok", msg) =>
-            if (msg.startsWith(":s:")) Some(msg.stripPrefix(":s:"))
-            else None
+            if (msg.startsWith(":s:"))
+              Some(msg.stripPrefix(":s:"))
+            else
+              None
         }
       }
 
@@ -154,16 +156,20 @@ final class ScalaJSRunner private[testadapter] (
     val slaves = this.slaves.values.toList // .toList to make it strict
 
     // First launch the stopping sequence on all slaves
-    val stopMessagesSent = for (slave <- slaves) yield Try {
-      slave.send("stopSlave")
-    }
+    val stopMessagesSent =
+      for (slave <- slaves)
+        yield Try {
+          slave.send("stopSlave")
+        }
 
     // Then process all their messages and close them
-    val slavesClosed = for (slave <- slaves) yield Try {
-      ComUtils.receiveLoop(slave, deadline)(
-        msgHandler(slave) orElse ComUtils.doneHandler)
-      slave.close()
-    }
+    val slavesClosed =
+      for (slave <- slaves)
+        yield Try {
+          ComUtils.receiveLoop(slave, deadline)(
+            msgHandler(slave) orElse ComUtils.doneHandler)
+          slave.close()
+        }
 
     // Return the first failed of all these Try's
     (stopMessagesSent ++ slavesClosed) collectFirst {

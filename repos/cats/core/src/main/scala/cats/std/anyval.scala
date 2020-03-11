@@ -37,7 +37,12 @@ trait ByteInstances /* missing algebra type classes */ {
       def empty: Byte = 0
       def inverse(x: Byte): Byte = (-x).toByte
       def compare(x: Byte, y: Byte): Int =
-        if (x < y) -1 else if (y < x) 1 else 0
+        if (x < y)
+          -1
+        else if (y < x)
+          1
+        else
+          0
     }
 }
 
@@ -49,7 +54,12 @@ trait CharInstances /* missing algebra type classes */ {
   implicit val charOrder: Order[Char] =
     new Order[Char] {
       def compare(x: Char, y: Char): Int =
-        if (x < y) -1 else if (y < x) 1 else 0
+        if (x < y)
+          -1
+        else if (y < x)
+          1
+        else
+          0
     }
 }
 
@@ -65,7 +75,12 @@ trait ShortInstances /* missing algebra type classes */ {
       def empty: Short = 0
       def inverse(x: Short): Short = (-x).toShort
       def compare(x: Short, y: Short): Int =
-        if (x < y) -1 else if (y < x) 1 else 0
+        if (x < y)
+          -1
+        else if (y < x)
+          1
+        else
+          0
     }
 
 }
@@ -82,7 +97,12 @@ trait LongInstances /* missing algebra type classes */ {
       def empty: Long = 0L
       def inverse(x: Long): Long = -x
       def compare(x: Long, y: Long): Int =
-        if (x < y) -1 else if (y < x) 1 else 0
+        if (x < y)
+          -1
+        else if (y < x)
+          1
+        else
+          0
     }
 }
 

@@ -15,8 +15,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   private def this(a: Array[Any]) = this(a, a.length)
 
   def apply(i: Int): T =
-    if (i > length) throw new IndexOutOfBoundsException
-    else a(i).asInstanceOf[T]
+    if (i > length)
+      throw new IndexOutOfBoundsException
+    else
+      a(i).asInstanceOf[T]
 
   def lengthCompare(n: Int): Int = length.compare(n)
 
@@ -59,8 +61,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       }
       i += 1
     }
-    if (j == 0) ConstArray.empty
-    else new ConstArray[R](ar, j)
+    if (j == 0)
+      ConstArray.empty
+    else
+      new ConstArray[R](ar, j)
   }
 
   def flatMap[R](f: T => ConstArray[R]): ConstArray[R] = {
@@ -73,7 +77,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       len += r.length
       i += 1
     }
-    if (len == 0) ConstArray.empty
+    if (len == 0)
+      ConstArray.empty
     else {
       val ar = new Array[Any](len)
       i = 0
@@ -96,7 +101,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       len += a(i).asInstanceOf[ConstArray[_]].length
       i += 1
     }
-    if (len == 0) ConstArray.empty
+    if (len == 0)
+      ConstArray.empty
     else {
       val ar = new Array[Any](len)
       i = 0
@@ -122,10 +128,14 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       val n0 = a(i)
       val n1 = f(n0.asInstanceOf[T])
       ar(i) = n1
-      if (n1.asInstanceOf[AnyRef] ne n0.asInstanceOf[AnyRef]) changed = true
+      if (n1.asInstanceOf[AnyRef] ne n0.asInstanceOf[AnyRef])
+        changed = true
       i += 1
     }
-    if (changed) new ConstArray[T](ar) else this
+    if (changed)
+      new ConstArray[T](ar)
+    else
+      this
   }
 
   def zipWithIndex: ConstArrayOp[(T, Int)] = new ConstArrayOp[(T, Int)] {
@@ -183,7 +193,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   def indexWhere(f: T => Boolean): Int = {
     var i = 0
     while (i < length) {
-      if (f(a(i).asInstanceOf[T])) return i
+      if (f(a(i).asInstanceOf[T]))
+        return i
       i += 1
     }
     -1
@@ -191,7 +202,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   def find(f: T => Boolean): Option[T] = {
     var idx = indexWhere(f)
-    if (idx == -1) None else Some(a(idx).asInstanceOf[T])
+    if (idx == -1)
+      None
+    else
+      Some(a(idx).asInstanceOf[T])
   }
 
   def exists(f: T => Boolean): Boolean = indexWhere(f) >= 0
@@ -199,7 +213,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   def forall(f: T => Boolean): Boolean = {
     var i = 0
     while (i < length) {
-      if (!f(a(i).asInstanceOf[T])) return false
+      if (!f(a(i).asInstanceOf[T]))
+        return false
       i += 1
     }
     true
@@ -216,9 +231,12 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       }
       i += 1
     }
-    if (ri == length) this
-    else if (ri == 0) ConstArray.empty
-    else new ConstArray[T](ar, ri)
+    if (ri == length)
+      this
+    else if (ri == 0)
+      ConstArray.empty
+    else
+      new ConstArray[T](ar, ri)
   }
 
   def withFilter(p: T => Boolean): ConstArrayOp[T] = new ConstArrayOp[T] {
@@ -233,14 +251,17 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
         }
         i += 1
       }
-      if (ri == 0) ConstArray.empty
-      else new ConstArray[R](ar, ri)
+      if (ri == 0)
+        ConstArray.empty
+      else
+        new ConstArray[R](ar, ri)
     }
     def foreach[R](f: T => R): Unit = {
       var i = 0
       while (i < length) {
         val v = a(i).asInstanceOf[T]
-        if (p(v)) f(v)
+        if (p(v))
+          f(v)
         i += 1
       }
     }
@@ -309,7 +330,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       srcPos: Int,
       destPos: Int,
       len: Int): Unit = {
-    if (len + srcPos > length) throw new IndexOutOfBoundsException
+    if (len + srcPos > length)
+      throw new IndexOutOfBoundsException
     System.arraycopy(a, srcPos, dest, destPos, len)
   }
 
@@ -339,7 +361,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   }
 
   def ++(o: Option[T] @uncheckedVariance): ConstArray[T] =
-    if (o.isDefined) this :+ o.get else this
+    if (o.isDefined)
+      this :+ o.get
+    else
+      this
 
   ///////////////////////////////////////////////////////// slicing
 
@@ -347,14 +372,24 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   def last: T = apply(length - 1)
 
-  def headOption: Option[T] = if (isEmpty) None else Some(head)
+  def headOption: Option[T] =
+    if (isEmpty)
+      None
+    else
+      Some(head)
 
-  def lastOption: Option[T] = if (isEmpty) None else Some(last)
+  def lastOption: Option[T] =
+    if (isEmpty)
+      None
+    else
+      Some(last)
 
   def slice(from: Int, until: Int): ConstArray[T] = {
     if (from == 0) {
-      if (until == length) this
-      else new ConstArray(a, until)
+      if (until == length)
+        this
+      else
+        new ConstArray(a, until)
     } else
       new ConstArray(
         Arrays
@@ -369,7 +404,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   def take(n: Int) = slice(0, math.min(n, length))
 
   def drop(n: Int) =
-    if (n >= length) ConstArray.empty else slice(n, length - n)
+    if (n >= length)
+      ConstArray.empty
+    else
+      slice(n, length - n)
 
   ///////////////////////////////////////////////////////// Equals
 
@@ -378,7 +416,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   private[this] var _hashCode: Int = 0
 
   override def hashCode = {
-    if (_hashCode != 0) _hashCode
+    if (_hashCode != 0)
+      _hashCode
     else {
       val h = MurmurHash3.productHash(this)
       _hashCode = h
@@ -388,11 +427,13 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   override def equals(o: Any): Boolean = o match {
     case o: ConstArray[_] =>
-      if (length != o.length) false
+      if (length != o.length)
+        false
       else {
         var i = 0
         while (i < length) {
-          if (a(i) != o(i)) return false
+          if (a(i) != o(i))
+            return false
           i += 1
         }
         true
@@ -444,7 +485,10 @@ object ConstArray {
   }
 
   def from[T](o: Option[T]): ConstArray[T] =
-    if (o.isDefined) apply(o.get) else empty
+    if (o.isDefined)
+      apply(o.get)
+    else
+      empty
 
   def unsafeWrap[T](values: Array[Any]): ConstArray[T] =
     new ConstArray(values)
@@ -501,8 +545,10 @@ final class ConstArrayBuilder[T](
   def length = len
 
   def result: ConstArray[T] =
-    if (len == 0) ConstArray.empty
-    else new ConstArray[T](a, len)
+    if (len == 0)
+      ConstArray.empty
+    else
+      new ConstArray[T](a, len)
 
   def +=(v: T): Unit = {
     ensure(1)
@@ -518,12 +564,14 @@ final class ConstArrayBuilder[T](
   }
 
   def ++=(vs: TraversableOnce[T]): Unit = {
-    if (vs.isInstanceOf[IndexedSeq[_]]) ensure(vs.size)
+    if (vs.isInstanceOf[IndexedSeq[_]])
+      ensure(vs.size)
     vs.foreach(self += _)
   }
 
   def ++=(vs: Option[T]): Unit =
-    if (vs.isDefined) this += vs.get
+    if (vs.isDefined)
+      this += vs.get
 
   private[this] def ensure(i: Int): Unit = {
     val total = len + i

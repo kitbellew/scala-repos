@@ -84,7 +84,8 @@ object InterpreterBenchmark {
       new InHandler {
         override def onPush(): Unit = {
           expected -= 1
-          if (expected > 0) pull(in)
+          if (expected > 0)
+            pull(in)
           // Otherwise do nothing, it will exit the interpreter
         }
       })

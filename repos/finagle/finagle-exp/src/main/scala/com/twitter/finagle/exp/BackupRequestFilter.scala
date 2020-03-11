@@ -24,7 +24,10 @@ object BackupRequestFilter {
   val DefaultRecalcWindow = 100
 
   private[exp] def defaultError(clipDuration: Duration): Double =
-    if (clipDuration.inMillis < 100) 0.0 else 0.05
+    if (clipDuration.inMillis < 100)
+      0.0
+    else
+      0.05
 
 }
 
@@ -187,7 +190,8 @@ class BackupRequestFilter[Req, Rep] private[exp] (
           val other = reps((firstIndex + 1) % 2)
           first.transform {
             case r @ Return(v) =>
-              if (first eq backup) orig.raise(BackupRequestLost)
+              if (first eq backup)
+                orig.raise(BackupRequestLost)
               Future.const(r)
             case Throw(_) =>
               other

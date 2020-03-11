@@ -37,7 +37,8 @@ trait ScalaXmlSupport {
           XML
             .withSAXParser(createSAXParser())
             .load(reader): NodeSeq // blocking call! Ideally we'd have a `loadToFuture`
-        } else NodeSeq.Empty
+        } else
+          NodeSeq.Empty
       }
 
   /**

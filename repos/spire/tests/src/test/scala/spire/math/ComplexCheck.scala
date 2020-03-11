@@ -36,7 +36,10 @@ class ComplexCheck
 
   val threshold = BigDecimal(1e-20)
   def near(x: Complex[BigDecimal], y: Complex[BigDecimal]) =
-    if (x == y) x shouldBe y else (x - y).abs should be <= threshold
+    if (x == y)
+      x shouldBe y
+    else
+      (x - y).abs should be <= threshold
 
   complex1("x + 0 == x") { x: C =>
     x + zero shouldBe x
@@ -51,7 +54,8 @@ class ComplexCheck
     x - x shouldBe zero
   }
   complex1("x / x == 1") { x: C =>
-    if (x != zero) near(x / x, one)
+    if (x != zero)
+      near(x / x, one)
   }
   complex1("x + x == 2x") { x: C =>
     near(x + x, x * 2)
@@ -64,7 +68,8 @@ class ComplexCheck
     near(x + y - x, y)
   }
   complex2("(x / y) * y == x") { (x: C, y: C) =>
-    if (y != zero) near((x / y) * y, x)
+    if (y != zero)
+      near((x / y) * y, x)
   }
 }
 
@@ -137,13 +142,15 @@ class ComplexCheck2
 
   property("x / x = 1") {
     forAll { (x: C) =>
-      if (x != zero) x / x shouldBe one
+      if (x != zero)
+        x / x shouldBe one
     }
   }
 
   property("x^-1 = 1 / x") {
     forAll { (x: C) =>
-      if (x != zero) x.reciprocal shouldBe one / x
+      if (x != zero)
+        x.reciprocal shouldBe one / x
     }
   }
 

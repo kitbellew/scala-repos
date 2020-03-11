@@ -87,14 +87,16 @@ private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
               "Payload size for [{}] is [{}] bytes",
               clazz.getName,
               payloadBytes)
-          else check()
+          else
+            check()
         } else if (payloadBytes > max) {
           if (maxPayloadBytes.replace(clazz, max, newMax))
             log.info(
               "New maximum payload size for [{}] is [{}] bytes",
               clazz.getName,
               payloadBytes)
-          else check()
+          else
+            check()
         }
       }
       check()

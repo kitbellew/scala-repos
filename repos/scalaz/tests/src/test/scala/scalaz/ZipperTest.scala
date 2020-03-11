@@ -51,8 +51,10 @@ object ZipperTest extends SpecLite {
     val zn = z.nextC
     zn.toStream must_=== (z.toStream)
 
-    if (z.atEnd) zn.atStart must_== (true)
-    else zn.index must_=== (z.index + 1)
+    if (z.atEnd)
+      zn.atStart must_== (true)
+    else
+      zn.index must_=== (z.index + 1)
   }
 
   "Next changes focus, lefts and rights " ! forAll {
@@ -69,8 +71,10 @@ object ZipperTest extends SpecLite {
 
   "Zipper next returns Some when rights is nonempty, none otherwise." ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int]) =>
-      if (r.length > 0) zipper(l, f, r).next.isDefined must_== (true)
-      else zipper(l, f, r).next.isDefined must_== (false)
+      if (r.length > 0)
+        zipper(l, f, r).next.isDefined must_== (true)
+      else
+        zipper(l, f, r).next.isDefined must_== (false)
   }
 
   "Zipper nextOr returns a new zipper when used on empty rights or Some of next" ! forAll {
@@ -97,8 +101,10 @@ object ZipperTest extends SpecLite {
     val zp = z.previousC
     zp.toStream must_=== (z.toStream)
 
-    if (z.atStart) zp.atEnd must_== (true)
-    else zp.index must_=== (z.index - 1)
+    if (z.atStart)
+      zp.atEnd must_== (true)
+    else
+      zp.index must_=== (z.index - 1)
   }
 
   "Previous changes the focus, lefts and rights " ! forAll {
@@ -207,8 +213,10 @@ object ZipperTest extends SpecLite {
         for {
           zd <- z.deleteRightC
         } yield {
-          if (z.rights.length > 0) zd.focus must_=== (z.rights(0))
-          else zd.focus must_=== (z.lefts.last)
+          if (z.rights.length > 0)
+            zd.focus must_=== (z.rights(0))
+          else
+            zd.focus must_=== (z.lefts.last)
         }
       ) getOrElse {
         (z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true))
@@ -218,8 +226,10 @@ object ZipperTest extends SpecLite {
   "deleteRightCOr should return Some of deleteLeftC or an alternative" ! forAll {
     (z: Zipper[Int], alt: Zipper[Int]) =>
       val zd = z.deleteRightCOr(alt)
-      if (z.lefts.length == 0 && z.rights.length == 0) zd must_=== (alt)
-      else z.deleteRightC must_=== (Some(zd))
+      if (z.lefts.length == 0 && z.rights.length == 0)
+        zd must_=== (alt)
+      else
+        z.deleteRightC must_=== (Some(zd))
   }
 
   "DeleteRight Affects Lengths and Moves Left if at end" ! forAll {
@@ -237,8 +247,10 @@ object ZipperTest extends SpecLite {
         for {
           zd <- z.deleteRight
         } yield {
-          if (z.rights.length > 0) zd.focus must_=== (z.rights(0))
-          else zd.focus must_=== (z.lefts(0))
+          if (z.rights.length > 0)
+            zd.focus must_=== (z.rights(0))
+          else
+            zd.focus must_=== (z.lefts(0))
         }
       ) getOrElse {
         (z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true))
@@ -270,8 +282,10 @@ object ZipperTest extends SpecLite {
         for {
           zd <- z.deleteLeft
         } yield {
-          if (z.lefts.length > 0) zd.focus must_=== (z.lefts(0))
-          else zd.focus must_=== (z.rights(0))
+          if (z.lefts.length > 0)
+            zd.focus must_=== (z.lefts(0))
+          else
+            zd.focus must_=== (z.rights(0))
         }
       ) getOrElse ((z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true)))
   }
@@ -290,8 +304,10 @@ object ZipperTest extends SpecLite {
         for {
           zd <- z.deleteLeftC
         } yield {
-          if (z.lefts.length > 0) zd.focus must_=== (z.lefts(0))
-          else zd.focus must_=== (z.rights.last)
+          if (z.lefts.length > 0)
+            zd.focus must_=== (z.lefts(0))
+          else
+            zd.focus must_=== (z.rights.last)
         }
       ) getOrElse ((z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true)))
   }
@@ -299,14 +315,17 @@ object ZipperTest extends SpecLite {
   "deleteLeftCOr should return Some of deleteLeftC or an alternative" ! forAll {
     (z: Zipper[Int], alt: Zipper[Int]) =>
       val zd = z.deleteLeftCOr(alt)
-      if (z.lefts.length == 0 && z.rights.length == 0) zd must_=== (alt)
-      else z.deleteLeftC must_=== (Some(zd))
+      if (z.lefts.length == 0 && z.rights.length == 0)
+        zd must_=== (alt)
+      else
+        z.deleteLeftC must_=== (Some(zd))
   }
 
   "deleteRightOr should return Some of deleteLeft or an alternative" ! forAll {
     (z: Zipper[Int], alt: Zipper[Int]) =>
       val zd = z.deleteRightOr(alt)
-      if (z.lefts.length == 0 && z.rights.length == 0) zd must_=== (alt)
+      if (z.lefts.length == 0 && z.rights.length == 0)
+        zd must_=== (alt)
       else if (z.rights.length != 0) {
         zd.rights must_=== (z.rights.tail)
         zd.lefts must_=== (z.lefts)
@@ -390,7 +409,8 @@ object ZipperTest extends SpecLite {
   "moveOr should return some of move or an alternative" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int], n: Short, alt: Zipper[Int]) =>
       val z = zipper(l, f, r).moveOr(n, alt)
-      if (l.length < (-n) || r.length < n) z must_=== (alt)
+      if (l.length < (-n) || r.length < n)
+        z must_=== (alt)
       else {
         z.lefts.length must_=== (l.length + n)
         z.rights.length must_=== (r.length - n)
@@ -410,8 +430,10 @@ object ZipperTest extends SpecLite {
 
   "The zipper should be atStart when the lefts stream is empty" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int]) =>
-      if (zipper(l, f, r).atStart) l.isEmpty must_== (true)
-      else l.isEmpty must_== (false)
+      if (zipper(l, f, r).atStart)
+        l.isEmpty must_== (true)
+      else
+        l.isEmpty must_== (false)
   }
 
   "withFocus should pair only the focus with true, false otherwise" ! forAll {
@@ -436,8 +458,10 @@ object ZipperTest extends SpecLite {
 
   "The zipper should be atEnd when the right stream is empty" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int]) =>
-      if (zipper(l, f, r).atEnd) r.isEmpty
-      else !r.isEmpty
+      if (zipper(l, f, r).atEnd)
+        r.isEmpty
+      else
+        !r.isEmpty
   }
 
   "Find" ! forAll {
@@ -502,7 +526,8 @@ object ZipperTest extends SpecLite {
       if (limit > 0) {
         limit -= 1;
         some(z.nextC)
-      } else none)(x => false)
+      } else
+        none)(x => false)
     true
   }
 

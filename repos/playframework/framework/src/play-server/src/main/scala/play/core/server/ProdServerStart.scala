@@ -138,7 +138,8 @@ object ProdServerStart {
     val pidFilePath = configuration
       .getString("play.server.pidfile.path")
       .getOrElse(throw ServerStartException("Pid file path not configured"))
-    if (pidFilePath == "/dev/null") None
+    if (pidFilePath == "/dev/null")
+      None
     else {
       val pidFile = new File(pidFilePath).getAbsoluteFile
 

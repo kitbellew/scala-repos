@@ -92,7 +92,8 @@ class InlineWarningTest extends ClearAfterClass {
 
     val removeImpl = (outDir: AbstractFile) => {
       val f = outDir.lookupName("T$class.class", directory = false)
-      if (f != null) f.delete()
+      if (f != null)
+        f.delete()
     }
 
     val warn =

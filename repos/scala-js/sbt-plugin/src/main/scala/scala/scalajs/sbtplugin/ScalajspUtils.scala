@@ -50,8 +50,10 @@ private[sbtplugin] object ScalajspUtils {
          * under the helloworld/ subdirectory.
          */
         val nextSlashPos = remaining.indexOf('/')
-        if (nextSlashPos == -1) remaining
-        else remaining.substring(0, nextSlashPos + 1)
+        if (nextSlashPos == -1)
+          remaining
+        else
+          remaining.substring(0, nextSlashPos + 1)
       }).distinct
 
       val (dirs, files) = allExamples.partition(_.endsWith("/"))

@@ -66,8 +66,10 @@ case class JavaUri(uri: sm.Uri) extends jm.Uri {
 
   def addPathSegment(segment: String): jm.Uri = t { u ⇒
     val newPath =
-      if (u.path.endsWithSlash) u.path ++ sm.Uri.Path(segment)
-      else u.path ++ sm.Uri.Path./(segment)
+      if (u.path.endsWithSlash)
+        u.path ++ sm.Uri.Path(segment)
+      else
+        u.path ++ sm.Uri.Path./(segment)
 
     u.withPath(newPath)
   }

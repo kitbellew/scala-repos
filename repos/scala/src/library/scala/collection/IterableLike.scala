@@ -116,7 +116,8 @@ trait IterableLike[+A, +Repr]
     val lo = math.max(from, 0)
     val elems = until - lo
     val b = newBuilder
-    if (elems <= 0) b.result()
+    if (elems <= 0)
+      b.result()
     else {
       b.sizeHintBounded(elems, this)
       var i = 0
@@ -132,7 +133,8 @@ trait IterableLike[+A, +Repr]
   override /*TraversableLike*/ def take(n: Int): Repr = {
     val b = newBuilder
 
-    if (n <= 0) b.result()
+    if (n <= 0)
+      b.result()
     else {
       b.sizeHintBounded(n, this)
       var i = 0
@@ -163,7 +165,8 @@ trait IterableLike[+A, +Repr]
     val it = iterator
     while (it.hasNext) {
       val x = it.next()
-      if (!p(x)) return b.result()
+      if (!p(x))
+        return b.result()
       b += x
     }
     b.result()
@@ -177,11 +180,12 @@ trait IterableLike[+A, +Repr]
     *          last will be less than size `size` if the elements don't divide evenly.
     */
   def grouped(size: Int): Iterator[Repr] =
-    for (xs <- iterator grouped size) yield {
-      val b = newBuilder
-      b ++= xs
-      b.result()
-    }
+    for (xs <- iterator grouped size)
+      yield {
+        val b = newBuilder
+        b ++= xs
+        b.result()
+      }
 
   /** Groups elements in fixed size blocks by passing a "sliding window"
     *  over them (as opposed to partitioning them, as is done in grouped.)
@@ -207,11 +211,12 @@ trait IterableLike[+A, +Repr]
     *          fewer elements than size.
     */
   def sliding(size: Int, step: Int): Iterator[Repr] =
-    for (xs <- iterator.sliding(size, step)) yield {
-      val b = newBuilder
-      b ++= xs
-      b.result()
-    }
+    for (xs <- iterator.sliding(size, step))
+      yield {
+        val b = newBuilder
+        b ++= xs
+        b.result()
+      }
 
   /** Selects last ''n'' elements.
     *  $orderDependent
@@ -229,7 +234,8 @@ trait IterableLike[+A, +Repr]
       lead.next()
       it.next()
     }
-    while (it.hasNext) b += it.next()
+    while (it.hasNext)
+      b += it.next()
     b.result()
   }
 
@@ -242,7 +248,8 @@ trait IterableLike[+A, +Repr]
     */
   def dropRight(n: Int): Repr = {
     val b = newBuilder
-    if (n >= 0) b.sizeHint(this, -n)
+    if (n >= 0)
+      b.sizeHint(this, -n)
     val lead = iterator drop n
     val it = iterator
     while (lead.hasNext) {

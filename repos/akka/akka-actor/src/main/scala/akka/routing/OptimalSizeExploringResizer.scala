@@ -218,8 +218,10 @@ case class DefaultOptimalSizeExploringResizer(
       case ActorRefRoutee(a: ActorRefWithCell) ⇒
         a.underlying match {
           case cell: ActorCell ⇒
-            cell.mailbox.numberOfMessages + (if (cell.currentMessage != null) 1
-                                             else 0)
+            cell.mailbox.numberOfMessages + (if (cell.currentMessage != null)
+                                               1
+                                             else
+                                               0)
           case cell ⇒ cell.numberOfMessages
         }
       case x ⇒ 0
@@ -255,8 +257,10 @@ case class DefaultOptimalSizeExploringResizer(
             (oldSpeed * (1.0 - weightOfLatestMetric)) + (last * weightOfLatestMetric)
           }
           performanceLog + (currentSize → toUpdate)
-        } else performanceLog
-      } else performanceLog
+        } else
+          performanceLog
+      } else
+        performanceLog
 
     val newRecord = record.copy(
       underutilizationStreak = newUnderutilizationStreak,

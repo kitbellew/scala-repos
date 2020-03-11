@@ -65,7 +65,10 @@ case class ScalaCompilerSettings(
   }
 
   private def when[T](b: Boolean)(value: => T): Seq[T] =
-    if (b) Seq(value) else Seq.empty
+    if (b)
+      Seq(value)
+    else
+      Seq.empty
 }
 
 object ScalaCompilerSettings {

@@ -50,7 +50,8 @@ trait PredefinedToEntityMarshallers extends MultipartMarshallers {
       val array = new Array[Byte](byteBuffer.remaining())
       byteBuffer.get(array)
       HttpEntity(contentType, array)
-    } else HttpEntity.Empty
+    } else
+      HttpEntity.Empty
 
   implicit val DoneMarshaller: ToEntityMarshaller[akka.Done] =
     Marshaller.withFixedContentType(`text/plain(UTF-8)`) { done ⇒

@@ -42,7 +42,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
               InspectionBundle.message("use.foreach.instead.of.map"),
               ref,
               "foreach"))
-        else Seq.empty
+        else
+          Seq.empty
       val unitTypeReturns = body
         .calculateReturns()
         .collect {

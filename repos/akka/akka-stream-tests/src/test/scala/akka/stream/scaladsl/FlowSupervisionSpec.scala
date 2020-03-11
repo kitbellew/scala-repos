@@ -22,7 +22,11 @@ class FlowSupervisionSpec extends AkkaSpec {
 
   val exc = new RuntimeException("simulated exc") with NoStackTrace
 
-  val failingMap = Flow[Int].map(n ⇒ if (n == 3) throw exc else n)
+  val failingMap = Flow[Int].map(n ⇒
+    if (n == 3)
+      throw exc
+    else
+      n)
 
   def run(f: Flow[Int, Int, NotUsed]): immutable.Seq[Int] =
     Await.result(
@@ -61,7 +65,11 @@ class FlowSupervisionSpec extends AkkaSpec {
 
     "resume stream when null is emitted" in {
       val nullMap = Flow[String]
-        .map(elem ⇒ if (elem == "b") null else elem)
+        .map(elem ⇒
+          if (elem == "b")
+            null
+          else
+            elem)
         .withAttributes(supervisionStrategy(Supervision.resumingDecider))
       val result = Await.result(
         Source(List("a", "b", "c"))

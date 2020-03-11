@@ -54,7 +54,8 @@ abstract class SymbolLoaders {
   }
 
   protected def signalError(root: Symbol, ex: Throwable) {
-    if (settings.debug) ex.printStackTrace()
+    if (settings.debug)
+      ex.printStackTrace()
     globalError(ex.getMessage() match {
       case null => "i/o error while loading " + root.name
       case msg  => "error while loading " + root.name + ", " + msg
@@ -137,8 +138,10 @@ abstract class SymbolLoaders {
       // Diagnostic for SI-7147
       def msg: String = {
         def symLocation(sym: Symbol) =
-          if (sym == null) "null"
-          else s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
+          if (sym == null)
+            "null"
+          else
+            s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
         sm"""Inconsistent class/module symbol pair for `$name` loaded from ${symLocation(
           root)}.
             |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz.companionModule}
@@ -246,7 +249,8 @@ abstract class SymbolLoaders {
           signalError(root, ex)
       }
       initRoot(root)
-      if (!root.isPackageClass) initRoot(root.companionSymbol)
+      if (!root.isPackageClass)
+        initRoot(root.companionSymbol)
     }
 
     override def load(root: Symbol) {
@@ -254,7 +258,11 @@ abstract class SymbolLoaders {
     }
 
     private def markAbsent(sym: Symbol): Unit = {
-      val tpe: Type = if (ok) NoType else ErrorType
+      val tpe: Type =
+        if (ok)
+          NoType
+        else
+          ErrorType
 
       if (sym != NoSymbol)
         sym setInfo tpe
@@ -269,7 +277,8 @@ abstract class SymbolLoaders {
 
   private def phaseBeforeRefchecks: Phase = {
     var resPhase = phase
-    while (resPhase.refChecked) resPhase = resPhase.prev
+    while (resPhase.refChecked)
+      resPhase = resPhase.prev
     resPhase
   }
 
@@ -315,8 +324,10 @@ abstract class SymbolLoaders {
       with FlagAgnosticCompleter {
     protected def description = {
       val shownPackageName =
-        if (packageName == FlatClassPath.RootPackage) "<root package>"
-        else packageName
+        if (packageName == FlatClassPath.RootPackage)
+          "<root package>"
+        else
+          packageName
       s"package loader $shownPackageName"
     }
 
@@ -334,8 +345,10 @@ abstract class SymbolLoaders {
           val fullName = pkg.name
 
           val name =
-            if (packageName == FlatClassPath.RootPackage) fullName
-            else fullName.substring(packageName.length + 1)
+            if (packageName == FlatClassPath.RootPackage)
+              fullName
+            else
+              fullName.substring(packageName.length + 1)
           val packageLoader =
             new PackageLoaderUsingFlatClassPath(fullName, classPath)
           enterPackage(root, name, packageLoader)
@@ -385,8 +398,10 @@ abstract class SymbolLoaders {
 
     protected def doComplete(root: Symbol) {
       val start =
-        if (Statistics.canEnable) Statistics.startTimer(classReadNanos)
-        else null
+        if (Statistics.canEnable)
+          Statistics.startTimer(classReadNanos)
+        else
+          null
 
       // Running the classfile parser after refchecks can lead to "illegal class file dependency"
       // errors. More concretely, the classfile parser calls "sym.companionModule", which calls
@@ -409,7 +424,8 @@ abstract class SymbolLoaders {
                 .format(classfile, root.name, root.shortSymbolClass))
         }
       }
-      if (Statistics.canEnable) Statistics.stopTimer(classReadNanos, start)
+      if (Statistics.canEnable)
+        Statistics.stopTimer(classReadNanos, start)
     }
     override def sourcefile: Option[AbstractFile] = classfileParser.srcfile
   }

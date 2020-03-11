@@ -14,13 +14,15 @@ abstract class CachingMessageConsumer(var delegate: MessageConsumer)
     synchronized {
       messages.add(message)
     }
-    if (needFlush(message, messages.size)) flush()
+    if (needFlush(message, messages.size))
+      flush()
   }
 
   def flush() {
     synchronized {
       val bs = StringBuilder.newBuilder
-      for (i <- 0 until messages.size()) bs append messages.poll() append "\n"
+      for (i <- 0 until messages.size())
+        bs append messages.poll() append "\n"
       delegate consume bs.delete(bs.size - 1, bs.size).result()
     }
 

@@ -35,15 +35,28 @@ trait AnyValInstances {
     override def shows(f: Boolean) = f.toString
 
     def order(x: Boolean, y: Boolean) =
-      if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+      if (x < y)
+        Ordering.LT
+      else if (x == y)
+        Ordering.EQ
+      else
+        Ordering.GT
 
     def succ(b: Boolean) = !b
 
     def pred(b: Boolean) = !b
 
-    override def succn(n: Int, b: Boolean) = if (n % 2 == 0) b else !b
+    override def succn(n: Int, b: Boolean) =
+      if (n % 2 == 0)
+        b
+      else
+        !b
 
-    override def predn(n: Int, b: Boolean) = if (n % 2 == 0) b else !b
+    override def predn(n: Int, b: Boolean) =
+      if (n % 2 == 0)
+        b
+      else
+        !b
 
     override def min = Some(false)
 
@@ -134,7 +147,12 @@ trait AnyValInstances {
       def zero: Byte = 0
 
       def order(x: Byte, y: Byte) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: Byte) = (b + 1).toByte
       def pred(b: Byte) = (b - 1).toByte
@@ -188,7 +206,12 @@ trait AnyValInstances {
       def zero: Char = 0
 
       def order(x: Char, y: Char) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: Char) = (b + 1).toChar
       def pred(b: Char) = (b - 1).toChar
@@ -239,7 +262,12 @@ trait AnyValInstances {
       def zero: Short = 0
 
       def order(x: Short, y: Short) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: Short) = (b + 1).toShort
       def pred(b: Short) = (b - 1).toShort
@@ -288,7 +316,12 @@ trait AnyValInstances {
       def zero: Int = 0
 
       def order(x: Int, y: Int) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: Int) = b + 1
       def pred(b: Int) = b - 1
@@ -337,7 +370,12 @@ trait AnyValInstances {
       def zero: Long = 0L
 
       def order(x: Long, y: Long) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: Long) = b + 1
       def pred(b: Long) = b - 1
@@ -384,7 +422,12 @@ trait AnyValInstances {
     override def equalIsNatural: Boolean = true
 
     def order(x: Float, y: Float) =
-      if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+      if (x < y)
+        Ordering.LT
+      else if (x == y)
+        Ordering.EQ
+      else
+        Ordering.GT
   }
 
   implicit val doubleInstance: Order[Double] with Show[Double] =
@@ -394,7 +437,12 @@ trait AnyValInstances {
       override def equalIsNatural: Boolean = true
 
       def order(x: Double, y: Double) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
     }
 }
 
@@ -507,12 +555,16 @@ trait BooleanFunctions {
   /**
     * Executes the given side-effect if `cond` is `false`
     */
-  final def unless(cond: Boolean)(f: => Unit) = if (!cond) f
+  final def unless(cond: Boolean)(f: => Unit) =
+    if (!cond)
+      f
 
   /**
     * Executes the given side-effect if `cond` is `true`
     */
-  final def when(cond: Boolean)(f: => Unit) = if (cond) f
+  final def when(cond: Boolean)(f: => Unit) =
+    if (cond)
+      f
 
   /**
     * Returns the given argument if `cond` is `false`, otherwise, unit lifted into M.
@@ -538,30 +590,49 @@ trait BooleanFunctions {
   /**
     * @return `t` if `cond` is `true`, `f` otherwise
     */
-  final def fold[A](cond: Boolean, t: => A, f: => A): A = if (cond) t else f
+  final def fold[A](cond: Boolean, t: => A, f: => A): A =
+    if (cond)
+      t
+    else
+      f
 
   /**
     * Returns the given argument in `Some` if `cond` is `true`, `None` otherwise.
     */
   final def option[A](cond: Boolean, a: => A): Option[A] =
-    if (cond) Some(a) else None
+    if (cond)
+      Some(a)
+    else
+      None
 
   /** Returns `1` if `p` is true, or `0` otherwise. */
-  def test(p: Boolean): Int = if (p) 1 else 0
+  def test(p: Boolean): Int =
+    if (p)
+      1
+    else
+      0
 
   /**
     * Returns the given argument if `cond` is `true`, otherwise, the zero element for the type of the given
     * argument.
     */
   final def valueOrZero[A](cond: Boolean)(value: => A)(
-      implicit z: Monoid[A]): A = if (cond) value else z.zero
+      implicit z: Monoid[A]): A =
+    if (cond)
+      value
+    else
+      z.zero
 
   /**
     * Returns the given argument if `cond` is `false`, otherwise, the zero element for the type of the given
     * argument.
     */
   final def zeroOrValue[A](cond: Boolean)(value: => A)(
-      implicit z: Monoid[A]): A = if (!cond) value else z.zero
+      implicit z: Monoid[A]): A =
+    if (!cond)
+      value
+    else
+      z.zero
 
   /**
     * Returns the value `a` lifted into the context `M` if `cond` is `true`, otherwise, the empty value
@@ -569,7 +640,10 @@ trait BooleanFunctions {
     */
   final def pointOrEmpty[M[_], A](cond: Boolean)(
       a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]): M[A] =
-    if (cond) M.point(a) else M0.empty
+    if (cond)
+      M.point(a)
+    else
+      M0.empty
 
   /**
     * Returns the value `a` lifted into the context `M` if `cond` is `false`, otherwise, the empty value
@@ -577,7 +651,10 @@ trait BooleanFunctions {
     */
   final def emptyOrPure[M[_], A](cond: Boolean)(
       a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]): M[A] =
-    if (!cond) M.point(a) else M0.empty
+    if (!cond)
+      M.point(a)
+    else
+      M0.empty
 
   final def pointOrEmptyNT[M[_]](
       cond: Boolean)(implicit M: Applicative[M], M0: PlusEmpty[M]): (Id ~> M) =
@@ -593,23 +670,43 @@ trait BooleanFunctions {
 }
 
 trait IntFunctions {
-  def heaviside(i: Int): Int = if (i < 0) 0 else 1
+  def heaviside(i: Int): Int =
+    if (i < 0)
+      0
+    else
+      1
 }
 
 trait ShortFunctions {
-  def heaviside(i: Short): Short = if (i < 0) 0 else 1
+  def heaviside(i: Short): Short =
+    if (i < 0)
+      0
+    else
+      1
 }
 
 trait LongFunctions {
-  def heaviside(i: Long): Long = if (i < 0) 0 else 1
+  def heaviside(i: Long): Long =
+    if (i < 0)
+      0
+    else
+      1
 }
 
 trait DoubleFunctions {
-  def heaviside(i: Double): Double = if (i < 0) 0 else 1.0
+  def heaviside(i: Double): Double =
+    if (i < 0)
+      0
+    else
+      1.0
 }
 
 trait FloatFunctions {
-  def heaviside(i: Float): Float = if (i < 0) 0 else 1.0f
+  def heaviside(i: Float): Float =
+    if (i < 0)
+      0
+    else
+      1.0f
 }
 
 object anyVal extends AnyValInstances

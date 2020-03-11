@@ -90,8 +90,10 @@ abstract class FunctionParameterInfoTestBase
 
     val res = new StringBuilder("")
 
-    for (item <- itemsArray) res.append(item).append("\n")
-    if (res.nonEmpty) res.replace(res.length - 1, res.length, "")
+    for (item <- itemsArray)
+      res.append(item).append("\n")
+    if (res.nonEmpty)
+      res.replace(res.length - 1, res.length, "")
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText
     val output = lastPsi.getNode.getElementType match {

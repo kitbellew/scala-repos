@@ -211,7 +211,10 @@ private[hive] class SparkHiveWriterContainer(
       var i = 0
       while (i < fieldOIs.length) {
         outputData(i) =
-          if (row.isNullAt(i)) null else wrappers(i)(row.get(i, dataTypes(i)))
+          if (row.isNullAt(i))
+            null
+          else
+            wrappers(i)(row.get(i, dataTypes(i)))
         i += 1
       }
       writer.write(serializer.serialize(outputData, standardOI))
@@ -308,8 +311,10 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
           ScalaUDF(fun, StringType, Seq(Cast(c, StringType)), Seq(StringType))
         val str = If(IsNull(c), Literal(defaultPartName), escaped)
         val partitionName = Literal(dynamicPartColNames(i) + "=") :: str :: Nil
-        if (i == 0) partitionName
-        else Literal(Path.SEPARATOR_CHAR.toString) :: partitionName
+        if (i == 0)
+          partitionName
+        else
+          Literal(Path.SEPARATOR_CHAR.toString) :: partitionName
     }
 
     // Returns the partition path given a partition key.

@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object Accordion {
   implicit def sfxAccordion2jfx(v: Accordion): jfxsc.Accordion =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

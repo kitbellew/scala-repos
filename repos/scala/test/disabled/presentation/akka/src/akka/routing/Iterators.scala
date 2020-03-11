@@ -26,7 +26,11 @@ case class CyclicIterator[T](val items: Seq[T]) extends InfiniteIterator[T] {
   def hasNext = items != Nil
 
   def next = {
-    val nc = if (current == Nil) items else current
+    val nc =
+      if (current == Nil)
+        items
+      else
+        current
     current = nc.tail
     nc.head
   }
@@ -45,7 +49,10 @@ case class SmallestMailboxFirstIterator(val items: Seq[ActorRef])
 
   def next =
     items.reduceLeft((a1, a2) =>
-      if (a1.mailboxSize < a2.mailboxSize) a1 else a2)
+      if (a1.mailboxSize < a2.mailboxSize)
+        a1
+      else
+        a2)
 
   override def exists(f: ActorRef => Boolean): Boolean = items.exists(f)
 }

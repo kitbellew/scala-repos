@@ -203,10 +203,13 @@ object BuiltinCommands {
         e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
       val built =
-        if (sc.isEmpty) ""
-        else "The current project is built against " + sc + "\n"
+        if (sc.isEmpty)
+          ""
+        else
+          "The current project is built against " + sc + "\n"
       current + built + aboutPlugins(e)
-    } else "No project is currently loaded"
+    } else
+      "No project is currently loaded"
 
   def aboutPlugins(e: Extracted): String = {
     def list(b: BuildUnit) =
@@ -214,8 +217,10 @@ object BuiltinCommands {
         .map(_.value.label) ++ b.plugins.detected.plugins.names
     val allPluginNames =
       e.structure.units.values.flatMap(u => list(u.unit)).toSeq.distinct
-    if (allPluginNames.isEmpty) ""
-    else allPluginNames.mkString("Available Plugins: ", ", ", "")
+    if (allPluginNames.isEmpty)
+      ""
+    else
+      allPluginNames.mkString("Available Plugins: ", ", ", "")
   }
   def aboutScala(s: State, e: Extracted): String = {
     val scalaVersion = e.getOpt(Keys.scalaVersion)
@@ -278,10 +283,14 @@ object BuiltinCommands {
     Command(command, settingsBrief(command), settingsDetailed(command))(
       showSettingParser(keep)) {
       case (s: State, (verbosity: Int, selected: Option[String])) =>
-        if (selected.isEmpty) System.out.println(preamble)
+        if (selected.isEmpty)
+          System.out.println(preamble)
         val prominentOnly = verbosity <= 1
         val verboseFilter =
-          if (prominentOnly) highPass(cutoff) else topNRanked(25 * verbosity)
+          if (prominentOnly)
+            highPass(cutoff)
+          else
+            topNRanked(25 * verbosity)
         System.out.println(
           tasksHelp(s, keys => verboseFilter(keys filter keep), selected))
         System.out.println()
@@ -369,7 +378,10 @@ object BuiltinCommands {
 
   def eval = Command.single(EvalCommand, Help.more(EvalCommand, evalDetailed)) {
     (s, arg) =>
-      if (Project.isProjectLoaded(s)) loadedEval(s, arg) else rawEval(s, arg)
+      if (Project.isProjectLoaded(s))
+        loadedEval(s, arg)
+      else
+        rawEval(s, arg)
       s
   }
   private[this] def loadedEval(s: State, arg: String): Unit = {
@@ -421,8 +433,10 @@ object BuiltinCommands {
         LineRange(0, 0)
       )(cl)
       val setResult =
-        if (all) SettingCompletions.setAll(extracted, settings)
-        else SettingCompletions.setThis(s, extracted, settings, arg)
+        if (all)
+          SettingCompletions.setAll(extracted, settings)
+        else
+          SettingCompletions.setThis(s, extracted, settings, arg)
       s.log.info(setResult.quietSummary)
       s.log.debug(setResult.verboseSummary)
       reapply(setResult.session, structure, s)
@@ -505,8 +519,10 @@ object BuiltinCommands {
     for {
       lastOnly_keys <- keysParser
       kvs = Act.keyValues(structure)(lastOnly_keys._2)
-      f <- if (lastOnly_keys._1) success(() => s)
-      else Aggregation.evaluatingParser(s, structure, show)(kvs)
+      f <- if (lastOnly_keys._1)
+        success(() => s)
+      else
+        Aggregation.evaluatingParser(s, structure, show)(kvs)
     } yield () => {
       def export0(s: State): State = lastImpl(s, kvs, Some(ExportStream))
       val newS =
@@ -531,7 +547,8 @@ object BuiltinCommands {
     Command(LastCommand, lastBrief, lastDetailed)(aggregatedKeyValueParser) {
       case (s, Some(sks)) => lastImpl(s, sks, None)
       case (s, None) =>
-        for (logFile <- lastLogFile(s)) yield Output.last(logFile, printLast(s))
+        for (logFile <- lastLogFile(s))
+          yield Output.last(logFile, printLast(s))
         keepLastLog(s)
     }
   def export =
@@ -550,14 +567,21 @@ object BuiltinCommands {
   /** Determines the log file that last* commands should operate on.  See also isLastOnly. */
   def lastLogFile(s: State) = {
     val backing = s.globalLogging.backing
-    if (isLastOnly(s)) backing.last else Some(backing.file)
+    if (isLastOnly(s))
+      backing.last
+    else
+      Some(backing.file)
   }
 
   /**
     * If false, shift the current log file to be the log file that 'last' will operate on.
     * If true, keep the previous log file as the one 'last' operates on because there is nothing useful in the current one.
     */
-  def keepLastLog(s: State): State = if (isLastOnly(s)) s.keepLastLog else s
+  def keepLastLog(s: State): State =
+    if (isLastOnly(s))
+      s.keepLastLog
+    else
+      s
 
   /**
     * The last* commands need to determine whether to read from the current log file or the previous log file
@@ -585,8 +609,14 @@ object BuiltinCommands {
       log: Logger) = {
     log.info("In " + uri)
     def prefix(id: String) =
-      if (currentID != id) "   " else if (current) " * " else "(*)"
-    for (id <- build.defined.keys.toSeq.sorted) log.info("\t" + prefix(id) + id)
+      if (currentID != id)
+        "   "
+      else if (current)
+        " * "
+      else
+        "(*)"
+    for (id <- build.defined.keys.toSeq.sorted)
+      log.info("\t" + prefix(id) + id)
   }
 
   def act = Command.customHelp(Act.actParser, actHelp)
@@ -678,7 +708,8 @@ object BuiltinCommands {
       s.log.warn(
         "Ignoring load failure: " + (if (hadPrevious)
                                        "using previously loaded project."
-                                     else "no project loaded."))
+                                     else
+                                       "no project loaded."))
       s
     } else if (matches("last"))
       LastCommand :: loadProjectCommand(LoadFailed, loadArg) :: s
@@ -711,7 +742,10 @@ object BuiltinCommands {
     val (s1, base) = Project.loadAction(SessionVar.clear(s0), action)
     IO.createDirectory(base)
     val s =
-      if (s1 has Keys.stateCompilerCache) s1 else registerCompilerCache(s1)
+      if (s1 has Keys.stateCompilerCache)
+        s1
+      else
+        registerCompilerCache(s1)
 
     val (eval, structure) =
       try Load.defaultLoad(
@@ -746,7 +780,10 @@ object BuiltinCommands {
                 "Resident compiler limit must be an integer.",
                 e)
           }
-        if (num <= 0) CompilerCache.fresh else CompilerCache(num)
+        if (num <= 0)
+          CompilerCache.fresh
+        else
+          CompilerCache(num)
       }
     s.put(Keys.stateCompilerCache, cache)
   }

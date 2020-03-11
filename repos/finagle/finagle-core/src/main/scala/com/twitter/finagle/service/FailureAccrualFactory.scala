@@ -350,7 +350,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
 
     // In order to have symmetry with the revival counter, don't count removals
     // when probing fails.
-    if (state == Alive) removalCounter.incr()
+    if (state == Alive)
+      removalCounter.incr()
 
     state = Dead
 
@@ -410,8 +411,10 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
             }
 
             service(request).respond { rep =>
-              if (isSuccess(ReqRep(request, rep))) didSucceed()
-              else didFail()
+              if (isSuccess(ReqRep(request, rep)))
+                didSucceed()
+              else
+                didFail()
             }
           }
 

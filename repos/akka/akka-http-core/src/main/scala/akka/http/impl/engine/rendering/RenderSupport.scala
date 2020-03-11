@@ -43,7 +43,8 @@ private object RenderSupport {
   def renderEntityContentType(r: Rendering, entity: HttpEntity) =
     if (entity.contentType != ContentTypes.NoContentType)
       r ~~ headers.`Content-Type` ~~ entity.contentType ~~ CrLf
-    else r
+    else
+      r
 
   def renderByteStrings(
       r: ByteStringRendering,
@@ -53,7 +54,8 @@ private object RenderSupport {
     val messageBytes =
       if (!skipEntity)
         (messageStart ++ entityBytes).mapMaterializedValue(_ ⇒ ())
-      else CancelSecond(messageStart, entityBytes)
+      else
+        CancelSecond(messageStart, entityBytes)
     messageBytes
   }
 
@@ -70,8 +72,10 @@ private object RenderSupport {
           chunk: HttpEntity.ChunkStreamPart,
           ctx: Context[ByteString]): SyncDirective = {
         val bytes = renderChunk(chunk)
-        if (chunk.isLastChunk) ctx.pushAndFinish(bytes)
-        else ctx.push(bytes)
+        if (chunk.isLastChunk)
+          ctx.pushAndFinish(bytes)
+        else
+          ctx.push(bytes)
       }
     }
     override def onUpstreamFinish(
@@ -114,12 +118,16 @@ private object RenderSupport {
     import chunk._
     val renderedSize = // buffer space required for rendering (without trailer)
       CharUtils.numberOfHexDigits(data.length) +
-        (if (extension.isEmpty) 0 else extension.length + 1) +
+        (if (extension.isEmpty)
+           0
+         else
+           extension.length + 1) +
         data.length +
         2 + 2
     val r = new ByteStringRendering(renderedSize)
     r ~~% data.length
-    if (extension.nonEmpty) r ~~ ';' ~~ extension
+    if (extension.nonEmpty)
+      r ~~ ';' ~~ extension
     r ~~ CrLf
     chunk match {
       case HttpEntity.Chunk(data, _) ⇒ r ~~ data

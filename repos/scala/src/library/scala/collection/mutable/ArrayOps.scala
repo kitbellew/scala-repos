@@ -45,7 +45,8 @@ trait ArrayOps[T]
 
   override def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) {
     val l = len min repr.length min (xs.length - start)
-    if (l > 0) Array.copy(repr, 0, xs, start, l)
+    if (l > 0)
+      Array.copy(repr, 0, xs, start, l)
   }
 
   override def toArray[U >: T: ClassTag]: Array[U] = {
@@ -101,7 +102,8 @@ trait ArrayOps[T]
   def transpose[U](implicit asArray: T => Array[U]): Array[Array[U]] = {
     val bb: Builder[Array[U], Array[Array[U]]] =
       Array.newBuilder(ClassTag[Array[U]](elementClass))
-    if (isEmpty) bb.result()
+    if (isEmpty)
+      bb.result()
     else {
       def mkRowBuilder() =
         Array.newBuilder(ClassTag[U](arrayElementClass(elementClass)))
@@ -113,7 +115,8 @@ trait ArrayOps[T]
           i += 1
         }
       }
-      for (b <- bs) bb += b.result()
+      for (b <- bs)
+        bb += b.result()
       bb.result()
     }
   }

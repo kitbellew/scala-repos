@@ -302,7 +302,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         val dummyPayload = {
           val ownerAccount = getAccountByUserName(repository.owner).get
           val commits =
-            if (repository.commitCount == 0) List.empty
+            if (repository.commitCount == 0)
+              List.empty
             else
               git.log
                 .add(git.getRepository.resolve(

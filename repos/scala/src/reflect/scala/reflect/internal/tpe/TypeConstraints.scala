@@ -97,9 +97,15 @@ private[internal] trait TypeConstraints {
     private var avoidWidening = avoidWidening0
 
     def loBounds: List[Type] =
-      if (numlo == NoType) lobounds else numlo :: lobounds
+      if (numlo == NoType)
+        lobounds
+      else
+        numlo :: lobounds
     def hiBounds: List[Type] =
-      if (numhi == NoType) hibounds else numhi :: hibounds
+      if (numhi == NoType)
+        hibounds
+      else
+        numhi :: hibounds
     def avoidWiden: Boolean = avoidWidening
 
     def addLoBound(tp: Type, isNumericBound: Boolean = false) {
@@ -119,12 +125,14 @@ private[internal] trait TypeConstraints {
             numlo = tp
           else if (!isNumericSubType(tp, numlo))
             numlo = numericLoBound
-        } else lobounds ::= tp
+        } else
+          lobounds ::= tp
       }
     }
 
     def checkWidening(tp: Type) {
-      if (tp.isStable) avoidWidening = true
+      if (tp.isStable)
+        avoidWidening = true
       else
         tp match {
           case HasTypeMember(_, _) => avoidWidening = true
@@ -146,7 +154,8 @@ private[internal] trait TypeConstraints {
             numhi = tp
           else if (!isNumericSubType(numhi, tp))
             numhi = numericHiBound
-        } else hibounds ::= tp
+        } else
+          hibounds ::= tp
       }
     }
 
@@ -184,8 +193,10 @@ private[internal] trait TypeConstraints {
         }
         lo + hi
       }
-      if (inst eq NoType) boundsStr
-      else boundsStr + " _= " + inst.safeToString
+      if (inst eq NoType)
+        boundsStr
+      else
+        boundsStr + " _= " + inst.safeToString
     }
   }
 
@@ -206,10 +217,17 @@ private[internal] trait TypeConstraints {
 
     def solveOne(tvar: TypeVar, tparam: Symbol, variance: Variance) {
       if (tvar.constr.inst == NoType) {
-        val up = if (variance.isContravariant) !upper else upper
+        val up =
+          if (variance.isContravariant)
+            !upper
+          else
+            upper
         tvar.constr.inst = null
         val bound: Type =
-          if (up) tparam.info.bounds.hi else tparam.info.bounds.lo
+          if (up)
+            tparam.info.bounds.hi
+          else
+            tparam.info.bounds.lo
         //Console.println("solveOne0(tv, tp, v, b)="+(tvar, tparam, variance, bound))
         var cyclic = bound contains tparam
         foreach3(tvars, tparams, variances)((tvar2, tparam2, variance2) => {
@@ -219,7 +237,8 @@ private[internal] trait TypeConstraints {
               || !up && (tparam2.info.bounds.hi =:= tparam.tpeHK)
           )
           if (ok) {
-            if (tvar2.constr.inst eq null) cyclic = true
+            if (tvar2.constr.inst eq null)
+              cyclic = true
             solveOne(tvar2, tparam2, variance2)
           }
         })
@@ -263,11 +282,15 @@ private[internal] trait TypeConstraints {
         val newInst =
           (
             if (up) {
-              if (depth.isAnyDepth) glb(tvar.constr.hiBounds)
-              else glb(tvar.constr.hiBounds, depth)
+              if (depth.isAnyDepth)
+                glb(tvar.constr.hiBounds)
+              else
+                glb(tvar.constr.hiBounds, depth)
             } else {
-              if (depth.isAnyDepth) lub(tvar.constr.loBounds)
-              else lub(tvar.constr.loBounds, depth)
+              if (depth.isAnyDepth)
+                lub(tvar.constr.loBounds)
+              else
+                lub(tvar.constr.loBounds, depth)
             }
           )
 
@@ -282,8 +305,10 @@ private[internal] trait TypeConstraints {
 
     def logBounds(tv: TypeVar) = log {
       val what =
-        if (!tv.instValid) "is invalid"
-        else s"does not conform to bounds: ${tv.constr}"
+        if (!tv.instValid)
+          "is invalid"
+        else
+          s"does not conform to bounds: ${tv.constr}"
       s"Inferred type for ${tv.originString} (${tv.inst}) $what"
     }
 

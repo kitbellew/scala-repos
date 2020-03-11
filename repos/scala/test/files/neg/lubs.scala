@@ -3,7 +3,11 @@ object test1 {
   class C extends A[C]
   class D extends A[D]
 
-  def f = if (1 == 2) new C else new D
+  def f =
+    if (1 == 2)
+      new C
+    else
+      new D
 
   val x1: A[Any] = f
   val x2: A[A[Any]] = f
@@ -23,7 +27,11 @@ object test2 {
     type T = D
   }
 
-  def f = if (1 == 2) new C else new D
+  def f =
+    if (1 == 2)
+      new C
+    else
+      new D
 
   val x1: A {
     type T

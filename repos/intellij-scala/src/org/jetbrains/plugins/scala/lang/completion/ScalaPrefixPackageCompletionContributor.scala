@@ -77,18 +77,22 @@ object ScalaPrefixPackageCompletionContributor {
       val isExcluded: Boolean =
         CodeInsightSettings.getInstance.EXCLUDED_PACKAGES
           .contains(packageFqn.startsWith(_: String))
-      if (isExcluded) return
+      if (isExcluded)
+        return
 
-      if (parameters.getInvocationCount == 0) return
+      if (parameters.getInvocationCount == 0)
+        return
 
       if (PsiTreeUtil.getContextOfType(position, classOf[ScImportStmt]) != null)
         return
 
-      if (result.getPrefixMatcher.getPrefix == "") return
+      if (result.getPrefixMatcher.getPrefix == "")
+        return
 
       val pckg = inReadAction(
         JavaPsiFacade.getInstance(project).findPackage(packageFqn))
-      if (pckg == null) return
+      if (pckg == null)
+        return
 
       ScalaPsiElementFactory.createExpressionWithContextFromText(
         pckg.name,

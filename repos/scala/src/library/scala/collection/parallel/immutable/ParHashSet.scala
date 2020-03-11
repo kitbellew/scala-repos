@@ -91,7 +91,8 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
       phit
     }
     def split: Seq[IterableSplitter[T]] =
-      if (remaining < 2) Seq(this)
+      if (remaining < 2)
+        Seq(this)
       else
         triter match {
           case t: TrieIterator[_] =>
@@ -168,13 +169,16 @@ private[immutable] abstract class HashSetCombiner[T]
     var bitmap = 0
     var i = 0
     while (i < rootsize) {
-      if (buckets(i) ne null) bitmap |= 1 << i
+      if (buckets(i) ne null)
+        bitmap |= 1 << i
       i += 1
     }
     val sz = root.foldLeft(0)(_ + _.size)
 
-    if (sz == 0) new ParHashSet[T]
-    else if (sz == 1) new ParHashSet[T](root(0))
+    if (sz == 0)
+      new ParHashSet[T]
+    else if (sz == 1)
+      new ParHashSet[T](root(0))
     else {
       val trie = new HashSet.HashTrieSet(bitmap, root, sz)
       new ParHashSet[T](trie)

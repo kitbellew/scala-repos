@@ -107,7 +107,8 @@ class SparkILoop(
       printAfterTyper("" + deconstruct.show(replInfo(sym)))
 
     def echoTypeSignature(sym: Symbol, verbose: Boolean) = {
-      if (verbose) SparkILoop.this.echo("// Type signature")
+      if (verbose)
+        SparkILoop.this.echo("// Type signature")
       printAfterTyper("" + replInfo(sym))
 
       if (verbose) {
@@ -126,8 +127,10 @@ class SparkILoop(
   private def typeCommandInternal(expr: String, verbose: Boolean): Result = {
     onIntp { intp =>
       val sym = intp.symbolOfLine(expr)
-      if (sym.exists) intp.echoTypeSignature(sym, verbose)
-      else ""
+      if (sym.exists)
+        intp.echoTypeSignature(sym, verbose)
+      else
+        ""
     }
   }
 
@@ -205,7 +208,8 @@ class SparkILoop(
   protected def createInterpreter() {
     require(settings != null)
 
-    if (addedClasspath != "") settings.classpath.append(addedClasspath)
+    if (addedClasspath != "")
+      settings.classpath.append(addedClasspath)
     val addedJars =
       if (Utils.isWindows) {
         // Strip any URI scheme prefix so we can add the correct path to the classpath
@@ -229,7 +233,8 @@ class SparkILoop(
 
   /** print a friendly help message */
   private def helpCommand(line: String): Result = {
-    if (line == "") helpSummary()
+    if (line == "")
+      helpSummary()
     else
       uniqueCommand(line) match {
         case Some(lc) => echo("\n" + lc.longHelp)
@@ -244,7 +249,11 @@ class SparkILoop(
     echo("Those marked with a * have more detailed help, e.g. :help imports.\n")
 
     commands foreach { cmd =>
-      val star = if (cmd.hasLongHelp) "*" else " "
+      val star =
+        if (cmd.hasLongHelp)
+          "*"
+        else
+          " "
       echo(formatStr.format(cmd.usageMsg, star, cmd.help))
     }
   }
@@ -276,7 +285,10 @@ class SparkILoop(
     fallbackMode = !old
     System.setProperty("spark.repl.fallback", fallbackMode.toString)
     echo(s"""
-      |Switched ${if (old) "off" else "on"} fallback mode without restarting.
+      |Switched ${if (old)
+              "off"
+            else
+              "on"} fallback mode without restarting.
       |       If you have defined classes in the repl, it would
       |be good to redefine them incase you plan to use them. If you still run
       |into issues it would be good to restart the repl and turn on `:fallback`
@@ -449,11 +461,26 @@ class SparkILoop(
           handler.importedSymbols partition (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
-        val typeMsg = if (types.isEmpty) "" else types.size + " types"
-        val termMsg = if (terms.isEmpty) "" else terms.size + " terms"
-        val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
+        val typeMsg =
+          if (types.isEmpty)
+            ""
+          else
+            types.size + " types"
+        val termMsg =
+          if (terms.isEmpty)
+            ""
+          else
+            terms.size + " terms"
+        val implicitMsg =
+          if (imps.isEmpty)
+            ""
+          else
+            imps.size + " are implicit"
         val foundMsg =
-          if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
+          if (found.isEmpty)
+            ""
+          else
+            found.mkString(" // imports: ", ", ", "")
         val statsMsg = List(
           typeMsg,
           termMsg,
@@ -481,8 +508,10 @@ class SparkILoop(
     val filtered = intp.implicitSymbolsBySource filter {
       case (source, syms) =>
         (args contains "-v") || {
-          if (line == "") (source.fullName.toString != "scala.Predef")
-          else (args exists (source.name.toString contains _))
+          if (line == "")
+            (source.fullName.toString != "scala.Predef")
+          else
+            (args exists (source.name.toString contains _))
         }
     }
 
@@ -517,7 +546,10 @@ class SparkILoop(
             }
 
             val ownerMessage =
-              if (owner == source) " defined in " else " inherited from "
+              if (owner == source)
+                " defined in "
+              else
+                " inherited from "
             p("  /* " + members.size + ownerMessage + owner.fullName + " */")
 
             memberGroups foreach { group =>
@@ -537,7 +569,8 @@ class SparkILoop(
       Some(jar)
     else if (jdkPath.isDirectory)
       jdkPath.deepFiles find (_.name == "tools.jar")
-    else None
+    else
+      None
   }
   private def addToolsJarToLoader() = {
     val cl = findToolsJar match {
@@ -567,8 +600,10 @@ class SparkILoop(
             case Some(flat) =>
               val clazz = flat :: rest mkString NAME_JOIN_STRING
               val bytes = super.tryClass(clazz)
-              if (bytes.nonEmpty) bytes
-              else super.tryClass(clazz + MODULE_SUFFIX_STRING)
+              if (bytes.nonEmpty)
+                bytes
+              else
+                super.tryClass(clazz + MODULE_SUFFIX_STRING)
             case _ => super.tryClass(path)
           }
         } else {
@@ -581,8 +616,10 @@ class SparkILoop(
               MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
-          if (bytes.nonEmpty) bytes
-          else super.tryClass(moduleName)
+          if (bytes.nonEmpty)
+            bytes
+          else
+            super.tryClass(moduleName)
         }
       }
     }
@@ -621,8 +658,10 @@ class SparkILoop(
       ":javap [-lcsvp] [path1 path2 ...]"
     else
       javap(words(line)) foreach { res =>
-        if (res.isError) return "Failed: " + res.value
-        else res.show()
+        if (res.isError)
+          return "Failed: " + res.value
+        else
+          res.show()
       }
   }
 
@@ -721,8 +760,10 @@ class SparkILoop(
             case _: RuntimeException => false
           }
 
-        if (fn()) replay()
-        else echo("\nAbandoning crashed session.")
+        if (fn())
+          replay()
+        else
+          echo("\nAbandoning crashed session.")
     }
     true
   }
@@ -739,10 +780,12 @@ class SparkILoop(
     // return false if repl should exit
     def processLine(line: String): Boolean = {
       if (isAsync) {
-        if (!awaitInitialized()) return false
+        if (!awaitInitialized())
+          return false
         runThunks()
       }
-      if (line eq null) false // assume null means EOF
+      if (line eq null)
+        false // assume null means EOF
       else
         command(line) match {
           case Result(false, _) => false
@@ -833,8 +876,10 @@ class SparkILoop(
   private def withFile(filename: String)(action: File => Unit) {
     val f = File(filename)
 
-    if (f.exists) action(f)
-    else echo("That file does not exist")
+    if (f.exists)
+      action(f)
+    else
+      echo("That file does not exist")
   }
 
   private def loadCommand(arg: String) = {
@@ -871,12 +916,15 @@ class SparkILoop(
       echo(
         "Added '%s'.  Your new classpath is:\n\"%s\""
           .format(f.path, intp.global.classPath.asClasspathString))
-    } else echo("The path '" + f + "' doesn't seem to exist.")
+    } else
+      echo("The path '" + f + "' doesn't seem to exist.")
   }
 
   private def powerCmd(): Result = {
-    if (isReplPower) "Already in power mode."
-    else enablePowerMode(false)
+    if (isReplPower)
+      "Already in power mode."
+    else
+      enablePowerMode(false)
   }
 
   private[repl] def enablePowerMode(isDuringInit: Boolean) = {
@@ -893,8 +941,10 @@ class SparkILoop(
 //   }
 
   private def asyncEcho(async: Boolean, msg: => String) {
-    if (async) asyncMessage(msg)
-    else echo(msg)
+    if (async)
+      asyncMessage(msg)
+    else
+      echo(msg)
   }
 
   private def verbosity() = {
@@ -916,7 +966,8 @@ class SparkILoop(
       }
     } else if (intp.global == null)
       Result(false, None) // Notice failure to create compiler
-    else Result(true, interpretStartingWith(line))
+    else
+      Result(true, interpretStartingWith(line))
   }
 
   private def readWhile(cond: String => Boolean) = {
@@ -993,7 +1044,8 @@ class SparkILoop(
       *  3) If the Completion object's execute returns Some(_), we inject that value
       *     and avoid the interpreter, as it's likely not valid scala code.
       */
-    if (code == "") None
+    if (code == "")
+      None
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
@@ -1028,8 +1080,10 @@ class SparkILoop(
       SimpleReader()
     else
       try new SparkJLineReader(
-        if (settings.noCompletion.value) NoCompletion
-        else new SparkJLineCompletion(intp)
+        if (settings.noCompletion.value)
+          NoCompletion
+        else
+          new SparkJLineCompletion(intp)
       )
       catch {
         case ex @ (_: Exception | _: NoClassDefFoundError) =>
@@ -1087,7 +1141,8 @@ class SparkILoop(
       import scala.compat.Platform.EOL
       val autorun =
         replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
-      if (autorun.isDefined) intp.quietRun(autorun.get)
+      if (autorun.isDefined)
+        intp.quietRun(autorun.get)
     })
 
     addThunk(printWelcome())
@@ -1178,8 +1233,14 @@ class SparkILoop(
   def process(args: Array[String]): Boolean = {
     val command = new SparkCommandLine(args.toList, msg => echo(msg))
     def neededHelp(): String =
-      (if (command.settings.help.value) command.usageMsg + "\n" else "") +
-        (if (command.settings.Xhelp.value) command.xusageMsg + "\n" else "")
+      (if (command.settings.help.value)
+         command.usageMsg + "\n"
+       else
+         "") +
+        (if (command.settings.Xhelp.value)
+           command.xusageMsg + "\n"
+         else
+           "")
 
     // if they asked for no help and command is valid, we call the real main
     neededHelp() match {
@@ -1205,7 +1266,10 @@ object SparkILoop extends Logging {
         "ADD_JARS environment variable is deprecated, use --jar spark submit argument instead")
     }
     val propJars = sys.props.get("spark.jars").flatMap { p =>
-      if (p == "") None else Some(p)
+      if (p == "")
+        None
+      else
+        Some(p)
     }
     val jars = propJars.orElse(envJars).getOrElse("")
     Utils.resolveURIs(jars).split(",").filter(_.nonEmpty)
@@ -1224,11 +1288,13 @@ object SparkILoop extends Logging {
         val output = new JPrintWriter(new OutputStreamWriter(ostream), true) {
           override def write(str: String) = {
             // completely skip continuation lines
-            if (str forall (ch => ch.isWhitespace || ch == '|')) ()
+            if (str forall (ch => ch.isWhitespace || ch == '|'))
+              ()
             // print a newline on empty scala prompts
             else if ((str contains '\n') && (str.trim == "scala> "))
               super.write("\n")
-            else super.write(str)
+            else
+              super.write(str)
           }
         }
         val input = new BufferedReader(new StringReader(code)) {

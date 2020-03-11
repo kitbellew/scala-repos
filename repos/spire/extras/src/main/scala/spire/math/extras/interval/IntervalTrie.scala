@@ -89,16 +89,20 @@ object IntervalTrie {
       val signAndMagnitude = java.lang.Float.floatToIntBits(value)
       // two's complement signed integer: if the sign bit is set, negate everything except the sign bit
       val twosComplement =
-        if (signAndMagnitude >= 0) signAndMagnitude
-        else (-signAndMagnitude | (1L << 63))
+        if (signAndMagnitude >= 0)
+          signAndMagnitude
+        else
+          (-signAndMagnitude | (1L << 63))
       twosComplement
     }
 
     def fromLong(twosComplement: Long): Float = {
       // sign and magnitude signed integer: if the sign bit is set, negate everything except the sign bit
       val signAndMagnitude =
-        if (twosComplement >= 0) twosComplement
-        else (-twosComplement | (1L << 63))
+        if (twosComplement >= 0)
+          twosComplement
+        else
+          (-twosComplement | (1L << 63))
       // double from sign and magnitude signed integer
       java.lang.Float.intBitsToFloat(signAndMagnitude.toInt)
     }
@@ -124,16 +128,20 @@ object IntervalTrie {
       val signAndMagnitude = java.lang.Double.doubleToLongBits(value)
       // two's complement signed integer: if the sign bit is set, negate everything except the sign bit
       val twosComplement =
-        if (signAndMagnitude >= 0) signAndMagnitude
-        else (-signAndMagnitude | (1L << 63))
+        if (signAndMagnitude >= 0)
+          signAndMagnitude
+        else
+          (-signAndMagnitude | (1L << 63))
       twosComplement
     }
 
     def fromLong(twosComplement: Long): Double = {
       // sign and magnitude signed integer: if the sign bit is set, negate everything except the sign bit
       val signAndMagnitude =
-        if (twosComplement >= 0) twosComplement
-        else (-twosComplement | (1L << 63))
+        if (twosComplement >= 0)
+          twosComplement
+        else
+          (-twosComplement | (1L << 63))
       // double from sign and magnitude signed integer
       java.lang.Double.longBitsToDouble(signAndMagnitude)
     }
@@ -233,21 +241,33 @@ object IntervalTrie {
 
     def apply[T: Element](value: T) = Leaf(toPrefix(value), true, true)
 
-    def unapply(l: Leaf) = if (l.at && l.sign) Some(l.key) else None
+    def unapply(l: Leaf) =
+      if (l.at && l.sign)
+        Some(l.key)
+      else
+        None
   }
 
   private object Above {
 
     def apply[T: Element](value: T) = Leaf(toPrefix(value), false, true)
 
-    def unapply(l: Leaf) = if (!l.at && l.sign) Some(l.key) else None
+    def unapply(l: Leaf) =
+      if (!l.at && l.sign)
+        Some(l.key)
+      else
+        None
   }
 
   private object Both {
 
     def apply[T: Element](value: T) = Leaf(toPrefix(value), true, false)
 
-    def unapply(l: Leaf) = if (l.at && !l.sign) Some(l.key) else None
+    def unapply(l: Leaf) =
+      if (l.at && !l.sign)
+        Some(l.key)
+      else
+        None
   }
 
   private def fromTo[T: Element](a: Leaf, b: Leaf): IntervalTrie[T] = {
@@ -347,28 +367,33 @@ object IntervalTrie {
 
     private[this] val element = implicitly[Element[T]]
 
-    private[this] var lower: Bound[T] = if (e.belowAll) Unbound() else null
+    private[this] var lower: Bound[T] =
+      if (e.belowAll)
+        Unbound()
+      else
+        null
 
     private[this] def nextInterval(): Interval[T] = {
       import element.{fromLong, order}
       var result: Interval[T] = null
       if (hasNextLeaf) {
         val leaf = nextLeaf()
-        if (lower eq null) leaf match {
-          case Both(x) =>
-            result = Interval.point(fromLong(x))
-            lower = null
-          case Below(x) =>
-            result = null
-            lower = Closed(fromLong(x))
-          case Above(x) =>
-            result = null
-            lower = Open(fromLong(x))
+        if (lower eq null)
+          leaf match {
+            case Both(x) =>
+              result = Interval.point(fromLong(x))
+              lower = null
+            case Below(x) =>
+              result = null
+              lower = Closed(fromLong(x))
+            case Above(x) =>
+              result = null
+              lower = Open(fromLong(x))
 
-          // $COVERAGE-OFF$
-          case _ => unreachable
-          // $COVERAGE-ON$
-        }
+            // $COVERAGE-OFF$
+            case _ => unreachable
+            // $COVERAGE-ON$
+          }
         else
           leaf match {
             case Both(x) =>
@@ -418,7 +443,11 @@ object IntervalTrie {
     import Tree._
     import ise.order
 
-    def aboveAll: Boolean = if (tree eq null) belowAll else belowAll ^ tree.sign
+    def aboveAll: Boolean =
+      if (tree eq null)
+        belowAll
+      else
+        belowAll ^ tree.sign
 
     def isEmpty = !belowAll && (tree eq null)
 
@@ -456,8 +485,16 @@ object IntervalTrie {
       if (isEmpty) {
         Interval.empty[T]
       } else {
-        val lower = if (belowAll) Unbound[T]() else lowerBound(tree)
-        val upper = if (aboveAll) Unbound[T]() else upperBound(tree)
+        val lower =
+          if (belowAll)
+            Unbound[T]()
+          else
+            lowerBound(tree)
+        val upper =
+          if (aboveAll)
+            Unbound[T]()
+          else
+            upperBound(tree)
         Interval.fromBounds(lower, upper)
       }
     }

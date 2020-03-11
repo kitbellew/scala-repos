@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object CurrencyStringConverter {
   implicit def sfxCurrencyStringConverter2jfx(
       c: CurrencyStringConverter): jfxuc.CurrencyStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class CurrencyStringConverter(

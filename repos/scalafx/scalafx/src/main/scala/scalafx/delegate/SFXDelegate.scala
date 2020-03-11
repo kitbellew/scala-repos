@@ -45,7 +45,10 @@ object SFXDelegate {
     * @tparam J JavaFX type
     */
   def delegateOrNull[J <: Object](wrapper: SFXDelegate[J]): J = {
-    if (wrapper != null) wrapper.delegate else null.asInstanceOf[J]
+    if (wrapper != null)
+      wrapper.delegate
+    else
+      null.asInstanceOf[J]
   }
 
 }

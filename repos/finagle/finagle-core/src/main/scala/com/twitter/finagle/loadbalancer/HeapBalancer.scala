@@ -105,8 +105,10 @@ class HeapBalancer[Req, Rep](
   private[this] val loadGauge = statsReceiver.addGauge("load") {
     val loads = synchronized {
       heap drop (1) map { n =>
-        if (n.load < 0) n.load + Penalty
-        else n.load
+        if (n.load < 0)
+          n.load + Penalty
+        else
+          n.load
       }
     }
 
@@ -166,16 +168,20 @@ class HeapBalancer[Req, Rep](
     while (n != null) {
       if (n.index < 0) { // discarded node
         n = n.downq
-        if (m == null) downq = n
-        else m.downq = n
+        if (m == null)
+          downq = n
+        else
+          m.downq = n
       } else if (n.factory.status == Status.Open) { // revived node
         n.load -= Penalty
         fixUp(heap, n.index)
         val o = n.downq
         n.downq = null
         n = o
-        if (m == null) downq = n
-        else m.downq = n
+        if (m == null)
+          downq = n
+        else
+          m.downq = n
       } else { // unchanged
         m = n
         n = n.downq
@@ -183,7 +189,8 @@ class HeapBalancer[Req, Rep](
     }
 
     n = heap(1)
-    if (n.factory.status == Status.Open || n.load >= 0) n
+    if (n.factory.status == Status.Open || n.load >= 0)
+      n
     else {
       // Mark as down.
       n.downq = downq
@@ -204,8 +211,10 @@ class HeapBalancer[Req, Rep](
 
   private[this] def updateGroup(newSnap: Set[ServiceFactory[Req, Rep]]): Unit =
     synchronized {
-      for (n <- snap &~ newSnap) remNode(n)
-      for (n <- newSnap &~ snap) addNode(n)
+      for (n <- snap &~ newSnap)
+        remNode(n)
+      for (n <- newSnap &~ snap)
+        addNode(n)
       snap = newSnap
     }
 

@@ -54,33 +54,45 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
 
   def matchesAny(string: String): Boolean = {
     @tailrec def rec(ix: Int): Boolean =
-      if (ix == string.length) false
-      else if (this(string charAt ix)) true
-      else rec(ix + 1)
+      if (ix == string.length)
+        false
+      else if (this(string charAt ix))
+        true
+      else
+        rec(ix + 1)
     rec(0)
   }
 
   def matchesAll(string: String): Boolean = {
     @tailrec def rec(ix: Int): Boolean =
-      if (ix == string.length) true
-      else if (!this(string charAt ix)) false
-      else rec(ix + 1)
+      if (ix == string.length)
+        true
+      else if (!this(string charAt ix))
+        false
+      else
+        rec(ix + 1)
     rec(0)
   }
 
   def indexOfFirstMatch(string: String): Int = {
     @tailrec def rec(ix: Int): Int =
-      if (ix == string.length) -1
-      else if (this(string charAt ix)) ix
-      else rec(ix + 1)
+      if (ix == string.length)
+        -1
+      else if (this(string charAt ix))
+        ix
+      else
+        rec(ix + 1)
     rec(0)
   }
 
   def indexOfFirstMismatch(string: String): Int = {
     @tailrec def rec(ix: Int): Int =
-      if (ix == string.length) -1
-      else if (this(string charAt ix)) rec(ix + 1)
-      else ix
+      if (ix == string.length)
+        -1
+      else if (this(string charAt ix))
+        rec(ix + 1)
+      else
+        ix
     rec(0)
   }
 
@@ -97,11 +109,22 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
     }
 
   protected def or(that: Char ⇒ Boolean): CharPredicate =
-    from(if (this == Empty) that else c ⇒ this(c) || that(c))
+    from(
+      if (this == Empty)
+        that
+      else
+        c ⇒ this(c) || that(c))
   protected def and(that: Char ⇒ Boolean): CharPredicate =
-    if (this == Empty) Empty else from(c ⇒ this(c) && that(c))
+    if (this == Empty)
+      Empty
+    else
+      from(c ⇒ this(c) && that(c))
   protected def andNot(that: Char ⇒ Boolean): CharPredicate =
-    from(if (this == Empty) c ⇒ !that(c) else c ⇒ this(c) && !that(c))
+    from(
+      if (this == Empty)
+        c ⇒ !that(c)
+      else
+        c ⇒ this(c) && !that(c))
 }
 
 object CharPredicate {
@@ -142,7 +165,10 @@ object CharPredicate {
       chars match {
         case _ if chars.size < 128 & !chars.exists(unmaskable) ⇒
           @tailrec def rec(ix: Int, result: CharPredicate): CharPredicate =
-            if (ix == chars.length) result else rec(ix + 1, result ++ chars(ix))
+            if (ix == chars.length)
+              result
+            else
+              rec(ix + 1, result ++ chars(ix))
           new ApplyMagnet(rec(0, Empty))
         case r: NumericRange[Char] ⇒ new ApplyMagnet(new RangeBased(r))
         case _ ⇒ new ApplyMagnet(new ArrayBased(chars.toArray))
@@ -157,7 +183,11 @@ object CharPredicate {
   case class MaskBased private[CharPredicate] (lowMask: Long, highMask: Long)
       extends CharPredicate {
     def apply(c: Char): Boolean = {
-      val mask = if (c < 64) lowMask else highMask
+      val mask =
+        if (c < 64)
+          lowMask
+        else
+          highMask
       ((1L << c) & ((c - 128) >> 31) & mask) != 0L // branchless for `(c < 128) && (mask & (1L << c) != 0)`
     }
 
@@ -195,7 +225,8 @@ object CharPredicate {
           case (MaskBased(low, high), c) ⇒ MaskBased(low, high & ~(1L << c))
           case (x, _) ⇒ x // once the fold acc is not a MaskBased we are done
         }
-      } else this
+      } else
+        this
 
     def intersect(that: CharPredicate) = that match {
       case Empty ⇒ Empty
@@ -219,8 +250,10 @@ object CharPredicate {
           if ((mask & (1L << bit)) > 0) {
             array(ix) = (offset + bit).toChar
             rec(mask, offset, bit + 1, ix + 1)
-          } else rec(mask, offset, bit + 1, ix)
-        } else ix
+          } else
+            rec(mask, offset, bit + 1, ix)
+        } else
+          ix
       rec(
         highMask,
         64,
@@ -243,7 +276,10 @@ object CharPredicate {
     }
 
     def ++(other: Seq[Char]): CharPredicate =
-      if (other.nonEmpty) this ++ CharPredicate(other) else this
+      if (other.nonEmpty)
+        this ++ CharPredicate(other)
+      else
+        this
 
     def --(that: CharPredicate): CharPredicate = that match {
       case Empty ⇒ this
@@ -251,7 +287,10 @@ object CharPredicate {
     }
 
     def --(other: Seq[Char]): CharPredicate =
-      if (other.nonEmpty) this -- CharPredicate(other) else this
+      if (other.nonEmpty)
+        this -- CharPredicate(other)
+      else
+        this
 
     def intersect(that: CharPredicate): CharPredicate = that match {
       case Empty ⇒ Empty
@@ -280,7 +319,8 @@ object CharPredicate {
     def ++(other: Seq[Char]): CharPredicate =
       if (other.nonEmpty)
         new ArrayBased((this -- other).chars ++ other.toArray[Char])
-      else this
+      else
+        this
 
     def --(that: CharPredicate): CharPredicate = that match {
       case Empty ⇒ this
@@ -292,7 +332,8 @@ object CharPredicate {
       if (other.nonEmpty) {
         val otherChars = other.toArray
         new ArrayBased(chars.filter(binarySearch(otherChars, _) < 0))
-      } else this
+      } else
+        this
 
     def intersect(that: CharPredicate): CharPredicate = that match {
       case Empty ⇒ Empty
@@ -318,7 +359,8 @@ object CharPredicate {
       if (chars.nonEmpty) {
         val abp = new ArrayBased(chars.toArray)
         from(c ⇒ predicate(c) || abp(c))
-      } else this
+      } else
+        this
 
     def --(that: CharPredicate): CharPredicate = that match {
       case Empty ⇒ this
@@ -330,7 +372,8 @@ object CharPredicate {
       if (chars.nonEmpty) {
         val abp = new ArrayBased(chars.toArray)
         from(c ⇒ predicate(c) && !abp(c))
-      } else this
+      } else
+        this
 
     def intersect(that: CharPredicate) = that match {
       case Empty ⇒ Empty

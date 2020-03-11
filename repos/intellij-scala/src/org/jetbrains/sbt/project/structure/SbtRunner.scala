@@ -176,7 +176,11 @@ object SbtRunner {
 
   def getSbtLauncherDir: File = {
     val file: File = jarWith[this.type]
-    val deep = if (file.getName == "classes") 1 else 2
+    val deep =
+      if (file.getName == "classes")
+        1
+      else
+        2
     (file << deep) / "launcher"
   }
 
@@ -263,8 +267,10 @@ object SbtRunner {
 
   private def sbtVersionIn(directory: File): Option[String] = {
     val propertiesFile = directory / "project" / "build.properties"
-    if (propertiesFile.exists()) readPropertyFrom(propertiesFile, "sbt.version")
-    else None
+    if (propertiesFile.exists())
+      readPropertyFrom(propertiesFile, "sbt.version")
+    else
+      None
   }
 
   private def readPropertyFrom(file: File, name: String): Option[String] = {

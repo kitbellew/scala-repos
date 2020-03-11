@@ -36,7 +36,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     * subclass thereof.
     */
   def getAttributeList[T <: Attribute](c: Class[T]): java.util.List[T] =
-    if (attributeList.isEmpty) java.util.Collections.emptyList()
+    if (attributeList.isEmpty)
+      java.util.Collections.emptyList()
     else {
       val result = new java.util.ArrayList[T]
       attributeList.foreach { a ⇒
@@ -67,7 +68,11 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     Optional.ofNullable(
       attributeList.foldLeft(
         null.asInstanceOf[T]
-      )((acc, attr) ⇒ if (c.isInstance(attr)) c.cast(attr) else acc))
+      )((acc, attr) ⇒
+        if (c.isInstance(attr))
+          c.cast(attr)
+        else
+          acc))
 
   /**
     * Java API: Get the first (least specific) attribute of a given `Class` or subclass thereof.
@@ -130,9 +135,12 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     * Adds given attributes to the end of these attributes.
     */
   def and(other: Attributes): Attributes =
-    if (attributeList.isEmpty) other
-    else if (other.attributeList.isEmpty) this
-    else Attributes(attributeList ::: other.attributeList)
+    if (attributeList.isEmpty)
+      other
+    else if (other.attributeList.isEmpty)
+      this
+    else
+      Attributes(attributeList ::: other.attributeList)
 
   /**
     * Adds given attribute to the end of these attributes.
@@ -159,15 +167,19 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
           case Name(n) ⇒
             // FIXME this URLEncode is a bug IMO, if that format is important then that is how it should be store in Name
             val nn = URLEncoder.encode(n, "UTF-8")
-            if (buf ne null) concatNames(i, null, buf.append('-').append(nn))
+            if (buf ne null)
+              concatNames(i, null, buf.append('-').append(nn))
             else if (first ne null) {
               val b = new StringBuilder((first.length() + nn.length()) * 2)
               concatNames(i, null, b.append(first).append('-').append(nn))
-            } else concatNames(i, nn, null)
+            } else
+              concatNames(i, nn, null)
           case _ ⇒ concatNames(i, first, buf)
         }
-      else if (buf eq null) first
-      else buf.toString
+      else if (buf eq null)
+        first
+      else
+        buf.toString
 
     concatNames(attributeList.iterator, null, null) match {
       case null ⇒ default
@@ -213,8 +225,10 @@ object Attributes {
     * If the name is null or empty the name is ignored, i.e. [[#none]] is returned.
     */
   def name(name: String): Attributes =
-    if (name == null || name.isEmpty) none
-    else Attributes(Name(name))
+    if (name == null || name.isEmpty)
+      none
+    else
+      Attributes(Name(name))
 
   /**
     * Specifies the initial and maximum size of the input buffer.

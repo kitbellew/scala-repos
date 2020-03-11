@@ -22,16 +22,20 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * Gets the element from the specified index in constant time.
     */
   def apply(i: Int): A = {
-    if (i >= count_) throw new IndexOutOfBoundsException(i.toString)
-    else array((read + i) % maxSize)
+    if (i >= count_)
+      throw new IndexOutOfBoundsException(i.toString)
+    else
+      array((read + i) % maxSize)
   }
 
   /**
     * Overwrites an element with a new value
     */
   def update(i: Int, elem: A) {
-    if (i >= count_) throw new IndexOutOfBoundsException(i.toString)
-    else array((read + i) % maxSize) = elem
+    if (i >= count_)
+      throw new IndexOutOfBoundsException(i.toString)
+    else
+      array((read + i) % maxSize) = elem
   }
 
   /**
@@ -41,8 +45,10 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
   def +=(elem: A) {
     array(write) = elem
     write = (write + 1) % maxSize
-    if (count_ == maxSize) read = (read + 1) % maxSize
-    else count_ += 1
+    if (count_ == maxSize)
+      read = (read + 1) % maxSize
+    else
+      count_ += 1
   }
 
   /**
@@ -52,14 +58,16 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
     * the buffer.
     */
   def ++=(iter: Iterable[A]) {
-    for (elem <- iter) this += elem
+    for (elem <- iter)
+      this += elem
   }
 
   /**
     * Removes the next element from the buffer
     */
   def next: A = {
-    if (read == write) throw new NoSuchElementException
+    if (read == write)
+      throw new NoSuchElementException
     else {
       val res = array(read)
       read = (read + 1) % maxSize
@@ -79,7 +87,8 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
   }
 
   override def drop(n: Int): RingBuffer[A] = {
-    if (n >= maxSize) clear()
+    if (n >= maxSize)
+      clear()
     else {
       read = (read + n) % maxSize
       count_ = math.max(0, count_ - n)
@@ -92,9 +101,11 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
     var j = 0
     for (i <- 0 until count_) {
       val elem = apply(i)
-      if (fn(elem)) rmCount_ += 1
+      if (fn(elem))
+        rmCount_ += 1
       else {
-        if (j < i) update(j, elem)
+        if (j < i)
+          update(j, elem)
         j += 1
       }
     }

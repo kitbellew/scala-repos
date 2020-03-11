@@ -123,7 +123,8 @@ trait ShardSystemActorModule extends YggConfigComponent with Logging {
              routingActor,
              checkpoint,
              checkpointCoordination,
-             permissionsFinder)) yield init
+             permissionsFinder))
+        yield init
 
     val stoppable = Stoppable.fromFuture({
       import IngestSystem.actorStop

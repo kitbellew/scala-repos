@@ -79,7 +79,10 @@ class OrcPartitionDiscoverySuite
     val partNames = partitionCols.map {
       case (k, v) =>
         val valueString =
-          if (v == null || v == "") defaultPartitionName else v.toString
+          if (v == null || v == "")
+            defaultPartitionName
+          else
+            v.toString
         s"$k=$valueString"
     }
 

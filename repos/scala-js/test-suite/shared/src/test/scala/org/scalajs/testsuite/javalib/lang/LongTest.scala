@@ -145,8 +145,10 @@ class LongTest {
 
     def genTestValue(i: Int): Long = {
       val result = Long.MaxValue / (1L << i)
-      if (i > 63) -result
-      else result
+      if (i > 63)
+        -result
+      else
+        result
     }
 
     for {

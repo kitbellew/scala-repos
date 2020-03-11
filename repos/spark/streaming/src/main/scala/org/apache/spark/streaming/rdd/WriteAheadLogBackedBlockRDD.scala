@@ -101,7 +101,11 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     assertValid()
     Array.tabulate(_blockIds.length) { i =>
-      val isValid = if (isBlockIdValid.length == 0) true else isBlockIdValid(i)
+      val isValid =
+        if (isBlockIdValid.length == 0)
+          true
+        else
+          isBlockIdValid(i)
       new WriteAheadLogBackedBlockRDDPartition(
         i,
         _blockIds(i),

@@ -71,7 +71,8 @@ private[exception] class TestServiceException(
           expected.get,
           "incorrect value for " + fieldName,
           previous)
-      } else true
+      } else
+        true
     }
 
     def fail(badKey: String, location: String) {
@@ -188,7 +189,8 @@ private[exception] class TestServiceException(
     assert(hasStackTrace, "no stacktrace")
 
     def optionalAssertDefined(o: Option[_], defined: Boolean, msg: String) {
-      if (o.isDefined) assert(defined, msg + " expected but not found")
+      if (o.isDefined)
+        assert(defined, msg + " expected but not found")
     }
 
     optionalAssertDefined(clientAddress, hasClient, "peer")

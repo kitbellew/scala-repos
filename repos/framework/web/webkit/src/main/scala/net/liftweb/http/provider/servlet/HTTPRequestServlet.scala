@@ -171,7 +171,8 @@ class HTTPRequestServlet(
         case f => {
           val headers = f.getHeaders()
           val names: List[String] =
-            if (headers eq null) Nil
+            if (headers eq null)
+              Nil
             else
               headers
                 .getHeaderNames()

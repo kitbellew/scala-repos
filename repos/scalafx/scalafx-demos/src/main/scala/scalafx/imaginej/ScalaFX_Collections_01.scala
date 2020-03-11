@@ -106,16 +106,17 @@ object ScalaFX_Collections_01 {
       println("observable string buffer invalidated")
     }
     observableStringBuffer onChange { (_, changes) =>
-      for (change <- changes) change match {
-        case Add(position, elements) =>
-          println("added " + elements + " at position " + position)
-        case Remove(position, elements) =>
-          println("removed " + elements + " at position " + position)
-        case Reorder(start, end, _) =>
-          println("reordered from " + start + " to " + end)
-        case _ =>
-          println("unclassified change")
-      }
+      for (change <- changes)
+        change match {
+          case Add(position, elements) =>
+            println("added " + elements + " at position " + position)
+          case Remove(position, elements) =>
+            println("removed " + elements + " at position " + position)
+          case Reorder(start, end, _) =>
+            println("reordered from " + start + " to " + end)
+          case _ =>
+            println("unclassified change")
+        }
     }
     println(
       "======================================================================")

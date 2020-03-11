@@ -56,7 +56,10 @@ object CheckBoxTableCell {
     */
   implicit def sfxCheckBoxTableCell2jfx[S, T](
       cell: CheckBoxTableCell[S, T]): jfxsc.cell.CheckBoxTableCell[S, T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   private[cell] implicit def selectedIntPropertyToGetSelectedProperty(
       selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean])

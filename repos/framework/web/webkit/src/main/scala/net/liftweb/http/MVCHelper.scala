@@ -67,7 +67,10 @@ trait MVCHelper extends LiftRules.DispatchPF {
   }
 
   private def dispatch: List[MVCMatch] =
-    if (Props.devMode) _dispatch.reverse else nonDevDispatch
+    if (Props.devMode)
+      _dispatch.reverse
+    else
+      nonDevDispatch
 
   /**
     * Is the Rest helper defined for a given request

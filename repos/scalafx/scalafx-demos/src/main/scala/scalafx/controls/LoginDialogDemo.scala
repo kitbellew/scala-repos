@@ -107,7 +107,8 @@ object LoginDialogDemo extends JFXApp {
     dialog.resultConverter = dialogButton =>
       if (dialogButton == loginButtonType)
         Result(username.text(), password.text())
-      else null
+      else
+        null
 
     val result = dialog.showAndWait()
 

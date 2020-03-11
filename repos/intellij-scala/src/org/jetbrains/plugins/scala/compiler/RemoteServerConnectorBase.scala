@@ -33,8 +33,10 @@ abstract class RemoteServerConnectorBase(
     if (ApplicationManager.getApplication.isUnitTestMode) {
       if (PlatformUtils.isIdeaCommunity)
         new File("./out/plugin/Scala/lib").getAbsoluteFile
-      else new File("../../out/plugin/Scala/lib").getAbsoluteFile
-    } else new File(PathUtil.getJarPathForClass(getClass)).getParentFile
+      else
+        new File("../../out/plugin/Scala/lib").getAbsoluteFile
+    } else
+      new File(PathUtil.getJarPathForClass(getClass)).getParentFile
   }
 
   private val libCanonicalPath = PathUtil.getCanonicalPath(libRoot.getPath)
@@ -42,7 +44,8 @@ abstract class RemoteServerConnectorBase(
   private val sbtData = SbtData.from(
     new URLClassLoader(
       Array(new URL(
-        "jar:file:" + (if (libCanonicalPath startsWith "/") ""
+        "jar:file:" + (if (libCanonicalPath startsWith "/")
+                         ""
                        else
                          "/") + libCanonicalPath + "/jps/sbt-interface.jar!/")),
       getClass.getClassLoader),

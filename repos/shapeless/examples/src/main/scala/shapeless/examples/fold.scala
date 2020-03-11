@@ -30,7 +30,11 @@ object FoldExamples extends App {
   object combine extends Poly {
     implicit def caseCharString = use((c: Char, s: String) => s.indexOf(c))
     implicit def caseIntBoolean =
-      use((i: Int, b: Boolean) => if ((i >= 0) == b) "pass" else "fail")
+      use((i: Int, b: Boolean) =>
+        if ((i >= 0) == b)
+          "pass"
+        else
+          "fail")
   }
 
   // Computation is:

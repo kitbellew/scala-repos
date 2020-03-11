@@ -67,7 +67,8 @@ class InplaceRenameHelper(parent: PsiElement) {
       val (depElem, depRange) = dependentsWithRanges(index)
       if (depRange != null)
         builder.replaceElement(depElem, depRange, dependentName, newName, false)
-      else builder.replaceElement(depElem, dependentName, newName, false)
+      else
+        builder.replaceElement(depElem, dependentName, newName, false)
     }
     primaries += primary
     primaryNames += (primary -> newName)
@@ -115,8 +116,10 @@ class InplaceRenameHelper(parent: PsiElement) {
               template: Template,
               oldIndex: Int,
               newIndex: Int) {
-            if (oldIndex >= 0) clearHighlighters()
-            if (newIndex >= 0) markCurrentVariables(newIndex)
+            if (oldIndex >= 0)
+              clearHighlighters()
+            if (newIndex >= 0)
+              markCurrentVariables(newIndex)
           }
 
           override def templateCancelled(template: Template) {
@@ -171,7 +174,8 @@ class InplaceRenameHelper(parent: PsiElement) {
                 else if (dependentNames(primary) contains name)
                   colorsManager.getGlobalScheme.getAttributes(
                     EditorColors.SEARCH_RESULT_ATTRIBUTES)
-                else null
+                else
+                  null
               if (attributes != null)
                 rangesToHighlight.put(segmentMarker, attributes)
             }

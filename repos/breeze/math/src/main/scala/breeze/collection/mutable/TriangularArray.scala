@@ -63,10 +63,14 @@ final class TriangularArray[T: ClassTag](val dimension: Int)
   override def toString = {
     val buffer = new StringBuilder()
     for (r <- 0 until dimension) {
-      val columns = for (c <- 0 until dimension) yield {
-        if (c <= r) "----"
-        else Option(apply(r, c)).map(_.toString).getOrElse("null")
-      }
+      val columns =
+        for (c <- 0 until dimension)
+          yield {
+            if (c <= r)
+              "----"
+            else
+              Option(apply(r, c)).map(_.toString).getOrElse("null")
+          }
       buffer ++= columns.mkString("[", ", ", "]\n")
     }
     buffer.toString()
@@ -95,7 +99,8 @@ object TriangularArray {
 
   @inline
   def index(r: Int, c: Int) = {
-    if (r > c) require(r <= c, "row must be less than column!")
+    if (r > c)
+      require(r <= c, "row must be less than column!")
     (c * (c + 1) / 2 + r)
   }
 

@@ -68,8 +68,10 @@ object JavaStreamEnrichments {
   }
 
   def posVarIntSize(i: Int): Int = {
-    if (i < 0) illegal(s"negative numbers not allowed: $i")
-    if (i < ((1 << 8) - 1)) 1
+    if (i < 0)
+      illegal(s"negative numbers not allowed: $i")
+    if (i < ((1 << 8) - 1))
+      1
     else {
       if (i < ((1 << 16) - 1)) {
         3
@@ -103,7 +105,8 @@ object JavaStreamEnrichments {
       */
     def markOrBuffer(size: Int): InputStream = {
       val ms =
-        if (s.markSupported) s
+        if (s.markSupported)
+          s
         else {
           val buf = new Array[Byte](size)
           s.readFully(buf)
@@ -125,27 +128,37 @@ object JavaStreamEnrichments {
       // Note that Java, when you read a byte, returns a Int holding an unsigned byte.
       // if the value is < 0, you hit EOF.
       val c1 = s.read
-      if (c1 < 0) eof else c1
+      if (c1 < 0)
+        eof
+      else
+        c1
     }
     def readUnsignedShort: Int = {
       val c1 = s.read
       val c2 = s.read
-      if ((c1 | c2) < 0) eof else ((c1 << 8) | c2)
+      if ((c1 | c2) < 0)
+        eof
+      else
+        ((c1 << 8) | c2)
     }
 
     final def readFully(bytes: Array[Byte]): Unit =
       readFully(bytes, 0, bytes.length)
 
     final def readFully(bytes: Array[Byte], offset: Int, len: Int): Unit = {
-      if (len < 0) throw new IndexOutOfBoundsException()
+      if (len < 0)
+        throw new IndexOutOfBoundsException()
 
       @annotation.tailrec
       def go(o: Int, l: Int): Unit =
-        if (l == 0) ()
+        if (l == 0)
+          ()
         else {
           val count = s.read(bytes, o, l)
-          if (count < 0) eof
-          else go(o + count, l - count)
+          if (count < 0)
+            eof
+          else
+            go(o + count, l - count)
         }
       go(offset, len)
     }
@@ -163,8 +176,10 @@ object JavaStreamEnrichments {
       val c2 = s.read
       val c3 = s.read
       val c4 = s.read
-      if ((c1 | c2 | c3 | c4) < 0) eof
-      else ((c1 << 24) | (c2 << 16) | (c3 << 8) | c4)
+      if ((c1 | c2 | c3 | c4) < 0)
+        eof
+      else
+        ((c1 << 24) | (c2 << 16) | (c3 << 8) | c4)
     }
     /*
      * This is the algorithm from DataInputStream
@@ -188,14 +203,20 @@ object JavaStreamEnrichments {
       val c1 = s.read
       val c2 = s.read
       // This is the algorithm from DataInputStream
-      if ((c1 | c2) < 0) eof else ((c1 << 8) | c2).toChar
+      if ((c1 | c2) < 0)
+        eof
+      else
+        ((c1 << 8) | c2).toChar
     }
 
     def readShort: Short = {
       val c1 = s.read
       val c2 = s.read
       // This is the algorithm from DataInputStream
-      if ((c1 | c2) < 0) eof else ((c1 << 8) | c2).toShort
+      if ((c1 | c2) < 0)
+        eof
+      else
+        ((c1 << 8) | c2).toShort
     }
 
     /**
@@ -207,11 +228,14 @@ object JavaStreamEnrichments {
       */
     final def readPosVarInt: Int = {
       val c1 = readUnsignedByte
-      if (c1 < ((1 << 8) - 1)) c1
+      if (c1 < ((1 << 8) - 1))
+        c1
       else {
         val c2 = readUnsignedShort
-        if (c2 < ((1 << 16) - 1)) c2
-        else readInt
+        if (c2 < ((1 << 16) - 1))
+          c2
+        else
+          readInt
       }
     }
 
@@ -219,19 +243,27 @@ object JavaStreamEnrichments {
       @annotation.tailrec
       def go(c: Long): Unit = {
         val skipped = s.skip(c)
-        if (skipped == c) ()
+        if (skipped == c)
+          ()
         else if (skipped == 0L)
           throw new IOException(
             s"could not skipFully: count, c, skipped = ${(count, c, skipped)}")
-        else go(c - skipped)
+        else
+          go(c - skipped)
       }
-      if (count != 0L) go(count) else ()
+      if (count != 0L)
+        go(count)
+      else
+        ()
     }
   }
 
   implicit class RichOutputStream(val s: OutputStream) extends AnyVal {
     def writeBoolean(b: Boolean): Unit =
-      if (b) s.write(1: Byte) else s.write(0: Byte)
+      if (b)
+        s.write(1: Byte)
+      else
+        s.write(0: Byte)
 
     def writeBytes(b: Array[Byte], off: Int, len: Int): Unit = {
       s.write(b, off, len)
@@ -249,8 +281,10 @@ object JavaStreamEnrichments {
       * 7 bytes for 65536 - Int.MaxValue
       */
     def writePosVarInt(i: Int): Unit = {
-      if (i < 0) illegal(s"must be non-negative: ${i}")
-      if (i < ((1 << 8) - 1)) s.write(i)
+      if (i < 0)
+        illegal(s"must be non-negative: ${i}")
+      if (i < ((1 << 8) - 1))
+        s.write(i)
       else {
         s.write(-1: Byte)
         if (i < ((1 << 16) - 1)) {

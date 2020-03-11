@@ -91,8 +91,10 @@ private[http] class HttpRequestRendererFactory(
                 case Some(te) ⇒
                   // if the user applied some custom transfer-encoding we need to keep the header
                   render(
-                    if (entity.isChunked && !entity.isKnownEmpty) te.withChunked
-                    else te)
+                    if (entity.isChunked && !entity.isKnownEmpty)
+                      te.withChunked
+                    else
+                      te)
                   renderHeaders(
                     tail,
                     hostHeaderSeen,
@@ -124,7 +126,8 @@ private[http] class HttpRequestRendererFactory(
                 transferEncodingSeen)
 
             case x: CustomHeader ⇒
-              if (x.renderInRequests) render(x)
+              if (x.renderInRequests)
+                render(x)
               renderHeaders(
                 tail,
                 hostHeaderSeen,
@@ -142,8 +145,10 @@ private[http] class HttpRequestRendererFactory(
                 transferEncodingSeen)
 
             case x ⇒
-              if (x.renderInRequests) render(x)
-              else log.warning("HTTP header '{}' is not allowed in requests", x)
+              if (x.renderInRequests)
+                render(x)
+              else
+                log.warning("HTTP header '{}' is not allowed in requests", x)
               renderHeaders(
                 tail,
                 hostHeaderSeen,
@@ -152,7 +157,8 @@ private[http] class HttpRequestRendererFactory(
           }
 
         case Nil ⇒
-          if (!hostHeaderSeen) r ~~ ctx.hostHeader ~~ CrLf
+          if (!hostHeaderSeen)
+            r ~~ ctx.hostHeader ~~ CrLf
           if (!userAgentSeen && userAgentHeader.isDefined)
             r ~~ userAgentHeader.get ~~ CrLf
           if (entity.isChunked && !entity.isKnownEmpty && !transferEncodingSeen)
@@ -162,7 +168,8 @@ private[http] class HttpRequestRendererFactory(
     def renderContentLength(contentLength: Long) =
       if (method.isEntityAccepted && (contentLength > 0 || method.requestEntityAcceptance == Expected))
         r ~~ `Content-Length` ~~ contentLength ~~ CrLf
-      else r
+      else
+        r
 
     def renderStreamed(
         body: Source[ByteString, Any]): RequestRenderingOutput = {
@@ -191,7 +198,8 @@ private[http] class HttpRequestRendererFactory(
           renderContentLength(data.length) ~~ CrLf
           if (ctx.sendEntityTrigger.isDefined)
             renderStreamed(Source.single(data))
-          else RequestRenderingOutput.Strict(r.get ++ data)
+          else
+            RequestRenderingOutput.Strict(r.get ++ data)
 
         case HttpEntity.Default(_, contentLength, data) ⇒
           renderContentLength(contentLength) ~~ CrLf

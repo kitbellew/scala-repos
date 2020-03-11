@@ -261,7 +261,10 @@ class OfferMatcherManagerModuleTest
           .map(_.getValue)
           .getOrElse(0)
 
-      if (cpusInOffer >= totalCpus) numberedTasks() else Seq.empty
+      if (cpusInOffer >= totalCpus)
+        numberedTasks()
+      else
+        Seq.empty
     }
   }
 }

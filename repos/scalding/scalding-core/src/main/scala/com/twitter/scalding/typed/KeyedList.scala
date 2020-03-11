@@ -167,8 +167,10 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
       override def plus(left: T, right: T) = left
       // Don't enumerate every item, just take the first
       override def sumOption(to: TraversableOnce[T]): Option[T] =
-        if (to.isEmpty) None
-        else Some(to.toIterator.next)
+        if (to.isEmpty)
+          None
+        else
+          Some(to.toIterator.next)
     }
   }
 
@@ -254,7 +256,10 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
   /** For each key, count the number of values that satisfy a predicate */
   def count(fn: T => Boolean): This[K, Long] =
     mapValues { t =>
-      if (fn(t)) 1L else 0L
+      if (fn(t))
+        1L
+      else
+        0L
     }.sum
 
   /** For each key, check to see if a predicate is true for all Values*/
@@ -283,8 +288,10 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * For each key, Selects first n elements. Don't use this if n == 1, head is faster in that case.
     */
   def take(n: Int): This[K, T] =
-    if (n < 1) filterKeys(_ => false) // just don't keep anything
-    else if (n == 1) head
+    if (n < 1)
+      filterKeys(_ => false) // just don't keep anything
+    else if (n == 1)
+      head
     else
       mapValueStream {
         _.take(n)

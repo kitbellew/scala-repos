@@ -99,7 +99,8 @@ object TestPublisher {
       val subscription: PublisherProbeSubscription[I] =
         new PublisherProbeSubscription[I](subscriber, probe)
       probe.ref ! Subscribe(subscription)
-      if (autoOnSubscribe) subscriber.onSubscribe(subscription)
+      if (autoOnSubscribe)
+        subscriber.onSubscribe(subscription)
     }
 
     /**
@@ -173,7 +174,8 @@ object TestPublisher {
     def pending: Long = pendingRequests
 
     def sendNext(elem: T): Self = {
-      if (pendingRequests == 0) pendingRequests = subscription.expectRequest()
+      if (pendingRequests == 0)
+        pendingRequests = subscription.expectRequest()
       pendingRequests -= 1
       subscription.sendNext(elem)
       this
@@ -422,7 +424,8 @@ object TestSubscriber {
       */
     def expectSubscriptionAndError(signalDemand: Boolean): Throwable = {
       val sub = expectSubscription()
-      if (signalDemand) sub.request(1)
+      if (signalDemand)
+        sub.request(1)
       expectError()
     }
 
@@ -450,7 +453,8 @@ object TestSubscriber {
         cause: Throwable,
         signalDemand: Boolean): Self = {
       val sub = expectSubscription()
-      if (signalDemand) sub.request(1)
+      if (signalDemand)
+        sub.request(1)
       expectError(cause)
       self
     }
@@ -478,7 +482,8 @@ object TestSubscriber {
       */
     def expectSubscriptionAndComplete(signalDemand: Boolean): Self = {
       val sub = expectSubscription()
-      if (signalDemand) sub.request(1)
+      if (signalDemand)
+        sub.request(1)
       expectComplete()
       self
     }
@@ -619,7 +624,8 @@ object TestSubscriber {
         }
 
       // if no subscription was obtained yet, we expect it
-      if (_subscription == null) self.expectSubscription()
+      if (_subscription == null)
+        self.expectSubscription()
       _subscription.request(Long.MaxValue)
 
       drain()

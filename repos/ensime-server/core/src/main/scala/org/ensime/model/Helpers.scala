@@ -75,7 +75,8 @@ trait Helpers { self: Global =>
           sect.exists(_.isImplicit)
         }
       )
-    } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
+    } else
+      CompletionSignature(List.empty, typeFullName(tpe, true), false)
   }
 
   /**
@@ -124,7 +125,8 @@ trait Helpers { self: Global =>
     val prefix =
       if (typeSym.enclosingPackage == NoSymbol)
         ""
-      else typeSym.enclosingPackage.fullName + "."
+      else
+        typeSym.enclosingPackage.fullName + "."
 
     val withoutArgs = if (typeSym.isNestedClass) {
       prefix + nestedClassName(typeSym)
@@ -141,17 +143,23 @@ trait Helpers { self: Global =>
                      } else {
                        ""
                      })
-    } else withoutArgs
+    } else
+      withoutArgs
   }
 
   def typeShortName(tpe: Type): String = {
-    if (tpe.typeSymbol != NoSymbol) typeShortName(tpe.typeSymbol)
-    else tpe.toString()
+    if (tpe.typeSymbol != NoSymbol)
+      typeShortName(tpe.typeSymbol)
+    else
+      tpe.toString()
   }
 
   def typeShortName(sym: Symbol): String = {
     val s = sym.nameString
-    if ((sym.isModule || sym.isModuleClass) && !s.endsWith("$")) s + "$" else s
+    if ((sym.isModule || sym.isModuleClass) && !s.endsWith("$"))
+      s + "$"
+    else
+      s
   }
 
   /**
@@ -220,7 +228,8 @@ trait Helpers { self: Global =>
     try {
       if (typeSym.isNestedClass) {
         Some(typeSym.outerClass)
-      } else None
+      } else
+        None
     } catch {
       // TODO accessing outerClass sometimes throws java.lang.Error
       // Notably, when tpe = scala.Predef$Class
@@ -235,14 +244,18 @@ trait Helpers { self: Global =>
         val comp = sym.companionClass
         if (comp != NoSymbol && comp.tpe != tpe) {
           Some(comp.tpe)
-        } else None
+        } else
+          None
       } else if (sym.isTrait || sym.isClass || sym.isPackageClass) {
         val comp = sym.companionModule
         if (comp != NoSymbol && comp.tpe != tpe) {
           Some(comp.tpe)
-        } else None
-      } else None
-    } else None
+        } else
+          None
+      } else
+        None
+    } else
+      None
   }
 
   /**
@@ -252,7 +265,10 @@ trait Helpers { self: Global =>
     */
   def packageSymFromPath(path: String): Option[Symbol] = {
     symbolByName(
-      if (path.endsWith("$")) path else path + "$",
+      if (path.endsWith("$"))
+        path
+      else
+        path + "$",
       RootPackage
     ).find { s =>
       s.hasPackageFlag

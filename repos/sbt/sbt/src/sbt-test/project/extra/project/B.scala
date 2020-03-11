@@ -28,7 +28,10 @@ object B extends Build {
   def addExtra1(s: State, extra: Seq[File]): State = {
     val cs = s.configuration.provider.components()
     val copied = cs.addToComponent("extra", extra.toArray)
-    if (copied) s.reload else s
+    if (copied)
+      s.reload
+    else
+      s
   }
   def addExtra2(s: State, extra: Seq[File]): State = {
     val reload = State.defaultReload(s)

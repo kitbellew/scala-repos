@@ -147,7 +147,11 @@ trait ColumnarTableModuleSpec[M[+_]]
   }
 
   def testRenderJson(seq: Seq[JValue]) = {
-    def arr(es: List[JValue]) = if (es.isEmpty) None else Some(JArray(es))
+    def arr(es: List[JValue]) =
+      if (es.isEmpty)
+        None
+      else
+        Some(JArray(es))
 
     def minimizeItem(t: (String, JValue)) = minimize(t._2).map((t._1, _))
 
@@ -159,7 +163,10 @@ trait ColumnarTableModuleSpec[M[+_]]
 
         case JArray(elements) =>
           val elements2 = elements.flatMap(minimize)
-          if (elements2.isEmpty) None else Some(JArray(elements2))
+          if (elements2.isEmpty)
+            None
+          else
+            Some(JArray(elements2))
 
         case JUndefined => None
 
@@ -291,7 +298,13 @@ trait ColumnarTableModuleSpec[M[+_]]
       }
 
       "check utf-8 encoding" in check { str: String =>
-        val s = str.toList.map((c: Char) => if (c < ' ') ' ' else c).mkString
+        val s = str.toList
+          .map((c: Char) =>
+            if (c < ' ')
+              ' '
+            else
+              c)
+          .mkString
         testRenderJson(JString(s) :: Nil)
       }.set(
         minTestsOk -> 20000,

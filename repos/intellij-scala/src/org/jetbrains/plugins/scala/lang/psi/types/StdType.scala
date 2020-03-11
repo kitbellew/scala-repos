@@ -29,7 +29,8 @@ abstract class StdType(val name: String, val tSuper: Option[StdType])
   def asClass(project: Project): Option[ScSyntheticClass] = {
     if (SyntheticClasses.get(project).isClassesRegistered)
       Some(SyntheticClasses.get(project).byName(name).get)
-    else None
+    else
+      None
   }
 
   override def equivInner(
@@ -106,8 +107,10 @@ object StdType {
 
   def unboxedType(tp: ScType): ScType = {
     val name = tp.canonicalText.stripPrefix("_root_.")
-    if (fqnBoxedToScType.contains(name)) fqnBoxedToScType(name)
-    else tp
+    if (fqnBoxedToScType.contains(name))
+      fqnBoxedToScType(name)
+    else
+      tp
   }
 
   def unapply(tp: StdType): Option[(String, Option[StdType])] =

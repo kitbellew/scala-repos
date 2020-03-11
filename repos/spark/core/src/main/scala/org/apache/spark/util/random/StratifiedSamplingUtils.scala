@@ -108,7 +108,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         }
         val acceptBound = acceptResult.acceptBound
         val copiesAccepted =
-          if (acceptBound == 0.0) 0L else rng.nextPoisson(acceptBound)
+          if (acceptBound == 0.0)
+            0L
+          else
+            rng.nextPoisson(acceptBound)
         if (copiesAccepted > 0) {
           acceptResult.numAccepted += copiesAccepted
         }
@@ -257,7 +260,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           // Must use the same invoke pattern on the rng as in getSeqOp for with replacement
           // in order to generate the same sequence of random numbers when creating the sample
           val copiesAccepted =
-            if (acceptBound == 0) 0L else rng.nextPoisson(acceptBound)
+            if (acceptBound == 0)
+              0L
+            else
+              rng.nextPoisson(acceptBound)
           val copiesWaitlisted = rng.nextPoisson(finalResult(key).waitListBound)
           val copiesInSample = copiesAccepted +
             (0 until copiesWaitlisted).count(i =>

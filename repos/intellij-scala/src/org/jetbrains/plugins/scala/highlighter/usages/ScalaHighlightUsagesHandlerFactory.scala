@@ -28,13 +28,15 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
   def createHighlightUsagesHandler(
       editor: Editor,
       file: PsiFile): HighlightUsagesHandlerBase[_ <: PsiElement] = {
-    if (!file.isInstanceOf[ScalaFile]) return null
+    if (!file.isInstanceOf[ScalaFile])
+      return null
     val offset = TargetElementUtil.adjustOffset(
       file,
       editor.getDocument,
       editor.getCaretModel.getOffset)
     val element: PsiElement = file.findElementAt(offset)
-    if (element == null || element.getNode == null) return null
+    if (element == null || element.getNode == null)
+      return null
     element.getNode.getElementType match {
       case ScalaTokenTypes.kRETURN =>
         val fun =

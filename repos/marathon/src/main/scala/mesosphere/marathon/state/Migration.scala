@@ -468,7 +468,10 @@ object StorageVersions {
       with Ordered[StorageVersion] {
     override def compare(that: StorageVersion): Int = {
       def by(left: Int, right: Int, fn: => Int): Int =
-        if (left.compareTo(right) != 0) left.compareTo(right) else fn
+        if (left.compareTo(right) != 0)
+          left.compareTo(right)
+        else
+          fn
       by(
         version.getMajor,
         that.getMajor,

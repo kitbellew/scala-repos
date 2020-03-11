@@ -111,8 +111,10 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
 
       results must haveAllElementsLike {
         case (ids, SObject(elems)) => {
-          if (idJoin) ids must haveSize(2)
-          else ids must haveSize(1)
+          if (idJoin)
+            ids must haveSize(2)
+          else
+            ids must haveSize(1)
 
           elems.keys must contain("predictedGender")
 

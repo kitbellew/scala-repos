@@ -49,7 +49,8 @@ class SimpleDnsManager(val ext: DnsExt)
   }
 
   override def postStop(): Unit = {
-    for (t ← cleanupTimer) t.cancel()
+    for (t ← cleanupTimer)
+      t.cancel()
   }
 }
 

@@ -29,7 +29,8 @@ trait BreezeBenchmark extends SimpleBenchmark {
     * Sugar to run 'f' for 'reps' number of times.
     */
   def run[A](reps: Int)(f: => A): A = {
-    if (reps < 1) sys.error("!")
+    if (reps < 1)
+      sys.error("!")
     var i = 0
     var result: Option[A] = None
     while (i < reps) {
@@ -40,7 +41,8 @@ trait BreezeBenchmark extends SimpleBenchmark {
   }
 
   def runWith[A, B](reps: Int, constructor: => B)(f: B => A): A = {
-    if (reps < 1) sys.error("!")
+    if (reps < 1)
+      sys.error("!")
     var i = 0
     var result: Option[A] = None
     val obj: B = constructor
@@ -53,7 +55,8 @@ trait BreezeBenchmark extends SimpleBenchmark {
 
   def runWith2[A, B, C](reps: Int, constructor: => B, constructor2: => C)(
       f: (B, C) => A): A = {
-    if (reps < 1) sys.error("!")
+    if (reps < 1)
+      sys.error("!")
     var i = 0
     var result: Option[A] = None
     val obj1: B = constructor

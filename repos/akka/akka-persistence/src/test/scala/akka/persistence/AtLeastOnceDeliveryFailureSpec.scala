@@ -54,7 +54,8 @@ object AtLeastOnceDeliveryFailureSpec {
 
     def add(i: Int): Unit = {
       state :+= i
-      if (state.length == numMessages) probe ! Done(state)
+      if (state.length == numMessages)
+        probe ! Done(state)
     }
 
     def shouldFail(rate: Double) =
@@ -117,8 +118,10 @@ object AtLeastOnceDeliveryFailureSpec {
     }
 
     private def debugMessage(msg: String): String =
-      s"[sender] ${msg} (mode = ${if (recoveryRunning) "replay"
-      else "live"} snr = ${lastSequenceNr} state = ${state.sorted})"
+      s"[sender] ${msg} (mode = ${if (recoveryRunning)
+        "replay"
+      else
+        "live"} snr = ${lastSequenceNr} state = ${state.sorted})"
 
     override protected def onRecoveryFailure(
         cause: Throwable,
@@ -178,7 +181,9 @@ object AtLeastOnceDeliveryFailureSpec {
         // snd will be stopped if recovery or persist fails
         log.debug(s"sender stopped, starting it again")
         snd = createSender()
-        1 to numMessages foreach (i ⇒ if (!acks(i)) snd ! i)
+        1 to numMessages foreach (i ⇒
+          if (!acks(i))
+            snd ! i)
     }
   }
 }

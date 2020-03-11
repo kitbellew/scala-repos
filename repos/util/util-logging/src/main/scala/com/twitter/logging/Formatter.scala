@@ -100,7 +100,10 @@ class Formatter(
   private val matcher = Formatter.DateFormatRegex.matcher(prefix)
 
   private val DATE_FORMAT = TwitterDateFormat(
-    if (matcher.find()) matcher.group(1) else "yyyyMMdd-HH:mm:ss.SSS")
+    if (matcher.find())
+      matcher.group(1)
+    else
+      "yyyyMMdd-HH:mm:ss.SSS")
   private val FORMAT = matcher.replaceFirst("%3\\$s")
 
   /**
@@ -155,7 +158,11 @@ class Formatter(
       Array(message)
     } else {
       val splitOnNewlines = message.split("\n")
-      val numThrowLines = if (record.getThrown == null) 0 else 20
+      val numThrowLines =
+        if (record.getThrown == null)
+          0
+        else
+          20
 
       val lines =
         new mutable.ArrayBuffer[String](splitOnNewlines.length + numThrowLines)

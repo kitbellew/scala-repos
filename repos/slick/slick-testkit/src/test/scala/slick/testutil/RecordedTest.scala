@@ -34,14 +34,16 @@ abstract class RecordedTest {
       while ({
         line = r.readLine();
         line != null
-      }) w.write(mask(line) + "\n")
+      })
+        w.write(mask(line) + "\n")
       w.flush()
       masked.getBuffer.toString
     }
 
     val check = {
       val f = new File(basename + ".check")
-      if (f.isFile) Some(read(f))
+      if (f.isFile)
+        Some(read(f))
       else {
         // Disabled because now we have doctests without a check file:
         // Console.err.println("Warning: "+f+" not found")
@@ -74,7 +76,8 @@ abstract class RecordedTest {
       while ({
         num = r.read(a);
         num > 0
-      }) buf.append(new String(a, 0, num))
+      })
+        buf.append(new String(a, 0, num))
       buf.toString()
     } finally in.close
   }

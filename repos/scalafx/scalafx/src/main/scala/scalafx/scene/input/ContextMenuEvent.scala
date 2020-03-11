@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object ContextMenuEvent {
   implicit def sfxContextMenuEvent2jfx(
       c: ContextMenuEvent): jfxsi.ContextMenuEvent =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class ContextMenuEvent(override val delegate: jfxsi.ContextMenuEvent)

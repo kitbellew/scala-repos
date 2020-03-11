@@ -68,7 +68,11 @@ object BatcherLaws extends Properties("Batcher") {
       batcher: Batcher,
       intervalGenerator: (BatchID, BatchID) => Interval[BatchID]) =
     forAll { (tsA: Timestamp, tsB: Timestamp, deltaMs: Long) =>
-      val (tsLower, tsUpper) = if (tsA < tsB) (tsA, tsB) else (tsB, tsA)
+      val (tsLower, tsUpper) =
+        if (tsA < tsB)
+          (tsA, tsB)
+        else
+          (tsB, tsA)
 
       val deltaBounded = Milliseconds(deltaMs % 1000 * 86000 * 365L)
       val int =
@@ -127,7 +131,11 @@ object BatcherLaws extends Properties("Batcher") {
 
     // Long division rounds toward zero. Add a correction to make
     // sure that our index is floored toward negative inf.
-    val flooredBatch = BatchID(if (millis < 0) (hourIndex - 1) else hourIndex)
+    val flooredBatch = BatchID(
+      if (millis < 0)
+        (hourIndex - 1)
+      else
+        hourIndex)
 
     (hourlyBatcher.batchOf(Timestamp(millis)) == flooredBatch) &&
     (hourlyBatcher.earliestTimeOf(flooredBatch).milliSinceEpoch ==
@@ -158,7 +166,8 @@ object BatcherLaws extends Properties("Batcher") {
           .forall { t =>
             if (t.milliSinceEpoch % (1000 * 10) == 0)
               tenSecondBatcher.isLowerBatchEdge(t)
-            else !tenSecondBatcher.isLowerBatchEdge(t)
+            else
+              !tenSecondBatcher.isLowerBatchEdge(t)
           }
       }
     }

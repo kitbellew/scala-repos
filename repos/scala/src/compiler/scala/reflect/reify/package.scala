@@ -50,7 +50,8 @@ package object reify {
       Apply(
         Select(universe, nme.runtimeMirror),
         List(Select(enclosingErasure, sn.GetClassLoader)))
-    else Select(universe, nme.rootMirror)
+    else
+      Select(universe, nme.rootMirror)
   }
 
   def reifyTree(global: Global)(
@@ -148,8 +149,11 @@ package object reify {
           typer0,
           classInScope.symbol.toTypeConstructor,
           concrete = true)
-      else if (!isUnsafeToUseThis) Select(This(tpnme.EMPTY), sn.GetClass)
-      else EmptyTree
-    } else EmptyTree
+      else if (!isUnsafeToUseThis)
+        Select(This(tpnme.EMPTY), sn.GetClass)
+      else
+        EmptyTree
+    } else
+      EmptyTree
   }
 }

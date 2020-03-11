@@ -122,7 +122,8 @@ class GraphConcatSpec extends TwoStreamsSetup {
         errorSignalled ||= subscriber2
           .expectNextOrError(4, TestException)
           .isLeft
-      if (!errorSignalled) subscriber2.expectError(TestException)
+      if (!errorSignalled)
+        subscriber2.expectError(TestException)
     }
 
     "work with one nonempty and one delayed failed publisher" in assertAllStagesStopped {
@@ -138,7 +139,8 @@ class GraphConcatSpec extends TwoStreamsSetup {
         errorSignalled ||= subscriber.expectNextOrError(3, TestException).isLeft
       if (!errorSignalled)
         errorSignalled ||= subscriber.expectNextOrError(4, TestException).isLeft
-      if (!errorSignalled) subscriber.expectError(TestException)
+      if (!errorSignalled)
+        subscriber.expectError(TestException)
     }
 
     "work with one delayed failed and one nonempty publisher" in assertAllStagesStopped {

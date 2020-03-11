@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object DateTimeStringConverter {
   implicit def sfxDateTimeStringConverter2jfx(
       c: DateTimeStringConverter): jfxuc.DateTimeStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class DateTimeStringConverter(

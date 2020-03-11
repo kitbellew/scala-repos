@@ -135,8 +135,10 @@ private[finagle] class MultiCategorizingExceptionStatsHandler(
 
     val flags = mkFlags(t)
     val flagLabels: Seq[Seq[String]] =
-      if (flags.isEmpty) Seq(Seq(parentLabel))
-      else flags.toSeq.map(Seq(parentLabel, _))
+      if (flags.isEmpty)
+        Seq(Seq(parentLabel))
+      else
+        flags.toSeq.map(Seq(parentLabel, _))
 
     val labels: Seq[Seq[String]] = mkSource(t) match {
       case Some(service) => flagLabels :+ Seq(SourcedFailures, service)
@@ -145,7 +147,8 @@ private[finagle] class MultiCategorizingExceptionStatsHandler(
 
     val paths: Seq[Seq[String]] = statPaths(t, labels, rollup)
 
-    if (flags.nonEmpty) statsReceiver.counter(parentLabel).incr()
+    if (flags.nonEmpty)
+      statsReceiver.counter(parentLabel).incr()
     paths.foreach { path =>
       statsReceiver.counter(path: _*).incr()
     }

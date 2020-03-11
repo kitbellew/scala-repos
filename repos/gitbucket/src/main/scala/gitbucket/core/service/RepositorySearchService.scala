@@ -35,7 +35,10 @@ trait RepositorySearchService { self: IssuesService =>
 
   def countFiles(owner: String, repository: String, query: String): Int =
     using(Git.open(getRepositoryDir(owner, repository))) { git =>
-      if (JGitUtil.isEmpty(git)) 0 else searchRepositoryFiles(git, query).length
+      if (JGitUtil.isEmpty(git))
+        0
+      else
+        searchRepositoryFiles(git, query).length
     }
 
   def searchFiles(

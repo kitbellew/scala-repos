@@ -58,11 +58,11 @@ object ParserSpecs
     "accept parameterized bind with one parameter" in {
       parseSingle("x(a) := 1 2") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "x"),
-            Vector("a"),
-            NumLit(_, "1"),
-            NumLit(_, "2")) =>
+              _,
+              Identifier(Vector(), "x"),
+              Vector("a"),
+              NumLit(_, "1"),
+              NumLit(_, "2")) =>
           ok
       }
     }
@@ -82,11 +82,11 @@ object ParserSpecs
     "accept parameterized bind with multiple parameter" in {
       parseSingle("x(a, b, c) := 1 2") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "x"),
-            Vector("a", "b", "c"),
-            NumLit(_, "1"),
-            NumLit(_, "2")) =>
+              _,
+              Identifier(Vector(), "x"),
+              Vector("a", "b", "c"),
+              NumLit(_, "1"),
+              NumLit(_, "2")) =>
           ok
       }
     }
@@ -94,11 +94,11 @@ object ParserSpecs
     "accept unparameterized bind" in {
       parseSingle("x := 1 2") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "x"),
-            Vector(),
-            NumLit(_, "1"),
-            NumLit(_, "2")) =>
+              _,
+              Identifier(Vector(), "x"),
+              Vector(),
+              NumLit(_, "1"),
+              NumLit(_, "2")) =>
           ok
       }
     }
@@ -118,9 +118,9 @@ object ParserSpecs
 
       parseSingle("import std::math::alissa 42") must beLike {
         case Import(
-            _,
-            SpecificImport(Vector("std", "math", "alissa")),
-            NumLit(_, "42")) =>
+              _,
+              SpecificImport(Vector("std", "math", "alissa")),
+              NumLit(_, "42")) =>
           ok
       }
     }
@@ -132,9 +132,9 @@ object ParserSpecs
 
       parseSingle("import std::math::alissa::* 42") must beLike {
         case Import(
-            _,
-            WildcardImport(Vector("std", "math", "alissa")),
-            NumLit(_, "42")) =>
+              _,
+              WildcardImport(Vector("std", "math", "alissa")),
+              NumLit(_, "42")) =>
           ok
       }
     }
@@ -155,11 +155,11 @@ object ParserSpecs
         |   //foo
         | foo""".stripMargin) must beLike {
         case Let(
-            _,
-            _,
-            _,
-            Import(_, WildcardImport(Vector("std", "time")), _),
-            _) =>
+              _,
+              _,
+              _,
+              Import(_, WildcardImport(Vector("std", "time")), _),
+              _) =>
           ok
       }
     }
@@ -185,14 +185,14 @@ object ParserSpecs
     "accept an assertion with a compound expression" in {
       parseSingle("assert a < 12 [a]") must beLike {
         case Assert(
-            _,
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              NumLit(_, "12")),
-            ArrayDef(
-              _,
-              Vector(Dispatch(_, Identifier(Vector(), "a"), Vector())))) =>
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                NumLit(_, "12")),
+              ArrayDef(
+                _,
+                Vector(Dispatch(_, Identifier(Vector(), "a"), Vector())))) =>
           ok
       }
     }
@@ -204,9 +204,9 @@ object ParserSpecs
     "accept a single solve expression" in {
       parseSingle("solve 'a 'a + 42") must beLike {
         case Solve(
-            _,
-            Vector(TicVar(_, "'a")),
-            Add(_, TicVar(_, "'a"), NumLit(_, "42"))) =>
+              _,
+              Vector(TicVar(_, "'a")),
+              Add(_, TicVar(_, "'a"), NumLit(_, "42"))) =>
           ok
       }
     }
@@ -215,9 +215,9 @@ object ParserSpecs
       "with Add" >> {
         parseSingle("solve 'a, 'b 'a + 'b") must beLike {
           case Solve(
-              _,
-              Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-              Add(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
+                _,
+                Vector(TicVar(_, "'a"), TicVar(_, "'b")),
+                Add(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
             ok
         }
       }
@@ -225,9 +225,9 @@ object ParserSpecs
       "with Union" >> {
         parseSingle("solve 'a, 'b 'a union 'b") must beLike {
           case Solve(
-              _,
-              Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-              Union(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
+                _,
+                Vector(TicVar(_, "'a"), TicVar(_, "'b")),
+                Union(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
             ok
         }
       }
@@ -235,9 +235,9 @@ object ParserSpecs
       "with Difference" >> {
         parseSingle("solve 'a, 'b 'a difference 'b") must beLike {
           case Solve(
-              _,
-              Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-              Difference(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
+                _,
+                Vector(TicVar(_, "'a"), TicVar(_, "'b")),
+                Difference(_, TicVar(_, "'a"), TicVar(_, "'b"))) =>
             ok
         }
       }
@@ -246,12 +246,12 @@ object ParserSpecs
         parseSingle(
           "solve 'a, 'b ('a where true) & ('b where false)") must beLike {
           case Solve(
-              _,
-              Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-              And(
                 _,
-                Paren(_, Where(_, TicVar(_, "'a"), BoolLit(_, true))),
-                Paren(_, Where(_, TicVar(_, "'b"), BoolLit(_, false))))) =>
+                Vector(TicVar(_, "'a"), TicVar(_, "'b")),
+                And(
+                  _,
+                  Paren(_, Where(_, TicVar(_, "'a"), BoolLit(_, true))),
+                  Paren(_, Where(_, TicVar(_, "'b"), BoolLit(_, false))))) =>
             ok
         }
       }
@@ -260,13 +260,13 @@ object ParserSpecs
     "accept a solve expression with a single expression constraint" in {
       parseSingle("solve 'a = 12 + true 1") must beLike {
         case Solve(
-            _,
-            Vector(
-              Eq(
-                _,
-                TicVar(_, "'a"),
-                Add(_, NumLit(_, "12"), BoolLit(_, true)))),
-            NumLit(_, "1")) =>
+              _,
+              Vector(
+                Eq(
+                  _,
+                  TicVar(_, "'a"),
+                  Add(_, NumLit(_, "12"), BoolLit(_, true)))),
+              NumLit(_, "1")) =>
           ok
       }
     }
@@ -274,11 +274,14 @@ object ParserSpecs
     "accept a solve expression with a single expression constraint and one tic variable" in {
       parseSingle("solve 'a = 12 + true, 'b 1") must beLike {
         case Solve(
-            _,
-            Vector(
-              Eq(_, TicVar(_, "'a"), Add(_, NumLit(_, "12"), BoolLit(_, true))),
-              TicVar(_, "'b")),
-            NumLit(_, "1")) =>
+              _,
+              Vector(
+                Eq(
+                  _,
+                  TicVar(_, "'a"),
+                  Add(_, NumLit(_, "12"), BoolLit(_, true))),
+                TicVar(_, "'b")),
+              NumLit(_, "1")) =>
           ok
       }
     }
@@ -286,9 +289,9 @@ object ParserSpecs
     "accept a solve expression with a nested solve expression as a constraint" in {
       parseSingle("solve solve 'a 1 2") must beLike {
         case Solve(
-            _,
-            Vector(Solve(_, Vector(TicVar(_, "'a")), NumLit(_, "1"))),
-            NumLit(_, "2")) =>
+              _,
+              Vector(Solve(_, Vector(TicVar(_, "'a")), NumLit(_, "1"))),
+              NumLit(_, "2")) =>
           ok
       }
     }
@@ -296,13 +299,13 @@ object ParserSpecs
     "accept a solve expression with a nested solve expression with two tic variables as a constraint" in {
       parseSingle("solve solve 'a, 'b 1 2") must beLike {
         case Solve(
-            _,
-            Vector(
-              Solve(
-                _,
-                Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-                NumLit(_, "1"))),
-            NumLit(_, "2")) =>
+              _,
+              Vector(
+                Solve(
+                  _,
+                  Vector(TicVar(_, "'a"), TicVar(_, "'b")),
+                  NumLit(_, "1"))),
+              NumLit(_, "2")) =>
           ok
       }
     }
@@ -310,14 +313,14 @@ object ParserSpecs
     "accept a solve expression followed by a let" in {
       parseSingle("solve 'a foo(b) := 1 + 'a foo") must beLike {
         case Solve(
-            _,
-            Vector(TicVar(_, "'a")),
-            Let(
               _,
-              Identifier(Vector(), "foo"),
-              Vector("b"),
-              Add(_, NumLit(_, "1"), TicVar(_, "'a")),
-              Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
+              Vector(TicVar(_, "'a")),
+              Let(
+                _,
+                Identifier(Vector(), "foo"),
+                Vector("b"),
+                Add(_, NumLit(_, "1"), TicVar(_, "'a")),
+                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
           ok
       }
     }
@@ -325,16 +328,16 @@ object ParserSpecs
     "accept a let expression without a parameter followed by a solve" in {
       parseSingle("foo := (solve 'b 10 + 'b) foo") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "foo"),
-            Vector(),
-            Paren(
               _,
-              Solve(
+              Identifier(Vector(), "foo"),
+              Vector(),
+              Paren(
                 _,
-                Vector(TicVar(_, "'b")),
-                Add(_, NumLit(_, "10"), TicVar(_, "'b")))),
-            Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
+                Solve(
+                  _,
+                  Vector(TicVar(_, "'b")),
+                  Add(_, NumLit(_, "10"), TicVar(_, "'b")))),
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
           ok
       }
     }
@@ -342,16 +345,16 @@ object ParserSpecs
     "accept a let expression with a parameter followed by a solve" in {
       parseSingle("foo(a) := (solve 'b 'a + 'b )foo") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "foo"),
-            Vector("a"),
-            Paren(
               _,
-              Solve(
+              Identifier(Vector(), "foo"),
+              Vector("a"),
+              Paren(
                 _,
-                Vector(TicVar(_, "'b")),
-                Add(_, TicVar(_, "'a"), TicVar(_, "'b")))),
-            Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
+                Solve(
+                  _,
+                  Vector(TicVar(_, "'b")),
+                  Add(_, TicVar(_, "'a"), TicVar(_, "'b")))),
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
           ok
       }
     }
@@ -359,11 +362,11 @@ object ParserSpecs
     "accept a let expression followed by a solve with no parens around the solve" in {
       parseSingle("foo := solve 'b 'b foo") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "foo"),
-            Vector(),
-            Solve(_, Vector(TicVar(_, "'b")), TicVar(_, "'b")),
-            Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
+              _,
+              Identifier(Vector(), "foo"),
+              Vector(),
+              Solve(_, Vector(TicVar(_, "'b")), TicVar(_, "'b")),
+              Dispatch(_, Identifier(Vector(), "foo"), Vector())) =>
           ok
       }
     }
@@ -372,22 +375,22 @@ object ParserSpecs
       parseSingle(
         "solve 'a foo(b) := (solve 'c 'b + 'c) foo + 'a") must beLike {
         case Solve(
-            _,
-            Vector(TicVar(_, "'a")),
-            Let(
               _,
-              Identifier(Vector(), "foo"),
-              Vector("b"),
-              Paren(
+              Vector(TicVar(_, "'a")),
+              Let(
                 _,
-                Solve(
+                Identifier(Vector(), "foo"),
+                Vector("b"),
+                Paren(
                   _,
-                  Vector(TicVar(_, "'c")),
-                  Add(_, TicVar(_, "'b"), TicVar(_, "'c")))),
-              Add(
-                _,
-                Dispatch(_, Identifier(Vector(), "foo"), Vector()),
-                TicVar(_, "'a")))) =>
+                  Solve(
+                    _,
+                    Vector(TicVar(_, "'c")),
+                    Add(_, TicVar(_, "'b"), TicVar(_, "'c")))),
+                Add(
+                  _,
+                  Dispatch(_, Identifier(Vector(), "foo"), Vector()),
+                  TicVar(_, "'a")))) =>
           ok
       }
     }
@@ -419,15 +422,15 @@ object ParserSpecs
     "accept a relate expression followed by a let" in {
       parseSingle("1 ~ 2 foo := //foo foo") must beLike {
         case Relate(
-            _,
-            NumLit(_, "1"),
-            NumLit(_, "2"),
-            Let(
               _,
-              Identifier(Vector(), "foo"),
-              Vector(),
-              PathLit("/foo"),
-              Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
+              NumLit(_, "1"),
+              NumLit(_, "2"),
+              Let(
+                _,
+                Identifier(Vector(), "foo"),
+                Vector(),
+                PathLit("/foo"),
+                Dispatch(_, Identifier(Vector(), "foo"), Vector()))) =>
           ok
       }
     }
@@ -435,14 +438,14 @@ object ParserSpecs
     "accept a relate expression with more than two constraint sets" in {
       parseSingle("1 ~ 2 ~ 3 ~ 4 5") must beLike {
         case Relate(
-            _,
-            NumLit(_, "1"),
-            NumLit(_, "2"),
-            Relate(
               _,
+              NumLit(_, "1"),
               NumLit(_, "2"),
-              NumLit(_, "3"),
-              Relate(_, NumLit(_, "3"), NumLit(_, "4"), NumLit(_, "5")))) =>
+              Relate(
+                _,
+                NumLit(_, "2"),
+                NumLit(_, "3"),
+                Relate(_, NumLit(_, "3"), NumLit(_, "4"), NumLit(_, "5")))) =>
           ok
       }
     }
@@ -669,24 +672,24 @@ object ParserSpecs
     "accept an object definition with multiple properties" in {
       parseSingle("{ a: 1, b: 2, cafe: 3, star_BUckS: 4 }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("a", NumLit(_, "1")),
-              ("b", NumLit(_, "2")),
-              ("cafe", NumLit(_, "3")),
-              ("star_BUckS", NumLit(_, "4")))) =>
+              _,
+              Vector(
+                ("a", NumLit(_, "1")),
+                ("b", NumLit(_, "2")),
+                ("cafe", NumLit(_, "3")),
+                ("star_BUckS", NumLit(_, "4")))) =>
           ok
       }
 
       parseSingle(
         "{ \"a\": 1, \"b\": 2, \"cafe\": 3, \"star_BUckS\": 4 }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("a", NumLit(_, "1")),
-              ("b", NumLit(_, "2")),
-              ("cafe", NumLit(_, "3")),
-              ("star_BUckS", NumLit(_, "4")))) =>
+              _,
+              Vector(
+                ("a", NumLit(_, "1")),
+                ("b", NumLit(_, "2")),
+                ("cafe", NumLit(_, "3")),
+                ("star_BUckS", NumLit(_, "4")))) =>
           ok
       }
     }
@@ -695,24 +698,24 @@ object ParserSpecs
       parseSingle(
         "{ a: 1, b: 2, cafe: { foo: null }, star_BUckS: null }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("a", NumLit(_, "1")),
-              ("b", NumLit(_, "2")),
-              ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
-              ("star_BUckS", NullLit(_)))) =>
+              _,
+              Vector(
+                ("a", NumLit(_, "1")),
+                ("b", NumLit(_, "2")),
+                ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
+                ("star_BUckS", NullLit(_)))) =>
           ok
       }
 
       parseSingle(
         "{ \"a\": 1, \"b\": 2, \"cafe\": { \"foo\": null }, \"star_BUckS\": null }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("a", NumLit(_, "1")),
-              ("b", NumLit(_, "2")),
-              ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
-              ("star_BUckS", NullLit(_)))) =>
+              _,
+              Vector(
+                ("a", NumLit(_, "1")),
+                ("b", NumLit(_, "2")),
+                ("cafe", ObjectDef(_, Vector(("foo", NullLit(_))))),
+                ("star_BUckS", NullLit(_)))) =>
           ok
       }
     }
@@ -734,10 +737,10 @@ object ParserSpecs
       parseSingle(
         "{ `$see! what I can do___`: 1, `test \\` ing \\\\ with $%^&*!@#$ me!`: 2 }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("$see! what I can do___", NumLit(_, "1")),
-              ("test ` ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
+              _,
+              Vector(
+                ("$see! what I can do___", NumLit(_, "1")),
+                ("test ` ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
           ok
       }
     }
@@ -746,10 +749,10 @@ object ParserSpecs
       parseSingle(
         "{ \"$see! what I can do___\": 1, \"test \\\" ing \\\\ with $%^&*!@#$ me!\": 2 }") must beLike {
         case ObjectDef(
-            _,
-            Vector(
-              ("$see! what I can do___", NumLit(_, "1")),
-              ("test \" ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
+              _,
+              Vector(
+                ("$see! what I can do___", NumLit(_, "1")),
+                ("test \" ing \\ with $%^&*!@#$ me!", NumLit(_, "2")))) =>
           ok
       }
     }
@@ -781,8 +784,8 @@ object ParserSpecs
     "accept an array definition with multiple actuals" in {
       parseSingle("[1, 2, 3]") must beLike {
         case ArrayDef(
-            _,
-            Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -837,9 +840,9 @@ object ParserSpecs
       }
       parseSingle("1@`test \\` ing \\\\ with $%^&*!@#$ me!`") must beLike {
         case MetaDescent(
-            _,
-            NumLit(_, "1"),
-            "test ` ing \\ with $%^&*!@#$ me!") =>
+              _,
+              NumLit(_, "1"),
+              "test ` ing \\ with $%^&*!@#$ me!") =>
           ok
       }
     }
@@ -850,9 +853,9 @@ object ParserSpecs
       }
       parseSingle("x[y]") must beLike {
         case Deref(
-            _,
-            Dispatch(_, Identifier(Vector(), "x"), Vector()),
-            Dispatch(_, Identifier(Vector(), "y"), Vector())) =>
+              _,
+              Dispatch(_, Identifier(Vector(), "x"), Vector()),
+              Dispatch(_, Identifier(Vector(), "y"), Vector())) =>
           ok
       }
     }
@@ -883,9 +886,9 @@ object ParserSpecs
     "accept a dispatch with one actual and a namespace" in {
       parseSingle("a :: b :: c :: d(1)") must beLike {
         case Dispatch(
-            _,
-            Identifier(Vector("a", "b", "c"), "d"),
-            Vector(NumLit(_, "1"))) =>
+              _,
+              Identifier(Vector("a", "b", "c"), "d"),
+              Vector(NumLit(_, "1"))) =>
           ok
       }
     }
@@ -921,9 +924,9 @@ object ParserSpecs
     "accept a dispatch with multiple actuals" in {
       parseSingle("x(1, 2, 3)") must beLike {
         case Dispatch(
-            _,
-            Identifier(Vector(), "x"),
-            Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              Identifier(Vector(), "x"),
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -931,9 +934,9 @@ object ParserSpecs
     "accept a dispatch with multiple actuals and a namespace" in {
       parseSingle("x :: y :: z :: quirky(1, 2, 3)") must beLike {
         case Dispatch(
-            _,
-            Identifier(Vector("x", "y", "z"), "quirky"),
-            Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              Identifier(Vector("x", "y", "z"), "quirky"),
+              Vector(NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -1281,44 +1284,44 @@ object ParserSpecs
     "favor negation/complement over multiplication/division" in {
       parseSingle("!a * b") must beLike {
         case Mul(
-            _,
-            Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
       parseSingle("neg a * b") must beLike {
         case Mul(
-            _,
-            Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
       parseSingle("!a / b") must beLike {
         case Div(
-            _,
-            Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
       parseSingle("neg a / b") must beLike {
         case Div(
-            _,
-            Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
       parseSingle("!a % b") must beLike {
         case Mod(
-            _,
-            Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Comp(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
       parseSingle("neg a % b") must beLike {
         case Mod(
-            _,
-            Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              Neg(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
     }
@@ -1326,124 +1329,124 @@ object ParserSpecs
     "favor multiplication/division over addition/subtraction" in {
       parseSingle("a + b * c") must beLike {
         case Add(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Mul(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Mul(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a - b * c") must beLike {
         case Sub(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Mul(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Mul(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a * b + c") must beLike {
         case Add(
-            _,
-            Mul(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Mul(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a * b - c") must beLike {
         case Sub(
-            _,
-            Mul(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Mul(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a + b / c") must beLike {
         case Add(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Div(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Div(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a - b / c") must beLike {
         case Sub(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Div(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Div(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a / b + c") must beLike {
         case Add(
-            _,
-            Div(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Div(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a / b - c") must beLike {
         case Sub(
-            _,
-            Div(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Div(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a + b % c") must beLike {
         case Add(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Mod(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Mod(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a - b % c") must beLike {
         case Sub(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Mod(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Mod(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a % b + c") must beLike {
         case Add(
-            _,
-            Mod(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Mod(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a % b - c") must beLike {
         case Sub(
-            _,
-            Mod(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Mod(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -1503,165 +1506,165 @@ object ParserSpecs
     "favor addition/subtraction over inequality operators" in {
       parseSingle("a < b + c") must beLike {
         case Lt(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a <= b + c") must beLike {
         case LtEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a + b < c") must beLike {
         case Lt(
-            _,
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a + b <= c") must beLike {
         case LtEq(
-            _,
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a < b - c") must beLike {
         case Lt(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a <= b - c") must beLike {
         case LtEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a - b < c") must beLike {
         case Lt(
-            _,
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a - b <= c") must beLike {
         case LtEq(
-            _,
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a > b + c") must beLike {
         case Gt(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a >= b + c") must beLike {
         case GtEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a + b > c") must beLike {
         case Gt(
-            _,
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a + b >= c") must beLike {
         case GtEq(
-            _,
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a > b - c") must beLike {
         case Gt(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a >= b - c") must beLike {
         case GtEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a - b > c") must beLike {
         case Gt(
-            _,
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a - b >= c") must beLike {
         case GtEq(
-            _,
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -1697,165 +1700,165 @@ object ParserSpecs
     "favor inequality operators over equality operators" in {
       parseSingle("a = b < c") must beLike {
         case Eq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a != b < c") must beLike {
         case NotEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a < b = c") must beLike {
         case Eq(
-            _,
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a < b != c") must beLike {
         case NotEq(
-            _,
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a = b <= c") must beLike {
         case Eq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            LtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              LtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a != b <= c") must beLike {
         case NotEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            LtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              LtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a <= b = c") must beLike {
         case Eq(
-            _,
-            LtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              LtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a <= b != c") must beLike {
         case NotEq(
-            _,
-            LtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              LtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a = b > c") must beLike {
         case Eq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Gt(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Gt(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a != b > c") must beLike {
         case NotEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Gt(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Gt(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a > b = c") must beLike {
         case Eq(
-            _,
-            Gt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Gt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a > b != c") must beLike {
         case NotEq(
-            _,
-            Gt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Gt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a = b >= c") must beLike {
         case Eq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            GtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              GtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a != b >= c") must beLike {
         case NotEq(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            GtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              GtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a >= b = c") must beLike {
         case Eq(
-            _,
-            GtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              GtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a >= b != c") must beLike {
         case NotEq(
-            _,
-            GtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              GtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -1874,83 +1877,83 @@ object ParserSpecs
     "favor equality operators over and/or" in {
       parseSingle("a & b = c") must beLike {
         case And(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Eq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Eq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a | b = c") must beLike {
         case Or(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Eq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Eq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a = b & c") must beLike {
         case And(
-            _,
-            Eq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Eq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a = b | c") must beLike {
         case Or(
-            _,
-            Eq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Eq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a & b != c") must beLike {
         case And(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            NotEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              NotEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a | b != c") must beLike {
         case Or(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            NotEq(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              NotEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a != b & c") must beLike {
         case And(
-            _,
-            NotEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              NotEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a != b | c") must beLike {
         case Or(
-            _,
-            NotEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              NotEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -1967,123 +1970,123 @@ object ParserSpecs
     "favor and/or operators over union/intersect/diff" in {
       parseSingle("a union b & c") must beLike {
         case Union(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a intersect b & c") must beLike {
         case Intersect(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a difference b & c") must beLike {
         case Difference(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a & b union c") must beLike {
         case Union(
-            _,
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a & b intersect c") must beLike {
         case Intersect(
-            _,
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a & b difference c") must beLike {
         case Difference(
-            _,
-            And(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              And(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
 
       parseSingle("a union b | c") must beLike {
         case Union(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a intersect b | c") must beLike {
         case Intersect(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a difference b | c") must beLike {
         case Difference(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a | b union c") must beLike {
         case Union(
-            _,
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a | b intersect c") must beLike {
         case Intersect(
-            _,
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a | b difference c") must beLike {
         case Difference(
-            _,
-            Or(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Or(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2091,31 +2094,31 @@ object ParserSpecs
     "favor union/intersect/diff according to left/right ordering" in {
       parseSingle("1 union 2 intersect 3") must beLike {
         case Intersect(
-            _,
-            Union(_, NumLit(_, "1"), NumLit(_, "2")),
-            NumLit(_, "3")) =>
+              _,
+              Union(_, NumLit(_, "1"), NumLit(_, "2")),
+              NumLit(_, "3")) =>
           ok
       }
       parseSingle("1 intersect 2 union 3") must beLike {
         case Union(
-            _,
-            Intersect(_, NumLit(_, "1"), NumLit(_, "2")),
-            NumLit(_, "3")) =>
+              _,
+              Intersect(_, NumLit(_, "1"), NumLit(_, "2")),
+              NumLit(_, "3")) =>
           ok
       }
 
       parseSingle("1 union 2 difference 3") must beLike {
         case Difference(
-            _,
-            Union(_, NumLit(_, "1"), NumLit(_, "2")),
-            NumLit(_, "3")) =>
+              _,
+              Union(_, NumLit(_, "1"), NumLit(_, "2")),
+              NumLit(_, "3")) =>
           ok
       }
       parseSingle("1 difference 2 union 3") must beLike {
         case Union(
-            _,
-            Difference(_, NumLit(_, "1"), NumLit(_, "2")),
-            NumLit(_, "3")) =>
+              _,
+              Difference(_, NumLit(_, "1"), NumLit(_, "2")),
+              NumLit(_, "3")) =>
           ok
       }
     }
@@ -2123,62 +2126,62 @@ object ParserSpecs
     "favor union/intersect/diff over with" in {
       parseSingle("a with b union c") must beLike {
         case With(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Union(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Union(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a with b intersect c") must beLike {
         case With(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Intersect(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Intersect(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a with b difference c") must beLike {
         case With(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Difference(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Difference(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()))) =>
           ok
       }
       parseSingle("a union b with c") must beLike {
         case With(
-            _,
-            Union(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Union(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a intersect b with c") must beLike {
         case With(
-            _,
-            Intersect(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Intersect(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
       parseSingle("a difference b with c") must beLike {
         case With(
-            _,
-            Difference(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Difference(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2186,11 +2189,11 @@ object ParserSpecs
     "favor with over new" in {
       parseSingle("new a with b") must beLike {
         case New(
-            _,
-            With(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector()))) =>
+              With(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector()))) =>
           ok
       }
     }
@@ -2198,9 +2201,9 @@ object ParserSpecs
     "favor new over where" in {
       parseSingle("new a where b") must beLike {
         case Where(
-            _,
-            New(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
-            Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
+              _,
+              New(_, Dispatch(_, Identifier(Vector(), "a"), Vector())),
+              Dispatch(_, Identifier(Vector(), "b"), Vector())) =>
           ok
       }
     }
@@ -2208,24 +2211,24 @@ object ParserSpecs
     "favor where over relate" in {
       parseSingle("a where b ~ c d") must beLike {
         case Relate(
-            _,
-            Where(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector()),
-            Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
+              Where(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector()),
+              Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
           ok
       }
       parseSingle("a ~ b where c d") must beLike {
         case Relate(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Where(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())),
-            Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
+              Where(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector())),
+              Dispatch(_, Identifier(Vector(), "d"), Vector())) =>
           ok
       }
     }
@@ -2233,11 +2236,11 @@ object ParserSpecs
     "favor where over let" in {
       parseSingle("a := 1 2 where 3") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(_, "1"),
-            Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(_, "1"),
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2245,9 +2248,9 @@ object ParserSpecs
     "favor where over assert" in {
       parseSingle("assert 1 2 where 3") must beLike {
         case Assert(
-            _,
-            NumLit(_, "1"),
-            Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              NumLit(_, "1"),
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2255,9 +2258,9 @@ object ParserSpecs
     "favor where over solve" in {
       parseSingle("solve 'a 2 where 3") must beLike {
         case Solve(
-            _,
-            Vector(TicVar(_, "'a")),
-            Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              Vector(TicVar(_, "'a")),
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2265,9 +2268,9 @@ object ParserSpecs
     "favor where over import" in {
       parseSingle("import a 2 where 3") must beLike {
         case Import(
-            _,
-            SpecificImport(Vector("a")),
-            Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
+              _,
+              SpecificImport(Vector("a")),
+              Where(_, NumLit(_, "2"), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2277,14 +2280,14 @@ object ParserSpecs
     "associate relations to the right" in {
       parseSingle("a ~ b a ~ b 42") must beLike {
         case Relate(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Dispatch(_, Identifier(Vector(), "b"), Vector()),
-            Relate(
               _,
               Dispatch(_, Identifier(Vector(), "a"), Vector()),
               Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              NumLit(_, "42"))) =>
+              Relate(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                NumLit(_, "42"))) =>
           ok
       }
     }
@@ -2292,12 +2295,12 @@ object ParserSpecs
     "associate multiplication to the left" in {
       parseSingle("a * b * c") must beLike {
         case Mul(
-            _,
-            Mul(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Mul(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2305,12 +2308,12 @@ object ParserSpecs
     "associate division to the left" in {
       parseSingle("a / b / c") must beLike {
         case Div(
-            _,
-            Div(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Div(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2318,12 +2321,12 @@ object ParserSpecs
     "associate addition to the left" in {
       parseSingle("a + b + c") must beLike {
         case Add(
-            _,
-            Add(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Add(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2331,12 +2334,12 @@ object ParserSpecs
     "associate subtraction to the left" in {
       parseSingle("a - b - c") must beLike {
         case Sub(
-            _,
-            Sub(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Sub(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2344,12 +2347,12 @@ object ParserSpecs
     "associate less-than to the left" in {
       parseSingle("a < b < c") must beLike {
         case Lt(
-            _,
-            Lt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Lt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2357,12 +2360,12 @@ object ParserSpecs
     "associate less-than-equal to the left" in {
       parseSingle("a <= b <= c") must beLike {
         case LtEq(
-            _,
-            LtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              LtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2370,12 +2373,12 @@ object ParserSpecs
     "associate greater-than to the left" in {
       parseSingle("a > b > c") must beLike {
         case Gt(
-            _,
-            Gt(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Gt(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2383,12 +2386,12 @@ object ParserSpecs
     "associate greater-than-equal to the left" in {
       parseSingle("a >= b >= c") must beLike {
         case GtEq(
-            _,
-            GtEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              GtEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2396,12 +2399,12 @@ object ParserSpecs
     "associate equal to the left" in {
       parseSingle("a = b = c") must beLike {
         case Eq(
-            _,
-            Eq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Eq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2409,12 +2412,12 @@ object ParserSpecs
     "associate not-equal to the left" in {
       parseSingle("a != b != c") must beLike {
         case NotEq(
-            _,
-            NotEq(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              NotEq(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2422,12 +2425,12 @@ object ParserSpecs
     "associate where to the left" in {
       parseSingle("a where b where c") must beLike {
         case Where(
-            _,
-            Where(
               _,
-              Dispatch(_, Identifier(Vector(), "a"), Vector()),
-              Dispatch(_, Identifier(Vector(), "b"), Vector())),
-            Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
+              Where(
+                _,
+                Dispatch(_, Identifier(Vector(), "a"), Vector()),
+                Dispatch(_, Identifier(Vector(), "b"), Vector())),
+              Dispatch(_, Identifier(Vector(), "c"), Vector())) =>
           ok
       }
     }
@@ -2435,11 +2438,11 @@ object ParserSpecs
     "apply within the body of a let" in {
       parseSingle("a := 1 + 2 + 3 4") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            _,
-            Add(_, Add(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")),
-            NumLit(_, "4")) =>
+              _,
+              Identifier(Vector(), "a"),
+              _,
+              Add(_, Add(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")),
+              NumLit(_, "4")) =>
           ok
       }
     }
@@ -2447,11 +2450,11 @@ object ParserSpecs
     "apply within the scope of a let" in {
       parseSingle("a := 4 1 + 2 + 3") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            _,
-            NumLit(_, "4"),
-            Add(_, Add(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3"))) =>
+              _,
+              Identifier(Vector(), "a"),
+              _,
+              NumLit(_, "4"),
+              Add(_, Add(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2584,11 +2587,11 @@ object ParserSpecs
     "parseSingle a no param function containing a parenthetical" in {
       parseSingle("a := 1 (2)") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(_, "1"),
-            Paren(_, NumLit(_, "2"))) =>
+              _,
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(_, "1"),
+              Paren(_, NumLit(_, "2"))) =>
           ok
       }
     }
@@ -2596,16 +2599,16 @@ object ParserSpecs
     "parseSingle a no param function containing a no param function" in {
       parseSingle("a := 1 c := 2 3") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(_, "1"),
-            Let(
               _,
-              Identifier(Vector(), "c"),
+              Identifier(Vector(), "a"),
               Vector(),
-              NumLit(_, "2"),
-              NumLit(_, "3"))) =>
+              NumLit(_, "1"),
+              Let(
+                _,
+                Identifier(Vector(), "c"),
+                Vector(),
+                NumLit(_, "2"),
+                NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2613,16 +2616,16 @@ object ParserSpecs
     "parseSingle a no param function containing a 1 param function" in {
       parseSingle("a := 1 c(d) := 2 3") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            NumLit(_, "1"),
-            Let(
               _,
-              Identifier(Vector(), "c"),
-              Vector("d"),
-              NumLit(_, "2"),
-              NumLit(_, "3"))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              NumLit(_, "1"),
+              Let(
+                _,
+                Identifier(Vector(), "c"),
+                Vector("d"),
+                NumLit(_, "2"),
+                NumLit(_, "3"))) =>
           ok
       }
     }
@@ -2638,21 +2641,21 @@ object ParserSpecs
 
       parseSingle(input) must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            Let(
               _,
-              Identifier(Vector(), "b"),
+              Identifier(Vector(), "a"),
               Vector(),
-              PathLit("/f"),
               Let(
                 _,
-                Identifier(Vector(), "c"),
+                Identifier(Vector(), "b"),
                 Vector(),
-                PathLit("/g"),
-                Dispatch(_, Identifier(Vector(), "d"), Vector()))),
-            Dispatch(_, Identifier(Vector(), "e"), Vector())) =>
+                PathLit("/f"),
+                Let(
+                  _,
+                  Identifier(Vector(), "c"),
+                  Vector(),
+                  PathLit("/g"),
+                  Dispatch(_, Identifier(Vector(), "d"), Vector()))),
+              Dispatch(_, Identifier(Vector(), "e"), Vector())) =>
           ok
       }
     }
@@ -2755,16 +2758,16 @@ object ParserSpecs
     "associate paired consecutive parentheses" in {
       parseSingle("a := b := c (d) (e)") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            Let(
               _,
-              Identifier(Vector(), "b"),
+              Identifier(Vector(), "a"),
               Vector(),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()),
-              Paren(_, Dispatch(_, Identifier(Vector(), "d"), Vector()))),
-            Paren(_, Dispatch(_, Identifier(Vector(), "e"), Vector()))) =>
+              Let(
+                _,
+                Identifier(Vector(), "b"),
+                Vector(),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()),
+                Paren(_, Dispatch(_, Identifier(Vector(), "d"), Vector()))),
+              Paren(_, Dispatch(_, Identifier(Vector(), "e"), Vector()))) =>
           ok
       }
     }
@@ -2779,19 +2782,22 @@ object ParserSpecs
 
       parseSingle(input) must beLike {
         case Relate(
-            _,
-            Dispatch(_, Identifier(Vector(), "a"), Vector()),
-            Dispatch(_, Identifier(Vector(), "b"), Vector()),
-            Relate(
               _,
+              Dispatch(_, Identifier(Vector(), "a"), Vector()),
               Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()),
-              Let(
+              Relate(
                 _,
-                Identifier(Vector(), "d"),
-                Vector(),
-                Dispatch(_, Identifier(Vector(), "f"), Vector(NumLit(_, "1"))),
-                NumLit(_, "2")))) =>
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()),
+                Let(
+                  _,
+                  Identifier(Vector(), "d"),
+                  Vector(),
+                  Dispatch(
+                    _,
+                    Identifier(Vector(), "f"),
+                    Vector(NumLit(_, "1"))),
+                  NumLit(_, "2")))) =>
           ok
       }
     }
@@ -2800,10 +2806,10 @@ object ParserSpecs
       "valid" >> {
         parseSingle("""{ user: "daniel", last: "spiewak" }""") must beLike {
           case ObjectDef(
-              _,
-              Vector(
-                ("user", StrLit(_, "daniel")),
-                ("last", StrLit(_, "spiewak")))) =>
+                _,
+                Vector(
+                  ("user", StrLit(_, "daniel")),
+                  ("last", StrLit(_, "spiewak")))) =>
             ok
         }
       }
@@ -2817,16 +2823,16 @@ object ParserSpecs
     "correctly disambiguate chained array dereferences" in {
       parseSingle("a := b [c] [d]") must beLike {
         case Let(
-            _,
-            Identifier(Vector(), "a"),
-            Vector(),
-            Deref(
               _,
-              Dispatch(_, Identifier(Vector(), "b"), Vector()),
-              Dispatch(_, Identifier(Vector(), "c"), Vector())),
-            ArrayDef(
-              _,
-              Vector(Dispatch(_, Identifier(Vector(), "d"), Vector())))) =>
+              Identifier(Vector(), "a"),
+              Vector(),
+              Deref(
+                _,
+                Dispatch(_, Identifier(Vector(), "b"), Vector()),
+                Dispatch(_, Identifier(Vector(), "c"), Vector())),
+              ArrayDef(
+                _,
+                Vector(Dispatch(_, Identifier(Vector(), "d"), Vector())))) =>
           ok
       }
     }
@@ -2838,41 +2844,41 @@ object ParserSpecs
       {
         forest.head must beLike {
           case Let(
-              _,
-              Identifier(Vector(), "a"),
-              Vector(),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()),
-              Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
+                _,
+                Identifier(Vector(), "a"),
+                Vector(),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()),
+                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
             ok
         }
 
         forest.last must beLike {
           case Let(
-              _,
-              Identifier(Vector(), "a"),
-              Vector(),
-              Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
-              ArrayDef(_, Vector(NumLit(_, "1")))) =>
+                _,
+                Identifier(Vector(), "a"),
+                Vector(),
+                Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
+                ArrayDef(_, Vector(NumLit(_, "1")))) =>
             ok
         }
       } or {
         forest.head must beLike {
           case Let(
-              _,
-              Identifier(Vector(), "a"),
-              Vector(),
-              Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
-              ArrayDef(_, Vector(NumLit(_, "1")))) =>
+                _,
+                Identifier(Vector(), "a"),
+                Vector(),
+                Dispatch(_, Identifier(Vector(), "c"), Vector(NumLit(_, "42"))),
+                ArrayDef(_, Vector(NumLit(_, "1")))) =>
             ok
         }
 
         forest.last must beLike {
           case Let(
-              _,
-              Identifier(Vector(), "a"),
-              Vector(),
-              Dispatch(_, Identifier(Vector(), "c"), Vector()),
-              Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
+                _,
+                Identifier(Vector(), "a"),
+                Vector(),
+                Dispatch(_, Identifier(Vector(), "c"), Vector()),
+                Deref(_, Paren(_, NumLit(_, "42")), NumLit(_, "1"))) =>
             ok
         }
       }
@@ -2911,13 +2917,13 @@ object ParserSpecs
   private object PathLit {
     def unapply(expr: Expr): Option[String] = expr match {
       case Dispatch(
-          _,
-          Identifier(Vector(), "load"),
-          Vector(
-            Dispatch(
-              _,
-              Identifier(Vector("std", "fs"), "expandPath"),
-              Vector(StrLit(_, str))))) =>
+            _,
+            Identifier(Vector(), "load"),
+            Vector(
+              Dispatch(
+                _,
+                Identifier(Vector("std", "fs"), "expandPath"),
+                Vector(StrLit(_, str))))) =>
         Some(str)
 
       case _ => None
@@ -2927,13 +2933,13 @@ object ParserSpecs
   private object RelPathLit {
     def unapply(expr: Expr): Option[String] = expr match {
       case Dispatch(
-          _,
-          Identifier(Vector(), "relativeLoad"),
-          Vector(
-            Dispatch(
-              _,
-              Identifier(Vector("std", "fs"), "expandPath"),
-              Vector(StrLit(_, str))))) =>
+            _,
+            Identifier(Vector(), "relativeLoad"),
+            Vector(
+              Dispatch(
+                _,
+                Identifier(Vector("std", "fs"), "expandPath"),
+                Vector(StrLit(_, str))))) =>
         Some(str)
 
       case _ => None

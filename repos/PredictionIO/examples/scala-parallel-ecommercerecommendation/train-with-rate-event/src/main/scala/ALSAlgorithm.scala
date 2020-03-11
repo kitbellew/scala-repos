@@ -112,7 +112,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           val (rating1, t1) = v1
           val (rating2, t2) = v2
           // keep the latest value
-          if (t1 > t2) v1 else v2
+          if (t1 > t2)
+            v1
+          else
+            v2
       }
       .map {
         case ((u, i), (rating, t)) => // MODIFIED
@@ -433,7 +436,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       i += 1
     }
     val n1n2 = (math.sqrt(n1) * math.sqrt(n2))
-    if (n1n2 == 0) 0 else (d / n1n2)
+    if (n1n2 == 0)
+      0
+    else
+      (d / n1n2)
   }
 
   private def isCandidateItem(

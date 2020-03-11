@@ -186,8 +186,10 @@ object Licensed {
   lazy val seeRegex = """\(see (.*?)\)""".r
   def licensePath(base: File, str: String): File = {
     val path = base / str;
-    if (path.exists) path
-    else sys.error("Referenced license '" + str + "' not found at " + path)
+    if (path.exists)
+      path
+    else
+      sys.error("Referenced license '" + str + "' not found at " + path)
   }
   def seePaths(base: File, noticeString: String): Seq[File] =
     seeRegex
@@ -207,7 +209,8 @@ object Licensed {
       streams) map extractLicenses0
   )
   def extractLicenses0(base: File, note: File, s: TaskStreams): Seq[File] =
-    if (!note.exists) Nil
+    if (!note.exists)
+      Nil
     else
       try {
         seePaths(base, IO.read(note))

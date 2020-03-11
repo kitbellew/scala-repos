@@ -59,8 +59,10 @@ trait SeqViewLike[
   trait Sliced extends super.Sliced with Transformed[A] {
     def length = iterator.size
     def apply(idx: Int): A =
-      if (idx >= 0 && idx + from < until) self.apply(idx + from)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx >= 0 && idx + from < until)
+        self.apply(idx + from)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
 
     override def foreach[U](f: A => U) = iterator foreach f
     override def iterator: Iterator[A] =
@@ -82,9 +84,12 @@ trait SeqViewLike[
     }
     protected[this] def findRow(idx: Int, lo: Int, hi: Int): Int = {
       val mid = (lo + hi) / 2
-      if (idx < index(mid)) findRow(idx, lo, mid - 1)
-      else if (idx >= index(mid + 1)) findRow(idx, mid + 1, hi)
-      else mid
+      if (idx < index(mid))
+        findRow(idx, lo, mid - 1)
+      else if (idx >= index(mid + 1))
+        findRow(idx, mid + 1, hi)
+      else
+        mid
     }
     def length = index(self.length)
     def apply(idx: Int) = {
@@ -99,15 +104,20 @@ trait SeqViewLike[
     protected[this] lazy val restSeq = rest.toSeq
     def length = self.length + restSeq.length
     def apply(idx: Int) =
-      if (idx < self.length) self(idx) else restSeq(idx - self.length)
+      if (idx < self.length)
+        self(idx)
+      else
+        restSeq(idx - self.length)
   }
 
   trait Prepended[B >: A] extends super.Prepended[B] with Transformed[B] {
     protected[this] lazy val fstSeq = fst.toSeq
     def length: Int = fstSeq.length + self.length
     def apply(idx: Int): B =
-      if (idx < fstSeq.length) fstSeq(idx)
-      else self.apply(idx - fstSeq.length)
+      if (idx < fstSeq.length)
+        fstSeq(idx)
+      else
+        self.apply(idx - fstSeq.length)
   }
 
   trait Filtered extends super.Filtered with Transformed[A] {
@@ -129,24 +139,30 @@ trait SeqViewLike[
     protected[this] lazy val len = self prefixLength pred
     def length = len
     def apply(idx: Int) =
-      if (idx < len) self(idx)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx < len)
+        self(idx)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
   }
 
   trait DroppedWhile extends super.DroppedWhile with Transformed[A] {
     protected[this] lazy val start = self prefixLength pred
     def length = self.length - start
     def apply(idx: Int) =
-      if (idx >= 0) self(idx + start)
-      else throw new IndexOutOfBoundsException(idx.toString)
+      if (idx >= 0)
+        self(idx + start)
+      else
+        throw new IndexOutOfBoundsException(idx.toString)
   }
 
   trait Zipped[B] extends super.Zipped[B] with Transformed[(A, B)] {
     protected[this] lazy val thatSeq = other.seq.toSeq
     /* Have to be careful here - other may be an infinite sequence. */
     def length =
-      if ((thatSeq lengthCompare self.length) <= 0) thatSeq.length
-      else self.length
+      if ((thatSeq lengthCompare self.length) <= 0)
+        thatSeq.length
+      else
+        self.length
     def apply(idx: Int) = (self.apply(idx), thatSeq.apply(idx))
   }
 
@@ -157,8 +173,14 @@ trait SeqViewLike[
     def length: Int = self.length max thatSeq.length
     def apply(idx: Int) =
       (
-        if (idx < self.length) self.apply(idx) else thisElem,
-        if (idx < thatSeq.length) thatSeq.apply(idx) else thatElem)
+        if (idx < self.length)
+          self.apply(idx)
+        else
+          thisElem,
+        if (idx < thatSeq.length)
+          thatSeq.apply(idx)
+        else
+          thatElem)
   }
 
   trait Reversed extends Transformed[A] {
@@ -169,7 +191,8 @@ trait SeqViewLike[
 
     private def createReversedIterator = {
       var lst = List[A]()
-      for (elem <- self) lst ::= elem
+      for (elem <- self)
+        lst ::= elem
       lst.iterator
     }
   }
@@ -191,10 +214,17 @@ trait SeqViewLike[
       pre + plen + post
     }
     def apply(idx: Int): B = {
-      val actualFrom = if (self.lengthCompare(from) < 0) self.length else from
-      if (idx < actualFrom) self.apply(idx)
-      else if (idx < actualFrom + plen) patch.apply(idx - actualFrom)
-      else self.apply(idx - plen + replaced)
+      val actualFrom =
+        if (self.lengthCompare(from) < 0)
+          self.length
+        else
+          from
+      if (idx < actualFrom)
+        self.apply(idx)
+      else if (idx < actualFrom + plen)
+        patch.apply(idx - actualFrom)
+      else
+        self.apply(idx - plen + replaced)
     }
     final override protected[this] def viewIdentifier = "P"
   }

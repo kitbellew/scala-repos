@@ -36,7 +36,8 @@ class HoconCommentJoinLinesHandler extends JoinLinesHandlerDelegate {
           document.replaceString(start + 1, toRemoveEnd, " ")
           start + 1
         } getOrElse CANNOT_JOIN
-      } else CANNOT_JOIN
+      } else
+        CANNOT_JOIN
     case _ => CANNOT_JOIN
   }
 }

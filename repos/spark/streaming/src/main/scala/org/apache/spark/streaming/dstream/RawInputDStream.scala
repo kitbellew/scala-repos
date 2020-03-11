@@ -96,7 +96,8 @@ private[streaming] class RawNetworkReceiver(
   }
 
   def onStop() {
-    if (blockPushingThread != null) blockPushingThread.interrupt()
+    if (blockPushingThread != null)
+      blockPushingThread.interrupt()
   }
 
   /** Read a buffer fully from a given Channel */

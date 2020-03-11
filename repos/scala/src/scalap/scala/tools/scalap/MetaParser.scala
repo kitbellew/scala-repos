@@ -33,7 +33,11 @@ class MetaParser(meta: String) {
     nextToken
     if (token == "[") {
       do {
-        res.append(if (token == ",") ", " else "[")
+        res.append(
+          if (token == ",")
+            ", "
+          else
+            "[")
         nextToken
         parseType
       } while (token == ",")
@@ -68,7 +72,11 @@ class MetaParser(meta: String) {
     nextToken
     if (token == "[") {
       do {
-        res.append(if (token == "[") "[" else ", ")
+        res.append(
+          if (token == "[")
+            "["
+          else
+            ", ")
         nextToken
         if (token == "+") {
           nextToken
@@ -167,7 +175,11 @@ class MetaParser(meta: String) {
     nextToken
     if (token == "(") {
       do {
-        res.append(if (token == "(") "(" else ", ")
+        res.append(
+          if (token == "(")
+            "("
+          else
+            ", ")
         nextToken
         if (token != ")")
           parseType

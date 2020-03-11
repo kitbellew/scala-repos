@@ -39,13 +39,15 @@ object Equivalence {
       falseUndef: Boolean = true): (Boolean, ScUndefinedSubstitutor) = {
     ProgressManager.checkCanceled()
 
-    if (l == r) return (true, subst)
+    if (l == r)
+      return (true, subst)
 
     val key = (l, r, falseUndef)
 
     val nowEval = eval.get()
     val tuple =
-      if (nowEval) null
+      if (nowEval)
+        null
       else {
         try {
           eval.set(true)
@@ -55,7 +57,8 @@ object Equivalence {
         }
       }
     if (tuple != null) {
-      if (subst.isEmpty) return tuple
+      if (subst.isEmpty)
+        return tuple
       return tuple.copy(_2 = subst + tuple._2)
     }
 
@@ -113,7 +116,8 @@ object Equivalence {
       new Computable[(Boolean, ScUndefinedSubstitutor)] {
         def compute(): (Boolean, ScUndefinedSubstitutor) = comp()
       })
-    if (res == null) return (false, new ScUndefinedSubstitutor())
+    if (res == null)
+      return (false, new ScUndefinedSubstitutor())
     if (!nowEval) {
       try {
         eval.set(true)
@@ -122,7 +126,8 @@ object Equivalence {
         eval.set(false)
       }
     }
-    if (subst.isEmpty) return res
+    if (subst.isEmpty)
+      return res
     res.copy(_2 = subst + res._2)
   }
 }

@@ -84,7 +84,8 @@ class ScalaImportTypeFix(
       .getInstance()
       .runUndoTransparentAction(new Runnable {
         def run() {
-          if (!ref.isValid) return
+          if (!ref.isValid)
+            return
           classes = ScalaImportTypeFix.getTypesToImport(ref, project)
           new ScalaAddImportAction(editor, classes, ref).execute()
         }
@@ -92,8 +93,10 @@ class ScalaImportTypeFix(
   }
 
   def showHint(editor: Editor): Boolean = {
-    if (!ref.isValid) return false
-    if (ref.qualifier.isDefined) return false
+    if (!ref.isValid)
+      return false
+    if (ref.qualifier.isDefined)
+      return false
     ref.getContext match {
       case postf: ScPostfixExpr if postf.operation == ref => false
       case pref: ScPrefixExpr if pref.operation == ref    => false
@@ -146,11 +149,14 @@ class ScalaImportTypeFix(
   private def fixesAction(editor: Editor) {
     ApplicationManager.getApplication.invokeLater(new Runnable {
       def run() {
-        if (!ref.isValid) return
-        if (ref.resolve != null) return
+        if (!ref.isValid)
+          return
+        if (ref.resolve != null)
+          return
 
         if (HintManagerImpl.getInstanceImpl
-              .hasShownHintsThatWillHideByOtherHint(true)) return
+              .hasShownHintsThatWillHideByOtherHint(true))
+          return
         val action =
           new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
@@ -162,7 +168,8 @@ class ScalaImportTypeFix(
             .getInstance()
             .showQuestionHint(
               editor,
-              if (classes.length == 1) classes(0).qualifiedName + "? Alt+Enter"
+              if (classes.length == 1)
+                classes(0).qualifiedName + "? Alt+Enter"
               else
                 classes(0).qualifiedName + "? (multiple choices...) Alt+Enter",
               offset,
@@ -186,14 +193,16 @@ class ScalaImportTypeFix(
       ApplicationManager.getApplication.invokeLater(new Runnable() {
         def run() {
           if (!ref.isValid || !FileModificationService.getInstance
-                .prepareFileForWrite(ref.getContainingFile)) return
+                .prepareFileForWrite(ref.getContainingFile))
+            return
           ScalaUtils.runWriteAction(
             new Runnable {
               def run() {
                 PsiDocumentManager
                   .getInstance(project)
                   .commitDocument(editor.getDocument)
-                if (!ref.isValid) return
+                if (!ref.isValid)
+                  return
                 if (!ref.isInstanceOf[ScDocResolvableCodeReference])
                   ref.bindToElement(clazz.element)
                 else
@@ -237,7 +246,8 @@ class ScalaImportTypeFix(
             return FINAL_CHOICE
           }
           val qname: String = selectedValue.qualifiedName
-          if (qname == null) return FINAL_CHOICE
+          if (qname == null)
+            return FINAL_CHOICE
           val toExclude: java.util.List[String] =
             AddImportAction.getAllExcludableStrings(qname)
           new BaseListPopupStep[String](null, toExclude) {
@@ -266,12 +276,14 @@ class ScalaImportTypeFix(
     }
 
     def execute: Boolean = {
-      for (clazz <- classes if !clazz.isValid) return false
+      for (clazz <- classes if !clazz.isValid)
+        return false
 
       PsiDocumentManager.getInstance(project).commitAllDocuments()
       if (classes.length == 1) {
         addImportOrReference(classes(0))
-      } else chooseClass()
+      } else
+        chooseClass()
 
       true
     }
@@ -323,8 +335,10 @@ object ScalaImportTypeFix {
 
     def qualifiedName: String = {
       val clazz: ScTemplateDefinition = ta.containingClass
-      if (clazz == null || clazz.qualifiedName == "") ta.name
-      else clazz.qualifiedName + "." + ta.name
+      if (clazz == null || clazz.qualifiedName == "")
+        ta.name
+      else
+        clazz.qualifiedName + "." + ta.name
     }
 
     def element: PsiNamedElement = ta
@@ -361,8 +375,10 @@ object ScalaImportTypeFix {
   private def notInner(clazz: PsiClass, ref: PsiElement): Boolean = {
     def parent(t: ScTypeDefinition): PsiElement = {
       val stub = t.asInstanceOf[ScTypeDefinitionImpl].getStub
-      if (stub != null) stub.getParentStub.getPsi
-      else t.getParent
+      if (stub != null)
+        stub.getParentStub.getPsi
+      else
+        t.getParent
     }
     clazz match {
       case o: ScObject if o.isSyntheticObject =>
@@ -389,8 +405,10 @@ object ScalaImportTypeFix {
   def getTypesToImport(
       ref: ScReferenceElement,
       myProject: Project): Array[TypeToImport] = {
-    if (!ref.isValid) return Array.empty
-    if (ref.isInstanceOf[ScTypeProjection]) return Array.empty
+    if (!ref.isValid)
+      return Array.empty
+    if (ref.isInstanceOf[ScTypeProjection])
+      return Array.empty
     val kinds = ref.getKinds(incomplete = false)
     val cache = ScalaPsiManager.instance(myProject)
     val classes = cache.getClassesByName(ref.refName, ref.getResolveScope)
@@ -441,8 +459,10 @@ object ScalaImportTypeFix {
           false
         case include =>
           val parts = include.split('.')
-          if (parts.length > 1) parts.takeRight(2).head == ref.refName
-          else false
+          if (parts.length > 1)
+            parts.takeRight(2).head == ref.refName
+          else
+            false
       }
       .map {
         case s => s.reverse.dropWhile(_ != '.').tail.reverse
@@ -469,6 +489,7 @@ object ScalaImportTypeFix {
         }
         .sortBy(_.qualifiedName)
         .toArray
-    } else buffer.sortBy(_.qualifiedName).toArray
+    } else
+      buffer.sortBy(_.qualifiedName).toArray
   }
 }

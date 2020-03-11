@@ -134,7 +134,10 @@ object GameRepo {
     }
 
   private def nonEmptyMod(mod: String, doc: BSONDocument) =
-    if (doc.isEmpty) BSONDocument() else BSONDocument(mod -> doc)
+    if (doc.isEmpty)
+      BSONDocument()
+    else
+      BSONDocument(mod -> doc)
 
   def setRatingDiffs(id: ID, white: Int, black: Int) =
     $update(
@@ -273,7 +276,8 @@ object GameRepo {
     val unsets =
       if (status >= Status.Mate)
         partialUnsets ++ BSONDocument(F.checkAt -> true)
-      else partialUnsets
+      else
+        partialUnsets
     $update(
       $select(id),
       nonEmptyMod(
@@ -295,7 +299,8 @@ object GameRepo {
     val g2 =
       if (ratedCheck && g.rated && g.userIds.distinct.size != 2)
         g.copy(mode = chess.Mode.Casual)
-      else g
+      else
+        g
     val userIds = g2.userIds.distinct
     val fen = (!g2.variant.standardInitialPosition)
       .option(Forsyth >> g2.toChess)
@@ -360,7 +365,8 @@ object GameRepo {
           Forsyth.initial.some
         case fen => fen
       }
-    else fuccess(none)
+    else
+      fuccess(none)
 
   def featuredCandidates: Fu[List[Game]] = $find(
     Query.playable ++ Query.clock(true) ++ Json.obj(

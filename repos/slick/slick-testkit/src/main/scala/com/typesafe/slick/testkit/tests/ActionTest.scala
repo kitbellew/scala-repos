@@ -104,12 +104,16 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
         DBIO.sequence((1 to 5000).toSeq.map(i => LiteralColumn(i).result))
       val a2 = DBIO.sequence(
         (1 to 20).toSeq.map(i =>
-          if (i % 2 == 0) LiteralColumn(i).result
-          else DBIO.from(Future.successful(i))))
+          if (i % 2 == 0)
+            LiteralColumn(i).result
+          else
+            DBIO.from(Future.successful(i))))
       val a3 = DBIO.sequence(
         (1 to 20).toSeq.map(i =>
-          if ((i / 4) % 2 == 0) LiteralColumn(i).result
-          else DBIO.from(Future.successful(i))))
+          if ((i / 4) % 2 == 0)
+            LiteralColumn(i).result
+          else
+            DBIO.from(Future.successful(i))))
       val a4 = DBIO.seq((1 to 50000).toSeq.map(i => DBIO.successful("a4")): _*)
       val a5 = (1 to 50000).toSeq
         .map(i => DBIO.successful("a5"))
@@ -122,7 +126,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
         a4.map(_ shouldBe (())),
         a5.map(_ shouldBe "a5")
       )
-    } else DBIO.successful(())
+    } else
+      DBIO.successful(())
 
   def testFlatten = {
     class T(tag: Tag) extends Table[Int](tag, u"t") {
@@ -135,7 +140,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
         ts.schema.create >>
           (ts ++= Seq(2, 3, 1, 5, 4))
       }
-      needFlatten = for (_ <- ts.result) yield ts.result
+      needFlatten = for (_ <- ts.result)
+        yield ts.result
       result <- db.run(needFlatten.flatten)
       _ = result shouldBe Seq(2, 3, 1, 5, 4)
     } yield ()

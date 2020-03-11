@@ -110,7 +110,10 @@ trait ClassTag[T]
       alternative: jClass[_] = null): Option[T] = {
     val conforms = runtimeClass.isInstance(
       x) || (alternative != null && runtimeClass.isAssignableFrom(alternative))
-    if (conforms) Some(x.asInstanceOf[T]) else None
+    if (conforms)
+      Some(x.asInstanceOf[T])
+    else
+      None
   }
 
   // case class accessories
@@ -122,7 +125,8 @@ trait ClassTag[T]
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =
-      if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
+      if (clazz.isArray)
+        s"Array[${prettyprint(arrayElementClass(clazz))}]"
       else
         clazz.getName
     prettyprint(runtimeClass)

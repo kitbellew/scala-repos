@@ -190,7 +190,9 @@ trait TensorLike[
 
   /** Returns true if and only if the given predicate is true for all elements. */
   def forall(fn: (K, V) => Boolean): Boolean = {
-    foreachPair((k, v) => if (!fn(k, v)) return false)
+    foreachPair((k, v) =>
+      if (!fn(k, v))
+        return false)
     true
   }
 
@@ -202,7 +204,9 @@ trait TensorLike[
 
   /** Returns true if and only if the given predicate is true for all elements. */
   def forall(fn: V => Boolean): Boolean = {
-    foreachValue(v => if (!fn(v)) return false)
+    foreachValue(v =>
+      if (!fn(v))
+        return false)
     true
   }
 

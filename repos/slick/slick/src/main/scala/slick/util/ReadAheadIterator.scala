@@ -19,20 +19,25 @@ trait ReadAheadIterator[+T] extends BufferedIterator[T] {
 
   def head: T = {
     update()
-    if (state == 1) cached
-    else throw new NoSuchElementException("head on empty iterator")
+    if (state == 1)
+      cached
+    else
+      throw new NoSuchElementException("head on empty iterator")
   }
 
   def headOption: Option[T] = {
     update()
-    if (state == 1) Some(cached)
-    else None
+    if (state == 1)
+      Some(cached)
+    else
+      None
   }
 
   private[this] def update() {
     if (state == 0) {
       cached = fetchNext()
-      if (state == 0) state = 1
+      if (state == 0)
+        state = 1
     }
   }
 
@@ -46,6 +51,7 @@ trait ReadAheadIterator[+T] extends BufferedIterator[T] {
     if (state == 1) {
       state = 0
       cached
-    } else throw new NoSuchElementException("next on empty iterator");
+    } else
+      throw new NoSuchElementException("next on empty iterator");
   }
 }

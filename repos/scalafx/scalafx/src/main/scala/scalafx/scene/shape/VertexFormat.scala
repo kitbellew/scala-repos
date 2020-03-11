@@ -41,7 +41,10 @@ object VertexFormat {
     * @return JavaFX VertexFormat
     */
   implicit def sfxVertexFormat2jfx(v: VertexFormat): jfxss.VertexFormat =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Specifies the format of a vertex that consists of a point and texture coordinates.

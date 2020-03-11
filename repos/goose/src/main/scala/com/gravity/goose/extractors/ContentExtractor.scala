@@ -65,9 +65,11 @@ trait ContentExtractor {
 
     try {
       val titleElem: Elements = doc.getElementsByTag("title")
-      if (titleElem == null || titleElem.isEmpty) return string.empty
+      if (titleElem == null || titleElem.isEmpty)
+        return string.empty
       var titleText: String = titleElem.first.text
-      if (string.isNullOrEmpty(titleText)) return string.empty
+      if (string.isNullOrEmpty(titleText))
+        return string.empty
       var usedDelimeter: Boolean = false
       if (titleText.contains("|")) {
         titleText = doTitleSplits(titleText, PIPE_SPLITTER)
@@ -132,7 +134,10 @@ trait ContentExtractor {
     if (meta.size > 0) {
       content = meta.first.attr("content")
     }
-    if (string.isNullOrEmpty(content)) string.empty else content.trim
+    if (string.isNullOrEmpty(content))
+      string.empty
+    else
+      content.trim
   }
 
   /**
@@ -156,7 +161,10 @@ trait ContentExtractor {
     val meta = article.doc.select("link[rel=canonical]")
     if (meta.size() > 0) {
       val href = Option(meta.first().attr("href")).getOrElse("").trim
-      if (href.nonEmpty) href else article.finalUrl
+      if (href.nonEmpty)
+        href
+      else
+        article.finalUrl
     } else {
       article.finalUrl
     }
@@ -168,14 +176,17 @@ trait ContentExtractor {
 
   def extractTags(article: Article): Set[String] = {
     val node = article.doc
-    if (node.children.size == 0) return NO_STRINGS
+    if (node.children.size == 0)
+      return NO_STRINGS
     val elements: Elements = Selector.select(A_REL_TAG_SELECTOR, node)
-    if (elements.size == 0) return NO_STRINGS
+    if (elements.size == 0)
+      return NO_STRINGS
     val tags = mutable.HashSet[String]()
 
     for (el <- elements) {
       var tag: String = el.text
-      if (!string.isNullOrEmpty(tag)) tags += tag
+      if (!string.isNullOrEmpty(tag))
+        tags += tag
     }
     tags.toSet
   }
@@ -275,7 +286,10 @@ trait ContentExtractor {
       }
     }
     printTraceLog(topNode)
-    if (topNode == null) None else Some(topNode)
+    if (topNode == null)
+      None
+    else
+      Some(topNode)
   }
 
   def printTraceLog(topNode: Element) {
@@ -289,7 +303,8 @@ trait ContentExtractor {
         val text =
           if (topNode.text.trim.length > 100)
             topNode.text.trim.substring(0, 100) + "..."
-          else topNode.text.trim
+          else
+            topNode.text.trim
         trace(logPrefix + "Text - " + text)
       }
     } catch {
@@ -333,7 +348,10 @@ trait ContentExtractor {
   }
 
   def getShortText(e: String, max: Int): String = {
-    if (e.length > max) e.substring(0, max) + "..." else e
+    if (e.length > max)
+      e.substring(0, max) + "..."
+    else
+      e
   }
 
   /**
@@ -389,7 +407,8 @@ trait ContentExtractor {
   private def getGravityScoreFromNode(node: Element): Option[Int] = {
     try {
       val grvScoreString: String = node.attr("gravityScore")
-      if (string.isNullOrEmpty(grvScoreString)) return None
+      if (string.isNullOrEmpty(grvScoreString))
+        return None
       Some(Integer.parseInt(grvScoreString))
     } catch {
       case e: Exception => None
@@ -408,8 +427,10 @@ trait ContentExtractor {
     try {
       val scoreString: String = node.attr("gravityScore")
       currentScore =
-        if (string.isNullOrEmpty(scoreString)) 0
-        else Integer.parseInt(scoreString)
+        if (string.isNullOrEmpty(scoreString))
+          0
+        else
+          Integer.parseInt(scoreString)
     } catch {
       case e: NumberFormatException => {
         currentScore = 0
@@ -430,8 +451,10 @@ trait ContentExtractor {
     try {
       val countString: String = node.attr("gravityNodes")
       currentScore =
-        if (string.isNullOrEmpty(countString)) 0
-        else Integer.parseInt(countString)
+        if (string.isNullOrEmpty(countString))
+          0
+        else
+          Integer.parseInt(countString)
     } catch {
       case e: NumberFormatException => {
         currentScore = 0
@@ -596,8 +619,10 @@ trait ContentExtractor {
       b += work(currentSibling)
 
       currentSibling =
-        if (currentSibling != null) currentSibling.previousElementSibling
-        else null
+        if (currentSibling != null)
+          currentSibling.previousElementSibling
+        else
+          null
     }
     b
   }

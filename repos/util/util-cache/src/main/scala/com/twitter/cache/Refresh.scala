@@ -50,7 +50,8 @@ object Refresh {
       case tuple @ (cachedValue, lastRetrieved) =>
         val now = Time.now
         // interruptible allows the promise to be interrupted safely
-        if (now < lastRetrieved + ttl) cachedValue.interruptible()
+        if (now < lastRetrieved + ttl)
+          cachedValue.interruptible()
         else {
           val p = Promise[T]()
           val nextTuple = (p, now)
@@ -64,7 +65,8 @@ object Refresh {
             }
             nextResult.proxyTo(p)
             p.interruptible() // interruptible allows the promise to be interrupted safely
-          } else result()
+          } else
+            result()
         }
     }
     // Return result, which is a no-arg function that returns a future

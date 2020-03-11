@@ -38,7 +38,8 @@ class RemoveReturnKeywordQuickFix(r: ScReturnStmt)
       r) {
   def doApplyFix(project: Project) {
     val ret = getElement
-    if (!ret.isValid) return
+    if (!ret.isValid)
+      return
     ret.expr match {
       case Some(e) => ret.replace(e.copy())
       case None    => ret.delete()

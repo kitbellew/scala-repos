@@ -61,7 +61,11 @@ package object signal {
       require(
         fs == 1d / dt,
         "If fs and dt are both specified, fs == 1.0/dt must be true. Otherwise, they are incompatible")
-    val realFs = if (fs < 0 && dt > 0) 1d / dt else fs
+    val realFs =
+      if (fs < 0 && dt > 0)
+        1d / dt
+      else
+        fs
 
     val shiftedFreq = if (isEven(windowLength)) {
       DenseVector.vertcat(
@@ -78,7 +82,10 @@ package object signal {
           i.toDouble * realFs / windowLength.toDouble)
       )
     }
-    if (shifted) fourierShift(shiftedFreq) else shiftedFreq
+    if (shifted)
+      fourierShift(shiftedFreq)
+    else
+      shiftedFreq
   }
 
   // </editor-fold>

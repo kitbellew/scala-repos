@@ -151,7 +151,11 @@ trait MappedForeignKey[
   def obj: Box[Other] = synchronized {
     if (!_calcedObj) {
       _calcedObj = true
-      this._obj = if (defined_?) dbKeyToTable.find(i_is_!) else Empty
+      this._obj =
+        if (defined_?)
+          dbKeyToTable.find(i_is_!)
+        else
+          Empty
     }
     _obj
   }
@@ -211,7 +215,8 @@ trait MappedForeignKey[
   val valHasObj = (value: Long) =>
     if (obj.isEmpty)
       List(FieldError(this, scala.xml.Text("Required field: " + name)))
-    else Nil
+    else
+      Nil
 }
 
 abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
@@ -224,16 +229,26 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
 
   def foreignMeta = _foreignMeta
 
-  def box: Box[Long] = if (defined_?) Full(get) else Empty
+  def box: Box[Long] =
+    if (defined_?)
+      Full(get)
+    else
+      Empty
 
   type KeyType = Long
   type KeyedForeignType = O
   type OwnerType = T
 
   override def jdbcFriendly(field: String) =
-    if (defined_?) new java.lang.Long(i_is_!) else null
+    if (defined_?)
+      new java.lang.Long(i_is_!)
+    else
+      null
   override def jdbcFriendly =
-    if (defined_?) new java.lang.Long(i_is_!) else null
+    if (defined_?)
+      new java.lang.Long(i_is_!)
+    else
+      null
 
   lazy val dbKeyToTable: KeyedMetaMapper[Long, O] = foreignMeta
 
@@ -246,10 +261,17 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
   def asSafeJs(obs: Box[KeyObfuscator]): JsExp =
     obs.map(o => JE.Str(o.obscure(dbKeyToTable, get))).openOr(JE.Num(get))
 
-  override def asJsExp: JsExp = if (defined_?) super.asJsExp else JE.JsNull
+  override def asJsExp: JsExp =
+    if (defined_?)
+      super.asJsExp
+    else
+      JE.JsNull
 
   override def asJsonValue: Box[JsonAST.JValue] =
-    if (defined_?) super.asJsonValue else Full(JsonAST.JNull)
+    if (defined_?)
+      super.asJsonValue
+    else
+      Full(JsonAST.JNull)
 
   override def setFromAny(in: Any): Long =
     in match {
@@ -264,7 +286,11 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
     */
   def dbAddedForeignKey: Box[() => Unit] = Empty
 
-  override def toString = if (defined_?) super.toString else "NULL"
+  override def toString =
+    if (defined_?)
+      super.toString
+    else
+      "NULL"
 
   def findFor(key: KeyType): List[OwnerType] =
     theOwner.getSingleton.findAll(By(this, key))
@@ -316,7 +342,11 @@ abstract class MappedStringForeignKey[
     */
   def dbAddedForeignKey: Box[() => Unit] = Empty
 
-  override def toString = if (defined_?) super.toString else "NULL"
+  override def toString =
+    if (defined_?)
+      super.toString
+    else
+      "NULL"
 
   def set(v: Box[O]): T = {
     val toSet: String = v match {

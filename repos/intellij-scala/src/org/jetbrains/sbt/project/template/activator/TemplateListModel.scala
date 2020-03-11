@@ -47,7 +47,10 @@ class TemplateListModel(
   def getTagsAt(id: String) = getData(id).tags
 
   private def getItem(i: Int): FullTemplateData =
-    if (i < indexedItems.length && i > -1) indexedItems(i) else dumbFullData
+    if (i < indexedItems.length && i > -1)
+      indexedItems(i)
+    else
+      dumbFullData
 
   private def getData(id: String) = idToItem.getOrElse(id, dumbData)
 }

@@ -63,8 +63,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       methodNode: MethodNode): Option[Callsite] = {
     val methodCallsites = callsites(methodNode)
     val newCallsites = methodCallsites - invocation
-    if (newCallsites.isEmpty) callsites.remove(methodNode)
-    else callsites(methodNode) = newCallsites
+    if (newCallsites.isEmpty)
+      callsites.remove(methodNode)
+    else
+      callsites(methodNode) = newCallsites
     methodCallsites.get(invocation)
   }
 
@@ -82,8 +84,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       methodNode: MethodNode): Option[ClosureInstantiation] = {
     val methodClosureInits = closureInstantiations(methodNode)
     val newClosureInits = methodClosureInits - indy
-    if (newClosureInits.isEmpty) closureInstantiations.remove(methodNode)
-    else closureInstantiations(methodNode) = newClosureInits
+    if (newClosureInits.isEmpty)
+      closureInstantiations.remove(methodNode)
+    else
+      closureInstantiations(methodNode) = newClosureInits
     methodClosureInits.get(indy)
   }
 
@@ -99,7 +103,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
   }
 
   def addIfMissing(methodNode: MethodNode, definingClass: ClassBType): Unit = {
-    if (!callsites.contains(methodNode)) addMethod(methodNode, definingClass)
+    if (!callsites.contains(methodNode))
+      addMethod(methodNode, definingClass)
   }
 
   def addMethod(methodNode: MethodNode, definingClass: ClassBType): Unit = {
@@ -123,7 +128,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
               new NullnessAnalyzer(btypes)))
         } else if (AsmAnalyzer.sizeOKForBasicValue(methodNode)) {
           Some(new AsmAnalyzer(methodNode, definingClass.internalName))
-        } else None
+        } else
+          None
       }
 
       // if the method is too large to run an analyzer, it is not added to the call graph
@@ -206,10 +212,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
             )
 
           case LambdaMetaFactoryCall(
-              indy,
-              samMethodType,
-              implMethod,
-              instantiatedMethodType) if a.frameAt(indy) != null =>
+                indy,
+                samMethodType,
+                implMethod,
+                instantiatedMethodType) if a.frameAt(indy) != null =>
             val lmf = LambdaMetaFactoryCall(
               indy,
               samMethodType,
@@ -235,11 +241,15 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       callee: Either[OptimizerWarning, Callee],
       callsiteInsn: MethodInsnNode,
       prodCons: => ProdConsAnalyzer): IntMap[ArgInfo] = {
-    if (callee.isLeft) IntMap.empty
+    if (callee.isLeft)
+      IntMap.empty
     else {
       lazy val numArgs = Type
         .getArgumentTypes(callsiteInsn.desc)
-        .length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC) 0 else 1)
+        .length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC)
+                     0
+                   else
+                     1)
       argInfosForSams(callee.get.samParamTypes, callsiteInsn, numArgs, prodCons)
     }
   }
@@ -275,7 +285,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         val prods = prodConsI.initialProducersForValueAt(
           consumerInsn,
           firstConsumedSlot + index)
-        if (prods.size != 1) None
+        if (prods.size != 1)
+          None
         else {
           val argInfo = prods.head match {
             case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
@@ -297,7 +308,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         .map(t =>
           bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
       val isStatic = BytecodeUtils.isStaticMethod(methodNode)
-      if (isStatic) params else receiverType +: params
+      if (isStatic)
+        params
+      else
+        receiverType +: params
     }
     samTypes(paramTypes)
   }
@@ -314,7 +328,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     for (i <- types.indices) {
       types(i) match {
         case c: ClassBType =>
-          if (c.info.get.inlineInfo.sam.isDefined) res = res.updated(i, c)
+          if (c.info.get.inlineInfo.sam.isDefined)
+            res = res.updated(i, c)
 
         case _ =>
       }
@@ -588,10 +603,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
           if indy.bsm == metafactoryHandle || indy.bsm == altMetafactoryHandle =>
         indy.bsmArgs match {
           case Array(
-              samMethodType: Type,
-              implMethod: Handle,
-              instantiatedMethodType: Type,
-              xs @ _*
+                samMethodType: Type,
+                implMethod: Handle,
+                instantiatedMethodType: Type,
+                xs @ _*
               ) => // xs binding because IntelliJ gets confused about _@_*
             // LambdaMetaFactory performs a number of automatic adaptations when invoking the lambda
             // implementation method (casting, boxing, unboxing, and primitive widening, see Javadoc).
@@ -628,7 +643,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
             val instantiatedMethodArgTypes =
               instantiatedMethodType.getArgumentTypes
             val expectedImplMethodType = {
-              val paramTypes = (if (isStatic) indyParamTypes
+              val paramTypes = (if (isStatic)
+                                  indyParamTypes
                                 else
                                   indyParamTypes.tail) ++ instantiatedMethodArgTypes
               Type.getMethodType(
@@ -648,7 +664,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
             if (isIndyLambda)
               Some((indy, samMethodType, implMethod, instantiatedMethodType))
-            else None
+            else
+              None
 
           case _ => None
         }

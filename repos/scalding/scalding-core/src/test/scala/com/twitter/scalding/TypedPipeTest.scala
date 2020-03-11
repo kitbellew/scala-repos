@@ -1688,7 +1688,11 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         10,
-        x => if (x < 50) 0 else 1)
+        x =>
+          if (x < 50)
+            0
+          else
+            1)
       sk shouldBe inner
     }
 
@@ -1696,7 +1700,11 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         10,
-        x => if (x == 50) 1000 else 1)
+        x =>
+          if (x == 50)
+            1000
+          else
+            1)
       sk shouldBe inner
     }
 
@@ -1710,7 +1718,11 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         1,
-        x => if (x == 50) 1000 else 1)
+        x =>
+          if (x == 50)
+            1000
+          else
+            1)
       sk shouldBe inner
     }
   }
@@ -1731,7 +1743,11 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         10,
-        x => if (x < 50) 0 else 1)
+        x =>
+          if (x < 50)
+            0
+          else
+            1)
       sk shouldBe inner
     }
 
@@ -1739,7 +1755,11 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         10,
-        x => if (x == 50) 1000 else 1)
+        x =>
+          if (x == 50)
+            1000
+          else
+            1)
       sk shouldBe inner
     }
 
@@ -1753,7 +1773,11 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
       val (sk, inner) = runJobWithArguments(
         new TypedSketchJoinJob(_),
         1,
-        x => if (x == 50) 1000 else 1)
+        x =>
+          if (x == 50)
+            1000
+          else
+            1)
       sk shouldBe inner
     }
   }

@@ -320,16 +320,21 @@ trait AnalyzerPlugins { self: Analyzer =>
   }
 
   private def invoke[T](op: CumulativeOp[T]): T = {
-    if (analyzerPlugins.isEmpty) op.default
+    if (analyzerPlugins.isEmpty)
+      op.default
     else
       analyzerPlugins.foldLeft(op.default)((current, plugin) =>
-        if (!plugin.isActive()) current else op.accumulate(current, plugin))
+        if (!plugin.isActive())
+          current
+        else
+          op.accumulate(current, plugin))
   }
 
   /** @see AnalyzerPlugin.pluginsPt */
   def pluginsPt(pt: Type, typer: Typer, tree: Tree, mode: Mode): Type =
     // performance opt
-    if (analyzerPlugins.isEmpty) pt
+    if (analyzerPlugins.isEmpty)
+      pt
     else
       invoke(new CumulativeOp[Type] {
         def default = pt
@@ -344,7 +349,8 @@ trait AnalyzerPlugins { self: Analyzer =>
       mode: Mode,
       pt: Type): Type =
     // performance opt
-    if (analyzerPlugins.isEmpty) addAnnotations(tree, tpe)
+    if (analyzerPlugins.isEmpty)
+      addAnnotations(tree, tpe)
     else
       invoke(new CumulativeOp[Type] {
         // support deprecated methods in annotation checkers
@@ -420,7 +426,8 @@ trait AnalyzerPlugins { self: Analyzer =>
   }
 
   private def invoke[T](op: NonCumulativeOp[T]): T = {
-    if (macroPlugins.isEmpty) op.default
+    if (macroPlugins.isEmpty)
+      op.default
     else {
       val results = macroPlugins
         .filter(_.isActive())
@@ -492,7 +499,8 @@ trait AnalyzerPlugins { self: Analyzer =>
 
   /** @see MacroPlugin.pluginsEnterSym */
   def pluginsEnterSym(namer: Namer, tree: Tree): Context =
-    if (macroPlugins.isEmpty) namer.standardEnterSym(tree)
+    if (macroPlugins.isEmpty)
+      namer.standardEnterSym(tree)
     else
       invoke(new NonCumulativeOp[Context] {
         def position = tree.pos
@@ -501,11 +509,14 @@ trait AnalyzerPlugins { self: Analyzer =>
         def custom(plugin: MacroPlugin) = {
           val hasExistingSym = tree.symbol != NoSymbol
           val result = plugin.pluginsEnterSym(namer, tree)
-          if (result && hasExistingSym) Some(namer.context)
+          if (result && hasExistingSym)
+            Some(namer.context)
           else if (result && tree.isInstanceOf[Import])
             Some(namer.context.make(tree))
-          else if (result) Some(namer.context)
-          else None
+          else if (result)
+            Some(namer.context)
+          else
+            None
         }
       })
 
@@ -525,10 +536,13 @@ trait AnalyzerPlugins { self: Analyzer =>
   /** @see MacroPlugin.pluginsEnterStats */
   def pluginsEnterStats(typer: Typer, stats: List[Tree]): List[Tree] = {
     // performance opt
-    if (macroPlugins.isEmpty) stats
+    if (macroPlugins.isEmpty)
+      stats
     else
       macroPlugins.foldLeft(stats)((current, plugin) =>
-        if (!plugin.isActive()) current
-        else plugin.pluginsEnterStats(typer, current))
+        if (!plugin.isActive())
+          current
+        else
+          plugin.pluginsEnterStats(typer, current))
   }
 }

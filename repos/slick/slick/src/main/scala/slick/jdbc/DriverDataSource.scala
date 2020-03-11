@@ -95,7 +95,8 @@ class DriverDataSource(
                 s"No driver specified and DriverManager does not know how to handle URL $url",
                 ex)
           }
-      } else driverObject
+      } else
+        driverObject
       if (!driver.acceptsURL(url)) {
         close()
         throw new SlickException(
@@ -114,11 +115,14 @@ class DriverDataSource(
       p: Properties,
       user: String,
       password: String): Properties = {
-    if ((p ne null) && (user eq null) && (password eq null)) p
+    if ((p ne null) && (user eq null) && (password eq null))
+      p
     else {
       val p2 = new Properties(p)
-      if (user ne null) p2.setProperty("user", user)
-      if (password ne null) p2.setProperty("password", password)
+      if (user ne null)
+        p2.setProperty("user", user)
+      if (password ne null)
+        p2.setProperty("password", password)
       p2
     }
   }
@@ -165,7 +169,8 @@ class DriverDataSource(
   def isWrapperFor(iface: Class[_]): Boolean = iface.isInstance(this)
 
   def unwrap[T](iface: Class[T]): T =
-    if (iface.isInstance(this)) this.asInstanceOf[T]
+    if (iface.isInstance(this))
+      this.asInstanceOf[T]
     else
       throw new SQLException(
         getClass.getName + " is not a wrapper for " + iface)

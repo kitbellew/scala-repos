@@ -18,7 +18,10 @@ object MultiPublishTest extends Build {
     name := "Retrieve Test",
     mavenStyle,
     libraryDependencies <<= publishMavenStyle { style =>
-      if (style) mavenStyleDependencies else ivyStyleDependencies
+      if (style)
+        mavenStyleDependencies
+      else
+        ivyStyleDependencies
     }
   )
 

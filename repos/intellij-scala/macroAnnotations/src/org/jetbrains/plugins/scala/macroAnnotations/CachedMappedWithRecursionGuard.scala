@@ -92,8 +92,10 @@ object CachedMappedWithRecursionGuard {
           """
 
         val updatedRhs = q"""
-          ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-        else EmptyTree}
+          ${if (analyzeCaches)
+          q"$cacheStatsName.aboutToEnterCachedArea()"
+        else
+          EmptyTree}
           type $dataTypeName = (..$parameterTypes)
           val $dataName = (..$parameterNames)
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
@@ -180,7 +182,8 @@ object CachedMappedWithRecursionGuard {
         val cacheStatsField =
           if (analyzeCaches) {
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-          } else EmptyTree
+          } else
+            EmptyTree
 
         val updatedDef =
           DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)

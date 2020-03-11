@@ -252,7 +252,11 @@ object CaseWhen {
       }
       .toArray
       .toSeq // force materialization to make the seq serializable
-    val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
+    val elseValue =
+      if (branches.size % 2 == 1)
+        Some(branches.last)
+      else
+        None
     CaseWhen(cases, elseValue)
   }
 }
@@ -271,7 +275,11 @@ object CaseKeyWhen {
       }
       .toArray
       .toSeq // force materialization to make the seq serializable
-    val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
+    val elseValue =
+      if (branches.size % 2 == 1)
+        Some(branches.last)
+      else
+        None
     CaseWhen(cases, elseValue)
   }
 }
@@ -305,7 +313,10 @@ case class Least(children: Seq[Expression]) extends Expression {
     children.foldLeft[Any](null)((r, c) => {
       val evalc = c.eval(input)
       if (evalc != null) {
-        if (r == null || ordering.lt(evalc, r)) evalc else r
+        if (r == null || ordering.lt(evalc, r))
+          evalc
+        else
+          r
       } else {
         r
       }
@@ -365,7 +376,10 @@ case class Greatest(children: Seq[Expression]) extends Expression {
     children.foldLeft[Any](null)((r, c) => {
       val evalc = c.eval(input)
       if (evalc != null) {
-        if (r == null || ordering.gt(evalc, r)) evalc else r
+        if (r == null || ordering.gt(evalc, r))
+          evalc
+        else
+          r
       } else {
         r
       }

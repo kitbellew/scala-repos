@@ -256,9 +256,13 @@ object GradientBoostedTrees extends Logging {
         firstTreeWeight,
         firstTreeModel,
         loss)
-    if (validate) validatePredErrorCheckpointer.update(validatePredError)
+    if (validate)
+      validatePredErrorCheckpointer.update(validatePredError)
     var bestValidateError =
-      if (validate) validatePredError.values.mean() else 0.0
+      if (validate)
+        validatePredError.values.mean()
+      else
+        0.0
     var bestM = 1
 
     var m = 1
@@ -325,7 +329,8 @@ object GradientBoostedTrees extends Logging {
 
     predErrorCheckpointer.deleteAllCheckpoints()
     validatePredErrorCheckpointer.deleteAllCheckpoints()
-    if (persistedInput) input.unpersist()
+    if (persistedInput)
+      input.unpersist()
 
     if (validate) {
       new GradientBoostedTreesModel(

@@ -52,9 +52,9 @@ class OrcFilterSuite extends QueryTest with OrcTest {
     val maybeAnalyzedPredicate = query.queryExecution.optimizedPlan
       .collect {
         case PhysicalOperation(
-            _,
-            filters,
-            LogicalRelation(orcRelation: HadoopFsRelation, _, _)) =>
+              _,
+              filters,
+              LogicalRelation(orcRelation: HadoopFsRelation, _, _)) =>
           maybeRelation = Some(orcRelation)
           filters
       }

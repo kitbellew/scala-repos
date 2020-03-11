@@ -24,7 +24,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       val i = phases.lastIndexWhere(_.name == after.name)
       if (i == -1)
         throw new SlickException("Previous phase " + after.name + " not found")
-      else phases.patch(i + 1, Seq(p), 0)
+      else
+        phases.patch(i + 1, Seq(p), 0)
     })
 
   /** Return a new compiler with the new phase added directly before another
@@ -35,7 +36,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       if (i == -1)
         throw new SlickException(
           "Following phase " + before.name + " not found")
-      else phases.patch(i, Seq(p), 0)
+      else
+        phases.patch(i, Seq(p), 0)
     })
 
   /** Return a new compiler without the given phase (or a different
@@ -46,7 +48,12 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
     * the same name. The new phase must have a State that is assignable to the
     * original phase's state. */
   def replace(p: Phase) =
-    new QueryCompiler(phases.map(o => if (o.name == p.name) p else o))
+    new QueryCompiler(
+      phases.map(o =>
+        if (o.name == p.name)
+          p
+        else
+          o))
 
   /** Compile an AST with a new `CompilerState`. */
   def run(tree: Node): CompilerState = {
@@ -67,9 +74,10 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
   protected[this] def runPhases(
       it: Iterator[Phase],
       state: CompilerState): CompilerState = {
-    if (logger.isDebugEnabled) state.symbolNamer.use {
-      logger.debug("Source:", state.tree)
-    }
+    if (logger.isDebugEnabled)
+      state.symbolNamer.use {
+        logger.debug("Source:", state.tree)
+      }
     if (benchmarkLogger.isDebugEnabled) {
       val (res, times) = it.foldLeft((state, Nil: List[(String, Long)])) {
         case ((n, times), p) =>
@@ -107,14 +115,16 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
         }
         if (GlobalConfig.verifyTypes && s2.wellTyped)
           (new VerifyTypes(after = Some(p))).apply(s2)
-      } else logger.debug("After phase " + p.name + ": (no change)")
+      } else
+        logger.debug("After phase " + p.name + ": (no change)")
       s2
     }
 
   protected[this] def detectRebuiltLeafs(
       n1: Node,
       n2: Node): Set[RefId[Dumpable]] = {
-    if (n1 eq n2) Set.empty
+    if (n1 eq n2)
+      Set.empty
     else {
       val chres =
         n1.children.iterator
@@ -123,7 +133,10 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
             case (n1, n2) => detectRebuiltLeafs(n1, n2)
           }
           .foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
-      if (chres.isEmpty) Set(RefId(n2)) else chres
+      if (chres.isEmpty)
+        Set(RefId(n2))
+      else
+        chres
     }
   }
 }

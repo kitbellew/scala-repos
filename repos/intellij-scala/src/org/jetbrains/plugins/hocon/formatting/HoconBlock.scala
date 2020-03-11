@@ -27,7 +27,8 @@ class HoconBlock(
         node.childrenIterator
           .map(_.getElementType)
           .find(HoconTokenSets.KeyValueSeparator.contains)
-      else None
+      else
+        None
     new formatter.WrapCache(pathValueSeparatorType)
   }
   private val alignmentCache = new formatter.AlignmentCache
@@ -71,6 +72,9 @@ class HoconBlock(
 
   override def toString =
     s"${node.getElementType}[${node.getText.replaceAllLiterally("\n", "\\n")}]${node.getTextRange}" + {
-      if (isLeaf) "" else children.mkString("\n", "\n", "").indent("  ")
+      if (isLeaf)
+        ""
+      else
+        children.mkString("\n", "\n", "").indent("  ")
     }
 }

@@ -40,7 +40,10 @@ class InterpretedProjection(expressions: Seq[Expression]) extends Projection {
 
   // null check is required for when Kryo invokes the no-arg constructor.
   protected val exprArray =
-    if (expressions != null) expressions.toArray else null
+    if (expressions != null)
+      expressions.toArray
+    else
+      null
 
   def apply(input: InternalRow): InternalRow = {
     val outputArray = new Array[Any](exprArray.length)

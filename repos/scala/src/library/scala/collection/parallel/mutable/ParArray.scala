@@ -102,8 +102,10 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       val total = sizesIncomplete.reduceLeft(_ + _)
       val left = remaining
       val sizes =
-        if (total >= left) sizesIncomplete
-        else sizesIncomplete :+ (left - total)
+        if (total >= left)
+          sizesIncomplete
+        else
+          sizesIncomplete :+ (left - total)
       for (sz <- sizes)
         yield
           if (traversed < until) {
@@ -167,7 +169,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var cnt = 0
       var j = from
       while (j < ntil) {
-        if (p(a(j).asInstanceOf[T])) cnt += 1
+        if (p(a(j).asInstanceOf[T]))
+          cnt += 1
         j += 1
       }
       cnt
@@ -242,20 +245,27 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
     }
 
     override def forall(p: T => Boolean): Boolean = {
-      if (isAborted) return false
+      if (isAborted)
+        return false
 
       var all = true
       while (i < until) {
-        val nextuntil = if (i + CHECK_RATE > until) until else i + CHECK_RATE
+        val nextuntil =
+          if (i + CHECK_RATE > until)
+            until
+          else
+            i + CHECK_RATE
 
         all = forall_quick(p, array, nextuntil, i)
-        if (all) i = nextuntil
+        if (all)
+          i = nextuntil
         else {
           i = until
           abort()
         }
 
-        if (isAborted) return false
+        if (isAborted)
+          return false
       }
       all
     }
@@ -268,26 +278,35 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         start: Int): Boolean = {
       var j = start
       while (j < nextuntil) {
-        if (p(a(j).asInstanceOf[T])) j += 1
-        else return false
+        if (p(a(j).asInstanceOf[T]))
+          j += 1
+        else
+          return false
       }
       true
     }
 
     override def exists(p: T => Boolean): Boolean = {
-      if (isAborted) return true
+      if (isAborted)
+        return true
 
       var some = false
       while (i < until) {
-        val nextuntil = if (i + CHECK_RATE > until) until else i + CHECK_RATE
+        val nextuntil =
+          if (i + CHECK_RATE > until)
+            until
+          else
+            i + CHECK_RATE
 
         some = exists_quick(p, array, nextuntil, i)
         if (some) {
           i = until
           abort()
-        } else i = nextuntil
+        } else
+          i = nextuntil
 
-        if (isAborted) return true
+        if (isAborted)
+          return true
       }
       some
     }
@@ -300,28 +319,36 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         start: Int): Boolean = {
       var j = start
       while (j < nextuntil) {
-        if (p(a(j).asInstanceOf[T])) return true
-        else j += 1
+        if (p(a(j).asInstanceOf[T]))
+          return true
+        else
+          j += 1
       }
       false
     }
 
     override def find(p: T => Boolean): Option[T] = {
-      if (isAborted) return None
+      if (isAborted)
+        return None
 
       var r: Option[T] = None
       while (i < until) {
         val nextuntil =
-          if ((i + CHECK_RATE) < until) (i + CHECK_RATE) else until
+          if ((i + CHECK_RATE) < until)
+            (i + CHECK_RATE)
+          else
+            until
 
         r = find_quick(p, array, nextuntil, i)
 
         if (r != None) {
           i = until
           abort()
-        } else i = nextuntil
+        } else
+          i = nextuntil
 
-        if (isAborted) return r
+        if (isAborted)
+          return r
       }
       r
     }
@@ -334,8 +361,10 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = start
       while (j < nextuntil) {
         val elem = a(j).asInstanceOf[T]
-        if (p(elem)) return Some(elem)
-        else j += 1
+        if (p(elem))
+          return Some(elem)
+        else
+          j += 1
       }
       None
     }
@@ -365,15 +394,21 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = startpos
       var endpos = ntil
       while (j < endpos) {
-        if (pred(a(j).asInstanceOf[T])) j += 1
-        else endpos = j
+        if (pred(a(j).asInstanceOf[T]))
+          j += 1
+        else
+          endpos = j
       }
       endpos - startpos
     }
 
     override def indexWhere(pred: T => Boolean): Int = {
       val r = indexWhere_quick(pred, arr, until, i)
-      val ret = if (r != -1) r - i else r
+      val ret =
+        if (r != -1)
+          r - i
+        else
+          r
       i = until
       ret
     }
@@ -389,14 +424,19 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         if (pred(a(j).asInstanceOf[T])) {
           pos = j
           j = ntil
-        } else j += 1
+        } else
+          j += 1
       }
       pos
     }
 
     override def lastIndexWhere(pred: T => Boolean): Int = {
       val r = lastIndexWhere_quick(pred, arr, i, until)
-      val ret = if (r != -1) r - i else r
+      val ret =
+        if (r != -1)
+          r - i
+        else
+          r
       i = until
       ret
     }
@@ -412,7 +452,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         if (pred(a(j).asInstanceOf[T])) {
           pos = j
           j = -1
-        } else j -= 1
+        } else
+          j -= 1
       }
       pos
     }
@@ -486,7 +527,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         val traversable = f(arr(i).asInstanceOf[T])
         if (traversable.isInstanceOf[Iterable[_]])
           cb ++= traversable.asInstanceOf[Iterable[S]].iterator
-        else cb ++= traversable.seq
+        else
+          cb ++= traversable.seq
         i += 1
       }
       cb
@@ -509,7 +551,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = i
       while (j < ntil) {
         val curr = a(j).asInstanceOf[T]
-        if (pred(curr)) cb += curr
+        if (pred(curr))
+          cb += curr
         j += 1
       }
     }
@@ -531,7 +574,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = i
       while (j < ntil) {
         val curr = a(j).asInstanceOf[T]
-        if (!pred(curr)) cb += curr
+        if (!pred(curr))
+          cb += curr
         j += 1
       }
     }
@@ -592,7 +636,10 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = from
       while (j < ntil) {
         val curr = a(j).asInstanceOf[T]
-        if (p(curr)) btrue += curr else bfalse += curr
+        if (p(curr))
+          btrue += curr
+        else
+          bfalse += curr
         j += 1
       }
     }
@@ -712,7 +759,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
 
       // wrap it into a parallel array
       (new ParArray[S](targarrseq)).asInstanceOf[That]
-    } else super.map(f)(bf)
+    } else
+      super.map(f)(bf)
 
   override def scan[U >: T, That](z: U)(op: (U, U) => U)(
       implicit cbf: CanBuildFrom[ParArray[T], U, That]): That =
@@ -732,7 +780,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
 
       // wrap the array into a parallel array
       (new ParArray[U](targarrseq)).asInstanceOf[That]
-    } else super.scan(z)(op)(cbf)
+    } else
+      super.scan(z)(op)(cbf)
 
   /* tasks */
 

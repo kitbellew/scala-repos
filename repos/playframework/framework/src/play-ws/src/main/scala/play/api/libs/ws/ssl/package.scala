@@ -52,7 +52,10 @@ package object ssl {
 
   // NOTE: Some SSL classes in OpenJDK 6 are in the same locations as JDK 7
   def foldRuntime[T](older: => T, newer: => T): T = {
-    if (isJavaAtLeast("1.7") || isOpenJdk) newer else older
+    if (isJavaAtLeast("1.7") || isOpenJdk)
+      newer
+    else
+      older
   }
 
 }

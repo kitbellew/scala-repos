@@ -39,7 +39,8 @@ trait ScalaSeparatorProvider {
           true
         }
       }
-    } else false
+    } else
+      false
   }
 
   def hasElementAbove(element: PsiElement) = {
@@ -50,7 +51,11 @@ trait ScalaSeparatorProvider {
 
   def getGroup(element: PsiElement) = {
     for (g <- groupOf(element))
-      yield if (isMultiline(element)) MultilineLevel + g else g
+      yield
+        if (isMultiline(element))
+          MultilineLevel + g
+        else
+          g
   }
 
   def groupOf(element: PsiElement): Option[Int] = {
@@ -96,7 +101,8 @@ trait ScalaSeparatorProvider {
     while (e != null) {
       val g = getGroup(e)
       if (g.isDefined) {
-        if (lines > 0 && filter(e)) return g
+        if (lines > 0 && filter(e))
+          return g
       } else {
         lines += augmentString(e.getText).count(_ == '\n')
       }

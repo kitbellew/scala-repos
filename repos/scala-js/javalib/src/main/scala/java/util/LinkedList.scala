@@ -129,8 +129,10 @@ class LinkedList[E]()
   }
 
   private def getNodeAt(index: Int): Node[E] = {
-    if (index == 0) head
-    else if (index == size - 1) last
+    if (index == 0)
+      head
+    else if (index == size - 1)
+      last
     else {
       var current: Node[E] = null
       if (index <= size / 2) {
@@ -160,8 +162,10 @@ class LinkedList[E]()
   }
 
   private def addNode(nextNode: Node[E], e: E): Unit = {
-    if (nextNode eq head) addFirst(e)
-    else if (nextNode eq null) addLast(e)
+    if (nextNode eq head)
+      addFirst(e)
+    else if (nextNode eq null)
+      addLast(e)
     else {
       val node = new Node(e, prev = nextNode.prev, next = nextNode)
       nextNode.prev.next = node
@@ -177,8 +181,10 @@ class LinkedList[E]()
   }
 
   private def removeNode(node: Node[E]): E = {
-    if (node eq head) removeFirst()
-    else if (node eq last) removeLast()
+    if (node eq head)
+      removeFirst()
+    else if (node eq last)
+      removeLast()
     else {
       node.prev.next = node.next
       node.next.prev = node.prev
@@ -220,20 +226,28 @@ class LinkedList[E]()
   }
 
   def peekFirst(): E =
-    if (head eq null) null.asInstanceOf[E]
-    else head.value
+    if (head eq null)
+      null.asInstanceOf[E]
+    else
+      head.value
 
   def peekLast(): E =
-    if (last eq null) null.asInstanceOf[E]
-    else last.value
+    if (last eq null)
+      null.asInstanceOf[E]
+    else
+      last.value
 
   def pollFirst(): E =
-    if (isEmpty()) null.asInstanceOf[E]
-    else removeFirst()
+    if (isEmpty())
+      null.asInstanceOf[E]
+    else
+      removeFirst()
 
   def pollLast(): E =
-    if (isEmpty) null.asInstanceOf[E]
-    else removeLast()
+    if (isEmpty)
+      null.asInstanceOf[E]
+    else
+      removeLast()
 
   def push(e: E): Unit =
     addFirst(e)
@@ -267,12 +281,14 @@ class LinkedList[E]()
       private var i: Double = index
 
       private var currentNode: Node[E] =
-        if (index == size) null
+        if (index == size)
+          null
         else
           getNodeAt(index)
 
       private var lastNode: Node[E] =
-        if (currentNode ne null) null
+        if (currentNode ne null)
+          null
         else
           LinkedList.this.last
 

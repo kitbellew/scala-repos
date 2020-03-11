@@ -36,7 +36,8 @@ class CreateAggregates extends Phase {
             case n @ Bind(s1, from1, Pure(sel1, ts1))
                 if !from1.isInstanceOf[GroupBy] =>
               val (sel2, temp) = liftAggregates(sel1, s1)
-              if (temp.isEmpty) n
+              if (temp.isEmpty)
+                n
               else {
                 logger.debug("Lifting aggregates into join in:", n)
                 logger.debug("New mapping with temporary refs:", sel2)
@@ -68,7 +69,10 @@ class CreateAggregates extends Phase {
                     sources.zipWithIndex.map {
                       case ((s, _), i) =>
                         val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                        s -> (if (i == len - 1) l else l :+ ElementSymbol(1))
+                        s -> (if (i == len - 1)
+                                l
+                              else
+                                l :+ ElementSymbol(1))
                     }.toMap
                 }
                 logger.debug("Replacement paths: " + repl)
@@ -91,7 +95,8 @@ class CreateAggregates extends Phase {
           keepType = true,
           bottomUp = true
         ))
-    else state
+    else
+      state
   }
 
   /** Recursively inline mapping Bind calls under an Aggregate */
@@ -124,7 +129,8 @@ class CreateAggregates extends Phase {
       if (a.findNode {
             case n: PathElement => n.sym == outer
             case _              => false
-          }.isDefined) (a, Map.empty)
+          }.isDefined)
+        (a, Map.empty)
       else {
         val s, f = new AnonSymbol
         val a2 = Aggregate(s1, f1, StructNode(ConstArray(f -> sel1))).infer()
@@ -136,7 +142,10 @@ class CreateAggregates extends Phase {
       val mapped = n.children.map(liftAggregates(_, outer))
       val m = mapped.iterator.flatMap(_._2).toMap
       val n2 =
-        if (m.isEmpty) n else n.withChildren(mapped.map(_._1)) :@ n.nodeType
+        if (m.isEmpty)
+          n
+        else
+          n.withChildren(mapped.map(_._1)) :@ n.nodeType
       (n2, m)
   }
 }

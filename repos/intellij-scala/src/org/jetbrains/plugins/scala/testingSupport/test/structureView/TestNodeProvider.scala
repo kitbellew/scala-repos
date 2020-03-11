@@ -56,7 +56,8 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
         val clazz = td.element
         val project = clazz.getProject
         try {
-          if (!clazz.isValid) return children
+          if (!clazz.isValid)
+            return children
           clazz.extendsBlock.templateBody match {
             case Some(body) =>
               for (expr <- body.exprs) {
@@ -138,7 +139,8 @@ object TestNodeProvider {
       extractWordSpec(expr, project)
     } else if (isInheritor(clazz, getUnitSpecBase)) {
       extractUnitSpec(expr, project)
-    } else None
+    } else
+      None
   }
 
   private def extractTestViewElementPatternDef(
@@ -151,7 +153,8 @@ object TestNodeProvider {
       val methodCall = pDef.getLastChild.asInstanceOf[ScMethodCall]
       checkScMethodCall(methodCall, "apply")
       None
-    } else None
+    } else
+      None
   }
 
   private def extractTestViewElement(
@@ -171,7 +174,8 @@ object TestNodeProvider {
       extractFunSpec(expr, project)
     } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {
       extractPropSpec(expr, project)
-    } else None
+    } else
+      None
   }
 
   private val scMethodCallDefaultArg = Seq(
@@ -388,7 +392,8 @@ object TestNodeProvider {
           expr,
           getInfixExprTestName(expr),
           entry.children(())))
-    } else None
+    } else
+      None
   }
 
   private def checkPendingInfixExpr(expr: ScInfixExpr): Boolean = {
@@ -501,9 +506,12 @@ object TestNodeProvider {
           expr,
           getInfixExprTestName(expr),
           children,
-          if (checkSpecsPending(expr)) TestStructureViewElement.pendingStatusId
-          else TestStructureViewElement.normalStatusId))
-    } else None
+          if (checkSpecsPending(expr))
+            TestStructureViewElement.pendingStatusId
+          else
+            TestStructureViewElement.normalStatusId))
+    } else
+      None
   }
 
   private def extractScMethodCall(
@@ -537,7 +545,8 @@ object TestNodeProvider {
           expr,
           getMethodCallTestName(expr),
           entry.children(())))
-    } else None
+    } else
+      None
   }
 
   //-----------------Here are checks for concrete test class bases---------------------
@@ -726,7 +735,8 @@ object TestNodeProvider {
             expr,
             getMethodCallTestName(expr.asInstanceOf[ScMethodCall]),
             processChildren(getInnerExprs(expr), extractUTestInner, project)))
-      } else None
+      } else
+        None
     }
     if (isUTestSuiteApplyCall(expr)) {
       import scala.collection.JavaConversions._
@@ -741,7 +751,8 @@ object TestNodeProvider {
             .toList
         case _ => new util.ArrayList[TreeElement]
       }
-    } else new util.ArrayList[TreeElement]()
+    } else
+      new util.ArrayList[TreeElement]()
   }
 
   def isUTestInfixExpr(psiElement: PsiElement): Boolean = psiElement match {

@@ -95,7 +95,8 @@ trait ScType {
     })
     if (wildcards.nonEmpty) {
       ScExistentialType(quantified, wildcards.toList).simplify()
-    } else quantified
+    } else
+      quantified
   }
 
   /**
@@ -164,8 +165,10 @@ trait ScType {
       update: ScType => (Boolean, ScType),
       visited: IHashSet[ScType] = IHashSet.empty): ScType = {
     val res = update(this)
-    if (res._1) res._2
-    else this
+    if (res._1)
+      res._2
+    else
+      this
   }
 
   def recursiveVarianceUpdate(
@@ -185,8 +188,10 @@ trait ScType {
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     val res = update(this, variance, data)
-    if (res._1) res._2
-    else this
+    if (res._1)
+      res._2
+    else
+      this
   }
 
   def collectAbstracts: Seq[ScAbstractType] = {
@@ -225,7 +230,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
         if (typeParam.typeParams.nonEmpty) {
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
-        } else boundsDepth
+        } else
+          boundsDepth
     }.max
   }
 
@@ -234,7 +240,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       typeDepth: Int): Int = {
     if (f.typeParameters.nonEmpty) {
       (f.typeParameters.map(elemTypeDepth(_)).max + 1).max(typeDepth)
-    } else typeDepth
+    } else
+      typeDepth
   }
 
   def elemTypeDepth(elem: ScNamedElement): Int = {
@@ -295,17 +302,21 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case ScThisType(clazz)                 => Some(clazz, new ScSubstitutor(t))
       case ScDesignatorType(clazz: PsiClass) => Some(clazz, ScSubstitutor.empty)
       case ScDesignatorType(ta: ScTypeAliasDefinition) =>
-        if (visitedAlias.contains(ta)) return None
+        if (visitedAlias.contains(ta))
+          return None
         val result = ta.aliasedType(TypingContext.empty)
-        if (result.isEmpty) return None
+        if (result.isEmpty)
+          return None
         extractClassType(result.get, project, visitedAlias + ta)
       case proj @ ScProjectionType(p, elem, _) =>
         proj.actualElement match {
           case c: PsiClass => Some((c, proj.actualSubst))
           case t: ScTypeAliasDefinition =>
-            if (visitedAlias.contains(t)) return None
+            if (visitedAlias.contains(t))
+              return None
             val result = t.aliasedType(TypingContext.empty)
-            if (result.isEmpty) return None
+            if (result.isEmpty)
+              return None
             extractClassType(
               proj.actualSubst.subst(result.get),
               project,
@@ -322,7 +333,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case std @ StdType(_, _) =>
         val asClass =
           std.asClass(project.getOrElse(DecompilerUtil.obtainProject))
-        if (asClass.isEmpty) return None
+        if (asClass.isEmpty)
+          return None
         Some((asClass.get, ScSubstitutor.empty))
       case _ => None
     }
@@ -343,7 +355,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         extractDesignated(n.inferValueType, withoutAliases)
       case ScDesignatorType(ta: ScTypeAliasDefinition) if withoutAliases =>
         val result = ta.aliasedType(TypingContext.empty)
-        if (result.isEmpty) return None
+        if (result.isEmpty)
+          return None
         extractDesignated(result.get, withoutAliases)
       case ScDesignatorType(e) => Some(e, ScSubstitutor.empty)
       case ScThisType(c)       => Some(c, ScSubstitutor.empty)
@@ -351,7 +364,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         proj.actualElement match {
           case t: ScTypeAliasDefinition if withoutAliases =>
             val result = t.aliasedType(TypingContext.empty)
-            if (result.isEmpty) return None
+            if (result.isEmpty)
+              return None
             extractDesignated(
               proj.actualSubst.subst(result.get),
               withoutAliases)
@@ -364,7 +378,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         }
       case std @ StdType(_, _) =>
         val asClass = std.asClass(DecompilerUtil.obtainProject)
-        if (asClass.isEmpty) return None
+        if (asClass.isEmpty)
+          return None
         Some((asClass.get, ScSubstitutor.empty))
       case ScTypeParameterType(_, _, _, _, param) =>
         Some(param, ScSubstitutor.empty)
@@ -453,7 +468,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def expandAliases(
       tp: ScType,
       visited: HashSet[ScType] = HashSet.empty): TypeResult[ScType] = {
-    if (visited contains tp) return Success(tp, None)
+    if (visited contains tp)
+      return Success(tp, None)
     tp match {
       case proj @ ScProjectionType(p, elem, _) =>
         proj.actualElement match {
@@ -489,7 +505,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       tp: ScType,
       visited: HashSet[ScType] = HashSet.empty,
       expandableOnly: Boolean = false): ScType = {
-    if (visited.contains(tp)) return tp
+    if (visited.contains(tp))
+      return tp
     var updated = false
     val res = tp.recursiveUpdate { t =>
       t.isAliasType match {
@@ -500,8 +517,10 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         case _ => (false, t)
       }
     }
-    if (!updated) tp
-    else removeAliasDefinitions(res, visited + tp, expandableOnly)
+    if (!updated)
+      tp
+    else
+      removeAliasDefinitions(res, visited + tp, expandableOnly)
   }
 
   /**
@@ -515,7 +534,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
     */
   @tailrec
   def nested(tpe: ScType, n: Int): Option[ScType] = {
-    if (n == 0) Some(tpe)
+    if (n == 0)
+      Some(tpe)
     else
       tpe match {
         case mt: ScMethodType => nested(mt.returnType, n - 1)

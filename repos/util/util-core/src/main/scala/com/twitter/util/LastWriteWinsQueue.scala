@@ -39,7 +39,8 @@ class LastWriteWinsQueue[A] extends java.util.Queue[A] {
       array
     } else if (contained.isDefined) {
       Array[Any](contained.get).asInstanceOf[Array[T with java.lang.Object]]
-    } else Array[Any]().asInstanceOf[Array[T with java.lang.Object]]
+    } else
+      Array[Any]().asInstanceOf[Array[T with java.lang.Object]]
   }
 
   def toArray = toArray(new Array[AnyRef](0))
@@ -50,7 +51,11 @@ class LastWriteWinsQueue[A] extends java.util.Queue[A] {
 
   def isEmpty = item.get.isDefined
 
-  def size = if (item.get.isDefined) 1 else 0
+  def size =
+    if (item.get.isDefined)
+      1
+    else
+      0
 
   def peek = item.get.getOrElse(null.asInstanceOf[A])
 

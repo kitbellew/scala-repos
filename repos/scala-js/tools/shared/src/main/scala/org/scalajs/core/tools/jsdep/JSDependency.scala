@@ -96,7 +96,10 @@ object JSDependency {
         .fld("resourceName", x.resourceName)
         .opt(
           "dependencies",
-          if (x.dependencies.nonEmpty) Some(x.dependencies) else None)
+          if (x.dependencies.nonEmpty)
+            Some(x.dependencies)
+          else
+            None)
         .opt("commonJSName", x.commonJSName)
         .opt("minifiedResourceName", x.minifiedResourceName)
         .toJSON

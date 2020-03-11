@@ -16,7 +16,8 @@ object PromiseMock {
     val oldPromise =
       if (global.hasOwnProperty("Promise").asInstanceOf[Boolean])
         Some(global.Promise)
-      else None
+      else
+        None
 
     global.Promise = js.constructorOf[MockPromise[_]]
     try {

@@ -105,7 +105,8 @@ private[play] class TestServerProcess extends ServerProcess {
     hooks = hooks :+ (() => hook)
   }
   def shutdown(): Unit = {
-    for (h <- hooks) h.apply()
+    for (h <- hooks)
+      h.apply()
   }
 
   override def classLoader = getClass.getClassLoader

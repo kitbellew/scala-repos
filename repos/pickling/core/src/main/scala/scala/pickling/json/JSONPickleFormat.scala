@@ -31,7 +31,8 @@ package json {
       new JSONPickleBuilder(this, out)
     def createReader(pickle: JSONPickle) = {
       // TODO - Raw strings, null, etc. should be valid JSON.
-      if (pickle.value == "null") new JSONPickleReader(null, this)
+      if (pickle.value == "null")
+        new JSONPickleReader(null, this)
       else
         JSON.parseRaw(pickle.value) match {
           case Some(raw) => new JSONPickleReader(raw, this)
@@ -54,7 +55,11 @@ package json {
     private var lastIsBracket = false
     private var isIgnoringFields = false
     private def append(s: String) = {
-      val sindent = if (pendingIndent) "  " * nindent else ""
+      val sindent =
+        if (pendingIndent)
+          "  " * nindent
+        else
+          ""
       buf.put(sindent + s)
       pendingIndent = false
       val trimmed = s.trim
@@ -124,8 +129,10 @@ package json {
         indent()
         // We add special support here for null
         val realTag =
-          if (null == picklee) FastTypeTag.Null
-          else tag
+          if (null == picklee)
+            FastTypeTag.Null
+          else
+            tag
         if (hints.isSharedReference) {
           tags.push(FastTypeTag.Ref)
           append("{ \"$ref\": " + hints.oid + " }")
@@ -153,8 +160,10 @@ package json {
             if (!hints.isElidedType) {
               // quickly decide whether we should use picklee.getClass instead
               val ts =
-                if (tag.key.contains("anonfun$")) picklee.getClass.getName
-                else tag.key
+                if (tag.key.contains("anonfun$"))
+                  picklee.getClass.getName
+                else
+                  tag.key
               append("\"$type\": \"" + ts + "\"")
             }
           }
@@ -162,8 +171,10 @@ package json {
         this
       }
     private def ignoringSharedRef(action: => PBuilder): PBuilder =
-      if (isIgnoringFields) this
-      else action
+      if (isIgnoringFields)
+        this
+      else
+        action
     def putField(name: String, pickler: PBuilder => Unit): PBuilder =
       ignoringSharedRef {
         // assert(!primitives.contains(tags.top.key), tags.top)
@@ -177,7 +188,8 @@ package json {
       }
     def endEntry(): Unit = {
       unindent()
-      if (primitives.contains(tags.pop().key)) () // do nothing
+      if (primitives.contains(tags.pop().key))
+        () // do nothing
       else {
         appendLine();
         append("}")
@@ -294,7 +306,8 @@ package json {
     }
     def beginEntry(): String = withHints { hints =>
       lastReadTag = {
-        if (datum == null) FastTypeTag.Null.key
+        if (datum == null)
+          FastTypeTag.Null.key
         else if (hints.isElidedType) {
           datum match {
             case JSONObject(fields) if fields.contains("$ref") =>

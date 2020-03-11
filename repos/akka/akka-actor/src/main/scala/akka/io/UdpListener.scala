@@ -103,7 +103,8 @@ private[io] class UdpListener(
         case sender: InetSocketAddress ⇒
           buffer.flip()
           handler ! Received(ByteString(buffer), sender)
-          if (readsLeft > 0) innerReceive(readsLeft - 1, buffer)
+          if (readsLeft > 0)
+            innerReceive(readsLeft - 1, buffer)
         case null ⇒ // null means no data was available
       }
     }

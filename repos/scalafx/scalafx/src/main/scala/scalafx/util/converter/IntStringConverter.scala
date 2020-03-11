@@ -33,7 +33,10 @@ import scala.language.implicitConversions
 object IntStringConverter {
   implicit def sfxIntStringConverter2jfx(
       c: IntStringConverter): jfxuc.IntegerStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class IntStringConverter(

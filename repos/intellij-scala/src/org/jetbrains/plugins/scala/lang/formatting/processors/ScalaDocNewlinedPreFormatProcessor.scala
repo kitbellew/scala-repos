@@ -30,7 +30,10 @@ class ScalaDocNewlinedPreFormatProcessor
         psiElem.accept(this)
         val diff = psiElem.getTextRange.getEndOffset - oldRange.getEndOffset
         //range can be overshrinked only for small elements that can't be formatted on their own, so it's ok to return whole range
-        if (range.getLength + diff <= 0) 0 else diff
+        if (range.getLength + diff <= 0)
+          0
+        else
+          diff
       }
       .map(range.grown)
       .getOrElse(range)
@@ -56,7 +59,8 @@ class ScalaDocNewlinedPreFormatProcessor
       scalaSettings: ScalaCodeStyleSettings): Unit = {
     import ScalaDocNewlinedPreFormatProcessor._
     val prevElement = element.getPrevSibling
-    if (prevElement == null) return
+    if (prevElement == null)
+      return
     if (scalaSettings.ENABLE_SCALADOC_FORMATTING)
       (isTag(prevElement), isTag(element)) match {
         case (true, true) =>
@@ -69,8 +73,10 @@ class ScalaDocNewlinedPreFormatProcessor
                   prevElement) && isParamTag(element) &&
                 scalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS || !isParamTag(
                   prevElement) && isParamTag(element) &&
-                scalaSettings.SD_BLANK_LINE_BEFORE_PARAMETERS) 2
-            else 1
+                scalaSettings.SD_BLANK_LINE_BEFORE_PARAMETERS)
+              2
+            else
+              1
           fixNewlinesBetweenElements(
             prevElement.getLastChild,
             newlinesNew,
@@ -86,7 +92,10 @@ class ScalaDocNewlinedPreFormatProcessor
             //process newlines between description and tags
             fixNewlinesBetweenElements(
               prevElement,
-              if (scalaSettings.SD_BLANK_LINE_BEFORE_TAGS) 2 else 1,
+              if (scalaSettings.SD_BLANK_LINE_BEFORE_TAGS)
+                2
+              else
+                1,
               scalaSettings)
           }
         case _ =>
@@ -113,7 +122,8 @@ class ScalaDocNewlinedPreFormatProcessor
       val newElement =
         if (element.getText.count(_ == '\n') > 1)
           element.replace(ScalaPsiElementFactory.createDocWhiteSpace(manager))
-        else element
+        else
+          element
       if (!Set(
             ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
             ScalaDocTokenType.DOC_COMMENT_END).contains(
@@ -130,7 +140,8 @@ class ScalaDocNewlinedPreFormatProcessor
           .map(other => other :: getSiblings(other))
           .getOrElse(List())
 
-      for (child <- getSiblings(element.getFirstChild)) fixAsterisk(child)
+      for (child <- getSiblings(element.getFirstChild))
+        fixAsterisk(child)
     }
   }
 
@@ -179,10 +190,12 @@ class ScalaDocNewlinedPreFormatProcessor
     while (currentChild != null && currentChild.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS) {
       currentChild = currentChild.getPrevSibling
     }
-    if (currentChild == null) return None
+    if (currentChild == null)
+      return None
     //last wthitespace before the asterisk in tag psi element
     val lastWhitespace = currentChild.getPrevSibling
-    if (!isWhiteSpace(lastWhitespace)) return None
+    if (!isWhiteSpace(lastWhitespace))
+      return None
     //count newlines
     var currentWs = lastWhitespace
     var newlinesCount = 0

@@ -54,9 +54,12 @@ object OrderedSerialization {
     * Create a Result from an Int.
     */
   def resultFrom(i: Int): Result =
-    if (i > 0) Greater
-    else if (i < 0) Less
-    else Equal
+    if (i > 0)
+      Greater
+    else if (i < 0)
+      Less
+    else
+      Equal
 
   def resultFrom(t: Try[Int]): Result = t match {
     case Success(i) => resultFrom(i)
@@ -180,7 +183,8 @@ object OrderedSerialization {
       { (a: T, b: T, c: T) =>
         if (ordb.lteq(a, b) && ordb.lteq(b, c)) {
           ordb.lteq(a, c)
-        } else true
+        } else
+          true
       })
 
   /**
@@ -193,7 +197,8 @@ object OrderedSerialization {
       { (a: T, b: T) =>
         if (ordb.lteq(a, b) && ordb.lteq(b, a)) {
           ordb.equiv(a, b)
-        } else true
+        } else
+          true
       })
 
   /**

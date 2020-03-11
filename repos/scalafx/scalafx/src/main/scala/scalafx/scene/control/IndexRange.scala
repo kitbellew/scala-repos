@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object IndexRange {
   implicit def sfxIndexRange(r: IndexRange): jfxsc.IndexRange =
-    if (r != null) r.delegate else null
+    if (r != null)
+      r.delegate
+    else
+      null
 
   /**
     * Index range value delimiter.

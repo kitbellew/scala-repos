@@ -18,22 +18,26 @@ final class SlickLogger(val slf4jLogger: Slf4jLogger) {
 
   @inline
   def error(msg: => String) {
-    if (slf4jLogger.isErrorEnabled) slf4jLogger.error(msg)
+    if (slf4jLogger.isErrorEnabled)
+      slf4jLogger.error(msg)
   }
 
   @inline
   def error(msg: => String, t: Throwable) {
-    if (slf4jLogger.isErrorEnabled) slf4jLogger.error(msg, t)
+    if (slf4jLogger.isErrorEnabled)
+      slf4jLogger.error(msg, t)
   }
 
   @inline
   def warn(msg: => String) {
-    if (slf4jLogger.isWarnEnabled) slf4jLogger.warn(msg)
+    if (slf4jLogger.isWarnEnabled)
+      slf4jLogger.warn(msg)
   }
 
   @inline
   def warn(msg: => String, t: Throwable) {
-    if (slf4jLogger.isWarnEnabled) slf4jLogger.warn(msg, t)
+    if (slf4jLogger.isWarnEnabled)
+      slf4jLogger.warn(msg, t)
   }
 
   @inline
@@ -42,40 +46,49 @@ final class SlickLogger(val slf4jLogger: Slf4jLogger) {
 
   @inline
   def info(msg: => String) {
-    if (slf4jLogger.isInfoEnabled) slf4jLogger.info(msg)
+    if (slf4jLogger.isInfoEnabled)
+      slf4jLogger.info(msg)
   }
 
   @inline
   def info(msg: => String, t: Throwable) {
-    if (slf4jLogger.isInfoEnabled) slf4jLogger.info(msg, t)
+    if (slf4jLogger.isInfoEnabled)
+      slf4jLogger.info(msg, t)
   }
 
   @inline
   def debug(msg: => String) {
-    if (slf4jLogger.isDebugEnabled) slf4jLogger.debug(msg)
+    if (slf4jLogger.isDebugEnabled)
+      slf4jLogger.debug(msg)
   }
 
   @inline
   def debug(msg: => String, t: Throwable) {
-    if (slf4jLogger.isDebugEnabled) slf4jLogger.debug(msg, t)
+    if (slf4jLogger.isDebugEnabled)
+      slf4jLogger.debug(msg, t)
   }
 
   @inline
   def trace(msg: => String) {
-    if (slf4jLogger.isTraceEnabled) slf4jLogger.trace(msg)
+    if (slf4jLogger.isTraceEnabled)
+      slf4jLogger.trace(msg)
   }
 
   @inline
   def trace(msg: => String, t: Throwable) {
-    if (slf4jLogger.isTraceEnabled) slf4jLogger.trace(msg, t)
+    if (slf4jLogger.isTraceEnabled)
+      slf4jLogger.trace(msg, t)
   }
 }
 
 object SlickLogger {
   private val treePrinter =
     new TreePrinter(
-      prefix =
-        DumpInfo.highlight(if (GlobalConfig.unicodeDump) "\u2503 " else "| "))
+      prefix = DumpInfo.highlight(
+        if (GlobalConfig.unicodeDump)
+          "\u2503 "
+        else
+          "| "))
 
   def apply[T](implicit ct: ClassTag[T]): SlickLogger =
     new SlickLogger(LoggerFactory.getLogger(ct.runtimeClass))
@@ -84,7 +97,11 @@ object SlickLogger {
 trait Logging {
   protected[this] lazy val logger = {
     val n = getClass.getName
-    val cln = if (n endsWith "$") n.substring(0, n.length - 1) else n
+    val cln =
+      if (n endsWith "$")
+        n.substring(0, n.length - 1)
+      else
+        n
     new SlickLogger(LoggerFactory.getLogger(cln))
   }
 }

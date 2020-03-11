@@ -56,7 +56,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
         tc.advance(500.milliseconds)
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         val res = deadlineService("marco")
         assert(statsReceiver.counters.get(List("exceeded")) == None)
         assert(
@@ -77,7 +78,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(200.milliseconds)
         val res = deadlineService("marco")
         assert(statsReceiver.stats(Seq("deadline_budget_ms"))(5) == 800f)
@@ -96,7 +98,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(200.milliseconds)
         val res = deadlineService("marco")
         assert(statsReceiver.stats(Seq("transit_latency_ms"))(5) == 200f)
@@ -115,7 +118,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         assert(Await.result(deadlineService("marco"), 1.second) == "polo")
         assert(statsReceiver.stats(Seq("deadline_budget_ms")).length == 6)
@@ -133,7 +137,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         assert(Await.result(deadlineService("marco"), 1.second) == "polo")
         assert(statsReceiver.stats(Seq("transit_latency_ms")).length == 6)
@@ -175,7 +180,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 3) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 3)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         val res = deadlineService("marco")
         assert(statsReceiver.counters.get(List("exceeded")) == Some(1))
@@ -198,7 +204,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         assert(Await.result(deadlineService("marco"), 1.second) == "polo")
         assert(statsReceiver.counters.get(List("exceeded")) == Some(1))
@@ -215,7 +222,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     promise.setValue("polo")
 
-    for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+    for (i <- 0 until 5)
+      Await.result(deadlineService("marco"), 1.second)
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
@@ -239,7 +247,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
         tc.advance(30.seconds)
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
       }
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
         tc.advance(2.seconds)
@@ -262,7 +271,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
         tc.advance(2.seconds)
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
 
         // 5 tokens should have been added, so we should be able to reject
         assert(Await.result(deadlineService("marco"), 1.second) == "polo")
@@ -279,7 +289,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 5)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         assert(Await.result(deadlineService("marco"), 1.second) == "polo")
         assert(statsReceiver.counters.get(List("rejected")) == Some(1))
@@ -287,7 +298,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
       // If we add 4 more tokens, should still not be able to reject again.
       Contexts.broadcast.let(Deadline, Deadline.ofTimeout(1.seconds)) {
-        for (i <- 0 until 4) Await.result(deadlineService("marco"), 1.second)
+        for (i <- 0 until 4)
+          Await.result(deadlineService("marco"), 1.second)
         tc.advance(2.seconds)
         Await.result(deadlineService("marco"), 1.second)
         assert(statsReceiver.counters.get(List("rejected")) == Some(1))
@@ -302,7 +314,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     promise.setValue("polo")
 
     Time.withCurrentTimeFrozen { tc =>
-      for (i <- 0 until 5) Await.result(deadlineService("marco"), 1.second)
+      for (i <- 0 until 5)
+        Await.result(deadlineService("marco"), 1.second)
       tc.advance(11.seconds)
 
       // tokens have expired so we should not be able to reject

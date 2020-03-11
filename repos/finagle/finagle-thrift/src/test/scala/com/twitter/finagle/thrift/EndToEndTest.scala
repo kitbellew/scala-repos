@@ -417,8 +417,10 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   private def serverForClassifier(): ListeningServer = {
     val iface = new Echo.FutureIface {
       def echo(x: String) =
-        if (x == "safe") Future.value("safe")
-        else Future.exception(new InvalidQueryException(x.length))
+        if (x == "safe")
+          Future.value("safe")
+        else
+          Future.exception(new InvalidQueryException(x.length))
     }
     val svc = new Echo.FinagledService(iface, Protocols.binaryFactory())
     Thrift.server

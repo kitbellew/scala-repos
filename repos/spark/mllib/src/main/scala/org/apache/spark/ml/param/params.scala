@@ -207,8 +207,16 @@ object ParamValidators {
       lowerInclusive: Boolean,
       upperInclusive: Boolean): T => Boolean = { (value: T) =>
     val x: Double = getDouble(value)
-    val lowerValid = if (lowerInclusive) x >= lowerBound else x > lowerBound
-    val upperValid = if (upperInclusive) x <= upperBound else x < upperBound
+    val lowerValid =
+      if (lowerInclusive)
+        x >= lowerBound
+      else
+        x > lowerBound
+    val upperValid =
+      if (upperInclusive)
+        x <= upperBound
+      else
+        x < upperBound
     lowerValid && upperValid
   }
 

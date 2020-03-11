@@ -23,8 +23,10 @@ sealed trait ZipAndJarFileLookupFactory {
   private val cache = collection.mutable.Map.empty[AbstractFile, FlatClassPath]
 
   def create(zipFile: AbstractFile, settings: Settings): FlatClassPath = {
-    if (settings.YdisableFlatCpCaching) createForZipFile(zipFile)
-    else createUsingCache(zipFile, settings)
+    if (settings.YdisableFlatCpCaching)
+      createForZipFile(zipFile)
+    else
+      createUsingCache(zipFile, settings)
   }
 
   protected def createForZipFile(zipFile: AbstractFile): FlatClassPath
@@ -108,7 +110,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       val packages = collection.mutable.HashMap[String, PackageFileInfo]()
 
       def getSubpackages(dir: AbstractFile): List[AbstractFile] =
-        (for (file <- dir if file.isPackage) yield file)(collection.breakOut)
+        (for (file <- dir if file.isPackage)
+          yield file)(collection.breakOut)
 
       @tailrec
       def traverse(
@@ -171,8 +174,10 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
 
   override protected def createForZipFile(
       zipFile: AbstractFile): FlatClassPath =
-    if (zipFile.file == null) createWithoutUnderlyingFile(zipFile)
-    else ZipArchiveFlatClassPath(zipFile.file)
+    if (zipFile.file == null)
+      createWithoutUnderlyingFile(zipFile)
+    else
+      ZipArchiveFlatClassPath(zipFile.file)
 
   private def createWithoutUnderlyingFile(zipFile: AbstractFile) =
     zipFile match {

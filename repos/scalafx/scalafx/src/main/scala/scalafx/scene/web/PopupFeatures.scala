@@ -43,7 +43,10 @@ object PopupFeatures {
     * @return JavaFX PopupFeatures
     */
   implicit def sfxPopupFeatures2jfx(pe: PopupFeatures): jfxsw.PopupFeatures =
-    if (pe != null) pe.delegate else null
+    if (pe != null)
+      pe.delegate
+    else
+      null
 }
 
 /**

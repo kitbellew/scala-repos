@@ -141,12 +141,14 @@ trait Html5Writer {
               case _ =>
                 if (c >= ' ' &&
                     c != '\u0085' &&
-                    !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
+                    !(c >= '\u007f' && c <= '\u0095'))
+                  sb.append(c)
             }
           } else {
             if (c >= ' ' &&
                 c != '\u0085' &&
-                !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
+                !(c >= '\u007f' && c <= '\u0095'))
+              sb.append(c)
           }
       }
 

@@ -31,7 +31,8 @@ case class ScExistentialType(
   private var _boundNames: List[String] = null
   def boundNames: List[String] = {
     var res = _boundNames
-    if (res != null) return res
+    if (res != null)
+      return res
     res = boundNamesInner
     _boundNames = res
     res
@@ -45,7 +46,8 @@ case class ScExistentialType(
 
   def skolem: ScType = {
     var res = _skolem
-    if (res != null) return res
+    if (res != null)
+      return res
     res = skolemInner
     _skolem = res
     res
@@ -69,7 +71,8 @@ case class ScExistentialType(
                         (true, unpacked.getOrElse(arg, tp), rejected)
                       case _ => (true, tp, rejected)
                     }
-                  } else (true, tp, rejected)
+                  } else
+                    (true, tp, rejected)
                 case _ => (true, tp, rejected)
               }
             case ScTypeVariable(name) =>
@@ -79,14 +82,17 @@ case class ScExistentialType(
                     (true, unpacked.getOrElse(arg, tp), rejected)
                   case _ => (true, tp, rejected)
                 }
-              } else (true, tp, rejected)
+              } else
+                (true, tp, rejected)
             case c @ ScCompoundType(components, _, typeMap) =>
               val newSet = rejected ++ typeMap.map(_._1)
               (false, c, newSet)
             case ex @ ScExistentialType(_quantified, _wildcards) =>
               val newSet =
-                if (ex ne this) rejected ++ ex.wildcards.map(_.name)
-                else rejected //todo: for wildcards add ex.wildcards
+                if (ex ne this)
+                  rejected ++ ex.wildcards.map(_.name)
+                else
+                  rejected //todo: for wildcards add ex.wildcards
               (false, ex, newSet)
             case _ => (false, tp, rejected)
           }
@@ -183,7 +189,8 @@ case class ScExistentialType(
             case u => ScExistentialType(ScParameterizedType(u, args), wildcards)
           }
         val t = Conformance.conformsInner(upper, r, Set.empty, undefinedSubst)
-        if (!t._1) return t
+        if (!t._1)
+          return t
 
         val lower: ScType =
           subst.subst(a.lower) match {
@@ -231,7 +238,8 @@ case class ScExistentialType(
         while (iterator.hasNext) {
           val (w1, w2) = iterator.next()
           val t = w2.equivInner(w1, undefinedSubst, falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
         }
         Equivalence.equivInner(
@@ -294,9 +302,13 @@ case class ScExistentialType(
             })
         case ex: ScExistentialType =>
           var newSet =
-            if (ex ne this) rejected ++ ex.wildcards.map(_.name) else rejected
+            if (ex ne this)
+              rejected ++ ex.wildcards.map(_.name)
+            else
+              rejected
           checkRecursive(ex.quantified, newSet)
-          if (ex eq this) newSet = rejected ++ ex.wildcards.map(_.name)
+          if (ex eq this)
+            newSet = rejected ++ ex.wildcards.map(_.name)
           ex.wildcards.foreach(ex => {
             checkRecursive(ex.lowerBound, newSet)
             checkRecursive(ex.upperBound, newSet)
@@ -342,7 +354,8 @@ case class ScExistentialType(
       rejected: HashSet[String] = HashSet.empty,
       variance: Int = 1)(implicit
       update: (Int, ScExistentialArgument, ScType) => ScType): ScType = {
-    if (variance == 0) return tp //optimization
+    if (variance == 0)
+      return tp //optimization
     tp match {
       case _: StdType => tp
       case c @ ScCompoundType(components, signatureMap, typeMap) =>
@@ -369,8 +382,10 @@ case class ScExistentialType(
                 s.substitutedTypes.map(_.map(f =>
                   () => updateRecursive(f(), newSet, variance)))
               val tParams: Array[TypeParameter] =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(updateTypeParam)
+                if (s.typeParams.length == 0)
+                  TypeParameter.EMPTY_ARRAY
+                else
+                  s.typeParams.map(updateTypeParam)
               val rt: ScType = updateRecursive(sctype, newSet, -variance)
               (
                 new Signature(
@@ -439,9 +454,13 @@ case class ScExistentialType(
           newTypeArgs)
       case ex @ ScExistentialType(_quantified, _wildcards) =>
         var newSet =
-          if (ex ne this) rejected ++ ex.wildcards.map(_.name) else rejected
+          if (ex ne this)
+            rejected ++ ex.wildcards.map(_.name)
+          else
+            rejected
         val q = updateRecursive(_quantified, newSet, variance)
-        if (ex eq this) newSet = rejected ++ ex.wildcards.map(_.name)
+        if (ex eq this)
+          newSet = rejected ++ ex.wildcards.map(_.name)
         ScExistentialType(
           q,
           _wildcards.map(arg =>
@@ -463,7 +482,8 @@ case class ScExistentialType(
                 case Some(arg) => update(variance, arg, tp)
                 case _         => tp
               }
-            } else tp
+            } else
+              tp
           case _ => tp
         }
       case ScTypeVariable(name) =>
@@ -472,7 +492,8 @@ case class ScExistentialType(
             case Some(arg) => update(variance, arg, tp)
             case _         => tp
           }
-        } else tp
+        } else
+          tp
       case ScTypeParameterType(name, args, lower, upper, param) =>
         //should return TypeParameterType (for undefined type)
         tp
@@ -542,7 +563,8 @@ case class ScExistentialType(
     val usedWildcards = wildcardsMap().keySet
 
     val used = wildcards.filter(arg => usedWildcards.contains(arg))
-    if (used.length == 0) return quantified
+    if (used.length == 0)
+      return quantified
     if (used.length != wildcards.length)
       return ScExistentialType(quantified, used).simplify()
 
@@ -555,7 +577,8 @@ case class ScExistentialType(
     }
 
     //third rule
-    if (wildcards.length == 0) return quantified
+    if (wildcards.length == 0)
+      return quantified
 
     var updated = false
     //fourth rule
@@ -595,7 +618,8 @@ case class ScExistentialType(
         case ex: ScExistentialType if ex != this => ex.simplify()
         case _                                   => res
       }
-    } else this
+    } else
+      this
   }
 
   def visitType(visitor: ScalaTypeVisitor) {
@@ -610,7 +634,8 @@ case class ScExistentialType(
             typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
           if (typeParam.args.nonEmpty) {
             (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
-          } else boundsDepth
+          } else
+            boundsDepth
       }.max
     }
 
@@ -621,9 +646,11 @@ case class ScExistentialType(
           wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
         if (wildcard.args.nonEmpty) {
           (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
-        } else boundsDepth
+        } else
+          boundsDepth
       }.max + 1).max(quantDepth)
-    } else quantDepth
+    } else
+      quantDepth
   }
 }
 
@@ -687,7 +714,8 @@ case class ScExistentialArgument(
       s.subst(exist.lowerBound),
       undefinedSubst,
       falseUndef)
-    if (!t._1) return (false, undefinedSubst)
+    if (!t._1)
+      return (false, undefinedSubst)
     undefinedSubst = t._2
     Equivalence.equivInner(
       upperBound,
@@ -761,18 +789,22 @@ case class ScSkolemizedType(
     var u = uSubst
     r match {
       case ScSkolemizedType(rname, rargs, rlower, rupper) =>
-        if (args.length != rargs.length) return (false, uSubst)
+        if (args.length != rargs.length)
+          return (false, uSubst)
         args.zip(rargs) foreach {
           case (tpt1, tpt2) =>
             val t = Equivalence.equivInner(tpt1, tpt2, u, falseUndef)
-            if (!t._1) return (false, u)
+            if (!t._1)
+              return (false, u)
             u = t._2
         }
         var t = Equivalence.equivInner(lower, rlower, u, falseUndef)
-        if (!t._1) return (false, u)
+        if (!t._1)
+          return (false, u)
         u = t._2
         t = Equivalence.equivInner(upper, rupper, u, falseUndef)
-        if (!t._1) return (false, u)
+        if (!t._1)
+          return (false, u)
         u = t._2
         (true, u)
       case _ => (false, uSubst)

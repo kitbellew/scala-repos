@@ -95,7 +95,8 @@ class ParHashMap[K, +V] private[immutable] (
       phit
     }
     def split: Seq[IterableSplitter[(K, V)]] =
-      if (remaining < 2) Seq(this)
+      if (remaining < 2)
+        Seq(this)
       else
         triter match {
           case t: TrieIterator[_] =>
@@ -198,13 +199,16 @@ private[parallel] abstract class HashMapCombiner[K, V]
     var bitmap = 0
     var i = 0
     while (i < rootsize) {
-      if (buckets(i) ne null) bitmap |= 1 << i
+      if (buckets(i) ne null)
+        bitmap |= 1 << i
       i += 1
     }
     val sz = root.foldLeft(0)(_ + _.size)
 
-    if (sz == 0) new ParHashMap[K, V]
-    else if (sz == 1) new ParHashMap[K, V](root(0))
+    if (sz == 0)
+      new ParHashMap[K, V]
+    else if (sz == 1)
+      new ParHashMap[K, V](root(0))
     else {
       val trie = new HashMap.HashTrieMap(bitmap, root, sz)
       new ParHashMap[K, V](trie)
@@ -221,12 +225,14 @@ private[parallel] abstract class HashMapCombiner[K, V]
     var bitmap = 0
     var i = 0
     while (i < rootsize) {
-      if (buckets(i) ne null) bitmap |= 1 << i
+      if (buckets(i) ne null)
+        bitmap |= 1 << i
       i += 1
     }
     val sz = root.foldLeft(0)(_ + _.size)
 
-    if (sz == 0) new ParHashMap[K, Repr]
+    if (sz == 0)
+      new ParHashMap[K, Repr]
     else if (sz == 1)
       new ParHashMap[K, Repr](root(0).asInstanceOf[HashMap[K, Repr]])
     else {

@@ -118,7 +118,10 @@ private[parquet] class CatalystSchemaConverter(
     val originalType = field.getOriginalType
 
     def typeString =
-      if (originalType == null) s"$typeName" else s"$typeName ($originalType)"
+      if (originalType == null)
+        s"$typeName"
+      else
+        s"$typeName ($originalType)"
 
     def typeNotSupported() =
       throw new AnalysisException(s"Parquet type not supported: $typeString")
@@ -335,7 +338,12 @@ private[parquet] class CatalystSchemaConverter(
     * Converts a Spark SQL [[StructField]] to a Parquet [[Type]].
     */
   def convertField(field: StructField): Type = {
-    convertField(field, if (field.nullable) OPTIONAL else REQUIRED)
+    convertField(
+      field,
+      if (field.nullable)
+        OPTIONAL
+      else
+        REQUIRED)
   }
 
   private def convertField(

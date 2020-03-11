@@ -112,7 +112,8 @@ object EventHandler extends ListenerManagement {
 
   def notify(event: Any) {
     if (event.isInstanceOf[Event]) {
-      if (level >= event.asInstanceOf[Event].level) notifyListeners(event)
+      if (level >= event.asInstanceOf[Event].level)
+        notifyListeners(event)
     } else
       notifyListeners(event)
   }
@@ -123,11 +124,13 @@ object EventHandler extends ListenerManagement {
   }
 
   def error(cause: Throwable, instance: AnyRef, message: => String) {
-    if (level >= ErrorLevel) notifyListeners(Error(cause, instance, message))
+    if (level >= ErrorLevel)
+      notifyListeners(Error(cause, instance, message))
   }
 
   def error(cause: Throwable, instance: AnyRef, message: Any) {
-    if (level >= ErrorLevel) notifyListeners(Error(cause, instance, message))
+    if (level >= ErrorLevel)
+      notifyListeners(Error(cause, instance, message))
   }
 
   def error(instance: AnyRef, message: => String) {
@@ -141,27 +144,33 @@ object EventHandler extends ListenerManagement {
   }
 
   def warning(instance: AnyRef, message: => String) {
-    if (level >= WarningLevel) notifyListeners(Warning(instance, message))
+    if (level >= WarningLevel)
+      notifyListeners(Warning(instance, message))
   }
 
   def warning(instance: AnyRef, message: Any) {
-    if (level >= WarningLevel) notifyListeners(Warning(instance, message))
+    if (level >= WarningLevel)
+      notifyListeners(Warning(instance, message))
   }
 
   def info(instance: AnyRef, message: => String) {
-    if (level >= InfoLevel) notifyListeners(Info(instance, message))
+    if (level >= InfoLevel)
+      notifyListeners(Info(instance, message))
   }
 
   def info(instance: AnyRef, message: Any) {
-    if (level >= InfoLevel) notifyListeners(Info(instance, message))
+    if (level >= InfoLevel)
+      notifyListeners(Info(instance, message))
   }
 
   def debug(instance: AnyRef, message: => String) {
-    if (level >= DebugLevel) notifyListeners(Debug(instance, message))
+    if (level >= DebugLevel)
+      notifyListeners(Debug(instance, message))
   }
 
   def debug(instance: AnyRef, message: Any) {
-    if (level >= DebugLevel) notifyListeners(Debug(instance, message))
+    if (level >= DebugLevel)
+      notifyListeners(Debug(instance, message))
   }
 
   def isInfoEnabled = level >= InfoLevel
@@ -178,11 +187,16 @@ object EventHandler extends ListenerManagement {
   }
 
   private def levelFor(eventClass: Class[_ <: Event]) = {
-    if (eventClass.isInstanceOf[Error]) ErrorLevel
-    else if (eventClass.isInstanceOf[Warning]) WarningLevel
-    else if (eventClass.isInstanceOf[Info]) InfoLevel
-    else if (eventClass.isInstanceOf[Debug]) DebugLevel
-    else DebugLevel
+    if (eventClass.isInstanceOf[Error])
+      ErrorLevel
+    else if (eventClass.isInstanceOf[Warning])
+      WarningLevel
+    else if (eventClass.isInstanceOf[Info])
+      InfoLevel
+    else if (eventClass.isInstanceOf[Debug])
+      DebugLevel
+    else
+      DebugLevel
   }
 
   class DefaultListener extends Actor {

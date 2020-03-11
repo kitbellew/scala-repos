@@ -22,7 +22,10 @@ object Test {
       "Replacing: ${main}. And another: ${foo}.",
       (m: util.matching.Regex.Match) => {
         val id = m.group(1)
-        if (id.startsWith("m")) Some(id) else None
+        if (id.startsWith("m"))
+          Some(id)
+        else
+          None
       })
     assert(replaced3 == "Replacing: main. And another: ${foo}.")
   }

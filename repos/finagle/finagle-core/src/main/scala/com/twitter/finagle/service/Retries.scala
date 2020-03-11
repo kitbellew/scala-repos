@@ -206,8 +206,10 @@ object Retries {
       next: ServiceFactory[Req, Rep]
   ): RequeueFilter[Req, Rep] = {
     val budget =
-      if (withdrawsOnly) new WithdrawOnlyRetryBudget(retryBudget)
-      else retryBudget
+      if (withdrawsOnly)
+        new WithdrawOnlyRetryBudget(retryBudget)
+      else
+        retryBudget
     new RequeueFilter[Req, Rep](
       budget,
       retrySchedule,

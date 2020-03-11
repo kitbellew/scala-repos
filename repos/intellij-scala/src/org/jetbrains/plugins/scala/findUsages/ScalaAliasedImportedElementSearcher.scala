@@ -56,7 +56,8 @@ class ScalaAliasedImportedElementSearcher
       mySession: SearchSession)
       extends RequestResultProcessor(myTarget, prefix) {
     private def getAlias(element: PsiElement): String = {
-      if (!element.getParent.isInstanceOf[ScImportSelector]) return null
+      if (!element.getParent.isInstanceOf[ScImportSelector])
+        return null
       val importStatement: ScImportSelector =
         element.getParent.asInstanceOf[ScImportSelector]
       importStatement.importedName
@@ -67,7 +68,8 @@ class ScalaAliasedImportedElementSearcher
         offsetInElement: Int,
         consumer: Processor[PsiReference]): Boolean = inReadAction {
       val alias: String = getAlias(element)
-      if (alias == null) return true
+      if (alias == null)
+        return true
       val reference: PsiReference = element.getReference
       if (reference == null) {
         return true

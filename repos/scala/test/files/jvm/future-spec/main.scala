@@ -32,7 +32,8 @@ trait MinimalScalaTest extends Output with Features {
   val throwables = mutable.ArrayBuffer[Throwable]()
 
   def check() {
-    if (throwables.nonEmpty) println(buffer.toString)
+    if (throwables.nonEmpty)
+      println(buffer.toString)
   }
 
   implicit def stringops(s: String) = new {
@@ -71,8 +72,10 @@ trait MinimalScalaTest extends Output with Features {
         "Exception of type %s was not thrown".format(manifest[T]))
     } catch {
       case t: Throwable =>
-        if (manifest[T].runtimeClass != t.getClass) throw t
-        else t.asInstanceOf[T]
+        if (manifest[T].runtimeClass != t.getClass)
+          throw t
+        else
+          t.asInstanceOf[T]
     }
   }
 
@@ -92,7 +95,9 @@ class TestLatch(count: Int = 1) extends Awaitable[Unit] {
 
   def countDown() = latch.countDown()
   def isOpen: Boolean = latch.getCount == 0
-  def open() = while (!isOpen) countDown()
+  def open() =
+    while (!isOpen)
+      countDown()
   def reset() = latch = new CountDownLatch(count)
 
   @throws(classOf[TimeoutException])

@@ -29,7 +29,10 @@ object D3 {
     }
 
     def inverse(x: D3): D3 =
-      if (x.n % 2 == 1) x else new D3(((3 - x.n / 2) % 3) * 2)
+      if (x.n % 2 == 1)
+        x
+      else
+        new D3(((3 - x.n / 2) % 3) * 2)
 
     def eqv(x: D3, y: D3): Boolean = x.n == y.n
   }

@@ -35,17 +35,24 @@ abstract class ScalaCodeInsightTestBase
       .invokeCompletion(getProjectAdapter, getEditorAdapter, time, false, false)
     val lookup: LookupImpl = getActiveLookup
     (
-      if (lookup == null) null
-      else lookup.getItems.toArray(LookupElement.EMPTY_ARRAY),
-      if (lookup == null) null else lookup.itemPattern(lookup.getItems.get(0)))
+      if (lookup == null)
+        null
+      else
+        lookup.getItems.toArray(LookupElement.EMPTY_ARRAY),
+      if (lookup == null)
+        null
+      else
+        lookup.itemPattern(lookup.getItems.get(0)))
   }
 
   protected def completeLookupItem(
       item: LookupElement = null,
       completionChar: Char = '\t') {
     val lookup: LookupImpl = getActiveLookup
-    if (item == null) lookup.finishLookup(completionChar)
-    else lookup.finishLookup(completionChar, item)
+    if (item == null)
+      lookup.finishLookup(completionChar)
+    else
+      lookup.finishLookup(completionChar, item)
   }
 
   protected def invokeSmartEnter() {

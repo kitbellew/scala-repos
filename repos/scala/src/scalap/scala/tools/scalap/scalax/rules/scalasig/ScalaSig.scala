@@ -92,7 +92,10 @@ object ScalaSigAttributeParsers extends ByteCodeReader {
       in.nextByte match {
         case Success(out, b) => {
           val y = (x << 7) + (b & 0x7f)
-          if ((b & 0x80) == 0) Success(out, y) else natN(out, y)
+          if ((b & 0x80) == 0)
+            Success(out, y)
+          else
+            natN(out, y)
         }
         case _ => Failure
       }

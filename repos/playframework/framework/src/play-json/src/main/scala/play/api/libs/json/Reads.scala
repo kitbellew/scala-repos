@@ -815,8 +815,10 @@ trait DefaultReads extends LowPriorityDefaultReads {
       import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 
       val df =
-        if (pattern == "") ISODateTimeFormat.localDateParser
-        else DateTimeFormat.forPattern(pattern)
+        if (pattern == "")
+          ISODateTimeFormat.localDateParser
+        else
+          DateTimeFormat.forPattern(pattern)
 
       def reads(json: JsValue): JsResult[LocalDate] = json match {
         case JsString(s) =>
@@ -856,8 +858,10 @@ trait DefaultReads extends LowPriorityDefaultReads {
       import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 
       val df =
-        if (pattern == "") ISODateTimeFormat.localTimeParser
-        else DateTimeFormat.forPattern(pattern)
+        if (pattern == "")
+          ISODateTimeFormat.localTimeParser
+        else
+          DateTimeFormat.forPattern(pattern)
 
       def reads(json: JsValue): JsResult[LocalTime] = json match {
         case JsNumber(n) => JsSuccess(new LocalTime(n.toLong))

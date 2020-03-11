@@ -43,8 +43,10 @@ object FixInternalDebugLogging {
       * @return true if this class should be returned in the set of findClasses, false otherwise.
       */
     def isValidClass(className: String): Boolean = {
-      if (className.startsWith("com.sun.net.ssl.internal.ssl")) return true
-      if (className.startsWith("sun.security.ssl")) return true
+      if (className.startsWith("com.sun.net.ssl.internal.ssl"))
+        return true
+      if (className.startsWith("sun.security.ssl"))
+        return true
       false
     }
 
@@ -62,7 +64,11 @@ object FixInternalDebugLogging {
 
       val newDebug: AnyRef = debugType.newInstance().asInstanceOf[AnyRef]
       logger.debug(s"run: debugType = $debugType")
-      val debugValue = if (isUsingDebug) newDebug else null
+      val debugValue =
+        if (isUsingDebug)
+          newDebug
+        else
+          null
 
       var isPatched = false
       for (debugClass <- findClasses;

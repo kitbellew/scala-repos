@@ -65,14 +65,18 @@ object ScalaExtractMethodUtils {
     val parameters =
       settings.parameters.filter(_.passAsParameter).map(paramText)
     val paramsText =
-      if (parameters.nonEmpty) parameters.mkString("(", ", ", ")") else ""
+      if (parameters.nonEmpty)
+        parameters.mkString("(", ", ", ")")
+      else
+        ""
 
     val project = settings.elements(0).getProject
     val codeStyleSettings = ScalaCodeStyleSettings.getInstance(project)
     val retType =
       if (settings.calcReturnTypeIsUnit && !codeStyleSettings.ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
         ""
-      else s": ${settings.calcReturnTypeText} ="
+      else
+        s": ${settings.calcReturnTypeText} ="
 
     val notPassedParams =
       settings.parameters.filter(p => !p.passAsParameter).map { p =>
@@ -101,14 +105,18 @@ object ScalaExtractMethodUtils {
     }
 
     val returnText =
-      if (settings.lastReturn) ""
+      if (settings.lastReturn)
+        ""
       else {
         def params = settings.outputs.map(_.paramName).mkString("(", ", ", ")")
         def multipleReturnText = {
           val ics = settings.innerClassSettings
-          if (!ics.needClass) params //tuple
-          else if (ics.isCase) s"${ics.className}$params"
-          else s"new ${ics.className}$params"
+          if (!ics.needClass)
+            params //tuple
+          else if (ics.isCase)
+            s"${ics.className}$params"
+          else
+            s"new ${ics.className}$params"
         }
 
         settings.returnType match {
@@ -141,7 +149,8 @@ object ScalaExtractMethodUtils {
     if (!settings.lastReturn) {
       val returnVisitor = new ScalaRecursiveElementVisitor {
         override def visitReturnStatement(ret: ScReturnStmt) {
-          if (!ret.returnFunction.contains(method)) return
+          if (!ret.returnFunction.contains(method))
+            return
           val retExprText = ret.expr.map(_.getText).mkString
           val newText = settings.returnType match {
             case Some(psi.types.Unit) =>
@@ -171,9 +180,9 @@ object ScalaExtractMethodUtils {
       override def visitReference(ref: ScReferenceElement) {
         ref.bind() match {
           case Some(
-              ScalaResolveResult(
-                named: PsiNamedElement,
-                subst: ScSubstitutor)) =>
+                ScalaResolveResult(
+                  named: PsiNamedElement,
+                  subst: ScSubstitutor)) =>
             if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
                 !named.name.startsWith("_")) {
               val oldName = named.name
@@ -261,14 +270,16 @@ object ScalaExtractMethodUtils {
   def convertVariableData(
       variable: VariableInfo,
       elements: Array[PsiElement]): ScalaVariableData = {
-    if (!variable.element.isInstanceOf[ScTypedDefinition]) return null
+    if (!variable.element.isInstanceOf[ScTypedDefinition])
+      return null
     val definition = variable.element.asInstanceOf[ScTypedDefinition]
 
     val isInside = if (elements.length > 0) {
       val startOffset = elements(0).getTextRange.getStartOffset
       val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
       definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
-    } else false
+    } else
+      false
     val retType = definition.getType(TypingContext.empty).getOrNothing
     val tp = definition match {
       case fun: ScFunction if fun.paramClauses.clauses.isEmpty =>
@@ -358,7 +369,8 @@ object ScalaExtractMethodUtils {
     for (input <- myInput) {
       var d: VariableData =
         ScalaExtractMethodUtils.convertVariableData(input, elements)
-      if (d != null) buffer += d
+      if (d != null)
+        buffer += d
     }
     val data = buffer.toArray
     var list: ArrayBuffer[ExtractMethodParameter] =
@@ -396,9 +408,14 @@ object ScalaExtractMethodUtils {
     val colon =
       if (StringUtil.isEmpty(name) || ScalaNamesUtil.isOpCharacter(name.last))
         " : "
-      else ": "
+      else
+        ": "
     val arrow = ScalaPsiUtil.functionArrow(project) + " "
-    val byNameArrow = if (byName) arrow else ""
+    val byNameArrow =
+      if (byName)
+        arrow
+      else
+        ""
     s"$name$colon$byNameArrow$typeText"
   }
 
@@ -412,8 +429,10 @@ object ScalaExtractMethodUtils {
 
     val ics = settings.innerClassSettings
     val classText =
-      if (ics.needClass) s"${ics.classText(canonTextForTypes = false)}\n\n"
-      else ""
+      if (ics.needClass)
+        s"${ics.classText(canonTextForTypes = false)}\n\n"
+      else
+        ""
 
     val methodName = settings.methodName
     val visibility = settings.visibility
@@ -463,10 +482,17 @@ object ScalaExtractMethodUtils {
 
     val params = settings.parameters
       .filter(_.passAsParameter)
-      .map(param => parameterText(param) + (if (param.isFunction) " _" else ""))
+      .map(param =>
+        parameterText(param) + (if (param.isFunction)
+                                  " _"
+                                else
+                                  ""))
 
     val paramsText =
-      if (params.nonEmpty) params.mkString("(", ", ", ")") else ""
+      if (params.nonEmpty)
+        params.mkString("(", ", ", ")")
+      else
+        ""
     val methodCallText = s"${settings.methodName}$paramsText"
     var needExtractorsFromMultipleReturn = false
 
@@ -478,11 +504,15 @@ object ScalaExtractMethodUtils {
     val ics = settings.innerClassSettings
 
     def patternForDeclaration: String = {
-      if (ics.needClass) return s"$mFreshName: ${ics.className}"
+      if (ics.needClass)
+        return s"$mFreshName: ${ics.className}"
 
-      if (outputTypedNames.length == 0) ""
-      else if (outputTypedNames.length == 1) outputTypedNames(0)
-      else outputTypedNames.mkString("(", ", ", ")")
+      if (outputTypedNames.length == 0)
+        ""
+      else if (outputTypedNames.length == 1)
+        outputTypedNames(0)
+      else
+        outputTypedNames.mkString("(", ", ", ")")
     }
 
     def insertCallStmt(): PsiElement = {
@@ -491,7 +521,8 @@ object ScalaExtractMethodUtils {
           ScalaPsiElementFactory.createExpressionFromText(text, manager)
         elements.head.replace(expr)
       }
-      if (settings.lastReturn) insertExpression(s"return $methodCallText")
+      if (settings.lastReturn)
+        insertExpression(s"return $methodCallText")
       else if (settings.outputs.length == 0) {
         val exprText = settings.returnType match {
           case None                 => methodCallText
@@ -547,7 +578,8 @@ object ScalaExtractMethodUtils {
     }
 
     def insertAssignsFromMultipleReturn(element: PsiElement) {
-      if (!needExtractorsFromMultipleReturn) return
+      if (!needExtractorsFromMultipleReturn)
+        return
 
       var lastElem: PsiElement = element
       def addElement(elem: PsiElement) = {
@@ -611,13 +643,16 @@ object ScalaExtractMethodUtils {
           addAssignment(ret, exprText)
           count += 1
         }
-      } else if (ics.isCase) addExtractorsFromCaseClass()
-      else addExtractorsFromClass()
+      } else if (ics.isCase)
+        addExtractorsFromCaseClass()
+      else
+        addExtractorsFromClass()
     }
 
     def removeReplacedElements() {
       val valid = elements.dropWhile(!_.isValid)
-      if (valid.isEmpty) return
+      if (valid.isEmpty)
+        return
 
       valid.head.getParent.deleteChildRange(valid.head, valid.last)
     }

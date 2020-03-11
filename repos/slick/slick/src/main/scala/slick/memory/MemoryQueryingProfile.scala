@@ -69,20 +69,26 @@ trait MemoryQueryingProfile extends BasicProfile {
 
     def transformSimpleGrouping(n: Node) = n match {
       case Bind(
-          gen,
-          g: GroupBy,
-          p @ Pure((_: ProductNode | _: StructNode), _)) =>
+            gen,
+            g: GroupBy,
+            p @ Pure((_: ProductNode | _: StructNode), _)) =>
         val p2 = transformCountAll(gen, p)
-        if (p2 eq p) n else Bind(gen, g, p2).infer(typeChildren = true)
+        if (p2 eq p)
+          n
+        else
+          Bind(gen, g, p2).infer(typeChildren = true)
       case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 => n
       case n                                                     => n
     }
 
     def transformCountAll(gen: TermSymbol, n: Node): Node = n match {
       case Apply(
-          Library.CountAll,
-          ch @ ConstArray(
-            Bind(gen2, FwdPath(s :: _), Pure(ProductOfCommonPaths(s2, _), _))))
+            Library.CountAll,
+            ch @ ConstArray(
+              Bind(
+                gen2,
+                FwdPath(s :: _),
+                Pure(ProductOfCommonPaths(s2, _), _))))
           if s == gen && s2 == gen2 =>
         Apply(Library.Count, ch)(n.nodeType)
       case n => n.mapChildren(ch => transformCountAll(gen, ch), keepType = true)
@@ -125,7 +131,8 @@ trait MemoryQueryingProfile extends BasicProfile {
         // TODO: Remove this hack; see comment in ternary logic section of QueryInterpreter
         if (!nullable && v.isInstanceOf[Option[_]])
           v.asInstanceOf[Option[_]].get
-        else v
+        else
+          v
       }
       def update(value: Any, pr: MemoryResultConverterDomain#Updater) = ??
       def set(value: Any, pp: MemoryResultConverterDomain#Writer) = ??
@@ -138,7 +145,8 @@ trait MemoryQueryingProfile extends BasicProfile {
   object ProductOfCommonPaths {
     def unapply(
         n: ProductNode): Option[(TermSymbol, Vector[List[TermSymbol]])] =
-      if (n.children.isEmpty) None
+      if (n.children.isEmpty)
+        None
       else
         n.children.iterator
           .foldLeft(null: Option[(TermSymbol, Vector[List[TermSymbol]])]) {

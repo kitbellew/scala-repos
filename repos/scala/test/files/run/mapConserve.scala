@@ -33,15 +33,20 @@ object Test {
   var callCount = 0
   val lastHexDigit: Function1[BigInt, AnyRef] = { x: BigInt =>
     callCount += 1;
-    if (x < 16) x else x % 16
+    if (x < 16)
+      x
+    else
+      x % 16
   }
 
   def main(args: Array[String]) {
     for (length <- 0 to maxListLength;
          bitmap <- 0 until (1 << length);
          data = List.range(0, length) map { x: Int =>
-           if ((bitmap & (1 << x)) != 0) BigInt(x + 16)
-           else BigInt(x)
+           if ((bitmap & (1 << x)) != 0)
+             BigInt(x + 16)
+           else
+             BigInt(x)
          }) {
       // Behaves like map with respect to  ==
       callCount = 0

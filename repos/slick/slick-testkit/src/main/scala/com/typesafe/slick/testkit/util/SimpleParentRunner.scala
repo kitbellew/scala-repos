@@ -22,7 +22,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
 
   private var _children: Seq[T] = null
   protected final def children = {
-    if (_children == null) _children = getChildren
+    if (_children == null)
+      _children = getChildren
     _children
   }
   protected final def children_=(s: Seq[T]) = _children = s
@@ -61,7 +62,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
     val desc = Description.createSuiteDescription(
       testClass.getName,
       testClass.getAnnotations: _*)
-    for (ch <- children) desc.addChild(describeChild(ch))
+    for (ch <- children)
+      desc.addChild(describeChild(ch))
     desc
   }
 
@@ -75,7 +77,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
 
   final def filter(filter: Filter) {
     children = children.filter { ch =>
-      if (!filter.shouldRun(describeChild(ch))) false
+      if (!filter.shouldRun(describeChild(ch)))
+        false
       else
         try {
           filter.apply(ch);
@@ -84,7 +87,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
           case _: NoTestsRemainException => false
         }
     }
-    if (children.isEmpty) throw new NoTestsRemainException
+    if (children.isEmpty)
+      throw new NoTestsRemainException
   }
 
   final def sort(sorter: Sorter) {

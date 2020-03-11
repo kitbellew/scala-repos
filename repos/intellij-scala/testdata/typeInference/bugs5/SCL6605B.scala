@@ -9,7 +9,11 @@ trait SCL6605B {
   type A5 <: C
   val a2: A2 with A5
   val a3: A3 with A4
-  val zz = if (true) a2 else a3
+  val zz =
+    if (true)
+      a2
+    else
+      a3
   /*start*/
   zz /*end*/
 }

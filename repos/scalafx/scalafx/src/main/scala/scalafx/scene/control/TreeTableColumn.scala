@@ -27,7 +27,10 @@ object TreeTableColumn {
     */
   implicit def sfxTreeTableColumn2jfx[S, T](
       v: TreeTableColumn[S, T]): jfxsc.TreeTableColumn[S, T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Object companion for [[scalafx.scene.control.TreeTableColumn.CellDataFeatures]]
@@ -35,7 +38,10 @@ object TreeTableColumn {
   object CellDataFeatures {
     implicit def sfxCellDataFeatures2jfx[S, T](v: CellDataFeatures[S, T])
         : jfxsc.TreeTableColumn.CellDataFeatures[S, T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   /**
@@ -96,7 +102,10 @@ object TreeTableColumn {
       */
     implicit def sfxCellEditEvent2jfx[S, T](
         cee: CellEditEvent[S, T]): jfxsc.TreeTableColumn.CellEditEvent[S, T] =
-      if (cee != null) cee.delegate else null
+      if (cee != null)
+        cee.delegate
+      else
+        null
 
   }
 

@@ -28,7 +28,9 @@ class TestLatch(count: Int = 1)(implicit system: ActorSystem)
 
   def countDown() = latch.countDown()
   def isOpen: Boolean = latch.getCount == 0
-  def open() = while (!isOpen) countDown()
+  def open() =
+    while (!isOpen)
+      countDown()
   def reset() = latch = new CountDownLatch(count)
 
   @throws(classOf[TimeoutException])

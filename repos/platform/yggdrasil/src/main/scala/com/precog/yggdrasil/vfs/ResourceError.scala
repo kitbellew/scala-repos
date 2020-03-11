@@ -105,7 +105,10 @@ object ResourceError {
         fatalError: FatalError => A,
         userError: UserError => A) = {
       val hasFatal = errors.list.exists(_.fold(_ => true, _ => false))
-      if (hasFatal) fatalError(self) else userError(self)
+      if (hasFatal)
+        fatalError(self)
+      else
+        userError(self)
     }
 
     def messages: NonEmptyList[String] = errors.flatMap(_.messages)

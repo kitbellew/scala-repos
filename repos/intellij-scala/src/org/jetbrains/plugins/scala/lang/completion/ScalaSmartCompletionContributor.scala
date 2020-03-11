@@ -74,7 +74,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
       }
     }
 
-    if (typez.isEmpty || typez.forall(_ == types.Nothing)) return
+    if (typez.isEmpty || typez.forall(_ == types.Nothing))
+      return
 
     def applyVariant(
         _variant: Object,
@@ -101,7 +102,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             import org.jetbrains.plugins.scala.lang.psi.types.Nothing
             if (!scType.equiv(Nothing) && typez.exists(scType conforms _)) {
               elementAdded = true
-              if (etaExpanded) el.etaExpanded = true
+              if (etaExpanded)
+                el.etaExpanded = true
               result.addElement(elemToAdd)
             } else {
               typez.foreach {
@@ -111,7 +113,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                         if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
                       if (!scType.equiv(Nothing) && scType.conforms(arg)) {
                         el.someSmartCompletion = true
-                        if (etaExpanded) el.etaExpanded = true
+                        if (etaExpanded)
+                          el.etaExpanded = true
                         result.addElement(elemToAdd)
                         elementAdded = true
                       }
@@ -161,8 +164,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   }
                 }
                 val infer =
-                  if (chainVariant) ScSubstitutor.empty
-                  else ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
+                  if (chainVariant)
+                    ScSubstitutor.empty
+                  else
+                    ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
                 val second = checkForSecondCompletion &&
                   fun.paramClauses.clauses
                     .filterNot(_.isImplicit)
@@ -183,8 +188,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 val second =
                   checkForSecondCompletion && method.getParameterList.getParametersCount == 0
                 val infer =
-                  if (chainVariant) ScSubstitutor.empty
-                  else ScalaPsiUtil.inferMethodTypesArgs(method, subst)
+                  if (chainVariant)
+                    ScSubstitutor.empty
+                  else
+                    ScalaPsiUtil.inferMethodTypesArgs(method, subst)
                 checkType(
                   ScType.create(method.getReturnType, method.getProject, scope),
                   infer,
@@ -273,9 +280,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def checkTypeProjection(tp: ScType) {
             tp match {
               case ScProjectionType(
-                  proj,
-                  _: ScTypeAlias | _: ScClass | _: ScTrait,
-                  _) =>
+                    proj,
+                    _: ScTypeAlias | _: ScClass | _: ScTrait,
+                    _) =>
                 ScType.extractClass(proj) match {
                   case Some(o: ScObject)
                       if ResolveUtils.isAccessible(
@@ -370,12 +377,15 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   thisProjections = true) match {
                   case Success(scType, _) =>
                     import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-                    val lookupString =
-                      (if (foundClazz) t.name + "." else "") + "this"
+                    val lookupString = (if (foundClazz)
+                                          t.name + "."
+                                        else
+                                          "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
                     if (!scType.equiv(Nothing) && typez.exists(
                           scType conforms _)) {
-                      if (!foundClazz) el.bold = true
+                      if (!foundClazz)
+                        el.bold = true
                       result.addElement(el)
                     } else {
                       var elementAdded = false
@@ -493,7 +503,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         val (ref, _) = extractReference[ScReturnStmt](element)
         val fun: ScFunction =
           PsiTreeUtil.getContextOfType(ref, classOf[ScFunction])
-        if (fun == null) return
+        if (fun == null)
+          return
         acceptTypes(
           Seq[ScType](fun.returnType.getOrAny),
           ref.getVariants,
@@ -556,12 +567,14 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                           false)) {
                       presentation.setItemText(prefix + suffix)
                       end = true
-                    } else prefixIndex -= 1
+                    } else
+                      prefixIndex -= 1
                   }
                   if (!end) {
                     presentation.setItemText(s"... $arrowText ")
                   }
-                } else presentation.setItemText(text)
+                } else
+                  presentation.setItemText(text)
                 presentation.setIcon(Icons.LAMBDA)
               case _ =>
                 presentation.setItemText(text)

@@ -1,7 +1,8 @@
 class UnitReturnSeveralOutput1 {
   def foo(i: Int) {
     /*start*/
-    if (true) return
+    if (true)
+      return
     var x = 0
     var y = "a"
     var z = 1

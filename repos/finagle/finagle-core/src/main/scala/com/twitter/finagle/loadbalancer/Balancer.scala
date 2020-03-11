@@ -184,8 +184,10 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
       return null.asInstanceOf[Node]
 
     val n = dist.pick()
-    if (n.factory.status == Status.Open) n
-    else pick(nodes, count - 1)
+    if (n.factory.status == Status.Open)
+      n
+    else
+      pick(nodes, count - 1)
   }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
@@ -205,7 +207,8 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
   }
 
   def close(deadline: Time): Future[Unit] = {
-    for (gauge <- gauges) gauge.remove()
+    for (gauge <- gauges)
+      gauge.remove()
     removes.incr(dist.vector.size)
     Closable.all(dist.vector: _*).close(deadline)
   }

@@ -42,7 +42,8 @@ case class Edge[@specialized(Char, Int, Boolean, Byte, Long, Float, Double) ED](
     * @return the id of the other vertex on the edge.
     */
   def otherVertexId(vid: VertexId): VertexId =
-    if (srcId == vid) dstId
+    if (srcId == vid)
+      dstId
     else {
       assert(dstId == vid);
       srcId
@@ -57,7 +58,8 @@ case class Edge[@specialized(Char, Int, Boolean, Byte, Long, Float, Double) ED](
     * vertex.
     */
   def relativeDirection(vid: VertexId): EdgeDirection =
-    if (vid == srcId) EdgeDirection.Out
+    if (vid == srcId)
+      EdgeDirection.Out
     else {
       assert(vid == dstId);
       EdgeDirection.In
@@ -68,11 +70,16 @@ object Edge {
   private[graphx] def lexicographicOrdering[ED] = new Ordering[Edge[ED]] {
     override def compare(a: Edge[ED], b: Edge[ED]): Int = {
       if (a.srcId == b.srcId) {
-        if (a.dstId == b.dstId) 0
-        else if (a.dstId < b.dstId) -1
-        else 1
-      } else if (a.srcId < b.srcId) -1
-      else 1
+        if (a.dstId == b.dstId)
+          0
+        else if (a.dstId < b.dstId)
+          -1
+        else
+          1
+      } else if (a.srcId < b.srcId)
+        -1
+      else
+        1
     }
   }
 

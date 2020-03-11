@@ -158,7 +158,8 @@ class SbtModuleBuilder
 
     if (!buildFile.createNewFile() ||
         !projectDir.mkdir() ||
-        !pluginsFile.createNewFile()) return
+        !pluginsFile.createNewFile())
+      return
 
     writeToFile(
       buildFile,
@@ -173,14 +174,16 @@ class SbtModuleBuilder
 
   override def setupRootModel(model: ModifiableRootModel) {
     val contentPath = getContentEntryPath
-    if (StringUtil.isEmpty(contentPath)) return
+    if (StringUtil.isEmpty(contentPath))
+      return
 
     val contentRootDir = contentPath.toFile
     createDirectory(contentRootDir)
 
     val fileSystem = LocalFileSystem.getInstance
     val vContentRootDir = fileSystem.refreshAndFindFileByIoFile(contentRootDir)
-    if (vContentRootDir == null) return
+    if (vContentRootDir == null)
+      return
 
     model.addContentEntry(vContentRootDir)
     model.inheritSdk()

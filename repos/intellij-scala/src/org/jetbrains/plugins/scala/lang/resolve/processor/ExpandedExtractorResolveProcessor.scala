@@ -34,7 +34,8 @@ class ExpandedExtractorResolveProcessor(
     val named = element.asInstanceOf[PsiNamedElement]
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
       named match {
         case bind: ScTypedDefinition => {
           val parentSubst = getSubst(state)

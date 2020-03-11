@@ -54,7 +54,8 @@ trait ScalatraFilter extends Filter with ServletBase {
           uri = "/"
         } else {
           val pos = uri.indexOf(';')
-          if (pos >= 0) uri = uri.substring(0, pos)
+          if (pos >= 0)
+            uri = uri.substring(0, pos)
         }
         UriDecoder.firstStep(uri)
       case null => "/"

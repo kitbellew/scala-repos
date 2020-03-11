@@ -31,7 +31,8 @@ object TestkitConfig {
             .getConfig("testkit")
             .withFallback(ref.getObject("testkit"))
             .resolve()
-        else ref.getConfig("testkit").resolve()
+        else
+          ref.getConfig("testkit").resolve()
       c.withValue(
         "absTestDir",
         ConfigValueFactory.fromAnyRef(
@@ -47,10 +48,15 @@ object TestkitConfig {
   /** Get a resolved test configuration */
   def testConfig(name: String) = {
     val cRef =
-      if (ref.hasPath(name)) ref.getConfig(name).withFallback(defaults)
-      else defaults
+      if (ref.hasPath(name))
+        ref.getConfig(name).withFallback(defaults)
+      else
+        defaults
     val cApp =
-      if (conf.hasPath(name)) conf.getConfig(name).withFallback(cRef) else cRef
+      if (conf.hasPath(name))
+        conf.getConfig(name).withFallback(cRef)
+      else
+        cRef
     cApp.resolve().withoutPath("testkit")
   }
 
@@ -61,7 +67,10 @@ object TestkitConfig {
   lazy val testDBPath = {
     val f = new File(testDir)
     val s = f.getPath().replace('\\', '/')
-    if (f.isAbsolute) s else "./" + s
+    if (f.isAbsolute)
+      s
+    else
+      "./" + s
   }
 
   /** The `testkit.testDBs` setting */
@@ -87,6 +96,7 @@ object TestkitConfig {
         case l: java.util.List[_] => Some(l.asScala.map(_.toString))
         case o                    => Some(List(o.toString))
       }
-    } else None
+    } else
+      None
   }
 }

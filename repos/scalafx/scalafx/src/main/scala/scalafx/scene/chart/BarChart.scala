@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 
 object BarChart {
   implicit def sfxBarChart2jfx[X, Y](v: BarChart[X, Y]): jfxsc.BarChart[X, Y] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply[X, Y](xAxis: Axis[X], yAxis: Axis[Y]) =
     new BarChart[X, Y](new jfxsc.BarChart[X, Y](xAxis, yAxis))

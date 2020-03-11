@@ -93,7 +93,11 @@ case class FetchFailed(
     message: String)
     extends TaskFailedReason {
   override def toErrorString: String = {
-    val bmAddressString = if (bmAddress == null) "null" else bmAddress.toString
+    val bmAddressString =
+      if (bmAddress == null)
+        "null"
+      else
+        bmAddress.toString
     s"FetchFailed($bmAddressString, shuffleId=$shuffleId, mapId=$mapId, reduceId=$reduceId, " +
       s"message=\n$message\n)"
   }
@@ -148,7 +152,10 @@ case class ExceptionFailure(
       e.getMessage,
       e.getStackTrace,
       Utils.exceptionString(e),
-      if (preserveCause) Some(new ThrowableSerializationWrapper(e)) else None,
+      if (preserveCause)
+        Some(new ThrowableSerializationWrapper(e))
+      else
+        None,
       accumUpdates)
   }
 
@@ -177,10 +184,16 @@ case class ExceptionFailure(
       className: String,
       description: String,
       stackTrace: Array[StackTraceElement]): String = {
-    val desc = if (description == null) "" else description
+    val desc =
+      if (description == null)
+        ""
+      else
+        description
     val st =
-      if (stackTrace == null) ""
-      else stackTrace.map("        " + _).mkString("\n")
+      if (stackTrace == null)
+        ""
+      else
+        stackTrace.map("        " + _).mkString("\n")
     s"$className: $desc\n$st"
   }
 }

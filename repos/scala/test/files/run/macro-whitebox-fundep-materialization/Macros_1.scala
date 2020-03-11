@@ -23,12 +23,15 @@ object Iso {
 
     def mkTpt() = {
       val core = Ident(TupleClass(fields.length) orElse UnitClass)
-      if (fields.length == 0) core
-      else AppliedTypeTree(core, fields map (f => TypeTree(f.info)))
+      if (fields.length == 0)
+        core
+      else
+        AppliedTypeTree(core, fields map (f => TypeTree(f.info)))
     }
 
     def mkFrom() = {
-      if (fields.length == 0) Literal(Constant(Unit))
+      if (fields.length == 0)
+        Literal(Constant(Unit))
       else
         Apply(
           Ident(newTermName("Tuple" + fields.length)),

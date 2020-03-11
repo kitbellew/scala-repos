@@ -58,7 +58,8 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
   override def createReplacingElementWithClassName(
       useFullQualifiedName: Boolean,
       clazz: TypeToImport) =
-    if (is2_10plus) super.createReplacingElementWithClassName(true, clazz)
+    if (is2_10plus)
+      super.createReplacingElementWithClassName(true, clazz)
     else
       ScalaPsiElementFactory.createDocLinkValue(
         clazz.qualifiedName,
@@ -67,7 +68,8 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
   override protected def processQualifier(
       ref: ScStableCodeReferenceElement,
       processor: BaseProcessor) {
-    if (is2_10plus) super.processQualifier(ref, processor)
+    if (is2_10plus)
+      super.processQualifier(ref, processor)
     else
       pathQualifier match {
         case None =>

@@ -36,7 +36,10 @@ import scalafx.scene.paint.Color
 
 object InnerShadow {
   implicit def sfxInnerShadow2jfx(ii: InnerShadow): jfxse.InnerShadow =
-    if (ii != null) ii.delegate else null
+    if (ii != null)
+      ii.delegate
+    else
+      null
 }
 
 /**

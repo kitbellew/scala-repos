@@ -33,7 +33,8 @@ class PsiTypedDefinitionWrapper(
     JavaPsiFacade.getInstance(typedDefinition.getProject).getElementFactory
   val containingClass = {
     val result =
-      if (cClass != None) cClass.get
+      if (cClass != None)
+        cClass.get
       else
         typedDefinition.nameContext match {
           case s: ScMember =>
@@ -43,7 +44,8 @@ class PsiTypedDefinitionWrapper(
                 case o: ScObject => o.fakeCompanionClassOrCompanionClass
                 case _           => res
               }
-            } else res
+            } else
+              res
           case _ => null
         }
     if (result == null) {
@@ -107,7 +109,8 @@ with LightScalaMethod {
   override def setName(name: String) = {
     if (role == PsiTypedDefinitionWrapper.DefinitionRole.SIMPLE_ROLE)
       typedDefinition.setName(name)
-    else this
+    else
+      this
   }
 }
 

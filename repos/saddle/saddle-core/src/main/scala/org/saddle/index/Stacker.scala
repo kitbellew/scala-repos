@@ -78,7 +78,8 @@ object Stacker extends StackerLowPriority {
       def apply(ix1: Index[(T1, T2)], ix2: Index[T3]) = {
         val data =
           for (x <- ix1.toArray;
-               y <- ix2.toArray) yield (x._1, x._2, y)
+               y <- ix2.toArray)
+            yield (x._1, x._2, y)
         Index(data)
       }
 
@@ -91,7 +92,8 @@ object Stacker extends StackerLowPriority {
       def apply(ix1: Index[(T1, T2, T3)], ix2: Index[T4]) = {
         val data =
           for (x <- ix1.toArray;
-               y <- ix2.toArray) yield (x._1, x._2, x._3, y)
+               y <- ix2.toArray)
+            yield (x._1, x._2, x._3, y)
         Index(data)
       }
 
@@ -224,7 +226,8 @@ trait StackerLowPriority {
       def apply(ix1: Index[T1], ix2: Index[T2]) = {
         val data =
           for (x <- ix1.toArray;
-               y <- ix2.toArray) yield (x, y)
+               y <- ix2.toArray)
+            yield (x, y)
         Index(data)
       }
 

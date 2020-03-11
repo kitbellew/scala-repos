@@ -140,7 +140,8 @@ class FlowDelaySpec extends AkkaSpec {
       val pSub = p.expectSubscription()
       cSub.request(20)
 
-      for (i ← 1 to 16) pSub.sendNext(i)
+      for (i ← 1 to 16)
+        pSub.sendNext(i)
       c.expectNoMsg(300.millis)
       pSub.sendNext(17)
       c.expectNext(100.millis, 1)

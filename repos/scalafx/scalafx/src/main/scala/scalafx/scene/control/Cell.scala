@@ -40,7 +40,10 @@ import scalafx.delegate.SFXDelegate
 
 object Cell {
   implicit def sfxCell2jfx[T](c: Cell[T]): jfxsc.Cell[T] =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class Cell[T](override val delegate: jfxsc.Cell[T] = new jfxsc.Cell[T])

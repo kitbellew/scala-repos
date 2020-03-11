@@ -11,7 +11,10 @@ final case class EntityTag(tag: String, weak: Boolean = false)
     extends jm.headers.EntityTag
     with ValueRenderable {
   def render[R <: Rendering](r: R): r.type =
-    if (weak) r ~~ "W/" ~~#! tag else r ~~#! tag
+    if (weak)
+      r ~~ "W/" ~~#! tag
+    else
+      r ~~#! tag
 }
 
 object EntityTag {

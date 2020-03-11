@@ -123,7 +123,10 @@ class RestartStrategySpec
 
         def receive = {
           case Ping ⇒
-            if (!pingLatch.isOpen) pingLatch.open else secondPingLatch.open
+            if (!pingLatch.isOpen)
+              pingLatch.open
+            else
+              secondPingLatch.open
           case Crash ⇒ throw new Exception("Crashing...")
         }
         override def postRestart(reason: Throwable) = {

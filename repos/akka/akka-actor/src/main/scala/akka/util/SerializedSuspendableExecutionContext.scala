@@ -48,7 +48,10 @@ private[akka] final class SerializedSuspendableExecutionContext(
   }
   @tailrec private final def remState(oldState: Int) {
     val c = state.get
-    if (state.compareAndSet(c, c & ~oldState)) attach() else remState(oldState)
+    if (state.compareAndSet(c, c & ~oldState))
+      attach()
+    else
+      remState(oldState)
   }
 
   /**
@@ -82,7 +85,8 @@ private[akka] final class SerializedSuspendableExecutionContext(
   }
 
   final def attach(): Unit =
-    if (!isEmpty() && state.compareAndSet(Off, On)) context execute this
+    if (!isEmpty() && state.compareAndSet(Off, On))
+      context execute this
   override final def execute(task: Runnable): Unit =
     try add(task)
     finally attach()

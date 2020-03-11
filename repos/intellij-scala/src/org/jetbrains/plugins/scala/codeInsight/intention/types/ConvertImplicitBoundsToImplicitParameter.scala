@@ -66,7 +66,8 @@ object ConvertImplicitBoundsToImplicitParameter {
   }
 
   def doConversion(element: PsiElement): Seq[ScParameter] = {
-    if (element == null || !element.isValid) return Seq.empty
+    if (element == null || !element.isValid)
+      return Seq.empty
     val (
       function: ScMethodLike,
       paramOwner: ScParameterOwner,
@@ -134,7 +135,8 @@ object ConvertImplicitBoundsToImplicitParameter {
   }
 
   def runRenamingTemplate(params: Seq[ScParameter]): Unit = {
-    if (params.isEmpty) return
+    if (params.isEmpty)
+      return
 
     val parent = PsiTreeUtil.findCommonParent(params.asJava)
     val helper = new InplaceRenameHelper(parent)

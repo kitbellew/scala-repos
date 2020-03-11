@@ -32,7 +32,8 @@ class StringSplitter {
   }
 
   def split(input: String): Array[String] = {
-    if (string.isNullOrEmpty(input)) return string.emptyArray
+    if (string.isNullOrEmpty(input))
+      return string.emptyArray
     pattern.split(input)
   }
 

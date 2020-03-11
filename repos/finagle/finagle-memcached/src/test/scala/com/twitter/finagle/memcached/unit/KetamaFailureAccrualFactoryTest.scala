@@ -200,8 +200,10 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       import h._
 
       def assertReponse(rep: Future[Int]) {
-        if (rep.isReturn) assert(Await.result(service(123)) == rep.get)
-        else intercept[Exception](Await.result(service(123)))
+        if (rep.isReturn)
+          assert(Await.result(service(123)) == rep.get)
+        else
+          intercept[Exception](Await.result(service(123)))
       }
 
       Time.withCurrentTimeFrozen { _ =>

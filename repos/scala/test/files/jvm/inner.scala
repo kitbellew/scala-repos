@@ -84,8 +84,10 @@ object Scalatest {
     val inp = new BufferedReader(new InputStreamReader(proc.getInputStream))
     val errp = new BufferedReader(new InputStreamReader(proc.getErrorStream))
     proc.waitFor()
-    while (inp.ready) println(inp.readLine())
-    while (errp.ready) println(errp.readLine())
+    while (inp.ready)
+      println(inp.readLine())
+    while (errp.ready)
+      println(errp.readLine())
   }
 }
 

@@ -2,7 +2,8 @@
 class UnitReturnSeveralOutput2 {
   def foo(i: Int) {
     /*start*/
-    if (true) return
+    if (true)
+      return
     val x = 0
     val y = "a"
     val z = 1

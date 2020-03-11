@@ -54,7 +54,11 @@ class IndexCheck extends Specification with ScalaCheck {
           val v = ix.raw(i)
           ix.count(v) must_== array
             .range(0, ix.length)
-            .map(l => if (ix.raw(l) == v) 1 else 0)
+            .map(l =>
+              if (ix.raw(l) == v)
+                1
+              else
+                0)
             .sum
         }
       }
@@ -187,7 +191,11 @@ class IndexCheck extends Specification with ScalaCheck {
           val v = ix.raw(i)
           ix.count(v) must_== array
             .range(0, ix.length)
-            .map(l => if (ix.raw(l) == v) 1 else 0)
+            .map(l =>
+              if (ix.raw(l) == v)
+                1
+              else
+                0)
             .sum
         }
       }

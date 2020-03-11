@@ -65,7 +65,8 @@ final class Env(
       case lila.hub.actorApi.mod.MarkCheater(userId) => rankingApi remove userId
       case lila.hub.actorApi.mod.MarkBooster(userId) => rankingApi remove userId
       case User.Active(user) =>
-        if (!user.seenRecently) UserRepo setSeenAt user.id
+        if (!user.seenRecently)
+          UserRepo setSeenAt user.id
         onlineUserIdMemo put user.id
     }
   }))

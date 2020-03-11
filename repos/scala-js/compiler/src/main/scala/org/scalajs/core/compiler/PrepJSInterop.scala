@@ -186,8 +186,10 @@ abstract class PrepJSInterop
         // Catch Scala Enumerations to transform calls to scala.Enumeration.Value
         case idef: ImplDef if isScalaEnum(idef) =>
           val kind =
-            if (idef.isInstanceOf[ModuleDef]) OwnerKind.EnumMod
-            else OwnerKind.EnumClass
+            if (idef.isInstanceOf[ModuleDef])
+              OwnerKind.EnumMod
+            else
+              OwnerKind.EnumClass
           enterOwner(kind) {
             super.transform(idef)
           }
@@ -523,9 +525,12 @@ abstract class PrepJSInterop
       }
 
       def strKind =
-        if (sym.isTrait) "trait"
-        else if (sym.isModuleClass) "object"
-        else "class"
+        if (sym.isTrait)
+          "trait"
+        else if (sym.isModuleClass)
+          "object"
+        else
+          "class"
 
       // Check that we do not have a case modifier
       if (implDef.mods.hasFlag(Flag.CASE)) {
@@ -662,9 +667,12 @@ abstract class PrepJSInterop
         val high = overridingPair.high
         if (jsInterop.jsNameOf(low) != jsInterop.jsNameOf(high)) {
           val pos = {
-            if (sym == low.owner) low.pos
-            else if (sym == high.owner) high.pos
-            else sym.pos
+            if (sym == low.owner)
+              low.pos
+            else if (sym == high.owner)
+              high.pos
+            else
+              sym.pos
           }
 
           val msg = {
@@ -685,11 +693,15 @@ abstract class PrepJSInterop
 
       val kind = {
         if (!isJSNative) {
-          if (sym.isModuleClass) OwnerKind.JSMod
-          else OwnerKind.JSClass
+          if (sym.isModuleClass)
+            OwnerKind.JSMod
+          else
+            OwnerKind.JSClass
         } else {
-          if (sym.isModuleClass) OwnerKind.JSNativeMod
-          else OwnerKind.JSNativeClass
+          if (sym.isModuleClass)
+            OwnerKind.JSNativeMod
+          else
+            OwnerKind.JSNativeClass
         }
       }
       enterOwner(kind) {
@@ -705,7 +717,11 @@ abstract class PrepJSInterop
 
       if (shouldPrepareExports) {
         // Exports are never valid on members of JS types
-        lazy val memType = if (sym.isConstructor) "constructor" else "method"
+        lazy val memType =
+          if (sym.isConstructor)
+            "constructor"
+          else
+            "method"
         for {
           exp <- exportsOf(sym)
           if !exp.ignoreInvalid
@@ -881,7 +897,11 @@ abstract class PrepJSInterop
         tree.rhs match {
           case sel: Select if sel.symbol == JSPackage_native =>
           case _ =>
-            val pos = if (tree.rhs != EmptyTree) tree.rhs.pos else tree.pos
+            val pos =
+              if (tree.rhs != EmptyTree)
+                tree.rhs.pos
+              else
+                tree.pos
             reporter.warning(
               pos,
               "Members of traits, classes and objects " +
@@ -917,7 +937,11 @@ abstract class PrepJSInterop
       sym: Symbol,
       pos: Position,
       exported: Boolean): Unit = {
-    val typeStr = if (exported) "Exported" else "Raw JS"
+    val typeStr =
+      if (exported)
+        "Exported"
+      else
+        "Raw JS"
 
     // Forbid setters with non-unit return type
     if (sym.tpe.resultType.typeSymbol != UnitClass) {

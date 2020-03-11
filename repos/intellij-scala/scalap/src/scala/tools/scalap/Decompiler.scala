@@ -65,11 +65,13 @@ object Decompiler {
       case Some(other) => other
       case None        => null
     }
-    if (scalaSig == null) return None
+    if (scalaSig == null)
+      return None
     val decompiledSourceText = {
       val baos = new ByteArrayOutputStream
       val stream = new PrintStream(baos, true, UTF8)
-      if (scalaSig == null) return None
+      if (scalaSig == null)
+        return None
       val syms = scalaSig.topLevelClasses ::: scalaSig.topLevelObjects
       // Print package with special treatment for package objects
       syms.head.parent match {

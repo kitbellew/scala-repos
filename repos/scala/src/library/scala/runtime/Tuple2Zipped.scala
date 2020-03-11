@@ -84,7 +84,8 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
           b1 += el1
           b2 += el2
         }
-      } else return (b1.result(), b2.result())
+      } else
+        return (b1.result(), b2.result())
     }
 
     (b1.result(), b2.result())
@@ -97,7 +98,8 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
       if (elems2.hasNext) {
         if (p(el1, elems2.next()))
           return true
-      } else return false
+      } else
+        return false
     }
     false
   }

@@ -108,7 +108,8 @@ object CachedMacroUtil {
         timePrevCacheRanUntilThisCacheStarted.foreach { case time: Long => myStartTimes.push(System.nanoTime - time)}
         res
       """
-    } else q"$rhs"
+    } else
+      q"$rhs"
   }
 
   def analyzeCachesEnabled(c: whitebox.Context): Boolean =

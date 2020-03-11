@@ -120,7 +120,8 @@ class ClientMergeable[K, V: Semigroup](
         multiMerge(nextCall)
       }
       firstRes ++ FutureOps.liftFutureValues(nextCall.keySet, fmap)
-    } else firstRes
+    } else
+      firstRes
   }
 
   private def multiMergeUnique[K1 <: (K, BatchID)](

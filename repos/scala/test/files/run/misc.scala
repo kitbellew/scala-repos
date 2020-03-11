@@ -1,9 +1,17 @@
 object Test {
 
-  def fac(n: Int): Int = if (n < 2) 1 else fac(n - 1) * n;
+  def fac(n: Int): Int =
+    if (n < 2)
+      1
+    else
+      fac(n - 1) * n;
 
   // Fibonacci
-  def fib(n: Int): Int = if (n < 2) 1 else fib(n - 1) + fib(n - 2);
+  def fib(n: Int): Int =
+    if (n < 2)
+      1
+    else
+      fib(n - 1) + fib(n - 2);
 
   def show_fib(n: Int): Int = {
     Console.print("### fib(");
@@ -72,7 +80,10 @@ object Test {
     def f11(x: Int)(y: Int) = x + y;
     f11(23)(2);
     1 < 2;
-    if (1 < 2) 3 else 4;
+    if (1 < 2)
+      3
+    else
+      4;
 
     show_fib(0);
     show_fib(1);

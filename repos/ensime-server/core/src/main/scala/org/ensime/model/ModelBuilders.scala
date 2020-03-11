@@ -201,7 +201,10 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       def basicTypeInfo(tpe: Type): BasicTypeInfo = {
         val typeSym = tpe.typeSymbol
         val symbolToLocate =
-          if (typeSym.isModuleClass) typeSym.sourceModule else typeSym
+          if (typeSym.isModuleClass)
+            typeSym.sourceModule
+          else
+            typeSym
         val symPos = locateSymbolPos(symbolToLocate, needPos)
         new BasicTypeInfo(
           typeShortName(tpe),
@@ -260,7 +263,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         }
       val ownerTpe = if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
         Some(sym.owner.tpe)
-      } else None
+      } else
+        None
       new SymbolInfo(
         name,
         localName,
@@ -309,9 +313,15 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     def apply(m: TypeMember): NamedTypeMemberInfo = {
       val decl = declaredAs(m.sym)
       val pos =
-        if (m.sym.pos == NoPosition) None else Some(EmptySourcePosition())
+        if (m.sym.pos == NoPosition)
+          None
+        else
+          Some(EmptySourcePosition())
       val signatureString =
-        if (decl == DeclaredAs.Method) Some(m.sym.signatureString) else None
+        if (decl == DeclaredAs.Method)
+          Some(m.sym.signatureString)
+        else
+          None
       new NamedTypeMemberInfo(
         m.sym.nameString,
         TypeInfo(m.tpe),

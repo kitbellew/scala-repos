@@ -14,7 +14,8 @@ trait FixtureSupport {
     */
   def init[A: ClassTag](size: Int)(f: => A) = {
     val data = Array.ofDim[A](size)
-    for (i <- 0 until size) data(i) = f
+    for (i <- 0 until size)
+      data(i) = f
     data
   }
 

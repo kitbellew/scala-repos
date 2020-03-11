@@ -52,7 +52,8 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
                 b.getElementType == ScalaElementTypes.INTERPOLATED_PREFIX_PATTERN_REFERENCE ||
                 b.getElementType == ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE =>
             if (a.getNode.getElementType == tINTERPOLATED_STRING_ESCAPE) {
-              if (caretOffset.get - a.getTextOffset == 1) modifyOffset(1)
+              if (caretOffset.get - a.getTextOffset == 1)
+                modifyOffset(1)
             } else {
               val lexer = new StringLiteralLexer(
                 StringLiteralLexer.NO_QUOTE_CHAR,
@@ -75,7 +76,8 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
             }
 
             extensions.inWriteAction {
-              if (isMLString(a.getParent)) return Result.Continue
+              if (isMLString(a.getParent))
+                return Result.Continue
 
               caretOffset.set(caretOffset.get + 3)
               caretAdvance.set(b.getTextLength + 1)

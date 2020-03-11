@@ -67,7 +67,10 @@ object TestResultLogger {
       t: TestResultLogger,
       f: TestResultLogger) =
     TestResultLogger((log, results, taskName) =>
-      (if (cond(results, taskName)) t else f).run(log, results, taskName))
+      (if (cond(results, taskName))
+         t
+       else
+         f).run(log, results, taskName))
 
   /** Transforms the input to be completely silent when the subject module doesn't contain any tests. */
   def silenceWhenNoTests(d: Defaults.Main) =
@@ -115,7 +118,8 @@ object TestResultLogger {
         if (message.isEmpty)
           log.debug("Summary for " + name + " not available.")
         else {
-          if (multipleFrameworks) log.info(name)
+          if (multipleFrameworks)
+            log.info(name)
           log.info(message)
         }
     })
@@ -137,15 +141,15 @@ object TestResultLogger {
         pendingCount) =
         results.events.foldLeft((0, 0, 0, 0, 0, 0, 0)) {
           case (
-              (
-                skippedAcc,
-                errorAcc,
-                passedAcc,
-                failureAcc,
-                ignoredAcc,
-                canceledAcc,
-                pendingAcc),
-              (name, testEvent)) =>
+                (
+                  skippedAcc,
+                  errorAcc,
+                  passedAcc,
+                  failureAcc,
+                  ignoredAcc,
+                  canceledAcc,
+                  pendingAcc),
+                (name, testEvent)) =>
             (
               skippedAcc + testEvent.skippedCount,
               errorAcc + testEvent.errorCount,

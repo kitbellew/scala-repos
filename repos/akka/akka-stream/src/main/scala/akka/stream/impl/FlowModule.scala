@@ -16,7 +16,8 @@ private[stream] trait FlowModule[In, Out, Mat]
     if (s != shape)
       throw new UnsupportedOperationException(
         "cannot replace the shape of a FlowModule")
-    else this
+    else
+      this
 
   val inPort = Inlet[In]("Flow.in")
   val outPort = Outlet[Out]("Flow.out")

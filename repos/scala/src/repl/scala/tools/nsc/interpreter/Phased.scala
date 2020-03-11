@@ -26,7 +26,8 @@ trait Phased {
       true
   }
   def setMulti(phases: Seq[PhaseName]): Boolean = {
-    if (phases contains NoPhaseName) false
+    if (phases contains NoPhaseName)
+      false
     else {
       multi = phases
       true
@@ -34,14 +35,21 @@ trait Phased {
   }
 
   private def parsePhaseChange(str: String): Option[Int] = {
-    if (str == "") Some(0)
-    else if (str startsWith ".prev") parsePhaseChange(str drop 5) map (_ - 1)
-    else if (str startsWith ".next") parsePhaseChange(str drop 5) map (_ + 1)
+    if (str == "")
+      Some(0)
+    else if (str startsWith ".prev")
+      parsePhaseChange(str drop 5) map (_ - 1)
+    else if (str startsWith ".next")
+      parsePhaseChange(str drop 5) map (_ + 1)
     else
       str.head match {
         case '+' | '-' =>
           val (num, rest) = str.tail.span(_.isDigit)
-          val diff = if (str.head == '+') num.toInt else -num.toInt
+          val diff =
+            if (str.head == '+')
+              num.toInt
+            else
+              -num.toInt
           parsePhaseChange(rest) map (_ + diff)
         case _ =>
           None
@@ -52,15 +60,19 @@ trait Phased {
     *  and turns it into a PhaseName instance.
     */
   private def parseInternal(str: String): PhaseName = {
-    if (str == "") NoPhaseName
-    else if (str forall (_.isDigit)) PhaseName(str.toInt)
+    if (str == "")
+      NoPhaseName
+    else if (str forall (_.isDigit))
+      PhaseName(str.toInt)
     else {
       val (name, rest) = str.toLowerCase span (_.isLetter)
       val start = PhaseName(name)
       val change = parsePhaseChange(rest)
 
-      if (start.isEmpty || change.isEmpty) NoPhaseName
-      else PhaseName(start.id + change.get)
+      if (start.isEmpty || change.isEmpty)
+        NoPhaseName
+      else
+        PhaseName(start.id + change.get)
     }
   }
   def parse(str: String): PhaseName =

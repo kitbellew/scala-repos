@@ -81,8 +81,10 @@ object StepWise {
 
   final case class Steps[T, U](ops: List[AST], keepTraces: Boolean) {
     private def getTrace(): Trace =
-      if (keepTraces) new WithTrace
-      else WithoutTrace
+      if (keepTraces)
+        new WithTrace
+      else
+        WithoutTrace
 
     def apply[V](thunk: U ⇒ V): Steps[T, V] =
       copy(ops = ThunkV(thunk.asInstanceOf[Any ⇒ Any]) :: ops)
@@ -224,7 +226,8 @@ object StepWise {
               val nextCount = count + 1
               if (nextCount == c) {
                 run(ctx, tail, f((msg :: acc).reverse, value))
-              } else behavior(nextCount, msg :: acc)
+              } else
+                behavior(nextCount, msg :: acc)
             case Sig(_, other) ⇒
               throwIllegalState(
                 trace,

@@ -107,7 +107,10 @@ abstract class AbstractCompiler extends Compiler {
     }
 
     def toOption[T](value: Maybe[T]): Option[T] =
-      if (value.isDefined) Some(value.get) else None
+      if (value.isDefined)
+        Some(value.get)
+      else
+        None
 
     def comment(p1: Position, p2: String) {} // TODO
   }

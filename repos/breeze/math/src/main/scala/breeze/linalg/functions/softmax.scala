@@ -16,10 +16,14 @@ object softmax extends UFunc {
 
   implicit object implDoubleDouble extends Impl2[Double, Double, Double] {
     def apply(a: Double, b: Double): Double = {
-      if (a.isNegInfinity) b
-      else if (b.isNegInfinity) a
-      else if (a < b) b + scala.math.log1p(scala.math.exp(a - b))
-      else a + scala.math.log1p(scala.math.exp(b - a))
+      if (a.isNegInfinity)
+        b
+      else if (b.isNegInfinity)
+        a
+      else if (a < b)
+        b + scala.math.log1p(scala.math.exp(a - b))
+      else
+        a + scala.math.log1p(scala.math.exp(b - a))
     }
   }
 
@@ -50,7 +54,11 @@ object softmax extends UFunc {
       maxImpl: max.Impl[T, Double]): Impl[T, Double] = new Impl[T, Double] {
     def apply(v: T): Double = {
 
-      val max = if (!iter.isTraversableAgain(v)) 0.0 else maxImpl(v)
+      val max =
+        if (!iter.isTraversableAgain(v))
+          0.0
+        else
+          maxImpl(v)
 
       if (max.isInfinite) {
         return Double.NegativeInfinity
@@ -96,7 +104,11 @@ object softmax extends UFunc {
       maxImpl: max.Impl[T, Float]): Impl[T, Float] = new Impl[T, Float] {
     def apply(v: T): Float = {
 
-      val max = if (!iter.isTraversableAgain(v)) 0.0f else maxImpl(v)
+      val max =
+        if (!iter.isTraversableAgain(v))
+          0.0f
+        else
+          maxImpl(v)
 
       if (max.isInfinite) {
         return Float.NegativeInfinity
@@ -144,8 +156,10 @@ object logDiff extends UFunc {
   implicit object implDoubleDouble extends Impl2[Double, Double, Double] {
     def apply(a: Double, b: Double): Double = {
       require(a >= b, s"a should be greater than b, but got $a and $b")
-      if (a > b) a + scala.math.log1p(-scala.math.exp(b - a))
-      else Double.NegativeInfinity
+      if (a > b)
+        a + scala.math.log1p(-scala.math.exp(b - a))
+      else
+        Double.NegativeInfinity
     }
   }
 }

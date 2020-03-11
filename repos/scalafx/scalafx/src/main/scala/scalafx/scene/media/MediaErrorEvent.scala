@@ -36,7 +36,10 @@ import scalafx.event._
 object MediaErrorEvent {
   implicit def sfxMediaErrorEvent2jfx(
       mee: MediaErrorEvent): jfxsm.MediaErrorEvent =
-    if (mee != null) mee.delegate else null
+    if (mee != null)
+      mee.delegate
+    else
+      null
 
   val MediaError: EventType[jfxsm.MediaErrorEvent] =
     jfxsm.MediaErrorEvent.MEDIA_ERROR

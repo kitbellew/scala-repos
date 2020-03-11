@@ -33,8 +33,12 @@ class ScDoStmtImpl(node: ASTNode)
     val c =
       if (rpar != null)
         PsiTreeUtil.getNextSiblingOfType(rpar, classOf[ScExpression])
-      else null
-    if (c == null) None else Some(c)
+      else
+        null
+    if (c == null)
+      None
+    else
+      Some(c)
   }
 
   override def accept(visitor: PsiElementVisitor): Unit = {

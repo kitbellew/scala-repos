@@ -74,7 +74,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case value ⇒ value.toInt requiring (_ >= 10, "nrOfNodes should be >= 10")
     }
 
-  for (n ← 1 to totalNumberOfNodes) role("node-" + n)
+  for (n ← 1 to totalNumberOfNodes)
+    role("node-" + n)
 
   // Note that this test uses default configuration,
   // not MultiNodeClusterSpec.clusterConfig
@@ -372,7 +373,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     }
 
     def formatPhi: String = {
-      if (phiValuesObservedByNode.isEmpty) ""
+      if (phiValuesObservedByNode.isEmpty)
+        ""
       else {
         import akka.cluster.Member.addressOrdering
         val lines =
@@ -476,7 +478,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           val previous = phiByNode(node)
           val φ = phi(node)
           if (φ > 0 || cluster.failureDetector.isMonitoring(node)) {
-            val aboveOne = if (!φ.isInfinite && φ > 1.0) 1 else 0
+            val aboveOne =
+              if (!φ.isInfinite && φ > 1.0)
+                1
+              else
+                0
             phiByNode += node -> PhiValue(
               node,
               previous.countAboveOne + aboveOne,
@@ -600,7 +606,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         outstanding -= id
         ackCounter += 1
         if (outstanding.size == settings.workBatchSize / 2)
-          if (batchInterval == Duration.Zero) self ! SendBatch
+          if (batchInterval == Duration.Zero)
+            self ! SendBatch
           else
             context.system.scheduler
               .scheduleOnce(batchInterval, self, SendBatch)
@@ -641,7 +648,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           ThreadLocalRandom.current.nextInt(settings.treeWidth),
           settings.treeLevels,
           settings.treeWidth)
-      else SimpleJob(idCounter.next(), payload)
+      else
+        SimpleJob(idCounter.next(), payload)
     }
 
     def resend(): Unit = {
@@ -689,7 +697,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   class TreeNode(level: Int, width: Int) extends Actor {
     require(level >= 1)
     def createChild(): Actor =
-      if (level == 1) new Leaf else new TreeNode(level - 1, width)
+      if (level == 1)
+        new Leaf
+      else
+        new TreeNode(level - 1, width)
     val indexedChildren =
       0 until width map { i ⇒
         context.actorOf(
@@ -940,7 +951,8 @@ abstract class StressSpec
         name = "result" + step)
       if (includeInHistory && infolog)
         aggregator ! ReportTo(Some(clusterResultHistory))
-      else aggregator ! ReportTo(None)
+      else
+        aggregator ! ReportTo(None)
     }
     enterBarrier("result-aggregator-created-" + step)
     runOn(roles.take(nbrUsedRoles): _*) {
@@ -960,7 +972,8 @@ abstract class StressSpec
   lazy val clusterResultHistory =
     if (settings.infolog)
       system.actorOf(Props[ClusterResultHistory], "resultHistory")
-    else system.deadLetters
+    else
+      system.deadLetters
 
   lazy val phiObserver = system.actorOf(Props[PhiObserver], "phiObserver")
 
@@ -1017,8 +1030,10 @@ abstract class StressSpec
       10.seconds + convergenceWithin(3.seconds, nbrUsedRoles + numberOfNodes)) {
       val currentRoles = roles.take(nbrUsedRoles + numberOfNodes)
       val joiningRoles = currentRoles.takeRight(numberOfNodes)
-      val title = s"join ${numberOfNodes} to ${if (toSeedNodes) "seed nodes"
-      else "one node"}, in ${nbrUsedRoles} nodes cluster"
+      val title = s"join ${numberOfNodes} to ${if (toSeedNodes)
+        "seed nodes"
+      else
+        "one node"}, in ${nbrUsedRoles} nodes cluster"
       createResultAggregator(
         title,
         expectedResults = currentRoles.size,
@@ -1028,7 +1043,8 @@ abstract class StressSpec
           runOn(joiningRoles: _*) {
             if (toSeedNodes)
               cluster.joinSeedNodes(seedNodes.toIndexedSeq map address)
-            else cluster.join(roles.head)
+            else
+              cluster.join(roles.head)
           }
           awaitMembersUp(currentRoles.size, timeout = remainingOrDefault)
         }
@@ -1049,8 +1065,10 @@ abstract class StressSpec
   def removeOne(shutdown: Boolean): Unit =
     within(25.seconds + convergenceWithin(3.seconds, nbrUsedRoles - 1)) {
       val currentRoles = roles.take(nbrUsedRoles - 1)
-      val title =
-        s"${if (shutdown) "shutdown" else "remove"} one from ${nbrUsedRoles} nodes cluster"
+      val title = s"${if (shutdown)
+        "shutdown"
+      else
+        "remove"} one from ${nbrUsedRoles} nodes cluster"
       createResultAggregator(
         title,
         expectedResults = currentRoles.size,
@@ -1059,7 +1077,8 @@ abstract class StressSpec
       val removeAddress = address(removeRole)
       runOn(removeRole) {
         system.actorOf(Props[Watchee], "watchee")
-        if (!shutdown) cluster.leave(myself)
+        if (!shutdown)
+          cluster.leave(myself)
       }
       enterBarrier("watchee-created-" + step)
       runOn(roles.head) {
@@ -1102,23 +1121,27 @@ abstract class StressSpec
       25.seconds + convergenceWithin(5.seconds, nbrUsedRoles - numberOfNodes)) {
       val currentRoles = roles.take(nbrUsedRoles - numberOfNodes)
       val removeRoles = roles.slice(currentRoles.size, nbrUsedRoles)
-      val title =
-        s"${if (shutdown) "shutdown" else "leave"} ${numberOfNodes} in ${nbrUsedRoles} nodes cluster"
+      val title = s"${if (shutdown)
+        "shutdown"
+      else
+        "leave"} ${numberOfNodes} in ${nbrUsedRoles} nodes cluster"
       createResultAggregator(
         title,
         expectedResults = currentRoles.size,
         includeInHistory = true)
       runOn(removeRoles: _*) {
-        if (!shutdown) cluster.leave(myself)
+        if (!shutdown)
+          cluster.leave(myself)
       }
       runOn(currentRoles: _*) {
         reportResult {
           runOn(roles.head) {
-            if (shutdown) removeRoles.foreach { r ⇒
-              if (infolog)
-                log.info("Shutting down [{}]", address(r))
-              testConductor.exit(r, 0).await
-            }
+            if (shutdown)
+              removeRoles.foreach { r ⇒
+                if (infolog)
+                  log.info("Shutting down [{}]", address(r))
+                testConductor.exit(r, 0).await
+              }
           }
           awaitMembersUp(currentRoles.size, timeout = remainingOrDefault)
           awaitAllReachable()
@@ -1157,7 +1180,8 @@ abstract class StressSpec
         counter: Int,
         previousAS: Option[ActorSystem],
         allPreviousAddresses: Set[Address]): Option[ActorSystem] = {
-      if (counter > rounds) previousAS
+      if (counter > rounds)
+        previousAS
       else {
         val t = title + " round " + counter
         runOn(usedRoles: _*) {
@@ -1179,7 +1203,8 @@ abstract class StressSpec
                 muteLog(sys)
                 Cluster(sys).joinSeedNodes(seedNodes.toIndexedSeq map address)
                 Some(sys)
-              } else previousAS
+              } else
+                previousAS
             runOn(usedRoles: _*) {
               awaitMembersUp(
                 nbrUsedRoles + activeRoles.size,

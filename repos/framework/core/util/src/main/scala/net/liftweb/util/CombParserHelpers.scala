@@ -190,7 +190,8 @@ trait CombParserHelpers {
     * @return a parser which parses the input using p a number of times
     */
   def repNN[T](n: Int, p: => Parser[T]): Parser[List[T]] =
-    if (n == 0) rep(p)
+    if (n == 0)
+      rep(p)
     else
       p ~ repNN(n - 1, p) ^^ {
         case ~(x, xs) => x :: xs
@@ -224,8 +225,10 @@ trait SafeSeqParser extends Parsers {
           res = p(in)
         }
 
-        if (!xs.isEmpty) Success(xs.toList, res.next)
-        else Failure("TODO", in0)
+        if (!xs.isEmpty)
+          Success(xs.toList, res.next)
+        else
+          Failure("TODO", in0)
       }
     }
 
@@ -260,8 +263,10 @@ trait SafeSeqParser extends Parsers {
             res = p(in)
           }
         }
-        if (!xs.isEmpty) Success(xs.toList, res.next)
-        else Failure("TODO", in0)
+        if (!xs.isEmpty)
+          Success(xs.toList, res.next)
+        else
+          Failure("TODO", in0)
 
       }
     }

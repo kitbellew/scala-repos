@@ -288,7 +288,11 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
   @Provides
   @Singleton
   def provideHostPort: String = {
-    val port = if (http.disableHttp()) http.httpsPort() else http.httpPort()
+    val port =
+      if (http.disableHttp())
+        http.httpsPort()
+      else
+        http.httpPort()
     "%s:%d".format(conf.hostname(), port)
   }
 
@@ -565,7 +569,9 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       prefix: String,
       newState: () => T)(implicit ct: ClassTag[T]): EntityStore[T] = {
     val marathonStore = new MarathonStore[T](store, metrics, newState, prefix)
-    if (conf.storeCache()) new EntityStoreCache[T](marathonStore)
-    else marathonStore
+    if (conf.storeCache())
+      new EntityStoreCache[T](marathonStore)
+    else
+      marathonStore
   }
 }

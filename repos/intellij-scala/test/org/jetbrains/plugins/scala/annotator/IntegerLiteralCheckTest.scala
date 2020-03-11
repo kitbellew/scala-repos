@@ -39,7 +39,10 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def prependSign(s: String): List[String] =
-    if (s.startsWith("-")) List(s) else List(s, "-" + s)
+    if (s.startsWith("-"))
+      List(s)
+    else
+      List(s, "-" + s)
 
   def appendL(s: String): List[String] = List(s + "l", s + "L")
 

@@ -73,7 +73,8 @@ class SimpleLucene(path: File, analyzers: Map[String, Analyzer])
   private def reader() = {
     // non-atomic, but worth it to avoid blocking
     val latest = DirectoryReader.openIfChanged(lastReader)
-    if (latest == null) lastReader
+    if (latest == null)
+      lastReader
     else {
       lastReader = latest
       latest
@@ -121,14 +122,16 @@ class SimpleLucene(path: File, analyzers: Map[String, Analyzer])
 
     if (delete.nonEmpty) {
       writer.deleteDocuments(delete.toArray: _*)
-      if (commit) writer.commit()
+      if (commit)
+        writer.commit()
     }
 
     if (create.nonEmpty) {
       create foreach { doc =>
         writer addDocument doc
       }
-      if (commit) writer.commit()
+      if (commit)
+        writer.commit()
     }
   }
 

@@ -50,7 +50,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       processedComments: mutable.HashSet[PsiElement],
       processedRegions: mutable.HashSet[PsiElement]) {
     val nodeTextRange = node.getTextRange
-    if (nodeTextRange.getStartOffset + 1 >= nodeTextRange.getEndOffset) return
+    if (nodeTextRange.getStartOffset + 1 >= nodeTextRange.getEndOffset)
+      return
     import collection.JavaConversions._
 
     val psi = node.getPsi
@@ -194,11 +195,13 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               val startElement =
                 if (a1.getPrevSibling.isInstanceOf[PsiWhiteSpace])
                   a1.getPrevSibling
-                else a1
+                else
+                  a1
               val endElement =
                 if (a2.getNextSibling.isInstanceOf[PsiWhiteSpace])
                   a2.getNextSibling
-                else a2
+                else
+                  a2
               descriptors += new FoldingDescriptor(
                 node,
                 new TextRange(
@@ -255,7 +258,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         case ScalaElementTypes.FUNCTION_DEFINITION =>
           val (isMultilineBody, _, sign) = isMultilineFuncBody(
             node.getPsi.asInstanceOf[ScFunctionDefinition])
-          if (isMultilineBody) return sign
+          if (isMultilineBody)
+            return sign
         case _ =>
       }
       if (node.getPsi != null) {
@@ -287,11 +291,17 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               val customText: String = node.getText
                 .replaceFirst(".*desc\\s*=\\s*\"(.*)\".*", "$1")
                 .trim
-              return if (customText.isEmpty) "..." else customText
+              return if (customText.isEmpty)
+                "..."
+              else
+                customText
             } else if (isSimpleRegionStart(node.getText)) {
               val customText: String =
                 node.getText.replaceFirst("..?\\s*region(.*)", "$1").trim
-              return if (customText.isEmpty) "..." else customText
+              return if (customText.isEmpty)
+                "..."
+              else
+                customText
             }
           }
         }
@@ -310,10 +320,12 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
 
     if (node.getTreeParent.getElementType == ScalaElementTypes.FILE &&
         node.getTreePrev == null && node.getElementType != ScalaElementTypes.PACKAGING &&
-        ScalaCodeFoldingSettings.getInstance().isCollapseFileHeaders) true
+        ScalaCodeFoldingSettings.getInstance().isCollapseFileHeaders)
+      true
     else if (node.getTreeParent.getElementType == ScalaElementTypes.FILE &&
              node.getElementType == ScalaElementTypes.IMPORT_STMT &&
-             ScalaCodeFoldingSettings.getInstance().isCollapseImports) true
+             ScalaCodeFoldingSettings.getInstance().isCollapseImports)
+      true
     else if (node.getTreeParent != null &&
              ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType &&
              ScalaCodeFoldingSettings.getInstance().isCollapseMultilineBlocks)
@@ -453,12 +465,14 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   }
 
   private def isMultilineImport(node: ASTNode): Boolean = {
-    if (node.getElementType != ScalaElementTypes.IMPORT_STMT) return false
+    if (node.getElementType != ScalaElementTypes.IMPORT_STMT)
+      return false
     var next = node.getTreeNext
     var flag = false
     while (next != null && (next.getPsi.isInstanceOf[
              LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
-      if (next.getElementType == ScalaElementTypes.IMPORT_STMT) flag = true
+      if (next.getElementType == ScalaElementTypes.IMPORT_STMT)
+        flag = true
       next = next.getTreeNext
     }
     flag
@@ -467,7 +481,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   private def isMultilineFuncBody(
       func: ScFunctionDefinition): (Boolean, TextRange, String) = {
     val body = func.body.orNull
-    if (body == null) return (false, null, "")
+    if (body == null)
+      return (false, null, "")
     val range = body.getTextRange
     body match {
       case _: ScBlockExpr =>
@@ -476,7 +491,11 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       case _ =>
         val isMultilineBody = (body.getText.indexOf(
           "\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
-        val textRange = if (isMultilineBody) range else null
+        val textRange =
+          if (isMultilineBody)
+            range
+          else
+            null
         return (isMultilineBody, textRange, "...")
     }
     (false, null, "")
@@ -488,7 +507,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       prev = prev.getTreePrev
     if (prev == null || prev.getElementType != ScalaElementTypes.IMPORT_STMT)
       true
-    else false
+    else
+      false
   }
 
   private def getImportEnd(node: ASTNode): Int = {
@@ -572,7 +592,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               flag = false
             }
           }
-          if (stack.nonEmpty) stack.pop()
+          if (stack.nonEmpty)
+            stack.pop()
         }
         if (elementType == ScalaTokenTypes.tLINE_COMMENT && isCustomRegionStart(
               node.getText) && !isWorksheetResults(node)) {
@@ -654,8 +675,8 @@ object TypeLambda {
                   case Some(ref) =>
                     (ref.holders, ref.types) match {
                       case (
-                          scala.Seq(),
-                          scala.Seq(tad: ScTypeAliasDefinitionImpl))
+                            scala.Seq(),
+                            scala.Seq(tad: ScTypeAliasDefinitionImpl))
                           if tad.name == nameId.getText =>
                         (
                           tad.typeParametersClause,

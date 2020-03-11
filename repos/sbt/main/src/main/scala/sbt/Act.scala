@@ -126,8 +126,8 @@ object Act {
     ss match {
       case Seq() => Nil
       case Seq(
-          x,
-          tail @ _*
+            x,
+            tail @ _*
           ) => // select the first configuration containing a valid key
         tail.takeWhile(_.key.scope.config == x.key.scope.config) match {
           case Seq() => x :: Nil
@@ -136,7 +136,10 @@ object Act {
     }
   def selectByTask(ss: Seq[ParsedKey]): Seq[ParsedKey] = {
     val (selects, globals) = ss.partition(_.key.scope.task.isSelect)
-    if (globals.nonEmpty) globals else selects
+    if (globals.nonEmpty)
+      globals
+    else
+      selects
   }
 
   def noValidKeys = failure("No such key.")
@@ -146,7 +149,13 @@ object Act {
     keys
       .take(3)
       .map(x => show(x))
-      .mkString("", ", ", if (keys.size > 3) ", ..." else "")
+      .mkString(
+        "",
+        ", ",
+        if (keys.size > 3)
+          ", ..."
+        else
+          "")
 
   def isValid(data: Settings[Scope])(parsed: ParsedKey): Boolean = {
     val key = parsed.key
@@ -199,12 +208,18 @@ object Act {
       proj: Option[ResolvedReference],
       index: KeyIndex,
       defaultConfigs: Option[ResolvedReference] => Seq[String]): Seq[String] =
-    if (index exists proj) defaultConfigs(proj) else Nil
+    if (index exists proj)
+      defaultConfigs(proj)
+    else
+      Nil
   def nonEmptyConfig(
       index: KeyIndex,
       proj: Option[ResolvedReference]): String => Seq[Option[String]] =
     config =>
-      if (index.isEmpty(proj, Some(config))) Nil else Some(config) :: Nil
+      if (index.isEmpty(proj, Some(config)))
+        Nil
+      else
+        Some(config) :: Nil
 
   def key(
       index: KeyIndex,
@@ -451,10 +466,14 @@ object Act {
       key: AttributeKey[T]): Option[T] =
     if (java.lang.Boolean.getBoolean("sbt.cli.nodelegation"))
       data.getDirect(scope, key)
-    else data.get(scope, key)
+    else
+      data.get(scope, key)
 
   def requireSession[T](s: State, p: => Parser[T]): Parser[T] =
-    if (s get sessionSettings isEmpty) failure("No project loaded") else p
+    if (s get sessionSettings isEmpty)
+      failure("No project loaded")
+    else
+      p
 
   sealed trait ParsedAxis[+T] {
     final def isExplicit = this != Omitted

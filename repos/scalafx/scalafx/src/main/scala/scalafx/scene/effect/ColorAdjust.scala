@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object ColorAdjust {
   implicit def sfxColorAdjust2jfx(ca: ColorAdjust): jfxse.ColorAdjust =
-    if (ca != null) ca.delegate else null
+    if (ca != null)
+      ca.delegate
+    else
+      null
 }
 
 class ColorAdjust(

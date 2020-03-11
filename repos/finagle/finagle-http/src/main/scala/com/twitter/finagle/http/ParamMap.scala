@@ -131,7 +131,8 @@ class MapParamMap(
 
   def iterator: Iterator[(String, String)] = {
     for ((k, vs) <- underlying.iterator;
-         v <- vs) yield (k, v)
+         v <- vs)
+      yield (k, v)
   }
 
   override def keySet: Set[String] =

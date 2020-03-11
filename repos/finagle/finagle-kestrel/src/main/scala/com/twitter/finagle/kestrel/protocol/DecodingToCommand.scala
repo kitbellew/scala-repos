@@ -55,8 +55,10 @@ private[kestrel] class DecodingToCommand
   }
 
   private[this] def validateGetCommand(tokens: Seq[Buf]): GetCommand = {
-    if (tokens.size < 1) throw new ClientError("Key missing")
-    if (tokens.size > 1) throw new ClientError("Too many arguments")
+    if (tokens.size < 1)
+      throw new ClientError("Key missing")
+    if (tokens.size > 1)
+      throw new ClientError("Too many arguments")
 
     val splitAll = tokens.head.split('/')
 

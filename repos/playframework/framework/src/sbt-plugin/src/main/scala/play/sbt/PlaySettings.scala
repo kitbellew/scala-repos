@@ -58,7 +58,10 @@ object PlaySettings {
     ivyConfigurations += DocsApplication,
     playOmnidoc := !play.core.PlayVersion.current.endsWith("-SNAPSHOT"),
     playDocsName := {
-      if (playOmnidoc.value) "play-omnidoc" else "play-docs"
+      if (playOmnidoc.value)
+        "play-omnidoc"
+      else
+        "play-docs"
     },
     playDocsModule := Some(
       "com.typesafe.play" %% playDocsName.value % play.core.PlayVersion.current % DocsApplication.name),
@@ -176,12 +179,14 @@ object PlaySettings {
         resourceMappings.map {
           case (resource, path) => resource -> ("conf/" + path)
         }
-      } else Nil
+      } else
+        Nil
     },
     scriptClasspath := {
       if (externalizeResources.value) {
         "../conf/" +: scriptClasspath.value
-      } else scriptClasspath.value
+      } else
+        scriptClasspath.value
     },
     // taskDyn ensures we only build the sans externalised jar if we need to
     scriptClasspathOrdering <<= Def.taskDyn {

@@ -80,7 +80,8 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
             //1 is buffer for Finished or Failed callback
             require(dataQueue.remainingCapacity() > 1)
             dataQueue.add(Data(grab(in)))
-            if (dataQueue.remainingCapacity() > 1) sendPullIfAllowed()
+            if (dataQueue.remainingCapacity() > 1)
+              sendPullIfAllowed()
           }
           override def onUpstreamFinish(): Unit = {
             dataQueue.add(Finished)
@@ -119,13 +120,16 @@ private[akka] class InputStreamAdapter(
     if (isActive) {
       waitIfNotInitialized()
       f()
-    } else throw subscriberClosedException
+    } else
+      throw subscriberClosedException
 
   @scala.throws(classOf[IOException])
   override def read(): Int = {
     val a = Array[Byte](1)
-    if (read(a, 0, 1) != -1) a(0)
-    else -1
+    if (read(a, 0, 1) != -1)
+      a(0)
+    else
+      -1
   }
 
   @scala.throws(classOf[IOException])
@@ -168,14 +172,16 @@ private[akka] class InputStreamAdapter(
           case Some(data) ⇒
             readBytes(a, begin, length)
         }
-      } else -1)
+      } else
+        -1)
   }
 
   private[this] def readBytes(a: Array[Byte], begin: Int, length: Int): Int = {
     require(detachedChunk.nonEmpty, "Chunk must be pulled from shared buffer")
     val availableInChunk = detachedChunk.get.size
     val readBytes = getData(a, begin, length, 0)
-    if (readBytes >= availableInChunk) sendToStage(ReadElementAcknowledgement)
+    if (readBytes >= availableInChunk)
+      sendToStage(ReadElementAcknowledgement)
     readBytes
   }
 
@@ -183,7 +189,8 @@ private[akka] class InputStreamAdapter(
   override def close(): Unit = {
     executeIfNotClosed(() ⇒ {
       // at this point Subscriber may be already terminated
-      if (isStageAlive) sendToStage(Close)
+      if (isStageAlive)
+        sendToStage(Close)
       isActive = false
     })
   }

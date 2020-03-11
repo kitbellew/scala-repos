@@ -42,7 +42,8 @@ class StringReplacement {
   }
 
   def replaceAll(input: String): String = {
-    if (string.isNullOrEmpty(input)) return string.empty
+    if (string.isNullOrEmpty(input))
+      return string.empty
     return pattern.matcher(input).replaceAll(replaceWith)
   }
 

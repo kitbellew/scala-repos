@@ -74,7 +74,8 @@ final class Env(
       new RecaptchaGoogle(
         privateKey = RecaptchaPrivateKey,
         endpoint = RecaptchaEndpoint)
-    else RecaptchaSkip
+    else
+      RecaptchaSkip
 
   lazy val forms =
     new DataForm(captcher = captcher, emailAddress = emailAddress)
@@ -95,7 +96,8 @@ final class Env(
         sender = EmailConfirmMailgunSender,
         baseUrl = EmailConfirmMailgunBaseUrl,
         secret = EmailConfirmSecret)
-    else EmailConfirmSkip
+    else
+      EmailConfirmSkip
 
   lazy val passwordReset = new PasswordReset(
     apiUrl = PasswordResetMailgunApiUrl,

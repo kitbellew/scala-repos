@@ -855,7 +855,8 @@ trait GrouperSpec[M[+_]]
     var firstMerge = 0L
 
     val result = Table.merge(intersection) { (key, map) =>
-      if (firstMerge == 0) firstMerge = System.currentTimeMillis
+      if (firstMerge == 0)
+        firstMerge = System.currentTimeMillis
       val start = System.currentTimeMillis
       for {
         gs1 <- map(groupId1)

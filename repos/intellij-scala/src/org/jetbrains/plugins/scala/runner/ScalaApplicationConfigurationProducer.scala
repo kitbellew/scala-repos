@@ -43,11 +43,14 @@ abstract class BaseScalaApplicationConfigurationProducer[
       context: ConfigurationContext,
       configuration: T): Boolean = {
     val location = JavaExecutionUtil.stepIntoSingleClass(_location)
-    if (location == null) return false
+    if (location == null)
+      return false
     val element: PsiElement = location.getPsiElement
     val containingFile = element.getContainingFile
-    if (!containingFile.isInstanceOf[ScalaFile]) return false
-    if (!element.isPhysical) return false
+    if (!containingFile.isInstanceOf[ScalaFile])
+      return false
+    if (!element.isPhysical)
+      return false
     var currentElement: PsiElement = element
     var method: PsiMethod = findMain(currentElement)
     while (method != null) {
@@ -65,7 +68,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
       method = findMain(currentElement)
     }
     val aClass: PsiClass = getMainClass(element)
-    if (aClass == null) return false
+    if (aClass == null)
+      return false
     myPsiElement = aClass
     createConfiguration(aClass, context, location, configuration)
     true
@@ -113,13 +117,16 @@ abstract class BaseScalaApplicationConfigurationProducer[
       configuration: T,
       context: ConfigurationContext): Boolean = {
     val location = context.getLocation
-    if (location == null) return false
+    if (location == null)
+      return false
     //use fast psi location check to filter off obvious candidates
     if (context.getPsiLocation == null || !hasClassAncestorWithName(
           context.getPsiLocation,
-          configuration.MAIN_CLASS_NAME)) return false
+          configuration.MAIN_CLASS_NAME))
+      return false
     val aClass: PsiClass = getMainClass(context.getPsiLocation)
-    if (aClass == null) return false
+    if (aClass == null)
+      return false
     val predefinedModule: Module = RunManagerEx
       .getInstanceEx(location.getProject)
       .asInstanceOf[RunManagerImpl]
@@ -138,11 +145,14 @@ abstract class BaseScalaApplicationConfigurationProducer[
       context: ConfigurationContext,
       sourceElement: Ref[PsiElement]): Boolean = {
     val location = JavaExecutionUtil.stepIntoSingleClass(context.getLocation)
-    if (location == null) return false
+    if (location == null)
+      return false
     val element: PsiElement = location.getPsiElement
     val containingFile = element.getContainingFile
-    if (!containingFile.isInstanceOf[ScalaFile]) return false
-    if (!element.isPhysical) return false
+    if (!containingFile.isInstanceOf[ScalaFile])
+      return false
+    if (!element.isPhysical)
+      return false
     var currentElement: PsiElement = element
     var method: PsiMethod = findMain(currentElement)
     while (method != null) {
@@ -161,7 +171,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
       method = findMain(currentElement)
     }
     val aClass: PsiClass = getMainClass(element)
-    if (aClass == null) return false
+    if (aClass == null)
+      return false
     myPsiElement = aClass
     createConfiguration(aClass, context, location, configuration)
     sourceElement.set(myPsiElement)
@@ -181,16 +192,21 @@ object ScalaApplicationConfigurationProducer {
     while (element != null) {
       element match {
         case clazz: PsiClassWrapper =>
-          if (PsiMethodUtil.findMainInClass(clazz) != null) return clazz
-          else if (firstTemplateDefOnly) return null
+          if (PsiMethodUtil.findMainInClass(clazz) != null)
+            return clazz
+          else if (firstTemplateDefOnly)
+            return null
         case o: ScObject =>
           val aClass = o.fakeCompanionClassOrCompanionClass
-          if (PsiMethodUtil.findMainInClass(aClass) != null) return aClass
-          else if (firstTemplateDefOnly) return null
+          if (PsiMethodUtil.findMainInClass(aClass) != null)
+            return aClass
+          else if (firstTemplateDefOnly)
+            return null
         case file: ScalaFile if !firstTemplateDefOnly =>
           val classes: Array[PsiClass] = file.getClasses //this call is ok
           for (aClass <- classes) {
-            if (PsiMethodUtil.findMainInClass(aClass) != null) return aClass
+            if (PsiMethodUtil.findMainInClass(aClass) != null)
+              return aClass
           }
         case _ =>
       }
@@ -224,7 +240,10 @@ object ScalaApplicationConfigurationProducer {
       isMainMethod(method) match {
         case Some(mainMethod) => return mainMethod
         case _ =>
-          if (firstContMethodOnly) return null else element = method.getParent
+          if (firstContMethodOnly)
+            return null
+          else
+            element = method.getParent
       }
       method = getContainingMethod(element)
     }

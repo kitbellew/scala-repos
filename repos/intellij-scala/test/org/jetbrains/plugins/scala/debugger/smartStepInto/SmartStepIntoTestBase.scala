@@ -64,7 +64,8 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
       source: String,
       methodName: String,
       line: Int) = {
-    if (targets == null) targets = availableSmartStepTargets()
+    if (targets == null)
+      targets = availableSmartStepTargets()
     val sst = targets.find(_.getPresentation == target)
     Assert.assertTrue(s"Cannot find such target: $target", sst.isDefined)
     doSmartStepInto(sst.get)

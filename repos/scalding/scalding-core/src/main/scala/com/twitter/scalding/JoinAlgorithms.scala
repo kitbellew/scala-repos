@@ -124,7 +124,8 @@ trait JoinAlgorithms {
           // If we renamed, get the rename, else just use the field
           if (collisions(fname)) {
             rename(fname)
-          } else fname
+          } else
+            fname
         }: _*)
     val renamedPipe = p.rename(orig -> temp)
     (renamedPipe, newJoinKeys, temp)
@@ -376,10 +377,12 @@ trait JoinAlgorithms {
     p.using(new Random(Seed) with Stateful).flatMap(() -> f) {
       (rand: Random, _: Unit) =>
         val rfs = getReplicationFields(rand, replication, otherReplication)
-        if (swap) rfs.map {
-          case (i, j) => (j, i)
-        }
-        else rfs
+        if (swap)
+          rfs.map {
+            case (i, j) => (j, i)
+          }
+        else
+          rfs
     }
   }
 
@@ -566,8 +569,10 @@ trait JoinAlgorithms {
         .discard(leftReplicationFields)
         .discard(rightReplicationFields)
 
-    if (intersection.isEmpty) joinedPipe
-    else joinedPipe.discard(dupeFields)
+    if (intersection.isEmpty)
+      joinedPipe
+    else
+      joinedPipe.discard(dupeFields)
   }
 
   def skewJoinWithLarger(
@@ -628,9 +633,15 @@ trait JoinAlgorithms {
             replicator.getReplications(counts._1, counts._2, numReducers)
 
           val (rep, otherRep) =
-            if (isPipeOnRight) (rightRep, leftRep) else (leftRep, rightRep)
+            if (isPipeOnRight)
+              (rightRep, leftRep)
+            else
+              (leftRep, rightRep)
           val rfs = getReplicationFields(rand, rep, otherRep)
-          if (isPipeOnRight) rfs.map(_.swap) else rfs
+          if (isPipeOnRight)
+            rfs.map(_.swap)
+          else
+            rfs
       }
       .discard(renamedFields)
       .discard(countFields)

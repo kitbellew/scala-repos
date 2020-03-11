@@ -88,7 +88,10 @@ object ActorPath {
     */
   final def validatePathElement(element: String, fullPath: String): Unit = {
     def fullPathMsg =
-      if (fullPath ne null) s""" (in path [$fullPath])""" else ""
+      if (fullPath ne null)
+        s""" (in path [$fullPath])"""
+      else
+        ""
 
     (findInvalidPathElementCharPosition(element): @switch) match {
       case ValidPathCode ⇒
@@ -117,7 +120,8 @@ object ActorPath {
     findInvalidPathElementCharPosition(s) == ValidPathCode
 
   private final def findInvalidPathElementCharPosition(s: String): Int =
-    if (s.isEmpty) EmptyPathCode
+    if (s.isEmpty)
+      EmptyPathCode
     else {
       def isValidChar(c: Char): Boolean =
         (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (ValidSymbols
@@ -137,9 +141,13 @@ object ActorPath {
               validate(pos + 3)
             case _ ⇒ pos
           }
-        else ValidPathCode
+        else
+          ValidPathCode
 
-      if (len > 0 && s.charAt(0) != '$') validate(0) else 0
+      if (len > 0 && s.charAt(0) != '$')
+        validate(0)
+      else
+        0
     }
 
   private[akka] final val emptyActorPath: immutable.Iterable[String] = List("")
@@ -195,7 +203,11 @@ sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
     * Recursively create a descendant’s path by appending all child names.
     */
   def /(child: Iterable[String]): ActorPath =
-    (this /: child)((path, elem) ⇒ if (elem.isEmpty) path else path / elem)
+    (this /: child)((path, elem) ⇒
+      if (elem.isEmpty)
+        path
+      else
+        path / elem)
 
   /**
     * Java API: Recursively create a descendant’s path by appending all child names.
@@ -297,8 +309,10 @@ final case class RootActorPath(address: Address, name: String = "/")
   override val toSerializationFormat: String = toString
 
   override def toStringWithAddress(addr: Address): String =
-    if (address.host.isDefined) address + name
-    else addr + name
+    if (address.host.isDefined)
+      address + name
+    else
+      addr + name
 
   override def toSerializationFormatWithAddress(addr: Address): String =
     toStringWithAddress(addr)
@@ -318,7 +332,8 @@ final case class RootActorPath(address: Address, name: String = "/")
     * INTERNAL API
     */
   override private[akka] def withUid(uid: Int): ActorPath =
-    if (uid == ActorCell.undefinedUid) this
+    if (uid == ActorCell.undefinedUid)
+      this
     else
       throw new IllegalStateException(
         s"RootActorPath must have undefinedUid, [$uid != ${ActorCell.undefinedUid}")
@@ -371,8 +386,10 @@ final class ChildActorPath private[akka] (
     * INTERNAL API
     */
   override private[akka] def withUid(uid: Int): ActorPath =
-    if (uid == this.uid) this
-    else new ChildActorPath(parent, name, uid)
+    if (uid == this.uid)
+      this
+    else
+      new ChildActorPath(parent, name, uid)
 
   override def toString: String = {
     val length = toStringLength
@@ -416,8 +433,10 @@ final class ChildActorPath private[akka] (
 
   private def addressStringLengthDiff(addr: Address): Int = {
     val r = root
-    if (r.address.host.isDefined) 0
-    else (addr.toString.length - r.address.toString.length)
+    if (r.address.host.isDefined)
+      0
+    else
+      (addr.toString.length - r.address.toString.length)
   }
 
   /**
@@ -454,17 +473,23 @@ final class ChildActorPath private[akka] (
   }
 
   private def appendUidFragment(sb: JStringBuilder): JStringBuilder = {
-    if (uid == ActorCell.undefinedUid) sb
-    else sb.append("#").append(uid)
+    if (uid == ActorCell.undefinedUid)
+      sb
+    else
+      sb.append("#").append(uid)
   }
 
   override def equals(other: Any): Boolean = {
     @tailrec
     def rec(left: ActorPath, right: ActorPath): Boolean =
-      if (left eq right) true
-      else if (left.isInstanceOf[RootActorPath]) left equals right
-      else if (right.isInstanceOf[RootActorPath]) right equals left
-      else left.name == right.name && rec(left.parent, right.parent)
+      if (left eq right)
+        true
+      else if (left.isInstanceOf[RootActorPath])
+        left equals right
+      else if (right.isInstanceOf[RootActorPath])
+        right equals left
+      else
+        left.name == right.name && rec(left.parent, right.parent)
 
     other match {
       case p: ActorPath ⇒ rec(this, p)
@@ -493,13 +518,18 @@ final class ChildActorPath private[akka] (
   override def compareTo(other: ActorPath): Int = {
     @tailrec
     def rec(left: ActorPath, right: ActorPath): Int =
-      if (left eq right) 0
-      else if (left.isInstanceOf[RootActorPath]) left compareTo right
-      else if (right.isInstanceOf[RootActorPath]) -(right compareTo left)
+      if (left eq right)
+        0
+      else if (left.isInstanceOf[RootActorPath])
+        left compareTo right
+      else if (right.isInstanceOf[RootActorPath])
+        -(right compareTo left)
       else {
         val x = left.name compareTo right.name
-        if (x == 0) rec(left.parent, right.parent)
-        else x
+        if (x == 0)
+          rec(left.parent, right.parent)
+        else
+          x
       }
 
     rec(this, other)

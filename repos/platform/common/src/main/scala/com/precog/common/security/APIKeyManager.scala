@@ -106,7 +106,8 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
   def findAPIKeyAncestry(apiKey: APIKey): M[List[APIKeyRecord]] = {
     findAPIKey(apiKey) flatMap {
       case Some(keyRecord) =>
-        if (keyRecord.issuerKey == apiKey) M.point(List(keyRecord))
+        if (keyRecord.issuerKey == apiKey)
+          M.point(List(keyRecord))
         else
           findAPIKeyAncestry(keyRecord.issuerKey) map {
             keyRecord :: _
@@ -141,7 +142,8 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       at: Option[DateTime] = None): M[Option[Grant]] =
     findGrant(grantId) flatMap { grantOpt =>
       grantOpt map { (grant: Grant) =>
-        if (grant.isExpired(at)) None.point[M]
+        if (grant.isExpired(at))
+          None.point[M]
         else
           grant.parentIds.foldLeft(some(grant).point[M]) {
             case (accM, parentId) =>
@@ -178,7 +180,8 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       perms: Set[Permission],
       expiration: Option[DateTime] = None): M[Option[Grant]] = {
     validGrants(issuerKey, expiration).flatMap { grants =>
-      if (!Grant.implies(grants, perms, expiration)) none[Grant].point[M]
+      if (!Grant.implies(grants, perms, expiration))
+        none[Grant].point[M]
       else {
         val minimized =
           Grant.coveringGrants(grants, perms, expiration).map(_.grantId)

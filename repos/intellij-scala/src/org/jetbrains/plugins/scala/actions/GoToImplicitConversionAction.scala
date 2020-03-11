@@ -56,9 +56,11 @@ class GoToImplicitConversionAction
     val context = e.getDataContext
     val project = CommonDataKeys.PROJECT.getData(context)
     val editor = CommonDataKeys.EDITOR.getData(context)
-    if (project == null || editor == null) return
+    if (project == null || editor == null)
+      return
     val file = PsiUtilBase.getPsiFileInEditor(editor, project)
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     def forExpr(expr: ScExpression): Boolean = {
       val implicitConversions = { //todo: too complex logic, should be simplified, and moved into one place
@@ -66,25 +68,34 @@ class GoToImplicitConversionAction
         if (ScUnderScoreSectionUtil.isUnderscoreFunction(expr)) {
           val conv1 = expr.getImplicitConversions(fromUnder = false)
           val conv2 = expr.getImplicitConversions(fromUnder = true)
-          if (conv2._2.isDefined) conv2
-          else if (conv1._2.isDefined) conv1
+          if (conv2._2.isDefined)
+            conv2
+          else if (conv1._2.isDefined)
+            conv1
           else if (additionalExpression.isDefined) {
             val conv3 = additionalExpression.get._1.getImplicitConversions(
               fromUnder = false,
               expectedOption = Some(additionalExpression.get._2))
-            if (conv3._2.isDefined) conv3
-            else conv1
-          } else conv1
+            if (conv3._2.isDefined)
+              conv3
+            else
+              conv1
+          } else
+            conv1
         } else if (additionalExpression.isDefined) {
           val conv3 = additionalExpression.get._1.getImplicitConversions(
             fromUnder = false,
             expectedOption = Some(additionalExpression.get._2))
-          if (conv3._2.isDefined) conv3
-          else expr.getImplicitConversions(fromUnder = false)
-        } else expr.getImplicitConversions(fromUnder = false)
+          if (conv3._2.isDefined)
+            conv3
+          else
+            expr.getImplicitConversions(fromUnder = false)
+        } else
+          expr.getImplicitConversions(fromUnder = false)
       }
       val functions = implicitConversions._1
-      if (functions.isEmpty) return true
+      if (functions.isEmpty)
+        return true
       val conversionFun = implicitConversions._2.orNull
       val model = JListCompatibility.createDefaultListModel()
       val firstPart = implicitConversions._3.sortBy(_.name)
@@ -94,12 +105,14 @@ class GoToImplicitConversionAction
       for (element <- firstPart) {
         val elem = new Parameters(element, expr, editor, firstPart, secondPart)
         JListCompatibility.addElement(model, elem)
-        if (element == conversionFun) actualIndex = model.indexOf(elem)
+        if (element == conversionFun)
+          actualIndex = model.indexOf(elem)
       }
       for (element <- secondPart) {
         val elem = new Parameters(element, expr, editor, firstPart, secondPart)
         JListCompatibility.addElement(model, elem)
-        if (element == conversionFun) actualIndex = model.indexOf(elem)
+        if (element == conversionFun)
+          actualIndex = model.indexOf(elem)
       }
       val list = JListCompatibility.createJListFromModel(model)
       val renderer = new ScImplicitFunctionListCellRenderer(conversionFun)
@@ -112,7 +125,8 @@ class GoToImplicitConversionAction
           def valueChanged(e: ListSelectionEvent) {
             hintAlarm.cancelAllRequests
             val item = list.getSelectedValue.asInstanceOf[Parameters]
-            if (item == null) return
+            if (item == null)
+              return
             updateHint(item, project)
           }
         })
@@ -166,7 +180,8 @@ class GoToImplicitConversionAction
         selectionEnd)
       opt match {
         case Some((expr, _)) =>
-          if (forExpr(expr)) return
+          if (forExpr(expr))
+            return
         case _ =>
       }
     } else {
@@ -216,8 +231,10 @@ class GoToImplicitConversionAction
       }
       val expressions = {
         val falseGuard = getExpressions(guard = false)
-        if (falseGuard.length != 0) falseGuard
-        else getExpressions(guard = true)
+        if (falseGuard.length != 0)
+          falseGuard
+        else
+          getExpressions(guard = true)
       }
       def chooseExpression(expr: ScExpression) {
         editor.getSelectionModel.setSelection(
@@ -313,7 +330,8 @@ class GoToImplicitConversionAction
                 case fun: ScFunction => fun
                 case _               => null
               }
-            if (function == null) return
+            if (function == null)
+              return
 
             IntentionUtils.showMakeExplicitPopup(
               project,

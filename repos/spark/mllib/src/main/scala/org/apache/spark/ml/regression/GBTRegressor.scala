@@ -285,7 +285,11 @@ private[ml] object GBTRegressionModel {
       // parent for each tree is null since there is no good way to set this.
       DecisionTreeRegressionModel.fromOld(tree, null, categoricalFeatures)
     }
-    val uid = if (parent != null) parent.uid else Identifiable.randomUID("gbtr")
+    val uid =
+      if (parent != null)
+        parent.uid
+      else
+        Identifiable.randomUID("gbtr")
     new GBTRegressionModel(
       parent.uid,
       newTrees,

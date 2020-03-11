@@ -53,7 +53,8 @@ private[timer] class TimerTaskList(taskCounter: AtomicInteger) extends Delayed {
       while (entry ne root) {
         val nextEntry = entry.next
 
-        if (!entry.cancelled) f(entry.timerTask)
+        if (!entry.cancelled)
+          f(entry.timerTask)
 
         entry = nextEntry
       }
@@ -126,9 +127,12 @@ private[timer] class TimerTaskList(taskCounter: AtomicInteger) extends Delayed {
 
     val other = d.asInstanceOf[TimerTaskList]
 
-    if (getExpiration < other.getExpiration) -1
-    else if (getExpiration > other.getExpiration) 1
-    else 0
+    if (getExpiration < other.getExpiration)
+      -1
+    else if (getExpiration > other.getExpiration)
+      1
+    else
+      0
   }
 
 }
@@ -142,7 +146,8 @@ private[timer] class TimerTaskEntry(val timerTask: TimerTask) {
 
   // if this timerTask is already held by an existing timer task entry,
   // setTimerTaskEntry will remove it.
-  if (timerTask != null) timerTask.setTimerTaskEntry(this)
+  if (timerTask != null)
+    timerTask.setTimerTaskEntry(this)
 
   def cancelled: Boolean = {
     timerTask.getTimerTaskEntry != this

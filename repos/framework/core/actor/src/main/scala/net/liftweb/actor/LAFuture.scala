@@ -55,7 +55,8 @@ class LAFuture[T](val scheduler: LAScheduler) {
             LAFuture.executeWithObservers(scheduler, () => f(Full(value))))
           onComplete = Nil
           ret
-        } else Nil
+        } else
+          Nil
       } finally {
         notifyAll()
       }
@@ -79,13 +80,18 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   @scala.annotation.tailrec
   final def get: T = synchronized {
-    if (satisfied) item
-    else if (aborted) throw new AbortedFutureException(failure)
+    if (satisfied)
+      item
+    else if (aborted)
+      throw new AbortedFutureException(failure)
     else {
       this.wait()
-      if (satisfied) item
-      else if (aborted) throw new AbortedFutureException(failure)
-      else get
+      if (satisfied)
+        item
+      else if (aborted)
+        throw new AbortedFutureException(failure)
+      else
+        get
     }
   }
 
@@ -139,14 +145,19 @@ class LAFuture[T](val scheduler: LAScheduler) {
     * Empty
     */
   def get(timeout: Long): Box[T] = synchronized {
-    if (satisfied) Full(item)
-    else if (aborted) failure
+    if (satisfied)
+      Full(item)
+    else if (aborted)
+      failure
     else {
       try {
         wait(timeout)
-        if (satisfied) Full(item)
-        else if (aborted) failure
-        else Empty
+        if (satisfied)
+          Full(item)
+        else if (aborted)
+          failure
+        else
+          Empty
       } catch {
         case _: InterruptedException => Empty
       }
@@ -196,7 +207,8 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def onFail(f: Box[Nothing] => Unit) {
     synchronized {
-      if (aborted) LAFuture.executeWithObservers(scheduler, () => f(failure))
+      if (aborted)
+        LAFuture.executeWithObservers(scheduler, () => f(failure))
       else if (!satisfied) {
         onFailure ::= f
       }
@@ -336,7 +348,11 @@ object LAFuture {
     */
   def observeCreation[T](observation: LAFuture[_] => Unit)(toDo: => T): T = {
     val old = threadInfo.get()
-    threadInfo.set(if (null eq old) List(observation) else observation :: old)
+    threadInfo.set(
+      if (null eq old)
+        List(observation)
+      else
+        observation :: old)
     try {
       toDo
     } finally {

@@ -41,7 +41,10 @@ import scalafx.scene.Node._
 
 object BorderPane {
   implicit def sfxBorderPane2jfx(v: BorderPane): jfxsl.BorderPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all borderpane constraints from the child node.

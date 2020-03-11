@@ -89,7 +89,8 @@ private[graphx] object BytecodeUtils {
     val className = cls.getName.replaceFirst("^.*\\.", "") + ".class"
     val resourceStream = cls.getResourceAsStream(className)
     // todo: Fixme - continuing with earlier behavior ...
-    if (resourceStream == null) return new ClassReader(resourceStream)
+    if (resourceStream == null)
+      return new ClassReader(resourceStream)
 
     val baos = new ByteArrayOutputStream(128)
     Utils.copyStream(resourceStream, baos, true)

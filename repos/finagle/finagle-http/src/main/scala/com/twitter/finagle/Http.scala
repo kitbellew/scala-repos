@@ -46,7 +46,11 @@ trait HttpRichClient { self: Client[Request, Response] =>
   def fetchUrl(url: String): Future[Response] = fetchUrl(new java.net.URL(url))
   def fetchUrl(url: java.net.URL): Future[Response] = {
     val addr = {
-      val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
+      val port =
+        if (url.getPort < 0)
+          url.getDefaultPort
+        else
+          url.getPort
       Address(url.getHost, port)
     }
     val req = http.RequestBuilder().url(url).buildGet()
@@ -130,7 +134,8 @@ object Http
             stats.statsReceiver,
             _.content.length,
             _.content.length).andThen(next)
-        else next
+        else
+          next
       }
     }
 

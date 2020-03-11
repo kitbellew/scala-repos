@@ -15,7 +15,9 @@ abstract class ParallelMapCheck[K, V](collname: String)
 
   property("gets iterated keys") = forAll(collectionPairs) {
     case (t, coll) =>
-      val containsT = for ((k, v) <- t) yield (coll.get(k) == Some(v))
+      val containsT =
+        for ((k, v) <- t)
+          yield (coll.get(k) == Some(v))
       val containsSelf = coll.map {
         case (k, v) => coll.get(k) == Some(v)
       }

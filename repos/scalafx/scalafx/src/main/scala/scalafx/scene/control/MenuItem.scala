@@ -45,7 +45,10 @@ import scalafx.scene.input.KeyCombination
 
 object MenuItem {
   implicit def sfxMenuItem2jfx(m: MenuItem): jfxsc.MenuItem =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 }
 
 class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)

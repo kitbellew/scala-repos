@@ -108,10 +108,12 @@ object PersistentActorStashingSpec {
       extends StashExamplePersistentActor(name) {
     val receiveCommand: Receive = commonBehavior orElse {
       case Cmd(data) ⇒
-        if (data == "b-2") throw new TestException("boom")
+        if (data == "b-2")
+          throw new TestException("boom")
         persist(Evt(data)) { evt ⇒
           updateState(evt)
-          if (data == "a") context.become(otherCommandHandler)
+          if (data == "a")
+            context.become(otherCommandHandler)
         }
     }
 

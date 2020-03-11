@@ -34,16 +34,16 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
               case Select(_ :@ NominalType(s, _), _)                      => s
               case Union(_, _ :@ CollectionType(_, NominalType(s, _)), _) => s
               case Comprehension(
-                  _,
-                  _ :@ CollectionType(_, NominalType(s, _)),
-                  _,
-                  _,
-                  _,
-                  _,
-                  _,
-                  _,
-                  _,
-                  _) if alwaysKeepSubqueryNames =>
+                    _,
+                    _ :@ CollectionType(_, NominalType(s, _)),
+                    _,
+                    _,
+                    _,
+                    _,
+                    _,
+                    _,
+                    _,
+                    _) if alwaysKeepSubqueryNames =>
                 s
             }
             .toSet
@@ -59,8 +59,10 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                 (Pure(ProductNode(ConstArray.empty), pts), pts)
               case Pure(StructNode(ch), pts) if unrefTSyms contains pts =>
                 val sel =
-                  if (ch.length == 1 && pts != top) ch(0)._2
-                  else if (pts != top) ProductNode(ch.map(_._2))
+                  if (ch.length == 1 && pts != top)
+                    ch(0)._2
+                  else if (pts != top)
+                    ProductNode(ch.map(_._2))
                   else
                     ProductNode(
                       ConstArray

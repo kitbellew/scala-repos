@@ -65,7 +65,11 @@ private[remote] class DefaultMessageDispatcher(
 
     lazy val payload: AnyRef =
       MessageSerializer.deserialize(system, serializedMessage)
-    def payloadClass: Class[_] = if (payload eq null) null else payload.getClass
+    def payloadClass: Class[_] =
+      if (payload eq null)
+        null
+      else
+        payload.getClass
     val sender: ActorRef = senderOption.getOrElse(system.deadLetters)
     val originalReceiver = recipient.path
 
@@ -78,12 +82,14 @@ private[remote] class DefaultMessageDispatcher(
         if (UntrustedMode)
           log.debug("dropping daemon message in untrusted mode")
         else {
-          if (LogReceive) log.debug("received daemon message {}", msgLog)
+          if (LogReceive)
+            log.debug("received daemon message {}", msgLog)
           remoteDaemon ! payload
         }
 
       case l @ (_: LocalRef | _: RepointableRef) if l.isLocal ⇒
-        if (LogReceive) log.debug("received local message {}", msgLog)
+        if (LogReceive)
+          log.debug("received local message {}", msgLog)
         payload match {
           case sel: ActorSelectionMessage ⇒
             if (UntrustedMode && (!TrustedSelectionPaths.contains(
@@ -108,7 +114,8 @@ private[remote] class DefaultMessageDispatcher(
 
       case r @ (_: RemoteRef | _: RepointableRef)
           if !r.isLocal && !UntrustedMode ⇒
-        if (LogReceive) log.debug("received remote-destined message {}", msgLog)
+        if (LogReceive)
+          log.debug("received remote-destined message {}", msgLog)
         if (provider.transport.addresses(recipientAddress))
           // if it was originally addressed to us but is in fact remote from our point of view (i.e. remote-deployed)
           r.!(payload)(sender)
@@ -270,7 +277,10 @@ private[remote] class ReliableDeliverySupervisor(
     case e @ (_: AssociationProblem) ⇒ Escalate
     case NonFatal(e) ⇒
       val causedBy =
-        if (e.getCause == null) "" else s"Caused by: [${e.getCause.getMessage}]"
+        if (e.getCause == null)
+          ""
+        else
+          s"Caused by: [${e.getCause.getMessage}]"
       log.warning(
         "Association with remote system [{}] has failed, address is now gated for [{}] ms. Reason: [{}] {}",
         remoteAddress,
@@ -287,7 +297,8 @@ private[remote] class ReliableDeliverySupervisor(
         currentHandle = None
         context.parent ! StoppedReading(self)
         Stop
-      } else Escalate
+      } else
+        Escalate
   }
 
   var currentHandle: Option[AkkaProtocolHandle] = handleOrActive
@@ -372,7 +383,8 @@ private[remote] class ReliableDeliverySupervisor(
         resendNacked()
       }
     case AttemptSysMsgRedelivery ⇒
-      if (uidConfirmed) resendAll()
+      if (uidConfirmed)
+        resendAll()
     case Terminated(_) ⇒
       currentHandle = None
       context.parent ! StoppedReading(self)
@@ -387,7 +399,8 @@ private[remote] class ReliableDeliverySupervisor(
       context.parent ! g
       // New system that has the same address as the old - need to start from fresh state
       uidConfirmed = true
-      if (uid.exists(_ != receivedUid)) reset()
+      if (uid.exists(_ != receivedUid))
+        reset()
       uid = Some(receivedUid)
       resendAll()
 
@@ -427,7 +440,8 @@ private[remote] class ReliableDeliverySupervisor(
         writer = createWriter()
         // Resending will be triggered by the incoming GotUid message after the connection finished
         goToActive()
-      } else goToIdle()
+      } else
+        goToIdle()
     case AttemptSysMsgRedelivery ⇒ // Ignore
     case s @ Send(msg: SystemMessage, _, _, _) ⇒
       tryBuffer(s.copy(seqOpt = Some(nextSeq())))
@@ -498,7 +512,8 @@ private[remote] class ReliableDeliverySupervisor(
       // Flow control by not sending more when we already have many outstanding.
       if (uidConfirmed && resendBuffer.nonAcked.size <= settings.SysResendLimit)
         writer ! sequencedSend
-    } else writer ! send
+    } else
+      writer ! send
 
   private def resendNacked(): Unit = resendBuffer.nacked foreach {
     writer ! _
@@ -738,7 +753,11 @@ private[remote] class EndpointWriter(
       DisassociatedEvent(localAddress, remoteAddress, inbound))
   }
 
-  def receive = if (handle.isEmpty) initializing else writing
+  def receive =
+    if (handle.isEmpty)
+      initializing
+    else
+      writing
 
   def initializing: Receive = {
     case s: Send ⇒
@@ -838,11 +857,14 @@ private[remote] class EndpointWriter(
           buffer.removeFirst()
           writeCount += 1
           writeLoop(count - 1)
-        } else false
-      else true
+        } else
+          false
+      else
+        true
 
     @tailrec def writePrioLoop(): Boolean =
-      if (prioBuffer.isEmpty) true
+      if (prioBuffer.isEmpty)
+        true
       else
         writeSend(prioBuffer.peek) && {
           prioBuffer.removeFirst();
@@ -1154,7 +1176,8 @@ private[remote] class EndpointReader(
     def merge(currentState: ResendState, oldState: ResendState): ResendState =
       if (currentState.uid == oldState.uid)
         ResendState(uid, oldState.buffer.mergeFrom(currentState.buffer))
-      else currentState
+      else
+        currentState
 
     @tailrec
     def updateSavedState(key: Link, expectedState: ResendState): Unit = {

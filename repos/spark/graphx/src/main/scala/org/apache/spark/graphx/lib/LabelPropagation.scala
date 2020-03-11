@@ -70,7 +70,10 @@ object LabelPropagation {
         vid: VertexId,
         attr: Long,
         message: Map[VertexId, Long]): VertexId = {
-      if (message.isEmpty) attr else message.maxBy(_._2)._1
+      if (message.isEmpty)
+        attr
+      else
+        message.maxBy(_._2)._1
     }
     val initialMessage = Map[VertexId, Long]()
     Pregel(lpaGraph, initialMessage, maxIterations = maxSteps)(

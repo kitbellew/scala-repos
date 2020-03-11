@@ -66,8 +66,10 @@ trait TestCodeGenerator {
               .fromURL(self.getClass.getResource(initScript))(Codec.UTF8)
               .getLines()
               .foreach { s =>
-                if (current eq null) current = s
-                else current = current + "\n" + s
+                if (current eq null)
+                  current = s
+                else
+                  current = current + "\n" + s
                 if (s.trim.endsWith(";")) {
                   if (useSingleLineStatements) {
                     current = current.substring(0, current.length - 1)
@@ -97,7 +99,8 @@ trait TestCodeGenerator {
           } finally db.close
         } finally tdb.cleanUpAfter()
         Some(s"$packageName.$objectName")
-      } else None
+      } else
+        None
 
     def generator: DBIO[SourceCodeGenerator] =
       tdb.profile.createModel(ignoreInvalidDefaults = false).map(new MyGen(_))
@@ -107,8 +110,10 @@ trait TestCodeGenerator {
     class MyGen(model: Model) extends SourceCodeGenerator(model) {
       override def entityName = sqlName => {
         val baseName = super.entityName(sqlName)
-        if (baseName.dropRight(3).last == 's') baseName.dropRight(4)
-        else baseName
+        if (baseName.dropRight(3).last == 's')
+          baseName.dropRight(4)
+        else
+          baseName
       }
       override def parentType =
         Some("com.typesafe.slick.testkit.util.TestCodeRunner.TestCase")
@@ -145,7 +150,8 @@ class TestCodeRunner(tests: TestCodeRunner.AllTests) {
           case e: ExecutionException => throw e.getCause
         } finally db.close()
       } finally tdb.cleanUpAfter()
-    } else println("- Test database is disabled")
+    } else
+      println("- Test database is disabled")
   }
 
   @Test def allTests = tests.clns.foreach(run)

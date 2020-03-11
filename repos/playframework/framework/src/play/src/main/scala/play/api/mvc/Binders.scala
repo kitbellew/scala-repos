@@ -369,7 +369,8 @@ object QueryStringBindable {
         if (value.length != 1)
           Left(
             s"Cannot parse parameter $key with value '$value' as Char: $key must be exactly one digit in length.")
-        else Right(value.charAt(0))
+        else
+          Right(value.charAt(0))
       }
     def unbind(key: String, value: Char) = key + "=" + value.toString
   }
@@ -604,9 +605,10 @@ object QueryStringBindable {
   private def unbindSeq[T: QueryStringBindable](
       key: String,
       values: Iterable[T]): String = {
-    (for (value <- values) yield {
-      implicitly[QueryStringBindable[T]].unbind(key, value)
-    }).mkString("&")
+    (for (value <- values)
+      yield {
+        implicitly[QueryStringBindable[T]].unbind(key, value)
+      }).mkString("&")
   }
 
   private def javascriptUnbindSeq(jsUnbindT: String) =
@@ -681,7 +683,8 @@ object PathBindable {
       if (value.length != 1)
         Left(
           s"Cannot parse parameter $key with value '$value' as Char: $key must be exactly one digit in length.")
-      else Right(value.charAt(0))
+      else
+        Right(value.charAt(0))
     }
     def unbind(key: String, value: Char) = value.toString
   }

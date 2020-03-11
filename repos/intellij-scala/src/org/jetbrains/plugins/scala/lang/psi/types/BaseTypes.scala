@@ -31,7 +31,8 @@ object BaseTypes {
             if (!notAll)
               BaseTypes.get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(
                 tp)
-            else Seq(tp)))
+            else
+              Seq(tp)))
       case ScDesignatorType(c: PsiClass) =>
         reduce(c.getSuperTypes.flatMap { p =>
           if (!notAll)
@@ -40,10 +41,12 @@ object BaseTypes {
               notAll,
               visitedAliases = visitedAliases) ++
               Seq(ScType.create(p, c.getProject))
-          else Seq(ScType.create(p, c.getProject))
+          else
+            Seq(ScType.create(p, c.getProject))
         })
       case ScDesignatorType(ta: ScTypeAliasDefinition) =>
-        if (visitedAliases.contains(ta)) return Seq.empty
+        if (visitedAliases.contains(ta))
+          return Seq.empty
         BaseTypes.get(
           ta.aliasedType.getOrElse(return Seq.empty),
           visitedAliases = visitedAliases + ta)
@@ -61,14 +64,16 @@ object BaseTypes {
       case p: ScProjectionType
           if p.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         val ta = p.actualElement.asInstanceOf[ScTypeAliasDefinition]
-        if (visitedAliases.contains(ta)) return Seq.empty
+        if (visitedAliases.contains(ta))
+          return Seq.empty
         BaseTypes.get(
           p.actualSubst.subst(ta.aliasedType.getOrElse(return Seq.empty)),
           visitedAliases = visitedAliases + ta)
       case ScParameterizedType(
-          ScDesignatorType(ta: ScTypeAliasDefinition),
-          args) =>
-        if (visitedAliases.contains(ta)) return Seq.empty
+            ScDesignatorType(ta: ScTypeAliasDefinition),
+            args) =>
+        if (visitedAliases.contains(ta))
+          return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
           ta.typeParameters.map(tp =>
             (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
@@ -79,7 +84,8 @@ object BaseTypes {
       case ScParameterizedType(p: ScProjectionType, args)
           if p.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         val ta = p.actualElement.asInstanceOf[ScTypeAliasDefinition]
-        if (visitedAliases.contains(ta)) return Seq.empty
+        if (visitedAliases.contains(ta))
+          return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
           ta.typeParameters.map(tp =>
             (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
@@ -98,7 +104,8 @@ object BaseTypes {
                   notAll,
                   visitedAliases = visitedAliases) ++ Seq(
                   p.substitutor.subst(tp))
-              else Seq(p.substitutor.subst(tp))
+              else
+                Seq(p.substitutor.subst(tp))
             })
           case Some(clazz) =>
             val s = p.substitutor
@@ -109,7 +116,8 @@ object BaseTypes {
                   notAll,
                   visitedAliases = visitedAliases) ++
                   Seq(s.subst(ScType.create(t, clazz.getProject)))
-              else Seq(s.subst(ScType.create(t, clazz.getProject)))
+              else
+                Seq(s.subst(ScType.create(t, clazz.getProject)))
             })
           case _ => Seq.empty
         }
@@ -119,7 +127,8 @@ object BaseTypes {
         }
       case ScCompoundType(comps, _, _) =>
         reduce(
-          if (notAll) comps
+          if (notAll)
+            comps
           else
             comps.flatMap(comp =>
               BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(
@@ -133,7 +142,8 @@ object BaseTypes {
                 BaseTypes.get(
                   s.subst(tp),
                   visitedAliases = visitedAliases) ++ Seq(s.subst(tp))
-              else Seq(s.subst(tp))
+              else
+                Seq(s.subst(tp))
             })
           case c: PsiClass =>
             reduce(c.getSuperTypes.flatMap { st =>
@@ -144,7 +154,8 @@ object BaseTypes {
                     s.subst(ScType.create(st, proj)),
                     visitedAliases = visitedAliases) ++ Seq(
                     s.subst(ScType.create(st, proj)))
-                else Seq(s.subst(ScType.create(st, proj)))
+                else
+                  Seq(s.subst(ScType.create(st, proj)))
               }
             })
           case _ => Seq.empty
@@ -167,7 +178,8 @@ object BaseTypes {
             case None     => true
             case Some(ts) => ts.find(t1 => !Conformance.conforms(t1, t)) == None
           }
-          if (isBest) res += ((c, t))
+          if (isBest)
+            res += ((c, t))
           all.addBinding(c, t)
         case None => //not a class type
       }

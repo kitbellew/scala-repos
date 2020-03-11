@@ -85,7 +85,11 @@ class NonlinearMinimizer(
     val s = init.copy
 
     val resultState = lbfgs.minimizeAndReturnState(primal, xHat)
-    val admmIters = if (maxIters < 0) max(400, 20 * z.length) else maxIters
+    val admmIters =
+      if (maxIters < 0)
+        max(400, 20 * z.length)
+      else
+        maxIters
     State(resultState, u, z, xHat, zOld, residual, s, admmIters, 0, false)
   }
 

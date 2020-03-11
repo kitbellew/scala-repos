@@ -124,8 +124,10 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       val t = nanoTime()
       val td = math.max(t - stamp, 0)
       val w = math.exp(-td / Tau)
-      if (rtt > cost) cost = rtt
-      else cost = cost * w + rtt * (1.0 - w)
+      if (rtt > cost)
+        cost = rtt
+      else
+        cost = cost * w + rtt * (1.0 - w)
       stamp = t
     }
 
@@ -136,8 +138,10 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       // If we don't have any latency history, we penalize the host on
       // the first probe. Otherwise, we factor in our current rate
       // assuming we were to schedule an additional request.
-      if (cost == 0.0 && pending != 0) Penalty + pending
-      else cost * (pending + 1)
+      if (cost == 0.0 && pending != 0)
+        Penalty + pending
+      else
+        cost * (pending + 1)
     }
 
     def start(): Long = synchronized {

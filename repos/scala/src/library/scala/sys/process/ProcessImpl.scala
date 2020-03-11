@@ -82,7 +82,8 @@ private[process] trait ProcessImpl {
         if (evaluateSecondProcess(codeA)) {
           val second = b.run(io)
           runInterruptible(second.exitValue())(second.destroy())
-        } else Some(codeA)
+        } else
+          Some(codeA)
       }
     }
   }
@@ -152,8 +153,10 @@ private[process] trait ProcessImpl {
       }
 
       val firstIO =
-        if (toError) defaultIO.withError(source.connectIn)
-        else defaultIO.withOutput(source.connectIn)
+        if (toError)
+          defaultIO.withError(source.connectIn)
+        else
+          defaultIO.withOutput(source.connectIn)
       val secondIO = defaultIO.withInput(sink.connectOut)
 
       val second =
@@ -173,7 +176,10 @@ private[process] trait ProcessImpl {
         val exit2 = second.exitValue()
         // Since file redirection (e.g. #>) is implemented as a piped process,
         // we ignore its exit value so cmd #> file doesn't always return 0.
-        if (b.hasExitValue) exit2 else exit1
+        if (b.hasExitValue)
+          exit2
+        else
+          exit1
       } {
         releaseResources(source, sink, first, second)
       }
@@ -190,7 +196,10 @@ private[process] trait ProcessImpl {
       try BasicIO.transferFully(src, dst)
       catch ioFailure(ioHandler)
       finally BasicIO close {
-        if (isSink) dst else src
+        if (isSink)
+          dst
+        else
+          src
       }
     }
     private def ioHandler(e: IOException) {
@@ -284,7 +293,10 @@ private[process] trait ProcessImpl {
     override def isAlive() = thread.isAlive()
     override def exitValue() = {
       thread.join()
-      if (success.get) 0 else 1
+      if (success.get)
+        0
+      else
+        1
     }
     override def destroy() {
       thread.interrupt()

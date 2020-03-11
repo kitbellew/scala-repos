@@ -50,7 +50,8 @@ object TrampolineUsage extends App {
       n + 1
     else if (n <= 0)
       ack(m - 1, 1)
-    else ack(m - 1, ack(m, n - 1))
+    else
+      ack(m - 1, ack(m, n - 1))
 
   // Trampolined ackermann function. Never blows the stack, even for large inputs.
   def ackermann(m: Int, n: Int): Trampoline[Int] =

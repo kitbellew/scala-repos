@@ -155,8 +155,10 @@ class ExternalAppendOnlyMap[K, V, C](
     // a new closure each time
     var curEntry: Product2[K, V] = null
     val update: (Boolean, C) => C = (hadVal, oldVal) => {
-      if (hadVal) mergeValue(oldVal, curEntry._2)
-      else createCombiner(curEntry._2)
+      if (hadVal)
+        mergeValue(oldVal, curEntry._2)
+      else
+        createCombiner(curEntry._2)
     }
 
     while (entries.hasNext) {
@@ -434,9 +436,12 @@ class ExternalAppendOnlyMap[K, V, C](
 
       override def compareTo(other: StreamBuffer): Int = {
         // descending order because mutable.PriorityQueue dequeues the max, not the min
-        if (other.minKeyHash < minKeyHash) -1
-        else if (other.minKeyHash == minKeyHash) 0
-        else 1
+        if (other.minKeyHash < minKeyHash)
+          -1
+        else if (other.minKeyHash == minKeyHash)
+          0
+        else
+          1
       }
     }
   }
@@ -541,7 +546,11 @@ class ExternalAppendOnlyMap[K, V, C](
     }
 
     override def next(): (K, C) = {
-      val item = if (nextItem == null) readNextItem() else nextItem
+      val item =
+        if (nextItem == null)
+          readNextItem()
+        else
+          nextItem
       if (item == null) {
         throw new NoSuchElementException
       }
@@ -580,7 +589,10 @@ private[spark] object ExternalAppendOnlyMap {
     * Return the hash code of the given object. If the object is null, return a special hash code.
     */
   private def hash[T](obj: T): Int = {
-    if (obj == null) 0 else obj.hashCode()
+    if (obj == null)
+      0
+    else
+      obj.hashCode()
   }
 
   /**
@@ -590,7 +602,12 @@ private[spark] object ExternalAppendOnlyMap {
     def compare(key1: K, key2: K): Int = {
       val hash1 = hash(key1)
       val hash2 = hash(key2)
-      if (hash1 < hash2) -1 else if (hash1 == hash2) 0 else 1
+      if (hash1 < hash2)
+        -1
+      else if (hash1 == hash2)
+        0
+      else
+        1
     }
   }
 }

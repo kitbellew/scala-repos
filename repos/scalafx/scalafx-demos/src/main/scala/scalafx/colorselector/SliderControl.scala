@@ -109,7 +109,11 @@ class SliderControl(title: String) extends HBox {
 
   onScroll = (event: ScrollEvent) => {
     if (event.eventType == ScrollEvent.Scroll) {
-      val multiplier = if (event.isControlDown) 10 else 1
+      val multiplier =
+        if (event.isControlDown)
+          10
+        else
+          1
       val delta = -(event.getDeltaY.toInt / 10)
 
       value = (value.get + multiplier * delta)

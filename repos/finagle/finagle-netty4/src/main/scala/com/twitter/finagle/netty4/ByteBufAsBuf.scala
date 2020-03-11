@@ -69,7 +69,8 @@ private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
       val begin = underlying.arrayOffset + underlying.readerIndex
       val end = begin + underlying.readableBytes
       Some(new Buf.ByteArray(bytes, begin, end))
-    } else None
+    } else
+      None
 
   def length: Int = underlying.readableBytes
 
@@ -78,8 +79,10 @@ private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
       throw new IndexOutOfBoundsException(
         s"slice indexes must be >= 0, saw from: $from until: $until")
 
-    if (until <= from || from >= length) Buf.Empty
-    else if (from == 0 && until >= length) this
+    if (until <= from || from >= length)
+      Buf.Empty
+    else if (from == 0 && until >= length)
+      this
     else
       new ByteBufAsBuf(
         underlying.slice(from, Math.min((until - from), (length - from))))

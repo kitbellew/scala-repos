@@ -31,7 +31,10 @@ trait RingLaws[A] extends GroupLaws[A] {
     RingLaws[A](
       Equ,
       Arb,
-      if (replace) _pred else pred && _pred
+      if (replace)
+        _pred
+      else
+        pred && _pred
     )
 
   implicit def Arb: Arbitrary[A]

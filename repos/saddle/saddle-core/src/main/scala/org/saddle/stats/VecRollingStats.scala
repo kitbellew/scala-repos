@@ -73,10 +73,13 @@ class RollingCount[@spec(Int, Long, Double) A: ST: Vec2Stats: NUM]
     if (i == 0) {
       s = v.count
       i += 1
-      if (v.length > 0) p = v.first
+      if (v.length > 0)
+        p = v.first
     } else {
-      if (!p.isNA) s -= 1
-      if (!v.last.isNA) s += 1
+      if (!p.isNA)
+        s -= 1
+      if (!v.last.isNA)
+        s += 1
       p = v.first
     }
     s
@@ -96,10 +99,13 @@ class RollingSum[@spec(Int, Long, Double) A: ST: AddOp: SubOp: Vec2Stats: NUM]
     if (i == 0) {
       s = v.sum
       i += 1
-      if (v.length > 0) p = v.first
+      if (v.length > 0)
+        p = v.first
     } else {
-      if (!p.isNA) s = sub(s, p.get)
-      if (!v.last.isNA) s = add(s, v.last.get)
+      if (!p.isNA)
+        s = sub(s, p.get)
+      if (!v.last.isNA)
+        s = add(s, v.last.get)
       p = v.first
     }
     s
@@ -119,7 +125,8 @@ class RollingMean[@spec(Int, Long, Double) A: ST: Vec2Stats: NUM]
       s = sa.toDouble(v.sum)
       c = v.count
       i += 1
-      if (v.length > 0) p = v.first
+      if (v.length > 0)
+        p = v.first
     } else {
       if (!p.isNA) {
         s -= sa.toDouble(p.get)
@@ -141,7 +148,11 @@ class RollingMedian[@spec(Int, Long, Double) A: ST: Vec2Stats: NUM](
   val sa = implicitly[ST[A]]
 
   val len = origv.length
-  val win = if (winSz > len) len else winSz
+  val win =
+    if (winSz > len)
+      len
+    else
+      winSz
 
   def evaluate: Vec[Double] = {
     if (len == 0 || winSz <= 0)

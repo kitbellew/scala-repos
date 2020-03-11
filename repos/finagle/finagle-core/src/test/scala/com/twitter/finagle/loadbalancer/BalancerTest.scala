@@ -100,7 +100,9 @@ private class BalancerTest
 
   val genStatus = Gen.oneOf(Status.Open, Status.Busy, Status.Closed)
   val genSvcFac = genStatus.map(newFac)
-  val genLoadedNode = for (fac <- genSvcFac) yield fac
+  val genLoadedNode =
+    for (fac <- genSvcFac)
+      yield fac
   val genNodes =
     Gen.containerOf[List, ServiceFactory[Unit, Unit]](genLoadedNode)
 

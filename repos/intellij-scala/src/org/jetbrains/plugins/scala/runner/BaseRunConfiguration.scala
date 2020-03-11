@@ -33,7 +33,10 @@ abstract class BaseRunConfiguration(
   val defaultJavaOptions = "-Djline.terminal=NONE"
   val useJavaCp = "-usejavacp"
   def ensureUsesJavaCpByDefault(s: String) =
-    if (s == null || s.isEmpty) useJavaCp else s
+    if (s == null || s.isEmpty)
+      useJavaCp
+    else
+      s
   private var myConsoleArgs = ""
   def consoleArgs = ensureUsesJavaCpByDefault(this.myConsoleArgs)
   def consoleArgs_=(s: String) =
@@ -58,7 +61,8 @@ abstract class BaseRunConfiguration(
     javaOptions = JDOMExternalizer.readString(element, "vmparams4")
     if (javaOptions == null) {
       javaOptions = JDOMExternalizer.readString(element, "vmparams")
-      if (javaOptions != null) javaOptions += s" $defaultJavaOptions"
+      if (javaOptions != null)
+        javaOptions += s" $defaultJavaOptions"
     }
     val str = JDOMExternalizer.readString(element, "workingDirectory")
     if (str != null)
@@ -67,7 +71,8 @@ abstract class BaseRunConfiguration(
 
   def createParams: JavaParameters = {
     val module = getModule
-    if (module == null) throw new ExecutionException("Module is not specified")
+    if (module == null)
+      throw new ExecutionException("Module is not specified")
 
     val scalaSdk = module.scalaSdk.getOrElse {
       throw new ExecutionException(

@@ -166,13 +166,15 @@ private[scalajs] final class ScalaJSClassEmitter(
       .asInstanceOf[js.VarRef]
       .ident
 
-    val parentVar = for (parentIdent <- tree.superClass) yield {
-      implicit val pos = parentIdent.pos
-      if (!tree.kind.isJSClass)
-        encodeClassVar(parentIdent.name)
-      else
-        genRawJSClassConstructor(linkedClassByName(parentIdent.name))
-    }
+    val parentVar =
+      for (parentIdent <- tree.superClass)
+        yield {
+          implicit val pos = parentIdent.pos
+          if (!tree.kind.isJSClass)
+            encodeClassVar(parentIdent.name)
+          else
+            genRawJSClassConstructor(linkedClassByName(parentIdent.name))
+        }
 
     js.ClassDef(Some(classIdent), parentVar, members)(tree.pos)
   }
@@ -244,8 +246,10 @@ private[scalajs] final class ScalaJSClassEmitter(
     }
 
     val inheritableCtorDef =
-      if (isJSClass) js.Skip()
-      else makeInheritableCtorDef(typeVar)
+      if (isJSClass)
+        js.Skip()
+      else
+        makeInheritableCtorDef(typeVar)
 
     js.Block(docComment, ctorDef, chainProto, inheritableCtorDef)
   }
@@ -417,7 +421,8 @@ private[scalajs] final class ScalaJSClassEmitter(
 
       // Optionally add getter
       val wget = {
-        if (property.getterBody == EmptyTree) base
+        if (property.getterBody == EmptyTree)
+          base
         else {
           val fun = desugarToFunction(
             this,
@@ -430,7 +435,8 @@ private[scalajs] final class ScalaJSClassEmitter(
       }
 
       // Optionally add setter
-      if (property.setterBody == EmptyTree) wget
+      if (property.setterBody == EmptyTree)
+        wget
       else {
         val fun = desugarToFunction(
           this,
@@ -453,7 +459,8 @@ private[scalajs] final class ScalaJSClassEmitter(
     val propName = genPropertyName(property.name)
 
     val getter = {
-      if (property.getterBody == EmptyTree) js.Skip()
+      if (property.getterBody == EmptyTree)
+        js.Skip()
       else {
         val fun = desugarToFunction(
           this,
@@ -466,7 +473,8 @@ private[scalajs] final class ScalaJSClassEmitter(
     }
 
     val setter = {
-      if (property.setterBody == EmptyTree) js.Skip()
+      if (property.setterBody == EmptyTree)
+        js.Skip()
       else {
         val fun = desugarToFunction(
           this,
@@ -749,13 +757,17 @@ private[scalajs] final class ScalaJSClassEmitter(
       kind == ClassKind.RawJSType || kind.isJSClass
 
     val isRawJSTypeParam =
-      if (isRawJSType) js.BooleanLiteral(true)
-      else js.Undefined()
+      if (isRawJSType)
+        js.BooleanLiteral(true)
+      else
+        js.Undefined()
 
     val parentData = if (linkingUnit.globalInfo.isParentDataAccessed) {
       tree.superClass.fold[js.Tree] {
-        if (isObjectClass) js.Null()
-        else js.Undefined()
+        if (isObjectClass)
+          js.Null()
+        else
+          js.Undefined()
       } { parent =>
         envField("d", parent.name)
       }
@@ -864,8 +876,10 @@ private[scalajs] final class ScalaJSClassEmitter(
       val assignModule = {
         val jsNew = js.New(encodeClassVar(className), Nil)
         val instantiateModule =
-          if (tree.kind == ClassKind.JSModuleClass) jsNew
-          else js.Apply(jsNew DOT js.Ident("init___"), Nil)
+          if (tree.kind == ClassKind.JSModuleClass)
+            jsNew
+          else
+            js.Apply(jsNew DOT js.Ident("init___"), Nil)
         moduleInstanceVar := instantiateModule
       }
 

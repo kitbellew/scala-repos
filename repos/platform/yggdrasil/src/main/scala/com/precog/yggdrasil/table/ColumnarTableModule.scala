@@ -103,8 +103,10 @@ object ColumnarTableModule extends Logging {
       suffix: String)(implicit M: Monad[M]): StreamT[M, CharBuffer] = {
     import scalaz.\/._
     def wrap(stream: StreamT[M, CharBuffer]) = {
-      if (prefix == "" && suffix == "") stream
-      else if (suffix == "") CharBuffer.wrap(prefix) :: stream
+      if (prefix == "" && suffix == "")
+        stream
+      else if (suffix == "")
+        CharBuffer.wrap(prefix) :: stream
       else if (prefix == "")
         stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
       else
@@ -119,8 +121,10 @@ object ColumnarTableModule extends Logging {
         case StreamT.Yield(slice, tail) =>
           val (stream, rendered2) = slice.renderJson[M](delimiter)
           val stream2 =
-            if (rendered && rendered2) CharBuffer.wrap(delimiter) :: stream
-            else stream
+            if (rendered && rendered2)
+              CharBuffer.wrap(delimiter) :: stream
+            else
+              stream
 
           StreamT.Skip(stream2 ++ foldFlatMap(tail(), rendered || rendered2))
 
@@ -185,17 +189,21 @@ object ColumnarTableModule extends Logging {
       def combine(that: Indices): Indices = {
         val buf = new mutable.ArrayBuffer[String](a.length)
         buf ++= a
-        that.getPaths.foreach(p => if (!m.contains(p)) buf.append(p))
+        that.getPaths.foreach(p =>
+          if (!m.contains(p))
+            buf.append(p))
         Indices.fromPaths(buf.toArray)
       }
       override def equals(that: Any): Boolean = that match {
         case that: Indices =>
           val len = n
-          if (len != that.size) return false
+          if (len != that.size)
+            return false
           var i = 0
           val paths = that.getPaths
           while (i < len) {
-            if (a(i) != paths(i)) return false
+            if (a(i) != paths(i))
+              return false
             i += 1
           }
           true
@@ -203,7 +211,8 @@ object ColumnarTableModule extends Logging {
           false
       }
       def writeToBuilder(sb: StringBuilder): Unit = {
-        if (n == 0) return ()
+        if (n == 0)
+          return ()
         sb.append(a(0))
         var i = 1
         val len = n
@@ -235,13 +244,18 @@ object ColumnarTableModule extends Logging {
 
     // these methods will quote CSV values for us
     // they could probably be a bit faster but are OK so far.
-    def quoteIfNeeded(s: String): String = if (needsQuoting(s)) quote(s) else s
+    def quoteIfNeeded(s: String): String =
+      if (needsQuoting(s))
+        quote(s)
+      else
+        s
     def quote(s: String): String = "\"" + s.replace("\"", "\"\"") + "\""
     def needsQuoting(s: String): Boolean = {
       var i = 0
       while (i < s.length) {
         val c = s.charAt(i)
-        if (c == ',' || c == '"' || c == '\r' || c == '\n') return true
+        if (c == ',' || c == '"' || c == '\r' || c == '\n')
+          return true
         i += 1
       }
       false
@@ -291,7 +305,8 @@ object ColumnarTableModule extends Logging {
       val height = slice.size
       val width = indices.size
 
-      if (width == 0) return (indices, CharBuffer.allocate(0))
+      if (width == 0)
+        return (indices, CharBuffer.allocate(0))
 
       val items = slice.columns.toArray
       val ncols = items.length
@@ -324,7 +339,8 @@ object ColumnarTableModule extends Logging {
         var i = 0
         while (i < ncols) {
           val s = columns(i)(row)
-          if (s != "") buckets(positions(i)) = s
+          if (s != "")
+            buckets(positions(i)) = s
           i += 1
         }
 
@@ -646,10 +662,16 @@ trait ColumnarTableModule[M[+_]]
           def normalizedKeys(
               index: TableIndex,
               keySchema: KeySchema): collection.Set[Key] = {
-            val schemaMap = for (k <- fullSchema) yield keySchema.indexOf(k)
+            val schemaMap =
+              for (k <- fullSchema)
+                yield keySchema.indexOf(k)
             for (key <- index.getUniqueKeys)
               yield for (k <- schemaMap)
-                yield if (k == -1) CUndefined else key(k)
+                yield
+                  if (k == -1)
+                    CUndefined
+                  else
+                    key(k)
           }
 
           def intersect(
@@ -677,7 +699,10 @@ trait ColumnarTableModule[M[+_]]
             // key with their subset.
             keys0.flatMap { key0 =>
               keys1.flatMap(key1 =>
-                if (consistent(key0, key1)) Some(merge(key0, key1)) else None)
+                if (consistent(key0, key1))
+                  Some(merge(key0, key1))
+                else
+                  None)
             }
           }
 
@@ -713,7 +738,8 @@ trait ColumnarTableModule[M[+_]]
               .map { indexedSource =>
                 val keySchema = indexedSource.keySchema
                 val projectedKeyIndices =
-                  for (k <- fullSchema) yield keySchema.indexOf(k)
+                  for (k <- fullSchema)
+                    yield keySchema.indexOf(k)
                 (indexedSource.index, projectedKeyIndices, groupKey)
               })
               .toList
@@ -1216,13 +1242,13 @@ trait ColumnarTableModule[M[+_]]
 
               rightStart match {
                 case Some(
-                    resetMarker @ SlicePosition(
-                      rightStartSliceId,
-                      rightStartPos,
-                      _,
-                      rightStartSlice,
-                      _,
-                      _)) =>
+                      resetMarker @ SlicePosition(
+                        rightStartSliceId,
+                        rightStartPos,
+                        _,
+                        rightStartSlice,
+                        _,
+                        _)) =>
                   // We're currently in a cartesian.
                   if (lpos < lhead.size && rpos < rhead.size) {
                     comparator.compare(lpos, rpos) match {
@@ -1250,23 +1276,23 @@ trait ColumnarTableModule[M[+_]]
                                 .format(lpos, rpos))
 
                           case Some(
-                              SlicePosition(
-                                endSliceId,
-                                endPos,
-                                _,
-                                endSlice,
-                                _,
-                                _)) if endSliceId == rSliceId =>
+                                SlicePosition(
+                                  endSliceId,
+                                  endPos,
+                                  _,
+                                  endSlice,
+                                  _,
+                                  _)) if endSliceId == rSliceId =>
                             buildRemappings(lpos, endPos, None, None, endRight)
 
                           case Some(
-                              rend @ SlicePosition(
-                                endSliceId,
-                                _,
-                                _,
-                                _,
-                                _,
-                                _)) =>
+                                rend @ SlicePosition(
+                                  endSliceId,
+                                  _,
+                                  _,
+                                  _,
+                                  _,
+                                  _)) =>
                             // Step out of buildRemappings so that we can restart with the current rightEnd
                             SkipRight(leftPosition.copy(pos = lpos), rend)
                         }
@@ -1897,7 +1923,10 @@ trait ColumnarTableModule[M[+_]]
                       next,
                       stream(
                         (
-                          if (next.size > 0) Some(curFilter) else prevFilter,
+                          if (next.size > 0)
+                            Some(curFilter)
+                          else
+                            prevFilter,
                           nextT),
                         sx))
                   }
@@ -2201,7 +2230,8 @@ trait ColumnarTableModule[M[+_]]
 
               var j = 0
               while (j < cols.length) {
-                if (cols(j) isDefinedAt row) RawBitSet.set(mask, j)
+                if (cols(j) isDefinedAt row)
+                  RawBitSet.set(mask, j)
                 j += 1
               }
 
@@ -2209,8 +2239,10 @@ trait ColumnarTableModule[M[+_]]
                 row + 1,
                 if (!contains(masks, mask) && !isZero(mask))
                   copyOf(mask, mask.length) :: masks
-                else masks)
-            } else masks
+                else
+                  masks)
+            } else
+              masks
           }
 
           build0(0, Nil)
@@ -2281,11 +2313,14 @@ trait ColumnarTableModule[M[+_]]
             StreamT.empty[M, Slice]
           })
           .point[M])
-      val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
-        logger.trace(logPrefix + " " + f(s));
-        s
-      }
-      else slices
+      val sliceEffect =
+        if (logger.isTraceEnabled)
+          slices map { s =>
+            logger.trace(logPrefix + " " + f(s));
+            s
+          }
+        else
+          slices
       Table(preludeEffect ++ sliceEffect ++ appendixEffect, size)
     }
 
@@ -2305,11 +2340,13 @@ trait ColumnarTableModule[M[+_]]
     }
 
     private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] = {
-      for (stream <- self.compact(Leaf(Source)).slices.toStream) yield {
-        for (slice <- stream;
-             i <- 0 until slice.size;
-             a <- f(slice, i)) yield a
-      }
+      for (stream <- self.compact(Leaf(Source)).slices.toStream)
+        yield {
+          for (slice <- stream;
+               i <- 0 until slice.size;
+               a <- f(slice, i))
+            yield a
+        }
     }
 
     def metrics = TableMetrics(readStarts.get, blockReads.get)

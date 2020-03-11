@@ -52,10 +52,14 @@ object Test extends App {
   var z = 0.0d
   var i = 0
   while (i < 10) {
-    if (i % 2 == 0) z = NaN
-    else z = NaN
+    if (i % 2 == 0)
+      z = NaN
+    else
+      z = NaN
     i += 1
   }
-  if (z.isNaN && i == 10) println("loop with NaN was good")
-  else println("loop with NaN was broken")
+  if (z.isNaN && i == 10)
+    println("loop with NaN was good")
+  else
+    println("loop with NaN was broken")
 }

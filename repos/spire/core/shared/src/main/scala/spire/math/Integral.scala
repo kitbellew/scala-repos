@@ -27,8 +27,10 @@ class IntegralOps[A](lhs: A)(implicit ev: Integral[A]) {
 
   def coerce(a: A): Long = {
     val n = ev.toBigInt(a)
-    if (Long.MinValue <= n && n <= Long.MaxValue) ev.toLong(a)
-    else throw new IllegalArgumentException(s"$lhs too large")
+    if (Long.MinValue <= n && n <= Long.MaxValue)
+      ev.toLong(a)
+    else
+      throw new IllegalArgumentException(s"$lhs too large")
   }
 
   def ! : BigInt = spire.math.fact(coerce(lhs))

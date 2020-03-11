@@ -53,11 +53,13 @@ class MainGenericRunner {
     val command =
       new GenericRunnerCommand(args.toList, (x: String) => errorFn(x))
 
-    if (!command.ok) return errorFn("\n" + command.shortUsageMsg)
+    if (!command.ok)
+      return errorFn("\n" + command.shortUsageMsg)
     else if (command.settings.version)
       return errorFn(
         "Scala code runner %s -- %s".format(versionString, copyrightString))
-    else if (command.shouldStopWithInfo) return errorFn("shouldStopWithInfo")
+    else if (command.shouldStopWithInfo)
+      return errorFn("shouldStopWithInfo")
 
     if (command.howToRun != AsObject)
       return errorFn("Scala.js runner can only run an object")

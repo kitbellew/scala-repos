@@ -178,13 +178,15 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       if (insnsRemoved) {
         val liveHandlerRemoved =
           removeEmptyExceptionHandlers(method).exists(h => liveLabels(h.start))
-        if (liveHandlerRemoved) removalRound()
+        if (liveHandlerRemoved)
+          removalRound()
       }
       insnsRemoved
     }
 
     val changed = removalRound()
-    if (changed) removeUnusedLocalVariableNodes(method)()
+    if (changed)
+      removeUnusedLocalVariableNodes(method)()
     unreachableCodeEliminated += method
     changed
   }
@@ -267,7 +269,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         requestStoreLoad: Boolean,
         firstIteration: Boolean,
         maxRecursion: Int = 10): (Boolean, Boolean) = {
-      if (maxRecursion == 0) return (false, false)
+      if (maxRecursion == 0)
+        return (false, false)
 
       traceIfChanged("beforeMethodOpt")
 
@@ -285,8 +288,10 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
           compilerSettings.YoptBoxUnbox ||
           compilerSettings.YoptCopyPropagation
       val (codeRemoved, liveLabels) =
-        if (runDCE) removeUnreachableCodeImpl(method, ownerClassName)
-        else (false, Set.empty[LabelNode])
+        if (runDCE)
+          removeUnreachableCodeImpl(method, ownerClassName)
+        else
+          (false, Set.empty[LabelNode])
       traceIfChanged("dce")
 
       // BOX-UNBOX
@@ -332,8 +337,10 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
 
       // STALE HANDLERS
       val removedHandlers =
-        if (runDCE) removeEmptyExceptionHandlers(method)
-        else Set.empty[TryCatchBlockNode]
+        if (runDCE)
+          removeEmptyExceptionHandlers(method)
+        else
+          Set.empty[TryCatchBlockNode]
       val handlersRemoved = removedHandlers.nonEmpty
       val liveHandlerRemoved = removedHandlers.exists(h => liveLabels(h.start))
       traceIfChanged("staleHandlers")
@@ -397,7 +404,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         if (compilerSettings.YoptUnreachableCode)
           unreachableCodeEliminated += method
         r
-      } else (false, false)
+      } else
+        (false, false)
 
     // (*) Removing stale local variable descriptors is required for correctness, see comment in `methodOptimizations`
     val localsRemoved =
@@ -405,17 +413,22 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         compactLocalVariables(method) // also removes unused
       else if (requireEliminateUnusedLocals)
         removeUnusedLocalVariableNodes(method)() // (*)
-      else false
+      else
+        false
     traceIfChanged("localVariables")
 
     val lineNumbersRemoved =
-      if (compilerSettings.YoptUnreachableCode) removeEmptyLineNumbers(method)
-      else false
+      if (compilerSettings.YoptUnreachableCode)
+        removeEmptyLineNumbers(method)
+      else
+        false
     traceIfChanged("lineNumbers")
 
     val labelsRemoved =
-      if (compilerSettings.YoptUnreachableCode) removeEmptyLabelNodes(method)
-      else false
+      if (compilerSettings.YoptUnreachableCode)
+        removeEmptyLabelNodes(method)
+      else
+        false
     traceIfChanged("labels")
 
     // assert that local variable annotations are empty (we don't emit them) - otherwise we'd have
@@ -465,64 +478,73 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         mutable.Map.empty[AbstractInsnNode, List[AbstractInsnNode]]
 
       val it = method.instructions.iterator()
-      while (it.hasNext) it.next() match {
-        case vi: VarInsnNode if isNull(vi, vi.`var`) =>
-          if (vi.getOpcode == ALOAD)
-            toReplace(vi) = List(new InsnNode(ACONST_NULL))
-          else if (vi.getOpcode == ASTORE)
-            for (frame <- frameAt(vi) if frame.peekStack(0) == NullValue)
-              toReplace(vi) = List(getPop(1))
+      while (it.hasNext)
+        it.next() match {
+          case vi: VarInsnNode if isNull(vi, vi.`var`) =>
+            if (vi.getOpcode == ALOAD)
+              toReplace(vi) = List(new InsnNode(ACONST_NULL))
+            else if (vi.getOpcode == ASTORE)
+              for (frame <- frameAt(vi) if frame.peekStack(0) == NullValue)
+                toReplace(vi) = List(getPop(1))
 
-        case ji: JumpInsnNode =>
-          val isIfNull = ji.getOpcode == IFNULL
-          val isIfNonNull = ji.getOpcode == IFNONNULL
-          if (isIfNull || isIfNonNull) for (frame <- frameAt(ji)) {
-            val nullness = frame.peekStack(0)
-            val taken =
-              nullness == NullValue && isIfNull || nullness == NotNullValue && isIfNonNull
-            val avoided =
-              nullness == NotNullValue && isIfNull || nullness == NullValue && isIfNonNull
-            if (taken || avoided) {
-              val jump =
-                if (taken) List(new JumpInsnNode(GOTO, ji.label)) else Nil
-              toReplace(ji) = getPop(1) :: jump
-            }
-          }
-          else {
-            val isIfEq = ji.getOpcode == IF_ACMPEQ
-            val isIfNe = ji.getOpcode == IF_ACMPNE
-            if (isIfEq || isIfNe) for (frame <- frameAt(ji)) {
-              val aNullness = frame.peekStack(1)
-              val bNullness = frame.peekStack(0)
-              val eq = aNullness == NullValue && bNullness == NullValue
-              val ne =
-                aNullness == NullValue && bNullness == NotNullValue || aNullness == NotNullValue && bNullness == NullValue
-              val taken = isIfEq && eq || isIfNe && ne
-              val avoided = isIfEq && ne || isIfNe && eq
-              if (taken || avoided) {
-                val jump =
-                  if (taken) List(new JumpInsnNode(GOTO, ji.label)) else Nil
-                toReplace(ji) = getPop(1) :: getPop(1) :: jump
+          case ji: JumpInsnNode =>
+            val isIfNull = ji.getOpcode == IFNULL
+            val isIfNonNull = ji.getOpcode == IFNONNULL
+            if (isIfNull || isIfNonNull)
+              for (frame <- frameAt(ji)) {
+                val nullness = frame.peekStack(0)
+                val taken =
+                  nullness == NullValue && isIfNull || nullness == NotNullValue && isIfNonNull
+                val avoided =
+                  nullness == NotNullValue && isIfNull || nullness == NullValue && isIfNonNull
+                if (taken || avoided) {
+                  val jump =
+                    if (taken)
+                      List(new JumpInsnNode(GOTO, ji.label))
+                    else
+                      Nil
+                  toReplace(ji) = getPop(1) :: jump
+                }
               }
+            else {
+              val isIfEq = ji.getOpcode == IF_ACMPEQ
+              val isIfNe = ji.getOpcode == IF_ACMPNE
+              if (isIfEq || isIfNe)
+                for (frame <- frameAt(ji)) {
+                  val aNullness = frame.peekStack(1)
+                  val bNullness = frame.peekStack(0)
+                  val eq = aNullness == NullValue && bNullness == NullValue
+                  val ne =
+                    aNullness == NullValue && bNullness == NotNullValue || aNullness == NotNullValue && bNullness == NullValue
+                  val taken = isIfEq && eq || isIfNe && ne
+                  val avoided = isIfEq && ne || isIfNe && eq
+                  if (taken || avoided) {
+                    val jump =
+                      if (taken)
+                        List(new JumpInsnNode(GOTO, ji.label))
+                      else
+                        Nil
+                    toReplace(ji) = getPop(1) :: getPop(1) :: jump
+                  }
+                }
             }
-          }
 
-        case ti: TypeInsnNode =>
-          if (ti.getOpcode == INSTANCEOF)
-            for (frame <- frameAt(ti) if frame.peekStack(0) == NullValue) {
-              toReplace(ti) = List(getPop(1), new InsnNode(ICONST_0))
-            }
+          case ti: TypeInsnNode =>
+            if (ti.getOpcode == INSTANCEOF)
+              for (frame <- frameAt(ti) if frame.peekStack(0) == NullValue) {
+                toReplace(ti) = List(getPop(1), new InsnNode(ICONST_0))
+              }
 
-        case mi: MethodInsnNode =>
-          if (isScalaUnbox(mi))
-            for (frame <- frameAt(mi) if frame.peekStack(0) == NullValue) {
-              toReplace(mi) = List(
-                getPop(1),
-                loadZeroForTypeSort(Type.getReturnType(mi.desc).getSort))
-            }
+          case mi: MethodInsnNode =>
+            if (isScalaUnbox(mi))
+              for (frame <- frameAt(mi) if frame.peekStack(0) == NullValue) {
+                toReplace(mi) = List(
+                  getPop(1),
+                  loadZeroForTypeSort(Type.getReturnType(mi.desc).getSort))
+              }
 
-        case _ =>
-      }
+          case _ =>
+        }
 
       def removeFromCallGraph(insn: AbstractInsnNode): Unit = insn match {
         case mi: MethodInsnNode => callGraph.removeCallsite(mi, method)
@@ -530,7 +552,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       }
 
       for ((oldOp, newOps) <- toReplace) {
-        for (newOp <- newOps) method.instructions.insertBefore(oldOp, newOp)
+        for (newOp <- newOps)
+          method.instructions.insertBefore(oldOp, newOp)
         method.instructions.remove(oldOp)
         removeFromCallGraph(oldOp)
       }
@@ -559,15 +582,21 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     while (itr.hasNext) {
       val insn = itr.next()
       val isLive = frames(i) != null
-      if (isLive) maxStack = math.max(maxStack, frames(i).getStackSize)
+      if (isLive)
+        maxStack = math.max(maxStack, frames(i).getStackSize)
 
       insn match {
         case l: LabelNode =>
           // label nodes are not removed: they might be referenced for example in a LocalVariableNode
-          if (isLive) liveLabels += l
+          if (isLive)
+            liveLabels += l
 
         case v: VarInsnNode if isLive =>
-          val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
+          val longSize =
+            if (isSize2LoadOrStore(v.getOpcode))
+              1
+            else
+              0
           maxLocals = math.max(
             maxLocals,
             v.`var` + longSize + 1
@@ -627,18 +656,19 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       val toRemove = mutable.Set.empty[TypeInsnNode]
 
       val it = method.instructions.iterator()
-      while (it.hasNext) it.next() match {
-        case ti: TypeInsnNode if ti.getOpcode == CHECKCAST =>
-          val frame = typeAnalyzer.frameAt(ti)
-          val valueTp = frame.getValue(frame.stackTop)
-          if (valueTp.isReference && isSubType(
-                valueTp.getType.getDescriptor,
-                ti.desc)) {
-            toRemove += ti
-          }
+      while (it.hasNext)
+        it.next() match {
+          case ti: TypeInsnNode if ti.getOpcode == CHECKCAST =>
+            val frame = typeAnalyzer.frameAt(ti)
+            val valueTp = frame.getValue(frame.stackTop)
+            if (valueTp.isReference && isSubType(
+                  valueTp.getType.getDescriptor,
+                  ti.desc)) {
+              toRemove += ti
+            }
 
-        case _ =>
-      }
+          case _ =>
+        }
 
       toRemove foreach method.instructions.remove
       toRemove.nonEmpty
@@ -715,8 +745,10 @@ object LocalOptImpls {
       val index = local.index
       // parameters and `this` (the lowest indices, starting at 0) are never removed or renumbered
       if (index >= firstLocalIndex) {
-        if (!variableIsUsed(local.start, local.end, index)) localsIter.remove()
-        else if (renumber(index) != index) local.index = renumber(index)
+        if (!variableIsUsed(local.start, local.end, index))
+          localsIter.remove()
+        else if (renumber(index) != index)
+          local.index = renumber(index)
       }
     }
     method.localVariables.size != initialNumVars
@@ -742,11 +774,17 @@ object LocalOptImpls {
       val isWide = isSize2LoadOrStore(varIns.getOpcode)
 
       // Ensure the length of `renumber`. Unused variable indices are mapped to -1.
-      val minLength = if (isWide) index + 2 else index + 1
-      for (i <- renumber.length until minLength) renumber += -1
+      val minLength =
+        if (isWide)
+          index + 2
+        else
+          index + 1
+      for (i <- renumber.length until minLength)
+        renumber += -1
 
       renumber(index) = index
-      if (isWide) renumber(index + 1) = index
+      if (isWide)
+        renumber(index + 1) = index
     }
 
     // first phase: collect all used local variables. if the variable at index x is used, set
@@ -774,7 +812,8 @@ object LocalOptImpls {
     val removedLocalVariableDescriptors =
       removeUnusedLocalVariableNodes(method)(firstLocalIndex, renumber)
 
-    if (nextIndex == renumber.length) removedLocalVariableDescriptors
+    if (nextIndex == renumber.length)
+      removedLocalVariableDescriptors
     else {
       // update variable instructions according to the renumber table
       method.maxLocals = nextIndex
@@ -836,14 +875,17 @@ object LocalOptImpls {
     while (iterator.hasNext) {
       iterator.next match {
         case label: LabelNode =>
-          if (!references.contains(label)) iterator.remove()
+          if (!references.contains(label))
+            iterator.remove()
           else if (prev != null) {
             references(label).foreach(substituteLabel(_, label, prev))
             iterator.remove()
-          } else prev = label
+          } else
+            prev = label
 
         case instruction =>
-          if (instruction.getOpcode >= 0) prev = null
+          if (instruction.getOpcode >= 0)
+            prev = null
       }
     }
     method.instructions.size != initialSize
@@ -862,16 +904,17 @@ object LocalOptImpls {
 
     val jumpInsns = mutable.LinkedHashMap.empty[JumpInsnNode, Boolean]
 
-    for (insn <- method.instructions.iterator().asScala) insn match {
-      case l: LabelNode =>
-        activeHandlers ++= allHandlers.filter(_.start == l)
-        activeHandlers = activeHandlers.filter(_.end != l)
+    for (insn <- method.instructions.iterator().asScala)
+      insn match {
+        case l: LabelNode =>
+          activeHandlers ++= allHandlers.filter(_.start == l)
+          activeHandlers = activeHandlers.filter(_.end != l)
 
-      case ji: JumpInsnNode =>
-        jumpInsns(ji) = activeHandlers.nonEmpty
+        case ji: JumpInsnNode =>
+          jumpInsns(ji) = activeHandlers.nonEmpty
 
-      case _ =>
-    }
+        case _ =>
+      }
 
     var _jumpTargets: Set[AbstractInsnNode] = null
     def jumpTargets = {
@@ -925,7 +968,8 @@ object LocalOptImpls {
     def collapseJumpChains(insn: AbstractInsnNode): Boolean = insn match {
       case JumpNonJsr(jump) =>
         val target = finalJumpTarget(jump)
-        if (jump.label == target) false
+        if (jump.label == target)
+          false
         else {
           jump.label = target
           _jumpTargets = null
@@ -981,7 +1025,8 @@ object LocalOptImpls {
               jumpInsns(newJump) = inTryBlock
               replaceJumpByPop(goto)
               true
-            } else false
+            } else
+              false
 
           case _ => false
         }
@@ -1010,7 +1055,8 @@ object LocalOptImpls {
                 method.instructions.set(jump, target.clone(null))
                 removeJumpFromMap(jump)
                 true
-              } else false
+              } else
+                false
 
             case _ => false
           }
@@ -1038,7 +1084,8 @@ object LocalOptImpls {
         changed ||= jumpRemoved
       }
 
-      if (changed) run()
+      if (changed)
+        run()
       changed
     }
 

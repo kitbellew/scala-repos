@@ -56,7 +56,8 @@ private class TokenBucket(size: Int, rate: Float, clock: Clock) extends Actor {
     case TokenRequest(key) =>
       refillAll()
       val newLevel = buckets.getOrElse(key, size) - 1
-      if (newLevel >= 0) buckets = buckets + (key -> newLevel)
+      if (newLevel >= 0)
+        buckets = buckets + (key -> newLevel)
       sender ! newLevel
   }
 

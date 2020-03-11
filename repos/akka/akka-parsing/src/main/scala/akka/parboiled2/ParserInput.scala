@@ -74,11 +74,16 @@ object ParserInput {
       @tailrec def rec(ix: Int, lineStartIx: Int, lineNr: Int): String =
         if (ix < length)
           if (charAt(ix) == '\n')
-            if (lineNr < line) rec(ix + 1, ix + 1, lineNr + 1)
-            else sliceString(lineStartIx, ix)
-          else rec(ix + 1, lineStartIx, lineNr)
-        else if (lineNr == line) sliceString(lineStartIx, ix)
-        else ""
+            if (lineNr < line)
+              rec(ix + 1, ix + 1, lineNr + 1)
+            else
+              sliceString(lineStartIx, ix)
+          else
+            rec(ix + 1, lineStartIx, lineNr)
+        else if (lineNr == line)
+          sliceString(lineStartIx, ix)
+        else
+          ""
       rec(ix = 0, lineStartIx = 0, lineNr = 1)
     }
   }
@@ -98,7 +103,10 @@ object ParserInput {
   class ByteArrayBasedParserInput(bytes: Array[Byte], endIndex: Int = 0)
       extends DefaultParserInput {
     val length =
-      if (endIndex <= 0 || endIndex > bytes.length) bytes.length else endIndex
+      if (endIndex <= 0 || endIndex > bytes.length)
+        bytes.length
+      else
+        endIndex
     def charAt(ix: Int) = (bytes(ix) & 0xFF).toChar
     def sliceString(start: Int, end: Int) =
       new String(bytes, start, end - start, `ISO-8859-1`)
@@ -123,7 +131,10 @@ object ParserInput {
   class CharArrayBasedParserInput(chars: Array[Char], endIndex: Int = 0)
       extends DefaultParserInput {
     val length =
-      if (endIndex <= 0 || endIndex > chars.length) chars.length else endIndex
+      if (endIndex <= 0 || endIndex > chars.length)
+        chars.length
+      else
+        endIndex
     def charAt(ix: Int) = chars(ix)
     def sliceString(start: Int, end: Int) =
       new String(chars, start, end - start)

@@ -48,7 +48,8 @@ object M1 {
       if (c) {
         b;
         While(c)(b)
-      } else ();
+      } else
+        ();
 
     def swap(i: Int, j: Int): Unit = {
       val t = xs(i);
@@ -74,11 +75,14 @@ object M1 {
           j = j - 1;
         }
       }
-      if (l < j) sort1(l, j);
-      if (j < r) sort1(i, r);
+      if (l < j)
+        sort1(l, j);
+      if (j < r)
+        sort1(i, r);
     }
 
-    if (xs.length > 0) sort1(0, xs.length - 1);
+    if (xs.length > 0)
+      sort1(0, xs.length - 1);
   }
 
   def list2array(list: List[Int]): Array[Int] = {

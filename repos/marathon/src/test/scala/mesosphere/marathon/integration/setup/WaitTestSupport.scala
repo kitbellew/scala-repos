@@ -13,7 +13,8 @@ object WaitTestSupport {
       if (!valid)
         throw new IllegalStateException(
           s"$description not valid for $until. Give up.")
-      if (deadLine.isOverdue()) true
+      if (deadLine.isOverdue())
+        true
       else {
         Thread.sleep(100)
         checkValid()
@@ -25,7 +26,10 @@ object WaitTestSupport {
   def waitUntil(description: String, maxWait: FiniteDuration)(
       fn: => Boolean) = {
     waitFor(description, maxWait) {
-      if (fn) Some(true) else None
+      if (fn)
+        Some(true)
+      else
+        None
     }
   }
 

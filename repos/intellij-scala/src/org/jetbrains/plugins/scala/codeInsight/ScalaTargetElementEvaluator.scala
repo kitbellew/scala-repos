@@ -51,7 +51,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
   private object isUnapplyFromVal {
     def unapply(
         ref: ScStableCodeReferenceElement): Option[(ScBindingPattern)] = {
-      if (ref == null) return null
+      if (ref == null)
+        return null
       ref.bind() match {
         case Some(resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
             if Set("unapply", "unapplySeq").contains(fun.name) =>

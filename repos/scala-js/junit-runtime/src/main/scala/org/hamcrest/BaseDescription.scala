@@ -96,7 +96,8 @@ abstract class BaseDescription extends Description {
     @tailrec
     def appendElems(separate: Boolean): Unit = {
       if (i.hasNext) {
-        if (separate) append(separator)
+        if (separate)
+          append(separator)
         appendDescriptionOf(i.next)
         appendElems(true)
       }

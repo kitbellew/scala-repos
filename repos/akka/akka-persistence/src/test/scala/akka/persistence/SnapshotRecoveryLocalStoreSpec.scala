@@ -66,8 +66,8 @@ class SnapshotRecoveryLocalStoreSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, seqNo, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, seqNo, timestamp),
+              state) ⇒
       }
       expectMsg(RecoveryCompleted)
     }

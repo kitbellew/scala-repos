@@ -61,8 +61,10 @@ object StaticTraitScFunctionWrapper {
 
     builder.append(" ")
     val name =
-      if (!function.isConstructor) function.getName
-      else function.containingClass.getName
+      if (!function.isConstructor)
+        function.getName
+      else
+        function.containingClass.getName
     builder.append(name)
 
     val qualName = containingClass.getQualifiedName
@@ -82,7 +84,8 @@ object StaticTraitScFunctionWrapper {
                 builder.append("scala.Function0<")
               builder.append(JavaConversionUtil
                 .typeText(tp, function.getProject, function.getResolveScope))
-              if (param.isCallByNameParameter) builder.append(">")
+              if (param.isCallByNameParameter)
+                builder.append(">")
             case _ => builder.append("java.lang.Object")
           }
           builder.append(" ").append(param.getName)

@@ -16,7 +16,8 @@ class SeqCoder(words: List[String]) {
   /** Invert the mnemonics map to give a map from chars 'A' ... 'Z' to '2' ... '9' */
   private val charCode: Map[Char, Char] =
     for ((digit, letters) <- m;
-         letter <- letters) yield letter -> digit
+         letter <- letters)
+      yield letter -> digit
 
   /** Maps a word to the digit string it represents,
     * e.g. `Java` -> `5282`  */
@@ -36,7 +37,8 @@ class SeqCoder(words: List[String]) {
 
   /** All ways to encode a number as a list of words */
   def encode(number: String): Set[List[String]] =
-    if (number.isEmpty) Set(List())
+    if (number.isEmpty)
+      Set(List())
     else {
       val splits = (1 to number.length).toSet
       // for {
@@ -81,7 +83,8 @@ class ParCoder(words: List[String]) {
   /** Invert the mnemonics map to give a map from chars 'A' ... 'Z' to '2' ... '9' */
   private val charCode: Map[Char, Char] =
     for ((digit, letters) <- m;
-         letter <- letters) yield letter -> digit
+         letter <- letters)
+      yield letter -> digit
 
   /** Maps a word to the digit string it represents,
     * e.g. `Java` -> `5282`  */
@@ -97,7 +100,8 @@ class ParCoder(words: List[String]) {
 
   /** All ways to encode a number as a list of words */
   def encode(number: String): ParSet[List[String]] =
-    if (number.isEmpty) ParSet(List())
+    if (number.isEmpty)
+      ParSet(List())
     else {
       val splits = (1 to number.length).toSet.par
       // for {

@@ -11,7 +11,10 @@ object Test {
 trait Foo {
   def name: String
   def unapply(x: String): Option[Unit] = {
-    if (x == name) Some(()) else None
+    if (x == name)
+      Some(())
+    else
+      None
   }
 }
 object Bar extends Foo {

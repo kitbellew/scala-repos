@@ -55,10 +55,12 @@ abstract class AbstractDecodingToCommand[C <: AnyRef] extends OneToOneDecoder {
   }
 
   protected def validateDeleteCommand(tokens: Seq[Buf]): Buf = {
-    if (tokens.size < 1) throw new ClientError("No key")
+    if (tokens.size < 1)
+      throw new ClientError("No key")
     if (tokens.size == 2 && !isDigits(tokens.last))
       throw new ClientError("Timestamp is poorly formed")
-    if (tokens.size > 2) throw new ClientError("Too many arguments")
+    if (tokens.size > 2)
+      throw new ClientError("Too many arguments")
 
     tokens.head
   }
@@ -69,16 +71,19 @@ class DecodingToCommand extends AbstractDecodingToCommand[Command] {
   import ParserUtils._
 
   private[this] def validateArithmeticCommand(tokens: Seq[Buf]) = {
-    if (tokens.size < 2) throw new ClientError("Too few arguments")
+    if (tokens.size < 2)
+      throw new ClientError("Too few arguments")
     if (tokens.size == 3 && tokens.last != NOREPLY)
       throw new ClientError("Too many arguments")
-    if (!isDigits(tokens(1))) throw new ClientError("Delta is not a number")
+    if (!isDigits(tokens(1)))
+      throw new ClientError("Delta is not a number")
 
     (tokens.head, tokens(1).toLong)
   }
 
   private[this] def validateAnyStorageCommand(tokens: Seq[Buf]) {
-    if (tokens.isEmpty) throw new ClientError("No arguments specified")
+    if (tokens.isEmpty)
+      throw new ClientError("No arguments specified")
   }
 
   protected def parseStorageCommand(tokens: Seq[Buf], data: Buf) = {

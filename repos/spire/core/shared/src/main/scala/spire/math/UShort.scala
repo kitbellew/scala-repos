@@ -89,7 +89,12 @@ private[math] trait UShortOrder extends Order[UShort] {
   override def lt(x: UShort, y: UShort): Boolean = x < y
   override def lteqv(x: UShort, y: UShort): Boolean = x <= y
   def compare(x: UShort, y: UShort): Int =
-    if (x < y) -1 else if (x > y) 1 else 0
+    if (x < y)
+      -1
+    else if (x > y)
+      1
+    else
+      0
 }
 
 @SerialVersionUID(0L)

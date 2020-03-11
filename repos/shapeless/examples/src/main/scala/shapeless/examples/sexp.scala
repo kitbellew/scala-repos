@@ -283,7 +283,11 @@ object SexpUserConvert {
         case SexpNil => Some(false)
         case other   => Some(true)
       }
-      def ser(b: Boolean) = if (b) SexpAtom("t") else SexpNil
+      def ser(b: Boolean) =
+        if (b)
+          SexpAtom("t")
+        else
+          SexpNil
     }
   implicit def optSexpConvert[T](
       c: Lazy[SexpConvert[T]]): SexpConvert[Option[T]] =
@@ -304,7 +308,11 @@ object SexpConvert {
 
   implicit def deriveHNil: SexpConvert[HNil] =
     new SexpConvert[HNil] {
-      def deser(s: Sexp) = if (s == SexpNil) Some(HNil) else None
+      def deser(s: Sexp) =
+        if (s == SexpNil)
+          Some(HNil)
+        else
+          None
       def ser(n: HNil) = SexpNil
     }
 

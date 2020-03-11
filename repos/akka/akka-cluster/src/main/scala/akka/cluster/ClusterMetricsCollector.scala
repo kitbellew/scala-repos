@@ -188,8 +188,10 @@ private[cluster] class ClusterMetricsCollector(publisher: ActorRef)
 
   def selectRandomNode(
       addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None
-    else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
+    if (addresses.isEmpty)
+      None
+    else
+      Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
   /**
     * Publishes to the event stream.
@@ -327,8 +329,10 @@ private[cluster] final case class EWMA(value: Double, alpha: Double) {
     */
   def :+(xn: Double): EWMA = {
     val newValue = (alpha * xn) + (1 - alpha) * value
-    if (newValue == value) this // no change
-    else copy(value = newValue)
+    if (newValue == value)
+      this // no change
+    else
+      copy(value = newValue)
   }
 
 }
@@ -361,16 +365,18 @@ final case class Metric private[cluster] (
     * Returns the updated metric.
     */
   def :+(latest: Metric): Metric =
-    if (this sameAs latest) average match {
-      case Some(avg) ⇒
-        copy(
-          value = latest.value,
-          average = Some(avg :+ latest.value.doubleValue))
-      case None if latest.average.isDefined ⇒
-        copy(value = latest.value, average = latest.average)
-      case _ ⇒ copy(value = latest.value)
-    }
-    else this
+    if (this sameAs latest)
+      average match {
+        case Some(avg) ⇒
+          copy(
+            value = latest.value,
+            average = Some(avg :+ latest.value.doubleValue))
+        case None if latest.average.isDefined ⇒
+          copy(value = latest.value, average = latest.average)
+        case _ ⇒ copy(value = latest.value)
+      }
+    else
+      this
 
   /**
     * The numerical value of the average, if defined, otherwise the latest value
@@ -416,7 +422,8 @@ object Metric extends MetricNumericConverter {
       decayFactor: Option[Double]): Option[Metric] =
     if (defined(value))
       Some(new Metric(name, value, ceateEWMA(value.doubleValue, decayFactor)))
-    else None
+    else
+      None
 
   /**
     * Creates a new Metric instance if the Try is successful and the value is valid,
@@ -465,7 +472,8 @@ final case class NodeMetrics(
     require(
       address == that.address,
       s"merge only allowed for same address, [$address] != [$that.address]")
-    if (timestamp >= that.timestamp) this // that is older
+    if (timestamp >= that.timestamp)
+      this // that is older
     else {
       // equality is based on the name of the Metric and Set doesn't replace existing element
       copy(metrics = that.metrics union metrics, timestamp = that.timestamp)

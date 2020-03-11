@@ -50,10 +50,14 @@ object intervalValuePartialOrder {
     override def gt(x: Interval[A], y: Interval[A]): Boolean = lt(y, x)
 
     def partialCompare(x: Interval[A], y: Interval[A]): Double =
-      if (eqv(x, y)) 0.0
-      else if (lt(x, y)) -1.0
-      else if (gt(x, y)) 1.0
-      else Double.NaN
+      if (eqv(x, y))
+        0.0
+      else if (lt(x, y))
+        -1.0
+      else if (gt(x, y))
+        1.0
+      else
+        Double.NaN
   }
 
   implicit def intervalValuePartialOrder[A: Order]: PartialOrder[Interval[A]] =

@@ -42,7 +42,8 @@ abstract class RatioBasedEstimator extends ReducerEstimator {
         "Input sizes differ too much to use for estimation: " +
           "current: " + current + ", past: " + past)
       false
-    } else true
+    } else
+      true
   }
 
   /**

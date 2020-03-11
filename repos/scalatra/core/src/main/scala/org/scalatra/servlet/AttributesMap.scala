@@ -24,7 +24,8 @@ trait AttributesMap
     * in the underlying servlet object, or None if none exists.
     */
   def get(key: String): Option[Any] = {
-    if (attributes == null) None
+    if (attributes == null)
+      None
     else {
       attributes.getAttribute(key) match {
         case null => None

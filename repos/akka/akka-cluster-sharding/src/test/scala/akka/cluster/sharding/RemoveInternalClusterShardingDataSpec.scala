@@ -103,12 +103,14 @@ class RemoveInternalClusterShardingDataSpec
 
   override protected def atStartup() {
     storageLocations.foreach(dir ⇒
-      if (dir.exists) FileUtils.deleteDirectory(dir))
+      if (dir.exists)
+        FileUtils.deleteDirectory(dir))
   }
 
   override protected def afterTermination() {
     storageLocations.foreach(dir ⇒
-      if (dir.exists) FileUtils.deleteDirectory(dir))
+      if (dir.exists)
+        FileUtils.deleteDirectory(dir))
   }
 
   // same persistenceId as is used by ShardCoordinator

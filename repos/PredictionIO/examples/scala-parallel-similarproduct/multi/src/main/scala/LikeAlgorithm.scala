@@ -79,13 +79,20 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
           val (like1, t1) = v1
           val (like2, t2) = v2
           // keep the latest value
-          if (t1 > t2) v1 else v2
+          if (t1 > t2)
+            v1
+          else
+            v2
       }
       .map {
         case ((u, i), (like, t)) => // MODIFIED
           // With ALS.trainImplicit(), we can use negative value to indicate
           // nagative siginal (ie. dislike)
-          val r = if (like) 1 else -1
+          val r =
+            if (like)
+              1
+            else
+              -1
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, r)
       }

@@ -68,7 +68,10 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
   def giveUpAnalysis(ana: Work.Analysis) =
     deleteAnalysis(ana) >>- logger.warn(s"Give up on analysis $ana")
   def updateOrGiveUpAnalysis(ana: Work.Analysis) =
-    if (ana.isOutOfTries) giveUpAnalysis(ana) else updateAnalysis(ana)
+    if (ana.isOutOfTries)
+      giveUpAnalysis(ana)
+    else
+      updateAnalysis(ana)
   def countAnalysis(acquired: Boolean) =
     analysisColl.count(
       BSONDocument(

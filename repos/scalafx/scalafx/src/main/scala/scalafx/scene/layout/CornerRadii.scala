@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object CornerRadii {
   implicit def sfxCornerRadii2jfx(v: CornerRadii): jfxsl.CornerRadii =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** An empty Background, useful to use instead of null. */
   val Empty = jfxsl.CornerRadii.EMPTY

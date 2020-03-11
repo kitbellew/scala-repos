@@ -103,7 +103,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
       writeIx = w + 1
       readIx = 0
       true
-    } else false
+    } else
+      false
 
   /**
     * Tries to read from the buffer using the given Cursor.
@@ -115,9 +116,11 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
     if (c - writeIx < 0) {
       cursor.cursor += 1
       val ret = array(c & mask).asInstanceOf[T]
-      if (c == readIx) updateReadIx()
+      if (c == readIx)
+        updateReadIx()
       ret
-    } else throw NothingToReadException
+    } else
+      throw NothingToReadException
   }
 
   def onCursorRemoved(cursor: Cursor): Unit =

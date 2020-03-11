@@ -44,7 +44,8 @@ private[stream] object Fusing {
       try descend(g.module, Attributes.none, struct, struct.newGroup(0), 0)
       catch {
         case NonFatal(ex) ⇒
-          if (Debug) struct.dump()
+          if (Debug)
+            struct.dump()
           throw ex
       }
     /*
@@ -79,8 +80,10 @@ private[stream] object Fusing {
       Attributes.none,
       info)
 
-    if (StreamLayout.Debug) validate(module)
-    if (Debug) println(module)
+    if (StreamLayout.Debug)
+      validate(module)
+    if (Debug)
+      println(module)
 
     FusedGraph(module, shape)
   }
@@ -92,9 +95,12 @@ private[stream] object Fusing {
     */
   private def fuse(struct: BuildStructuralInfo): Set[Module] =
     struct.groups.asScala.flatMap { group ⇒
-      if (group.size == 0) Nil
-      else if (group.size == 1) group.iterator.next() :: Nil
-      else fuseGroup(struct, group) :: Nil
+      if (group.size == 0)
+        Nil
+      else if (group.size == 1)
+        group.iterator.next() :: Nil
+      else
+        fuseGroup(struct, group) :: Nil
     }(collection.breakOut)
 
   /**
@@ -141,33 +147,34 @@ private[stream] object Fusing {
     val ups = struct.upstreams
     val downs = struct.downstreams
     val outGroup = struct.outGroup
-    while (it.hasNext) it.next() match {
-      case copy @ CopiedModule(shape, attr, gsm: GraphStageModule) ⇒
-        stages(pos) = gsm.stage
-        matValIDs(pos) = copy
-        attributes(pos) = attr and gsm.attributes
+    while (it.hasNext)
+      it.next() match {
+        case copy @ CopiedModule(shape, attr, gsm: GraphStageModule) ⇒
+          stages(pos) = gsm.stage
+          matValIDs(pos) = copy
+          attributes(pos) = attr and gsm.attributes
 
-        shape.inlets.iterator.zip(gsm.shape.inlets.iterator).foreach {
-          case (in, orig) ⇒
-            val out = ups.get(in)
-            val internal = (out != null) && (outGroup.get(out) eq group)
-            if (internal) {
-              ups.remove(in)
-              downs.remove(out)
-              outConns.put(out, insB2.size)
-              insB2.add(orig)
-              inOwnersB2.add(pos)
-            } else {
-              insB1.add(orig)
-              inOwnersB1.add(pos)
-              inlets.add(in)
-            }
-        }
+          shape.inlets.iterator.zip(gsm.shape.inlets.iterator).foreach {
+            case (in, orig) ⇒
+              val out = ups.get(in)
+              val internal = (out != null) && (outGroup.get(out) eq group)
+              if (internal) {
+                ups.remove(in)
+                downs.remove(out)
+                outConns.put(out, insB2.size)
+                insB2.add(orig)
+                inOwnersB2.add(pos)
+              } else {
+                insB1.add(orig)
+                inOwnersB1.add(pos)
+                inlets.add(in)
+              }
+          }
 
-        pos += 1
-      case _ =>
-        throw new IllegalArgumentException("unexpected module structure")
-    }
+          pos += 1
+        case _ =>
+          throw new IllegalArgumentException("unexpected module structure")
+      }
 
     val outsB2 = new Array[Outlet[_]](insB2.size)
     val outOwnersB2 = new Array[Int](insB2.size)
@@ -177,24 +184,25 @@ private[stream] object Fusing {
      */
     pos = 0
     it = group.iterator
-    while (it.hasNext) it.next() match {
-      case CopiedModule(shape, _, gsm: GraphStageModule) ⇒
-        shape.outlets.iterator.zip(gsm.shape.outlets.iterator).foreach {
-          case (out, orig) ⇒
-            if (outConns.containsKey(out)) {
-              val idx = outConns.remove(out)
-              outsB2(idx) = orig
-              outOwnersB2(idx) = pos
-            } else {
-              outsB3.add(orig)
-              outOwnersB3.add(pos)
-              outlets.add(out)
-            }
-        }
-        pos += 1
-      case _ =>
-        throw new IllegalArgumentException("unexpected module structure")
-    }
+    while (it.hasNext)
+      it.next() match {
+        case CopiedModule(shape, _, gsm: GraphStageModule) ⇒
+          shape.outlets.iterator.zip(gsm.shape.outlets.iterator).foreach {
+            case (out, orig) ⇒
+              if (outConns.containsKey(out)) {
+                val idx = outConns.remove(out)
+                outsB2(idx) = orig
+                outOwnersB2(idx) = pos
+              } else {
+                outsB3.add(orig)
+                outOwnersB3.add(pos)
+                outlets.add(out)
+              }
+          }
+          pos += 1
+        case _ =>
+          throw new IllegalArgumentException("unexpected module structure")
+      }
 
     /*
      * Now mechanically gather together the GraphAssembly arrays from their various pieces.
@@ -238,7 +246,10 @@ private[stream] object Fusing {
         throw new IllegalArgumentException("unexpected module structure")
     }
     val async =
-      if (isAsync(firstModule)) Attributes(AsyncBoundary) else Attributes.none
+      if (isAsync(firstModule))
+        Attributes(AsyncBoundary)
+      else
+        Attributes.none
     val disp = dispatcher(firstModule) match {
       case None ⇒ Attributes.none
       case Some(d) ⇒ Attributes(d)
@@ -265,7 +276,8 @@ private[stream] object Fusing {
     if (it.hasNext) {
       array(idx) = it.next()
       copyToArray(it, array, idx + 1)
-    } else idx
+    } else
+      idx
 
   /**
     * This is a normalization step for the graph that also collects the needed
@@ -297,11 +309,14 @@ private[stream] object Fusing {
       case _ if m.isAtomic ⇒ true // non-GraphStage atomic or has AsyncBoundary
       case _ ⇒ m.attributes.contains(AsyncBoundary)
     }
-    if (Debug) log(s"entering ${m.getClass} (hash=${struct.hash(
-      m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+    if (Debug)
+      log(s"entering ${m.getClass} (hash=${struct.hash(
+        m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
-      if (async) struct.newGroup(indent)
-      else openGroup
+      if (async)
+        struct.newGroup(indent)
+      else
+        openGroup
 
     if (m.isAtomic) {
       m match {
@@ -394,7 +409,8 @@ private[stream] object Fusing {
           result ::= m -> Atomic(newgm)
           result
         case _ ⇒
-          if (Debug) log(s"atomic module $m")
+          if (Debug)
+            log(s"atomic module $m")
           List(
             m -> struct.addModule(m, localGroup, inheritedAttributes, indent))
       }
@@ -469,7 +485,8 @@ private[stream] object Fusing {
               case Ignore => Ignore
               case other ⇒ matNodeMapping.get(other)
             }
-            if (Debug) log(s"materialized value source: ${c.copyOf} -> $mapped")
+            if (Debug)
+              log(s"materialized value source: ${c.copyOf} -> $mapped")
             require(
               mapped != null,
               s"mismatch:\n  ${ms.computation}\n  ${m.materializedValueComputation}")
@@ -485,9 +502,12 @@ private[stream] object Fusing {
 
   @tailrec
   private def findInArray[T](elem: T, arr: Array[T], idx: Int = 0): Int =
-    if (idx >= arr.length) -1
-    else if (arr(idx) == elem) idx
-    else findInArray(elem, arr, idx + 1)
+    if (idx >= arr.length)
+      -1
+    else if (arr(idx) == elem)
+      idx
+    else
+      findInArray(elem, arr, idx + 1)
 
   /**
     * Given a mapping from old modules to new MaterializedValueNode, rewrite the given
@@ -521,8 +541,10 @@ private[stream] object Fusing {
 
   private implicit class NonNull[T](val x: T) extends AnyVal {
     def nonNull(msg: String): T =
-      if (x != null) x
-      else throw new IllegalArgumentException("null encountered: " + msg)
+      if (x != null)
+        x
+      else
+        throw new IllegalArgumentException("null encountered: " + msg)
   }
 
   /**
@@ -603,7 +625,8 @@ private[stream] object Fusing {
         map: ju.Map[T, List[T]]): Unit = {
       if (map.containsKey(orig)) {
         map.put(orig, mapd :: map.get(orig))
-      } else map.put(orig, mapd :: Nil)
+      } else
+        map.put(orig, mapd :: Nil)
     }
 
     private def removeMapping[T](orig: T, map: ju.Map[T, List[T]]): T =
@@ -684,7 +707,8 @@ private[stream] object Fusing {
       while (it.hasNext) {
         val out = it.next()
         val in = downstreams.remove(out)
-        if (in != null) upstreams.remove(in)
+        if (in != null)
+          upstreams.remove(in)
       }
     }
 
@@ -713,7 +737,8 @@ private[stream] object Fusing {
       */
     def newGroup(indent: Int): ju.Set[Module] = {
       val group = new ju.HashSet[Module]
-      if (Debug) println("  " * indent + s"creating new group ${hash(group)}")
+      if (Debug)
+        println("  " * indent + s"creating new group ${hash(group)}")
       groups.add(group)
       group
     }
@@ -730,10 +755,16 @@ private[stream] object Fusing {
       val copy =
         if (_oldShape == null)
           CopiedModule(m.shape.deepCopy(), inheritedAttributes, realModule(m))
-        else m
-      val oldShape = if (_oldShape == null) m.shape else _oldShape
-      if (Debug) println("  " * indent + s"adding copy ${hash(
-        copy)} ${printShape(copy.shape)} of ${printShape(oldShape)}")
+        else
+          m
+      val oldShape =
+        if (_oldShape == null)
+          m.shape
+        else
+          _oldShape
+      if (Debug)
+        println("  " * indent + s"adding copy ${hash(copy)} ${printShape(
+          copy.shape)} of ${printShape(oldShape)}")
       group.add(copy)
       modules.add(copy)
       copy.shape.outlets.foreach(o ⇒ outGroup.put(o, group))

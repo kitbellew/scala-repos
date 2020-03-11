@@ -74,15 +74,21 @@ object Reference {
     def addHelpAlias(f: () => String) = mapHelp { s =>
       val str = "alias for '%s'" format f()
       def noHelp = (helpFormatStr.format("", "")).length == s.length
-      val str2 = if (noHelp) str else " (" + str + ")"
+      val str2 =
+        if (noHelp)
+          str
+        else
+          " (" + str + ")"
 
       s + str2
     }
     def addHelpDefault(f: () => String): Unit = mapHelp { s =>
       val str = "(default: %s)" format f()
 
-      if (s.length + str.length < MaxLine) s + " " + str
-      else defaultFormatStr.format(s, str)
+      if (s.length + str.length < MaxLine)
+        s + " " + str
+      else
+        defaultFormatStr.format(s, str)
     }
     def addHelpEnvDefault(name: String): Unit = mapHelp { s =>
       val line1 = "%s (default: %s)".format(s, name)

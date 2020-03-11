@@ -62,6 +62,8 @@ class ConcurrentBijectionTest extends WordSpec {
     for (i <- 0 until 100)
       b += (i -> i)
 
-    assert(b.toSet == (for (i <- 0 until 100) yield (i, i)).toSet)
+    assert(
+      b.toSet == (for (i <- 0 until 100)
+        yield (i, i)).toSet)
   }
 }

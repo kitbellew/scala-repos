@@ -71,7 +71,10 @@ object ResponseHeader {
     new ResponseHeader(status, headers)
   def unapply(
       rh: ResponseHeader): Option[(Int, Map[String, String], Option[String])] =
-    if (rh eq null) None else Some((rh.status, rh.headers, rh.reasonPhrase))
+    if (rh eq null)
+      None
+    else
+      Some((rh.status, rh.headers, rh.reasonPhrase))
 }
 
 /**
@@ -122,7 +125,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return the new result
     */
   def withCookies(cookies: Cookie*): Result = {
-    if (cookies.isEmpty) this
+    if (cookies.isEmpty)
+      this
     else {
       withHeaders(
         SET_COOKIE -> Cookies.mergeSetCookieHeader(
@@ -161,8 +165,10 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return the new result
     */
   def withSession(session: Session): Result = {
-    if (session.isEmpty) discardingCookies(Session.discard)
-    else withCookies(Session.encodeAsCookie(session))
+    if (session.isEmpty)
+      discardingCookies(Session.discard)
+    else
+      withCookies(Session.encodeAsCookie(session))
   }
 
   /**
@@ -425,7 +431,11 @@ trait Results {
           status,
           Map(
             CONTENT_DISPOSITION -> {
-              val dispositionType = if (inline) "inline" else "attachment"
+              val dispositionType =
+                if (inline)
+                  "inline"
+                else
+                  "attachment"
               dispositionType + "; filename=\"" + name + "\""
             }
           )),
@@ -744,7 +754,10 @@ trait Results {
     val fullUrl = url + Option(queryString)
       .filterNot(_.isEmpty)
       .map { params =>
-        (if (url.contains("?")) "&" else "?") + params.toSeq
+        (if (url.contains("?"))
+           "&"
+         else
+           "?") + params.toSeq
           .flatMap { pair =>
             pair._2.map(value =>
               (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))

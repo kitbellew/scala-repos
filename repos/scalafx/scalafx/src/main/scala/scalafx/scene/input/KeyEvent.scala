@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object KeyEvent {
   implicit def sfxKeyEvent2jfx(ke: KeyEvent): jfxsi.KeyEvent =
-    if (ke != null) ke.delegate else null
+    if (ke != null)
+      ke.delegate
+    else
+      null
 
   /**
     * Common supertype for all key event types.

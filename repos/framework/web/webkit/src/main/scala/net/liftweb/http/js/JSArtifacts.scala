@@ -107,7 +107,10 @@ object AjaxInfo {
   def apply(data: JsExp, post: Boolean) =
     new AjaxInfo(
       data,
-      if (post) "POST" else "GET",
+      if (post)
+        "POST"
+      else
+        "GET",
       1000,
       false,
       "script",
@@ -117,7 +120,10 @@ object AjaxInfo {
   def apply(data: JsExp, dataType: String, post: Boolean) =
     new AjaxInfo(
       data,
-      if (post) "POST" else "GET",
+      if (post)
+        "POST"
+      else
+        "GET",
       1000,
       false,
       dataType,
@@ -138,7 +144,10 @@ object AjaxInfo {
       failFunc: String) =
     new AjaxInfo(
       data,
-      if (post) "POST" else "GET",
+      if (post)
+        "POST"
+      else
+        "GET",
       timeout,
       false,
       "script",

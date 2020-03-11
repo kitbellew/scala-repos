@@ -37,7 +37,8 @@ object Version {
       template: String) = Def.task[Seq[File]] {
     val file = locate(dir.value)
     val content = template.stripMargin.format(version.value)
-    if (!file.exists || IO.read(file) != content) IO.write(file, content)
+    if (!file.exists || IO.read(file) != content)
+      IO.write(file, content)
     Seq(file)
   }
 

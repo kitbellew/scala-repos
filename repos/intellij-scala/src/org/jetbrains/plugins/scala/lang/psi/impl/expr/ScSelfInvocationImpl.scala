@@ -45,17 +45,22 @@ class ScSelfInvocationImpl(node: ASTNode)
 
   private def bindInternal(shapeResolve: Boolean): Option[PsiElement] = {
     val seq = bindMultiInternal(shapeResolve)
-    if (seq.length == 1) Some(seq(0))
-    else None
+    if (seq.length == 1)
+      Some(seq(0))
+    else
+      None
   }
 
   private def bindMultiInternal(shapeResolve: Boolean): Seq[PsiElement] = {
     val psiClass = PsiTreeUtil.getContextOfType(this, classOf[PsiClass])
-    if (psiClass == null) return Seq.empty
-    if (!psiClass.isInstanceOf[ScClass]) return Seq.empty
+    if (psiClass == null)
+      return Seq.empty
+    if (!psiClass.isInstanceOf[ScClass])
+      return Seq.empty
     val clazz = psiClass.asInstanceOf[ScClass]
     val method = PsiTreeUtil.getContextOfType(this, classOf[ScFunction])
-    if (method == null) return Seq.empty
+    if (method == null)
+      return Seq.empty
     val expressions: Seq[Expression] = args match {
       case Some(arguments) => arguments.exprs.map(new Expression(_))
       case None            => Seq.empty

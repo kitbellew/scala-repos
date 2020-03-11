@@ -50,8 +50,10 @@ final class AutoPairing(
         blackPlayer = GamePlayer.black,
         mode = tour.mode,
         variant =
-          if (tour.position.initial) tour.variant
-          else chess.variant.FromPosition,
+          if (tour.position.initial)
+            tour.variant
+          else
+            chess.variant.FromPosition,
         source = Source.Tournament,
         pgnImport = None
       )
@@ -100,7 +102,8 @@ final class AutoPairing(
                 lmt - nowSeconds + secondsToMove
               },
               false)
-        } else roundMap ! Tell(pov.gameId, NoStartColor(pov.color))
+        } else
+          roundMap ! Tell(pov.gameId, NoStartColor(pov.color))
       }
     }
   }

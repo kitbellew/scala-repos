@@ -46,7 +46,11 @@ trait KafkaMetricsGroup extends Logging {
       name: String,
       tags: scala.collection.Map[String, String] = Map.empty) = {
     val klass = this.getClass
-    val pkg = if (klass.getPackage == null) "" else klass.getPackage.getName
+    val pkg =
+      if (klass.getPackage == null)
+        ""
+      else
+        klass.getPackage.getName
     val simpleName = klass.getSimpleName.replaceAll("\\$$", "")
 
     explicitMetricName(pkg, simpleName, name, tags)

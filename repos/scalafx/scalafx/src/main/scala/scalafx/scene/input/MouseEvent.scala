@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object MouseEvent {
   implicit def sfxMouseEvent2jfx(me: MouseEvent): jfxsi.MouseEvent =
-    if (me != null) me.delegate else null
+    if (me != null)
+      me.delegate
+    else
+      null
 
   val Any: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.ANY
 

@@ -21,7 +21,8 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
 
   implicit def charArrayUnmarshaller: FromEntityUnmarshaller[Array[Char]] =
     byteStringUnmarshaller mapWithInput { (entity, bytes) ⇒
-      if (entity.isKnownEmpty) Array.emptyCharArray
+      if (entity.isKnownEmpty)
+        Array.emptyCharArray
       else {
         val charBuffer = Unmarshaller
           .bestUnmarshallingCharsetFor(entity)
@@ -35,7 +36,8 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
 
   implicit def stringUnmarshaller: FromEntityUnmarshaller[String] =
     byteStringUnmarshaller mapWithInput { (entity, bytes) ⇒
-      if (entity.isKnownEmpty) ""
+      if (entity.isKnownEmpty)
+        ""
       else
         bytes.decodeString(
           Unmarshaller.bestUnmarshallingCharsetFor(entity).nioCharset.name)
@@ -49,7 +51,8 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
       ranges: ContentTypeRange*): FromEntityUnmarshaller[FormData] =
     stringUnmarshaller.forContentTypes(ranges: _*).mapWithInput {
       (entity, string) ⇒
-        if (entity.isKnownEmpty) FormData.Empty
+        if (entity.isKnownEmpty)
+          FormData.Empty
         else {
           try FormData(
             Uri.Query(

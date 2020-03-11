@@ -92,5 +92,6 @@ case class First(child: Expression, ignoreNullsExpr: Expression)
   override lazy val evaluateExpression: AttributeReference = first
 
   override def toString: String =
-    s"first($child)${if (ignoreNulls) " ignore nulls"}"
+    s"first($child)${if (ignoreNulls)
+      " ignore nulls"}"
 }

@@ -24,7 +24,8 @@ class JavaUniverse
 
   private val isLogging = sys.props contains "scala.debug.reflect"
   def log(msg: => AnyRef): Unit =
-    if (isLogging) Console.err.println("[reflect] " + msg)
+    if (isLogging)
+      Console.err.println("[reflect] " + msg)
 
   // TODO: why put output under isLogging? Calls to inform are already conditional on debug/verbose/...
   import scala.reflect.internal.{Reporter, ReporterImpl}
@@ -74,7 +75,8 @@ class JavaUniverse
                 val jm = mirror.asInstanceOf[ju.Mirror]
                 val sym = jm.classSymbol(manifest.runtimeClass)
                 val tpe =
-                  if (manifest.typeArguments.isEmpty) sym.toType
+                  if (manifest.typeArguments.isEmpty)
+                    sym.toType
                   else {
                     val tags = manifest.typeArguments map (targ =>
                       ju.internal.manifestToTypeTag(jm, targ))

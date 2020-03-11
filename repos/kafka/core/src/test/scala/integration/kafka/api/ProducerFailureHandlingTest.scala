@@ -92,10 +92,14 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
 
   @After
   override def tearDown() {
-    if (producer1 != null) producer1.close()
-    if (producer2 != null) producer2.close()
-    if (producer3 != null) producer3.close()
-    if (producer4 != null) producer4.close()
+    if (producer1 != null)
+      producer1.close()
+    if (producer2 != null)
+      producer2.close()
+    if (producer3 != null)
+      producer3.close()
+    if (producer4 != null)
+      producer4.close()
 
     super.tearDown()
   }

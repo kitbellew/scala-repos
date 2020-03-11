@@ -29,10 +29,16 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     val coll = factory.empty[T]
     coll.addAll(range.map(toElem))
 
-    val minMax = if (isMin) range.head else range.last
+    val minMax =
+      if (isMin)
+        range.head
+      else
+        range.last
     def getMinMax(): T =
-      if (isMin) ju.Collections.min(coll)
-      else ju.Collections.max(coll)
+      if (isMin)
+        ju.Collections.min(coll)
+      else
+        ju.Collections.max(coll)
 
     assertEquals(0, getMinMax().compareTo(toElem(minMax)))
 
@@ -54,10 +60,16 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     val coll = factory.empty[T]
     coll.addAll(range.map(toElem))
 
-    val minMax = if (isMin) range.head else range.last
+    val minMax =
+      if (isMin)
+        range.head
+      else
+        range.last
     def getMinMax: T =
-      if (isMin) ju.Collections.min(coll, cmp)
-      else ju.Collections.max(coll, cmp)
+      if (isMin)
+        ju.Collections.min(coll, cmp)
+      else
+        ju.Collections.max(coll, cmp)
 
     assertEquals(0, cmp.compare(getMinMax, toElem(minMax)))
 

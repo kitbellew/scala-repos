@@ -148,7 +148,8 @@ class ScImportExprImpl private (
 
   def reference: Option[ScStableCodeReferenceElement] = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScImportExprStub].reference
+    if (stub != null)
+      stub.asInstanceOf[ScImportExprStub].reference
     else
       getFirstChild.asOptionOf[
         ScStableCodeReferenceElement

@@ -76,7 +76,8 @@ private[play] object Streamed {
     private var publisher: Publisher[HttpResponseBodyPart] = _
 
     def onStream(publisher: Publisher[HttpResponseBodyPart]): State = {
-      if (this.publisher != null) State.ABORT
+      if (this.publisher != null)
+        State.ABORT
       else {
         this.publisher = publisher
         promise.success((responseHeaders, publisher))
@@ -85,7 +86,8 @@ private[play] object Streamed {
     }
 
     override def onStatusReceived(status: HttpResponseStatus): State = {
-      if (this.publisher != null) State.ABORT
+      if (this.publisher != null)
+        State.ABORT
       else {
         statusCode = status.getStatusCode
         State.CONTINUE
@@ -93,7 +95,8 @@ private[play] object Streamed {
     }
 
     override def onHeadersReceived(h: HttpResponseHeaders): State = {
-      if (this.publisher != null) State.ABORT
+      if (this.publisher != null)
+        State.ABORT
       else {
         val headers = h.getHeaders
         responseHeaders = DefaultWSResponseHeaders(

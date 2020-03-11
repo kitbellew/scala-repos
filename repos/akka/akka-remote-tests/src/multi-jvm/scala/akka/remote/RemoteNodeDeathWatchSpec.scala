@@ -200,7 +200,11 @@ abstract class RemoteNodeDeathWatchSpec
         system.actorOf(Props(classOf[ProbeActor], testActor), "subject3")
         enterBarrier("actors-started-3")
 
-        val other = if (myself == first) second else first
+        val other =
+          if (myself == first)
+            second
+          else
+            first
         val subject = identify(other, "subject3")
         watcher ! WatchIt(subject)
         expectMsg(1 second, Ack)
@@ -236,7 +240,11 @@ abstract class RemoteNodeDeathWatchSpec
         val s2 = system.actorOf(Props(classOf[ProbeActor], testActor), "s2")
         enterBarrier("actors-started-4")
 
-        val other = if (myself == first) second else first
+        val other =
+          if (myself == first)
+            second
+          else
+            first
         val subject1 = identify(other, "s1")
         val subject2 = identify(other, "s2")
         watcher1 ! WatchIt(subject1)

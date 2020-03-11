@@ -67,7 +67,11 @@ abstract class CommonWriteAheadLogTests(
   protected var testDir: String = null
   protected var testFile: String = null
   protected var writeAheadLog: WriteAheadLog = null
-  protected def testPrefix = if (testTag != "") testTag + " - " else testTag
+  protected def testPrefix =
+    if (testTag != "")
+      testTag + " - "
+    else
+      testTag
 
   before {
     tempDir = Utils.createTempDir()
@@ -277,7 +281,8 @@ class FileBasedWriteAheadLogSuite
       @volatile private var max: Int = 0
       def increment(): Unit = synchronized {
         val atInstant = value.incrementAndGet()
-        if (atInstant > max) max = atInstant
+        if (atInstant > max)
+          max = atInstant
       }
       def decrement(): Unit = synchronized {
         value.decrementAndGet()
@@ -722,7 +727,8 @@ object WriteAheadLogSuite {
       manualClock: ManualClock = new ManualClock,
       closeLog: Boolean = true,
       clockAdvanceTime: Int = 500): WriteAheadLog = {
-    if (manualClock.getTimeMillis() < 100000) manualClock.setTime(10000)
+    if (manualClock.getTimeMillis() < 100000)
+      manualClock.setTime(10000)
     val wal =
       createWriteAheadLog(logDirectory, closeFileAfterWrite, allowBatching)
 
@@ -731,7 +737,8 @@ object WriteAheadLogSuite {
       manualClock.advance(clockAdvanceTime)
       wal.write(item, manualClock.getTimeMillis())
     }
-    if (closeLog) wal.close()
+    if (closeLog)
+      wal.close()
     wal
   }
 
@@ -830,7 +837,10 @@ object WriteAheadLogSuite {
       1,
       1,
       closeFileAfterWrite)
-    if (allowBatching) new BatchedWriteAheadLog(wal, sparkConf) else wal
+    if (allowBatching)
+      new BatchedWriteAheadLog(wal, sparkConf)
+    else
+      wal
   }
 
   def generateRandomData(): Seq[String] = {

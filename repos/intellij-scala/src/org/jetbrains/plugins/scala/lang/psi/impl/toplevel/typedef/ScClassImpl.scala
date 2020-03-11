@@ -66,8 +66,10 @@ class ScClassImpl private (
 
   override def additionalJavaNames: Array[String] = {
     //do not add all cases with fakeCompanionModule, it will be used in Stubs.
-    if (isCase) fakeCompanionModule.map(_.getName).toArray
-    else Array.empty
+    if (isCase)
+      fakeCompanionModule.map(_.getName).toArray
+    else
+      Array.empty
   }
 
   def this(node: ASTNode) = {
@@ -110,12 +112,14 @@ class ScClassImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (DumbService.getInstance(getProject).isDumb) return true
+    if (DumbService.getInstance(getProject).isDumb)
+      return true
     if (!super[ScTemplateDefinition].processDeclarationsForTemplateBody(
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     constructor match {
       case Some(constr)
@@ -129,7 +133,8 @@ class ScClassImpl private (
           ProgressManager.checkCanceled()
           if (processor.isInstanceOf[
                 BaseProcessor]) { // don't expose class parameters to Java.
-            if (!processor.execute(p, state)) return false
+            if (!processor.execute(p, state))
+              return false
           }
         }
     }
@@ -277,10 +282,16 @@ class ScClassImpl private (
   private def copyMethodText: String = {
     val x = constructor.getOrElse(return "")
     val paramString = (if (x.parameterList.clauses.length == 1 &&
-                           x.parameterList.clauses.head.isImplicit) "()"
-                       else "") + x.parameterList.clauses
+                           x.parameterList.clauses.head.isImplicit)
+                         "()"
+                       else
+                         "") + x.parameterList.clauses
       .map { c =>
-        val start = if (c.isImplicit) "(implicit " else "("
+        val start =
+          if (c.isImplicit)
+            "(implicit "
+          else
+            "("
         c.parameters
           .map { p =>
             val paramType = p.typeElement match {
@@ -313,7 +324,8 @@ class ScClassImpl private (
             } else if (tp.isCovariant) {
               val i = baseText.indexOf('+')
               baseText.substring(i + 1)
-            } else baseText
+            } else
+              baseText
           })
           .mkString("[", ", ", "]")
       })
@@ -330,7 +342,13 @@ class ScClassImpl private (
                 case _          => paramText
               }
           }
-          .mkString(if (clause.isImplicit) "(implicit " else "(", ", ", ")")
+          .mkString(
+            if (clause.isImplicit)
+              "(implicit "
+            else
+              "(",
+            ", ",
+            ")")
     }.mkString
     getModifierList.accessModifier
       .map(am => am.getText + " ")
@@ -356,7 +374,8 @@ class ScClassImpl private (
           }
         case None => None
       }
-    } else None
+    } else
+      None
   }
 
   override def getFields: Array[PsiField] = {

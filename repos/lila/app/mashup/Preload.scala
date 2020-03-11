@@ -59,16 +59,16 @@ final class Preload(
       (ctx.userId ?? getPlayban) zip
       (ctx.me ?? Preload.currentGame(lightUser)) map {
       case (
-          (
             (
               (
                 (
-                  ((((((data, posts), tours), simuls), feat), entries), lead),
-                  tWinners),
-                puzzle),
-              streams),
-            playban),
-          currentGame) =>
+                  (
+                    ((((((data, posts), tours), simuls), feat), entries), lead),
+                    tWinners),
+                  puzzle),
+                streams),
+              playban),
+            currentGame) =>
         (
           data,
           entries,

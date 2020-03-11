@@ -316,7 +316,8 @@ class StreamExecution(
   def toDebugString: String = {
     val deathCauseStr = if (streamDeathCause != null) {
       "Error:\n" + stackTraceToString(streamDeathCause.cause)
-    } else ""
+    } else
+      ""
     s"""
        |=== Continuous Query ===
        |Name: $name

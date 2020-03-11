@@ -24,10 +24,15 @@ object LeveldbPersistenceQueryDocSpec {
     override def toJournal(event: Any): Any = event match {
       case s: String ⇒
         var tags = colors.foldLeft(Set.empty[String]) { (acc, c) ⇒
-          if (s.contains(c)) acc + c else acc
+          if (s.contains(c))
+            acc + c
+          else
+            acc
         }
-        if (tags.isEmpty) event
-        else Tagged(event, tags)
+        if (tags.isEmpty)
+          event
+        else
+          Tagged(event, tags)
       case _ ⇒ event
     }
 

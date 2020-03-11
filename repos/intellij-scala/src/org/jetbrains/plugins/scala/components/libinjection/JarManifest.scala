@@ -49,10 +49,11 @@ case class JarManifest(
               impl
             }>
           {
-              for (src <- srcs) <source>
+              for (src <- srcs)
+                <source>
           {
-                src
-              }
+                  src
+                }
         </source>
             }
         </psi-injector>

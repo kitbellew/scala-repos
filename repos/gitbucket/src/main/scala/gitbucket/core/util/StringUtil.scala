@@ -78,9 +78,15 @@ object StringUtil {
     */
   def appendNewLine(content: String, lineSeparator: String): String = {
     if (lineSeparator == "CRLF") {
-      if (content.endsWith("\r\n")) content else content + "\r\n"
+      if (content.endsWith("\r\n"))
+        content
+      else
+        content + "\r\n"
     } else {
-      if (content.endsWith("\n")) content else content + "\n"
+      if (content.endsWith("\n"))
+        content
+      else
+        content + "\n"
     }
   }
 

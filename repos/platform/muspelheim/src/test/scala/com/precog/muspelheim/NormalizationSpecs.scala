@@ -607,8 +607,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
               clusterSchema(clusters, clusterId) == Set("age", "income")
             }
 
-            if (checkClusters) ok
-            else ko
+            if (checkClusters)
+              ok
+            else
+              ko
         }
 
       case _ => ko

@@ -22,8 +22,10 @@ trait Aggregator {
     * @return The same receive function.
     */
   def expectOnce(fn: Actor.Receive): Actor.Receive = {
-    if (processing) addBuffer.add(fn, permanent = false)
-    else expectList.add(fn, permanent = false)
+    if (processing)
+      addBuffer.add(fn, permanent = false)
+    else
+      expectList.add(fn, permanent = false)
     fn
   }
 
@@ -33,8 +35,10 @@ trait Aggregator {
     * @return The same receive function.
     */
   def expect(fn: Actor.Receive): Actor.Receive = {
-    if (processing) addBuffer.add(fn, permanent = true)
-    else expectList.add(fn, permanent = true)
+    if (processing)
+      addBuffer.add(fn, permanent = true)
+    else
+      expectList.add(fn, permanent = true)
     fn
   }
 
@@ -44,9 +48,12 @@ trait Aggregator {
     * @return True if the partial function is removed, false if not found.
     */
   def unexpect(fn: Actor.Receive): Boolean = {
-    if (expectList remove fn) true
-    else if (processing && (addBuffer remove fn)) true
-    else false
+    if (expectList remove fn)
+      true
+    else if (processing && (addBuffer remove fn))
+      true
+    else
+      false
   }
 
   /**
@@ -135,14 +142,20 @@ class WorkList[T] {
     def remove(parent: Entry[T], entry: Entry[T]): Boolean = {
       if (entry.ref.get == ref) {
         parent.next = entry.next // Remove entry
-        if (tail == entry) tail = parent
+        if (tail == entry)
+          tail = parent
         entry.isDeleted = true
         true
-      } else if (entry.next != null) remove(entry, entry.next)
-      else false
+      } else if (entry.next != null)
+        remove(entry, entry.next)
+      else
+        false
     }
 
-    if (head.next == null) false else remove(head, head.next)
+    if (head.next == null)
+      false
+    else
+      remove(head, head.next)
   }
 
   /**
@@ -159,15 +172,21 @@ class WorkList[T] {
       if (processed) {
         if (!entry.permanent && !entry.isDeleted) {
           parent.next = entry.next // Remove entry
-          if (tail == entry) tail = parent
+          if (tail == entry)
+            tail = parent
           entry.isDeleted = true
         }
         true // Handled
-      } else if (entry.next != null) process(entry, entry.next)
-      else false
+      } else if (entry.next != null)
+        process(entry, entry.next)
+      else
+        false
     }
 
-    if (head.next == null) false else process(head, head.next)
+    if (head.next == null)
+      false
+    else
+      process(head, head.next)
   }
 
   /**
@@ -188,7 +207,8 @@ class WorkList[T] {
     * @return True if at least one entry is removed. False if none is removed.
     */
   def removeAll() = {
-    if (head.next == null) false
+    if (head.next == null)
+      false
     else {
       head.next = null
       tail = head

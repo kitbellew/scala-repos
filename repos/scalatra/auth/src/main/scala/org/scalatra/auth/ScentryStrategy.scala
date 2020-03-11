@@ -10,8 +10,10 @@ trait ScentryStrategy[UserType <: AnyRef] {
   def name: String = "NameMe"
 
   def registerWith(registrar: Scentry[UserType]) {
-    if (name == "NameMe") throwOverrideException
-    else registrar.register(name, createStrategy _)
+    if (name == "NameMe")
+      throwOverrideException
+    else
+      registrar.register(name, createStrategy _)
   }
 
   def createStrategy(app: ScalatraBase): this.type = {

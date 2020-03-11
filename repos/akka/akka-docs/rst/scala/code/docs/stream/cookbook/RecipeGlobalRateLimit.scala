@@ -57,7 +57,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
         case WantToPass =>
           permitTokens -= 1
           sender() ! MayPass
-          if (permitTokens == 0) context.become(closed)
+          if (permitTokens == 0)
+            context.become(closed)
       }
 
       val closed: Receive = {
@@ -74,7 +75,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
         waitQueue = remainingQueue
         permitTokens -= toBeReleased.size
         toBeReleased foreach (_ ! MayPass)
-        if (permitTokens > 0) context.become(open)
+        if (permitTokens > 0)
+          context.become(open)
       }
 
       override def postStop(): Unit = {

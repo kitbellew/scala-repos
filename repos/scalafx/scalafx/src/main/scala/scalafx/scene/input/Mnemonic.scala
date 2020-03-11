@@ -35,7 +35,10 @@ import scalafx.scene.Node
 
 object Mnemonic {
   implicit def sfxMnemonic2jfx(m: Mnemonic): jfxsi.Mnemonic =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 }
 
 class Mnemonic(override val delegate: jfxsi.Mnemonic)

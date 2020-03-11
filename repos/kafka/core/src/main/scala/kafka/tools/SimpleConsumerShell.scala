@@ -145,8 +145,15 @@ object SimpleConsumerShell extends Logging {
     val maxMessages = options.valueOf(maxMessagesOpt).intValue
 
     val skipMessageOnError =
-      if (options.has(skipMessageOnErrorOpt)) true else false
-    val printOffsets = if (options.has(printOffsetOpt)) true else false
+      if (options.has(skipMessageOnErrorOpt))
+        true
+      else
+        false
+    val printOffsets =
+      if (options.has(printOffsetOpt))
+        true
+      else
+        false
     val noWaitAtEndOfLog = options.has(noWaitAtEndOfLogOpt)
 
     val messageFormatterClass =
@@ -247,7 +254,11 @@ object SimpleConsumerShell extends Logging {
       messageFormatterClass.newInstance().asInstanceOf[MessageFormatter]
     formatter.init(formatterArgs)
 
-    val replicaString = if (replicaId > 0) "leader" else "replica"
+    val replicaString =
+      if (replicaId > 0)
+        "leader"
+      else
+        "replica"
     info(
       "Starting simple consumer shell to partition [%s, %d], %s [%d], host and port: [%s, %d], from offset [%d]"
         .format(
@@ -293,13 +304,25 @@ object SimpleConsumerShell extends Logging {
                     System.out.println("next offset = " + offset)
                   val message = messageAndOffset.message
                   val key =
-                    if (message.hasKey) Utils.readBytes(message.key) else null
+                    if (message.hasKey)
+                      Utils.readBytes(message.key)
+                    else
+                      null
                   val value =
-                    if (message.isNull) null
-                    else Utils.readBytes(message.payload)
-                  val serializedKeySize = if (message.hasKey) key.size else -1
+                    if (message.isNull)
+                      null
+                    else
+                      Utils.readBytes(message.payload)
+                  val serializedKeySize =
+                    if (message.hasKey)
+                      key.size
+                    else
+                      -1
                   val serializedValueSize =
-                    if (message.isNull) -1 else value.size
+                    if (message.isNull)
+                      -1
+                    else
+                      value.size
                   formatter.writeTo(
                     new ConsumerRecord(
                       topic,

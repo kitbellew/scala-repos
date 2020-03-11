@@ -20,13 +20,17 @@ class ScalaScopeWeigher extends CompletionWeigher {
       it: Iterator[PsiElement],
       y: PsiElement): Option[Int] = {
     val idx = it.indexOf(y)
-    if (idx == -1) None else Some(-idx)
+    if (idx == -1)
+      None
+    else
+      Some(-idx)
   }
 
   def checkByContext(first: PsiElement, second: PsiElement): Option[Int] = {
     if (PsiTreeUtil.isContextAncestor(second, first, true))
       computeLevelsBetween(first.contexts, second)
-    else None
+    else
+      None
   }
 
   override def weigh(
@@ -40,7 +44,8 @@ class ScalaScopeWeigher extends CompletionWeigher {
         if (sl.element.scopes.hasNext)
           checkByContext(completionPosition, sl.element.scopes.next())
             .getOrElse(Int.MinValue)
-        else null
+        else
+          null
       case _ => null
     }
   }

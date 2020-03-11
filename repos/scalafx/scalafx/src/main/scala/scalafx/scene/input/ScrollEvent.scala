@@ -35,7 +35,10 @@ import scalafx.event.EventType
 
 object ScrollEvent {
   implicit def sfxScrollEvent2jfx(se: ScrollEvent): jfxsi.ScrollEvent =
-    if (se != null) se.delegate else null
+    if (se != null)
+      se.delegate
+    else
+      null
 
   object HorizontalTextScrollUnits
       extends SFXEnumDelegateCompanion[

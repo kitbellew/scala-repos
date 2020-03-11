@@ -190,7 +190,8 @@ object Streams {
         }
       }
       def checkOpen(): Unit = synchronized {
-        if (closed) sys.error("Streams for '" + name(a) + "' have been closed.")
+        if (closed)
+          sys.error("Streams for '" + name(a) + "' have been closed.")
       }
     }
   }

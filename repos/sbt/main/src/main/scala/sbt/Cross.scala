@@ -27,7 +27,10 @@ object Cross {
       val knownVersions = crossVersions(state)
       val version = token(StringBasic.examples(knownVersions: _*))
       val spacedVersion =
-        if (spacePresent) version else version & spacedFirst(SwitchCommand)
+        if (spacePresent)
+          version
+        else
+          version & spacedFirst(SwitchCommand)
       val optionalCommand = token(Space ~> matched(state.combinedParser)) ?? ""
       spacedVersion ~ optionalCommand
     }
@@ -60,8 +63,10 @@ object Cross {
             state.log.info(
               "Setting Scala home to " + home + " with actual version " + instance.actualVersion)
             val version =
-              if (resolveVersion.isEmpty) instance.actualVersion
-              else resolveVersion
+              if (resolveVersion.isEmpty)
+                instance.actualVersion
+              else
+                resolveVersion
             state.log.info(
               "\tand using " + version + " for resolving dependencies.")
             val settings = Seq(
@@ -98,8 +103,10 @@ object Cross {
         }
         val fixedSession = session.appendRaw(add ++ delegates)
         val fixedState = BuiltinCommands.reapply(fixedSession, structure, state)
-        if (!command.isEmpty) command :: fixedState
-        else fixedState
+        if (!command.isEmpty)
+          command :: fixedState
+        else
+          fixedState
     }
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.
@@ -131,7 +138,8 @@ object Cross {
       val versions = crossVersions(state)
       val current =
         scalaVersion in currentRef get structure.data map (SwitchCommand + " " + _) toList;
-      if (versions.isEmpty) command :: state
+      if (versions.isEmpty)
+        command :: state
       else {
         versions.map(v => s"$SwitchCommand $v $command") ::: current ::: state
       }
@@ -144,6 +152,9 @@ object Cross {
 
   def requireSession[T](p: State => Parser[T]): State => Parser[T] =
     s =>
-      if (s get sessionSettings isEmpty) failure("No project loaded") else p(s)
+      if (s get sessionSettings isEmpty)
+        failure("No project loaded")
+      else
+        p(s)
 
 }

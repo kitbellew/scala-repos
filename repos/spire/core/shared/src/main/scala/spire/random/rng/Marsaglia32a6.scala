@@ -35,7 +35,11 @@ class Marsaglia32a6(_x: Int, _y: Int, _z: Int, _w: Int, _v: Int, _d: Int)
   }
 
   def setSeed(seed: Array[Int]): Unit = {
-    val zs = if (seed.length < 6) Arrays.copyOf(seed, 6) else seed
+    val zs =
+      if (seed.length < 6)
+        Arrays.copyOf(seed, 6)
+      else
+        seed
     x = zs(0)
     y = zs(0)
     z = zs(0)
@@ -57,7 +61,11 @@ class Marsaglia32a6(_x: Int, _y: Int, _z: Int, _w: Int, _v: Int, _d: Int)
   }
 
   def setSeedBytes(bytes: Array[Byte]): Unit = {
-    val bs = if (bytes.length < 24) Arrays.copyOf(bytes, 24) else bytes
+    val bs =
+      if (bytes.length < 24)
+        Arrays.copyOf(bytes, 24)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bs)
     x = bb.getInt()
     y = bb.getInt()
@@ -81,7 +89,11 @@ class Marsaglia32a6(_x: Int, _y: Int, _z: Int, _w: Int, _v: Int, _d: Int)
 
 object Marsaglia32a6 extends GeneratorCompanion[Marsaglia32a6, Array[Int]] {
   def fromBytes(bytes: Array[Byte]): Marsaglia32a6 = {
-    val bs = if (bytes.length < 24) Arrays.copyOf(bytes, 24) else bytes
+    val bs =
+      if (bytes.length < 24)
+        Arrays.copyOf(bytes, 24)
+      else
+        bytes
     val bb = ByteBuffer.wrap(bytes)
     val x = bb.getInt()
     val y = bb.getInt()
@@ -93,7 +105,11 @@ object Marsaglia32a6 extends GeneratorCompanion[Marsaglia32a6, Array[Int]] {
   }
 
   def fromSeed(ints: Array[Int]): Marsaglia32a6 = {
-    val zs = if (ints.length < 6) Arrays.copyOf(ints, 6) else ints
+    val zs =
+      if (ints.length < 6)
+        Arrays.copyOf(ints, 6)
+      else
+        ints
     new Marsaglia32a6(zs(0), zs(1), zs(2), zs(3), zs(4), zs(5))
   }
 

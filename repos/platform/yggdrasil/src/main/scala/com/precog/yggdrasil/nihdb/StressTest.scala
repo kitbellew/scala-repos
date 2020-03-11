@@ -136,16 +136,22 @@ class StressTest {
         val n = ch.read(bb)
         bb.flip()
 
-        val input = if (n >= 0) More(bb) else Done
+        val input =
+          if (n >= 0)
+            More(bb)
+          else
+            Done
         val (AsyncParse(errors, results), parser) = p(input)
-        if (!errors.isEmpty) sys.error("errors: %s" format errors)
+        if (!errors.isEmpty)
+          sys.error("errors: %s" format errors)
         //projection.insert(Array(eventid), results)
         val eventidobj = EventId.fromLong(eventid)
         nihdb.insert(Seq(NIHDB.Batch(eventid, results)))
 
         eventid += 1L
         bb.flip()
-        if (n >= 0) loop(parser)
+        if (n >= 0)
+          loop(parser)
       }
 
       try {
@@ -155,7 +161,8 @@ class StressTest {
       }
       timeit("  finished ingesting")
 
-      while (fromFuture(nihdb.status).pending > 0) Thread.sleep(100)
+      while (fromFuture(nihdb.status).pending > 0)
+        Thread.sleep(100)
       timeit("  finished cooking")
 
       import scalaz._

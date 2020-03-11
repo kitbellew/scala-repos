@@ -352,7 +352,10 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
       * Create a new unacknowledged Write command with the given data.
       */
     def apply(data: ByteString): Write =
-      if (data.isEmpty) empty else Write(data, NoAck)
+      if (data.isEmpty)
+        empty
+      else
+        Write(data, NoAck)
   }
 
   /**
@@ -594,7 +597,10 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
     }
 
     val MaxChannelsPerSelector: Int =
-      if (MaxChannels == -1) -1 else math.max(MaxChannels / NrOfSelectors, 1)
+      if (MaxChannels == -1)
+        -1
+      else
+        math.max(MaxChannels / NrOfSelectors, 1)
     val FinishConnectRetries: Int =
       getInt("finish-connect-retries") requiring (_ > 0,
       "finish-connect-retries must be > 0")

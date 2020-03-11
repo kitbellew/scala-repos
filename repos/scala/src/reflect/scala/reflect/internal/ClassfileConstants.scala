@@ -347,9 +347,17 @@ object ClassfileConstants {
         SYNTHETIC | ARTIFACT // maybe should be just artifact?
       case JAVA_ACC_STATIC => STATIC
       case JAVA_ACC_ABSTRACT =>
-        if (isAnnotation) 0L else if (isClass) ABSTRACT else DEFERRED
+        if (isAnnotation)
+          0L
+        else if (isClass)
+          ABSTRACT
+        else
+          DEFERRED
       case JAVA_ACC_INTERFACE =>
-        if (isAnnotation) 0L else TRAIT | INTERFACE | ABSTRACT
+        if (isAnnotation)
+          0L
+        else
+          TRAIT | INTERFACE | ABSTRACT
       case JAVA_ACC_ENUM       => JAVA_ENUM
       case JAVA_ACC_ANNOTATION => JAVA_ANNOTATION
       case _                   => 0L
@@ -381,13 +389,19 @@ object ClassfileConstants {
     def fieldFlags(jflags: Int): Long = {
       translateFlags(
         jflags,
-        if ((jflags & JAVA_ACC_FINAL) == 0) MUTABLE else 0,
+        if ((jflags & JAVA_ACC_FINAL) == 0)
+          MUTABLE
+        else
+          0,
         isClass = false)
     }
     def methodFlags(jflags: Int): Long = {
       translateFlags(
         jflags,
-        if ((jflags & JAVA_ACC_BRIDGE) != 0) BRIDGE | ARTIFACT else 0,
+        if ((jflags & JAVA_ACC_BRIDGE) != 0)
+          BRIDGE | ARTIFACT
+        else
+          0,
         isClass = false)
     }
   }

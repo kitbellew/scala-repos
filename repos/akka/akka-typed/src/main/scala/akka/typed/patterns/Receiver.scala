@@ -97,7 +97,10 @@ object Receiver {
         Same
       case g: GetOne[t] ⇒
         g.replyTo ! GetOneResult(ctx.self, Some(queue.remove()))
-        if (queue.isEmpty) empty(ctx) else Same
+        if (queue.isEmpty)
+          empty(ctx)
+        else
+          Same
       case g @ GetAll(d) if d <= Duration.Zero ⇒
         g.replyTo ! GetAllResult(ctx.self, queue.iterator.asScala.toVector)
         empty(ctx)
@@ -125,7 +128,8 @@ object Receiver {
         if (remaining.isEmpty) {
           ctx.setReceiveTimeout(Duration.Undefined)
           empty(ctx)
-        } else asked(ctx, remaining)
+        } else
+          asked(ctx, remaining)
       case Msg(_, msg) ⇒
         msg match {
           case ExternalAddress(replyTo) ⇒ {
@@ -149,7 +153,8 @@ object Receiver {
             if (q.isEmpty) {
               ctx.setReceiveTimeout(Duration.Undefined)
               empty(ctx)
-            } else asked(ctx, q)
+            } else
+              asked(ctx, q)
         }
     }
   }

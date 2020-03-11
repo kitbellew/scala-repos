@@ -36,7 +36,8 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       return false
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null) return false
+    if (methodCallExpr == null)
+      return false
     val referenceExpr = methodCallExpr.getInvokedExpr match {
       case ref: ScReferenceExpression => ref
       case call: ScGenericCall =>
@@ -50,14 +51,16 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
       return false
-    if (referenceExpr.isQualified) return true
+    if (referenceExpr.isQualified)
+      return true
     false
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null || !methodCallExpr.isValid) return
+    if (methodCallExpr == null || !methodCallExpr.isValid)
+      return
 
     val referenceExpr = methodCallExpr.getInvokedExpr match {
       case ref: ScReferenceExpression => ref

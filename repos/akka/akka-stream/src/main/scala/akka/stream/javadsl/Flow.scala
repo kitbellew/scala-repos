@@ -1995,14 +1995,18 @@ object RunnableGraph {
 
     override def withAttributes(attr: Attributes): RunnableGraphAdapter[Mat] = {
       val newRunnable = runnable.withAttributes(attr)
-      if (newRunnable eq runnable) this
-      else new RunnableGraphAdapter(newRunnable)
+      if (newRunnable eq runnable)
+        this
+      else
+        new RunnableGraphAdapter(newRunnable)
     }
 
     override def named(name: String): RunnableGraphAdapter[Mat] = {
       val newRunnable = runnable.named(name)
-      if (newRunnable eq runnable) this
-      else new RunnableGraphAdapter(newRunnable)
+      if (newRunnable eq runnable)
+        this
+      else
+        new RunnableGraphAdapter(newRunnable)
     }
   }
 }

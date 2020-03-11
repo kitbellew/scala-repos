@@ -58,7 +58,11 @@ case class HandlerCall(
     method: String,
     parameters: Option[Seq[Parameter]])
     extends Positional {
-  val dynamic = if (instantiate) "@" else ""
+  val dynamic =
+    if (instantiate)
+      "@"
+    else
+      ""
   override def toString =
     dynamic + packageName + "." + controller + dynamic + "." + method + parameters
       .map { params =>

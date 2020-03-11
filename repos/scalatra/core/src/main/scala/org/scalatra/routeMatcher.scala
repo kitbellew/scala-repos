@@ -69,12 +69,14 @@ final class SinatraRouteMatcher(pattern: String)
     def addOptional(name: String): Builder =
       if (params contains name)
         copy(path = path + params(name), params = params - name)
-      else this
+      else
+        this
 
     def addPrefixedOptional(name: String, prefix: String): Builder =
       if (params contains name)
         copy(path = path + prefix + params(name), params = params - name)
-      else this
+      else
+        this
 
     // checks all splats are used, appends additional params as a query string
     def get: String = {
@@ -83,7 +85,11 @@ final class SinatraRouteMatcher(pattern: String)
       val pairs = params map {
         case (key, value) => key.urlEncode + "=" + value.urlEncode
       }
-      val queryString = if (pairs.isEmpty) "" else pairs.mkString("?", "&", "")
+      val queryString =
+        if (pairs.isEmpty)
+          ""
+        else
+          pairs.mkString("?", "&", "")
       path + queryString
     }
   }
@@ -168,7 +174,11 @@ final class RailsRouteMatcher(pattern: String)
       val pairs = params map {
         case (key, value) => key.urlEncode + "=" + value.urlEncode
       }
-      val queryString = if (pairs.isEmpty) "" else pairs.mkString("?", "&", "")
+      val queryString =
+        if (pairs.isEmpty)
+          ""
+        else
+          pairs.mkString("?", "&", "")
       path + queryString
     }
 
@@ -265,7 +275,10 @@ final class BooleanBlockRouteMatcher(block: => Boolean) extends RouteMatcher {
     * @return Some empty map if the block evaluates to true, or else None.
     */
   def apply(requestPath: String): Option[MultiMap] =
-    if (block) Some(MultiMap()) else None
+    if (block)
+      Some(MultiMap())
+    else
+      None
 
   override def toString: String = "[Boolean Guard]"
 
@@ -275,7 +288,10 @@ final class StatusCodeRouteMatcher(codes: Range, responseStatus: => Int)
     extends RouteMatcher {
 
   def apply(requestPath: String): Option[MultiMap] =
-    if (codes.contains(responseStatus)) Some(MultiMap()) else None
+    if (codes.contains(responseStatus))
+      Some(MultiMap())
+    else
+      None
 
   override def toString: String = codes.toString()
 

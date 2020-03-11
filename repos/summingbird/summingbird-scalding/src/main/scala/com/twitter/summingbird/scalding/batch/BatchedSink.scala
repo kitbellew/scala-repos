@@ -144,7 +144,10 @@ trait BatchedSink[T] extends Sink[T] {
       newlyWritten match {
         case None => mergeExistingAndBuilt(None)
         case Some(Left(err)) =>
-          if (existing.isEmpty) Left(err) else mergeExistingAndBuilt(None)
+          if (existing.isEmpty)
+            Left(err)
+          else
+            mergeExistingAndBuilt(None)
         case Some(Right(built)) => mergeExistingAndBuilt(Some(built))
       }
     })

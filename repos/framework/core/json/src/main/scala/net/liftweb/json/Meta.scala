@@ -76,12 +76,20 @@ private[json] object Meta {
     def bestMatching(argNames: List[String]): Option[DeclaredConstructor] = {
       val names = Set(argNames: _*)
       def countOptionals(args: List[Arg]) =
-        args.foldLeft(0)((n, x) => if (x.optional) n + 1 else n)
+        args.foldLeft(0)((n, x) =>
+          if (x.optional)
+            n + 1
+          else
+            n)
       def score(args: List[Arg]) =
         args.foldLeft(0)((s, arg) =>
-          if (names.contains(arg.path)) s + 1 else -100)
+          if (names.contains(arg.path))
+            s + 1
+          else
+            -100)
 
-      if (choices.isEmpty) None
+      if (choices.isEmpty)
+        None
       else {
         val best =
           choices.tail.foldLeft((choices.head, score(choices.head.args))) {
@@ -90,9 +98,12 @@ private[json] object Meta {
               if (newScore == best._2) {
                 if (countOptionals(c.args) < countOptionals(best._1.args))
                   (c, newScore)
-                else best
-              } else if (newScore > best._2) (c, newScore)
-              else best
+                else
+                  best
+              } else if (newScore > best._2)
+                (c, newScore)
+              else
+                best
           }
         Some(best._1)
       }
@@ -168,14 +179,16 @@ private[json] object Meta {
                     context.containingClass,
                     idx,
                     context.allArgs.map(_._1))
-                else t
+                else
+                  t
             }
           Some(mkParameterizedType(x.getRawType, typeArgs))
         case _ => None
       }
 
       def mkConstructor(t: Type) =
-        if (visited.contains(t)) (Cycle(t), false)
+        if (visited.contains(t))
+          (Cycle(t), false)
         else
           (
             Constructor(
@@ -210,7 +223,8 @@ private[json] object Meta {
               fieldMapping(aType.getGenericComponentType)._1),
             false)
         case raw: Class[_] =>
-          if (primitive_?(raw)) (Value(raw), false)
+          if (primitive_?(raw))
+            (Value(raw), false)
           else if (raw.isArray)
             (
               mkContainer(t, `* -> *`, 0, Col.apply(TypeInfo(raw, None), _)),
@@ -273,7 +287,8 @@ private[json] object Meta {
 
     def memoize(x: A, f: A => R): R = {
       val c = cache.get
-      if (c contains x) c(x)
+      if (c contains x)
+        c(x)
       else {
         val ret = f(x)
         cache.set(c + (x -> ret))
@@ -353,7 +368,8 @@ private[json] object Meta {
                       idx,
                       ctx.allArgs.map(_._1)))
                   .getOrElse(arg)
-              else arg
+              else
+                arg
             case (x, _) => x
           }
           names.toList.zip(types)
@@ -397,7 +413,8 @@ private[json] object Meta {
                   context.containingClass,
                   i,
                   context.allArgs.map(_._1))
-              else c
+              else
+                c
             case p: ParameterizedType => p.getRawType.asInstanceOf[Class[_]]
             case x                    => fail("do not know how to get type parameter from " + x)
           }
@@ -465,8 +482,10 @@ private[json] object Meta {
                 case p: ParameterizedType => Some(p)
                 case _                    => None
               })))
-      fs ::: (if (clazz.getSuperclass == null) Nil
-              else fields(clazz.getSuperclass))
+      fs ::: (if (clazz.getSuperclass == null)
+                Nil
+              else
+                fields(clazz.getSuperclass))
     }
 
     def setField(a: AnyRef, name: String, value: Any) = {
@@ -486,8 +505,10 @@ private[json] object Meta {
         clazz.getDeclaredField(name)
       } catch {
         case e: NoSuchFieldException =>
-          if (clazz.getSuperclass == null) throw e
-          else findField(clazz.getSuperclass, name)
+          if (clazz.getSuperclass == null)
+            throw e
+          else
+            findField(clazz.getSuperclass, name)
       }
 
     def getDeclaredFields(clazz: Class[_]): Map[String, Field] = {

@@ -26,7 +26,11 @@ class ComputeMatrixIntersectionJob(args: Args) extends Job(args) {
   //zip puts creates a pair element out of corresponding elements in the two matrices
   val intersection = adjacencyMatrix1
     .zip(adjacencyMatrix2)
-    .mapValues(pair => if (pair._1 > 0 && pair._2 > 0) 1.0 else 0.0)
+    .mapValues(pair =>
+      if (pair._1 > 0 && pair._2 > 0)
+        1.0
+      else
+        0.0)
     .write(Tsv(args("intersection")))
   (adjacencyMatrix1 - intersection).write(Tsv(args("leftDiff")))
   (adjacencyMatrix2 - intersection).write(Tsv(args("rightDiff")))

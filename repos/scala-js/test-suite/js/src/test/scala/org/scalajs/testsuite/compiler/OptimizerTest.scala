@@ -299,7 +299,11 @@ object OptimizerTest {
   @inline
   class InlineClassDependentFields(val x: Int) {
     val b = x > 3
-    val y = if (b) x + 6 else x - 2
+    val y =
+      if (b)
+        x + 6
+      else
+        x - 2
   }
 
   @inline

@@ -78,16 +78,17 @@ private[round] final class Finisher(
 
   private def notifyTimeline(game: Game)(color: Color) = {
     import lila.hub.actorApi.timeline.{Propagate, GameEnd}
-    if (!game.aborted) game.player(color).userId foreach { userId =>
-      game.perfType foreach { perfType =>
-        timeline ! (Propagate(
-          GameEnd(
-            playerId = game fullIdOf color,
-            opponent = game.player(!color).userId,
-            win = game.winnerColor map (color ==),
-            perf = perfType.key)) toUser userId)
+    if (!game.aborted)
+      game.player(color).userId foreach { userId =>
+        game.perfType foreach { perfType =>
+          timeline ! (Propagate(
+            GameEnd(
+              playerId = game fullIdOf color,
+              opponent = game.player(!color).userId,
+              win = game.winnerColor map (color ==),
+              perf = perfType.key)) toUser userId)
+        }
       }
-    }
   }
 
   private def updateCountAndPerfs(finish: FinishGame): Funit =
@@ -111,9 +112,12 @@ private[round] final class Finisher(
       game.rated,
       game.hasAi,
       result =
-        if (game.winnerUserId exists (user.id ==)) 1
-        else if (game.loserUserId exists (user.id ==)) -1
-        else 0,
+        if (game.winnerUserId exists (user.id ==))
+          1
+        else if (game.loserUserId exists (user.id ==))
+          -1
+        else
+          0,
       totalTime = totalTime,
       tvTime = tvTime
     )

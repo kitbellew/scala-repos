@@ -178,9 +178,12 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   }
 
   override def validate: List[FieldError] = {
-    if (!invalidPw && password.get != "*") Nil
-    else if (invalidPw) List(FieldError(this, Text(invalidMsg)))
-    else List(FieldError(this, Text(S.?("password.must.be.set"))))
+    if (!invalidPw && password.get != "*")
+      Nil
+    else if (invalidPw)
+      List(FieldError(this, Text(invalidMsg)))
+    else
+      List(FieldError(this, Text(S.?("password.must.be.set"))))
   }
 
   def real_convertToJDBCFriendly(value: String): Object =
@@ -262,14 +265,22 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       { (inst: T, v: Long, isNull: Boolean) =>
         {
           val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.salt_i() = if (isNull) null else v.toString
+          tv.salt_i() =
+            if (isNull)
+              null
+            else
+              v.toString
         }
       }
     } else if (columnName.endsWith("_pw")) {
       { (inst: T, v: Long, isNull: Boolean) =>
         {
           val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-          tv.password() = if (isNull) null else v.toString
+          tv.password() =
+            if (isNull)
+              null
+            else
+              v.toString
         }
       }
     } else {
@@ -320,7 +331,11 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.salt_i() = (if (v == null) null else v.toString);
+            tv.salt_i() =
+              (if (v == null)
+                 null
+               else
+                 v.toString);
             tv.resetDirty
           }
         }
@@ -333,7 +348,11 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.password() = (if (v == null) null else v.toString);
+            tv.password() =
+              (if (v == null)
+                 null
+               else
+                 v.toString);
             tv.resetDirty
           }
         }
@@ -348,6 +367,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     * Given the driver type, return the string required to create the column in the database
     */
   def fieldCreatorString(dbType: DriverType, colName: String): String =
-    (if (colName.endsWith("_pw")) colName + " VARCHAR(48)"
-     else colName + " VARCHAR(20)") + notNullAppender()
+    (if (colName.endsWith("_pw"))
+       colName + " VARCHAR(48)"
+     else
+       colName + " VARCHAR(20)") + notNullAppender()
 }

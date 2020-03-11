@@ -23,11 +23,13 @@ object Help {
     var b: Boolean = true;
     var i: Int = 0;
     while (i < count) {
-      if (vars(i) != value) b = false;
+      if (vars(i) != value)
+        b = false;
       i = i + 1;
     }
     while (i < max) {
-      if (vars(i) != null) b = false;
+      if (vars(i) != null)
+        b = false;
       i = i + 1;
     }
     b;
@@ -35,7 +37,8 @@ object Help {
   def print: Unit = {
     var i = 0;
     while (i < max) {
-      if (i > 0) Console.print(", ");
+      if (i > 0)
+        Console.print(", ");
       Console.print(vars(i));
       i = i + 1;
     }
@@ -17073,7 +17076,11 @@ object Test {
 
     if (errors > 0) {
       Console.println;
-      Console.println(errors + " error" + (if (errors > 1) "s" else ""));
+      Console.println(
+        errors + " error" + (if (errors > 1)
+                               "s"
+                             else
+                               ""));
     }
   }
 }

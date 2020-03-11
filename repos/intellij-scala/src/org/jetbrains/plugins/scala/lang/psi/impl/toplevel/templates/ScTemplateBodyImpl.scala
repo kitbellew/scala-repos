@@ -54,7 +54,8 @@ class ScTemplateBodyImpl private (
       stub.getChildrenByType(
         TokenSets.ALIASES_SET,
         JavaArrayFactoryUtil.ScTypeAliasFactory)
-    } else findChildrenByClass(classOf[ScTypeAlias])
+    } else
+      findChildrenByClass(classOf[ScTypeAlias])
   }
 
   def functions: Array[ScFunction] =
@@ -110,7 +111,8 @@ class ScTemplateBodyImpl private (
             processor,
             state,
             td.extendsBlock,
-            place)) return false
+            place))
+        return false
     }
     super.processDeclarations(processor, state, lastParent, place)
   }

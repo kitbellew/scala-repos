@@ -114,8 +114,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     assert(
       !primitiveTypeToBType.contains(classSym) || isCompilingPrimitive,
       s"Cannot create ClassBType for primitive class symbol $classSym")
-    if (classSym == NothingClass) srNothingRef
-    else if (classSym == NullClass) srNullRef
+    if (classSym == NothingClass)
+      srNothingRef
+    else if (classSym == NullClass)
+      srNullRef
     else {
       val internalName = classSym.javaBinaryName.toString
       classBTypeFromInternalName.getOrElse(
@@ -152,8 +154,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       tpe: Type,
       isConstructor: Boolean): MethodBType = {
     val resultType: BType =
-      if (isConstructor) UNIT
-      else typeToBType(tpe.resultType)
+      if (isConstructor)
+        UNIT
+      else
+        typeToBType(tpe.resultType)
     MethodBType(tpe.paramTypes map typeToBType, resultType)
   }
 
@@ -175,7 +179,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
   def staticHandleFromSymbol(sym: Symbol): asm.Handle = {
     val owner =
-      if (sym.owner.isModuleClass) sym.owner.linkedClassOfClass else sym.owner
+      if (sym.owner.isModuleClass)
+        sym.owner.linkedClassOfClass
+      else
+        sym.owner
     val descriptor =
       methodBTypeFromMethodType(sym.info, isConstructor = false).descriptor
     new asm.Handle(
@@ -300,7 +307,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       if (classSym.hasJavaAnnotationFlag)
         parents.filterNot(c =>
           c.typeSymbol == ClassfileAnnotationClass || c.typeSymbol == AnnotationClass)
-      else parents
+      else
+        parents
     }
 
     val allParents =
@@ -376,23 +384,44 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // Java enums for exhaustiveness checking.
         val hasAbstractMethod =
           classSym.info.decls.exists(s => s.isMethod && s.isDeferred)
-        if (hasAbstractMethod) ACC_ABSTRACT else 0
+        if (hasAbstractMethod)
+          ACC_ABSTRACT
+        else
+          0
       }
       GenBCode.mkFlags(
         // SI-9393: the classfile / java source parser make java annotation symbols look like classes.
         // here we recover the actual classfile flags.
         if (classSym.hasJavaAnnotationFlag)
           ACC_ANNOTATION | ACC_INTERFACE | ACC_ABSTRACT
-        else 0,
-        if (classSym.isPublic) ACC_PUBLIC else 0,
-        if (classSym.isFinal) ACC_FINAL else 0,
+        else
+          0,
+        if (classSym.isPublic)
+          ACC_PUBLIC
+        else
+          0,
+        if (classSym.isFinal)
+          ACC_FINAL
+        else
+          0,
         // see the link above. javac does the same: ACC_SUPER for all classes, but not interfaces.
-        if (classSym.isInterface) ACC_INTERFACE else ACC_SUPER,
+        if (classSym.isInterface)
+          ACC_INTERFACE
+        else
+          ACC_SUPER,
         // for Java enums, we cannot trust `hasAbstractFlag` (see comment in enumFlags)
-        if (!classSym.hasJavaEnumFlag && classSym.hasAbstractFlag) ACC_ABSTRACT
-        else 0,
-        if (classSym.isArtifact) ACC_SYNTHETIC else 0,
-        if (classSym.hasJavaEnumFlag) enumFlags else 0
+        if (!classSym.hasJavaEnumFlag && classSym.hasAbstractFlag)
+          ACC_ABSTRACT
+        else
+          0,
+        if (classSym.isArtifact)
+          ACC_SYNTHETIC
+        else
+          0,
+        if (classSym.hasJavaEnumFlag)
+          enumFlags
+        else
+          0
       )
     }
 
@@ -401,14 +430,17 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // scala.annotation.Annotation as superclass to java annotations. In reality, java
     // annotation classfiles have superclass Object (like any interface classfile).
     val superClassSym =
-      if (classSym.hasJavaAnnotationFlag) ObjectClass
+      if (classSym.hasJavaAnnotationFlag)
+        ObjectClass
       else {
         val sc = classSym.superClass
         // SI-9393: Java annotation classes don't have the ABSTRACT/INTERFACE flag, so they appear
         // (wrongly) as superclasses. Fix this for BTypes: the java annotation will appear as interface
         // (handled by method implementedInterfaces), the superclass is set to Object.
-        if (sc.hasJavaAnnotationFlag) ObjectClass
-        else sc
+        if (sc.hasJavaAnnotationFlag)
+          ObjectClass
+        else
+          sc
       }
     assert(
       if (classSym == ObjectClass)
@@ -422,15 +454,18 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       s"Bad superClass for $classSym: $superClassSym"
     )
     val superClass =
-      if (superClassSym == NoSymbol) None
-      else Some(classBTypeFromSymbol(superClassSym))
+      if (superClassSym == NoSymbol)
+        None
+      else
+        Some(classBTypeFromSymbol(superClassSym))
 
     val interfaces = implementedInterfaces(classSym).map(classBTypeFromSymbol)
 
     val flags = {
       if (classSym.isJava)
         javaClassfileFlags(classSym) // see comment on javaClassfileFlags
-      else javaFlags(classSym)
+      else
+        javaFlags(classSym)
     }
 
     /* The InnerClass table of a class C must contain all nested classes of C, even if they are only
@@ -455,7 +490,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // from the companion that were originally nested in the value class.
           if (exitingPickler(linkedClass.isDerivedValueClass))
             allNested.filterNot(classOriginallyNestedInClass(_, linkedClass))
-          else allNested
+          else
+            allNested
         }
 
         if (isTopLevelModuleClass(classSym)) {
@@ -470,7 +506,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       }
 
       val companionModuleMembers =
-        if (considerAsTopLevelImplementationArtifact(classSym)) Nil
+        if (considerAsTopLevelImplementationArtifact(classSym))
+          Nil
         else {
           // If this is a top-level non-impl (*) class, the member classes of the companion object are
           // added as members of the class. For example:
@@ -536,7 +573,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           nb == 2,
           s"Java member module without member class: $s - $nestedClassSymbols")
         false
-      } else true
+      } else
+        true
     })
 
     val nestedClasses =
@@ -608,8 +646,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       }
 
       val outerName: Option[String] = {
-        if (isAnonymousOrLocalClass(innerClassSym)) None
-        else Some(enclosingClass.internalName)
+        if (isAnonymousOrLocalClass(innerClassSym))
+          None
+        else
+          Some(enclosingClass.internalName)
       }
 
       val innerName: Option[String] = {
@@ -818,29 +858,72 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // suppress final if abstract is present.
     import asm.Opcodes._
     GenBCode.mkFlags(
-      if (privateFlag) ACC_PRIVATE else ACC_PUBLIC,
+      if (privateFlag)
+        ACC_PRIVATE
+      else
+        ACC_PUBLIC,
       if ((sym.isDeferred && !sym.hasFlag(
             symtab.Flags.JAVA_DEFAULTMETHOD)) || sym.hasAbstractFlag)
         ACC_ABSTRACT
-      else 0,
-      if (sym.isTraitOrInterface) ACC_INTERFACE else 0,
-      if (finalFlag && !sym.hasAbstractFlag) ACC_FINAL else 0,
-      if (sym.isStaticMember) ACC_STATIC else 0,
-      if (sym.isBridge) ACC_BRIDGE | ACC_SYNTHETIC else 0,
-      if (sym.isArtifact) ACC_SYNTHETIC else 0,
-      if (sym.isClass && !sym.isTraitOrInterface) ACC_SUPER else 0,
-      if (sym.hasJavaEnumFlag) ACC_ENUM else 0,
-      if (sym.isVarargsMethod) ACC_VARARGS else 0,
-      if (sym.hasFlag(symtab.Flags.SYNCHRONIZED)) ACC_SYNCHRONIZED else 0,
-      if (sym.isDeprecated) asm.Opcodes.ACC_DEPRECATED else 0
+      else
+        0,
+      if (sym.isTraitOrInterface)
+        ACC_INTERFACE
+      else
+        0,
+      if (finalFlag && !sym.hasAbstractFlag)
+        ACC_FINAL
+      else
+        0,
+      if (sym.isStaticMember)
+        ACC_STATIC
+      else
+        0,
+      if (sym.isBridge)
+        ACC_BRIDGE | ACC_SYNTHETIC
+      else
+        0,
+      if (sym.isArtifact)
+        ACC_SYNTHETIC
+      else
+        0,
+      if (sym.isClass && !sym.isTraitOrInterface)
+        ACC_SUPER
+      else
+        0,
+      if (sym.hasJavaEnumFlag)
+        ACC_ENUM
+      else
+        0,
+      if (sym.isVarargsMethod)
+        ACC_VARARGS
+      else
+        0,
+      if (sym.hasFlag(symtab.Flags.SYNCHRONIZED))
+        ACC_SYNCHRONIZED
+      else
+        0,
+      if (sym.isDeprecated)
+        asm.Opcodes.ACC_DEPRECATED
+      else
+        0
     )
   }
 
   def javaFieldFlags(sym: Symbol) = {
     javaFlags(sym) | GenBCode.mkFlags(
-      if (sym hasAnnotation TransientAttr) asm.Opcodes.ACC_TRANSIENT else 0,
-      if (sym hasAnnotation VolatileAttr) asm.Opcodes.ACC_VOLATILE else 0,
-      if (sym.isMutable) 0 else asm.Opcodes.ACC_FINAL
+      if (sym hasAnnotation TransientAttr)
+        asm.Opcodes.ACC_TRANSIENT
+      else
+        0,
+      if (sym hasAnnotation VolatileAttr)
+        asm.Opcodes.ACC_VOLATILE
+      else
+        0,
+      if (sym.isMutable)
+        0
+      else
+        asm.Opcodes.ACC_FINAL
     )
   }
 }

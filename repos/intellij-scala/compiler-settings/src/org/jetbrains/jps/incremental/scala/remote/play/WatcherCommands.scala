@@ -12,5 +12,9 @@ object WatcherCommands {
   val TRUE = "true"
   val FALSE = "false"
 
-  def toMessage(v: Boolean) = if (v) TRUE else FALSE
+  def toMessage(v: Boolean) =
+    if (v)
+      TRUE
+    else
+      FALSE
 }

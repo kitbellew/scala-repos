@@ -73,7 +73,10 @@ sealed trait DecisionTree[ /*@specialized(Double) */ A] {
   def apply(v: Array[Double]): A = {
     @tailrec def loop(tree: DecisionTree[A]): A = tree match {
       case Split(i, boundary, left, right) =>
-        if (v(i) <= boundary) loop(left) else loop(right)
+        if (v(i) <= boundary)
+          loop(left)
+        else
+          loop(right)
       case Leaf(k) =>
         k
     }
@@ -295,7 +298,11 @@ class ClassificationTreeMaker[K] extends TreeMaker[K] {
   protected final class GiniIndex(m: java.util.HashMap[K, Int], var n: Int)
       extends RegionLike {
     def +=(k: K) {
-      val cnt = if (m containsKey k) m.get(k) + 1 else 1
+      val cnt =
+        if (m containsKey k)
+          m.get(k) + 1
+        else
+          1
       m.put(k, cnt)
       n += 1
     }
@@ -506,7 +513,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         var correct = 0d
         var i = 0
         while (i < actual.length) {
-          correct += (if (actual(i) == predicted(i)) 1d else 0d)
+          correct += (if (actual(i) == predicted(i))
+                        1d
+                      else
+                        0d)
           i += 1
         }
         correct / actual.length

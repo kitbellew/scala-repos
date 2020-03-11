@@ -277,7 +277,10 @@ class ComplexIsNumeric[A](implicit
     a.pow(reciprocal(fromInt(n)))
 
   def compare(x: Complex[A], y: Complex[A]): Int =
-    if (x eqv y) 0 else throw new UnsupportedOperationException("undefined")
+    if (x eqv y)
+      0
+    else
+      throw new UnsupportedOperationException("undefined")
 
   def ceil(a: Complex[A]): Complex[A] = a.ceil
   def floor(a: Complex[A]): Complex[A] = a.floor

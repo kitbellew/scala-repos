@@ -102,9 +102,11 @@ case class ScAbstractType(
       case rt =>
         var t: (Boolean, ScUndefinedSubstitutor) =
           Conformance.conformsInner(upper, r, Set.empty, uSubst)
-        if (!t._1) return (false, uSubst)
+        if (!t._1)
+          return (false, uSubst)
         t = Conformance.conformsInner(r, lower, Set.empty, t._2)
-        if (!t._1) return (false, uSubst)
+        if (!t._1)
+          return (false, uSubst)
         (true, t._2)
     }
   }
@@ -112,7 +114,12 @@ case class ScAbstractType(
   def inferValueType = tpt
 
   def simplifyType: ScType = {
-    if (upper.equiv(Any)) lower else if (lower.equiv(Nothing)) upper else lower
+    if (upper.equiv(Any))
+      lower
+    else if (lower.equiv(Nothing))
+      upper
+    else
+      lower
   }
 
   override def removeAbstracts = simplifyType

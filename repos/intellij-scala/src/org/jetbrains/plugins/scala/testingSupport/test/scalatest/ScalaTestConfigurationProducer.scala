@@ -63,7 +63,8 @@ class ScalaTestConfigurationProducer extends {
       location: Location[_ <: PsiElement])
       : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
     val element = location.getPsiElement
-    if (element == null) return None
+    if (element == null)
+      return None
 
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
@@ -83,20 +84,29 @@ class ScalaTestConfigurationProducer extends {
     }
 
     val (testClass, testName) = getLocationClassAndTest(location)
-    if (testClass == null) return None
+    if (testClass == null)
+      return None
     val testClassPath = testClass.qualifiedName
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
-          (if (testName != null) "." + testName else ""),
+          (if (testName != null)
+             "." + testName
+           else
+             ""),
         confFactory)
     val runConfiguration =
       settings.getConfiguration.asInstanceOf[ScalaTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
-    if (testName != null) runConfiguration.setTestName(testName)
-    val kind = if (testName == null) TestKind.CLASS else TestKind.TEST_NAME
+    if (testName != null)
+      runConfiguration.setTestName(testName)
+    val kind =
+      if (testName == null)
+        TestKind.CLASS
+      else
+        TestKind.TEST_NAME
     runConfiguration.setTestKind(kind)
     try {
       val module = ScalaPsiUtil.getModule(element)
@@ -115,16 +125,19 @@ class ScalaTestConfigurationProducer extends {
       configuration: RunConfiguration,
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
-    if (element == null) return false
+    if (element == null)
+      return false
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
-      if (!configuration.isInstanceOf[ScalaTestRunConfiguration]) return false
+      if (!configuration.isInstanceOf[ScalaTestRunConfiguration])
+        return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
         configuration)
     }
     val (testClass, testName) = getLocationClassAndTest(location)
-    if (testClass == null) return false
+    if (testClass == null)
+      return false
     val testClassPath = testClass.qualifiedName
     configuration match {
       case configuration: ScalaTestRunConfiguration
@@ -144,7 +157,8 @@ class ScalaTestConfigurationProducer extends {
     val element = location.getPsiElement
     var clazz: ScTypeDefinition =
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
-    if (clazz == null) return (null, null)
+    if (clazz == null)
+      return (null, null)
     val tb = clazz.extendsBlock.templateBody.orNull
     while (PsiTreeUtil.getParentOfType(
              clazz,
@@ -153,8 +167,10 @@ class ScalaTestConfigurationProducer extends {
       clazz =
         PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
     }
-    if (!clazz.isInstanceOf[ScClass]) return (null, null)
-    if (ScalaTestRunConfiguration.isInvalidSuite(clazz)) return (null, null)
+    if (!clazz.isInstanceOf[ScClass])
+      return (null, null)
+    if (ScalaTestRunConfiguration.isInvalidSuite(clazz))
+      return (null, null)
     if (!suitePaths.exists(suitePath => isInheritor(clazz, suitePath)))
       return (null, null)
 
@@ -173,7 +189,8 @@ class ScalaTestConfigurationProducer extends {
         inv: MethodInvocation => Option[String],
         recursive: Boolean,
         checkFirstArgIsUnitOrString: Boolean): ReturnResult = {
-      if (call == null) return NotFoundResult
+      if (call == null)
+        return NotFoundResult
       call.getInvokedExpr match {
         case ref: ScReferenceExpression if namesSet.isDefinedAt(ref.refName) =>
           var middleName = ref.refName
@@ -229,8 +246,10 @@ class ScalaTestConfigurationProducer extends {
                 val res = inv(call)
                 if (res.isDefined)
                   return SuccessResult(call, res.get, middleName)
-                else return WrongResult
-              } else return WrongResult
+                else
+                  return WrongResult
+              } else
+                return WrongResult
             }
           }
         case _call: MethodInvocation =>
@@ -246,7 +265,8 @@ class ScalaTestConfigurationProducer extends {
           }
         case _ =>
       }
-      if (!recursive) return NotFoundResult
+      if (!recursive)
+        return NotFoundResult
       checkCallGeneral(
         PsiTreeUtil.getParentOfType(call, classOf[MethodInvocation], true),
         namesSet,
@@ -329,7 +349,8 @@ class ScalaTestConfigurationProducer extends {
                             }
                         }
                     }
-                  } else None
+                  } else
+                    None
                 case _ => None
               }
             case _ => None
@@ -358,7 +379,10 @@ class ScalaTestConfigurationProducer extends {
       checkCallGeneral(
         call,
         namesSet,
-        if (testNameIsAlwaysEmpty) _ => Some("") else inv,
+        if (testNameIsAlwaysEmpty)
+          _ => Some("")
+        else
+          inv,
         recursive = true,
         checkFirstArgIsUnitOrString)
     }
@@ -368,7 +392,8 @@ class ScalaTestConfigurationProducer extends {
     implicit def s2set(s: String): Set[String] = Set(s) //todo: inline?
 
     def checkFunSuite(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       checkCall(
         PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
         Map("test" -> fqn, "ignore" -> fqn)) match {
@@ -379,7 +404,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkPropSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       checkCall(
         PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
         Map("property" -> fqn, "ignore" -> fqn)) match {
@@ -390,7 +416,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkFeatureSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       checkCall(
         PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
         Map("scenario" -> fqn, "ignore" -> fqn)) match {
@@ -401,10 +428,11 @@ class ScalaTestConfigurationProducer extends {
             Map("feature" -> fqn)) match {
             case SuccessResult(_, featureName, _) =>
               //check with Informing is used to distinguish scalatest 2.0 from scalatest 1.9.2
-              testName =
-                (if (isInheritor(clazz, "org.scalatest.Informing")) "Feature: "
-                 else "") +
-                  featureName + " " + testName
+              testName = (if (isInheritor(clazz, "org.scalatest.Informing"))
+                            "Feature: "
+                          else
+                            "") +
+                featureName + " " + testName
             case WrongResult => return None
             case _           =>
           }
@@ -415,7 +443,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkFunSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       checkCall(
         PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
         Map("it" -> fqn, "ignore" -> fqn)) match {
@@ -441,7 +470,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkFreeSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       def checkFreeSpecInner(innerClassName: String): Option[String] = {
         val ifqn = fqn + innerClassName
         checkInfix(
@@ -481,7 +511,8 @@ class ScalaTestConfigurationProducer extends {
     val canFqn2 = "org.scalatest.words.CanVerb.StringCanWrapperForVerb"
 
     def checkWordSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       def checkWordSpecInner(innerClassName: String): Option[String] = {
         val ifqn = fqn + innerClassName
         val wfqn = fqn + ".WordSpecStringWrapper"
@@ -635,7 +666,8 @@ class ScalaTestConfigurationProducer extends {
         sibling = sibling.getPrevSibling
       }
 
-      if (result == null) return None
+      if (result == null)
+        return None
       result
     }
 
@@ -674,7 +706,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkFlatSpec(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       val itFqn = fqn + ".ItWord"
       val itVFqn = fqn + ".ItVerbString"
       val itVTFqn = fqn + ".ItVerbStringTaggedAs"
@@ -746,9 +779,10 @@ class ScalaTestConfigurationProducer extends {
                 ) match {
                   case SuccessResult(invoc, tName, middleName) =>
                     call = invoc
-                    testName =
-                      tName + " " + middleName + (if (testName.isEmpty) ""
-                                                  else " ") + testName
+                    testName = tName + " " + middleName + (if (testName.isEmpty)
+                                                             ""
+                                                           else
+                                                             " ") + testName
                   case WrongResult => return None
                   case _           => call = null
                 }
@@ -762,7 +796,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkJUnit3Suite(fqn: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       var fun = PsiTreeUtil.getParentOfType(
         element,
         classOf[ScFunctionDefinition],
@@ -781,7 +816,8 @@ class ScalaTestConfigurationProducer extends {
     }
 
     def checkAnnotatedSuite(fqn: String, annot: String): Option[String] = {
-      if (!isInheritor(clazz, fqn)) return None
+      if (!isInheritor(clazz, fqn))
+        return None
       var fun = PsiTreeUtil.getParentOfType(
         element,
         classOf[ScFunctionDefinition],
@@ -809,8 +845,10 @@ class ScalaTestConfigurationProducer extends {
 
     class OptionExtension(x: Option[String]) {
       def ++(s: => Option[String]): Option[String] = {
-        if (x.isDefined) x
-        else s
+        if (x.isDefined)
+          x
+        else
+          s
       }
     }
     implicit def o2e(x: Option[String]): OptionExtension =
@@ -886,8 +924,10 @@ class ScalaTestConfigurationProducer extends {
         val parent = location.getPsiElement.getParent
         if (parent != null)
           getLocationClassAndTest(new PsiLocation(location.getProject, parent))
-        else null
+        else
+          null
       }
-    } else oldResult
+    } else
+      oldResult
   }
 }

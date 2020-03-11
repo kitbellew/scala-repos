@@ -6,14 +6,22 @@
 // Calibration
 
 class Calibrator {
-  def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
 }
 
 //############################################################################
 // Tail calls in different contexts
 
 class Class {
-  def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
 }
 
 class SubClass extends Class {
@@ -21,7 +29,11 @@ class SubClass extends Class {
 }
 
 sealed class Sealed {
-  def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
 }
 
 class SubSealed extends Sealed {
@@ -29,61 +41,129 @@ class SubSealed extends Sealed {
 }
 
 final class Final {
-  def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
 }
 
 object Object {
-  def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
 }
 
 //############################################################################
 // Tail calls in nested objects/classes
 
 object O {
-  final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  final def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
   object O {
-    final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+    final def f(n: Int, v: Int): Int =
+      if (n == 0)
+        v
+      else
+        f(n - 1, v - 1);
     object O {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     class C {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     val c: C = new C;
   }
   class C {
-    final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+    final def f(n: Int, v: Int): Int =
+      if (n == 0)
+        v
+      else
+        f(n - 1, v - 1);
     object O {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     class C {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
@@ -93,50 +173,110 @@ object O {
 }
 
 class C {
-  final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+  final def f(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      f(n - 1, v - 1);
   object O {
-    final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+    final def f(n: Int, v: Int): Int =
+      if (n == 0)
+        v
+      else
+        f(n - 1, v - 1);
     object O {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     class C {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     val c: C = new C;
   }
   class C {
-    final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+    final def f(n: Int, v: Int): Int =
+      if (n == 0)
+        v
+      else
+        f(n - 1, v - 1);
     object O {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
     class C {
-      final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+      final def f(n: Int, v: Int): Int =
+        if (n == 0)
+          v
+        else
+          f(n - 1, v - 1);
       object O {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       class C {
-        final def f(n: Int, v: Int): Int = if (n == 0) v else f(n - 1, v - 1);
+        final def f(n: Int, v: Int): Int =
+          if (n == 0)
+            v
+          else
+            f(n - 1, v - 1);
       }
       val c: C = new C;
     }
@@ -152,25 +292,43 @@ class TailCall[S](s: S) {
   def getS: S = s;
 
   final def f1(n: Int, v: Int): Int =
-    if (n == 0) v else f1(n - 1, v - 1);
+    if (n == 0)
+      v
+    else
+      f1(n - 1, v - 1);
   final def f2[T](n: Int, v: Int): Int =
-    if (n == 0) v else f2[T](n - 1, v - 1);
+    if (n == 0)
+      v
+    else
+      f2[T](n - 1, v - 1);
   final def f3[T](n: Int, v: Int, ls: List[T]): Int =
-    if (n == 0) v else f3(n - 1, v - 1, ls);
+    if (n == 0)
+      v
+    else
+      f3(n - 1, v - 1, ls);
 
   final def g1(x: Int, y: Int): Int = {
     def aux(n: Int, v: Int): Int =
-      if (n == 0) v else aux(n - 1, v - 1);
+      if (n == 0)
+        v
+      else
+        aux(n - 1, v - 1);
     aux(x, y);
   }
   final def g2[T](x: Int, y: Int): Int = {
     def aux[U](n: Int, v: Int): Int =
-      if (n == 0) v else aux[U](n - 1, v - 1);
+      if (n == 0)
+        v
+      else
+        aux[U](n - 1, v - 1);
     aux[T](x, y);
   }
   final def g3[T](x: Int, y: Int, zs: List[T]): Int = {
     def aux[U](n: Int, v: Int, ls: List[Tuple2[T, U]]): Int =
-      if (n == 0) v else aux(n - 1, v - 1, ls);
+      if (n == 0)
+        v
+      else
+        aux(n - 1, v - 1, ls);
     aux(x, y, Nil);
   }
 
@@ -180,7 +338,11 @@ class TailCall[S](s: S) {
     (x > 0) && ((x == 1) || b1(x - 1))
 
   def h1(n: Int, v: Int): Int = hP(n, v);
-  private def hP(n: Int, v: Int): Int = if (n == 0) v else hP(n - 1, v - 1);
+  private def hP(n: Int, v: Int): Int =
+    if (n == 0)
+      v
+    else
+      hP(n - 1, v - 1);
 
   // !!! test return in non-tail-call position
   // !!! test non-same-instance calls
@@ -206,7 +368,10 @@ class FancyTailCalls {
   def tcTryLocal(x: Int, v: Int): Int = {
     try {
       def loop(n: Int): Int = {
-        if (n == 0) v else loop(n - 1)
+        if (n == 0)
+          v
+        else
+          loop(n - 1)
       }
       loop(x)
     } finally {}
@@ -214,27 +379,45 @@ class FancyTailCalls {
 
   def tcInBooleanExprFirstOp(x: Int, v: Int): Boolean = {
     {
-      def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
+      def loop(n: Int): Int =
+        if (n == 0)
+          v
+        else
+          loop(n - 1)
       loop(x)
     } == v && true
   }
   def tcInBooleanExprSecondOp(x: Int, v: Int): Boolean = {
     true && {
-      def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
+      def loop(n: Int): Int =
+        if (n == 0)
+          v
+        else
+          loop(n - 1)
       loop(x)
     } == v
   }
   def tcInIfCond(x: Int, v: Int): Boolean = {
     if ({
-      def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
+      def loop(n: Int): Int =
+        if (n == 0)
+          v
+        else
+          loop(n - 1)
       loop(x)
-    } == v) true
-    else false
+    } == v)
+      true
+    else
+      false
   }
   def tcInPatternGuard(x: Int, v: Int): Boolean =
     v match {
       case _ if {
-            def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
+            def loop(n: Int): Int =
+              if (n == 0)
+                v
+              else
+                loop(n - 1)
             loop(x) == v
           } =>
         true
@@ -242,24 +425,31 @@ class FancyTailCalls {
 
   import FancyTailCalls._
   final def differentInstance(n: Int, v: Int): Int = {
-    if (n == 0) v
-    else if ((n % 2) == 0) f1.differentInstance(n - 1, v)
-    else f2.differentInstance(n - 1, v)
+    if (n == 0)
+      v
+    else if ((n % 2) == 0)
+      f1.differentInstance(n - 1, v)
+    else
+      f2.differentInstance(n - 1, v)
   }
 }
 
 class NonTailCall {
   final def f1(n: Int): Int =
     try {
-      if (n == 0) 0
-      else f1(n - 1)
+      if (n == 0)
+        0
+      else
+        f1(n - 1)
     } finally {
       Console.print(" " + n)
     }
 
   final def f2(n: Int): Int = synchronized {
-    if (n == 0) 0
-    else f2(n - 1)
+    if (n == 0)
+      0
+    else
+      f2(n - 1)
   }
 
 }
@@ -323,7 +513,8 @@ object Test {
     while (!stop) {
       try {
         calibrator.f(n, n);
-        if (n >= Int.MaxValue / 2) sys.error("calibration failure");
+        if (n >= Int.MaxValue / 2)
+          sys.error("calibration failure");
         n = 2 * n;
       } catch {
         case exception: compat.Platform.StackOverflowError => stop = true
@@ -336,7 +527,10 @@ object Test {
     // compute min and max iteration number
     val min = 16;
     val max =
-      if (scala.tools.partest.utils.Properties.isAvian) 10000 else calibrate
+      if (scala.tools.partest.utils.Properties.isAvian)
+        10000
+      else
+        calibrate
 
     // test tail calls in different contexts
     val Final = new Final()
@@ -437,13 +631,20 @@ object Test {
   import scala.util.control.TailCalls._
 
   def isEven(xs: List[Int]): TailRec[Boolean] =
-    if (xs.isEmpty) done(true) else tailcall(isOdd(xs.tail))
+    if (xs.isEmpty)
+      done(true)
+    else
+      tailcall(isOdd(xs.tail))
 
   def isOdd(xs: List[Int]): TailRec[Boolean] =
-    if (xs.isEmpty) done(false) else tailcall(isEven(xs.tail))
+    if (xs.isEmpty)
+      done(false)
+    else
+      tailcall(isEven(xs.tail))
 
   def fib(n: Int): TailRec[Int] =
-    if (n < 2) done(n)
+    if (n < 2)
+      done(n)
     else
       for {
         x <- tailcall(fib(n - 1))
@@ -451,7 +652,8 @@ object Test {
       } yield (x + y)
 
   def rec(n: Int): TailRec[Int] =
-    if (n == 1) done(n)
+    if (n == 1)
+      done(n)
     else
       for {
         x <- tailcall(rec(n - 1))

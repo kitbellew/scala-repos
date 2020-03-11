@@ -34,7 +34,10 @@ import scalafx.scene.paint.Color
 
 object AmbientLight {
   implicit def sfxAmbientLight2jfx(al: AmbientLight): jfxs.AmbientLight =
-    if (al != null) al.delegate else null
+    if (al != null)
+      al.delegate
+    else
+      null
 }
 
 /** Defines an ambient light source object. Ambient light is a light source that seems to come from all directions. */

@@ -66,7 +66,8 @@ case class AtxHeaderLine(pre: String, pay: String)
   def trimHashes() = {
     val s = payload.trim
     var idx = s.length - 1
-    while (idx >= 0 && s.charAt(idx) == '#') idx -= 1
+    while (idx >= 0 && s.charAt(idx) == '#')
+      idx -= 1
     s.substring(0, idx + 1).trim
   }
 
@@ -146,10 +147,16 @@ case class MarkdownLineReader private (
   def this(ls: Seq[MarkdownLine], lu: Map[String, LinkDefinition]) =
     this(ls, lu, 1)
   def this(ls: Seq[MarkdownLine]) = this(ls, Map())
-  def first = if (lines.isEmpty) EofLine else lines.head
+  def first =
+    if (lines.isEmpty)
+      EofLine
+    else
+      lines.head
   def rest =
-    if (lines.isEmpty) this
-    else new MarkdownLineReader(lines.tail, lookup, lineCount + 1)
+    if (lines.isEmpty)
+      this
+    else
+      new MarkdownLineReader(lines.tail, lookup, lineCount + 1)
   def atEnd = lines.isEmpty
   def pos = new Position {
     def line = lineCount

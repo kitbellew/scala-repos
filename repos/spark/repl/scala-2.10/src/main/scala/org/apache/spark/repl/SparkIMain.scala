@@ -160,8 +160,10 @@ class SparkIMain(
   }
 
   private def compilerClasspath: Seq[URL] = (
-    if (isInitializeComplete) global.classPath.asURLs
-    else new PathResolver(settings).result.asURLs // the compiler's classpath
+    if (isInitializeComplete)
+      global.classPath.asURLs
+    else
+      new PathResolver(settings).result.asURLs // the compiler's classpath
   )
   // NOTE: Exposed to repl package since accessed indirectly from SparkIMain
   private[repl] def settings = currentSettings
@@ -176,7 +178,8 @@ class SparkIMain(
       settings.nowarn.value = true
 
     try body
-    finally if (!saved) settings.nowarn.value = false
+    finally if (!saved)
+      settings.nowarn.value = false
   }
 
   /** construct an interpreter that reports to Console */
@@ -260,7 +263,8 @@ class SparkIMain(
     */
   @DeveloperApi
   lazy val global: Global = {
-    if (isInitializeComplete) _compiler
+    if (isInitializeComplete)
+      _compiler
     else {
       // If init hasn't been called yet you're on your own.
       if (_isInitialized == null) {
@@ -269,8 +273,10 @@ class SparkIMain(
         initialize(())
       }
       //       // blocks until it is ; false means catastrophic failure
-      if (_isInitialized.get()) _compiler
-      else null
+      if (_isInitialized.get())
+        _compiler
+      else
+        null
     }
   }
   @deprecated("Use `global` for access to the compiler instance.", "2.9.0")
@@ -287,8 +293,16 @@ class SparkIMain(
   }
 
   private implicit class ReplTypeOps(tp: Type) {
-    def orElse(other: => Type): Type = if (tp ne NoType) tp else other
-    def andAlso(fn: Type => Type): Type = if (tp eq NoType) tp else fn(tp)
+    def orElse(other: => Type): Type =
+      if (tp ne NoType)
+        tp
+      else
+        other
+    def andAlso(fn: Type => Type): Type =
+      if (tp eq NoType)
+        tp
+      else
+        fn(tp)
   }
 
   // TODO: If we try to make naming a lazy val, we run into big time
@@ -301,8 +315,10 @@ class SparkIMain(
     // make sure we don't overwrite their unwisely named res3 etc.
     def freshUserTermName(): TermName = {
       val name = newTermName(freshUserVarName())
-      if (definedNameMap contains name) freshUserTermName()
-      else name
+      if (definedNameMap contains name)
+        freshUserTermName()
+      else
+        name
     }
     def isUserTermName(name: Name) = isUserVarName("" + name)
     def isInternalTermName(name: Name) = isInternalVarName("" + name)
@@ -573,7 +589,8 @@ class SparkIMain(
   def generatedName(simpleName: String): Option[String] = {
     if (simpleName endsWith nme.MODULE_SUFFIX_STRING)
       optFlatName(simpleName.init) map (_ + nme.MODULE_SUFFIX_STRING)
-    else optFlatName(simpleName)
+    else
+      optFlatName(simpleName)
   }
 
   // NOTE: Exposed to repl package since used by SparkILoop
@@ -606,7 +623,8 @@ class SparkIMain(
   def pathToName(name: Name): String = {
     if (definedNameMap contains name)
       definedNameMap(name) fullPath name
-    else name.toString
+    else
+      name.toString
   }
 
   /** Most recent tree handled which wasn't wholly synthetic. */
@@ -678,7 +696,8 @@ class SparkIMain(
       if (definedNameMap contains name) {
         if (name.isTypeName)
           handleTypeRedefinition(name.toTypeName, definedNameMap(name), req)
-        else handleTermRedefinition(name.toTermName, definedNameMap(name), req)
+        else
+          handleTermRedefinition(name.toTermName, definedNameMap(name), req)
       }
       definedNameMap(name) = req
     }
@@ -798,14 +817,18 @@ class SparkIMain(
       case _: TermTree | _: Ident |
           _: Select => // ... but do want other unnamed terms.
         val varName =
-          if (synthetic) freshInternalVarName() else freshUserVarName()
+          if (synthetic)
+            freshInternalVarName()
+          else
+            freshUserVarName()
         val rewrittenLine =
           (
             // In theory this would come out the same without the 1-specific test, but
             // it's a cushion against any more sneaky parse-tree position vs. code mismatches:
             // this way such issues will only arise on multiple-statement repl input lines,
             // which most people don't use.
-            if (trees.size == 1) "val " + varName + " =\n" + content
+            if (trees.size == 1)
+              "val " + varName + " =\n" + content
             else {
               // The position of the last tree
               val lastpos0 = earliestPosition(trees.last)
@@ -824,7 +847,11 @@ class SparkIMain(
               val (l1, l2) = content splitAt lastpos
               logDebug("[adj] " + l1 + "   <--->   " + l2)
 
-              val prefix = if (l1.trim == "") "" else l1 + ";\n"
+              val prefix =
+                if (l1.trim == "")
+                  ""
+                else
+                  l1 + ";\n"
               // Note to self: val source needs to have this precise structure so that
               // error messages print the user-submitted part without the "val res0 = " part.
               val combined = prefix + "val " + varName + " =\n" + l2
@@ -914,15 +941,18 @@ class SparkIMain(
       }
     }
 
-    if (global == null) IR.Error
+    if (global == null)
+      IR.Error
     else
       requestFromLine(line, synthetic) match {
         case Left(result) => result
         case Right(req)   =>
           // null indicates a disallowed statement type; otherwise compile and
           // fail if false (implying e.g. a type error)
-          if (req == null || !req.compile) IR.Error
-          else loadAndRunReq(req)
+          if (req == null || !req.compile)
+            IR.Error
+          else
+            loadAndRunReq(req)
       }
   }
 
@@ -1030,8 +1060,10 @@ class SparkIMain(
     */
   @DeveloperApi
   def addImports(ids: String*): IR.Result =
-    if (ids.isEmpty) IR.Success
-    else interpret("import " + ids.mkString(", "))
+    if (ids.isEmpty)
+      IR.Success
+    else
+      interpret("import " + ids.mkString(", "))
 
   // NOTE: Exposed to repl package since used by SparkILoop
   private[repl] def quietBind(p: NamedParam): IR.Result = beQuietDuring(bind(p))
@@ -1254,7 +1286,11 @@ class SparkIMain(
       _originalLine = s;
       this
     }
-    def originalLine = if (_originalLine == null) line else _originalLine
+    def originalLine =
+      if (_originalLine == null)
+        line
+      else
+        _originalLine
 
     /** handlers for each tree in this request */
     val handlers: List[MemberHandler] =
@@ -1318,7 +1354,8 @@ class SparkIMain(
     private object ObjectSourceCode extends CodeAssembler[MemberHandler] {
       def path = pathToTerm("$intp")
       def envLines = {
-        if (!isReplPower) Nil // power mode only for now
+        if (!isReplPower)
+          Nil // power mode only for now
         // $intp is not bound; punt, but include the line.
         else if (path == "$intp")
           List(
@@ -1367,7 +1404,8 @@ class SparkIMain(
         *  is a value which can be referred to as-is.
         */
       val evalResult =
-        if (!handlers.last.definesValue) ""
+        if (!handlers.last.definesValue)
+          ""
         else
           handlers.last.definesTerm match {
             case Some(vname) if typeOf contains vname =>
@@ -1486,7 +1524,8 @@ class SparkIMain(
     */
   @DeveloperApi
   def mostRecentVar: String =
-    if (mostRecentlyHandledTree.isEmpty) ""
+    if (mostRecentlyHandledTree.isEmpty)
+      ""
     else
       "" + (mostRecentlyHandledTree.get match {
         case x: ValOrDefDef         => x.name
@@ -1511,7 +1550,8 @@ class SparkIMain(
   def requestForReqId(id: Int): Option[Request] =
     if (executingRequest != null && executingRequest.reqId == id)
       Some(executingRequest)
-    else prevRequests find (_.reqId == id)
+    else
+      prevRequests find (_.reqId == id)
 
   def requestForName(name: Name): Option[Request] = {
     assert(definedNameMap != null, "definedNameMap is null")
@@ -1629,7 +1669,8 @@ class SparkIMain(
 
       if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (runtimeSym isSubClass staticSym))
         runtimeSym.info
-      else NoType
+      else
+        NoType
     }
   }
 
@@ -1794,7 +1835,10 @@ class SparkIMain(
     allDefHandlers map (_.symbol) filter (_ ne NoSymbol)
 
   private def lastRequest =
-    if (prevRequests.isEmpty) null else prevRequests.last
+    if (prevRequests.isEmpty)
+      null
+    else
+      prevRequests.last
   // NOTE: Exposed to repl package since used by SparkImports
   private[repl] def prevRequestList = prevRequests.toList
   private def allSeenTypes =
@@ -1896,7 +1940,11 @@ object SparkIMain {
   trait StrippingWriter {
     def isStripping: Boolean
     def stripImpl(str: String): String
-    def strip(str: String): String = if (isStripping) stripImpl(str) else str
+    def strip(str: String): String =
+      if (isStripping)
+        stripImpl(str)
+      else
+        str
   }
   trait TruncatingWriter {
     def maxStringLength: Int
@@ -1904,7 +1952,8 @@ object SparkIMain {
     def truncate(str: String): String = {
       if (isTruncating && (maxStringLength != 0 && str.length > maxStringLength))
         (str take maxStringLength - 3) + "..."
-      else str
+      else
+        str
     }
   }
   abstract class StrippingTruncatingWriter(out: JPrintWriter)
@@ -1935,11 +1984,14 @@ object SparkIMain {
       // Avoiding deadlock when the compiler starts logging before
       // the lazy val is done.
       if (intp.isInitializeComplete) {
-        if (intp.totalSilence) ()
-        else super.printMessage(msg)
+        if (intp.totalSilence)
+          ()
+        else
+          super.printMessage(msg)
       }
       // scalastyle:off println
-      else Console.println(msg)
+      else
+        Console.println(msg)
       // scalastyle:on println
     }
   }
@@ -1974,8 +2026,10 @@ class SparkISettings(intp: SparkIMain) extends Logging {
   def deprecation_=(x: Boolean) = {
     val old = intp.settings.deprecation.value
     intp.settings.deprecation.value = x
-    if (!old && x) logDebug("Enabled -deprecation output.")
-    else if (old && !x) logDebug("Disabled -deprecation output.")
+    if (!old && x)
+      logDebug("Enabled -deprecation output.")
+    else if (old && !x)
+      logDebug("Disabled -deprecation output.")
   }
 
   def deprecation: Boolean = intp.settings.deprecation.value

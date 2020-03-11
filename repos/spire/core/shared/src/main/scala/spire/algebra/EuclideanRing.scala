@@ -12,7 +12,10 @@ trait EuclideanRing[@sp(Byte, Short, Int, Long, Float, Double) A]
   def lcm(a: A, b: A): A = times(quot(a, gcd(a, b)), b)
 
   @tailrec protected[this] final def euclid(a: A, b: A)(implicit eq: Eq[A]): A =
-    if (eq.eqv(b, zero)) a else euclid(b, mod(a, b))
+    if (eq.eqv(b, zero))
+      a
+    else
+      euclid(b, mod(a, b))
 }
 
 object EuclideanRing {

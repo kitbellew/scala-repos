@@ -67,8 +67,10 @@ object TypeDescriptorProviderImpl {
         case tpe if tpe =:= typeOf[String] =>
           // if we don't allowUnknown here, we treat null and "" is indistinguishable
           // for text formats
-          if (allowUnknown) thisColumn
-          else (offset + 1, None)
+          if (allowUnknown)
+            thisColumn
+          else
+            (offset + 1, None)
         case tpe if tpe =:= typeOf[Boolean] => thisColumn
         case tpe if tpe =:= typeOf[Short]   => thisColumn
         case tpe if tpe =:= typeOf[Int]     => thisColumn
@@ -105,7 +107,8 @@ object TypeDescriptorProviderImpl {
   def optionInner(c: Context)(opt: c.universe.Type): Option[c.universe.Type] =
     if (opt.erasure =:= c.universe.typeOf[Option[Any]]) {
       Some(opt.asInstanceOf[c.universe.TypeRefApi].args.head)
-    } else None
+    } else
+      None
 
   def isTuple[T](c: Context)(implicit T: c.WeakTypeTag[T]): Boolean = {
     import c.universe._
@@ -335,7 +338,11 @@ object TypeDescriptorProviderImpl {
     val setter =
       TupleSetterImpl.caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
 
-    val namingScheme = if (isTuple[T](c)) Indexed else NamedWithPrefix
+    val namingScheme =
+      if (isTuple[T](c))
+        Indexed
+      else
+        NamedWithPrefix
 
     val fields = FieldsProviderImpl
       .toFieldsCommonImpl[T](c, namingScheme, allowUnknownTypes)

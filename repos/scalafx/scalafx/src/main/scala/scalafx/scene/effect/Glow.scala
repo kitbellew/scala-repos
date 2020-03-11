@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Glow {
   implicit def sfxGlow2jfx(g: Glow): jfxse.Glow =
-    if (g != null) g.delegate else null
+    if (g != null)
+      g.delegate
+    else
+      null
 }
 
 class Glow(override val delegate: jfxse.Glow = new jfxse.Glow)

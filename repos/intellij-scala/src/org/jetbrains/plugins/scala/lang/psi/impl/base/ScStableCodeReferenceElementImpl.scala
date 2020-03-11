@@ -126,14 +126,19 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
       case e: ScImportExpr =>
         if (e.selectorSet != None
             //import Class._ is not allowed
-            || qualifier == None || e.singleWildcard) stableQualRef
-        else stableImportSelector
+            || qualifier == None || e.singleWildcard)
+          stableQualRef
+        else
+          stableImportSelector
       case ste: ScSimpleTypeElement =>
         if (incomplete)
           noPackagesClassCompletion // todo use the settings to include packages
-        else if (ste.getLastChild.isInstanceOf[PsiErrorElement]) stableQualRef
-        else if (ste.singleton) stableQualRef
-        else stableClass
+        else if (ste.getLastChild.isInstanceOf[PsiErrorElement])
+          stableQualRef
+        else if (ste.singleton)
+          stableQualRef
+        else
+          stableClass
       case _: ScTypeAlias                           => stableClass
       case _: ScInterpolationPattern                => stableImportSelector
       case _: ScConstructorPattern                  => objectOrValue
@@ -146,7 +151,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     }
     if (completion)
       result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets.VAL
-    else result
+    else
+      result
   }
 
   def nameId: PsiElement =
@@ -154,7 +160,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
 
   //  @throws(IncorrectOperationException)
   def bindToElement(element: PsiElement): PsiElement = {
-    if (isReferenceTo(element)) this
+    if (isReferenceTo(element))
+      this
     else {
       val aliasedRef: Option[ScReferenceElement] =
         ScalaPsiUtil.importAliasFor(element, this)
@@ -170,9 +177,12 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                   if (getContext.getContext != null)
                     if (getContext.getContext.getContext != null)
                       getContext.getContext.getContext.getText
-                    else getContext.getContext.getText
-                  else getContext.getText
-                else getText
+                    else
+                      getContext.getContext.getText
+                  else
+                    getContext.getText
+                else
+                  getText
               })
           if (nameId.getText != c.name) {
             val ref =

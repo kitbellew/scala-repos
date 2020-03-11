@@ -35,7 +35,10 @@ import scalafx.beans.binding.NumberExpression.VariablePrecisionNumber
 object NumberExpression {
   implicit def sfxNumberExpression2jfx(
       ne: NumberExpression): jfxbb.NumberExpression =
-    if (ne != null) ne.delegate else null
+    if (ne != null)
+      ne.delegate
+    else
+      null
 
   case class VariablePrecisionNumber(
       number: Double,

@@ -219,15 +219,16 @@ private[http] object OutgoingConnectionBlueprint {
 
         def onPush(): Unit = grab(in) match {
           case ResponseStart(
-              statusCode,
-              protocol,
-              headers,
-              entityCreator,
-              closeRequested) ⇒
+                statusCode,
+                protocol,
+                headers,
+                entityCreator,
+                closeRequested) ⇒
             val entity = createEntity(
               entityCreator) withSizeLimit parserSettings.maxContentLength
             push(out, HttpResponse(statusCode, headers, entity, protocol))
-            if (closeRequested) completeStage()
+            if (closeRequested)
+              completeStage()
 
           case MessageStartError(_, info) ⇒
             throw IllegalResponseException(info)
@@ -238,7 +239,8 @@ private[http] object OutgoingConnectionBlueprint {
         }
 
         def onPull(): Unit = {
-          if (!entitySubstreamStarted) pull(in)
+          if (!entitySubstreamStarted)
+            pull(in)
         }
 
         override def onDownstreamFinish(): Unit = {
@@ -258,7 +260,8 @@ private[http] object OutgoingConnectionBlueprint {
         lazy val waitForMessageEnd = new InHandler with OutHandler {
           def onPush(): Unit = grab(in) match {
             case MessageEnd ⇒
-              if (isAvailable(out)) pull(in)
+              if (isAvailable(out))
+                pull(in)
               setIdleHandlers()
             case other ⇒
               throw new IllegalStateException(
@@ -279,7 +282,8 @@ private[http] object OutgoingConnectionBlueprint {
               entitySource = null
               // there was a deferred pull from upstream
               // while we were streaming the entity
-              if (isAvailable(out)) pull(in)
+              if (isAvailable(out))
+                pull(in)
               setIdleHandlers()
 
             case messagePart ⇒
@@ -355,7 +359,8 @@ private[http] object OutgoingConnectionBlueprint {
               drainParser(output)
             }
             override def onUpstreamFinish(): Unit =
-              if (waitingForMethod) completeStage()
+              if (waitingForMethod)
+                completeStage()
           }
         )
 
@@ -368,7 +373,8 @@ private[http] object OutgoingConnectionBlueprint {
               drainParser(output)
             }
             override def onUpstreamFinish(): Unit =
-              if (waitingForMethod) completeStage()
+              if (waitingForMethod)
+                completeStage()
               else {
                 if (parser.onUpstreamFinish()) {
                   completeStage()
@@ -383,22 +389,28 @@ private[http] object OutgoingConnectionBlueprint {
 
         val getNextMethod = () ⇒ {
           waitingForMethod = true
-          if (isClosed(bypassInput)) completeStage()
-          else pull(bypassInput)
+          if (isClosed(bypassInput))
+            completeStage()
+          else
+            pull(bypassInput)
         }
 
         val getNextData = () ⇒ {
           waitingForMethod = false
-          if (isClosed(dataInput)) completeStage()
-          else pull(dataInput)
+          if (isClosed(dataInput))
+            completeStage()
+          else
+            pull(dataInput)
         }
 
         @tailrec def drainParser(
             current: ResponseOutput,
             b: ListBuffer[ResponseOutput] = ListBuffer.empty): Unit = {
           def e(output: List[ResponseOutput], andThen: () ⇒ Unit): Unit =
-            if (output.nonEmpty) emit(out, output, andThen)
-            else andThen()
+            if (output.nonEmpty)
+              emit(out, output, andThen)
+            else
+              andThen()
           current match {
             case NeedNextRequestMethod ⇒ e(b.result(), getNextMethod)
             case StreamEnd ⇒ e(b.result(), () ⇒ completeStage())

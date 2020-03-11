@@ -32,8 +32,10 @@ object ActorPublisherSpec {
       probe: ActorRef,
       useTestDispatcher: Boolean = true): Props = {
     val p = Props(new TestPublisher(probe))
-    if (useTestDispatcher) p.withDispatcher("akka.test.stream-dispatcher")
-    else p
+    if (useTestDispatcher)
+      p.withDispatcher("akka.test.stream-dispatcher")
+    else
+      p
   }
 
   case class TotalDemand(elements: Long)
@@ -347,7 +349,8 @@ class ActorPublisherSpec
         probe.expectMsg("elem-2")
 
         (4 to 500) foreach { n ⇒
-          if (n % 19 == 0) Thread.sleep(50) // simulate bursts
+          if (n % 19 == 0)
+            Thread.sleep(50) // simulate bursts
           snd ! n
         }
 

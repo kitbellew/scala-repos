@@ -63,8 +63,10 @@ class AbstractTestRerunFailedTestsAction(
           .map(s =>
             {
               val i = s.lastIndexOf(".")
-              if (i < 0) s
-              else s.substring(i + 1)
+              if (i < 0)
+                s
+              else
+                s.substring(i + 1)
             } -> s)
           .toMap
         import scala.collection.JavaConversions._
@@ -100,7 +102,8 @@ class AbstractTestRerunFailedTestsAction(
                 added = true
               }
             }
-            if (!added) tail()
+            if (!added)
+              tail()
           } else {
             tail()
           }
@@ -114,7 +117,8 @@ class AbstractTestRerunFailedTestsAction(
   }
 
   private def isFailed(test: AbstractTestProxy): Boolean = {
-    if (!test.isLeaf) return false
+    if (!test.isLeaf)
+      return false
     test match {
       case test: SMTestProxy =>
         val info = test.getMagnitudeInfo
@@ -127,7 +131,8 @@ class AbstractTestRerunFailedTestsAction(
     val list = new ArrayList[AbstractTestProxy]()
     val allTests = getModel.getRoot.getAllTests
     import scala.collection.JavaConversions._
-    for (test <- allTests if isFailed(test)) list add test
+    for (test <- allTests if isFailed(test))
+      list add test
     list
   }
 }

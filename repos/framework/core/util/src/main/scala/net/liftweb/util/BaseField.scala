@@ -200,7 +200,10 @@ trait StringValidators {
   def valRegex(pat: Pattern, msg: => String)(
       value: ValueType): List[FieldError] =
     valueTypeToBoxString(value).flatMap { str =>
-      if (pat.matcher(str).matches) Full(true) else Empty
+      if (pat.matcher(str).matches)
+        Full(true)
+      else
+        Empty
     } match {
       case Full(true) => Nil
       case _          => List(FieldError(this, Text(msg)))

@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object Button {
   implicit def sfxButton2jfx(v: Button): jfxsc.Button =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class Button(override val delegate: jfxsc.Button = new jfxsc.Button)

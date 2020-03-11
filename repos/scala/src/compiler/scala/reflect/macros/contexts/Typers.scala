@@ -30,14 +30,21 @@ trait Typers {
         .format(tree, pt, !withImplicitViewsDisabled, !withMacrosDisabled))
     val context = callsiteTyper.context
     val withImplicitFlag =
-      if (!withImplicitViewsDisabled) (context.withImplicitsEnabled[Tree] _)
-      else (context.withImplicitsDisabled[Tree] _)
+      if (!withImplicitViewsDisabled)
+        (context.withImplicitsEnabled[Tree] _)
+      else
+        (context.withImplicitsDisabled[Tree] _)
     val withMacroFlag =
-      if (!withMacrosDisabled) (context.withMacrosEnabled[Tree] _)
-      else (context.withMacrosDisabled[Tree] _)
+      if (!withMacrosDisabled)
+        (context.withMacrosEnabled[Tree] _)
+      else
+        (context.withMacrosDisabled[Tree] _)
     def withContext(tree: => Tree) = withImplicitFlag(withMacroFlag(tree))
     def withWrapping(tree: Tree)(op: Tree => Tree) =
-      if (mode == TERMmode) universe.wrappingIntoTerm(tree)(op) else op(tree)
+      if (mode == TERMmode)
+        universe.wrappingIntoTerm(tree)(op)
+      else
+        op(tree)
     def typecheckInternal(tree: Tree) =
       callsiteTyper.silent(
         _.typed(universe.duplicateAndKeepPositions(tree), mode, pt),

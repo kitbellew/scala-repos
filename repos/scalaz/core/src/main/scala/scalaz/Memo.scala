@@ -32,7 +32,8 @@ object Memo extends MemoInstances {
           val v = f(k)
           a(k) = v
           v
-        } else t
+        } else
+          t
       }
     }
   }
@@ -53,7 +54,8 @@ object Memo extends MemoInstances {
           val v = f(k)
           a(k) = v
           v
-        } else t
+        } else
+          t
       }
     }
   }

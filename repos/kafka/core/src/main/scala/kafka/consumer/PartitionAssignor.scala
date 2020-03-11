@@ -180,7 +180,8 @@ class RangeAssignor() extends PartitionAssignor with Logging {
         val nParts =
           nPartsPerConsumer + (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
                                  0
-                               else 1)
+                               else
+                                 1)
 
         /**
           *   Range-partition the sorted partitions to consumers for better locality.

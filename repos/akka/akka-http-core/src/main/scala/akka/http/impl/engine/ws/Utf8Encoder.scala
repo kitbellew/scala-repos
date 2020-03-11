@@ -27,7 +27,8 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
 
     def step(char: Int): Unit =
       if (!inSurrogatePair)
-        if (char <= Utf8OneByteLimit) builder += char.toByte
+        if (char <= Utf8OneByteLimit)
+          builder += char.toByte
         else if (char <= Utf8TwoByteLimit) {
           b(0xc0 | ((char & 0x7c0) >> 6)) // upper 5 bits
           b(0x80 | (char & 0x3f)) // lower 6 bits
@@ -61,8 +62,10 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
       offset += 1
     }
 
-    if (builder.length > 0) ctx.push(builder.result())
-    else ctx.pull()
+    if (builder.length > 0)
+      ctx.push(builder.result())
+    else
+      ctx.pull()
   }
 
   override def onUpstreamFinish(
@@ -71,7 +74,8 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
       ctx.fail(
         new IllegalArgumentException(
           "Truncated String input (ends in the middle of surrogate pair)"))
-    else super.onUpstreamFinish(ctx)
+    else
+      super.onUpstreamFinish(ctx)
 }
 
 /**

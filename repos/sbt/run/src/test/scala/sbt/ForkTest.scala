@@ -52,7 +52,11 @@ object ForkTest extends Properties("Fork") {
                   e.printStackTrace;
                   1
               }
-            val expectedCode = if (optionName.isEmpty) 1 else 0
+            val expectedCode =
+              if (optionName.isEmpty)
+                1
+              else
+                0
             s"temporary directory: ${dir.getAbsolutePath}" |:
               s"required classpath: ${requiredEntries.mkString("\n\t", "\n\t", "")}" |:
               s"main and args: ${mainAndArgs.mkString(" ")}" |:

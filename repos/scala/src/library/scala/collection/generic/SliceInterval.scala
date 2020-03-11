@@ -38,8 +38,10 @@ private[collection] class SliceInterval private (
     val elems = scala.math.min(_until - lo, width)
     val start = from + lo
 
-    if (elems <= 0) new SliceInterval(from, from)
-    else new SliceInterval(start, start + elems)
+    if (elems <= 0)
+      new SliceInterval(from, from)
+    else
+      new SliceInterval(start, start + elems)
   }
   def recalculate(interval: SliceInterval): SliceInterval =
     recalculate(interval.from, interval.until)
@@ -50,7 +52,9 @@ object SliceInterval {
     val lo = from max 0
     val hi = until max 0
 
-    if (hi <= lo) new SliceInterval(lo, lo)
-    else new SliceInterval(lo, hi)
+    if (hi <= lo)
+      new SliceInterval(lo, lo)
+    else
+      new SliceInterval(lo, hi)
   }
 }

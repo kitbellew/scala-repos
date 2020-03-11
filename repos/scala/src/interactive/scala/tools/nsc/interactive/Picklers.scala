@@ -118,17 +118,25 @@ trait Picklers { self: Global =>
 
   implicit lazy val namePickler: Pickler[Name] =
     pkl[String].wrapped[Name] { str =>
-      if ((str.length > 1) && (str endsWith "!")) newTypeName(str.init)
-      else newTermName(str)
+      if ((str.length > 1) && (str endsWith "!"))
+        newTypeName(str.init)
+      else
+        newTermName(str)
     } { name =>
-      if (name.isTypeName) name.toString + "!" else name.toString
+      if (name.isTypeName)
+        name.toString + "!"
+      else
+        name.toString
     }
 
   implicit lazy val symPickler: Pickler[Symbol] = {
     def ownerNames(sym: Symbol, buf: ListBuffer[Name]): ListBuffer[Name] = {
       if (!sym.isRoot) {
         ownerNames(sym.owner, buf)
-        buf += (if (sym.isModuleClass) sym.sourceModule else sym).name
+        buf += (if (sym.isModuleClass)
+                  sym.sourceModule
+                else
+                  sym).name
         if (!sym.isType && !sym.isStable) { // TODO: what's the reasoning behind this condition!?
           val sym1 = sym.owner.info.decl(sym.name)
           if (sym1.isOverloaded) {
@@ -149,7 +157,8 @@ trait Picklers { self: Global =>
         val sym = root.info.decl(name)
         if (sym.isOverloaded)
           makeSymbol(sym.alternatives(rest.head.toString.toInt), rest.tail)
-        else makeSymbol(sym, rest)
+        else
+          makeSymbol(sym, rest)
     }
     pkl[List[Name]].wrapped {
       makeSymbol(rootMirror.RootClass, _)

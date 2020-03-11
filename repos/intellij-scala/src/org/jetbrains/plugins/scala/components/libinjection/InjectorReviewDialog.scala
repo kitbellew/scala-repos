@@ -36,8 +36,10 @@ class InjectorReviewDialog(
               .getInstance()
               .findFileByUrl(s"jar://$containingJar!/$source")
             if (file.isValid) {
-              if (file.isDirectory) file.getChildren
-              else Seq(file)
+              if (file.isDirectory)
+                file.getChildren
+              else
+                Seq(file)
             } else {
               LOG.warn(
                 s"Source root '$source' is broken, check your library - $containingJar")
@@ -85,7 +87,8 @@ class InjectorReviewDialog(
 
   override def dispose(): Unit = {
     editors.foreach(e =>
-      if (!e.isDisposed) EditorFactory.getInstance().releaseEditor(e))
+      if (!e.isDisposed)
+        EditorFactory.getInstance().releaseEditor(e))
     super.dispose()
   }
 }

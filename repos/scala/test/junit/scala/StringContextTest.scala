@@ -94,13 +94,19 @@ class StringContextTest {
   }
 
   @Test def fIf() = {
-    val res = f"${if (true) 2.5 else 2.5}%.2f"
+    val res = f"${if (true)
+      2.5
+    else
+      2.5}%.2f"
     val expected = locally"2.50"
     assertEquals(expected, res)
   }
 
   @Test def fIfNot() = {
-    val res = f"${if (false) 2.5 else 3.5}%.2f"
+    val res = f"${if (false)
+      2.5
+    else
+      3.5}%.2f"
     val expected = locally"3.50"
     assertEquals(expected, res)
   }
@@ -248,6 +254,7 @@ class StringContextTest {
       f"z" -> "z"
     )
 
-    for ((f, s) <- ss) assertEquals(s, f)
+    for ((f, s) <- ss)
+      assertEquals(s, f)
   }
 }

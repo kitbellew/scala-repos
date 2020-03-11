@@ -46,7 +46,8 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
       val res = buf(pos).toInt
       pos += 1
       res
-    } else -1
+    } else
+      -1
   }
 
   override def read(cbuf: Array[Char], off: Int, len: Int): Int = {
@@ -55,13 +56,15 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
     if (off < 0 || len < 0 || len > cbuf.length - off)
       throw new IndexOutOfBoundsException
 
-    if (len == 0) 0
+    if (len == 0)
+      0
     else if (prepareRead()) {
       val count = Math.min(len, end - pos)
       System.arraycopy(this.buf, pos, cbuf, off, count)
       pos += count
       count
-    } else -1
+    } else
+      -1
   }
 
   def readLine(): String = {
@@ -76,8 +79,10 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
 
     if (pos >= end) {
       // We have reached the end of the stream (prepareRead() returned false)
-      if (res == "") null
-      else res
+      if (res == "")
+        null
+      else
+        res
     } else {
       // Consume terminator
       pos += 1
@@ -100,12 +105,14 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
   override def reset(): Unit = {
     ensureOpen()
 
-    if (!validMark) throw new IOException("Mark invalid")
+    if (!validMark)
+      throw new IOException("Mark invalid")
     pos = 0
   }
 
   override def skip(n: Long): Long = {
-    if (n < 0) throw new IllegalArgumentException("n negative")
+    if (n < 0)
+      throw new IllegalArgumentException("n negative")
     else if (pos < end) {
       val count = Math.min(n, end - pos).toInt
       pos += count

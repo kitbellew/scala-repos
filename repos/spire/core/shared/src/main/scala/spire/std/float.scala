@@ -39,15 +39,23 @@ trait FloatIsField extends Field[Float] {
       val exp = (exp0 - shift)
       // If exp is 0, then the value is actually just the mantissa * 2^−126,
       // so we need to adjust the *shift* accordingly.
-      val shift0 = if (exp == 0) shift - 1 else shift
+      val shift0 =
+        if (exp == 0)
+          shift - 1
+        else
+          shift
       val mantissa = (n << shift0) & 0x007FFFFF
       // If exp < 0, then we have underflowed; not much we can do but return 0.
-      if (exp < 0) 0f
-      else intBitsToFloat((exp << 23) | mantissa)
+      if (exp < 0)
+        0f
+      else
+        intBitsToFloat((exp << 23) | mantissa)
     }
 
-    if (a == 0f) b
-    else if (b == 0f) a
+    if (a == 0f)
+      b
+    else if (b == 0f)
+      a
     else {
       val aBits = floatToIntBits(a)
       val aVal = value(aBits)
@@ -57,8 +65,10 @@ trait FloatIsField extends Field[Float] {
       val bVal = value(bBits)
       val bExp = exp(bBits)
 
-      if (aExp < bExp) gcd0(aVal, aExp, bVal, bExp)
-      else gcd0(bVal, bExp, aVal, aExp)
+      if (aExp < bExp)
+        gcd0(aVal, aExp, bVal, bExp)
+      else
+        gcd0(bVal, bExp, aVal, aExp)
     }
   }
 
@@ -102,7 +112,11 @@ trait FloatIsTrig extends Trig[Float] {
 
 trait FloatIsSigned extends Signed[Float] {
   def signum(a: Float): Int = Math.signum(a).toInt
-  def abs(a: Float): Float = if (a < 0.0f) -a else a
+  def abs(a: Float): Float =
+    if (a < 0.0f)
+      -a
+    else
+      a
 }
 
 trait FloatOrder extends Order[Float] {

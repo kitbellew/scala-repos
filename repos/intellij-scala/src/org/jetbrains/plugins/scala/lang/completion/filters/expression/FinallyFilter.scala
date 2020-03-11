@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
   */
 class FinallyFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
@@ -27,7 +28,8 @@ class FinallyFilter extends ElementFilter {
       var leaf1 = getLeafByOffset(i, context)
       while (leaf1 != null && !leaf1.isInstanceOf[ScTryStmt])
         leaf1 = leaf1.getParent
-      if (leaf1 == null) return false
+      if (leaf1 == null)
+        return false
       if (leaf1.getNode
             .getChildren(null)
             .exists(_.getElementType == ScalaElementTypes.FINALLY_BLOCK))
@@ -36,7 +38,8 @@ class FinallyFilter extends ElementFilter {
         context.getTextRange.getEndOffset,
         context)
       if (Array("catch", "finally").contains(
-            getLeafByOffset(i, context).getText)) return false
+            getLeafByOffset(i, context).getText))
+        return false
       return true
     }
     false
@@ -53,9 +56,11 @@ class FinallyFilter extends ElementFilter {
 
   def getPrevNotWhitespaceAndComment(index: Int, context: PsiElement): Int = {
     var i = index
-    if (i < 0) return 0
+    if (i < 0)
+      return 0
     while (i > 0 && (context.getContainingFile.getText.charAt(i) == ' ' ||
-           context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
+           context.getContainingFile.getText.charAt(i) == '\n'))
+      i = i - 1
     val leaf = getLeafByOffset(i, context)
     if (leaf.isInstanceOf[PsiComment] || leaf.isInstanceOf[ScDocComment])
       return getPrevNotWhitespaceAndComment(
@@ -70,7 +75,8 @@ class FinallyFilter extends ElementFilter {
       return context.getContainingFile.getTextLength - 2
     while (i < context.getContainingFile.getText.length - 1 && (context.getContainingFile.getText
              .charAt(i) == ' ' ||
-           context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
+           context.getContainingFile.getText.charAt(i) == '\n'))
+      i = i + 1
     val leaf = getLeafByOffset(i, context)
     if (leaf.isInstanceOf[PsiComment] || leaf.isInstanceOf[ScDocComment])
       return getNextNotWhitespaceAndComment(

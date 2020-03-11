@@ -105,8 +105,10 @@ trait BuildFileModifier {
         val isModified = changes.contains(copy)
         assert(!fileStatusMap.contains(copy))
         val buildFileStatus =
-          if (isModified) BuildFileModifiedStatus.MODIFIED_AUTOMATICALLY
-          else BuildFileModifiedStatus.DETECTED
+          if (isModified)
+            BuildFileModifiedStatus.MODIFIED_AUTOMATICALLY
+          else
+            BuildFileModifiedStatus.DETECTED
         val buildFileModificationStamp =
           documentManager.getDocument(copy).getModificationStamp
         fileStatusMap.put(copy, (buildFileStatus, buildFileModificationStamp))
@@ -122,7 +124,8 @@ trait BuildFileModifier {
       Some(
         for (change <- selectedChanges)
           yield changesToWorkingCopies(change.asInstanceOf[BuildFileChange]))
-    } else None
+    } else
+      None
   }
 
   def applyChanges(

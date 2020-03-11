@@ -27,7 +27,10 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
       def startOffset(element: PsiElement) = element.getTextRange.getStartOffset
       def endOffset(element: PsiElement) = element.getTextRange.getEndOffset
       def shiftInNewFile(offset: Int, semicolonOffset: Int): Int =
-        offset + (if (offset > semicolonOffset) 1 else 0)
+        offset + (if (offset > semicolonOffset)
+                    1
+                  else
+                    0)
 
       override def visitElement(element: PsiElement) {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
@@ -46,13 +49,15 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
             var elem2 = newFile.findElementAt(offset - 1)
             while (elem1 != null && endOffset(
                      elem1) <= offset && elem2 != null) {
-              if (elem1.getText != elem2.getText) return
+              if (elem1.getText != elem2.getText)
+                return
               if (elem1.getNode.getElementType != elem2.getNode.getElementType)
                 return
               elem1 = elem1.getParent
               elem2 = elem2.getParent
             }
-            if (elem2 == null) return
+            if (elem2 == null)
+              return
             if (shiftInNewFile(startOffset(elem2), offset) > startOffset(
                   elem1) ||
                 shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
@@ -61,13 +66,15 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
             elem2 = newFile.findElementAt(whitespaceOffset - 1)
             while (elem1 != null && startOffset(
                      elem1) >= whitespaceOffset && elem2 != null) {
-              if (elem1.getText != elem2.getText) return
+              if (elem1.getText != elem2.getText)
+                return
               if (elem1.getNode.getElementType != elem2.getNode.getElementType)
                 return
               elem1 = elem1.getParent
               elem2 = elem2.getParent
             }
-            if (elem2 == null) return
+            if (elem2 == null)
+              return
             if (shiftInNewFile(startOffset(elem2), offset) > startOffset(
                   elem1) ||
                 shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
@@ -92,7 +99,8 @@ class RemoveSemicolonFix(element: PsiElement)
     extends AbstractFixOnPsiElement("Remove unnecessary semicolon", element) {
   def doApplyFix(project: Project) {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
     elem.delete()
   }
 }

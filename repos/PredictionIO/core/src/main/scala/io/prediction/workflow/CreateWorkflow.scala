@@ -185,7 +185,8 @@ object CreateWorkflow extends Logging {
                 s"${wfc.engineVariant}. Aborting.")
             sys.exit(1)
         }
-      } else wfc.engineFactory
+      } else
+        wfc.engineFactory
       val variantId = variantJson \ "id" match {
         case JString(s) => s
         case _ =>

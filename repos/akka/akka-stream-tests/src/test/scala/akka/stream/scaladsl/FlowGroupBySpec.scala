@@ -58,7 +58,11 @@ class FlowGroupBySpec extends AkkaSpec {
       elementCount: Int = 6,
       maxSubstreams: Int = -1) {
     val source = Source(1 to elementCount).runWith(Sink.asPublisher(false))
-    val max = if (maxSubstreams > 0) maxSubstreams else groupCount
+    val max =
+      if (maxSubstreams > 0)
+        maxSubstreams
+      else
+        groupCount
     val groupStream = Source
       .fromPublisher(source)
       .groupBy(max, _ % groupCount)
@@ -238,7 +242,13 @@ class FlowGroupBySpec extends AkkaSpec {
       val exc = TE("test")
       val publisher = Source
         .fromPublisher(publisherProbeProbe)
-        .groupBy(2, elem ⇒ if (elem == 2) throw exc else elem % 2)
+        .groupBy(
+          2,
+          elem ⇒
+            if (elem == 2)
+              throw exc
+            else
+              elem % 2)
         .lift(_ % 2)
         .runWith(Sink.asPublisher(false))
       val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, NotUsed])]()
@@ -270,7 +280,13 @@ class FlowGroupBySpec extends AkkaSpec {
       val exc = TE("test")
       val publisher = Source
         .fromPublisher(publisherProbeProbe)
-        .groupBy(2, elem ⇒ if (elem == 2) throw exc else elem % 2)
+        .groupBy(
+          2,
+          elem ⇒
+            if (elem == 2)
+              throw exc
+            else
+              elem % 2)
         .lift(_ % 2)
         .withAttributes(ActorAttributes.supervisionStrategy(resumingDecider))
         .runWith(Sink.asPublisher(false))

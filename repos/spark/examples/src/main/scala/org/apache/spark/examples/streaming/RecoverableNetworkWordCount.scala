@@ -108,7 +108,8 @@ object RecoverableNetworkWordCount {
     // from the new checkpoint
     println("Creating new context")
     val outputFile = new File(outputPath)
-    if (outputFile.exists()) outputFile.delete()
+    if (outputFile.exists())
+      outputFile.delete()
     val sparkConf = new SparkConf().setAppName("RecoverableNetworkWordCount")
     // Create the context with a 1 second batch size
     val ssc = new StreamingContext(sparkConf, Seconds(1))

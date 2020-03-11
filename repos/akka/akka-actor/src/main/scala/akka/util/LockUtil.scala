@@ -32,7 +32,8 @@ class Switch(startAsOn: Boolean = false) {
             throw t
         }
         true
-      } else false
+      } else
+        false
     }
 
   /**
@@ -67,13 +68,19 @@ class Switch(startAsOn: Boolean = false) {
     * Executes the provided action and returns its value if the switch is IMMEDIATELY on (i.e. no lock involved)
     */
   def ifOnYield[T](action: ⇒ T): Option[T] =
-    if (switch.get) Some(action) else None
+    if (switch.get)
+      Some(action)
+    else
+      None
 
   /**
     * Executes the provided action and returns its value if the switch is IMMEDIATELY off (i.e. no lock involved)
     */
   def ifOffYield[T](action: ⇒ T): Option[T] =
-    if (!switch.get) Some(action) else None
+    if (!switch.get)
+      Some(action)
+    else
+      None
 
   /**
     * Executes the provided action and returns if the action was executed or not, if the switch is IMMEDIATELY on (i.e. no lock involved)
@@ -82,7 +89,8 @@ class Switch(startAsOn: Boolean = false) {
     if (switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   /**
@@ -92,7 +100,8 @@ class Switch(startAsOn: Boolean = false) {
     if (!switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   /**
@@ -100,7 +109,10 @@ class Switch(startAsOn: Boolean = false) {
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
   def whileOnYield[T](action: ⇒ T): Option[T] = synchronized {
-    if (switch.get) Some(action) else None
+    if (switch.get)
+      Some(action)
+    else
+      None
   }
 
   /**
@@ -108,7 +120,10 @@ class Switch(startAsOn: Boolean = false) {
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
   def whileOffYield[T](action: ⇒ T): Option[T] = synchronized {
-    if (!switch.get) Some(action) else None
+    if (!switch.get)
+      Some(action)
+    else
+      None
   }
 
   /**
@@ -119,7 +134,8 @@ class Switch(startAsOn: Boolean = false) {
     if (switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   /**
@@ -130,7 +146,8 @@ class Switch(startAsOn: Boolean = false) {
     if (!switch.get) {
       action
       true
-    } else false
+    } else
+      false
   }
 
   /**
@@ -138,7 +155,10 @@ class Switch(startAsOn: Boolean = false) {
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
   def fold[T](on: ⇒ T)(off: ⇒ T): T = synchronized {
-    if (switch.get) on else off
+    if (switch.get)
+      on
+    else
+      off
   }
 
   /**

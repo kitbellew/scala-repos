@@ -57,14 +57,22 @@ object ZipArchive {
   private def baseName(path: String) = splitPath(path, front = false)
   private def splitPath(path0: String, front: Boolean): String = {
     val isDir = path0.charAt(path0.length - 1) == '/'
-    val path = if (isDir) path0.substring(0, path0.length - 1) else path0
+    val path =
+      if (isDir)
+        path0.substring(0, path0.length - 1)
+      else
+        path0
     val idx = path.lastIndexOf('/')
 
     if (idx < 0)
-      if (front) "/"
-      else path
-    else if (front) path.substring(0, idx + 1)
-    else path.substring(idx + 1)
+      if (front)
+        "/"
+      else
+        path
+    else if (front)
+      path.substring(0, idx + 1)
+    else
+      path.substring(idx + 1)
   }
 }
 import ZipArchive._
@@ -101,8 +109,10 @@ abstract class ZipArchive(override val file: JFile)
     override def isDirectory = true
     override def iterator: Iterator[Entry] = entries.valuesIterator
     override def lookupName(name: String, directory: Boolean): Entry = {
-      if (directory) entries(name + "/")
-      else entries(name)
+      if (directory)
+        entries(name + "/")
+      else
+        entries(name)
     }
   }
 
@@ -131,8 +141,10 @@ abstract class ZipArchive(override val file: JFile)
   protected def getDir(
       dirs: mutable.Map[String, DirEntry],
       entry: ZipEntry): DirEntry = {
-    if (entry.isDirectory) ensureDir(dirs, entry.getName, entry)
-    else ensureDir(dirs, dirName(entry.getName), null)
+    if (entry.isDirectory)
+      ensureDir(dirs, entry.getName, entry)
+    else
+      ensureDir(dirs, dirName(entry.getName), null)
   }
 }
 
@@ -154,7 +166,8 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
     while (enum.hasMoreElements) {
       val zipEntry = enum.nextElement
       val dir = getDir(dirs, zipEntry)
-      if (zipEntry.isDirectory) dir
+      if (zipEntry.isDirectory)
+        dir
       else {
         class FileEntry() extends Entry(zipEntry.getName) {
           override def getArchive = zipFile
@@ -202,7 +215,11 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
       class FileEntry() extends Entry(zipEntry.getName) {
         override val toByteArray: Array[Byte] = {
           val len = zipEntry.getSize().toInt
-          val arr = if (len == 0) Array.emptyByteArray else new Array[Byte](len)
+          val arr =
+            if (len == 0)
+              Array.emptyByteArray
+            else
+              new Array[Byte](len)
           var offset = 0
 
           def loop() {
@@ -216,7 +233,8 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
           }
           loop()
 
-          if (offset == arr.length) arr
+          if (offset == arr.length)
+            arr
           else
             throw new IOException(
               "Input stream truncated: read %d of %d bytes".format(offset, len))
@@ -230,8 +248,10 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
           dir
         else {
           val f =
-            if (zipEntry.getSize() == 0) new EmptyFileEntry()
-            else new FileEntry()
+            if (zipEntry.getSize() == 0)
+              new EmptyFileEntry()
+            else
+              new FileEntry()
           dir.entries(f.name) = f
         }
         in.closeEntry()
@@ -318,7 +338,8 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
             .currentThread()
             .getContextClassLoader()
             .getResourceAsStream(path)
-        if (in == null) throw new RuntimeException(path + " not found")
+        if (in == null)
+          throw new RuntimeException(path + " not found")
         super.read()
       }
 

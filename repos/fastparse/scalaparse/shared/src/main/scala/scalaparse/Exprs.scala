@@ -24,8 +24,16 @@ trait Exprs extends Core with Types with Xml {
 
   class WsCtx(curlyBlock: Boolean) {
 
-    val OneSemiMax = if (curlyBlock) OneNLMax else Pass
-    val NoSemis = if (curlyBlock) NotNewline else Pass
+    val OneSemiMax =
+      if (curlyBlock)
+        OneNLMax
+      else
+        Pass
+    val NoSemis =
+      if (curlyBlock)
+        NotNewline
+      else
+        Pass
 
     val Enumerators = {
       val Generator = P(`<-` ~/ Expr ~ Guard.?)
@@ -56,7 +64,11 @@ trait Exprs extends Core with Types with Xml {
       }
       val Throw = P(`throw` ~/ Expr)
       val Return = P(`return` ~/ Expr.?)
-      val LambdaRhs = if (curlyBlock) P(BlockChunk) else P(Expr)
+      val LambdaRhs =
+        if (curlyBlock)
+          P(BlockChunk)
+        else
+          P(Expr)
 
       val ImplicitLambda = P(
         `implicit` ~ (Id | `_`) ~ (`:` ~ InfixType).? ~ `=>` ~ LambdaRhs.?)
@@ -69,7 +81,11 @@ trait Exprs extends Core with Types with Xml {
           ImplicitLambda | SmallerExprOrLambda
       )
     }
-    val AscriptionType = if (curlyBlock) P(PostfixType) else P(Type)
+    val AscriptionType =
+      if (curlyBlock)
+        P(PostfixType)
+      else
+        P(Type)
     val Ascription = P(`:` ~/ (`_*` | AscriptionType | Annot.rep(1)))
     val MatchAscriptionSuffix = P(`match` ~/ "{" ~ CaseClauses | Ascription)
     val ExprPrefix = P(WL ~ CharIn("-+!~") ~~ !syntax.Basic.OpChar ~ WS)

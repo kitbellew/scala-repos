@@ -64,7 +64,8 @@ object CanIHaarTr {
               .map(e => List((e._1 + e._2) * nFactor, (e._1 - e._2) * nFactor))
               .flatten
               .toArray
-            for (c <- 0 until limit) m(r, c) = v(c)
+            for (c <- 0 until limit)
+              m(r, c) = v(c)
           }
           for (c <- 0 until limit) {
             val cv = m(0 until limit, c).toArray
@@ -73,7 +74,8 @@ object CanIHaarTr {
               .map(e => List((e._1 + e._2) * nFactor, (e._1 - e._2) * nFactor))
               .flatten
               .toArray
-            for (r <- 0 until limit) m(r, c) = v(r)
+            for (r <- 0 until limit)
+              m(r, c) = v(r)
           }
         }
         val r = m.copy

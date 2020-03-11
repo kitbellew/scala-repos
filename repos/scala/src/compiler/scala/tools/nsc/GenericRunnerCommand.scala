@@ -32,13 +32,16 @@ class GenericRunnerCommand(
     settings.processArguments(args, processAll = false)
   override def ok = _ok
   private def guessHowToRun(target: String): GenericRunnerCommand.HowToRun = {
-    if (!ok) Error
-    else if (io.Jar.isJarOrZip(target)) AsJar
+    if (!ok)
+      Error
+    else if (io.Jar.isJarOrZip(target))
+      AsJar
     else if (ScalaClassLoader.classExists(settings.classpathURLs, target))
       AsObject
     else {
       val f = io.File(target)
-      if (!f.hasExtension("class", "jar", "zip") && f.canRead) AsScript
+      if (!f.hasExtension("class", "jar", "zip") && f.canRead)
+        AsScript
       else {
         Console.err.println("No such file or class on classpath: " + target)
         Error

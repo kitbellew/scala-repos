@@ -326,14 +326,22 @@ private[columnar] object DOUBLE extends NativeColumnType(DoubleType, 8) {
 
 private[columnar] object BOOLEAN extends NativeColumnType(BooleanType, 1) {
   override def append(v: Boolean, buffer: ByteBuffer): Unit = {
-    buffer.put(if (v) 1: Byte else 0: Byte)
+    buffer.put(
+      if (v)
+        1: Byte
+      else
+        0: Byte)
   }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
       buffer: ByteBuffer): Unit = {
-    buffer.put(if (row.getBoolean(ordinal)) 1: Byte else 0: Byte)
+    buffer.put(
+      if (row.getBoolean(ordinal))
+        1: Byte
+      else
+        0: Byte)
   }
 
   override def extract(buffer: ByteBuffer): Boolean = buffer.get() == 1

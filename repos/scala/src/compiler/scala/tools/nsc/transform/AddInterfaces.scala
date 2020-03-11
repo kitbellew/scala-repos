@@ -25,8 +25,10 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
         case Nil => Nil
         case hd :: tl =>
           assert(!hd.typeSymbol.isTrait, clazz)
-          if (clazz.isTrait) ObjectTpe :: tl
-          else parents
+          if (clazz.isTrait)
+            ObjectTpe :: tl
+          else
+            parents
       }
       if (clazz.isTrait) {
         decls foreach { sym =>
@@ -34,8 +36,10 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
             sym.info // initialize to set lateMETHOD flag if necessary
         }
       }
-      if (parents1 eq parents) tp
-      else ClassInfoType(parents1, decls, clazz)
+      if (parents1 eq parents)
+        tp
+      else
+        ClassInfoType(parents1, decls, clazz)
     case _ =>
       tp
   }
@@ -56,8 +60,10 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
 
   private def mkAssign(clazz: Symbol, assignSym: Symbol, rhs: Tree): Tree = {
     val qual = Select(This(clazz), assignSym)
-    if (assignSym.isSetter) Apply(qual, List(rhs))
-    else Assign(qual, rhs)
+    if (assignSym.isSetter)
+      Apply(qual, List(rhs))
+    else
+      Assign(qual, rhs)
   }
 
   /** Add calls to supermixin constructors

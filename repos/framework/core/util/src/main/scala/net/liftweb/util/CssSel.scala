@@ -295,8 +295,10 @@ private class SelectorMap(binds: List[CssBind])
                   case xs  => Full(Text(xs.mkString(" ")))
                 }
               } else {
-                if (org.text == calced.flatMap(a => a).text) Empty
-                else Full(org)
+                if (org.text == calced.flatMap(a => a).text)
+                  Empty
+                else
+                  Full(org)
               }
 
               val newAttr = flat match {
@@ -339,7 +341,10 @@ private class SelectorMap(binds: List[CssBind])
           other: MetaData,
           stripId: Boolean,
           skipClassMerge: Boolean): MetaData = {
-        var oldAttrs = attrs - (if (stripId) "id" else "")
+        var oldAttrs = attrs - (if (stripId)
+                                  "id"
+                                else
+                                  "")
 
         var builtMeta: MetaData = Null
         var pos = other
@@ -401,7 +406,11 @@ private class SelectorMap(binds: List[CssBind])
         .openOrThrowException("Guarded with test before calling this method")
         .subNodes match {
         case Full(SelectThisNode(kids)) => {
-          throw new RetryWithException(if (kids) realE.child else realE)
+          throw new RetryWithException(
+            if (kids)
+              realE.child
+            else
+              realE)
         }
 
         case Full(todo: WithKids) => {
@@ -574,7 +583,8 @@ private class SelectorMap(binds: List[CssBind])
     }
 
     def forAttr(in: Elem, buff: ListBuffer[CssBind]) {
-      if (attrMap.isEmpty || attrs.isEmpty) ()
+      if (attrMap.isEmpty || attrs.isEmpty)
+        ()
       else {
         for {
           (key, map) <- attrMap
@@ -650,7 +660,8 @@ private class SelectorMap(binds: List[CssBind])
           throw new RetryWithException(
             if (csb.selectThisChildren_?)
               e.child
-            else e)
+            else
+              e)
       }
     } else {
       lb.toList.filterNot(_.selectThis_?) match {
@@ -883,7 +894,11 @@ object CanBind extends CssBindImplicits {
   implicit def stringTransform: CanBind[String] = new CanBind[String] {
     def apply(str: => String)(ns: NodeSeq): Seq[NodeSeq] = {
       val s = str
-      List(if (null eq s) NodeSeq.Empty else Text(s))
+      List(
+        if (null eq s)
+          NodeSeq.Empty
+        else
+          Text(s))
     }
   }
 
@@ -895,7 +910,11 @@ object CanBind extends CssBindImplicits {
     new CanBind[java.lang.Number] {
       def apply(str: => java.lang.Number)(ns: NodeSeq): Seq[NodeSeq] = {
         val num = str
-        List(if (null eq num) NodeSeq.Empty else Text(num.toString))
+        List(
+          if (null eq num)
+            NodeSeq.Empty
+          else
+            Text(num.toString))
       }
     }
 
@@ -1000,7 +1019,10 @@ object CanBind extends CssBindImplicits {
     new CanBind[T[N]] {
       def apply(info: => T[N])(ns: NodeSeq): Seq[NodeSeq] =
         f(info).toSeq.flatMap(a =>
-          if (a eq null) Nil else List(Text(a.toString)))
+          if (a eq null)
+            Nil
+          else
+            List(Text(a.toString)))
     }
 
   implicit def iterableDouble[T[Double]](
@@ -1008,7 +1030,10 @@ object CanBind extends CssBindImplicits {
     new CanBind[T[Double]] {
       def apply(info: => T[Double])(ns: NodeSeq): Seq[NodeSeq] =
         f(info).toSeq.flatMap(a =>
-          if (a equals null) Nil else List(Text(a.toString)))
+          if (a equals null)
+            Nil
+          else
+            List(Text(a.toString)))
     }
 
   implicit def iterableBindableTransform[T[_]](

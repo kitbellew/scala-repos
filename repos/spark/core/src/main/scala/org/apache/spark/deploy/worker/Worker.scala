@@ -147,7 +147,10 @@ private[deploy] class Worker(
 
   private val publicAddress = {
     val envVar = conf.getenv("SPARK_PUBLIC_DNS")
-    if (envVar != null) envVar else host
+    if (envVar != null)
+      envVar
+    else
+      host
   }
   private var webUi: WorkerWebUI = null
 
@@ -206,7 +209,11 @@ private[deploy] class Worker(
     webUi = new WorkerWebUI(this, workDir, webUiPort)
     webUi.bind()
 
-    val scheme = if (webUi.sslOptions.enabled) "https" else "http"
+    val scheme =
+      if (webUi.sslOptions.enabled)
+        "https"
+      else
+        "http"
     workerWebUiUrl = s"$scheme://$publicAddress:${webUi.boundPort}"
     registerWithMaster()
 

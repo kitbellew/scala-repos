@@ -117,10 +117,14 @@ abstract class ActorRef
   final def compareTo(other: ActorRef) = {
     val x = this.path compareTo other.path
     if (x == 0)
-      if (this.path.uid < other.path.uid) -1
-      else if (this.path.uid == other.path.uid) 0
-      else 1
-    else x
+      if (this.path.uid < other.path.uid)
+        -1
+      else if (this.path.uid == other.path.uid)
+        0
+      else
+        1
+    else
+      x
   }
 
   /**
@@ -149,8 +153,10 @@ abstract class ActorRef
   private[akka] def isTerminated: Boolean
 
   final override def hashCode: Int = {
-    if (path.uid == ActorCell.undefinedUid) path.hashCode
-    else path.uid
+    if (path.uid == ActorCell.undefinedUid)
+      path.hashCode
+    else
+      path.uid
   }
 
   /**
@@ -162,8 +168,10 @@ abstract class ActorRef
   }
 
   override def toString: String =
-    if (path.uid == ActorCell.undefinedUid) s"Actor[${path}]"
-    else s"Actor[${path}#${path.uid}]"
+    if (path.uid == ActorCell.undefinedUid)
+      s"Actor[${path}]"
+    else
+      s"Actor[${path}#${path.uid}]"
 }
 
 /**
@@ -406,13 +414,18 @@ private[akka] class LocalActorRef private[akka] (
             case "" ⇒ l
             case any ⇒ l.getSingleChild(any)
           }
-          if (next == Nobody || name.isEmpty) next else rec(next, name)
+          if (next == Nobody || name.isEmpty)
+            next
+          else
+            rec(next, name)
         case _ ⇒
           ref.getChild(name)
       }
 
-    if (names.isEmpty) this
-    else rec(this, names)
+    if (names.isEmpty)
+      this
+    else
+      rec(this, names)
   }
 
   // ========= AKKA PROTECTED FUNCTIONS =========
@@ -473,7 +486,10 @@ private[akka] trait MinimalActorRef extends InternalActorRef with LocalRef {
 
   override def getParent: InternalActorRef = Nobody
   override def getChild(names: Iterator[String]): InternalActorRef =
-    if (names.forall(_.isEmpty)) this else Nobody
+    if (names.forall(_.isEmpty))
+      this
+    else
+      Nobody
 
   override def start(): Unit = ()
   override def suspend(): Unit = ()
@@ -560,7 +576,8 @@ private[akka] class EmptyLocalActorRef(
   override private[akka] def isTerminated = true
 
   override def sendSystemMessage(message: SystemMessage): Unit = {
-    if (Mailbox.debug) println(s"ELAR $path having enqueued $message")
+    if (Mailbox.debug)
+      println(s"ELAR $path having enqueued $message")
     specialHandle(message, provider.deadLetters)
   }
 
@@ -576,7 +593,10 @@ private[akka] class EmptyLocalActorRef(
       eventStream.publish(
         DeadLetter(
           message,
-          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          if (sender eq Actor.noSender)
+            provider.deadLetters
+          else
+            sender,
           this))
     case _ ⇒
   }
@@ -603,7 +623,10 @@ private[akka] class EmptyLocalActorRef(
           eventStream.publish(
             DeadLetter(
               sel.msg,
-              if (sender eq Actor.noSender) provider.deadLetters else sender,
+              if (sender eq Actor.noSender)
+                provider.deadLetters
+              else
+                sender,
               this))
       }
       true
@@ -611,7 +634,10 @@ private[akka] class EmptyLocalActorRef(
       eventStream.publish(
         SuppressedDeadLetter(
           m,
-          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          if (sender eq Actor.noSender)
+            provider.deadLetters
+          else
+            sender,
           this))
       true
     case _ ⇒ false
@@ -635,13 +661,17 @@ private[akka] class DeadLetterActorRef(
       case null ⇒ throw new InvalidMessageException("Message is null")
       case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, None)
       case d: DeadLetter ⇒
-        if (!specialHandle(d.message, d.sender)) eventStream.publish(d)
+        if (!specialHandle(d.message, d.sender))
+          eventStream.publish(d)
       case _ ⇒
         if (!specialHandle(message, sender))
           eventStream.publish(
             DeadLetter(
               message,
-              if (sender eq Actor.noSender) provider.deadLetters else sender,
+              if (sender eq Actor.noSender)
+                provider.deadLetters
+              else
+                sender,
               this))
     }
 
@@ -742,16 +772,20 @@ private[akka] class VirtualPathContainer(
   def getChild(name: String): InternalActorRef = children.get(name)
 
   override def getChild(name: Iterator[String]): InternalActorRef = {
-    if (name.isEmpty) this
+    if (name.isEmpty)
+      this
     else {
       val n = name.next()
-      if (n.isEmpty) this
+      if (n.isEmpty)
+        this
       else
         children.get(n) match {
           case null ⇒ Nobody
           case some ⇒
-            if (name.isEmpty) some
-            else some.getChild(name)
+            if (name.isEmpty)
+              some
+            else
+              some.getChild(name)
         }
     }
   }
@@ -760,7 +794,8 @@ private[akka] class VirtualPathContainer(
 
   def foreachChild(f: ActorRef ⇒ Unit): Unit = {
     val iter = children.values.iterator
-    while (iter.hasNext) f(iter.next)
+    while (iter.hasNext)
+      f(iter.next)
   }
 }
 

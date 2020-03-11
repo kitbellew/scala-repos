@@ -47,7 +47,10 @@ import scalafx.scene.text.{Font, TextAlignment}
 
 object Labeled {
   implicit def sfxLabeled2jfx(v: Labeled): jfxsc.Labeled =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 abstract class Labeled(override val delegate: jfxsc.Labeled)

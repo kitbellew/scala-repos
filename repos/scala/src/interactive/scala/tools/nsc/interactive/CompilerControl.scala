@@ -100,7 +100,10 @@ trait CompilerControl { self: Global =>
   }
 
   private def postWorkItem(item: WorkItem) =
-    if (item.onCompilerThread) item() else scheduler.postWorkItem(item)
+    if (item.onCompilerThread)
+      item()
+    else
+      scheduler.postWorkItem(item)
 
   /** Makes sure a set of compilation units is loaded and parsed.
     *  Returns () to syncvar `response` on completion.
@@ -273,7 +276,10 @@ trait CompilerControl { self: Global =>
 
   /** Asks for a computation to be done quickly on the presentation compiler thread */
   def ask[A](op: () => A): A =
-    if (self.onCompilerThread) op() else scheduler doQuickly op
+    if (self.onCompilerThread)
+      op()
+    else
+      scheduler doQuickly op
 
   /** Asks for a computation to be done on presentation compiler thread, returning
     *  a response with the result or an exception
@@ -309,7 +315,11 @@ trait CompilerControl { self: Global =>
     def implicitlyAdded = false
     def symNameDropLocal: Name = sym.name.dropLocal
 
-    private def accessible_s = if (accessible) "" else "[inaccessible] "
+    private def accessible_s =
+      if (accessible)
+        ""
+      else
+        "[inaccessible] "
     def forceInfoString = {
       definitions.fullyInitializeSymbol(sym)
       definitions.fullyInitializeType(tpe)

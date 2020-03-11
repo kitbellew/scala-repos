@@ -71,8 +71,10 @@ object Paginator {
       adapter: AdapterLike[A],
       currentPage: Int = 1,
       maxPerPage: Int = 10): Valid[Fu[Paginator[A]]] =
-    if (currentPage < 1) !!("Max per page must be greater than zero")
-    else if (maxPerPage <= 0) !!("Current page must be greater than zero")
+    if (currentPage < 1)
+      !!("Max per page must be greater than zero")
+    else if (maxPerPage <= 0)
+      !!("Current page must be greater than zero")
     else
       Success(for {
         results ← adapter.slice((currentPage - 1) * maxPerPage, maxPerPage)

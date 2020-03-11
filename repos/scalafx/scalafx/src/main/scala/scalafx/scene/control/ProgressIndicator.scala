@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object ProgressIndicator {
   implicit def sfxProgressIndicator2jfx(
       v: ProgressIndicator): jfxsc.ProgressIndicator =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   val IndeterminateProgress = jfxsc.ProgressIndicator.INDETERMINATE_PROGRESS
   @deprecated(

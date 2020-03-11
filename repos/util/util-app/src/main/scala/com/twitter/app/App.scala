@@ -158,7 +158,8 @@ trait App extends Closable with CloseAwaitably {
   final def nonExitingMain(args: Array[String]): Unit = {
     App.register(this)
 
-    for (f <- inits) f()
+    for (f <- inits)
+      f()
 
     flag.parseArgs(args, allowUndefinedFlags) match {
       case Flags.Ok(remainder) =>
@@ -169,7 +170,8 @@ trait App extends Closable with CloseAwaitably {
         throw FlagParseException(reason)
     }
 
-    for (f <- premains) f()
+    for (f <- premains)
+      f()
 
     // Get a main() if it's defined. It's possible to define traits that only use pre/post mains.
     val mainMethod =
@@ -186,7 +188,8 @@ trait App extends Closable with CloseAwaitably {
       }
     }
 
-    for (f <- postmains.asScala) f()
+    for (f <- postmains.asScala)
+      f()
 
     // We discard this future but we `Await.result` on `this` which is a
     // `CloseAwaitable`, and this means the thread waits for the future to

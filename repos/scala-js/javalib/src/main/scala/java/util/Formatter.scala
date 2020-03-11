@@ -78,17 +78,21 @@ final class Formatter(private val dest: Appendable)
           val widthStr = matchResult(3).getOrElse("")
           val hasWidth = !widthStr.isEmpty
           val width = {
-            if (hasWidth) Integer.parseInt(widthStr)
+            if (hasWidth)
+              Integer.parseInt(widthStr)
             else if (hasFlag("-"))
               throw new MissingFormatWidthException(format_in)
-            else 0
+            else
+              0
           }
 
           val precisionStr = matchResult(4).getOrElse("")
           val hasPrecision = !precisionStr.isEmpty
           val precision =
-            if (hasPrecision) Integer.parseInt(precisionStr)
-            else 0
+            if (hasPrecision)
+              Integer.parseInt(precisionStr)
+            else
+              0
 
           val conversion = matchResult(5).get.charAt(0)
 
@@ -152,20 +156,29 @@ final class Formatter(private val dest: Appendable)
                 val padRight = hasFlag("-")
                 val padZero = hasFlag("0") && !preventZero
                 val padLength = width - prePadLen
-                val padChar: String = if (padZero) "0" else " "
+                val padChar: String =
+                  if (padZero)
+                    "0"
+                  else
+                    " "
                 val padding = strRepeat(padChar, padLength)
 
                 if (padZero && padRight)
                   throw new java.util.IllegalFormatFlagsException(flags)
-                else if (padRight) prefix + argStr + padding
-                else if (padZero) prefix + padding + argStr
-                else padding + prefix + argStr
+                else if (padRight)
+                  prefix + argStr + padding
+                else if (padZero)
+                  prefix + padding + argStr
+                else
+                  padding + prefix + argStr
               }
             }
 
             val casedStr =
-              if (isConversionUpperCase) padStr.toUpperCase()
-              else padStr
+              if (isConversionUpperCase)
+                padStr.toUpperCase()
+              else
+                padStr
             dest.append(casedStr)
           }
 
@@ -180,23 +193,39 @@ final class Formatter(private val dest: Appendable)
               }
             case 'h' | 'H' =>
               pad {
-                if (arg eq null) "null"
-                else Integer.toHexString(arg.hashCode)
+                if (arg eq null)
+                  "null"
+                else
+                  Integer.toHexString(arg.hashCode)
               }
             case 's' | 'S' =>
               arg match {
                 case formattable: Formattable =>
                   val flags = {
-                    (if (hasFlag("-")) FormattableFlags.LEFT_JUSTIFY else 0) |
-                      (if (hasFlag("#")) FormattableFlags.ALTERNATE else 0) |
-                      (if (isConversionUpperCase) FormattableFlags.UPPERCASE
-                       else 0)
+                    (if (hasFlag("-"))
+                       FormattableFlags.LEFT_JUSTIFY
+                     else
+                       0) |
+                      (if (hasFlag("#"))
+                         FormattableFlags.ALTERNATE
+                       else
+                         0) |
+                      (if (isConversionUpperCase)
+                         FormattableFlags.UPPERCASE
+                       else
+                         0)
                   }
                   formattable.formatTo(
                     this,
                     flags,
-                    if (hasWidth) width else -1,
-                    if (hasPrecision) precision else -1)
+                    if (hasWidth)
+                      width
+                    else
+                      -1,
+                    if (hasPrecision)
+                      precision
+                    else
+                      -1)
                   None // no further processing
                 case _ =>
                   if (!hasFlag("#"))
@@ -213,34 +242,56 @@ final class Formatter(private val dest: Appendable)
                 case arg: scala.Int  => Integer.toOctalString(arg)
                 case arg: scala.Long => Long.toOctalString(arg)
               }
-              padCaptureSign(str, if (hasFlag("#")) "0" else "")
+              padCaptureSign(
+                str,
+                if (hasFlag("#"))
+                  "0"
+                else
+                  "")
             case 'x' | 'X' =>
               val str = (arg: Any) match {
                 case arg: scala.Int  => Integer.toHexString(arg)
                 case arg: scala.Long => Long.toHexString(arg)
               }
-              padCaptureSign(str, if (hasFlag("#")) "0x" else "")
+              padCaptureSign(
+                str,
+                if (hasFlag("#"))
+                  "0x"
+                else
+                  "")
             case 'e' | 'E' =>
-              sciNotation(if (hasPrecision) precision else 6)
+              sciNotation(
+                if (hasPrecision)
+                  precision
+                else
+                  6)
             case 'g' | 'G' =>
               val m = Math.abs(numberArg)
               // precision handling according to JavaDoc
               // precision here means number of significant digits
               // not digits after decimal point
               val p =
-                if (!hasPrecision) 6
-                else if (precision == 0) 1
-                else precision
+                if (!hasPrecision)
+                  6
+                else if (precision == 0)
+                  1
+                else
+                  precision
               // between 1e-4 and 10e(p): display as fixed
               if (m >= 1e-4 && m < Math.pow(10, p)) {
                 val sig = Math.ceil(Math.log10(m)).toInt
                 with_+(numberArg.toFixed(Math.max(p - sig, 0)))
-              } else sciNotation(p - 1)
+              } else
+                sciNotation(p - 1)
             case 'f' =>
               with_+(
                 {
                   // JavaDoc: 6 is default precision
-                  numberArg.toFixed(if (hasPrecision) precision else 6)
+                  numberArg.toFixed(
+                    if (hasPrecision)
+                      precision
+                    else
+                      6)
                 },
                 numberArg.isNaN || numberArg.isInfinite)
           }
@@ -254,7 +305,8 @@ final class Formatter(private val dest: Appendable)
                 if ('e' == exp.charAt(exp.length - 3)) {
                   exp.substring(0, exp.length - 1) + "0" +
                     exp.charAt(exp.length - 1)
-                } else exp
+                } else
+                  exp
               },
               numberArg.isNaN || numberArg.isInfinite
             )
@@ -276,8 +328,10 @@ final class Formatter(private val dest: Appendable)
   override def toString(): String = out().toString()
 
   @inline private def ifNotClosed[T](body: => T): T =
-    if (closed) throwClosedException()
-    else body
+    if (closed)
+      throwClosedException()
+    else
+      body
 
   private def throwClosedException(): Nothing =
     throw new FormatterClosedException()

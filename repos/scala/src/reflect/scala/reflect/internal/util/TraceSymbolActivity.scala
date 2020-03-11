@@ -65,7 +65,8 @@ trait TraceSymbolActivity {
     allSymbols remove id foreach showSym
   }
   private def symbolStr(id: Int): String = {
-    if (id == 1) "NoSymbol"
+    if (id == 1)
+      "NoSymbol"
     else {
       val sym = allSymbols(id)
       sym.accurateKindString + " " + sym.name.decode
@@ -96,7 +97,8 @@ trait TraceSymbolActivity {
   }
 
   def showAllSymbols() {
-    if (!enabled) return
+    if (!enabled)
+      return
     enabled = false
     allSymbols(1) = NoSymbol
 

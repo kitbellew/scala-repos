@@ -53,7 +53,11 @@ object RouterExample extends App {
   }
 
   def matchString(s: String): Router[String] = new Router[String] {
-    def apply(path: String): Option[String] = if (path == s) Some(s) else None
+    def apply(path: String): Option[String] =
+      if (path == s)
+        Some(s)
+      else
+        None
 
     override def toString = s
   }

@@ -33,7 +33,8 @@ class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
       isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitXmlStartTag(s: ScXmlStartTag) {
-        if (s.getTextRange.isEmpty) return
+        if (s.getTextRange.isEmpty)
+          return
 
         val endTag = s.getClosingTag
         def register(fixes: LocalQuickFix*) {
@@ -81,7 +82,8 @@ class DeleteUnmatchedTagQuickFix(s: ScalaPsiElement)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
 
     elem.delete()
   }
@@ -95,7 +97,8 @@ class RenameClosingTagQuickFix(s: ScXmlStartTag)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
 
     elem.getClosingTag.replace(
       ScalaPsiElementFactory.createXmlEndTag(elem.getTagName, elem.getManager))
@@ -110,7 +113,8 @@ class RenameOpeningTagQuickFix(s: ScXmlEndTag)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
     val openingTag = elem.getOpeningTag
     val attributes = openingTag
       .findChildrenByType(ScalaElementTypes.XML_ATTRIBUTE)
@@ -120,6 +124,9 @@ class RenameOpeningTagQuickFix(s: ScXmlEndTag)
       ScalaPsiElementFactory.createXmlStartTag(
         elem.getTagName,
         elem.getManager,
-        if (attributes.isEmpty) "" else attributes.mkString(" ", " ", "")))
+        if (attributes.isEmpty)
+          ""
+        else
+          attributes.mkString(" ", " ", "")))
   }
 }

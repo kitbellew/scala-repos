@@ -38,7 +38,10 @@ import scalafx.scene.transform.Transform
 object SnapshotParameters {
   implicit def sfxSnapshotParameters2jfx(
       sp: SnapshotParameters): jfxs.SnapshotParameters =
-    if (sp != null) sp.delegate else null
+    if (sp != null)
+      sp.delegate
+    else
+      null
 }
 
 /**

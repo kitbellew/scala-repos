@@ -22,7 +22,8 @@ trait Decoder {
     if (message.headers exists Encoder.isContentEncodingHeader)
       decodeData(message).withHeaders(
         message.headers filterNot Encoder.isContentEncodingHeader)
-    else message.self
+    else
+      message.self
 
   def decodeData[T](t: T)(implicit mapper: DataMapper[T]): T =
     mapper.transformDataBytes(t, decoderFlow)

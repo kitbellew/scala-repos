@@ -75,10 +75,13 @@ private[http] object One2OneBidiFlow {
           inOut,
           new OutHandler {
             override def onPull(): Unit =
-              if (pending < maxPending || maxPending == -1) pull(inIn)
-              else pullSuppressed = true
+              if (pending < maxPending || maxPending == -1)
+                pull(inIn)
+              else
+                pullSuppressed = true
             override def onDownstreamFinish(): Unit = {
-              if (!isClosed(inIn)) innerFlowCancelled = true
+              if (!isClosed(inIn))
+                innerFlowCancelled = true
               cancel(inIn)
             }
           }
@@ -96,12 +99,14 @@ private[http] object One2OneBidiFlow {
                   pullSuppressed = false
                   pull(inIn)
                 }
-              } else throw new UnexpectedOutputException(element)
+              } else
+                throw new UnexpectedOutputException(element)
             }
             override def onUpstreamFinish(): Unit = {
               if (pending == 0 && isClosed(inIn) && !innerFlowCancelled)
                 complete(outOut)
-              else throw OutputTruncationException
+              else
+                throw OutputTruncationException
             }
           }
         )

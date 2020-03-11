@@ -459,14 +459,18 @@ trait TransSpecModule extends FNModule {
           case gand @ GroupKeySpecAnd(left, right) =>
             val leftdnf = dnf(left)
             val rightdnf = dnf(right)
-            if (leftdnf == left && rightdnf == right) gand
-            else dnf(GroupKeySpecAnd(leftdnf, rightdnf))
+            if (leftdnf == left && rightdnf == right)
+              gand
+            else
+              dnf(GroupKeySpecAnd(leftdnf, rightdnf))
 
           case gor @ GroupKeySpecOr(left, right) =>
             val leftdnf = dnf(left)
             val rightdnf = dnf(right)
-            if (leftdnf == left && rightdnf == right) gor
-            else dnf(GroupKeySpecOr(leftdnf, rightdnf))
+            if (leftdnf == left && rightdnf == right)
+              gor
+            else
+              dnf(GroupKeySpecOr(leftdnf, rightdnf))
         }
       }
 
@@ -519,13 +523,14 @@ trait TransSpecModule extends FNModule {
 
   def makeTableTrans(tableTrans: TableTransSpec1): TransSpec1 = {
     val wrapped =
-      for ((key @ CPathField(fieldName), value) <- tableTrans) yield {
-        val mapped = TransSpec.deepMap(value) {
-          case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
-        }
+      for ((key @ CPathField(fieldName), value) <- tableTrans)
+        yield {
+          val mapped = TransSpec.deepMap(value) {
+            case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
+          }
 
-        trans.WrapObject(mapped, fieldName)
-      }
+          trans.WrapObject(mapped, fieldName)
+        }
 
     wrapped.foldLeft[TransSpec1](
       ObjectDelete(Leaf(Source), Set(tableTrans.keys.toSeq: _*))) { (acc, ts) =>

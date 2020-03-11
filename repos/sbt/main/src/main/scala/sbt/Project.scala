@@ -111,7 +111,10 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
   private[this] def ifNonEmpty[T](
       label: String,
       ts: Iterable[T]): List[String] =
-    if (ts.isEmpty) Nil else s"$label: $ts" :: Nil
+    if (ts.isEmpty)
+      Nil
+    else
+      s"$label: $ts" :: Nil
 }
 sealed trait Project extends ProjectDefinition[ProjectReference] {
   // TODO: add parameters for plugins in 0.14.0 (not reasonable to do in a binary compatible way in 0.13)
@@ -327,7 +330,8 @@ object Project extends ProjectExtra {
       keyNameColor: Option[String]): Show[ScopedKey[_]] =
     if (isProjectLoaded(state))
       showContextKey(session(state), structure(state), keyNameColor)
-    else Def.showFullKey
+    else
+      Def.showFullKey
 
   def showContextKey(
       session: SessionSettings,
@@ -422,9 +426,12 @@ object Project extends ProjectExtra {
   def normalizeProjectID(id: String): Either[String, String] = {
     val attempt = normalizeBase(id)
     val refined =
-      if (attempt.length < 1) "root"
-      else if (!validProjectIDStart(attempt.substring(0, 1))) "root-" + attempt
-      else attempt
+      if (attempt.length < 1)
+        "root"
+      else if (!validProjectIDStart(attempt.substring(0, 1)))
+        "root-" + attempt
+      else
+        attempt
     validProjectID(refined).toLeft(refined)
   }
   private[this] def normalizeBase(s: String) =
@@ -584,7 +591,8 @@ object Project extends ProjectExtra {
     val ref = Project.current(s)
     val project = Load.getProject(structure.units, ref.build, ref.project)
     val msg = Keys.onLoadMessage in ref get structure.data getOrElse ""
-    if (!msg.isEmpty) s.log.info(msg)
+    if (!msg.isEmpty)
+      s.log.info(msg)
     def get[T](k: SettingKey[T]): Option[T] = k in ref get structure.data
     def commandsIn(axis: ResolvedReference) =
       commands in axis get structure.data toList;
@@ -727,7 +735,12 @@ object Project extends ProjectExtra {
     def derivedDependencies(c: ScopedKey[_]): List[ScopedKey[_]] =
       comp
         .get(c)
-        .map(_.settings.flatMap(s => if (s.isDerived) s.dependencies else Nil))
+        .map(
+          _.settings.flatMap(s =>
+            if (s.isDerived)
+              s.dependencies
+            else
+              Nil))
         .toList
         .flatten
 
@@ -747,11 +760,19 @@ object Project extends ProjectExtra {
         derivedLabel: String,
         scopes: Iterable[ScopedKey[_]],
         derived: Set[ScopedKey[_]]): String = {
-      val label =
-        s"$baseLabel${if (derived.isEmpty) "" else s" (D=$derivedLabel)"}"
+      val label = s"$baseLabel${if (derived.isEmpty)
+        ""
+      else
+        s" (D=$derivedLabel)"}"
       val prefix: ScopedKey[_] => String =
-        if (derived.isEmpty) const("")
-        else sk => if (derived(sk)) "D " else "  "
+        if (derived.isEmpty)
+          const("")
+        else
+          sk =>
+            if (derived(sk))
+              "D "
+            else
+              "  "
       printScopes(label, scopes, prefix = prefix)
     }
 
@@ -760,11 +781,14 @@ object Project extends ProjectExtra {
         scopes: Iterable[ScopedKey[_]],
         max: Int = Int.MaxValue,
         prefix: ScopedKey[_] => String = const("")) =
-      if (scopes.isEmpty) ""
+      if (scopes.isEmpty)
+        ""
       else {
         val (limited, more) =
-          if (scopes.size <= max) (scopes, "\n")
-          else (scopes.take(max), "\n...\n")
+          if (scopes.size <= max)
+            (scopes, "\n")
+          else
+            (scopes.take(max), "\n...\n")
         limited
           .map(sk => prefix(sk) + display(sk))
           .mkString(label + ":\n\t", "\n\t", more)
@@ -840,12 +864,19 @@ object Project extends ProjectExtra {
       actual: Boolean,
       key: AttributeKey[_])(implicit display: Show[ScopedKey[_]]): Seq[Scope] =
     relation(structure, actual)(display)._1s.toSeq flatMap { sk =>
-      if (sk.key == key) sk.scope :: Nil else Nil
+      if (sk.key == key)
+        sk.scope :: Nil
+      else
+        Nil
     }
   def usedBy(structure: BuildStructure, actual: Boolean, key: AttributeKey[_])(
       implicit display: Show[ScopedKey[_]]): Seq[ScopedKey[_]] =
     relation(structure, actual)(display).all.toSeq flatMap {
-      case (a, b) => if (b.key == key) List[ScopedKey[_]](a) else Nil
+      case (a, b) =>
+        if (b.key == key)
+          List[ScopedKey[_]](a)
+        else
+          Nil
     }
   def reverseDependencies(
       cMap: Map[ScopedKey[_], Flattened],

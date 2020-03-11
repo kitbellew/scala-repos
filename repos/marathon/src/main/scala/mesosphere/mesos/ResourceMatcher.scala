@@ -73,11 +73,17 @@ object ResourceMatcher {
     }
 
     override def toString: String = {
-      val reservedString = if (reserved) "RESERVED" else "unreserved"
+      val reservedString =
+        if (reserved)
+          "RESERVED"
+        else
+          "unreserved"
       val rolesString = acceptedRoles.mkString(", ")
       val labelStrings =
-        if (requiredLabels.labels.nonEmpty) s" and labels $requiredLabels"
-        else ""
+        if (requiredLabels.labels.nonEmpty)
+          s" and labels $requiredLabels"
+        else
+          ""
       s"Considering $reservedString resources with roles {$rolesString}$labelStrings"
     }
   }
@@ -205,7 +211,8 @@ object ResourceMatcher {
             val reservation =
               if (nextResource.hasReservation)
                 Option(nextResource.getReservation)
-              else None
+              else
+                None
             val consumedValue = ScalarMatch.Consumption(
               consume,
               nextResource.getRole,

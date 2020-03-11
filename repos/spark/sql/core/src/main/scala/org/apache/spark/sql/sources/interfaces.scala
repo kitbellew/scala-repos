@@ -427,7 +427,10 @@ case class HadoopFsRelation(
   }
 
   def partitionSchemaOption: Option[StructType] =
-    if (partitionSchema.isEmpty) None else Some(partitionSchema)
+    if (partitionSchema.isEmpty)
+      None
+    else
+      Some(partitionSchema)
   def partitionSpec: PartitionSpec = location.partitionSpec()
 
   def refresh(): Unit = location.refresh()

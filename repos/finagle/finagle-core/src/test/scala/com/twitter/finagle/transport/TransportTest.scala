@@ -42,7 +42,8 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     private[this] var next = seq
     def write(in: Any) = Future.exception(new Exception)
     def read() = synchronized {
-      if (next.isEmpty) Future.None
+      if (next.isEmpty)
+        Future.None
       else {
         val head = next.head
         next = next.tail

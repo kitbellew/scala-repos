@@ -20,8 +20,10 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     extends ClassLoader(parent)
     with ScalaClassLoader {
   protected def classNameToPath(name: String): String =
-    if (name endsWith ".class") name
-    else s"${name.replace('.', '/')}.class"
+    if (name endsWith ".class")
+      name
+    else
+      s"${name.replace('.', '/')}.class"
 
   protected def findAbstractFile(name: String): AbstractFile = {
     var file: AbstractFile = root
@@ -89,11 +91,13 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
   lazy val protectionDomain = {
     val cl = Thread.currentThread().getContextClassLoader()
     val resource = cl.getResource("scala/runtime/package.class")
-    if (resource == null || resource.getProtocol != "jar") null
+    if (resource == null || resource.getProtocol != "jar")
+      null
     else {
       val s = resource.getPath
       val n = s.lastIndexOf('!')
-      if (n < 0) null
+      if (n < 0)
+        null
       else {
         val path = s.substring(0, n)
         new ProtectionDomain(

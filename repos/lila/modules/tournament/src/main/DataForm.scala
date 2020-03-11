@@ -19,7 +19,10 @@ final class DataForm {
   val clockTimeDefault = 2d
   private def formatLimit(l: Double) =
     chess.Clock.showLimit(l * 60 toInt) + {
-      if (l <= 1) " minute" else " minutes"
+      if (l <= 1)
+        " minute"
+      else
+        " minutes"
     }
   val clockTimeChoices = optionsDouble(clockTimes, formatLimit)
   val clockTimePrivateChoices = optionsDouble(clockTimesPrivate, formatLimit)

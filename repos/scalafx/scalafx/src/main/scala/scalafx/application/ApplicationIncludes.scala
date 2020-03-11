@@ -50,13 +50,15 @@ trait ApplicationIncludes {
     */
   implicit def jfxParameters2sfx(
       p: jfxa.Application.Parameters): JFXApp.Parameters =
-    if (p != null) new JFXApp.Parameters {
-      def raw = p.getRaw
-      def named = p.getNamed
-      def unnamed = p.getUnnamed
-      def delegate = p
-    }
-    else null
+    if (p != null)
+      new JFXApp.Parameters {
+        def raw = p.getRaw
+        def named = p.getNamed
+        def unnamed = p.getUnnamed
+        def delegate = p
+      }
+    else
+      null
 
   /**
     * Converts a

@@ -119,7 +119,8 @@ private[remote] class TcpAssociationHandle(
     if (channel.isWritable && channel.isOpen) {
       channel.write(ChannelBuffers.wrappedBuffer(payload.asByteBuffer))
       true
-    } else false
+    } else
+      false
 
   override def disassociate(): Unit = NettyTransport.gracefulClose(channel)
 }

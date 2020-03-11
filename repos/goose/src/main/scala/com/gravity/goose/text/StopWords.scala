@@ -43,7 +43,8 @@ object StopWords {
 
   def getStopWordCount(content: String): WordStats = {
 
-    if (string.isNullOrEmpty(content)) return WordStats.EMPTY
+    if (string.isNullOrEmpty(content))
+      return WordStats.EMPTY
     val ws: WordStats = new WordStats
     val strippedInput: String = removePunctuation(content)
 

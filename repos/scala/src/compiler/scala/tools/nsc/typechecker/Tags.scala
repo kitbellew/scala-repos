@@ -18,7 +18,8 @@ trait Tags {
         allowMaterialization: Boolean) = enteringTyper {
       def wrapper(tree: => Tree): Tree =
         if (allowMaterialization)(context.withMacrosEnabled[Tree](tree))
-        else (context.withMacrosDisabled[Tree](tree))
+        else
+          (context.withMacrosDisabled[Tree](tree))
       wrapper(
         inferImplicit(
           EmptyTree,
@@ -77,15 +78,19 @@ trait Tags {
         concrete: Boolean,
         allowMaterialization: Boolean = true): Tree =
       // if someone requests a type tag, but scala-reflect.jar isn't on the library classpath, then bail
-      if (pre == NoType && ApiUniverseClass == NoSymbol) EmptyTree
+      if (pre == NoType && ApiUniverseClass == NoSymbol)
+        EmptyTree
       else {
         val tagSym =
-          if (concrete) runDefinitions.TypeTagClass
-          else runDefinitions.WeakTypeTagClass
+          if (concrete)
+            runDefinitions.TypeTagClass
+          else
+            runDefinitions.WeakTypeTagClass
         val tagTp =
           if (pre == NoType)
             TypeRef(ApiUniverseClass.toTypeConstructor, tagSym, List(tp))
-          else singleType(pre, pre member tagSym.name)
+          else
+            singleType(pre, pre member tagSym.name)
         val taggedTp = appliedType(tagTp, List(tp))
         resolveTag(pos, taggedTp, allowMaterialization)
       }

@@ -773,7 +773,8 @@ abstract class DStream[T: ClassTag](
         println(s"Time: $time")
         println("-------------------------------------------")
         firstNum.take(num).foreach(println)
-        if (firstNum.length > num) println("...")
+        if (firstNum.length > num)
+          println("...")
         println()
         // scalastyle:on println
       }
@@ -954,7 +955,10 @@ abstract class DStream[T: ClassTag](
     alignedFromTime
       .to(alignedToTime, slideDuration)
       .flatMap(time => {
-        if (time >= zeroTime) getOrCompute(time) else None
+        if (time >= zeroTime)
+          getOrCompute(time)
+        else
+          None
       })
   }
 

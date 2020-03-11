@@ -79,7 +79,8 @@ trait ScPrimaryConstructor
 
   private def syntheticParamClause: Option[ScParameterClause] = {
     val hasImplicit = parameterList.clauses.exists(_.isImplicit)
-    if (hasImplicit) None
+    if (hasImplicit)
+      None
     else
       ScalaPsiUtil.syntheticParamClause(
         containingClass.asInstanceOf[ScTypeParametersOwner],
@@ -100,8 +101,10 @@ trait ScPrimaryConstructor
             ScThisType(parentClazz),
             clazz,
             superReference = false)
-        else ScDesignatorType(clazz)
-      if (typeParameters.isEmpty) designatorType
+        else
+          ScDesignatorType(clazz)
+      if (typeParameters.isEmpty)
+        designatorType
       else {
         ScParameterizedType(
           designatorType,
@@ -123,7 +126,8 @@ trait ScPrimaryConstructor
 
   def polymorphicType: ScType = {
     val typeParameters = getParent.asInstanceOf[ScTypeDefinition].typeParameters
-    if (typeParameters.isEmpty) methodType
+    if (typeParameters.isEmpty)
+      methodType
     else
       ScTypePolymorphicType(
         methodType,

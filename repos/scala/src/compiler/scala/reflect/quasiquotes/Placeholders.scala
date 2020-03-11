@@ -35,8 +35,10 @@ trait Placeholders { self: Quasiquotes =>
         c.freshName(TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
       sb.append(placeholderName)
       val holeTree =
-        if (method != nme.unapply) tree
-        else Bind(placeholderName, tree)
+        if (method != nme.unapply)
+          tree
+        else
+          Bind(placeholderName, tree)
       holeMap(placeholderName) = Hole(rank, holeTree)
     }
 
@@ -111,8 +113,8 @@ trait Placeholders { self: Quasiquotes =>
         List(Literal(Constant(name.toString))))
     def matching = {
       case Apply(
-          Select(New(Ident(tpnme.QUASIQUOTE_MODS)), nme.CONSTRUCTOR),
-          List(Literal(Constant(s: String)))) =>
+            Select(New(Ident(tpnme.QUASIQUOTE_MODS)), nme.CONSTRUCTOR),
+            List(Literal(Constant(s: String)))) =>
         TermName(s)
     }
   }
@@ -174,9 +176,9 @@ trait Placeholders { self: Quasiquotes =>
         EmptyTree)
     def unapply(tree: Tree): Option[Hole] = tree match {
       case CaseDef(
-          Apply(Ident(nme.QUASIQUOTE_CASE), List(Placeholder(hole))),
-          EmptyTree,
-          EmptyTree) =>
+            Apply(Ident(nme.QUASIQUOTE_CASE), List(Placeholder(hole))),
+            EmptyTree,
+            EmptyTree) =>
         Some(hole)
       case _ => None
     }
@@ -211,10 +213,10 @@ trait Placeholders { self: Quasiquotes =>
       ValDef(NoMods, nme.QUASIQUOTE_PACKAGE_STAT, Ident(name), EmptyTree)
     def unapply(tree: Tree): Option[Hole] = tree match {
       case ValDef(
-          NoMods,
-          nme.QUASIQUOTE_PACKAGE_STAT,
-          Ident(Placeholder(hole)),
-          EmptyTree) =>
+            NoMods,
+            nme.QUASIQUOTE_PACKAGE_STAT,
+            Ident(Placeholder(hole)),
+            EmptyTree) =>
         Some(hole)
       case _ => None
     }
@@ -227,8 +229,8 @@ trait Placeholders { self: Quasiquotes =>
         Ident(nme.QUASIQUOTE_FOR_ENUM))
     def unapply(tree: Tree): Option[Hole] = tree match {
       case build.SyntacticValFrom(
-          Bind(Placeholder(hole), Ident(nme.WILDCARD)),
-          Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
+            Bind(Placeholder(hole), Ident(nme.WILDCARD)),
+            Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
         Some(hole)
       case _ => None
     }

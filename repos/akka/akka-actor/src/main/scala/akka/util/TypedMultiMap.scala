@@ -85,9 +85,13 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
         if (set(value)) {
           val newset = set - value
           val newmap =
-            if (newset.isEmpty) map - key else map.updated(key, newset)
+            if (newset.isEmpty)
+              map - key
+            else
+              map.updated(key, newset)
           new TypedMultiMap[T, K](newmap)
-        } else this
+        } else
+          this
     }
   }
 

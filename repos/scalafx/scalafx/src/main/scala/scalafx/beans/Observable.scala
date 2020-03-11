@@ -34,7 +34,10 @@ import scalafx.event.subscriptions.Subscription
 
 object Observable {
   implicit def sfxObservable2jfx(o: Observable): jfxb.Observable =
-    if (o != null) o.delegate else null
+    if (o != null)
+      o.delegate
+    else
+      null
 }
 
 /**

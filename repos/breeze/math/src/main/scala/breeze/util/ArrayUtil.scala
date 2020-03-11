@@ -148,7 +148,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -160,7 +161,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -175,7 +177,8 @@ object ArrayUtil {
   def equals(a: Array[_], b: Array[_]): Boolean = {
     val ac = a.getClass
     val bc = b.getClass
-    if (ac != bc) false
+    if (ac != bc)
+      false
     else {
       a match {
         case x: Array[Double] =>
@@ -229,7 +232,8 @@ object ArrayUtil {
       blength: Int): Boolean = {
     val ac = a.getClass
     val bc = b.getClass
-    if (ac != bc || alength != blength) false
+    if (ac != bc || alength != blength)
+      false
     else if (aoffset == 0 && astride == 1 && alength == a.length && boffset == 0 && bstride == 1 && blength == b.length) {
       ArrayUtil.equals(a, b)
     } else {
@@ -240,7 +244,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -252,7 +257,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -264,7 +270,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -276,7 +283,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -288,7 +296,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -300,7 +309,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -312,7 +322,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -324,7 +335,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -336,7 +348,8 @@ object ArrayUtil {
           var bi = boffset
           var i = 0
           while (i < alength) {
-            if (x(ai) != y(bi)) return false
+            if (x(ai) != y(bi))
+              return false
             ai += astride
             bi += bstride
             i += 1
@@ -353,7 +366,8 @@ object ArrayUtil {
       fromIndex: Int,
       toIndex: Int,
       toFind: Int): Int = {
-    if (objs.length == 0) return ~0
+    if (objs.length == 0)
+      return ~0
 
 //    if(toIndex - fromIndex <= 16) return linearSearch(objs, fromIndex, toIndex, toFind)
 

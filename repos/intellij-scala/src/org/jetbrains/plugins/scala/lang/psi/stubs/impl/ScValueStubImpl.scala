@@ -53,7 +53,9 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
       parent,
       elemType
         .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
-    this.names = for (name <- names) yield StringRef.fromString(name)
+    this.names =
+      for (name <- names)
+        yield StringRef.fromString(name)
     this.declaration = isDeclaration
     this.typeText = StringRef.fromString(typeText)
     this.bodyText = StringRef.fromString(bodyText)
@@ -96,7 +98,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
   def isDeclaration = declaration
 
   def getPatternsContainer: Option[ScPatternList] = {
-    if (isDeclaration) return None
+    if (isDeclaration)
+      return None
     if (myPatterns != null) {
       val patterns = myPatterns.get
       if (patterns != null && (patterns.isEmpty || (patterns.get.getContext eq getPsi)))
@@ -107,7 +110,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createPatterListFromText(getBindingsContainerText, getPsi, null))
-      } else None
+      } else
+        None
     myPatterns = new SofterReference(res)
     res
   }
@@ -125,7 +129,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createExpressionWithContextFromText(getBodyText, getPsi, null))
-      } else None
+      } else
+        None
     myBodyExpression = new SofterReference(res)
     res
   }
@@ -141,13 +146,15 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createTypeElementFromText(getTypeText, getPsi, null))
-      else None
+      else
+        None
     myTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
   }
 
   def getIdsContainer: Option[ScIdList] = {
-    if (!isDeclaration) return None
+    if (!isDeclaration)
+      return None
     if (myIds != null) {
       val ids = myIds.get
       if (ids != null && (ids.isEmpty || (ids.get.getContext eq getPsi)))
@@ -158,7 +165,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         Some(
           ScalaPsiElementFactory
             .createIdsListFromText(getBindingsContainerText, getPsi, null))
-      } else None
+      } else
+        None
     myIds = new SofterReference[Option[ScIdList]](res)
     res
   }

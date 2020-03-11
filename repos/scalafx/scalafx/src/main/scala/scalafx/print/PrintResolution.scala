@@ -44,7 +44,10 @@ object PrintResolution {
     */
   implicit def sfxPrintResolution2jfx(
       pr: PrintResolution): jfxp.PrintResolution =
-    if (pr != null) pr.delegate else null
+    if (pr != null)
+      pr.delegate
+    else
+      null
 
 }
 

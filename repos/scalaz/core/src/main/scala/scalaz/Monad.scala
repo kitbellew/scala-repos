@@ -62,14 +62,22 @@ trait Monad[F[_]] extends Applicative[F] with Bind[F] { self =>
     * and return that result, discarding all others.
     */
   def iterateWhile[A](f: F[A])(p: A => Boolean): F[A] =
-    bind(f)(y => if (p(y)) iterateWhile(f)(p) else point(y))
+    bind(f)(y =>
+      if (p(y))
+        iterateWhile(f)(p)
+      else
+        point(y))
 
   /**
     * Execute an action repeatedly until its result satisfies the given predicate
     * and return that result, discarding all others.
     */
   def iterateUntil[A](f: F[A])(p: A => Boolean): F[A] =
-    bind(f)(y => if (p(y)) point(y) else iterateUntil(f)(p))
+    bind(f)(y =>
+      if (p(y))
+        point(y)
+      else
+        iterateUntil(f)(p))
 
   /**The product of Monad `F` and `G`, `[x](F[x], G[x]])`, is a Monad */
   def product[G[_]](implicit G0: Monad[G]): Monad[λ[α => (F[α], G[α])]] =

@@ -110,14 +110,20 @@ object MapperRules extends Factory {
     */
   val quoteTableName: FactoryMaker[String => String] =
     new FactoryMaker[String => String]((s: String) =>
-      if (s.indexOf(' ') >= 0) '"' + s + '"' else s) {}
+      if (s.indexOf(' ') >= 0)
+        '"' + s + '"'
+      else
+        s) {}
 
   /**
     * What are the rules and mechanisms for putting quotes around column names?
     */
   val quoteColumnName: FactoryMaker[String => String] =
     new FactoryMaker[String => String]((s: String) =>
-      if (s.indexOf(' ') >= 0) '"' + s + '"' else s) {}
+      if (s.indexOf(' ') >= 0)
+        '"' + s + '"'
+      else
+        s) {}
 
   /**
     * Function that determines if foreign key constraints are
@@ -222,8 +228,13 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       dbId: ConnectionIdentifier,
       query: String,
       checkedBy: IHaveValidatedThisSQL): scala.Long =
-    DB.use(dbId)(DB.prepareStatement(query, _)(DB.exec(_)(rs =>
-      if (rs.next) rs.getLong(1) else 0L)))
+    DB.use(dbId)(
+      DB.prepareStatement(query, _)(
+        DB.exec(_)(rs =>
+          if (rs.next)
+            rs.getLong(1)
+          else
+            0L)))
 
   def findAllByInsecureSql(
       query: String,
@@ -304,8 +315,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       DB.prepareStatement(query, conn) { st =>
         setStatementFields(st, bl, 1, conn)
         DB.exec(st) { rs =>
-          if (rs.next) rs.getLong(1)
-          else 0
+          if (rs.next)
+            rs.getLong(1)
+          else
+            0
         }
       }
     }
@@ -509,7 +522,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     var wav = whereAdded
 
     def whereOrAnd =
-      if (wav) " AND "
+      if (wav)
+        " AND "
       else {
         wav = true;
         " WHERE "
@@ -558,7 +572,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
             val vals =
               Set(orgVals: _*).toList // faster than list.removeDuplicates
 
-            if (vals.isEmpty) updatedWhat = updatedWhat + whereOrAnd + " 0 = 1 "
+            if (vals.isEmpty)
+              updatedWhat = updatedWhat + whereOrAnd + " 0 = 1 "
             else
               updatedWhat = updatedWhat +
                 vals
@@ -735,7 +750,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       }
     }
 
-    if (conn.brokenLimit_?) (tmp, start, max)
+    if (conn.brokenLimit_?)
+      (tmp, start, max)
     else {
       val ret = (max, start) match {
         case (Full(max), Full(start)) =>
@@ -864,7 +880,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       } {
         val f = ??(meth, ret)
         f.setFromAny(field.value)
-        if (!markFieldsAsDirty) f.resetDirty
+        if (!markFieldsAsDirty)
+          f.resetDirty
       }
     }
 
@@ -891,8 +908,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     mappedFieldList.flatMap(f => ??(f.method, toValidate).validate) :::
       validation.flatMap {
         case pf: PartialFunction[A, List[FieldError]] =>
-          if (pf.isDefinedAt(toValidate)) pf(toValidate)
-          else Nil
+          if (pf.isDefinedAt(toValidate))
+            pf(toValidate)
+          else
+            Nil
 
         case f => f(toValidate)
       }
@@ -901,14 +920,18 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     logger.debug("Validating dbName=%s, entity=%s".format(dbName, toValidate))
     val saved_? = this.saved_?(toValidate)
     _beforeValidation(toValidate)
-    if (saved_?) _beforeValidationOnUpdate(toValidate)
-    else _beforeValidationOnCreate(toValidate)
+    if (saved_?)
+      _beforeValidationOnUpdate(toValidate)
+    else
+      _beforeValidationOnCreate(toValidate)
 
     val ret: List[FieldError] = runValidationList(toValidate)
 
     _afterValidation(toValidate)
-    if (saved_?) _afterValidationOnUpdate(toValidate)
-    else _afterValidationOnCreate(toValidate)
+    if (saved_?)
+      _afterValidationOnUpdate(toValidate)
+    else
+      _afterValidationOnCreate(toValidate)
 
     logger.debug(
       "Validated dbName=%s, entity=%s, result=%s"
@@ -997,7 +1020,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         // Set a string with a simple guard for null values
         st.setString(
           index,
-          if (value ne null) value.toString else value.asInstanceOf[String])
+          if (value ne null)
+            value.toString
+          else
+            value.asInstanceOf[String])
 
       // Sybase SQL Anywhere and DB2 choke on using setObject for boolean data
       case Types.BOOLEAN =>
@@ -1057,7 +1083,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
                 }
               }
               !rs.next
-            } else false
+            } else
+              false
           } finally {
             rs.close
           }
@@ -1075,14 +1102,16 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           }
         }
 
-        if (saved_?(toSave) && clean_?(toSave)) true
+        if (saved_?(toSave) && clean_?(toSave))
+          true
         else {
           val ret = DB.use(toSave.connectionIdentifier) { conn =>
             _beforeSave(toSave)
             val ret = if (saved_?(toSave)) {
               _beforeUpdate(toSave)
               val ret: Boolean =
-                if (!dirty_?(toSave)) true
+                if (!dirty_?(toSave))
+                  true
                 else {
                   val ret: Boolean = DB.prepareStatement(
                     "UPDATE " + MapperRules.quoteTableName.vend(
@@ -1313,7 +1342,12 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           type C
         })]]
     }
-    val look = (name.toLowerCase, if (clz ne null) Full(clz) else Empty)
+    val look = (
+      name.toLowerCase,
+      if (clz ne null)
+        Full(clz)
+      else
+        Empty)
     Box(mappedAppliers.get(look) orElse {
       val newFunc = createApplier(name, inst)
       mappedAppliers(look) = newFunc
@@ -1717,9 +1751,12 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     if (conn.isDefined) {
       val rc =
         conn.openOrThrowException("We just checked that this is a Full Box")
-      if (rc.metaData.storesMixedCaseIdentifiers) name
-      else name.toLowerCase
-    } else name
+      if (rc.metaData.storesMixedCaseIdentifiers)
+        name
+      else
+        name.toLowerCase
+    } else
+      name
   } // dbTableName.toLowerCase
 
   private[mapper] lazy val internal_dbTableName = fixTableName(
@@ -2005,7 +2042,11 @@ sealed abstract class InThing[OuterType <: Mapper[OuterType]]
 
   def notIn: Boolean
 
-  def inKeyword = if (notIn) " NOT IN " else " IN "
+  def inKeyword =
+    if (notIn)
+      " NOT IN "
+    else
+      " IN "
 
   def distinct: String =
     queryParams.find {
@@ -2313,7 +2354,8 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   private def testProdArity(prod: Product): Boolean = {
     var pos = 0
     while (pos < prod.productArity) {
-      if (!prod.productElement(pos).isInstanceOf[QueryParam[A]]) return false
+      if (!prod.productElement(pos).isInstanceOf[QueryParam[A]])
+        return false
       pos = pos + 1
     }
     true
@@ -2375,8 +2417,10 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   }
 
   def unapply(key: Any): Option[A] = {
-    if (S.inStatefulScope_?) unapplyMemo(key, this.find(key))
-    else this.find(key)
+    if (S.inStatefulScope_?)
+      unapplyMemo(key, this.find(key))
+    else
+      this.find(key)
   }
 
   def find(key: Any): Box[A] =
@@ -2428,7 +2472,8 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   private def selectDbForKey(key: Type): ConnectionIdentifier =
     if (dbSelectDBConnectionForFind.isDefinedAt(key))
       dbSelectDBConnectionForFind(key)
-    else dbDefaultConnectionIdentifier
+    else
+      dbDefaultConnectionIdentifier
 
   def dbSelectDBConnectionForFind: PartialFunction[Type, ConnectionIdentifier] =
     Map.empty
@@ -2461,8 +2506,10 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
               field.targetSQLType(field._dbColumnNameLC)))
         DB.exec(st) { rs =>
           val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
+          if (rs.next)
+            Full(createInstance(dbId, rs, mi))
+          else
+            Empty
         }
       }
     }
@@ -2483,8 +2530,10 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
         setStatementFields(st, bl, 1, conn)
         DB.exec(st) { rs =>
           val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
+          if (rs.next)
+            Full(createInstance(dbId, rs, mi))
+          else
+            Empty
         }
 
       }

@@ -74,7 +74,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       val property: IProperty =
         ScalaI18nUtil.getI18nProperty(project, expression)
       val set = new java.util.HashSet[AnyRef]
-      if (property != null) set.add(property)
+      if (property != null)
+        set.add(property)
       val msg: String = ScalaI18nUtil.formatI18nProperty(expression, property)
       val parent: PsiElement = expression.getParent
       parent match {

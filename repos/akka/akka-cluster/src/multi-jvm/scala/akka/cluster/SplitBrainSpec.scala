@@ -95,14 +95,16 @@ abstract class SplitBrainSpec(multiNodeConfig: SplitBrainMultiNodeConfig)
       enterBarrier("after-split")
 
       runOn(side1: _*) {
-        for (role ← side2) markNodeAsUnavailable(role)
+        for (role ← side2)
+          markNodeAsUnavailable(role)
         // auto-down
         awaitMembersUp(side1.size, side2.toSet map address)
         assertLeader(side1: _*)
       }
 
       runOn(side2: _*) {
-        for (role ← side1) markNodeAsUnavailable(role)
+        for (role ← side1)
+          markNodeAsUnavailable(role)
         // auto-down
         awaitMembersUp(side2.size, side1.toSet map address)
         assertLeader(side2: _*)

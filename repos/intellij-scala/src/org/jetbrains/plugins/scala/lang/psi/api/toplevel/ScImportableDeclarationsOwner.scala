@@ -29,6 +29,7 @@ trait ScImportableDeclarationsOwner extends ScalaPsiElement {
         place,
         lastParent,
         getType(TypingContext.empty))
-    } else true
+    } else
+      true
 
 }

@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object EqualizerBand {
   implicit def sfxEqualizerBand2jfx(eb: EqualizerBand): jfxsm.EqualizerBand =
-    if (eb != null) eb.delegate else null
+    if (eb != null)
+      eb.delegate
+    else
+      null
 
   /**
     * Maximum possible gain value.

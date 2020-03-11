@@ -67,7 +67,8 @@ object ResourceServer {
 
   def calcLastModified(in: URL): Long = {
     val str = in.toString
-    if (!Props.devMode && lastModCache.containsKey(str)) lastModCache.get(str)
+    if (!Props.devMode && lastModCache.containsKey(str))
+      lastModCache.get(str)
     else {
       val ret: Long =
         (for {
@@ -110,7 +111,8 @@ object ResourceServer {
         stream,
         () => stream.close,
         uc.getContentLength,
-        (if (lastModified == 0L) Nil
+        (if (lastModified == 0L)
+           Nil
          else
            List("Last-Modified" -> toInternetDate(lastModified))) :::
           List(

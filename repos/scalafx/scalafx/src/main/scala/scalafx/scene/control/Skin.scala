@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object Skin {
   implicit def sfxSkin2jfx[C <: jfxsc.Skinnable](s: Skin[C]): jfxsc.Skin[C] =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 }
 
 /**

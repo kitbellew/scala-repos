@@ -34,7 +34,10 @@ trait JavacOutputParsing extends Logger {
           Header(
             new File(path),
             row.toLong,
-            if (modifier == null) kind else Kind.WARNING))
+            if (modifier == null)
+              kind
+            else
+              Kind.WARNING))
         lines :+= message
       case PointerPattern(prefix) if header.isDefined =>
         val text = (lines :+ line).mkString("\n")

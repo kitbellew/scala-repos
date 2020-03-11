@@ -92,9 +92,10 @@ object CumulativeSum {
         .flatMap {
           case (k, maybeAcc) =>
             for (acc <- maybeAcc;
-                 previousSum <- acc._1) yield {
-              (k, acc._3) -> (None, previousSum)
-            }
+                 previousSum <- acc._1)
+              yield {
+                (k, acc._3) -> (None, previousSum)
+              }
         }
 
       val summands = pipe
@@ -118,9 +119,10 @@ object CumulativeSum {
         .flatMap {
           case ((k, s), acc) =>
             for (uv <- acc;
-                 u <- uv._1) yield {
-              (k, (u, uv._2))
-            }
+                 u <- uv._1)
+              yield {
+                (k, (u, uv._2))
+              }
         }
     }
   }

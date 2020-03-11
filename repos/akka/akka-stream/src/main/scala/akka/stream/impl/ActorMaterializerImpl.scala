@@ -46,7 +46,8 @@ private[akka] case class ActorMaterializerImpl(
   }
 
   override def shutdown(): Unit =
-    if (haveShutDown.compareAndSet(false, true)) supervisor ! PoisonPill
+    if (haveShutDown.compareAndSet(false, true))
+      supervisor ! PoisonPill
 
   override def isShutdown: Boolean = haveShutDown.get()
 
@@ -93,13 +94,16 @@ private[akka] case class ActorMaterializerImpl(
       _runnableGraph: Graph[ClosedShape, Mat],
       subflowFuser: GraphInterpreterShell ⇒ ActorRef): Mat = {
     val runnableGraph =
-      if (settings.autoFusing) Fusing.aggressive(_runnableGraph)
-      else _runnableGraph
+      if (settings.autoFusing)
+        Fusing.aggressive(_runnableGraph)
+      else
+        _runnableGraph
 
     if (haveShutDown.get())
       throw new IllegalStateException(
         "Attempted to call materialize() after the ActorMaterializer has been shut down.")
-    if (StreamLayout.Debug) StreamLayout.validate(runnableGraph.module)
+    if (StreamLayout.Debug)
+      StreamLayout.validate(runnableGraph.module)
 
     val session =
       new MaterializerSession(runnableGraph.module, initialAttributes) {
@@ -115,7 +119,8 @@ private[akka] case class ActorMaterializerImpl(
             atomic: AtomicModule,
             effectiveAttributes: Attributes,
             matVal: ju.Map[Module, Any]): Unit = {
-          if (MaterializerSession.Debug) println(s"materializing $atomic")
+          if (MaterializerSession.Debug)
+            println(s"materializing $atomic")
 
           def newMaterializationContext() =
             new MaterializationContext(
@@ -267,7 +272,8 @@ private[akka] case class ActorMaterializerImpl(
     val dispatcher =
       if (props.deploy.dispatcher == Deploy.NoDispatcherGiven)
         effectiveSettings(context.effectiveAttributes).dispatcher
-      else props.dispatcher
+      else
+        props.dispatcher
     actorOf(props, context.stageName, dispatcher)
   }
 

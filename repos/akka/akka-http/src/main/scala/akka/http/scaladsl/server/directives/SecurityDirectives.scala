@@ -111,7 +111,8 @@ trait SecurityDirectives {
         credentials ⇒
           if (authenticator isDefinedAt credentials)
             authenticator(credentials).fast.map(Some(_))
-          else FastFuture.successful(None))
+          else
+            FastFuture.successful(None))
     }
 
   /**
@@ -168,7 +169,8 @@ trait SecurityDirectives {
         credentials ⇒
           if (authenticator isDefinedAt credentials)
             authenticator(credentials).fast.map(Some(_))
-          else FastFuture.successful(None))
+          else
+            FastFuture.successful(None))
     }
 
   /**
@@ -187,7 +189,10 @@ trait SecurityDirectives {
           case Right(user) ⇒ provide(user)
           case Left(challenge) ⇒
             val cause =
-              if (cred.isEmpty) CredentialsMissing else CredentialsRejected
+              if (cred.isEmpty)
+                CredentialsMissing
+              else
+                CredentialsRejected
             reject(AuthenticationFailedRejection(cause, challenge)): Directive1[
               T]
         }

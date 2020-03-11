@@ -33,10 +33,12 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
               case TypeDef(_, _, _, rhs) => TypeDef(tree.symbol, rhs)
               case _                     => tree
             }
-          } else tree)
+          } else
+            tree)
       case unit: CompilationUnit =>
         print("// Scala source: " + unit.source + "\n")
-        if (unit.body == null) print("<null>")
+        if (unit.body == null)
+          print("<null>")
         else {
           print(unit.body);
           println()
@@ -93,7 +95,11 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
       printLogicalOp(t1, t2, "&&")
 
     def printLogicalOp(t1: (Tree, Boolean), t2: (Tree, Boolean), op: String) = {
-      def maybenot(tvalue: Boolean) = if (tvalue) "" else "!"
+      def maybenot(tvalue: Boolean) =
+        if (tvalue)
+          ""
+        else
+          "!"
 
       print("%s(" format maybenot(t1._2))
       printTree(t1._1)
@@ -226,8 +232,10 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
     new CompactTreePrinter(writer)
 
   override def newTreePrinter(writer: PrintWriter): TreePrinter =
-    if (settings.Ycompacttrees) newCompactTreePrinter(writer)
-    else newStandardTreePrinter(writer)
+    if (settings.Ycompacttrees)
+      newCompactTreePrinter(writer)
+    else
+      newStandardTreePrinter(writer)
   override def newTreePrinter(stream: OutputStream): TreePrinter =
     newTreePrinter(new PrintWriter(stream))
   override def newTreePrinter(): TreePrinter =

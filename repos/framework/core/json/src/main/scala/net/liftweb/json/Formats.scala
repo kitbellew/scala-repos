@@ -212,9 +212,12 @@ trait TypeHints {
 
 private[json] object ClassDelta {
   def delta(class1: Class[_], class2: Class[_]): Int = {
-    if (class1 == class2) 0
-    else if (class1.getInterfaces.contains(class2)) 0
-    else if (class2.getInterfaces.contains(class1)) 0
+    if (class1 == class2)
+      0
+    else if (class1.getInterfaces.contains(class2))
+      0
+    else if (class2.getInterfaces.contains(class1))
+      0
     else if (class1.isAssignableFrom(class2)) {
       1 + delta(class1, class2.getSuperclass)
     } else if (class2.isAssignableFrom(class1)) {
@@ -309,8 +312,10 @@ class CustomSerializer[A: Manifest](
 
   def deserialize(implicit format: Formats) = {
     case (TypeInfo(Class, _), json) =>
-      if (ser(format)._1.isDefinedAt(json)) ser(format)._1(json)
-      else throw new MappingException("Can't convert " + json + " to " + Class)
+      if (ser(format)._1.isDefinedAt(json))
+        ser(format)._1(json)
+      else
+        throw new MappingException("Can't convert " + json + " to " + Class)
   }
 
   def serialize(implicit format: Formats) = ser(format)._2

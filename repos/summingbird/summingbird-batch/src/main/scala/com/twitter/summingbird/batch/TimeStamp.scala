@@ -71,7 +71,10 @@ object Timestamp {
   implicit val timestampSuccessible: Successible[Timestamp] =
     new Successible[Timestamp] {
       def next(old: Timestamp) =
-        if (old.milliSinceEpoch != Long.MaxValue) Some(old.next) else None
+        if (old.milliSinceEpoch != Long.MaxValue)
+          Some(old.next)
+        else
+          None
       def ordering: Ordering[Timestamp] = Timestamp.orderingOnTimestamp
       def partialOrdering = Timestamp.orderingOnTimestamp
     }
@@ -79,7 +82,10 @@ object Timestamp {
   implicit val timestampPredecessible: Predecessible[Timestamp] =
     new Predecessible[Timestamp] {
       def prev(old: Timestamp) =
-        if (old.milliSinceEpoch != Long.MinValue) Some(old.prev) else None
+        if (old.milliSinceEpoch != Long.MinValue)
+          Some(old.prev)
+        else
+          None
       def ordering: Ordering[Timestamp] = Timestamp.orderingOnTimestamp
       def partialOrdering = Timestamp.orderingOnTimestamp
     }
@@ -90,7 +96,8 @@ object Timestamp {
   val rightSemigroup = new Semigroup[Timestamp] {
     def plus(a: Timestamp, b: Timestamp) = b
     override def sumOption(ti: TraversableOnce[Timestamp]) =
-      if (ti.isEmpty) None
+      if (ti.isEmpty)
+        None
       else {
         val iter = ti.toIterator
         var last: Timestamp = iter.next

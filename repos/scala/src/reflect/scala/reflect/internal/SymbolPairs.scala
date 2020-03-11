@@ -63,9 +63,12 @@ abstract class SymbolPairs {
 
   case class SymbolPair(base: Symbol, low: Symbol, high: Symbol) {
     def pos =
-      if (low.owner == base) low.pos
-      else if (high.owner == base) high.pos
-      else base.pos
+      if (low.owner == base)
+        low.pos
+      else if (high.owner == base)
+        high.pos
+      else
+        base.pos
     def self: Type = base.thisType
     def rootType: Type = base.thisType
 
@@ -87,8 +90,10 @@ abstract class SymbolPairs {
     private def memberDefString(sym: Symbol, where: Boolean) = {
       val def_s =
         (
-          if (sym.isConstructor) s"$sym: ${self memberType sym}"
-          else sym defStringSeenAs (self memberType sym)
+          if (sym.isConstructor)
+            s"$sym: ${self memberType sym}"
+          else
+            sym defStringSeenAs (self memberType sym)
         )
       def_s + whereString(sym)
     }
@@ -97,7 +102,10 @@ abstract class SymbolPairs {
       *  under consideration, or ' in trait Foo' if defined elsewhere.
       */
     private def whereString(sym: Symbol) =
-      if (sym.owner == base) " at line " + sym.pos.line else sym.locationString
+      if (sym.owner == base)
+        " at line " + sym.pos.line
+      else
+        sym.locationString
 
     def lowString = memberDefString(low, where = true)
     def highString = memberDefString(high, where = true)
@@ -239,7 +247,8 @@ abstract class SymbolPairs {
       val nmask = 1 << (n & 31)
       var i = 0
       while (i < nshifted) {
-        if ((bs1(i) & bs2(i)) != 0) return true
+        if ((bs1(i) & bs2(i)) != 0)
+          return true
         i += 1
       }
       (bs1(nshifted) & bs2(nshifted) & (nmask | nmask - 1)) != 0

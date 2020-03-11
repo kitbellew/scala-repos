@@ -66,7 +66,8 @@ trait ClassHelpers { self: ControlHelpers =>
             Class
               .forName(fullName)
               .asSubclass(targetType)
-              .asInstanceOf[Class[C]])) yield klass).headOption
+              .asInstanceOf[Class[C]]))
+      yield klass).headOption
 
   /**
     * General method to in find a class according to its type, its name, a list of possible
@@ -158,7 +159,8 @@ trait ClassHelpers { self: ControlHelpers =>
   def findType[C <: AnyRef](where: List[(String, List[String])])(
       implicit m: Manifest[C]): Box[Class[C]] =
     (for ((name, packages) <- where;
-          klass <- findType[C](name, packages)) yield klass).headOption
+          klass <- findType[C](name, packages))
+      yield klass).headOption
 
   /**
     * Find a class given a list of possible names and corresponding packages, turning underscored
@@ -188,8 +190,10 @@ trait ClassHelpers { self: ControlHelpers =>
     * @return true if clz is assignable from any of the matching classes
     */
   def containsClass[C](clz: Class[C], toMatch: List[Class[_]]): Boolean =
-    if (toMatch eq null) false
-    else toMatch.exists(_.isAssignableFrom(clz))
+    if (toMatch eq null)
+      false
+    else
+      toMatch.exists(_.isAssignableFrom(clz))
 
   /**
     * Check that the method 'name' is callable for class 'clz'
@@ -222,8 +226,10 @@ trait ClassHelpers { self: ControlHelpers =>
     } catch {
       case c: InvocationTargetException => {
         def findRoot(e: Throwable) {
-          if (e.getCause == null || e.getCause == e) throw e
-          else findRoot(e.getCause)
+          if (e.getCause == null || e.getCause == e)
+            throw e
+          else
+            findRoot(e.getCause)
         }
         findRoot(c)
       }
@@ -379,7 +385,10 @@ trait ClassHelpers { self: ControlHelpers =>
           case Failure(_, Full(c: IllegalAccessException), _)   => false
           case Failure(_, Full(c: IllegalArgumentException), _) => false
           case Failure(_, Full(c), _) =>
-            if (c.getCause != null) throw c.getCause else throw c
+            if (c.getCause != null)
+              throw c.getCause
+            else
+              throw c
           case _ => false
         }) match {
       case Some(result @ Full(_)) => result

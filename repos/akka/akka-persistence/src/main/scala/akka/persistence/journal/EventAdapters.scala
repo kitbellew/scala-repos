@@ -191,7 +191,8 @@ private[akka] object EventAdapters {
       config.getConfig(path).root.unwrapped.asScala.toMap map {
         case (k, v) ⇒ k -> v.toString
       }
-    } else Map.empty
+    } else
+      Map.empty
   }
 
   private final def configToListMap(
@@ -204,7 +205,8 @@ private[akka] object EventAdapters {
           k -> v.asScala.map(_.toString).toList
         case (k, v) ⇒ k -> List(v.toString)
       }
-    } else Map.empty
+    } else
+      Map.empty
   }
 
 }

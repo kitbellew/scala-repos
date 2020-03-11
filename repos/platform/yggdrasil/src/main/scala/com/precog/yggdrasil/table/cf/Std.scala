@@ -73,8 +73,10 @@ object std {
       new Map2Column(c1, c2) with BoolColumn {
         def apply(row: Int) = {
           val res = NumericComparisons.compare(c1(row), c2(row))
-          if (res == 0) true
-          else false
+          if (res == 0)
+            true
+          else
+            false
         }
       }
     case (c1: EmptyObjectColumn, c2: EmptyObjectColumn) =>

@@ -49,10 +49,12 @@ object SpinnersDemo extends JFXApp {
     Spinner.StyleClassSplitArrowsHorizontal
   )
 
-  val intSpinners = for (s <- styles) yield new Spinner[Integer](1, 99, 5) {
-    styleClass += s
-    prefWidth = 100
-  }
+  val intSpinners =
+    for (s <- styles)
+      yield new Spinner[Integer](1, 99, 5) {
+        styleClass += s
+        prefWidth = 100
+      }
 
   val stringSpinners =
     for (s <- styles)
@@ -62,10 +64,11 @@ object SpinnersDemo extends JFXApp {
       }
 
   val doubleSpinners =
-    for (s <- styles) yield new Spinner[Double](0.0, 1.0, 0.5, 0.01) {
-      styleClass += s
-      prefWidth = 100
-    }
+    for (s <- styles)
+      yield new Spinner[Double](0.0, 1.0, 0.5, 0.01) {
+        styleClass += s
+        prefWidth = 100
+      }
 
   stage = new PrimaryStage {
     title = "Spinners Demo"

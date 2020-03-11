@@ -22,7 +22,8 @@ class RenameElementQuickfix(myRef: PsiElement, name: String)
     extends AbstractFixOnPsiElement(name, myRef) {
   def doApplyFix(project: Project) {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
     val action: AnAction = new RenameElementAction
     val event: AnActionEvent = actionEventForElement(project, action)
     invokeLater {

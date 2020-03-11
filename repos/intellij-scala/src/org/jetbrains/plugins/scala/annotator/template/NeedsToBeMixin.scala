@@ -30,7 +30,8 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
       element: ScTemplateDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (element.isInstanceOf[ScTrait]) return
+    if (element.isInstanceOf[ScTrait])
+      return
     val signaturesIterator = TypeDefinitionMembers
       .getSignatures(element)
       .allFirstSeq()

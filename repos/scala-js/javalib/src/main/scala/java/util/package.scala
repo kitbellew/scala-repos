@@ -6,8 +6,10 @@ package object util {
       extends AnyVal {
     @inline
     def ===(that: Any): Boolean =
-      if (self.asInstanceOf[AnyRef] eq null) that.asInstanceOf[AnyRef] eq null
-      else self.equals(that)
+      if (self.asInstanceOf[AnyRef] eq null)
+        that.asInstanceOf[AnyRef] eq null
+      else
+        self.equals(that)
   }
 
   private[util] final case class Box[+K](inner: K) {
@@ -21,8 +23,10 @@ package object util {
     }
 
     override def hashCode(): Int =
-      if (inner == null) 0
-      else inner.hashCode
+      if (inner == null)
+        0
+      else
+        inner.hashCode
   }
 
   private[util] def defaultOrdering[E]: Ordering[E] = {

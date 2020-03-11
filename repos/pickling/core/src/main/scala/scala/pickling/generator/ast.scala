@@ -141,8 +141,10 @@ private[pickling] case class SubclassUnpicklerDelegation(
     val cases = (
       parentBehavior.toList.map(b => s"case thisClass =>\n  $b") ++
         subClasses.map(c => s" case $c => lookup implicit unpickler $c") ++
-        (if (lookupRuntime) List("case _ => lookup runtime")
-         else List("case _ => error"))
+        (if (lookupRuntime)
+           List("case _ => lookup runtime")
+         else
+           List("case _ => error"))
     )
     s"clazz match {${cases.mkString("\n", "\n", "\n")}}"
   }
@@ -212,8 +214,10 @@ private[pickling] case class SubclassDispatch(
     val cases: Seq[String] =
       (subClasses.map(c => s"case $c => implicitly pickle") ++
         parentBehavior.toList.map(b => s"case thisClass =>\n$b") ++
-        (if (lookupRuntime) List("case _ => lookup runtime")
-         else List("case _ => error")))
+        (if (lookupRuntime)
+           List("case _ => lookup runtime")
+         else
+           List("case _ => error")))
     s"class match {${cases.mkString("\n", "\n", "\n")}"
   }
 }

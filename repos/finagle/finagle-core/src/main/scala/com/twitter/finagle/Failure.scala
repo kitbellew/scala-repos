@@ -47,7 +47,8 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] for flag definitions.
     */
   def flagged(addFlags: Long): Failure =
-    if ((flags & addFlags) == addFlags) this
+    if ((flags & addFlags) == addFlags)
+      this
     else
       copy(flags = flags | addFlags)
 
@@ -57,7 +58,8 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] forflag definitions.
     */
   def unflagged(delFlags: Long): Failure =
-    if ((flags & delFlags) == 0) this
+    if ((flags & delFlags) == 0)
+      this
     else
       copy(flags = flags & ~delFlags)
 
@@ -67,7 +69,8 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] forflag definitions.
     */
   def masked(mask: Long): Failure =
-    if ((flags & mask) == flags) this
+    if ((flags & mask) == flags)
+      this
     else
       copy(flags = flags & mask)
 
@@ -105,7 +108,10 @@ final class Failure private[finagle] (
     "Failure(%s, flags=0x%02x)\n\twith %s".format(
       why,
       flags,
-      if (sources.isEmpty) "NoSources" else sources.mkString("\n\twith "))
+      if (sources.isEmpty)
+        "NoSources"
+      else
+        sources.mkString("\n\twith "))
 
   override def getStackTrace(): Array[StackTraceElement] = stacktrace
   override def printStackTrace(p: java.io.PrintWriter) {
@@ -237,10 +243,14 @@ object Failure {
     exc match {
       case f: Failure =>
         var flags: Set[String] = Set.empty
-        if (f.isFlagged(Interrupted)) flags += "interrupted"
-        if (f.isFlagged(Restartable)) flags += "restartable"
-        if (f.isFlagged(Wrapped)) flags += "wrapped"
-        if (f.isFlagged(Naming)) flags += "naming"
+        if (f.isFlagged(Interrupted))
+          flags += "interrupted"
+        if (f.isFlagged(Restartable))
+          flags += "restartable"
+        if (f.isFlagged(Wrapped))
+          flags += "wrapped"
+        if (f.isFlagged(Naming))
+          flags += "naming"
         flags
       case _ => Set.empty
     }
@@ -299,7 +309,8 @@ object Failure {
 
   @tailrec
   private def show(f: Failure): Throwable = {
-    if (!f.isFlagged(Failure.Wrapped)) f.masked(ShowMask)
+    if (!f.isFlagged(Failure.Wrapped))
+      f.masked(ShowMask)
     else
       f.cause match {
         case Some(inner: Failure)   => show(inner)

@@ -168,7 +168,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         .to(Sink.fromSubscriber(out))
         .run()
 
-      for (i ← 0 to 4) probes(i).subscribe(s(i))
+      for (i ← 0 to 4)
+        probes(i).subscribe(s(i))
       val sub = out.expectSubscription()
       sub.request(10)
 
@@ -179,14 +180,18 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         s.sendComplete()
       }
 
-      val gotten = for (_ ← 0 to 4) yield out.expectNext()
+      val gotten =
+        for (_ ← 0 to 4)
+          yield out.expectNext()
       gotten.toSet should ===(Set(0, 1, 2, 3, 4))
       out.expectComplete()
     }
 
     "combine from many inputs with simplified API" in {
       val probes = Seq.fill(3)(TestPublisher.manualProbe[Int]())
-      val source = for (i ← 0 to 2) yield Source.fromPublisher(probes(i))
+      val source =
+        for (i ← 0 to 2)
+          yield Source.fromPublisher(probes(i))
       val out = TestSubscriber.manualProbe[Int]
 
       Source
@@ -204,7 +209,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         s.sendComplete()
       }
 
-      val gotten = for (_ ← 0 to 2) yield out.expectNext()
+      val gotten =
+        for (_ ← 0 to 2)
+          yield out.expectNext()
       gotten.toSet should ===(Set(0, 1, 2))
       out.expectComplete()
     }
@@ -230,7 +237,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         s.sendComplete()
       }
 
-      val gotten = for (_ ← 0 to 1) yield out.expectNext()
+      val gotten =
+        for (_ ← 0 to 1)
+          yield out.expectNext()
       gotten.toSet should ===(Set(0, 1))
       out.expectComplete()
     }

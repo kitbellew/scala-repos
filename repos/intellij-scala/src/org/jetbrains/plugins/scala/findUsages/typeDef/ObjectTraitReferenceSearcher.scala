@@ -49,7 +49,8 @@ class ObjectTraitReferenceSearcher
                  if ref.getRangeInElement.contains(offsetInElement)) {
               inReadAction {
                 if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
-                  if (!consumer.process(ref)) return false
+                  if (!consumer.process(ref))
+                    return false
                 }
               }
             }

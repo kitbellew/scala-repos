@@ -50,8 +50,16 @@ object Bound {
       rhs: Bound[A],
       emptyIsMin: Boolean): Bound[A] =
     (lhs, rhs) match {
-      case (EmptyBound(), _)                    => if (emptyIsMin) lhs else rhs
-      case (_, EmptyBound())                    => if (emptyIsMin) rhs else lhs
+      case (EmptyBound(), _) =>
+        if (emptyIsMin)
+          lhs
+        else
+          rhs
+      case (_, EmptyBound()) =>
+        if (emptyIsMin)
+          rhs
+        else
+          lhs
       case (Unbound(), _) | (_, Unbound())      => Unbound()
       case (Closed(lv), Closed(rv)) if lv <= rv => lhs
       case (Closed(_), Closed(_))               => rhs
@@ -68,8 +76,16 @@ object Bound {
       rhs: Bound[A],
       emptyIsMax: Boolean): Bound[A] =
     (lhs, rhs) match {
-      case (EmptyBound(), _)                    => if (emptyIsMax) lhs else rhs
-      case (_, EmptyBound())                    => if (emptyIsMax) rhs else lhs
+      case (EmptyBound(), _) =>
+        if (emptyIsMax)
+          lhs
+        else
+          rhs
+      case (_, EmptyBound()) =>
+        if (emptyIsMax)
+          rhs
+        else
+          lhs
       case (Unbound(), _)                       => rhs
       case (_, Unbound())                       => lhs
       case (Closed(lv), Closed(rv)) if lv >= rv => lhs
@@ -87,8 +103,16 @@ object Bound {
       rhs: Bound[A],
       emptyIsMin: Boolean): Bound[A] =
     (lhs, rhs) match {
-      case (EmptyBound(), _)                    => if (emptyIsMin) lhs else rhs
-      case (_, EmptyBound())                    => if (emptyIsMin) rhs else lhs
+      case (EmptyBound(), _) =>
+        if (emptyIsMin)
+          lhs
+        else
+          rhs
+      case (_, EmptyBound()) =>
+        if (emptyIsMin)
+          rhs
+        else
+          lhs
       case (Unbound(), _)                       => rhs
       case (_, Unbound())                       => lhs
       case (Closed(lv), Closed(rv)) if lv <= rv => lhs
@@ -106,8 +130,16 @@ object Bound {
       rhs: Bound[A],
       emptyIsMax: Boolean): Bound[A] =
     (lhs, rhs) match {
-      case (EmptyBound(), _)                    => if (emptyIsMax) lhs else rhs
-      case (_, EmptyBound())                    => if (emptyIsMax) rhs else lhs
+      case (EmptyBound(), _) =>
+        if (emptyIsMax)
+          lhs
+        else
+          rhs
+      case (_, EmptyBound()) =>
+        if (emptyIsMax)
+          rhs
+        else
+          lhs
       case (Unbound(), _) | (_, Unbound())      => Unbound()
       case (Closed(lv), Closed(rv)) if lv >= rv => lhs
       case (Closed(_), Closed(_))               => rhs
@@ -129,33 +161,51 @@ sealed trait ValueBound[A] extends Bound[A] { lhs =>
   def isClosed: Boolean
 
   override def unary_-()(implicit ev: AdditiveGroup[A]): ValueBound[A] =
-    if (isClosed) Closed(-a) else Open(-a)
+    if (isClosed)
+      Closed(-a)
+    else
+      Open(-a)
 
   override def reciprocal()(
       implicit ev: MultiplicativeGroup[A]): ValueBound[A] =
-    if (isClosed) Closed(a.reciprocal) else Open(a.reciprocal)
+    if (isClosed)
+      Closed(a.reciprocal)
+    else
+      Open(a.reciprocal)
 
   def +~(rhs: ValueBound[A])(
       implicit ev: AdditiveSemigroup[A]): ValueBound[A] = {
     val m = lhs.a + rhs.a
-    if (lhs.isClosed && rhs.isClosed) Closed(m) else Open(m)
+    if (lhs.isClosed && rhs.isClosed)
+      Closed(m)
+    else
+      Open(m)
   }
 
   def -~(rhs: ValueBound[A])(implicit ev: AdditiveGroup[A]): ValueBound[A] = {
     val m = lhs.a - rhs.a
-    if (lhs.isClosed && rhs.isClosed) Closed(m) else Open(m)
+    if (lhs.isClosed && rhs.isClosed)
+      Closed(m)
+    else
+      Open(m)
   }
 
   def *~(rhs: ValueBound[A])(
       implicit ev: MultiplicativeSemigroup[A]): ValueBound[A] = {
     val m = lhs.a * rhs.a
-    if (lhs.isClosed && rhs.isClosed) Closed(m) else Open(m)
+    if (lhs.isClosed && rhs.isClosed)
+      Closed(m)
+    else
+      Open(m)
   }
 
   def /~(rhs: ValueBound[A])(
       implicit ev: MultiplicativeGroup[A]): ValueBound[A] = {
     val m = lhs.a / rhs.a
-    if (lhs.isClosed && rhs.isClosed) Closed(m) else Open(m)
+    if (lhs.isClosed && rhs.isClosed)
+      Closed(m)
+    else
+      Open(m)
   }
 }
 

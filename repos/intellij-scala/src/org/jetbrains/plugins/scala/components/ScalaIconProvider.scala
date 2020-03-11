@@ -17,17 +17,22 @@ class ScalaIconProvider extends IconProvider {
     element match {
       case null =>
       case file: ScalaFile =>
-        if (file.isWorksheetFile) return Icons.WORKSHEET_LOGO
-        if (file.isScriptFile()) return Icons.SCRIPT_FILE_LOGO
-        if (file.getVirtualFile == null) return Icons.SCRIPT_FILE_LOGO
+        if (file.isWorksheetFile)
+          return Icons.WORKSHEET_LOGO
+        if (file.isScriptFile())
+          return Icons.SCRIPT_FILE_LOGO
+        if (file.getVirtualFile == null)
+          return Icons.SCRIPT_FILE_LOGO
         val name = file.getVirtualFile.getNameWithoutExtension
         val defs = file.typeDefinitions
         val clazzIterator = defs.iterator
         while (clazzIterator.hasNext) {
           val clazz = clazzIterator.next()
-          if (name.equals(clazz.name)) return clazz.getIcon(flags)
+          if (name.equals(clazz.name))
+            return clazz.getIcon(flags)
         }
-        if (defs.nonEmpty) return defs.head.getIcon(flags)
+        if (defs.nonEmpty)
+          return defs.head.getIcon(flags)
       case _ =>
     }
     null

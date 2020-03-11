@@ -34,7 +34,8 @@ private[challenge] final class Joiner(onStart: String => Unit) {
                   clock = c.clock.map(_.chessClock))
                 if (Forsyth.>>(game) == Forsyth.initial)
                   makeChess(chess.variant.Standard) -> none
-                else game -> baseState
+                else
+                  game -> baseState
             }
           val realVariant = chessGame.board.variant
           def makePlayer(color: chess.Color, userOption: Option[User]) =

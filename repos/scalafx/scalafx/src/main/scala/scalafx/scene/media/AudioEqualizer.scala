@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object AudioEqualizer {
   implicit def sfxAudioEqualizer2jfx(ae: AudioEqualizer): jfxsm.AudioEqualizer =
-    if (ae != null) ae.delegate else null
+    if (ae != null)
+      ae.delegate
+    else
+      null
 
   /**
     * Maximum number of bands an AudioEqualizer may contain.

@@ -93,7 +93,8 @@ abstract class ContextCleanerSuiteBase(
       case 1 => newShuffleRDD()
       case 2 => newPairRDD.join(newPairRDD())
     }
-    if (Random.nextBoolean()) rdd.persist()
+    if (Random.nextBoolean())
+      rdd.persist()
     rdd.count()
     rdd
   }

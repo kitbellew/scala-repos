@@ -43,151 +43,153 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
   }
 
   // COORD-339
-  if (!sys.props.contains("SKIP_FLAKY")) test("Session expiration 2") {
-    implicit val timer = new MockTimer
-    val connected: (WatchState => Boolean) = {
-      case WatchState.SessionState(SessionState.SyncConnected) => true
-      case _                                                   => false
-    }
-    val notConnected: (WatchState => Boolean) = w => !connected(w)
-    val session1 = ZkSession.retrying(
-      retryStream,
-      () =>
-        ZkSession(
-          retryStream,
-          inst.zookeeperConnectString,
-          statsReceiver = NullStatsReceiver))
-
-    @volatile var states = Seq.empty[SessionState]
-    val state = session1 flatMap { session1 =>
-      session1.state
-    }
-    state.changes.register(Witness({ ws =>
-      ws match {
-        case WatchState.SessionState(s) => states = s +: states
-        case _                          =>
+  if (!sys.props.contains("SKIP_FLAKY"))
+    test("Session expiration 2") {
+      implicit val timer = new MockTimer
+      val connected: (WatchState => Boolean) = {
+        case WatchState.SessionState(SessionState.SyncConnected) => true
+        case _                                                   => false
       }
-    }))
+      val notConnected: (WatchState => Boolean) = w => !connected(w)
+      val session1 = ZkSession.retrying(
+        retryStream,
+        () =>
+          ZkSession(
+            retryStream,
+            inst.zookeeperConnectString,
+            statsReceiver = NullStatsReceiver))
 
-    Await.result(state.changes.filter(connected).toFuture())
-    val cond = state.changes.filter(notConnected).toFuture()
+      @volatile var states = Seq.empty[SessionState]
+      val state = session1 flatMap { session1 =>
+        session1.state
+      }
+      state.changes.register(Witness({ ws =>
+        ws match {
+          case WatchState.SessionState(s) => states = s +: states
+          case _                          =>
+        }
+      }))
 
-    val session2 = {
-      val z = Var.sample(session1)
-      val p = new Array[Byte](z.sessionPasswd.length)
-      z.sessionPasswd.write(p, 0)
+      Await.result(state.changes.filter(connected).toFuture())
+      val cond = state.changes.filter(notConnected).toFuture()
 
-      ClientBuilder()
-        .hosts(inst.zookeeperConnectString)
-        .sessionTimeout(zkTimeout)
-        .sessionId(z.sessionId)
-        .password(Buf.ByteArray.Owned(p))
-        .reader()
+      val session2 = {
+        val z = Var.sample(session1)
+        val p = new Array[Byte](z.sessionPasswd.length)
+        z.sessionPasswd.write(p, 0)
+
+        ClientBuilder()
+          .hosts(inst.zookeeperConnectString)
+          .sessionTimeout(zkTimeout)
+          .sessionId(z.sessionId)
+          .password(Buf.ByteArray.Owned(p))
+          .reader()
+      }
+      Await.result(session2.state.changes.filter(connected).toFuture())
+      session2.value.close()
+
+      Await.result(cond)
+      Await.result(state.changes.filter(connected).toFuture())
+
+      assert(
+        states == Seq(
+          SessionState.SyncConnected,
+          SessionState.Expired,
+          SessionState.Disconnected,
+          SessionState.SyncConnected))
     }
-    Await.result(session2.state.changes.filter(connected).toFuture())
-    session2.value.close()
-
-    Await.result(cond)
-    Await.result(state.changes.filter(connected).toFuture())
-
-    assert(
-      states == Seq(
-        SessionState.SyncConnected,
-        SessionState.Expired,
-        SessionState.Disconnected,
-        SessionState.SyncConnected))
-  }
 
   // COORD-339
-  if (!sys.props.contains("SKIP_FLAKY")) test("ZkSession.retrying") {
-    implicit val timer = new MockTimer
-    val watch = Stopwatch.start()
-    val varZkSession = ZkSession.retrying(
-      retryStream,
-      () =>
-        ZkSession(
-          retryStream,
-          inst.zookeeperConnectString,
-          statsReceiver = NullStatsReceiver))
-    val varZkState = varZkSession flatMap {
-      _.state
-    }
-
-    @volatile var zkStates = Seq[(SessionState, Duration)]()
-    varZkState.changes.register(Witness({ ws =>
-      ws match {
-        case WatchState.SessionState(state) =>
-          zkStates = (state, watch()) +: zkStates
-        case _ =>
+  if (!sys.props.contains("SKIP_FLAKY"))
+    test("ZkSession.retrying") {
+      implicit val timer = new MockTimer
+      val watch = Stopwatch.start()
+      val varZkSession = ZkSession.retrying(
+        retryStream,
+        () =>
+          ZkSession(
+            retryStream,
+            inst.zookeeperConnectString,
+            statsReceiver = NullStatsReceiver))
+      val varZkState = varZkSession flatMap {
+        _.state
       }
-    }))
 
-    @volatile var sessions = Seq[ZkSession]()
-    varZkSession.changes.register(Witness({ s =>
-      sessions = s +: sessions
-    }))
+      @volatile var zkStates = Seq[(SessionState, Duration)]()
+      varZkState.changes.register(Witness({ ws =>
+        ws match {
+          case WatchState.SessionState(state) =>
+            zkStates = (state, watch()) +: zkStates
+          case _ =>
+        }
+      }))
 
-    // Wait for the initial connect.
-    eventually {
-      assert(
-        Var.sample(varZkState) ==
-          WatchState.SessionState(SessionState.SyncConnected))
-      assert(sessions.size == 1)
-    }
+      @volatile var sessions = Seq[ZkSession]()
+      varZkSession.changes.register(Witness({ s =>
+        sessions = s +: sessions
+      }))
 
-    val session1 = Var.sample(varZkSession)
-
-    // Hijack the session by reusing its id and password.
-    val session2 = {
-      val p = new Array[Byte](session1.sessionPasswd.length)
-      session1.sessionPasswd.write(p, 0)
-
-      ClientBuilder()
-        .hosts(inst.zookeeperConnectString)
-        .sessionTimeout(zkTimeout)
-        .sessionId(session1.sessionId)
-        .password(Buf.ByteArray.Owned(p))
-        .reader()
-    }
-
-    val connected = new Promise[Unit]
-    val closed = new Promise[Unit]
-    session2.state.changes.register(Witness({ ws =>
-      ws match {
-        case WatchState.SessionState(SessionState.SyncConnected) =>
-          connected.setDone()
-        case WatchState.SessionState(SessionState.Disconnected) =>
-          closed.setDone()
-        case _ =>
+      // Wait for the initial connect.
+      eventually {
+        assert(
+          Var.sample(varZkState) ==
+            WatchState.SessionState(SessionState.SyncConnected))
+        assert(sessions.size == 1)
       }
-    }))
 
-    Await.ready(connected)
-    Await.ready(session2.value.close())
+      val session1 = Var.sample(varZkSession)
 
-    // This will expire the session.
-    val session1Expired = session1.state.changes
-      .filter(_ == WatchState.SessionState(SessionState.Expired))
-      .toFuture()
-    val zkConnected = varZkState.changes
-      .filter(_ == WatchState.SessionState(SessionState.SyncConnected))
-      .toFuture()
+      // Hijack the session by reusing its id and password.
+      val session2 = {
+        val p = new Array[Byte](session1.sessionPasswd.length)
+        session1.sessionPasswd.write(p, 0)
 
-    Await.ready(session1.getData("/sadfads"))
-    Await.ready(session1Expired)
-    Await.ready(zkConnected)
+        ClientBuilder()
+          .hosts(inst.zookeeperConnectString)
+          .sessionTimeout(zkTimeout)
+          .sessionId(session1.sessionId)
+          .password(Buf.ByteArray.Owned(p))
+          .reader()
+      }
 
-    eventually {
-      assert(
-        (zkStates map {
-          case (s, _) => s
-        }).reverse ==
-          Seq(
-            SessionState.SyncConnected,
-            SessionState.Disconnected,
-            SessionState.Expired,
-            SessionState.SyncConnected))
+      val connected = new Promise[Unit]
+      val closed = new Promise[Unit]
+      session2.state.changes.register(Witness({ ws =>
+        ws match {
+          case WatchState.SessionState(SessionState.SyncConnected) =>
+            connected.setDone()
+          case WatchState.SessionState(SessionState.Disconnected) =>
+            closed.setDone()
+          case _ =>
+        }
+      }))
+
+      Await.ready(connected)
+      Await.ready(session2.value.close())
+
+      // This will expire the session.
+      val session1Expired = session1.state.changes
+        .filter(_ == WatchState.SessionState(SessionState.Expired))
+        .toFuture()
+      val zkConnected = varZkState.changes
+        .filter(_ == WatchState.SessionState(SessionState.SyncConnected))
+        .toFuture()
+
+      Await.ready(session1.getData("/sadfads"))
+      Await.ready(session1Expired)
+      Await.ready(zkConnected)
+
+      eventually {
+        assert(
+          (zkStates map {
+            case (s, _) => s
+          }).reverse ==
+            Seq(
+              SessionState.SyncConnected,
+              SessionState.Disconnected,
+              SessionState.Expired,
+              SessionState.SyncConnected))
+      }
+      assert(sessions.size == 2)
     }
-    assert(sessions.size == 2)
-  }
 }

@@ -88,8 +88,10 @@ class Jetty6AsyncProvider(req: HTTPRequest)
   def suspendResumeSupport_? : Boolean = hasContinuations_?
 
   def resumeInfo: Option[(Req, LiftResponse)] =
-    if (!hasContinuations_?) None
-    else if (Props.inGAE) None
+    if (!hasContinuations_?)
+      None
+    else if (Props.inGAE)
+      None
     else {
       val cont = getContinuation.invoke(contSupport, servletReq, LiftRules)
       val ret = getObject.invoke(cont)
@@ -111,7 +113,10 @@ class Jetty6AsyncProvider(req: HTTPRequest)
       val b = suspendMeth
         .invoke(cont, new java.lang.Long(timeout))
         .asInstanceOf[Boolean]
-      if (!b) RetryState.TIMED_OUT else RetryState.RESUMED
+      if (!b)
+        RetryState.TIMED_OUT
+      else
+        RetryState.RESUMED
     } catch {
       case e: java.lang.reflect.InvocationTargetException
           if e.getCause.getClass.getName.endsWith("RetryRequest") =>

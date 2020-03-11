@@ -35,7 +35,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object QuadCurveTo {
   implicit def sfxQuadCurveTo2jfx(v: QuadCurveTo): jfxss.QuadCurveTo =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(controlX: Double, controlY: Double, x: Double, y: Double) =
     new QuadCurveTo(new jfxss.QuadCurveTo(controlX, controlY, x, y))

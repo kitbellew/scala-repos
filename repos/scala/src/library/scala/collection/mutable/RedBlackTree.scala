@@ -73,7 +73,10 @@ private[collection] object RedBlackTree {
   // ---- size ----
 
   def size(node: Node[_, _]): Int =
-    if (node eq null) 0 else 1 + size(node.left) + size(node.right)
+    if (node eq null)
+      0
+    else
+      1 + size(node.left) + size(node.right)
   def size(tree: Tree[_, _]): Int = tree.size
   def isEmpty(tree: Tree[_, _]) = tree.root eq null
   def clear(tree: Tree[_, _]): Unit = {
@@ -91,12 +94,16 @@ private[collection] object RedBlackTree {
 
   @tailrec private[this] def getNode[A, B](node: Node[A, B], key: A)(
       implicit ord: Ordering[A]): Node[A, B] =
-    if (node eq null) null
+    if (node eq null)
+      null
     else {
       val cmp = ord.compare(key, node.key)
-      if (cmp < 0) getNode(node.left, key)
-      else if (cmp > 0) getNode(node.right, key)
-      else node
+      if (cmp < 0)
+        getNode(node.left, key)
+      else if (cmp > 0)
+        getNode(node.right, key)
+      else
+        node
     }
 
   def contains[A: Ordering](tree: Tree[A, _], key: A) =
@@ -113,10 +120,16 @@ private[collection] object RedBlackTree {
   }
 
   private def minNode[A, B](node: Node[A, B]): Node[A, B] =
-    if (node eq null) null else minNodeNonNull(node)
+    if (node eq null)
+      null
+    else
+      minNodeNonNull(node)
 
   @tailrec def minNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
-    if (node.left eq null) node else minNodeNonNull(node.left)
+    if (node.left eq null)
+      node
+    else
+      minNodeNonNull(node.left)
 
   def max[A, B](tree: Tree[A, B]): Option[(A, B)] = maxNode(tree.root) match {
     case null => None
@@ -129,10 +142,16 @@ private[collection] object RedBlackTree {
   }
 
   private def maxNode[A, B](node: Node[A, B]): Node[A, B] =
-    if (node eq null) null else maxNodeNonNull(node)
+    if (node eq null)
+      null
+    else
+      maxNodeNonNull(node)
 
   @tailrec def maxNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
-    if (node.right eq null) node else maxNodeNonNull(node.right)
+    if (node.right eq null)
+      node
+    else
+      maxNodeNonNull(node.right)
 
   /**
     * Returns the first (lowest) map entry with a key equal or greater than `key`. Returns `None` if there is no such
@@ -154,7 +173,8 @@ private[collection] object RedBlackTree {
 
   private[this] def minNodeAfter[A, B](node: Node[A, B], key: A)(
       implicit ord: Ordering[A]): Node[A, B] = {
-    if (node eq null) null
+    if (node eq null)
+      null
     else {
       var y: Node[A, B] = null
       var x = node
@@ -162,9 +182,16 @@ private[collection] object RedBlackTree {
       while ((x ne null) && cmp != 0) {
         y = x
         cmp = ord.compare(key, x.key)
-        x = if (cmp < 0) x.left else x.right
+        x =
+          if (cmp < 0)
+            x.left
+          else
+            x.right
       }
-      if (cmp <= 0) y else successor(y)
+      if (cmp <= 0)
+        y
+      else
+        successor(y)
     }
   }
 
@@ -187,7 +214,8 @@ private[collection] object RedBlackTree {
 
   private[this] def maxNodeBefore[A, B](node: Node[A, B], key: A)(
       implicit ord: Ordering[A]): Node[A, B] = {
-    if (node eq null) null
+    if (node eq null)
+      null
     else {
       var y: Node[A, B] = null
       var x = node
@@ -195,9 +223,16 @@ private[collection] object RedBlackTree {
       while ((x ne null) && cmp != 0) {
         y = x
         cmp = ord.compare(key, x.key)
-        x = if (cmp < 0) x.left else x.right
+        x =
+          if (cmp < 0)
+            x.left
+          else
+            x.right
       }
-      if (cmp > 0) y else predecessor(y)
+      if (cmp > 0)
+        y
+      else
+        predecessor(y)
     }
   }
 
@@ -211,16 +246,24 @@ private[collection] object RedBlackTree {
     while ((x ne null) && cmp != 0) {
       y = x
       cmp = ord.compare(key, x.key)
-      x = if (cmp < 0) x.left else x.right
+      x =
+        if (cmp < 0)
+          x.left
+        else
+          x.right
     }
 
-    if (cmp == 0) y.value = value
+    if (cmp == 0)
+      y.value = value
     else {
       val z = Node.leaf(key, value, red = true, y)
 
-      if (y eq null) tree.root = z
-      else if (cmp < 0) y.left = z
-      else y.right = z
+      if (y eq null)
+        tree.root = z
+      else if (cmp < 0)
+        y.left = z
+      else
+        y.right = z
 
       fixAfterInsert(tree, z)
       tree.size += 1
@@ -293,7 +336,8 @@ private[collection] object RedBlackTree {
         yIsRed = y.red
         x = y.right
 
-        if (y.parent eq z) xParent = y
+        if (y.parent eq z)
+          xParent = y
         else {
           xParent = y.parent
           transplant(tree, y, y.right)
@@ -306,7 +350,8 @@ private[collection] object RedBlackTree {
         y.red = z.red
       }
 
-      if (!yIsRed) fixAfterDelete(tree, x, xParent)
+      if (!yIsRed)
+        fixAfterDelete(tree, x, xParent)
       tree.size -= 1
     }
   }
@@ -373,7 +418,8 @@ private[collection] object RedBlackTree {
       }
       xParent = x.parent
     }
-    if (x ne null) x.red = false
+    if (x ne null)
+      x.red = false
   }
 
   // ---- helpers ----
@@ -383,7 +429,8 @@ private[collection] object RedBlackTree {
     * therefore, the last node), this method returns `null`.
     */
   private[this] def successor[A, B](node: Node[A, B]): Node[A, B] = {
-    if (node.right ne null) minNodeNonNull(node.right)
+    if (node.right ne null)
+      minNodeNonNull(node.right)
     else {
       var x = node
       var y = x.parent
@@ -400,7 +447,8 @@ private[collection] object RedBlackTree {
     * therefore, the first node), this method returns `null`.
     */
   private[this] def predecessor[A, B](node: Node[A, B]): Node[A, B] = {
-    if (node.left ne null) maxNodeNonNull(node.left)
+    if (node.left ne null)
+      maxNodeNonNull(node.left)
     else {
       var x = node
       var y = x.parent
@@ -418,12 +466,16 @@ private[collection] object RedBlackTree {
       val y = x.right
       x.right = y.left
 
-      if (y.left ne null) y.left.parent = x
+      if (y.left ne null)
+        y.left.parent = x
       y.parent = x.parent
 
-      if (x.parent eq null) tree.root = y
-      else if (x eq x.parent.left) x.parent.left = y
-      else x.parent.right = y
+      if (x.parent eq null)
+        tree.root = y
+      else if (x eq x.parent.left)
+        x.parent.left = y
+      else
+        x.parent.right = y
 
       y.left = x
       x.parent = y
@@ -435,12 +487,16 @@ private[collection] object RedBlackTree {
       val y = x.left
       x.left = y.right
 
-      if (y.right ne null) y.right.parent = x
+      if (y.right ne null)
+        y.right.parent = x
       y.parent = x.parent
 
-      if (x.parent eq null) tree.root = y
-      else if (x eq x.parent.right) x.parent.right = y
-      else x.parent.left = y
+      if (x.parent eq null)
+        tree.root = y
+      else if (x eq x.parent.right)
+        x.parent.right = y
+      else
+        x.parent.left = y
 
       y.right = x
       x.parent = y
@@ -454,11 +510,15 @@ private[collection] object RedBlackTree {
       tree: Tree[A, B],
       to: Node[A, B],
       from: Node[A, B]): Unit = {
-    if (to.parent eq null) tree.root = from
-    else if (to eq to.parent.left) to.parent.left = from
-    else to.parent.right = from
+    if (to.parent eq null)
+      tree.root = from
+    else if (to eq to.parent.left)
+      to.parent.left = from
+    else
+      to.parent.right = from
 
-    if (from ne null) from.parent = to.parent
+    if (from ne null)
+      from.parent = to.parent
   }
 
   // ---- tree traversal ----
@@ -469,28 +529,34 @@ private[collection] object RedBlackTree {
   private[this] def foreachNode[A, B, U](
       node: Node[A, B],
       f: ((A, B)) => U): Unit =
-    if (node ne null) foreachNodeNonNull(node, f)
+    if (node ne null)
+      foreachNodeNonNull(node, f)
 
   private[this] def foreachNodeNonNull[A, B, U](
       node: Node[A, B],
       f: ((A, B)) => U): Unit = {
-    if (node.left ne null) foreachNodeNonNull(node.left, f)
+    if (node.left ne null)
+      foreachNodeNonNull(node.left, f)
     f((node.key, node.value))
-    if (node.right ne null) foreachNodeNonNull(node.right, f)
+    if (node.right ne null)
+      foreachNodeNonNull(node.right, f)
   }
 
   def foreachKey[A, U](tree: Tree[A, _], f: A => U): Unit =
     foreachNodeKey(tree.root, f)
 
   private[this] def foreachNodeKey[A, U](node: Node[A, _], f: A => U): Unit =
-    if (node ne null) foreachNodeKeyNonNull(node, f)
+    if (node ne null)
+      foreachNodeKeyNonNull(node, f)
 
   private[this] def foreachNodeKeyNonNull[A, U](
       node: Node[A, _],
       f: A => U): Unit = {
-    if (node.left ne null) foreachNodeKeyNonNull(node.left, f)
+    if (node.left ne null)
+      foreachNodeKeyNonNull(node.left, f)
     f(node.key)
-    if (node.right ne null) foreachNodeKeyNonNull(node.right, f)
+    if (node.right ne null)
+      foreachNodeKeyNonNull(node.right, f)
   }
 
   def transform[A, B](tree: Tree[A, B], f: (A, B) => B): Unit =
@@ -499,14 +565,17 @@ private[collection] object RedBlackTree {
   private[this] def transformNode[A, B, U](
       node: Node[A, B],
       f: (A, B) => B): Unit =
-    if (node ne null) transformNodeNonNull(node, f)
+    if (node ne null)
+      transformNodeNonNull(node, f)
 
   private[this] def transformNodeNonNull[A, B, U](
       node: Node[A, B],
       f: (A, B) => B): Unit = {
-    if (node.left ne null) transformNodeNonNull(node.left, f)
+    if (node.left ne null)
+      transformNodeNonNull(node.left, f)
     node.value = f(node.key, node.value)
-    if (node.right ne null) transformNodeNonNull(node.right, f)
+    if (node.right ne null)
+      transformNodeNonNull(node.right, f)
   }
 
   def iterator[A: Ordering, B](
@@ -605,16 +674,21 @@ private[collection] object RedBlackTree {
   private[this] def hasProperParentRefs[A, B](tree: Tree[A, B]): Boolean = {
 
     def hasProperParentRefs(node: Node[A, B]): Boolean = {
-      if (node eq null) true
+      if (node eq null)
+        true
       else {
         if ((node.left ne null) && (node.left.parent ne node) ||
-            (node.right ne null) && (node.right.parent ne node)) false
-        else hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
+            (node.right ne null) && (node.right.parent ne node))
+          false
+        else
+          hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
       }
     }
 
-    if (tree.root eq null) true
-    else (tree.root.parent eq null) && hasProperParentRefs(tree.root)
+    if (tree.root eq null)
+      true
+    else
+      (tree.root.parent eq null) && hasProperParentRefs(tree.root)
   }
 
   /**
@@ -622,12 +696,14 @@ private[collection] object RedBlackTree {
     */
   private[this] def isValidBST[A, B](node: Node[A, B])(
       implicit ord: Ordering[A]): Boolean = {
-    if (node eq null) true
+    if (node eq null)
+      true
     else {
       if ((node.left ne null) && (ord.compare(node.key, node.left.key) <= 0) ||
           (node.right ne null) && (ord.compare(node.key, node.right.key) >= 0))
         false
-      else isValidBST(node.left) && isValidBST(node.right)
+      else
+        isValidBST(node.left) && isValidBST(node.right)
     }
   }
 
@@ -638,20 +714,27 @@ private[collection] object RedBlackTree {
   private[this] def isValidRedBlackTree[A, B](tree: Tree[A, B]): Boolean = {
 
     def noRedAfterRed(node: Node[A, B]): Boolean = {
-      if (node eq null) true
-      else if (node.red && (isRed(node.left) || isRed(node.right))) false
-      else noRedAfterRed(node.left) && noRedAfterRed(node.right)
+      if (node eq null)
+        true
+      else if (node.red && (isRed(node.left) || isRed(node.right)))
+        false
+      else
+        noRedAfterRed(node.left) && noRedAfterRed(node.right)
     }
 
     def blackHeight(node: Node[A, B]): Int = {
-      if (node eq null) 1
+      if (node eq null)
+        1
       else {
         val lh = blackHeight(node.left)
         val rh = blackHeight(node.right)
 
-        if (lh == -1 || lh != rh) -1
-        else if (isRed(node)) lh
-        else lh + 1
+        if (lh == -1 || lh != rh)
+          -1
+        else if (isRed(node))
+          lh
+        else
+          lh + 1
       }
     }
 

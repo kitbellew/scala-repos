@@ -46,9 +46,15 @@ class IndexTime(
   @transient lazy private val lmf = ScalarTagLong
 
   private def l2t(l: Long) =
-    if (lmf.isMissing(l)) scalarTag.missing else new DateTime(l, chrono)
+    if (lmf.isMissing(l))
+      scalarTag.missing
+    else
+      new DateTime(l, chrono)
   private def t2l(t: DateTime) =
-    if (scalarTag.isMissing(t)) lmf.missing else t.getMillis
+    if (scalarTag.isMissing(t))
+      lmf.missing
+    else
+      t.getMillis
   private def il2it(l: Index[Long]) = new IndexTime(l, tzone)
 
   @transient lazy private val _locator = new Locator[DateTime] {
@@ -186,7 +192,11 @@ object IndexTime {
     var i = 0
     while (i < millis.length) {
       val t = times(i)
-      millis(i) = if (st.isMissing(t)) sl.missing else t.getMillis
+      millis(i) =
+        if (st.isMissing(t))
+          sl.missing
+        else
+          t.getMillis
       i += 1
     }
     new IndexTime(Index(millis), tzone)

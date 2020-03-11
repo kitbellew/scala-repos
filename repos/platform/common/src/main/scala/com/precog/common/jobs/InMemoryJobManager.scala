@@ -121,11 +121,12 @@ trait BaseInMemoryJobManager[M[+_]]
     synchronized {
       jobs get jobId map {
         case JobData(_, _, Some(cur)) if cur.id == prev.getOrElse(cur.id) =>
-          for (m <- addMessage(jobId, JobManager.channels.Status, jval)) yield {
-            val Some(s) = Status.fromMessage(m)
-            jobs(jobId) = jobs(jobId).copy(status = Some(s))
-            Right(s)
-          }
+          for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+            yield {
+              val Some(s) = Status.fromMessage(m)
+              jobs(jobId) = jobs(jobId).copy(status = Some(s))
+              Right(s)
+            }
 
         case JobData(_, _, Some(_)) =>
           M.point(Left("Current status did not match expected status."))
@@ -134,11 +135,12 @@ trait BaseInMemoryJobManager[M[+_]]
           M.point(Left("Job has not yet started, yet a status was expected."))
 
         case JobData(_, _, None) =>
-          for (m <- addMessage(jobId, JobManager.channels.Status, jval)) yield {
-            val Some(s) = Status.fromMessage(m)
-            jobs(jobId) = jobs(jobId).copy(status = Some(s))
-            Right(s)
-          }
+          for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+            yield {
+              val Some(s) = Status.fromMessage(m)
+              jobs(jobId) = jobs(jobId).copy(status = Some(s))
+              Right(s)
+            }
       } getOrElse {
         M.point(Left("No job with ID " + jobId))
       }

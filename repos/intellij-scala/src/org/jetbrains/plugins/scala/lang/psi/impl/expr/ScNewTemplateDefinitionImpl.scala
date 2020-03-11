@@ -129,7 +129,8 @@ class ScNewTemplateDefinitionImpl private (
     }.toArray
     val res = new ArrayBuffer[PsiClass]
     res ++= direct
-    for (sup <- direct if !res.contains(sup)) res ++= sup.getSupers
+    for (sup <- direct if !res.contains(sup))
+      res ++= sup.getSupers
     // return strict superclasses
     res.filter(_ != this).toArray
   }

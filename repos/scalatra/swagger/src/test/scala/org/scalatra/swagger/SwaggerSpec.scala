@@ -86,7 +86,11 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     "user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
 
   private def readJson(file: String) = {
-    val f = if (file startsWith "/") file else "/" + file
+    val f =
+      if (file startsWith "/")
+        file
+      else
+        "/" + file
     val rdr =
       Source.fromInputStream(getClass.getResourceAsStream(f)).bufferedReader()
     JsonParser.parse(rdr)
@@ -326,7 +330,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               .setMessage("The count for the responseMessages is different")
           if (r.nonEmpty) {
             countsmatch and (r reduce (_ and _))
-          } else countsmatch
+          } else
+            countsmatch
         case "parameters" =>
           val JArray(af) = act \ fn
           val JArray(ef) = exp \ fn
@@ -348,7 +353,10 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               .extractOrElse("N/A"))
           }
 
-          if (r.nonEmpty) r reduce (_ and _) else 1.must_==(1)
+          if (r.nonEmpty)
+            r reduce (_ and _)
+          else
+            1.must_==(1)
         case _ =>
           val m = act \ fn must_== exp \ fn
           m setMessage (JsonMethods.compact(

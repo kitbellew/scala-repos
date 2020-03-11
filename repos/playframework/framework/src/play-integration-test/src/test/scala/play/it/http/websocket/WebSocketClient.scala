@@ -126,7 +126,8 @@ object WebSocketClient {
             "/",
             normalized.getQuery,
             normalized.getFragment)
-        } else normalized
+        } else
+          normalized
 
       val disconnected = Promise[Unit]()
 

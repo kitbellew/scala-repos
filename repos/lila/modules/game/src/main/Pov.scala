@@ -50,11 +50,17 @@ object Pov {
   def first(game: Game) =
     apply(
       game,
-      if (!game.variant.racingKings) game.firstPlayer else game.whitePlayer)
+      if (!game.variant.racingKings)
+        game.firstPlayer
+      else
+        game.whitePlayer)
   def second(game: Game) =
     apply(
       game,
-      if (!game.variant.racingKings) game.secondPlayer else game.blackPlayer)
+      if (!game.variant.racingKings)
+        game.secondPlayer
+      else
+        game.blackPlayer)
   def white(game: Game) = apply(game, game.whitePlayer)
   def black(game: Game) = apply(game, game.blackPlayer)
   def player(game: Game) = apply(game, game.player)
@@ -83,20 +89,30 @@ object Pov {
   private def isFresher(a: Pov, b: Pov) = {
     val aDate = a.game.updatedAtOrCreatedAt.getSeconds
     val bDate = b.game.updatedAtOrCreatedAt.getSeconds
-    if (aDate == bDate) a.gameId < b.gameId
-    else aDate > bDate
+    if (aDate == bDate)
+      a.gameId < b.gameId
+    else
+      aDate > bDate
   }
 
   def priority(a: Pov, b: Pov) =
-    if (!a.isMyTurn && !b.isMyTurn) isFresher(a, b)
-    else if (!a.isMyTurn && b.isMyTurn) false
-    else if (a.isMyTurn && !b.isMyTurn) true
+    if (!a.isMyTurn && !b.isMyTurn)
+      isFresher(a, b)
+    else if (!a.isMyTurn && b.isMyTurn)
+      false
+    else if (a.isMyTurn && !b.isMyTurn)
+      true
     // first move has priority over games with more than 30s left
-    else if (!a.hasMoved && orInf(b.remainingSeconds) > 30) true
-    else if (!b.hasMoved && orInf(a.remainingSeconds) > 30) false
-    else if (orInf(a.remainingSeconds) < orInf(b.remainingSeconds)) true
-    else if (orInf(b.remainingSeconds) < orInf(a.remainingSeconds)) false
-    else isFresher(a, b)
+    else if (!a.hasMoved && orInf(b.remainingSeconds) > 30)
+      true
+    else if (!b.hasMoved && orInf(a.remainingSeconds) > 30)
+      false
+    else if (orInf(a.remainingSeconds) < orInf(b.remainingSeconds))
+      true
+    else if (orInf(b.remainingSeconds) < orInf(a.remainingSeconds))
+      false
+    else
+      isFresher(a, b)
 }
 
 case class PovRef(gameId: String, color: Color) {

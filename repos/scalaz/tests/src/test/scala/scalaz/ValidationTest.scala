@@ -135,7 +135,10 @@ object ValidationTest extends SpecLite {
 
   "toMaybe" ! forAll { x: Validation[String, Int] =>
     val m = x.toMaybe
-    if (x.isSuccess) m.isJust else m.isEmpty
+    if (x.isSuccess)
+      m.isJust
+    else
+      m.isEmpty
   }
 
   object instances {

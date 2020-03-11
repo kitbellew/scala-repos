@@ -23,13 +23,17 @@ object NeedsToBeAbstract extends AnnotatorPart[ScTemplateDefinition] {
       definition: ScTemplateDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (!typeAware) return
+    if (!typeAware)
+      return
 
-    if (definition.isInstanceOf[ScNewTemplateDefinition]) return
+    if (definition.isInstanceOf[ScNewTemplateDefinition])
+      return
 
-    if (definition.isInstanceOf[ScObject]) return
+    if (definition.isInstanceOf[ScObject])
+      return
 
-    if (isAbstract(definition)) return
+    if (isAbstract(definition))
+      return
 
     val undefined = for {
       member <- getMembersToImplement(definition, withOwn = true)

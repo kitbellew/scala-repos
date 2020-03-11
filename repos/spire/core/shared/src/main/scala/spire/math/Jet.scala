@@ -362,8 +362,10 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
-    if (real < f.zero) new Jet(-real, -infinitesimal)
-    else this
+    if (real < f.zero)
+      new Jet(-real, -infinitesimal)
+    else
+      this
   }
 
   // spire.math. does not define this pow generically, so there it is
@@ -373,8 +375,10 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     if (e === f.zero) {
       f.one
     } else if (b === f.zero) {
-      if (e < f.zero) throw new Exception("raising 0 to a negative power")
-      else f.zero
+      if (e < f.zero)
+        throw new Exception("raising 0 to a negative power")
+      else
+        f.zero
     } else {
       spire.math.exp(e * spire.math.log(b))
     }
@@ -601,8 +605,10 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
 
   // Object stuff
   override def hashCode: Int = {
-    if (isReal) real.##
-    else 13 * real.## + infinitesimal.foldLeft(53)((x, y) => x + y.## * 19)
+    if (isReal)
+      real.##
+    else
+      13 * real.## + infinitesimal.foldLeft(53)((x, y) => x + y.## * 19)
   }
 
   override def equals(that: Any): Boolean = that match {
@@ -669,7 +675,10 @@ private[math] trait JetIsEuclideanRing[@sp(Float, Double) T]
   override def quotmod(a: Jet[T], b: Jet[T]): (Jet[T], Jet[T]) = a /% b
   def gcd(a: Jet[T], b: Jet[T]): Jet[T] = {
     @tailrec def _gcd(a: Jet[T], b: Jet[T]): Jet[T] =
-      if (b.isZero) a else _gcd(b, a - (a / b).round * b)
+      if (b.isZero)
+        a
+      else
+        _gcd(b, a - (a / b).round * b)
     _gcd(a, b)
   }
 }

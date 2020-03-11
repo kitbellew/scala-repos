@@ -64,8 +64,10 @@ trait IterateeFunctions {
     def loop(acc: F[A], n: Int)(s: Input[A]): Iteratee[A, F[A]] =
       s(
         el = e =>
-          if (n <= 0) done[A, Id, F[A]](acc, s)
-          else cont(loop(mon.append(acc, pt.point(e)), n - 1)),
+          if (n <= 0)
+            done[A, Id, F[A]](acc, s)
+          else
+            cont(loop(mon.append(acc, pt.point(e)), n - 1)),
         empty = cont(loop(acc, n)),
         eof = done[A, Id, F[A]](acc, s))
     cont(loop(mon.zero, n))
@@ -80,8 +82,10 @@ trait IterateeFunctions {
     def loop(acc: F[A])(s: Input[A]): Iteratee[A, F[A]] =
       s(
         el = e =>
-          if (p(e)) cont(loop(mon.append(acc, pt.point(e))))
-          else done[A, Id, F[A]](acc, s),
+          if (p(e))
+            cont(loop(mon.append(acc, pt.point(e))))
+          else
+            done[A, Id, F[A]](acc, s),
         empty = cont(loop(acc)),
         eof = done[A, Id, F[A]](acc, eofInput))
     cont(loop(mon.zero))

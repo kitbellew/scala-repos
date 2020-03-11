@@ -43,8 +43,10 @@ object IOUtils extends Logging {
   def isNormalDirectory(f: File) = f.isDirectory && !dotDirs.contains(f.getName)
 
   def walkSubdirs(root: File): IO[Seq[File]] = IO {
-    if (!root.isDirectory) List.empty
-    else root.listFiles.filter(isNormalDirectory)
+    if (!root.isDirectory)
+      List.empty
+    else
+      root.listFiles.filter(isNormalDirectory)
   }
 
   def readFileToString(f: File): IO[String] = IO {
@@ -85,8 +87,10 @@ object IOUtils extends Logging {
   }
 
   def makeDirectory(dir: File): IO[PrecogUnit] = IO {
-    if (dir.isDirectory || dir.mkdirs) PrecogUnit
-    else throw new IOException("Failed to create directory " + dir)
+    if (dir.isDirectory || dir.mkdirs)
+      PrecogUnit
+    else
+      throw new IOException("Failed to create directory " + dir)
   }
 
   def recursiveDelete(dir: File): IO[PrecogUnit] = IO {

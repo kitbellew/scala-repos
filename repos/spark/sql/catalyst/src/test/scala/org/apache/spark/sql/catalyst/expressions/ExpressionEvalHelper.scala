@@ -105,7 +105,11 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
         case e: Exception => fail(s"Exception evaluating $expression", e)
       }
     if (!checkResult(actual, expected)) {
-      val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
+      val input =
+        if (inputRow == EmptyRow)
+          ""
+        else
+          s", input: $inputRow"
       fail(
         s"Incorrect evaluation (codegen off): $expression, " +
           s"actual: $actual, " +
@@ -125,7 +129,11 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
 
     val actual = plan(inputRow).get(0, expression.dataType)
     if (!checkResult(actual, expected)) {
-      val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
+      val input =
+        if (inputRow == EmptyRow)
+          ""
+        else
+          s", input: $inputRow"
       fail(
         s"Incorrect evaluation: $expression, actual: $actual, expected: $expected$input")
     }
@@ -142,7 +150,11 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expression)
 
     val unsafeRow = plan(inputRow)
-    val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
+    val input =
+      if (inputRow == EmptyRow)
+        ""
+      else
+        s", input: $inputRow"
 
     if (expected == null) {
       if (!unsafeRow.isNullAt(0)) {

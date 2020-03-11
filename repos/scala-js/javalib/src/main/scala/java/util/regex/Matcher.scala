@@ -63,7 +63,8 @@ final class Matcher private[regex] (
         canStillFind = false
       }
       lastMatch ne null
-    } else false
+    } else
+      false
 
   def find(start: Int): Boolean = {
     reset()
@@ -180,7 +181,8 @@ final class Matcher private[regex] (
   def group(): String = ensureLastMatch(0).get
 
   def start(group: Int): Int = {
-    if (group == 0) start()
+    if (group == 0)
+      start()
     else {
       val last = ensureLastMatch
       // not provided by JS RegExp, so we make up something that at least
@@ -193,8 +195,10 @@ final class Matcher private[regex] (
 
   def end(group: Int): Int = {
     val s = start(group)
-    if (s == -1) -1
-    else s + this.group(group).length
+    if (s == -1)
+      -1
+    else
+      s + this.group(group).length
   }
 
   def group(group: Int): String = ensureLastMatch(group).orNull
@@ -251,7 +255,8 @@ object Matcher {
     def group(): String = ensureLastMatch(0).get
 
     def start(group: Int): Int = {
-      if (group == 0) start()
+      if (group == 0)
+        start()
       else {
         val last = ensureLastMatch
 
@@ -265,8 +270,10 @@ object Matcher {
 
     def end(group: Int): Int = {
       val s = start(group)
-      if (s == -1) -1
-      else s + this.group(group).length
+      if (s == -1)
+        -1
+      else
+        s + this.group(group).length
     }
 
     def group(group: Int): String = ensureLastMatch(group).orNull

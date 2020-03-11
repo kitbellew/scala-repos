@@ -17,8 +17,10 @@ trait StringHelper { self: NumberHelper =>
 
   def shorten(text: String, length: Int, sep: String = "…") = Html {
     val t = text.replace("\n", " ")
-    if (t.size > (length + sep.size)) escape(t take length) ++ sep
-    else escape(t)
+    if (t.size > (length + sep.size))
+      escape(t take length) ++ sep
+    else
+      escape(t)
   }
 
   def shortenWithBr(text: String, length: Int) = Html {
@@ -26,7 +28,13 @@ trait StringHelper { self: NumberHelper =>
   }
 
   def pluralize(s: String, n: Int) =
-    "%d %s%s".format(n, s, if (n > 1) "s" else "")
+    "%d %s%s".format(
+      n,
+      s,
+      if (n > 1)
+        "s"
+      else
+        "")
 
   def autoLink(text: String) = Html {
     (nl2br _ compose addLinks _ compose escape _)(text)
@@ -62,7 +70,11 @@ trait StringHelper { self: NumberHelper =>
       text,
       m => {
         val url = delocalize(quoteReplacement(m group 1))
-        val target = if (url contains netDomain) "" else " target='blank'"
+        val target =
+          if (url contains netDomain)
+            ""
+          else
+            " target='blank'"
         s"""<a$target rel="nofollow" href="${prependHttp(url)}">$url</a>"""
       }
     )
@@ -72,11 +84,18 @@ trait StringHelper { self: NumberHelper =>
 
   private val delocalize = new lila.common.String.Delocalizer(netDomain)
 
-  def showNumber(n: Int): String = if (n > 0) s"+$n" else n.toString
+  def showNumber(n: Int): String =
+    if (n > 0)
+      s"+$n"
+    else
+      n.toString
 
   implicit def lilaRichString(str: String) = new {
     def active(other: String, one: String = "active") =
-      if (str == other) one else ""
+      if (str == other)
+        one
+      else
+        ""
   }
 
   def when(cond: Boolean, str: String) = cond ?? str

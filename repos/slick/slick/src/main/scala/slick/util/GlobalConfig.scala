@@ -42,8 +42,10 @@ object GlobalConfig {
 
   /** Get a `Config` object for a Slick profile */
   def profileConfig(path: String): Config = {
-    if (config.hasPath(path)) config.getConfig(path)
-    else ConfigFactory.empty()
+    if (config.hasPath(path))
+      config.getConfig(path)
+    else
+      ConfigFactory.empty()
   }
 }
 
@@ -52,27 +54,44 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
   import scala.collection.JavaConverters._
 
   def getBooleanOr(path: String, default: => Boolean = false) =
-    if (c.hasPath(path)) c.getBoolean(path) else default
+    if (c.hasPath(path))
+      c.getBoolean(path)
+    else
+      default
   def getIntOr(path: String, default: => Int = 0) =
-    if (c.hasPath(path)) c.getInt(path) else default
+    if (c.hasPath(path))
+      c.getInt(path)
+    else
+      default
   def getStringOr(path: String, default: => String = null) =
-    if (c.hasPath(path)) c.getString(path) else default
+    if (c.hasPath(path))
+      c.getString(path)
+    else
+      default
   def getConfigOr(path: String, default: => Config = ConfigFactory.empty()) =
-    if (c.hasPath(path)) c.getConfig(path) else default
+    if (c.hasPath(path))
+      c.getConfig(path)
+    else
+      default
 
   def getMillisecondsOr(path: String, default: => Long = 0L) =
-    if (c.hasPath(path)) c.getDuration(path, TimeUnit.MILLISECONDS) else default
+    if (c.hasPath(path))
+      c.getDuration(path, TimeUnit.MILLISECONDS)
+    else
+      default
   def getDurationOr(path: String, default: => Duration = Duration.Zero) =
     if (c.hasPath(path))
       Duration(
         c.getDuration(path, TimeUnit.MILLISECONDS),
         TimeUnit.MILLISECONDS)
-    else default
+    else
+      default
 
   def getPropertiesOr(path: String, default: => Properties = null): Properties =
     if (c.hasPath(path))
       new ConfigExtensionMethods(c.getConfig(path)).toProperties
-    else default
+    else
+      default
 
   def toProperties: Properties = {
     def toProps(m: mutable.Map[String, ConfigValue]): Properties = {
@@ -82,9 +101,12 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
           val v =
             if (cv.valueType() == ConfigValueType.OBJECT)
               toProps(cv.asInstanceOf[ConfigObject].asScala)
-            else if (cv.unwrapped eq null) null
-            else cv.unwrapped.toString
-          if (v ne null) props.put(k, v)
+            else if (cv.unwrapped eq null)
+              null
+            else
+              cv.unwrapped.toString
+          if (v ne null)
+            props.put(k, v)
       }
       props
     }
@@ -92,9 +114,15 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
   }
 
   def getBooleanOpt(path: String): Option[Boolean] =
-    if (c.hasPath(path)) Some(c.getBoolean(path)) else None
+    if (c.hasPath(path))
+      Some(c.getBoolean(path))
+    else
+      None
   def getIntOpt(path: String): Option[Int] =
-    if (c.hasPath(path)) Some(c.getInt(path)) else None
+    if (c.hasPath(path))
+      Some(c.getInt(path))
+    else
+      None
   def getStringOpt(path: String) = Option(getStringOr(path))
   def getPropertiesOpt(path: String) = Option(getPropertiesOr(path))
 }

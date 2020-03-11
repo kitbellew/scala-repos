@@ -272,7 +272,10 @@ class Dataset[T] private[sql] (
             case seq: Seq[_]     => seq.mkString("[", ", ", "]")
             case _               => cell.toString
           }
-          if (truncate && str.length > 20) str.substring(0, 17) + "..." else str
+          if (truncate && str.length > 20)
+            str.substring(0, 17) + "..."
+          else
+            str
         }: Seq[String]
       }
 
@@ -1865,8 +1868,10 @@ class Dataset[T] private[sql] (
     )
 
     val outputCols =
-      (if (cols.isEmpty) numericColumns.map(usePrettyExpression(_).sql)
-       else cols).toList
+      (if (cols.isEmpty)
+         numericColumns.map(usePrettyExpression(_).sql)
+       else
+         cols).toList
 
     val ret: Seq[Row] = if (outputCols.nonEmpty) {
       val aggExprs = statistics.flatMap {

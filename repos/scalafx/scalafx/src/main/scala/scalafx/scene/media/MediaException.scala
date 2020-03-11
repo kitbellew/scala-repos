@@ -35,7 +35,10 @@ import scalafx.delegate.{SFXDelegate, SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 object MediaException {
   implicit def sfxMediaException2jfx(me: MediaException): jfxsm.MediaException =
-    if (me != null) me.delegate else null
+    if (me != null)
+      me.delegate
+    else
+      null
 
   object Type
       extends SFXEnumDelegateCompanion[jfxsm.MediaException.Type, Type] {

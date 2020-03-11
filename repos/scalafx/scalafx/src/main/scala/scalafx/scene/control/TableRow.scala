@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object TableRow {
   implicit def sfxTableRow2jfx[T](tr: TableRow[T]): jfxsc.TableRow[T] =
-    if (tr != null) tr.delegate else null
+    if (tr != null)
+      tr.delegate
+    else
+      null
 }
 
 /**

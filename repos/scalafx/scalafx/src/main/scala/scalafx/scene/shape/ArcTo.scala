@@ -35,7 +35,10 @@ import scalafx.delegate.{PositionDelegate, SFXDelegate}
 
 object ArcTo {
   implicit def sfxArcTo2jfx(v: ArcTo): jfxss.ArcTo =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply(
       radiusX: Double,

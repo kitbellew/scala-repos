@@ -290,8 +290,10 @@ object PlayRun {
           if (System
                 .getProperty("os.name")
                 .toLowerCase(java.util.Locale.ENGLISH)
-                .contains("win")) f.getAbsolutePath + ".bat"
-          else f.getAbsolutePath
+                .contains("win"))
+            f.getAbsolutePath + ".bat"
+          else
+            f.getAbsolutePath
         }.get
         val javaProductionOptions = Project
           .runTask(javaOptions in Production, state)

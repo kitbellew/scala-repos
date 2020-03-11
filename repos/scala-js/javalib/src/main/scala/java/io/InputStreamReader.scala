@@ -57,13 +57,18 @@ class InputStreamReader(
   }
 
   def getEncoding(): String =
-    if (closed) null else decoder.charset.name
+    if (closed)
+      null
+    else
+      decoder.charset.name
 
   override def read(): Int = {
     ensureOpen()
 
-    if (outBuf.hasRemaining) outBuf.get()
-    else super.read()
+    if (outBuf.hasRemaining)
+      outBuf.get()
+    else
+      super.read()
   }
 
   def read(cbuf: Array[Char], off: Int, len: Int): Int = {
@@ -123,7 +128,8 @@ class InputStreamReader(
     assert(charsRead != 0) // can be -1, though
     outBuf.flip()
 
-    if (charsRead == -1) -1
+    if (charsRead == -1)
+      -1
     else {
       val available = Math.min(charsRead, len)
       outBuf.get(cbuf, off, available)
@@ -159,8 +165,10 @@ class InputStreamReader(
           InputStreamReader.Overflow
         } else {
           // Done
-          if (out.position == initPos) -1
-          else out.position - initPos
+          if (out.position == initPos)
+            -1
+          else
+            out.position - initPos
         }
       } else {
         // We need to read more from the underlying input stream

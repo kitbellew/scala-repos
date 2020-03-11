@@ -33,7 +33,8 @@ class ResolveArtifactsActor(
   override def preStart(): Unit = {
     import context.dispatcher
     downloads.map(_.get.map(DownloadFinished) pipeTo self)
-    if (url2Path.isEmpty) promise.success(true) // handle empty list
+    if (url2Path.isEmpty)
+      promise.success(true) // handle empty list
   }
 
   override def postStop(): Unit = {
@@ -47,7 +48,8 @@ class ResolveArtifactsActor(
   override def receive: Receive = {
     case DownloadFinished(download) =>
       downloads = downloads.filter(_ != download)
-      if (downloads.isEmpty) promise.success(true)
+      if (downloads.isEmpty)
+        promise.success(true)
     case Failure(ex) =>
       log.warn("Can not resolve artifact", ex) // do not fail the promise!
   }

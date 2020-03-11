@@ -60,11 +60,13 @@ class AddPrefixFix(ref: ScReferenceElement, clazz: PsiClass)
   def doApplyFix(project: Project) {
     val refElem = getFirstElement
     val cl = getSecondElement
-    if (!refElem.isValid || !cl.isValid) return
+    if (!refElem.isValid || !cl.isValid)
+      return
     val parts = cl.qualifiedName.split('.')
     val packageName = parts.dropRight(1).mkString(".")
     val pckg = JavaPsiFacade.getInstance(cl.getProject).findPackage(packageName)
-    if (parts.length < 2) return
+    if (parts.length < 2)
+      return
     val newRefText = parts.takeRight(2).mkString(".")
     refElem match {
       case stRef: ScStableCodeReferenceElement =>

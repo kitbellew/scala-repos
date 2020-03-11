@@ -116,7 +116,10 @@ class NativeJsonSupportServlet(val withBigDecimal: Boolean)
     with NativeJsonSupport {
 
   protected implicit val jsonFormats: Formats =
-    if (withBigDecimal) DefaultFormats.withBigDecimal else DefaultFormats
+    if (withBigDecimal)
+      DefaultFormats.withBigDecimal
+    else
+      DefaultFormats
 
 }
 
@@ -126,7 +129,10 @@ class JacksonSupportServlet(val withBigDecimal: Boolean)
     with JacksonJsonSupport {
 
   protected implicit val jsonFormats: Formats =
-    if (withBigDecimal) DefaultFormats.withBigDecimal else DefaultFormats
+    if (withBigDecimal)
+      DefaultFormats.withBigDecimal
+    else
+      DefaultFormats
 
 }
 

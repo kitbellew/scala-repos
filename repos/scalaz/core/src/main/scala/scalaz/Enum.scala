@@ -25,13 +25,21 @@ trait Enum[F] extends Order[F] { self =>
     * Moves to the successor, unless at the maximum.
     */
   def succx: Kleisli[Option, F, F] =
-    Kleisli(a => if (max forall (equal(a, _))) None else Some(succ(a)))
+    Kleisli(a =>
+      if (max forall (equal(a, _)))
+        None
+      else
+        Some(succ(a)))
 
   /**
     * Moves to the predecessor, unless at the minimum.
     */
   def predx: Kleisli[Option, F, F] =
-    Kleisli(a => if (min forall (equal(a, _))) None else Some(pred(a)))
+    Kleisli(a =>
+      if (min forall (equal(a, _)))
+        None
+      else
+        Some(pred(a)))
 
   /**
     * Produce a state value that executes the successor (`succ`) on each spin and executing the given function on the current value. This is useful to implement incremental looping. Evaluating the state value requires a beginning to increment from.
@@ -142,7 +150,12 @@ trait Enum[F] extends Order[F] { self =>
       if (equal(a, z))
         EphemeralStream.emptyEphemeralStream
       else
-        fromTo(if (lessThan(a, z)) succ(a) else pred(a), z))
+        fromTo(
+          if (lessThan(a, z))
+            succ(a)
+          else
+            pred(a),
+          z))
 
   def fromToL(a: F, z: F): List[F] = {
     def fromToLT(a: F, z: F): Trampoline[List[F]] =
@@ -150,7 +163,12 @@ trait Enum[F] extends Order[F] { self =>
         return_(a :: Nil)
       else
         suspend(
-          fromToLT(if (lessThan(a, z)) succ(a) else pred(a), z) map (a :: _))
+          fromToLT(
+            if (lessThan(a, z))
+              succ(a)
+            else
+              pred(a),
+            z) map (a :: _))
     fromToLT(a, z).run
   }
 

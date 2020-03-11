@@ -84,7 +84,8 @@ private[repl] trait SparkILoopInit {
   protected def awaitInitialized(): Boolean = {
     if (!initIsComplete)
       withLock {
-        while (!initIsComplete) initLoopCondition.await()
+        while (!initIsComplete)
+          initLoopCondition.await()
       }
     if (initError != null) {
       // scalastyle:off println
@@ -95,7 +96,8 @@ private[repl] trait SparkILoopInit {
         |%s.""".stripMargin.format(initError))
       // scalastyle:on println
       false
-    } else true
+    } else
+      true
   }
   // private def warningsThunks = List(
   //   () => intp.bind("lastWarnings", "" + typeTag[List[(Position, String)]], intp.lastWarnings _),
@@ -104,7 +106,10 @@ private[repl] trait SparkILoopInit {
   protected def postInitThunks =
     List[Option[() => Unit]](
       Some(intp.setContextClassLoader _),
-      if (isReplPower) Some(() => enablePowerMode(true)) else None
+      if (isReplPower)
+        Some(() => enablePowerMode(true))
+      else
+        None
     ).flatten
   // ++ (
   //   warningsThunks

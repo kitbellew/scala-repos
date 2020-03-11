@@ -17,7 +17,10 @@ class ScaloidCodeGenerator(
   def wholeClassDef =
     s"""$richClassDef
        |
-       |${if (!(cls.isAbstract || cls.isFinal)) prefixedClassDef else ""}
+       |${if (!(cls.isAbstract || cls.isFinal))
+         prefixedClassDef
+       else
+         ""}
      """.stripMargin
 
   def richClassDef =
@@ -31,7 +34,10 @@ class ScaloidCodeGenerator(
          cls.tpe,
          erased = true)}]$extendClause {
        |
-       |  ${if (cls.parentType.isEmpty) "def basis: This" else ""}
+       |  ${if (cls.parentType.isEmpty)
+         "def basis: This"
+       else
+         ""}
        |
        |  ${companionTemplate.safeRender(cls.name + "_traitBody")}
        |
@@ -41,7 +47,11 @@ class ScaloidCodeGenerator(
        |}
      """.stripMargin
 
-  def deprecated = if (cls.isDeprecated) deprecatedDecl else ""
+  def deprecated =
+    if (cls.isDeprecated)
+      deprecatedDecl
+    else
+      ""
   def helperTraitName: String = helperTraitName(cls.name)
   def helperTraitName(name: String): String =
     "Trait" + StringUtils.simpleName(name)
@@ -76,8 +86,10 @@ class ScaloidCodeGenerator(
 
   def companionObjectDef = {
     val con =
-      if (!cls.hasBlankConstructor) ""
-      else new ConstructorGenerator(cls.constructors.head).constructor
+      if (!cls.hasBlankConstructor)
+        ""
+      else
+        new ConstructorGenerator(cls.constructors.head).constructor
 
     s"""${deprecated}object $sClassName$customCompanionSuperclass {
        |  $con
@@ -127,7 +139,11 @@ class ScaloidCodeGenerator(
   class ConstructorGenerator(con: ScalaConstructor) {
 
     def constructor = {
-      val dp = if (con.isDeprecated) deprecatedDecl else ""
+      val dp =
+        if (con.isDeprecated)
+          deprecatedDecl
+        else
+          ""
       val appliedType = typeVar(cls.tpe)
       s"""${dp}def apply$constTypeParams($constExplicitArgs)$constImplicitArgs: $sClassName$appliedType = {
          |  val v = new $sClassName$appliedType
@@ -168,7 +184,10 @@ class ScaloidCodeGenerator(
     List(constArgs(args), customArgs).filter(_.nonEmpty) match {
       case Nil => ""
       case argStrings =>
-        s"(${if (isImplicit) "implicit " else ""}${argStrings.mkString(", ")})"
+        s"(${if (isImplicit)
+          "implicit "
+        else
+          ""}${argStrings.mkString(", ")})"
     }
   }
 
@@ -188,8 +207,10 @@ class ScaloidCodeGenerator(
 
   def argTypes(types: List[ScalaType]) = {
     val str = types.map(genType).mkString(", ")
-    if (types.length > 1) s"($str)"
-    else str
+    if (types.length > 1)
+      s"($str)"
+    else
+      str
   }
 
   def namedArgs(types: List[ScalaType]) =
@@ -217,9 +238,12 @@ class ScaloidCodeGenerator(
   // listener
 
   def callbackBody(method: AndroidCallbackMethod, isUnit: Boolean = false) =
-    if (!method.hasBody) ""
-    else if (isUnit) "f"
-    else s"f(${callArgs(method.argTypes)})"
+    if (!method.hasBody)
+      ""
+    else if (isUnit)
+      "f"
+    else
+      s"f(${callArgs(method.argTypes)})"
 
   def callbackMethod(m: AndroidCallbackMethod, isUnit: Boolean = false) = {
     s"def ${m.name}(${namedArgs(m.argTypes)}): ${genType(m.retType)} = " +
@@ -227,10 +251,16 @@ class ScaloidCodeGenerator(
   }
 
   def commonListener(l: AndroidListener, args: String = "") = {
-    val dp = if (l.isDeprecated) deprecatedDecl else ""
+    val dp =
+      if (l.isDeprecated)
+        deprecatedDecl
+      else
+        ""
     dp + "@inline def " + l.name + (
-      if (l.retType.name == "Unit") s"[U](f: $args => U): This = {"
-      else s"(f: $args => ${genType(l.retType)}): This = {"
+      if (l.retType.name == "Unit")
+        s"[U](f: $args => U): This = {"
+      else
+        s"(f: $args => ${genType(l.retType)}): This = {"
     ) + s"\n  basis.${l.setter}(new ${l.callbackClassName} {"
   }
 
@@ -251,8 +281,10 @@ class ScaloidCodeGenerator(
        |}""".stripMargin
 
   def listener(l: AndroidListener) =
-    (if (l.argTypes.nonEmpty) fullListener(l) else "") + "\n\n" + unitListener(
-      l)
+    (if (l.argTypes.nonEmpty)
+       fullListener(l)
+     else
+       "") + "\n\n" + unitListener(l)
 
   def listeners =
     cls.listeners.map(listener).mkString("\n\n")
@@ -260,9 +292,21 @@ class ScaloidCodeGenerator(
   // Intent
 
   def intentMethod(l: AndroidIntentMethod) = {
-    val dp = if (l.isDeprecated) deprecatedDecl else ""
-    val da = if (l.zeroArgs) "" else s"(${namedArgs(l.argTypes)})"
-    val ca = if (l.zeroArgs) "" else s", ${callArgs(l.argTypes)}"
+    val dp =
+      if (l.isDeprecated)
+        deprecatedDecl
+      else
+        ""
+    val da =
+      if (l.zeroArgs)
+        ""
+      else
+        s"(${namedArgs(l.argTypes)})"
+    val ca =
+      if (l.zeroArgs)
+        ""
+      else
+        s", ${callArgs(l.argTypes)}"
     s"$dp@inline def ${l.name}[T: ClassTag]$da(implicit context: Context): " +
       s"${genType(l.retType)} = basis.${l.name}(SIntent[T]$ca)"
   }
@@ -277,18 +321,33 @@ class ScaloidCodeGenerator(
 
   def getter(prop: AndroidProperty) =
     prop.getter
-      .fold(if (prop.nameClashes) "" else noGetter(prop.name)) { getter =>
-        val dp = if (getter.isDeprecated) deprecatedDecl else ""
+      .fold(
+        if (prop.nameClashes)
+          ""
+        else
+          noGetter(prop.name)) { getter =>
+        val dp =
+          if (getter.isDeprecated)
+            deprecatedDecl
+          else
+            ""
         methodScalaDoc(getter) +
-          s"\n$dp@inline${if (getter.isOverride) " override"
-          else ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
+          s"\n$dp@inline${if (getter.isOverride)
+            " override"
+          else
+            ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
       }
 
   def setter(prop: AndroidProperty, method: AndroidMethod) = {
     def _setter(postFix: String, body: String) =
-      if (method.isAbstract && method.paramedTypes.nonEmpty) ""
+      if (method.isAbstract && method.paramedTypes.nonEmpty)
+        ""
       else {
-        val dp = if (method.isDeprecated) deprecatedDecl else ""
+        val dp =
+          if (method.isDeprecated)
+            deprecatedDecl
+          else
+            ""
         methodScalaDoc(method) +
           s"\n$dp@inline def ${safeIdent(prop.name + postFix)}${paramedTypes(
             method.paramedTypes)}(${namedArgs(method.argTypes)}) = $body\n"
@@ -300,7 +359,11 @@ class ScaloidCodeGenerator(
 
   def switch(name: String, setter: Option[AndroidMethod]) =
     setter.fold("") { s =>
-      val dp = if (s.isDeprecated) deprecatedDecl else ""
+      val dp =
+        if (s.isDeprecated)
+          deprecatedDecl
+        else
+          ""
       val spaces = " " * 13
       s"$dp@inline def  enable$name()$spaces= { basis.${s.name}(true ); basis }\n" +
         s"$dp@inline def disable$name()$spaces= { basis.${s.name}(false); basis }\n"
@@ -365,26 +428,36 @@ class ScaloidCodeGenerator(
        |""".stripMargin.trim
 
   def typeVar(tpe: ScalaType, erased: Boolean = false) =
-    if (tpe.bounds.nonEmpty) paramedType(tpe)
+    if (tpe.bounds.nonEmpty)
+      paramedType(tpe)
     else
       tpe.params match {
         case Nil => ""
         case params =>
-          s"[${if (erased) "_" else params.map(genType).mkString(", ")}]"
+          s"[${if (erased)
+            "_"
+          else
+            params.map(genType).mkString(", ")}]"
       }
 
   def paramedType(tpe: ScalaType, define: Boolean = false): String =
     tpe.name + (if (define || !tpe.isVar)
                   " <: " + tpe.bounds.map(genType).mkString(" with ")
-                else "")
+                else
+                  "")
 
   def paramedTypes(pTypes: List[ScalaType], define: Boolean = false) =
-    if (pTypes.isEmpty) ""
-    else pTypes.map(paramedType(_, true)).mkString("[", ", ", "]")
+    if (pTypes.isEmpty)
+      ""
+    else
+      pTypes.map(paramedType(_, true)).mkString("[", ", ", "]")
 
   def genType(tpe: ScalaType): String = genType(tpe, erased = false)
   def genType(tpe: ScalaType, erased: Boolean): String =
-    (if (tpe.bounds.isEmpty) tpe.name else "") + typeVar(tpe, erased)
+    (if (tpe.bounds.isEmpty)
+       tpe.name
+     else
+       "") + typeVar(tpe, erased)
 
 }
 

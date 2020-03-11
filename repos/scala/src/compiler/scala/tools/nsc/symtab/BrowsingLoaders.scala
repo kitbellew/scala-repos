@@ -31,8 +31,10 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       completer: SymbolLoader): Symbol = {
     completer.sourcefile match {
       case Some(src) =>
-        (if (member.isModule) member.moduleClass else member).associatedFile =
-          src
+        (if (member.isModule)
+           member.moduleClass
+         else
+           member).associatedFile = src
       case _ =>
     }
     val decls = owner.info.decls
@@ -70,7 +72,8 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
           packagePrefix += ("." + name)
         case Ident(name) =>
           if (name != nme.EMPTY_PACKAGE_NAME) { // mirrors logic in Namers, see createPackageSymbol
-            if (packagePrefix.length != 0) packagePrefix += "."
+            if (packagePrefix.length != 0)
+              packagePrefix += "."
             packagePrefix += name
           }
         case _ =>

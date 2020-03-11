@@ -49,7 +49,8 @@ class DefaultSSLEngineProvider(
         val algorithm =
           if (keyStoreConfig.hasPath("algorithm"))
             keyStoreConfig.getString("algorithm")
-          else KeyManagerFactory.getDefaultAlgorithm
+          else
+            KeyManagerFactory.getDefaultAlgorithm
         val file = new File(path)
         if (file.isFile) {
           val in = new FileInputStream(file)

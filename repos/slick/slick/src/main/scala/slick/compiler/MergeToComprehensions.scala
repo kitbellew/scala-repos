@@ -123,7 +123,8 @@ class MergeToComprehensions extends Phase {
         val (c1a, replacements1a) =
           if (c1.distinct.isDefined || c1.having.isDefined)
             toSubquery(c1, replacements1)
-          else (c1, replacements1)
+          else
+            (c1, replacements1)
         logger
           .debug("Merging Distinct into Comprehension:", Ellipsis(n, List(0)))
         val o2 = applyReplacements(o1, replacements1a, c1a)
@@ -172,7 +173,8 @@ class MergeToComprehensions extends Phase {
             val (c1a, replacements1a) = toSubquery(c1, replacements1)
             val b2a = applyReplacements(b1, replacements1a, c1a)
             (c1a, replacements1a, b2a)
-          } else (c1, replacements1, b2)
+          } else
+            (c1, replacements1, b2)
         }
         val str2 = str1.replace {
           case Aggregate(_, FwdPath(s :: ElementSymbol(2) :: Nil), v)
@@ -235,7 +237,8 @@ class MergeToComprehensions extends Phase {
         n: Node,
         buildBase: Boolean): (Comprehension, Replacements) = {
       val (n2, mappings) = {
-        if (buildBase) createSourceOrTopLevel(n)
+        if (buildBase)
+          createSourceOrTopLevel(n)
         else
           createSource(n).getOrElse(
             throw new SlickTreeException(
@@ -305,7 +308,11 @@ class MergeToComprehensions extends Phase {
                   mappingsM.get((ts, s)) match {
                     case Some(ElementSymbol(idx) :: ss) =>
                       //logger.debug(s"Found $idx :: $ss")
-                      FwdPath((if (idx == 1) ls else rs) :: ss)
+                      FwdPath(
+                        (if (idx == 1)
+                           ls
+                         else
+                           rs) :: ss)
                     case _ => p
                   }
               },
@@ -385,8 +392,10 @@ class MergeToComprehensions extends Phase {
 
     val tree2 :@ CollectionType(cons2, _) = convert1(tree)
     val cons1 = tree.nodeType.asCollectionType.cons
-    if (cons2 != cons1) CollectionCast(tree2, cons1).infer()
-    else tree2
+    if (cons2 != cons1)
+      CollectionCast(tree2, cons1).infer()
+    else
+      tree2
   }
 
   /** Lift a valid top-level or source Node into a subquery */
@@ -443,8 +452,10 @@ class MergeToComprehensions extends Phase {
     case Filter(s1, f1, p1) if allowFilter =>
       val (c1, replacements1) = rec(f1, true)
       val (c1a, replacements1a) =
-        if (c1.distinct.isDefined) toSubquery(c1, replacements1)
-        else (c1, replacements1)
+        if (c1.distinct.isDefined)
+          toSubquery(c1, replacements1)
+        else
+          (c1, replacements1)
       logger.debug("Merging Filter into Comprehension:", Ellipsis(n, List(0)))
       val p2 = applyReplacements(p1, replacements1a, c1a)
       val c2 =
@@ -466,7 +477,10 @@ class MergeToComprehensions extends Phase {
   def and(p1: Node, p2: Node): Node = {
     val t1 = p1.nodeType.structural
     Library.And.typed(
-      if (t1.isInstanceOf[OptionType]) t1 else p2.nodeType.structural,
+      if (t1.isInstanceOf[OptionType])
+        t1
+      else
+        p2.nodeType.structural,
       p1,
       p2)
   }

@@ -175,8 +175,10 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
     relevantConfigurations.flatMap { configuration =>
       def createRoot(kind: Root.Kind)(directory: sbtStructure.DirectoryData) = {
         val scope =
-          if (configuration.id == "compile") Root.Scope.Compile
-          else Root.Scope.Test
+          if (configuration.id == "compile")
+            Root.Scope.Compile
+          else
+            Root.Scope.Test
         Root(scope, kind, directory.file.canonicalFile)
       }
 
@@ -236,7 +238,10 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
 
     def nameFor(base: Option[File]) = {
       val namedDirectory =
-        if (base.exists(_.getName == "shared")) base.flatMap(_.parent) else base
+        if (base.exists(_.getName == "shared"))
+          base.flatMap(_.parent)
+        else
+          base
       val prefix =
         namedDirectory.map(_.getName + "-sources").getOrElse("shared-sources")
       if (usedNames.contains(prefix)) {

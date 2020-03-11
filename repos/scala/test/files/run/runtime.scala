@@ -10,7 +10,8 @@ object Test0Test {
     var i = 0;
     Console.print("[");
     while (i < xs.length) {
-      if (i > 0) Console.print(",");
+      if (i > 0)
+        Console.print(",");
       Console.print(xs(i));
       i = i + 1;
     }
@@ -174,7 +175,8 @@ object Test3Test {
 
   def check(expected: Boolean, actual1: Boolean, actual2: Boolean): Unit =
     Console.println(
-      if ((actual1 == expected) && (actual2 == !expected)) "Ok"
+      if ((actual1 == expected) && (actual2 == !expected))
+        "Ok"
       else
         "KO: "
           + "expected: " + expected + " - " + (!expected) + ", "
@@ -238,7 +240,11 @@ object Test {
 
     if (errors > 0) {
       Console.println;
-      Console.println(errors + " error" + (if (errors > 1) "s" else ""));
+      Console.println(
+        errors + " error" + (if (errors > 1)
+                               "s"
+                             else
+                               ""));
     }
   }
 }

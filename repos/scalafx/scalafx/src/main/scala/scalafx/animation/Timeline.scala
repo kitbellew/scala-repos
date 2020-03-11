@@ -47,7 +47,10 @@ object Timeline extends AnimationStatics {
     * @return JavaFX $TM extracted from `v`.
     */
   implicit def sfxTimeline2jfx(v: Timeline): jfxa.Timeline =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Creates a new $TM from a sequence of [[scalafx.animation.KeyFrame]]s.

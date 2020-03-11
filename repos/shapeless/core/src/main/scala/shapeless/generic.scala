@@ -316,7 +316,8 @@ trait CaseClassMacros extends ReprTypes {
   def lowerKind(tpe: Type): Type =
     if (tpe.takesTypeArgs)
       appliedType(tpe, List(typeOf[Any])).dealias
-    else tpe
+    else
+      tpe
 
   def isProductAux(tpe: Type): Boolean =
     tpe.typeSymbol.isClass && (isCaseClassLike(
@@ -331,7 +332,8 @@ trait CaseClassMacros extends ReprTypes {
 
   def isCoproduct(tpe: Type): Boolean = {
     val sym = tpe.typeSymbol
-    if (!sym.isClass) false
+    if (!sym.isClass)
+      false
     else {
       val sym = classSym(tpe)
       (sym.isTrait || sym.isAbstract) && sym.isSealed
@@ -341,8 +343,10 @@ trait CaseClassMacros extends ReprTypes {
   def ownerChain(sym: Symbol): List[Symbol] = {
     @tailrec
     def loop(sym: Symbol, acc: List[Symbol]): List[Symbol] =
-      if (sym.owner == NoSymbol) acc
-      else loop(sym.owner, sym :: acc)
+      if (sym.owner == NoSymbol)
+        acc
+      else
+        loop(sym.owner, sym :: acc)
 
     loop(sym, Nil)
   }
@@ -365,7 +369,8 @@ trait CaseClassMacros extends ReprTypes {
 
   def fieldsOf(tpe: Type): List[(TermName, Type)] = {
     val tSym = tpe.typeSymbol
-    if (tSym.isClass && isAnonOrRefinement(tSym)) Nil
+    if (tSym.isClass && isAnonOrRefinement(tSym))
+      Nil
     else
       tpe.decls.toList collect {
         case sym: TermSymbol if isCaseAccessorLike(sym) =>
@@ -394,8 +399,10 @@ trait CaseClassMacros extends ReprTypes {
     def distinct[A](list: List[A])(eq: (A, A) => Boolean): List[A] =
       list
         .foldLeft(List.empty[A]) { (acc, x) =>
-          if (!acc.exists(eq(x, _))) x :: acc
-          else acc
+          if (!acc.exists(eq(x, _)))
+            x :: acc
+          else
+            acc
         }
         .reverse
     distinct(ctorsOfAux(tpe, hk))(_ =:= _)
@@ -421,7 +428,8 @@ trait CaseClassMacros extends ReprTypes {
       val basePre = prefix(tpe)
       val baseSym = classSym(tpe)
       val baseTpe =
-        if (!hk) tpe
+        if (!hk)
+          tpe
         else {
           val tc = tpe.typeConstructor
           val paramSym = tc.typeParams.head
@@ -468,7 +476,10 @@ trait CaseClassMacros extends ReprTypes {
             }
           if (!isAccessible(ctor))
             abort(s"$tpe has an inaccessible subtype $ctor")
-          if (ctor <:< baseTpe) Some(ctor) else None
+          if (ctor <:< baseTpe)
+            Some(ctor)
+          else
+            None
         }
       if (ctors.isEmpty)
         abort(s"Sealed trait $tpe has no case class subtypes")
@@ -515,7 +526,8 @@ trait CaseClassMacros extends ReprTypes {
       val HNilTpe = hnilTpe
       val HConsPre = prefix(hconsTpe)
       val HConsSym = hconsTpe.typeSymbol
-      if (u <:< HNilTpe) acc
+      if (u <:< HNilTpe)
+        acc
       else
         (u baseType HConsSym) match {
           case TypeRef(pre, _, List(hd, tl)) if pre =:= HConsPre =>
@@ -629,8 +641,10 @@ trait CaseClassMacros extends ReprTypes {
     unfoldCompoundTpe(tpe, cnilTpe, cconsTpe)
 
   def reprTpe(tpe: Type): Type = {
-    if (isProduct(tpe)) mkHListTpe(fieldsOf(tpe).map(_._2))
-    else mkCoproductTpe(ctorsOf(tpe))
+    if (isProduct(tpe))
+      mkHListTpe(fieldsOf(tpe).map(_._2))
+    else
+      mkCoproductTpe(ctorsOf(tpe))
   }
 
   def param1(tpe: Type): Type =
@@ -641,14 +655,18 @@ trait CaseClassMacros extends ReprTypes {
     }
 
   def reprTypTree(tpe: Type): Tree = {
-    if (isProduct(tpe)) mkHListTypTree(fieldsOf(tpe).map(_._2))
-    else mkCoproductTypTree(ctorsOf(tpe))
+    if (isProduct(tpe))
+      mkHListTypTree(fieldsOf(tpe).map(_._2))
+    else
+      mkCoproductTypTree(ctorsOf(tpe))
   }
 
   def reprTypTree1(tpe: Type, arg: TypeName): Tree = {
     val param = param1(tpe)
-    if (isProduct1(tpe)) mkHListTypTree1(fieldsOf(tpe).map(_._2), param, arg)
-    else mkCoproductTypTree1(ctorsOf1(tpe), param, arg)
+    if (isProduct1(tpe))
+      mkHListTypTree1(fieldsOf(tpe).map(_._2), param, arg)
+    else
+      mkCoproductTypTree1(ctorsOf1(tpe), param, arg)
   }
 
   def isCaseClassLike(sym: ClassSymbol): Boolean = {
@@ -673,7 +691,8 @@ trait CaseClassMacros extends ReprTypes {
   def isCaseAccessorLike(sym: TermSymbol): Boolean =
     !isNonGeneric(sym) && sym.isPublic && (if (sym.owner.asClass.isCaseClass)
                                              sym.isCaseAccessor
-                                           else sym.isAccessor)
+                                           else
+                                             sym.isAccessor)
 
   def isSealedHierarchyClassSymbol(symbol: ClassSymbol): Boolean = {
     def helper(classSym: ClassSymbol): Boolean = {
@@ -854,7 +873,8 @@ trait CaseClassMacros extends ReprTypes {
 
   def alignFields(tpe: Type, ts: List[Type]): Option[List[(TermName, Type)]] = {
     val fields = fieldsOf(tpe)
-    if (fields.length != ts.length) None
+    if (fields.length != ts.length)
+      None
     else {
       @tailrec
       def loop(
@@ -889,8 +909,10 @@ trait CaseClassMacros extends ReprTypes {
           alignFields(
             tpe,
             applyParamss.head.map(tpe => unByName(tpe.infoIn(companionTpe))))
-        else None
-      } else None
+        else
+          None
+      } else
+        None
     }
   }
 
@@ -911,7 +933,8 @@ trait CaseClassMacros extends ReprTypes {
           case TypeRef(_, _, args @ List(arg)) => Some(args)
           case _                               => None
         }
-      else None
+      else
+        None
     }
   }
 
@@ -928,7 +951,8 @@ trait CaseClassMacros extends ReprTypes {
             alignFields(
               tpe,
               ctorParamss.head.map(param => unByName(param.info)))
-          else None
+          else
+            None
         case _ => None
       }
   }
@@ -988,7 +1012,10 @@ trait CaseClassMacros extends ReprTypes {
         }
         val pattern = pq"${companionRef(tpe)}(..${elems.map {
           case (binder, tpe) =>
-            if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
+            if (isVararg(tpe))
+              pq"$binder @ $repWCard"
+            else
+              pq"$binder"
         }})"
         val reprPattern =
           elems.foldRight(q"_root_.shapeless.HNil": Tree) {
@@ -1075,7 +1102,10 @@ trait CaseClassMacros extends ReprTypes {
           }
           val pattern = pq"${companionRef(tpe)}(..${elems.map {
             case (binder, _, tpe) =>
-              if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
+              if (isVararg(tpe))
+                pq"$binder @ $repWCard"
+              else
+                pq"$binder"
           }})"
           val rhs = elems.map {
             case (binder, _, tpe) => narrow(q"$binder", tpe)

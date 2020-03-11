@@ -32,13 +32,15 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
       parentStub: StubElement[ParentPsi]): ScTypeAliasStub = {
     val isDeclaration = psi.isInstanceOf[ScTypeAliasDeclaration]
     val typeElementText = {
-      if (isDeclaration) ""
+      if (isDeclaration)
+        ""
       else {
         psi.asInstanceOf[ScTypeAliasDefinition].aliasedTypeElement.getText
       }
     }
     val lower = {
-      if (!isDeclaration) ""
+      if (!isDeclaration)
+        ""
       else
         psi
           .asInstanceOf[ScTypeAliasDeclaration]
@@ -47,7 +49,8 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
           .getOrElse("")
     }
     val upper = {
-      if (!isDeclaration) ""
+      if (!isDeclaration)
+        ""
       else
         psi
           .asInstanceOf[ScTypeAliasDeclaration]

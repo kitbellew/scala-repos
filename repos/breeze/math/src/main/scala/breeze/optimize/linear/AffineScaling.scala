@@ -28,15 +28,22 @@ class AffineScaling extends SerializableLogging {
       val D = diag(vk :^ -2.0)
       val hx = (A.t * D * A).asInstanceOf[DenseMatrix[Double]] \ c
       val hv: DenseVector[Double] = A * hx * -1.0
-      if (hv.values.exists(_ >= 0)) throw UnboundedProblem
+      if (hv.values.exists(_ >= 0))
+        throw UnboundedProblem
 
       val constraints =
-        (for (i <- 0 until hv.length if hv(i) < 0) yield (-vk(i) / hv(i)))
-      val alpha = if (constraints.size > 1) constraints.min * gamma else 0.0
+        (for (i <- 0 until hv.length if hv(i) < 0)
+          yield (-vk(i) / hv(i)))
+      val alpha =
+        if (constraints.size > 1)
+          constraints.min * gamma
+        else
+          0.0
       val xn = x + hx * alpha
       val cvn = xn dot c
       logger.info("Current obj: " + cvn)
-      if ((cvn - cv).abs / (1.0 max cvn) < eps) converged = true
+      if ((cvn - cv).abs / (1.0 max cvn) < eps)
+        converged = true
       cv = cvn
       x = xn
     }

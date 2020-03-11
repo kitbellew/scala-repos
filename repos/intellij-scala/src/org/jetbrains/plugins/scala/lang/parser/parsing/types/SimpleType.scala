@@ -67,24 +67,31 @@ object SimpleType {
             builder.getTokenType match {
               case ScalaTokenTypes.tRPARENTHESIS =>
                 builder.advanceLexer() //Ate )
-                if (isTuple) tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
+                if (isTuple)
+                  tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
                 else {
                   builder.error("Identifier expected, but ',' found")
                   tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
                 }
               case _ =>
                 builder error ScalaBundle.message("rparenthesis.expected")
-                if (isTuple) tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
-                else tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
+                if (isTuple)
+                  tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
+                else
+                  tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
             }
           case ScalaTokenTypes.tRPARENTHESIS =>
             builder.advanceLexer() //Ate )
-            if (isTuple) tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
-            else tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
+            if (isTuple)
+              tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
+            else
+              tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
           case _ =>
             builder error ScalaBundle.message("rparenthesis.expected")
-            if (isTuple) tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
-            else tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
+            if (isTuple)
+              tupleMarker.done(ScalaElementTypes.TUPLE_TYPE)
+            else
+              tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
         }
         builder.restoreNewlinesState
       case ScalaTokenTypes.kTHIS | ScalaTokenTypes.tIDENTIFIER |

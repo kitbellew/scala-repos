@@ -46,7 +46,8 @@ private[akka] abstract class FanoutOutputs(
     if (!downstreamCompleted) {
       downstreamCompleted = true
       abortDownstream(e)
-      if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
+      if (exposedPublisher ne null)
+        exposedPublisher.shutdown(Some(e))
     }
   }
 
@@ -62,8 +63,10 @@ private[akka] abstract class FanoutOutputs(
 
   override protected def shutdown(completed: Boolean): Unit = {
     if (exposedPublisher ne null) {
-      if (completed) exposedPublisher.shutdown(None)
-      else exposedPublisher.shutdown(ActorPublisher.SomeNormalShutdownReason)
+      if (completed)
+        exposedPublisher.shutdown(None)
+      else
+        exposedPublisher.shutdown(ActorPublisher.SomeNormalShutdownReason)
     }
     afterShutdown()
   }

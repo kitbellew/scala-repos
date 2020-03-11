@@ -111,12 +111,14 @@ private[stream] object AbstractStage {
 
     private def resetAfterSupervise(): Unit = {
       val mustPull = currentStage.isDetached || isAvailable(shape.out)
-      if (!hasBeenPulled(shape.in) && mustPull) pull(shape.in)
+      if (!hasBeenPulled(shape.in) && mustPull)
+        pull(shape.in)
     }
 
     override protected[stream] def beforePreStart(): Unit = {
       super.beforePreStart()
-      if (currentStage.isDetached) pull(shape.in)
+      if (currentStage.isDetached)
+        pull(shape.in)
     }
 
     final override def push(elem: Out): DownstreamDirective = {
@@ -157,7 +159,8 @@ private[stream] object AbstractStage {
         interpreter.log.error(ex.getMessage)
         throw ex // We still throw for correctness (although a finish() would also work here)
       }
-      if (isAvailable(shape.out)) currentStage.onPull(ctx)
+      if (isAvailable(shape.out))
+        currentStage.onPull(ctx)
       null
     }
 
@@ -535,8 +538,10 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     _current.onPull(ctx)
 
   override def onUpstreamFinish(ctx: Context[Out]): TerminationDirective =
-    if (emitting) ctx.absorbTermination()
-    else ctx.finish()
+    if (emitting)
+      ctx.absorbTermination()
+    else
+      ctx.finish()
 
   /**
     * Scala API: Can be used from [[StageState#onPush]] or [[StageState#onPull]] to push more than one
@@ -564,7 +569,8 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       iter: Iterator[Out],
       ctx: Context[Out],
       nextState: StageState[In, Out]): SyncDirective = {
-    if (emitting) throw new IllegalStateException("already in emitting state")
+    if (emitting)
+      throw new IllegalStateException("already in emitting state")
     if (iter.isEmpty) {
       become(nextState)
       ctx.pull()
@@ -601,7 +607,8 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
   final def emitAndFinish(
       iter: Iterator[Out],
       ctx: Context[Out]): SyncDirective = {
-    if (emitting) throw new IllegalStateException("already in emitting state")
+    if (emitting)
+      throw new IllegalStateException("already in emitting state")
     if (iter.isEmpty)
       ctx.finish()
     else {
@@ -636,8 +643,10 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       iter: Iterator[Out],
       ctx: Context[Out]): TerminationDirective = {
     if (iter.isEmpty) {
-      if (emitting) ctx.absorbTermination()
-      else ctx.finish()
+      if (emitting)
+        ctx.absorbTermination()
+      else
+        ctx.finish()
     } else {
       val nextState = current match {
         case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)

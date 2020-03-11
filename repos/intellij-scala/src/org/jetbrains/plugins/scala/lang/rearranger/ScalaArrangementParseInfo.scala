@@ -75,7 +75,8 @@ class ScalaArrangementParseInfo {
       val cache = new mutable.HashMap[ScFunction, ScalaArrangementDependency]
       for (method <- currentMethodDependencyRoots) {
         val info = buildMethodDependencyInfo(method, cache)
-        if (info.isDefined) dependencyRoots += info.get
+        if (info.isDefined)
+          dependencyRoots += info.get
       }
       rebuildMethodDependencies = false
     }

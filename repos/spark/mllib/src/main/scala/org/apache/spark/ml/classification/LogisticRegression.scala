@@ -75,7 +75,8 @@ private[classification] trait LogisticRegressionParams
     * @group setParam
     */
   def setThreshold(value: Double): this.type = {
-    if (isSet(thresholds)) clear(thresholds)
+    if (isSet(thresholds))
+      clear(thresholds)
     set(threshold, value)
   }
 
@@ -119,7 +120,8 @@ private[classification] trait LogisticRegressionParams
     * @group setParam
     */
   def setThresholds(value: Array[Double]): this.type = {
-    if (isSet(threshold)) clear(threshold)
+    if (isSet(threshold))
+      clear(threshold)
     set(thresholds, value)
   }
 
@@ -296,14 +298,19 @@ class LogisticRegression @Since("1.2.0") (
   protected[spark] def train(
       dataset: DataFrame,
       handlePersistence: Boolean): LogisticRegressionModel = {
-    val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
+    val w =
+      if ($(weightCol).isEmpty)
+        lit(1.0)
+      else
+        col($(weightCol))
     val instances: RDD[Instance] =
       dataset.select(col($(labelCol)), w, col($(featuresCol))).rdd.map {
         case Row(label: Double, weight: Double, features: Vector) =>
           Instance(label, weight, features)
       }
 
-    if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
+    if (handlePersistence)
+      instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val (summarizer, labelSummarizer) = {
       val seqOp = (
@@ -402,8 +409,10 @@ class LogisticRegression @Since("1.2.0") (
                 // perform this reverse standardization by penalizing each component
                 // differently to get effectively the same objective function when
                 // the training dataset is not standardized.
-                if (featuresStd(index) != 0.0) regParamL1 / featuresStd(index)
-                else 0.0
+                if (featuresStd(index) != 0.0)
+                  regParamL1 / featuresStd(index)
+                else
+                  0.0
               }
             }
           }
@@ -415,7 +424,11 @@ class LogisticRegression @Since("1.2.0") (
         }
 
         val initialCoefficientsWithIntercept =
-          Vectors.zeros(if ($(fitIntercept)) numFeatures + 1 else numFeatures)
+          Vectors.zeros(
+            if ($(fitIntercept))
+              numFeatures + 1
+            else
+              numFeatures)
 
         if (optInitialModel.isDefined && optInitialModel.get.coefficients.size != numFeatures) {
           val vec = optInitialModel.get.coefficients
@@ -484,7 +497,10 @@ class LogisticRegression @Since("1.2.0") (
         var i = 0
         while (i < numFeatures) {
           rawCoefficients(i) *= {
-            if (featuresStd(i) != 0.0) 1.0 / featuresStd(i) else 0.0
+            if (featuresStd(i) != 0.0)
+              1.0 / featuresStd(i)
+            else
+              0.0
           }
           i += 1
         }
@@ -503,7 +519,8 @@ class LogisticRegression @Since("1.2.0") (
       }
     }
 
-    if (handlePersistence) instances.unpersist()
+    if (handlePersistence)
+      instances.unpersist()
 
     val model = copyValues(
       new LogisticRegressionModel(uid, coefficients, intercept))
@@ -637,7 +654,10 @@ class LogisticRegressionModel private[spark] (
     */
   override protected def predict(features: Vector): Double = {
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
-    if (score(features) > getThreshold) 1 else 0
+    if (score(features) > getThreshold)
+      1
+    else
+      0
   }
 
   override protected def raw2probabilityInPlace(
@@ -668,7 +688,8 @@ class LogisticRegressionModel private[spark] (
     val newModel = copyValues(
       new LogisticRegressionModel(uid, coefficients, intercept),
       extra)
-    if (trainingSummary.isDefined) newModel.setSummary(trainingSummary.get)
+    if (trainingSummary.isDefined)
+      newModel.setSummary(trainingSummary.get)
     newModel.setParent(parent)
   }
 
@@ -682,12 +703,18 @@ class LogisticRegressionModel private[spark] (
     } else {
       math.log(t / (1.0 - t))
     }
-    if (rawPrediction(1) > rawThreshold) 1 else 0
+    if (rawPrediction(1) > rawThreshold)
+      1
+    else
+      0
   }
 
   override protected def probability2prediction(probability: Vector): Double = {
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
-    if (probability(1) > getThreshold) 1 else 0
+    if (probability(1) > getThreshold)
+      1
+    else
+      0
   }
 
   /**
@@ -794,7 +821,8 @@ private[classification] class MultiClassSummarizer extends Serializable {
   def add(label: Double, weight: Double = 1.0): this.type = {
     require(weight >= 0.0, s"instance weight, $weight has to be >= 0.0")
 
-    if (weight == 0.0) return this
+    if (weight == 0.0)
+      return this
 
     if (label - label.toInt != 0.0 || label < 0) {
       totalInvalidCnt += 1
@@ -1051,7 +1079,10 @@ private class LogisticAggregator(
   }
 
   private val dim =
-    if (fitIntercept) coefficientsArray.length - 1 else coefficientsArray.length
+    if (fitIntercept)
+      coefficientsArray.length - 1
+    else
+      coefficientsArray.length
 
   private val gradientSumArray = Array.ofDim[Double](coefficientsArray.length)
 
@@ -1071,7 +1102,8 @@ private class LogisticAggregator(
             s" Expecting $dim but got ${features.size}.")
         require(weight >= 0.0, s"instance weight, $weight has to be >= 0.0")
 
-        if (weight == 0.0) return this
+        if (weight == 0.0)
+          return this
 
         val localCoefficientsArray = coefficientsArray
         val localGradientSumArray = gradientSumArray
@@ -1088,7 +1120,10 @@ private class LogisticAggregator(
                 }
               }
               sum + {
-                if (fitIntercept) localCoefficientsArray(dim) else 0.0
+                if (fitIntercept)
+                  localCoefficientsArray(dim)
+                else
+                  0.0
               }
             }
 

@@ -77,11 +77,14 @@ trait GenTrees {
   }
 
   def reifyFlags(flags: FlagSet) =
-    if (flags != 0) reifyBuildCall(nme.FlagsRepr, flags)
-    else mirrorSelect(nme.NoFlags)
+    if (flags != 0)
+      reifyBuildCall(nme.FlagsRepr, flags)
+    else
+      mirrorSelect(nme.NoFlags)
 
   def reifyModifiers(m: global.Modifiers) =
-    if (m == NoMods) mirrorSelect(nme.NoMods)
+    if (m == NoMods)
+      mirrorSelect(nme.NoMods)
     else
       mirrorFactoryCall(
         nme.Modifiers,
@@ -92,7 +95,8 @@ trait GenTrees {
   private def spliceTree(tree: Tree): Tree = {
     tree match {
       case TreeSplice(splicee) =>
-        if (reifyDebug) println("splicing " + tree)
+        if (reifyDebug)
+          println("splicing " + tree)
 
         // see `Metalevels` for more info about metalevel breaches
         // and about how we deal with splices that contain them
@@ -107,11 +111,13 @@ trait GenTrees {
           // EmptyTree
           CannotReifyRuntimeSplice(tree)
         } else {
-          if (reifyDebug) println("splicing has succeeded")
+          if (reifyDebug)
+            println("splicing has succeeded")
           splicee match {
             // we intentionally don't care about the prefix (the first underscore in the `RefiedTree` pattern match)
             case ReifiedTree(_, _, inlinedSymtab, rtree, _, _, _) =>
-              if (reifyDebug) println("inlining the splicee")
+              if (reifyDebug)
+                println("inlining the splicee")
               // all free vars local to the enclosing reifee should've already been inlined by `Metalevels`
               for (sym <- inlinedSymtab.syms if sym.isLocalToReifee)
                 abort(
@@ -144,11 +150,14 @@ trait GenTrees {
         if (sym.isLocalToReifee)
           mirrorCall(nme.This, reify(qual))
         else if (sym.isClass && !sym.isModuleClass) {
-          if (reifyDebug) println("This for %s, reified as freeVar".format(sym))
-          if (reifyDebug) println("Free: " + sym)
+          if (reifyDebug)
+            println("This for %s, reified as freeVar".format(sym))
+          if (reifyDebug)
+            println("Free: " + sym)
           mirrorBuildCall(nme.mkIdent, reifyFreeTerm(This(sym)))
         } else {
-          if (reifyDebug) println("This for %s, reified as This".format(sym))
+          if (reifyDebug)
+            println("This for %s, reified as This".format(sym))
           mirrorBuildCall(nme.mkThis, reify(sym))
         }
 
@@ -167,15 +176,20 @@ trait GenTrees {
               nme.Select,
               mirrorBuildCall(nme.mkIdent, reify(sym)),
               reify(nme.elem))
-          } else mirrorBuildCall(nme.mkIdent, reify(sym))
-        } else mirrorCall(nme.Ident, reify(name))
+          } else
+            mirrorBuildCall(nme.mkIdent, reify(sym))
+        } else
+          mirrorCall(nme.Ident, reify(name))
 
       case Select(qual, name) =>
         if (qual.symbol != null && qual.symbol.hasPackageFlag) {
           mirrorBuildCall(nme.mkIdent, reify(sym))
         } else {
           val effectiveName =
-            if (sym != null && sym != NoSymbol) sym.name else name
+            if (sym != null && sym != NoSymbol)
+              sym.name
+            else
+              name
           reifyProduct(Select(qual, effectiveName))
         }
 
@@ -212,7 +226,8 @@ trait GenTrees {
           val spliced = spliceType(tpe)
 
           if (spliced == EmptyTree) {
-            if (reifyDebug) println("splicing failed: reify as is")
+            if (reifyDebug)
+              println("splicing failed: reify as is")
             mirrorBuildCall(nme.mkTypeTree, reify(tpe))
           } else
             spliced match {
@@ -221,20 +236,23 @@ trait GenTrees {
                   println("splicing returned a free type: " + freeType)
                 Ident(freeType)
               case _ =>
-                if (reifyDebug) println("splicing succeeded: " + spliced)
+                if (reifyDebug)
+                  println("splicing succeeded: " + spliced)
                 mirrorBuildCall(nme.mkTypeTree, spliced)
             }
         } else
           tree match {
             case Select(qual, name) if !qual.symbol.hasPackageFlag =>
-              if (reifyDebug) println(s"reifying Select($qual, $name)")
+              if (reifyDebug)
+                println(s"reifying Select($qual, $name)")
               mirrorCall(nme.Select, reify(qual), reify(name))
             case SelectFromTypeTree(qual, name) =>
               if (reifyDebug)
                 println(s"reifying SelectFromTypeTree($qual, $name)")
               mirrorCall(nme.SelectFromTypeTree, reify(qual), reify(name))
             case _ if sym.isLocatable =>
-              if (reifyDebug) println(s"tpe is locatable: reify as Ident($sym)")
+              if (reifyDebug)
+                println(s"tpe is locatable: reify as Ident($sym)")
               mirrorBuildCall(nme.mkIdent, reify(sym))
             case _ =>
               if (reifyDebug)
@@ -259,12 +277,14 @@ trait GenTrees {
   }
 
   private def reifyNestedFreeDef(tree: Tree): Tree = {
-    if (reifyDebug) println("nested free def: %s".format(showRaw(tree)))
+    if (reifyDebug)
+      println("nested free def: %s".format(showRaw(tree)))
     reifyProduct(tree)
   }
 
   private def reifyNestedFreeRef(tree: Tree): Tree = {
-    if (reifyDebug) println("nested free ref: %s".format(showRaw(tree)))
+    if (reifyDebug)
+      println("nested free ref: %s".format(showRaw(tree)))
     reifyProduct(tree)
   }
 }

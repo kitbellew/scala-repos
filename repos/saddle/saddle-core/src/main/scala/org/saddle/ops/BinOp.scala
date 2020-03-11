@@ -70,21 +70,32 @@ object BinOp {
     val sr = implicitly[ST[R]]
     val ss = implicitly[ST[S]]
     def apply(a: Q, b: R) =
-      if (sq.isMissing(a) || sr.isMissing(b)) ss.missing else f(a, b)
+      if (sq.isMissing(a) || sr.isMissing(b))
+        ss.missing
+      else
+        f(a, b)
   }
 
   private final class BinOpImplDL[O <: OpType, @spec(Int, Long) R: ST](
       f: (Double, R) => Double)
       extends BinOp[O, Double, R, Double] {
     val sc = implicitly[ST[R]]
-    def apply(a: Double, b: R) = if (sc.isMissing(b)) Double.NaN else f(a, b)
+    def apply(a: Double, b: R) =
+      if (sc.isMissing(b))
+        Double.NaN
+      else
+        f(a, b)
   }
 
   private final class BinOpImplLD[O <: OpType, @spec(Int, Long) Q: ST](
       f: (Q, Double) => Double)
       extends BinOp[O, Q, Double, Double] {
     val sc = implicitly[ST[Q]]
-    def apply(a: Q, b: Double) = if (sc.isMissing(a)) Double.NaN else f(a, b)
+    def apply(a: Q, b: Double) =
+      if (sc.isMissing(a))
+        Double.NaN
+      else
+        f(a, b)
   }
 
   private final class BinOpImplDD[O <: OpType](f: (Double, Double) => Double)

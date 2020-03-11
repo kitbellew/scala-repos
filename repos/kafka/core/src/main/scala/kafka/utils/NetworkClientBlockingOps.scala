@@ -61,7 +61,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
         true
       else if (client.connectionFailed(node))
         throw new IOException(s"Connection to $node failed")
-      else false
+      else
+        false
     }
   }
 
@@ -109,8 +110,10 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
       predicate: (Seq[ClientResponse], Long) => Boolean)(
       implicit time: JTime): Boolean = {
     pollUntilFound(timeout) { (responses, now) =>
-      if (predicate(responses, now)) Some(true)
-      else None
+      if (predicate(responses, now))
+        Some(true)
+      else
+        None
     }.fold(false)(_ => true)
   }
 
@@ -133,15 +136,20 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     @tailrec
     def recurse(iterationStartTime: Long): Option[T] = {
       val pollTimeout =
-        if (timeout < 0) timeout else timeoutExpiryTime - iterationStartTime
+        if (timeout < 0)
+          timeout
+        else
+          timeoutExpiryTime - iterationStartTime
       val responses = client.poll(pollTimeout, iterationStartTime).asScala
       val result = collect(responses, iterationStartTime)
-      if (result.isDefined) result
+      if (result.isDefined)
+        result
       else {
         val afterPollTime = time.milliseconds()
         if (timeout < 0 || afterPollTime < timeoutExpiryTime)
           recurse(afterPollTime)
-        else None
+        else
+          None
       }
     }
 

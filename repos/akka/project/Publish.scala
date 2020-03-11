@@ -54,7 +54,8 @@ object Publish extends AutoPlugin {
         val nexus = "https://oss.sonatype.org/"
         if (version endsWith "-SNAPSHOT")
           "snapshots" at nexus + "content/repositories/snapshots"
-        else "releases" at nexus + "service/local/staging/deploy/maven2"
+        else
+          "releases" at nexus + "service/local/staging/deploy/maven2"
     }
 
   private def localRepo(repository: File) =

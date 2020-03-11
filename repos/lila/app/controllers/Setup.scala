@@ -105,11 +105,12 @@ object Setup extends LilaController with TheftPrevention {
     }
 
   def hookForm = Open { implicit ctx =>
-    if (HTTPRequest isXhr ctx.req) NoPlaybanOrCurrent {
-      env.forms.hookFilled(timeModeString = get("time")) map {
-        html.setup.hook(_)
+    if (HTTPRequest isXhr ctx.req)
+      NoPlaybanOrCurrent {
+        env.forms.hookFilled(timeModeString = get("time")) map {
+          html.setup.hook(_)
+        }
       }
-    }
     else
       fuccess {
         Redirect(routes.Lobby.home + "#hook")
@@ -226,7 +227,8 @@ object Setup extends LilaController with TheftPrevention {
   private[controllers] def redirectPov(pov: Pov)(implicit ctx: Context) = {
     implicit val req = ctx.req
     val redir = Redirect(routes.Round.watcher(pov.game.id, "white"))
-    if (ctx.isAuth) redir
+    if (ctx.isAuth)
+      redir
     else
       redir withCookies LilaCookie.cookie(
         AnonCookie.name,

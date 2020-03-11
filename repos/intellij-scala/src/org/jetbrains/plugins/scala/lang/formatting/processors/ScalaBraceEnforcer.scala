@@ -163,7 +163,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
 
   private def replaceExprWithBlock(expr: ScExpression) {
     assert(expr.isValid)
-    if (!checkElementContainsRange(expr)) return
+    if (!checkElementContainsRange(expr))
+      return
 
     val parent = expr.getParent
     val oldTextLength: Int = parent.getTextLength

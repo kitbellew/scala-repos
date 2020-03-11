@@ -107,7 +107,10 @@ class DecimalSuite extends SparkFunSuite with PrivateMethodTester {
     val isCompact = d.invokePrivate(decimalVal()).eq(null)
     assert(
       isCompact == expected,
-      s"$d ${if (expected) "was not" else "was"} compact")
+      s"$d ${if (expected)
+        "was not"
+      else
+        "was"} compact")
   }
 
   test("small decimals represented as unscaled long") {

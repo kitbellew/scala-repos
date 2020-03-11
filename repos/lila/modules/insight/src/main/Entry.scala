@@ -152,7 +152,11 @@ object QueenTrade {
   object Yes extends QueenTrade(true, "Queen trade")
   object No extends QueenTrade(false, "No queen trade")
   val all = List(Yes, No)
-  def apply(v: Boolean): QueenTrade = if (v) Yes else No
+  def apply(v: Boolean): QueenTrade =
+    if (v)
+      Yes
+    else
+      No
 }
 
 sealed abstract class RelativeStrength(val id: Int, val name: String)

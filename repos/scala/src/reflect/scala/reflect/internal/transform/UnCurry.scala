@@ -20,7 +20,10 @@ trait UnCurry {
     *  Let us figure out why it is and then change this method.
     */
   private def expandAlias(tp: Type): Type =
-    if (!tp.isHigherKinded) tp.normalize else tp
+    if (!tp.isHigherKinded)
+      tp.normalize
+    else
+      tp
 
   val uncurry: TypeMap = new TypeMap {
     def apply(tp0: Type): Type = {
@@ -40,8 +43,8 @@ trait UnCurry {
               params ::: existentiallyAbstractedParam1s,
               substitutedResult))
         case MethodType(
-            params,
-            ExistentialType(tparams, restpe @ MethodType(_, _))) =>
+              params,
+              ExistentialType(tparams, restpe @ MethodType(_, _))) =>
           abort("unexpected curried method types with intervening existential")
         case MethodType(h :: t, restpe) if h.isImplicit =>
           apply(MethodType(h.cloneSymbol.resetFlag(IMPLICIT) :: t, restpe))
@@ -62,7 +65,12 @@ trait UnCurry {
       case TypeRef(pre, RepeatedParamClass, arg :: Nil) =>
         Some(seqType(arg))
       case TypeRef(pre, JavaRepeatedParamClass, arg :: Nil) =>
-        Some(arrayType(if (isUnboundedGeneric(arg)) ObjectTpe else arg))
+        Some(
+          arrayType(
+            if (isUnboundedGeneric(arg))
+              ObjectTpe
+            else
+              arg))
       case _ =>
         None
     }
@@ -74,7 +82,8 @@ trait UnCurry {
       tp match {
         case ClassInfoType(parents, decls, clazz) =>
           val parents1 = parents mapConserve uncurry
-          if (parents1 eq parents) tp
+          if (parents1 eq parents)
+            tp
           else
             ClassInfoType(parents1, decls, clazz) // @MAT normalize in decls??
         case PolyType(_, _) =>
@@ -91,5 +100,8 @@ trait UnCurry {
     * @MAT: starting with this phase, the info of every symbol will be normalized
     */
   def transformInfo(sym: Symbol, tp: Type): Type =
-    if (sym.isType) uncurryType(tp) else uncurry(tp)
+    if (sym.isType)
+      uncurryType(tp)
+    else
+      uncurry(tp)
 }

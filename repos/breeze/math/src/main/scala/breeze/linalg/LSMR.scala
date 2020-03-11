@@ -93,7 +93,8 @@ object LSMR extends SerializableLogging {
       }
 
       alpha = norm(v)
-      if (alpha > 0) v /= alpha
+      if (alpha > 0)
+        v /= alpha
 
       // Construct rotation Qhat_{k,2k+1}.
 

@@ -83,8 +83,10 @@ object SessionVar {
         read(key, state)(f) match {
           case s @ Some(t) =>
             val newState =
-              if (setIfUnset && get(key, state).isDefined) state
-              else set(key, state, t)
+              if (setIfUnset && get(key, state).isDefined)
+                state
+              else
+                set(key, state, t)
             (newState, s)
           case None => (state, None)
         }

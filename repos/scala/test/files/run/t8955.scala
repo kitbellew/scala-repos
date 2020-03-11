@@ -2,7 +2,8 @@ import scala.collection.parallel.immutable.ParSet
 
 object Test {
   def main(args: Array[String]): Unit = {
-    for (i <- 1 to 2000) test()
+    for (i <- 1 to 2000)
+      test()
   }
 
   def test() {

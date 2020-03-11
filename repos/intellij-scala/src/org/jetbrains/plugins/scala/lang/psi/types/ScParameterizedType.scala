@@ -49,8 +49,10 @@ case class JavaArrayType(arg: ScType) extends ValueType {
       val tps = arrayClass.getTypeParameters
       if (tps.length == 1) {
         Some(ScParameterizedType(ScType.designator(arrayClass), Seq(arg)))
-      } else None
-    } else None
+      } else
+        None
+    } else
+      None
   }
 
   override def removeAbstracts = JavaArrayType(arg.removeAbstracts)
@@ -152,7 +154,8 @@ class ScParameterizedType private (
       val res = substitutorInner
       ScParameterizedType.substitutorCache.put(this, res)
       res
-    } else res
+    } else
+      res
   }
 
   private def substitutorInner: ScSubstitutor = {
@@ -240,7 +243,11 @@ class ScParameterizedType private (
             .recursiveVarianceUpdateModifiable(newData, update, variance),
           typeArgs.zipWithIndex.map {
             case (ta, i) =>
-              val v = if (i < des.length) des(i) else 0
+              val v =
+                if (i < des.length)
+                  des(i)
+                else
+                  0
               ta.recursiveVarianceUpdateModifiable(
                 newData,
                 update,
@@ -257,7 +264,8 @@ class ScParameterizedType private (
     var undefinedSubst = uSubst
     (this, r) match {
       case (ScParameterizedType(ScAbstractType(tpt, lower, upper), args), _) =>
-        if (falseUndef) return (false, uSubst)
+        if (falseUndef)
+          return (false, uSubst)
         val subst = new ScSubstitutor(
           Map(tpt.args.zip(args).map {
             case (tpt: ScTypeParameterType, tp: ScType) =>
@@ -267,13 +275,15 @@ class ScParameterizedType private (
           None)
         var t: (Boolean, ScUndefinedSubstitutor) =
           Conformance.conformsInner(subst.subst(upper), r, Set.empty, uSubst)
-        if (!t._1) return (false, uSubst)
+        if (!t._1)
+          return (false, uSubst)
         t = Conformance.conformsInner(r, subst.subst(lower), Set.empty, t._2)
-        if (!t._1) return (false, uSubst)
+        if (!t._1)
+          return (false, uSubst)
         (true, t._2)
       case (
-          ScParameterizedType(proj @ ScProjectionType(projected, _, _), args),
-          _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
+            ScParameterizedType(proj @ ScProjectionType(projected, _, _), args),
+            _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
@@ -287,8 +297,10 @@ class ScParameterizedType private (
           case _ => (false, uSubst)
         }
       case (
-          ScParameterizedType(ScDesignatorType(a: ScTypeAliasDefinition), args),
-          _) =>
+            ScParameterizedType(
+              ScDesignatorType(a: ScTypeAliasDefinition),
+              args),
+            _) =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
@@ -302,16 +314,18 @@ class ScParameterizedType private (
           case _ => (false, uSubst)
         }
       case (
-          ScParameterizedType(_, _),
-          ScParameterizedType(designator1, typeArgs1)) =>
+            ScParameterizedType(_, _),
+            ScParameterizedType(designator1, typeArgs1)) =>
         var t = Equivalence.equivInner(
           designator,
           designator1,
           undefinedSubst,
           falseUndef)
-        if (!t._1) return (false, undefinedSubst)
+        if (!t._1)
+          return (false, undefinedSubst)
         undefinedSubst = t._2
-        if (typeArgs.length != typeArgs1.length) return (false, undefinedSubst)
+        if (typeArgs.length != typeArgs1.length)
+          return (false, undefinedSubst)
         val iterator1 = typeArgs.iterator
         val iterator2 = typeArgs1.iterator
         while (iterator1.hasNext && iterator2.hasNext) {
@@ -320,7 +334,8 @@ class ScParameterizedType private (
             iterator2.next(),
             undefinedSubst,
             falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
         }
         (true, undefinedSubst)
@@ -372,8 +387,10 @@ class ScParameterizedType private (
 
   override def typeDepth: Int = {
     val depths = typeArgs.map(_.typeDepth)
-    if (depths.isEmpty) designator.typeDepth //todo: shouldn't be possible
-    else designator.typeDepth.max(depths.max + 1)
+    if (depths.isEmpty)
+      designator.typeDepth //todo: shouldn't be possible
+    else
+      designator.typeDepth.max(depths.max + 1)
   }
 
   override def isFinalType: Boolean =
@@ -509,8 +526,10 @@ case class ScTypeParameterType(
     val undefinedSubst = uSubst
     r match {
       case stp: ScTypeParameterType =>
-        if (stp.param eq param) (true, undefinedSubst)
-        else (false, undefinedSubst)
+        if (stp.param eq param)
+          (true, undefinedSubst)
+        else
+          (false, undefinedSubst)
       case _ => (false, undefinedSubst)
     }
   }

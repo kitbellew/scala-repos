@@ -75,7 +75,8 @@ class ScalaIntroduceParameterHandler
       editor: Editor,
       file: PsiFile,
       dataContext: DataContext) {
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
     if (!ScalaRefactoringUtil.ensureFileWritable(project, file)) {
       showErrorHint(
         ScalaBundle.message("file.is.not.writable"),
@@ -177,7 +178,8 @@ class ScalaIntroduceParameterHandler
       editor: Editor): Option[(ExprWithTypes, Seq[PsiElement])] = {
     try {
       val selModel: SelectionModel = editor.getSelectionModel
-      if (!selModel.hasSelection) return None
+      if (!selModel.hasSelection)
+        return None
 
       val (startOffset, endOffset) =
         (selModel.getSelectionStart, selModel.getSelectionEnd)
@@ -203,7 +205,8 @@ class ScalaIntroduceParameterHandler
         project,
         editor,
         REFACTORING_NAME)
-      if (hasWarnings) return None
+      if (hasWarnings)
+        return None
       if (haveReturnStmts(elems)) {
         showErrorHint(
           "Refactoring is not supported: selection contains return statement",
@@ -239,7 +242,8 @@ class ScalaIntroduceParameterHandler
           case _ => Array(funType, StdType.ANY)
         }
         (allTypes, funExpr.getText, argClauseText)
-      } else (exprWithTypes.get._2, exprWithTypes.get._1.getText, "")
+      } else
+        (exprWithTypes.get._2, exprWithTypes.get._1.getText, "")
 
     val superMethod = methodLike.findDeepestSuperMethod() match {
       case null => methodLike

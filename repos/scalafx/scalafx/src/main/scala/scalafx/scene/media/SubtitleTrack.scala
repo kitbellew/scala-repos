@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object SubtitleTrack {
   implicit def sfxSubtitleTrack2jfx(st: SubtitleTrack): jfxsm.SubtitleTrack =
-    if (st != null) st.delegate else null
+    if (st != null)
+      st.delegate
+    else
+      null
 }
 
 /**

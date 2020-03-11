@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object PasswordField {
   implicit def sfxPasswordField2jfx(v: PasswordField): jfxsc.PasswordField =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 class PasswordField(

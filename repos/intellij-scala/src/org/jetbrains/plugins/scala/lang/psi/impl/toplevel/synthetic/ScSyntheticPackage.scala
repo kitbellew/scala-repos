@@ -63,16 +63,20 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
       case bp: BaseProcessor =>
         if (bp.kinds.contains(PACKAGE)) {
           val subPackages =
-            if (lastParent != null) getSubPackages(lastParent.getResolveScope)
-            else getSubPackages
+            if (lastParent != null)
+              getSubPackages(lastParent.getResolveScope)
+            else
+              getSubPackages
           for (subp <- subPackages) {
-            if (!processor.execute(subp, state)) return false
+            if (!processor.execute(subp, state))
+              return false
           }
         }
         if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp.kinds
               .contains(METHOD)) {
           for (clazz <- getClasses) {
-            if (!processor.execute(clazz, state)) return false
+            if (!processor.execute(clazz, state))
+              return false
           }
         }
         true
@@ -84,7 +88,11 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
 object ScSyntheticPackage {
   def get(fqn: String, project: Project): ScSyntheticPackage = {
     val i = fqn.lastIndexOf(".")
-    val name = if (i < 0) fqn else fqn.substring(i + 1)
+    val name =
+      if (i < 0)
+        fqn
+      else
+        fqn.substring(i + 1)
 
     import com.intellij.psi.stubs.StubIndex
 
@@ -115,7 +123,11 @@ object ScSyntheticPackage {
           pc.qualifiedName == fqn
         }) match {
         case Some(obj) =>
-          val pname = if (i < 0) "" else fqn.substring(0, i)
+          val pname =
+            if (i < 0)
+              ""
+            else
+              fqn.substring(0, i)
           new ScSyntheticPackage(name, PsiManager.getInstance(project)) {
             override def getFiles(
                 globalSearchScope: GlobalSearchScope): Array[PsiFile] =
@@ -140,9 +152,14 @@ object ScSyntheticPackage {
         pc.fqn.startsWith(fqn) && fqn.startsWith(pc.prefix)
       })
 
-      if (pkgs.isEmpty) null
+      if (pkgs.isEmpty)
+        null
       else {
-        val pname = if (i < 0) "" else fqn.substring(0, i)
+        val pname =
+          if (i < 0)
+            ""
+          else
+            fqn.substring(0, i)
         new ScSyntheticPackage(name, PsiManager.getInstance(project)) {
           override def getFiles(
               globalSearchScope: GlobalSearchScope): Array[PsiFile] =
@@ -170,7 +187,8 @@ object ScSyntheticPackage {
                       Seq(td, c.fakeCompanionModule.get)
                     case td => Seq(td)
                   }
-                else Seq.empty): _*)
+                else
+                  Seq.empty): _*)
           }
 
           def getClasses(scope: GlobalSearchScope) =
@@ -188,19 +206,26 @@ object ScSyntheticPackage {
             pkgs.foreach { p =>
               def addPackage(tail: String) {
                 val p = ScPackageImpl.findPackage(project, fqn + "." + tail)
-                if (p != null) buff += p
+                if (p != null)
+                  buff += p
               }
 
               val fqn1 = p.fqn
               val tail =
-                if (fqn1.length > fqn.length) fqn1.substring(fqn.length + 1)
-                else ""
+                if (fqn1.length > fqn.length)
+                  fqn1.substring(fqn.length + 1)
+                else
+                  ""
               if (tail.length == 0) {
                 p.packagings.foreach { pack =>
                   {
                     val own = pack.ownNamePart
                     val i = own.indexOf(".")
-                    addPackage(if (i > 0) own.substring(0, i) else own)
+                    addPackage(
+                      if (i > 0)
+                        own.substring(0, i)
+                      else
+                        own)
                   }
                 }
                 p.typeDefs.foreach {
@@ -211,7 +236,11 @@ object ScSyntheticPackage {
                 }
               } else {
                 val i = tail.indexOf(".")
-                val next = if (i > 0) tail.substring(0, i) else tail
+                val next =
+                  if (i > 0)
+                    tail.substring(0, i)
+                  else
+                    tail
                 addPackage(next)
               }
             }

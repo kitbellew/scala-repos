@@ -42,8 +42,10 @@ class CoalescedPartitioner(
     for (i <- 0 until partitionStartIndices.length) {
       val start = partitionStartIndices(i)
       val end =
-        if (i < partitionStartIndices.length - 1) partitionStartIndices(i + 1)
-        else n
+        if (i < partitionStartIndices.length - 1)
+          partitionStartIndices(i + 1)
+        else
+          n
       for (j <- start until end) {
         result(j) = i
       }
@@ -100,8 +102,10 @@ class CustomShuffledRDD[K, V, C](
     Array.tabulate[Partition](partitionStartIndices.length) { i =>
       val startIndex = partitionStartIndices(i)
       val endIndex =
-        if (i < partitionStartIndices.length - 1) partitionStartIndices(i + 1)
-        else n
+        if (i < partitionStartIndices.length - 1)
+          partitionStartIndices(i + 1)
+        else
+          n
       new CustomShuffledRDDPartition(i, startIndex, endIndex)
     }
   }

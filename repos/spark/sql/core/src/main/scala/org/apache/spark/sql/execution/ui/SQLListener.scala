@@ -242,12 +242,12 @@ private[sql] class SQLListener(conf: SparkConf)
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = event match {
     case SparkListenerSQLExecutionStart(
-        executionId,
-        description,
-        details,
-        physicalPlanDescription,
-        sparkPlanInfo,
-        time) =>
+          executionId,
+          description,
+          details,
+          physicalPlanDescription,
+          sparkPlanInfo,
+          time) =>
       val physicalPlanGraph = SparkPlanGraph(sparkPlanInfo)
       val sqlPlanMetrics = physicalPlanGraph.allNodes.flatMap { node =>
         node.metrics.map(metric => metric.accumulatorId -> metric)
@@ -321,13 +321,14 @@ private[sql] class SQLListener(conf: SparkConf)
           for (stageId <- executionUIData.stages;
                stageMetrics <- _stageIdToStageMetrics.get(stageId).toIterable;
                taskMetrics <- stageMetrics.taskIdToMetricUpdates.values;
-               accumulatorUpdate <- taskMetrics.accumulatorUpdates) yield {
-            assert(
-              accumulatorUpdate.update.isDefined,
-              s"accumulator update from " +
-                s"task did not have a partial value: ${accumulatorUpdate.name}")
-            (accumulatorUpdate.id, accumulatorUpdate.update.get)
-          }
+               accumulatorUpdate <- taskMetrics.accumulatorUpdates)
+            yield {
+              assert(
+                accumulatorUpdate.update.isDefined,
+                s"accumulator update from " +
+                  s"task did not have a partial value: ${accumulatorUpdate.name}")
+              (accumulatorUpdate.id, accumulatorUpdate.update.get)
+            }
         }.filter {
           case (id, _) => executionUIData.accumulatorMetrics.contains(id)
         }

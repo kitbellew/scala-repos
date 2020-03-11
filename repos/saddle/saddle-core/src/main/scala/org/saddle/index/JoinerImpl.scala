@@ -125,7 +125,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     var i = 0
     while (i < newIdx.length) {
       val lpos = lTake(i)
-      newIdx(i) = if (lpos != -1) left.raw(lpos) else right.raw(rTake(i))
+      newIdx(i) =
+        if (lpos != -1)
+          left.raw(lpos)
+        else
+          right.raw(rTake(i))
       i += 1
     }
 
@@ -228,11 +232,13 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
         while (i < ll && {
                  l = left.raw(i);
                  scalar.lt(l, r)
-               }) i += 1
+               })
+          i += 1
         while (j < rl && {
                  r = right.raw(j);
                  scalar.lt(r, l)
-               }) j += 1
+               })
+          j += 1
         if (l == r) {
           c += 1
           i += 1
@@ -254,18 +260,22 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       while (i < ll && j < rl) {
         if (scalar.lt(l, r)) {
           i += 1
-          if (i < ll) l = left.raw(i)
+          if (i < ll)
+            l = left.raw(i)
         } else if (scalar.lt(r, l)) {
           j += 1
-          if (j < rl) r = right.raw(j)
+          if (j < rl)
+            r = right.raw(j)
         } else {
           res(c) = l
           lft(c) = i
           rgt(c) = j
           i += 1
           j += 1
-          if (i < left.length) l = left.raw(i)
-          if (j < right.length) r = right.raw(j)
+          if (i < left.length)
+            l = left.raw(i)
+          if (j < right.length)
+            r = right.raw(j)
           c += 1
         }
       }
@@ -333,7 +343,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
   def innerJoinUnique(left: Index[T], right: Index[T]): ReIndexer[T] = {
     // want to scan over the smaller one; make lft the smaller one
-    val szhint = if (left.length > right.length) right.length else left.length
+    val szhint =
+      if (left.length > right.length)
+        right.length
+      else
+        left.length
 
     val res = Buffer[T](szhint)
     val lft = Buffer[Int](szhint)
@@ -341,7 +355,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
     val switchLR = left.length > right.length
 
-    val (ltmp, rtmp) = if (switchLR) (right, left) else (left, right)
+    val (ltmp, rtmp) =
+      if (switchLR)
+        (right, left)
+      else
+        (left, right)
 
     var i = 0
     while (i < ltmp.length) {
@@ -356,7 +374,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     }
 
     val result: Array[T] = res
-    val (lres, rres) = if (switchLR) (rgt, lft) else (lft, rgt)
+    val (lres, rres) =
+      if (switchLR)
+        (rgt, lft)
+      else
+        (lft, rgt)
 
     ReIndexer(Some(lres), Some(rres), Index(Vec(result)))
   }
@@ -428,7 +450,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           rgt(c) = -1
           i += 1
           c += 1
-          if (i < ll) l = left.raw(i)
+          if (i < ll)
+            l = left.raw(i)
         }
         while (i < ll && j < rl && r == l) {
           res(c) = r
@@ -437,8 +460,10 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           j += 1
           i += 1
           c += 1
-          if (i < ll) l = left.raw(i)
-          if (j < rl) r = right.raw(j)
+          if (i < ll)
+            l = left.raw(i)
+          if (j < rl)
+            r = right.raw(j)
         }
         while (j < rl && scalar.lt(r, l)) {
           res(c) = r
@@ -446,7 +471,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           rgt(c) = j
           j += 1
           c += 1
-          if (j < rl) r = right.raw(j)
+          if (j < rl)
+            r = right.raw(j)
         }
       }
       while (i < ll) {

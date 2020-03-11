@@ -87,7 +87,8 @@ object SimplifyBooleanUtil {
           child.getNode,
           simplify(child, isTopLevel = false).getNode))
       simplifyTrivially(exprCopy)
-    } else expr
+    } else
+      expr
   }
 
   private def isOfBooleanType(expr: ScExpression): Boolean =
@@ -117,7 +118,8 @@ object SimplifyBooleanUtil {
       copy
         .replaceExpression(copy.expr.getOrElse(copy), removeParenthesis = true)
     case ScPrefixExpr(operation, operand) =>
-      if (operation.refName != "!") expr
+      if (operation.refName != "!")
+        expr
       else {
         booleanConst(operand) match {
           case Some(bool: Boolean) =>
@@ -128,7 +130,8 @@ object SimplifyBooleanUtil {
       }
     case ScInfixExpr(leftExpr, operation, rightExpr) =>
       val operName = operation.refName
-      if (!boolInfixOperations.contains(operName)) expr
+      if (!boolInfixOperations.contains(operName))
+        expr
       else {
         booleanConst(leftExpr) match {
           case Some(bool: Boolean) =>

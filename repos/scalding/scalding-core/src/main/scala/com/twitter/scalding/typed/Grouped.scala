@@ -108,7 +108,10 @@ object Grouped {
       flowDef: FlowDef): (K => Boxed[K], BoxedOrderedSerialization[K]) = {
     // We can only supply a cacheKey if the equals and hashcode are known sane
     val (boxfn, cls) = Boxed.nextCached[K](
-      if (ordser.isInstanceOf[EquivSerialization[_]]) Some(ordser) else None)
+      if (ordser.isInstanceOf[EquivSerialization[_]])
+        Some(ordser)
+      else
+        None)
     val boxordSer = BoxedOrderedSerialization(boxfn, ordser)
 
     WrappedSerialization.rawSetBinary(
@@ -179,7 +182,10 @@ object Grouped {
 
   def addEmptyGuard[K, V1, V2](fn: (K, Iterator[V1]) => Iterator[V2])
       : (K, Iterator[V1]) => Iterator[V2] = { (key: K, iter: Iterator[V1]) =>
-    if (iter.nonEmpty) fn(key, iter) else Iterator.empty
+    if (iter.nonEmpty)
+      fn(key, iter)
+    else
+      Iterator.empty
   }
 }
 
@@ -551,8 +557,10 @@ case class IdentityValueSortedReduce[K, V1](
     * Otherwise, we send all the values to the reducers
     */
   override def take(n: Int) =
-    if (n <= 1) bufferedTake(n)
-    else mapValueStream(_.take(n))
+    if (n <= 1)
+      bufferedTake(n)
+    else
+      mapValueStream(_.take(n))
 
   override lazy val toTypedPipe =
     groupOpWithValueSort[V1](valueSort = Some(valueSort)) { gb =>

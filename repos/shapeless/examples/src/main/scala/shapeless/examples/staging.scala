@@ -32,7 +32,11 @@ object StagedTypeClassExample extends App {
     }
 
     implicit val booleanDouble = new TupleConsumer[Boolean, Double] {
-      def apply(t: (Boolean, Double)) = (if (t._1) "+" else "-") + t._2
+      def apply(t: (Boolean, Double)) =
+        (if (t._1)
+           "+"
+         else
+           "-") + t._2
     }
   }
 
@@ -90,7 +94,8 @@ object ReflectionUtils {
       currentMirror,
       new TreeCreator {
         def apply[U <: Universe with Singleton](m: Mirror[U]): U#Tree =
-          if (m eq currentMirror) tree.asInstanceOf[U#Tree]
+          if (m eq currentMirror)
+            tree.asInstanceOf[U#Tree]
           else
             throw new IllegalArgumentException(
               s"Expr defined in $currentMirror cannot be migrated to other mirrors.")

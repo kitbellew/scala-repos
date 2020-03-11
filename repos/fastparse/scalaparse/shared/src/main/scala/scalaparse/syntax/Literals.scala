@@ -97,7 +97,11 @@ trait Literals { l =>
       val TripleChars = P((StringChars | Interp | NonTripleQuoteChar).rep)
       val TripleTail = P(TQ ~ "\"".rep)
       def SingleChars(allowSlash: Boolean) = {
-        val LiteralSlash = P(if (allowSlash) "\\" else Fail)
+        val LiteralSlash = P(
+          if (allowSlash)
+            "\\"
+          else
+            Fail)
         val NonStringEnd = P(!CharIn("\n\"") ~ AnyChar)
         P((StringChars | Interp | LiteralSlash | Escape | NonStringEnd).rep)
       }

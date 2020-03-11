@@ -99,7 +99,10 @@ object Step {
 
   private def add[A](k: String, v: A, cond: Boolean)(o: JsObject)(
       implicit writes: Writes[A]): JsObject =
-    if (cond) o + (k -> writes.writes(v)) else o
+    if (cond)
+      o + (k -> writes.writes(v))
+    else
+      o
 
   private def add[A: Writes](k: String, v: Option[A]): JsObject => JsObject =
     v.fold(identity[JsObject] _) {

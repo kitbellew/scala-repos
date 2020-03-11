@@ -54,7 +54,10 @@ object Scope {
       )
 
   def subThis[T](sub: ScopeAxis[T], into: ScopeAxis[T]): ScopeAxis[T] =
-    if (into == This) sub else into
+    if (into == This)
+      sub
+    else
+      into
 
   /**
     * `Select(ThisProject)` cannot be resolved by [[resolveProject]] (it doesn't know what to replace it with), so we
@@ -151,7 +154,11 @@ object Scope {
     val configPrefix = config.foldStrict(display, "*:", ".:")
     val taskPrefix = task.foldStrict(_.label + "::", "", ".::")
     val extras = extra.foldStrict(_.entries.map(_.toString).toList, Nil, Nil)
-    val postfix = if (extras.isEmpty) "" else extras.mkString("(", ", ", ")")
+    val postfix =
+      if (extras.isEmpty)
+        ""
+      else
+        extras.mkString("(", ", ", ")")
     mask.concatShow(
       projectPrefix(project, showProject),
       configPrefix,
@@ -266,7 +273,8 @@ object Scope {
       val eLin = withGlobalAxis(scope.extra)
       for (c <- cLin;
            t <- tLin;
-           e <- eLin) yield Scope(px, c, t, e)
+           e <- eLin)
+        yield Scope(px, c, t, e)
     }
     scope.project match {
       case Global | This => globalProjectDelegates(scope)
@@ -282,9 +290,15 @@ object Scope {
   }
 
   def withGlobalAxis[T](base: ScopeAxis[T]): Seq[ScopeAxis[T]] =
-    if (base.isSelect) base :: Global :: Nil else Global :: Nil
+    if (base.isSelect)
+      base :: Global :: Nil
+    else
+      Global :: Nil
   def withGlobalScope(base: Scope): Seq[Scope] =
-    if (base == GlobalScope) GlobalScope :: Nil else base :: GlobalScope :: Nil
+    if (base == GlobalScope)
+      GlobalScope :: Nil
+    else
+      base :: GlobalScope :: Nil
   def withRawBuilds(
       ps: Seq[ScopeAxis[ProjectRef]]): Seq[ScopeAxis[ResolvedReference]] =
     ps ++ (ps flatMap rawBuild).distinct :+ Global
@@ -330,14 +344,21 @@ object Scope {
   def linearize[T](axis: ScopeAxis[T], appendGlobal: Boolean = true)(
       inherit: T => Seq[T]): Seq[ScopeAxis[T]] =
     axis match {
-      case Select(x)     => topologicalSort[T](x, appendGlobal)(inherit)
-      case Global | This => if (appendGlobal) Global :: Nil else Nil
+      case Select(x) => topologicalSort[T](x, appendGlobal)(inherit)
+      case Global | This =>
+        if (appendGlobal)
+          Global :: Nil
+        else
+          Nil
     }
 
   def topologicalSort[T](node: T, appendGlobal: Boolean)(
       dependencies: T => Seq[T]): Seq[ScopeAxis[T]] = {
     val o = Dag.topologicalSortUnchecked(node)(dependencies).map(Select.apply)
-    if (appendGlobal) o ::: Global :: Nil else o
+    if (appendGlobal)
+      o ::: Global :: Nil
+    else
+      o
   }
   def globalProjectDelegates(scope: Scope): Seq[Scope] =
     if (scope == GlobalScope)
@@ -345,5 +366,6 @@ object Scope {
     else
       for (c <- withGlobalAxis(scope.config);
            t <- withGlobalAxis(scope.task);
-           e <- withGlobalAxis(scope.extra)) yield Scope(Global, c, t, e)
+           e <- withGlobalAxis(scope.extra))
+        yield Scope(Global, c, t, e)
 }

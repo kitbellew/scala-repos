@@ -111,7 +111,8 @@ class IMain(
     null // wrapper exposing addURL
 
   def compilerClasspath: Seq[java.net.URL] = (
-    if (isInitializeComplete) global.classPath.asURLs
+    if (isInitializeComplete)
+      global.classPath.asURLs
     else
       PathResolverFactory
         .create(settings)
@@ -125,7 +126,8 @@ class IMain(
       settings.nowarn.value = true
 
     try body
-    finally if (!saved) settings.nowarn.value = false
+    finally if (!saved)
+      settings.nowarn.value = false
   }
 
   /** construct an interpreter that reports to Console */
@@ -161,7 +163,9 @@ class IMain(
     } catch AbstractOrMissingHandler()
   }
   private val logScope = scala.sys.props contains "scala.repl.scope"
-  private def scopelog(msg: String) = if (logScope) Console.err.println(msg)
+  private def scopelog(msg: String) =
+    if (logScope)
+      Console.err.println(msg)
 
   // argument is a thunk to execute after init is done
   def initialize(postInitSignal: => Unit) {
@@ -182,7 +186,8 @@ class IMain(
   def isInitializeComplete = _initializeComplete
 
   lazy val global: Global = {
-    if (!isInitializeComplete) _initialize()
+    if (!isInitializeComplete)
+      _initialize()
     _compiler
   }
 
@@ -207,7 +212,11 @@ class IMain(
   )
 
   implicit class ReplTypeOps(tp: Type) {
-    def andAlso(fn: Type => Type): Type = if (tp eq NoType) tp else fn(tp)
+    def andAlso(fn: Type => Type): Type =
+      if (tp eq NoType)
+        tp
+      else
+        fn(tp)
   }
 
   // TODO: If we try to make naming a lazy val, we run into big time
@@ -219,8 +228,10 @@ class IMain(
     // make sure we don't overwrite their unwisely named res3 etc.
     def freshUserTermName(): TermName = {
       val name = newTermName(freshUserVarName())
-      if (replScope containsName name) freshUserTermName()
-      else name
+      if (replScope containsName name)
+        freshUserTermName()
+      else
+        name
     }
     def isInternalTermName(name: Name) = isInternalVarName("" + name)
   }
@@ -354,7 +365,11 @@ class IMain(
     translateOriginalPath(typerOp path sym)
 
   /** For class based repl mode we use an .INSTANCE accessor. */
-  val readInstanceName = if (isClassBased) ".INSTANCE" else ""
+  val readInstanceName =
+    if (isClassBased)
+      ".INSTANCE"
+    else
+      ""
   def translateOriginalPath(p: String): String = {
     val readName = java.util.regex.Matcher.quoteReplacement(sessionNames.read)
     p.replaceFirst(readName, readName + readInstanceName)
@@ -363,7 +378,10 @@ class IMain(
 
   def translatePath(path: String) = {
     val sym =
-      if (path endsWith "$") symbolOfTerm(path.init) else symbolOfIdent(path)
+      if (path endsWith "$")
+        symbolOfTerm(path.init)
+      else
+        symbolOfIdent(path)
     sym.toOption map flatPath
   }
 
@@ -375,7 +393,10 @@ class IMain(
     if (!(path contains '/') && (path endsWith ".class")) {
       val name = path stripSuffix ".class"
       val sym =
-        if (name endsWith "$") symbolOfTerm(name.init) else symbolOfIdent(name)
+        if (name endsWith "$")
+          symbolOfTerm(name.init)
+        else
+          symbolOfIdent(name)
       def pathOf(s: String) = s"${s.replace('.', '/')}.class"
       sym.toOption map (s => pathOf(flatPath(s)))
     } else {
@@ -428,20 +449,29 @@ class IMain(
 
   private def updateReplScope(sym: Symbol, isDefined: Boolean) {
     def log(what: String) {
-      val mark = if (sym.isType) "t " else "v "
+      val mark =
+        if (sym.isType)
+          "t "
+        else
+          "v "
       val name = exitingTyper(sym.nameString)
       val info = cleanTypeAfterTyper(sym)
       val defn = sym defStringSeenAs info
 
       scopelog(f"[$mark$what%6s] $name%-25s $defn%s")
     }
-    if (ObjectClass isSubClass sym.owner) return
+    if (ObjectClass isSubClass sym.owner)
+      return
     // unlink previous
     replScope lookupAll sym.name foreach { sym =>
       log("unlink")
       replScope unlink sym
     }
-    val what = if (isDefined) "define" else "import"
+    val what =
+      if (isDefined)
+        "define"
+      else
+        "import"
     log(what)
     replScope enter sym
   }
@@ -558,14 +588,18 @@ class IMain(
       case _: TermTree | _: Ident |
           _: Select => // ... but do want other unnamed terms.
         val varName =
-          if (synthetic) freshInternalVarName() else freshUserVarName()
+          if (synthetic)
+            freshInternalVarName()
+          else
+            freshUserVarName()
         val rewrittenLine =
           (
             // In theory this would come out the same without the 1-specific test, but
             // it's a cushion against any more sneaky parse-tree position vs. code mismatches:
             // this way such issues will only arise on multiple-statement repl input lines,
             // which most people don't use.
-            if (trees.size == 1) "val " + varName + " =\n" + content
+            if (trees.size == 1)
+              "val " + varName + " =\n" + content
             else {
               // The position of the last tree
               val lastpos0 = earliestPosition(last)
@@ -584,7 +618,11 @@ class IMain(
               val (l1, l2) = content splitAt lastpos
               repldbg("[adj] " + l1 + "   <--->   " + l2)
 
-              val prefix = if (l1.trim == "") "" else l1 + ";\n"
+              val prefix =
+                if (l1.trim == "")
+                  ""
+                else
+                  l1 + ";\n"
               // Note to self: val source needs to have this precise structure so that
               // error messages print the user-submitted part without the "val res0 = " part.
               val combined = prefix + "val " + varName + " =\n" + l2
@@ -637,14 +675,18 @@ class IMain(
   private def compile(
       line: String,
       synthetic: Boolean): Either[IR.Result, Request] = {
-    if (global == null) Left(IR.Error)
+    if (global == null)
+      Left(IR.Error)
     else
       requestFromLine(line, synthetic) match {
         case Left(result) => Left(result)
         case Right(req)   =>
           // null indicates a disallowed statement type; otherwise compile and
           // fail if false (implying e.g. a type error)
-          if (req == null || !req.compile) Left(IR.Error) else Right(req)
+          if (req == null || !req.compile)
+            Left(IR.Error)
+          else
+            Right(req)
       }
   }
 
@@ -974,7 +1016,11 @@ class IMain(
       _originalLine = s;
       this
     }
-    def originalLine = if (_originalLine == null) line else _originalLine
+    def originalLine =
+      if (_originalLine == null)
+        line
+      else
+        _originalLine
 
     /** handlers for each tree in this request */
     val handlers: List[MemberHandler] =
@@ -1027,7 +1073,8 @@ class IMain(
     abstract class Wrapper extends IMain.CodeAssembler[MemberHandler] {
       def path = originalPath("$intp")
       def envLines = {
-        if (!isReplPower) Nil // power mode only for now
+        if (!isReplPower)
+          Nil // power mode only for now
         else {
           val escapedLine = Constant(originalLine).escapedStringValue
           List(
@@ -1082,7 +1129,10 @@ class IMain(
     }
 
     private[interpreter] lazy val ObjectSourceCode: Wrapper =
-      if (isClassBased) new ClassBasedWrapper else new ObjectBasedWrapper
+      if (isClassBased)
+        new ClassBasedWrapper
+      else
+        new ObjectBasedWrapper
 
     private object ResultObjectSourceCode
         extends IMain.CodeAssembler[MemberHandler] {
@@ -1142,7 +1192,11 @@ class IMain(
         }
 
         // compile the result-extraction object
-        val handls = if (printResults) handlers else Nil
+        val handls =
+          if (printResults)
+            handlers
+          else
+            Nil
         withoutWarnings(lineRep compile ResultObjectSourceCode(handls))
       }
     }
@@ -1191,13 +1245,15 @@ class IMain(
     override def put(name: String, value: Object): Object = {
       val n = name.indexOf(":")
       val p: NamedParam =
-        if (n < 0) (name, value)
+        if (n < 0)
+          (name, value)
         else {
           val nme = name.substring(0, n).trim
           val tpe = name.substring(n + 1).trim
           NamedParamClass(nme, tpe, value)
         }
-      if (!p.name.startsWith("javax.script")) bind(p)
+      if (!p.name.startsWith("javax.script"))
+        bind(p)
       null
     }
   }
@@ -1227,7 +1283,8 @@ class IMain(
     *  the previous result.
     */
   def mostRecentVar: String =
-    if (mostRecentlyHandledTree.isEmpty) ""
+    if (mostRecentlyHandledTree.isEmpty)
+      ""
     else
       "" + (mostRecentlyHandledTree.get match {
         case x: ValOrDefDef         => x.name
@@ -1308,7 +1365,8 @@ class IMain(
 
       if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (runtimeSym isSubClass staticSym))
         runtimeSym.info
-      else NoType
+      else
+        NoType
     }
   }
 
@@ -1342,9 +1400,12 @@ class IMain(
       def parse = {
         reporter.reset()
         val trees = newUnitParser(line).parseStats()
-        if (reporter.hasErrors) Error(trees)
-        else if (isIncomplete) Incomplete(trees)
-        else Success(trees)
+        if (reporter.hasErrors)
+          Error(trees)
+        else if (isIncomplete)
+          Incomplete(trees)
+        else
+          Success(trees)
       }
       currentRun.parsing.withIncompleteHandler((_, _) => isIncomplete = true) {
         parse
@@ -1392,7 +1453,11 @@ class IMain(
   private val directlyBoundNames = mutable.Set[Name]()
 
   def allHandlers = prevRequestList flatMap (_.handlers)
-  def lastRequest = if (prevRequests.isEmpty) null else prevRequests.last
+  def lastRequest =
+    if (prevRequests.isEmpty)
+      null
+    else
+      prevRequests.last
   def prevRequestList = prevRequests.toList
   def importHandlers = allHandlers collect {
     case x: ImportHandler => x
@@ -1516,7 +1581,11 @@ object IMain {
   trait StrippingWriter {
     def isStripping: Boolean
     def stripImpl(str: String): String
-    def strip(str: String): String = if (isStripping) stripImpl(str) else str
+    def strip(str: String): String =
+      if (isStripping)
+        stripImpl(str)
+      else
+        str
   }
   trait TruncatingWriter {
     def maxStringLength: Int
@@ -1524,7 +1593,8 @@ object IMain {
     def truncate(str: String): String = {
       if (isTruncating && (maxStringLength != 0 && str.length > maxStringLength))
         (str take maxStringLength - 3) + "..."
-      else str
+      else
+        str
     }
   }
   abstract class StrippingTruncatingWriter(out: JPrintWriter)

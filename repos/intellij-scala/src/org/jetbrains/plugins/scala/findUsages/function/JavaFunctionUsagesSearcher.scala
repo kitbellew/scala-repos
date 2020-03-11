@@ -61,7 +61,8 @@ class JavaFunctionUsagesSearcher
         }
         val helper: PsiSearchHelper =
           PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
-        if (name == "") return true
+        if (name == "")
+          return true
         helper.processElementsWithWord(
           processor,
           scope,
@@ -77,7 +78,8 @@ class JavaFunctionUsagesSearcher
   private object scalaOrNonStatic {
     def unapply(method: PsiMethod): Option[PsiMethod] = {
       inReadAction {
-        if (!method.isValid) return None
+        if (!method.isValid)
+          return None
         method match {
           case f: ScFunction => Some(f)
           case m: PsiMethod if !m.hasModifierProperty(PsiModifier.STATIC) =>

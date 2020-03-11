@@ -150,7 +150,10 @@ object SessionSettings {
 
   /** Adds `s` to a strings when needed.    Maybe one day we'll care about non-english languages. */
   def pluralize(size: Int, of: String) =
-    size.toString + (if (size == 1) of else (of + "s"))
+    size.toString + (if (size == 1)
+                       of
+                     else
+                       (of + "s"))
 
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
@@ -169,7 +172,11 @@ object SessionSettings {
       case (s, (hi, lo)) => s ++ (hi to lo)
     }
     in.zipWithIndex.flatMap {
-      case (t, index) => if (asSet(index + 1)) Nil else t :: Nil
+      case (t, index) =>
+        if (asSet(index + 1))
+          Nil
+        else
+          t :: Nil
     }
   }
 
@@ -207,14 +214,15 @@ object SessionSettings {
     withSettings(s) { session =>
       val newSettings =
         for ((ref, settings) <- session.append
-             if settings.nonEmpty && include(ref)) yield {
-          val (news, olds) = writeSettings(
-            ref,
-            settings.toList,
-            session.original,
-            Project.structure(s))
-          (ref -> news, olds)
-        }
+             if settings.nonEmpty && include(ref))
+          yield {
+            val (news, olds) = writeSettings(
+              ref,
+              settings.toList,
+              session.original,
+              Project.structure(s))
+            (ref -> news, olds)
+          }
       val (newAppend, newOriginal) = newSettings.unzip
       val newSession = session.copy(
         append = newAppend.toMap,
@@ -274,8 +282,10 @@ object SessionSettings {
     val (_, exist) =
       SbtRefactorings.applySessionSettings((writeTo, oldContent), replace)
     val adjusted =
-      if (newSettings.nonEmpty && needsTrailingBlank(exist)) exist :+ ""
-      else exist
+      if (newSettings.nonEmpty && needsTrailingBlank(exist))
+        exist :+ ""
+      else
+        exist
     val lines = adjusted ++ newSettings.flatMap(x => x._2 :+ "")
     IO.writeLines(writeTo, lines)
     val (newWithPos, _) =
@@ -385,9 +395,21 @@ save, save-all
 
   /** The raw implementation of the session command. */
   def command(s: State) = Command.applyEffect(parser) {
-    case p: Print  => if (p.all) printAllSettings(s) else printSettings(s)
-    case v: Save   => if (v.all) saveAllSettings(s) else saveSettings(s)
-    case c: Clear  => if (c.all) clearAllSettings(s) else clearSettings(s)
+    case p: Print =>
+      if (p.all)
+        printAllSettings(s)
+      else
+        printSettings(s)
+    case v: Save =>
+      if (v.all)
+        saveAllSettings(s)
+      else
+        saveSettings(s)
+    case c: Clear =>
+      if (c.all)
+        clearAllSettings(s)
+      else
+        clearSettings(s)
     case r: Remove => removeSettings(s, r.ranges)
   }
 }

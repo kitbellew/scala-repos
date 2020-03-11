@@ -144,8 +144,10 @@ class NonServerRunner(
             charBuffer(i) match {
               case '=' if i == 0 && text.isEmpty =>
               case '=' if i == n - 1 || charBuffer.charAt(i + 1) != '=' =>
-                if ((text.length + 1) % 4 == 0) text.append('=')
-                else if ((text.length + 2) % 4 == 0) text.append("==")
+                if ((text.length + 1) % 4 == 0)
+                  text.append('=')
+                else if ((text.length + 2) % 4 == 0)
+                  text.append("==")
                 onTextAvailable(text.toString())
                 text.clear()
               case '\n' if text.nonEmpty && text.startsWith("Listening") =>

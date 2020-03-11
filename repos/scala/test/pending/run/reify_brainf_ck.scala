@@ -26,8 +26,15 @@ object Test extends App {
     case class Tape[T](left: List[T], cell: T, right: List[T])(
         implicit func: Func[T]) {
       private def headOf(list: List[T]) =
-        if (list.isEmpty) func.zero else list.head
-      private def tailOf(list: List[T]) = if (list.isEmpty) Nil else list.tail
+        if (list.isEmpty)
+          func.zero
+        else
+          list.head
+      private def tailOf(list: List[T]) =
+        if (list.isEmpty)
+          Nil
+        else
+          list.tail
       def isZero = cell == func.zero
       def execute(ch: Char) = (ch: @switch) match {
         case '+' => copy(cell = func.inc(cell))
@@ -56,7 +63,8 @@ object Test extends App {
             pos: Int,
             stack: List[Int],
             o2c: Map[Int, Int]): Map[Int, Int] =
-          if (pos == prog.length) o2c
+          if (pos == prog.length)
+            o2c
           else
             (prog(pos): @switch) match {
               case '[' => braceMatcher(pos + 1, pos :: stack, o2c)

@@ -33,20 +33,21 @@ object ManifestFilters {
     */
   def reinterpretResourceNames(
       mappings: Origin => String => String): ManifestFilter = { manifests =>
-    for (manifest <- manifests) yield {
-      val mapping = mappings(manifest.origin)
-      val filteredJSDeps =
-        for (jsDependency <- manifest.libDeps)
-          yield new JSDependency(
-            mapping(jsDependency.resourceName),
-            jsDependency.dependencies.map(mapping),
-            jsDependency.commonJSName,
-            jsDependency.minifiedResourceName.map(mapping))
-      new JSDependencyManifest(
-        manifest.origin,
-        filteredJSDeps,
-        manifest.requiresDOM,
-        manifest.compliantSemantics)
-    }
+    for (manifest <- manifests)
+      yield {
+        val mapping = mappings(manifest.origin)
+        val filteredJSDeps =
+          for (jsDependency <- manifest.libDeps)
+            yield new JSDependency(
+              mapping(jsDependency.resourceName),
+              jsDependency.dependencies.map(mapping),
+              jsDependency.commonJSName,
+              jsDependency.minifiedResourceName.map(mapping))
+        new JSDependencyManifest(
+          manifest.origin,
+          filteredJSDeps,
+          manifest.requiresDOM,
+          manifest.compliantSemantics)
+      }
   }
 }

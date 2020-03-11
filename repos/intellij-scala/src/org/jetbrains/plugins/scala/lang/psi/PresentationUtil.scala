@@ -27,7 +27,8 @@ object PresentationUtil {
       case clause: ScParameterClause =>
         val buffer = new StringBuilder("")
         buffer.append("(")
-        if (clause.isImplicit) buffer.append("implicit ")
+        if (clause.isImplicit)
+          buffer.append("implicit ")
         buffer.append(
           clause.parameters
             .map(presentationString(_, substitutor))
@@ -42,8 +43,10 @@ object PresentationUtil {
         val builder = new StringBuilder
         builder.append(param.name)
         builder.append(": " + presentationString(param.paramType, substitutor))
-        if (param.isRepeated) builder.append("*")
-        if (param.isDefault) builder.append(" = _")
+        if (param.isRepeated)
+          builder.append("*")
+        if (param.isDefault)
+          builder.append(" = _")
         builder.toString()
       case tp: ScType => ScType.presentableText(substitutor.subst(tp))
       case tp: PsiEllipsisType =>
@@ -58,8 +61,10 @@ object PresentationUtil {
           .mkString("[", ", ", "]")
       case param: ScTypeParam =>
         var paramText = param.name
-        if (param.isContravariant) paramText = "-" + paramText
-        else if (param.isCovariant) paramText = "+" + paramText
+        if (param.isContravariant)
+          paramText = "-" + paramText
+        else if (param.isCovariant)
+          paramText = "+" + paramText
         param.lowerBound foreach {
           case psi.types.Nothing =>
           case tp: ScType =>
@@ -90,14 +95,18 @@ object PresentationUtil {
       case param: PsiParameter =>
         val buffer: StringBuilder = new StringBuilder("")
         val list = param.getModifierList
-        if (list == null) return ""
+        if (list == null)
+          return ""
         val lastSize = buffer.length
         for (a <- list.getAnnotations) {
-          if (lastSize != buffer.length) buffer.append(" ")
+          if (lastSize != buffer.length)
+            buffer.append(" ")
           val element = a.getNameReferenceElement
-          if (element != null) buffer.append("@").append(element.getText)
+          if (element != null)
+            buffer.append("@").append(element.getText)
         }
-        if (lastSize != buffer.length) buffer.append(" ")
+        if (lastSize != buffer.length)
+          buffer.append(" ")
         val name = param.name
         if (name != null) {
           buffer.append(name)

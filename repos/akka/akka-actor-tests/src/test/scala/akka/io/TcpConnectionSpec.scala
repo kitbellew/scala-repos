@@ -773,7 +773,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         writer.expectNoMsg(1.second)
 
         // so drain the queue until it works again
-        while (!writer.msgAvailable) pullFromServerSide(TestSize)
+        while (!writer.msgAvailable)
+          pullFromServerSide(TestSize)
         writer.expectMsg(Duration.Zero, WritingResumed)
 
         // now write should work again
@@ -931,7 +932,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     def ignoreWindowsWorkaroundForTicket15766(): Unit = {
       // Due to the Windows workaround of #15766 we need to set an OP_CONNECT to reliably detect connection resets
-      if (Helpers.isWindows) interestCallReceiver.expectMsg(OP_CONNECT)
+      if (Helpers.isWindows)
+        interestCallReceiver.expectMsg(OP_CONNECT)
     }
 
     def run(body: ⇒ Unit): Unit = {
@@ -1034,7 +1036,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     override def ignoreWindowsWorkaroundForTicket15766(): Unit = {
       super.ignoreWindowsWorkaroundForTicket15766()
-      if (Helpers.isWindows) clientSelectionKey.interestOps(OP_CONNECT)
+      if (Helpers.isWindows)
+        clientSelectionKey.interestOps(OP_CONNECT)
     }
 
     override def run(body: ⇒ Unit): Unit = super.run {
@@ -1057,7 +1060,8 @@ class TcpConnectionSpec extends AkkaSpec("""
             keepOpenOnPeerClosed,
             useResumeWriting))
         ignoreWindowsWorkaroundForTicket15766()
-        if (!pullMode) interestCallReceiver.expectMsg(OP_READ)
+        if (!pullMode)
+          interestCallReceiver.expectMsg(OP_READ)
 
         clientSelectionKey // trigger initialization
         serverSelectionKey // trigger initialization
@@ -1075,8 +1079,10 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     def closeServerSideAndWaitForClientReadable(
         fullClose: Boolean = true): Unit = {
-      if (fullClose) serverSideChannel.close()
-      else serverSideChannel.socket.shutdownOutput()
+      if (fullClose)
+        serverSideChannel.close()
+      else
+        serverSideChannel.socket.shutdownOutput()
       checkFor(
         clientSelectionKey,
         OP_READ,
@@ -1098,7 +1104,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
         ret > 0 && nioSelector.selectedKeys().contains(key) && key.isValid &&
         (key.readyOps() & interest) != 0
-      } else false
+      } else
+        false
 
     def openSelectorFor(
         channel: SocketChannel,
@@ -1133,7 +1140,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
         val read =
           if (nioSelector.selectedKeys().contains(serverSelectionKey)) {
-            if (into eq defaultbuffer) into.clear()
+            if (into eq defaultbuffer)
+              into.clear()
             serverSideChannel.read(into) match {
               case -1 ⇒
                 throw new IllegalStateException(
@@ -1141,7 +1149,8 @@ class TcpConnectionSpec extends AkkaSpec("""
               case 0 ⇒ throw new IllegalStateException("Made no progress")
               case other ⇒ other
             }
-          } else 0
+          } else
+            0
 
         nioSelector.selectedKeys().clear()
 
@@ -1200,7 +1209,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           log.debug("setSoLinger(true, 0) failed with {}", e)
       }
       channel.close()
-      if (Helpers.isWindows) nioSelector.select(10) // Windows needs this
+      if (Helpers.isWindows)
+        nioSelector.select(10) // Windows needs this
     }
   }
 

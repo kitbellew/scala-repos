@@ -146,7 +146,10 @@ trait FunctionAnnotator {
             usageTypeText,
             functionTypeText)
           val returnExpression =
-            if (explicitReturn) usage.asInstanceOf[ScReturnStmt].expr else None
+            if (explicitReturn)
+              usage.asInstanceOf[ScReturnStmt].expr
+            else
+              None
           val expr = returnExpression.getOrElse(usage) match {
             case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
             case b: ScBlock =>

@@ -129,7 +129,8 @@ private[ann] class AffineLayerModel private (w: BDM[Double], b: BDV[Double])
   private var ones: BDV[Double] = null
 
   override def eval(data: BDM[Double]): BDM[Double] = {
-    if (z == null || z.cols != data.cols) z = new BDM[Double](w.rows, data.cols)
+    if (z == null || z.cols != data.cols)
+      z = new BDM[Double](w.rows, data.cols)
     z(::, *) := b
     BreezeUtil.dgemm(1.0, w, data, 1.0, z)
     z
@@ -640,7 +641,11 @@ private[ml] class FeedForwardModel private (
     }
     val grads = new Array[Array[Double]](layerModels.length)
     for (i <- 0 until layerModels.length) {
-      val input = if (i == 0) data else outputs(i - 1)
+      val input =
+        if (i == 0)
+          data
+        else
+          outputs(i - 1)
       grads(i) = layerModels(i).grad(deltas(i), input)
     }
     // update cumGradient

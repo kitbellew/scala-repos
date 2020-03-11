@@ -48,15 +48,18 @@ class Pack200Task extends ScalaMatchingTask {
 \*============================================================================*/
 
   def setDir(dir: File) {
-    if (dir.exists && dir.isDirectory) srcdir = Some(dir)
+    if (dir.exists && dir.isDirectory)
+      srcdir = Some(dir)
     else
       buildError("Please specify a valid directory with Jar files for packing.")
   }
 
   /** A level from 0 (none) to 9 (max) of effort for applying Pack200 */
   def setEffort(x: Int) {
-    if (effort < 10 && effort > -1) effort = x
-    else buildError("The effort level must be a value from 0 to 9")
+    if (effort < 10 && effort > -1)
+      effort = x
+    else
+      buildError("The effort level must be a value from 0 to 9")
   }
 
   /** Set the flag to specify if file reordering should be performed. Reordering
@@ -87,7 +90,8 @@ class Pack200Task extends ScalaMatchingTask {
 
   /** Set the output directory */
   def setDestdir(file: File) {
-    if (file != null && file.exists && file.isDirectory) destdir = Some(file)
+    if (file != null && file.exists && file.isDirectory)
+      destdir = Some(file)
     else
       buildError(
         "The destination directory is invalid: " + file.getAbsolutePath)
@@ -111,7 +115,8 @@ class Pack200Task extends ScalaMatchingTask {
     for (filename <- ds.getIncludedFiles()
          if filename.toLowerCase.endsWith(".jar")) {
       val file = new File(dir, filename)
-      if (files.exists(file.equals(_)) == false) files = file :: files
+      if (files.exists(file.equals(_)) == false)
+        files = file :: files
     }
     files.reverse
   }
@@ -139,15 +144,26 @@ class Pack200Task extends ScalaMatchingTask {
     fileset.setDir(srcdir.getOrElse(getProject.getBaseDir))
 
     val files = getFileList
-    if (files.isEmpty) buildError("No JAR files were selected for packing.")
+    if (files.isEmpty)
+      buildError("No JAR files were selected for packing.")
 
     // Setup the packer
     val packer = Pack200.newPacker
     val p = packer.properties
     p.put(EFFORT, effort.toString)
     p.put(SEGMENT_LIMIT, segmentLimit.toString)
-    p.put(KEEP_FILE_ORDER, if (keepFileOrder) TRUE else FALSE)
-    p.put(MODIFICATION_TIME, if (keepModificationTime) LATEST else KEEP)
+    p.put(
+      KEEP_FILE_ORDER,
+      if (keepFileOrder)
+        TRUE
+      else
+        FALSE)
+    p.put(
+      MODIFICATION_TIME,
+      if (keepModificationTime)
+        LATEST
+      else
+        KEEP)
 
     for (file <- files) {
       if (repack) {

@@ -65,7 +65,8 @@ trait LocationLineManager {
       try {
         if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
           refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
-        else refType.locationsOfLine(line + 1)
+        else
+          refType.locationsOfLine(line + 1)
       } catch {
         case aie: AbsentInformationException => return Seq.empty
       }
@@ -103,13 +104,16 @@ trait LocationLineManager {
     seenRefTypes += refType
 
     val generatingElem = findElementByReferenceType(refType).orNull
-    if (generatingElem == null) return
+    if (generatingElem == null)
+      return
     val containingFile = generatingElem.getContainingFile
-    if (containingFile == null) return
+    if (containingFile == null)
+      return
     val document = PsiDocumentManager
       .getInstance(debugProcess.getProject)
       .getDocument(containingFile)
-    if (document == null) return
+    if (document == null)
+      return
 
     def elementStartLine(e: PsiElement) =
       document.getLineNumber(e.getTextOffset)
@@ -130,10 +134,12 @@ trait LocationLineManager {
       }
 
       def shouldPointAtStartLine(location: Location): Boolean = {
-        if (location.codeIndex() != 0) return false
+        if (location.codeIndex() != 0)
+          return false
 
         val lineNumber = ScalaPositionManager.checkedLineNumber(location)
-        if (lineNumber < 0) return true
+        if (lineNumber < 0)
+          return true
 
         val linePosition =
           SourcePosition.createFromLine(containingFile, lineNumber)
@@ -182,7 +188,8 @@ trait LocationLineManager {
               case Seq()      => Nil
               case istoreCode => BytecodeUtil.iloadCode(istoreCode)
             }
-          if (iloadCode.isEmpty) return
+          if (iloadCode.isEmpty)
+            return
 
           method.allLineLocations().asScala.foreach {
             case loc
@@ -214,7 +221,10 @@ trait LocationLineManager {
         def storeCode(location: Location): Option[Seq[Byte]] = {
           val codeIndex = location.codeIndex().toInt
           val code = BytecodeUtil.readStoreCode(codeIndex, bytecodes)
-          if (code.nonEmpty) Some(code) else None
+          if (code.nonEmpty)
+            Some(code)
+          else
+            None
         }
 
         val notCustomizedYet = caseLinesLocations.map(
@@ -223,14 +233,17 @@ trait LocationLineManager {
         val lastLocations = repeating.map(_.last)
         val withStoreCode =
           for (loc <- lastLocations;
-               code <- storeCode(loc)) yield (loc, code)
+               code <- storeCode(loc))
+            yield (loc, code)
         val (locationsToSkip, codes) = withStoreCode.unzip
-        if (codes.distinct.size != 1) return
+        if (codes.distinct.size != 1)
+          return
 
         locationsToSkip.foreach(cacheCustomLine(_, -1))
 
         val loadCode = BytecodeUtil.loadCode(codes.head)
-        if (loadCode.isEmpty) return
+        if (loadCode.isEmpty)
+          return
 
         val loadLocations = method.allLineLocations().asScala.filter { l =>
           BytecodeUtil.readLoadCode(l.codeIndex().toInt, bytecodes) == loadCode
@@ -241,7 +254,8 @@ trait LocationLineManager {
       def skipBaseLineExtraLocations(method: Method, baseLine: Int): Unit = {
         val locations = locationsOfLine(method, baseLine).filter(
           !customizedLocationsCache.contains(_))
-        if (locations.size <= 1) return
+        if (locations.size <= 1)
+          return
 
         val bytecodes =
           try method.bytecodes()

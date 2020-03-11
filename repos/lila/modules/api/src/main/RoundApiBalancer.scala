@@ -55,14 +55,14 @@ private[api] final class RoundApiBalancer(
                 }
                 .result
             case Watcher(
-                pov,
-                apiVersion,
-                tv,
-                analysis,
-                initialFenO,
-                withMoveTimes,
-                withOpening,
-                ctx) =>
+                  pov,
+                  apiVersion,
+                  tv,
+                  analysis,
+                  initialFenO,
+                  withMoveTimes,
+                  withOpening,
+                  ctx) =>
               api.watcher(
                 pov,
                 apiVersion,

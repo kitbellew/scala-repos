@@ -56,8 +56,10 @@ class ScPatternDefinitionImpl private (
       val patterns = plist.patterns
       if (patterns.length == 1) {
         patterns(0).bindings
-      } else patterns.flatMap((p: ScPattern) => p.bindings)
-    } else Seq.empty
+      } else
+        patterns.flatMap((p: ScPattern) => p.bindings)
+    } else
+      Seq.empty
   }
 
   def declaredElements = bindings
@@ -88,7 +90,8 @@ class ScPatternDefinitionImpl private (
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScValueStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    } else
+      findChild(classOf[ScTypeElement])
   }
 
   def pList: ScPatternList = {
@@ -99,6 +102,7 @@ class ScPatternDefinitionImpl private (
           ScalaElementTypes.PATTERN_LIST,
           JavaArrayFactoryUtil.ScPatternListFactory)
         .apply(0)
-    } else findChildByClass(classOf[ScPatternList])
+    } else
+      findChildByClass(classOf[ScPatternList])
   }
 }

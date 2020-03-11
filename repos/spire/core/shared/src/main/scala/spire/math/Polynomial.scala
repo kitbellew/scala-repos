@@ -25,7 +25,8 @@ object Polynomial extends PolynomialInstances {
   def dense[@sp(Double) C: Semiring: Eq: ClassTag](
       coeffs: Array[C]): PolyDense[C] = {
     var i = coeffs.length
-    while (i > 0 && (coeffs(i - 1) === Semiring[C].zero)) i -= 1
+    while (i > 0 && (coeffs(i - 1) === Semiring[C].zero))
+      i -= 1
     if (i == coeffs.length) {
       new PolyDense(coeffs)
     } else {
@@ -59,9 +60,15 @@ object Polynomial extends PolynomialInstances {
   def zero[@sp(Double) C: Eq: Semiring: ClassTag]: Polynomial[C] =
     PolySparse.zero[C]
   def constant[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
-    if (c === Semiring[C].zero) zero[C] else Polynomial(Map((0, c)))
+    if (c === Semiring[C].zero)
+      zero[C]
+    else
+      Polynomial(Map((0, c)))
   def linear[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
-    if (c === Semiring[C].zero) zero[C] else Polynomial(Map((1, c)))
+    if (c === Semiring[C].zero)
+      zero[C]
+    else
+      Polynomial(Map((1, c)))
   def linear[@sp(Double) C: Eq: Semiring: ClassTag](
       c1: C,
       c0: C): Polynomial[C] =
@@ -71,14 +78,20 @@ object Polynomial extends PolynomialInstances {
       c0: C): Polynomial[C] =
     Polynomial(Map((1, c1), (0, c0)))
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
-    if (c === Semiring[C].zero) zero[C] else Polynomial(Map((2, c)))
+    if (c === Semiring[C].zero)
+      zero[C]
+    else
+      Polynomial(Map((2, c)))
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](
       c2: C,
       c1: C,
       c0: C): Polynomial[C] =
     Polynomial(Map((2, c2), (1, c1), (0, c0)))
   def cubic[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
-    if (c === Semiring[C].zero) zero[C] else Polynomial(Map((3, c)))
+    if (c === Semiring[C].zero)
+      zero[C]
+    else
+      Polynomial(Map((3, c)))
   def cubic[@sp(Double) C: Eq: Semiring: ClassTag](
       c3: C,
       c2: C,
@@ -110,17 +123,30 @@ object Polynomial extends PolynomialInstances {
         val (op, s2) = operRe.findPrefixMatchOf(s) match {
           case Some(m) => (m.group(1), s.substring(m.end))
           case None =>
-            if (ts.isEmpty) ("+", s) else throw new IllegalArgumentException(s)
+            if (ts.isEmpty)
+              ("+", s)
+            else
+              throw new IllegalArgumentException(s)
         }
 
         val m2 = termRe
           .findPrefixMatchOf(s2)
           .getOrElse(throw new IllegalArgumentException(s2))
         val c0 = Option(m2.group(1)).getOrElse("1")
-        val c = if (op == "-") "-" + c0 else c0
+        val c =
+          if (op == "-")
+            "-" + c0
+          else
+            c0
         val v = Option(m2.group(2)).getOrElse("")
         val e0 = Option(m2.group(3)).getOrElse("")
-        val e = if (e0 != "") e0 else if (v == "") "0" else "1"
+        val e =
+          if (e0 != "")
+            e0
+          else if (v == "")
+            "0"
+          else
+            "1"
 
         val t =
           try {
@@ -129,14 +155,21 @@ object Polynomial extends PolynomialInstances {
             case _: Exception =>
               throw new IllegalArgumentException(s"illegal term: $c*x^$e")
           }
-        parse(s2.substring(m2.end), if (t.c == 0) ts else t :: ts)
+        parse(
+          s2.substring(m2.end),
+          if (t.c == 0)
+            ts
+          else
+            t :: ts)
       }
 
     // do some pre-processing to remove whitespace/outer parens
     val t = s.trim
     val u =
-      if (t.startsWith("(") && t.endsWith(")")) t.substring(1, t.length - 1)
-      else t
+      if (t.startsWith("(") && t.endsWith(")"))
+        t.substring(1, t.length - 1)
+      else
+        t
     val v = Term.removeSuperscript(u)
 
     // parse out the terms
@@ -203,7 +236,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def foreachNonZero[U](
       f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit =
     foreach { (e, c) =>
-      if (c =!= ring.zero) f(e, c)
+      if (c =!= ring.zero)
+        f(e, c)
     }
 
   /**
@@ -393,8 +427,10 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def flip(implicit ring: Rng[C], eq: Eq[C]): Polynomial[C] =
     mapTerms {
       case term @ Term(coeff, exp) =>
-        if (exp % 2 == 0) term
-        else Term(-coeff, exp)
+        if (exp % 2 == 0)
+          term
+        else
+          Term(-coeff, exp)
     }
 
   /**
@@ -435,7 +471,13 @@ trait Polynomial[@sp(Double) C] { lhs =>
       if (k == 1)
         b * extra
       else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+        loop(
+          b * b,
+          k >>> 1,
+          if ((k & 1) == 1)
+            b * extra
+          else
+            extra)
 
     if (k < 0) {
       throw new IllegalArgumentException("negative exponent")
@@ -461,7 +503,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
       if (it.hasNext) {
         val term = it.next
         loop(n ^ (0xfeed1257 * term.exp ^ term.coeff.##))
-      } else n
+      } else
+        n
     loop(0)
   }
 
@@ -473,8 +516,12 @@ trait Polynomial[@sp(Double) C] { lhs =>
         val has1 = it1.hasNext
         val has2 = it2.hasNext
         if (has1 && has2) {
-          if (it1.next == it2.next) loop() else false
-        } else has1 == has2
+          if (it1.next == it2.next)
+            loop()
+          else
+            false
+        } else
+          has1 == has2
       }
       loop()
 
@@ -504,7 +551,10 @@ trait Polynomial[@sp(Double) C] { lhs =>
       val ts = bldr.result()
       QuickSort.sort(ts)(Order[Term[C]].reverse, implicitly[ClassTag[Term[C]]])
       val s = ts.mkString
-      "(" + (if (s.take(3) == " - ") "-" + s.drop(3) else s.drop(3)) + ")"
+      "(" + (if (s.take(3) == " - ")
+               "-" + s.drop(3)
+             else
+               s.drop(3)) + ")"
     }
 }
 

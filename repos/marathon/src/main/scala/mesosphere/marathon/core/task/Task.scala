@@ -462,6 +462,9 @@ object Task {
     }
 
     def unapply(state: TaskState): Option[TaskState] =
-      if (isTerminated(state)) Some(state) else None
+      if (isTerminated(state))
+        Some(state)
+      else
+        None
   }
 }

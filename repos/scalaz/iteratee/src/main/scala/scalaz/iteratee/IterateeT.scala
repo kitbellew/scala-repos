@@ -65,7 +65,13 @@ sealed abstract class IterateeT[E, F[_], A] {
     def step(s: StepT[E, F, A]): IterateeT[EE, F, A] =
       s.fold[IterateeT[EE, F, A]](
         cont = k => cont((in: Input[EE]) => k(in.map(i => f(i))) >>== step),
-        done = (a, i) => done(a, if (i.isEof) eofInput else emptyInput)
+        done = (a, i) =>
+          done(
+            a,
+            if (i.isEof)
+              eofInput
+            else
+              emptyInput)
       )
 
     this >>== step
@@ -154,8 +160,10 @@ sealed abstract class IterateeT[E, F[_], A] {
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
           k =>
             isEof[E, F] flatMap { eof =>
-              if (eof) done(scont(k), eofInput)
-              else step(k)
+              if (eof)
+                done(scont(k), eofInput)
+              else
+                step(k)
             }
         def step: (
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
@@ -183,7 +191,12 @@ sealed abstract class IterateeT[E, F[_], A] {
               case (b, yy) =>
                 (a, b) match {
                   case (Some((a, e)), Some((b, ee))) =>
-                    done((a, b), if (e.isEl) e else ee)
+                    done(
+                      (a, b),
+                      if (e.isEl)
+                        e
+                      else
+                        ee)
                   case _ => cont(loop(xx, yy))
                 }
             }
@@ -336,8 +349,10 @@ trait IterateeTFunctions {
   def drop[E, F[_]: Applicative](n: Int): IterateeT[E, F, Unit] = {
     def step(s: Input[E]): IterateeT[E, F, Unit] =
       s(el = _ => drop(n - 1), empty = cont(step), eof = done((), eofInput[E]))
-    if (n == 0) done((), emptyInput[E])
-    else cont(step)
+    if (n == 0)
+      done((), emptyInput[E])
+    else
+      cont(step)
   }
 
   /**
@@ -347,7 +362,11 @@ trait IterateeTFunctions {
       p: E => Boolean): IterateeT[E, F, Unit] = {
     def step(s: Input[E]): IterateeT[E, F, Unit] =
       s(
-        el = e => if (p(e)) dropWhile(p) else done((), s),
+        el = e =>
+          if (p(e))
+            dropWhile(p)
+          else
+            done((), s),
         empty = cont(step),
         eof = done((), eofInput[E]))
     cont(step)

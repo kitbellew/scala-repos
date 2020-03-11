@@ -139,21 +139,22 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     def pathStructure(selector: CPath)(implicit M: Monad[M]) = {
       (projection: Projection) =>
         EitherT.right(
-          for (columnRefs <- projection.structure) yield {
-            val types: Map[CType, Long] = columnRefs
-              .collect {
-                // FIXME: This should use real counts
-                case ColumnRef(selector, ctype)
-                    if selector.hasPrefix(selector) =>
-                  (ctype, 0L)
-              }
-              .groupBy(_._1)
-              .map {
-                case (tpe, values) => (tpe, values.map(_._2).sum)
-              }
+          for (columnRefs <- projection.structure)
+            yield {
+              val types: Map[CType, Long] = columnRefs
+                .collect {
+                  // FIXME: This should use real counts
+                  case ColumnRef(selector, ctype)
+                      if selector.hasPrefix(selector) =>
+                    (ctype, 0L)
+                }
+                .groupBy(_._1)
+                .map {
+                  case (tpe, values) => (tpe, values.map(_._2).sum)
+                }
 
-            PathStructure(types, columnRefs.map(_.selector))
-          }
+              PathStructure(types, columnRefs.map(_.selector))
+            }
         )
     }
   }
@@ -252,15 +253,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
             // We can discard the event IDs for the purposes of this class
             messages.map(_._2).foldLeft(acc) {
               case (
-                  acc,
-                  IngestMessage(
-                    _,
-                    _,
-                    writeAs,
-                    records,
-                    _,
-                    _,
-                    StreamRef.Append)) =>
+                    acc,
+                    IngestMessage(
+                      _,
+                      _,
+                      writeAs,
+                      records,
+                      _,
+                      _,
+                      StreamRef.Append)) =>
                 updated(
                   acc,
                   acc.get(currentKey),
@@ -269,15 +270,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                   records.map(_.value))
 
               case (
-                  acc,
-                  IngestMessage(
-                    _,
-                    _,
-                    writeAs,
-                    records,
-                    _,
-                    _,
-                    StreamRef.Create(id, _))) =>
+                    acc,
+                    IngestMessage(
+                      _,
+                      _,
+                      writeAs,
+                      records,
+                      _,
+                      _,
+                      StreamRef.Create(id, _))) =>
                 val archiveKey = (path, Version.Archived(id))
                 val appendTo = acc
                   .get(archiveKey)
@@ -285,20 +286,23 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                 updated(
                   acc,
                   appendTo,
-                  if (acc.contains(currentKey)) currentKey else archiveKey,
+                  if (acc.contains(currentKey))
+                    currentKey
+                  else
+                    archiveKey,
                   writeAs,
                   records.map(_.value))
 
               case (
-                  acc,
-                  IngestMessage(
-                    _,
-                    _,
-                    writeAs,
-                    records,
-                    _,
-                    _,
-                    StreamRef.Replace(id, _))) =>
+                    acc,
+                    IngestMessage(
+                      _,
+                      _,
+                      writeAs,
+                      records,
+                      _,
+                      _,
+                      StreamRef.Replace(id, _))) =>
                 val archiveKey = (path, Version.Archived(id))
                 acc.get(archiveKey).orElse(acc.get(currentKey)) map {
                   case rec @ JsonRecord(resource, `id`) =>
@@ -306,8 +310,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                     rec.resource
                       .append(NIHDB.Batch(0, records.map(_.value)))
                       .unsafePerformIO
-                    acc + ((if (acc.contains(currentKey)) currentKey
-                            else archiveKey) -> rec)
+                    acc + ((if (acc.contains(currentKey))
+                              currentKey
+                            else
+                              archiveKey) -> rec)
 
                   case record =>
                     // replace when id is not recognized, or when record is binary
@@ -327,29 +333,29 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                 }
 
               case (
-                  acc,
-                  StoreFileMessage(
-                    _,
-                    _,
-                    writeAs,
-                    _,
-                    _,
-                    content,
-                    _,
-                    StreamRef.Create(id, _))) =>
+                    acc,
+                    StoreFileMessage(
+                      _,
+                      _,
+                      writeAs,
+                      _,
+                      _,
+                      content,
+                      _,
+                      StreamRef.Create(id, _))) =>
                 sys.error("todo")
 
               case (
-                  acc,
-                  StoreFileMessage(
-                    _,
-                    _,
-                    writeAs,
-                    _,
-                    _,
-                    content,
-                    _,
-                    StreamRef.Replace(id, _))) =>
+                    acc,
+                    StoreFileMessage(
+                      _,
+                      _,
+                      writeAs,
+                      _,
+                      _,
+                      content,
+                      _,
+                      StreamRef.Replace(id, _))) =>
                 sys.error("todo")
 
               case (acc, _: ArchiveMessage) =>
@@ -390,12 +396,16 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
           Set(
             PathMetadata(
               p0,
-              if (isDir) DataDir(record.resource.mimeType)
-              else DataOnly(record.resource.mimeType)))
+              if (isDir)
+                DataDir(record.resource.mimeType)
+              else
+                DataOnly(record.resource.mimeType)))
         } getOrElse {
           // no current version
-          if (isDir) Set(PathMetadata(p0, PathOnly))
-          else Set.empty[PathMetadata]
+          if (isDir)
+            Set(PathMetadata(p0, PathOnly))
+          else
+            Set.empty[PathMetadata]
         }
       }
     }
@@ -418,11 +428,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
             \/.right(
               PathMetadata(
                 path,
-                if (isDir) DataDir(record.resource.mimeType)
-                else DataOnly(record.resource.mimeType)))
+                if (isDir)
+                  DataDir(record.resource.mimeType)
+                else
+                  DataOnly(record.resource.mimeType)))
           } getOrElse {
-            if (isDir) \/.right(PathMetadata(path, PathOnly))
-            else \/.left(NotFound("Path not fournd: %s".format(path.path)))
+            if (isDir)
+              \/.right(PathMetadata(path, PathOnly))
+            else
+              \/.left(NotFound("Path not fournd: %s".format(path.path)))
           }
         }
       }

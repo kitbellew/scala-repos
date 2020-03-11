@@ -75,12 +75,20 @@ private[http] class FrameEventRenderer
       case _ ⇒ (127, 8)
     }
 
-    val maskBytes = if (header.mask.isDefined) 4 else 0
+    val maskBytes =
+      if (header.mask.isDefined)
+        4
+      else
+        0
     val totalSize = 2 + extraLengthBytes + maskBytes
 
     val data = new Array[Byte](totalSize)
 
-    def bool(b: Boolean, mask: Int): Int = if (b) mask else 0
+    def bool(b: Boolean, mask: Int): Int =
+      if (b)
+        mask
+      else
+        0
     val flags =
       bool(header.fin, FIN_MASK) |
         bool(header.rsv1, RSV1_MASK) |

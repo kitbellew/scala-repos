@@ -450,7 +450,8 @@ private[hive] case class HiveScriptIOSchema(
       rowFormat: Seq[(String, String)],
       serdeClass: Option[String],
       serdeProps: Seq[(String, String)]): Option[String] = {
-    if (schemaLess) return Some("")
+    if (schemaLess)
+      return Some("")
 
     val rowFormatDelimited =
       rowFormat.map {
@@ -475,7 +476,10 @@ private[hive] case class HiveScriptIOSchema(
             s"'${p._1}' = '${p._2}'"
           }
           .mkString(", ")
-        if (props.nonEmpty) " WITH SERDEPROPERTIES(" + props + ")" else ""
+        if (props.nonEmpty)
+          " WITH SERDEPROPERTIES(" + props + ")"
+        else
+          ""
       } else {
         ""
       }

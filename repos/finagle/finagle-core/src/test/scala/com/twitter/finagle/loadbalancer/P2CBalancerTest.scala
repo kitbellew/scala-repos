@@ -75,7 +75,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
 
     // This isn't quite the right notion of mean load, but it's good enough.
     def meanLoad: Double =
-      if (count == 0) 0.0 else sum.toDouble / count.toDouble
+      if (count == 0)
+        0.0
+      else
+        sum.toDouble / count.toDouble
 
     def apply(conn: ClientConnection) = {
       load += 1
@@ -113,7 +116,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
       new LoadedFactory(i)
     }
     val bal = newBal(Var.value(init))
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assertEven(init)
   }
 
@@ -149,13 +153,15 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     val vec = Var(init)
     val bal = newBal(vec)
 
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assertEven(vec())
 
     val fN1 = LoadedFactory(N + 1)
     vec() :+= fN1
 
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assertEven(vec())
 
     // Spot check!
@@ -164,7 +170,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     val init0Load = init(0).load
     vec() = vec() drop 1
 
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assert(init0Load == init(0).load)
   }
 
@@ -195,7 +202,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     assertEven(init drop 1)
 
     Closable.all(byIndex(0).toSeq: _*).close()
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assert(init(0).load == 0)
     assertEven(init drop 1)
 
@@ -219,7 +227,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     assert(exc eq noBrokers)
 
     vec() :+= new LoadedFactory(0)
-    for (_ <- 0 until R) Await.result(bal())
+    for (_ <- 0 until R)
+      Await.result(bal())
     assert(vec().head.load == R)
 
     vec() = Vector.empty
@@ -234,19 +243,24 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     }
     val bal = newBal(Var.value(init))
 
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     assertEven(init)
 
     val init0Load = init(0).load
-    for (f <- init) f.stat = Status.Closed
-    for (_ <- 0 until R) Await.result(bal()) // make sure we don't throw
+    for (f <- init)
+      f.stat = Status.Closed
+    for (_ <- 0 until R)
+      Await.result(bal()) // make sure we don't throw
 
     assertEven(init)
     val init0Load2 = init(0).load
     assert(math.abs(init0Load * 2 - init0Load2) < ε)
 
-    for (f <- init drop N / 2) f.stat = Status.Open
-    for (_ <- 0 until R) bal()
+    for (f <- init drop N / 2)
+      f.stat = Status.Open
+    for (_ <- 0 until R)
+      bal()
 
     assert(init0Load2 == init(0).load)
     assertEven(init drop N / 2)
@@ -301,7 +315,8 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     }
     val bal = newBal(Var.value(init))
     // Give it some traffic.
-    for (_ <- 0 until R) bal()
+    for (_ <- 0 until R)
+      bal()
     Await.result(bal.close(), 5.seconds)
   }
 }
@@ -331,9 +346,11 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
     val bal = newBal(Var.value(fs), clock = clock)
     @tailrec
     def go(step: Int, schedule: SortedMap[Long, Seq[Closable]]): Unit = {
-      if (step != 0 && schedule.isEmpty) return
+      if (step != 0 && schedule.isEmpty)
+        return
       val next =
-        if (step >= n) schedule
+        if (step >= n)
+          schedule
         else {
           val svc = Await.result(bal())
           val latency = Await.result(svc((): Unit)).toLong
@@ -343,7 +360,8 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
           schedule + work
         }
       for (seq <- next.get(step);
-           c <- seq) c.close()
+           c <- seq)
+        c.close()
       clock.advance(1)
       go(step + 1, next - step)
     }
@@ -355,7 +373,11 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
     val weight = 1d
     var load = 0
     var sum = 0
-    def meanLoad = if (load == 0) 0.0 else sum.toDouble / load.toDouble
+    def meanLoad =
+      if (load == 0)
+        0.0
+      else
+        sum.toDouble / load.toDouble
     def apply(conn: ClientConnection) = {
       load += 1
       sum += load

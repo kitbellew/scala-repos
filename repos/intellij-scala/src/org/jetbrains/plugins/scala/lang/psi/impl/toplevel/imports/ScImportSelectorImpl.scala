@@ -45,7 +45,10 @@ class ScImportSelectorImpl private (
       return stub.asInstanceOf[ScImportSelectorStub].importedName
     }
     val id = findChildByType[PsiElement](TokenSets.ID_SET)
-    if (id == null) reference.refName else id.getText
+    if (id == null)
+      reference.refName
+    else
+      id.getText
   }
 
   def reference: ScStableCodeReferenceElement = {
@@ -67,13 +70,21 @@ class ScImportSelectorImpl private (
     }
     val forward: Boolean = expr.selectors.head == this
     var node = this.getNode
-    var prev = if (forward) node.getTreeNext else node.getTreePrev
+    var prev =
+      if (forward)
+        node.getTreeNext
+      else
+        node.getTreePrev
     var t: IElementType = null
     do {
       node.getTreeParent.removeChild(node)
       node = prev
       if (node != null) {
-        prev = if (forward) node.getTreeNext else node.getTreePrev
+        prev =
+          if (forward)
+            node.getTreeNext
+          else
+            node.getTreePrev
         t = node.getElementType
       }
     } while (node != null && !(t == ScalaElementTypes.IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER))

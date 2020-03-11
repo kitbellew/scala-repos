@@ -32,14 +32,16 @@ trait SerializationSupport {
   @volatile
   private var ser: Serialization = _
   def serialization: Serialization = {
-    if (ser == null) ser = SerializationExtension(system)
+    if (ser == null)
+      ser = SerializationExtension(system)
     ser
   }
 
   @volatile
   private var protocol: String = _
   def addressProtocol: String = {
-    if (protocol == null) protocol = system.provider.getDefaultAddress.protocol
+    if (protocol == null)
+      protocol = system.provider.getDefaultAddress.protocol
     protocol
   }
 
@@ -144,8 +146,10 @@ trait SerializationSupport {
 
   def otherMessageFromProto(other: dm.OtherMessage): AnyRef = {
     val manifest =
-      if (other.hasMessageManifest) other.getMessageManifest.toStringUtf8
-      else ""
+      if (other.hasMessageManifest)
+        other.getMessageManifest.toStringUtf8
+      else
+        ""
     serialization
       .deserialize(
         other.getEnclosedMessage.toByteArray,

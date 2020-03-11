@@ -108,7 +108,10 @@ final case class SurroundKids() extends SubNode with WithKids {
       case x => x
     }
 
-    if (changed) res else newNs ++ original
+    if (changed)
+      res
+    else
+      newNs ++ original
   }
 }
 
@@ -189,7 +192,10 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   }
 
   private val atEnd = Parser { in =>
-    if (in.atEnd) Success(CharSequenceReader.EofCh, in) else Failure("", in)
+    if (in.atEnd)
+      Success(CharSequenceReader.EofCh, in)
+    else
+      Failure("", in)
   }
   private lazy val topParser: Parser[CssSelector] =
     phrase(

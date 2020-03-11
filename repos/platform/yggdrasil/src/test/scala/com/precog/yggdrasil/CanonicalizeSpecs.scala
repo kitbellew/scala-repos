@@ -94,7 +94,10 @@ trait CanonicalizeSpec[M[+_]]
         val num = size / length
         val remainder = size % length
         val prefix = Stream.fill(num)(length)
-        if (remainder > 0) prefix :+ remainder else prefix
+        if (remainder > 0)
+          prefix :+ remainder
+        else
+          prefix
       }
 
       resultSizes mustEqual expected

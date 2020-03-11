@@ -238,8 +238,12 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
 
     /** Scala type this column is mapped to */
     def tpe = jdbcTypeToScala(meta.sqlType, meta.typeName).toString match {
-      case "java.lang.String" => if (meta.size == Some(1)) "Char" else "String"
-      case t                  => t
+      case "java.lang.String" =>
+        if (meta.size == Some(1))
+          "Char"
+        else
+          "String"
+      case t => t
     }
     def name = meta.name
 
@@ -260,7 +264,10 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
 
     /** Column length of string types */
     def length: Option[Int] =
-      if (tpe == "String") meta.size else None // Only valid for strings!
+      if (tpe == "String")
+        meta.size
+      else
+        None // Only valid for strings!
     /** Indicates wether this should be a varchar in case of a string column.
       * Currently defaults to true. Should be based on the value of dbType in the future. */
     def varying: Boolean =
@@ -281,7 +288,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * If `ignoreInvalidDefaults = true`, Slick catches scala.MatchError and java.lang.NumberFormatException thrown by
       * this method, logs the message and treats it as no default value for convenience. */
     def default: Option[Option[Any]] = rawDefault.map { v =>
-      if (v == "NULL") None
+      if (v == "NULL")
+        None
       else {
         // NOTE: When extending this list, please also extend the code generator accordingly
         Some((v, tpe) match {
@@ -331,7 +339,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         .getOrElse {
           default.map(d =>
             RelationalProfile.ColumnOption.Default(
-              if (nullable) d
+              if (nullable)
+                d
               else
                 d.getOrElse(throw new SlickException(
                   s"Invalid default value $d for non-nullable column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString))
@@ -352,7 +361,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           if (ignoreInvalidDefaults) {
             logger.debug(s"SlickException: $msg")
             None
-          } else throw new SlickException(msg, e)
+          } else
+            throw new SlickException(msg, e)
       }
 
     def model =
@@ -363,13 +373,21 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         nullable = nullable,
         options = Set() ++
           dbType.map(SqlProfile.ColumnOption.SqlType) ++
-          (if (autoInc) Some(ColumnOption.AutoInc) else None) ++
-          (if (createPrimaryKeyColumnOption) Some(ColumnOption.PrimaryKey)
-           else None) ++
+          (if (autoInc)
+             Some(ColumnOption.AutoInc)
+           else
+             None) ++
+          (if (createPrimaryKeyColumnOption)
+             Some(ColumnOption.PrimaryKey)
+           else
+             None) ++
           length.map(
             RelationalProfile.ColumnOption.Length
               .apply(_, varying = varying)) ++
-          (if (!autoInc) convenientDefault else None)
+          (if (!autoInc)
+             convenientDefault
+           else
+             None)
       )
   }
 
@@ -382,7 +400,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def columns = meta.map(_.column)
     // single column primary keys excluded in favor of PrimaryKey column option
     final def model: Option[m.PrimaryKey] =
-      if (!enabled) None
+      if (!enabled)
+        None
       else
         Some(
           m.PrimaryKey(
@@ -407,7 +426,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       assert(
         tableBuilder.namer.qualifiedName == tableNamersByQName(
           fk.fkTable).qualifiedName)
-      if (!enabled) None
+      if (!enabled)
+        None
       else
         Some(
           m.ForeignKey(
@@ -452,7 +472,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def columns = meta.flatMap(_.column)
     def name = idx.indexName.filter(_ != "")
     final def model: Option[m.Index] =
-      if (!enabled) None
+      if (!enabled)
+        None
       else
         Some(
           m.Index(

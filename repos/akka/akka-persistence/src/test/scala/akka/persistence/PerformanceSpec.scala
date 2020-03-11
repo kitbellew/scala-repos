@@ -42,7 +42,9 @@ object PerformanceSpec {
     var failAt: Long = -1
 
     override val receiveRecover: Receive = {
-      case _ ⇒ if (lastSequenceNr % 1000 == 0) print("r")
+      case _ ⇒
+        if (lastSequenceNr % 1000 == 0)
+          print("r")
     }
 
     val controlBehavior: Receive = {
@@ -58,8 +60,10 @@ object PerformanceSpec {
     override val receiveCommand: Receive = controlBehavior orElse {
       case cmd ⇒
         persistAsync(cmd) { _ ⇒
-          if (lastSequenceNr % 1000 == 0) print(".")
-          if (lastSequenceNr == failAt) throw new TestException("boom")
+          if (lastSequenceNr % 1000 == 0)
+            print(".")
+          if (lastSequenceNr == failAt)
+            throw new TestException("boom")
         }
     }
   }
@@ -70,8 +74,10 @@ object PerformanceSpec {
     override val receiveCommand: Receive = controlBehavior orElse {
       case cmd ⇒
         persist(cmd) { _ ⇒
-          if (lastSequenceNr % 1000 == 0) print(".")
-          if (lastSequenceNr == failAt) throw new TestException("boom")
+          if (lastSequenceNr % 1000 == 0)
+            print(".")
+          if (lastSequenceNr == failAt)
+            throw new TestException("boom")
         }
     }
   }
@@ -84,15 +90,19 @@ object PerformanceSpec {
     var counter = 0
 
     val handler: Any ⇒ Unit = { evt ⇒
-      if (lastSequenceNr % 1000 == 0) print(".")
-      if (lastSequenceNr == failAt) throw new TestException("boom")
+      if (lastSequenceNr % 1000 == 0)
+        print(".")
+      if (lastSequenceNr == failAt)
+        throw new TestException("boom")
     }
 
     val receiveCommand: Receive = controlBehavior orElse {
       case cmd ⇒
         counter += 1
-        if (counter % 10 == 0) persist(cmd)(handler)
-        else persistAsync(cmd)(handler)
+        if (counter % 10 == 0)
+          persist(cmd)(handler)
+        else
+          persistAsync(cmd)(handler)
     }
   }
 
@@ -101,7 +111,8 @@ object PerformanceSpec {
 
     val printProgress: PartialFunction[Any, Any] = {
       case m ⇒
-        if (lastSequenceNr % 1000 == 0) print(".");
+        if (lastSequenceNr % 1000 == 0)
+          print(".");
         m
     }
 

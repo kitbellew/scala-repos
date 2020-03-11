@@ -262,7 +262,8 @@ object Schemifier extends Loggable {
     using(md.getTables(null, getDefaultSchemaName(connection), null, null)) {
       rs =>
         def hasTable(rs: ResultSet): Boolean =
-          if (!rs.next) false
+          if (!rs.next)
+            false
           else
             rs.getString(3) match {
               case s if s.toLowerCase == table._dbTableNameLC.toLowerCase =>
@@ -335,7 +336,8 @@ object Schemifier extends Loggable {
       }
       hasTable_?(table, connection, actualTableNames)
       Collector(table.dbAddTable.toList, cmds.toList)
-    } else Collector(Nil, cmds.toList)
+    } else
+      Collector(Nil, cmds.toList)
   }
 
   private def createColumns(
@@ -426,7 +428,8 @@ object Schemifier extends Loggable {
         false,
         false)) { rs =>
       def quad(rs: ResultSet): List[(String, String, Int)] = {
-        if (!rs.next) Nil
+        if (!rs.next)
+          Nil
         else {
           if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC)) {
             // Skip index statistics
@@ -435,8 +438,10 @@ object Schemifier extends Loggable {
                 rs.getString(6).toLowerCase,
                 rs.getString(9).toLowerCase,
                 rs.getInt(8)) :: quad(rs)
-            } else quad(rs)
-          } else Nil
+            } else
+              quad(rs)
+          } else
+            Nil
         }
       }
       quad(rs)
@@ -466,7 +471,8 @@ object Schemifier extends Loggable {
             "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
           }
           field.dbAddedIndex.toList
-        } else Nil
+        } else
+          Nil
       }
 
     table.dbIndexes.foreach { index =>

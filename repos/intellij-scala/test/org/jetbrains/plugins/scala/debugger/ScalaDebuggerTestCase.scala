@@ -80,7 +80,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
                 event: ProcessEvent,
                 outputType: Key[_]) {
               val text = event.getText
-              if (debug) print(text)
+              if (debug)
+                print(text)
             }
           },
           runner
@@ -252,8 +253,10 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
         val ctx: EvaluationContextImpl = evaluationContext()
         val factory = new ScalaCodeFragmentFactory()
         val kind =
-          if (codeText.contains("\n")) CodeFragmentKind.CODE_BLOCK
-          else CodeFragmentKind.EXPRESSION
+          if (codeText.contains("\n"))
+            CodeFragmentKind.CODE_BLOCK
+          else
+            CodeFragmentKind.EXPRESSION
         val codeFragment: PsiCodeFragment = inReadAction {
           val result =
             new CodeFragmentFactoryContextWrapper(factory).createCodeFragment(

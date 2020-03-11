@@ -236,7 +236,10 @@ private[twitter] object Message {
       }
 
       val dstbytes =
-        if (dst.isEmpty) noBytes else dst.show.getBytes(Charsets.Utf8)
+        if (dst.isEmpty)
+          noBytes
+        else
+          dst.show.getBytes(Charsets.Utf8)
       n += 2 + dstbytes.length
       n += 2
 
@@ -443,14 +446,18 @@ private[twitter] object Message {
 
   object Tmessage {
     def unapply(m: Message): Option[Int] =
-      if (m.typ > 0) Some(m.tag)
-      else None
+      if (m.typ > 0)
+        Some(m.tag)
+      else
+        None
   }
 
   object Rmessage {
     def unapply(m: Message): Option[Int] =
-      if (m.typ < 0) Some(m.tag)
-      else None
+      if (m.typ < 0)
+        Some(m.tag)
+      else
+        None
   }
 
   object ControlMessage {
@@ -459,7 +466,8 @@ private[twitter] object Message {
     def unapply(m: Message): Option[Int] =
       if (math.abs(m.typ) >= 64 || m.typ == Types.BAD_Tdiscarded)
         Some(m.tag)
-      else None
+      else
+        None
   }
 
   def decodeUtf8(buf: ChannelBuffer): String =
@@ -568,12 +576,15 @@ private[twitter] object Message {
     val ndst = buf.readUnsignedShort()
     // Path.read("") fails, so special case empty-dst.
     val dst =
-      if (ndst == 0) Path.empty
-      else Path.read(decodeUtf8(buf.readSlice(ndst)))
+      if (ndst == 0)
+        Path.empty
+      else
+        Path.read(decodeUtf8(buf.readSlice(ndst)))
 
     val nd = buf.readUnsignedShort()
     val dtab =
-      if (nd == 0) Dtab.empty
+      if (nd == 0)
+        Dtab.empty
       else {
         var i = 0
         val delegations = new Array[Dentry](nd)

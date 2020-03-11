@@ -42,17 +42,22 @@ object traversable {
 
     implicit def hnilFromTraversable[T] = new FromTraversable[HNil] {
       def apply(l: GenTraversable[_]) =
-        if (l.isEmpty) Some(HNil) else None
+        if (l.isEmpty)
+          Some(HNil)
+        else
+          None
     }
 
     implicit def hlistFromTraversable[OutH, OutT <: HList](implicit
         flt: FromTraversable[OutT],
         oc: Typeable[OutH]) = new FromTraversable[OutH :: OutT] {
       def apply(l: GenTraversable[_]): Option[OutH :: OutT] =
-        if (l.isEmpty) None
+        if (l.isEmpty)
+          None
         else
           for (h <- l.head.cast[OutH];
-               t <- flt(l.tail)) yield h :: t
+               t <- flt(l.tail))
+            yield h :: t
     }
   }
 

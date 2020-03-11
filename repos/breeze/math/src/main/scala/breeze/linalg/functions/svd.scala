@@ -434,7 +434,10 @@ object svd extends UFunc {
         else
           svdImpl(mt, k, tol)
 
-      if (isSlimMatrix) SVD(vt.t, s, u.t) else SVD(u, s, vt)
+      if (isSlimMatrix)
+        SVD(vt.t, s, u.t)
+      else
+        SVD(u, s, vt)
     }
   }
 }

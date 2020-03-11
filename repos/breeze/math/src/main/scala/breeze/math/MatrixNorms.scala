@@ -82,7 +82,8 @@ object EntrywiseMatrixNorms {
                 (
                   (v: Int) => {
                     val nn = v.abs.toDouble
-                    if (nn > agg) agg = nn
+                    if (nn > agg)
+                      agg = nn
                   },
                   identity[Double] _)
               } else {
@@ -128,7 +129,8 @@ object EntrywiseMatrixNorms {
                 (
                   (v: Float) => {
                     val nn = v.abs.toDouble
-                    if (nn > agg) agg = nn
+                    if (nn > agg)
+                      agg = nn
                   },
                   identity[Double] _)
               } else {
@@ -161,7 +163,8 @@ object EntrywiseMatrixNorms {
           class NormVisitor extends ValuesVisitor[Double] {
             var agg: Double = 0.0
             val (op, opEnd) =
-              if (n == 1) ((v: Double) => agg += v.abs, identity[Double] _)
+              if (n == 1)
+                ((v: Double) => agg += v.abs, identity[Double] _)
               else if (n == 2)
                 (
                   (v: Double) => {
@@ -173,7 +176,8 @@ object EntrywiseMatrixNorms {
                 (
                   (v: Double) => {
                     val nn = v.abs
-                    if (nn > agg) agg = nn
+                    if (nn > agg)
+                      agg = nn
                   },
                   identity[Double] _)
               } else {
@@ -206,7 +210,8 @@ object EntrywiseMatrixNorms {
           class NormVisitor extends ValuesVisitor[S] {
             var agg: Double = 0.0
             val (op, opEnd) =
-              if (n == 1) ((v: S) => agg += field.sNorm(v), identity[Double] _)
+              if (n == 1)
+                ((v: S) => agg += field.sNorm(v), identity[Double] _)
               else if (n == 2)
                 (
                   (v: S) => {
@@ -218,7 +223,8 @@ object EntrywiseMatrixNorms {
                 (
                   (v: S) => {
                     val nn = field.sNorm(v)
-                    if (nn > agg) agg = nn
+                    if (nn > agg)
+                      agg = nn
                   },
                   identity[Double] _)
               } else {

@@ -36,7 +36,8 @@ object SwaggerSerializers {
       json: JValue) = {
     if (value.nonEmpty)
       json merge JObject(List(key -> JArray(value map (JString(_)))))
-    else json
+    else
+      json
   }
 
   lazy val Iso8601Date = ISODateTimeFormat.dateTime.withZone(DateTimeZone.UTC)
@@ -352,7 +353,8 @@ object SwaggerSerializers {
           {
             case x: Model =>
               val required =
-                for ((key, value) <- x.properties if value.required) yield key
+                for ((key, value) <- x.properties if value.required)
+                  yield key
               ("id" -> x.id) ~
                 ("name" -> x.name) ~
                 ("qualifiedType" -> x.qualifiedName) ~
@@ -464,7 +466,8 @@ object SwaggerSerializers {
                                           Some(
                                             Extraction.decompose(
                                               obj.responseMessages))
-                                        else None))
+                                        else
+                                          None))
 
               val consumes = dontAddOnEmpty("consumes", obj.consumes) _
               val produces = dontAddOnEmpty("produces", obj.produces) _
@@ -607,9 +610,10 @@ object SwaggerSerializers {
               ("type" -> obj.`type`) ~
                 ("scopes" -> scopes) ~
                 ("grantTypes" ->
-                  (for (t <- grantTypes) yield {
-                    (t.`type`, Extraction.decompose(t))
-                  }).toMap)
+                  (for (t <- grantTypes)
+                    yield {
+                      (t.`type`, Extraction.decompose(t))
+                    }).toMap)
             case obj @ ApiKey(keyname, passAs) =>
               ("type" -> obj.`type`) ~
                 ("passAs" -> passAs) ~

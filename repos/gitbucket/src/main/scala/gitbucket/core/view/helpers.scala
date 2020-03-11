@@ -42,7 +42,10 @@ object helpers
     timeUnits.find(tuple => duration / tuple._1 > 0) match {
       case Some((unitValue, unitString)) =>
         val value = duration / unitValue
-        s"${value} ${unitString}${if (value > 1) "s" else ""} ago"
+        s"${value} ${unitString}${if (value > 1)
+          "s"
+        else
+          ""} ago"
       case None => "just now"
     }
   }
@@ -60,7 +63,10 @@ object helpers
         s"on ${new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH).format(date)}"
       case Some((unitValue, unitString)) =>
         val value = duration / unitValue
-        s"${value} ${unitString}${if (value > 1) "s" else ""} ago"
+        s"${value} ${unitString}${if (value > 1)
+          "s"
+        else
+          ""} ago"
       case None => "just now"
     }
   }
@@ -84,7 +90,12 @@ object helpers
     * If plural is not specified, returns singular + "s" as plural.
     */
   def plural(count: Int, singular: String, plural: String = ""): String =
-    if (count == 1) singular else if (plural.isEmpty) singular + "s" else plural
+    if (count == 1)
+      singular
+    else if (plural.isEmpty)
+      singular + "s"
+    else
+      plural
 
   /**
     * Converts Markdown of Wiki pages to HTML.
@@ -401,14 +412,18 @@ object helpers
           x ++ (Seq(
             if (pos < m.start)
               Some(HtmlFormat.escape(text.substring(pos, m.start)))
-            else None,
+            else
+              None,
             Some(Html(s"""<a href="${href}">${url}</a>"""))
           ).flatten),
           m.end)
     }
     // append rest fragment
     val out =
-      if (pos < text.length) x :+ HtmlFormat.escape(text.substring(pos)) else x
+      if (pos < text.length)
+        x :+ HtmlFormat.escape(text.substring(pos))
+      else
+        x
 
     HtmlFormat.fill(out)
   }

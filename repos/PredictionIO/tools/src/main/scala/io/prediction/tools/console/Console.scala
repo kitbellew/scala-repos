@@ -751,8 +751,10 @@ object Console extends Logging {
       mainHelp
     } else {
       val stripped =
-        (if (commands.head == "help") commands.drop(1) else commands)
-          .mkString("-")
+        (if (commands.head == "help")
+           commands.drop(1)
+         else
+           commands).mkString("-")
       helpText.getOrElse(stripped, s"Help is unavailable for ${stripped}.")
     }
   }
@@ -935,9 +937,16 @@ object Console extends Logging {
       } else {
         ""
       }
-    val clean = if (ca.build.sbtClean) " clean" else ""
+    val clean =
+      if (ca.build.sbtClean)
+        " clean"
+      else
+        ""
     val buildCmd = s"${sbt} ${ca.build.sbtExtra.getOrElse("")}${clean} " +
-      (if (ca.build.uberJar) "assembly" else s"package${asm}")
+      (if (ca.build.uberJar)
+         "assembly"
+       else
+         s"package${asm}")
     val core = new File(s"pio-assembly-${BuildInfo.version}.jar")
     if (ca.build.uberJar) {
       info(s"Uber JAR enabled. Putting ${core.getName} in lib.")
@@ -1234,7 +1243,10 @@ object Console extends Logging {
         new File("target" +
           File.separator + s"scala-${scalaVersionNoPatch}")))
     // Use libFiles is target is empty.
-    if (targetFiles.size > 0) targetFiles else libFiles
+    if (targetFiles.size > 0)
+      targetFiles
+    else
+      libFiles
   }
 
   def jarFilesForScalaFilter(jars: Array[File]): Array[File] =
@@ -1271,7 +1283,10 @@ object Console extends Logging {
     } getOrElse {
       val f = new File(
         Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
-      if (f.exists) f.getCanonicalPath else "sbt"
+      if (f.exists)
+        f.getCanonicalPath
+      else
+        "sbt"
     }
   }
 

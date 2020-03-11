@@ -43,7 +43,10 @@ object TextInputDialog {
     */
   implicit def sfxTextInputDialog2jfx(
       v: TextInputDialog): jfxsc.TextInputDialog =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

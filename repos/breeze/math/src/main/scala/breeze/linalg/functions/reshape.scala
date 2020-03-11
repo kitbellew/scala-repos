@@ -67,7 +67,10 @@ object reshape extends UFunc {
           cols,
           nDM.data,
           dm.offset,
-          if (dm.isTranspose) cols else rows,
+          if (dm.isTranspose)
+            cols
+          else
+            rows,
           dm.isTranspose)
       }
     }

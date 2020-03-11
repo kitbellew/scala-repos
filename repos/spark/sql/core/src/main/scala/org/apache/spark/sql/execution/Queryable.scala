@@ -122,7 +122,11 @@ private[sql] trait Queryable {
 
     // For Data that has more than "numRows" records
     if (hasMoreData) {
-      val rowsString = if (numRows == 1) "row" else "rows"
+      val rowsString =
+        if (numRows == 1)
+          "row"
+        else
+          "rows"
       sb.append(s"only showing top $numRows $rowsString\n")
     }
 

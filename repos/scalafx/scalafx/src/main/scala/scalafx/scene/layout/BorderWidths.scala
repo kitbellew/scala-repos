@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 
 object BorderWidths {
   implicit def sfxBorderWidths2jfx(v: BorderWidths): jfxsl.BorderWidths =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * When used by a BorderStroke, the value of AUTO is interpreted as the value of

@@ -33,10 +33,10 @@ class JarTargetTest
               1,
               expectMsgType[SymbolSearchResults].syms) should matchPattern {
               case TypeSearchResult(
-                  "baz.Foo$",
-                  "Foo$",
-                  DeclaredAs.Class,
-                  Some(_)) =>
+                    "baz.Foo$",
+                    "Foo$",
+                    DeclaredAs.Class,
+                    Some(_)) =>
             }
           }
         }
@@ -99,10 +99,10 @@ class MissingJarTargetTest
               1,
               expectMsgType[SymbolSearchResults].syms) should matchPattern {
               case TypeSearchResult(
-                  "baz.Foo$",
-                  "Foo$",
-                  DeclaredAs.Class,
-                  Some(_)) =>
+                    "baz.Foo$",
+                    "Foo$",
+                    DeclaredAs.Class,
+                    Some(_)) =>
             }
           }
         }

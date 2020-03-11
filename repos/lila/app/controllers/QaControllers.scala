@@ -30,8 +30,10 @@ trait QaController extends LilaController {
               popular,
               related,
               answerForm =
-                if (QaAuth canAnswer q) answerForm orElse Some(forms.answer)
-                else None,
+                if (QaAuth canAnswer q)
+                  answerForm orElse Some(forms.answer)
+                else
+                  None,
               captcha = captcha))
         }
       case _ => notFound
@@ -48,23 +50,29 @@ trait QaController extends LilaController {
   protected def WithQuestion(id: QuestionId, slug: String)(
       block: Question => Fu[Result])(implicit ctx: Context): Fu[Result] =
     WithQuestion(id) { q =>
-      if (slug != q.slug) fuccess(Redirect {
-        controllers.routes.QaQuestion.show(id, q.slug)
-      })
-      else block(q)
+      if (slug != q.slug)
+        fuccess(Redirect {
+          controllers.routes.QaQuestion.show(id, q.slug)
+        })
+      else
+        block(q)
     }
 
   protected def WithOwnQuestion(id: QuestionId)(block: Question => Fu[Result])(
       implicit ctx: Context): Fu[Result] =
     WithQuestion(id) { q =>
-      if (QaAuth canEdit q) block(q)
-      else fuccess(Unauthorized)
+      if (QaAuth canEdit q)
+        block(q)
+      else
+        fuccess(Unauthorized)
     }
   protected def WithOwnQuestion(id: QuestionId, slug: String)(
       block: Question => Fu[Result])(implicit ctx: Context): Fu[Result] =
     WithQuestion(id, slug) { q =>
-      if (QaAuth canEdit q) block(q)
-      else fuccess(Unauthorized)
+      if (QaAuth canEdit q)
+        block(q)
+      else
+        fuccess(Unauthorized)
     }
 
   protected def WithOwnAnswer(questionId: QuestionId, answerId: AnswerId)(

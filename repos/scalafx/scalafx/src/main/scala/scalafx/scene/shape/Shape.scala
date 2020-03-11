@@ -39,7 +39,10 @@ import scalafx.scene.paint.Paint
 
 object Shape {
   implicit def sfxShape2jfx(v: Shape): jfxss.Shape =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Returns a new Shape which is created as an intersection of the specified input shapes.

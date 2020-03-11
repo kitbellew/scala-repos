@@ -123,25 +123,33 @@ trait BlockStoreColumnarTableModule[M[+_]]
       }
 
       def slice = {
-        slice0.sparsen(remap, if (position > 0) remap(position - 1) + 1 else 0)
+        slice0.sparsen(
+          remap,
+          if (position > 0)
+            remap(position - 1) + 1
+          else
+            0)
       }
 
       def currentJson = slice0.toJson(position)
 
       def succ: M[Option[CellState]] = {
-        for (blockOpt <- succf(maxKey)) yield {
-          blockOpt map { block =>
-            CellState(index, block.maxKey, block.data, succf)
+        for (blockOpt <- succf(maxKey))
+          yield {
+            blockOpt map { block =>
+              CellState(index, block.maxKey, block.data, succf)
+            }
           }
-        }
       }
 
       def split: (Slice, CellState) = {
         val (finished, continuing) = slice0.split(position)
         val nextState = CellState(index, maxKey, continuing, succf)
         (
-          if (position == 0) finished
-          else finished.sparsen(remap, remap(position - 1) + 1),
+          if (position == 0)
+            finished
+          else
+            finished.sparsen(remap, remap(position - 1) + 1),
           nextState)
       }
 
@@ -167,15 +175,17 @@ trait BlockStoreColumnarTableModule[M[+_]]
       def apply(initialCells: Vector[Cell])(
           keyf: Slice => Iterable[CPath]): CellMatrix = {
         val size =
-          if (initialCells.isEmpty) 0 else initialCells.map(_.index).max + 1
+          if (initialCells.isEmpty)
+            0
+          else
+            initialCells.map(_.index).max + 1
 
         type ComparatorMatrix = Array[Array[RowComparator]]
         def fillMatrix(initialCells: Vector[Cell]): ComparatorMatrix = {
           val comparatorMatrix = Array.ofDim[RowComparator](size, size)
 
           for (Cell(i, _, s) <- initialCells;
-               Cell(i0, _, s0) <- initialCells
-               if i != i0) {
+               Cell(i0, _, s0) <- initialCells if i != i0) {
             comparatorMatrix(i)(i0) = Slice.rowComparatorFor(s, s0)(keyf)
           }
 
@@ -467,7 +477,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         }
 
         private val auxComparator =
-          if (rauth == null) null
+          if (rauth == null)
+            null
           else {
             Slice.rowComparatorFor(
               lkey.deref(CPathIndex(0)),
@@ -479,7 +490,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         def compare(i1: Int, i2: Int) = {
           if (i2 < 0 && rauth != null)
             auxComparator.compare(i1, rauth.size + i2)
-          else mainComparator.compare(i1, i2)
+          else
+            mainComparator.compare(i1, i2)
         }
       }
 
@@ -1222,13 +1234,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
           (sliceIndex, jdbmState)
 
         case SortedSlice(
-            indexName,
-            kslice0,
-            vslice0,
-            vEncoder0,
-            keyRefs,
-            valRefs,
-            count) =>
+              indexName,
+              kslice0,
+              vslice0,
+              vEncoder0,
+              keyRefs,
+              valRefs,
+              count) =>
           val keyRowFormat = RowFormat.forSortingKey(krefs)
           val keyComparator =
             SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
@@ -1330,8 +1342,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   (k: SortingKey) => M.point(None))))
 
           case (
-              SliceIndex(name, dbFile, _, _, _, keyColumns, valColumns, count),
-              index) =>
+                SliceIndex(
+                  name,
+                  dbFile,
+                  _,
+                  _,
+                  _,
+                  keyColumns,
+                  valColumns,
+                  count),
+                index) =>
             val sortProjection = new JDBMRawSortProjection[M](
               dbFile,
               name,
@@ -1356,14 +1376,17 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
       val head = StreamT.Skip(
         StreamT.wrapEffect(
-          for (cellOptions <- cellsMs.sequence) yield {
-            mergeProjections(sortOrder, cellOptions.flatMap(a => a)) { slice =>
-              // only need to compare on the group keys (0th element of resulting table) between projections
-              slice.columns.keys collect {
-                case ColumnRef(path @ CPath(CPathIndex(0), _ @_*), _) => path
+          for (cellOptions <- cellsMs.sequence)
+            yield {
+              mergeProjections(sortOrder, cellOptions.flatMap(a => a)) {
+                slice =>
+                  // only need to compare on the group keys (0th element of resulting table) between projections
+                  slice.columns.keys collect {
+                    case ColumnRef(path @ CPath(CPathIndex(0), _ @_*), _) =>
+                      path
+                  }
               }
             }
-          }
         )
       )
 
@@ -1381,7 +1404,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
       def hashJoin(index: Slice, table: Table, flip: Boolean): M[Table] = {
         val (indexKeySpec, tableKeySpec) =
-          if (flip) (rightKeySpec, leftKeySpec) else (leftKeySpec, rightKeySpec)
+          if (flip)
+            (rightKeySpec, leftKeySpec)
+          else
+            (leftKeySpec, rightKeySpec)
 
         val initKeyTrans = composeSliceTransform(tableKeySpec)
         val initJoinTrans = composeSliceTransform2(joinSpec)
@@ -1573,8 +1599,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
     override def distinct(spec: TransSpec1): Table = this
 
     override def takeRange(startIndex: Long, numberToTake: Long): Table =
-      if (startIndex <= 0 && startIndex + numberToTake >= 1) this
-      else Table.empty
+      if (startIndex <= 0 && startIndex + numberToTake >= 1)
+        this
+      else
+        Table.empty
   }
 
   /**

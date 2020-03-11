@@ -52,7 +52,8 @@ object TerminateJson {
     }
 
     def push(a: A) {
-      if (next == stack.length) resize()
+      if (next == stack.length)
+        resize()
       stack(next) = a
       next += 1
     }
@@ -119,15 +120,21 @@ object TerminateJson {
             case SkipChar =>
               stack.pop()
             case ExpectValue =>
-              if (!isWhitespace(c)) stack.pop()
+              if (!isWhitespace(c))
+                stack.pop()
               anyValue()
             case CloseString =>
-              if (c == '\\') stack.push(SkipChar)
-              else if (c == '"') stack.pop()
+              if (c == '\\')
+                stack.push(SkipChar)
+              else if (c == '"')
+                stack.pop()
             case CloseArray =>
-              if (c == ']') stack.pop()
-              else if (c == ',') stack.push(ExpectValue)
-              else anyValue()
+              if (c == ']')
+                stack.pop()
+              else if (c == ',')
+                stack.push(ExpectValue)
+              else
+                anyValue()
             case ExpectField =>
               if (c == '"') {
                 stack.pop()
@@ -136,15 +143,19 @@ object TerminateJson {
                 stack.push(CloseString)
               }
             case CloseObject =>
-              if (c == '}') stack.pop()
-              else if (c == ',') stack.push(ExpectField)
+              if (c == '}')
+                stack.pop()
+              else if (c == ',')
+                stack.push(ExpectField)
               else if (c == '"') {
                 stack.push(ExpectValue)
                 stack.push(FieldDelim)
                 stack.push(CloseString)
-              } else anyValue()
+              } else
+                anyValue()
             case FieldDelim =>
-              if (c == ':') stack.pop()
+              if (c == ':')
+                stack.pop()
             case _ =>
               anyValue()
           }
@@ -156,7 +167,8 @@ object TerminateJson {
     }
 
     def terminal(stack: ArrayStack[Int]): Option[CharBuffer] = {
-      if (stack.isEmpty) None
+      if (stack.isEmpty)
+        None
       else
         Some({
           val sb = new StringBuilder()

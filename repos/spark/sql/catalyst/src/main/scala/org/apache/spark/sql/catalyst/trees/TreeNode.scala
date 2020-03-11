@@ -185,7 +185,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case nonChild: AnyRef => nonChild
       case null             => null
     }.toArray
-    if (changed) makeCopy(newArgs) else this
+    if (changed)
+      makeCopy(newArgs)
+    else
+      this
   }
 
   /**
@@ -244,7 +247,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case null             => null
     }.toArray
 
-    if (changed) makeCopy(newArgs) else this
+    if (changed)
+      makeCopy(newArgs)
+    else
+      this
   }
 
   /**
@@ -366,7 +372,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case nonChild: AnyRef => nonChild
       case null             => null
     }.toArray
-    if (changed) makeCopy(newArgs) else this
+    if (changed)
+      makeCopy(newArgs)
+    else
+      this
   }
 
   /**
@@ -540,11 +549,19 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       builder: StringBuilder): StringBuilder = {
     if (depth > 0) {
       lastChildren.init.foreach { isLast =>
-        val prefixFragment = if (isLast) "   " else ":  "
+        val prefixFragment =
+          if (isLast)
+            "   "
+          else
+            ":  "
         builder.append(prefixFragment)
       }
 
-      val branch = if (lastChildren.last) "+- " else ":- "
+      val branch =
+        if (lastChildren.last)
+          "+- "
+        else
+          ":- "
       builder.append(branch)
     }
 
@@ -762,7 +779,8 @@ object TreeNode {
       expectedType: Type,
       children: Seq[TreeNode[_]],
       sc: SparkContext): AnyRef = ScalaReflectionLock.synchronized {
-    if (value == JNull) return null
+    if (value == JNull)
+      return null
 
     expectedType match {
       case t if t <:< definitions.BooleanTpe =>

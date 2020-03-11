@@ -75,8 +75,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       * if the decorated boolean is true, or a BooleanNone otherwise.
       */
     def ?[A](first: => A): BooleanOption[A] = {
-      if (b) BooleanSome(() => first)
-      else BooleanNone
+      if (b)
+        BooleanSome(() => first)
+      else
+        BooleanNone
     }
 
     /**
@@ -152,7 +154,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
         }
       case _ => true
     }
-    if (found) Full(ret) else Empty
+    if (found)
+      Full(ret)
+    else
+      Empty
   }
 
   /**
@@ -200,7 +205,11 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       * Return the specified value in a single-element list if the predicate
       * evaluates to true.
       */
-    def ?>[T](f: => T): List[T] = if (expr) List(f) else Nil
+    def ?>[T](f: => T): List[T] =
+      if (expr)
+        List(f)
+      else
+        Nil
   }
 
   /**
@@ -267,7 +276,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
     */
   object AsBoolean {
     def unapply(in: String): Option[Boolean] =
-      if (null eq in) None
+      if (null eq in)
+        None
       else
         in.toLowerCase match {
           case "t" | "true" | "yes" | "1" | "on"  => Full(true)
@@ -404,9 +414,12 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
     */
   def isEq(a: Array[Byte], b: Array[Byte]) = {
     def eq(a: Array[Byte], b: Array[Byte], pos: Int, len: Int): Boolean = {
-      if (pos == len) true
-      else if (a(pos) != b(pos)) false
-      else eq(a, b, pos + 1, len)
+      if (pos == len)
+        true
+      else if (a(pos) != b(pos))
+        false
+      else
+        eq(a, b, pos + 1, len)
     }
     a.length == b.length && eq(a, b, 0, a.length)
   }

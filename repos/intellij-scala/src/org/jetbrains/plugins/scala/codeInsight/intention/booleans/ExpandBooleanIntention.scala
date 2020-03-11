@@ -34,7 +34,8 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val returnStmt: ScReturnStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
-    if (returnStmt == null) return false
+    if (returnStmt == null)
+      return false
 
     val range: TextRange = returnStmt.getTextRange
     val offset = editor.getCaretModel.getOffset
@@ -42,10 +43,13 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
       return false
 
     val value = returnStmt.expr.orNull
-    if (value == null) return false
+    if (value == null)
+      return false
     val valType = value.getType(TypingContext.empty).getOrElse(null)
-    if (valType == null) return false
-    if (valType.canonicalText == "Boolean") return true
+    if (valType == null)
+      return false
+    if (valType.canonicalText == "Boolean")
+      return true
 
     false
   }
@@ -53,12 +57,14 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val returnStmt: ScReturnStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
-    if (returnStmt == null || !returnStmt.isValid) return
+    if (returnStmt == null || !returnStmt.isValid)
+      return
 
     val start = returnStmt.getTextRange.getStartOffset
     val expr = new StringBuilder
     val value = returnStmt.expr.orNull
-    if (value == null) return
+    if (value == null)
+      return
     expr.append("if ")
 
     value match {

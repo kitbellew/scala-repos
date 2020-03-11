@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object ReadOnlyBooleanProperty {
   implicit def sfxReadOnlyBooleanProperty2jfx(
       robp: ReadOnlyBooleanProperty): jfxbp.ReadOnlyBooleanProperty =
-    if (robp != null) robp.delegate else null
+    if (robp != null)
+      robp.delegate
+    else
+      null
 }
 
 class ReadOnlyBooleanProperty(

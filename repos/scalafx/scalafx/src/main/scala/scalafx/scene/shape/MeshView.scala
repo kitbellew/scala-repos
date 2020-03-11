@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object MeshView {
   implicit def sfxMeshView2jfx(mv: MeshView): jfxss.MeshView =
-    if (mv != null) mv.delegate else null
+    if (mv != null)
+      mv.delegate
+    else
+      null
 }
 
 /**

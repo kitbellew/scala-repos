@@ -246,7 +246,11 @@ private[spark] class MemoryStore(
         entries.synchronized {
           entries.put(blockId, entry)
         }
-        val bytesOrValues = if (level.deserialized) "values" else "bytes"
+        val bytesOrValues =
+          if (level.deserialized)
+            "values"
+          else
+            "bytes"
         logInfo(
           "Block %s stored as %s in memory (estimated size %s, free %s)".format(
             blockId,

@@ -333,7 +333,8 @@ private[util] trait Props extends Logger {
     * The resource path segment corresponding to the system hostname.
     */
   lazy val hostName: String =
-    (if (inGAE) "GAE"
+    (if (inGAE)
+       "GAE"
      else
        Helpers.tryo(InetAddress.getLocalHost.getHostName).openOr("localhost"))
 
@@ -377,7 +378,10 @@ private[util] trait Props extends Logger {
 
     trace(
       "Loading properties. Active run.mode is %s".format(
-        if (modeName == "") "(Development)" else modeName))
+        if (modeName == "")
+          "(Development)"
+        else
+          modeName))
 
     def vendStreams: List[(String, () => Box[InputStream])] =
       whereToLook() :::

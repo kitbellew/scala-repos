@@ -61,16 +61,22 @@ class CompileSocket extends CompileOutputCommon {
     case "" => cmdName
     case dirname =>
       val trial = File(dirname) / "bin" / cmdName
-      if (trial.canRead) trial.path
-      else cmdName
+      if (trial.canRead)
+        trial.path
+      else
+        cmdName
   }
 
   /** The class name of the scala compile server */
   protected val serverClass = "scala.tools.nsc.CompileServer"
   protected def serverClassArgs =
-    (if (verbose) List("-v") else Nil) ::: (if (fixPort > 0)
-                                              List("-p", fixPort.toString)
-                                            else Nil)
+    (if (verbose)
+       List("-v")
+     else
+       Nil) ::: (if (fixPort > 0)
+                   List("-p", fixPort.toString)
+                 else
+                   Nil)
 
   /** A temporary directory to use */
   val tmpDir = {
@@ -80,7 +86,8 @@ class CompileSocket extends CompileOutputCommon {
     if (f.isDirectory && f.canWrite) {
       info("[Temp directory: " + f + "]")
       f
-    } else fatal("Could not find a directory for temporary files")
+    } else
+      fatal("Could not find a directory for temporary files")
   }
 
   /* A directory holding port identification files */
@@ -112,8 +119,10 @@ class CompileSocket extends CompileOutputCommon {
   /** Poll for a server port number; return -1 if none exists yet */
   private def pollPort(): Int =
     if (fixPort > 0) {
-      if (portsDir.list.toList.exists(_.name == fixPort.toString)) fixPort
-      else -1
+      if (portsDir.list.toList.exists(_.name == fixPort.toString))
+        fixPort
+      else
+        -1
     } else
       portsDir.list.toList match {
         case Nil => -1
@@ -185,8 +194,13 @@ class CompileSocket extends CompileOutputCommon {
         warn("Unable to establish connection to compilation daemon");
         None
       case num =>
-        val port = if (create) getPort(vmArgs) else pollPort()
-        if (port < 0) return None
+        val port =
+          if (create)
+            getPort(vmArgs)
+          else
+            pollPort()
+        if (port < 0)
+          return None
 
         Socket.localhost(port).either match {
           case Right(socket) =>

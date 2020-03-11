@@ -53,8 +53,10 @@ private[hosts] case class HostMatcher(pattern: String) {
   def apply(hostHeader: String): Boolean = {
     val (headerHost, headerPort) = getHostAndPort(hostHeader)
     val hostMatches =
-      if (isSuffix) s".$headerHost" endsWith hostPattern
-      else headerHost == hostPattern
+      if (isSuffix)
+        s".$headerHost" endsWith hostPattern
+      else
+        headerHost == hostPattern
     val portMatches =
       headerPort.forall(_ > 0) && (port.isEmpty || port == headerPort)
     hostMatches && portMatches

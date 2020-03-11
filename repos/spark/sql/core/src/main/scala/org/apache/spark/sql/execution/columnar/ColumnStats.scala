@@ -102,8 +102,10 @@ private[columnar] class BooleanColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getBoolean(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += BOOLEAN.defaultSize
     }
   }
@@ -121,8 +123,10 @@ private[columnar] class ByteColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getByte(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += BYTE.defaultSize
     }
   }
@@ -140,8 +144,10 @@ private[columnar] class ShortColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getShort(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += SHORT.defaultSize
     }
   }
@@ -159,8 +165,10 @@ private[columnar] class IntColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getInt(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += INT.defaultSize
     }
   }
@@ -178,8 +186,10 @@ private[columnar] class LongColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getLong(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += LONG.defaultSize
     }
   }
@@ -197,8 +207,10 @@ private[columnar] class FloatColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getFloat(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += FLOAT.defaultSize
     }
   }
@@ -216,8 +228,10 @@ private[columnar] class DoubleColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getDouble(ordinal)
-      if (value > upper) upper = value
-      if (value < lower) lower = value
+      if (value > upper)
+        upper = value
+      if (value < lower)
+        lower = value
       sizeInBytes += DOUBLE.defaultSize
     }
   }
@@ -235,8 +249,10 @@ private[columnar] class StringColumnStats extends ColumnStats {
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getUTF8String(ordinal)
-      if (upper == null || value.compareTo(upper) > 0) upper = value.clone()
-      if (lower == null || value.compareTo(lower) < 0) lower = value.clone()
+      if (upper == null || value.compareTo(upper) > 0)
+        upper = value.clone()
+      if (lower == null || value.compareTo(lower) < 0)
+        lower = value.clone()
       sizeInBytes += STRING.actualSize(row, ordinal)
     }
   }
@@ -270,8 +286,10 @@ private[columnar] class DecimalColumnStats(precision: Int, scale: Int)
     super.gatherStats(row, ordinal)
     if (!row.isNullAt(ordinal)) {
       val value = row.getDecimal(ordinal, precision, scale)
-      if (upper == null || value.compareTo(upper) > 0) upper = value
-      if (lower == null || value.compareTo(lower) < 0) lower = value
+      if (upper == null || value.compareTo(upper) > 0)
+        upper = value
+      if (lower == null || value.compareTo(lower) < 0)
+        lower = value
       // TODO: this is not right for DecimalType with precision > 18
       sizeInBytes += 8
     }

@@ -139,7 +139,8 @@ class ArrayBuffer[A](override protected val initialSize: Int)
     *  @throws IndexOutOfBoundsException if `n` is out of bounds.
     */
   def insertAll(n: Int, seq: Traversable[A]) {
-    if (n < 0 || n > size0) throw new IndexOutOfBoundsException(n.toString)
+    if (n < 0 || n > size0)
+      throw new IndexOutOfBoundsException(n.toString)
     val len = seq.size
     val newSize = size0 + len
     ensureSize(newSize)
@@ -162,7 +163,8 @@ class ArrayBuffer[A](override protected val initialSize: Int)
     if (count < 0)
       throw new IllegalArgumentException(
         "removing negative number of elements: " + count.toString)
-    else if (count == 0) return // Did nothing
+    else if (count == 0)
+      return // Did nothing
     if (n < 0 || n > size0 - count)
       throw new IndexOutOfBoundsException(
         "at " + n.toString + " deleting " + count.toString)

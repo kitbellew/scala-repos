@@ -1,7 +1,8 @@
 object Test {
   @annotation.tailrec
   def bar(i: Int): Int = {
-    if (i == 0) 0
+    if (i == 0)
+      0
     else
       try {
         throw new RuntimeException
@@ -12,7 +13,8 @@ object Test {
 
   @annotation.tailrec
   def nestedTry1(i: Int): Int = {
-    if (i == 0) 0
+    if (i == 0)
+      0
     else
       try {
         throw new RuntimeException

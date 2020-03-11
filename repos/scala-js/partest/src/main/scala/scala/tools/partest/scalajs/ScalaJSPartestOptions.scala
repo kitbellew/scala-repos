@@ -80,28 +80,30 @@ object ScalaJSPartestOptions {
         filter = Some(newFilter)
     }
 
-    for (arg <- args) arg match {
-      case "--fastOpt" =>
-        optMode = FastOpt
-      case "--noOpt" =>
-        optMode = NoOpt
-      case "--fullOpt" =>
-        optMode = FullOpt
-      case "--blacklisted" =>
-        setFilter(BlacklistedTests)
-      case "--buglisted" =>
-        setFilter(BuglistedTests)
-      case "--whitelisted" =>
-        setFilter(WhitelistedTests)
-      case "--unknown" =>
-        setFilter(UnknownTests)
-      case "--showDiff" =>
-        showDiff = true
-      case _ =>
-        setFilter(SomeTests(arg :: Nil))
-    }
+    for (arg <- args)
+      arg match {
+        case "--fastOpt" =>
+          optMode = FastOpt
+        case "--noOpt" =>
+          optMode = NoOpt
+        case "--fullOpt" =>
+          optMode = FullOpt
+        case "--blacklisted" =>
+          setFilter(BlacklistedTests)
+        case "--buglisted" =>
+          setFilter(BuglistedTests)
+        case "--whitelisted" =>
+          setFilter(WhitelistedTests)
+        case "--unknown" =>
+          setFilter(UnknownTests)
+        case "--showDiff" =>
+          showDiff = true
+        case _ =>
+          setFilter(SomeTests(arg :: Nil))
+      }
 
-    if (failed) None
+    if (failed)
+      None
     else
       Some {
         new ScalaJSPartestOptions(

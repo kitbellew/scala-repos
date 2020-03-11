@@ -192,8 +192,10 @@ private[stats] class BucketedHistogram(limits: Array[Int])
       while (i >= 0 && counts(i) == 0) {
         i -= 1
       }
-      if (i == 0) 0
-      else limitMidpoint(i)
+      if (i == 0)
+        0
+      else
+        limitMidpoint(i)
     }
   }
 
@@ -259,6 +261,9 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     * @return 0.0 if no values have been [[add added]].
     */
   def average: Double =
-    if (num == 0) 0.0 else total / num.toDouble
+    if (num == 0)
+      0.0
+    else
+      total / num.toDouble
 
 }

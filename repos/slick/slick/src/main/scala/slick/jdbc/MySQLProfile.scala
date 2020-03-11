@@ -98,12 +98,15 @@ trait MySQLProfile extends JdbcProfile { profile =>
             val d = super.default
             if (meta.nullable == Some(true) && d == None) {
               Some(None)
-            } else d
+            } else
+              d
           }
       override def length: Option[Int] = {
         val l = super.length
-        if (tpe == "String" && varying && l == Some(65535)) None
-        else l
+        if (tpe == "String" && varying && l == Some(65535))
+          None
+        else
+          l
       }
     }
   }
@@ -139,7 +142,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
       sym.flatMap(
         _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
         case Some(l) =>
-          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
+          if (l.varying)
+            s"VARCHAR(${l.length})"
+          else
+            s"CHAR(${l.length})"
         case None =>
           defaultStringType match {
             case Some(s) => s
@@ -152,7 +158,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
                     .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
                     .isDefined)
                 "VARCHAR(254)"
-              else "TEXT"
+              else
+                "TEXT"
           }
       }
     case _ => super.defaultSqlTypeName(tmd, sym)
@@ -213,8 +220,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
     override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
       case Library.Cast(ch) :@ JdbcType(ti, _) =>
         val tn =
-          if (ti == columnTypes.stringJdbcType) "VARCHAR"
-          else ti.sqlTypeName(None)
+          if (ti == columnTypes.stringJdbcType)
+            "VARCHAR"
+          else
+            ti.sqlTypeName(None)
         b"\({fn convert(!${ch},$tn)}\)"
       case Library.NextValue(SequenceNode(name)) => b"`${name + "_nextval"}()"
       case Library.CurrentValue(SequenceNode(name)) =>
@@ -240,7 +249,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
       else if (o.nulls.first && o.direction.desc)
         b"isnull($n) desc,"
       expr(n)
-      if (o.direction.desc) b" desc"
+      if (o.direction.desc)
+        b" desc"
     }
   }
 
@@ -267,11 +277,16 @@ trait MySQLProfile extends JdbcProfile { profile =>
   class ColumnDDLBuilder(column: FieldSymbol)
       extends super.ColumnDDLBuilder(column) {
     override protected def appendOptions(sb: StringBuilder) {
-      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
-      if (notNull) sb append " NOT NULL"
-      else if (sqlType.toUpperCase == "TIMESTAMP") sb append " NULL"
-      if (autoIncrement) sb append " AUTO_INCREMENT"
-      if (primaryKey) sb append " PRIMARY KEY"
+      if (defaultLiteral ne null)
+        sb append " DEFAULT " append defaultLiteral
+      if (notNull)
+        sb append " NOT NULL"
+      else if (sqlType.toUpperCase == "TIMESTAMP")
+        sb append " NULL"
+      if (autoIncrement)
+        sb append " AUTO_INCREMENT"
+      if (primaryKey)
+        sb append " PRIMARY KEY"
     }
   }
 
@@ -284,13 +299,20 @@ trait MySQLProfile extends JdbcProfile { profile =>
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
       val minValue =
-        seq._minValue getOrElse (if (desc) fromInt(java.lang.Integer.MIN_VALUE)
-                                 else one)
-      val maxValue = seq._maxValue getOrElse (if (desc) fromInt(-1)
+        seq._minValue getOrElse (if (desc)
+                                   fromInt(java.lang.Integer.MIN_VALUE)
+                                 else
+                                   one)
+      val maxValue = seq._maxValue getOrElse (if (desc)
+                                                fromInt(-1)
                                               else
                                                 fromInt(
                                                   java.lang.Integer.MAX_VALUE))
-      val start = seq._start.getOrElse(if (desc) maxValue else minValue)
+      val start = seq._start.getOrElse(
+        if (desc)
+          maxValue
+        else
+          minValue)
       val beforeStart = start - increment
       if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
         throw new SlickException(
@@ -330,22 +352,24 @@ trait MySQLProfile extends JdbcProfile { profile =>
   class JdbcTypes extends super.JdbcTypes {
     override val stringJdbcType = new StringJdbcType {
       override def valueToSQLLiteral(value: String) =
-        if (value eq null) "NULL"
+        if (value eq null)
+          "NULL"
         else {
           val sb = new StringBuilder
           sb append '\''
-          for (c <- value) c match {
-            case '\'' => sb append "\\'"
-            case '"'  => sb append "\\\""
-            case 0    => sb append "\\0"
-            case 26   => sb append "\\Z"
-            case '\b' => sb append "\\b"
-            case '\n' => sb append "\\n"
-            case '\r' => sb append "\\r"
-            case '\t' => sb append "\\t"
-            case '\\' => sb append "\\\\"
-            case _    => sb append c
-          }
+          for (c <- value)
+            c match {
+              case '\'' => sb append "\\'"
+              case '"'  => sb append "\\\""
+              case 0    => sb append "\\0"
+              case 26   => sb append "\\Z"
+              case '\b' => sb append "\\b"
+              case '\n' => sb append "\\n"
+              case '\r' => sb append "\\r"
+              case '\t' => sb append "\\t"
+              case '\\' => sb append "\\\\"
+              case _    => sb append c
+            }
           sb append '\''
           sb.toString
         }

@@ -792,7 +792,8 @@ object Enumerator {
           k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
         if (!s.isEmpty)
           loop(k(Input.El(s.head)), s.tail)
-        else Future.successful(Cont(k))
+        else
+          Future.successful(Cont(k))
     })
 
   private[iteratee] def enumerateSeq2[E](s: Seq[Input[E]]): Enumerator[E] =
@@ -803,7 +804,8 @@ object Enumerator {
           k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
         if (!s.isEmpty)
           loop(k(s.head), s.tail)
-        else Future.successful(Cont(k))
+        else
+          Future.successful(Cont(k))
     })
 
 }

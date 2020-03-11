@@ -38,7 +38,10 @@ import scalafx.scene.Node
 
 object VBox {
   implicit def sfxVBox2jfx(v: VBox): jfxsl.VBox =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all vbox constraints from the child node.

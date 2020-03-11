@@ -30,7 +30,9 @@ trait Parsing { self: Positions with Reporting =>
 
     def incompleteHandled = incompleteHandler != null
     def incompleteInputError(pos: Position, msg: String): Unit =
-      if (incompleteHandled) incompleteHandler(pos, msg)
-      else reporter.error(pos, msg)
+      if (incompleteHandled)
+        incompleteHandler(pos, msg)
+      else
+        reporter.error(pos, msg)
   }
 }

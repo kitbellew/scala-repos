@@ -11,7 +11,8 @@ import java.io.PrintStream
   */
 class SimpleTracer(out: PrintStream, enabled: Boolean = true) {
   def apply[T](msg: => String)(value: T): T = {
-    if (enabled) out.println(msg + value)
+    if (enabled)
+      out.println(msg + value)
     value
   }
   def when(enabled: Boolean): SimpleTracer = new SimpleTracer(out, enabled)

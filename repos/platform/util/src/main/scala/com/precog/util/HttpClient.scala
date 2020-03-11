@@ -94,7 +94,10 @@ trait HttpClientModule[M[+_]] {
 
     def ok: HttpClientError \/ A =
       body map { data =>
-        if (code / 200 != 1) -\/(NotOk(code, message)) else \/-(data)
+        if (code / 200 != 1)
+          -\/(NotOk(code, message))
+        else
+          \/-(data)
       } getOrElse -\/(EmptyBody)
   }
 }

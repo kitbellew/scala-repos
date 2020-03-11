@@ -17,7 +17,10 @@ trait MiscDirectives {
     */
   def validate(check: ⇒ Boolean, errorMsg: String): Directive0 =
     Directive { inner ⇒
-      if (check) inner(()) else reject(ValidationRejection(errorMsg))
+      if (check)
+        inner(())
+      else
+        reject(ValidationRejection(errorMsg))
     }
 
   /**
@@ -81,10 +84,18 @@ object MiscDirectives extends MiscDirectives {
       }
 
   private val _requestEntityEmpty: Directive0 =
-    extract(_.request.entity.isKnownEmpty).flatMap(if (_) pass else reject)
+    extract(_.request.entity.isKnownEmpty).flatMap(
+      if (_)
+        pass
+      else
+        reject)
 
   private val _requestEntityPresent: Directive0 =
-    extract(_.request.entity.isKnownEmpty).flatMap(if (_) reject else pass)
+    extract(_.request.entity.isKnownEmpty).flatMap(
+      if (_)
+        reject
+      else
+        pass)
 
   private val _rejectEmptyResponse: Directive0 =
     mapRouteResult {

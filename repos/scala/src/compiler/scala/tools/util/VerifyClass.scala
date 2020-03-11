@@ -32,8 +32,10 @@ object VerifyClass {
     } yield checkClass(name, cl)) toMap
 
   def checkClasses(name: String, cl: ClassLoader) =
-    if (name endsWith ".jar") checkClassesInJar(name, cl)
-    else checkClassesInDir(name, cl)
+    if (name endsWith ".jar")
+      checkClassesInJar(name, cl)
+    else
+      checkClassesInDir(name, cl)
 
   /** Attempts to load all classes on the classpath defined in the args string array.  This method is meant to be used via reflection from tools like SBT or Ant. */
   def run(args: Array[String]): java.util.Map[String, String] = {
@@ -53,6 +55,10 @@ object VerifyClass {
     for ((name, result) <- results; if result != null) {
       println(name + " had error: " + result)
     }
-    System.exit(if (errors.size > 0) 1 else 0)
+    System.exit(
+      if (errors.size > 0)
+        1
+      else
+        0)
   }
 }

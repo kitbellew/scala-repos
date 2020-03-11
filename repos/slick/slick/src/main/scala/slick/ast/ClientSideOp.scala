@@ -76,16 +76,20 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
         val map2 = map.infer(scope + (generator -> t), typeChildren)
         (map2, map2.nodeType)
     }
-    withChildren(ConstArray[Node](from2, map2)) :@ (if (!hasType) newType
-                                                    else nodeType)
+    withChildren(ConstArray[Node](from2, map2)) :@ (if (!hasType)
+                                                      newType
+                                                    else
+                                                      nodeType)
   }
   def nodeMapServerSide(keepType: Boolean, r: Node => Node) = {
     val this2 = mapScopedChildren {
       case (Some(_), ch) => r(ch)
       case (None, ch)    => ch
     }
-    if (keepType && hasType) this2 :@ nodeType
-    else this2
+    if (keepType && hasType)
+      this2 :@ nodeType
+    else
+      this2
   }
 }
 
@@ -109,9 +113,15 @@ final case class ParameterSwitch(
   def nodeMapServerSide(keepType: Boolean, r: Node => Node): Self = {
     val ch = children
     val ch2 = ch.endoMap(r)
-    val this2 = if (ch2 eq ch) this else rebuild(ch2)
-    if (keepType && hasType) this2 :@ nodeType
-    else this2
+    val this2 =
+      if (ch2 eq ch)
+        this
+      else
+        rebuild(ch2)
+    if (keepType && hasType)
+      this2 :@ nodeType
+    else
+      this2
   }
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
 }

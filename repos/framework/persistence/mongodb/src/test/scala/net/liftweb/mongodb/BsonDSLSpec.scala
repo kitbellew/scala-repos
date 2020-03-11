@@ -83,10 +83,11 @@ object BsonDSLSpec extends Specification {
         .toList
         .map(_.asInstanceOf[Pattern])
 
-      for (i <- 0 to 2) yield {
-        ptrnList(i).pattern must_== ptrnList2(i).pattern
-        ptrnList(i).flags must_== ptrnList2(i).flags
-      }
+      for (i <- 0 to 2)
+        yield {
+          ptrnList(i).pattern must_== ptrnList2(i).pattern
+          ptrnList(i).flags must_== ptrnList2(i).flags
+        }
 
       ptrnList2.length must_== ptrnList.length
     }

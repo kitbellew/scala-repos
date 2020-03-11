@@ -106,7 +106,8 @@ abstract class PlayableConnector(activity: SActivity) {
   def updateUI(event: UpdateEvent)
 
   private def start(p: Playable): Unit = {
-    if (p.running) return
+    if (p.running)
+      return
     p.start()
     runOnUiThread(updateUI(ON_STARTED))
     startTimer()
@@ -115,7 +116,8 @@ abstract class PlayableConnector(activity: SActivity) {
   def start(): Unit = playable.foreach(start)
 
   private def stop(p: Playable): Unit = {
-    if (!p.running) return
+    if (!p.running)
+      return
     p.stop()
     runOnUiThread(updateUI(ON_STOPPED))
     timer.cancel()
@@ -124,6 +126,9 @@ abstract class PlayableConnector(activity: SActivity) {
   def stop(): Unit = playable.foreach(stop)
 
   def toggle(): Unit = playable.foreach { p =>
-    if (p.running) stop(p) else start(p)
+    if (p.running)
+      stop(p)
+    else
+      start(p)
   }
 }

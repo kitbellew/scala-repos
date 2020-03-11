@@ -195,16 +195,17 @@ trait TaskExtra {
     def #|(p: ProcessBuilder): Task[Int] = pipe0(None, p)
     def pipe(sid: String)(p: ProcessBuilder): Task[Int] = pipe0(Some(sid), p)
     private def pipe0(sid: Option[String], p: ProcessBuilder): Task[Int] =
-      for (s <- streams) yield {
-        val in = s.readBinary(key(t), sid)
-        val pio = TaskExtra
-          .processIO(s)
-          .withInput(out => {
-            BasicIO.transferFully(in, out);
-            out.close()
-          })
-        (p run pio).exitValue
-      }
+      for (s <- streams)
+        yield {
+          val in = s.readBinary(key(t), sid)
+          val pio = TaskExtra
+            .processIO(s)
+            .withInput(out => {
+              BasicIO.transferFully(in, out);
+              out.close()
+            })
+          (p run pio).exitValue
+        }
   }
 
   final implicit def binaryPipeTask[Key](in: Task[_])(implicit
@@ -279,7 +280,10 @@ object TaskExtra extends TaskExtra {
   def anyFailM[K[L[x]]](implicit a: AList[K]): K[Result] => Seq[Incomplete] =
     in => {
       val incs = failuresM(a)(in)
-      if (incs.isEmpty) expectedFailure else incs
+      if (incs.isEmpty)
+        expectedFailure
+      else
+        incs
     }
   def failM[T]: Result[T] => Incomplete = {
     case Inc(i) => i;
@@ -295,16 +299,20 @@ object TaskExtra extends TaskExtra {
   }
   def allM[K[L[x]]](implicit a: AList[K]): K[Result] => K[Id] = in => {
     val incs = failuresM(a)(in)
-    if (incs.isEmpty) a.transform(in, Result.tryValue)
-    else throw incompleteDeps(incs)
+    if (incs.isEmpty)
+      a.transform(in, Result.tryValue)
+    else
+      throw incompleteDeps(incs)
   }
   def failuresM[K[L[x]]](implicit a: AList[K]): K[Result] => Seq[Incomplete] =
     x => failures[Any](a.toList(x))
 
   def all[D](in: Seq[Result[D]]): Seq[D] = {
     val incs = failures(in)
-    if (incs.isEmpty) in.map(Result.tryValue.fn[D])
-    else throw incompleteDeps(incs)
+    if (incs.isEmpty)
+      in.map(Result.tryValue.fn[D])
+    else
+      throw incompleteDeps(incs)
   }
   def failures[A](results: Seq[Result[A]]): Seq[Incomplete] = results.collect {
     case Inc(i) => i

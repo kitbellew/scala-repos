@@ -37,7 +37,10 @@ import scalafx.delegate.SFXDelegate
 object StackedBarChart {
   implicit def sfxStackedBarChart2jfx[X, Y](
       v: StackedBarChart[X, Y]): jfxsc.StackedBarChart[X, Y] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply[X, Y](xAxis: Axis[X], yAxis: Axis[Y]) =
     new StackedBarChart[X, Y](new jfxsc.StackedBarChart[X, Y](xAxis, yAxis))

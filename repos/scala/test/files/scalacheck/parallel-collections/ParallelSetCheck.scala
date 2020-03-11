@@ -15,8 +15,12 @@ abstract class ParallelSetCheck[T](collname: String)
 
   property("gets iterated keys") = forAll(collectionPairs) {
     case (t, coll) =>
-      val containsT = for (elem <- t) yield (coll.contains(elem))
-      val containsSelf = for (elem <- coll) yield (coll.contains(elem))
+      val containsT =
+        for (elem <- t)
+          yield (coll.contains(elem))
+      val containsSelf =
+        for (elem <- coll)
+          yield (coll.contains(elem))
       ("Par contains elements of seq map" |: containsT.forall(_ == true)) &&
       ("Par contains elements of itself" |: containsSelf.forall(_ == true))
   }

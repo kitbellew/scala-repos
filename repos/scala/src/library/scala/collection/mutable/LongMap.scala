@@ -60,11 +60,13 @@ final class LongMap[V] private[collection] (
   private[this] var _keys: Array[Long] = null
   private[this] var _values: Array[AnyRef] = null
 
-  if (initBlank) defaultInitialize(initialBufferSize)
+  if (initBlank)
+    defaultInitialize(initialBufferSize)
 
   private[this] def defaultInitialize(n: Int) = {
     mask =
-      if (n < 0) 0x7
+      if (n < 0)
+        0x7
       else
         (((1 << (32 - java.lang.Integer
           .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
@@ -121,7 +123,8 @@ final class LongMap[V] private[collection] (
     var q = 0L
     while ({
       q = _keys(e);
-      if (q == k) return e;
+      if (q == k)
+        return e;
       q != 0
     }) {
       x += 1;
@@ -136,17 +139,20 @@ final class LongMap[V] private[collection] (
     var q = 0L
     while ({
       q = _keys(e);
-      if (q == k) return e;
+      if (q == k)
+        return e;
       q + q != 0
     }) {
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
-    if (q == 0) return e | MissingBit
+    if (q == 0)
+      return e | MissingBit
     val o = e | MissVacant
     while ({
       q = _keys(e);
-      if (q == k) return e;
+      if (q == k)
+        return e;
       q != 0
     }) {
       x += 1
@@ -156,29 +162,43 @@ final class LongMap[V] private[collection] (
   }
 
   override def contains(key: Long): Boolean = {
-    if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
-    else seekEntry(key) >= 0
+    if (key == -key)
+      (((key >>> 63).toInt + 1) & extraKeys) != 0
+    else
+      seekEntry(key) >= 0
   }
 
   override def get(key: Long): Option[V] = {
     if (key == -key) {
-      if ((((key >>> 63).toInt + 1) & extraKeys) == 0) None
-      else if (key == 0) Some(zeroValue.asInstanceOf[V])
-      else Some(minValue.asInstanceOf[V])
+      if ((((key >>> 63).toInt + 1) & extraKeys) == 0)
+        None
+      else if (key == 0)
+        Some(zeroValue.asInstanceOf[V])
+      else
+        Some(minValue.asInstanceOf[V])
     } else {
       val i = seekEntry(key)
-      if (i < 0) None else Some(_values(i).asInstanceOf[V])
+      if (i < 0)
+        None
+      else
+        Some(_values(i).asInstanceOf[V])
     }
   }
 
   override def getOrElse[V1 >: V](key: Long, default: => V1): V1 = {
     if (key == -key) {
-      if ((((key >>> 63).toInt + 1) & extraKeys) == 0) default
-      else if (key == 0) zeroValue.asInstanceOf[V1]
-      else minValue.asInstanceOf[V1]
+      if ((((key >>> 63).toInt + 1) & extraKeys) == 0)
+        default
+      else if (key == 0)
+        zeroValue.asInstanceOf[V1]
+      else
+        minValue.asInstanceOf[V1]
     } else {
       val i = seekEntry(key)
-      if (i < 0) default else _values(i).asInstanceOf[V1]
+      if (i < 0)
+        default
+      else
+        _values(i).asInstanceOf[V1]
     }
   }
 
@@ -188,11 +208,15 @@ final class LongMap[V] private[collection] (
       if ((kbits & extraKeys) == 0) {
         val value = defaultValue
         extraKeys |= kbits
-        if (key == 0) zeroValue = value.asInstanceOf[AnyRef]
-        else minValue = value.asInstanceOf[AnyRef]
+        if (key == 0)
+          zeroValue = value.asInstanceOf[AnyRef]
+        else
+          minValue = value.asInstanceOf[AnyRef]
         value
-      } else if (key == 0) zeroValue.asInstanceOf[V]
-      else minValue.asInstanceOf[V]
+      } else if (key == 0)
+        zeroValue.asInstanceOf[V]
+      else
+        minValue.asInstanceOf[V]
     } else {
       var i = seekEntryOrOpen(key)
       if (i < 0) {
@@ -204,7 +228,8 @@ final class LongMap[V] private[collection] (
           val ans = defaultValue
           if (ok ne _keys) {
             i = seekEntryOrOpen(key)
-            if (i >= 0) _size -= 1
+            if (i >= 0)
+              _size -= 1
           }
           ans
         }
@@ -212,10 +237,13 @@ final class LongMap[V] private[collection] (
         val j = i & IndexMask
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0)
+          _vacant -= 1
+        else if (imbalanced)
+          repack()
         value
-      } else _values(i).asInstanceOf[V]
+      } else
+        _values(i).asInstanceOf[V]
     }
   }
 
@@ -228,12 +256,18 @@ final class LongMap[V] private[collection] (
     */
   def getOrNull(key: Long): V = {
     if (key == -key) {
-      if ((((key >>> 63).toInt + 1) & extraKeys) == 0) null.asInstanceOf[V]
-      else if (key == 0) zeroValue.asInstanceOf[V]
-      else minValue.asInstanceOf[V]
+      if ((((key >>> 63).toInt + 1) & extraKeys) == 0)
+        null.asInstanceOf[V]
+      else if (key == 0)
+        zeroValue.asInstanceOf[V]
+      else
+        minValue.asInstanceOf[V]
     } else {
       val i = seekEntry(key)
-      if (i < 0) null.asInstanceOf[V] else _values(i).asInstanceOf[V]
+      if (i < 0)
+        null.asInstanceOf[V]
+      else
+        _values(i).asInstanceOf[V]
     }
   }
 
@@ -243,12 +277,18 @@ final class LongMap[V] private[collection] (
     */
   override def apply(key: Long): V = {
     if (key == -key) {
-      if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
-      else if (key == 0) zeroValue.asInstanceOf[V]
-      else minValue.asInstanceOf[V]
+      if ((((key >>> 63).toInt + 1) & extraKeys) == 0)
+        defaultEntry(key)
+      else if (key == 0)
+        zeroValue.asInstanceOf[V]
+      else
+        minValue.asInstanceOf[V]
     } else {
       val i = seekEntry(key)
-      if (i < 0) defaultEntry(key) else _values(i).asInstanceOf[V]
+      if (i < 0)
+        defaultEntry(key)
+      else
+        _values(i).asInstanceOf[V]
     }
   }
 
@@ -288,7 +328,8 @@ final class LongMap[V] private[collection] (
     var m = mask
     if (_size + _vacant >= 0.5 * mask && !(_vacant > 0.2 * mask))
       m = ((m << 1) + 1) & IndexMask
-    while (m > 8 && 8 * _size < m) m = m >>> 1
+    while (m > 8 && 8 * _size < m)
+      m = m >>> 1
     repack(m)
   }
 
@@ -296,13 +337,19 @@ final class LongMap[V] private[collection] (
     if (key == -key) {
       if (key == 0) {
         val ans =
-          if ((extraKeys & 1) == 1) Some(zeroValue.asInstanceOf[V]) else None
+          if ((extraKeys & 1) == 1)
+            Some(zeroValue.asInstanceOf[V])
+          else
+            None
         zeroValue = value.asInstanceOf[AnyRef]
         extraKeys |= 1
         ans
       } else {
         val ans =
-          if ((extraKeys & 2) == 1) Some(minValue.asInstanceOf[V]) else None
+          if ((extraKeys & 2) == 1)
+            Some(minValue.asInstanceOf[V])
+          else
+            None
         minValue = value.asInstanceOf[AnyRef]
         extraKeys |= 2
         ans
@@ -314,8 +361,10 @@ final class LongMap[V] private[collection] (
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
         _size += 1
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0)
+          _vacant -= 1
+        else if (imbalanced)
+          repack()
         None
       } else {
         val ans = Some(_values(i).asInstanceOf[V])
@@ -346,8 +395,10 @@ final class LongMap[V] private[collection] (
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
         _size += 1
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0)
+          _vacant -= 1
+        else if (imbalanced)
+          repack()
       } else {
         _keys(i) = key
         _values(i) = value.asInstanceOf[AnyRef]
@@ -392,13 +443,18 @@ final class LongMap[V] private[collection] (
     private[this] val vz = _values
 
     private[this] var nextPair: (Long, V) =
-      if (extraKeys == 0) null
-      else if ((extraKeys & 1) == 1) (0L, zeroValue.asInstanceOf[V])
-      else (Long.MinValue, minValue.asInstanceOf[V])
+      if (extraKeys == 0)
+        null
+      else if ((extraKeys & 1) == 1)
+        (0L, zeroValue.asInstanceOf[V])
+      else
+        (Long.MinValue, minValue.asInstanceOf[V])
 
     private[this] var anotherPair: (Long, V) =
-      if (extraKeys == 3) (Long.MinValue, minValue.asInstanceOf[V])
-      else null
+      if (extraKeys == 3)
+        (Long.MinValue, minValue.asInstanceOf[V])
+      else
+        null
 
     private[this] var index = 0
 
@@ -407,7 +463,8 @@ final class LongMap[V] private[collection] (
         var q = kz(index)
         while (q == -q) {
           index += 1
-          if (index >= kz.length) return false
+          if (index >= kz.length)
+            return false
           q = kz(index)
         }
         nextPair = (kz(index), vz(index).asInstanceOf[V])
@@ -415,19 +472,23 @@ final class LongMap[V] private[collection] (
         true
       })
     def next = {
-      if (nextPair == null && !hasNext) throw new NoSuchElementException("next")
+      if (nextPair == null && !hasNext)
+        throw new NoSuchElementException("next")
       val ans = nextPair
       if (anotherPair != null) {
         nextPair = anotherPair
         anotherPair = null
-      } else nextPair = null
+      } else
+        nextPair = null
       ans
     }
   }
 
   override def foreach[U](f: ((Long, V)) => U) {
-    if ((extraKeys & 1) == 1) f((0L, zeroValue.asInstanceOf[V]))
-    if ((extraKeys & 2) == 2) f((Long.MinValue, minValue.asInstanceOf[V]))
+    if ((extraKeys & 1) == 1)
+      f((0L, zeroValue.asInstanceOf[V]))
+    if ((extraKeys & 2) == 2)
+      f((Long.MinValue, minValue.asInstanceOf[V]))
     var i, j = 0
     while (i < _keys.length & j < _size) {
       val k = _keys(i)
@@ -475,8 +536,10 @@ final class LongMap[V] private[collection] (
 
   /** Applies a function to all keys of this map. */
   def foreachKey[A](f: Long => A) {
-    if ((extraKeys & 1) == 1) f(0L)
-    if ((extraKeys & 2) == 2) f(Long.MinValue)
+    if ((extraKeys & 1) == 1)
+      f(0L)
+    if ((extraKeys & 2) == 2)
+      f(Long.MinValue)
     var i, j = 0
     while (i < _keys.length & j < _size) {
       val k = _keys(i)
@@ -490,8 +553,10 @@ final class LongMap[V] private[collection] (
 
   /** Applies a function to all values of this map. */
   def foreachValue[A](f: V => A) {
-    if ((extraKeys & 1) == 1) f(zeroValue.asInstanceOf[V])
-    if ((extraKeys & 2) == 2) f(minValue.asInstanceOf[V])
+    if ((extraKeys & 1) == 1)
+      f(zeroValue.asInstanceOf[V])
+    if ((extraKeys & 2) == 2)
+      f(minValue.asInstanceOf[V])
     var i, j = 0
     while (i < _keys.length & j < _size) {
       val k = _keys(i)
@@ -511,10 +576,13 @@ final class LongMap[V] private[collection] (
     val zv =
       if ((extraKeys & 1) == 1)
         f(zeroValue.asInstanceOf[V]).asInstanceOf[AnyRef]
-      else null
+      else
+        null
     val mv =
-      if ((extraKeys & 2) == 2) f(minValue.asInstanceOf[V]).asInstanceOf[AnyRef]
-      else null
+      if ((extraKeys & 2) == 2)
+        f(minValue.asInstanceOf[V]).asInstanceOf[AnyRef]
+      else
+        null
     val lm = new LongMap[V1](LongMap.exceptionDefault, 1, false)
     val kz = java.util.Arrays.copyOf(_keys, _keys.length)
     val vz = new Array[AnyRef](_values.length)
@@ -586,12 +654,17 @@ object LongMap {
 
   /** Creates a new `LongMap` with zero or more key/value pairs. */
   def apply[V](elems: (Long, V)*): LongMap[V] = {
-    val sz = if (elems.hasDefiniteSize) elems.size else 4
+    val sz =
+      if (elems.hasDefiniteSize)
+        elems.size
+      else
+        4
     val lm = new LongMap[V](sz * 2)
     elems.foreach {
       case (k, v) => lm(k) = v
     }
-    if (lm.size < (sz >> 3)) lm.repack()
+    if (lm.size < (sz >> 3))
+      lm.repack()
     lm
   }
 
@@ -612,7 +685,8 @@ object LongMap {
       lm(keys(i)) = values(i);
       i += 1
     }
-    if (lm.size < (sz >> 3)) lm.repack()
+    if (lm.size < (sz >> 3))
+      lm.repack()
     lm
   }
 
@@ -626,8 +700,10 @@ object LongMap {
     val lm = new LongMap[V](sz * 2)
     val ki = keys.iterator
     val vi = values.iterator
-    while (ki.hasNext && vi.hasNext) lm(ki.next) = vi.next
-    if (lm.size < (sz >> 3)) lm.repack()
+    while (ki.hasNext && vi.hasNext)
+      lm(ki.next) = vi.next
+    if (lm.size < (sz >> 3))
+      lm.repack()
     lm
   }
 }

@@ -45,7 +45,8 @@ private[saddle] object MatImpl {
   def withoutRows[@spec(Boolean, Int, Long, Double) A: ST](
       m: Mat[A],
       locs: Array[Int]): Mat[A] = {
-    if (m.length == 0) Mat.empty[A]
+    if (m.length == 0)
+      Mat.empty[A]
     else {
       val locset = locs.toSet
       val buf = Buffer[A](m.length)
@@ -72,7 +73,8 @@ private[saddle] object MatImpl {
   def takeRows[@spec(Boolean, Int, Long, Double) A: ST](
       m: Mat[A],
       locs: Array[Int]): Mat[A] = {
-    if (m.length == 0) Mat.empty[A]
+    if (m.length == 0)
+      Mat.empty[A]
     else {
       val buf = Buffer[A](m.length)
       var r = 0

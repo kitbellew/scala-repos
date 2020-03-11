@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Paint {
   implicit def sfxPaint2jfx(p: Paint): jfxsp.Paint =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 
   /**
     * Creates a paint value from a string representation.  Recognizes strings representing Color, RadialGradient or LinearGradient. String specifying

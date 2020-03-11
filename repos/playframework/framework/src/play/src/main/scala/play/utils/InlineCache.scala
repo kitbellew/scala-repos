@@ -54,14 +54,17 @@ private[play] final class InlineCache[A <: AnyRef, B](f: A => B)
     // If it's null then this is our first call to the function
     // (on this thread) so get a fresh value.
     val cacheSnapshot = cache
-    if (cacheSnapshot == null) return fresh(a)
+    if (cacheSnapshot == null)
+      return fresh(a)
     // Get cached input/output pair out of the WeakReference.
     // If the pair is null then the reference has been collected
     // and we need a fresh value.
     val inputOutput = cacheSnapshot.get
-    if (inputOutput == null) return fresh(a)
+    if (inputOutput == null)
+      return fresh(a)
     // If the inputs don't match then we need a fresh value.
-    if (inputOutput._1 ne a) return fresh(a)
+    if (inputOutput._1 ne a)
+      return fresh(a)
     // We got the cached value, return it.
     inputOutput._2
   }

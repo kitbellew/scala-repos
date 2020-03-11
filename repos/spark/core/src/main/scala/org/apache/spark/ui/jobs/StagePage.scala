@@ -430,8 +430,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         </script>
 
       val taskIdsInPage =
-        if (taskTable == null) Set.empty[Long]
-        else taskTable.dataSource.slicedTaskIds
+        if (taskTable == null)
+          Set.empty[Long]
+        else
+          taskTable.dataSource.slicedTaskIds
 
       // Excludes tasks which failed and have incomplete metrics
       val validTasks = tasks.filter(t =>
@@ -730,14 +732,18 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } else {
               Nil
             },
-            if (stageData.hasInput) <tr>{
-              inputQuantiles
-            }</tr>
-            else Nil,
-            if (stageData.hasOutput) <tr>{
-              outputQuantiles
-            }</tr>
-            else Nil,
+            if (stageData.hasInput)
+              <tr>{
+                inputQuantiles
+              }</tr>
+            else
+              Nil,
+            if (stageData.hasOutput)
+              <tr>{
+                outputQuantiles
+              }</tr>
+            else
+              Nil,
             if (stageData.hasShuffleRead) {
               <tr class={
                 TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME
@@ -759,18 +765,24 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } else {
               Nil
             },
-            if (stageData.hasShuffleWrite) <tr>{
-              shuffleWriteQuantiles
-            }</tr>
-            else Nil,
-            if (stageData.hasBytesSpilled) <tr>{
-              memoryBytesSpilledQuantiles
-            }</tr>
-            else Nil,
-            if (stageData.hasBytesSpilled) <tr>{
-              diskBytesSpilledQuantiles
-            }</tr>
-            else Nil
+            if (stageData.hasShuffleWrite)
+              <tr>{
+                shuffleWriteQuantiles
+              }</tr>
+            else
+              Nil,
+            if (stageData.hasBytesSpilled)
+              <tr>{
+                memoryBytesSpilledQuantiles
+              }</tr>
+            else
+              Nil,
+            if (stageData.hasBytesSpilled)
+              <tr>{
+                diskBytesSpilledQuantiles
+              }</tr>
+            else
+              Nil
           )
 
           val quantileHeaders = Seq(
@@ -797,7 +809,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val maybeAccumulableTable: Seq[Node] =
         if (hasAccumulators) {
           <h4>Accumulators</h4> ++ accumulableTable
-        } else Seq()
+        } else
+          Seq()
 
       val content =
         summary ++
@@ -842,7 +855,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val launchTime = taskInfo.launchTime
           val finishTime =
-            if (!taskInfo.running) taskInfo.finishTime else currentTime
+            if (!taskInfo.running)
+              taskInfo.finishTime
+            else
+              currentTime
           val totalExecutionTime = finishTime - launchTime
           minLaunchTime = launchTime.min(minLaunchTime)
           maxFinishTime = finishTime.max(maxFinishTime)
@@ -1156,10 +1172,13 @@ private[ui] class TaskDataSource(
   private def taskRow(taskData: TaskUIData): TaskTableRowData = {
     val TaskUIData(info, metrics, errorMessage) = taskData
     val duration =
-      if (info.status == "RUNNING") info.timeRunning(currentTime)
-      else metrics.map(_.executorRunTime).getOrElse(1L)
+      if (info.status == "RUNNING")
+        info.timeRunning(currentTime)
+      else
+        metrics.map(_.executorRunTime).getOrElse(1L)
     val formatDuration =
-      if (info.status == "RUNNING") UIUtils.formatDuration(duration)
+      if (info.status == "RUNNING")
+        UIUtils.formatDuration(duration)
       else
         metrics
           .map(m => UIUtils.formatDuration(m.executorRunTime))
@@ -1234,7 +1253,10 @@ private[ui] class TaskDataSource(
     val writeTimeReadable = maybeWriteTime
       .map(t => t / (1000 * 1000))
       .map { ms =>
-        if (ms == 0) "" else UIUtils.formatDuration(ms)
+        if (ms == 0)
+          ""
+        else
+          UIUtils.formatDuration(ms)
       }
       .getOrElse("")
 
@@ -1326,8 +1348,10 @@ private[ui] class TaskDataSource(
       serializationTime,
       gettingResultTime,
       peakExecutionMemoryUsed,
-      if (hasAccumulators) Some(externalAccumulableReadable.mkString("<br/>"))
-      else None,
+      if (hasAccumulators)
+        Some(externalAccumulableReadable.mkString("<br/>"))
+      else
+        None,
       input,
       output,
       shuffleRead,
@@ -1660,11 +1684,20 @@ private[ui] class TaskPagedTable(
           Nil
         }
       } ++ {
-        if (hasAccumulators) Seq(("Accumulators", "")) else Nil
+        if (hasAccumulators)
+          Seq(("Accumulators", ""))
+        else
+          Nil
       } ++ {
-        if (hasInput) Seq(("Input Size / Records", "")) else Nil
+        if (hasInput)
+          Seq(("Input Size / Records", ""))
+        else
+          Nil
       } ++ {
-        if (hasOutput) Seq(("Output Size / Records", "")) else Nil
+        if (hasOutput)
+          Seq(("Output Size / Records", ""))
+        else
+          Nil
       } ++ {
         if (hasShuffleRead) {
           Seq(
@@ -1707,7 +1740,11 @@ private[ui] class TaskPagedTable(
                 s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
                 s"&task.desc=${!desc}" +
                 s"&task.pageSize=$pageSize")
-            val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
+            val arrow =
+              if (desc)
+                "&#x25BE;"
+              else
+                "&#x25B4;" // UP or DOWN
             <th class={
               cssClass
             }>
@@ -1755,8 +1792,10 @@ private[ui] class TaskPagedTable(
       task.taskId
     }</td>
       <td>{
-      if (task.speculative) s"${task.attempt} (speculative)"
-      else task.attempt.toString
+      if (task.speculative)
+        s"${task.attempt} (speculative)"
+      else
+        task.attempt.toString
     }</td>
       <td>{
       task.status
@@ -1789,7 +1828,10 @@ private[ui] class TaskPagedTable(
       </td>
       <td>
         {
-      if (task.gcTime > 0) UIUtils.formatDuration(task.gcTime) else ""
+      if (task.gcTime > 0)
+        UIUtils.formatDuration(task.gcTime)
+      else
+        ""
     }
       </td>
       <td class={

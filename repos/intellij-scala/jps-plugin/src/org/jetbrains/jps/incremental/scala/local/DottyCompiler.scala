@@ -74,21 +74,25 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
     "-Ybuilder-debug:")
 
   private def splitArg(arg: String): Seq[String] = {
-    if (!argsToSplit.exists(arg.startsWith)) return Seq(arg)
+    if (!argsToSplit.exists(arg.startsWith))
+      return Seq(arg)
 
     val colonIdx = arg.indexOf(':')
     if (colonIdx > 0 && colonIdx < arg.length - 1 && !arg
           .charAt(colonIdx + 1)
           .isWhitespace)
       Seq(arg.substring(0, colonIdx + 1).trim, arg.substring(colonIdx + 1).trim)
-    else Seq(arg)
+    else
+      Seq(arg)
   }
 }
 
 class ClientDottyCallback(client: Client) extends CompilerCallback {
   private def toJFile(f: AbstractFile) = {
-    if (f.jfile().isPresent) f.jfile().get()
-    else new File(f.path())
+    if (f.jfile().isPresent)
+      f.jfile().get()
+    else
+      new File(f.path())
   }
 
   override def onClassGenerated(
@@ -108,7 +112,10 @@ class ClientDottyCallback(client: Client) extends CompilerCallback {
 
 class ClientDottyReporter(client: Client) extends SimpleReporter {
   private def toOption[T](x: Optional[T]): Option[T] =
-    if (x.isPresent) Some(x.get()) else None
+    if (x.isPresent)
+      Some(x.get())
+    else
+      None
 
   private val seenMessageHashes = mutable.HashMap[Int, Int]()
 

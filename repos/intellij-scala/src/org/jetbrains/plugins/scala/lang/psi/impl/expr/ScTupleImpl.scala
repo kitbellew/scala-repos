@@ -25,7 +25,8 @@ class ScTupleImpl(node: ASTNode)
 
   protected[expr] override def innerType(
       ctx: TypingContext): TypeResult[ScType] =
-    if (exprs.length == 0) Success(Unit, Some(this))
+    if (exprs.length == 0)
+      Success(Unit, Some(this))
     else {
       val tupleType = ScTupleType(exprs.map(_.getType(ctx).getOrAny))(
         getProject,

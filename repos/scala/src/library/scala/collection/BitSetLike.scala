@@ -84,7 +84,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
         a(pos) = 0
         pos += 1
       }
-      if (f > 0 && pos < len) a(pos) &= ~((1L << f) - 1)
+      if (f > 0 && pos < len)
+        a(pos) &= ~((1L << f) - 1)
     }
     if (until.isDefined) {
       val u = until.get
@@ -95,7 +96,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
         a(clearw) = 0
         clearw += 1
       }
-      if (w < len) a(w) &= (1L << b) - 1
+      if (w < len)
+        a(w) &= (1L << b) - 1
     }
     fromBitMaskNoCopy(a)
   }
@@ -106,7 +108,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
     private var current = start
     private val end = nwords * WordLength
     def hasNext: Boolean = {
-      while (current != end && !self.contains(current)) current += 1
+      while (current != end && !self.contains(current))
+        current += 1
       current != end
     }
     def next(): Int =
@@ -114,7 +117,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
         val r = current;
         current += 1;
         r
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   override def foreach[U](f: Int => U) {
@@ -127,7 +131,8 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
       var w = word(i)
       var j = i * WordLength
       while (w != 0L) {
-        if ((w & 1L) == 1L) f(j)
+        if ((w & 1L) == 1L)
+          f(j)
         w = w >>> 1
         j += 1
       }
@@ -266,11 +271,14 @@ object BitSetLike {
     while (len > 0 && (elems(len - 1) == 0L || w == 0L && idx == len - 1))
       len -= 1
     var newlen = len
-    if (idx >= newlen && w != 0L) newlen = idx + 1
+    if (idx >= newlen && w != 0L)
+      newlen = idx + 1
     val newelems = new Array[Long](newlen)
     Array.copy(elems, 0, newelems, 0, len)
-    if (idx < newlen) newelems(idx) = w
-    else assert(w == 0L)
+    if (idx < newlen)
+      newelems(idx) = w
+    else
+      assert(w == 0L)
     newelems
   }
 }

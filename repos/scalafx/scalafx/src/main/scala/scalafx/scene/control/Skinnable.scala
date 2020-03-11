@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Skinnable {
   implicit def sfxSkinnable2jfx(s: Skinnable): jfxsc.Skinnable =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 }
 
 trait Skinnable extends SFXDelegate[jfxsc.Skinnable] {

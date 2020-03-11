@@ -74,8 +74,10 @@ final class PgnDump(
         Tag(
           _.Event,
           imported.flatMap(_ tag "event") | {
-            if (game.imported) "Import"
-            else game.rated.fold("Rated game", "Casual game")
+            if (game.imported)
+              "Import"
+            else
+              game.rated.fold("Rated game", "Casual game")
           }),
         Tag(_.Site, gameUrl(game.id)),
         Tag(

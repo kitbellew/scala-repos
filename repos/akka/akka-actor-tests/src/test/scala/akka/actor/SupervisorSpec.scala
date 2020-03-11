@@ -83,7 +83,10 @@ object SupervisorSpec {
 
   def creator(target: ActorRef, fail: Boolean = false) = {
     val p = Props(new Creator(target))
-    if (fail) p.withMailbox("error-mailbox") else p
+    if (fail)
+      p.withMailbox("error-mailbox")
+    else
+      p
   }
 
   val failure = new AssertionError("deliberate test failure")
@@ -429,10 +432,12 @@ class SupervisorSpec
 
       val dyingProps = Props(new Actor {
         val init = inits.getAndIncrement()
-        if (init % 3 == 1) throw new IllegalStateException("Don't wanna!")
+        if (init % 3 == 1)
+          throw new IllegalStateException("Don't wanna!")
 
         override def preRestart(cause: Throwable, msg: Option[Any]) {
-          if (init % 3 == 0) throw new IllegalStateException("Don't wanna!")
+          if (init % 3 == 0)
+            throw new IllegalStateException("Don't wanna!")
         }
 
         def receive = {

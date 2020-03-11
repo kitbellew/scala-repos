@@ -145,7 +145,8 @@ trait StatsReceiver { self =>
     * and `/client/backend/adds`.
     */
   def scope(namespace: String): StatsReceiver = {
-    if (namespace == "") this
+    if (namespace == "")
+      this
     else {
       new NameTranslatingStatsReceiver(this, namespace) {
         protected[this] def translate(name: Seq[String]): Seq[String] =
@@ -178,7 +179,8 @@ trait StatsReceiver { self =>
     * will generate a [[Counter counter]] named `/client/toto/adds`.
     */
   def scopeSuffix(suffix: String): StatsReceiver = {
-    if (suffix == "") this
+    if (suffix == "")
+      this
     else {
       new StatsReceiver {
         val repr = self.repr

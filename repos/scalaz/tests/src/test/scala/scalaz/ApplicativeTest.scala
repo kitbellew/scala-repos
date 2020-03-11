@@ -23,7 +23,11 @@ object ApplicativeTest extends SpecLite {
       case Nil => Monad[F].point(List())
       case h :: t =>
         Monad[F].bind(f(h))(b =>
-          Monad[F].map(filterM(t, f))(t => if (b) h :: t else t))
+          Monad[F].map(filterM(t, f))(t =>
+            if (b)
+              h :: t
+            else
+              t))
     }
 
   "replicateM is the same" ! forAll { (fa: Option[Int]) =>
@@ -34,7 +38,11 @@ object ApplicativeTest extends SpecLite {
 
   "filterM is the same" ! forAll { (l: List[Int]) =>
     // don't make `None` too likely
-    def pred(n: Int) = if (n < 0 && n % 2 == 0) None else Some(n % 2 == 0)
+    def pred(n: Int) =
+      if (n < 0 && n % 2 == 0)
+        None
+      else
+        Some(n % 2 == 0)
     l.filterM(pred) must_=== (filterM(l, pred))
   }
 

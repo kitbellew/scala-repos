@@ -59,8 +59,10 @@ private[scala] trait MarkupParserCommon {
       // well-formedness constraint
       if (ch == '<')
         return errorAndResult("'<' not allowed in attrib value", "")
-      else if (ch == SU) truncatedError("")
-      else buf append ch_returning_nextch
+      else if (ch == SU)
+        truncatedError("")
+      else
+        buf append ch_returning_nextch
     }
     ch_returning_nextch
     // @todo: normalize attribute value
@@ -101,7 +103,8 @@ private[scala] trait MarkupParserCommon {
     if (buf.last == ':') {
       reportSyntaxError("name cannot end in ':'")
       buf.toString dropRight 1
-    } else buf.toString
+    } else
+      buf.toString
   }
 
   /** CharRef ::= "&#" '0'..'9' {'0'..'9'} ";"
@@ -156,8 +159,10 @@ private[scala] trait MarkupParserCommon {
   }
 
   def xToken(that: Char) {
-    if (ch == that) nextch()
-    else xHandleError(that, "'%s' expected instead of '%s'".format(that, ch))
+    if (ch == that)
+      nextch()
+    else
+      xHandleError(that, "'%s' expected instead of '%s'".format(that, ch))
   }
   def xToken(that: Seq[Char]) {
     that foreach xToken
@@ -171,14 +176,17 @@ private[scala] trait MarkupParserCommon {
   }
 
   /** skip optional space S? */
-  def xSpaceOpt() = while (isSpace(ch) && !eof) nextch()
+  def xSpaceOpt() =
+    while (isSpace(ch) && !eof)
+      nextch()
 
   /** scan [3] S ::= (#x20 | #x9 | #xD | #xA)+ */
   def xSpace() =
     if (isSpace(ch)) {
       nextch();
       xSpaceOpt()
-    } else xHandleError(ch, "whitespace expected")
+    } else
+      xHandleError(ch, "whitespace expected")
 
   /** Apply a function and return the passed value */
   def returning[T](x: T)(f: T => Unit): T = {

@@ -159,8 +159,8 @@ class Analyzer(
           case p =>
             p.transformExpressions {
               case UnresolvedWindowExpression(
-                  c,
-                  WindowSpecReference(windowName)) =>
+                    c,
+                    WindowSpecReference(windowName)) =>
                 val errorMessage =
                   s"Window specification $windowName is not defined in the WINDOW clause."
                 val windowSpecDefinition =
@@ -266,14 +266,14 @@ class Analyzer(
       case a if !a.childrenResolved =>
         a // be sure all of the children are resolved.
       case Aggregate(
-          Seq(c @ Cube(groupByExprs)),
-          aggregateExpressions,
-          child) =>
+            Seq(c @ Cube(groupByExprs)),
+            aggregateExpressions,
+            child) =>
         GroupingSets(bitmasks(c), groupByExprs, child, aggregateExpressions)
       case Aggregate(
-          Seq(r @ Rollup(groupByExprs)),
-          aggregateExpressions,
-          child) =>
+            Seq(r @ Rollup(groupByExprs)),
+            aggregateExpressions,
+            child) =>
         GroupingSets(bitmasks(r), groupByExprs, child, aggregateExpressions)
       case g: GroupingSets
           if g.expressions.exists(!_.resolved) && hasGroupingId(
@@ -389,7 +389,10 @@ class Analyzer(
                   s"Aggregate expression required for pivot, found '$aggregate'")
               }
               val name =
-                if (singleAgg) value.toString else value + "_" + aggregate.sql
+                if (singleAgg)
+                  value.toString
+                else
+                  value + "_" + aggregate.sql
               Alias(filteredAggregate, name)()
             }
         }
@@ -1509,14 +1512,14 @@ class Analyzer(
       case logical: LogicalPlan =>
         logical transformExpressions {
           case WindowExpression(
-              wf: WindowFunction,
-              WindowSpecDefinition(_, _, f: SpecifiedWindowFrame))
+                wf: WindowFunction,
+                WindowSpecDefinition(_, _, f: SpecifiedWindowFrame))
               if wf.frame != UnspecifiedFrame && wf.frame != f =>
             failAnalysis(
               s"Window Frame $f must match the required frame ${wf.frame}")
           case WindowExpression(
-              wf: WindowFunction,
-              s @ WindowSpecDefinition(_, o, UnspecifiedFrame))
+                wf: WindowFunction,
+                s @ WindowSpecDefinition(_, o, UnspecifiedFrame))
               if wf.frame != UnspecifiedFrame =>
             WindowExpression(wf, s.copy(frameSpecification = wf.frame))
           case we @ WindowExpression(

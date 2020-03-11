@@ -104,14 +104,17 @@ object RenameSuperMembersUtil {
       classes.last.getContainingFile,
       classes.last)
     val additional =
-      if (oneSuperClass) Nil
-      else Seq((renameAllMarkerObject, null)) //option for rename all
+      if (oneSuperClass)
+        Nil
+      else
+        Seq((renameAllMarkerObject, null)) //option for rename all
     val classesToNamed = additional ++: Map(classes.zip(allElements): _*)
     val selection = classesToNamed.keys.head
 
     val processor = new PsiElementProcessor[PsiClass] {
       def execute(aClass: PsiClass): Boolean = {
-        if (aClass != renameAllMarkerObject) action(classesToNamed(aClass))
+        if (aClass != renameAllMarkerObject)
+          action(classesToNamed(aClass))
         else {
           val mainOne = classesToNamed(classes(0))
           superMembersToRename.clear()
@@ -139,25 +142,31 @@ object RenameSuperMembersUtil {
           case cl                   => cl.getQualifiedName
         }
         s"$name $overimpl member of $qualName"
-      } else ScalaBundle.message("rename.has.multiple.base.members", name)
+      } else
+        ScalaBundle.message("rename.has.multiple.base.members", name)
 
     val popup = NavigationUtil.getPsiElementPopup(
       classesToNamed.keys.toArray,
       new PsiClassListCellRenderer() {
         override def getIcon(element: PsiElement): Icon = {
-          if (element == renameAllMarkerObject || oneSuperClass) null
-          else super.getIcon(element)
+          if (element == renameAllMarkerObject || oneSuperClass)
+            null
+          else
+            super.getIcon(element)
         }
 
         override def getElementText(clazz: PsiClass): String = {
-          if (clazz == renameAllMarkerObject) return renameAllText
+          if (clazz == renameAllMarkerObject)
+            return renameAllText
           def classKind = clazz match {
             case _: ScObject => "object"
             case _: ScTrait  => "trait"
             case _           => "class"
           }
-          if (clazz == classes.last) renameOnlyCurrent
-          else if (oneSuperClass) renameBase
+          if (clazz == classes.last)
+            renameOnlyCurrent
+          else if (oneSuperClass)
+            renameBase
           else
             ScalaBundle.message(
               "rename.only.in",
@@ -168,7 +177,8 @@ object RenameSuperMembersUtil {
         override def getContainerText(clazz: PsiClass, name: String): String = {
           if (clazz == renameAllMarkerObject || clazz == classes.last || oneSuperClass)
             null //don't show package name
-          else super.getContainerText(clazz, name)
+          else
+            super.getContainerText(clazz, name)
         }
       },
       title,
@@ -178,12 +188,17 @@ object RenameSuperMembersUtil {
 
     if (ApplicationManager.getApplication.isUnitTestMode) {
       processor.execute(
-        if (oneSuperClass) classes(0) else renameAllMarkerObject
+        if (oneSuperClass)
+          classes(0)
+        else
+          renameAllMarkerObject
       ) //in unit tests uses base member or all base members
       return
     }
-    if (editor != null) popup.showInBestPositionFor(editor)
-    else popup.showInFocusCenter()
+    if (editor != null)
+      popup.showInBestPositionFor(editor)
+    else
+      popup.showInFocusCenter()
   }
 
   @NotNull
@@ -195,10 +210,13 @@ object RenameSuperMembersUtil {
       case _           => return Seq()
     }
     val aClass = member.containingClass
-    if (aClass == null) return Seq()
+    if (aClass == null)
+      return Seq()
     val signatures =
-      if (withSelfType) TypeDefinitionMembers.getSelfTypeSignatures(aClass)
-      else TypeDefinitionMembers.getSignatures(aClass)
+      if (withSelfType)
+        TypeDefinitionMembers.getSelfTypeSignatures(aClass)
+      else
+        TypeDefinitionMembers.getSignatures(aClass)
     val allSigns = signatures.forName(named.name)._1
     val signs = allSigns.filter(sign => sign._1.namedElement == named)
     signs.flatMap(sign => sign._2.supers.map(_.info.namedElement))
@@ -213,10 +231,13 @@ object RenameSuperMembersUtil {
       case _              => return Seq()
     }
     val aClass = typeAlias.containingClass
-    if (aClass == null) return Seq()
+    if (aClass == null)
+      return Seq()
     val types =
-      if (withSelfType) TypeDefinitionMembers.getSelfTypeTypes(aClass)
-      else TypeDefinitionMembers.getTypes(aClass)
+      if (withSelfType)
+        TypeDefinitionMembers.getSelfTypeTypes(aClass)
+      else
+        TypeDefinitionMembers.getTypes(aClass)
     val forName = types.forName(named.name)._1
     val typeAliases =
       forName.filter(ta => ScalaNamesUtil.scalaName(ta._1) == named.name)

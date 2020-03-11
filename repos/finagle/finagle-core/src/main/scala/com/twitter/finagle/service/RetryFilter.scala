@@ -78,7 +78,8 @@ class RetryFilter[Req, Rep](
         promise.become(f)
       }
       promise
-    } else f
+    } else
+      f
   }
 
   private[this] def dispatch(

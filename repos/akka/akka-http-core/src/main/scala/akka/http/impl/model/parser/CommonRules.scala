@@ -145,7 +145,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // per #17714, parse two digit year to https://tools.ietf.org/html/rfc6265#section-5.1.1
   def date2 = rule {
     day ~ '-' ~ month ~ '-' ~ digit2 ~> (y ⇒
-      if (y <= 69) y + 2000 else y + 1900)
+      if (y <= 69)
+        y + 2000
+      else
+        y + 1900)
   }
 
   def `day-name-l` =

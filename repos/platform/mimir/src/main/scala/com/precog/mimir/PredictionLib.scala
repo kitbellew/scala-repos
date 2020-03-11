@@ -110,7 +110,8 @@ trait PredictionLibModule[M[+_]]
                           val inner = {
                             if (prod.length == 1 && prod.head.length == 1)
                               prod(0)(0)
-                            else sys.error("matrix of wrong shape")
+                            else
+                              sys.error("matrix of wrong shape")
                           }
 
                           val conf = math.sqrt(inner)

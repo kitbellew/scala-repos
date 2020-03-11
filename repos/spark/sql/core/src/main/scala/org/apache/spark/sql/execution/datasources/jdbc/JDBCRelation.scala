@@ -53,11 +53,13 @@ private[sql] object JDBCRelation {
     * @return an array of partitions with where clause for each partition
     */
   def columnPartition(partitioning: JDBCPartitioningInfo): Array[Partition] = {
-    if (partitioning == null) return Array[Partition](JDBCPartition(null, 0))
+    if (partitioning == null)
+      return Array[Partition](JDBCPartition(null, 0))
 
     val numPartitions = partitioning.numPartitions
     val column = partitioning.column
-    if (numPartitions == 1) return Array[Partition](JDBCPartition(null, 0))
+    if (numPartitions == 1)
+      return Array[Partition](JDBCPartition(null, 0))
     // Overflow and silliness can happen if you subtract then divide.
     // Here we get a little roundoff, but that's (hopefully) OK.
     val stride: Long = (partitioning.upperBound / numPartitions
@@ -66,10 +68,17 @@ private[sql] object JDBCRelation {
     var currentValue: Long = partitioning.lowerBound
     var ans = new ArrayBuffer[Partition]()
     while (i < numPartitions) {
-      val lowerBound = if (i != 0) s"$column >= $currentValue" else null
+      val lowerBound =
+        if (i != 0)
+          s"$column >= $currentValue"
+        else
+          null
       currentValue += stride
       val upperBound =
-        if (i != numPartitions - 1) s"$column < $currentValue" else null
+        if (i != numPartitions - 1)
+          s"$column < $currentValue"
+        else
+          null
       val whereClause =
         if (upperBound == null) {
           lowerBound
@@ -123,7 +132,11 @@ private[sql] case class JDBCRelation(
 
   override def insert(data: DataFrame, overwrite: Boolean): Unit = {
     data.write
-      .mode(if (overwrite) SaveMode.Overwrite else SaveMode.Append)
+      .mode(
+        if (overwrite)
+          SaveMode.Overwrite
+        else
+          SaveMode.Append)
       .jdbc(url, table, properties)
   }
 

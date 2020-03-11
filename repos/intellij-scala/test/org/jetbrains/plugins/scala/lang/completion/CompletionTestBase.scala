@@ -68,8 +68,10 @@ abstract class CompletionTestBase
       false)
 
     val completionType =
-      if (getTestName(false).startsWith("Smart")) CompletionType.SMART
-      else CompletionType.BASIC
+      if (getTestName(false).startsWith("Smart"))
+        CompletionType.SMART
+      else
+        CompletionType.BASIC
     new CodeCompletionHandlerBase(completionType, false, false, true)
       .invokeCompletion(getProjectAdapter, editor)
     val lookup: LookupImpl =

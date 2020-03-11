@@ -43,7 +43,14 @@ object RankingMetricsExample {
 
     // Map ratings to 1 or 0, 1 indicating a movie that should be recommended
     val binarizedRatings = ratings
-      .map(r => Rating(r.user, r.product, if (r.rating > 0) 1.0 else 0.0))
+      .map(r =>
+        Rating(
+          r.user,
+          r.product,
+          if (r.rating > 0)
+            1.0
+          else
+            0.0))
       .cache()
 
     // Summarize ratings

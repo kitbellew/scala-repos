@@ -146,7 +146,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
   private def metaToColumn(meta: ResultSetMetaData, index: Int): DBColumns = {
     val columnName = meta.getColumnLabel(index)
     val selector = paths.Value \ CPath(
-      if (unescapeColumnNames) unescapePath(columnName) else columnName)
+      if (unescapeColumnNames)
+        unescapePath(columnName)
+      else
+        columnName)
 
     import Types._
 
@@ -376,7 +379,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       def atOffset(offset: Long) =
         if (offset > 0) {
           baseQuery + " OFFSET " + offset
-        } else baseQuery
+        } else
+          baseQuery
     }
 
     sealed trait LoadState
@@ -426,8 +430,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                           }
                           val query = Query(
                             "SELECT %s FROM %s".format(
-                              if (columns.isEmpty) "*"
-                              else columns.mkString(","),
+                              if (columns.isEmpty)
+                                "*"
+                              else
+                                columns.mkString(","),
                               tableName),
                             yggConfig.maxSliceSize)
 

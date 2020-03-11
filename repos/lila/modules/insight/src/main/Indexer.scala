@@ -56,7 +56,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
   private val maxGames = 10 * 1000
 
   private def fetchFirstGame(user: User): Fu[Option[Game]] =
-    if (user.count.rated == 0) fuccess(none)
+    if (user.count.rated == 0)
+      fuccess(none)
     else {
       (user.count.rated >= maxGames) ??
         pimpQB($query(gameQuery(user)))

@@ -35,7 +35,8 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    } else
+      None
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
@@ -45,7 +46,8 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    } else
+      None
   }
 
   override def viewTypeElement: Seq[ScTypeElement] = {
@@ -69,7 +71,8 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
              node.getElementType)) {
       node = node.getTreeNext
     }
-    if (node == null) return
+    if (node == null)
+      return
     node.getPsi.getPrevSibling match {
       case ws: PsiWhiteSpace => ws.delete()
       case _                 =>

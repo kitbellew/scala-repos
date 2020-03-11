@@ -22,11 +22,16 @@ final class FakeComplex[@sp(Float, Double) T](val real: T, val imag: T)(implicit
     t: Trig[T])
     extends Ordered[FakeComplex[T]] {
   def compare(b: FakeComplex[T]): Int = {
-    if (f.lt(real, b.real)) -1
-    else if (f.gt(real, b.real)) 1
-    else if (f.lt(imag, b.imag)) -1
-    else if (f.gt(imag, b.imag)) 1
-    else 0
+    if (f.lt(real, b.real))
+      -1
+    else if (f.gt(real, b.real))
+      1
+    else if (f.lt(imag, b.imag))
+      -1
+    else if (f.gt(imag, b.imag))
+      1
+    else
+      0
   }
 }
 
@@ -35,11 +40,16 @@ class SortingBenchmarks extends MyBenchmark with BenchmarkData {
     new Order[Complex[Double]] {
       override def eqv(a: Complex[Double], b: Complex[Double]) = a == b
       def compare(a: Complex[Double], b: Complex[Double]): Int = {
-        if (a.real < b.real) -1
-        else if (a.real > b.real) 1
-        else if (a.imag < b.imag) -1
-        else if (a.imag > b.imag) 1
-        else 0
+        if (a.real < b.real)
+          -1
+        else if (a.real > b.real)
+          1
+        else if (a.imag < b.imag)
+          -1
+        else if (a.imag > b.imag)
+          1
+        else
+          0
       }
     }
 
@@ -67,12 +77,36 @@ class SortingBenchmarks extends MyBenchmark with BenchmarkData {
 
     def complexToFake(c: Complex[Double]) = new FakeComplex(c.real, c.imag)
 
-    is = if (typ == "int") mkarray(size, layout)(nextInt) else null
-    js = if (typ == "long") mkarray(size, layout)(nextLong) else null
-    fs = if (typ == "float") mkarray(size, layout)(nextFloat) else null
-    ds = if (typ == "double") mkarray(size, layout)(nextDouble) else null
-    cs = if (typ == "complex") mkarray(size, layout)(nextComplex) else null
-    cs2 = if (typ == "complex") cs.map(complexToFake) else null
+    is =
+      if (typ == "int")
+        mkarray(size, layout)(nextInt)
+      else
+        null
+    js =
+      if (typ == "long")
+        mkarray(size, layout)(nextLong)
+      else
+        null
+    fs =
+      if (typ == "float")
+        mkarray(size, layout)(nextFloat)
+      else
+        null
+    ds =
+      if (typ == "double")
+        mkarray(size, layout)(nextDouble)
+      else
+        null
+    cs =
+      if (typ == "complex")
+        mkarray(size, layout)(nextComplex)
+      else
+        null
+    cs2 =
+      if (typ == "complex")
+        cs.map(complexToFake)
+      else
+        null
   }
 
   def timeJavaSort(reps: Int) = run(reps) {
@@ -125,7 +159,11 @@ class SortingBenchmarks extends MyBenchmark with BenchmarkData {
   }
 
   def timeSpireInsertionSort(reps: Int): Unit = run(reps) {
-    val n = if (pow > 13) 2 else spire.math.pow(2, pow).toInt
+    val n =
+      if (pow > 13)
+        2
+      else
+        spire.math.pow(2, pow).toInt
 
     if (typ == "int") {
       val arr = is.clone;

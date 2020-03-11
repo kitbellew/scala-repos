@@ -105,7 +105,10 @@ object RValue {
             v: RValue): List[RValue] = {
           def update(l: List[RValue], j: Int): List[RValue] = l match {
             case x :: xs =>
-              (if (j == i) rec(x, rem, v) else x) :: update(xs, j + 1)
+              (if (j == i)
+                 rec(x, rem, v)
+               else
+                 x) :: update(xs, j + 1)
             case Nil => Nil
           }
 
@@ -572,7 +575,11 @@ case object CTrue extends CBoolean(true)
 case object CFalse extends CBoolean(false)
 
 object CBoolean extends CValueType[Boolean] {
-  def apply(value: Boolean) = if (value) CTrue else CFalse
+  def apply(value: Boolean) =
+    if (value)
+      CTrue
+    else
+      CFalse
   def unapply(cbool: CBoolean) = Some(cbool.value)
   val manifest: Manifest[Boolean] = implicitly[Manifest[Boolean]]
   def readResolve() = CBoolean

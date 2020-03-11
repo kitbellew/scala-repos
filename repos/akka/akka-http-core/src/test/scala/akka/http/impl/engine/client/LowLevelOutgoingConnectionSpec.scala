@@ -818,7 +818,8 @@ class LowLevelOutgoingConnectionSpec
       val s = ClientConnectionSettings(system)
         .withUserAgentHeader(
           Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
-      if (maxResponseContentLength < 0) s
+      if (maxResponseContentLength < 0)
+        s
       else
         s.withParserSettings(
           s.parserSettings.withMaxContentLength(maxResponseContentLength))

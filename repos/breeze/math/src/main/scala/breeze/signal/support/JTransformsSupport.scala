@@ -31,7 +31,8 @@ object JTransformsSupport {
 
   def getD2DInstance(rows: Int, columns: Int): DoubleFFT_2D = {
     val inst = fft_instD2D.get
-    if (inst != null && rows == inst._1 && columns == inst._2) inst._3
+    if (inst != null && rows == inst._1 && columns == inst._2)
+      inst._3
     else {
       fft_instD2D.set((rows, columns, new DoubleFFT_2D(rows, columns)))
       fft_instD2D.get()._3
@@ -74,7 +75,8 @@ object JTransformsSupport {
   private[signal] def denseVectorDToTemp(
       tempDV: DenseVector[Double]): Array[Double] = {
     val tempArr = new Array[Double](tempDV.length * 2)
-    for (n <- 0 until tempDV.length) tempArr(n) = tempDV(n)
+    for (n <- 0 until tempDV.length)
+      tempArr(n) = tempDV(n)
     tempArr
   }
 

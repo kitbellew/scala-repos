@@ -192,7 +192,8 @@ class EndToEndTest
         def query(x: String) =
           if (x.isEmpty)
             Future.value(ClientId.current.map(_.name).getOrElse(""))
-          else Future.value(x + x)
+          else
+            Future.value(x + x)
       }
 
       val pfSvc = new TestService$FinagleService(iface, pf)
@@ -599,8 +600,10 @@ class EndToEndTest
   private def serverForClassifier(): ListeningServer = {
     val iface = new TestService.FutureIface {
       def query(x: String) =
-        if (x == "safe") Future.value("safe")
-        else Future.exception(new InvalidQueryException(x.length))
+        if (x == "safe")
+          Future.value("safe")
+        else
+          Future.exception(new InvalidQueryException(x.length))
     }
     val svc = new TestService.FinagledService(iface, Protocols.binaryFactory())
     ThriftMux.server
@@ -745,7 +748,8 @@ class EndToEndTest
     // received by the service serially.
     1 to nreqs foreach { i =>
       val req = Await.result(requestReceived(i - 1), 5.seconds)
-      if (i != nreqs) assert(!requestReceived(i).isDefined)
+      if (i != nreqs)
+        assert(!requestReceived(i).isDefined)
       assert(testService.nReqReceived == i)
       servicePromises(i - 1).setValue(req + req)
     }

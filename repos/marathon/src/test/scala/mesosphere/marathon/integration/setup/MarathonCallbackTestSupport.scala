@@ -58,10 +58,14 @@ trait MarathonCallbackTestSupport extends ExternalMarathonIntegrationTest {
       fn: CallbackEvent => Boolean): CallbackEvent = {
     @tailrec
     def nextEvent: Option[CallbackEvent] =
-      if (events.isEmpty) None
+      if (events.isEmpty)
+        None
       else {
         val event = events.poll()
-        if (fn(event)) Some(event) else nextEvent
+        if (fn(event))
+          Some(event)
+        else
+          nextEvent
       }
     WaitTestSupport.waitFor(description, maxWait)(nextEvent)
   }

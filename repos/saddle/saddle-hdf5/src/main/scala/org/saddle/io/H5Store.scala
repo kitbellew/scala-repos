@@ -334,7 +334,10 @@ object H5Store {
     */
   def openFile(path: String, readOnly: Boolean = true): Int = withMonitor {
     val rwParam =
-      if (readOnly) HDF5Constants.H5F_ACC_RDONLY else HDF5Constants.H5F_ACC_RDWR
+      if (readOnly)
+        HDF5Constants.H5F_ACC_RDONLY
+      else
+        HDF5Constants.H5F_ACC_RDWR
     val fid = H5.H5Fopen(path, rwParam, HDF5Constants.H5P_DEFAULT)
     assertException(fid >= 0, "Could not open file " + path)
     // H5Reg.save(fid, H5F) <-- don't want fid automatically released on error
@@ -609,7 +612,11 @@ object H5Store {
 
     H5Reg.save(attribute_id, H5A)
 
-    val byte = if (datum) 0x01: Byte else 0x00: Byte
+    val byte =
+      if (datum)
+        0x01: Byte
+      else
+        0x00: Byte
 
     H5.H5Awrite(attribute_id, HDF5Constants.H5T_STD_B8LE, Array(byte))
 
@@ -1122,7 +1129,8 @@ object H5Store {
       "File ID : " + fileid + " does not belong to a valid file")
 
     try {
-      if (writeHeader) writePytablesHeader(fileid)
+      if (writeHeader)
+        writePytablesHeader(fileid)
       writePandasSeries[X, T](fileid, name, index, values)
     } finally {
       closeFile(fileid)

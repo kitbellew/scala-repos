@@ -354,8 +354,10 @@ class Flags extends ModifierFlags {
     (paramFlags & DefaultGetterFlags) | SYNTHETIC | METHOD | DEFAULTPARAM
 
   def getterFlags(fieldFlags: Long): Long = ACCESSOR + (
-    if ((fieldFlags & MUTABLE) != 0) fieldFlags & ~MUTABLE & ~PRESUPER
-    else fieldFlags & ~PRESUPER | STABLE
+    if ((fieldFlags & MUTABLE) != 0)
+      fieldFlags & ~MUTABLE & ~PRESUPER
+    else
+      fieldFlags & ~PRESUPER | STABLE
   )
 
   def setterFlags(fieldFlags: Long): Long =
@@ -498,13 +500,20 @@ class Flags extends ModifierFlags {
 
   private def accessString(flags: Long, privateWithin: String) = (
     if (privateWithin == "") {
-      if ((flags & PrivateLocal) == PrivateLocal) "private[this]"
-      else if ((flags & ProtectedLocal) == ProtectedLocal) "protected[this]"
-      else if ((flags & PRIVATE) != 0) "private"
-      else if ((flags & PROTECTED) != 0) "protected"
-      else ""
-    } else if ((flags & PROTECTED) != 0) "protected[" + privateWithin + "]"
-    else "private[" + privateWithin + "]"
+      if ((flags & PrivateLocal) == PrivateLocal)
+        "private[this]"
+      else if ((flags & ProtectedLocal) == ProtectedLocal)
+        "protected[this]"
+      else if ((flags & PRIVATE) != 0)
+        "private"
+      else if ((flags & PROTECTED) != 0)
+        "protected"
+      else
+        ""
+    } else if ((flags & PROTECTED) != 0)
+      "protected[" + privateWithin + "]"
+    else
+      "private[" + privateWithin + "]"
   )
 
   @deprecated("Use flagString on the flag-carrying member", "2.10.0")
@@ -520,7 +529,8 @@ class Flags extends ModifierFlags {
   @deprecated("Use flagString on the flag-carrying member", "2.10.0")
   private[scala] def flagsToString(flags: Long): String = {
     // Fast path for common case
-    if (flags == 0L) ""
+    if (flags == 0L)
+      ""
     else {
       var sb: StringBuilder = null
       var i = 0
@@ -529,14 +539,20 @@ class Flags extends ModifierFlags {
         if ((flags & mask) != 0L) {
           val s = flagToString(mask)
           if (s.length > 0) {
-            if (sb eq null) sb = new StringBuilder append s
-            else if (sb.length == 0) sb append s
-            else sb append " " append s
+            if (sb eq null)
+              sb = new StringBuilder append s
+            else if (sb.length == 0)
+              sb append s
+            else
+              sb append " " append s
           }
         }
         i += 1
       }
-      if (sb eq null) "" else sb.toString
+      if (sb eq null)
+        ""
+      else
+        sb.toString
     }
   }
 

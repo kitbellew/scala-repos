@@ -42,19 +42,23 @@ trait FindMembers {
     private[this] var _self: Type = null
     protected def self: Type = {
       // TODO: use narrow only for modules? (correct? efficiency gain?) (<-- Note: this comment predates SI-5330)
-      if (_self eq null) _self = narrowForFindMember(tpe)
+      if (_self eq null)
+        _self = narrowForFindMember(tpe)
       _self
     }
 
     // Main entry point
     def apply(): T = {
-      if (Statistics.canEnable) Statistics.incCounter(findMemberCount)
+      if (Statistics.canEnable)
+        Statistics.incCounter(findMemberCount)
       val start =
         if (Statistics.canEnable)
           Statistics.pushTimer(typeOpsStack, findMemberNanos)
-        else null
+        else
+          null
       try searchConcreteThenDeferred
-      finally if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
+      finally if (Statistics.canEnable)
+        Statistics.popTimer(typeOpsStack, start)
     }
 
     protected def result: T
@@ -96,7 +100,11 @@ trait FindMembers {
       while (!bcs.isEmpty) {
         val currentBaseClass = bcs.head
         val decls = currentBaseClass.info.decls
-        var entry = if (findAll) decls.elems else decls.lookupEntry(name)
+        var entry =
+          if (findAll)
+            decls.elems
+          else
+            decls.lookupEntry(name)
         while (entry ne null) {
           val sym = entry.sym
           val flags = sym.flags
@@ -110,13 +118,19 @@ trait FindMembers {
                   currentBaseClass,
                   seenFirstNonRefinementClass,
                   refinementParents)) {
-              if (shortCircuit(sym)) return false
-              else addMemberIfNew(sym)
+              if (shortCircuit(sym))
+                return false
+              else
+                addMemberIfNew(sym)
             } else if (excl == DEFERRED) {
               deferredSeen = true
             }
           }
-          entry = if (findAll) entry.next else decls lookupNextEntry entry
+          entry =
+            if (findAll)
+              entry.next
+            else
+              decls lookupNextEntry entry
         }
 
         // SLS 5.2 The private modifier can be used with any definition or declaration in a template.
@@ -208,8 +222,10 @@ trait FindMembers {
     private def narrowForFindMember(tp: Type): Type = {
       val w = tp.widen
       // Only narrow on widened type when we have to -- narrow is expensive unless the target is a singleton type.
-      if ((tp ne w) && containsExistential(w)) w.narrow
-      else tp.narrow
+      if ((tp ne w) && containsExistential(w))
+        w.narrow
+      else
+        tp.narrow
     }
   }
 
@@ -224,7 +240,8 @@ trait FindMembers {
         requiredFlags) {
     private[this] var _membersScope: Scope = null
     private def membersScope: Scope = {
-      if (_membersScope eq null) _membersScope = newFindMemberScope
+      if (_membersScope eq null)
+        _membersScope = newFindMemberScope
       _membersScope
     }
 
@@ -242,7 +259,8 @@ trait FindMembers {
         others =
           members lookupNextEntry others // next existing member with the same name.
       }
-      if (isNew) members.enter(sym)
+      if (isNew)
+        members.enter(sym)
     }
   }
 
@@ -303,22 +321,29 @@ trait FindMembers {
     private[this] var _member0Tpe: Type = null
     private[this] def member0Tpe: Type = {
       assert(member0 != null)
-      if (_member0Tpe eq null) _member0Tpe = self.memberType(member0)
+      if (_member0Tpe eq null)
+        _member0Tpe = self.memberType(member0)
       _member0Tpe
     }
 
     override protected def memberTypeLow(sym: Symbol): Type =
-      if (sym eq member0) member0Tpe else super.memberTypeLow(sym)
+      if (sym eq member0)
+        member0Tpe
+      else
+        super.memberTypeLow(sym)
 
     // Assemble the result from the hand-rolled ListBuffer
     protected def result: Symbol =
       if (members eq null) {
         if (member0 == NoSymbol) {
-          if (Statistics.canEnable) Statistics.incCounter(noMemberCount)
+          if (Statistics.canEnable)
+            Statistics.incCounter(noMemberCount)
           NoSymbol
-        } else member0
+        } else
+          member0
       } else {
-        if (Statistics.canEnable) Statistics.incCounter(multMemberCount)
+        if (Statistics.canEnable)
+          Statistics.incCounter(multMemberCount)
         lastM.tl = Nil
         initBaseClasses.head.newOverloaded(tpe, members)
       }

@@ -37,7 +37,10 @@ import scalafx.event.EventType
 object InputMethodEvent {
   implicit def sfxInputMethodEvent2jfx(
       ime: InputMethodEvent): jfxsi.InputMethodEvent =
-    if (ime != null) ime.delegate else null
+    if (ime != null)
+      ime.delegate
+    else
+      null
 
   val InputMethodTextChanged: EventType[jfxsi.InputMethodEvent] =
     jfxsi.InputMethodEvent.INPUT_METHOD_TEXT_CHANGED

@@ -31,11 +31,15 @@ object ShowPickled extends Names {
       case _ => false
     }
     def readName =
-      if (isName) new String(bytes, "UTF-8")
-      else sys.error("%s is no name" format tagName)
+      if (isName)
+        new String(bytes, "UTF-8")
+      else
+        sys.error("%s is no name" format tagName)
     def nameIndex =
-      if (hasName) readNat(bytes, 0)
-      else sys.error("%s has no name" format tagName)
+      if (hasName)
+        readNat(bytes, 0)
+      else
+        sys.error("%s has no name" format tagName)
 
     def tagName = tag2string(tag)
     override def toString = "%d,%d: %s".format(num, startIndex, tagName)
@@ -44,9 +48,12 @@ object ShowPickled extends Names {
   case class PickleBufferEntryList(entries: IndexedSeq[PickleBufferEntry]) {
     def nameAt(idx: Int) = {
       val entry = entries(idx)
-      if (entry.isName) entry.readName
-      else if (entry.hasName) entries(entry.nameIndex).readName
-      else "?"
+      if (entry.isName)
+        entry.readName
+      else if (entry.hasName)
+        entries(entry.nameIndex).readName
+      else
+        "?"
     }
   }
 
@@ -155,10 +162,11 @@ object ShowPickled extends Names {
       def printFlags(privateWithin: Option[Int]) = {
         val accessBoundary =
           (
-            for (idx <- privateWithin) yield {
-              val s = entryList nameAt idx
-              idx + "(" + s + ")"
-            }
+            for (idx <- privateWithin)
+              yield {
+                val s = entryList nameAt idx
+                idx + "(" + s + ")"
+              }
           )
         val flagString = {
           val arg1 = Flags.pickledToRawFlags(pflags)
@@ -205,7 +213,8 @@ object ShowPickled extends Names {
           buf.readIndex = end
         case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym =>
           printSymInfo(end)
-          if (tag == CLASSsym && (buf.readIndex < end)) printTypeRef()
+          if (tag == CLASSsym && (buf.readIndex < end))
+            printTypeRef()
         case EXTref | EXTMODCLASSref =>
           printNameRef()
           if (buf.readIndex < end) {
@@ -239,7 +248,11 @@ object ShowPickled extends Names {
           printTypeRef();
           buf.until(end, printSymbolRef)
         case LITERALboolean =>
-          out.print(if (buf.readLong(len) == 0L) " false" else " true")
+          out.print(
+            if (buf.readLong(len) == 0L)
+              " false"
+            else
+              " true")
         case LITERALbyte =>
           out.print(" " + buf.readLong(len).toByte)
         case LITERALshort =>
@@ -294,7 +307,8 @@ object ShowPickled extends Names {
       }
     }
 
-    for (i <- 0 until index.length) printEntry(i)
+    for (i <- 0 until index.length)
+      printEntry(i)
   }
 
   def fromFile(path: String) = fromBytes(io.File(path).toByteArray())

@@ -40,7 +40,10 @@ object TestGraphs {
   // Helpers
 
   private def sum[V: Semigroup](opt: Option[V], v: V): V =
-    if (opt.isDefined) Semigroup.plus(opt.get, v) else v
+    if (opt.isDefined)
+      Semigroup.plus(opt.get, v)
+    else
+      v
 
   private def scanSum[V: Semigroup](
       it: Iterator[V]): Iterator[(Option[V], V)] = {

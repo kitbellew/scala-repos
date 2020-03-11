@@ -106,7 +106,11 @@ class LiftServlet extends Loggable {
       session: Box[LiftSession],
       func: ((=> LiftResponse) => Unit) => Unit): Boolean = {
 
-    val req = if (null eq reqOrg) reqOrg else reqOrg.snapshot
+    val req =
+      if (null eq reqOrg)
+        reqOrg
+      else
+        reqOrg.snapshot
 
     def runFunction(doAnswer: LiftResponse => Unit) {
       Schedule.schedule(
@@ -1082,8 +1086,10 @@ class LiftServlet extends Loggable {
               (
                 (for (updated <- Full(
                         (if (!LiftRules.excludePathFromContextPathRewriting
-                               .vend(uri)) u.contextPath
-                         else "") + uri).filter(ignore => uri.startsWith("/"));
+                               .vend(uri))
+                           u.contextPath
+                         else
+                           "") + uri).filter(ignore => uri.startsWith("/"));
                       rwf <- URLRewriter.rewriteFunc)
                   yield rwf(updated)) openOr uri
               ))
@@ -1093,7 +1099,8 @@ class LiftServlet extends Loggable {
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
       val acceptHeader =
         for (innerReq <- Box.legacyNullTest(req.request);
-             accept <- innerReq.header("Accept")) yield accept
+             accept <- innerReq.header("Accept"))
+          yield accept
 
       (Full(req), acceptHeader)
     }
@@ -1110,8 +1117,10 @@ class LiftServlet extends Loggable {
       toInsure
         .foldLeft(org) {
           case (map, (key, value)) =>
-            if (map.contains(key)) map
-            else map + (key -> value)
+            if (map.contains(key))
+              map
+            else
+              map + (key -> value)
         }
         .toList
 
@@ -1128,7 +1137,10 @@ class LiftServlet extends Loggable {
           LiftRules.defaultHeaders(NodeSeq.Empty -> request) :::
             /* List(("Content-Type",
         LiftRules.determineContentType(pairFromRequest(request)))) ::: */
-            (if (len >= 0) List(("Content-Length", len.toString)) else Nil)
+            (if (len >= 0)
+               List(("Content-Length", len.toString))
+             else
+               Nil)
         )
 
     LiftRules.beforeSend.toList.foreach(f =>
@@ -1171,7 +1183,8 @@ class LiftServlet extends Loggable {
               case stream                   => len = stream.read(ba)
             }
             while (len >= 0) {
-              if (len > 0) os.write(ba, 0, len)
+              if (len > 0)
+                os.write(ba, 0, len)
               stream match {
                 case jio: java.io.InputStream => len = jio.read(ba)
                 case stream                   => len = stream.read(ba)

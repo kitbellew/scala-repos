@@ -230,7 +230,8 @@ object CoreUtils extends Logging {
     */
   def circularIterator[T](coll: Iterable[T]) =
     for (_ <- Iterator.continually(1);
-         t <- coll) yield t
+         t <- coll)
+      yield t
 
   /**
     * Replace the given string suffix with the new suffix. If the string doesn't end with the given suffix throw an exception.

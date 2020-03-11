@@ -80,8 +80,8 @@ trait ReductionFinderModule[M[+_]]
       val (ancestorByReduce, specByParent) = info.foldLeft(
         (Map[dag.Reduce, DepGraph](), Map[DepGraph, TransSpec1]())) {
         case (
-            (ancestorByReduce, specByParent),
-            ReduceInfo(reduce, spec, ancestor)) =>
+              (ancestorByReduce, specByParent),
+              ReduceInfo(reduce, spec, ancestor)) =>
           (
             ancestorByReduce + (reduce -> ancestor),
             specByParent + (reduce.parent -> spec))

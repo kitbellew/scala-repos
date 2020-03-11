@@ -293,7 +293,10 @@ object Pickler {
       def pickle(wr: Writer, xs: Iterator[T]) {
         var first = true
         for (x <- xs) {
-          if (first) first = false else wr.write(',')
+          if (first)
+            first = false
+          else
+            wr.write(',')
           p.pickle(wr, x)
         }
       }
@@ -305,7 +308,10 @@ object Pickler {
             t != EOF && t != RParen && t != RBrace && t != RBracket
           }
           def next(): T = {
-            if (first) first = false else rd.accept(',')
+            if (first)
+              first = false
+            else
+              rd.accept(',')
             p.unpickle(rd).requireSuccess.result
           }
         })
@@ -321,8 +327,10 @@ object Pickler {
       matcher: PartialFunction[Token, T]) = new Pickler[T] {
     def pickle(wr: Writer, x: T) = wr.write(x.toString)
     def unpickle(rd: Lexer) =
-      if (matcher isDefinedAt rd.token) nextSuccess(rd, matcher(rd.token))
-      else errorExpected(rd, kind)
+      if (matcher isDefinedAt rd.token)
+        nextSuccess(rd, matcher(rd.token))
+      else
+        errorExpected(rd, kind)
   }
 
   /** A pickler for values of type `Long`, represented as integer literals */
@@ -366,7 +374,11 @@ object Pickler {
   /** A pickler for values of type `String`, represented as string literals */
   implicit val stringPickler: Pickler[String] = new Pickler[String] {
     def pickle(wr: Writer, x: String) =
-      wr.write(if (x == null) "null" else quoted(x))
+      wr.write(
+        if (x == null)
+          "null"
+        else
+          quoted(x))
     def unpickle(rd: Lexer) = rd.token match {
       case StringLit(s) => nextSuccess(rd, s)
       case NullLit      => nextSuccess(rd, null)
@@ -421,7 +433,8 @@ abstract class CondPickler[T](val canPickle: Any => Boolean)
     */
   def tryPickle(wr: Writer, x: Any): Boolean = {
     val result = canPickle(x)
-    if (result) pickle(wr, x.asInstanceOf[T])
+    if (result)
+      pickle(wr, x.asInstanceOf[T])
     result
   }
 

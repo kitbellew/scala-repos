@@ -70,8 +70,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     Resolver.resolve(ResolvableReferenceExpression.this, incomplete)
 
   def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
-    if (resolveFunction != null) resolveFunction()
-    else multiResolveImpl(incomplete)
+    if (resolveFunction != null)
+      resolveFunction()
+    else
+      multiResolveImpl(incomplete)
   }
 
   @CachedWithRecursionGuard[ResolvableReferenceExpression](
@@ -83,8 +85,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
 
   def shapeResolve: Array[ResolveResult] = {
     ProgressManager.checkCanceled()
-    if (shapeResolveFunction != null) shapeResolveFunction()
-    else shapeResolveImpl
+    if (shapeResolveFunction != null)
+      shapeResolveFunction()
+    else
+      shapeResolveImpl
   }
 
   def isAssignmentOperator = {
@@ -108,7 +112,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       ref: ResolvableReferenceExpression,
       processor: BaseProcessor,
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
-    if (!accessibilityCheck) processor.doNotCheckAccessibility()
+    if (!accessibilityCheck)
+      processor.doNotCheckAccessibility()
     val actualProcessor = ref.qualifier match {
       case None =>
         resolveUnqalified(ref, processor)
@@ -128,7 +133,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       processor: BaseProcessor): BaseProcessor = {
     ref.getContext match {
       case inf: ScInfixExpr if ref == inf.operation =>
-        val thisOp = if (ref.rightAssoc) inf.rOp else inf.lOp
+        val thisOp =
+          if (ref.rightAssoc)
+            inf.rOp
+          else
+            inf.lOp
         processTypes(ref, thisOp, processor)
       case postf: ScPostfixExpr if ref == postf.operation =>
         processTypes(ref, postf.operand, processor)
@@ -145,15 +154,19 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       processor: BaseProcessor) {
     @tailrec
     def treeWalkUp(place: PsiElement, lastParent: PsiElement) {
-      if (place == null) return
+      if (place == null)
+        return
       if (!place.processDeclarations(
             processor,
             ResolveState.initial(),
             lastParent,
-            ref)) return
+            ref))
+        return
       place match {
         case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
-        case _                                       => if (!processor.changedLevel) return
+        case _ =>
+          if (!processor.changedLevel)
+            return
       }
       treeWalkUp(place.getContext, place)
     }
@@ -351,7 +364,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               val exprs = args.exprs
               var i = 0
               def tail() {
-                if (methods.nonEmpty) methods.remove(0)
+                if (methods.nonEmpty)
+                  methods.remove(0)
               }
               while (exprs(i) != assign) {
                 exprs(i) match {
@@ -360,8 +374,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                       case ref: ScReferenceExpression =>
                         val ind = methods.indexWhere(p =>
                           ScalaPsiUtil.memberNamesEquals(p.name, ref.refName))
-                        if (ind != -1) methods.remove(ind)
-                        else tail()
+                        if (ind != -1)
+                          methods.remove(ind)
+                        else
+                          tail()
                       case _ => tail()
                     }
                   case _ => tail()
@@ -463,7 +479,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     args.getContext match {
       case s: ScSelfInvocation =>
         val clazz = ScalaPsiUtil.getContextOfType(s, true, classOf[ScClass])
-        if (clazz == null) return
+        if (clazz == null)
+          return
         val tp: ScType = clazz
           .asInstanceOf[ScClass]
           .getType(TypingContext.empty)
@@ -472,7 +489,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         val typeArgs: Seq[ScTypeElement] = Seq.empty
         val arguments = s.arguments
         val secondaryConstructors = (c: ScClass) => {
-          if (c != clazz) Seq.empty
+          if (c != clazz)
+            Seq.empty
           else {
             c.secondaryConstructors.filter(f =>
               !PsiTreeUtil.isContextAncestor(f, s, true) &&
@@ -512,7 +530,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       val params = new ArrayBuffer[ScParameter] ++ actualClause.parameters
       var i = 0
       def tail() {
-        if (params.nonEmpty) params.remove(0)
+        if (params.nonEmpty)
+          params.remove(0)
       }
       while (exprs(i) != assign) {
         exprs(i) match {
@@ -521,8 +540,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               case ref: ScReferenceExpression =>
                 val ind = params.indexWhere(p =>
                   ScalaPsiUtil.memberNamesEquals(p.name, ref.refName))
-                if (ind != -1) params.remove(ind)
-                else tail()
+                if (ind != -1)
+                  params.remove(ind)
+                else
+                  tail()
               case _ => tail()
             }
           case _ => tail()
@@ -552,7 +573,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             !internal.isInstanceOf[ScMethodType] && !internal
             .isInstanceOf[ScUndefinedType] /* optimization */ =>
         processType(internal, reference, e, processor)
-        if (processor.candidates.nonEmpty) return processor
+        if (processor.candidates.nonEmpty)
+          return processor
       case _ =>
     }
     //if it's ordinar case
@@ -630,7 +652,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       .instance(getProject)
       .getCachedClass(getResolveScope, "scala.Dynamic")
       .orNull
-    if (cachedClass == null) return baseProcessor
+    if (cachedClass == null)
+      return baseProcessor
     val dynamicType = ScDesignatorType(cachedClass)
 
     if (aType.conforms(dynamicType)) {

@@ -143,9 +143,12 @@ object ScalaJSPluginInternal {
             val scalaJSFiles = if (classFile.getPath endsWith ".class") {
               val f =
                 FileVirtualFile.withExtension(classFile, ".class", ".sjsir")
-              if (f.exists) List(f)
-              else Nil
-            } else Nil
+              if (f.exists)
+                List(f)
+              else
+                Nil
+            } else
+              Nil
             classFile :: scalaJSFiles
           })
         }

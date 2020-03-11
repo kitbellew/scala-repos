@@ -103,8 +103,10 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       *  isMethod, isModule or isPackage are never going to auto-initialize.
       */
     override def isThreadsafe(purpose: SymbolOps) = {
-      if (isCompilerUniverse) false
-      else if (_initialized) true
+      if (isCompilerUniverse)
+        false
+      else if (_initialized)
+        true
       else
         purpose.isFlagRelated && (_initializationMask & purpose.mask & TopLevelPickledFlags) == 0
     }
@@ -169,9 +171,11 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       }
 
     override def typeParams: List[Symbol] = gilSynchronizedIfNotThreadsafe {
-      if (isCompilerUniverse) super.typeParams
+      if (isCompilerUniverse)
+        super.typeParams
       else {
-        if (isMonomorphicType) Nil
+        if (isMonomorphicType)
+          Nil
         else {
           // analogously to the "info" getter, here we allow for two completions:
           //   one: sourceCompleter to LazyType, two: LazyType to completed type
@@ -186,10 +190,13 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     }
     override def unsafeTypeParams: List[Symbol] =
       gilSynchronizedIfNotThreadsafe {
-        if (isCompilerUniverse) super.unsafeTypeParams
+        if (isCompilerUniverse)
+          super.unsafeTypeParams
         else {
-          if (isMonomorphicType) Nil
-          else rawInfo.typeParams
+          if (isMonomorphicType)
+            Nil
+          else
+            rawInfo.typeParams
         }
       }
 

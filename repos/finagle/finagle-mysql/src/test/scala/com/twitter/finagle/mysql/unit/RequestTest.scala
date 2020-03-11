@@ -179,7 +179,11 @@ class ExecuteRequestTest extends FunSuite {
     }
 
     test("Boolean") {
-      assert(br.readByte() == (if (boolVal) 1 else 0))
+      assert(
+        br.readByte() == (if (boolVal)
+                            1
+                          else
+                            0))
     }
 
     test("Byte") {

@@ -129,7 +129,10 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       specificTimer.time {
         response = doSend(
           producerRequest,
-          if (producerRequest.requiredAcks == 0) false else true)
+          if (producerRequest.requiredAcks == 0)
+            false
+          else
+            true)
       }
     }
     if (producerRequest.requiredAcks != 0) {

@@ -212,8 +212,10 @@ private[stream] object Timers {
         private val IdleTimer = "DelayTimer"
 
         override def preStart(): Unit = {
-          if (delay == Duration.Zero) open = true
-          else scheduleOnce(IdleTimer, delay)
+          if (delay == Duration.Zero)
+            open = true
+          else
+            scheduleOnce(IdleTimer, delay)
         }
 
         private var open: Boolean = false
@@ -227,12 +229,15 @@ private[stream] object Timers {
         setHandler(
           out,
           new OutHandler {
-            override def onPull(): Unit = if (open) pull(in)
+            override def onPull(): Unit =
+              if (open)
+                pull(in)
           })
 
         override protected def onTimer(timerKey: Any): Unit = {
           open = true
-          if (isAvailable(out)) pull(in)
+          if (isAvailable(out))
+            pull(in)
         }
       }
   }
@@ -265,7 +270,8 @@ private[stream] object Timers {
             }
 
             override def onUpstreamFinish(): Unit = {
-              if (!isAvailable(in)) completeStage()
+              if (!isAvailable(in))
+                completeStage()
             }
           }
         )
@@ -276,13 +282,16 @@ private[stream] object Timers {
             override def onPull(): Unit = {
               if (isAvailable(in)) {
                 push(out, grab(in))
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in))
+                  completeStage()
+                else
+                  pull(in)
               } else {
                 if (nextDeadline.isOverdue()) {
                   nextDeadline = Deadline.now + timeout
                   push(out, inject())
-                } else scheduleOnce(IdleTimer, nextDeadline.timeLeft)
+                } else
+                  scheduleOnce(IdleTimer, nextDeadline.timeLeft)
               }
             }
           }

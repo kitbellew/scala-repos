@@ -54,7 +54,8 @@ final class Api(
           val thread =
             if (me.troll || lila.security.Spam.detect(data.subject, data.text))
               t deleteFor invited
-            else t
+            else
+              t
           sendUnlessBlocked(thread, fromMod) >>-
             updateUser(invited) >>- {
             val text = s"${data.subject} ${data.text}"
@@ -76,7 +77,8 @@ final class Api(
       fromMod = false) >> unreadCache.clear(lt.to)
 
   private def sendUnlessBlocked(thread: Thread, fromMod: Boolean): Funit =
-    if (fromMod) $insert(thread)
+    if (fromMod)
+      $insert(thread)
     else
       blocks(thread.invitedId, thread.creatorId) flatMap {
         !_ ?? $insert(thread)
@@ -84,7 +86,8 @@ final class Api(
 
   def makePost(thread: Thread, text: String, me: User): Fu[Thread] = {
     val post = Post.make(text = text, isByCreator = thread isCreator me)
-    if (thread endsWith post) fuccess(thread) // prevent duplicate post
+    if (thread endsWith post)
+      fuccess(thread) // prevent duplicate post
     else
       blocks(thread receiverOf post, me.id) flatMap {
         case true => fuccess(thread)

@@ -35,5 +35,9 @@ object Signed {
 private[algebra] class OrderedRingIsSigned[A](implicit o: Order[A], r: Ring[A])
     extends Signed[A] {
   def signum(a: A): Int = o.compare(a, r.zero)
-  def abs(a: A): A = if (signum(a) < 0) r.negate(a) else a
+  def abs(a: A): A =
+    if (signum(a) < 0)
+      r.negate(a)
+    else
+      a
 }

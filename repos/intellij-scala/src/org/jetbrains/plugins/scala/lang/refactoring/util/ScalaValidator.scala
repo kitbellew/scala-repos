@@ -20,13 +20,17 @@ abstract class ScalaValidator(
     myProject
 
   def enclosingContainer(allOcc: Boolean): PsiElement =
-    if (allOcc) enclosingContainerAll else enclosingOne
+    if (allOcc)
+      enclosingContainerAll
+    else
+      enclosingOne
 
   def isOK(dialog: NamedDialog): Boolean =
     isOK(dialog.getEnteredName, dialog.isReplaceAllOccurrences)
 
   def isOK(newName: String, isReplaceAllOcc: Boolean): Boolean = {
-    if (noOccurrences) return true
+    if (noOccurrences)
+      return true
     val conflicts = isOKImpl(newName, isReplaceAllOcc)
     conflicts.isEmpty || conflictsReporter.reportConflicts(myProject, conflicts)
   }
@@ -47,10 +51,13 @@ abstract class ScalaValidator(
       allOcc: Boolean): Array[(PsiNamedElement, String)]
 
   def validateName(name: String, increaseNumber: Boolean): String = {
-    if (noOccurrences) return name
+    if (noOccurrences)
+      return name
     var res = name
-    if (isOKImpl(res, allOcc = false).isEmpty) return res
-    if (!increaseNumber) return ""
+    if (isOKImpl(res, allOcc = false).isEmpty)
+      return res
+    if (!increaseNumber)
+      return ""
     var i = 1
     res = name + i
     if (!ScalaNamesUtil.isIdentifier(res)) {

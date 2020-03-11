@@ -25,7 +25,10 @@ class SimpleSSLContextBuilder(
     extends SSLContextBuilder {
 
   def nullIfEmpty[T](array: Array[T]) = {
-    if (array.isEmpty) null else array
+    if (array.isEmpty)
+      null
+    else
+      array
   }
 
   /**
@@ -127,7 +130,8 @@ class ConfigSSLContextBuilder(
   lazy val keyManagers: Seq[KeyManager] =
     if (info.keyManagerConfig.keyStoreConfigs.nonEmpty) {
       Seq(buildCompositeKeyManager(info.keyManagerConfig, algorithmChecker))
-    } else Nil
+    } else
+      Nil
 
   lazy val trustManagers: Seq[TrustManager] =
     if (info.trustManagerConfig.trustStoreConfigs.nonEmpty) {
@@ -137,7 +141,8 @@ class ConfigSSLContextBuilder(
           info.checkRevocation.getOrElse(false),
           revocationLists,
           algorithmChecker))
-    } else Nil
+    } else
+      Nil
 
   def buildSSLContext(
       protocol: String,

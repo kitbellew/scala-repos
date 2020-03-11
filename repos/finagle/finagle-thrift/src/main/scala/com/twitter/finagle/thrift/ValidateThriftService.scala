@@ -53,8 +53,10 @@ class ValidateThriftService(
       }
 
   override def status =
-    if (!isValid) Status.Closed
-    else self.status
+    if (!isValid)
+      Status.Closed
+    else
+      self.status
 
   private def isResponseValid(bytes: Array[Byte]) =
     try {

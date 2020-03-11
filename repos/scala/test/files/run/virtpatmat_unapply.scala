@@ -2,7 +2,10 @@ class IntList(val hd: Int, val tl: IntList)
 object NilIL extends IntList(0, null)
 object IntList {
   def unapply(il: IntList): Option[(Int, IntList)] =
-    if (il eq NilIL) None else Some(il.hd, il.tl)
+    if (il eq NilIL)
+      None
+    else
+      Some(il.hd, il.tl)
   def apply(x: Int, xs: IntList) = new IntList(x, xs)
 }
 

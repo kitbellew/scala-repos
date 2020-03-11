@@ -28,8 +28,10 @@ object Test extends InteractiveTest {
     compiler.getUnitOf(source) match {
       case Some(unit) =>
         val problems = unit.problems.toList
-        if (problems.isEmpty) reporter.println("Test OK")
-        else problems.foreach(problem => reporter.println(problem.msg))
+        if (problems.isEmpty)
+          reporter.println("Test OK")
+        else
+          problems.foreach(problem => reporter.println(problem.msg))
 
       case None =>
         reporter.println("No compilation unit found for " + source.file.name)

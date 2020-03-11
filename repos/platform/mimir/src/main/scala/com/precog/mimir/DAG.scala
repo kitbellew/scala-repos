@@ -231,7 +231,11 @@ trait DAG extends Instructions {
           }
 
           case instr @ MergeBuckets(and) => {
-            val const = if (and) IntersectBucketSpec else UnionBucketSpec
+            val const =
+              if (and)
+                IntersectBucketSpec
+              else
+                UnionBucketSpec
 
             continue {
               case Left(right) :: Left(left) :: tl =>
@@ -705,7 +709,10 @@ trait DAG extends Instructions {
             edit: (DepGraph, DepGraph),
             replace: DepGraph => T,
             retain: DepGraph => T): T =
-          if (inScope && from == edit._1) replace(edit._2) else retain(from)
+          if (inScope && from == edit._1)
+            replace(edit._2)
+          else
+            retain(from)
         def edit[T](
             inScope: Boolean,
             from: dag.BucketSpec,
@@ -729,7 +736,10 @@ trait DAG extends Instructions {
             edit: (dag.BucketSpec, dag.BucketSpec),
             replace: dag.BucketSpec => T,
             retain: dag.BucketSpec => T): T =
-          if (inScope && from == edit._1) replace(edit._2) else retain(from)
+          if (inScope && from == edit._1)
+            replace(edit._2)
+          else
+            retain(from)
 
         def bimap[T](
             e: dag.BucketSpec)(fg: DepGraph => T, fs: dag.BucketSpec => T): T =
@@ -1676,8 +1686,10 @@ trait DAG extends Instructions {
         val idx = specs indexWhere { s =>
           intersects(spec._1, s)
         }
-        if (idx < 0) None
-        else Some((union(spec._1, specs(idx)), (spec._2, idx)))
+        if (idx < 0)
+          None
+        else
+          Some((union(spec._1, specs(idx)), (spec._2, idx)))
       }
 
       private def matches = (leftIdentities, rightIdentities) match {
@@ -1703,14 +1715,18 @@ trait DAG extends Instructions {
 
       def mapLeftIndex(i: Int): Int = {
         val j = sharedIndices.unzip._1.indexOf(i)
-        if (j < 0) leftIndices.indexOf(i) + sharedIndices.size else j
+        if (j < 0)
+          leftIndices.indexOf(i) + sharedIndices.size
+        else
+          j
       }
 
       def mapRightIndex(i: Int): Int = {
         val j = sharedIndices.unzip._2.indexOf(i)
         if (j < 0)
           rightIndices.indexOf(i) + sharedIndices.size + leftIndices.size
-        else j
+        else
+          j
       }
     }
   }

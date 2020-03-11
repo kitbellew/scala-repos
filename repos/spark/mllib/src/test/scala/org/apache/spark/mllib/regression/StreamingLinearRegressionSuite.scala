@@ -136,7 +136,14 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     // check error stability (it always either shrinks, or increases with small tol)
     assert(deltas.forall(x => (x._1 - x._2) <= 0.1))
     // check that error shrunk on at least 2 batches
-    assert(deltas.map(x => if ((x._1 - x._2) < 0) 1 else 0).sum > 1)
+    assert(
+      deltas
+        .map(x =>
+          if ((x._1 - x._2) < 0)
+            1
+          else
+            0)
+        .sum > 1)
   }
 
   // Test predictions on a stream

@@ -17,16 +17,22 @@ final case class DataPoint(x: Vector, y: Double) extends Serializable
 trait SparkLRBenchmark extends scala.pickling.testing.PicklingBenchmark {
   val data = {
     def generatePoint(i: Int) = {
-      val y = if (i % 2 == 0) -1 else 1
+      val y =
+        if (i % 2 == 0)
+          -1
+        else
+          1
       val x = {
         val elements = new Array[Double](10)
-        for (i <- 0 until 10) elements(i) = y * 0.7
+        for (i <- 0 until 10)
+          elements(i) = y * 0.7
         new Vector(elements)
       }
       DataPoint(x, y)
     }
     val buffer = ArrayBuffer[DataPoint]()
-    for (i <- 1 to size) buffer += generatePoint(i)
+    for (i <- 1 to size)
+      buffer += generatePoint(i)
     buffer
   }
 }

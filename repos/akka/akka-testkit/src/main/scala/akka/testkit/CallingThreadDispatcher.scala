@@ -77,7 +77,10 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
       Set[WeakReference[MessageQueue]]] /: queues) {
       case (m, (k, v)) ⇒
         val nv = v filter (_.get ne null)
-        if (nv.isEmpty) m else m += (k -> nv)
+        if (nv.isEmpty)
+          m
+        else
+          m += (k -> nv)
     }.result
   }
 
@@ -248,7 +251,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           queue.enqueue(receiver.self, handle)
           true
         }
-        if (execute) runQueue(mbox, queue)
+        if (execute)
+          runQueue(mbox, queue)
       case m ⇒ m.enqueue(receiver.self, handle)
     }
   }
@@ -276,7 +280,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           "Interrupted during message processing")
         log.error(ie, "Interrupted during message processing")
         ie
-      } else intEx
+      } else
+        intEx
     }
 
     def throwInterruptionIfExistsOrSet(intEx: InterruptedException): Unit = {
@@ -294,7 +299,10 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       val recurse = {
         mbox.processAllSystemMessages()
         val handle = mbox.suspendSwitch.fold[Envelope](null) {
-          if (mbox.isClosed) null else queue.dequeue()
+          if (mbox.isClosed)
+            null
+          else
+            queue.dequeue()
         }
         if (handle ne null) {
           try {
@@ -314,10 +322,13 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
               log.error(e, "Error during message processing")
               false
           }
-        } else false
+        } else
+          false
       }
-      if (recurse) process(intex)
-      else intex
+      if (recurse)
+        process(intex)
+      else
+        intex
     }
 
     // if we own the lock then we shouldn't do anything since we are processing

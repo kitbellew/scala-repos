@@ -77,14 +77,16 @@ class SeriesCheck extends Specification with ScalaCheck {
         if (!s.isEmpty) {
           val exp = Vec(na.to[Double]) concat s.values.slice(0, s.length - 1)
           s.shift(1).values must_== exp
-        } else s.shift(1).isEmpty must beTrue
+        } else
+          s.shift(1).isEmpty must beTrue
 
         s.shift(-1).index must_== s.index
 
         if (!s.isEmpty) {
           val exp = s.values.slice(1, s.length) concat Vec(na.to[Double])
           s.shift(-1).values must_== exp
-        } else s.shift(1).isEmpty must beTrue
+        } else
+          s.shift(1).isEmpty must beTrue
       }
     }
 

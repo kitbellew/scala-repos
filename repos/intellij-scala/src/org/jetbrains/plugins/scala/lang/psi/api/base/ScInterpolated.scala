@@ -49,7 +49,11 @@ trait ScInterpolated extends ScalaPsiElement {
 
   @CachedInsidePsiElement(this, ModCount.getBlockModificationCount)
   def getStringContextExpression: Option[ScExpression] = {
-    val quote = if (isMultiLineString) "\"\"\"" else "\""
+    val quote =
+      if (isMultiLineString)
+        "\"\"\""
+      else
+        "\""
     val parts =
       getStringParts(this).mkString(
         quote,
@@ -57,7 +61,8 @@ trait ScInterpolated extends ScalaPsiElement {
         quote
       ) //making list of string literals
     val params = getInjections.map(_.getText).mkString("(", ",", ")")
-    if (getContext == null) None
+    if (getContext == null)
+      None
     else
       Option(
         ScalaPsiElementFactory.createExpressionWithContextFromText(
@@ -101,12 +106,13 @@ trait ScInterpolated extends ScalaPsiElement {
         case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
             ScalaTokenTypes.tINTERPOLATED_STRING_END =>
           val prev = child.getTreePrev
-          if (prev != null) prev.getElementType match {
-            case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
-                ScalaTokenTypes.tINTERPOLATED_STRING =>
-            case _ =>
-              result += emptyString //insert empty string between injections
-          }
+          if (prev != null)
+            prev.getElementType match {
+              case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
+                  ScalaTokenTypes.tINTERPOLATED_STRING =>
+              case _ =>
+                result += emptyString //insert empty string between injections
+            }
         case _ =>
       }
     }

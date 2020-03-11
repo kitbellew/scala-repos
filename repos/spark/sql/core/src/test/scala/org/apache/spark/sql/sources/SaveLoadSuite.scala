@@ -127,7 +127,8 @@ class SaveLoadSuite
       message.contains("already exists"),
       "We should complain that the path already exists.")
 
-    if (path.exists()) Utils.deleteRecursively(path)
+    if (path.exists())
+      Utils.deleteRecursively(path)
 
     df.write.json(path.toString)
     checkLoad()

@@ -39,8 +39,10 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
 
   private def minNumPostShufflePartitions: Option[Int] = {
     val minNumPostShufflePartitions = conf.minNumPostShufflePartitions
-    if (minNumPostShufflePartitions > 0) Some(minNumPostShufflePartitions)
-    else None
+    if (minNumPostShufflePartitions > 0)
+      Some(minNumPostShufflePartitions)
+    else
+      None
   }
 
   /**
@@ -217,8 +219,10 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
             }
           // If we need to shuffle all children, we use defaultNumPreShufflePartitions as the
           // number of partitions. Otherwise, we use maxChildrenNumPartitions.
-          if (shufflesAllChildren) defaultNumPreShufflePartitions
-          else maxChildrenNumPartitions
+          if (shufflesAllChildren)
+            defaultNumPreShufflePartitions
+          else
+            maxChildrenNumPartitions
         }
 
         children.zip(requiredChildDistributions).map {
@@ -272,7 +276,10 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
     case operator @ ShuffleExchange(partitioning, child, _) =>
       child.children match {
         case ShuffleExchange(childPartitioning, baseChild, _) :: Nil =>
-          if (childPartitioning.guarantees(partitioning)) child else operator
+          if (childPartitioning.guarantees(partitioning))
+            child
+          else
+            operator
         case _ => operator
       }
     case operator: SparkPlan => ensureDistributionAndOrdering(operator)

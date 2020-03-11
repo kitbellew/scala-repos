@@ -147,7 +147,11 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
     if (isWritable != wasWritableAttr.get) {
       val writableDuration = ctx.attr(ChannelWritableDurationKey)
       val elapsed: Duration = writableDuration.get().apply()
-      val stat = if (wasWritableAttr.get) writable else unwritable
+      val stat =
+        if (wasWritableAttr.get)
+          writable
+        else
+          unwritable
       stat.incr(elapsed.inMilliseconds.toInt)
 
       wasWritableAttr.set(isWritable)

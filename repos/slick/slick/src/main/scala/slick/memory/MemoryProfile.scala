@@ -190,13 +190,20 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
         ctx: Backend#StreamingContext,
         limit: Long,
         state: StreamState): StreamState = {
-      val it = if (state ne null) state else getIterator(ctx)
+      val it =
+        if (state ne null)
+          state
+        else
+          getIterator(ctx)
       var count = 0L
       while (count < limit && it.hasNext) {
         count += 1
         ctx.emit(it.next)
       }
-      if (it.hasNext) it else null
+      if (it.hasNext)
+        it
+      else
+        null
     }
     def head: ProfileAction[T, NoStream, Effect.Read] =
       new ProfileAction[T, NoStream, Effect.Read]
@@ -213,7 +220,10 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
           Effect.Read] {
         def run(ctx: Backend#Context): Option[T] = {
           val it = getIterator(ctx)
-          if (it.hasNext) Some(it.next) else None
+          if (it.hasNext)
+            Some(it.next)
+          else
+            None
         }
         def getDumpInfo =
           DumpInfo("MemoryProfile.StreamingQueryAction.firstOption")

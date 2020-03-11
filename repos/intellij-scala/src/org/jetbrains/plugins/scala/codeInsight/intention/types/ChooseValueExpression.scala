@@ -55,8 +55,10 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
 
   override def calculateLookupItems(
       context: ExpressionContext): Array[LookupElement] =
-    if (lookupElements.length > 1) lookupElements
-    else null
+    if (lookupElements.length > 1)
+      lookupElements
+    else
+      null
 
   override def calculateQuickResult(context: ExpressionContext): Result =
     calculateResult(context)
@@ -73,8 +75,10 @@ class ChooseTypeTextExpression(
   override def lookupString(elem: ScTypeText): String = {
     val useCanonicalText: Boolean =
       lookupItems.count(_.presentableText == elem.presentableText) > 1
-    if (useCanonicalText) elem.canonicalText.replace("_root_.", "")
-    else elem.presentableText
+    if (useCanonicalText)
+      elem.canonicalText.replace("_root_.", "")
+    else
+      elem.presentableText
   }
 
   override def calcLookupElements(): Seq[LookupElementBuilder] = {

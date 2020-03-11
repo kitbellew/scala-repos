@@ -165,7 +165,10 @@ trait SingleMarathonIntegrationTest
         .map(_.value)
         .getOrElse(Nil)
         .filter(_.launched)
-      if (tasks.size == num) Some(tasks) else None
+      if (tasks.size == num)
+        Some(tasks)
+      else
+        None
     }
     WaitTestSupport.waitFor(s"$num tasks to launch", maxWait)(checkTasks)
   }
@@ -260,7 +263,10 @@ trait SingleMarathonIntegrationTest
       cpus = 0.5,
       mem = 128.0,
       healthChecks =
-        if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
+        if (withHealth)
+          appProxyHealthChecks
+        else
+          Set.empty[HealthCheck],
       dependencies = dependencies
     )
   }
@@ -281,7 +287,10 @@ trait SingleMarathonIntegrationTest
       cpus = 0.5,
       mem = 128.0,
       healthChecks =
-        if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
+        if (withHealth)
+          appProxyHealthChecks
+        else
+          Set.empty[HealthCheck],
       dependencies = dependencies
     )
   }

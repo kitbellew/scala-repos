@@ -80,7 +80,11 @@ class TestInputStream[T: ClassTag](
   def compute(validTime: Time): Option[RDD[T]] = {
     logInfo("Computing RDD for time " + validTime)
     val index = ((validTime - zeroTime) / slideDuration - 1).toInt
-    val selectedInput = if (index < input.size) input(index) else Seq[T]()
+    val selectedInput =
+      if (index < input.size)
+        input(index)
+      else
+        Seq[T]()
 
     // lets us test cases where RDDs are not created
     if (selectedInput == null) {
@@ -548,7 +552,11 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       numBatches: Int,
       useSet: Boolean
   ) {
-    val numBatches_ = if (numBatches > 0) numBatches else expectedOutput.size
+    val numBatches_ =
+      if (numBatches > 0)
+        numBatches
+      else
+        expectedOutput.size
     withStreamingContext(setupStreams[U, V](input, operation)) { ssc =>
       val output = runStreams[V](ssc, numBatches_, expectedOutput.size)
       verifyOutput[V](output.toSeq, expectedOutput, useSet)
@@ -593,7 +601,11 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       numBatches: Int,
       useSet: Boolean
   ) {
-    val numBatches_ = if (numBatches > 0) numBatches else expectedOutput.size
+    val numBatches_ =
+      if (numBatches > 0)
+        numBatches
+      else
+        expectedOutput.size
     withStreamingContext(setupStreams[U, V, W](input1, input2, operation)) {
       ssc =>
         val output = runStreams[W](ssc, numBatches_, expectedOutput.size)

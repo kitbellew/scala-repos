@@ -46,7 +46,10 @@ object ChoiceDialog {
     */
   implicit def sfxChoiceDialog2jfx[T](
       v: ChoiceDialog[T]): jfxsc.ChoiceDialog[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

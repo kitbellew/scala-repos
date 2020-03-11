@@ -67,7 +67,11 @@ abstract class SessionTest extends ReplTest {
   def session: String
 
   /** Expected output, as an iterator, optionally marginally stripped. */
-  def expected = if (stripMargins) session.stripMargin.lines else session.lines
+  def expected =
+    if (stripMargins)
+      session.stripMargin.lines
+    else
+      session.lines
 
   /** Override with false if we should not strip margins because of leading continuation lines. */
   def stripMargins: Boolean = true

@@ -55,15 +55,19 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
   @inline private[this] def mkOutput(knownSize: Int): Unit = {
     if (output == null)
       output =
-        if (knownSize != -1) new FixedByteArrayOutput(knownSize)
-        else new ByteArrayOutput
+        if (knownSize != -1)
+          new FixedByteArrayOutput(knownSize)
+        else
+          new ByteArrayOutput
     else
       output.ensureCapacity(knownSize)
   }
 
   private def ignoringSharedRefs(action: => PBuilder): PBuilder =
-    if (isIgnoringFields) this
-    else action
+    if (isIgnoringFields)
+      this
+    else
+      action
 
   @inline def beginEntry(picklee: Any, tag: FastTypeTag[_]): PBuilder =
     withHints { hints =>
@@ -79,8 +83,10 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
         if (!hints.isElidedType) {
           // quickly decide whether we should use picklee.getClass instead
           val ts =
-            if (tag.key.contains("anonfun$")) picklee.getClass.getName
-            else tag.key
+            if (tag.key.contains("anonfun$"))
+              picklee.getClass.getName
+            else
+              tag.key
           output.putString(ts)
         }
 
@@ -129,7 +135,8 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
           case KEY_ARRAY_DOUBLE =>
             output.putDoubleArray(picklee.asInstanceOf[Array[Double]])
           case _ =>
-            if (hints.isElidedType) output.putByte(ELIDED_TAG)
+            if (hints.isElidedType)
+              output.putByte(ELIDED_TAG)
         }
       }
       this

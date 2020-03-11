@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object SepiaTone {
   implicit def sfxSepiaTone2jfx(st: SepiaTone): jfxse.SepiaTone =
-    if (st != null) st.delegate else null
+    if (st != null)
+      st.delegate
+    else
+      null
 }
 
 class SepiaTone(override val delegate: jfxse.SepiaTone = new jfxse.SepiaTone)

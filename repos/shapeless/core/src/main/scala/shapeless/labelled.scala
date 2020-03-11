@@ -97,12 +97,14 @@ class LabelledMacros(val c: whitebox.Context)
   def mkDefaultSymbolicLabellingImpl[T](implicit tTag: WeakTypeTag[T]): Tree = {
     val tTpe = weakTypeOf[T]
     val labels: List[String] =
-      if (isProduct(tTpe)) fieldsOf(tTpe).map { f =>
-        nameAsString(f._1)
-      }
-      else if (isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe =>
-        nameAsString(nameOf(tpe))
-      }
+      if (isProduct(tTpe))
+        fieldsOf(tTpe).map { f =>
+          nameAsString(f._1)
+        }
+      else if (isCoproduct(tTpe))
+        ctorsOf(tTpe).map { tpe =>
+          nameAsString(nameOf(tpe))
+        }
       else
         c.abort(
           c.enclosingPosition,

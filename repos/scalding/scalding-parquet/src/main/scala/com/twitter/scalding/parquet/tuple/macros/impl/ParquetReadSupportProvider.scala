@@ -72,8 +72,10 @@ object ParquetReadSupportProvider {
         collectionType match {
           case OPTION =>
             val child =
-              if (isPrimitive) primitiveCollectionElementConverter
-              else caseClassFieldCollectionElementConverter
+              if (isPrimitive)
+                primitiveCollectionElementConverter
+              else
+                caseClassFieldCollectionElementConverter
             q"""
               val $converterName = new _root_.com.twitter.scalding.parquet.tuple.scheme.OptionConverter[$fieldType] {
                 $child
@@ -81,8 +83,10 @@ object ParquetReadSupportProvider {
             """
           case LIST =>
             val child =
-              if (isPrimitive) primitiveCollectionElementConverter
-              else caseClassFieldCollectionElementConverter
+              if (isPrimitive)
+                primitiveCollectionElementConverter
+              else
+                caseClassFieldCollectionElementConverter
             q"""
               val $converterName = new _root_.com.twitter.scalding.parquet.tuple.scheme.ListConverter[$fieldType] {
                 $child
@@ -90,8 +94,10 @@ object ParquetReadSupportProvider {
             """
           case SET =>
             val child =
-              if (isPrimitive) primitiveCollectionElementConverter
-              else caseClassFieldCollectionElementConverter
+              if (isPrimitive)
+                primitiveCollectionElementConverter
+              else
+                caseClassFieldCollectionElementConverter
 
             q"""
               val $converterName = new _root_.com.twitter.scalding.parquet.tuple.scheme.SetConverter[$fieldType] {

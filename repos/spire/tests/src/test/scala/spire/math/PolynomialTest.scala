@@ -22,7 +22,10 @@ object PolynomialSetup {
     d0 <- arbitrary[Long]
   } yield {
     val (n, d) = (n0 % 100, d0 % 100)
-    if (d == 0L) Rational(n, 1L) else Rational(n, d)
+    if (d == 0L)
+      Rational(n, 1L)
+    else
+      Rational(n, d)
   })
 
   // default scalacheck bigdecimals are weird
@@ -131,13 +134,15 @@ class PolynomialCheck
 
     property(s"$name p /~ p = 1") {
       forAll { (p: P) =>
-        if (!p.isZero) p /~ p shouldBe one
+        if (!p.isZero)
+          p /~ p shouldBe one
       }
     }
 
     property(s"$name p % p = 0") {
       forAll { (p: P) =>
-        if (!p.isZero) p % p shouldBe zero
+        if (!p.isZero)
+          p % p shouldBe zero
       }
     }
 
@@ -155,7 +160,8 @@ class PolynomialCheck
 
     property(s"$name (x /~ y) * y + (x % y) = x") {
       forAll { (x: P, y: P) =>
-        if (!y.isZero) (x /~ y) * y + (x % y) shouldBe x
+        if (!y.isZero)
+          (x /~ y) * y + (x % y) shouldBe x
       }
     }
 
@@ -199,7 +205,8 @@ class PolynomialCheck
         t.eval(x) shouldBe t.coeff * x.pow(t.exp.toInt)
       }
       t.isZero shouldBe (t.coeff == 0)
-      if (t.exp > 0) t.der.int shouldBe t
+      if (t.exp > 0)
+        t.der.int shouldBe t
       t.int.der shouldBe t
     }
   }

@@ -47,13 +47,17 @@ class Kalman(N: Int) {
   }
 
   private[this] def mvar = variance(
-    if (n < N) mbuf take n.toInt
-    else mbuf
+    if (n < N)
+      mbuf take n.toInt
+    else
+      mbuf
   )
 
   private[this] def evar = variance(
-    if (n < N) ebuf take n.toInt
-    else ebuf
+    if (n < N)
+      ebuf take n.toInt
+    else
+      ebuf
   )
 
   def estimate = est
@@ -117,14 +121,19 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     require(count <= N && count > 0)
     val i = {
       val x = ((from - count) % N).toInt
-      if (x < 0) (x + N)
-      else x
+      if (x < 0)
+        (x + N)
+      else
+        x
     }
     val j = (from % N).toInt
     val sum =
-      if (i == j) buf.sum
-      else if (i < j) buf.slice(i, j).sum
-      else buf.slice(i, N).sum + buf.slice(0, j).sum
+      if (i == j)
+        buf.sum
+      else if (i < j)
+        buf.slice(i, j).sum
+      else
+        buf.slice(i, N).sum + buf.slice(0, j).sum
     sum / count
   }
 
@@ -157,8 +166,10 @@ class LoadAverage(interval: Double) extends Estimator[Double] {
 
   def measure(m: Double) {
     load =
-      if (load.isNaN) m
-      else load * a + m * (1 - a)
+      if (load.isNaN)
+        m
+      else
+        load * a + m * (1 - a)
   }
 
   def estimate = load

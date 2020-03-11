@@ -47,7 +47,8 @@ object LazyMacrosRef {
     val lmSym = typeOf[LazyMacrosRef.type].typeSymbol
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
-        if (lm == LazyMacrosRef) forward
+        if (lm == LazyMacrosRef)
+          forward
         else {
           lm.asInstanceOf[
               {
@@ -78,7 +79,8 @@ object LazyMacrosRef {
     val lmSym = typeOf[LazyMacrosRef.type].typeSymbol
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
-        if (lm == LazyMacrosRef) forward
+        if (lm == LazyMacrosRef)
+          forward
         else {
           lm.asInstanceOf[
               {

@@ -74,8 +74,10 @@ object DuplicatesUtil {
     val siblingIterator = element.nextSiblings
     val siblings =
       element +: siblingIterator.withFilter(isSignificant).take(size - 1).toSeq
-    if (siblings.size < size) None
-    else Some(siblings)
+    if (siblings.size < size)
+      None
+    else
+      Some(siblings)
   }
 
   def findDuplicates(
@@ -130,8 +132,10 @@ object DuplicatesUtil {
           }
         }
 
-        if (cancelled) return
-      } else replaceDuplicate(project, settings, d)
+        if (cancelled)
+          return
+      } else
+        replaceDuplicate(project, settings, d)
     }
   }
 

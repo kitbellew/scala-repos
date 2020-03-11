@@ -48,7 +48,10 @@ object StyleConverter {
     */
   implicit def sfxStyleConverterProperty2jfx[F, T](
       s: StyleConverter[F, T]): jfxcss.StyleConverter[F, T] =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 
   // CONVERTERS
 

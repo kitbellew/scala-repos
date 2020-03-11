@@ -145,7 +145,8 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
   def setPref(pref: Pref, notifyChange: Boolean): Funit =
     coll.update(BSONDocument("_id" -> pref.id), pref, upsert = true).void >>- {
       cache remove pref.id
-      if (notifyChange) bus.publish(SendTo(pref.id, "prefChange", true), 'users)
+      if (notifyChange)
+        bus.publish(SendTo(pref.id, "prefChange", true), 'users)
     }
 
   def setPref(user: User, change: Pref => Pref, notifyChange: Boolean): Funit =

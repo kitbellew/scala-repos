@@ -49,7 +49,10 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
       case _: ScObject    => "object"
       case _: ScTrait     => "trait"
       case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
-        if (c.isInterface) "interface" else "class"
+        if (c.isInterface)
+          "interface"
+        else
+          "class"
       case _: PsiMethod   => "method"
       case _: ScTypeParam => "type parameter"
       case _: ScBindingPattern =>
@@ -57,7 +60,8 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
         while (parent match {
                  case null | _: ScValue | _: ScVariable => false
                  case _                                 => true
-               }) parent = parent.getParent
+               })
+          parent = parent.getParent
         parent match {
           case null => "pattern"
           case _    => "variable"
@@ -107,12 +111,19 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
           PsiSubstitutor.EMPTY,
           PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
           PsiFormatUtilBase.SHOW_TYPE)
-      case c: PsiVariable      => c.name
-      case c: PsiFile          => c.name
-      case c: ScTypeDefinition => if (useFullName) c.qualifiedName else c.name
-      case c: ScNamedElement   => c.name
+      case c: PsiVariable => c.name
+      case c: PsiFile     => c.name
+      case c: ScTypeDefinition =>
+        if (useFullName)
+          c.qualifiedName
+        else
+          c.name
+      case c: ScNamedElement => c.name
       case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
-        if (useFullName) c.qualifiedName else c.name
+        if (useFullName)
+          c.qualifiedName
+        else
+          c.name
       case _ => element.getText
     }
     Option(name) getOrElse "anonymous"

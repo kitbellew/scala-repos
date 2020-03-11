@@ -46,7 +46,10 @@ object AnimationTimer {
     * @return JavaFX $AT extracted from `at`.
     */
   implicit def sfxAnimationTimer2jfx(at: AnimationTimer): jfxa.AnimationTimer =
-    if (at != null) at.delegate else null
+    if (at != null)
+      at.delegate
+    else
+      null
 
   /**
     * Creates a new [[scalafx.animation.AnimationTimer]] from a handle function that receives a Long parameter.

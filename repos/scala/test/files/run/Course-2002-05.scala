@@ -60,7 +60,10 @@ object M1 {
       xs: List[a],
       pred: a => Boolean): Tuple2[List[a], List[a]] = {
     xs.foldRight[Tuple2[List[a], List[a]]]((List(), List())) { (x, p) =>
-      if (pred(x)) (x :: p._1, p._2) else (p._1, x :: p._2)
+      if (pred(x))
+        (x :: p._1, p._2)
+      else
+        (p._1, x :: p._2)
     }
   }
 
@@ -126,11 +129,17 @@ object M2 {
 
 object M3 {
 
-  def abs(x: Int) = if (x < 0) 0 - x else x;
+  def abs(x: Int) =
+    if (x < 0)
+      0 - x
+    else
+      x;
 
   def range(lo: Int, hi: Int): List[Int] =
-    if (lo > hi) List()
-    else lo :: range(lo + 1, hi);
+    if (lo > hi)
+      List()
+    else
+      lo :: range(lo + 1, hi);
 
   type Placement = List[(Int, Int)];
 
@@ -169,11 +178,17 @@ object M3 {
 
 object M4 {
 
-  def abs(x: Int) = if (x < 0) 0 - x else x;
+  def abs(x: Int) =
+    if (x < 0)
+      0 - x
+    else
+      x;
 
   def range(lo: Int, hi: Int): List[Int] =
-    if (lo > hi) List()
-    else lo :: range(lo + 1, hi);
+    if (lo > hi)
+      List()
+    else
+      lo :: range(lo + 1, hi);
 
   type Placement = List[Int];
 
@@ -191,9 +206,10 @@ object M4 {
 
         for (placement <- placeQueens(row - 1);
              col <- columns;
-             if isSafe(col, placement, 1)) yield {
-          col :: placement
-        }
+             if isSafe(col, placement, 1))
+          yield {
+            col :: placement
+          }
       }
     }
     placeQueens(n);

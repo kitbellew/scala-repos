@@ -44,8 +44,10 @@ object Scripted {
       val pageSize = files.size / page.total
       // The last page may loose some values, so we explicitly keep them
       val dropped = files.drop(pageSize * (page.page - 1))
-      if (page.page == page.total) dropped
-      else dropped.take(pageSize)
+      if (page.page == page.total)
+        dropped
+      else
+        dropped.take(pageSize)
     }
     def nameP(group: String) = {
       token("*".id | id.examples(pairMap(group)))
@@ -61,7 +63,8 @@ object Scripted {
 
     val testID =
       (for (group <- groupP;
-            name <- nameP(group)) yield (group, name))
+            name <- nameP(group))
+        yield (group, name))
     val testIdAsGroup = matched(testID) map (test => Seq(test))
     //(token(Space) ~> matched(testID)).*
     (token(Space) ~> (PagedIds | testIdAsGroup)).* map (_.flatten)

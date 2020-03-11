@@ -79,7 +79,13 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val ex = new Exception("buh")
       intercept[TestFailedException] {
         Source(1 to 3)
-          .flatMapMerge(10, i ⇒ if (i == 3) throw ex else blocked)
+          .flatMapMerge(
+            10,
+            i ⇒
+              if (i == 3)
+                throw ex
+              else
+                blocked)
           .runWith(Sink.head)
           .futureValue
       }.cause.get should ===(ex)

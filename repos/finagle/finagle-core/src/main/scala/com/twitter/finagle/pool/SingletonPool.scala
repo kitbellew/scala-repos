@@ -193,15 +193,20 @@ class SingletonPool[Req, Rep](
   private[this] def closeService(deadline: Time): Future[Unit] =
     state.get match {
       case Idle =>
-        if (!state.compareAndSet(Idle, Closed)) closeService(deadline)
-        else Future.Done
+        if (!state.compareAndSet(Idle, Closed))
+          closeService(deadline)
+        else
+          Future.Done
 
       case s @ Open(svc) =>
-        if (!state.compareAndSet(s, Closed)) closeService(deadline)
-        else svc.close(deadline)
+        if (!state.compareAndSet(s, Closed))
+          closeService(deadline)
+        else
+          svc.close(deadline)
 
       case s @ Awaiting(done) =>
-        if (!state.compareAndSet(s, Closed)) closeService(deadline)
+        if (!state.compareAndSet(s, Closed))
+          closeService(deadline)
         else {
           done.raise(new ServiceClosedException)
           Future.Done

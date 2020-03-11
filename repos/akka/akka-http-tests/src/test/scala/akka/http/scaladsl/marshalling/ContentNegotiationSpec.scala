@@ -216,7 +216,8 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
                   case result ⇒ fail(result.errors.head.formatPretty)
                 }
             }
-          } else Nil
+          } else
+            Nil
 
         testHeaders(headers: _*)(accept ⇒ body(accept))
       }

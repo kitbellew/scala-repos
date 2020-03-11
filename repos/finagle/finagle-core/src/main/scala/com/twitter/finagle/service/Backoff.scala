@@ -108,8 +108,10 @@ object Backoff {
     def next(prev: Duration): Stream[Duration] = {
       val randRange = math.abs((prev.inNanoseconds * 3) - start.inNanoseconds)
       val randBackoff =
-        if (randRange == 0) start.inNanoseconds
-        else start.inNanoseconds + rng.nextLong(randRange)
+        if (randRange == 0)
+          start.inNanoseconds
+        else
+          start.inNanoseconds + rng.nextLong(randRange)
 
       val backoffNanos = math.min(maximum.inNanoseconds, randBackoff)
       val backoff = Duration.fromNanoseconds(backoffNanos)

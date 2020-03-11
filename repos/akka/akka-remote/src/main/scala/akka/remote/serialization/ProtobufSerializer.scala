@@ -49,8 +49,10 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 2
-    else identifierFromConfig
+    if (system eq null)
+      2
+    else
+      identifierFromConfig
 
   @deprecated("Will be removed without replacement", "2.4")
   val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
@@ -78,7 +80,8 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
                   clazz.getDeclaredMethod(
                     "parseFrom",
                     ProtobufSerializer.ARRAY_OF_BYTE_ARRAY: _*)
-                else method
+                else
+                  method
               if (parsingMethodBindingRef.compareAndSet(
                     parsingMethodBinding,
                     parsingMethodBinding.updated(clazz, unCachedParsingMethod)))
@@ -104,8 +107,10 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
         case Some(cachedtoByteArrayMethod) ⇒ cachedtoByteArrayMethod
         case None ⇒
           val unCachedtoByteArrayMethod =
-            if (method eq null) clazz.getMethod("toByteArray")
-            else method
+            if (method eq null)
+              clazz.getMethod("toByteArray")
+            else
+              method
           if (toByteArrayMethodBindingRef.compareAndSet(
                 toByteArrayMethodBinding,
                 toByteArrayMethodBinding

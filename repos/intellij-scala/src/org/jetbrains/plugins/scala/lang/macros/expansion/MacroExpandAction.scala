@@ -189,7 +189,7 @@ class MacroExpandAction extends AnAction {
         reformatCode(newPsi)
         newPsi.firstChild match {
           case Some(
-              block: ScBlock
+                block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
             block.children
@@ -320,7 +320,8 @@ class MacroExpandAction extends AnAction {
       implicit event: AnActionEvent): Seq[MacroExpansion] = {
     val file = new File(
       PathManager.getSystemPath + s"/expansion-${event.getProject.getName}")
-    if (!file.exists()) return Seq.empty
+    if (!file.exists())
+      return Seq.empty
     val fs = new BufferedInputStream(new FileInputStream(file))
     val os = new ObjectInputStream(fs)
     val res = scala.collection.mutable.ListBuffer[MacroExpansion]()
@@ -340,7 +341,8 @@ class MacroExpandAction extends AnAction {
       .getInstance(e.getProject)
       .getFileIndex
       .getModuleForFile(file.getVirtualFile)
-    if (module == null) return
+    if (module == null)
+      return
     val state = module.scalaCompilerSettings.getState
 
     val options = state.additionalCompilerOptions.to[mutable.ListBuffer]

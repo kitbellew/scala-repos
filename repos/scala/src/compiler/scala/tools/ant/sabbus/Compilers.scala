@@ -23,20 +23,26 @@ object Compilers extends scala.collection.DefaultMap[String, Compiler] {
   override def size = container.size
 
   def make(id: String, classpath: Array[URL], settings: Settings): Compiler = {
-    if (debug) println("Making compiler " + id)
-    if (debug) println("  memory before: " + freeMemoryString)
+    if (debug)
+      println("Making compiler " + id)
+    if (debug)
+      println("  memory before: " + freeMemoryString)
     val comp = new Compiler(classpath, settings)
     container(id) = comp
-    if (debug) println("  memory after: " + freeMemoryString)
+    if (debug)
+      println("  memory after: " + freeMemoryString)
     comp
   }
 
   def break(id: String): Null = {
-    if (debug) println("Breaking compiler " + id)
-    if (debug) println("  memory before: " + freeMemoryString)
+    if (debug)
+      println("Breaking compiler " + id)
+    if (debug)
+      println("  memory before: " + freeMemoryString)
     container -= id
     System.gc()
-    if (debug) println("  memory after: " + freeMemoryString)
+    if (debug)
+      println("  memory after: " + freeMemoryString)
     null
   }
 

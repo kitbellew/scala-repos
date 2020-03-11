@@ -179,16 +179,20 @@ object Framing {
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective =
-      if (buffer.nonEmpty) ctx.absorbTermination()
-      else ctx.finish()
+      if (buffer.nonEmpty)
+        ctx.absorbTermination()
+      else
+        ctx.finish()
 
     private def tryPull(ctx: Context[ByteString]): SyncDirective = {
       if (ctx.isFinishing) {
-        if (allowTruncation) ctx.pushAndFinish(buffer)
+        if (allowTruncation)
+          ctx.pushAndFinish(buffer)
         else
           ctx.fail(new FramingException(
             "Stream finished but there was a truncated final frame in the buffer"))
-      } else ctx.pull()
+      } else
+        ctx.pull()
     }
 
     @tailrec
@@ -219,7 +223,8 @@ object Framing {
             nextPossibleMatch = 0
             if (ctx.isFinishing && buffer.isEmpty)
               ctx.pushAndFinish(parsedFrame)
-            else ctx.push(parsedFrame)
+            else
+              ctx.push(parsedFrame)
           } else {
             nextPossibleMatch += 1
             doParse(ctx)
@@ -249,7 +254,8 @@ object Framing {
       if (ctx.isFinishing)
         ctx.fail(new FramingException(
           "Stream finished but there was a truncated final frame in the buffer"))
-      else ctx.pull()
+      else
+        ctx.pull()
 
     override def onPush(
         chunk: ByteString,
@@ -262,20 +268,25 @@ object Framing {
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective =
-      if (buffer.nonEmpty) ctx.absorbTermination()
-      else ctx.finish()
+      if (buffer.nonEmpty)
+        ctx.absorbTermination()
+      else
+        ctx.finish()
 
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
       def emitFrame(ctx: Context[ByteString]): SyncDirective = {
         val parsedFrame = buffer.take(frameSize).compact
         buffer = buffer.drop(frameSize)
         frameSize = Int.MaxValue
-        if (ctx.isFinishing && buffer.isEmpty) ctx.pushAndFinish(parsedFrame)
-        else ctx.push(parsedFrame)
+        if (ctx.isFinishing && buffer.isEmpty)
+          ctx.pushAndFinish(parsedFrame)
+        else
+          ctx.push(parsedFrame)
       }
 
       val bufSize = buffer.size
-      if (bufSize >= frameSize) emitFrame(ctx)
+      if (bufSize >= frameSize)
+        emitFrame(ctx)
       else if (bufSize >= minimumChunkSize) {
         val parsedLength =
           intDecoder(buffer.iterator.drop(lengthFieldOffset), lengthFieldLength)
@@ -283,9 +294,12 @@ object Framing {
         if (frameSize > maximumFrameLength)
           ctx.fail(new FramingException(
             s"Maximum allowed frame size is $maximumFrameLength but decoded frame header reported size $frameSize"))
-        else if (bufSize >= frameSize) emitFrame(ctx)
-        else tryPull(ctx)
-      } else tryPull(ctx)
+        else if (bufSize >= frameSize)
+          emitFrame(ctx)
+        else
+          tryPull(ctx)
+      } else
+        tryPull(ctx)
     }
 
     override def postStop(): Unit = buffer = null

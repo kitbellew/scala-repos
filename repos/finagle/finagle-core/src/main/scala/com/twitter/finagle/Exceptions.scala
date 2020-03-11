@@ -22,8 +22,10 @@ trait HasRemoteInfo extends Exception {
   def exceptionMessage(): String = super.getMessage()
 
   override def getMessage(): String =
-    if (exceptionMessage == null) null
-    else s"$exceptionMessage. Remote Info: $remoteInfo"
+    if (exceptionMessage == null)
+      null
+    else
+      s"$exceptionMessage. Remote Info: $remoteInfo"
 }
 
 /**
@@ -82,7 +84,10 @@ class RequestException(message: String, cause: Throwable)
   def this() = this(null, null)
   def this(cause: Throwable) = this(null, cause)
   override def getStackTrace =
-    if (cause != null) cause.getStackTrace else super.getStackTrace
+    if (cause != null)
+      cause.getStackTrace
+    else
+      super.getStackTrace
 }
 
 /**
@@ -286,8 +291,10 @@ class ChannelException(underlying: Throwable, val remoteAddress: SocketAddress)
         s"${underlying.getMessage} at remote address: ${remoteAddress.toString}"
     }
 
-    if (serviceName == SourcedException.UnspecifiedServiceName) message
-    else s"$message from service: $serviceName"
+    if (serviceName == SourcedException.UnspecifiedServiceName)
+      message
+    else
+      s"$message from service: $serviceName"
   }
   def logLevel: Level = Level.DEBUG
 }

@@ -74,8 +74,10 @@ object JavaToScala {
       associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false): IntermediateNode = {
-    if (element == null) return LiteralExpression("")
-    if (element.getLanguage != JavaLanguage.INSTANCE) LiteralExpression("")
+    if (element == null)
+      return LiteralExpression("")
+    if (element.getLanguage != JavaLanguage.INSTANCE)
+      LiteralExpression("")
     val result: IntermediateNode = element match {
       case f: PsiFile =>
         val m = MainConstruction()
@@ -221,7 +223,10 @@ object JavaToScala {
         val tp = Option(f.getIteratedValue).flatMap((e: PsiExpression) =>
           Option(e.getType))
         val isJavaCollection =
-          if (tp.isEmpty) true else !tp.get.isInstanceOf[PsiArrayType]
+          if (tp.isEmpty)
+            true
+          else
+            !tp.get.isInstanceOf[PsiArrayType]
 
         val iteratedValue = Option(f.getIteratedValue)
           .map(convertPsiToIntermdeiate(_, externalProperties))
@@ -238,7 +243,8 @@ object JavaToScala {
         val refName =
           if (externalProperties.isInstanceOf[WithReferenceExpression]) {
             fieldParamaterMap.getOrElse(r.getReferenceName, r.getReferenceName)
-          } else r.getReferenceName
+          } else
+            r.getReferenceName
 
         if (r.getQualifierExpression != null) {
           val t = Option(r.getQualifierExpression)
@@ -378,7 +384,11 @@ object JavaToScala {
           l,
           classOf[PsiCodeBlock],
           classOf[PsiBlockStatement])
-        val needVar = if (parent == null) false else isVar(l, parent)
+        val needVar =
+          if (parent == null)
+            false
+          else
+            isVar(l, parent)
         val initalizer = Option(l.getInitializer)
           .map(convertPsiToIntermdeiate(_, externalProperties))
         LocalVariable(
@@ -441,7 +451,8 @@ object JavaToScala {
               convertPsiToIntermdeiate(
                 m.getReturnTypeElement,
                 externalProperties)
-            else null
+            else
+              null
           )
         }
       case c: PsiClass => createClass(c, externalProperties)
@@ -543,7 +554,8 @@ object JavaToScala {
               Seq(
                 convertPsiToIntermdeiate(n.getArgumentList, externalProperties))
             }
-          } else null
+          } else
+            null
           NewExpression(mtype, argList, withArrayInitalizer = false)
         }
       case t: PsiTryStatement =>
@@ -592,7 +604,8 @@ object JavaToScala {
       case p: PsiPolyadicExpression =>
         val tokenValue = if (p.getOperands.nonEmpty) {
           p.getTokenBeforeOperand(p.getOperands.apply(1)).getText
-        } else ""
+        } else
+          ""
         PolyadicExpression(
           p.getOperands.map(convertPsiToIntermdeiate(_, externalProperties)),
           tokenValue)
@@ -605,13 +618,15 @@ object JavaToScala {
           NotSupported(
             None,
             "break " + b.getLabelIdentifier.getText + "// todo: label break is not supported")
-        else NotSupported(None, "break //todo: break is not supported")
+        else
+          NotSupported(None, "break //todo: break is not supported")
       case c: PsiContinueStatement =>
         if (c.getLabelIdentifier != null)
           NotSupported(
             None,
             "continue " + c.getLabelIdentifier.getText + " //todo: continue is not supported")
-        else NotSupported(None, "continue //todo: continue is not supported")
+        else
+          NotSupported(None, "continue //todo: continue is not supported")
       case s: PsiLabeledStatement =>
         val statements = Option(s.getStatement)
           .map(convertPsiToIntermdeiate(_, externalProperties))
@@ -696,18 +711,21 @@ object JavaToScala {
       for (method <- inClass.getMethods) {
         if (method.hasModifierProperty("static")) {
           forObject += method
-        } else forClass += method
+        } else
+          forClass += method
       }
       val serialVersionUID = serialVersion(inClass)
       for (field <- inClass.getFields if !serialVersionUID.contains(field)) {
         if (field.hasModifierProperty("static")) {
           forObject += field
-        } else forClass += field
+        } else
+          forClass += field
       }
       for (clazz <- inClass.getInnerClasses) {
         if (clazz.hasModifierProperty("static")) {
           forObject += clazz
-        } else forClass += clazz
+        } else
+          forClass += clazz
       }
 
       forClass = forClass.sortBy(_.getTextOffset)
@@ -852,8 +870,10 @@ object JavaToScala {
               val (dropMembers, primaryConstructor) = handlePrimaryConstructor(
                 inClass.getConstructors)
               val classType =
-                if (inClass.isInterface) ClassType.INTERFACE
-                else ClassType.CLASS
+                if (inClass.isInterface)
+                  ClassType.INTERFACE
+                else
+                  ClassType.CLASS
               val members = updateMembersAndConvert(dropMembers)
 
               ClassConstruction(
@@ -978,19 +998,23 @@ object JavaToScala {
             case _ => None
           }
 
-          val field = if (leftPart.isDefined) leftPart.get.resolve() match {
-            case f: PsiField
-                if f.getContainingClass == constructor.getContainingClass && f.getInitializer == null =>
-              Some(f)
-            case _ => None
-          }
-          else None
+          val field =
+            if (leftPart.isDefined)
+              leftPart.get.resolve() match {
+                case f: PsiField
+                    if f.getContainingClass == constructor.getContainingClass && f.getInitializer == null =>
+                  Some(f)
+                case _ => None
+              }
+            else
+              None
 
           var statement: Option[PsiExpressionStatement] =
             if (field.isDefined && parent.isDefined && parent.get.getParent
                   .isInstanceOf[PsiExpressionStatement]) {
               Some(parent.get.getParent.asInstanceOf[PsiExpressionStatement])
-            } else None
+            } else
+              None
 
           if (statement.isDefined && statement.get.getParent != constructor.getBody) {
             statement = None
@@ -1078,7 +1102,8 @@ object JavaToScala {
         if (pc != null) {
           val updatedConstructor = createPrimaryConstructor(pc)
           (Some(pc +: dropFields.toSeq), Some(updatedConstructor))
-        } else (None, None)
+        } else
+          (None, None)
     }
   }
 
@@ -1211,7 +1236,8 @@ object JavaToScala {
           .hasModifierProperty("final") &&
         serialField.hasInitializer) {
       Some(serialField)
-    } else None
+    } else
+      None
   }
 
   /**

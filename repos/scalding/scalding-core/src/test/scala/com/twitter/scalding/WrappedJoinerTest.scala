@@ -27,7 +27,10 @@ class TestWrappedJoinerJob(args: Args) extends Job(args) {
 
   val joiner = {
     val checkJoiner = new CheckFlowProcessJoiner(uniqueID)
-    if (args.boolean("wrapJoiner")) WrappedJoiner(checkJoiner) else checkJoiner
+    if (args.boolean("wrapJoiner"))
+      WrappedJoiner(checkJoiner)
+    else
+      checkJoiner
   }
 
   val p1 = new CoGroup(inA, 'a, inB, 'x, joiner)

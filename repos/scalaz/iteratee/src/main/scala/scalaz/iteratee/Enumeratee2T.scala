@@ -74,7 +74,8 @@ trait Enumeratee2TFunctions {
                         s,
                         if (rbuf.headOption.exists(order(left, _) == EQ))
                           right :: rbuf
-                        else right :: Nil)
+                        else
+                          right :: Nil)
                     } yield a
 
                   case _ => done[J, IterateeM, StepM[A]](s, eofInput)
@@ -83,8 +84,16 @@ trait Enumeratee2TFunctions {
             },
             done = (a, r) =>
               done[J, IterateeM, StepM[A]](
-                sdone(a, if (r.isEof) eofInput else emptyInput),
-                if (r.isEof) eofInput else emptyInput)
+                sdone(
+                  a,
+                  if (r.isEof)
+                    eofInput
+                  else
+                    emptyInput),
+                if (r.isEof)
+                  eofInput
+                else
+                  emptyInput)
           )
         }
 
@@ -109,8 +118,16 @@ trait Enumeratee2TFunctions {
             },
           done = (a, r) =>
             sdone(
-              sdone(a, if (r.isEof) eofInput else emptyInput),
-              if (r.isEof) eofInput else emptyInput)
+              sdone(
+                a,
+                if (r.isEof)
+                  eofInput
+                else
+                  emptyInput),
+              if (r.isEof)
+                eofInput
+              else
+                emptyInput)
         )
 
         (step: StepT[(J, K), F, A]) =>
@@ -150,8 +167,16 @@ trait Enumeratee2TFunctions {
             },
             done = (a, r) =>
               done[E, IterateeM, StepM[A]](
-                sdone(a, if (r.isEof) eofInput else emptyInput),
-                if (r.isEof) eofInput else emptyInput)
+                sdone(
+                  a,
+                  if (r.isEof)
+                    eofInput
+                  else
+                    emptyInput),
+                if (r.isEof)
+                  eofInput
+                else
+                  emptyInput)
           )
 
         step
@@ -178,8 +203,16 @@ trait Enumeratee2TFunctions {
             },
           done = (a, r) =>
             sdone(
-              sdone(a, if (r.isEof) eofInput else emptyInput),
-              if (r.isEof) eofInput else emptyInput)
+              sdone(
+                a,
+                if (r.isEof)
+                  eofInput
+                else
+                  emptyInput),
+              if (r.isEof)
+                eofInput
+              else
+                emptyInput)
         )
 
         (step: StepT[J, F, A]) =>

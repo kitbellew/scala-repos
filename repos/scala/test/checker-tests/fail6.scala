@@ -4,8 +4,11 @@
 //   Ident("while$1"), // sym=method while$1, sym.owner=method f, sym.tpe=()Unit, tpe=()Unit, tpe.sym=<none>,
 class Erasure {
   def f(b: Boolean) = {
-    if (b) "abc"
-    else while (b) ()
+    if (b)
+      "abc"
+    else
+      while (b)
+        ()
   }
 }
 

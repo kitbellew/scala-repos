@@ -15,7 +15,8 @@ import scala.xml.Elem
   */
 class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
   def createOrUpdateIn(context: ConversionContext): Option[File] = {
-    if (basePackages.isEmpty) return None
+    if (basePackages.isEmpty)
+      return None
 
     val optionsElement = createOptionsElement(basePackages)
 
@@ -29,12 +30,16 @@ class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
   }
 
   def getFilesToUpdate(context: ConversionContext): Set[File] = {
-    if (basePackages.isEmpty) return Set.empty
+    if (basePackages.isEmpty)
+      return Set.empty
 
     context.getStorageScheme match {
       case StorageScheme.DIRECTORY_BASED =>
         val file = getDirectorySettingsFileIn(context)
-        if (file.exists()) Set(file) else Set.empty
+        if (file.exists())
+          Set(file)
+        else
+          Set.empty
       case StorageScheme.DEFAULT =>
         Set(context.getProjectFile)
     }

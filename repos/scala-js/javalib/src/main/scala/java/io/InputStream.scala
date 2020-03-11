@@ -9,14 +9,16 @@ abstract class InputStream extends Closeable {
     if (off < 0 || len < 0 || len > b.length - off)
       throw new IndexOutOfBoundsException
 
-    if (len == 0) 0
+    if (len == 0)
+      0
     else {
       var bytesWritten = 0
       var next = 0
 
       while (bytesWritten < len && next != -1) {
         next =
-          if (bytesWritten == 0) read()
+          if (bytesWritten == 0)
+            read()
           else {
             try read()
             catch {
@@ -29,8 +31,10 @@ abstract class InputStream extends Closeable {
         }
       }
 
-      if (bytesWritten <= 0) -1
-      else bytesWritten
+      if (bytesWritten <= 0)
+        -1
+      else
+        bytesWritten
     }
   }
 

@@ -47,8 +47,10 @@ final class Refiner {
         val encodedName = analyzerInfo.encodedName
 
         def optDummyParent =
-          if (!analyzerInfo.isAnySubclassInstantiated) None
-          else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
+          if (!analyzerInfo.isAnySubclassInstantiated)
+            None
+          else
+            Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
         linkedClassesByName
           .get(encodedName)
@@ -75,8 +77,10 @@ final class Refiner {
       info: Analysis.ClassInfo): LinkedClass = {
 
     val fields =
-      if (info.isAnySubclassInstantiated) classDef.fields
-      else Nil
+      if (info.isAnySubclassInstantiated)
+        classDef.fields
+      else
+        Nil
 
     val staticMethods = classDef.staticMethods filter { m =>
       info.staticMethodInfos(m.info.encodedName).isReachable
@@ -91,8 +95,10 @@ final class Refiner {
     }
 
     val kind =
-      if (info.isModuleAccessed) classDef.kind
-      else classDef.kind.withoutModuleAccessor
+      if (info.isModuleAccessed)
+        classDef.kind
+      else
+        classDef.kind.withoutModuleAccessor
 
     classDef.copy(
       kind = kind,

@@ -318,7 +318,10 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
           Modifiers(),
           T1,
           List(),
-          if (args.nonEmpty) AppliedTypeTree(Ident(T2), args) else Ident(T2))
+          if (args.nonEmpty)
+            AppliedTypeTree(Ident(T2), args)
+          else
+            Ident(T2))
   }
 }
 

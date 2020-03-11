@@ -39,9 +39,11 @@ trait ArbitraryJValue {
   def genSimpleNotNull: Gen[JValue] = oneOf(genJNum, genJBool, genJString)
 
   def genArray(listSize: Int): Gen[JValue] =
-    for (l <- genList(listSize)) yield JArray(l)
+    for (l <- genList(listSize))
+      yield JArray(l)
   def genObject(listSize: Int): Gen[JObject] =
-    for (l <- genFieldList(listSize)) yield JObject(l)
+    for (l <- genFieldList(listSize))
+      yield JObject(l)
 
   def genList(listSize: Int) =
     Gen.containerOfN[List, JValue](listSize, genJValue)

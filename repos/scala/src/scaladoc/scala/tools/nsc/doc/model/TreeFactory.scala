@@ -48,13 +48,15 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
             val end = pos.end - firstIndex
             if (start != end) {
               var asym = rhs.symbol
-              if (asym.isClass) makeTemplate(asym) match {
-                case docTmpl: DocTemplateImpl =>
-                  refs += ((start, (docTmpl, end)))
-                case _ =>
-              }
+              if (asym.isClass)
+                makeTemplate(asym) match {
+                  case docTmpl: DocTemplateImpl =>
+                    refs += ((start, (docTmpl, end)))
+                  case _ =>
+                }
               else if (asym.isTerm && asym.owner.isClass) {
-                if (asym.isSetter) asym = asym.getterIn(asym.owner)
+                if (asym.isSetter)
+                  asym = asym.getterIn(asym.owner)
                 makeTemplate(asym.owner) match {
                   case docTmpl: DocTemplateImpl =>
                     val mbrs: Option[MemberImpl] = findMember(asym, docTmpl)

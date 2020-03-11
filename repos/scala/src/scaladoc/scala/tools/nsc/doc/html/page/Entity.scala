@@ -31,11 +31,18 @@ trait EntityPage extends HtmlPage {
 
   def title = {
     val s = universe.settings
-    (if (!s.doctitle.isDefault) s.doctitle.value + " " else "") +
-      (if (!s.docversion.isDefault) s.docversion.value else "") +
+    (if (!s.doctitle.isDefault)
+       s.doctitle.value + " "
+     else
+       "") +
+      (if (!s.docversion.isDefault)
+         s.docversion.value
+       else
+         "") +
       (if ((!s.doctitle.isDefault || !s.docversion.isDefault) && tpl.qualifiedName != "_root_")
          " - " + tpl.qualifiedName
-       else "")
+       else
+         "")
   }
 
   def headers =
@@ -107,7 +114,8 @@ trait EntityPage extends HtmlPage {
             List("diagrams.js", "lib")
           }
         } id="diagrams-js"></script>
-      } else NodeSeq.Empty
+      } else
+        NodeSeq.Empty
     }
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
@@ -199,7 +207,8 @@ trait EntityPage extends HtmlPage {
 
       // If current entity is a package, take its containing entities - otherwise take parent's containing entities
       val currentPackageTpls =
-        if (tpl.isPackage) tpl.templates
+        if (tpl.isPackage)
+          tpl.templates
         else
           parent.fold(Seq.empty[TemplateEntity with MemberEntity])(p =>
             p.templates)
@@ -217,7 +226,10 @@ trait EntityPage extends HtmlPage {
         .map(
           entityToUl(
             _,
-            (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
+            (if (tpl.isPackage)
+               0
+             else
+               -1) + rootToParentLis.length))
       val currSubLis = tpl.templates
         .filter(_.isPackage)
         .sortBy(_.name)
@@ -255,7 +267,8 @@ trait EntityPage extends HtmlPage {
           null,
           s"doc-version ($version) is too long to be displayed in the webview")
         ""
-      } else version
+      } else
+        version
     }
           </span>
         </span>
@@ -294,7 +307,11 @@ trait EntityPage extends HtmlPage {
    * like a package/object this problem should be fixed, this implementation
    * is just a patch. */
   val content = {
-    val templateName = if (tpl.isRootPackage) "root package" else tpl.name
+    val templateName =
+      if (tpl.isRootPackage)
+        "root package"
+      else
+        tpl.name
     val displayName = tpl.companion match {
       case Some(companion)
           if (companion.visibility.isPublic && companion.inSource != None) =>
@@ -320,7 +337,10 @@ trait EntityPage extends HtmlPage {
     }
 
     <body class={
-      tpl.kind + (if (tpl.isType) " type" else " value")
+      tpl.kind + (if (tpl.isType)
+                    " type"
+                  else
+                    " value")
     }>
       <div id="definition">
         {
@@ -356,7 +376,8 @@ trait EntityPage extends HtmlPage {
       permalink(tpl)
     }</h1>
         {
-      if (tpl.isPackage) NodeSeq.Empty
+      if (tpl.isPackage)
+        NodeSeq.Empty
       else
         <h3>{
           companionAndPackage(tpl)
@@ -373,7 +394,8 @@ trait EntityPage extends HtmlPage {
     }
 
       {
-      if (valueMembers.filterNot(_.kind == "package").isEmpty) NodeSeq.Empty
+      if (valueMembers.filterNot(_.kind == "package").isEmpty)
+        NodeSeq.Empty
       else
         <div id="mbrsel">
         <div class='toggle'></div>
@@ -425,7 +447,8 @@ trait EntityPage extends HtmlPage {
               }
                   </ol>
                 </div>
-            else NodeSeq.Empty
+            else
+              NodeSeq.Empty
           } ++ {
             if (!tpl.conversions.isEmpty)
               <div class="ancestors">
@@ -446,7 +469,8 @@ trait EntityPage extends HtmlPage {
               }
                   </ol>
                 </div>
-            else NodeSeq.Empty
+            else
+              NodeSeq.Empty
           } ++
             <div class="ancestors">
               <span class="filtertype"></span>
@@ -469,7 +493,8 @@ trait EntityPage extends HtmlPage {
       <div id="template">
         <div id="allMembers">
         {
-      if (constructors.isEmpty) NodeSeq.Empty
+      if (constructors.isEmpty)
+        NodeSeq.Empty
       else
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
@@ -480,7 +505,8 @@ trait EntityPage extends HtmlPage {
     }
 
         {
-      if (typeMembers.isEmpty) NodeSeq.Empty
+      if (typeMembers.isEmpty)
+        NodeSeq.Empty
       else
         <div id="types" class="types members">
               <h3>Type Members</h3>
@@ -491,7 +517,8 @@ trait EntityPage extends HtmlPage {
     }
 
         {
-      if (absValueMembers.isEmpty) NodeSeq.Empty
+      if (absValueMembers.isEmpty)
+        NodeSeq.Empty
       else
         <div class="values members">
               <h3>Abstract Value Members</h3>
@@ -502,12 +529,15 @@ trait EntityPage extends HtmlPage {
     }
 
         {
-      if (concValueMembers.isEmpty) NodeSeq.Empty
+      if (concValueMembers.isEmpty)
+        NodeSeq.Empty
       else
         <div class="values members">
               <h3>{
-          if (absValueMembers.isEmpty) "Value Members"
-          else "Concrete Value Members"
+          if (absValueMembers.isEmpty)
+            "Value Members"
+          else
+            "Concrete Value Members"
         }</h3>
               <ol>
                 {
@@ -519,7 +549,8 @@ trait EntityPage extends HtmlPage {
     }
 
         {
-      if (shadowedImplicitMembers.isEmpty) NodeSeq.Empty
+      if (shadowedImplicitMembers.isEmpty)
+        NodeSeq.Empty
       else
         <div class="values members">
               <h3>Shadowed Implicit Value Members</h3>
@@ -530,7 +561,8 @@ trait EntityPage extends HtmlPage {
     }
 
         {
-      if (deprValueMembers.isEmpty) NodeSeq.Empty
+      if (deprValueMembers.isEmpty)
+        NodeSeq.Empty
       else
         <div class="values members">
               <h3>Deprecated Value Members</h3>
@@ -640,16 +672,25 @@ trait EntityPage extends HtmlPage {
     <li name={
       mbr.definitionName
     } visbl={
-      if (mbr.visibility.isProtected) "prt" else "pub"
+      if (mbr.visibility.isProtected)
+        "prt"
+      else
+        "pub"
     }
       class={
-      s"indented$indentation " + (if (mbr eq inTpl) "current" else "")
+      s"indented$indentation " + (if (mbr eq inTpl)
+                                    "current"
+                                  else
+                                    "")
     }
       data-isabs={
       mbr.isAbstract.toString
     }
       fullComment={
-      if (memberComment.filter(_.label == "div").isEmpty) "no" else "yes"
+      if (memberComment.filter(_.label == "div").isEmpty)
+        "no"
+      else
+        "yes"
     }
       group={
       mbr.group
@@ -734,7 +775,8 @@ trait EntityPage extends HtmlPage {
     val s = universe.settings
 
     val memberComment =
-      if (mbr.comment.isEmpty) NodeSeq.Empty
+      if (mbr.comment.isEmpty)
+        NodeSeq.Empty
       else
         <div class="comment cmt">{
           commentToHtml(mbr.comment)
@@ -747,8 +789,10 @@ trait EntityPage extends HtmlPage {
       else
         <div class="comment cmt">
         {
-          if (mbr.comment.get.authors.size > 1) <h6>Authors:</h6>
-          else <h6>Author:</h6>
+          if (mbr.comment.get.authors.size > 1)
+            <h6>Authors:</h6>
+          else
+            <h6>Author:</h6>
         }
         {
           mbr.comment.get.authors map bodyToHtml
@@ -797,7 +841,8 @@ trait EntityPage extends HtmlPage {
           case tp: TypeParam  => comment.typeParams isDefinedAt tp.name
           case vp: ValueParam => comment.valueParams isDefinedAt vp.name
         }
-        if (cmtedPrs.isEmpty && comment.result.isEmpty) NodeSeq.Empty
+        if (cmtedPrs.isEmpty && comment.result.isEmpty)
+          NodeSeq.Empty
         else {
           <dl class="paramcmts block">{
             paramCommentToHtml(cmtedPrs, comment) ++ (comment.result match {
@@ -895,14 +940,16 @@ trait EntityPage extends HtmlPage {
                 scala.xml.Text("This implicitly inherited member is ambiguous. One or more implicitly " +
                   "inherited members have similar signatures, so calling this member may produce an ambiguous " +
                   "implicit conversion compiler error.") ++ shadowingSuggestion
-              else NodeSeq.Empty
+              else
+                NodeSeq.Empty
 
             <dt class="implicit">Shadowing</dt> ++
               <dd>{
                 shadowingWarning
               }</dd>
 
-          } else NodeSeq.Empty
+          } else
+            NodeSeq.Empty
         }
       case _ =>
         NodeSeq.Empty
@@ -911,7 +958,8 @@ trait EntityPage extends HtmlPage {
     // --- start attributes block vals
     val attributes: NodeSeq = {
       val fvs: List[comment.Paragraph] = visibility(mbr).toList
-      if (fvs.isEmpty || isReduced) NodeSeq.Empty
+      if (fvs.isEmpty || isReduced)
+        NodeSeq.Empty
       else {
         <dt>Attributes</dt>
         <dd>{
@@ -978,14 +1026,17 @@ trait EntityPage extends HtmlPage {
                 <span class="name">@{
               templateToHtml(annot.annotationClass)
             }</span>{
-              if (showArguments(annot)) argumentsToHtml(annot.arguments)
-              else NodeSeq.Empty
+              if (showArguments(annot))
+                argumentsToHtml(annot.arguments)
+              else
+                NodeSeq.Empty
             }
               </xml:group>
           }
         }
         </dd>
-      } else NodeSeq.Empty
+      } else
+        NodeSeq.Empty
     }
 
     val sourceLink: NodeSeq = mbr match {
@@ -1026,18 +1077,25 @@ trait EntityPage extends HtmlPage {
     val mainComment: NodeSeq = mbr.comment match {
       case Some(comment) if (!isReduced) =>
         def orEmpty[T](it: Iterable[T])(gen: => NodeSeq): NodeSeq =
-          if (it.isEmpty) NodeSeq.Empty else gen
+          if (it.isEmpty)
+            NodeSeq.Empty
+          else
+            gen
 
         val example =
           orEmpty(comment.example) {
             <div class="block">Example{
-              if (comment.example.length > 1) "s" else ""
+              if (comment.example.length > 1)
+                "s"
+              else
+                ""
             }:
                <ol>{
               val exampleXml: List[NodeSeq] =
-                for (ex <- comment.example) yield <li class="cmt">{
-                  bodyToHtml(ex)
-                }</li>
+                for (ex <- comment.example)
+                  yield <li class="cmt">{
+                    bodyToHtml(ex)
+                  }</li>
               exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
             }</ol>
             </div>
@@ -1047,7 +1105,8 @@ trait EntityPage extends HtmlPage {
           orEmpty(comment.version) {
             <dt>Version</dt>
             <dd>{
-              for (body <- comment.version.toList) yield bodyToHtml(body)
+              for (body <- comment.version.toList)
+                yield bodyToHtml(body)
             }</dd>
           }
 
@@ -1055,7 +1114,8 @@ trait EntityPage extends HtmlPage {
           orEmpty(comment.since) {
             <dt>Since</dt>
             <dd>{
-              for (body <- comment.since.toList) yield bodyToHtml(body)
+              for (body <- comment.since.toList)
+                yield bodyToHtml(body)
             }</dd>
           }
 
@@ -1064,9 +1124,10 @@ trait EntityPage extends HtmlPage {
             <dt>Note</dt>
             <dd>{
               val noteXml: List[NodeSeq] =
-                for (note <- comment.note) yield <span class="cmt">{
-                  bodyToHtml(note)
-                }</span>
+                for (note <- comment.note)
+                  yield <span class="cmt">{
+                    bodyToHtml(note)
+                  }</span>
               noteXml.reduceLeft(_ ++ Text(", ") ++ _)
             }</dd>
           }
@@ -1076,9 +1137,10 @@ trait EntityPage extends HtmlPage {
             <dt>See also</dt>
             <dd>{
               val seeXml: List[NodeSeq] =
-                for (see <- comment.see) yield <span class="cmt">{
-                  bodyToHtml(see)
-                }</span>
+                for (see <- comment.see)
+                  yield <span class="cmt">{
+                    bodyToHtml(see)
+                  }</span>
               seeXml.reduceLeft(_ ++ _)
             }</dd>
           }
@@ -1101,9 +1163,10 @@ trait EntityPage extends HtmlPage {
             <dt>To do</dt>
             <dd>{
               val todoXml: List[NodeSeq] =
-                (for (todo <- comment.todo) yield <span class="cmt">{
-                  bodyToHtml(todo)
-                }</span>)
+                (for (todo <- comment.todo)
+                  yield <span class="cmt">{
+                    bodyToHtml(todo)
+                  }</span>)
               todoXml.reduceLeft(_ ++ _)
             }</dd>
           }
@@ -1162,7 +1225,8 @@ trait EntityPage extends HtmlPage {
               scala.xml.Text(", "))
           }</div>
           </div>
-        else NodeSeq.Empty
+        else
+          NodeSeq.Empty
       case _ => NodeSeq.Empty
     }
 
@@ -1170,36 +1234,40 @@ trait EntityPage extends HtmlPage {
         f: DocTemplateEntity => Option[Diagram],
         description: String,
         id: String): NodeSeq =
-      if (s.docDiagrams.value) mbr match {
-        case dtpl: DocTemplateEntity if isSelf && !isReduced =>
-          val diagram = f(dtpl)
-          if (diagram.isDefined) {
-            val diagramSvg = generator.generate(diagram.get, tpl, this)
-            if (diagramSvg != NodeSeq.Empty) {
-              <div class="toggleContainer block diagram-container" id={
-                id + "-container"
-              }>
+      if (s.docDiagrams.value)
+        mbr match {
+          case dtpl: DocTemplateEntity if isSelf && !isReduced =>
+            val diagram = f(dtpl)
+            if (diagram.isDefined) {
+              val diagramSvg = generator.generate(diagram.get, tpl, this)
+              if (diagramSvg != NodeSeq.Empty) {
+                <div class="toggleContainer block diagram-container" id={
+                  id + "-container"
+                }>
                 <span class="toggle diagram-link">
                   {
-                description
-              }
+                  description
+                }
                 </span>
                 <div class="diagram" id={
-                id
-              }>{
-                diagramSvg
-              }</div>
+                  id
+                }>{
+                  diagramSvg
+                }</div>
                 <div id="diagram-controls" class="hiddenContent">
                   <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons">&#xE15B;</i></button>
                   <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons">&#xE145;</i></button>
                   <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons">&#xE5D0;</i></button>
                 </div>
               </div>
-            } else NodeSeq.Empty
-          } else NodeSeq.Empty
-        case _ => NodeSeq.Empty
-      }
-      else NodeSeq.Empty // diagrams not generated
+              } else
+                NodeSeq.Empty
+            } else
+              NodeSeq.Empty
+          case _ => NodeSeq.Empty
+        }
+      else
+        NodeSeq.Empty // diagrams not generated
 
     val typeHierarchy = createDiagram(
       _.inheritanceDiagram,
@@ -1283,7 +1351,11 @@ trait EntityPage extends HtmlPage {
             "name"
 
         val nameHtml = {
-          val value = if (mbr.isConstructor) tpl.name else mbr.name
+          val value =
+            if (mbr.isConstructor)
+              tpl.name
+            else
+              mbr.name
           val span =
             if (mbr.deprecation.isDefined)
               <span class={
@@ -1320,12 +1392,14 @@ trait EntityPage extends HtmlPage {
             nameHtml
           }
             </a>
-        else nameHtml
+        else
+          nameHtml
       }{
         def tparamsToHtml(mbr: Any): NodeSeq = mbr match {
           case hk: HigherKinded =>
             val tpss = hk.typeParams
-            if (tpss.isEmpty) NodeSeq.Empty
+            if (tpss.isEmpty)
+              NodeSeq.Empty
             else {
               def tparam0(tp: TypeParam): NodeSeq =
                 <span name={
@@ -1350,7 +1424,8 @@ trait EntityPage extends HtmlPage {
         }
         tparamsToHtml(mbr)
       }{
-        if (isReduced) NodeSeq.Empty
+        if (isReduced)
+          NodeSeq.Empty
         else {
           def paramsToHtml(vlsss: List[List[ValueParam]]): NodeSeq = {
             def param0(vl: ValueParam): NodeSeq =
@@ -1377,7 +1452,8 @@ trait EntityPage extends HtmlPage {
               case vl :: vls =>
                 if (vl.isImplicit) {
                   <span class="implicit">implicit </span>
-                } else Text("")
+                } else
+                  Text("")
               case _ => Text("")
             }
             vlsss map { vlss =>
@@ -1394,7 +1470,8 @@ trait EntityPage extends HtmlPage {
           }
         }
       }{
-        if (isReduced) NodeSeq.Empty
+        if (isReduced)
+          NodeSeq.Empty
         else {
           mbr match {
             case tme: MemberEntity
@@ -1409,7 +1486,8 @@ trait EntityPage extends HtmlPage {
                 <span class="result">{
                   b2s
                 }</span>
-              else NodeSeq.Empty
+              else
+                NodeSeq.Empty
 
             case alt: MemberEntity with AliasType =>
               <span class="result alias"> = {
@@ -1453,20 +1531,22 @@ trait EntityPage extends HtmlPage {
     def codeStringToXml(text: String): NodeSeq = {
       var goodLookingXml: NodeSeq = NodeSeq.Empty
       var indent = 0
-      for (c <- text) c match {
-        case '{' =>
-          indent += 1
-          goodLookingXml ++= Text("{")
-        case '}' =>
-          indent -= 1
-          goodLookingXml ++= Text("}")
-        case '\n' =>
-          goodLookingXml ++= <br/> ++ indentation
-        case _ => goodLookingXml ++= Text(c.toString)
-      }
+      for (c <- text)
+        c match {
+          case '{' =>
+            indent += 1
+            goodLookingXml ++= Text("{")
+          case '}' =>
+            indent -= 1
+            goodLookingXml ++= Text("}")
+          case '\n' =>
+            goodLookingXml ++= <br/> ++ indentation
+          case _ => goodLookingXml ++= Text(c.toString)
+        }
       def indentation: NodeSeq = {
         var indentXml = NodeSeq.Empty
-        for (x <- 1 to indent) indentXml ++= Text("&nbsp;&nbsp;")
+        for (x <- 1 to indent)
+          indentXml ++= Text("&nbsp;&nbsp;")
         indentXml
       }
       goodLookingXml
@@ -1622,5 +1702,8 @@ object EntityPage {
   /* Vlad: Lesson learned the hard way: don't put any stateful code that references the model here,
    * it won't be garbage collected and you'll end up filling the heap with garbage */
   def lowerFirstLetter(s: String) =
-    if (s.length >= 1) s.substring(0, 1).toLowerCase() + s.substring(1) else s
+    if (s.length >= 1)
+      s.substring(0, 1).toLowerCase() + s.substring(1)
+    else
+      s
 }

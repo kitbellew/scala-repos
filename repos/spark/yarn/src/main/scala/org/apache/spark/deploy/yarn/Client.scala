@@ -607,7 +607,10 @@ private[spark] class Client(
     // archive need to be placed in a subdirectory that will be added to PYTHONPATH.
     args.pyFiles.foreach { f =>
       val targetDir =
-        if (f.endsWith(".py")) Some(LOCALIZED_PYTHON_DIR) else None
+        if (f.endsWith(".py"))
+          Some(LOCALIZED_PYTHON_DIR)
+        else
+          None
       distribute(f, targetDir = targetDir)
     }
 
@@ -1037,8 +1040,13 @@ private[spark] class Client(
         ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
 
     // TODO: it would be nicer to just make sure there are no null commands here
-    val printableCommands =
-      commands.map(s => if (s == null) "null" else s).toList
+    val printableCommands = commands
+      .map(s =>
+        if (s == null)
+          "null"
+        else
+          s)
+      .toList
     amContainer.setCommands(printableCommands.asJava)
 
     logDebug(
@@ -1478,7 +1486,10 @@ object Client extends Logging {
     mainJar
       .flatMap { path =>
         val uri = Utils.resolveURI(path)
-        if (uri.getScheme == LOCAL_SCHEME) Some(uri) else None
+        if (uri.getScheme == LOCAL_SCHEME)
+          Some(uri)
+        else
+          None
       }
       .orElse(Some(new URI(APP_JAR_NAME)))
   }

@@ -243,7 +243,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             ScalaPsiUtil.firstLeaf(this))
           .map { e =>
             val cd = fun(e)
-            if (cd._2.nonEmpty) tail
+            if (cd._2.nonEmpty)
+              tail
             else {
               setApplicabilityProblemsVar(cd._2)
               setMatchedParametersVar(cd._3)
@@ -257,7 +258,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             }
           }
           .getOrElse(tail)
-      } else tail
+      } else
+        tail
     }
 
     def functionParams(params: Seq[ScType]): Seq[Parameter] = {
@@ -294,12 +296,12 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         case ScMethodType(retType, params, _) =>
           Some(checkConformance(retType, args, params))
         case ScTypePolymorphicType(
-            ScMethodType(retType, params, _),
-            typeParams) =>
+              ScMethodType(retType, params, _),
+              typeParams) =>
           Some(checkConformanceWithInference(retType, args, typeParams, params))
         case ScTypePolymorphicType(
-            ScFunctionType(retType, params),
-            typeParams) =>
+              ScFunctionType(retType, params),
+              typeParams) =>
           Some(
             checkConformanceWithInference(
               retType,
@@ -321,8 +323,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         includeUpdateCall: Boolean = false,
         isNamedDynamic: Boolean = false): Seq[Expression] = {
       def default: Seq[ScExpression] =
-        if (includeUpdateCall) argumentExpressionsIncludeUpdateCall
-        else argumentExpressions
+        if (includeUpdateCall)
+          argumentExpressionsIncludeUpdateCall
+        else
+          argumentExpressions
       if (isNamedDynamic) {
         default.map { expr =>
           val actualExpr = expr match {
@@ -362,7 +366,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             }
           }
         }
-      } else default
+      } else
+        default
     }
 
     def isApplyDynamicNamed: Boolean = {

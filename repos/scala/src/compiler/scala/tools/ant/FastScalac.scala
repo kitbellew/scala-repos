@@ -82,7 +82,8 @@ class FastScalac extends Scalac {
     *  @param input The value for `maxIdle`.
     */
   def setMaxIdle(input: Int) {
-    if (0 <= input) idleMinutes = Some(input)
+    if (0 <= input)
+      idleMinutes = Some(input)
   }
 
   /*============================================================================*\
@@ -101,10 +102,12 @@ class FastScalac extends Scalac {
     // initialize fsc specific settings
     val s = settings.asInstanceOf[FscSettings] // safe (newSettings)
     s.reset.value = resetCaches
-    if (!serverAddr.isEmpty) s.server.value = serverAddr.get
+    if (!serverAddr.isEmpty)
+      s.server.value = serverAddr.get
     s.shutdown.value = shutdownServer
     s.preferIPv4.value = useIPv4
-    if (!idleMinutes.isEmpty) s.idleMins.value = idleMinutes.get
+    if (!idleMinutes.isEmpty)
+      s.idleMins.value = idleMinutes.get
 
     val stringSettings =
       List(
@@ -155,8 +158,10 @@ class FastScalac extends Scalac {
 
     val phaseSetting = {
       val s = settings.log
-      if (s.value.isEmpty) Nil
-      else List("%s:%s".format(s.name, s.value.mkString(",")))
+      if (s.value.isEmpty)
+        Nil
+      else
+        List("%s:%s".format(s.name, s.value.mkString(",")))
     }
 
     val fscOptions =
@@ -169,7 +174,8 @@ class FastScalac extends Scalac {
     java.createJvmarg() setValue "-Xms32M"
     val scalacPath: Path = {
       val path = new Path(getProject)
-      if (compilerPath.isDefined) path add compilerPath.get
+      if (compilerPath.isDefined)
+        path add compilerPath.get
       else
         getClass.getClassLoader match {
           case cl: AntClassLoader =>
@@ -206,8 +212,12 @@ class FastScalac extends Scalac {
       t map { s =>
         if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
           "\"" + s.flatMap(c =>
-            (if (c == '"' || c == '\\') "\\" else "") + c) + "\""
-        else s
+            (if (c == '"' || c == '\\')
+               "\\"
+             else
+               "") + c) + "\""
+        else
+          s
       } mkString "\n"
 
     // dump the arguments to a file and do "java @file"

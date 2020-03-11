@@ -47,7 +47,8 @@ trait BootableActorLoaderService extends Bootable {
         new URLClassLoader(
           allJars.toArray,
           Thread.currentThread.getContextClassLoader)
-      } else Thread.currentThread.getContextClassLoader
+      } else
+        Thread.currentThread.getContextClassLoader
     })
 
   abstract override def onLoad = {

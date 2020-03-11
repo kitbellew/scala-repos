@@ -89,7 +89,10 @@ object Algorithms {
         try {
           val lengthMethod = unknownKey.getClass.getMethod("length")
           val l = lengthMethod.invoke(unknownKey).asInstanceOf[Integer]
-          if (l >= 0) Some(l) else None
+          if (l >= 0)
+            Some(l)
+          else
+            None
         } catch {
           case _: Throwable =>
             throw new IllegalStateException(
@@ -101,7 +104,10 @@ object Algorithms {
 
   def getKeyAlgorithmName(pubk: Key): String = {
     val name = pubk.getAlgorithm
-    if (name == "DH") "DiffieHellman" else name
+    if (name == "DH")
+      "DiffieHellman"
+    else
+      name
   }
 
   def translateKey(pubk: Key): Key = {

@@ -55,9 +55,12 @@ case class InlineInfoAttribute(inlineInfo: InlineInfo)
     result.putByte(InlineInfoAttribute.VERSION)
 
     var finalSelfSam = 0
-    if (inlineInfo.isEffectivelyFinal) finalSelfSam |= 1
-    if (inlineInfo.traitImplClassSelfType.isDefined) finalSelfSam |= 2
-    if (inlineInfo.sam.isDefined) finalSelfSam |= 4
+    if (inlineInfo.isEffectivelyFinal)
+      finalSelfSam |= 1
+    if (inlineInfo.traitImplClassSelfType.isDefined)
+      finalSelfSam |= 2
+    if (inlineInfo.sam.isDefined)
+      finalSelfSam |= 4
     result.putByte(finalSelfSam)
 
     for (selfInternalName <- inlineInfo.traitImplClassSelfType) {
@@ -82,10 +85,14 @@ case class InlineInfoAttribute(inlineInfo: InlineInfo)
       result.putShort(cw.newUTF8(desc))
 
       var inlineInfo = 0
-      if (info.effectivelyFinal) inlineInfo |= 1
-      if (info.traitMethodWithStaticImplementation) inlineInfo |= 2
-      if (info.annotatedInline) inlineInfo |= 4
-      if (info.annotatedNoInline) inlineInfo |= 8
+      if (info.effectivelyFinal)
+        inlineInfo |= 1
+      if (info.traitMethodWithStaticImplementation)
+        inlineInfo |= 2
+      if (info.annotatedInline)
+        inlineInfo |= 4
+      if (info.annotatedNoInline)
+        inlineInfo |= 8
       result.putByte(inlineInfo)
     }
 
@@ -132,14 +139,16 @@ case class InlineInfoAttribute(inlineInfo: InlineInfo)
       val hasSam = (finalSelfSam & 4) != 0
 
       val self =
-        if (!hasSelf) None
+        if (!hasSelf)
+          None
         else {
           val selfName = nextUTF8()
           Some(selfName)
         }
 
       val sam =
-        if (!hasSam) None
+        if (!hasSam)
+          None
         else {
           val name = nextUTF8()
           val desc = nextUTF8()

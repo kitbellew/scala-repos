@@ -51,7 +51,8 @@ class ScalaBlock(
     mySettings.getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
 
   def getTextRange =
-    if (myLastNode == null) myNode.getTextRange
+    if (myLastNode == null)
+      myNode.getTextRange
     else
       new TextRange(
         myNode.getTextRange.getStartOffset,
@@ -86,13 +87,17 @@ class ScalaBlock(
       case m: ScMatchStmt =>
         if (m.caseClauses.length == 0) {
           new ChildAttributes(
-            if (braceShifted) Indent.getNoneIndent else Indent.getNormalIndent,
+            if (braceShifted)
+              Indent.getNoneIndent
+            else
+              Indent.getNormalIndent,
             null)
         } else {
           val indent =
             if (mySettings.INDENT_CASE_FROM_SWITCH)
               Indent.getSpaceIndent(2 * indentSize)
-            else Indent.getNormalIndent
+            else
+              Indent.getNormalIndent
           new ChildAttributes(indent, null)
         }
       case c: ScCaseClauses => new ChildAttributes(Indent.getNormalIndent, null)
@@ -104,14 +109,19 @@ class ScalaBlock(
         var i = getSubBlocks().size() - newChildIndex
         val elem = b.lastExpr.get.getNode.getTreePrev
         if (elem.getElementType != TokenType.WHITE_SPACE || !elem.getText
-              .contains("\n")) i = 0
-        val indent = i + (if (!braceShifted) 1 else 0)
+              .contains("\n"))
+          i = 0
+        val indent = i + (if (!braceShifted)
+                            1
+                          else
+                            0)
         new ChildAttributes(Indent.getSpaceIndent(indent * indentSize), null)
       case _: ScBlockExpr | _: ScEarlyDefinitions | _: ScTemplateBody |
           _: ScForStatement | _: ScWhileStmt | _: ScTryBlock |
           _: ScCatchBlock =>
         new ChildAttributes(
-          if (braceShifted) Indent.getNoneIndent
+          if (braceShifted)
+            Indent.getNoneIndent
           else if (mySubBlocks != null && mySubBlocks.size >= newChildIndex &&
                    mySubBlocks
                      .get(newChildIndex - 1)
@@ -129,7 +139,8 @@ class ScalaBlock(
         new ChildAttributes(
           if (scope.getNode.getElementType == ScalaTokenTypes.tLBRACE && braceShifted)
             Indent.getNoneIndent
-          else Indent.getNormalIndent,
+          else
+            Indent.getNormalIndent,
           null)
       case p: ScPackaging if p.isExplicit =>
         new ChildAttributes(Indent.getNormalIndent, null)
@@ -138,8 +149,10 @@ class ScalaBlock(
         new ChildAttributes(
           if (grandParent != null && (grandParent
                 .isInstanceOf[ScCaseClause] || grandParent
-                .isInstanceOf[ScFunctionExpr])) Indent.getNormalIndent
-          else Indent.getNoneIndent,
+                .isInstanceOf[ScFunctionExpr]))
+            Indent.getNormalIndent
+          else
+            Indent.getNoneIndent,
           null)
       case _: ScIfStmt =>
         new ChildAttributes(
@@ -152,7 +165,8 @@ class ScalaBlock(
           new ChildAttributes(
             if (mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
               Indent.getNoneIndent
-            else Indent.getNormalIndent,
+            else
+              Indent.getNormalIndent,
             null)
       case _: ScXmlElement => new ChildAttributes(Indent.getNormalIndent, null)
       case _: ScalaFile    => new ChildAttributes(Indent.getNoneIndent, null)
@@ -164,7 +178,10 @@ class ScalaBlock(
       case _: ScDocComment =>
         new ChildAttributes(
           Indent.getSpaceIndent(
-            if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1),
+            if (scalaSettings.USE_SCALADOC2_FORMATTING)
+              2
+            else
+              1),
           null)
       case _ if parent.getNode.getElementType == ScalaTokenTypes.kIF =>
         new ChildAttributes(Indent.getNormalIndent, null)
@@ -180,7 +197,8 @@ class ScalaBlock(
         new ChildAttributes(
           if (scalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS)
             Indent.getNormalIndent
-          else Indent.getContinuationWithoutFirstIndent,
+          else
+            Indent.getContinuationWithoutFirstIndent,
           this.getAlignment)
       case _: ScValue =>
         new ChildAttributes(
@@ -217,8 +235,10 @@ class ScalaBlock(
   }
 
   def isLeaf(node: ASTNode): Boolean = {
-    if (myLastNode == null) node.getFirstChildNode == null
-    else false
+    if (myLastNode == null)
+      node.getFirstChildNode == null
+    else
+      false
   }
 
   def isIncomplete(node: ASTNode): Boolean = {

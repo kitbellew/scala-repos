@@ -37,7 +37,10 @@ import scalafx.scene.Node
 
 object Label {
   implicit def sfxLabel2jfx(v: Label): jfxsc.Label =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** Creates Label with supplied text. */
   def apply(text: String) = new Label(text)

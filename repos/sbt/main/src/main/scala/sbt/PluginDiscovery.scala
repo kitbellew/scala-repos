@@ -116,7 +116,10 @@ object PluginDiscovery {
     val ds = Discovery(subclassSet, Set.empty)(Tests.allDefs(analysis))
     ds.flatMap {
       case (definition, Discovered(subs, _, _, true)) =>
-        if ((subs & subclassSet).isEmpty) Nil else definition.name :: Nil
+        if ((subs & subclassSet).isEmpty)
+          Nil
+        else
+          definition.name :: Nil
       case _ => Nil
     }
   }
@@ -150,7 +153,8 @@ object PluginDiscovery {
       implicit classTag: reflect.ClassTag[T]): DetectedModules[T] = {
     val classpath = data.classpath
     val namesAndValues =
-      if (classpath.isEmpty) Nil
+      if (classpath.isEmpty)
+        Nil
       else {
         val names = binarySourceModuleNames(
           classpath,
@@ -170,7 +174,10 @@ object PluginDiscovery {
     catch {
       case e: ExceptionInInitializerError =>
         val cause = e.getCause
-        if (cause eq null) throw e else throw cause
+        if (cause eq null)
+          throw e
+        else
+          throw cause
       case e: LinkageError => incompatiblePlugins(data, e)
     }
 
@@ -187,7 +194,8 @@ object PluginDiscovery {
     }
     val msgBase = "Binary incompatibility in plugins detected."
     val msgExtra =
-      if (evictedStrings.isEmpty) ""
+      if (evictedStrings.isEmpty)
+        ""
       else
         "\nNote that conflicts were resolved for some dependencies:\n\t" + evictedStrings
           .mkString("\n\t")

@@ -147,8 +147,10 @@ trait NamesDefaults { self: Analyzer =>
       val (baseFun1, funTargs, defaultTargs) = baseFun match {
         case TypeApply(fun, targs) =>
           val targsInSource =
-            if (targs.forall(a => context.undetparams contains a.symbol)) Nil
-            else targs
+            if (targs.forall(a => context.undetparams contains a.symbol))
+              Nil
+            else
+              targs
           (fun, targs, targsInSource)
 
         case Select(New(tpt @ TypeTree()), _) if isConstr =>
@@ -164,8 +166,10 @@ trait NamesDefaults { self: Analyzer =>
 
         case Select(TypeApply(New(TypeTree()), targs), _) if isConstr =>
           val targsInSource =
-            if (targs.forall(a => context.undetparams contains a.symbol)) Nil
-            else targs
+            if (targs.forall(a => context.undetparams contains a.symbol))
+              Nil
+            else
+              targs
           (baseFun, Nil, targsInSource)
 
         case _ => (baseFun, Nil, Nil)
@@ -193,13 +197,16 @@ trait NamesDefaults { self: Analyzer =>
               qual.pos
                 .union(baseFun1.pos)
                 .withStart(Math.min(qual.pos.end, baseFun1.pos.end))
-            else baseFun1.pos
+            else
+              baseFun1.pos
           val f = blockTyper.typedOperator(
             Select(newQual, selected)
               .setSymbol(baseFun1.symbol)
               .setPos(selectPos))
-          if (funTargs.isEmpty) f
-          else TypeApply(f, funTargs).setType(baseFun.tpe)
+          if (funTargs.isEmpty)
+            f
+          else
+            TypeApply(f, funTargs).setType(baseFun.tpe)
         }
 
         val b = Block(List(vd), baseFunTransformed)
@@ -224,7 +231,8 @@ trait NamesDefaults { self: Analyzer =>
           None
         } else {
           val module = companionSymbolOf(baseFun.symbol.owner, context)
-          if (module == NoSymbol) None
+          if (module == NoSymbol)
+            None
           else {
             val ref = atPos(pos.focus)(gen.mkAttributedRef(pre, module))
             if (treeInfo.admitsTypeSelection(
@@ -312,10 +320,11 @@ trait NamesDefaults { self: Analyzer =>
             val byName = isByNameParamType(paramTpe)
             val repeated = isScalaRepeatedParamType(paramTpe)
             val argTpe = (
-              if (repeated) arg match {
-                case WildcardStarArg(expr) => expr.tpe
-                case _                     => seqType(arg.tpe)
-              }
+              if (repeated)
+                arg match {
+                  case WildcardStarArg(expr) => expr.tpe
+                  case _                     => seqType(arg.tpe)
+                }
               else {
                 // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
                 //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
@@ -327,7 +336,11 @@ trait NamesDefaults { self: Analyzer =>
               unit.freshTermName(nme.NAMEDARG_PREFIX),
               arg.pos,
               newFlags = ARTIFACT) setInfo {
-              val tp = if (byName) functionType(Nil, argTpe) else argTpe
+              val tp =
+                if (byName)
+                  functionType(Nil, argTpe)
+                else
+                  argTpe
               uncheckedBounds(tp)
             }
             Some((context.scope.enter(s), byName, repeated))
@@ -346,11 +359,13 @@ trait NamesDefaults { self: Analyzer =>
               new ChangeOwnerTraverser(
                 context.owner,
                 sym) traverse arg // fixes #4502
-              if (repeated) arg match {
-                case WildcardStarArg(expr) => expr
-                case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
-              }
-              else arg
+              if (repeated)
+                arg match {
+                  case WildcardStarArg(expr) => expr
+                  case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
+                }
+              else
+                arg
             }
           Some(atPos(body.pos)(ValDef(sym, body).setType(NoType)))
       }
@@ -365,7 +380,8 @@ trait NamesDefaults { self: Analyzer =>
         case Apply(fun, namelessArgs) =>
           val transformedFun =
             transformNamedApplication(typer, mode, pt)(fun, x => x)
-          if (transformedFun.isErroneous) setError(tree)
+          if (transformedFun.isErroneous)
+            setError(tree)
           else {
             assert(isNamedApplyBlock(transformedFun), transformedFun)
             val NamedApplyInfo(qual, targs, vargss, blockTyper) =
@@ -515,19 +531,25 @@ trait NamesDefaults { self: Analyzer =>
 
             }
             default1 =
-              if (targs.isEmpty) default1
-              else TypeApply(default1, targs.map(_.duplicate))
+              if (targs.isEmpty)
+                default1
+              else
+                TypeApply(default1, targs.map(_.duplicate))
             val default2 = (default1 /: previousArgss)((tree, args) =>
               Apply(tree, args.map(_.duplicate)))
             Some(atPos(pos) {
-              if (positional) default2
-              else AssignOrNamedArg(Ident(p.name), default2)
+              if (positional)
+                default2
+              else
+                AssignOrNamedArg(Ident(p.name), default2)
             })
           }
         })
         (givenArgs ::: defaultArgs, Nil)
-      } else (givenArgs, missing filterNot (_.hasDefault))
-    } else (givenArgs, Nil)
+      } else
+        (givenArgs, missing filterNot (_.hasDefault))
+    } else
+      (givenArgs, Nil)
   }
 
   /**
@@ -552,7 +574,8 @@ trait NamesDefaults { self: Analyzer =>
           context.lookup(defGetterName, param.owner.owner)
         }
       }
-    } else NoSymbol
+    } else
+      NoSymbol
   }
 
   /** A full type check is very expensive; let's make sure there's a name

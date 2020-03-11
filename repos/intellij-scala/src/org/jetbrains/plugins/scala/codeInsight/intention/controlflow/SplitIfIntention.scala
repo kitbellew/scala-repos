@@ -33,10 +33,12 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null) return false
+    if (ifStmt == null)
+      return false
 
     val cond = ifStmt.condition.orNull
-    if (cond == null || !cond.isInstanceOf[ScInfixExpr]) return false
+    if (cond == null || !cond.isInstanceOf[ScInfixExpr])
+      return false
 
     val range: TextRange =
       cond.asInstanceOf[ScInfixExpr].operation.nameId.getTextRange
@@ -53,7 +55,8 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val ifStmt: ScIfStmt =
       PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
-    if (ifStmt == null || !ifStmt.isValid) return
+    if (ifStmt == null || !ifStmt.isValid)
+      return
 
     val start = ifStmt.getTextRange.getStartOffset
     val expr = new StringBuilder
@@ -63,12 +66,14 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
       if (cond.getBaseExpr.getText.trim.startsWith(
             "(") && cond.getBaseExpr.getText.trim.endsWith(")"))
         cond.getBaseExpr.getText.trim
-      else "(" + cond.getBaseExpr.getText.trim + ")"
+      else
+        "(" + cond.getBaseExpr.getText.trim + ")"
     val secondCond =
       if (cond.getArgExpr.getText.trim.startsWith(
             "(") && cond.getArgExpr.getText.trim.endsWith(")"))
         cond.getArgExpr.getText.trim
-      else "(" + cond.getArgExpr.getText.trim + ")"
+      else
+        "(" + cond.getArgExpr.getText.trim + ")"
 
     expr
       .append("if ")
@@ -81,8 +86,10 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
 
     val elseBranch = ifStmt.elseBranch.orNull
     if (elseBranch != null) {
-      if (expr.toString().trim.endsWith("}")) expr.append(" else ")
-      else expr.append("\nelse ")
+      if (expr.toString().trim.endsWith("}"))
+        expr.append(" else ")
+      else
+        expr.append("\nelse ")
       expr
         .append(elseBranch.getText)
         .append("\nelse ")

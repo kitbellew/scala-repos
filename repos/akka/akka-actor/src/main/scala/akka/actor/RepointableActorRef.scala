@@ -54,14 +54,18 @@ private[akka] class RepointableActorRef(
 
   @tailrec final def swapCell(next: Cell): Cell = {
     val old = underlying
-    if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next)) old
-    else swapCell(next)
+    if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next))
+      old
+    else
+      swapCell(next)
   }
 
   @tailrec final def swapLookup(next: Cell): Cell = {
     val old = lookup
-    if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next)) old
-    else swapLookup(next)
+    if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next))
+      old
+    else
+      swapLookup(next)
   }
 
   /**
@@ -79,7 +83,8 @@ private[akka] class RepointableActorRef(
         swapCell(new UnstartedCell(system, this, props, supervisor))
         swapLookup(underlying)
         supervisor.sendSystemMessage(Supervise(this, async))
-        if (!async) point(false)
+        if (!async)
+          point(false)
         this
       case other ⇒
         throw new IllegalStateException("initialize called more than once!")
@@ -172,7 +177,8 @@ private[akka] class RepointableActorRef(
               }
           }
       }
-    } else this
+    } else
+      this
 
   /**
     * Method for looking up a single child beneath this actor.
@@ -252,7 +258,10 @@ private[akka] class UnstartedCell(
   def stop(): Unit = sendSystemMessage(Terminate())
   override private[akka] def isTerminated: Boolean = locked {
     val cell = self.underlying
-    if (cellIsReady(cell)) cell.isTerminated else false
+    if (cellIsReady(cell))
+      cell.isTerminated
+    else
+      false
   }
   def parent: InternalActorRef = supervisor
   def childrenRefs: ChildrenContainer = ChildrenContainer.EmptyChildrenContainer
@@ -295,7 +304,8 @@ private[akka] class UnstartedCell(
         cell.sendSystemMessage(msg)
       else {
         sysmsgQueue ::= msg
-        if (Mailbox.debug) println(s"$self temp queueing system $msg")
+        if (Mailbox.debug)
+          println(s"$self temp queueing system $msg")
       }
     } finally lock.unlock()
   }
@@ -307,12 +317,18 @@ private[akka] class UnstartedCell(
 
   def hasMessages: Boolean = locked {
     val cell = self.underlying
-    if (cellIsReady(cell)) cell.hasMessages else !queue.isEmpty
+    if (cellIsReady(cell))
+      cell.hasMessages
+    else
+      !queue.isEmpty
   }
 
   def numberOfMessages: Int = locked {
     val cell = self.underlying
-    if (cellIsReady(cell)) cell.numberOfMessages else queue.size
+    if (cellIsReady(cell))
+      cell.numberOfMessages
+    else
+      queue.size
   }
 
   private[this] final def locked[T](body: ⇒ T): T = {

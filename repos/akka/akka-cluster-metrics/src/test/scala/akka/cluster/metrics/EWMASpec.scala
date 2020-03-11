@@ -92,7 +92,8 @@ class EWMASpec
                 updated.isSmooth should ===(true)
                 updated.smoothValue should not be (previous.smoothValue)
                 Some(updated)
-              } else None
+              } else
+                None
           }
         }
         streamingDataSet ++= changes.map(m ⇒ m.name -> m)

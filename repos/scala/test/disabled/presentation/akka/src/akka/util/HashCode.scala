@@ -37,15 +37,20 @@ object HashCode {
     case value: Byte    => hash(seed, value)
     case value: AnyRef =>
       var result = seed
-      if (value eq null) result = hash(result, 0)
-      else if (!isArray(value)) result = hash(result, value.hashCode())
+      if (value eq null)
+        result = hash(result, 0)
+      else if (!isArray(value))
+        result = hash(result, value.hashCode())
       else
         for (id ← 0 until JArray.getLength(value))
           result = hash(result, JArray.get(value, id)) // is an array
       result
   }
   def hash(seed: Int, value: Boolean): Int =
-    firstTerm(seed) + (if (value) 1 else 0)
+    firstTerm(seed) + (if (value)
+                         1
+                       else
+                         0)
   def hash(seed: Int, value: Char): Int =
     firstTerm(seed) + value.asInstanceOf[Int]
   def hash(seed: Int, value: Int): Int = firstTerm(seed) + value

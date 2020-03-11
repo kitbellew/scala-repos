@@ -68,7 +68,8 @@ class FlowBatchSpec extends AkkaSpec {
       val future = Source(1 to 1000)
         .batch(max = 100, seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
         .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10);
+          if (ThreadLocalRandom.current().nextBoolean())
+            Thread.sleep(10);
           i
         }
         .runFold(0)(_ + _)

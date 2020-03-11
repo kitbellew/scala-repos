@@ -80,7 +80,10 @@ trait ScReferenceElement
     resolve() match {
       case clazz: ScObject if clazz.isStatic => clazz.qualifiedName
       case c: ScTypeDefinition =>
-        if (c.containingClass == null) c.qualifiedName else c.name
+        if (c.containingClass == null)
+          c.qualifiedName
+        else
+          c.name
       case c: PsiClass        => c.qualifiedName
       case n: PsiNamedElement => n.name
       case _                  => refName
@@ -94,8 +97,12 @@ trait ScReferenceElement
       patternNeedBackticks(newElementName) || ScalaNamesUtil.isKeyword(
         newElementName)
     val newName =
-      if (needBackticks) "`" + newElementName + "`" else newElementName
-    if (!ScalaNamesUtil.isIdentifier(newName)) return this
+      if (needBackticks)
+        "`" + newElementName + "`"
+      else
+        newElementName
+    if (!ScalaNamesUtil.isIdentifier(newName))
+      return this
     val id = nameId.getNode
     val parent = id.getTreeParent
     parent.replaceChild(
@@ -118,7 +125,8 @@ trait ScReferenceElement
     val iterator = multiResolve(false).iterator
     while (iterator.hasNext) {
       val resolved = iterator.next()
-      if (isReferenceTo(element, resolved.getElement)) return true
+      if (isReferenceTo(element, resolved.getElement))
+        return true
     }
     false
   }
@@ -127,11 +135,15 @@ trait ScReferenceElement
       useFullQualifiedName: Boolean,
       clazz: TypeToImport): ScReferenceElement =
     ScalaPsiElementFactory.createReferenceFromText(
-      if (useFullQualifiedName) clazz.qualifiedName else clazz.name,
+      if (useFullQualifiedName)
+        clazz.qualifiedName
+      else
+        clazz.name,
       clazz.element.getManager)
 
   def isReferenceTo(element: PsiElement, resolved: PsiElement): Boolean = {
-    if (ScEquivalenceUtil.smartEquivalence(resolved, element)) return true
+    if (ScEquivalenceUtil.smartEquivalence(resolved, element))
+      return true
     resolved match {
       case isLightScNamedElement(named) => return isReferenceTo(element, named)
       case isWrapper(named)             => return isReferenceTo(element, named)
@@ -170,7 +182,8 @@ trait ScReferenceElement
                 case _             =>
               }
             }
-            if (break) return true
+            if (break)
+              return true
           case obj: ScObject if obj.isSyntheticObject =>
             ScalaPsiUtil.getCompanionModule(td) match {
               case Some(typeDef) if typeDef == obj => return true
@@ -181,7 +194,8 @@ trait ScReferenceElement
       case c: PsiClass =>
         resolved match {
           case method: PsiMethod if method.isConstructor =>
-            if (c == method.containingClass) return true
+            if (c == method.containingClass)
+              return true
           case _ =>
         }
       case _: ScTypeAliasDefinition
@@ -213,7 +227,8 @@ trait ScReferenceElement
   def isIndirectReferenceTo(
       resolved: PsiElement,
       element: PsiElement): Boolean = {
-    if (resolved == null) return false
+    if (resolved == null)
+      return false
     (resolved, element) match {
       case (typeAlias: ScTypeAliasDefinition, cls: PsiClass) =>
         typeAlias.isExactAliasFor(cls)
@@ -230,8 +245,10 @@ trait ScReferenceElement
         // TODO indirect references via vals, e.g. `package object scala { val List = scala.collection.immutable.List }` ?
 
         val originalElement = element.getOriginalElement
-        if (originalElement != element) isReferenceTo(originalElement, resolved)
-        else false
+        if (originalElement != element)
+          isReferenceTo(originalElement, resolved)
+        else
+          false
     }
   }
 
@@ -264,7 +281,8 @@ trait ScReferenceElement
     val anotherRef: T = referenceCreator(last, true)
     val resolve: Array[ResolveResult] = anotherRef.multiResolve(false)
     def checkForPredefinedTypes(): Boolean = {
-      if (resolve.isEmpty) return true
+      if (resolve.isEmpty)
+        return true
       val usedNames = new mutable.HashSet[String]()
       val res = resolve.forall {
         case r: ScalaResolveResult if r.importsUsed.isEmpty =>
@@ -272,11 +290,13 @@ trait ScReferenceElement
           true
         case _ => false
       }
-      if (!res) return false
+      if (!res)
+        return false
       var reject = false
       getContainingFile.accept(new ScalaRecursiveElementVisitor {
         override def visitReference(ref: ScReferenceElement) {
-          if (reject) return
+          if (reject)
+            return
           if (usedNames.contains(ref.refName)) {
             ref.bind() match {
               case Some(r: ScalaResolveResult)
@@ -301,8 +321,10 @@ trait ScReferenceElement
         var index =
           if (ScalaCodeStyleSettings
                 .getInstance(getProject)
-                .isImportShortestPathForAmbiguousReferences) parts.length - 2
-          else 0
+                .isImportShortestPathForAmbiguousReferences)
+            parts.length - 2
+          else
+            0
         while (index >= 0) {
           val packagePart = parts.take(index + 1).mkString(".")
           val toReplace = parts.drop(index).mkString(".")
@@ -314,8 +336,10 @@ trait ScReferenceElement
           def isOk: Boolean = {
             if (packagePart == "java.util")
               return true //todo: fix possible clashes?
-            if (resolve.length == 0) true
-            else if (resolve.length > 1) false
+            if (resolve.length == 0)
+              true
+            else if (resolve.length > 1)
+              false
             else {
               val result: ResolveResult = resolve(0)
               def smartCheck: Boolean = {
@@ -329,7 +353,8 @@ trait ScReferenceElement
                       case Some(_) =>
                       case None =>
                         if (!ref.getParent.isInstanceOf[ScImportSelector]) {
-                          if (ref.refName == parts(index)) res = false
+                          if (ref.refName == parts(index))
+                            res = false
                         }
                     }
                   }
@@ -338,13 +363,19 @@ trait ScReferenceElement
               }
               result match {
                 case r @ ScalaResolveResult(pack: PsiPackage, _) =>
-                  if (pack.getQualifiedName == packagePart) true
-                  else if (r.importsUsed.isEmpty) smartCheck
-                  else false
+                  if (pack.getQualifiedName == packagePart)
+                    true
+                  else if (r.importsUsed.isEmpty)
+                    smartCheck
+                  else
+                    false
                 case r @ ScalaResolveResult(c: PsiClass, _) =>
-                  if (c.qualifiedName == packagePart) true
-                  else if (r.importsUsed.isEmpty) smartCheck
-                  else false
+                  if (c.qualifiedName == packagePart)
+                    true
+                  else if (r.importsUsed.isEmpty)
+                    smartCheck
+                  else
+                    false
                 case _ => smartCheck
               }
             }
@@ -390,7 +421,8 @@ trait ScReferenceElement
           if (!imported)
             importHolder.addImportForPath(qualifiedName, ref = this)
           pckg.getName
-        } else qualifiedName
+        } else
+          qualifiedName
       this match {
         case stRef: ScStableCodeReferenceElement =>
           stRef.replace(

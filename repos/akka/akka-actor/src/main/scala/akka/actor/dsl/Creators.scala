@@ -120,17 +120,30 @@ trait Creators { this: ActorDSL.type ⇒
     def whenStopping(body: ⇒ Unit): Unit = postStopFun = () ⇒ body
 
     override def preStart(): Unit =
-      if (preStartFun != null) preStartFun() else super.preStart()
+      if (preStartFun != null)
+        preStartFun()
+      else
+        super.preStart()
     override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
-      if (preRestartFun != null) preRestartFun(cause, msg)
-      else super.preRestart(cause, msg)
+      if (preRestartFun != null)
+        preRestartFun(cause, msg)
+      else
+        super.preRestart(cause, msg)
     override def postRestart(cause: Throwable): Unit =
-      if (postRestartFun != null) postRestartFun(cause)
-      else super.postRestart(cause)
+      if (postRestartFun != null)
+        postRestartFun(cause)
+      else
+        super.postRestart(cause)
     override def postStop(): Unit =
-      if (postStopFun != null) postStopFun() else super.postStop()
+      if (postStopFun != null)
+        postStopFun()
+      else
+        super.postStop()
     override def supervisorStrategy: SupervisorStrategy =
-      if (strategy != null) strategy else super.supervisorStrategy
+      if (strategy != null)
+        strategy
+      else
+        super.supervisorStrategy
 
     /**
       * Default behavior of the actor is empty, use `become` to change this.
@@ -184,8 +197,10 @@ trait Creators { this: ActorDSL.type ⇒
     val classOfActor = implicitly[ClassTag[T]].runtimeClass
     val props = mkProps(classOfActor, () ⇒ ctor)
 
-    if (name == null) factory.actorOf(props)
-    else factory.actorOf(props, name)
+    if (name == null)
+      factory.actorOf(props)
+    else
+      factory.actorOf(props, name)
   }
 
   /**

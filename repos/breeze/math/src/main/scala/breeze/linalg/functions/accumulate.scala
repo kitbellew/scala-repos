@@ -21,8 +21,10 @@ object accumulate extends UFunc {
             .toArray)
       }
       def cumImpl(listNew: List[T], listOld: List[T]): List[T] = {
-        if (listOld == Nil) listNew
-        else cumImpl((listOld.head + listNew.head) :: listNew, listOld.tail)
+        if (listOld == Nil)
+          listNew
+        else
+          cumImpl((listOld.head + listNew.head) :: listNew, listOld.tail)
       }
     }
 

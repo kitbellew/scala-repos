@@ -1,6 +1,10 @@
 final class NonNullChar(val get: Char) extends AnyVal {
   def isEmpty = get == 0.toChar
-  override def toString = if (isEmpty) "NoChar" else s"'$get'"
+  override def toString =
+    if (isEmpty)
+      "NoChar"
+    else
+      s"'$get'"
 }
 object NonNullChar {
   @inline final val None = new NonNullChar(0.toChar)

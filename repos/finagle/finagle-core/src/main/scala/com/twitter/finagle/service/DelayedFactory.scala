@@ -51,9 +51,10 @@ class DelayedFactory[Req, Rep](
     }
 
   override def close(deadline: Time): Future[Unit] = {
-    if (underlyingF.isDefined) wrapped flatMap { svc =>
-      svc.close(deadline)
-    }
+    if (underlyingF.isDefined)
+      wrapped flatMap { svc =>
+        svc.close(deadline)
+      }
     else {
       underlyingF.onSuccess(_.close(deadline))
       val exc = new ServiceClosedException
@@ -65,8 +66,10 @@ class DelayedFactory[Req, Rep](
   }
 
   override def status: Status =
-    if (underlyingF.isDefined) Await.result(underlyingF).status
-    else Status.Busy
+    if (underlyingF.isDefined)
+      Await.result(underlyingF).status
+    else
+      Status.Busy
 
   private[finagle] def numWaiters(): Int = q.size()
 

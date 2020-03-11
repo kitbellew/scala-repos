@@ -71,11 +71,14 @@ class REDoer[T](
 
   def apply(obj: T, other: String): Box[T] = {
     val ma = new REMatcher(other, compiled)
-    if (!ma.matches) Empty
+    if (!ma.matches)
+      Empty
     else
       func.flatMap(f =>
-        if (f.isDefinedAt((obj, ma.capture))) Full(f((obj, ma.capture)))
-        else Empty)
+        if (f.isDefinedAt((obj, ma.capture)))
+          Full(f((obj, ma.capture)))
+        else
+          Empty)
   }
 }
 
@@ -104,8 +107,10 @@ class REMatcher(val str: String, val compiled: Pattern) {
     * for the specified pattern, or Empty if no match exists.
     */
   lazy val matchStr: Box[String] =
-    if (matches) Full(str.substring(matcher.start, matcher.end))
-    else Empty
+    if (matches)
+      Full(str.substring(matcher.start, matcher.end))
+    else
+      Empty
 
   /**
     * Cached version of the matched groups in this matcher's string.
@@ -141,14 +146,16 @@ class REMatcher(val str: String, val compiled: Pattern) {
 
     def doIt {
       def runIt(pos: Int) {
-        if (pos >= cnt) return
+        if (pos >= cnt)
+          return
         else {
           ab += f(matcher.group(pos + 1));
           runIt(pos + 1)
         }
       }
 
-      if (!matcher.find) return
+      if (!matcher.find)
+        return
       else {
         runIt(0);
         doIt

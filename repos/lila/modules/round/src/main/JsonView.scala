@@ -245,8 +245,10 @@ final class JsonView(
             "variant" -> game.variant,
             "opening" -> game.opening,
             "initialFen" -> {
-              if (pov.game.pgnMoves.isEmpty) fen
-              else (initialFen | chess.format.Forsyth.initial)
+              if (pov.game.pgnMoves.isEmpty)
+                fen
+              else
+                (initialFen | chess.format.Forsyth.initial)
             },
             "fen" -> fen,
             "turns" -> game.turns,

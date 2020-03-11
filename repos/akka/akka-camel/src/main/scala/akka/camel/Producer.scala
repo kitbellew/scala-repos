@@ -105,7 +105,8 @@ trait ProducerSupport extends Actor with CamelSupport {
     * actor).
     */
   protected def routeResponse(msg: Any): Unit =
-    if (!oneway) sender() ! transformResponse(msg)
+    if (!oneway)
+      sender() ! transformResponse(msg)
 
   private class ProducerChild(endpoint: Endpoint, processor: SendProcessor)
       extends Actor {
@@ -117,7 +118,10 @@ trait ProducerSupport extends Actor with CamelSupport {
           endpoint,
           processor,
           msg,
-          if (oneway) ExchangePattern.InOnly else ExchangePattern.InOut)
+          if (oneway)
+            ExchangePattern.InOnly
+          else
+            ExchangePattern.InOut)
     }
 
     /**

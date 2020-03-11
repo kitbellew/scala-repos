@@ -67,7 +67,8 @@ object Utility {
             })
           sb.append(theChar)
         } else {
-          if (rfb eq null) rfb = new StringBuilder()
+          if (rfb eq null)
+            rfb = new StringBuilder()
           rfb append c
           c = it.next()
           while (c != ';') {
@@ -86,7 +87,8 @@ object Utility {
             case _ =>
           }
         }
-      } else sb append c
+      } else
+        sb append c
     }
 
     if (!sb.isEmpty) // flush buffer
@@ -111,7 +113,11 @@ object Utility {
       nextch();
       true
     }
-    val base = if (hex) 16 else 10
+    val base =
+      if (hex)
+        16
+      else
+        10
     var i = 0
     while (ch() != ';') {
       ch() match {

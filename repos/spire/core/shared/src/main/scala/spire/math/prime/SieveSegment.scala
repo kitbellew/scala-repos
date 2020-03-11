@@ -74,7 +74,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
     var i = (n - start + 2).toInt
     val len = primes.length
     while (i < len) {
-      if (primes(i)) return start + i
+      if (primes(i))
+        return start + i
       i += 2
     }
     SafeLong(-1L) // fail
@@ -133,7 +134,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
   }
 
   @tailrec private def initFromQueue(limit: SafeLong, q: FactorHeap): Unit = {
-    if (q.isEmpty) return ()
+    if (q.isEmpty)
+      return ()
 
     val factor = q.dequeue
     val m = factor.next
@@ -191,7 +193,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
   }
 
   def initRest(slowq: FactorHeap): Unit = {
-    if (start >= cutoff) return ()
+    if (start >= cutoff)
+      return ()
 
     val len: Long =
       if (start + primes.length >= cutoff)

@@ -361,7 +361,10 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
         while (i < numOfLinearPredictor) {
           val start = i * n
           val end = (i + 1) * n - {
-            if (addIntercept) 1 else 0
+            if (addIntercept)
+              1
+            else
+              0
           }
 
           val partialWeightsArray = scaler

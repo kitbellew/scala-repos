@@ -177,13 +177,15 @@ class BlockMatrix @Since("1.3.0") (
 
   @Since("1.3.0")
   override def numRows(): Long = {
-    if (nRows <= 0L) estimateDim()
+    if (nRows <= 0L)
+      estimateDim()
     nRows
   }
 
   @Since("1.3.0")
   override def numCols(): Long = {
-    if (nCols <= 0L) estimateDim()
+    if (nCols <= 0L)
+      estimateDim()
     nCols
   }
 
@@ -213,11 +215,13 @@ class BlockMatrix @Since("1.3.0") (
       .reduce { (x0, x1) =>
         (math.max(x0._1, x1._1), math.max(x0._2, x1._2))
       }
-    if (nRows <= 0L) nRows = rows
+    if (nRows <= 0L)
+      nRows = rows
     assert(
       rows <= nRows,
       s"The number of rows $rows is more than claimed $nRows.")
-    if (nCols <= 0L) nCols = cols
+    if (nCols <= 0L)
+      nCols = cols
     assert(
       cols <= nCols,
       s"The number of columns $cols is more than claimed $nCols.")

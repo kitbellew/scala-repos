@@ -235,8 +235,10 @@ class PrintStreamTest {
       autoFlush: Boolean): Unit = {
     val (ps, bos) = newPrintStream(autoFlush = autoFlush)
     body(ps)
-    if (autoFlush) assertTrue(bos.flushed)
-    else assertFalse(bos.flushed)
+    if (autoFlush)
+      assertTrue(bos.flushed)
+    else
+      assertFalse(bos.flushed)
     assertFalse(ps.checkError())
     assertEquals(expected, bos.toString())
   }
@@ -262,8 +264,10 @@ class PrintStreamTest {
       autoFlush: Boolean): Unit = {
     val (ps, bos) = newPrintStream(autoFlush = autoFlush)
     body(ps)
-    if (autoFlush) assertTrue(bos.flushed)
-    else assertFalse(bos.flushed)
+    if (autoFlush)
+      assertTrue(bos.flushed)
+    else
+      assertFalse(bos.flushed)
     assertFalse(ps.checkError())
     assertEquals(expected, bos.toString())
   }

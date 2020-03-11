@@ -79,11 +79,15 @@ private[akka] class RemoteSystemDaemon(
       child: ActorRef): Boolean =
     parent2children.get(parent) match {
       case null ⇒
-        if (parent2children.putIfAbsent(parent, Set(child)) == null) true
-        else addChildParentNeedsWatch(parent, child)
+        if (parent2children.putIfAbsent(parent, Set(child)) == null)
+          true
+        else
+          addChildParentNeedsWatch(parent, child)
       case children ⇒
-        if (parent2children.replace(parent, children, children + child)) false
-        else addChildParentNeedsWatch(parent, child)
+        if (parent2children.replace(parent, children, children + child))
+          false
+        else
+          addChildParentNeedsWatch(parent, child)
     }
 
   @tailrec private def removeChildParentNeedsUnwatch(
@@ -96,11 +100,13 @@ private[akka] class RemoteSystemDaemon(
         if (next.isEmpty) {
           if (!parent2children.remove(parent, children))
             removeChildParentNeedsUnwatch(parent, child)
-          else true
+          else
+            true
         } else {
           if (!parent2children.replace(parent, children, next))
             removeChildParentNeedsUnwatch(parent, child)
-          else false
+          else
+            false
         }
     }
   }
@@ -118,8 +124,10 @@ private[akka] class RemoteSystemDaemon(
       getChild(childName) match {
         case null ⇒
           val last = s.lastIndexOf('/')
-          if (last == -1) (Nobody, n)
-          else rec(s.substring(0, last), n + 1)
+          if (last == -1)
+            (Nobody, n)
+          else
+            rec(s.substring(0, last), n + 1)
         case ref if uid != undefinedUid && uid != ref.path.uid ⇒ (Nobody, n)
         case ref ⇒ (ref, n)
       }
@@ -135,9 +143,9 @@ private[akka] class RemoteSystemDaemon(
 
   override def sendSystemMessage(message: SystemMessage): Unit = message match {
     case DeathWatchNotification(
-        child: ActorRefWithCell with ActorRefScope,
-        _,
-        _) if child.isLocal ⇒
+          child: ActorRefWithCell with ActorRefScope,
+          _,
+          _) if child.isLocal ⇒
       terminating.locked {
         removeChild(child.path.elements.drop(1).mkString("/"), child)
         val parent = child.getParent
@@ -182,8 +190,10 @@ private[akka] class RemoteSystemDaemon(
                 val childName = {
                   val s = subpath.mkString("/")
                   val i = s.indexOf('#')
-                  if (i < 0) s
-                  else s.substring(0, i)
+                  if (i < 0)
+                    s
+                  else
+                    s.substring(0, i)
                 }
                 val isTerminating = !terminating.whileOff {
                   val parent = supervisor.asInstanceOf[InternalActorRef]
@@ -274,7 +284,8 @@ private[akka] class RemoteSystemDaemon(
     }
 
   def terminationHookDoneWhenNoChildren(): Unit = terminating.whileOn {
-    if (!hasChildren) terminator.tell(TerminationHookDone, this)
+    if (!hasChildren)
+      terminator.tell(TerminationHookDone, this)
   }
 
 }

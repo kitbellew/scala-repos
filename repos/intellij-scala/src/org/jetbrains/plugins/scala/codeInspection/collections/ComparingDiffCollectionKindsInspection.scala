@@ -23,9 +23,12 @@ object ComparingDiffCollectionKinds extends SimplificationType {
           if leftKind != rightKind =>
         def convertSimplification(leftSide: Boolean): Seq[Simplification] = {
           val (otherKind, exprToConvert, side) =
-            if (leftSide) (rightKind, left, "left")
-            else (leftKind, right, "right")
-          if (otherKind == "Array") return Seq.empty
+            if (leftSide)
+              (rightKind, left, "left")
+            else
+              (leftKind, right, "right")
+          if (otherKind == "Array")
+            return Seq.empty
           val convertText =
             partConvertedExprText(expr, exprToConvert, "to" + otherKind)
           Seq(

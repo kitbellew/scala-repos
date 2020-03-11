@@ -41,10 +41,14 @@ private[loadbalancer] class Heap[T](
 
   @tailrec
   final def fixDown(heap: Array[T], i: Int, j: Int) {
-    if (j < i * 2) return
+    if (j < i * 2)
+      return
 
     val m =
-      if (j == i * 2 || heap(2 * i) < heap(2 * i + 1)) 2 * i else 2 * i + 1
+      if (j == i * 2 || heap(2 * i) < heap(2 * i + 1))
+        2 * i
+      else
+        2 * i + 1
     if (heap(m) < heap(i)) {
       swap(heap, i, m)
       fixDown(heap, m, j)
@@ -60,10 +64,15 @@ private[loadbalancer] class Heap[T](
   }
 
   def isValid(heap: Array[T], i: Int, j: Int): Boolean =
-    if (j < i * 2) true
+    if (j < i * 2)
+      true
     else {
       val left = heap(i) < heap(i * 2)
-      val right = if (j == i * 2) true else heap(i) < heap(i * 2 + 1)
+      val right =
+        if (j == i * 2)
+          true
+        else
+          heap(i) < heap(i * 2 + 1)
       left && right
     }
 }

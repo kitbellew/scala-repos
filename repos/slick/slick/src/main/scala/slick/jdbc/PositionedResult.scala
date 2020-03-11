@@ -39,7 +39,10 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
 
   final def <<[T](implicit f: GetResult[T]): T = f(this)
   final def <<?[T](implicit f: GetResult[Option[T]]): Option[T] =
-    if (hasMoreColumns) this.<< else None
+    if (hasMoreColumns)
+      this.<<
+    else
+      None
 
   final def nextBoolean() = {
     val npos = pos + 1;
@@ -51,7 +54,10 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
     val npos = pos + 1;
     val r = rs getBigDecimal npos;
     pos = npos;
-    if (r eq null) null else BigDecimal(r)
+    if (r eq null)
+      null
+    else
+      BigDecimal(r)
   }
   final def nextBlob() = {
     val npos = pos + 1;
@@ -143,112 +149,176 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
   final def nextBooleanOption() = {
     val npos = pos + 1;
     val r = rs getBoolean npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextBigDecimalOption() = {
     val npos = pos + 1;
     val r = rs getBigDecimal npos;
-    val rr = (if (rs.wasNull) None else Some(BigDecimal(r)));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(BigDecimal(r)));
     pos = npos;
     rr
   }
   final def nextBlobOption() = {
     val npos = pos + 1;
     val r = rs getBlob npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextByteOption() = {
     val npos = pos + 1;
     val r = rs getByte npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextBytesOption() = {
     val npos = pos + 1;
     val r = rs getBytes npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextClobOption() = {
     val npos = pos + 1;
     val r = rs getClob npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextDateOption() = {
     val npos = pos + 1;
     val r = rs getDate npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextDoubleOption() = {
     val npos = pos + 1;
     val r = rs getDouble npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextFloatOption() = {
     val npos = pos + 1;
     val r = rs getFloat npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextIntOption() = {
     val npos = pos + 1;
     val r = rs getInt npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextLongOption() = {
     val npos = pos + 1;
     val r = rs getLong npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextObjectOption() = {
     val npos = pos + 1;
     val r = rs getObject npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextShortOption() = {
     val npos = pos + 1;
     val r = rs getShort npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextStringOption() = {
     val npos = pos + 1;
     val r = rs getString npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextTimeOption() = {
     val npos = pos + 1;
     val r = rs getTime npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
   final def nextTimestampOption() = {
     val npos = pos + 1;
     val r = rs getTimestamp npos;
-    val rr = (if (rs.wasNull) None else Some(r));
+    val rr =
+      (if (rs.wasNull)
+         None
+       else
+         Some(r));
     pos = npos;
     rr
   }
@@ -495,12 +565,14 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
           pos = startPos
           ret
         }
-        if (pos == Int.MinValue) disc
+        if (pos == Int.MinValue)
+          disc
         else {
           val outerRet = outer.nextRow
           val ret = outerRet && disc
           pos = startPos
-          if (!ret && outerRet) outer.rewind
+          if (!ret && outerRet)
+            outer.rewind
           ret
         }
       }
@@ -526,7 +598,8 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
   final def build[C[_], R](gr: GetResult[R])(
       implicit canBuildFrom: CanBuildFrom[Nothing, R, C[R]]): C[R] = {
     val b = canBuildFrom()
-    while (nextRow) b += gr(this)
+    while (nextRow)
+      b += gr(this)
     b.result()
   }
 
@@ -561,7 +634,8 @@ abstract class PositionedResultIterator[+T](
       readRows += 1
       res
     } else {
-      if (autoClose) close()
+      if (autoClose)
+        close()
       finished()
     }
   }

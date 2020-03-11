@@ -42,7 +42,10 @@ object ScalatraServlet {
       _.substring(idx)
     } flatMap (_.blankOption) getOrElse "/")
     val pos = u2.indexOf(';')
-    if (pos > -1) u2.substring(0, pos) else u2
+    if (pos > -1)
+      u2.substring(0, pos)
+    else
+      u2
   }
 
 }

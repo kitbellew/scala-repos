@@ -23,8 +23,10 @@ object TopStatSeq {
       waitBrace: Boolean,
       hasPackage: Boolean): Int = {
     var parseState = ParserState.EMPTY_STATE
-    if (waitBrace) parseState = ParserState.FILE_STATE
-    if (hasPackage) parseState = ParserState.FILE_STATE
+    if (waitBrace)
+      parseState = ParserState.FILE_STATE
+    if (hasPackage)
+      parseState = ParserState.FILE_STATE
     while (true) {
       builder.getTokenType match {
         //end of parsing when find } or builder.eof

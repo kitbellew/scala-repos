@@ -42,11 +42,18 @@ private class Log4jController extends Log4jControllerMBean {
     while (loggers.hasMoreElements) {
       val logger = loggers.nextElement().asInstanceOf[Logger]
       if (logger != null) {
-        val level = if (logger != null) logger.getLevel else null
+        val level =
+          if (logger != null)
+            logger.getLevel
+          else
+            null
         lst.add(
           "%s=%s".format(
             logger.getName,
-            if (level != null) level.toString else "null"))
+            if (level != null)
+              level.toString
+            else
+              "null"))
       }
     }
     lst
@@ -55,12 +62,14 @@ private class Log4jController extends Log4jControllerMBean {
   private def newLogger(loggerName: String) =
     if (loggerName == "root")
       LogManager.getRootLogger
-    else LogManager.getLogger(loggerName)
+    else
+      LogManager.getLogger(loggerName)
 
   private def existingLogger(loggerName: String) =
     if (loggerName == "root")
       LogManager.getRootLogger
-    else LogManager.exists(loggerName)
+    else
+      LogManager.exists(loggerName)
 
   def getLogLevel(loggerName: String) = {
     val log = existingLogger(loggerName)
@@ -68,8 +77,10 @@ private class Log4jController extends Log4jControllerMBean {
       val level = log.getLevel
       if (level != null)
         log.getLevel.toString
-      else "Null log level."
-    } else "No such logger."
+      else
+        "Null log level."
+    } else
+      "No such logger."
   }
 
   def setLogLevel(loggerName: String, level: String) = {
@@ -77,7 +88,8 @@ private class Log4jController extends Log4jControllerMBean {
     if (!loggerName.trim.isEmpty && !level.trim.isEmpty && log != null) {
       log.setLevel(Level.toLevel(level.toUpperCase))
       true
-    } else false
+    } else
+      false
   }
 
 }

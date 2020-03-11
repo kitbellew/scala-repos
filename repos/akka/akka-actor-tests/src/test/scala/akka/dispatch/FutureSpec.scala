@@ -512,9 +512,11 @@ class FutureSpec
       }
 
       "find" in {
-        val futures = for (i ← 1 to 10) yield Future {
-          i
-        }
+        val futures =
+          for (i ← 1 to 10)
+            yield Future {
+              i
+            }
         val result = Future.find[Int](futures)(_ == 3)
         Await.result(result, timeout.duration) should ===(Some(3))
 
@@ -569,7 +571,8 @@ class FutureSpec
         Await.result(
           futures.foldLeft(Future(0))((fr, fa) ⇒
             for (r ← fr;
-                 a ← fa) yield (r + a)),
+                 a ← fa)
+              yield (r + a)),
           timeout.duration) should ===(55)
       }
 
@@ -1046,7 +1049,9 @@ class FutureSpec
   }
 
   implicit def arbFuture: Arbitrary[Future[Int]] =
-    Arbitrary(for (n ← arbitrary[Int]) yield Future(n))
+    Arbitrary(
+      for (n ← arbitrary[Int])
+        yield Future(n))
 
   implicit def arbFutureAction: Arbitrary[FutureAction] = Arbitrary {
 

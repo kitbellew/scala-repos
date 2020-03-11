@@ -334,7 +334,8 @@ trait PCDataMarkupParser[PCM <: MarkupParser with MarkupHandler]
         sb.setLength(sb.length - 2);
         nextch;
         return PCData(sb.toString)
-      } else sb.append(ch);
+      } else
+        sb.append(ch);
       nextch;
     }
     throw FatalError("this cannot happen");
@@ -582,7 +583,8 @@ object AltXML {
       case e: Elem if ((e.child eq null) || e.child.isEmpty) =>
         sb.append('<')
         e.nameToString(sb)
-        if (e.attributes ne null) e.attributes.buildString(sb)
+        if (e.attributes ne null)
+          e.attributes.buildString(sb)
         e.scope.buildString(sb, pscope)
         sb.append(" />")
 
@@ -590,7 +592,8 @@ object AltXML {
         // print tag with namespace declarations
         sb.append('<')
         e.nameToString(sb)
-        if (e.attributes ne null) e.attributes.buildString(sb)
+        if (e.attributes ne null)
+          e.attributes.buildString(sb)
         e.scope.buildString(sb, pscope)
         sb.append('>')
         sequenceToXML(e.child, e.scope, sb, stripComment, convertAmp)
@@ -686,7 +689,8 @@ object AltXML {
             && inlineTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)
-        if (e.attributes ne null) e.attributes.buildString(sb)
+        if (e.attributes ne null)
+          e.attributes.buildString(sb)
         e.scope.buildString(sb, pscope)
         sb.append(" />")
 
@@ -695,7 +699,8 @@ object AltXML {
             ieBadTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)
-        if (e.attributes ne null) e.attributes.buildString(sb)
+        if (e.attributes ne null)
+          e.attributes.buildString(sb)
         e.scope.buildString(sb, pscope)
         sb.append("/>")
 
@@ -703,7 +708,8 @@ object AltXML {
         // print tag with namespace declarations
         sb.append('<')
         e.nameToString(sb)
-        if (e.attributes ne null) e.attributes.buildString(sb)
+        if (e.attributes ne null)
+          e.attributes.buildString(sb)
         e.scope.buildString(sb, pscope)
         sb.append('>')
         sequenceToXML(

@@ -76,13 +76,15 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
               case _ =>
             }
             c.secondaryConstructors.foreach(fun =>
-              if (fun.parameters.nonEmpty) hasNonEmptyParams = true)
+              if (fun.parameters.nonEmpty)
+                hasNonEmptyParams = true)
           case _ =>
             clazz.getConstructors.foreach(meth =>
               if (meth.getParameterList.getParametersCount > 0)
                 hasNonEmptyParams = true)
         }
-        if (context.getCompletionChar == '(') hasNonEmptyParams = true
+        if (context.getCompletionChar == '(')
+          hasNonEmptyParams = true
         if (item.typeParametersProblem) {
           document.insertString(endOffset, "[]")
           endOffset += 2
@@ -160,7 +162,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
             def run() {
               val file = context.getFile
               val element = file.findElementAt(editor.getCaretModel.getOffset)
-              if (element == null) return
+              if (element == null)
+                return
 
               element.getParent match {
                 case (_: ScTemplateBody) childOf ((_: ScExtendsBlock) childOf (newTemplateDef: ScNewTemplateDefinition)) =>

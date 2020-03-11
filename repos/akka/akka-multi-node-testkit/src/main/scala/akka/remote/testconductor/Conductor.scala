@@ -492,7 +492,8 @@ private[akka] class Controller(
   }
 
   def failBarrier(data: Data): SupervisorStrategy.Directive = {
-    for (c ← data.arrived) c ! ToClient(BarrierResult(data.barrier, false))
+    for (c ← data.arrived)
+      c ! ToClient(BarrierResult(data.barrier, false))
     SupervisorStrategy.Restart
   }
 
@@ -523,9 +524,11 @@ private[akka] class Controller(
         fsm ! ToClient(BarrierResult("initial startup", false))
       } else {
         nodes += name -> c
-        if (initialParticipants <= 0) fsm ! ToClient(Done)
+        if (initialParticipants <= 0)
+          fsm ! ToClient(Done)
         else if (nodes.size == initialParticipants) {
-          for (NodeInfo(_, _, client) ← nodes.values) client ! ToClient(Done)
+          for (NodeInfo(_, _, client) ← nodes.values)
+            client ! ToClient(Done)
           initialParticipants = 0
         }
         if (addrInterest contains name) {
@@ -703,11 +706,15 @@ private[akka] class BarrierCoordinator
 
   when(Waiting) {
     case Event(
-        EnterBarrier(name, timeout),
-        d @ Data(clients, barrier, arrived, deadline)) ⇒
-      if (name != barrier) throw WrongBarrier(name, sender(), d)
+          EnterBarrier(name, timeout),
+          d @ Data(clients, barrier, arrived, deadline)) ⇒
+      if (name != barrier)
+        throw WrongBarrier(name, sender(), d)
       val together =
-        if (clients.exists(_.fsm == sender())) sender() :: arrived else arrived
+        if (clients.exists(_.fsm == sender()))
+          sender() :: arrived
+        else
+          arrived
       val enterDeadline = getDeadline(timeout)
       // we only allow the deadlines to get shorter
       if (enterDeadline.timeLeft < deadline.timeLeft) {
@@ -725,7 +732,8 @@ private[akka] class BarrierCoordinator
               arrived = arrived filterNot (_ == client.fsm)))
       }
     case Event(FailBarrier(name), d @ Data(_, barrier, _, _)) ⇒
-      if (name != barrier) throw WrongBarrier(name, sender(), d)
+      if (name != barrier)
+        throw WrongBarrier(name, sender(), d)
       throw FailedBarrier(d)
     case Event(StateTimeout, d) ⇒
       throw BarrierTimeout(d)

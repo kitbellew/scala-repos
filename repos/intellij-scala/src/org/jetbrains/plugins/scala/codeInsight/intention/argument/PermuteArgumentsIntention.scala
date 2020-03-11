@@ -26,7 +26,8 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    if (!element.isValid) return
+    if (!element.isValid)
+      return
     check(project, editor, element) match {
       case Some(x) => x()
       case None    =>
@@ -39,7 +40,8 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Option[() => Unit] = {
     val argList =
       PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
-    if (argList == null) return None
+    if (argList == null)
+      return None
 
     val argsAndMatchingParams: Seq[(ScExpression, Parameter)] =
       argList.matchedParameters.sortBy(_._1.getTextOffset)
@@ -55,6 +57,7 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
         }
       }
       Some(doIt)
-    } else None
+    } else
+      None
   }
 }

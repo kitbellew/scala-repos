@@ -98,8 +98,10 @@ trait CacheConditionDirectives {
         def step1(): Route =
           header[`If-Match`] match {
             case Some(`If-Match`(im)) if eTag.isDefined ⇒
-              if (matchesRange(eTag.get, im, weakComparison = false)) step3()
-              else complete412()
+              if (matchesRange(eTag.get, im, weakComparison = false))
+                step3()
+              else
+                complete412()
             case None ⇒ step2()
           }
         def step2(): Route =
@@ -112,9 +114,12 @@ trait CacheConditionDirectives {
         def step3(): Route =
           header[`If-None-Match`] match {
             case Some(`If-None-Match`(inm)) if eTag.isDefined ⇒
-              if (!matchesRange(eTag.get, inm, weakComparison = true)) step5()
-              else if (isGetOrHead) complete304()
-              else complete412()
+              if (!matchesRange(eTag.get, inm, weakComparison = true))
+                step5()
+              else if (isGetOrHead)
+                complete304()
+              else
+                complete412()
             case None ⇒ step4()
           }
         def step4(): Route =
@@ -125,7 +130,8 @@ trait CacheConditionDirectives {
                 complete304()
               case _ ⇒ step5()
             }
-          } else step5()
+          } else
+            step5()
         def step5(): Route =
           if (method == GET && header[Range].isDefined)
             header[`If-Range`] match {
@@ -140,7 +146,8 @@ trait CacheConditionDirectives {
                 innerRouteWithRangeHeaderFilteredOut
               case _ ⇒ step6()
             }
-          else step6()
+          else
+            step6()
         def step6(): Route = addResponseHeaders(route)
 
         step1()

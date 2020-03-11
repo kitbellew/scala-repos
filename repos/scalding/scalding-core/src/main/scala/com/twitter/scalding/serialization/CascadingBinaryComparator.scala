@@ -63,7 +63,8 @@ object CascadingBinaryComparator {
         Failure(
           new RuntimeException("Cannot verify OrderedSerialization: " + s))
 
-      if (m.isEmpty) error(s"Splice must have KeySelectors: $s")
+      if (m.isEmpty)
+        error(s"Splice must have KeySelectors: $s")
       else {
         reduce(m.map {
           case (pipename, fields) =>
@@ -91,7 +92,8 @@ object CascadingBinaryComparator {
             case _           => false // only do sorting in groupBy/cogroupBy
           }) {
         Some(getDesc(bfs).mkString(", "))
-      } else None
+      } else
+        None
 
     // Get all the steps that have missing OrderedSerializations
     val missing = flow.getFlowSteps.asScala
@@ -102,7 +104,8 @@ object CascadingBinaryComparator {
         case Some(desc) => desc
       }
 
-    if (missing.isEmpty) Success(())
+    if (missing.isEmpty)
+      Success(())
     else {
       val badSteps = missing.size
       val msg = missing.zipWithIndex.map {

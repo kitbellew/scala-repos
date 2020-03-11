@@ -126,11 +126,16 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
     def submit(r: Runnable): Unit = {
       assert(r != null)
 
-      if (lifo) reorderLifo(r)
-      else if (r0 == null) r0 = r
-      else if (r1 == null) r1 = r
-      else if (r2 == null) r2 = r
-      else rs.addLast(r)
+      if (lifo)
+        reorderLifo(r)
+      else if (r0 == null)
+        r0 = r
+      else if (r1 == null)
+        r1 = r
+      else if (r2 == null)
+        r2 = r
+      else
+        rs.addLast(r)
 
       if (!running) {
         numDispatches += 1
@@ -153,7 +158,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
     }
 
     def flush(): Unit = {
-      if (running) run()
+      if (running)
+        run()
     }
 
     @inline def hasNext: Boolean = running && r0 != null
@@ -167,7 +173,11 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
       val r = r0
       r0 = r1
       r1 = r2
-      r2 = if (rs.isEmpty) null else rs.removeFirst()
+      r2 =
+        if (rs.isEmpty)
+          null
+        else
+          rs.removeFirst()
       r
     }
 

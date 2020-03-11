@@ -109,11 +109,16 @@ private[ui] class ExecutorsPage(
             </span>
           </th>
           {
-        if (logsExist) <th class="sorttable_nosort">Logs</th> else Seq.empty
+        if (logsExist)
+          <th class="sorttable_nosort">Logs</th>
+        else
+          Seq.empty
       }
           {
-        if (threadDumpEnabled) <th class="sorttable_nosort">Thread Dump</th>
-        else Seq.empty
+        if (threadDumpEnabled)
+          <th class="sorttable_nosort">Thread Dump</th>
+        else
+          Seq.empty
       }
         </thead>
         <tbody>

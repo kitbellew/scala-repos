@@ -46,7 +46,10 @@ object SortedBuffer {
     * @return JavaFX SortedList
     */
   implicit def sfxSortedList2jfx[E](v: SortedBuffer[E]): jfxct.SortedList[E] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**
@@ -98,7 +101,12 @@ class SortedBuffer[E](override val delegate: jfxct.SortedList[E])
   def comparator_[T >: E](lessThan: (T, T) => Boolean) {
     val c = new ju.Comparator[T] {
       def compare(p1: T, p2: T) =
-        if (lessThan(p1, p2)) -1 else if (lessThan(p2, p1)) 1 else 0
+        if (lessThan(p1, p2))
+          -1
+        else if (lessThan(p2, p1))
+          1
+        else
+          0
     }
     ObjectProperty.fillProperty(
       delegate.comparatorProperty(),

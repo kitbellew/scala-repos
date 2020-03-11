@@ -113,7 +113,11 @@ object InfoSerializers {
       val isExported = readBoolean()
       val kind = ClassKind.fromByte(readByte())
       val superClass0 = readUTF()
-      val superClass = if (superClass0 == "") None else Some(superClass0)
+      val superClass =
+        if (superClass0 == "")
+          None
+        else
+          Some(superClass0)
       val interfaces = readList(readUTF())
 
       def readMethod(): MethodInfo = {

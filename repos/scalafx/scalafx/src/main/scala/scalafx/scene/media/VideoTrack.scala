@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object VideoTrack {
   implicit def sfxVideoTrack2jfx(at: VideoTrack): jfxsm.VideoTrack =
-    if (at != null) at.delegate else null
+    if (at != null)
+      at.delegate
+    else
+      null
 }
 
 class VideoTrack(override val delegate: jfxsm.VideoTrack)

@@ -320,8 +320,10 @@ abstract class UnCurry
             localTyper.typedPos(pos) {
               val pt = arrayType(elemtp)
               val adaptedTree = // might need to cast to Array[elemtp], as arrays are not covariant
-                if (tree.tpe <:< pt) tree
-                else gen.mkCastArray(tree, elemtp, pt)
+                if (tree.tpe <:< pt)
+                  tree
+                else
+                  gen.mkCastArray(tree, elemtp, pt)
 
               gen.mkWrapArray(adaptedTree, elemtp)
             }
@@ -335,10 +337,14 @@ abstract class UnCurry
           def getClassTag(tp: Type): Tree = {
             val tag = localTyper.resolveClassTag(tree.pos, tp)
             // Don't want bottom types getting any further than this (SI-4024)
-            if (tp.typeSymbol.isBottomClass) getClassTag(AnyTpe)
-            else if (!tag.isEmpty) tag
-            else if (tp.bounds.hi ne tp) getClassTag(tp.bounds.hi)
-            else localTyper.TyperErrorGen.MissingClassTagError(tree, tp)
+            if (tp.typeSymbol.isBottomClass)
+              getClassTag(AnyTpe)
+            else if (!tag.isEmpty)
+              tag
+            else if (tp.bounds.hi ne tp)
+              getClassTag(tp.bounds.hi)
+            else
+              localTyper.TyperErrorGen.MissingClassTagError(tree, tp)
           }
           def traversableClassTag(tpe: Type): Tree = {
             (tpe baseType TraversableClass).typeArgs match {
@@ -361,17 +367,23 @@ abstract class UnCurry
           if (treeInfo isWildcardStarArgList args) {
             val Typed(tree, _) = args.last
             if (isJava)
-              if (tree.tpe.typeSymbol == ArrayClass) tree
-              else sequenceToArray(tree)
-            else if (tree.tpe.typeSymbol isSubClass SeqClass) tree
-            else arrayToSequence(tree, varargsElemType)
+              if (tree.tpe.typeSymbol == ArrayClass)
+                tree
+              else
+                sequenceToArray(tree)
+            else if (tree.tpe.typeSymbol isSubClass SeqClass)
+              tree
+            else
+              arrayToSequence(tree, varargsElemType)
           } else {
             def mkArray =
               mkArrayValue(args drop (formals.length - 1), varargsElemType)
-            if (isJava) mkArray
+            if (isJava)
+              mkArray
             else if (args.isEmpty)
               gen.mkNil // avoid needlessly double-wrapping an empty argument list
-            else arrayToSequence(mkArray, varargsElemType)
+            else
+              arrayToSequence(mkArray, varargsElemType)
           }
 
         exitingUncurry {
@@ -388,8 +400,10 @@ abstract class UnCurry
       }
 
       val args1 =
-        if (isVarArgTypes(formals)) transformVarargs(formals.last.typeArgs.head)
-        else args
+        if (isVarArgTypes(formals))
+          transformVarargs(formals.last.typeArgs.head)
+        else
+          args
 
       map2(formals, args1) { (formal, arg) =>
         if (!isByNameParamType(formal))
@@ -424,8 +438,10 @@ abstract class UnCurry
       tree match {
         case DefDef(_, _, _, _, _, rhs) =>
           val rhs1 =
-            if (rhs == EmptyTree) rhs
-            else Block(Nil, gen.mkZero(rhs.tpe)) setType rhs.tpe
+            if (rhs == EmptyTree)
+              rhs
+            else
+              Block(Nil, gen.mkZero(rhs.tpe)) setType rhs.tpe
           deriveDefDef(tree)(_ => rhs1) setSymbol tree.symbol setType tree.tpe
         case _ =>
           gen.mkZero(tree.tpe) setType tree.tpe
@@ -504,7 +520,8 @@ abstract class UnCurry
                   p => treeCopy.ValDef(p, p.mods, p.name, p.tpt, EmptyTree)
                 })
 
-                if (dd.symbol hasAnnotation VarargsClass) validateVarargs(dd)
+                if (dd.symbol hasAnnotation VarargsClass)
+                  validateVarargs(dd)
 
                 withNeedLift(needLift = false) {
                   if (dd.symbol.isClassConstructor) {
@@ -588,8 +605,10 @@ abstract class UnCurry
                 super.transform(tree)
 
               case Try(block, catches, finalizer) =>
-                if (needTryLift) transform(liftTree(tree))
-                else super.transform(tree)
+                if (needTryLift)
+                  transform(liftTree(tree))
+                else
+                  super.transform(tree)
 
               case CaseDef(pat, guard, body) =>
                 val pat1 = transform(pat)
@@ -613,7 +632,8 @@ abstract class UnCurry
                 if (isByNameRef(tree1)) {
                   val tree2 = tree1 setType functionType(Nil, tree1.tpe)
                   return {
-                    if (noApply contains tree2) tree2
+                    if (noApply contains tree2)
+                      tree2
                     else
                       localTyper.typedPos(tree1.pos)(
                         Apply(Select(tree2, nme.apply), Nil))
@@ -690,7 +710,8 @@ abstract class UnCurry
                     value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
                 case _ => newRhs
               }
-            } else newRhs
+            } else
+              newRhs
 
           val flatdd = copyDefDef(dd)(
             vparamss = newParamss,
@@ -724,7 +745,10 @@ abstract class UnCurry
         case TypeTree() =>
           tree
         case _ =>
-          if (tree.isType) TypeTree(tree.tpe) setPos tree.pos else tree
+          if (tree.isType)
+            TypeTree(tree.tpe) setPos tree.pos
+          else
+            tree
       }
     }
 
@@ -782,7 +806,8 @@ abstract class UnCurry
           map2(vparamss.flatten, dd.symbol.info.paramss.flatten) {
             (p, infoParam) =>
               val packedType = infoParam.info
-              if (packedType =:= p.symbol.info) Identity(p)
+              if (packedType =:= p.symbol.info)
+                Identity(p)
               else {
                 // The Uncurry info transformer existentially abstracted over value parameters
                 // from the previous parameter lists.
@@ -851,7 +876,8 @@ abstract class UnCurry
         }.unzip
 
         val rhs1 =
-          if (rhs == EmptyTree || tempVals.isEmpty) rhs
+          if (rhs == EmptyTree || tempVals.isEmpty)
+            rhs
           else {
             localTyper.typedPos(rhs.pos) {
               // Patch the method body to refer to the temp vals
@@ -899,8 +925,10 @@ abstract class UnCurry
         //   becomes     def foo[T](a: Int, b: Array[Object])
         //   instead of  def foo[T](a: Int, b: Array[T]) ===> def foo[T](a: Int, b: Object)
         arrayType(
-          if (arg.typeSymbol.isTypeParameterOrSkolem) ObjectTpe
-          else arg
+          if (arg.typeSymbol.isTypeParameterOrSkolem)
+            ObjectTpe
+          else
+            arg
         )
       }
 
@@ -950,7 +978,11 @@ abstract class UnCurry
           case (null, argsym) => Ident(argsym)
           case (l, _)         => l
         }
-        val end = if (forwsym.isConstructor) List(UNIT) else Nil
+        val end =
+          if (forwsym.isConstructor)
+            List(UNIT)
+          else
+            Nil
 
         DefDef(
           forwsym,

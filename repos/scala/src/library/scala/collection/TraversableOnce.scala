@@ -104,7 +104,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
 
   def size: Int = {
     var result = 0
-    for (x <- self) result += 1
+    for (x <- self)
+      result += 1
     result
   }
 
@@ -113,7 +114,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
   def count(p: A => Boolean): Int = {
     var cnt = 0
     for (x <- this)
-      if (p(x)) cnt += 1
+      if (p(x))
+        cnt += 1
 
     cnt
   }
@@ -147,7 +149,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
       }
     while (i.hasNext) {
       val x = pf.applyOrElse(i.next, sentinel)
-      if (x.asInstanceOf[AnyRef] ne sentinel) return Some(x.asInstanceOf[B])
+      if (x.asInstanceOf[AnyRef] ne sentinel)
+        return Some(x.asInstanceOf[B])
     }
     None
   }
@@ -190,7 +193,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
       if (first) {
         acc = x
         first = false
-      } else acc = op(acc, x)
+      } else
+        acc = op(acc, x)
     }
     acc
   }
@@ -203,10 +207,16 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
   }
 
   def reduceLeftOption[B >: A](op: (B, A) => B): Option[B] =
-    if (isEmpty) None else Some(reduceLeft(op))
+    if (isEmpty)
+      None
+    else
+      Some(reduceLeft(op))
 
   def reduceRightOption[B >: A](op: (A, B) => B): Option[B] =
-    if (isEmpty) None else Some(reduceRight(op))
+    if (isEmpty)
+      None
+    else
+      Some(reduceRight(op))
 
   def reduce[A1 >: A](op: (A1, A1) => A1): A1 = reduceLeft(op)
 
@@ -227,14 +237,22 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     if (isEmpty)
       throw new UnsupportedOperationException("empty.min")
 
-    reduceLeft((x, y) => if (cmp.lteq(x, y)) x else y)
+    reduceLeft((x, y) =>
+      if (cmp.lteq(x, y))
+        x
+      else
+        y)
   }
 
   def max[B >: A](implicit cmp: Ordering[B]): A = {
     if (isEmpty)
       throw new UnsupportedOperationException("empty.max")
 
-    reduceLeft((x, y) => if (cmp.gteq(x, y)) x else y)
+    reduceLeft((x, y) =>
+      if (cmp.gteq(x, y))
+        x
+      else
+        y)
   }
 
   def maxBy[B](f: A => B)(implicit cmp: Ordering[B]): A = {
@@ -291,7 +309,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
       val result = new Array[B](size)
       copyToArray(result, 0)
       result
-    } else toBuffer.toArray
+    } else
+      toBuffer.toArray
   }
 
   def toTraversable: Traversable[A]
@@ -482,7 +501,11 @@ object TraversableOnce {
         it = its.next().toIterator;
         hasNext
       }
-      def next(): A = if (hasNext) it.next() else Iterator.empty.next()
+      def next(): A =
+        if (hasNext)
+          it.next()
+        else
+          Iterator.empty.next()
     }
   }
 

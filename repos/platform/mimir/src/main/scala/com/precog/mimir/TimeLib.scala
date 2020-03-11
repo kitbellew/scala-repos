@@ -243,7 +243,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           val rawCols: Array[Column] = {
             if (startCol.isEmpty || endCol.isEmpty || stepCol.isEmpty)
               Array.empty[Column]
-            else Array(startCol.get, endCol.get, stepCol.get)
+            else
+              Array(startCol.get, endCol.get, stepCol.get)
           }
 
           val baseDefined = BitSetUtil.filteredRange(range.start, range.end) {
@@ -289,8 +290,10 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           // creates the DateTime values for each array-column with index `idx`
           def dateCol(idx: Int): Array[DateTime] = dateTimes map { arr =>
-            if (arr.length > idx) arr(idx)
-            else new DateTime()
+            if (arr.length > idx)
+              arr(idx)
+            else
+              new DateTime()
           }
 
           val result = {
@@ -353,8 +356,10 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         with ExtremeTime {
       def computeExtreme(t1: DateTime, t2: DateTime): DateTime = {
         val res: Int = NumericComparisons.compare(t1, t2)
-        if (res < 0) t1
-        else t2
+        if (res < 0)
+          t1
+        else
+          t2
       }
     }
 
@@ -363,8 +368,10 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         with ExtremeTime {
       def computeExtreme(t1: DateTime, t2: DateTime): DateTime = {
         val res: Int = NumericComparisons.compare(t1, t2)
-        if (res > 0) t1
-        else t2
+        if (res > 0)
+          t1
+        else
+          t2
       }
     }
 
@@ -632,10 +639,14 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def determineSeason(time: DateTime): String = {
         val day = time.dayOfYear.get
 
-        if (day >= 79 & day < 171) "spring"
-        else if (day >= 171 & day < 265) "summer"
-        else if (day >= 265 & day < 355) "fall"
-        else "winter"
+        if (day >= 79 & day < 171)
+          "spring"
+        else if (day >= 171 & day < 265)
+          "summer"
+        else if (day >= 265 & day < 355)
+          "fall"
+        else
+          "winter"
       }
 
       val tpe = UnaryOperationType(StrAndDateT, JTextT)

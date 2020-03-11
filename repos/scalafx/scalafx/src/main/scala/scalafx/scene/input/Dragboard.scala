@@ -41,7 +41,10 @@ import scalafx.scene.image.ImageIncludes.jfxImage2sfx
   */
 object Dragboard {
   implicit def sfxDragboard2jfx(d: Dragboard): jfxsi.Dragboard =
-    if (d != null) d.delegate else null
+    if (d != null)
+      d.delegate
+    else
+      null
 }
 
 /**

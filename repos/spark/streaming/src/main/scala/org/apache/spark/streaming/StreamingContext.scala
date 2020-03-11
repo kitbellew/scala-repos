@@ -194,7 +194,10 @@ class StreamingContext private[streaming] (
   }
 
   private[streaming] val checkpointDuration: Duration = {
-    if (isCheckpointPresent) _cp.checkpointDuration else graph.batchDuration
+    if (isCheckpointPresent)
+      _cp.checkpointDuration
+    else
+      graph.batchDuration
   }
 
   private[streaming] val scheduler = new JobScheduler(this)
@@ -264,7 +267,10 @@ class StreamingContext private[streaming] (
   }
 
   private[streaming] def initialCheckpoint: Checkpoint = {
-    if (isCheckpointPresent) _cp else null
+    if (isCheckpointPresent)
+      _cp
+    else
+      null
   }
 
   private[streaming] def getNewInputStreamId() =
@@ -747,7 +753,8 @@ class StreamingContext private[streaming] (
     }
     // Even if we have already stopped, we still need to attempt to stop the SparkContext because
     // a user might stop(stopSparkContext = false) and then call stop(stopSparkContext = true).
-    if (stopSparkContext) sc.stop()
+    if (stopSparkContext)
+      sc.stop()
   }
 
   private def stopOnShutdown(): Unit = {

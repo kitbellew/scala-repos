@@ -27,13 +27,15 @@ object M1 {
   class BankAccount() {
     private var balance = 0;
     def deposit(amount: Int): Unit =
-      if (amount > 0) balance = balance + amount;
+      if (amount > 0)
+        balance = balance + amount;
 
     def withdraw(amount: Int): Int =
       if (0 < amount && amount <= balance) {
         balance = balance - amount;
         balance
-      } else sys.error("insufficient funds");
+      } else
+        sys.error("insufficient funds");
   }
 
   def test0 = {
@@ -148,7 +150,9 @@ object M4 {
       Console.print(i + " ")
     };
     Console.println;
-    Console.println(for (i <- range(1, 4)) yield i);
+    Console.println(
+      for (i <- range(1, 4))
+        yield i);
     Console.println;
   }
 }
@@ -185,8 +189,10 @@ object M5 {
         case List() =>
           List((time, action))
         case (t, act) :: ag1 =>
-          if (time < t) (time, action) :: ag
-          else (t, act) :: insert(ag1, time)
+          if (time < t)
+            (time, action) :: ag
+          else
+            (t, act) :: insert(ag1, time)
       }
       agenda = insert(agenda, curtime + delay)
     }
@@ -290,10 +296,17 @@ object M5 {
       val cout = new Wire();
       inverter(ain, cout);
 
-      def result = if (cout.getSignal) 1 else 0;
+      def result =
+        if (cout.getSignal)
+          1
+        else
+          0;
 
       def test(a: Int) = {
-        ain setSignal (if (a == 0) false else true);
+        ain setSignal (if (a == 0)
+                         false
+                       else
+                         true);
         run;
         Console.println("!" + a + " = " + result);
         Console.println;
@@ -311,11 +324,21 @@ object M5 {
       val cout = new Wire();
       andGate(ain, bin, cout);
 
-      def result = if (cout.getSignal) 1 else 0;
+      def result =
+        if (cout.getSignal)
+          1
+        else
+          0;
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0) false else true);
-        bin setSignal (if (b == 0) false else true);
+        ain setSignal (if (a == 0)
+                         false
+                       else
+                         true);
+        bin setSignal (if (b == 0)
+                         false
+                       else
+                         true);
         run;
         Console.println(a + " & " + b + " = " + result);
         Console.println;
@@ -336,11 +359,21 @@ object M5 {
       val cout = new Wire();
       orGate(ain, bin, cout);
 
-      def result = if (cout.getSignal) 1 else 0;
+      def result =
+        if (cout.getSignal)
+          1
+        else
+          0;
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0) false else true);
-        bin setSignal (if (b == 0) false else true);
+        ain setSignal (if (a == 0)
+                         false
+                       else
+                         true);
+        bin setSignal (if (b == 0)
+                         false
+                       else
+                         true);
         run;
         Console.println(a + " | " + b + " = " + result);
         Console.println;
@@ -363,12 +396,24 @@ object M5 {
       halfAdder(ain, bin, sout, cout);
 
       def result =
-        ((if (sout.getSignal) 1 else 0) +
-          (if (cout.getSignal) 2 else 0));
+        ((if (sout.getSignal)
+            1
+          else
+            0) +
+          (if (cout.getSignal)
+             2
+           else
+             0));
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0) false else true);
-        bin setSignal (if (b == 0) false else true);
+        ain setSignal (if (a == 0)
+                         false
+                       else
+                         true);
+        bin setSignal (if (b == 0)
+                         false
+                       else
+                         true);
         run;
         Console.println(a + " + " + b + " = " + result);
         Console.println;
@@ -393,13 +438,28 @@ object M5 {
       fullAdder(ain, bin, cin, sout, cout);
 
       def result =
-        ((if (sout.getSignal) 1 else 0) +
-          (if (cout.getSignal) 2 else 0));
+        ((if (sout.getSignal)
+            1
+          else
+            0) +
+          (if (cout.getSignal)
+             2
+           else
+             0));
 
       def test(a: Int, b: Int, c: Int) = {
-        ain setSignal (if (a == 0) false else true);
-        bin setSignal (if (b == 0) false else true);
-        cin setSignal (if (c == 0) false else true);
+        ain setSignal (if (a == 0)
+                         false
+                       else
+                         true);
+        bin setSignal (if (b == 0)
+                         false
+                       else
+                         true);
+        cin setSignal (if (c == 0)
+                         false
+                       else
+                         true);
         run;
         Console.println(a + " + " + b + " + " + c + " = " + result);
         Console.println;
@@ -445,8 +505,10 @@ class Simulator() {
       case List() =>
         List((time, action))
       case (t, act) :: ag1 =>
-        if (time < t) (time, action) :: ag
-        else (t, act) :: insert(ag1, time)
+        if (time < t)
+          (time, action) :: ag
+        else
+          (t, act) :: insert(ag1, time)
     }
     agenda = insert(agenda, curtime + delay)
   }
@@ -599,12 +661,16 @@ class Main() extends CircuitSimulator() {
     val outNum = 1 << n;
 
     val in = new Wire();
-    val ctrl = for (x <- range(0, n)) yield {
-      new Wire()
-    };
-    val out = for (x <- range(0, outNum)) yield {
-      new Wire()
-    };
+    val ctrl =
+      for (x <- range(0, n))
+        yield {
+          new Wire()
+        };
+    val out =
+      for (x <- range(0, outNum))
+        yield {
+          new Wire()
+        };
 
     demux(in, ctrl.reverse, out.reverse);
 

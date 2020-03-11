@@ -7,10 +7,14 @@ object Test {
   }
 
   def main(args: Array[String]) {
-    for (i <- 0 until 100) checkPar(i)
-    for (i <- 100 until 1000 by 50) checkPar(i)
-    for (i <- 1000 until 10000 by 500) checkPar(i)
-    for (i <- 10000 until 100000 by 5000) checkPar(i)
+    for (i <- 0 until 100)
+      checkPar(i)
+    for (i <- 100 until 1000 by 50)
+      checkPar(i)
+    for (i <- 1000 until 10000 by 500)
+      checkPar(i)
+    for (i <- 10000 until 100000 by 5000)
+      checkPar(i)
   }
 
 }

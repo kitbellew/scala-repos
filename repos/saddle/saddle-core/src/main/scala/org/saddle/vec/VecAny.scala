@@ -88,7 +88,8 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
     val b = math.max(from, 0)
     val e = math.min(until, self.length)
 
-    if (e <= b) Vec.empty
+    if (e <= b)
+      Vec.empty
     else
       new VecAny(values) {
         private val ub = math.min(self.length, e)

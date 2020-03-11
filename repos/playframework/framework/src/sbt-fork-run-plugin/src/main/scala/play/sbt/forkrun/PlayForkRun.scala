@@ -85,7 +85,11 @@ object PlayForkRun extends AutoPlugin {
   def selectRunTask = Def.inputTaskDyn[Unit] {
     val input = allInput.parsed
     val forked = (fork in (Compile, run)).value
-    val runInput = if (forked) playForkRun else playRun
+    val runInput =
+      if (forked)
+        playForkRun
+      else
+        playRun
     runInput.toTask(input)
   }
 

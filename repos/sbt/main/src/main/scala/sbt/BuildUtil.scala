@@ -104,7 +104,10 @@ object BuildUtil {
 
   /** Import just the names. */
   def importNames(names: Seq[String]): Seq[String] =
-    if (names.isEmpty) Nil else names.mkString("import ", ", ", "") :: Nil
+    if (names.isEmpty)
+      Nil
+    else
+      names.mkString("import ", ", ", "") :: Nil
 
   /** Prepend `_root_` and import just the names. */
   def importNamesRoot(names: Seq[String]): Seq[String] =
@@ -117,7 +120,11 @@ object BuildUtil {
     })
   def importAllRoot(values: Seq[String]): Seq[String] =
     importAll(values map rootedName)
-  def rootedName(s: String): String = if (s contains '.') "_root_." + s else s
+  def rootedName(s: String): String =
+    if (s contains '.')
+      "_root_." + s
+    else
+      s
 
   def aggregationRelation(
       units: Map[URI, LoadedBuildUnit]): Relation[ProjectRef, ProjectRef] = {

@@ -179,8 +179,10 @@ class ClientQuotaManager(
     * Returns the quota for the specified clientId
     */
   def quota(clientId: String): Quota =
-    if (overriddenQuota.containsKey(clientId)) overriddenQuota.get(clientId)
-    else defaultQuota;
+    if (overriddenQuota.containsKey(clientId))
+      overriddenQuota.get(clientId)
+    else
+      defaultQuota;
 
   /*
    * This function either returns the sensors for a given client id or creates them if they don't exist

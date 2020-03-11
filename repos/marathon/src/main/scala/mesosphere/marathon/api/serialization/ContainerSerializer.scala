@@ -22,8 +22,10 @@ object ContainerSerializer {
 
   def fromProto(proto: Protos.ExtendedContainerInfo): Container = {
     val maybeDocker =
-      if (proto.hasDocker) Some(DockerSerializer.fromProto(proto.getDocker))
-      else None
+      if (proto.hasDocker)
+        Some(DockerSerializer.fromProto(proto.getDocker))
+      else
+        None
     Container(
       `type` = proto.getType,
       volumes = proto.getVolumesList.asScala.map(Volume(_)).to[Seq],
@@ -106,17 +108,26 @@ object DockerSerializer {
   def fromProto(proto: Protos.ExtendedContainerInfo.DockerInfo): Docker =
     Docker(
       image = proto.getImage,
-      network = if (proto.hasNetwork) Some(proto.getNetwork) else None,
+      network =
+        if (proto.hasNetwork)
+          Some(proto.getNetwork)
+        else
+          None,
       portMappings = {
         val pms = proto.getPortMappingsList.asScala
 
-        if (pms.isEmpty) None
-        else Some(pms.map(PortMappingSerializer.fromProto).to[Seq])
+        if (pms.isEmpty)
+          None
+        else
+          Some(pms.map(PortMappingSerializer.fromProto).to[Seq])
       },
       privileged = proto.getPrivileged,
       parameters = proto.getParametersList.asScala.map(Parameter(_)).to[Seq],
       forcePullImage =
-        if (proto.hasForcePullImage) proto.getForcePullImage else false
+        if (proto.hasForcePullImage)
+          proto.getForcePullImage
+        else
+          false
     )
 
   def toMesos(
@@ -169,7 +180,10 @@ object PortMappingSerializer {
       proto.getHostPort,
       proto.getServicePort,
       proto.getProtocol,
-      if (proto.hasName) Some(proto.getName) else None,
+      if (proto.hasName)
+        Some(proto.getName)
+      else
+        None,
       proto.getLabelsList.asScala.map { p =>
         p.getKey -> p.getValue
       }.toMap

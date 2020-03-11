@@ -221,7 +221,10 @@ class ScalaArrangementVisitor(
       acc || current.intersects(range))
 
   private def getCurrentEntry =
-    if (arrangementEntries.isEmpty) null else arrangementEntries.top
+    if (arrangementEntries.isEmpty)
+      null
+    else
+      arrangementEntries.top
 
   private def createNewEntry(
       parent: PsiElement,
@@ -279,7 +282,8 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry,
       modifiers: ScModifierListOwner,
       nextPsiRoot: ScalaPsiElement) {
-    if (entry == null) return
+    if (entry == null)
+      return
     if (modifiers != null) {
       parseModifiers(modifiers.getModifierList, entry)
     }
@@ -303,37 +307,47 @@ class ScalaArrangementVisitor(
     val queue =
       unseparableRanges.getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
     //    var unseparable =
-    def next() = if (queue.isEmpty) null else queue.dequeue()
+    def next() =
+      if (queue.isEmpty)
+        null
+      else
+        queue.dequeue()
     psiRoot.getChildren.foldLeft(
       false,
-      if (queue.isEmpty) null else queue.dequeue())((acc, child) => {
+      if (queue.isEmpty)
+        null
+      else
+        queue.dequeue())((acc, child) => {
       val (insideBlock, unseparable) = acc
       val childStart = child.getTextRange.getStartOffset
       //check if there are any more unseparable blocks at all
-      val res = if (unseparable != null) {
-        //process current child with regard to current block
-        (
-          insideBlock,
-          childStart >= unseparable.getStartOffset,
-          childStart >= unseparable.getEndOffset) match {
-          case (false, true, false) => //entering arrange block
-            arrangementEntries.push(unseparable)
-            (true, unseparable)
-          case (true, true, false) => (true, unseparable) //inside arrange block
-          case (true, true, true) => //leaving arrange block
-            arrangementEntries.pop()
-            val nextUnseparable = next()
-            //check whether new current block is immediately adjucent to the previous
-            //in such case leaving the previous means entering the current
-            if (childStart >= nextUnseparable.getStartOffset) {
-              arrangementEntries.push(nextUnseparable)
-              (true, nextUnseparable)
-            } else {
-              (false, nextUnseparable)
-            }
-          case _ => (false, unseparable) //outside arrange block
-        }
-      } else (false, unseparable)
+      val res =
+        if (unseparable != null) {
+          //process current child with regard to current block
+          (
+            insideBlock,
+            childStart >= unseparable.getStartOffset,
+            childStart >= unseparable.getEndOffset) match {
+            case (false, true, false) => //entering arrange block
+              arrangementEntries.push(unseparable)
+              (true, unseparable)
+            case (true, true, false) =>
+              (true, unseparable) //inside arrange block
+            case (true, true, true) => //leaving arrange block
+              arrangementEntries.pop()
+              val nextUnseparable = next()
+              //check whether new current block is immediately adjucent to the previous
+              //in such case leaving the previous means entering the current
+              if (childStart >= nextUnseparable.getStartOffset) {
+                arrangementEntries.push(nextUnseparable)
+                (true, nextUnseparable)
+              } else {
+                (false, nextUnseparable)
+              }
+            case _ => (false, unseparable) //outside arrange block
+          }
+        } else
+          (false, unseparable)
       child.accept(this)
       res
     })
@@ -426,7 +440,8 @@ class ScalaArrangementVisitor(
         (
           if (methodName.startsWith("get"))
             StringUtil.decapitalize(methodName.substring(3))
-          else StringUtil.decapitalize(methodName.substring(2)),
+          else
+            StringUtil.decapitalize(methodName.substring(2)),
           psiParent),
         method,
         entry
@@ -453,8 +468,10 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry) = {
     body.getChildren.foldLeft(None)((startOffset, child) => {
       val newOffset =
-        if (startOffset.isDefined) startOffset.get
-        else child.getTextRange.getStartOffset
+        if (startOffset.isDefined)
+          startOffset.get
+        else
+          child.getTextRange.getStartOffset
       if (child.isInstanceOf[ScExpression]) {
         if (!unseparableRanges.contains(entry)) {
           unseparableRanges += (entry -> mutable.Queue[ScalaArrangementEntry]())
@@ -470,7 +487,8 @@ class ScalaArrangementVisitor(
                 null,
                 canArrange = true)))
         None
-      } else startOffset
+      } else
+        startOffset
     })
   }
 }
@@ -492,7 +510,8 @@ object ScalaArrangementVisitor {
       method.returnType.getOrAny != Unit
     } else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean
-    } else false
+    } else
+      false
   }
 
   private def hasJavaSetterName(method: ScFunction) = {

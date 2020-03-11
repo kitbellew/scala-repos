@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Cylinder {
   implicit def sfxCylinder2jfx(c: Cylinder): jfxss.Cylinder =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 /**

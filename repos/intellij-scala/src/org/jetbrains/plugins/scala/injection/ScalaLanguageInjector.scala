@@ -53,16 +53,19 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       registrar: MultiHostRegistrar,
       host: PsiElement) {
     val literals = literalsOf(host)
-    if (literals.isEmpty) return
+    if (literals.isEmpty)
+      return
 
     if (injectUsingIntention(
           registrar,
           host,
-          literals) || injectInInterpolation(registrar, host, literals)) return
+          literals) || injectInInterpolation(registrar, host, literals))
+      return
 
     if (ScalaProjectSettings
           .getInstance(host.getProject)
-          .isDisableLangInjection) return
+          .isDisableLangInjection)
+      return
 
     injectUsingAnnotation(registrar, host, literals) || injectUsingPatterns(
       registrar,
@@ -141,12 +144,15 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       literals.zipWithIndex foreach { p =>
         val (literal, i) = p
         val prefix =
-          if (i == 0) annotation.flatMap(readAttribute(_, "prefix")).mkString
-          else ""
+          if (i == 0)
+            annotation.flatMap(readAttribute(_, "prefix")).mkString
+          else
+            ""
         val suffix =
           if (i == literals.size - 1)
             annotation.flatMap(readAttribute(_, "suffix")).mkString
-          else ""
+          else
+            ""
 
         if (!literal.isMultiLineString) {
           registrar.addPlace(
@@ -159,8 +165,14 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
           for ((lineRange, index) <- rangesCollected.zipWithIndex) {
             registrar.addPlace(
-              if (index == 0) prefix else " ",
-              if (index == rangesCollected.length - 1) suffix else " ",
+              if (index == 0)
+                prefix
+              else
+                " ",
+              if (index == rangesCollected.length - 1)
+                suffix
+              else
+                " ",
               literal,
               lineRange)
           }
@@ -240,8 +252,10 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _: ScArgumentExprList          => parameterOf(child)
       case assignment: ScAssignStmt       => assignmentTarget(assignment)
       case infix: ScInfixExpr if child == infix.getFirstChild =>
-        if (ScalaLanguageInjector isSafeCall infix) annotationOwnerFor(infix)
-        else None
+        if (ScalaLanguageInjector isSafeCall infix)
+          annotationOwnerFor(infix)
+        else
+          None
       case infix: ScInfixExpr             => parameterOf(child)
       case tuple: ScTuple if tuple.isCall => parameterOf(child)
       case param: ScParameter             => Some(param)
@@ -321,7 +335,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       assignment: ScAssignStmt): Option[PsiAnnotationOwner with PsiElement] = {
     val l = assignment.getLExpression
     // map(x) = y check
-    if (l.isInstanceOf[ScMethodCall]) None
+    if (l.isInstanceOf[ScMethodCall])
+      None
     else
       l.asOptionOf[ScReferenceElement]
         .flatMap(_.resolve().toOption)
@@ -332,18 +347,22 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
   private def parameterOf(
       argument: ScExpression): Option[PsiAnnotationOwner with PsiElement] = {
     def getParameter(methodInv: MethodInvocation, index: Int) = {
-      if (index == -1) None
+      if (index == -1)
+        None
       else
         methodInv.getEffectiveInvokedExpr
           .asOptionOf[ScReferenceExpression] flatMap { ref =>
           ref.resolve().toOption match {
             case Some(f: ScFunction) =>
               val parameters = f.parameters
-              if (parameters.isEmpty) None
-              else Some(parameters.get(index.min(parameters.size - 1)))
+              if (parameters.isEmpty)
+                None
+              else
+                Some(parameters.get(index.min(parameters.size - 1)))
             case Some(m: PsiMethod) =>
               val parameters = m.getParameterList.getParameters
-              if (parameters.isEmpty) None
+              if (parameters.isEmpty)
+                None
               else
                 parameters(
                   index.min(parameters.size - 1)).getModifierList.toOption
@@ -398,8 +417,10 @@ object ScalaLanguageInjector {
       if (wsPrefixLength != lineLength) {
         rangesCollected +=
           (new TextRange(
-            if (partOfMlLine.trim startsWith margin) count + 1 + wsPrefixLength
-            else count,
+            if (partOfMlLine.trim startsWith margin)
+              count + 1 + wsPrefixLength
+            else
+              count,
             count + lineLength) shiftRight range.getStartOffset)
       }
 

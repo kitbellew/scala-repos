@@ -36,7 +36,10 @@ import scalafx.util.Duration
 object MediaMarkerEvent {
   implicit def sfxMediaMarkerEvent2jfx(
       mme: MediaMarkerEvent): jfxsm.MediaMarkerEvent =
-    if (mme != null) mme.delegate else null
+    if (mme != null)
+      mme.delegate
+    else
+      null
 }
 
 class MediaMarkerEvent(override val delegate: jfxsm.MediaMarkerEvent)

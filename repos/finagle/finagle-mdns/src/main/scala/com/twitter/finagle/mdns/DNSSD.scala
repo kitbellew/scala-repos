@@ -33,7 +33,8 @@ private class Listener(f: PartialFunction[(String, Array[Object]), Unit])
     extends InvocationHandler {
   def invoke(proxy: Object, method: Method, args: Array[Object]) = {
     val fArgs = (method.getName, args)
-    if (f.isDefinedAt(fArgs)) f(fArgs)
+    if (f.isDefinedAt(fArgs))
+      f(fArgs)
     null
   }
 }

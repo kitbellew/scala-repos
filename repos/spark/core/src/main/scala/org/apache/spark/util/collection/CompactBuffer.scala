@@ -132,7 +132,11 @@ private[spark] class CompactBuffer[T: ClassTag]
       throw new UnsupportedOperationException(
         "Can't grow buffer past Int.MaxValue elements")
     }
-    val capacity = if (otherElements != null) otherElements.length + 2 else 2
+    val capacity =
+      if (otherElements != null)
+        otherElements.length + 2
+      else
+        2
     if (newSize > capacity) {
       var newArrayLen = 8
       while (newSize - 2 > newArrayLen) {

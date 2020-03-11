@@ -51,7 +51,8 @@ private[http] trait LazyValueBytesRenderable extends Renderable {
   // that a synchronization overhead or even @volatile reads
   private[this] var _valueBytes: Array[Byte] = _
   private def valueBytes =
-    if (_valueBytes != null) _valueBytes
+    if (_valueBytes != null)
+      _valueBytes
     else {
       _valueBytes = value.asciiBytes;
       _valueBytes
@@ -111,8 +112,10 @@ private[http] object Renderer {
       tRenderer: Renderer[T]): Renderer[Option[T]] =
     new Renderer[Option[T]] {
       def render[R <: Rendering](r: R, value: Option[T]): r.type =
-        if (value.isEmpty) sRenderer.render(r, defaultValue)
-        else tRenderer.render(r, value.get)
+        if (value.isEmpty)
+          sRenderer.render(r, defaultValue)
+        else
+          tRenderer.render(r, value.get)
     }
 
   def defaultSeqRenderer[T: Renderer] =
@@ -126,17 +129,21 @@ private[http] object Renderer {
       def render[R <: Rendering](r: R, value: immutable.Seq[T]): r.type = {
         @tailrec def recI(values: IndexedSeq[T], ix: Int = 0): r.type =
           if (ix < values.size) {
-            if (ix > 0) sRenderer.render(r, separator)
+            if (ix > 0)
+              sRenderer.render(r, separator)
             tRenderer.render(r, values(ix))
             recI(values, ix + 1)
-          } else r
+          } else
+            r
 
         @tailrec def recL(remaining: LinearSeq[T]): r.type =
           if (remaining.nonEmpty) {
-            if (remaining ne value) sRenderer.render(r, separator)
+            if (remaining ne value)
+              sRenderer.render(r, separator)
             tRenderer.render(r, remaining.head)
             recL(remaining.tail)
-          } else r
+          } else
+            r
 
         value match {
           case Nil ⇒ r ~~ empty
@@ -163,7 +170,10 @@ private[http] trait Rendering {
   def ~~(i: Int): this.type = this ~~ i.toLong
 
   def ~~(l: Long): this.type =
-    if (l != 0) this ~~ CharUtils.signedDecimalChars(l) else this ~~ '0'
+    if (l != 0)
+      this ~~ CharUtils.signedDecimalChars(l)
+    else
+      this ~~ '0'
 
   /**
     * Renders the given Int in (lower case) hex notation.
@@ -177,17 +187,22 @@ private[http] trait Rendering {
     if (lng != 0) {
       @tailrec def putChar(shift: Int): this.type = {
         this ~~ CharUtils.lowerHexDigit(lng >>> shift)
-        if (shift > 0) putChar(shift - 4) else this
+        if (shift > 0)
+          putChar(shift - 4)
+        else
+          this
       }
       putChar((63 - java.lang.Long.numberOfLeadingZeros(lng)) & 0xFC)
-    } else this ~~ '0'
+    } else
+      this ~~ '0'
 
   def ~~(string: String): this.type = {
     @tailrec def rec(ix: Int = 0): this.type =
       if (ix < string.length) {
         this ~~ string.charAt(ix);
         rec(ix + 1)
-      } else this
+      } else
+        this
     rec()
   }
 
@@ -196,7 +211,8 @@ private[http] trait Rendering {
       if (ix < chars.length) {
         this ~~ chars(ix);
         rec(ix + 1)
-      } else this
+      } else
+        this
     rec()
   }
 
@@ -208,7 +224,10 @@ private[http] trait Rendering {
     * or in double quotes (if it contains at least one non-token char).
     */
   def ~~#(s: String): this.type =
-    if (CharacterClasses.tchar matchesAll s) this ~~ s else ~~#!(s)
+    if (CharacterClasses.tchar matchesAll s)
+      this ~~ s
+    else
+      ~~#!(s)
 
   /**
     * Renders the given string in double quotes.
@@ -222,10 +241,12 @@ private[http] trait Rendering {
     @tailrec def rec(ix: Int = 0): this.type =
       if (ix < s.length) {
         val c = s.charAt(ix)
-        if (escape(c)) this ~~ escChar
+        if (escape(c))
+          this ~~ escChar
         this ~~ c
         rec(ix + 1)
-      } else this
+      } else
+        this
     rec()
   }
 }
@@ -259,7 +280,8 @@ private[http] class StringRendering extends Rendering {
       if (ix < bytes.length) {
         this ~~ bytes(ix).asInstanceOf[Char];
         rec(ix + 1)
-      } else this
+      } else
+        this
     rec()
   }
   def ~~(bytes: ByteString): this.type = this ~~ bytes.toArray[Byte]
@@ -274,8 +296,10 @@ private[http] class ByteArrayRendering(sizeHint: Int) extends Rendering {
   private[this] var size = 0
 
   def get: Array[Byte] =
-    if (size == array.length) array
-    else java.util.Arrays.copyOfRange(array, 0, size)
+    if (size == array.length)
+      array
+    else
+      java.util.Arrays.copyOfRange(array, 0, size)
 
   def ~~(char: Char): this.type = {
     val oldSize = growBy(1)
@@ -333,12 +357,14 @@ private[http] class ByteStringRendering(sizeHint: Int) extends Rendering {
   }
 
   def ~~(bytes: Array[Byte]): this.type = {
-    if (bytes.length > 0) builder.putByteArrayUnsafe(bytes)
+    if (bytes.length > 0)
+      builder.putByteArrayUnsafe(bytes)
     this
   }
 
   def ~~(bytes: ByteString): this.type = {
-    if (bytes.length > 0) builder ++= bytes
+    if (bytes.length > 0)
+      builder ++= bytes
     this
   }
 }
@@ -360,7 +386,8 @@ private[http] class CustomCharsetByteStringRendering(
   }
 
   def ~~(char: Char): this.type = {
-    if (!charBuffer.hasRemaining) flushCharBuffer()
+    if (!charBuffer.hasRemaining)
+      flushCharBuffer()
     charBuffer.put(char)
     this
   }

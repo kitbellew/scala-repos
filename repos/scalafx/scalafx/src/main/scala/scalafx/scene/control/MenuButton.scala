@@ -41,7 +41,10 @@ import scalafx.scene.Node._
 
 object MenuButton {
   implicit def sfxToggleButton2jfx(mb: MenuButton): jfxsc.MenuButton =
-    if (mb != null) mb.delegate else null
+    if (mb != null)
+      mb.delegate
+    else
+      null
 
   /** Called when the MenuButton popup has been hidden. */
   val OnHidden: EventType[jfxe.Event] = jfxsc.MenuButton.ON_HIDDEN

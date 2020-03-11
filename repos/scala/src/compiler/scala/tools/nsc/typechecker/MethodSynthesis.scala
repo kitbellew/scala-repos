@@ -24,7 +24,10 @@ trait MethodSynthesis {
   class ClassMethodSynthesis(val clazz: Symbol, localTyper: Typer) {
     def mkThis = This(clazz) setPos clazz.pos.focus
     def mkThisSelect(sym: Symbol) = atPos(clazz.pos.focus)(
-      if (clazz.isClass) Select(This(clazz), sym) else Ident(sym)
+      if (clazz.isClass)
+        Select(This(clazz), sym)
+      else
+        Ident(sym)
     )
 
     private def isOverride(name: TermName) =
@@ -32,19 +35,28 @@ trait MethodSynthesis {
         !sym.isDeferred && (sym.owner != clazz))
 
     def newMethodFlags(name: TermName) = {
-      val overrideFlag = if (isOverride(name)) OVERRIDE else 0L
+      val overrideFlag =
+        if (isOverride(name))
+          OVERRIDE
+        else
+          0L
       overrideFlag | SYNTHETIC
     }
     def newMethodFlags(method: Symbol) = {
       val overrideFlag =
-        if (isOverride(method.name.toTermName)) OVERRIDE else 0L
+        if (isOverride(method.name.toTermName))
+          OVERRIDE
+        else
+          0L
       (method.flags | overrideFlag | SYNTHETIC) & ~DEFERRED
     }
 
     private def finishMethod(method: Symbol, f: Symbol => Tree): Tree =
       localTyper typed (
-        if (method.isLazy) ValDef(method, f(method))
-        else DefDef(method, f(method))
+        if (method.isLazy)
+          ValDef(method, f(method))
+        else
+          DefDef(method, f(method))
       )
 
     private def createInternal(
@@ -165,8 +177,10 @@ trait MethodSynthesis {
         // NOTE: we cannot look at symbol info, since we're in the process of deriving them
         // (luckily, they only matter for lazy vals, which we've ruled out in this else branch,
         // and `doNotDeriveField` will skip them if `!mods.isLazy`)
-        if (Field.noFieldFor(tree)) getterSym setPos tree.pos
-        else enterStrictVal(tree)
+        if (Field.noFieldFor(tree))
+          getterSym setPos tree.pos
+        else
+          enterStrictVal(tree)
       }
 
       enterBeans(tree)
@@ -252,24 +266,35 @@ trait MethodSynthesis {
     }
 
     def standardAccessors(vd: ValDef): List[DerivedFromValDef] =
-      if (vd.mods.isLazy) List(LazyValGetter(vd))
+      if (vd.mods.isLazy)
+        List(LazyValGetter(vd))
       else {
         val getter = Getter(vd)
-        if (getter.needsSetter) List(getter, Setter(vd))
-        else List(getter)
+        if (getter.needsSetter)
+          List(getter, Setter(vd))
+        else
+          List(getter)
       }
 
     def beanAccessors(vd: ValDef): List[DerivedFromValDef] = {
-      val setter = if (vd.mods.isMutable) List(BeanSetter(vd)) else Nil
+      val setter =
+        if (vd.mods.isMutable)
+          List(BeanSetter(vd))
+        else
+          Nil
       if (vd.symbol hasAnnotation BeanPropertyAttr)
         BeanGetter(vd) :: setter
       else if (vd.symbol hasAnnotation BooleanBeanPropertyAttr)
         BooleanBeanGetter(vd) :: setter
-      else Nil
+      else
+        Nil
     }
 
     def field(vd: ValDef): List[Field] =
-      if (Field.noFieldFor(vd)) Nil else List(Field(vd))
+      if (Field.noFieldFor(vd))
+        Nil
+      else
+        List(Field(vd))
 
     /** This trait assembles what's needed for synthesizing derived methods.
       *  Important: Typically, instances of this trait are created TWICE for each derived
@@ -402,13 +427,18 @@ trait MethodSynthesis {
         assert(
           !derivedSym.isOverloaded,
           s"Unexpected overloaded setter $derivedSym for $basisSym in $enclClass")
-        if (Field.noFieldFor(tree) || derivedSym.isOverloaded) EmptyTree
-        else Assign(fieldSelection, Ident(setterParam))
+        if (Field.noFieldFor(tree) || derivedSym.isOverloaded)
+          EmptyTree
+        else
+          Assign(fieldSelection, Ident(setterParam))
       }
 
       private def setterDef = DefDef(derivedSym, setterRhs)
       override def derivedTree: Tree =
-        if (setterParam == NoSymbol) EmptyTree else setterDef
+        if (setterParam == NoSymbol)
+          EmptyTree
+        else
+          setterDef
     }
 
     /** A synthetic method which performs the implicit conversion implied by
@@ -439,7 +469,10 @@ trait MethodSynthesis {
       def name = tree.name
       def flagsMask = GetterFlags
       def flagsExtra =
-        ACCESSOR.toLong | (if (tree.mods.isMutable) 0 else STABLE)
+        ACCESSOR.toLong | (if (tree.mods.isMutable)
+                             0
+                           else
+                             STABLE)
 
       override def validate() {
         assert(derivedSym != NoSymbol, tree)
@@ -451,9 +484,15 @@ trait MethodSynthesis {
     }
     case class Getter(tree: ValDef) extends BaseGetter(tree) {
       override def derivedSym =
-        if (Field.noFieldFor(tree)) basisSym else basisSym.getterIn(enclClass)
+        if (Field.noFieldFor(tree))
+          basisSym
+        else
+          basisSym.getterIn(enclClass)
       private def derivedRhs =
-        if (Field.noFieldFor(tree)) tree.rhs else fieldSelection
+        if (Field.noFieldFor(tree))
+          tree.rhs
+        else
+          fieldSelection
 
       private def derivedTpt = {
         // For existentials, don't specify a type for the getter, even one derived
@@ -511,7 +550,8 @@ trait MethodSynthesis {
         val body =
           if (tree.symbol.owner.isTrait || Field.noFieldFor(tree))
             rhs1 // TODO move tree.symbol.owner.isTrait into noFieldFor
-          else gen.mkAssignAndReturn(basisSym, rhs1)
+          else
+            gen.mkAssignAndReturn(basisSym, rhs1)
 
         derivedSym setPos tree.pos // cannot set it at createAndEnterSymbol because basisSym can possibly still have NoPosition
         val ddefRes = DefDef(
@@ -563,8 +603,10 @@ trait MethodSynthesis {
             mods = mods | flagsExtra,
             name = this.name,
             rhs = EmptyTree).setPos(tree.pos.focus)
-        else if (Field.noFieldFor(tree)) EmptyTree
-        else copyValDef(tree)(mods = mods | flagsExtra, name = this.name)
+        else if (Field.noFieldFor(tree))
+          EmptyTree
+        else
+          copyValDef(tree)(mods = mods | flagsExtra, name = this.name)
 
     }
     case class Param(tree: ValDef) extends DerivedFromValDef {
@@ -603,7 +645,10 @@ trait MethodSynthesis {
             Nil,
             ListOfNil,
             tree.tpt.duplicate,
-            if (isDeferred) EmptyTree else Select(This(owner), tree.name))
+            if (isDeferred)
+              EmptyTree
+            else
+              Select(This(owner), tree.name))
         }
       }
       override def createAndEnterSymbol(): MethodSymbol =
@@ -628,13 +673,19 @@ trait MethodSynthesis {
       if (hasBP || hasBoolBP) {
         val getter =
           (
-            if (hasBP) new BeanGetter(tree) with NoSymbolBeanGetter
-            else new BooleanBeanGetter(tree) with NoSymbolBeanGetter
+            if (hasBP)
+              new BeanGetter(tree) with NoSymbolBeanGetter
+            else
+              new BooleanBeanGetter(tree) with NoSymbolBeanGetter
           )
         getter :: {
-          if (mods.isMutable) List(BeanSetter(tree)) else Nil
+          if (mods.isMutable)
+            List(BeanSetter(tree))
+          else
+            Nil
         }
-      } else Nil
+      } else
+        Nil
     }
 
     protected def enterBeans(tree: ValDef) {

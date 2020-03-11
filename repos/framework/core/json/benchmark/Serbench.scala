@@ -44,7 +44,10 @@ object Serbench extends Benchmark {
 
   lazy val bigJValue = {
     def appendN(json: JObject, count: Int): JObject = {
-      if (count == 0) json else json ~ appendN(json, count - 1)
+      if (count == 0)
+        json
+      else
+        json ~ appendN(json, count - 1)
     }
 
     appendN(jvalueProject, 100)

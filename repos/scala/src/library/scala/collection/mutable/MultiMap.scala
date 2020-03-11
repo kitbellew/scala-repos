@@ -98,7 +98,8 @@ trait MultiMap[A, B] extends Map[A, Set[B]] {
       case None =>
       case Some(set) =>
         set -= value
-        if (set.isEmpty) this -= key
+        if (set.isEmpty)
+          this -= key
     }
     this
   }

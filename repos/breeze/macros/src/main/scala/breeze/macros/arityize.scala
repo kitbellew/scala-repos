@@ -24,43 +24,47 @@ object arityize {
       case tree @ ClassDef(mods, name, targs, impl) =>
         val maxOrder: Int = extractOrder(c)
 
-        val results = for (order <- 1 to maxOrder) yield {
-          val bindings = Map(name.encoded -> order)
-          val newTemplate = Template(
-            impl.parents,
-            impl.self,
-            impl.body.flatMap(x => expandArity(c, order, bindings)(x)))
-          val newTargs =
-            targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
-          ClassDef(
-            mods,
-            newTypeName(name.encoded + order),
-            newTargs,
-            newTemplate)
-        }
+        val results =
+          for (order <- 1 to maxOrder)
+            yield {
+              val bindings = Map(name.encoded -> order)
+              val newTemplate = Template(
+                impl.parents,
+                impl.self,
+                impl.body.flatMap(x => expandArity(c, order, bindings)(x)))
+              val newTargs =
+                targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+              ClassDef(
+                mods,
+                newTypeName(name.encoded + order),
+                newTargs,
+                newTemplate)
+            }
 
         val ret = c.Expr(Block(results.toList, Literal(Constant(()))))
         ret
       case tree @ DefDef(mods, name, targs, vargs, tpt, impl) =>
         val maxOrder: Int = extractOrder(c)
 
-        val results = for (order <- 1 to maxOrder) yield {
-          val bindings = Map(name.encoded -> order)
+        val results =
+          for (order <- 1 to maxOrder)
+            yield {
+              val bindings = Map(name.encoded -> order)
 
-          val newImpl = expandArity(c, order, bindings)(impl).head
-          val newVargs =
-            vargs.map(_.flatMap(arg => expandValDef(c, order, bindings)(arg)))
-          val newTargs =
-            targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
-          val newRet = expandArity(c, order, bindings)(tpt).head
-          DefDef(
-            mods,
-            newTermName(name.encoded + order),
-            newTargs,
-            newVargs,
-            newRet,
-            newImpl)
-        }
+              val newImpl = expandArity(c, order, bindings)(impl).head
+              val newVargs = vargs.map(
+                _.flatMap(arg => expandValDef(c, order, bindings)(arg)))
+              val newTargs =
+                targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+              val newRet = expandArity(c, order, bindings)(tpt).head
+              DefDef(
+                mods,
+                newTermName(name.encoded + order),
+                newTargs,
+                newVargs,
+                newRet,
+                newImpl)
+            }
 
         val ret = c.Expr(Block(results.toList, Literal(Constant(()))))
         ret
@@ -159,9 +163,10 @@ object arityize {
             Apply(w2, args2)
           }
       case Select(lhs, name) =>
-        for (w2 <- expandArity(c, order, bindings)(lhs)) yield {
-          Select(w2, name)
-        }
+        for (w2 <- expandArity(c, order, bindings)(lhs))
+          yield {
+            Select(w2, name)
+          }
       case AppliedTypeTree(lhs, targs) =>
         val newLHS = expandArity(c, order, bindings)(lhs).head
 

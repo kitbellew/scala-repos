@@ -37,7 +37,11 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
   }
   override def toString() = {
     val uss = userSetSettings
-    val indent = if (uss.nonEmpty) " " * 2 else ""
+    val indent =
+      if (uss.nonEmpty)
+        " " * 2
+      else
+        ""
     uss.mkString(f"Settings {%n$indent", f"%n$indent", f"%n}%n")
   }
   def toConciseString = userSetSettings.mkString("(", " ", ")")
@@ -145,7 +149,10 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
     }
     override def hashCode() = name.hashCode + value.hashCode
     override def toString() =
-      name + " = " + (if (value == "") "\"\"" else value)
+      name + " = " + (if (value == "")
+                        "\"\""
+                      else
+                        value)
   }
 
   trait InternalSetting extends AbsSetting {

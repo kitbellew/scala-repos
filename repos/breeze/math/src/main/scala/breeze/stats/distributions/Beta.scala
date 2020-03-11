@@ -175,7 +175,8 @@ object Beta
       import stats.n
       def calculate(x: (Double, Double)) = {
         val (a, b) = x
-        if (a < 0 || b < 0) (Double.PositiveInfinity, (0.0, 0.0))
+        if (a < 0 || b < 0)
+          (Double.PositiveInfinity, (0.0, 0.0))
         else {
           val obj = n * (lgamma(a) + lgamma(b) - lgamma(
             a + b) - (a - 1) * stats.meanLog - (b - 1) * stats.meanLog1M)

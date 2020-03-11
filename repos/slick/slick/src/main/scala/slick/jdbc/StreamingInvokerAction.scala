@@ -31,12 +31,16 @@ trait StreamingInvokerAction[R, T, -E <: Effect]
       state: StreamState): StreamState = {
     val bufferNext = ctx.bufferNext
     val it =
-      if (state ne null) state
-      else createInvoker(statements).iteratorTo(0)(ctx.session)
+      if (state ne null)
+        state
+      else
+        createInvoker(statements).iteratorTo(0)(ctx.session)
     var count = 0L
     try {
-      while (if (bufferNext) it.hasNext && count < limit
-             else count < limit && it.hasNext) {
+      while (if (bufferNext)
+               it.hasNext && count < limit
+             else
+               count < limit && it.hasNext) {
         count += 1
         ctx.emit(it.next())
       }
@@ -46,7 +50,13 @@ trait StreamingInvokerAction[R, T, -E <: Effect]
         catch ignoreFollowOnError
         throw ex
     }
-    if (if (bufferNext) it.hasNext else count == limit) it else null
+    if (if (bufferNext)
+          it.hasNext
+        else
+          count == limit)
+      it
+    else
+      null
   }
 
   override final def cancelStream(

@@ -84,7 +84,8 @@ object XmlPatterns extends ParserNode {
               builder,
               ScalaTokenTypes.tUNDER,
               ScalaTokenTypes.tIDENTIFIER)) {
-        if (withComma) builder.advanceLexer()
+        if (withComma)
+          builder.advanceLexer()
         val wild = builder.mark
         builder.getTokenType
         builder.advanceLexer()
@@ -118,7 +119,8 @@ object XmlPatterns extends ParserNode {
               ScalaTokenTypes.tAT,
               ScalaTokenTypes.tUNDER,
               ScalaTokenTypes.tIDENTIFIER)) {
-        if (withComma) builder.advanceLexer() // ,
+        if (withComma)
+          builder.advanceLexer() // ,
         val wild = builder.mark
         builder.getTokenType
         if (isVarId) {

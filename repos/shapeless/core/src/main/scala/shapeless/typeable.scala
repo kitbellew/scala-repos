@@ -51,7 +51,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   case class ValueTypeable[T, B](cB: Class[B], describe: String)
       extends Typeable[T] {
     def cast(t: Any): Option[T] = {
-      if (t != null && cB.isInstance(t)) Some(t.asInstanceOf[T]) else None
+      if (t != null && cB.isInstance(t))
+        Some(t.asInstanceOf[T])
+      else
+        None
     }
   }
 
@@ -108,8 +111,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   implicit val anyValTypeable: Typeable[AnyVal] =
     new Typeable[AnyVal] {
       def cast(t: Any): Option[AnyVal] = {
-        if (t != null && isValClass(t.getClass)) Some(t.asInstanceOf[AnyVal])
-        else None
+        if (t != null && isValClass(t.getClass))
+          Some(t.asInstanceOf[AnyVal])
+        else
+          None
       }
       def describe = "AnyVal"
     }
@@ -118,8 +123,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   implicit val anyRefTypeable: Typeable[AnyRef] =
     new Typeable[AnyRef] {
       def cast(t: Any): Option[AnyRef] = {
-        if (t == null || isValClass(t.getClass)) None
-        else Some(t.asInstanceOf[AnyRef])
+        if (t == null || isValClass(t.getClass))
+          None
+        else
+          Some(t.asInstanceOf[AnyRef])
       }
       def describe = "AnyRef"
     }
@@ -130,7 +137,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       def cast(t: Any): Option[T] = {
         if (t != null && erased.isAssignableFrom(t.getClass))
           Some(t.asInstanceOf[T])
-        else None
+        else
+          None
       }
       def describe = {
         // Workaround for https://issues.scala-lang.org/browse/SI-5425
@@ -147,7 +155,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   def valueSingletonTypeable[T](value: T, name: String): Typeable[T] =
     new Typeable[T] {
       def cast(t: Any): Option[T] =
-        if (t == value) Some(value) else None
+        if (t == value)
+          Some(value)
+        else
+          None
       def describe = s"$name($value)"
     }
 
@@ -157,7 +168,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       name: String): Typeable[T] =
     new Typeable[T] {
       def cast(t: Any): Option[T] =
-        if (t.asInstanceOf[AnyRef] eq value) Some(value) else None
+        if (t.asInstanceOf[AnyRef] eq value)
+          Some(value)
+        else
+          None
       def describe = s"$name.type"
     }
 
@@ -167,7 +181,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       def cast(t: Any): Option[T] = {
         if (t != null && parents.forall(_.cast(t).isDefined))
           Some(t.asInstanceOf[T])
-        else None
+        else
+          None
       }
       def describe = parents map (_.describe) mkString " with "
     }
@@ -177,14 +192,18 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       implicit castT: Typeable[T]): Typeable[Option[T]] =
     new Typeable[Option[T]] {
       def cast(t: Any): Option[Option[T]] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[Option[_]]) {
           val o = t.asInstanceOf[Option[_]]
-          if (o.isEmpty) Some(t.asInstanceOf[Option[T]])
+          if (o.isEmpty)
+            Some(t.asInstanceOf[Option[T]])
           else
             for (e <- o;
-                 _ <- e.cast[T]) yield t.asInstanceOf[Option[T]]
-        } else None
+                 _ <- e.cast[T])
+              yield t.asInstanceOf[Option[T]]
+        } else
+          None
       }
       def describe = s"Option[${castT.describe}]"
     }
@@ -205,11 +224,14 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       implicit castA: Typeable[A]): Typeable[Left[A, B]] =
     new Typeable[Left[A, B]] {
       def cast(t: Any): Option[Left[A, B]] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[Left[_, _]]) {
           val l = t.asInstanceOf[Left[_, _]]
-          for (a <- l.a.cast[A]) yield t.asInstanceOf[Left[A, B]]
-        } else None
+          for (a <- l.a.cast[A])
+            yield t.asInstanceOf[Left[A, B]]
+        } else
+          None
       }
       def describe = s"Left[${castA.describe}]"
     }
@@ -219,11 +241,14 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       implicit castB: Typeable[B]): Typeable[Right[A, B]] =
     new Typeable[Right[A, B]] {
       def cast(t: Any): Option[Right[A, B]] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[Right[_, _]]) {
           val r = t.asInstanceOf[Right[_, _]]
-          for (b <- r.b.cast[B]) yield t.asInstanceOf[Right[A, B]]
-        } else None
+          for (b <- r.b.cast[B])
+            yield t.asInstanceOf[Right[A, B]]
+        } else
+          None
       }
       def describe = s"Right[${castB.describe}]"
     }
@@ -237,12 +262,16 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     // Scala 2.10.x bug which causes conflicts between this instance and `anyTypeable`.
     new Typeable[CC[T]] {
       def cast(t: Any): Option[CC[T]] =
-        if (t == null) None
+        if (t == null)
+          None
         else if (mCC.runtimeClass isAssignableFrom t.getClass) {
           val cc = t.asInstanceOf[CC[Any]]
-          if (cc.forall(_.cast[T].isDefined)) Some(t.asInstanceOf[CC[T]])
-          else None
-        } else None
+          if (cc.forall(_.cast[T].isDefined))
+            Some(t.asInstanceOf[CC[T]])
+          else
+            None
+        } else
+          None
       def describe = s"${mCC.runtimeClass.getSimpleName}[${castT.describe}]"
     }
 
@@ -254,12 +283,16 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       castV: Typeable[V]): Typeable[M[K, V]] =
     new Typeable[M[K, V]] {
       def cast(t: Any): Option[M[K, V]] =
-        if (t == null) None
+        if (t == null)
+          None
         else if (mM.runtimeClass isAssignableFrom t.getClass) {
           val m = t.asInstanceOf[GenMap[Any, Any]]
-          if (m.forall(_.cast[(K, V)].isDefined)) Some(t.asInstanceOf[M[K, V]])
-          else None
-        } else None
+          if (m.forall(_.cast[(K, V)].isDefined))
+            Some(t.asInstanceOf[M[K, V]])
+          else
+            None
+        } else
+          None
       def describe =
         s"${mM.runtimeClass.getSimpleName}[${castK.describe}, ${castV.describe}]"
     }
@@ -276,9 +309,12 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
           val f = c.productIterator.toList
           if ((f zip fields).forall {
                 case (f, castF) => castF.cast(f).isDefined
-              }) Some(c)
-          else None
-        } else None
+              })
+            Some(c)
+          else
+            None
+        } else
+          None
       def describe = {
         val typeParams = fields map (_.describe) mkString (",")
         // Workaround for https://issues.scala-lang.org/browse/SI-5425
@@ -297,8 +333,10 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   implicit val hnilTypeable: Typeable[HNil] =
     new Typeable[HNil] {
       def cast(t: Any): Option[HNil] =
-        if (t != null && t.isInstanceOf[HNil]) Some(t.asInstanceOf[HNil])
-        else None
+        if (t != null && t.isInstanceOf[HNil])
+          Some(t.asInstanceOf[HNil])
+        else
+          None
       def describe = "HNil"
     }
 
@@ -308,13 +346,15 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       castT: Typeable[T]): Typeable[H :: T] =
     new Typeable[H :: T] {
       def cast(t: Any): Option[H :: T] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[::[_, _ <: HList]]) {
           val l = t.asInstanceOf[::[_, _ <: HList]]
           for (hd <- l.head.cast[H];
                tl <- (l.tail: Any).cast[T])
             yield t.asInstanceOf[H :: T]
-        } else None
+        } else
+          None
       }
       def describe = s"${castH.describe} :: ${castT.describe}"
     }
@@ -345,11 +385,14 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       implicit castH: Typeable[H]): Typeable[Inl[H, T]] =
     new Typeable[Inl[H, T]] {
       def cast(t: Any): Option[Inl[H, T]] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[Inl[_, _ <: Coproduct]]) {
           val l = t.asInstanceOf[Inl[_, _ <: Coproduct]]
-          for (hd <- l.head.cast[H]) yield t.asInstanceOf[Inl[H, T]]
-        } else None
+          for (hd <- l.head.cast[H])
+            yield t.asInstanceOf[Inl[H, T]]
+        } else
+          None
       }
       def describe = s"Inl[${castH.describe}}]"
     }
@@ -359,11 +402,14 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       implicit castT: Typeable[T]): Typeable[Inr[H, T]] =
     new Typeable[Inr[H, T]] {
       def cast(t: Any): Option[Inr[H, T]] = {
-        if (t == null) None
+        if (t == null)
+          None
         else if (t.isInstanceOf[Inr[_, _ <: Coproduct]]) {
           val r = t.asInstanceOf[Inr[_, _ <: Coproduct]]
-          for (tl <- r.tail.cast[T]) yield t.asInstanceOf[Inr[H, T]]
-        } else None
+          for (tl <- r.tail.cast[T])
+            yield t.asInstanceOf[Inr[H, T]]
+        } else
+          None
       }
       def describe = s"Inr[${castT.describe}}]"
     }

@@ -495,8 +495,10 @@ object DateTimeUtils {
   private[this] def numYears(days: Int): (Int, Int) = {
     val year = days / 365
     val boundary = yearBoundary(year)
-    if (days > boundary) (year, days - boundary)
-    else (year - 1, days - yearBoundary(year - 1))
+    if (days > boundary)
+      (year, days - boundary)
+    else
+      (year - 1, days - yearBoundary(year - 1))
   }
 
   /**
@@ -562,7 +564,8 @@ object DateTimeUtils {
     if (isLeap && dayInYear == 60) {
       (year, 2, 29, 0)
     } else {
-      if (isLeap && dayInYear > 60) dayInYear -= 1
+      if (isLeap && dayInYear > 60)
+        dayInYear -= 1
 
       if (dayInYear <= 181) {
         if (dayInYear <= 31) {
@@ -572,7 +575,10 @@ object DateTimeUtils {
             year,
             2,
             dayInYear - 31,
-            if (isLeap) 60 - dayInYear else 59 - dayInYear)
+            if (isLeap)
+              60 - dayInYear
+            else
+              59 - dayInYear)
         } else if (dayInYear <= 90) {
           (year, 3, dayInYear - 59, 90 - dayInYear)
         } else if (dayInYear <= 120) {
@@ -723,13 +729,19 @@ object DateTimeUtils {
   def dateAddMonths(days: SQLDate, months: Int): SQLDate = {
     val (year, monthInYear, dayOfMonth, daysToMonthEnd) = splitDate(days)
     val absoluteMonth = (year - YearZero) * 12 + monthInYear - 1 + months
-    val nonNegativeMonth = if (absoluteMonth >= 0) absoluteMonth else 0
+    val nonNegativeMonth =
+      if (absoluteMonth >= 0)
+        absoluteMonth
+      else
+        0
     val currentMonthInYear = nonNegativeMonth % 12
     val currentYear = nonNegativeMonth / 12
 
     val leapDay =
-      if (currentMonthInYear == 1 && isLeapYear(currentYear + YearZero)) 1
-      else 0
+      if (currentMonthInYear == 1 && isLeapYear(currentYear + YearZero))
+        1
+      else
+        0
     val lastDayOfMonth = monthDays(currentMonthInYear) + leapDay
 
     val currentDayInMonth =

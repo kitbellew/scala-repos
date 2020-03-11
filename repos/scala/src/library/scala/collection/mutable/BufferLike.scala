@@ -116,7 +116,8 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     if (count < 0)
       throw new IllegalArgumentException(
         "removing negative number of elements: " + count.toString)
-    for (i <- 0 until count) remove(n)
+    for (i <- 0 until count)
+      remove(n)
   }
 
   /** Removes a single element from this buffer, at its first occurrence.
@@ -127,7 +128,8 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     */
   def -=(x: A): this.type = {
     val i = indexOf(x)
-    if (i != -1) remove(i)
+    if (i != -1)
+      remove(i)
     this
   }
 
@@ -214,10 +216,16 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     case Update(End, x)      => update(length - 1, x)
     case Update(Index(n), x) => update(n, x)
 
-    case Remove(Start, x)    => if (this(0) == x) remove(0)
-    case Remove(End, x)      => if (this(length - 1) == x) remove(length - 1)
-    case Remove(Index(n), x) => if (this(n) == x) remove(n)
-    case Remove(NoLo, x)     => this -= x
+    case Remove(Start, x) =>
+      if (this(0) == x)
+        remove(0)
+    case Remove(End, x) =>
+      if (this(length - 1) == x)
+        remove(length - 1)
+    case Remove(Index(n), x) =>
+      if (this(n) == x)
+        remove(n)
+    case Remove(NoLo, x) => this -= x
 
     case Reset()      => clear()
     case s: Script[_] => s.iterator foreach <<

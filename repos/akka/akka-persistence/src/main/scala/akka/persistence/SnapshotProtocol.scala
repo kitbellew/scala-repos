@@ -21,12 +21,16 @@ final case class SnapshotMetadata(
 object SnapshotMetadata {
   implicit val ordering: Ordering[SnapshotMetadata] =
     Ordering.fromLessThan[SnapshotMetadata] { (a, b) ⇒
-      if (a eq b) false
+      if (a eq b)
+        false
       else if (a.persistenceId != b.persistenceId)
         a.persistenceId.compareTo(b.persistenceId) < 0
-      else if (a.sequenceNr != b.sequenceNr) a.sequenceNr < b.sequenceNr
-      else if (a.timestamp != b.timestamp) a.timestamp < b.timestamp
-      else false
+      else if (a.sequenceNr != b.sequenceNr)
+        a.sequenceNr < b.sequenceNr
+      else if (a.timestamp != b.timestamp)
+        a.timestamp < b.timestamp
+      else
+        false
     }
 }
 
@@ -126,8 +130,10 @@ final case class SnapshotSelectionCriteria(
     */
   private[persistence] def limit(
       toSequenceNr: Long): SnapshotSelectionCriteria =
-    if (toSequenceNr < maxSequenceNr) copy(maxSequenceNr = toSequenceNr)
-    else this
+    if (toSequenceNr < maxSequenceNr)
+      copy(maxSequenceNr = toSequenceNr)
+    else
+      this
 
   /**
     * INTERNAL API.

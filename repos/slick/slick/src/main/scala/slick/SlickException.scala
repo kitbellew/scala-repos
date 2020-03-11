@@ -25,23 +25,32 @@ class SlickTreeException(
 
 private[slick] object SlickTreeException {
   val treePrinter = new TreePrinter(
-    prefix =
-      DumpInfo.highlight(if (GlobalConfig.unicodeDump) "\u2503 " else "| "))
+    prefix = DumpInfo.highlight(
+      if (GlobalConfig.unicodeDump)
+        "\u2503 "
+      else
+        "| "))
 
   def format(
       msg: String,
       detail: Dumpable,
       _mark: (Dumpable => Boolean),
       removeUnmarked: Boolean): String =
-    if (detail eq null) msg
+    if (detail eq null)
+      msg
     else
       msg + {
         try {
-          val mark = if (_mark eq null)((_: Dumpable) => false) else _mark
+          val mark =
+            if (_mark eq null)((_: Dumpable) => false)
+            else
+              _mark
           val tp = treePrinter.copy(mark = mark)
           val markedTop =
-            if (!removeUnmarked || (_mark eq null)) detail
-            else tp.findMarkedTop(detail)
+            if (!removeUnmarked || (_mark eq null))
+              detail
+            else
+              tp.findMarkedTop(detail)
           "\n" + tp.get(markedTop)
         } catch {
           case t: Throwable => " <Error formatting detail: " + t + ">"

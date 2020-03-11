@@ -283,7 +283,8 @@ object TestTransport {
 
       push((params: A) ⇒
         for (delayed ← controlPromise.future;
-             original ← originalBehavior(params)) yield original)
+             original ← originalBehavior(params))
+          yield original)
 
       controlPromise
     }
@@ -357,7 +358,11 @@ object TestTransport {
         listenerPair: (HandleEventListener, HandleEventListener))
         : HandleEventListener = {
       listenerPair match {
-        case (initiator, receiver) ⇒ if (handle.inbound) initiator else receiver
+        case (initiator, receiver) ⇒
+          if (handle.inbound)
+            initiator
+          else
+            receiver
       }
     }
 
@@ -379,7 +384,8 @@ object TestTransport {
       var result = List[Activity]()
 
       val it = activityLog.iterator()
-      while (it.hasNext) result ::= it.next()
+      while (it.hasNext)
+        result ::= it.next()
 
       result.reverse
     }
@@ -531,7 +537,10 @@ final case class TestAssociationHandle(
   override val readHandlerPromise: Promise[HandleEventListener] = Promise()
 
   override def write(payload: ByteString): Boolean =
-    if (writable) transport.write(this, payload) else false
+    if (writable)
+      transport.write(this, payload)
+    else
+      false
 
   override def disassociate(): Unit = transport.disassociate(this)
 
@@ -540,6 +549,8 @@ final case class TestAssociationHandle(
     * ordered pair of addresses, where the first element of the pair is always the initiator of the association.
     */
   val key =
-    if (!inbound) (localAddress, remoteAddress)
-    else (remoteAddress, localAddress)
+    if (!inbound)
+      (localAddress, remoteAddress)
+    else
+      (remoteAddress, localAddress)
 }

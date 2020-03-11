@@ -216,7 +216,8 @@ object EmitHtml {
   }
 
   def emitHtml(classname: String, outStream: java.io.OutputStream = out.out) {
-    if (outStream != out.out) out setOut outStream
+    if (outStream != out.out)
+      out setOut outStream
     try {
       val cl = this.getClass.getClassLoader()
       val clasz = cl loadClass classname

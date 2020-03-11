@@ -73,7 +73,8 @@ abstract class RemoteDeliverySpec
           p1 ! Letter(n, route)
           expectMsg(5.seconds, Letter(n, Nil))
           // in case the loop count is increased it is good with some progress feedback
-          if (n % 10000 == 0) log.info("Passed [{}]", n)
+          if (n % 10000 == 0)
+            log.info("Passed [{}]", n)
         }
       }
 

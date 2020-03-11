@@ -29,15 +29,22 @@ trait CapturedVariables { self: SymbolTable =>
       vble: Symbol,
       tpe: Type = NoType,
       erasedTypes: Boolean = false): Type = {
-    val tpe1 = if (tpe == NoType) vble.tpe else tpe
+    val tpe1 =
+      if (tpe == NoType)
+        vble.tpe
+      else
+        tpe
     val symClass = tpe1.typeSymbol
     def refType(valueRef: Map[Symbol, Symbol], objectRefClass: Symbol) =
       if (isPrimitiveValueClass(symClass) && symClass != UnitClass)
         valueRef(symClass).tpe
-      else if (erasedTypes) objectRefClass.tpe
-      else appliedType(objectRefClass, tpe1)
+      else if (erasedTypes)
+        objectRefClass.tpe
+      else
+        appliedType(objectRefClass, tpe1)
     if (vble.hasAnnotation(VolatileAttr))
       refType(volatileRefClass, VolatileObjectRefClass)
-    else refType(refClass, ObjectRefClass)
+    else
+      refType(refClass, ObjectRefClass)
   }
 }

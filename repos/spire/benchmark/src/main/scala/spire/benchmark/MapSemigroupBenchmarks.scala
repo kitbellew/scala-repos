@@ -56,7 +56,10 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
             kv._1,
             (x get kv._1) match {
               case Some(u) =>
-                if (flip) semigroup.op(kv._2, u) else semigroup.op(u, kv._2)
+                if (flip)
+                  semigroup.op(kv._2, u)
+                else
+                  semigroup.op(u, kv._2)
               case None => kv._2
             }))
     }
@@ -64,7 +67,10 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
 
   def bulkAdd[K, V](x: Map[K, V], y: Map[K, V])(
       implicit semigroup: Semigroup[V]): Map[K, V] = {
-    if (x.size < y.size) add(y, x, true) else add(x, y, false)
+    if (x.size < y.size)
+      add(y, x, true)
+    else
+      add(x, y, false)
   }
 
   def spireAdd[K, V](x: Map[K, V], y: Map[K, V])(

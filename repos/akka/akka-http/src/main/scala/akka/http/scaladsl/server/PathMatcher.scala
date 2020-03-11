@@ -41,7 +41,10 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
   def unary_!(): PathMatcher0 =
     new PathMatcher[Unit] {
       def apply(path: Path) =
-        if (self(path) eq Unmatched) Matched(path, ()) else Unmatched
+        if (self(path) eq Unmatched)
+          Matched(path, ())
+        else
+          Unmatched
     }
 
   def transform[R: Tuple](f: Matching[L] ⇒ Matching[R]): PathMatcher[R] =
@@ -95,13 +98,19 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
       require(max >= min, "`max` must be >= `min`")
       def apply(path: Path) = rec(path, 1)
       def rec(path: Path, count: Int): Matching[lift.Out] = {
-        def done = if (count >= min) Matched(path, lift()) else Unmatched
+        def done =
+          if (count >= min)
+            Matched(path, lift())
+          else
+            Unmatched
         if (count <= max) {
           self(path) match {
             case Matched(remaining, extractions) ⇒
               def done1 =
-                if (count >= min) Matched(remaining, lift(extractions))
-                else Unmatched
+                if (count >= min)
+                  Matched(remaining, lift(extractions))
+                else
+                  Unmatched
               separator(remaining) match {
                 case Matched(remaining2, _) ⇒
                   rec(remaining2, count + 1) match {
@@ -115,7 +124,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
               }
             case Unmatched ⇒ done
           }
-        } else done
+        } else
+          done
       }
     }
 }
@@ -160,13 +170,15 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
     * If the given prefix is empty the returned PathMatcher matches always and consumes nothing.
     */
   def apply[L: Tuple](prefix: Path, extractions: L): PathMatcher[L] =
-    if (prefix.isEmpty) provide(extractions)
+    if (prefix.isEmpty)
+      provide(extractions)
     else
       new PathMatcher[L] {
         def apply(path: Path) =
           if (path startsWith prefix)
             Matched(path dropChars prefix.charCount, extractions)(ev)
-          else Unmatched
+          else
+            Unmatched
       }
 
   /** Provoke implicit conversions to PathMatcher to be applied */
@@ -325,7 +337,8 @@ trait ImplicitPathMatcherConstruction {
     */
   implicit def valueMap2PathMatcher[T](
       valueMap: Map[String, T]): PathMatcher1[T] =
-    if (valueMap.isEmpty) PathMatchers.nothingMatcher
+    if (valueMap.isEmpty)
+      PathMatchers.nothingMatcher
     else
       valueMap
         .map {
@@ -347,9 +360,15 @@ trait PathMatchers {
         ix: Int = 0,
         matcher: PathMatcher0 = null): PathMatcher0 = {
       val nextIx = string.indexOf('/', ix)
-      def append(m: PathMatcher0) = if (matcher eq null) m else matcher / m
-      if (nextIx < 0) append(string.substring(ix))
-      else split(nextIx + 1, append(string.substring(ix, nextIx)))
+      def append(m: PathMatcher0) =
+        if (matcher eq null)
+          m
+        else
+          matcher / m
+      if (nextIx < 0)
+        append(string.substring(ix))
+      else
+        split(nextIx + 1, append(string.substring(ix, nextIx)))
     }
     split()
   }
@@ -443,19 +462,27 @@ trait PathMatchers {
             ix: Int = 0,
             value: T = minusOne): Matching[Tuple1[T]] = {
           val a =
-            if (ix < segment.length) fromChar(segment charAt ix) else minusOne
+            if (ix < segment.length)
+              fromChar(segment charAt ix)
+            else
+              minusOne
           if (a == minusOne) {
-            if (value == minusOne) Unmatched
+            if (value == minusOne)
+              Unmatched
             else
               Matched(
-                if (ix < segment.length) segment.substring(ix) :: tail
-                else tail,
+                if (ix < segment.length)
+                  segment.substring(ix) :: tail
+                else
+                  tail,
                 Tuple1(value))
           } else {
-            if (value == minusOne) digits(ix + 1, a)
+            if (value == minusOne)
+              digits(ix + 1, a)
             else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
               digits(ix + 1, value * base + a)
-            else Unmatched
+            else
+              Unmatched
           }
         }
         digits()
@@ -466,13 +493,20 @@ trait PathMatchers {
     def fromChar(c: Char): T
 
     def fromDecimalChar(c: Char): T =
-      if ('0' <= c && c <= '9') x.fromInt(c - '0') else minusOne
+      if ('0' <= c && c <= '9')
+        x.fromInt(c - '0')
+      else
+        minusOne
 
     def fromHexChar(c: Char): T =
-      if ('0' <= c && c <= '9') x.fromInt(c - '0')
+      if ('0' <= c && c <= '9')
+        x.fromInt(c - '0')
       else {
         val cn = c | 0x20 // normalize to lowercase
-        if ('a' <= cn && cn <= 'f') x.fromInt(cn - 'a' + 10) else minusOne
+        if ('a' <= cn && cn <= 'f')
+          x.fromInt(cn - 'a' + 10)
+        else
+          minusOne
       }
   }
 

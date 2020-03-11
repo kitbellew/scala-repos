@@ -67,7 +67,10 @@ private[finagle] class PipelineFactory(
 
       val contextBuf =
         new mutable.ArrayBuffer[(ChannelBuffer, ChannelBuffer)](
-          2 + (if (header.contexts == null) 0 else header.contexts.size))
+          2 + (if (header.contexts == null)
+                 0
+               else
+                 header.contexts.size))
 
       contextBuf += (BufChannelBuffer(Trace.idCtx.marshalId) ->
         BufChannelBuffer(Trace.idCtx.marshal(richHeader.traceId)))
@@ -208,8 +211,10 @@ private[finagle] class PipelineFactory(
     override def messageReceived(
         ctx: ChannelHandlerContext,
         e: MessageEvent): Unit = {
-      if (n.incrementAndGet() > 1) q.offer(e)
-      else super.messageReceived(ctx, e)
+      if (n.incrementAndGet() > 1)
+        q.offer(e)
+      else
+        super.messageReceived(ctx, e)
     }
 
     override def writeRequested(

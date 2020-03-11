@@ -57,10 +57,14 @@ object Bounds {
 
   //This weird method is copy from Scala compiler. See scala.reflect.internal.Types#lubDepthAdjust
   private def lubDepthAdjust(td: Int, bd: Int): Int = {
-    if (bd <= 3) bd
-    else if (bd <= 5) td max (bd - 1)
-    else if (bd <= 7) td max (bd - 2)
-    else (td - 1) max (bd - 3)
+    if (bd <= 3)
+      bd
+    else if (bd <= 5)
+      td max (bd - 1)
+    else if (bd <= 7)
+      td max (bd - 2)
+    else
+      (td - 1) max (bd - 3)
   }
 
   private class Options(_tp: ScType) extends {
@@ -117,9 +121,11 @@ object Bounds {
               .instance(base.getProject)
               .cachedDeepIsInheritor(inheritor, base)
         case (base, inheritor: ScTypeAlias) =>
-          if (ScEquivalenceUtil.smartEquivalence(base, inheritor)) return true
+          if (ScEquivalenceUtil.smartEquivalence(base, inheritor))
+            return true
           for (opt <- bClass.getSuperOptions) {
-            if (isInheritorOrSelf(opt)) return true
+            if (isInheritorOrSelf(opt))
+              return true
           }
           false
         case _ => false //class can't be inheritor of type alias
@@ -148,9 +154,11 @@ object Bounds {
           drv: PsiClass,
           drvSubst: ScSubstitutor,
           visited: mutable.Set[PsiClass]): Option[ScSubstitutor] = {
-        if (base.getManager.areElementsEquivalent(base, drv)) Some(drvSubst)
+        if (base.getManager.areElementsEquivalent(base, drv))
+          Some(drvSubst)
         else {
-          if (visited.contains(drv)) None
+          if (visited.contains(drv))
+            None
           else {
             visited += drv
             val superTypes: Seq[ScType] = drv match {
@@ -212,13 +220,15 @@ object Bounds {
   }
 
   def glb(t1: ScType, t2: ScType, checkWeak: Boolean = false): ScType = {
-    if (t1.conforms(t2, checkWeak)) t1
-    else if (t2.conforms(t1, checkWeak)) t2
+    if (t1.conforms(t2, checkWeak))
+      t1
+    else if (t2.conforms(t1, checkWeak))
+      t2
     else {
       (t1, t2) match {
         case (
-            ScSkolemizedType(name, args, lower, upper),
-            ScSkolemizedType(name2, args2, lower2, upper2)) =>
+              ScSkolemizedType(name, args, lower, upper),
+              ScSkolemizedType(name2, args2, lower2, upper2)) =>
           ScSkolemizedType(
             name,
             args,
@@ -246,7 +256,8 @@ object Bounds {
   }
 
   def glb(typez: Seq[ScType], checkWeak: Boolean): ScType = {
-    if (typez.length == 1) typez(0)
+    if (typez.length == 1)
+      typez(0)
     var res = typez(0)
     for (i <- 1 until typez.length) {
       res = glb(res, typez(i), checkWeak)
@@ -267,8 +278,10 @@ object Bounds {
 
   private def lub(t1: ScType, t2: ScType, depth: Int, checkWeak: Boolean)(
       implicit stopAddingUpperBound: Boolean): ScType = {
-    if (t1.conforms(t2, checkWeak)) t2
-    else if (t2.conforms(t1, checkWeak)) t1
+    if (t1.conforms(t2, checkWeak))
+      t2
+    else if (t2.conforms(t1, checkWeak))
+      t1
     else {
       def lubWithExpandedAliases(t1: ScType, t2: ScType): ScType = {
         (t1, t2) match {
@@ -297,8 +310,8 @@ object Bounds {
           case (_, ScTypeParameterType(_, Nil, _, upper, _)) =>
             lub(t1, upper.v, checkWeak)
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             ScSkolemizedType(
               name,
               args,
@@ -349,11 +362,15 @@ object Bounds {
               case None => ScParameterizedType(des, Seq(v))
             }
           case (JavaArrayType(_), tp) =>
-            if (tp.conforms(AnyRef)) AnyRef
-            else Any
+            if (tp.conforms(AnyRef))
+              AnyRef
+            else
+              Any
           case (tp, JavaArrayType(_)) =>
-            if (tp.conforms(AnyRef)) AnyRef
-            else Any
+            if (tp.conforms(AnyRef))
+              AnyRef
+            else
+              Any
           case _ =>
             val aOptions: Seq[Options] = {
               t1 match {
@@ -380,7 +397,8 @@ object Bounds {
                   sup._1,
                   depth,
                   checkWeak)
-                if (tp != types.Any) buf += tp
+                if (tp != types.Any)
+                  buf += tp
               }
               buf.toArray match {
                 case a: Array[ScType] if a.length == 0 => types.Any
@@ -403,7 +421,8 @@ object Bounds {
       checkWeak: Boolean,
       count: Int = 1)(implicit stopAddingUpperBound: Boolean)
       : (ScType, Option[ScExistentialArgument]) = {
-    if (substed1 equiv substed2) (substed1, None)
+    if (substed1 equiv substed2)
+      (substed1, None)
     else {
       if (substed1 conforms substed2) {
         (
@@ -426,10 +445,11 @@ object Bounds {
       } else {
         (substed1, substed2) match {
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             val newLub =
-              if (stopAddingUpperBound) types.Any
+              if (stopAddingUpperBound)
+                types.Any
               else
                 lub(Seq(upper, upper2), checkWeak)(stopAddingUpperBound = true)
             (
@@ -441,14 +461,16 @@ object Bounds {
               None)
           case (ScSkolemizedType(name, args, lower, upper), _) =>
             val newLub =
-              if (stopAddingUpperBound) types.Any
+              if (stopAddingUpperBound)
+                types.Any
               else
                 lub(Seq(upper, substed2), checkWeak)(stopAddingUpperBound =
                   true)
             (ScSkolemizedType(name, args, glb(lower, substed2), newLub), None)
           case (_, ScSkolemizedType(name, args, lower, upper)) =>
             val newLub =
-              if (stopAddingUpperBound) types.Any
+              if (stopAddingUpperBound)
+                types.Any
               else
                 lub(Seq(upper, substed1), checkWeak)(stopAddingUpperBound =
                   true)
@@ -495,7 +517,8 @@ object Bounds {
       depth: Int,
       checkWeak: Boolean)(implicit stopAddingUpperBound: Boolean): ScType = {
     val baseClassDesignator = baseClass.baseDesignator
-    if (baseClass.getTypeParameters.length == 0) return baseClassDesignator
+    if (baseClass.getTypeParameters.length == 0)
+      return baseClassDesignator
     (
       baseClass.superSubstitutor(clazz1),
       baseClass.superSubstitutor(clazz2)) match {
@@ -515,8 +538,10 @@ object Bounds {
           val substed2 = tp2.typeArgs.apply(i)
           resTypeArgs += (baseClass.getTypeParameters.apply(i) match {
             case scp: ScTypeParam if scp.isCovariant =>
-              if (depth > 0) lub(substed1, substed2, depth - 1, checkWeak)
-              else types.Any
+              if (depth > 0)
+                lub(substed1, substed2, depth - 1, checkWeak)
+              else
+                types.Any
             case scp: ScTypeParam if scp.isContravariant =>
               glb(substed1, substed2, checkWeak)
             case _ =>
@@ -582,7 +607,8 @@ object Bounds {
         aClasses: Seq[Options],
         baseIndex: Int = -1,
         visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty) {
-      if (aClasses.length == 0) return
+      if (aClasses.length == 0)
+        return
       val aIter = aClasses.iterator
       var i = 0
       while (aIter.hasNext) {
@@ -593,14 +619,23 @@ object Bounds {
         while (!break && bIter.hasNext) {
           val bClass = bIter.next()
           if (aClass.isInheritorOrSelf(bClass)) {
-            addClass(aClass, if (baseIndex == -1) i else baseIndex, j)
+            addClass(
+              aClass,
+              if (baseIndex == -1)
+                i
+              else
+                baseIndex,
+              j)
             break = true
           } else {
             val element = aClass.getNamedElement
             if (!visited.contains(element)) {
               checkClasses(
                 aClass.getSuperOptions,
-                if (baseIndex == -1) i else baseIndex,
+                if (baseIndex == -1)
+                  i
+                else
+                  baseIndex,
                 visited + element)
             }
           }

@@ -64,7 +64,8 @@ trait FileDeclarationsHolder
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     if (context != null) {
       return true
@@ -88,7 +89,8 @@ trait FileDeclarationsHolder
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
               top,
-              state.put(ResolverEnv.nameKey, "_root_"))) return false
+              state.put(ResolverEnv.nameKey, "_root_")))
+          return false
         state.put(ResolverEnv.nameKey, null)
       }
       case ref: ScReferenceExpressionImpl
@@ -97,7 +99,8 @@ trait FileDeclarationsHolder
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
               top,
-              state.put(ResolverEnv.nameKey, "_root_"))) return false
+              state.put(ResolverEnv.nameKey, "_root_")))
+          return false
         state.put(ResolverEnv.nameKey, null)
       }
       case _ => {
@@ -112,7 +115,8 @@ trait FileDeclarationsHolder
                 processor,
                 state,
                 null,
-                place)) return false
+                place))
+            return false
         } else if (defaultPackage != null && !BaseProcessor.isImplicitProcessor(
                      processor)) {
           //we will add only packages
@@ -126,7 +130,8 @@ trait FileDeclarationsHolder
             val iterator = packages.iterator
             while (iterator.hasNext) {
               val pack = iterator.next()
-              if (!processor.execute(pack, state)) return false
+              if (!processor.execute(pack, state))
+                return false
             }
             val migration =
               PsiMigrationManager.getInstance(getProject).getCurrentMigration
@@ -138,7 +143,8 @@ trait FileDeclarationsHolder
               val iterator = packages.iterator
               while (iterator.hasNext) {
                 val pack = iterator.next()
-                if (!processor.execute(pack, state)) return false
+                if (!processor.execute(pack, state))
+                  return false
               }
             }
           } else {
@@ -160,7 +166,8 @@ trait FileDeclarationsHolder
       while (syntheticValueIterator.hasNext) {
         val syntheticValue = syntheticValueIterator.next()
         ProgressManager.checkCanceled()
-        if (!processor.execute(syntheticValue, state)) return false
+        if (!processor.execute(syntheticValue, state))
+          return false
       }
     }
 
@@ -196,7 +203,8 @@ trait FileDeclarationsHolder
                       processor,
                       newState,
                       null,
-                      place)) return false
+                      place))
+                  return false
               case _ =>
             }
           }
@@ -217,7 +225,8 @@ trait FileDeclarationsHolder
               processor,
               state,
               null,
-              place)) return false
+              place))
+          return false
       }
       true
     }
@@ -225,8 +234,10 @@ trait FileDeclarationsHolder
     if (checkWildcardImports) {
       if (!checkObjects(
             implicitlyImportedObjects,
-            PrecedenceTypes.WILDCARD_IMPORT)) return false
-      if (!checkPackages(implicitlyImportedPackages)) return false
+            PrecedenceTypes.WILDCARD_IMPORT))
+        return false
+      if (!checkPackages(implicitlyImportedPackages))
+        return false
     }
 
     if (checkPredefinedClassesAndPackages) {
@@ -239,7 +250,8 @@ trait FileDeclarationsHolder
           ScalaShortNamesCacheManager
             .getInstance(getProject)
             .getClassNames(scalaPack, scope)
-        else Set.empty[String]
+        else
+          Set.empty[String]
 
       def alreadyContains(className: String) = namesSet.contains(className)
       val classes = SyntheticClasses.get(getProject)
@@ -259,7 +271,8 @@ trait FileDeclarationsHolder
           return false
       }
 
-      if (!checkPackages(predefPackages)) return false
+      if (!checkPackages(predefPackages))
+        return false
     }
 
     if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
@@ -267,7 +280,8 @@ trait FileDeclarationsHolder
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     true
   }

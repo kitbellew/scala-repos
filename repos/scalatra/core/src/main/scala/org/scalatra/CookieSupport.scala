@@ -50,13 +50,18 @@ case class Cookie(name: String, value: String)(
     if (cookieOptions.domain.nonBlank && cookieOptions.domain != "localhost")
       sb.append("; Domain=")
         .append({
-          if (!cookieOptions.domain.startsWith(".")) "." + cookieOptions.domain
-          else cookieOptions.domain
+          if (!cookieOptions.domain.startsWith("."))
+            "." + cookieOptions.domain
+          else
+            cookieOptions.domain
         }.toLowerCase(Locale.ENGLISH))
 
     val pth = cookieOptions.path
     if (pth.nonBlank) {
-      sb append "; Path=" append (if (!pth.startsWith("/")) "/" + pth else pth)
+      sb append "; Path=" append (if (!pth.startsWith("/"))
+                                    "/" + pth
+                                  else
+                                    pth)
     }
     if (cookieOptions.comment.nonBlank) {
       sb append ("; Comment=") append cookieOptions.comment
@@ -64,8 +69,10 @@ case class Cookie(name: String, value: String)(
 
     appendMaxAge(sb, cookieOptions.maxAge, cookieOptions.version)
 
-    if (cookieOptions.secure) sb append "; Secure"
-    if (cookieOptions.httpOnly) sb append "; HttpOnly"
+    if (cookieOptions.secure)
+      sb append "; Secure"
+    if (cookieOptions.httpOnly)
+      sb append "; HttpOnly"
     sb.toString
   }
 
@@ -85,8 +92,10 @@ case class Cookie(name: String, value: String)(
     // see Q1: http://blogs.msdn.com/b/ieinternals/archive/2009/08/20/wininet-ie-cookie-internals-faq.aspx
     val bOpt = dateInMillis map (ms => appendExpires(sb, new Date(ms)))
     val agedOpt =
-      if (version > 0) bOpt map (_.append("; Max-Age=").append(maxAge))
-      else bOpt
+      if (version > 0)
+        bOpt map (_.append("; Max-Age=").append(maxAge))
+      else
+        bOpt
     agedOpt getOrElse sb
   }
 

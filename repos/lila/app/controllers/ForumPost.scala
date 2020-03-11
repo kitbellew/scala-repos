@@ -36,7 +36,8 @@ object ForumPost extends LilaController with ForumController {
           implicit val req = ctx.body
           OptionFuResult(topicApi.show(categSlug, slug, page, ctx.troll)) {
             case (categ, topic, posts) =>
-              if (topic.closed) fuccess(BadRequest("This topic is closed"))
+              if (topic.closed)
+                fuccess(BadRequest("This topic is closed"))
               else
                 forms.post.bindFromRequest.fold(
                   err =>

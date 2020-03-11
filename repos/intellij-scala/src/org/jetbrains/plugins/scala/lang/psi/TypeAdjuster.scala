@@ -110,7 +110,8 @@ object TypeAdjuster extends ApplicationAdapter {
         val text = info.replacement
         if (text.contains(".type#"))
           Some(info.withNewText(text.replace(".type#", ".")))
-        else None
+        else
+          None
       }
     }
 
@@ -131,7 +132,8 @@ object TypeAdjuster extends ApplicationAdapter {
           } yield {
             info.withNewText(withoutThisType)
           }
-        } else None
+        } else
+          None
       }
     }
 
@@ -158,13 +160,15 @@ object TypeAdjuster extends ApplicationAdapter {
                 info.origTypeElem,
                 newTypeEl,
                 subTypeElems.map(ReplacementInfo.initial)))
-        } else None
+        } else
+          None
       }
     }
 
     if (info.origTypeElem.parentsInFile
           .filterByType(classOf[ScTypeElement])
-          .exists(isMarkedToReplace)) None
+          .exists(isMarkedToReplace))
+      None
     else
       info match {
         case cmp: CompoundInfo =>
@@ -185,7 +189,8 @@ object TypeAdjuster extends ApplicationAdapter {
           typeElement
             .replace(newTypeElem(replacement, typeElement))
             .asInstanceOf[ScTypeElement]
-        else typeElement
+        else
+          typeElement
       case cmp: CompoundInfo =>
         val tempElem = cmp.tempTypeElem
         cmp.childInfos.foreach(replaceTypeElem)
@@ -219,7 +224,8 @@ object TypeAdjuster extends ApplicationAdapter {
                     case Some(ta) if !ta.isAncestorOf(position) =>
                       if (ScalaPsiUtil.hasStablePath(ta))
                         Some(rInfo.updateTarget(ta))
-                      else Some(rInfo.withNewText(ta.name))
+                      else
+                        Some(rInfo.withNewText(ta.name))
                     case _ =>
                       Some(rInfo.updateTarget(named))
                   }
@@ -304,7 +310,8 @@ object TypeAdjuster extends ApplicationAdapter {
       clazz: PsiClass,
       position: PsiElement,
       useTypeAliases: Boolean): Option[ScTypeAliasDefinition] = {
-    if (!useTypeAliases) None
+    if (!useTypeAliases)
+      None
     else {
       class FindTypeAliasProcessor extends BaseProcessor(ValueSet(CLASS)) {
         var collected: Option[ScTypeAliasDefinition] = None
@@ -366,7 +373,8 @@ object TypeAdjuster extends ApplicationAdapter {
             val withPrefix = words.takeRight(2).mkString(".")
             val packageName = words.dropRight(1).mkString(".")
             (withPrefix, Some(packageName))
-          } else (clazz.name, Some(qName))
+          } else
+            (clazz.name, Some(qName))
         case _ => (target.name, ScalaNamesUtil.qualifiedName(target))
       }
       val replacementText = origTypeElem match {
@@ -378,8 +386,10 @@ object TypeAdjuster extends ApplicationAdapter {
         resolve = Some(target),
         pathsToImport = Seq.empty)
 
-      if (withoutImport.checkReplacementResolve) withoutImport
-      else withoutImport.copy(pathsToImport = pathToImport.toSeq)
+      if (withoutImport.checkReplacementResolve)
+        withoutImport
+      else
+        withoutImport.copy(pathsToImport = pathToImport.toSeq)
     }
 
     override def checkReplacementResolve: Boolean = {

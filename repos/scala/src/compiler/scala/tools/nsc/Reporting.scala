@@ -39,12 +39,18 @@ trait Reporting extends scala.reflect.internal.Reporting {
       }
       val warnings = mutable.LinkedHashMap[Position, String]()
       def warn(pos: Position, msg: String) =
-        if (doReport()) reporter.warning(pos, msg)
-        else if (!(warnings contains pos)) warnings += ((pos, msg))
+        if (doReport())
+          reporter.warning(pos, msg)
+        else if (!(warnings contains pos))
+          warnings += ((pos, msg))
       def summarize() =
         if (warnings.nonEmpty && (setting.isDefault || doReport())) {
           val numWarnings = warnings.size
-          val warningVerb = if (numWarnings == 1) "was" else "were"
+          val warningVerb =
+            if (numWarnings == 1)
+              "was"
+            else
+              "were"
           val warningCount =
             countElementsAsString(numWarnings, s"$what warning")
 
@@ -111,11 +117,16 @@ trait Reporting extends scala.reflect.internal.Reporting {
         featureTrait: Symbol,
         construct: => String = "",
         required: Boolean): Unit = {
-      val req = if (required) "needs to" else "should"
+      val req =
+        if (required)
+          "needs to"
+        else
+          "should"
       val fqname = "scala.language." + featureName
       val explain =
         (
-          if (reportedFeature contains featureTrait) ""
+          if (reportedFeature contains featureTrait)
+            ""
           else
             s"""|
             |This can be achieved by adding the import clause 'import $fqname'
@@ -127,8 +138,10 @@ trait Reporting extends scala.reflect.internal.Reporting {
 
       val msg =
         s"$featureDesc $req be enabled\nby making the implicit value $fqname visible.$explain" replace ("#", construct)
-      if (required) reporter.error(pos, msg)
-      else featureWarning(pos, msg)
+      if (required)
+        reporter.error(pos, msg)
+      else
+        featureWarning(pos, msg)
     }
 
     /** Has any macro expansion used a fallback during this run? */

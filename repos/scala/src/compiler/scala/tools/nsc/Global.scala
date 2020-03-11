@@ -113,10 +113,16 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     this(settings, Global.reporter(settings))
 
   def picklerPhase: Phase =
-    if (currentRun.isDefined) currentRun.picklerPhase else NoPhase
+    if (currentRun.isDefined)
+      currentRun.picklerPhase
+    else
+      NoPhase
 
   def erasurePhase: Phase =
-    if (currentRun.isDefined) currentRun.erasurePhase else NoPhase
+    if (currentRun.isDefined)
+      currentRun.erasurePhase
+    else
+      NoPhase
 
   // platform specific elements
 
@@ -201,7 +207,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     def showUnit(unit: CompilationUnit) {
       print(" // " + unit.source)
-      if (unit.body == null) println(": tree is null")
+      if (unit.body == null)
+        println(": tree is null")
       else {
         val source =
           util.stringFromWriter(w => newTreePrinter(w) print unit.body)
@@ -307,7 +314,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   @inline final override def devWarning(msg: => String): Unit =
     devWarning(NoPosition, msg)
   @inline final def devWarning(pos: Position, msg: => String) {
-    def pos_s = if (pos eq NoPosition) "" else s" [@ $pos]"
+    def pos_s =
+      if (pos eq NoPosition)
+        ""
+      else
+        s" [@ $pos]"
     if (isDeveloper)
       warning(pos, "!!! " + msg)
     else
@@ -436,8 +447,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def cancelled(unit: CompilationUnit) = {
       // run the typer only if in `createJavadoc` mode
       val maxJavaPhase =
-        if (createJavadoc) currentRun.typerPhase.id
-        else currentRun.namerPhase.id
+        if (createJavadoc)
+          currentRun.typerPhase.id
+        else
+          currentRun.namerPhase.id
       reporter.cancelled || unit.isJava && this.id > maxJavaPhase
     }
 
@@ -705,8 +718,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     /** Allow phases to opt out of the phase assembly. */
     def cullPhases(phases: List[SubComponent]) = {
       val enabled =
-        if (settings.debug && settings.isInfo) phases
-        else phases filter (_.enabled)
+        if (settings.debug && settings.isInfo)
+          phases
+        else
+          phases filter (_.enabled)
       def isEnabled(q: String) = enabled exists (_.phaseName == q)
       val (satisfied, unhappy) = enabled partition (_.requires forall isEnabled)
       unhappy foreach (u =>
@@ -747,15 +762,21 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def phaseFlagDescriptions: String = {
     def fmt(ph: SubComponent) = {
       def fstr1 =
-        if (ph.phaseNewFlags == 0L) ""
-        else "[START] " + Flags.flagsToString(ph.phaseNewFlags)
+        if (ph.phaseNewFlags == 0L)
+          ""
+        else
+          "[START] " + Flags.flagsToString(ph.phaseNewFlags)
       def fstr2 =
-        if (ph.phaseNextFlags == 0L) ""
-        else "[END] " + Flags.flagsToString(ph.phaseNextFlags)
-      if (ph.initial) Flags.flagsToString(Flags.InitialFlags)
+        if (ph.phaseNextFlags == 0L)
+          ""
+        else
+          "[END] " + Flags.flagsToString(ph.phaseNextFlags)
+      if (ph.initial)
+        Flags.flagsToString(Flags.InitialFlags)
       else if (ph.phaseNewFlags != 0L && ph.phaseNextFlags != 0L)
         fstr1 + " " + fstr2
-      else fstr1 + fstr2
+      else
+        fstr1 + fstr2
     }
     phaseHelp("new flags", elliptically = false, fmt)
   }
@@ -779,8 +800,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val width = maxName min Limit
     val maxDesc = MaxCol - (width + 6) // descriptions not novels
     val fmt =
-      if (settings.verbose || !elliptically) s"%${maxName}s  %2s  %s%n"
-      else s"%${width}.${width}s  %2s  %.${maxDesc}s%n"
+      if (settings.verbose || !elliptically)
+        s"%${maxName}s  %2s  %s%n"
+      else
+        s"%${width}.${width}s  %2s  %.${maxDesc}s%n"
 
     val line1 = fmt.format("phase name", "id", title)
     val line2 = fmt.format("----------", "--", "-" * title.length)
@@ -789,9 +812,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     import java.util.{Formattable, FormattableFlags, Formatter}
     def dotfmt(s: String) = new Formattable {
       def elliptically(s: String, max: Int) = (
-        if (max < 0 || s.length <= max) s
-        else if (max < 4) s.take(max)
-        else s.take(max - 3) + "..."
+        if (max < 0 || s.length <= max)
+          s
+        else if (max < 4)
+          s.take(max)
+        else
+          s.take(max - 3) + "..."
       )
       override def formatTo(
           formatter: Formatter,
@@ -804,11 +830,14 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
           val sb = new StringBuilder
           def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-          if (!leftly) pad()
+          if (!leftly)
+            pad()
           sb.append(p)
-          if (leftly) pad()
+          if (leftly)
+            pad()
           sb.toString
-        } else p
+        } else
+          p
         formatter.out.append(w)
       }
     }
@@ -817,13 +846,17 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def idOf(p: SubComponent) = (
       if (settings.skip contains p.phaseName)
         "oo" // (currentRun skipPhase p.phaseName)
-      else if (!p.enabled) "xx"
-      else p.ownPhase.id.toString
+      else if (!p.enabled)
+        "xx"
+      else
+        p.ownPhase.id.toString
     )
     def mkText(p: SubComponent) = {
       val (name, text) =
-        if (elliptically) (dotfmt(p.phaseName), dotfmt(describe(p)))
-        else (p.phaseName, describe(p))
+        if (elliptically)
+          (dotfmt(p.phaseName), dotfmt(describe(p)))
+        else
+          (p.phaseName, describe(p))
       fmt.format(name, idOf(p), text)
     }
     line1 :: line2 :: (phaseDescriptors map mkText) mkString
@@ -838,8 +871,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       .filterNot(_ eq NoPhase)
       .foldLeft(List[(Phase, T)]()) { (res, ph) =>
         val value = exitingPhase(ph)(op)
-        if (res.nonEmpty && res.head._2 == value) res
-      else ((ph, value)) :: res
+        if (res.nonEmpty && res.head._2 == value)
+        res
+      else
+        ((ph, value)) :: res
     } reverse
   }
 
@@ -925,8 +960,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             s"classpath updated on entries [${subst.keys mkString ","}]")
           def mkClassPath(
               elems: Iterable[PlatformClassPath]): PlatformClassPath =
-            if (elems.size == 1) elems.head
-            else new MergedClassPath(elems, recursiveClassPath.context)
+            if (elems.size == 1)
+              elems.head
+            else
+              new MergedClassPath(elems, recursiveClassPath.context)
           val oldEntries = mkClassPath(subst.keys)
           val newEntries = mkClassPath(subst.values)
           mergeNewEntries(
@@ -993,10 +1030,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       invalidateOrRemove(root)
     } else {
       if (classesFound) {
-        if (root.isRoot) invalidateOrRemove(EmptyPackageClass)
-        else failed += root
+        if (root.isRoot)
+          invalidateOrRemove(EmptyPackageClass)
+        else
+          failed += root
       }
-      if (!oldEntries.isDefined) invalidateOrRemove(root)
+      if (!oldEntries.isDefined)
+        invalidateOrRemove(root)
       else
         for (pstr <- newEntries.packages.map(getName)) {
           val pname = newTermName(pstr)
@@ -1044,9 +1084,15 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     */
   def currentRun: Run = curRun
   def currentUnit: CompilationUnit =
-    if (currentRun eq null) NoCompilationUnit else currentRun.currentUnit
+    if (currentRun eq null)
+      NoCompilationUnit
+    else
+      currentRun.currentUnit
   def currentSource: SourceFile =
-    if (currentUnit.exists) currentUnit.source else lastSeenSourceFile
+    if (currentUnit.exists)
+      currentUnit.source
+    else
+      lastSeenSourceFile
   def currentFreshNameCreator = currentUnit.fresh
 
   def isGlobalInitialized = (
@@ -1105,8 +1151,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   // Owners which aren't package classes.
   private def ownerChainString(sym: Symbol): String = (
-    if (sym == null) ""
-    else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
+    if (sym == null)
+      ""
+    else
+      sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
   )
 
   private def formatExplain(pairs: (String, Any)*): String = (
@@ -1127,7 +1175,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       val pos_s =
         if (tree.pos.isDefined)
           s"line ${tree.pos.line} of ${tree.pos.source.file}"
-        else "<unknown>"
+        else
+          "<unknown>"
       val context_s =
         try {
           // Taking 3 before, 3 after the fingered line.
@@ -1150,7 +1199,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
       val info1 = formatExplain(
         "while compiling" -> currentSource.path,
-        "during phase" -> (if (globalPhase eq phase) phase
+        "during phase" -> (if (globalPhase eq phase)
+                             phase
                            else
                              "globalPhase=%s, enteringPhase=%s"
                                .format(globalPhase, phase)),
@@ -1323,10 +1373,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         // Ensure there is a terminal phase at the end, since -Ystop may have limited the phases.
         if (phs.isEmpty || !phs.last.terminal) {
           val t =
-            if (phaseDescriptors.last.terminal) phaseDescriptors.last
-            else terminal
+            if (phaseDescriptors.last.terminal)
+              phaseDescriptors.last
+            else
+              terminal
           phs :+ t
-        } else phs
+        } else
+          phs
       }
       // Create phases and link them together. We supply the previous, and the ctor sets prev.next.
       val last =
@@ -1334,7 +1387,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       // rewind (Iterator.iterate(last)(_.prev) dropWhile (_.prev ne NoPhase)).next
       val first = {
         var p = last;
-        while (p.prev ne NoPhase) p = p.prev;
+        while (p.prev ne NoPhase)
+          p = p.prev;
         p
       }
       val ss = settings
@@ -1350,11 +1404,15 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           setting.value = List(p)
           val count =
             (
-              if (including) first.iterator count (setting containsPhase _)
-              else phaseDescriptors count (setting contains _.phaseName)
+              if (including)
+                first.iterator count (setting containsPhase _)
+              else
+                phaseDescriptors count (setting contains _.phaseName)
             )
-          if (count == 0) warning(s"'$p' specifies no phase")
-          if (count > 1 && !isSpecial(p)) warning(s"'$p' selects $count phases")
+          if (count == 0)
+            warning(s"'$p' specifies no phase")
+          if (count > 1 && !isSpecial(p))
+            warning(s"'$p' selects $count phases")
           if (!including && isSpecial(p))
             globalError(s"-Yskip and -Ystop values must name phases: '$p'")
           setting.clear()
@@ -1414,7 +1472,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     private def totalProgress =
       (phaseDescriptors.size - 1) * size // -1: drops terminal phase
     private def refreshProgress() =
-      if (size > 0) progress(currentProgress, totalProgress)
+      if (size > 0)
+        progress(currentProgress, totalProgress)
 
     // ----- finding phases --------------------------------------------
 
@@ -1491,11 +1550,16 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     //       Here we work around that wrinkle by claiming that a early-initialized member is compiled in
     //       *every* run. This approximation works because this method is exclusively called with `this` == `currentRun`.
     def compiles(sym: Symbol): Boolean =
-      if (sym == NoSymbol) false
-      else if (symSource.isDefinedAt(sym)) true
-      else if (!sym.isTopLevel) compiles(sym.enclosingTopLevelClassOrDummy)
-      else if (sym.isModuleClass) compiles(sym.sourceModule)
-      else false
+      if (sym == NoSymbol)
+        false
+      else if (symSource.isDefinedAt(sym))
+        true
+      else if (!sym.isTopLevel)
+        compiles(sym.enclosingTopLevelClassOrDummy)
+      else if (sym.isModuleClass)
+        compiles(sym.sourceModule)
+      else
+        false
 
     /** Is this run allowed to redefine the given symbol? Usually this is true
       *  if the run does not already compile `sym`, but for interactive mode
@@ -1508,7 +1572,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     protected def runCheckers() {
       val toCheck = globalPhase.prev
       val canCheck = toCheck.checkable
-      val fmt = if (canCheck) "[Now checking: %s]" else "[Not checkable: %s]"
+      val fmt =
+        if (canCheck)
+          "[Now checking: %s]"
+        else
+          "[Not checkable: %s]"
 
       inform(fmt format toCheck.name)
 
@@ -1522,7 +1590,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     private def showMembers() = {
       // Allows for syntax like scalac -Xshow-class Random@erasure,typer
       def splitClassAndPhase(str: String, term: Boolean): Name = {
-        def mkName(s: String) = if (term) newTermName(s) else newTypeName(s)
+        def mkName(s: String) =
+          if (term)
+            newTermName(s)
+          else
+            newTypeName(s)
         (str indexOf '@') match {
           case -1 => mkName(str)
           case idx =>
@@ -1612,7 +1684,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           // print trees
           if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
             nodePrinters.printAll()
-          else printAllUnits()
+          else
+            printAllUnits()
         }
 
         // print the symbols presently attached to AST nodes
@@ -1681,7 +1754,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           if (settings.script.isSetByUser && filenames.size > 1)
             returning(Nil)(_ =>
               globalError("can only compile one script at a time"))
-          else filenames map getSourceFile
+          else
+            filenames map getSourceFile
 
         compileSources(sources)
       } catch {
@@ -1724,7 +1798,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         enteringPhase(firstPhase) {
           pclazz.setInfo(enteringPhase(typerPhase)(pclazz.info))
         }
-        if (!pclazz.isRoot) resetPackageClass(pclazz.owner)
+        if (!pclazz.isRoot)
+          resetPackageClass(pclazz.owner)
       }
   } // class Run
 
@@ -1744,7 +1819,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       definitions.ObjectClass)
     def phased[T](body: => T): T = exitingPhase(ph)(body)
     def boringMember(sym: Symbol) = boringOwners(sym.owner)
-    def symString(sym: Symbol) = if (sym.isTerm) sym.defString else sym.toString
+    def symString(sym: Symbol) =
+      if (sym.isTerm)
+        sym.defString
+      else
+        sym.toString
 
     def members(sym: Symbol) =
       phased(sym.info.members filterNot boringMember map symString)
@@ -1770,7 +1849,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         ph.name)
       val baseClasses = bases(sym).mkString("Base classes:\n  ", "\n  ", "")
       val contents =
-        if (declsOnly) decls(sym).mkString("Declarations:\n  ", "\n  ", "")
+        if (declsOnly)
+          decls(sym).mkString("Declarations:\n  ", "\n  ", "")
         else
           members(sym).mkString(
             "Members (excluding Any/AnyRef unless overridden):\n  ",

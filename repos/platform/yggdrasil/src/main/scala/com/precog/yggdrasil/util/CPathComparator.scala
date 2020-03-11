@@ -53,7 +53,13 @@ object MaybeOrdering {
     def complement = NoComp
   }
 
-  def fromInt(n: Int): MaybeOrdering = if (n < 0) Lt else if (n == 0) Eq else Gt
+  def fromInt(n: Int): MaybeOrdering =
+    if (n < 0)
+      Lt
+    else if (n == 0)
+      Eq
+    else
+      Gt
 }
 
 trait CPathComparator { self =>
@@ -228,7 +234,8 @@ object CPathComparator {
           def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
             if (selector.canPluck(lCol(r1), indices, mask)) {
               ordering
-            } else Lt
+            } else
+              Lt
           }
         }
     }
@@ -279,7 +286,12 @@ private[yggdrasil] final class HalfArrayCPathComparator[
     if (lPluckable) {
       val a = lSelector.pluck(left, indices, lMask)
       val cmp = ho.compare(a, rCol(r2))
-      if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
+      if (cmp < 0)
+        Lt
+      else if (cmp == 0)
+        Eq
+      else
+        Gt
     } else {
       Lt
     }
@@ -325,7 +337,12 @@ private[yggdrasil] final class ArrayCPathComparator[
         val a = lSelector.pluck(left, indices, lMask)
         val b = rSelector.pluck(right, indices, rMask)
         val cmp = ho.compare(a, b)
-        if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
+        if (cmp < 0)
+          Lt
+        else if (cmp == 0)
+          Eq
+        else
+          Gt
       } else {
         Gt
       }

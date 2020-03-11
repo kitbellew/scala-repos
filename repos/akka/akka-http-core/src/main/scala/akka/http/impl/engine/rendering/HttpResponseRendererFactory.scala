@@ -71,7 +71,9 @@ private[http] class HttpResponseRendererFactory(
         var closeMode: CloseMode =
           DontClose // signals what to do after the current response
         def close: Boolean = closeMode != DontClose
-        def closeIf(cond: Boolean): Unit = if (cond) closeMode = CloseConnection
+        def closeIf(cond: Boolean): Unit =
+          if (cond)
+            closeMode = CloseConnection
         var transferring = false
 
         setHandler(
@@ -81,13 +83,16 @@ private[http] class HttpResponseRendererFactory(
               render(grab(in)) match {
                 case Strict(outElement) ⇒
                   push(out, outElement)
-                  if (close) completeStage()
+                  if (close)
+                    completeStage()
                 case Streamed(outStream) ⇒ transfer(outStream)
               }
 
             override def onUpstreamFinish(): Unit =
-              if (transferring) closeMode = CloseConnection
-              else completeStage()
+              if (transferring)
+                closeMode = CloseConnection
+              else
+                completeStage()
           }
         )
         val waitForDemandHandler = new OutHandler {
@@ -101,11 +106,13 @@ private[http] class HttpResponseRendererFactory(
           sinkIn.setHandler(new InHandler {
             override def onPush(): Unit = push(out, sinkIn.grab())
             override def onUpstreamFinish(): Unit =
-              if (close) completeStage()
+              if (close)
+                completeStage()
               else {
                 transferring = false
                 setHandler(out, waitForDemandHandler)
-                if (isAvailable(out)) pull(in)
+                if (isAvailable(out))
+                  pull(in)
               }
           })
           setHandler(
@@ -131,8 +138,10 @@ private[http] class HttpResponseRendererFactory(
           def renderStatusLine(): Unit =
             protocol match {
               case `HTTP/1.1` ⇒
-                if (status eq StatusCodes.OK) r ~~ DefaultStatusLineBytes
-                else r ~~ StatusLineStartBytes ~~ status ~~ CrLf
+                if (status eq StatusCodes.OK)
+                  r ~~ DefaultStatusLineBytes
+                else
+                  r ~~ StatusLineStartBytes ~~ status ~~ CrLf
               case `HTTP/1.0` ⇒ r ~~ protocol ~~ ' ' ~~ status ~~ CrLf
             }
 
@@ -203,7 +212,8 @@ private[http] class HttpResponseRendererFactory(
                         render(
                           if (mustRenderTransferEncodingChunkedHeader)
                             te.withChunked
-                          else te)
+                          else
+                            te)
                         renderHeaders(
                           tail,
                           alwaysClose,
@@ -215,8 +225,10 @@ private[http] class HttpResponseRendererFactory(
 
                   case x: Connection ⇒
                     val connectionHeader =
-                      if (connHeader eq null) x
-                      else Connection(x.tokens ++ connHeader.tokens)
+                      if (connHeader eq null)
+                        x
+                      else
+                        Connection(x.tokens ++ connHeader.tokens)
                     renderHeaders(
                       tail,
                       alwaysClose,
@@ -236,7 +248,8 @@ private[http] class HttpResponseRendererFactory(
                       dateSeen)
 
                   case x: CustomHeader ⇒
-                    if (x.renderInResponses) render(x)
+                    if (x.renderInResponses)
+                      render(x)
                     renderHeaders(
                       tail,
                       alwaysClose,
@@ -258,7 +271,8 @@ private[http] class HttpResponseRendererFactory(
                       dateSeen)
 
                   case x ⇒
-                    if (x.renderInResponses) render(x)
+                    if (x.renderInResponses)
+                      render(x)
                     else
                       log.warning(
                         "HTTP header '{}' is not allowed in responses",
@@ -273,8 +287,10 @@ private[http] class HttpResponseRendererFactory(
                 }
 
               case Nil ⇒
-                if (!serverSeen) renderDefaultServerHeader(r)
-                if (!dateSeen) r ~~ dateHeader
+                if (!serverSeen)
+                  renderDefaultServerHeader(r)
+                if (!dateSeen)
+                  r ~~ dateHeader
 
                 // Do we close the connection after this response?
                 closeIf {
@@ -287,8 +303,10 @@ private[http] class HttpResponseRendererFactory(
                     case `HTTP/1.1` ⇒
                       (connHeader ne null) && connHeader.hasClose
                     case `HTTP/1.0` ⇒
-                      if (connHeader eq null) ctx.requestProtocol == `HTTP/1.1`
-                      else !connHeader.hasKeepAlive
+                      if (connHeader eq null)
+                        ctx.requestProtocol == `HTTP/1.1`
+                      else
+                        !connHeader.hasKeepAlive
                   })
                 }
 
@@ -299,8 +317,10 @@ private[http] class HttpResponseRendererFactory(
                     protocol != ctx.requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
 
                 if (renderConnectionHeader)
-                  r ~~ Connection ~~ (if (close) CloseBytes
-                                      else KeepAliveBytes) ~~ CrLf
+                  r ~~ Connection ~~ (if (close)
+                                        CloseBytes
+                                      else
+                                        KeepAliveBytes) ~~ CrLf
                 else if (connHeader != null && connHeader.hasUpgrade) {
                   r ~~ connHeader ~~ CrLf
                   headers
@@ -318,7 +338,8 @@ private[http] class HttpResponseRendererFactory(
           def renderContentLengthHeader(contentLength: Long) =
             if (status.allowsEntity)
               r ~~ `Content-Length` ~~ contentLength ~~ CrLf
-            else r
+            else
+              r
 
           def byteStrings(entityBytes: ⇒ Source[ByteString, Any])
               : Source[ResponseRenderingOutput, Any] =
@@ -333,7 +354,8 @@ private[http] class HttpResponseRendererFactory(
                 renderEntityContentType(r, entity)
                 renderContentLengthHeader(data.length) ~~ CrLf
 
-                if (!noEntity) r ~~ data
+                if (!noEntity)
+                  r ~~ data
 
                 Strict {
                   closeMode match {

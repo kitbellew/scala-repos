@@ -103,10 +103,18 @@ trait Ordering[T]
   override def equiv(x: T, y: T): Boolean = compare(x, y) == 0
 
   /** Return `x` if `x` >= `y`, otherwise `y`. */
-  def max(x: T, y: T): T = if (gteq(x, y)) x else y
+  def max(x: T, y: T): T =
+    if (gteq(x, y))
+      x
+    else
+      y
 
   /** Return `x` if `x` <= `y`, otherwise `y`. */
-  def min(x: T, y: T): T = if (lteq(x, y)) x else y
+  def min(x: T, y: T): T =
+    if (lteq(x, y))
+      x
+    else
+      y
 
   /** Return the opposite ordering of this one. */
   override def reverse: Ordering[T] = new Ordering[T] {
@@ -181,7 +189,8 @@ object Ordering extends LowPriorityOrderingImplicits {
 
           while (xe.hasNext && ye.hasNext) {
             val res = ord.compare(xe.next(), ye.next())
-            if (res != 0) return res
+            if (res != 0)
+              return res
           }
 
           Ordering.Boolean.compare(xe.hasNext, ye.hasNext)
@@ -205,7 +214,13 @@ object Ordering extends LowPriorityOrderingImplicits {
 
   /** Construct an Ordering[T] given a function `lt`. */
   def fromLessThan[T](cmp: (T, T) => Boolean): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T) = if (cmp(x, y)) -1 else if (cmp(y, x)) 1 else 0
+    def compare(x: T, y: T) =
+      if (cmp(x, y))
+        -1
+      else if (cmp(y, x))
+        1
+      else
+        0
     // overrides to avoid multiple comparisons
     override def lt(x: T, y: T): Boolean = cmp(x, y)
     override def gt(x: T, y: T): Boolean = cmp(y, x)
@@ -257,17 +272,23 @@ object Ordering extends LowPriorityOrderingImplicits {
 
   trait IntOrdering extends Ordering[Int] {
     def compare(x: Int, y: Int) =
-      if (x < y) -1
-      else if (x == y) 0
-      else 1
+      if (x < y)
+        -1
+      else if (x == y)
+        0
+      else
+        1
   }
   implicit object Int extends IntOrdering
 
   trait LongOrdering extends Ordering[Long] {
     def compare(x: Long, y: Long) =
-      if (x < y) -1
-      else if (x == y) 0
-      else 1
+      if (x < y)
+        -1
+      else if (x == y)
+        0
+      else
+        1
   }
   implicit object Long extends LongOrdering
 
@@ -363,7 +384,8 @@ object Ordering extends LowPriorityOrderingImplicits {
 
         while (xe.hasNext && ye.hasNext) {
           val res = ord.compare(xe.next(), ye.next())
-          if (res != 0) return res
+          if (res != 0)
+            return res
         }
 
         Boolean.compare(xe.hasNext, ye.hasNext)
@@ -376,9 +398,11 @@ object Ordering extends LowPriorityOrderingImplicits {
     new Ordering[(T1, T2)] {
       def compare(x: (T1, T2), y: (T1, T2)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         0
       }
     }
@@ -390,11 +414,14 @@ object Ordering extends LowPriorityOrderingImplicits {
     new Ordering[(T1, T2, T3)] {
       def compare(x: (T1, T2, T3), y: (T1, T2, T3)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         0
       }
     }
@@ -407,13 +434,17 @@ object Ordering extends LowPriorityOrderingImplicits {
     new Ordering[(T1, T2, T3, T4)] {
       def compare(x: (T1, T2, T3, T4), y: (T1, T2, T3, T4)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         0
       }
     }
@@ -429,15 +460,20 @@ object Ordering extends LowPriorityOrderingImplicits {
           x: (T1, T2, T3, T4, T5),
           y: Tuple5[T1, T2, T3, T4, T5]): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         val compare5 = ord5.compare(x._5, y._5)
-        if (compare5 != 0) return compare5
+        if (compare5 != 0)
+          return compare5
         0
       }
     }
@@ -454,17 +490,23 @@ object Ordering extends LowPriorityOrderingImplicits {
           x: (T1, T2, T3, T4, T5, T6),
           y: (T1, T2, T3, T4, T5, T6)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         val compare5 = ord5.compare(x._5, y._5)
-        if (compare5 != 0) return compare5
+        if (compare5 != 0)
+          return compare5
         val compare6 = ord6.compare(x._6, y._6)
-        if (compare6 != 0) return compare6
+        if (compare6 != 0)
+          return compare6
         0
       }
     }
@@ -482,19 +524,26 @@ object Ordering extends LowPriorityOrderingImplicits {
           x: (T1, T2, T3, T4, T5, T6, T7),
           y: (T1, T2, T3, T4, T5, T6, T7)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         val compare5 = ord5.compare(x._5, y._5)
-        if (compare5 != 0) return compare5
+        if (compare5 != 0)
+          return compare5
         val compare6 = ord6.compare(x._6, y._6)
-        if (compare6 != 0) return compare6
+        if (compare6 != 0)
+          return compare6
         val compare7 = ord7.compare(x._7, y._7)
-        if (compare7 != 0) return compare7
+        if (compare7 != 0)
+          return compare7
         0
       }
     }
@@ -513,21 +562,29 @@ object Ordering extends LowPriorityOrderingImplicits {
           x: (T1, T2, T3, T4, T5, T6, T7, T8),
           y: (T1, T2, T3, T4, T5, T6, T7, T8)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         val compare5 = ord5.compare(x._5, y._5)
-        if (compare5 != 0) return compare5
+        if (compare5 != 0)
+          return compare5
         val compare6 = ord6.compare(x._6, y._6)
-        if (compare6 != 0) return compare6
+        if (compare6 != 0)
+          return compare6
         val compare7 = ord7.compare(x._7, y._7)
-        if (compare7 != 0) return compare7
+        if (compare7 != 0)
+          return compare7
         val compare8 = ord8.compare(x._8, y._8)
-        if (compare8 != 0) return compare8
+        if (compare8 != 0)
+          return compare8
         0
       }
     }
@@ -547,23 +604,32 @@ object Ordering extends LowPriorityOrderingImplicits {
           x: (T1, T2, T3, T4, T5, T6, T7, T8, T9),
           y: (T1, T2, T3, T4, T5, T6, T7, T8, T9)): Int = {
         val compare1 = ord1.compare(x._1, y._1)
-        if (compare1 != 0) return compare1
+        if (compare1 != 0)
+          return compare1
         val compare2 = ord2.compare(x._2, y._2)
-        if (compare2 != 0) return compare2
+        if (compare2 != 0)
+          return compare2
         val compare3 = ord3.compare(x._3, y._3)
-        if (compare3 != 0) return compare3
+        if (compare3 != 0)
+          return compare3
         val compare4 = ord4.compare(x._4, y._4)
-        if (compare4 != 0) return compare4
+        if (compare4 != 0)
+          return compare4
         val compare5 = ord5.compare(x._5, y._5)
-        if (compare5 != 0) return compare5
+        if (compare5 != 0)
+          return compare5
         val compare6 = ord6.compare(x._6, y._6)
-        if (compare6 != 0) return compare6
+        if (compare6 != 0)
+          return compare6
         val compare7 = ord7.compare(x._7, y._7)
-        if (compare7 != 0) return compare7
+        if (compare7 != 0)
+          return compare7
         val compare8 = ord8.compare(x._8, y._8)
-        if (compare8 != 0) return compare8
+        if (compare8 != 0)
+          return compare8
         val compare9 = ord9.compare(x._9, y._9)
-        if (compare9 != 0) return compare9
+        if (compare9 != 0)
+          return compare9
         0
       }
     }

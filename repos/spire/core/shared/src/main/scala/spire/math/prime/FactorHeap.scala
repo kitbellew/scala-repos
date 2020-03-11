@@ -61,7 +61,8 @@ class FactorHeap {
   }
 
   def dequeue(): Factor = {
-    if (len == 0) throw new NoSuchElementException("empty heap")
+    if (len == 0)
+      throw new NoSuchElementException("empty heap")
     val result = arr(1)
     val last = arr(len)
     len -= 1 // points to last valid slot
@@ -69,7 +70,8 @@ class FactorHeap {
     var i = 1
     var j = 2
     while (len >= j) {
-      if (j < len && arr(j).next > arr(j + 1).next) j += 1
+      if (j < len && arr(j).next > arr(j + 1).next)
+        j += 1
       val cv = arr(j)
       if (last.next <= cv.next) {
         arr(i) = last;

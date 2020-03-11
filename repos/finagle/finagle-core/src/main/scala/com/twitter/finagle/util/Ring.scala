@@ -68,8 +68,10 @@ class Ring(positions: Array[Int]) {
     * Compute the width of the given index.
     */
   private[this] def width(i: Int): Int =
-    if (i == 0) nodes(0).toInt
-    else (nodes(i) - nodes(i - 1)).toInt
+    if (i == 0)
+      nodes(0).toInt
+    else
+      (nodes(i) - nodes(i - 1)).toInt
 
   /**
     * Compute the range of the given index.

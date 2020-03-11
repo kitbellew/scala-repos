@@ -54,7 +54,12 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
         case (vid, nbrs) =>
           val s = nbrs.toSet
           assert(s.contains((vid + 1) % 100))
-          assert(s.contains(if (vid > 0) vid - 1 else 99))
+          assert(
+            s.contains(
+              if (vid > 0)
+                vid - 1
+              else
+                99))
       }
     }
   }
@@ -152,7 +157,12 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
         case (vid, edges) =>
           val s = edges.toSet
           val edgeSrcIds = s.map(e => e.srcId)
-          assert(edgeSrcIds.contains(if (vid > 0) vid - 1 else 99))
+          assert(
+            edgeSrcIds.contains(
+              if (vid > 0)
+                vid - 1
+              else
+                99))
       }
     }
   }
@@ -168,9 +178,18 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       edges.collect.foreach {
         case (vid, edges) =>
           val s = edges.toSet
-          val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
+          val edgeIds = s.map(e =>
+            if (vid != e.srcId)
+              e.srcId
+            else
+              e.dstId)
           assert(edgeIds.contains((vid + 1) % 100))
-          assert(edgeIds.contains(if (vid > 0) vid - 1 else 99))
+          assert(
+            edgeIds.contains(
+              if (vid > 0)
+                vid - 1
+              else
+                99))
       }
     }
   }
@@ -229,7 +248,11 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       edges.collect.foreach {
         case (vid, edges) =>
           val s = edges.toSet
-          val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
+          val edgeIds = s.map(e =>
+            if (vid != e.srcId)
+              e.srcId
+            else
+              e.dstId)
           if (vid == 0) {
             assert(edgeIds.contains(1))
           } else if (vid == 49) {

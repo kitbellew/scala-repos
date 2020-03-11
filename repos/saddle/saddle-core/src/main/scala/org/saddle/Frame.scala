@@ -304,7 +304,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       to: RX,
       inclusive: Boolean = true): Frame[RX, CX, T] = {
     val start = rowIx.lsearch(from)
-    val end = if (inclusive) rowIx.rsearch(to) else rowIx.lsearch(to)
+    val end =
+      if (inclusive)
+        rowIx.rsearch(to)
+      else
+        rowIx.lsearch(to)
     Frame(values.map(v => v.slice(start, end)), rowIx.slice(start, end), colIx)
   }
 
@@ -653,7 +657,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def first(k: RX): Series[CX, T] = {
     val loc = rowIx.getFirst(k)
-    if (loc == -1) emptyRow else rowAt(loc)
+    if (loc == -1)
+      emptyRow
+    else
+      rowAt(loc)
   }
 
   /**
@@ -663,7 +670,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def last(k: RX): Series[CX, T] = {
     val loc = rowIx.getLast(k)
-    if (loc == -1) Series.empty[CX, T] else rowAt(loc)
+    if (loc == -1)
+      Series.empty[CX, T]
+    else
+      rowAt(loc)
   }
 
   /**
@@ -673,7 +683,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def firstCol(k: CX): Series[RX, T] = {
     val loc = colIx.getFirst(k)
-    if (loc == -1) emptyCol else colAt(loc)
+    if (loc == -1)
+      emptyCol
+    else
+      colAt(loc)
   }
 
   /**
@@ -683,7 +696,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def lastCol(k: CX): Series[RX, T] = {
     val loc = colIx.getLast(k)
-    if (loc == -1) emptyCol else colAt(loc)
+    if (loc == -1)
+      emptyCol
+    else
+      colAt(loc)
   }
 
   /**
@@ -703,7 +719,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * index keys
     */
   def sortedRIx: Frame[RX, CX, T] =
-    if (rowIx.isMonotonic) this
+    if (rowIx.isMonotonic)
+      this
     else {
       val taker = rowIx.argSort
       Frame(values.map(_.take(taker)), rowIx.take(taker), colIx)
@@ -714,7 +731,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * index keys
     */
   def sortedCIx: Frame[RX, CX, T] =
-    if (colIx.isMonotonic) this
+    if (colIx.isMonotonic)
+      this
     else {
       val taker = colIx.argSort
       Frame(values.take(taker), rowIx, colIx.take(taker))
@@ -955,7 +973,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def where(pred: Series[_, Boolean]): Frame[RX, CX, T] = {
     val newVals = values.zipWithIndex.flatMap(z =>
-      if (pred.values(z._2)) Seq(z._1) else Seq.empty[Vec[T]])
+      if (pred.values(z._2))
+        Seq(z._1)
+      else
+        Seq.empty[Vec[T]])
     val newIdx = VecImpl.where(Vec(this.colIx.toArray))(pred.values.toArray)
     Frame(newVals, rowIx, Index(newIdx))
   }
@@ -1209,13 +1230,15 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val rvals: MatCols[U] =
       cJoin.rTake.map(locs => other.values.take(locs)).getOrElse(other.values)
 
-    val vecs = for (i <- 0 until lvals.length) yield {
-      val lvec: Vec[T] =
-        rJoin.lTake.map(locs => lvals(i).take(locs)).getOrElse(lvals(i))
-      val rvec: Vec[U] =
-        rJoin.rTake.map(locs => rvals(i).take(locs)).getOrElse(rvals(i))
-      (lvec, rvec)
-    }
+    val vecs =
+      for (i <- 0 until lvals.length)
+        yield {
+          val lvec: Vec[T] =
+            rJoin.lTake.map(locs => lvals(i).take(locs)).getOrElse(lvals(i))
+          val rvec: Vec[U] =
+            rJoin.rTake.map(locs => rvals(i).take(locs)).getOrElse(rvals(i))
+          (lvec, rvec)
+        }
 
     val (lvecs, rvecs) = vecs.unzip
 
@@ -1392,7 +1415,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       }
 
       Frame[O1, V, T](result, rix, cix)
-    } else Frame.empty[O1, V, T]
+    } else
+      Frame.empty[O1, V, T]
   }
 
   /**
@@ -1560,14 +1584,16 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * row Series
     */
   def toRowSeq: IndexedSeq[(RX, Series[CX, T])] =
-    for (i <- array.range(0, numRows)) yield (rowIx.raw(i), rowAt(i))
+    for (i <- array.range(0, numRows))
+      yield (rowIx.raw(i), rowAt(i))
 
   /**
     * Produce an indexed sequence of pairs of column index value and
     * column Series.
     */
   def toColSeq: IndexedSeq[(CX, Series[RX, T])] =
-    for (i <- array.range(0, numCols)) yield (colIx.raw(i), colAt(i))
+    for (i <- array.range(0, numCols))
+      yield (colIx.raw(i), colAt(i))
 
   /**
     * Produce an indexed sequence of triples of values in the Frame
@@ -1634,7 +1660,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       val csca = colIx.scalarTag
       def clen(c: Int) = clens(c) max {
         val lst = csca.strList(colIx.raw(c)).map(_.length)
-        if (lst.length > 0) lst.max else 0
+        if (lst.length > 0)
+          lst.max
+        else
+          0
       }
 
       var prevColMask =
@@ -1688,25 +1717,30 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
       // for building row labels
       def enumZip[A, B](a: List[A], b: List[B]): List[(Int, A, B)] =
-        for (v <- (a.zipWithIndex zip b)) yield (v._1._2, v._1._1, v._2)
+        for (v <- (a.zipWithIndex zip b))
+          yield (v._1._2, v._1._1, v._2)
 
       val prevRowLabels =
         Array.fill(rowIx.scalarTag.strList(rowIx.raw(0)).size)("")
       def resetRowLabels(k: Int) {
-        for (i <- k until prevRowLabels.length) prevRowLabels(i) = ""
+        for (i <- k until prevRowLabels.length)
+          prevRowLabels(i) = ""
       }
 
       def createIx(r: Int) = {
         val vls = rsca.strList(rowIx.raw(r))
-        val lst = for ((i, l, v) <- enumZip(rlens, vls)) yield {
-          val fmt = "%" + l + "s"
-          val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-            resetRowLabels(i + 1)
-            v.formatted(fmt)
-          } else "".formatted(fmt)
-          prevRowLabels(i) = v
-          res
-        }
+        val lst =
+          for ((i, l, v) <- enumZip(rlens, vls))
+            yield {
+              val fmt = "%" + l + "s"
+              val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
+                resetRowLabels(i + 1)
+                v.formatted(fmt)
+              } else
+                "".formatted(fmt)
+              prevRowLabels(i) = v
+              res
+            }
         lst.mkString(" ")
       }
 
@@ -1785,7 +1819,8 @@ object Frame extends BinOpFrame {
     * Factory method to create a Frame from a sequence of Vec objects
     */
   def apply[T: ST](values: Vec[T]*): Frame[Int, Int, T] =
-    if (values.isEmpty) empty[Int, Int, T]
+    if (values.isEmpty)
+      empty[Int, Int, T]
     else {
       val asIdxSeq = values.toIndexedSeq
       apply(
@@ -1802,7 +1837,8 @@ object Frame extends BinOpFrame {
       values: Seq[Vec[T]],
       rowIx: Index[RX],
       colIx: Index[CX]): Frame[RX, CX, T] =
-    if (values.isEmpty) empty[RX, CX, T]
+    if (values.isEmpty)
+      empty[RX, CX, T]
     else
       new Frame[RX, CX, T](MatCols[T](values: _*), rowIx, colIx)
 
@@ -1813,7 +1849,8 @@ object Frame extends BinOpFrame {
   def apply[CX: ST: ORD, T: ST](
       values: Seq[Vec[T]],
       colIx: Index[CX]): Frame[Int, CX, T] =
-    if (values.isEmpty) empty[Int, CX, T]
+    if (values.isEmpty)
+      empty[Int, CX, T]
     else {
       val asIdxSeq = values.toIndexedSeq
       apply(asIdxSeq, IndexIntRange(asIdxSeq(0).length), colIx)
@@ -1947,7 +1984,8 @@ object Panel {
     * Factory method to create a Frame from a sequence of Vec objects
     */
   def apply(values: Vec[_]*): Frame[Int, Int, Any] =
-    if (values.isEmpty) empty[Int, Int]
+    if (values.isEmpty)
+      empty[Int, Int]
     else {
       val asIdxSeq = values.toIndexedSeq
       apply(
@@ -1978,7 +2016,8 @@ object Panel {
   def apply[CX: ST: ORD](
       values: Seq[Vec[_]],
       colIx: Index[CX]): Frame[Int, CX, Any] =
-    if (values.isEmpty) empty[Int, CX]
+    if (values.isEmpty)
+      empty[Int, CX]
     else {
       val asIdxSeq = values.toIndexedSeq
       apply(asIdxSeq, IndexIntRange(asIdxSeq(0).length), colIx)

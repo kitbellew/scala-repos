@@ -184,11 +184,12 @@ class MapperSpec extends Specification with BeforeExample {
 
           for (t <- mm)(t.tag.get.startsWith("M")) must beTrue
 
-          for (t <- mm) yield {
-            t.model.cached_? must beFalse
-            t.model.obj
-            t.model.cached_? must beTrue
-          }
+          for (t <- mm)
+            yield {
+              t.model.cached_? must beFalse
+              t.model.obj
+              t.model.cached_? must beTrue
+            }
 
           (mm.length > 0) must beTrue
         }
@@ -229,7 +230,8 @@ class MapperSpec extends Specification with BeforeExample {
           val oo = SampleTag
             .findAll(By(SampleTag.tag, "Meow"), PreCache(SampleTag.model))
 
-          for (t <- oo) yield t.model.cached_? must beTrue
+          for (t <- oo)
+            yield t.model.cached_? must beTrue
 
           (oo.length > 0) must beTrue
         }
@@ -250,7 +252,8 @@ class MapperSpec extends Specification with BeforeExample {
               PreCache(SampleTag.model))
 
             (oo.length > 0) must beTrue
-            for (t <- oo) t.model.cached_? must beTrue
+            for (t <- oo)
+              t.model.cached_? must beTrue
           }
           success
         }
@@ -262,7 +265,8 @@ class MapperSpec extends Specification with BeforeExample {
             By(SampleTag.tag, "Meow"),
             PreCache(SampleTag.model, false))
 
-          for (t <- oo) yield t.model.cached_? must beTrue
+          for (t <- oo)
+            yield t.model.cached_? must beTrue
 
           (oo.length > 0) must beTrue
         }
@@ -277,7 +281,8 @@ class MapperSpec extends Specification with BeforeExample {
             MaxRows(2),
             PreCache(SampleTag.model, false))
 
-          for (t <- oo) yield t.model.cached_? must beTrue
+          for (t <- oo)
+            yield t.model.cached_? must beTrue
 
           (oo.length > 0) must beTrue
         }
@@ -373,7 +378,8 @@ class MapperSpec extends Specification with BeforeExample {
               PreCache(SampleTag.model))
 
             (oo.length > 0) must beTrue
-            for (t <- oo) yield t.model.cached_? must beTrue
+            for (t <- oo)
+              yield t.model.cached_? must beTrue
           }
           success
         }
@@ -385,7 +391,8 @@ class MapperSpec extends Specification with BeforeExample {
             By(SampleTag.tag, "Meow"),
             PreCache(SampleTag.model, false))
 
-          for (t <- oo) yield t.model.cached_? must beTrue
+          for (t <- oo)
+            yield t.model.cached_? must beTrue
 
           (oo.length > 0) must beTrue
         }
@@ -421,7 +428,8 @@ class MapperSpec extends Specification with BeforeExample {
             MaxRows(2),
             PreCache(SampleTag.model, false))
 
-          for (t <- oo) yield t.model.cached_? must beTrue
+          for (t <- oo)
+            yield t.model.cached_? must beTrue
 
           (oo.length > 0) must beTrue
         }

@@ -41,7 +41,10 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       true
     }
-    i == (if (F.isEmpty(fa)) 0 else 1)
+    i == (if (F.isEmpty(fa))
+            0
+          else
+            1)
   }
 
   def forallLazy[A](fa: F[A]): Boolean = {
@@ -50,7 +53,10 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       false
     }
-    i == (if (F.isEmpty(fa)) 0 else 1)
+    i == (if (F.isEmpty(fa))
+            0
+          else
+            1)
   }
 
   def forallConsistentWithExists[A](
@@ -66,7 +72,8 @@ trait FoldableLaws[F[_]] {
       // if p is true for all elements, then either there must be no elements
       // or there must exist an element for which it is true.
       (F.isEmpty(fa) || F.exists(fa)(p))
-    } else true // can't test much in this case
+    } else
+      true // can't test much in this case
   }
 
   /**

@@ -16,10 +16,12 @@ private[scala] trait SymbolTable
     with ThreadLocalStorage {
 
   def info(msg: => String) =
-    if (settings.verbose) println("[reflect-compiler] " + msg)
+    if (settings.verbose)
+      println("[reflect-compiler] " + msg)
 
   def debugInfo(msg: => String) =
-    if (settings.debug) info(msg)
+    if (settings.debug)
+      info(msg)
 
   /** Declares that this is a runtime reflection universe.
     *

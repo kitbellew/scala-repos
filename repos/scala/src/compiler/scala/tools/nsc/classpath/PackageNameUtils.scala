@@ -25,5 +25,8 @@ object PackageNameUtils {
   }
 
   def packagePrefix(inPackage: String): String =
-    if (inPackage == RootPackage) "" else inPackage + "."
+    if (inPackage == RootPackage)
+      ""
+    else
+      inPackage + "."
 }

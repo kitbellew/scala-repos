@@ -114,11 +114,14 @@ class SupervisorMiscSpec
               val result =
                 if (newKid eq kid)
                   "Failure: context.actorOf returned the same instance!"
-                else if (!kid.isTerminated) "Kid is zombie"
-                else if (newKid.isTerminated) "newKid was stillborn"
+                else if (!kid.isTerminated)
+                  "Kid is zombie"
+                else if (newKid.isTerminated)
+                  "newKid was stillborn"
                 else if (kid.path != newKid.path)
                   "The kids do not share the same path"
-                else "green"
+                else
+                  "green"
               testActor ! result
             } catch {
               case NonFatal(e) ⇒ testActor ! e
@@ -158,8 +161,10 @@ class SupervisorMiscSpec
                 children: Iterable[ActorRef]): Unit = {
               val newKid = context.actorOf(Props.empty, child.path.name)
               testActor ! {
-                if ((newKid ne child) && newKid.path == child.path) "green"
-                else "red"
+                if ((newKid ne child) && newKid.path == child.path)
+                  "green"
+                else
+                  "red"
               }
             }
           }

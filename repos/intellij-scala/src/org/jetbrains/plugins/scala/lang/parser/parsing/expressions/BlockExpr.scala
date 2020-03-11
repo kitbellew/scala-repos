@@ -19,7 +19,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.{ParserPatcher, ParserUtils}
  */
 object BlockExpr {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    if (ParserPatcher.getSuitablePatcher(builder).parse(builder)) return true
+    if (ParserPatcher.getSuitablePatcher(builder).parse(builder))
+      return true
     val blockExprMarker = builder.mark
     builder.getTokenType match {
       case ScalaTokenTypes.tLBRACE =>

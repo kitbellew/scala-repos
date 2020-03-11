@@ -110,7 +110,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       }
 
       (strategy.take()).process()
-      if (reverse.nonEmpty) next()
+      if (reverse.nonEmpty)
+        next()
     }
     next()
 
@@ -122,7 +123,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def dumpCalling: String = state.filter(_._2 == Calling).mkString("\n\t")
 
   def call[T](node: A[T], target: A[T])(implicit strategy: Strategy): Unit = {
-    if (config.checkCycles) cycleCheck(node, target)
+    if (config.checkCycles)
+      cycleCheck(node, target)
     pre {
       assert(running(node))
       readyInv(node)
@@ -198,7 +200,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     * Its computation is then evaluated and made available for nodes that have it as an input.
     */
   def addChecked[T](node: A[T])(implicit strategy: Strategy): Unit = {
-    if (!added(node)) addNew(node)
+    if (!added(node))
+      addNew(node)
 
     post {
       addedInv(node)
@@ -237,8 +240,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     post {
       addedInv(node)
       assert(running(node) ^ pending(node))
-      if (running(node)) runningInv(node)
-      if (pending(node)) pendingInv(node)
+      if (running(node))
+        runningInv(node)
+      if (pending(node))
+        pendingInv(node)
     }
   }
 
@@ -284,7 +289,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     progress.workStarting(node)
     val rawResult = wideConvert(f).left.map {
       case i: Incomplete =>
-        if (config.overwriteNode(i)) i.copy(node = Some(node)) else i
+        if (config.overwriteNode(i))
+          i.copy(node = Some(node))
+        else
+          i
       case e => Incomplete(Some(node), Incomplete.Error, directCause = Some(e))
     }
     val result = rewrap(rawResult)
@@ -386,13 +394,15 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       cycleCheck(caller.asInstanceOf[A[c]], called)
 
   def cycleCheck[T](node: A[T], target: A[T]): Unit = {
-    if (node eq target) cyclic(node, target, "Cannot call self")
+    if (node eq target)
+      cyclic(node, target, "Cannot call self")
     val all = IDSet.create[A[T]]
     def allCallers(n: A[T]): Unit = (all process n)(()) {
       callers.get(n).toList.flatten.foreach(allCallers)
     }
     allCallers(node)
-    if (all contains target) cyclic(node, target, "Cyclic reference")
+    if (all contains target)
+      cyclic(node, target, "Cyclic reference")
   }
   def cyclic[T](caller: A[T], target: A[T], msg: String) =
     throw new Incomplete(
@@ -417,6 +427,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def added(d: A[_]) = state contains d
   def complete = state.values.forall(_ == Done)
 
-  def pre(f: => Unit) = if (checkPreAndPostConditions) f
-  def post(f: => Unit) = if (checkPreAndPostConditions) f
+  def pre(f: => Unit) =
+    if (checkPreAndPostConditions)
+      f
+  def post(f: => Unit) =
+    if (checkPreAndPostConditions)
+      f
 }

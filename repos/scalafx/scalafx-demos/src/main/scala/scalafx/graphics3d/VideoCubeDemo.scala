@@ -83,7 +83,8 @@ object VideoCubeDemo extends JFXApp {
   val folder = folderOption match {
     case Some(folderName) => {
       val file = new File(folderName)
-      if (file.exists() && file.isDirectory) file
+      if (file.exists() && file.isDirectory)
+        file
       else
         throw new IllegalArgumentException(
           "System property `" + folderSysProperty + " = " + folderName + "` " +

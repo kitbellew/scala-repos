@@ -54,7 +54,8 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
       val c = buf(charOffset)
       ch = c
       charOffset += 1
-      if (c == '\\') potentialUnicode()
+      if (c == '\\')
+        potentialUnicode()
       if (ch < ' ') {
         skipCR()
         potentialLineEnd()
@@ -73,7 +74,8 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
       val c = buf(charOffset)
       ch = c
       charOffset += 1
-      if (c == '\\') potentialUnicode()
+      if (c == '\\')
+        potentialUnicode()
     }
   }
 
@@ -81,7 +83,8 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
   private def potentialUnicode() = {
     def evenSlashPrefix: Boolean = {
       var p = charOffset - 2
-      while (p >= 0 && buf(p) == '\\') p -= 1
+      while (p >= 0 && buf(p) == '\\')
+        p -= 1
       (charOffset - p) % 2 == 0
     }
     def udigit: Int = {
@@ -93,8 +96,10 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
         SU
       } else {
         val d = digit2int(buf(charOffset), 16)
-        if (d >= 0) charOffset += 1
-        else error(charOffset, "error in unicode escape")
+        if (d >= 0)
+          charOffset += 1
+        else
+          error(charOffset, "error in unicode escape")
         d
       }
     }

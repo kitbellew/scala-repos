@@ -36,13 +36,19 @@ import scalafx.scene.paint.Color
 
 object Light {
   implicit def sfxLight2jfx(l: Light): jfxse.Light =
-    if (l != null) l.delegate else null
+    if (l != null)
+      l.delegate
+    else
+      null
 
   // Distant Definition - Begin
 
   object Distant {
     implicit def sfxDistant2jfx(d: Distant): jfxse.Light.Distant =
-      if (d != null) d.delegate else null
+      if (d != null)
+        d.delegate
+      else
+        null
   }
 
   class Distant(
@@ -80,7 +86,10 @@ object Light {
 
   object Point {
     implicit def sfxPoint2jfx(p: Point): jfxse.Light.Point =
-      if (p != null) p.delegate else null
+      if (p != null)
+        p.delegate
+      else
+        null
 
   }
 
@@ -108,7 +117,10 @@ object Light {
 
   object Spot {
     implicit def sfxSpot2jfx(s: Spot): jfxse.Light.Spot =
-      if (s != null) s.delegate else null
+      if (s != null)
+        s.delegate
+      else
+        null
 
   }
 

@@ -21,7 +21,8 @@ class AtomicInteger(private[this] var value: Int)
   }
 
   final def compareAndSet(expect: Int, update: Int): Boolean = {
-    if (expect != value) false
+    if (expect != value)
+      false
     else {
       value = update
       true

@@ -445,12 +445,15 @@ private[camel] trait ActorProducerFixture
     private[this] def valueWithin(implicit timeout: FiniteDuration) =
       if (!callbackReceived.await(timeout.length, timeout.unit))
         fail("Callback not received!")
-      else callbackValue.get
+      else
+        callbackValue.get
 
     def expectDoneSyncWithin(implicit timeout: FiniteDuration): Unit =
-      if (!valueWithin(timeout)) fail("Expected to be done Synchronously")
+      if (!valueWithin(timeout))
+        fail("Expected to be done Synchronously")
     def expectDoneAsyncWithin(implicit timeout: FiniteDuration): Unit =
-      if (valueWithin(timeout)) fail("Expected to be done Asynchronously")
+      if (valueWithin(timeout))
+        fail("Expected to be done Asynchronously")
 
   }
 

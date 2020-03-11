@@ -493,7 +493,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               val typeOfRequest =
                 if (broker == state.leaderIsrAndControllerEpoch.leaderAndIsr.leader)
                   "become-leader"
-                else "become-follower"
+                else
+                  "become-follower"
               stateChangeLogger.trace(
                 ("Controller %d epoch %d sending %s LeaderAndIsr request %s to broker %d " +
                   "for partition [%s,%d]").format(
@@ -574,7 +575,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               2: Short
             else if (controller.config.interBrokerProtocolVersion >= KAFKA_0_9_0)
               1: Short
-            else 0: Short
+            else
+              0: Short
 
           val updateMetadataRequest =
             if (version == 0) {

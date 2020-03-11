@@ -1099,7 +1099,8 @@ private object ClientBuilderClient {
       val GlobalTimeout(timeout) = globalTimeoutP
       val Timer(timer) = timerP
 
-      if (timeout == Duration.Top) next
+      if (timeout == Duration.Top)
+        next
       else {
         val exception = new GlobalRequestTimeoutException(timeout)
         val globalTimeout =
@@ -1140,7 +1141,10 @@ private object ClientBuilderClient {
     val factory = client.withParams(clientParams).newClient(dest, label)
 
     val exitGuard =
-      if (!daemon) Some(ExitGuard.guard(s"client for '$label'")) else None
+      if (!daemon)
+        Some(ExitGuard.guard(s"client for '$label'"))
+      else
+        None
     new ServiceFactoryProxy[Req, Rep](factory) {
       private[this] val closed = new AtomicBoolean(false)
       override def close(deadline: Time): Future[Unit] = {
@@ -1249,8 +1253,10 @@ private case class CodecClient[Req, Rep](
       // disable failFast if the codec requests it or it is
       // disabled via the ClientBuilder parameter.
       val FailFast(failFast) = params[FailFast]
-      if (!codec.failFastOk || !failFast) stack0.remove(FailFastFactory.role)
-      else stack0
+      if (!codec.failFastOk || !failFast)
+        stack0.remove(FailFastFactory.role)
+      else
+        stack0
     }
 
     case class Client(
@@ -1280,8 +1286,10 @@ private case class CodecClient[Req, Rep](
 
     // don't override a configured protocol value
     val clientParams =
-      if (proto != ProtocolLibrary.param.default) params
-      else params + ProtocolLibrary(codec.protocolLibraryName)
+      if (proto != ProtocolLibrary.param.default)
+        params
+      else
+        params + ProtocolLibrary(codec.protocolLibraryName)
 
     Client(
       stack = clientStack,

@@ -75,7 +75,10 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     data.flatMap { v =>
       {
         val rep = rng.sample()
-        if (rep == 0) Iterator.empty else Iterator.fill(rep)(v)
+        if (rep == 0)
+          Iterator.empty
+        else
+          Iterator.fill(rep)(v)
       }
     }
   }

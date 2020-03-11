@@ -69,11 +69,14 @@ trait ScBindingPattern
 
   def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
-    if (ccontainingClass == null) return this
+    if (ccontainingClass == null)
+      return this
     val originalClass: PsiClass =
       ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
-    if (ccontainingClass eq originalClass) return this
-    if (!originalClass.isInstanceOf[ScTypeDefinition]) return this
+    if (ccontainingClass eq originalClass)
+      return this
+    if (!originalClass.isInstanceOf[ScTypeDefinition])
+      return this
     val c = originalClass.asInstanceOf[ScTypeDefinition]
     val membersIterator = c.members.iterator
     while (membersIterator.hasNext) {
@@ -84,7 +87,8 @@ trait ScBindingPattern
           val elemsIterator = d.declaredElements.iterator
           while (elemsIterator.hasNext) {
             val nextElem = elemsIterator.next()
-            if (nextElem.name == name) return nextElem
+            if (nextElem.name == name)
+              return nextElem
           }
         case _ =>
       }

@@ -64,8 +64,10 @@ class ConcurrentRingBuffer[T: ClassTag](capacity: Int) {
     val w = publishedWrite.get
     val r = nextRead.get
 
-    if (w < r) None
-    else Some(ring((r % capacity).toInt))
+    if (w < r)
+      None
+    else
+      Some(ring((r % capacity).toInt))
   }
 
   /**
@@ -80,7 +82,8 @@ class ConcurrentRingBuffer[T: ClassTag](capacity: Int) {
     if (w - r >= capacity)
       return false
 
-    if (!nextWrite.compareAndSet(w, w + 1)) tryPut(el)
+    if (!nextWrite.compareAndSet(w, w + 1))
+      tryPut(el)
     else {
       ring((w % capacity).toInt) = el
       publish(w)

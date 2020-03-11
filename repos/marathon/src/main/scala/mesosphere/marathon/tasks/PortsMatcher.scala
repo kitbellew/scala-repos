@@ -120,12 +120,12 @@ class PortsMatcher(
 
       mappings.iterator.map {
         case PortMapping(
-            containerPort,
-            hostPort,
-            servicePort,
-            protocol,
-            name,
-            labels) if hostPort == 0 =>
+              containerPort,
+              hostPort,
+              servicePort,
+              protocol,
+              name,
+              labels) if hostPort == 0 =>
           if (!availablePortsWithoutStaticHostPorts.hasNext) {
             log.info(
               s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
@@ -154,7 +154,10 @@ class PortsMatcher(
       ports: Iterator[Option[T]]): Option[Seq[T]] = {
     val allocatedPorts =
       ports.takeWhile(_.isDefined).take(expectedSize).flatten.toVector
-    if (allocatedPorts.size == expectedSize) Some(allocatedPorts) else None
+    if (allocatedPorts.size == expectedSize)
+      Some(allocatedPorts)
+    else
+      None
   }
 
   private[this] lazy val offeredPortRanges: Seq[PortRange] = {
@@ -162,8 +165,10 @@ class PortsMatcher(
       resource <- offer.getResourcesList.asScala.iterator
       if resourceSelector(resource) && resource.getName == Resource.PORTS
       rangeInResource <- resource.getRanges.getRangeList.asScala
-      reservation = if (resource.hasReservation) Option(resource.getReservation)
-      else None
+      reservation = if (resource.hasReservation)
+        Option(resource.getReservation)
+      else
+        None
     } yield PortRange(
       resource.getRole,
       rangeInResource.getBegin.toInt,

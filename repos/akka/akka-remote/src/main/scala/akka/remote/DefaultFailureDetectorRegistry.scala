@@ -77,7 +77,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
     // if we won the race then update else try again
     if (!resourceToFailureDetector.compareAndSet(
           oldTable,
-          Map.empty[A, FailureDetector])) reset() // recur
+          Map.empty[A, FailureDetector]))
+      reset() // recur
 
   }
 

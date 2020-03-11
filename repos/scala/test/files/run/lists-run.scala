@@ -77,7 +77,10 @@ object Test_multiset {
       {
         val intersection = xs intersect ys
         val unconsumed = xs.foldLeft(intersection) { (rest, e) =>
-          if (!rest.isEmpty && e == rest.head) rest.tail else rest
+          if (!rest.isEmpty && e == rest.head)
+            rest.tail
+          else
+            rest
         }
         unconsumed.isEmpty
       },

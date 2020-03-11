@@ -37,7 +37,10 @@ import scalafx.event.EventHandlerDelegate
 
 object Service {
   implicit def sfxService2jfx[T](s: Service[T]): jfxc.Service[T] =
-    if (s != null) s.delegate else null
+    if (s != null)
+      s.delegate
+    else
+      null
 
   /**
     * Create a new [[scalafx.concurrent.Service]] with a operation to be invoked after this was started on the JavaFX

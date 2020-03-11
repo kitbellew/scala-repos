@@ -27,7 +27,10 @@ private[ann] object BreezeUtil {
 
   // TODO: switch to MLlib BLAS interface
   private def transposeString(a: BDM[Double]): String =
-    if (a.isTranspose) "T" else "N"
+    if (a.isTranspose)
+      "T"
+    else
+      "N"
 
   /**
     * DGEMM: C := alpha * A * B + beta * C

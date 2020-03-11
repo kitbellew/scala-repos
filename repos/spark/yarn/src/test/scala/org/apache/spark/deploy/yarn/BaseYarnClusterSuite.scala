@@ -144,7 +144,11 @@ abstract class BaseYarnClusterSuite
       extraJars: Seq[String] = Nil,
       extraConf: Map[String, String] = Map(),
       extraEnv: Map[String, String] = Map()): SparkAppHandle.State = {
-    val deployMode = if (clientMode) "client" else "cluster"
+    val deployMode =
+      if (clientMode)
+        "client"
+      else
+        "cluster"
     val propsFile =
       createConfFile(extraClassPath = extraClassPath, extraConf = extraConf)
     val env =

@@ -15,8 +15,10 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
   */
 class ModifiersFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
-    if (element.isInstanceOf[PsiIdentifier]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
+    if (element.isInstanceOf[PsiIdentifier])
+      return false
     val (leaf, _) = processPsiLeafForFilter(
       getLeafByOffset(context.getTextRange.getStartOffset, context))
 
@@ -28,7 +30,8 @@ class ModifiersFilter extends ElementFilter {
         case _ =>
       }
       val tuple = ScalaCompletionUtil.getForAll(parent, leaf)
-      if (tuple._1) return tuple._2
+      if (tuple._1)
+        return tuple._2
     }
     false
   }

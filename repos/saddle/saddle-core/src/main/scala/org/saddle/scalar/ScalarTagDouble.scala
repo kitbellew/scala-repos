@@ -33,7 +33,14 @@ object ScalarTagDouble extends ScalarTag[Double] {
 
   // note, consider N/A's equal
   def compare(x: Double, y: Double)(implicit ev: ORD[Double]) =
-    if (x == y) 0 else if (x > y) 1 else if (x < y) -1 else 0
+    if (x == y)
+      0
+    else if (x > y)
+      1
+    else if (x < y)
+      -1
+    else
+      0
 
   def toDouble(t: Double)(implicit ev: NUM[Double]): Double = t
   override def isDouble = true
@@ -44,7 +51,10 @@ object ScalarTagDouble extends ScalarTag[Double] {
   def negInf(implicit ev: NUM[Double]) = Double.NegativeInfinity
 
   def show(v: Double) =
-    if (isMissing(v)) "%s" format "NA" else "%.4f" format (v)
+    if (isMissing(v))
+      "%s" format "NA"
+    else
+      "%.4f" format (v)
 
   override def runtimeClass = classOf[Double]
 

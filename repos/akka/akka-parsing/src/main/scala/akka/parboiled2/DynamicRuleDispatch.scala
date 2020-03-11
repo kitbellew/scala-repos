@@ -83,7 +83,8 @@ object DynamicRuleDispatch {
               val p = handler.parser
               p.__run[$L](p.${newTermName(name).encodedName.toTermName})(handler)
             }"""
-      } else q"handler.ruleNotFound(ruleName)"
+      } else
+        q"handler.ruleNotFound(ruleName)"
 
     c.Expr[(DynamicRuleDispatch[P, L], immutable.Seq[String])] {
       q"""val drd =

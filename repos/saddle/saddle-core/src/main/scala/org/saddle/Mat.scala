@@ -248,7 +248,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     val builder = Set.newBuilder[Int]
     var i = 0
     while (i < numRows) {
-      if (row(i).hasNA) builder += i
+      if (row(i).hasNA)
+        builder += i
       i += 1
     }
     builder.result()
@@ -450,7 +451,10 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
       val strFn = (col: Int) => {
         val l = lenMap(col)
         "%" + {
-          if (l > 0) l else 1
+          if (l > 0)
+            l
+          else
+            1
         } + "s " format scalarTag.show(apply(r, col))
       }
       buf.append(util.buildStr(ncols, numCols, strFn))
@@ -508,7 +512,10 @@ object Mat extends BinOpMat {
   def apply[T](rows: Int, cols: Int, arr: Array[T])(
       implicit st: ST[T]): Mat[T] = {
     val (r, c, a) =
-      if (rows == 0 || cols == 0) (0, 0, Array.empty[T]) else (rows, cols, arr)
+      if (rows == 0 || cols == 0)
+        (0, 0, Array.empty[T])
+      else
+        (rows, cols, arr)
     st.makeMat(r, c, a)
   }
 

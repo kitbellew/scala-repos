@@ -49,7 +49,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxBooleanProperty2sfx(
       p: jfxbp.BooleanProperty): BooleanProperty =
-    if (p != null) new BooleanProperty(p) else null
+    if (p != null)
+      new BooleanProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -60,7 +63,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     * @return ScalaFX BooleanProperty
     */
   implicit def jfxDoubleProperty2sfx(p: jfxbp.DoubleProperty): DoubleProperty =
-    if (p != null) new DoubleProperty(p) else null
+    if (p != null)
+      new DoubleProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -71,7 +77,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     * @return ScalaFX BooleanProperty
     */
   implicit def jfxFloatProperty2sfx(p: jfxbp.FloatProperty): FloatProperty =
-    if (p != null) new FloatProperty(p) else null
+    if (p != null)
+      new FloatProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -83,7 +92,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxIntegerProperty2sfx(
       p: jfxbp.IntegerProperty): IntegerProperty =
-    if (p != null) new IntegerProperty(p) else null
+    if (p != null)
+      new IntegerProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -94,7 +106,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     * @return ScalaFX LongProperty
     */
   implicit def jfxLongProperty2sfx(p: jfxbp.LongProperty): LongProperty =
-    if (p != null) new LongProperty(p) else null
+    if (p != null)
+      new LongProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -117,7 +132,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     * @return ScalaFX StringProperty
     */
   implicit def jfxStringProperty2sfx(p: jfxbp.StringProperty): StringProperty =
-    if (p != null) new StringProperty(p) else null
+    if (p != null)
+      new StringProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -129,7 +147,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyBooleanProperty2sfx(
       p: jfxbp.ReadOnlyBooleanProperty): ReadOnlyBooleanProperty =
-    if (p != null) new ReadOnlyBooleanProperty(p) else null
+    if (p != null)
+      new ReadOnlyBooleanProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -141,7 +162,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyDoubleProperty2sfx(
       p: jfxbp.ReadOnlyDoubleProperty): ReadOnlyDoubleProperty =
-    if (p != null) new ReadOnlyDoubleProperty(p) else null
+    if (p != null)
+      new ReadOnlyDoubleProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -153,7 +177,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyFloatProperty2sfx(
       p: jfxbp.ReadOnlyFloatProperty): ReadOnlyFloatProperty =
-    if (p != null) new ReadOnlyFloatProperty(p) else null
+    if (p != null)
+      new ReadOnlyFloatProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -165,7 +192,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyIntegerProperty2sfx(
       p: jfxbp.ReadOnlyIntegerProperty): ReadOnlyIntegerProperty =
-    if (p != null) new ReadOnlyIntegerProperty(p) else null
+    if (p != null)
+      new ReadOnlyIntegerProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -177,7 +207,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyLongProperty2sfx(
       p: jfxbp.ReadOnlyLongProperty): ReadOnlyLongProperty =
-    if (p != null) new ReadOnlyLongProperty(p) else null
+    if (p != null)
+      new ReadOnlyLongProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -201,7 +234,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyStringProperty2sfx(
       p: jfxbp.ReadOnlyStringProperty): ReadOnlyStringProperty =
-    if (p != null) new ReadOnlyStringProperty(p) else null
+    if (p != null)
+      new ReadOnlyStringProperty(p)
+    else
+      null
 
   /**
     * Converts a
@@ -213,7 +249,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyBooleanWrapper2sfx(
       p: jfxbp.ReadOnlyBooleanWrapper): ReadOnlyBooleanWrapper =
-    if (p != null) new ReadOnlyBooleanWrapper(p) else null
+    if (p != null)
+      new ReadOnlyBooleanWrapper(p)
+    else
+      null
 
   /**
     * Converts a
@@ -225,7 +264,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyDoubleWrapper2sfx(
       p: jfxbp.ReadOnlyDoubleWrapper): ReadOnlyDoubleWrapper =
-    if (p != null) new ReadOnlyDoubleWrapper(p) else null
+    if (p != null)
+      new ReadOnlyDoubleWrapper(p)
+    else
+      null
 
   /**
     * Converts a
@@ -237,7 +279,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyFloatWrapper2sfx(
       p: jfxbp.ReadOnlyFloatWrapper): ReadOnlyFloatWrapper =
-    if (p != null) new ReadOnlyFloatWrapper(p) else null
+    if (p != null)
+      new ReadOnlyFloatWrapper(p)
+    else
+      null
 
   /**
     * Converts a
@@ -249,7 +294,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyIntegerWrapper2sfx(
       p: jfxbp.ReadOnlyIntegerWrapper): ReadOnlyIntegerWrapper =
-    if (p != null) new ReadOnlyIntegerWrapper(p) else null
+    if (p != null)
+      new ReadOnlyIntegerWrapper(p)
+    else
+      null
 
   /**
     * Converts a
@@ -261,7 +309,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyLongWrapper2sfx(
       p: jfxbp.ReadOnlyLongWrapper): ReadOnlyLongWrapper =
-    if (p != null) new ReadOnlyLongWrapper(p) else null
+    if (p != null)
+      new ReadOnlyLongWrapper(p)
+    else
+      null
 
   /**
     * Converts a
@@ -285,7 +336,10 @@ trait PropertyIncludes extends LowerPriorityIncludes {
     */
   implicit def jfxReadOnlyStringWrapper2sfx(
       p: jfxbp.ReadOnlyStringWrapper): ReadOnlyStringWrapper =
-    if (p != null) new ReadOnlyStringWrapper(p) else null
+    if (p != null)
+      new ReadOnlyStringWrapper(p)
+    else
+      null
 
 }
 

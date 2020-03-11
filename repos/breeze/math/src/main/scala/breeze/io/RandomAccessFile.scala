@@ -975,7 +975,10 @@ abstract class ByteConverter {
   ///// bytesToXXX /////
   /**Takes 1 Byte and returns a UInt8 (as Short)*/
   def byteToUInt8(b0: Byte): Short = {
-    if (b0 < 0) (b0 + 256).toShort else b0.toShort
+    if (b0 < 0)
+      (b0 + 256).toShort
+    else
+      b0.toShort
   }
 
   /**Takes 2 Bytes and returns an Int16 (Short)*/
@@ -1033,7 +1036,10 @@ abstract class ByteConverter {
     require(
       value <= 255 && value >= 0,
       "Value " + value + " is out of range of 1-byte unsigned integer.")
-    if (value >= 128) (value - 256.toShort).toByte else value.toByte
+    if (value >= 128)
+      (value - 256.toShort).toByte
+    else
+      value.toByte
   }
 
   /**Takes an Int16 (Short), and returns an array of 2 bytes*/

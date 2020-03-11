@@ -14,7 +14,11 @@ trait BasicFormats {
   implicit object BooleanFormat extends SexpFormat[Boolean] {
     // all non-nil Sexps are technically "true"
     private val SexpTrue = SexpSymbol("t")
-    def write(x: Boolean) = if (x) SexpTrue else SexpNil
+    def write(x: Boolean) =
+      if (x)
+        SexpTrue
+      else
+        SexpNil
     def read(value: Sexp) = value match {
       case SexpNil => false
       case _       => true
@@ -64,10 +68,14 @@ trait BasicFormats {
   implicit def ViaBigDecimalFormat[T](implicit c: BigDecimalConvertor[T]) =
     new SexpFormat[T] {
       def write(x: T): Sexp =
-        if (c.isNaN(x)) SexpNaN
-        else if (c.isPosInf(x)) SexpPosInf
-        else if (c.isNegInf(x)) SexpNegInf
-        else SexpNumber(c.to(x))
+        if (c.isNaN(x))
+          SexpNaN
+        else if (c.isPosInf(x))
+          SexpPosInf
+        else if (c.isNegInf(x))
+          SexpNegInf
+        else
+          SexpNumber(c.to(x))
 
       def read(value: Sexp): T = value match {
         case SexpNumber(x) => c.from(x)

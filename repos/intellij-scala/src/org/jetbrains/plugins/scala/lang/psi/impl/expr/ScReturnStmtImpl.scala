@@ -41,6 +41,9 @@ class ScReturnStmtImpl(node: ASTNode)
 
   def returnFunction: Option[ScFunctionDefinition] = {
     val o = PsiTreeUtil.getParentOfType(this, classOf[ScFunctionDefinition])
-    if (o == null) None else Some(o)
+    if (o == null)
+      None
+    else
+      Some(o)
   }
 }

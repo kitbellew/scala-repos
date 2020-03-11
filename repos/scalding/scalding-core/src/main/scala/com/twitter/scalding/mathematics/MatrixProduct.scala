@@ -115,8 +115,10 @@ object MatrixProduct extends java.io.Serializable {
       // If leftsize is definite:
       leftSize.total
         .map { t =>
-          if (t < maxTinyJoin) TinyToAny
-          else new SmallToBig(numOfReducers(newHint))
+          if (t < maxTinyJoin)
+            TinyToAny
+          else
+            new SmallToBig(numOfReducers(newHint))
         }
         // Else just assume the right is smaller, but both are unknown:
         .getOrElse(new BigToSmall(numOfReducers(newHint)))
@@ -124,8 +126,10 @@ object MatrixProduct extends java.io.Serializable {
       // left > right
       rightSize.total
         .map { rs =>
-          if (rs < maxTinyJoin) AnyToTiny
-          else new BigToSmall(numOfReducers(newHint))
+          if (rs < maxTinyJoin)
+            AnyToTiny
+          else
+            new BigToSmall(numOfReducers(newHint))
         }
         .getOrElse(new BigToSmall(numOfReducers(newHint)))
     }
@@ -134,7 +138,10 @@ object MatrixProduct extends java.io.Serializable {
   def getCrosser(rightSize: SizeHint): MatrixCrosser =
     rightSize.total
       .map { t =>
-        if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall
+        if (t < maxTinyJoin)
+          AnyCrossTiny
+        else
+          AnyCrossSmall
       }
       .getOrElse(AnyCrossSmall)
 

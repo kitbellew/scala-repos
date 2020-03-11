@@ -51,11 +51,16 @@ object Example2App extends App {
       while (change.next()) {
         order += 1
         println(order)
-        if (change.wasPermutated) println("permutated")
-        if (change.wasAdded) println("added")
-        if (change.wasRemoved) println("removed")
-        if (change.wasReplaced) println("replaced")
-        if (change.wasUpdated) println("updated")
+        if (change.wasPermutated)
+          println("permutated")
+        if (change.wasAdded)
+          println("added")
+        if (change.wasRemoved)
+          println("removed")
+        if (change.wasReplaced)
+          println("replaced")
+        if (change.wasUpdated)
+          println("updated")
       }
     }
   }

@@ -103,12 +103,18 @@ class VectorOps_DoubleTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          if (bx) DenseVector.fill(N)(math.random * x)
-          else SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
-          if (by) DenseVector.fill(N)(math.random * y)
-          else SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
-          if (bz) DenseVector.fill(N)(math.random * z)
-          else SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
+          if (bx)
+            DenseVector.fill(N)(math.random * x)
+          else
+            SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
+          if (by)
+            DenseVector.fill(N)(math.random * y)
+          else
+            SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
+          if (bz)
+            DenseVector.fill(N)(math.random * z)
+          else
+            SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
       }
     }
   }
@@ -147,15 +153,18 @@ class VectorOps_FloatTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          if (bx) DenseVector.fill(N)(math.random * x toFloat)
+          if (bx)
+            DenseVector.fill(N)(math.random * x toFloat)
           else
             SparseVector(N)(
               xl.map(i => (i % N).abs -> (math.random * x toFloat)): _*),
-          if (by) DenseVector.fill(N)(math.random * y toFloat)
+          if (by)
+            DenseVector.fill(N)(math.random * y toFloat)
           else
             SparseVector(N)(
               yl.map(i => (i % N).abs -> (math.random * y toFloat)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z toFloat)
+          if (bz)
+            DenseVector.fill(N)(math.random * z toFloat)
           else
             SparseVector(N)(
               zl.map(i => (i % N).abs -> (math.random * z toFloat)): _*))
@@ -194,15 +203,18 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          if (bx) DenseVector.fill(N)(math.random * x toInt)
+          if (bx)
+            DenseVector.fill(N)(math.random * x toInt)
           else
             SparseVector(N)(
               xl.map(i => (i % N).abs -> (math.random * x toInt)): _*),
-          if (by) DenseVector.fill(N)(math.random * y toInt)
+          if (by)
+            DenseVector.fill(N)(math.random * y toInt)
           else
             SparseVector(N)(
               yl.map(i => (i % N).abs -> (math.random * y toInt)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z toInt)
+          if (bz)
+            DenseVector.fill(N)(math.random * z toInt)
           else
             SparseVector(N)(
               zl.map(i => (i % N).abs -> (math.random * z toInt)): _*))
@@ -237,13 +249,16 @@ class VectorOps_ComplexTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          if (bx) DenseVector.fill(N)(math.random * x)
+          if (bx)
+            DenseVector.fill(N)(math.random * x)
           else
             SparseVector(N)(xl.map(i => (i % N).abs -> (math.random * x)): _*),
-          if (by) DenseVector.fill(N)(math.random * y)
+          if (by)
+            DenseVector.fill(N)(math.random * y)
           else
             SparseVector(N)(yl.map(i => (i % N).abs -> (math.random * y)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z)
+          if (bz)
+            DenseVector.fill(N)(math.random * z)
           else
             SparseVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
       }

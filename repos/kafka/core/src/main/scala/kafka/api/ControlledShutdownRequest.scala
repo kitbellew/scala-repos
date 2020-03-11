@@ -32,7 +32,11 @@ object ControlledShutdownRequest extends Logging {
   def readFrom(buffer: ByteBuffer): ControlledShutdownRequest = {
     val versionId = buffer.getShort
     val correlationId = buffer.getInt
-    val clientId = if (versionId > 0) Some(readShortString(buffer)) else None
+    val clientId =
+      if (versionId > 0)
+        Some(readShortString(buffer))
+      else
+        None
     val brokerId = buffer.getInt
     new ControlledShutdownRequest(versionId, correlationId, clientId, brokerId)
   }

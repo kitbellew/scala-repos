@@ -51,7 +51,8 @@ abstract class KeywordCompletionTestBase
     val lookup: LookupImpl =
       LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
     val items: Array[String] =
-      if (lookup == null) Array.empty
+      if (lookup == null)
+        Array.empty
       else
         lookup.getItems
           .toArray(LookupElement.EMPTY_ARRAY)

@@ -22,7 +22,8 @@ class ScalaWithUnaryNotSurrounder extends ScalaExpressionSurrounder {
     "!(" + super.getTemplateAsString(elements) + ")"
   override def getTemplateDescription: String = "!(expr)"
   override def isApplicable(elements: Array[PsiElement]): Boolean = {
-    if (elements.length != 1) return false
+    if (elements.length != 1)
+      return false
     elements(0) match {
       case x: ScExpression
           if x

@@ -126,7 +126,10 @@ object Ingest {
             apiKey,
             path,
             ownerAccountId.map(Authorities(_)),
-            if (jv == JUndefined) Vector() else Vector(jv),
+            if (jv == JUndefined)
+              Vector()
+            else
+              Vector(jv),
             None,
             EventMessage.defaultTimestamp,
             StreamRef.Append)
@@ -143,7 +146,10 @@ object Ingest {
           apiKey,
           path,
           None,
-          if (jv == JUndefined) Vector() else Vector(jv),
+          if (jv == JUndefined)
+            Vector()
+          else
+            Vector(jv),
           None,
           EventMessage.defaultTimestamp,
           StreamRef.Append)

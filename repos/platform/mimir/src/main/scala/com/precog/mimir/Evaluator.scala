@@ -136,7 +136,10 @@ trait EvaluatorModule[M[+_]]
     def composeOptimizations(
         optimize: Boolean,
         funcs: List[DepGraph => DepGraph]): DepGraph => DepGraph =
-      if (optimize) funcs.reverse.map(Endo[DepGraph]).suml.run else identity
+      if (optimize)
+        funcs.reverse.map(Endo[DepGraph]).suml.run
+      else
+        identity
 
     // Have to be idempotent on subgraphs
     def stagedRewriteDAG(
@@ -336,7 +339,8 @@ trait EvaluatorModule[M[+_]]
 
         def assumptionCheck(graph: DepGraph)
             : StateT[N, EvaluatorState, Option[(Table, TableOrder)]] =
-          for (state <- monadState.gets(identity)) yield state.assume.get(graph)
+          for (state <- monadState.gets(identity))
+            yield state.assume.get(graph)
 
         def memoized(
             graph: DepGraph,
@@ -552,9 +556,12 @@ trait EvaluatorModule[M[+_]]
                   joinSpec))
               case (lSorted, rSorted) =>
                 val hint = Some(
-                  if (lSorted) LeftOrder
-                  else if (rSorted) RightOrder
-                  else KeyOrder)
+                  if (lSorted)
+                    LeftOrder
+                  else if (rSorted)
+                    RightOrder
+                  else
+                    KeyOrder)
                 Table.join(leftResult, rightResult, hint)(
                   leftKeySpec,
                   rightKeySpec,
@@ -635,17 +642,17 @@ trait EvaluatorModule[M[+_]]
               }
 
             case Join(
-                op,
-                joinSort @ (IdentitySort | ValueSort(_)),
-                left,
-                right) =>
+                  op,
+                  joinSort @ (IdentitySort | ValueSort(_)),
+                  left,
+                  right) =>
               join(graph, left, right, joinSort)(
                 transFromBinOp(op, MorphContext(ctx, graph)))
 
             case dag.Filter(
-                joinSort @ (IdentitySort | ValueSort(_)),
-                target,
-                boolean) =>
+                  joinSort @ (IdentitySort | ValueSort(_)),
+                  target,
+                  boolean) =>
               join(graph, target, boolean, joinSort)(trans.Filter(_, _))
 
             case s: SplitParam =>
@@ -835,7 +842,8 @@ trait EvaluatorModule[M[+_]]
                     val hint =
                       if (left.isSingleton || !right.isSingleton)
                         CrossOrder.CrossRight
-                      else CrossOrder.CrossLeft
+                      else
+                        CrossOrder.CrossLeft
                     ((transState liftM mn(morph1)) |@| cross(
                       graph,
                       left,

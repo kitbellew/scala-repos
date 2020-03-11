@@ -195,7 +195,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       sparkJob.stageIds.size - sparkJob.numSkippedStages
     }
         {
-      if (sparkJob.numFailedStages > 0) s"(${sparkJob.numFailedStages} failed)"
+      if (sparkJob.numFailedStages > 0)
+        s"(${sparkJob.numFailedStages} failed)"
     }
         {
       if (sparkJob.numSkippedStages > 0)
@@ -265,7 +266,10 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       jobId.toString
     }>
         {
-      if (jobId >= 0) jobId.toString else "-"
+      if (jobId >= 0)
+        jobId.toString
+      else
+        "-"
     }
       </td>
       <!-- Duration -->

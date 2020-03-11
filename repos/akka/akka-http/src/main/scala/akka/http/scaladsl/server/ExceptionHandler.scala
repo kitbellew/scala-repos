@@ -35,12 +35,14 @@ object ExceptionHandler {
       def withFallback(that: ExceptionHandler): ExceptionHandler =
         if (!knownToBeSealed)
           ExceptionHandler(knownToBeSealed = false)(this orElse that)
-        else this
+        else
+          this
       def seal(settings: RoutingSettings): ExceptionHandler =
         if (!knownToBeSealed)
           ExceptionHandler(knownToBeSealed = true)(
             this orElse default(settings))
-        else this
+        else
+          this
     }
 
   def default(settings: RoutingSettings): ExceptionHandler =
@@ -67,6 +69,8 @@ object ExceptionHandler {
     */
   def seal(handler: ExceptionHandler)(
       implicit settings: RoutingSettings): ExceptionHandler =
-    if (handler ne null) handler.seal(settings)
-    else ExceptionHandler.default(settings)
+    if (handler ne null)
+      handler.seal(settings)
+    else
+      ExceptionHandler.default(settings)
 }

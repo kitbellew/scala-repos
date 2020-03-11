@@ -52,7 +52,10 @@ import scalafx.scene.control.ContextMenu._
 object TableColumnBase {
   implicit def sfxTableColumn2jfx[S, T](
       tc: TableColumnBase[S, T]): jfxsc.TableColumnBase[S, T] =
-    if (tc != null) tc.delegate else null
+    if (tc != null)
+      tc.delegate
+    else
+      null
 
   /**
     * By default all columns will use this comparator to perform sorting.

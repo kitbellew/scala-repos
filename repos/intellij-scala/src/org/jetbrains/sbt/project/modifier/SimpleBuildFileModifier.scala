@@ -63,7 +63,10 @@ class SimpleBuildFileModifier(
               buildPsiElement(
                 module.getProject,
                 Option(
-                  if (buildFileEntry.isModuleLocal) null else module.getName),
+                  if (buildFileEntry.isModuleLocal)
+                    null
+                  else
+                    module.getName),
                 elementType).map(
                 SimpleBuildFileModifier.addElementsToBuildFile(
                   module,
@@ -131,7 +134,8 @@ object SimpleBuildFileModifier {
       inName: Option[String],
       prefix: String,
       seq: Seq[String]): Option[PsiElement] =
-    if (seq.isEmpty) None
+    if (seq.isEmpty)
+      None
     else
       Some(
         ScalaPsiElementFactory.createExpressionFromText(
@@ -176,7 +180,8 @@ object SimpleBuildFileModifier {
           if (index == 0) || parent.getChildren.size >= index =>
         val children = parent.getChildren
         if (children.isEmpty) {
-          for (psiElement <- psiElements) parent.add(psiElement)
+          for (psiElement <- psiElements)
+            parent.add(psiElement)
         } else if (index == 0) {
           for (psiElement <- psiElements)
             parent.addBefore(psiElement, children(0))

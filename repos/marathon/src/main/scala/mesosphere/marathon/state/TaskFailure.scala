@@ -62,7 +62,11 @@ object TaskFailure {
       host = proto.getHost,
       version = Timestamp(proto.getVersion),
       timestamp = Timestamp(proto.getTimestamp),
-      slaveId = if (proto.hasSlaveId) Some(proto.getSlaveId) else None
+      slaveId =
+        if (proto.hasSlaveId)
+          Some(proto.getSlaveId)
+        else
+          None
     )
 
   object FromMesosStatusUpdateEvent {
@@ -98,7 +102,8 @@ object TaskFailure {
             Timestamp(ts),
             Option(slaveIDToProto(SlaveID(slaveId)))
           ))
-      else None
+      else
+        None
     }
   }
 

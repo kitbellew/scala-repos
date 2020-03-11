@@ -84,7 +84,11 @@ class MyEventsByTagPublisher(
     if (buf.isEmpty) {
       try {
         val result = Select.run(tag, currentOffset, Limit)
-        currentOffset = if (result.nonEmpty) result.last._1 else currentOffset
+        currentOffset =
+          if (result.nonEmpty)
+            result.last._1
+          else
+            currentOffset
         val serialization = SerializationExtension(context.system)
 
         buf = result.map {

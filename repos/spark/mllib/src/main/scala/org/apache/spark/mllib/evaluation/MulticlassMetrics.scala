@@ -47,14 +47,24 @@ class MulticlassMetrics @Since("1.1.0") (
   private lazy val tpByClass: Map[Double, Int] = predictionAndLabels
     .map {
       case (prediction, label) =>
-        (label, if (label == prediction) 1 else 0)
+        (
+          label,
+          if (label == prediction)
+            1
+          else
+            0)
     }
     .reduceByKey(_ + _)
     .collectAsMap()
   private lazy val fpByClass: Map[Double, Int] = predictionAndLabels
     .map {
       case (prediction, label) =>
-        (prediction, if (prediction != label) 1 else 0)
+        (
+          prediction,
+          if (prediction != label)
+            1
+          else
+            0)
     }
     .reduceByKey(_ + _)
     .collectAsMap()
@@ -114,7 +124,10 @@ class MulticlassMetrics @Since("1.1.0") (
   def precision(label: Double): Double = {
     val tp = tpByClass(label)
     val fp = fpByClass.getOrElse(label, 0)
-    if (tp + fp == 0) 0 else tp.toDouble / (tp + fp)
+    if (tp + fp == 0)
+      0
+    else
+      tp.toDouble / (tp + fp)
   }
 
   /**
@@ -135,7 +148,10 @@ class MulticlassMetrics @Since("1.1.0") (
     val p = precision(label)
     val r = recall(label)
     val betaSqrd = beta * beta
-    if (p + r == 0) 0 else (1 + betaSqrd) * p * r / (betaSqrd * p + r)
+    if (p + r == 0)
+      0
+    else
+      (1 + betaSqrd) * p * r / (betaSqrd * p + r)
   }
 
   /**

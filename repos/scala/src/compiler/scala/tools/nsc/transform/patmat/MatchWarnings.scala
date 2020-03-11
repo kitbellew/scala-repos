@@ -61,8 +61,10 @@ trait MatchWarnings {
           case NoSymbol => ""
           case sym =>
             val desc =
-              if (sym.isParameter) s"parameter ${sym.nameString} of"
-              else sym + " in"
+              if (sym.isParameter)
+                s"parameter ${sym.nameString} of"
+              else
+                sym + " in"
             s"\nIf you intended to match against $desc ${sym.owner}, you must use backticks, like: case `${sym.nameString}` =>"
         }
       }

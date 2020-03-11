@@ -107,7 +107,8 @@ private class ScalaPsiMethodGenerationInfo(
   private def findAnchor(
       td: ScTemplateDefinition,
       baseMethod: PsiMethod): PsiElement = {
-    if (baseMethod == null) return null
+    if (baseMethod == null)
+      return null
 
     var prevBaseMethod: PsiMethod =
       PsiTreeUtil.getPrevSiblingOfType(baseMethod, classOf[PsiMethod])

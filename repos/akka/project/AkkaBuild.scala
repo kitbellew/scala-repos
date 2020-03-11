@@ -455,7 +455,8 @@ object AkkaBuild extends Build {
     base = file("akka-samples"),
     // FIXME osgiDiningHakkersSampleMavenTest temporarily removed from aggregate due to #16703
     aggregate =
-      if (!Sample.CliOptions.aggregateSamples) Nil
+      if (!Sample.CliOptions.aggregateSamples)
+        Nil
       else
         Seq(
           sampleCamelJava,
@@ -616,14 +617,16 @@ object AkkaBuild extends Build {
           .getProperty("akka.build.useLocalMavenResolver", "false")
           .toBoolean)
       Seq(resolvers += mavenLocalResolver)
-    else Seq.empty
+    else
+      Seq.empty
   } ++ {
     // should we be allowed to use artifacts from sonatype snapshots
     if (System
           .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
           .toBoolean)
       Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
-    else Seq.empty
+    else
+      Seq.empty
   } ++ Seq(
     pomIncludeRepository := (_ =>
       false) // do not leak internal repositories during staging
@@ -644,8 +647,10 @@ object AkkaBuild extends Build {
       "-unchecked",
       "-Xlog-reflective-calls",
       "-Xlint"),
-    scalacOptions in Compile ++= (if (allWarnings) Seq("-deprecation")
-                                  else Nil),
+    scalacOptions in Compile ++= (if (allWarnings)
+                                    Seq("-deprecation")
+                                  else
+                                    Nil),
     scalacOptions in Test := (scalacOptions in Test).value.filterNot(opt =>
       opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
     // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
@@ -658,8 +663,10 @@ object AkkaBuild extends Build {
       "1.8",
       "-Xlint:unchecked",
       "-XDignore.symbol.file"),
-    javacOptions in compile ++= (if (allWarnings) Seq("-Xlint:deprecation")
-                                 else Nil),
+    javacOptions in compile ++= (if (allWarnings)
+                                   Seq("-Xlint:deprecation")
+                                 else
+                                   Nil),
     javacOptions in doc ++= Seq(),
     incOptions := incOptions.value.withNameHashing(true),
     crossVersion := CrossVersion.binary,
@@ -744,7 +751,8 @@ object AkkaBuild extends Build {
 
         // check against all binary compatible artifacts
         versions.map(organization.value %% id % _).toSet
-      } else Set.empty
+      } else
+        Set.empty
     }
 
   def akkaStreamAndHttpPreviousArtifacts(
@@ -761,7 +769,8 @@ object AkkaBuild extends Build {
 
       // check against all binary compatible artifacts
       versions.map(organization.value %% id % _).toSet
-    } else Set.empty
+    } else
+      Set.empty
   }
 
   def loadSystemProperties(fileName: String): Unit = {

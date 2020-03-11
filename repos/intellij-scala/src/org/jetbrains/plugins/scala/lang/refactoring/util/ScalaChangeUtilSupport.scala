@@ -27,7 +27,8 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
       element: TreeElement,
       original: ASTNode,
       encodingState: Map[Object, Object]): Unit = {
-    if (!element.isInstanceOf[ScalaPsiElement]) return
+    if (!element.isInstanceOf[ScalaPsiElement])
+      return
     if (original.isInstanceOf[CompositeElement]) {
       original.getElementType match {
         case ScalaElementTypes.REFERENCE |
@@ -36,9 +37,9 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
           val res = original.getPsi.asInstanceOf[ScReferenceElement].bind
           res match {
             case Some(
-                resolveResult @ ScalaResolveResult(
-                  elem: PsiNamedElement,
-                  subst: ScSubstitutor)) => {
+                  resolveResult @ ScalaResolveResult(
+                    elem: PsiNamedElement,
+                    subst: ScSubstitutor)) => {
               element.putCopyableUserData(
                 ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY,
                 elem)
@@ -54,7 +55,8 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
   def decodeInformation(
       element: TreeElement,
       decodingState: Map[Object, Object]): TreeElement = {
-    if (!element.isInstanceOf[ScalaPsiElement]) return null
+    if (!element.isInstanceOf[ScalaPsiElement])
+      return null
     if (element.isInstanceOf[CompositeElement]) {
       if (element.getElementType == ScalaElementTypes.REFERENCE || element.getElementType == ScalaElementTypes.REFERENCE_EXPRESSION ||
           element.getElementType == ScalaElementTypes.TYPE_PROJECTION) {

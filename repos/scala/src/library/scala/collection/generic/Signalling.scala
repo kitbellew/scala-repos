@@ -132,16 +132,20 @@ trait AtomicIndexFlag extends Signalling {
     var loop = true
     do {
       val old = intflag.get
-      if (f <= old) loop = false
-      else if (intflag.compareAndSet(old, f)) loop = false
+      if (f <= old)
+        loop = false
+      else if (intflag.compareAndSet(old, f))
+        loop = false
     } while (loop)
   }
   abstract override def setIndexFlagIfLesser(f: Int) = {
     var loop = true
     do {
       val old = intflag.get
-      if (f >= old) loop = false
-      else if (intflag.compareAndSet(old, f)) loop = false
+      if (f >= old)
+        loop = false
+      else if (intflag.compareAndSet(old, f))
+        loop = false
     } while (loop)
   }
 }

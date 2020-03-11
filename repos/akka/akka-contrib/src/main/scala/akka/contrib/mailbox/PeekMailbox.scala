@@ -99,7 +99,11 @@ class PeekMailbox(owner: ActorRef, system: ActorSystem, maxRetries: Int)
       queue.poll()
     case 0 | Marker ⇒
       val e = queue.peek()
-      tries = if (e eq null) 0 else 1
+      tries =
+        if (e eq null)
+          0
+        else
+          1
       e
     case `maxRetries` ⇒
       tries = Marker
@@ -111,7 +115,8 @@ class PeekMailbox(owner: ActorRef, system: ActorSystem, maxRetries: Int)
 
   def ack(): Unit = {
     // do not dequeue for real if double-ack() or ack() on last try
-    if (tries != 0 && tries != Marker) queue.poll()
+    if (tries != 0 && tries != Marker)
+      queue.poll()
     tries = 0
   }
 

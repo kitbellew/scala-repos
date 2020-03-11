@@ -46,7 +46,10 @@ object Printer {
     * @return JavaFX Printer
     */
   implicit def sfxPrinter2jfx(p: Printer): jfxp.Printer =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 
   // MarginType - begin
 

@@ -85,8 +85,10 @@ object PrimitiveOrderedBuf {
 
     def accessor(e: c.TermName): c.Tree = {
       val primitiveAccessor = newTermName(shortName.toLowerCase + "Value")
-      if (boxed) q"$e.$primitiveAccessor"
-      else q"$e"
+      if (boxed)
+        q"$e.$primitiveAccessor"
+      else
+        q"$e"
     }
 
     new TreeOrderedBuf[c.type] {
@@ -106,14 +108,19 @@ object PrimitiveOrderedBuf {
 
       override def get(inputStream: ctx.TermName): ctx.Tree = {
         val unboxed = q"$inputStream.$bbGetter"
-        if (boxed) q"_root_.java.lang.$javaType.valueOf($unboxed)" else unboxed
+        if (boxed)
+          q"_root_.java.lang.$javaType.valueOf($unboxed)"
+        else
+          unboxed
       }
 
       override def compare(
           elementA: ctx.TermName,
           elementB: ctx.TermName): ctx.Tree =
-        if (boxed) q"""$elementA.compareTo($elementB)"""
-        else q"""_root_.java.lang.$javaType.compare($elementA, $elementB)"""
+        if (boxed)
+          q"""$elementA.compareTo($elementB)"""
+        else
+          q"""_root_.java.lang.$javaType.compare($elementA, $elementB)"""
 
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         ConstantLengthCalculation(c)(lenInBytes)

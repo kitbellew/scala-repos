@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Lighting {
   implicit def sfxLighting2jfx(l: Lighting): jfxse.Lighting =
-    if (l != null) l.delegate else null
+    if (l != null)
+      l.delegate
+    else
+      null
 
 }
 

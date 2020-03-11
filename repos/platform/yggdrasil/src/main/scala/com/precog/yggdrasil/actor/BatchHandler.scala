@@ -80,28 +80,33 @@ class BatchHandler(
       remaining += (count + 1)
       logger.trace(
         "Should expect %d more updates (total %d)".format(count, remaining))
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     case InsertComplete(path) =>
       logger.trace("Insert complete for " + path)
       remaining -= 1
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     case UpdateSuccess(path) =>
       logger.trace("Update complete for " + path)
       remaining -= 1
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     // These next two cases are errors that should not terminate the batch
     case PathOpFailure(path, ResourceError.PermissionsError(msg)) =>
       logger.warn("Permissions failure on %s: %s".format(path, msg))
       remaining -= 1
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     case PathOpFailure(path, ResourceError.IllegalWriteRequestError(msg)) =>
       logger.warn("Illegal write failure on %s: %s".format(path, msg))
       remaining -= 1
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     case PathOpFailure(path, err) =>
       logger.error(
@@ -111,7 +116,8 @@ class BatchHandler(
     case ArchiveComplete(path) =>
       logger.info("Archive complete for " + path)
       remaining -= 1
-      if (remaining == 0) self ! PoisonPill
+      if (remaining == 0)
+        self ! PoisonPill
 
     case other =>
       logger.warn("Received unexpected message in BatchHandler: " + other)

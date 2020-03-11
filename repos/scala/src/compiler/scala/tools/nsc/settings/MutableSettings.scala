@@ -186,10 +186,11 @@ class MutableSettings(val errorFn: String => Unit)
           if (prefix.isDefined) {
             prefix.get tryToSet args
             rest
-          } else if (arg contains ":") parseColonArg(arg) match {
-            case Some(_) => rest
-            case None    => args
-          }
+          } else if (arg contains ":")
+            parseColonArg(arg) match {
+              case Some(_) => rest
+              case None    => args
+            }
           else
             parseNormalArg(arg, rest) match {
               case Some(xs) => xs
@@ -490,7 +491,10 @@ class MutableSettings(val errorFn: String => Unit)
     def max = range map (_._2) getOrElse IntMax
 
     override def value_=(s: Int) =
-      if (isInputValid(s)) super.value_=(s) else errorMsg()
+      if (isInputValid(s))
+        super.value_=(s)
+      else
+        errorMsg()
 
     // Validate that min and max are consistent
     assert(min <= max)
@@ -523,7 +527,8 @@ class MutableSettings(val errorFn: String => Unit)
       errorFn("invalid setting for -" + name + " " + getValidText)
 
     def tryToSet(args: List[String]) =
-      if (args.isEmpty) errorAndValue("missing argument", None)
+      if (args.isEmpty)
+        errorAndValue("missing argument", None)
       else
         parseArgument(args.head) match {
           case Some(i) =>
@@ -535,8 +540,10 @@ class MutableSettings(val errorFn: String => Unit)
         }
 
     def unparse: List[String] =
-      if (value == default) Nil
-      else List(name, value.toString)
+      if (value == default)
+        Nil
+      else
+        List(name, value.toString)
 
     withHelpSyntax(name + " <n>")
   }
@@ -552,7 +559,11 @@ class MutableSettings(val errorFn: String => Unit)
       value = true;
       Some(args)
     }
-    def unparse: List[String] = if (value) List(name) else Nil
+    def unparse: List[String] =
+      if (value)
+        List(name)
+      else
+        Nil
     override def tryToSetFromPropertyValue(s: String) { // used from ide
       value = s.equalsIgnoreCase("true")
     }
@@ -565,7 +576,8 @@ class MutableSettings(val errorFn: String => Unit)
         } else if (x.equalsIgnoreCase("false")) {
           value = false
           Some(Nil)
-        } else errorAndValue(s"'$x' is not a valid choice for '$name'", None)
+        } else
+          errorAndValue(s"'$x' is not a valid choice for '$name'", None)
       case _ => errorAndValue(s"'$name' accepts only one boolean value", None)
     }
   }
@@ -603,7 +615,11 @@ class MutableSettings(val errorFn: String => Unit)
         value = x;
         Some(xs)
     }
-    def unparse: List[String] = if (value == default) Nil else List(name, value)
+    def unparse: List[String] =
+      if (value == default)
+        Nil
+      else
+        List(name, value)
 
     withHelpSyntax(name + " <" + arg + ">")
   }
@@ -641,7 +657,10 @@ class MutableSettings(val errorFn: String => Unit)
     }
 
     def unparse: List[String] =
-      if (value == NoScalaVersion) Nil else List(s"${name}:${value.unparse}")
+      if (value == NoScalaVersion)
+        Nil
+      else
+        List(s"${name}:${value.unparse}")
 
     withHelpSyntax(s"${name}:<${arg}>")
   }
@@ -800,8 +819,10 @@ class MutableSettings(val errorFn: String => Unit)
 
       // yeas from _ or expansions are weak: an explicit nay will disable them
       val weakYeas =
-        if (sawAll) domain.values filter simple
-        else expand(yeas filterNot simple)
+        if (sawAll)
+          domain.values filter simple
+        else
+          expand(yeas filterNot simple)
       value = (yeas filter simple) | (weakYeas &~ nays)
     }
 
@@ -858,10 +879,11 @@ class MutableSettings(val errorFn: String => Unit)
       val rest = loop(args)
 
       // if no arg consumed, use defaults or error; otherwise, add what they added
-      if (rest.size == args.size) default match {
-        case Some(defaults) => defaults foreach add
-        case None           => errorFn(s"'$name' requires an option. See '$name:help'.")
-      }
+      if (rest.size == args.size)
+        default match {
+          case Some(defaults) => defaults foreach add
+          case None           => errorFn(s"'$name' requires an option. See '$name:help'.")
+        }
       else {
         added foreach add
       }
@@ -910,7 +932,8 @@ class MutableSettings(val errorFn: String => Unit)
     protected def tryToSetArgs(args: List[String], halting: Boolean) = {
       def loop(args: List[String]): List[String] = args match {
         case arg :: rest =>
-          if (halting && (arg startsWith "-")) args
+          if (halting && (arg startsWith "-"))
+            args
           else {
             appendToValue(arg);
             loop(rest)
@@ -968,7 +991,10 @@ class MutableSettings(val errorFn: String => Unit)
           None)
     }
     def unparse: List[String] =
-      if (value == default) Nil else List(name + ":" + value)
+      if (value == default)
+        Nil
+      else
+        List(name + ":" + value)
     override def tryToSetFromPropertyValue(s: String) =
       tryToSetColon(s :: Nil) // used from ide
 
@@ -977,7 +1003,10 @@ class MutableSettings(val errorFn: String => Unit)
 
   private def mkPhasesHelp(descr: String, default: String) = {
     descr + " <phases>" + (
-      if (default == "") "" else " (default: " + default + ")"
+      if (default == "")
+        ""
+      else
+        " (default: " + default + ")"
     )
   }
 
@@ -1015,7 +1044,10 @@ class MutableSettings(val errorFn: String => Unit)
       _v = t
     }
     override def value =
-      if (v contains "all") List("all") else super.value // i.e., v
+      if (v contains "all")
+        List("all")
+      else
+        super.value // i.e., v
     private def numericValues = _numbs
     private def stringValues = _names
     private def phaseIdTest(i: Int): Boolean =
@@ -1024,15 +1056,19 @@ class MutableSettings(val errorFn: String => Unit)
       })
 
     def tryToSet(args: List[String]) =
-      if (default == "") errorAndValue("missing phase", None)
-      else tryToSetColon(List(default)) map (_ => args)
+      if (default == "")
+        errorAndValue("missing phase", None)
+      else
+        tryToSetColon(List(default)) map (_ => args)
 
     override def tryToSetColon(args: List[String]) =
       try {
         args match {
           case Nil =>
-            if (default == "") errorAndValue("missing phase", None)
-            else tryToSetColon(List(default))
+            if (default == "")
+              errorAndValue("missing phase", None)
+            else
+              tryToSetColon(List(default))
           case xs =>
             value = (value ++ xs).distinct.sorted;
             Some(Nil)
@@ -1054,8 +1090,10 @@ class MutableSettings(val errorFn: String => Unit)
     def unparse: List[String] = value map (name + ":" + _)
 
     withHelpSyntax(
-      if (default == "") name + ":<phases>"
-      else name + "[:phases]"
+      if (default == "")
+        name + ":<phases>"
+      else
+        name + "[:phases]"
     )
   }
 
@@ -1063,7 +1101,9 @@ class MutableSettings(val errorFn: String => Unit)
   protected class EnableSettings[T <: BooleanSetting](val s: T) {
     def enablingIfNotSetByUser(toEnable: List[BooleanSetting]): s.type =
       s withPostSetHook (_ =>
-        toEnable foreach (sett => if (!sett.isSetByUser) sett.value = s.value))
+        toEnable foreach (sett =>
+          if (!sett.isSetByUser)
+            sett.value = s.value))
     def enabling(toEnable: List[BooleanSetting]): s.type =
       s withPostSetHook (_ => toEnable foreach (_.value = s.value))
     def disabling(toDisable: List[BooleanSetting]): s.type =

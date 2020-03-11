@@ -189,7 +189,8 @@ final class JUnitExecuteTest(
       val exOpt = {
         if (!ex.isInstanceOf[AssertionError] || runner.runSettings.logAssert)
           Some(ex)
-        else None
+        else
+          None
       }
       logFormattedError(methodName, msg, exOpt)
       taskFailed(methodName)
@@ -238,7 +239,11 @@ final class JUnitExecuteTest(
   }
 
   private[this] def logFormattedInfo(method: String, msg: String): Unit = {
-    val fMethod = if (method != null) c(method, NNAME2) else null
+    val fMethod =
+      if (method != null)
+        c(method, NNAME2)
+      else
+        null
     richLogger.info(
       formatLayout("Test ", packageName, c(className, NNAME1), fMethod, msg))
   }
@@ -247,7 +252,11 @@ final class JUnitExecuteTest(
       prefix: String,
       method: String,
       msg: String): Unit = {
-    val fMethod = if (method != null) c(method, ERRMSG) else null
+    val fMethod =
+      if (method != null)
+        c(method, ERRMSG)
+      else
+        null
     richLogger.warn(
       formatLayout(prefix, packageName, c(className, NNAME1), fMethod, msg))
   }
@@ -256,7 +265,11 @@ final class JUnitExecuteTest(
       method: String,
       msg: String,
       exOpt: Option[Throwable]): Unit = {
-    val fMethod = if (method != null) c(method, ERRMSG) else null
+    val fMethod =
+      if (method != null)
+        c(method, ERRMSG)
+      else
+        null
     val formattedMsg =
       formatLayout("Test ", packageName, c(className, NNAME1), fMethod, msg)
     exOpt match {
@@ -271,7 +284,9 @@ final class JUnitExecuteTest(
       className: String,
       method: String,
       msg: String): String = {
-    if (method != null) s"$prefix$packageName.$className.$method $msg"
-    else s"$prefix$packageName.$className $msg"
+    if (method != null)
+      s"$prefix$packageName.$className.$method $msg"
+    else
+      s"$prefix$packageName.$className $msg"
   }
 }

@@ -36,7 +36,8 @@ package test {
   }
   class Bar {
     private def bar = 8
-    if (bar > 8) ??? // use it to avoid extra warning
+    if (bar > 8)
+      ??? // use it to avoid extra warning
   }
   class Baz extends Bar {
     def f =

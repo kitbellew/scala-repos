@@ -19,6 +19,9 @@ trait WorksheetPerFileConfig {
     FileAttributeUtilCache.writeAttribute(
       attribute,
       file,
-      if (e) enabled else disabled)
+      if (e)
+        enabled
+      else
+        disabled)
   }
 }

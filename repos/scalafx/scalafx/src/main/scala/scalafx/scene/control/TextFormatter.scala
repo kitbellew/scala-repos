@@ -47,7 +47,10 @@ object TextFormatter {
     */
   implicit def sfxTextFormatter2jfx[V](
       v: TextFormatter[V]): jfxsc.TextFormatter[V] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * This string converter converts the text to the same String value. This might be useful for cases where you
@@ -59,7 +62,10 @@ object TextFormatter {
   object Change {
     implicit def sfxTextFormatterChange2jfx[V](
         v: Change): jfxsc.TextFormatter.Change =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   /**

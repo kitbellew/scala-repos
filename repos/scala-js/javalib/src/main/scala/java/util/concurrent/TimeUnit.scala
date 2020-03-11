@@ -129,8 +129,11 @@ object TimeUnit {
   }
 
   private def x(a: Long, b: Long, max: Long): Long = {
-    if (a > max) MAX
-    else if (a < -max) -MAX
-    else a * b
+    if (a > max)
+      MAX
+    else if (a < -max)
+      -MAX
+    else
+      a * b
   }
 }

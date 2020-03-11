@@ -52,8 +52,10 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("call-by-name tail evaluated at most once") {
     val p = new Promise[Unit]
     val s = () +:: {
-      if (p.setDone()) of(())
-      else AsyncStream.empty[Unit]
+      if (p.setDone())
+        of(())
+      else
+        AsyncStream.empty[Unit]
     }
     assert(toSeq(s) == toSeq(s))
   }
@@ -179,7 +181,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       var once = 0
       val s: AsyncStream[Int] = 2 +:: {
         once = once + 1
-        if (once > 1) throw new Exception("evaluated more than once")
+        if (once > 1)
+          throw new Exception("evaluated more than once")
         AsyncStream.of(1)
       }
 
@@ -697,7 +700,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
         val s = AsyncStream.fromSeq(xs).withEffect(_ => i += 1)
 
         // Is lazy on initial application (with the exception of the first element)
-        assert(i == (if (xs.isEmpty) 0 else 1))
+        assert(
+          i == (if (xs.isEmpty)
+                  0
+                else
+                  1))
 
         // Is lazy when consuming the stream
         await(s.take(n).force)
@@ -706,7 +713,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
         // non-empty, the effect will occur for the first item right away,
         // since the head is not lazy. Otherwise, we expect the same
         // number of effects as items demanded.
-        val expected = if (xs.isEmpty) 0 else 1.max(xs.length.min(n))
+        val expected =
+          if (xs.isEmpty)
+            0
+          else
+            1.max(xs.length.min(n))
         assert(i == expected)
 
         // Preserves the elements in the stream

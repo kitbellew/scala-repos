@@ -11,8 +11,10 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 
 trait ParserNode extends ScalaTokenTypes {
   def lookAhead(builder: PsiBuilder, elems: IElementType*): Boolean = {
-    if (!(elems(0) == builder.getTokenType)) return false
-    if (elems.length == 1) return true
+    if (!(elems(0) == builder.getTokenType))
+      return false
+    if (elems.length == 1)
+      return true
     val rb: PsiBuilder.Marker = builder.mark
     builder.advanceLexer()
     var i: Int = 1

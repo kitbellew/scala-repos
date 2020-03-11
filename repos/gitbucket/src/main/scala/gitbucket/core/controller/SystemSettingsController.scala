@@ -81,10 +81,12 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     Vector(
       if (settings.ssh && settings.baseUrl.isEmpty) {
         Some("baseUrl" -> "Base URL is required if SSH access is enabled.")
-      } else None,
+      } else
+        None,
       if (settings.ssh && settings.sshHost.isEmpty) {
         Some("sshHost" -> "SSH host is required if SSH access is enabled.")
-      } else None
+      } else
+        None
     ).flatten
   }
 
@@ -357,8 +359,10 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
             _.split(":") match {
               case Array(userName, isManager) => isManager.toBoolean
             }
-          }) None
-      else Some("Must select one manager at least.")
+          })
+        None
+      else
+        Some("Must select one manager at least.")
     }
   }
 

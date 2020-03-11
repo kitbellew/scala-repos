@@ -117,7 +117,10 @@ object Templates {
             @scala.annotation.tailrec
             def topDir(f: java.io.File): File = {
               val parent: java.io.File = f.getParentFile
-              if (f.getParent == null) f else topDir(parent)
+              if (f.getParent == null)
+                f
+              else
+                topDir(parent)
             }
             val rebasedFile = (file relativeTo outDir).getOrElse(
               sys.error(s"Can't rebase prepared template $file to dir $outDir"))
@@ -370,8 +373,10 @@ object Templates {
       val setBack =
         templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
 
-      if (command == "") setCommand :: state
-      else setCommand :: command :: setBack ::: state
+      if (command == "")
+        setCommand :: state
+      else
+        setCommand :: command :: setBack ::: state
   }
 
   private def templatesParser(

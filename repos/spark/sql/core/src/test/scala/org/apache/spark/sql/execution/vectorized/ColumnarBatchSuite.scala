@@ -598,16 +598,20 @@ class ColumnarBatchSuite extends SparkFunSuite {
 
         def rowEquals(x: InternalRow, y: Row): Unit = {
           assert(x.isNullAt(0) == y.isNullAt(0))
-          if (!x.isNullAt(0)) assert(x.getInt(0) == y.getInt(0))
+          if (!x.isNullAt(0))
+            assert(x.getInt(0) == y.getInt(0))
 
           assert(x.isNullAt(1) == y.isNullAt(1))
-          if (!x.isNullAt(1)) assert(x.getDouble(1) == y.getDouble(1))
+          if (!x.isNullAt(1))
+            assert(x.getDouble(1) == y.getDouble(1))
 
           assert(x.isNullAt(2) == y.isNullAt(2))
-          if (!x.isNullAt(2)) assert(x.getInt(2) == y.getInt(2))
+          if (!x.isNullAt(2))
+            assert(x.getInt(2) == y.getInt(2))
 
           assert(x.isNullAt(3) == y.isNullAt(3))
-          if (!x.isNullAt(3)) assert(x.getString(3) == y.getString(3))
+          if (!x.isNullAt(3))
+            assert(x.getString(3) == y.getString(3))
         }
 
         // Verify
@@ -845,8 +849,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
       val rows = mutable.ArrayBuffer.empty[Row]
       for (i <- 0 until NUM_ROWS) {
         val row =
-          if (i < numNulls) Row.fromSeq(Seq(i, null))
-          else Row.fromSeq(Seq(i, i.toString))
+          if (i < numNulls)
+            Row.fromSeq(Seq(i, null))
+          else
+            Row.fromSeq(Seq(i, i.toString))
         rows += row
       }
       (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>

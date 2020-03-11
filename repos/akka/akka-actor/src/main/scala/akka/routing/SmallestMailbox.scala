@@ -33,8 +33,10 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
-    else selectNext(routees)
+    if (routees.isEmpty)
+      NoRoutee
+    else
+      selectNext(routees)
 
   // Worst-case a 2-pass inspection with mailbox size checking done on second pass, and only until no one empty is found.
   // Lowest score wins, score 0 is autowin
@@ -59,26 +61,41 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       if (deep) {
         if (isTerminated(proposedTarget))
           targets(ThreadLocalRandom.current.nextInt(targets.size))
-        else proposedTarget
-      } else selectNext(targets, proposedTarget, currentScore, 0, deep = true)
+        else
+          proposedTarget
+      } else
+        selectNext(targets, proposedTarget, currentScore, 0, deep = true)
     } else {
       val target = targets(at)
       val newScore: Long =
-        if (isSuspended(target)) Long.MaxValue - 1
+        if (isSuspended(target))
+          Long.MaxValue - 1
         else { //Just about better than the DeadLetters
-          (if (isProcessingMessage(target)) 1L else 0L) +
-            (if (!hasMessages(target)) 0L
+          (if (isProcessingMessage(target))
+             1L
+           else
+             0L) +
+            (if (!hasMessages(target))
+               0L
              else { //Race between hasMessages and numberOfMessages here, unfortunate the numberOfMessages returns 0 if unknown
-               val noOfMsgs: Long = if (deep) numberOfMessages(target) else 0
-               if (noOfMsgs > 0) noOfMsgs
-               else Long.MaxValue - 3 //Just better than a suspended actorref
+               val noOfMsgs: Long =
+                 if (deep)
+                   numberOfMessages(target)
+                 else
+                   0
+               if (noOfMsgs > 0)
+                 noOfMsgs
+               else
+                 Long.MaxValue - 3 //Just better than a suspended actorref
              })
         }
 
-      if (newScore == 0) target
+      if (newScore == 0)
+        target
       else if (newScore < 0 || newScore >= currentScore)
         selectNext(targets, proposedTarget, currentScore, at + 1, deep)
-      else selectNext(targets, target, newScore, at + 1, deep)
+      else
+        selectNext(targets, target, newScore, at + 1, deep)
     }
   }
 

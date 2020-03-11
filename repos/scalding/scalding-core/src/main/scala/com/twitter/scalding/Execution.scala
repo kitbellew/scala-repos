@@ -1165,7 +1165,8 @@ object ExecutionCounters {
         if (keys(k)) {
           // Yes, cascading is reversed frow what we did in Stats. :/
           Some(cs.getCounterValue(k.group, k.counter))
-        } else None
+        } else
+          None
     }
 
   /**

@@ -182,18 +182,21 @@ case class AppDefinition(
     val argsOption =
       if (proto.getCmd.getArgumentsCount > 0)
         Some(proto.getCmd.getArgumentsList.asScala.to[Seq])
-      else None
+      else
+        None
 
     //Precondition: either args or command is defined
     val commandOption =
       if (argsOption.isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue.nonEmpty)
         Some(proto.getCmd.getValue)
-      else None
+      else
+        None
 
     val containerOption =
       if (proto.hasContainer)
         Some(ContainerSerializer.fromProto(proto.getContainer))
-      else None
+      else
+        None
 
     val acceptedResourceRoles: Option[Set[String]] =
       if (proto.hasAcceptedResourceRoles)
@@ -212,13 +215,16 @@ case class AppDefinition(
         OnlyVersion(Timestamp(proto.getVersion))
 
     val ipAddressOption =
-      if (proto.hasIpAddress) Some(IpAddress.fromProto(proto.getIpAddress))
-      else None
+      if (proto.hasIpAddress)
+        Some(IpAddress.fromProto(proto.getIpAddress))
+      else
+        None
 
     val residencyOption =
       if (proto.hasResidency)
         Some(ResidencySerializer.fromProto(proto.getResidency))
-      else None
+      else
+        None
 
     // TODO (gkleiman): we have to be able to read the ports from the deprecated field in order to perform migrations
     // until the deprecation cycle is complete.
@@ -232,7 +238,11 @@ case class AppDefinition(
 
     AppDefinition(
       id = PathId(proto.getId),
-      user = if (proto.getCmd.hasUser) Some(proto.getCmd.getUser) else None,
+      user =
+        if (proto.getCmd.hasUser)
+          Some(proto.getCmd.getUser)
+        else
+          None,
       cmd = commandOption,
       args = argsOption,
       executor = proto.getExecutor,
@@ -261,7 +271,8 @@ case class AppDefinition(
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)
           UpgradeStrategy.fromProto(proto.getUpgradeStrategy)
-        else UpgradeStrategy.empty,
+        else
+          UpgradeStrategy.empty,
       dependencies = proto.getDependenciesList.asScala.map(PathId.apply).toSet,
       ipAddress = ipAddressOption,
       residency = residencyOption
@@ -277,10 +288,12 @@ case class AppDefinition(
     } yield pms
 
   def containerHostPorts: Option[Seq[Int]] =
-    for (pms <- portMappings) yield pms.map(_.hostPort)
+    for (pms <- portMappings)
+      yield pms.map(_.hostPort)
 
   def containerServicePorts: Option[Seq[Int]] =
-    for (pms <- portMappings) yield pms.map(_.servicePort)
+    for (pms <- portMappings)
+      yield pms.map(_.servicePort)
 
   def hostPorts: Seq[Int] = containerHostPorts.getOrElse(portNumbers)
 

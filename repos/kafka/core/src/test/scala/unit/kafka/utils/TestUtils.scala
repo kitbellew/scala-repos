@@ -244,7 +244,8 @@ object TestUtils extends Logging {
       .mkString(",")
 
     val props = new Properties
-    if (nodeId >= 0) props.put("broker.id", nodeId.toString)
+    if (nodeId >= 0)
+      props.put("broker.id", nodeId.toString)
     props.put("listeners", listeners)
     props.put("log.dir", TestUtils.tempDir().getAbsolutePath)
     props.put("zookeeper.connect", zkConnect)
@@ -585,7 +586,8 @@ object TestUtils extends Logging {
 
     defaultProps.foreach {
       case (key, value) =>
-        if (!producerProps.containsKey(key)) producerProps.put(key, value)
+        if (!producerProps.containsKey(key))
+          producerProps.put(key, value)
     }
 
     /*
@@ -648,7 +650,8 @@ object TestUtils extends Logging {
 
     defaultProps.foreach {
       case (key, value) =>
-        if (!consumerProps.containsKey(key)) consumerProps.put(key, value)
+        if (!consumerProps.containsKey(key))
+          consumerProps.put(key, value)
     }
 
     /*

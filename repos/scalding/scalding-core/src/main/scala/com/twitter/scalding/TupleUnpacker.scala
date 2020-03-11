@@ -86,7 +86,10 @@ class ReflectionTupleUnpacker[T](implicit m: Manifest[T])
     * If it is, return lazy allFields.
     */
   def expandIfAll(fields: Fields) =
-    if (fields.isAll) allFields else fields
+    if (fields.isAll)
+      allFields
+    else
+      fields
 
   override def newSetter(fields: Fields) =
     new ReflectionSetter[T](expandIfAll(fields))(m)

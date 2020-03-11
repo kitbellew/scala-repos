@@ -161,9 +161,12 @@ object DatabaseService {
 
     // legacy: note that we can't distinguish class/trait
     def declAs: DeclaredAs =
-      if (descriptor.isDefined) DeclaredAs.Method
-      else if (internal.isDefined) DeclaredAs.Field
-      else DeclaredAs.Class
+      if (descriptor.isDefined)
+        DeclaredAs.Method
+      else if (internal.isDefined)
+        DeclaredAs.Field
+      else
+        DeclaredAs.Class
   }
   private class FqnSymbols(tag: Tag)
       extends Table[FqnSymbol](tag, "FQN_SYMBOLS") {

@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Effect {
   implicit def sfxEffect2jfx(e: Effect): jfxe.Effect =
-    if (e != null) e.delegate else null.asInstanceOf[jfxe.Effect]
+    if (e != null)
+      e.delegate
+    else
+      null.asInstanceOf[jfxe.Effect]
 }
 
 abstract class Effect protected (override val delegate: jfxe.Effect)

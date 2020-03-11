@@ -70,7 +70,11 @@ class FsHistoryProviderSuite
       appAttemptId: Option[String],
       inProgress: Boolean,
       codec: Option[String] = None): File = {
-    val ip = if (inProgress) EventLoggingListener.IN_PROGRESS else ""
+    val ip =
+      if (inProgress)
+        EventLoggingListener.IN_PROGRESS
+      else
+        ""
     val logUri =
       EventLoggingListener.getLogPath(testDir.toURI, appId, appAttemptId)
     val logPath = new URI(logUri).getPath + ip

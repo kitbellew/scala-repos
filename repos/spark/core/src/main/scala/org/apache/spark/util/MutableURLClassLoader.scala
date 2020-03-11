@@ -83,7 +83,11 @@ private[spark] class ChildFirstURLClassLoader(
 
   override def getResource(name: String): URL = {
     val url = super.findResource(name)
-    val res = if (url != null) url else parentClassLoader.getResource(name)
+    val res =
+      if (url != null)
+        url
+      else
+        parentClassLoader.getResource(name)
     res
   }
 

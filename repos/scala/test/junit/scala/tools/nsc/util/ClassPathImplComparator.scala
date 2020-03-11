@@ -48,7 +48,11 @@ object ClassPathImplComparator {
     }
 
     def printResults(): Unit = {
-      val avg = if (iterations == 0) 0 else sum.toDouble / iterations
+      val avg =
+        if (iterations == 0)
+          0
+        else
+          sum.toDouble / iterations
       println(
         s"$name - total duration: $sum ms; iterations: $iterations; avg: $avg ms")
     }
@@ -81,8 +85,10 @@ object ClassPathImplComparator {
 
       val classesToCheck = oldCpSettings.checkClasses.value
       val classesToFind =
-        if (classesToCheck.isEmpty) defaultClassesToFind
-        else classesToCheck.split(";").toList
+        if (classesToCheck.isEmpty)
+          defaultClassesToFind
+        else
+          classesToCheck.split(";").toList
 
       def doTest(
           classPath: => ClassFileLookup[AbstractFile],

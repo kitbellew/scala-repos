@@ -58,7 +58,8 @@ trait TypeComparers {
 
   private def isSubPre(pre1: Type, pre2: Type, sym: Symbol) =
     if ((pre1 ne pre2) && (pre1 ne NoPrefix) && (pre2 ne NoPrefix) && pre1 <:< pre2) {
-      if (settings.debug) println(s"new isSubPre $sym: $pre1 <:< $pre2")
+      if (settings.debug)
+        println(s"new isSubPre $sym: $pre1 <:< $pre2")
       true
     } else
       false
@@ -105,7 +106,8 @@ trait TypeComparers {
   /** Do `tp1` and `tp2` denote equivalent types? */
   def isSameType(tp1: Type, tp2: Type): Boolean =
     try {
-      if (Statistics.canEnable) Statistics.incCounter(sametypeCount)
+      if (Statistics.canEnable)
+        Statistics.incCounter(sametypeCount)
       subsametypeRecursions += 1
       //OPT cutdown on Function0 allocation
       //was:
@@ -117,7 +119,8 @@ trait TypeComparers {
       var result = false
       try {
         result = isSameType1(tp1, tp2)
-      } finally if (!result) undoLog.undoTo(before)
+      } finally if (!result)
+        undoLog.undoTo(before)
       result
     } finally {
       subsametypeRecursions -= 1
@@ -356,7 +359,8 @@ trait TypeComparers {
         } else {
           isSubType1(tp1, tp2, depth)
         }
-      } finally if (!result) undoLog.undoTo(before)
+      } finally if (!result)
+        undoLog.undoTo(before)
 
       result
     } finally {
@@ -388,9 +392,12 @@ trait TypeComparers {
         || (tp2 eq NoPrefix)
     )
 
-    if (isTrue) TriState.True
-    else if (isFalse) TriState.False
-    else TriState.Unknown
+    if (isTrue)
+      TriState.True
+    else if (isFalse)
+      TriState.False
+    else
+      TriState.Unknown
   }
 
   private def isSubType1(tp1: Type, tp2: Type, depth: Depth): Boolean =
@@ -411,9 +418,16 @@ trait TypeComparers {
       // fast-path: polymorphic method type -- type params cannot be captured
       val isMethod = tparams1.head.owner.isMethod
       //@M for an example of why we need to generate fresh symbols otherwise, see neg/tcpoly_ticket2101.scala
-      val substitutes = if (isMethod) tparams1 else cloneSymbols(tparams1)
+      val substitutes =
+        if (isMethod)
+          tparams1
+        else
+          cloneSymbols(tparams1)
       def sub1(tp: Type) =
-        if (isMethod) tp else tp.substSym(tparams1, substitutes)
+        if (isMethod)
+          tp
+        else
+          tp.substSym(tparams1, substitutes)
       def sub2(tp: Type) = tp.substSym(tparams2, substitutes)
       def cmp(p1: Symbol, p2: Symbol) = (
         methodHigherOrderTypeParamsSubVariance(p2, p1)
@@ -430,8 +444,8 @@ trait TypeComparers {
   private def isThisAndSuperSubtype(tp1: Type, tp2: Type): Boolean =
     (tp1, tp2) match {
       case (
-          SingleType(ThisType(lpre), v1),
-          SingleType(SuperType(ThisType(rpre), _), v2)) =>
+            SingleType(ThisType(lpre), v1),
+            SingleType(SuperType(ThisType(rpre), _), v2)) =>
         (lpre eq rpre) && (v1.overrideChain contains v2)
       case _ => false
     }
@@ -568,9 +582,12 @@ trait TypeComparers {
       def abstractTypeOnRight(lo: Type) =
         isDifferentTypeConstructor(tp2, lo) && retry(tp1, lo)
       def classOnRight = (
-        if (isRawType(tp2)) retry(tp1, rawToExistential(tp2))
-        else if (sym2.isRefinementClass) retry(tp1, sym2.info)
-        else fourthTry
+        if (isRawType(tp2))
+          retry(tp1, rawToExistential(tp2))
+        else if (sym2.isRefinementClass)
+          retry(tp1, sym2.info)
+        else
+          fourthTry
       )
       sym2 match {
         case SingletonClass => tp1.isStable || fourthTry
@@ -699,8 +716,12 @@ trait TypeComparers {
     */
   private def primitiveBaseClass(tp: Type): Symbol = {
     @tailrec def loop(bases: List[Symbol]): Symbol = bases match {
-      case Nil     => NoSymbol
-      case x :: xs => if (isPrimitiveValueClass(x)) x else loop(xs)
+      case Nil => NoSymbol
+      case x :: xs =>
+        if (isPrimitiveValueClass(x))
+          x
+        else
+          loop(xs)
     }
     loop(tp.baseClasses)
   }

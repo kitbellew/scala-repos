@@ -35,7 +35,10 @@ import scala.language.implicitConversions
 object TimeStringConverter {
   implicit def sfxTimeStringConverter2jfx(
       c: TimeStringConverter): jfxuc.TimeStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class TimeStringConverter(

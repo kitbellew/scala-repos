@@ -186,14 +186,21 @@ object State {
     /** Adds `command` as the most recently executed command.*/
     def ::(command: String): History = {
       val prependTo =
-        if (maxSize > 0 && executed.size >= maxSize) executed.take(maxSize - 1)
-        else executed
+        if (maxSize > 0 && executed.size >= maxSize)
+          executed.take(maxSize - 1)
+        else
+          executed
       new History(command +: prependTo, maxSize)
     }
 
     /** Changes the maximum number of commands kept, adjusting the current history if necessary.*/
     def setMaxSize(size: Int): History =
-      new History(if (size <= 0) executed else executed.take(size), size)
+      new History(
+        if (size <= 0)
+          executed
+        else
+          executed.take(size),
+        size)
     def current: String = executed.head
     def previous: Option[String] = executed.drop(1).headOption
   }
@@ -240,7 +247,13 @@ object State {
     def clearGlobalLog = setNext(ClearGlobalLog)
     def keepLastLog = setNext(KeepLastLog)
     def exit(ok: Boolean) =
-      runExitHooks().setNext(new Return(Exit(if (ok) 0 else 1)))
+      runExitHooks().setNext(
+        new Return(
+          Exit(
+            if (ok)
+              0
+            else
+              1)))
     def get[T](key: AttributeKey[T]) = s.attributes get key
     def put[T](key: AttributeKey[T], value: T) =
       s.copy(attributes = s.attributes.put(key, value))

@@ -35,10 +35,16 @@ Repr <% GenTraversableLike[A, Repr]: AdditiveCollection](r: Repr) {
   import Sized._
 
   def sized[L <: Nat](implicit toInt: ToInt[L]) =
-    if (r.size == toInt()) Some(wrap[Repr, L](r)) else None
+    if (r.size == toInt())
+      Some(wrap[Repr, L](r))
+    else
+      None
 
   def sized(l: Nat)(implicit toInt: ToInt[l.N]) =
-    if (r.size == toInt()) Some(wrap[Repr, l.N](r)) else None
+    if (r.size == toInt())
+      Some(wrap[Repr, l.N](r))
+    else
+      None
 
   def ensureSized[L <: Nat](implicit toInt: ToInt[L]) = {
     assert(r.size == toInt())

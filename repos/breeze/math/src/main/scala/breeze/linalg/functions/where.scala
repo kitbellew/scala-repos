@@ -25,14 +25,16 @@ object where extends UFunc {
           v,
           new KeyValuePairsVisitor[K, V] {
             override def visit(k: K, a: V): Unit = {
-              if (a != semi.zero) result += k
+              if (a != semi.zero)
+                result += k
             }
 
             override def zeros(
                 numZero: Int,
                 zeroKeys: Iterator[K],
                 zeroValue: V): Unit = {
-              if (zeroValue != semi.zero) result ++= zeroKeys
+              if (zeroValue != semi.zero)
+                result ++= zeroKeys
             }
           }
         )
@@ -52,7 +54,10 @@ object where extends UFunc {
         trav.map(
           from,
           { (k, v) =>
-            if (v != semi.zero) v2(k) else v3(k)
+            if (v != semi.zero)
+              v2(k)
+            else
+              v3(k)
           })
       }
     }

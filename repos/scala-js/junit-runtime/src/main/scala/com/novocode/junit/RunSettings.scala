@@ -30,10 +30,14 @@ class RunSettings private (
   }
 
   def decodeName(name: String): String =
-    if (decodeScalaNames) RunSettings.decodeScalaName(name) else name
+    if (decodeScalaNames)
+      RunSettings.decodeScalaName(name)
+    else
+      name
 
   def buildColoredMessage(t: Throwable, c1: String): String = {
-    if (t == null) "null"
+    if (t == null)
+      "null"
     else {
       if (!logExceptionClass || (!logAssert && t
             .isInstanceOf[AssertionError])) {
@@ -43,10 +47,13 @@ class RunSettings private (
         val cn = decodeName(t.getClass.getName)
         val pos1 = cn.indexOf('$')
         val pos2 = {
-          if (pos1 == -1) cn.lastIndexOf('.')
-          else cn.lastIndexOf('.', pos1)
+          if (pos1 == -1)
+            cn.lastIndexOf('.')
+          else
+            cn.lastIndexOf('.', pos1)
         }
-        if (pos2 == -1) b.append(c(cn, c1))
+        if (pos2 == -1)
+          b.append(c(cn, c1))
         else {
           b.append(cn.substring(0, pos2))
           b.append('.')

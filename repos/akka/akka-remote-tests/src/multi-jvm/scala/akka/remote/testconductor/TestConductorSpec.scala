@@ -78,7 +78,8 @@ class TestConductorSpec
       enterBarrier("throttled_send")
 
       runOn(slave) {
-        for (i ← 0 to 9) echo ! i
+        for (i ← 0 to 9)
+          echo ! i
       }
 
       within(0.6 seconds, 2 seconds) {
@@ -98,12 +99,15 @@ class TestConductorSpec
       enterBarrier("throttled_recv")
 
       runOn(slave) {
-        for (i ← 10 to 19) echo ! i
+        for (i ← 10 to 19)
+          echo ! i
       }
 
       val (min, max) =
-        if (isNode(master)) (0 seconds, 500 millis)
-        else (0.3 seconds, 3 seconds)
+        if (isNode(master))
+          (0 seconds, 500 millis)
+        else
+          (0.3 seconds, 3 seconds)
 
       within(min, max) {
         expectMsg(500 millis, 10)

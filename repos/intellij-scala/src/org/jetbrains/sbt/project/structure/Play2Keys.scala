@@ -31,7 +31,8 @@ object Play2Keys {
 
   object KeyExtractor {
     def extract(elem: scala.xml.Node): Option[SettingKey[_]] = {
-      if (elem.isInstanceOf[Text] || elem.label == "#PCDATA") return None
+      if (elem.isInstanceOf[Text] || elem.label == "#PCDATA")
+        return None
 
       val keyName = elem.label
       val children =
@@ -55,7 +56,8 @@ object Play2Keys {
             Some((projectKey.label, projectKey \ ENTRY_SEQ_NAME map (_.text)))
         }.toMap
         Some(new SeqStringXmlKey(keyName, values))
-      } else None
+      } else
+        None
     }
   }
 

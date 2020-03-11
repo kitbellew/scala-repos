@@ -172,7 +172,11 @@ sealed abstract class AggregateFunction
   }
 
   def sql(isDistinct: Boolean): String = {
-    val distinct = if (isDistinct) "DISTINCT " else ""
+    val distinct =
+      if (isDistinct)
+        "DISTINCT "
+      else
+        ""
     s"$prettyName($distinct${children.map(_.sql).mkString(", ")})"
   }
 }

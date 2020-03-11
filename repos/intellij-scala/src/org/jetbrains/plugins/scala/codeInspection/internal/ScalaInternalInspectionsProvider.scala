@@ -16,6 +16,7 @@ class ScalaInternalInspectionsProvider extends InspectionToolProvider {
       buffer += classOf[ScalaWrongMethodsUsageInspection]
       buffer += classOf[AnnotatorBasedErrorInspection]
       buffer.toArray
-    } else Array.empty
+    } else
+      Array.empty
   }
 }

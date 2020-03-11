@@ -32,13 +32,16 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         x: ClosureInstantiation,
         y: ClosureInstantiation): Int = {
       val cls = x.ownerClass.internalName compareTo y.ownerClass.internalName
-      if (cls != 0) return cls
+      if (cls != 0)
+        return cls
 
       val mName = x.ownerMethod.name compareTo y.ownerMethod.name
-      if (mName != 0) return mName
+      if (mName != 0)
+        return mName
 
       val mDesc = x.ownerMethod.desc compareTo y.ownerMethod.desc
-      if (mDesc != 0) return mDesc
+      if (mDesc != 0)
+        return mDesc
 
       def pos(inst: ClosureInstantiation) =
         inst.ownerMethod.instructions.indexOf(inst.lambdaMetaFactoryCall.indy)
@@ -248,7 +251,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       closureInit: ClosureInstantiation,
       prodCons: => ProdConsAnalyzer): Boolean = {
     val indy = closureInit.lambdaMetaFactoryCall.indy
-    if (invocation.getOpcode == INVOKESTATIC) false
+    if (invocation.getOpcode == INVOKESTATIC)
+      false
     else {
       def closureIsReceiver = {
         val invocationFrame = prodCons.frameAt(invocation)
@@ -292,12 +296,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         val aDesc = invocation.desc
         val bDesc =
           closureInit.lambdaMetaFactoryCall.samMethodType.getDescriptor
-        if (aName == bName) aDesc == bDesc
+        if (aName == bName)
+          aDesc == bDesc
         else if (isSpecializedVersion(aName, bName))
           specializedDescMatches(aDesc, bDesc)
         else if (isSpecializedVersion(bName, aName))
           specializedDescMatches(bDesc, aDesc)
-        else false
+        else
+          false
       }
 
       nameAndDescMatch && closureIsReceiver // most expensive check last
@@ -421,14 +427,18 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     if (isPrimitiveType(
           invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
-        if (invocationReturnType.getSort == Type.VOID) getPop(1)
-        else getScalaUnbox(invocationReturnType)
+        if (invocationReturnType.getSort == Type.VOID)
+          getPop(1)
+        else
+          getScalaUnbox(invocationReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
     } else if (isPrimitiveType(
                  bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
-        if (bodyReturnType.getSort == Type.VOID) getBoxedUnit
-        else getScalaBox(bodyReturnType)
+        if (bodyReturnType.getSort == Type.VOID)
+          getBoxedUnit
+        else
+          getScalaBox(bodyReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
     } else {
       // see comment of that method
@@ -597,7 +607,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         // The ASM method `type.getOpcode` returns the opcode for operating on a value of `type`.
         val offset = types(i).getOpcode(ILOAD) - ILOAD
         val local = Local(firstLocal + i + sizeTwoOffset, offset)
-        if (local.size == 2) sizeTwoOffset += 1
+        if (local.size == 2)
+          sizeTwoOffset += 1
         local
       })(collection.breakOut)
       LocalsList(locals)
@@ -611,7 +622,11 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     * a local variable holding a reference (`A`) is 4. See also method `getOpcode` in [[scala.tools.asm.Type]].
     */
   case class Local(local: Int, opcodeOffset: Int) {
-    def size = if (loadOpcode == LLOAD || loadOpcode == DLOAD) 2 else 1
+    def size =
+      if (loadOpcode == LLOAD || loadOpcode == DLOAD)
+        2
+      else
+        1
 
     def loadOpcode = ILOAD + opcodeOffset
     def storeOpcode = ISTORE + opcodeOffset

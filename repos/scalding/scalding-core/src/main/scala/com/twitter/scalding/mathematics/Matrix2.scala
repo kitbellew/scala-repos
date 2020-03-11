@@ -136,7 +136,10 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     lazy val resultPipe = joinedBool
       .flatMap {
         case (key, ((row, bool), (col2, v))) =>
-          if (bool) Some((row, col2), v) else None // filter early
+          if (bool)
+            Some((row, col2), v)
+          else
+            None // filter early
       }
       .group // TODO we could be lazy with this group and combine with a sum
       .sum
@@ -844,8 +847,10 @@ object Matrix2 {
         p: IndexedSeq[Matrix2[Any, Any, V]],
         i: Int,
         j: Int): BigInt = {
-      if (subchainCosts.contains((i, j))) subchainCosts((i, j))
-      if (i == j) subchainCosts.put((i, j), 0)
+      if (subchainCosts.contains((i, j)))
+        subchainCosts((i, j))
+      if (i == j)
+        subchainCosts.put((i, j), 0)
       else {
         subchainCosts.put((i, j), Long.MaxValue)
         for (k <- i to (j - 1)) {
@@ -874,7 +879,8 @@ object Matrix2 {
      */
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     def generatePlan(i: Int, j: Int): Matrix2[Any, Any, V] = {
-      if (i == j) p(i)
+      if (i == j)
+        p(i)
       else {
         val k = splitMarkers((i, j))
         val left = generatePlan(i, k)

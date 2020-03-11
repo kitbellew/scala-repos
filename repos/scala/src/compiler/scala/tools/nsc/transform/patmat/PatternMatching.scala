@@ -125,9 +125,11 @@ trait Debugging {
   object debug {
     val printPatmat = global.settings.Ypatmatdebug.value
     @inline final def patmat(s: => String) =
-      if (printPatmat) Console.err.println(s)
+      if (printPatmat)
+        Console.err.println(s)
     @inline final def patmatResult[T](s: => String)(result: T): T = {
-      if (printPatmat) Console.err.println(s + ": " + result)
+      if (printPatmat)
+        Console.err.println(s + ": " + result)
       result
     }
   }
@@ -210,8 +212,10 @@ trait Interface extends ast.TreeDSL {
       reporter.warning(pos, "unreachable code")
     def reportMissingCases(pos: Position, counterExamples: List[String]) = {
       val ceString =
-        if (counterExamples.tail.isEmpty) "input: " + counterExamples.head
-        else "inputs: " + counterExamples.mkString(", ")
+        if (counterExamples.tail.isEmpty)
+          "input: " + counterExamples.head
+        else
+          "inputs: " + counterExamples.mkString(", ")
 
       reporter.warning(
         pos,
@@ -227,7 +231,10 @@ trait Interface extends ast.TreeDSL {
       def apply(from: Symbol, to: Tree) = new Substitution(List(from), List(to))
       // requires sameLength(from, to)
       def apply(from: List[Symbol], to: List[Tree]) =
-        if (from nonEmpty) new Substitution(from, to) else EmptySubstitution
+        if (from nonEmpty)
+          new Substitution(from, to)
+        else
+          EmptySubstitution
     }
 
     class Substitution(val from: List[Symbol], val to: List[Tree]) {
@@ -257,10 +264,12 @@ trait Interface extends ast.TreeDSL {
         val toSyms = to.map(_.symbol)
         object substIdentsForTrees extends Transformer {
           private def typedIfOrigTyped(to: Tree, origTp: Type): Tree =
-            if (origTp == null || origTp == NoType) to
+            if (origTp == null || origTp == NoType)
+              to
             // important: only type when actually substituting and when original tree was typed
             // (don't need to use origTp as the expected type, though, and can't always do this anyway due to unknown type params stemming from polymorphic extractors)
-            else typer.typed(to)
+            else
+              typer.typed(to)
 
           def typedStable(t: Tree) =
             typer.typed(
@@ -270,12 +279,14 @@ trait Interface extends ast.TreeDSL {
 
           override def transform(tree: Tree): Tree = {
             def subst(from: List[Symbol], to: List[Tree]): Tree =
-              if (from.isEmpty) tree
+              if (from.isEmpty)
+                tree
               else if (tree.symbol == from.head)
                 typedIfOrigTyped(
                   typedStable(to.head).setPos(tree.pos),
                   tree.tpe)
-              else subst(from.tail, to.tail)
+              else
+                subst(from.tail, to.tail)
 
             val tree1 = tree match {
               case Ident(_) => subst(from, to)
@@ -297,7 +308,8 @@ trait Interface extends ast.TreeDSL {
             ) // SI-7459 catches `case t => new t.Foo`
           else
             substIdentsForTrees.transform(tree)
-        } else tree
+        } else
+          tree
       }
 
       // the substitution that chains `other` before `this` substitution

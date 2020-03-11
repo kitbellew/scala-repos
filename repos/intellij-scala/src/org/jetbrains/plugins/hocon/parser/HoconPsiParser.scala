@@ -50,16 +50,20 @@ class HoconPsiParser extends PsiParser {
             token == commentToken && (if (i > 0)
                                         tokens.get(
                                           i - 1) == LineBreakingWhitespace
-                                      else atStreamEdge)
+                                      else
+                                        atStreamEdge)
           def noBlankLineWhitespace =
             Whitespace
               .contains(token) && text.charIterator.count(_ == '\n') <= 1
 
-          if (i < 0) resultSoFar
+          if (i < 0)
+            resultSoFar
           else if (noBlankLineWhitespace)
             goThrough(commentToken, resultSoFar, i - 1)
-          else if (entireLineComment) goThrough(commentToken, i, i - 1)
-          else resultSoFar
+          else if (entireLineComment)
+            goThrough(commentToken, i, i - 1)
+          else
+            resultSoFar
         }
 
         val dsCommentsStart =
@@ -129,8 +133,14 @@ class HoconPsiParser extends PsiParser {
         nonGreedyRight: Boolean): Unit = {
       import com.intellij.lang.WhitespacesBinders._
       marker.setCustomEdgeTokenBinders(
-        if (nonGreedyLeft) DEFAULT_LEFT_BINDER else GREEDY_LEFT_BINDER,
-        if (nonGreedyRight) DEFAULT_RIGHT_BINDER else GREEDY_RIGHT_BINDER)
+        if (nonGreedyLeft)
+          DEFAULT_LEFT_BINDER
+        else
+          GREEDY_LEFT_BINDER,
+        if (nonGreedyRight)
+          DEFAULT_RIGHT_BINDER
+        else
+          GREEDY_RIGHT_BINDER)
     }
 
     def parseFile(): Unit = {
@@ -184,8 +194,10 @@ class HoconPsiParser extends PsiParser {
           pass(Comma)
         } else {
           tokenError(
-            "expected object field" + (if (insideObject) ", include or '}'"
-                                       else " or include"))
+            "expected object field" + (if (insideObject)
+                                         ", include or '}'"
+                                       else
+                                         " or include"))
         }
       }
 
@@ -231,15 +243,20 @@ class HoconPsiParser extends PsiParser {
             } catch {
               case e: MalformedURLException =>
                 tokenError(
-                  if (e.getMessage != null) e.getMessage else "malformed URL")
+                  if (e.getMessage != null)
+                    e.getMessage
+                  else
+                    "malformed URL")
             }
           } else {
             parseStringLiteral(IncludeTarget)
           }
           if (matchesUnquoted(")")) {
             advanceLexer()
-          } else errorUntil(ValueEnding.orNewLineOrEof, "expected ')'")
-        } else errorUntil(ValueEnding.orNewLineOrEof, "expected quoted string")
+          } else
+            errorUntil(ValueEnding.orNewLineOrEof, "expected ')'")
+        } else
+          errorUntil(ValueEnding.orNewLineOrEof, "expected quoted string")
       } else
         errorUntil(
           ValueEnding.orNewLineOrEof,
@@ -421,7 +438,8 @@ class HoconPsiParser extends PsiParser {
               "characters $ \" { } [ ] : = , + # ` ^ ? ! @ * & \\ are forbidden unquoted")
           }
           parseValueParts(partCount + 1)
-        } else partCount
+        } else
+          partCount
       }
 
       suppressNewLine()
@@ -466,7 +484,10 @@ class HoconPsiParser extends PsiParser {
       lazy val isValid = {
         val text = textBuilder.result()
         try {
-          if (gotPeriod) text.toDouble else text.toLong
+          if (gotPeriod)
+            text.toDouble
+          else
+            text.toLong
           true
         } catch {
           case e: NumberFormatException => false
@@ -506,7 +527,8 @@ class HoconPsiParser extends PsiParser {
         if (!pass(SubRBrace)) {
           builder.error("expected '}'")
         }
-      } else errorUntil(PathEnding.orNewLineOrEof, "expected path expression")
+      } else
+        errorUntil(PathEnding.orNewLineOrEof, "expected path expression")
       pass(SubRBrace)
 
       marker.done(Substitution)

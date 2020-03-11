@@ -442,7 +442,11 @@ object JsonAST {
       * }}}
       */
     def transformField(f: PartialFunction[JField, JField]): JValue = mapField {
-      x => if (f.isDefinedAt(x)) f(x) else x
+      x =>
+        if (f.isDefinedAt(x))
+          f(x)
+        else
+          x
     }
 
     /**
@@ -489,7 +493,10 @@ object JsonAST {
       *         untouched.
       */
     def transform(f: PartialFunction[JValue, JValue]): JValue = map { x =>
-      if (f.isDefinedAt(x)) f(x) else x
+      if (f.isDefinedAt(x))
+        f(x)
+      else
+        x
     }
 
     /**
@@ -513,7 +520,12 @@ object JsonAST {
                 JObject(
                   fields.map {
                     case JField(`x`, value) =>
-                      JField(x, if (xs == Nil) replacement else rep(xs, value))
+                      JField(
+                        x,
+                        if (xs == Nil)
+                          replacement
+                        else
+                          rep(xs, value))
                     case field => field
                   }
                 )
@@ -614,7 +626,11 @@ object JsonAST {
       *         if this `JValue` is not a `JObject`.
       */
     def filterField(p: JField => Boolean): List[JField] =
-      foldField(List[JField]())((acc, e) => if (p(e)) e :: acc else acc).reverse
+      foldField(List[JField]())((acc, e) =>
+        if (p(e))
+          e :: acc
+        else
+          acc).reverse
 
     /**
       * Return a List of all values which matches the given predicate, recursively.
@@ -639,7 +655,11 @@ object JsonAST {
       * }}}
       */
     def filter(p: JValue => Boolean): List[JValue] =
-      fold(List[JValue]())((acc, e) => if (p(e)) e :: acc else acc).reverse
+      fold(List[JValue]())((acc, e) =>
+        if (p(e))
+          e :: acc
+        else
+          acc).reverse
 
     /**
       * Create a new instance of `[[WithFilter]]` for Scala to use when using

@@ -54,7 +54,8 @@ class PowerMethod(maxIters: Int = 10, tolerance: Double = 1e-5)
     eigenVector := ay
     val norm1 = norm(ay)
     eigenVector *= 1.0 / norm1
-    if (lambda < 0.0) eigenVector *= -1.0
+    if (lambda < 0.0)
+      eigenVector *= -1.0
     lambda
   }
 
@@ -72,7 +73,8 @@ class PowerMethod(maxIters: Int = 10, tolerance: Double = 1e-5)
         val val_dif = abs(lambda - eigenValue)
         if (val_dif <= tolerance || iter > maxIters)
           State(lambda, eigenVector, ay, iter + 1, true)
-        else State(lambda, eigenVector, ay, iter + 1, false)
+        else
+          State(lambda, eigenVector, ay, iter + 1, false)
       }
       .takeUpToWhere(_.converged)
 
@@ -117,7 +119,8 @@ object PowerMethod {
             val val_dif = abs(lambda - eigenValue)
             if (val_dif <= tolerance || iter > maxIters)
               State(lambda, eigenVector, ay, iter + 1, true)
-            else State(lambda, eigenVector, ay, iter + 1, false)
+            else
+              State(lambda, eigenVector, ay, iter + 1, false)
           }
           .takeUpToWhere(_.converged)
     }

@@ -86,7 +86,10 @@ class ReliableProxySpec
   // blackhole will trigger failure detection
   val expectNoMsgTimeout = {
     val timeFactor = TestKitExtension(system).TestTimeFactor
-    if (timeFactor > 1.0) (1.0 / timeFactor).seconds else 1.second
+    if (timeFactor > 1.0)
+      (1.0 / timeFactor).seconds
+    else
+      1.second
   }
 
   "A ReliableProxy" must {

@@ -9,7 +9,13 @@ case class Path(entity: String, member: Option[String] = None) {
 
   def asString(wildcardMembers: Boolean): String =
     member
-      .map(it => "%s.%s".format(entity, if (wildcardMembers) "_" else it))
+      .map(it =>
+        "%s.%s".format(
+          entity,
+          if (wildcardMembers)
+            "_"
+          else
+            it))
       .getOrElse(entity)
 }
 

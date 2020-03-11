@@ -35,12 +35,17 @@ object Test extends Properties("TreeMap") {
        * Since we allocate a fixed size buffer in the iterator (based on the tree size) we need to ensure
        * it is big enough for these worst-case trees.
        */
-      val highest = if (even) (1 << (n + 1)) - 2 else 3 * (1 << n) - 2
+      val highest =
+        if (even)
+          (1 << (n + 1)) - 2
+        else
+          3 * (1 << n) - 2
       val values = (1 to highest).reverse
       val subject = TreeMap(values zip values: _*)
       val it = subject.iterator
       try {
-        while (it.hasNext) it.next;
+        while (it.hasNext)
+          it.next;
         true
       } catch {
         case _ => false

@@ -33,12 +33,16 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
       _sourceElement: PsiElement,
       offset: Int,
       editor: Editor): Array[PsiElement] = {
-    if (_sourceElement == null) return null
+    if (_sourceElement == null)
+      return null
     val containingFile: PsiFile = _sourceElement.getContainingFile
-    if (containingFile == null) return null
+    if (containingFile == null)
+      return null
     val sourceElement = containingFile.findElementAt(offset)
-    if (sourceElement == null) return null
-    if (sourceElement.getLanguage != ScalaFileType.SCALA_LANGUAGE) return null
+    if (sourceElement == null)
+      return null
+    if (sourceElement.getLanguage != ScalaFileType.SCALA_LANGUAGE)
+      return null
 
     if (sourceElement.getNode.getElementType == ScalaTokenTypes.tASSIGN) {
       return sourceElement.getParent match {
@@ -63,7 +67,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
     if (sourceElement.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
       val file = sourceElement.getContainingFile
       val ref = file.findReferenceAt(sourceElement.getTextRange.getStartOffset)
-      if (ref == null) return null
+      if (ref == null)
+        return null
       val targets = ref match {
         case resRef: ResolvableReferenceElement =>
           resRef.bind() match {
@@ -85,7 +90,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
                   val clazz = c.containingClass
                   if (clazz == x.getActualElement)
                     Seq(x.element).flatMap(goToTargets)
-                  else all.distinct flatMap goToTargets
+                  else
+                    all.distinct flatMap goToTargets
                 case _ =>
                   all.distinct flatMap goToTargets
               }

@@ -6,7 +6,11 @@ object Bug {
     if (true)
       A1()
     else {
-      val a = if (true) A1() else A2();
+      val a =
+        if (true)
+          A1()
+        else
+          A2();
       a
     };
 }

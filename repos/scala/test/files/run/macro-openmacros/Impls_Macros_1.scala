@@ -10,7 +10,8 @@ object Macros {
         (dir.getCanonicalPath + java.io.File.separator).replace('\\', '/')
       var regex = """\Q%s\E""" format base
       val isWin = System.getProperty("os.name", "") startsWith "Windows"
-      if (isWin) regex = "(?i)" + regex
+      if (isWin)
+        regex = "(?i)" + regex
       s.replace('\\', '/').replaceAll(regex, "")
     }
 
@@ -19,7 +20,8 @@ object Macros {
       if (c.enclosingMacros.length < 3)
         c.Expr[Unit](
           Select(Ident(c.mirror.staticModule("Macros")), TermName("foo")))
-      else c.Expr[Unit](Literal(Constant(())))
+      else
+        c.Expr[Unit](Literal(Constant(())))
     c.universe.reify {
       println(
         c.Expr[String](

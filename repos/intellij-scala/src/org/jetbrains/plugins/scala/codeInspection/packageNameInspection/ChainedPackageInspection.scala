@@ -59,7 +59,8 @@ class UseChainedPackageQuickFix(myFile: ScalaFile, basePackage: String)
       myFile) {
   def doApplyFix(project: Project) {
     val file = getElement
-    if (file.isValid) file.setPackageName(file.packageName)
+    if (file.isValid)
+      file.setPackageName(file.packageName)
   }
 
   override def getFamilyName = "Use chained package clauses"

@@ -34,7 +34,10 @@ import scalafx.scene.Node
 
 object RadioMenuItem {
   implicit def sfxRadioMenuItem2jfx(m: RadioMenuItem): jfxsc.RadioMenuItem =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 }
 
 /**

@@ -189,7 +189,8 @@ class IsotonicRegression @Since("1.5.0") (
     // Extract columns from data.  If dataset is persisted, do not persist oldDataset.
     val instances = extractWeightedLabeledPoints(dataset)
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
+    if (handlePersistence)
+      instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val isotonicRegression =
       new MLlibIsotonicRegression().setIsotonic($(isotonic))

@@ -137,7 +137,8 @@ trait DescriptiveStats {
             }
 
             def zeros(numZero: Int, zeroValue: S): Unit = {
-              for (i <- 0 until numZero) visit(zeroValue)
+              for (i <- 0 until numZero)
+                visit(zeroValue)
             }
           }
           iter.traverse(v, visit)
@@ -507,14 +508,17 @@ object DescriptiveStats {
     * returns the estimate of the data at p * it.size, where p in [0,1]
     */
   def percentile(it: TraversableOnce[Double], p: Double) = {
-    if (p > 1 || p < 0) throw new IllegalArgumentException("p must be in [0,1]")
+    if (p > 1 || p < 0)
+      throw new IllegalArgumentException("p must be in [0,1]")
     val arr = it.toArray
     Sorting.quickSort(arr)
     // +1 so that the .5 == mean for even number of elements.
     val f = (arr.length + 1) * p
     val i = f.toInt
-    if (i == 0) arr.head
-    else if (i >= arr.length) arr.last
+    if (i == 0)
+      arr.head
+    else if (i >= arr.length)
+      arr.last
     else {
       arr(i - 1) + (f - i) * (arr(i) - arr(i - 1))
     }
@@ -545,7 +549,10 @@ object DescriptiveStats {
             oldC + ((y._1 - oldMu1) * (y._2 - newMu2)) //compute covariance in single pass
           (newMu1, newMu2, newC, newN)
       }
-    if (n == 1) (mu1, mu2, 0) else (mu1, mu2, c / (n - frac.fromInt(1)))
+    if (n == 1)
+      (mu1, mu2, 0)
+    else
+      (mu1, mu2, c / (n - frac.fromInt(1)))
   }
 
   /**

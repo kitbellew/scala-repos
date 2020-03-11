@@ -33,8 +33,10 @@ trait ScMatchStmt extends ScExpression {
 
   def caseClauses: Seq[ScCaseClause] = {
     val cc = getCaseClauses
-    if (cc == null) Nil
-    else cc.caseClauses
+    if (cc == null)
+      Nil
+    else
+      cc.caseClauses
   }
 
   override def accept(visitor: ScalaElementVisitor) =

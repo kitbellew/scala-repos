@@ -61,7 +61,8 @@ object Scaladoc extends AutoPlugin {
   def scaladocVerifier(file: File): File = {
     @tailrec
     def findHTMLFileWithDiagram(dirs: Seq[File]): Boolean = {
-      if (dirs.isEmpty) false
+      if (dirs.isEmpty)
+        false
       else {
         val curr = dirs.head
         val (newDirs, files) = curr.listFiles.partition(_.isDirectory)
@@ -83,7 +84,8 @@ object Scaladoc extends AutoPlugin {
                     e)
               } finally source.close()
             hd
-          } else false
+          } else
+            false
         }
         hasDiagram || findHTMLFileWithDiagram(rest)
       }

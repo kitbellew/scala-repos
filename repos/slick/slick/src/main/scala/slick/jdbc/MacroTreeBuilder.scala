@@ -200,7 +200,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
           case (param, rawQueryPart) =>
             val (queryPart, append) = decode(rawQueryPart)
             queryString.append(Literal(Constant(queryPart)))
-            if (append) queryString.append(param.tree)
+            if (append)
+              queryString.append(param.tree)
             else {
               queryString.append(Literal(Constant("?")))
               remaining += c.Expr[SetParameter[Unit]] {
@@ -218,7 +219,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
         }
       queryString.append(Literal(Constant(rawQueryParts.last)))
       val pconv =
-        if (remaining.isEmpty) Select(SetParameterTree, TermName("SetUnit"))
+        if (remaining.isEmpty)
+          Select(SetParameterTree, TermName("SetUnit"))
         else
           Apply(
             Select(SetParameterTree, TermName("apply")),

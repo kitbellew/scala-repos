@@ -10,7 +10,10 @@ import scalafx.scene.image.Image
 
 object PhongMaterial {
   implicit def sfxPhongMaterial2jfx(c: PhongMaterial): jfxsp.PhongMaterial =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 /** The PhongMaterial class provides definitions of properties that represent a form of Phong shaded material. */

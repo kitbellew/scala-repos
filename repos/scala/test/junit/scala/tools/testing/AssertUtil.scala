@@ -24,8 +24,10 @@ object AssertUtil {
   private implicit class `class helper`(val clazz: Class[_]) extends AnyVal {
     def allFields: List[Field] = {
       def loop(k: Class[_]): List[Field] =
-        if (k == null) Nil
-        else k.getDeclaredFields.toList ::: loop(k.getSuperclass)
+        if (k == null)
+          Nil
+        else
+          k.getDeclaredFields.toList ::: loop(k.getSuperclass)
       loop(clazz)
     }
   }
@@ -62,8 +64,10 @@ object AssertUtil {
       message: String = ""): Unit =
     if (!(expected sameElements actual))
       fail(
-        f"${if (message.nonEmpty) s"$message " else ""}expected:<${stringOf(
-          expected)}> but was:<${stringOf(actual)}>"
+        f"${if (message.nonEmpty)
+          s"$message "
+        else
+          ""}expected:<${stringOf(expected)}> but was:<${stringOf(actual)}>"
       )
 
   /** Convenient for testing iterators.

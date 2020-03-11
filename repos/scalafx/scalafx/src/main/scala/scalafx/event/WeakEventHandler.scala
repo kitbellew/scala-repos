@@ -46,7 +46,10 @@ object WeakEventHandler {
     */
   implicit def sfxWeakEventHandler2jfx[T <: jfxe.Event](
       weh: WeakEventHandler[T]): jfxe.WeakEventHandler[T] =
-    if (weh != null) weh.delegate else null
+    if (weh != null)
+      weh.delegate
+    else
+      null
 
 }
 

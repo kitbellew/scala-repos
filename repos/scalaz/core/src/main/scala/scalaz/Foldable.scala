@@ -151,11 +151,19 @@ trait Foldable[F[_]] { self =>
 
   def findLeft[A](fa: F[A])(f: A => Boolean): Option[A] =
     foldLeft[A, Option[A]](fa, None)((b, a) =>
-      b.orElse(if (f(a)) Some(a) else None))
+      b.orElse(
+        if (f(a))
+          Some(a)
+        else
+          None))
 
   def findRight[A](fa: F[A])(f: A => Boolean): Option[A] =
     foldRight[A, Option[A]](fa, None)((a, b) =>
-      b.orElse(if (f(a)) Some(a) else None))
+      b.orElse(
+        if (f(a))
+          Some(a)
+        else
+          None))
 
   /** Alias for `length`. */
   final def count[A](fa: F[A]): Int = length(fa)
@@ -172,7 +180,10 @@ trait Foldable[F[_]] { self =>
         (
           idx + 1,
           elem orElse {
-            if (idx == i) Some(curr) else None
+            if (idx == i)
+              Some(curr)
+            else
+              None
           })
     }._2
 
@@ -206,7 +217,11 @@ trait Foldable[F[_]] { self =>
   def allM[G[_], A](fa: F[A])(p: A => G[Boolean])(
       implicit G: Monad[G]): G[Boolean] =
     foldRight(fa, G.point(true))((a, b) =>
-      G.bind(p(a))(q => if (q) b else G.point(false)))
+      G.bind(p(a))(q =>
+        if (q)
+          b
+        else
+          G.point(false)))
 
   /** Whether any `A`s in `fa` yield true from `p`. */
   def any[A](fa: F[A])(p: A => Boolean): Boolean =
@@ -216,10 +231,18 @@ trait Foldable[F[_]] { self =>
   def anyM[G[_], A](fa: F[A])(p: A => G[Boolean])(
       implicit G: Monad[G]): G[Boolean] =
     foldRight(fa, G.point(false))((a, b) =>
-      G.bind(p(a))(q => if (q) G.point(true) else b))
+      G.bind(p(a))(q =>
+        if (q)
+          G.point(true)
+        else
+          b))
 
   def filterLength[A](fa: F[A])(f: A => Boolean): Int =
-    foldLeft(fa, 0)((b, a) => (if (f(a)) 1 else 0) + b)
+    foldLeft(fa, 0)((b, a) =>
+      (if (f(a))
+         1
+       else
+         0) + b)
 
   import Ordering.{GT, LT}
   import std.option.{some, none}
@@ -227,8 +250,13 @@ trait Foldable[F[_]] { self =>
   /** The greatest element of `fa`, or None if `fa` is empty. */
   def maximum[A: Order](fa: F[A]): Option[A] =
     foldLeft(fa, none[A]) {
-      case (None, y)    => some(y)
-      case (Some(x), y) => some(if (Order[A].order(x, y) == GT) x else y)
+      case (None, y) => some(y)
+      case (Some(x), y) =>
+        some(
+          if (Order[A].order(x, y) == GT)
+            x
+          else
+            y)
     }
 
   /** The greatest value of `f(a)` for each element `a` of `fa`, or None if `fa` is empty. */
@@ -237,7 +265,11 @@ trait Foldable[F[_]] { self =>
       case (None, a) => some(f(a))
       case (Some(b), aa) =>
         val bb = f(aa);
-        some(if (Order[B].order(b, bb) == GT) b else bb)
+        some(
+          if (Order[B].order(b, bb) == GT)
+            b
+          else
+            bb)
     }
 
   /** The element `a` of `fa` which yields the greatest value of `f(a)`, or None if `fa` is empty. */
@@ -246,14 +278,23 @@ trait Foldable[F[_]] { self =>
       case (None, a) => some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
         val bb = f(aa);
-        some(if (Order[B].order(b, bb) == GT) x else aa -> bb)
+        some(
+          if (Order[B].order(b, bb) == GT)
+            x
+          else
+            aa -> bb)
     } map (_._1)
 
   /** The smallest element of `fa`, or None if `fa` is empty. */
   def minimum[A: Order](fa: F[A]): Option[A] =
     foldLeft(fa, none[A]) {
-      case (None, y)    => some(y)
-      case (Some(x), y) => some(if (Order[A].order(x, y) == LT) x else y)
+      case (None, y) => some(y)
+      case (Some(x), y) =>
+        some(
+          if (Order[A].order(x, y) == LT)
+            x
+          else
+            y)
     }
 
   /** The smallest value of `f(a)` for each element `a` of `fa`, or None if `fa` is empty. */
@@ -262,7 +303,11 @@ trait Foldable[F[_]] { self =>
       case (None, a) => some(f(a))
       case (Some(b), aa) =>
         val bb = f(aa);
-        some(if (Order[B].order(b, bb) == LT) b else bb)
+        some(
+          if (Order[B].order(b, bb) == LT)
+            b
+          else
+            bb)
     }
 
   /** The element `a` of `fa` which yields the smallest value of `f(a)`, or None if `fa` is empty. */
@@ -271,7 +316,11 @@ trait Foldable[F[_]] { self =>
       case (None, a) => some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
         val bb = f(aa);
-        some(if (Order[B].order(b, bb) == LT) x else aa -> bb)
+        some(
+          if (Order[B].order(b, bb) == LT)
+            x
+          else
+            aa -> bb)
     } map (_._1)
 
   def sumr[A](fa: F[A])(implicit A: Monoid[A]): A =
@@ -314,7 +363,10 @@ trait Foldable[F[_]] { self =>
         b match {
           case (_, None) => NonEmptyList(a) :: Nil
           case (x, Some(q)) =>
-            if (pa == q) (a <:: x.head) :: x.tail else NonEmptyList(a) :: x
+            if (pa == q)
+              (a <:: x.head) :: x.tail
+            else
+              NonEmptyList(a) :: x
         },
         Some(pa))
     })._1
@@ -333,7 +385,8 @@ trait Foldable[F[_]] { self =>
                 (a <:: x.head) :: x.tail
               else
                 NonEmptyList(a) :: x
-            else x,
+            else
+              x,
             pa)
         }
       })._1
@@ -344,7 +397,8 @@ trait Foldable[F[_]] { self =>
       case ((seen, acc), a) =>
         if (seen.notMember(a))
           (seen.insert(a), a :: acc)
-        else (seen, acc)
+        else
+          (seen, acc)
     }._2.reverse
 
   /** ``O(n^2^)`` complexity */
@@ -353,7 +407,8 @@ trait Foldable[F[_]] { self =>
       case (seen, a) =>
         if (!IList.instances.element(seen, a))
           a :: seen
-        else seen
+        else
+          seen
     }.reverse
 
   def collapse[X[_], A](x: F[A])(implicit A: ApplicativePlus[X]): X[A] =

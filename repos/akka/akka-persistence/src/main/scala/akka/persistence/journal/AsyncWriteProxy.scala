@@ -43,7 +43,8 @@ private[persistence] trait AsyncWriteProxy
 
   override protected[akka] def aroundReceive(receive: Receive, msg: Any): Unit =
     if (isInitialized) {
-      if (msg != InitTimeout) super.aroundReceive(receive, msg)
+      if (msg != InitTimeout)
+        super.aroundReceive(receive, msg)
     } else
       msg match {
         case SetStore(ref) ⇒

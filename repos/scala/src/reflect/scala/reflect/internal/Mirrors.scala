@@ -38,7 +38,8 @@ trait Mirrors extends api.Mirrors {
 
     def findMemberFromRoot(fullName: Name): Symbol = {
       val segs = nme.segments(fullName.toString, fullName.isTermName)
-      if (segs.isEmpty) NoSymbol
+      if (segs.isEmpty)
+        NoSymbol
       else
         definitions.findNamedMember(segs.tail, RootClass.info member segs.head)
     }
@@ -47,12 +48,19 @@ trait Mirrors extends api.Mirrors {
     private def getModuleOrClass(path: Name, len: Int): Symbol = {
       val point = path lastPos ('.', len - 1)
       val owner =
-        if (point > 0) getModuleOrClass(path.toTermName, point)
-        else RootClass
+        if (point > 0)
+          getModuleOrClass(path.toTermName, point)
+        else
+          RootClass
       val name = path subName (point + 1, len)
       val sym = owner.info member name
-      val result = if (path.isTermName) sym.suchThat(_ hasFlag MODULE) else sym
-      if (result != NoSymbol) result
+      val result =
+        if (path.isTermName)
+          sym.suchThat(_ hasFlag MODULE)
+        else
+          sym
+      if (result != NoSymbol)
+        result
       else {
         if (settings.debug) {
           log(sym.info);
@@ -60,8 +68,10 @@ trait Mirrors extends api.Mirrors {
         } //debug
         thisMirror.missingHook(owner, name) orElse {
           MissingRequirementError.notFound(
-            (if (path.isTermName) "object "
-             else "class ") + path + " in " + thisMirror)
+            (if (path.isTermName)
+               "object "
+             else
+               "class ") + path + " in " + thisMirror)
         }
       }
     }
@@ -83,8 +93,10 @@ trait Mirrors extends api.Mirrors {
       */
     private def staticModuleOrClass(path: Name): Symbol = {
       val isPackageless = path.pos('.') == path.length
-      if (isPackageless) EmptyPackageClass.info decl path
-      else getModuleOrClass(path)
+      if (isPackageless)
+        EmptyPackageClass.info decl path
+      else
+        getModuleOrClass(path)
     }
 
     protected def mirrorMissingHook(owner: Symbol, name: Name): Symbol =
@@ -105,7 +117,8 @@ trait Mirrors extends api.Mirrors {
         fullname: String,
         sym: Symbol): ClassSymbol = {
       var result = sym
-      while (result.isAliasType) result = result.info.typeSymbol
+      while (result.isAliasType)
+        result = result.info.typeSymbol
       result match {
         case x: ClassSymbol => x
         case _              => MissingRequirementError.notFound("class " + fullname)
@@ -248,7 +261,8 @@ trait Mirrors extends api.Mirrors {
       def erasureString(clazz: Class[_]): String = {
         if (clazz.isArray)
           "Array[" + erasureString(clazz.getComponentType) + "]"
-        else clazz.getName
+        else
+          clazz.getName
       }
       erasureString(classTag[T].runtimeClass)
     }
@@ -281,7 +295,8 @@ trait Mirrors extends api.Mirrors {
     // }
 
     def init() {
-      if (initialized) return
+      if (initialized)
+        return
       // Still fiddling with whether it's cleaner to do some of this setup here
       // or from constructors.  The latter approach tends to invite init order issues.
 

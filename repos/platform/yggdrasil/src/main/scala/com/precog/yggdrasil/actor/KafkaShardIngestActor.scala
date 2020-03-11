@@ -127,7 +127,8 @@ case class FilesystemIngestFailureLog(
       new File(persistDir, FilePrefix + System.currentTimeMillis + ".tmp")
     val out = new PrintWriter(new FileWriter(logFile))
     try {
-      for (rec <- failureLog.values) out.println(rec.serialize.renderCompact)
+      for (rec <- failureLog.values)
+        out.println(rec.serialize.renderCompact)
     } finally {
       out.close()
     }
@@ -151,7 +152,8 @@ object FilesystemIngestFailureLog {
         reader: BufferedReader,
         into: Map[EventMessage, LogRecord]): Map[EventMessage, LogRecord] = {
       val line = reader.readLine()
-      if (line == null) into
+      if (line == null)
+        into
       else {
         val logRecord =
           ((Thrown(_: Throwable)) <-: JParser.parseFromString(line))
@@ -175,8 +177,10 @@ object FilesystemIngestFailureLog {
         val failureLog = readAll(reader, Map.empty[EventMessage, LogRecord])
         new FilesystemIngestFailureLog(
           failureLog,
-          if (failureLog.isEmpty) initialCheckpoint
-          else failureLog.values.minBy(_.lastKnownGood).lastKnownGood,
+          if (failureLog.isEmpty)
+            initialCheckpoint
+          else
+            failureLog.values.minBy(_.lastKnownGood).lastKnownGood,
           persistDir)
       } finally {
         reader.close()

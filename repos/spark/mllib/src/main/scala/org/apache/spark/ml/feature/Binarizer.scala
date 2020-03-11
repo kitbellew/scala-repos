@@ -77,7 +77,10 @@ final class Binarizer(override val uid: String)
     val td = $(threshold)
 
     val binarizerDouble = udf { in: Double =>
-      if (in > td) 1.0 else 0.0
+      if (in > td)
+        1.0
+      else
+        0.0
     }
     val binarizerVector = udf { (data: Vector) =>
       val indices = ArrayBuilder.make[Int]

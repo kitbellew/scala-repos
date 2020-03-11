@@ -91,8 +91,10 @@ class StochasticAveragedGradient[T](
       range,
       d,
       previousGradients.updated(nextPos, newGrad),
-      if (oldState.iter < previousGradients.length - 1) oldState.iter + 1
-      else Rand.choose(range).draw()
+      if (oldState.iter < previousGradients.length - 1)
+        oldState.iter + 1
+      else
+        Rand.choose(range).draw()
     )
   }
 }

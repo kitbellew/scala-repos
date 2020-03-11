@@ -42,7 +42,10 @@ object ObservableBufferBase {
     */
   implicit def sfxObservableListBase2jfx[E](
       v: ObservableBufferBase[E]): jfxc.ObservableListBase[E] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

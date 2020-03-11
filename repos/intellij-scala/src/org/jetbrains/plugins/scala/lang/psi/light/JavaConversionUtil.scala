@@ -103,7 +103,8 @@ object JavaConversionUtil {
       case call: ScMethodCall =>
         if (call.getInvokedExpr.getText.endsWith("Array")) {
           call.args.exprs.map(convertExpression).mkString("{", ", ", "}")
-        } else problem
+        } else
+          problem
       case call: ScGenericCall =>
         if (call.referencedExpr.getText.endsWith("classOf")) {
           val arguments = call.arguments
@@ -117,8 +118,10 @@ object JavaConversionUtil {
                 }
               case _ => problem
             }
-          } else problem
-        } else problem
+          } else
+            problem
+        } else
+          problem
       case n: ScNewTemplateDefinition =>
         n.extendsBlock.templateParents match {
           case Some(c: ScClassParents) =>
@@ -148,7 +151,9 @@ object JavaConversionUtil {
   }
 
   def convertArgs(args: Seq[ScExpression]): String = {
-    if (args.isEmpty) ""
-    else args.map(convertExpression).mkString("(", ", ", ")")
+    if (args.isEmpty)
+      ""
+    else
+      args.map(convertExpression).mkString("(", ", ", ")")
   }
 }

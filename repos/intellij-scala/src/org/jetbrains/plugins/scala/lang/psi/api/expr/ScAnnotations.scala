@@ -25,7 +25,10 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
   def foldFuns(initial: Any)(fail: Any)(l: List[PartialFunction[Any, _]]): Any =
     l match {
       case h :: t =>
-        if (h.isDefinedAt(initial)) foldFuns(h(initial))(fail)(t) else fail
+        if (h.isDefinedAt(initial))
+          foldFuns(h(initial))(fail)(t)
+        else
+          fail
       case Nil => initial
     }
 

@@ -57,8 +57,10 @@ case class TypeAliasSignature(
       isDefinition,
       ta)
 
-    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
-    else res
+    if (withCopy)
+      res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
+    else
+      res
   }
 
   def updateTypesWithVariance(
@@ -81,8 +83,10 @@ case class TypeAliasSignature(
       isDefinition,
       ta)
 
-    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
-    else res
+    if (withCopy)
+      res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
+    else
+      res
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeAliasSignature]
@@ -185,7 +189,8 @@ class Signature(
     var undefSubst = uSubst
     if (paramLength != other.paramLength && !(paramLength.sum == 0 && other.paramLength.sum == 0))
       return (false, undefSubst)
-    if (hasRepeatedParam != other.hasRepeatedParam) return (false, undefSubst)
+    if (hasRepeatedParam != other.hasRepeatedParam)
+      return (false, undefSubst)
     val unified1 = unify(substitutor, typeParams, typeParams)
     val unified2 = unify(other.substitutor, typeParams, other.typeParams)
     val clauseIterator = substitutedTypes.iterator
@@ -306,13 +311,15 @@ object PhysicalSignature {
         val res = new ArrayBuffer[Int]()
         var i = 0
         while (i < params.length) {
-          if (params(i).isRepeatedParameter) res += i
+          if (params(i).isRepeatedParameter)
+            res += i
           i += 1
         }
         res.toSeq
       case p =>
         val parameters = p.getParameters
-        if (parameters.length == 0) return Seq.empty
+        if (parameters.length == 0)
+          return Seq.empty
         if (parameters(parameters.length - 1).isVarArgs)
           return Seq(parameters.length - 1)
         Seq.empty

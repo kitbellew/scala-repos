@@ -105,8 +105,10 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
       val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
         if (!errorSignalled)
           subscriber.expectNextOrError(e, TestException).isLeft
-        else true)
-      if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
+        else
+          true)
+      if (!errorSignalled)
+        subscriber.expectSubscriptionAndError(TestException)
     }
 
     "work with one delayed failed and one nonempty publisher" in assertAllStagesStopped {
@@ -121,8 +123,10 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
       val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
         if (!errorSignalled)
           subscriber.expectNextOrError(e, TestException).isLeft
-        else true)
-      if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
+        else
+          true)
+      if (!errorSignalled)
+        subscriber.expectSubscriptionAndError(TestException)
     }
 
     "correctly handle async errors in secondary upstream" in assertAllStagesStopped {

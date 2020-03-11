@@ -137,7 +137,10 @@ object Test {
         || (nested.isEmpty && privateObj))
 
     val enums =
-      if (shouldBeTopLevel) Contexts.topLevel else Contexts.values.toList
+      if (shouldBeTopLevel)
+        Contexts.topLevel
+      else
+        Contexts.values.toList
 
     if (depth == 0) {
       if (p(nested)) {
@@ -310,9 +313,14 @@ object Test {
   }
 
   def main(args: Array[String]) {
-    if (args.isEmpty || args.contains("-help")) usage()
+    if (args.isEmpty || args.contains("-help"))
+      usage()
 
-    val depth = if (args.length < 1) 2 else args(0).toInt
+    val depth =
+      if (args.length < 1)
+        2
+      else
+        args(0).toInt
 
     val header =
       """

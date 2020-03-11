@@ -5,7 +5,8 @@ object Test {
   // next line will run forever if withFilter isn't doing its thing.
   val fizzbuzzes =
     for (n <- nums; if isFizz(n);
-         if isBuzz(n)) yield n
+         if isBuzz(n))
+      yield n
 
   def main(args: Array[String]): Unit = {
     fizzbuzzes take 5 foreach println

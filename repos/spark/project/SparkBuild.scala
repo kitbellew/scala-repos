@@ -236,8 +236,12 @@ object SparkBuild extends PomBuild {
     javacOptions in (Compile, doc) ++= {
       val versionParts = System.getProperty("java.version").split("[+.\\-]+", 3)
       var major = versionParts(0).toInt
-      if (major == 1) major = versionParts(1).toInt
-      if (major >= 8) Seq("-Xdoclint:all", "-Xdoclint:-missing") else Seq.empty
+      if (major == 1)
+        major = versionParts(1).toInt
+      if (major >= 8)
+        Seq("-Xdoclint:all", "-Xdoclint:-missing")
+      else
+        Seq.empty
     },
     javacJVMVersion := "1.7",
     scalacJVMVersion := "1.7",
@@ -426,8 +430,10 @@ object SparkBuild extends PomBuild {
   // TODO: move this to its upstream project.
   override def projectDefinitions(baseDirectory: File): Seq[Project] = {
     super.projectDefinitions(baseDirectory).map { x =>
-      if (projectsMap.exists(_._1 == x.id)) x.settings(projectsMap(x.id): _*)
-      else x.settings(Seq[Setting[_]](): _*)
+      if (projectsMap.exists(_._1 == x.id))
+        x.settings(projectsMap(x.id): _*)
+      else
+        x.settings(Seq[Setting[_]](): _*)
     } ++ Seq[Project](OldDeps.project)
   }
 
@@ -906,8 +912,10 @@ object Java8TestSettings {
   lazy val settings = Seq(
     javacJVMVersion := "1.8",
     // Targeting Java 8 bytecode is only supported in Scala 2.11.4 and higher:
-    scalacJVMVersion := (if (System.getProperty("scala-2.10") == "true") "1.7"
-                         else "1.8")
+    scalacJVMVersion := (if (System.getProperty("scala-2.10") == "true")
+                           "1.7"
+                         else
+                           "1.8")
   )
 }
 

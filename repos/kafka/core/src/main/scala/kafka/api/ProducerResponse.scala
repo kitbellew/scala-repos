@@ -72,7 +72,11 @@ case class ProducerResponse(
   def hasError = status.values.exists(_.error != Errors.NONE.code)
 
   val sizeInBytes = {
-    val throttleTimeSize = if (requestVersion > 0) 4 else 0
+    val throttleTimeSize =
+      if (requestVersion > 0)
+        4
+      else
+        0
     val groupedStatus = statusGroupedByTopic
     4 + /* correlation id */
     4 + /* topic count */
@@ -101,9 +105,9 @@ case class ProducerResponse(
       buffer.putInt(errorsAndOffsets.size) // partition count
       errorsAndOffsets.foreach {
         case (
-            (
-            TopicAndPartition(_, partition),
-            ProducerResponseStatus(error, nextOffset, timestamp))) =>
+              (
+                TopicAndPartition(_, partition),
+                ProducerResponseStatus(error, nextOffset, timestamp))) =>
           buffer.putInt(partition)
           buffer.putShort(error)
           buffer.putLong(nextOffset)

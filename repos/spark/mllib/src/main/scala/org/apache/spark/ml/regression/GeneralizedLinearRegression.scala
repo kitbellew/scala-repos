@@ -238,7 +238,11 @@ class GeneralizedLinearRegression @Since("2.0.0") (
       throw new SparkException(msg)
     }
 
-    val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
+    val w =
+      if ($(weightCol).isEmpty)
+        lit(1.0)
+      else
+        col($(weightCol))
     val instances: RDD[Instance] = dataset
       .select(col($(labelCol)), w, col($(featuresCol)))
       .rdd
@@ -935,10 +939,16 @@ class GeneralizedLinearRegressionSummary private[regression] (
   private lazy val devianceResiduals: DataFrame = {
     val drUDF = udf { (y: Double, mu: Double, weight: Double) =>
       val r = math.sqrt(math.max(family.deviance(y, mu, weight), 0.0))
-      if (y > mu) r else -1.0 * r
+      if (y > mu)
+        r
+      else
+        -1.0 * r
     }
     val w =
-      if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        col(model.getWeightCol)
     predictions.select(
       drUDF(col(model.getLabelCol), col(predictionCol), w)
         .as("devianceResiduals"))
@@ -949,7 +959,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
       family.variance(mu)
     }
     val w =
-      if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        col(model.getWeightCol)
     predictions.select(
       col(model.getLabelCol)
         .minus(col(predictionCol))
@@ -1001,7 +1014,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
   @Since("2.0.0")
   lazy val nullDeviance: Double = {
     val w =
-      if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        col(model.getWeightCol)
     val wtdmu: Double = if (model.getFitIntercept) {
       val agg =
         predictions.agg(sum(w.multiply(col(model.getLabelCol))), sum(w)).first()
@@ -1025,7 +1041,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
   @Since("2.0.0")
   lazy val deviance: Double = {
     val w =
-      if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        col(model.getWeightCol)
     predictions
       .select(col(model.getLabelCol), col(predictionCol), w)
       .rdd
@@ -1058,7 +1077,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
   @Since("2.0.0")
   lazy val aic: Double = {
     val w =
-      if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
+      if (model.getWeightCol.isEmpty)
+        lit(1.0)
+      else
+        col(model.getWeightCol)
     val weightSum = predictions.select(w).agg(sum(w)).first().getDouble(0)
     val t = predictions
       .select(col(model.getLabelCol), col(predictionCol), w)

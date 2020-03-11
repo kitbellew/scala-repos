@@ -40,10 +40,15 @@ trait Positions extends api.Positions { self: SymbolTable =>
       default: Position,
       trees: List[Tree],
       focus: Boolean): Position = {
-    if (useOffsetPositions) default
+    if (useOffsetPositions)
+      default
     else {
       val ranged = trees filter (_.pos.isRange)
-      if (ranged.isEmpty) if (focus) default.focus else default
+      if (ranged.isEmpty)
+        if (focus)
+          default.focus
+        else
+          default
       else
         Position.range(
           default.source,
@@ -60,8 +65,10 @@ trait Positions extends api.Positions { self: SymbolTable =>
     */
   def wrappingPos(trees: List[Tree]): Position = {
     val headpos = trees.head.pos
-    if (useOffsetPositions || !headpos.isDefined) headpos
-    else wrappingPos(headpos, trees)
+    if (useOffsetPositions || !headpos.isDefined)
+      headpos
+    else
+      wrappingPos(headpos, trees)
   }
 
   /** Ensure that given tree has no positions that overlap with
@@ -73,7 +80,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
     ensureNonOverlapping(tree, others, focus = true)
   }
   def ensureNonOverlapping(tree: Tree, others: List[Tree], focus: Boolean) {
-    if (useOffsetPositions) return
+    if (useOffsetPositions)
+      return
 
     def isOverlapping(pos: Position) =
       pos.isRange && (others exists (pos overlaps _.pos))
@@ -83,21 +91,30 @@ trait Positions extends api.Positions { self: SymbolTable =>
       children foreach (ensureNonOverlapping(_, others, focus))
       if (tree.pos.isOpaqueRange) {
         val wpos = wrappingPos(tree.pos, children, focus)
-        tree setPos (if (isOverlapping(wpos)) tree.pos.makeTransparent
-                     else wpos)
+        tree setPos (if (isOverlapping(wpos))
+                       tree.pos.makeTransparent
+                     else
+                       wpos)
       }
     }
   }
 
   def rangePos(source: SourceFile, start: Int, point: Int, end: Int): Position =
-    if (useOffsetPositions) Position.offset(source, point)
-    else Position.range(source, start, point, end)
+    if (useOffsetPositions)
+      Position.offset(source, point)
+    else
+      Position.range(source, start, point, end)
 
   def validatePositions(tree: Tree) {
-    if (useOffsetPositions) return
+    if (useOffsetPositions)
+      return
 
     def reportTree(prefix: String, tree: Tree) {
-      val source = if (tree.pos.isDefined) tree.pos.source else ""
+      val source =
+        if (tree.pos.isDefined)
+          tree.pos.source
+        else
+          ""
       inform(
         "== " + prefix + " tree [" + tree.id + "] of type " + tree.productPrefix + " at " + tree.pos.show + source)
       inform("")
@@ -161,7 +178,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
             }
           }
         }
-        for (ct <- tree.children flatMap solidDescendants) validate(ct, tree)
+        for (ct <- tree.children flatMap solidDescendants)
+          validate(ct, tree)
       }
     }
 
@@ -170,8 +188,10 @@ trait Positions extends api.Positions { self: SymbolTable =>
   }
 
   def solidDescendants(tree: Tree): List[Tree] =
-    if (tree.pos.isTransparent) tree.children flatMap solidDescendants
-    else List(tree)
+    if (tree.pos.isTransparent)
+      tree.children flatMap solidDescendants
+    else
+      List(tree)
 
   /** A free range from `lo` to `hi` */
   private def free(lo: Int, hi: Int): Range =
@@ -182,8 +202,10 @@ trait Positions extends api.Positions { self: SymbolTable =>
 
   /** A singleton list of a non-empty range from `lo` to `hi`, or else the empty List */
   private def maybeFree(lo: Int, hi: Int) =
-    if (lo < hi) List(free(lo, hi))
-    else List()
+    if (lo < hi)
+      List(free(lo, hi))
+    else
+      List()
 
   /** Insert `pos` into ranges `rs` if possible;
     *  otherwise add conflicting trees to `conflicting`.
@@ -203,7 +225,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
           r.pos.start,
           t.pos.start) ::: rs1
       } else {
-        if (!r.isFree && (r.pos overlaps t.pos)) conflicting += r.tree
+        if (!r.isFree && (r.pos overlaps t.pos))
+          conflicting += r.tree
         r :: insert(rs1, t, conflicting)
       }
   }
@@ -213,8 +236,10 @@ trait Positions extends api.Positions { self: SymbolTable =>
       ts: List[Tree],
       t: Tree,
       replacement: List[Tree]): List[Tree] =
-    if (ts.head == t) replacement ::: ts.tail
-    else ts.head :: replace(ts.tail, t, replacement)
+    if (ts.head == t)
+      replacement ::: ts.tail
+    else
+      ts.head :: replace(ts.tail, t, replacement)
 
   /** Does given list of trees have mutually non-overlapping positions?
     *  pre: None of the trees is transparent
@@ -225,7 +250,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
       if (ct.pos.isOpaqueRange) {
         val conflicting = new ListBuffer[Tree]
         ranges = insert(ranges, ct, conflicting)
-        if (conflicting.nonEmpty) return conflicting.toList map (t => (t, ct))
+        if (conflicting.nonEmpty)
+          return conflicting.toList map (t => (t, ct))
       }
     }
     List()
@@ -278,7 +304,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
           traverse(tt.original)
         case _ =>
           if (t.pos includes pos) {
-            if (isEligible(t)) last = t
+            if (isEligible(t))
+              last = t
             super.traverse(t)
           } else
             t match {
@@ -314,7 +341,8 @@ trait Positions extends api.Positions { self: SymbolTable =>
   protected class DefaultPosAssigner extends PosAssigner {
     var pos: Position = _
     override def traverse(t: Tree) {
-      if (!t.canHaveAttrs) ()
+      if (!t.canHaveAttrs)
+        ()
       else if (t.pos == NoPosition) {
         t.setPos(pos)
         super.traverse(
@@ -348,8 +376,10 @@ trait Positions extends api.Positions { self: SymbolTable =>
         tree.setPos(pos)
         val children = tree.children
         if (children.nonEmpty) {
-          if (children.tail.isEmpty) atPos(pos)(children.head)
-          else setChildrenPos(pos, children)
+          if (children.tail.isEmpty)
+            atPos(pos)(children.head)
+          else
+            setChildrenPos(pos, children)
         }
       }
       tree

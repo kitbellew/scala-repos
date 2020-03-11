@@ -52,8 +52,10 @@ trait RemoteModule {
     var actorRefOrNull =
       if (id.startsWith(UUID_PREFIX))
         findActorByUuid(id.substring(UUID_PREFIX.length))
-      else findActorById(id)
-    if (actorRefOrNull eq null) actorRefOrNull = findActorByUuid(uuid)
+      else
+        findActorById(id)
+    if (actorRefOrNull eq null)
+      actorRefOrNull = findActorByUuid(uuid)
     actorRefOrNull
   }
 
@@ -63,8 +65,10 @@ trait RemoteModule {
     var actorRefOrNull =
       if (id.startsWith(UUID_PREFIX))
         findTypedActorByUuid(id.substring(UUID_PREFIX.length))
-      else findTypedActorById(id)
-    if (actorRefOrNull eq null) actorRefOrNull = findTypedActorByUuid(uuid)
+      else
+        findTypedActorById(id)
+    if (actorRefOrNull eq null)
+      actorRefOrNull = findTypedActorByUuid(uuid)
     actorRefOrNull
   }
 }

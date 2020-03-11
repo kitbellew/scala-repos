@@ -170,8 +170,10 @@ private[streaming] class MapWithStateRDD[
       context)
 
     val prevRecord =
-      if (prevStateRDDIterator.hasNext) Some(prevStateRDDIterator.next())
-      else None
+      if (prevStateRDDIterator.hasNext)
+        Some(prevStateRDDIterator.next())
+      else
+        None
     val newRecord = MapWithStateRDDRecord.updateRecordWithData(
       prevRecord,
       dataIterator,

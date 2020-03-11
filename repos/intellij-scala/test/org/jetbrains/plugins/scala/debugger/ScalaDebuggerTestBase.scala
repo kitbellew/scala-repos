@@ -46,7 +46,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     if (!testDataValid) {
       needMake = true
       val testDataProjectPath = testDataBasePath
-      if (testDataProjectPath.exists()) FileUtil.delete(testDataProjectPath)
+      if (testDataProjectPath.exists())
+        FileUtil.delete(testDataProjectPath)
     }
 
     UsefulTestCase.edt(new Runnable {
@@ -76,8 +77,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   override def setUpModule(): Unit = {
-    if (needMake) super.setUpModule()
-    else myModule = loadModule(getImlFile.getAbsolutePath)
+    if (needMake)
+      super.setUpModule()
+    else
+      myModule = loadModule(getImlFile.getAbsolutePath)
 
     PlatformTestCase.myFilesToDelete.remove(getImlFile)
   }
@@ -98,7 +101,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
           _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION)
         }
         .orNull
-    else null
+    else
+      null
   }
 
   override def runInDispatchThread(): Boolean = false
@@ -126,7 +130,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
       if (file.exists() || virtualFileExists(file)) {
         val vFile = getVirtualFile(file)
         inWriteAction(VfsUtil.saveText(vFile, fileText))
-      } else super.addFileToProject(fileName, fileText)
+      } else
+        super.addFileToProject(fileName, fileText)
     }
   }
 
@@ -151,7 +156,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   protected def getFileInSrc(fileName: String): File = {
-    if (!srcDir.exists()) srcDir.mkdir()
+    if (!srcDir.exists())
+      srcDir.mkdir()
     new File(srcDir, fileName)
   }
 
@@ -161,7 +167,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   protected def testDataBasePath(dataPath: String): File = {
     val testDataDir = new File(TestUtils.getTestDataPath, dataPath)
     val classTestsDir = new File(testDataDir, testClassName)
-    if (classTestsDir.exists()) classTestsDir
+    if (classTestsDir.exists())
+      classTestsDir
     else {
       FileUtil.createDirectory(classTestsDir)
       classTestsDir
@@ -193,13 +200,16 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   private def computeChecksums(): mutable.HashMap[String, Array[Byte]] = {
     val result = new mutable.HashMap[String, Array[Byte]]
     def computeForDir(dir: File) {
-      if (dir.exists) dir.listFiles().foreach { f =>
-        if (f.isDirectory) computeForDir(f)
-        else {
-          result += (testDataBasePath.toURI.relativize(f.toURI).toString -> md5(
-            f))
+      if (dir.exists)
+        dir.listFiles().foreach { f =>
+          if (f.isDirectory)
+            computeForDir(f)
+          else {
+            result += (testDataBasePath.toURI
+              .relativize(f.toURI)
+              .toString -> md5(f))
+          }
         }
-      }
     }
     computeForDir(srcDir)
     computeForDir(outDir)
@@ -259,7 +269,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def fileWithTextExists(file: File, fileText: String): Boolean = {
-    if (!file.exists()) false
+    if (!file.exists())
+      false
     else {
       val oldText = scala.io.Source.fromFile(file, "UTF-8").mkString
       oldText.replace("\r", "") == fileText.replace("\r", "")

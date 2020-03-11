@@ -265,7 +265,8 @@ abstract class GraphStageLogic private[stream] (
     if (_interpreter == null)
       throw new IllegalStateException(
         "not yet initialized: only setHandler is allowed in GraphStageLogic constructor")
-    else _interpreter
+    else
+      _interpreter
 
   /**
     * The [[akka.stream.Materializer]] that has set this GraphStage in motion.
@@ -330,7 +331,8 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def setHandler(in: Inlet[_], handler: InHandler): Unit = {
     handlers(in.id) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(in), handler)
+    if (_interpreter != null)
+      _interpreter.setHandler(conn(in), handler)
   }
 
   /**
@@ -356,7 +358,8 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def setHandler(out: Outlet[_], handler: OutHandler): Unit = {
     handlers(out.id + inCount) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(out), handler)
+    if (_interpreter != null)
+      _interpreter.setHandler(conn(out), handler)
   }
 
   private def conn(in: Inlet[_]): Int = portToConn(in.id)
@@ -397,7 +400,8 @@ abstract class GraphStageLogic private[stream] (
     * query whether pull is allowed to be called or not.
     */
   final protected def tryPull[T](in: Inlet[T]): Unit =
-    if (!isClosed(in)) pull(in)
+    if (!isClosed(in))
+      pull(in)
 
   /**
     * Requests to stop receiving events from a given input port. Cancelling clears any ungrabbed elements from the port.
@@ -466,7 +470,8 @@ abstract class GraphStageLogic private[stream] (
           case _ ⇒
             false // This can only be Empty actually (if a cancel was concurrent with a failure)
         }
-      } else false
+      } else
+        false
     }
   }
 
@@ -583,7 +588,8 @@ abstract class GraphStageLogic private[stream] (
     if (n < 0)
       throw new IllegalArgumentException(
         "cannot read negative number of elements")
-    else if (n == 0) andThen(Nil)
+    else if (n == 0)
+      andThen(Nil)
     else {
       val result = new Array[AnyRef](n).asInstanceOf[Array[T]]
       var pos = 0
@@ -596,17 +602,20 @@ abstract class GraphStageLogic private[stream] (
 
       if (n != pos) { // If we aren't already done
         requireNotReading(in)
-        if (!hasBeenPulled(in)) pull(in)
+        if (!hasBeenPulled(in))
+          pull(in)
         setHandler(
           in,
           new Reading(in, n - pos, getHandler(in))(
             (elem: T) ⇒ {
               result(pos) = elem
               pos += 1
-              if (pos == n) andThen(result)
+              if (pos == n)
+                andThen(result)
             },
             () ⇒ onClose(result.take(pos))))
-      } else andThen(result)
+      } else
+        andThen(result)
     }
 
   /**
@@ -640,7 +649,8 @@ abstract class GraphStageLogic private[stream] (
       onClose()
     } else {
       requireNotReading(in)
-      if (!hasBeenPulled(in)) pull(in)
+      if (!hasBeenPulled(in))
+        pull(in)
       setHandler(in, new Reading(in, 1, getHandler(in))(andThen, onClose))
     }
   }
@@ -689,8 +699,10 @@ abstract class GraphStageLogic private[stream] (
       val elem = grab(in)
       n -= 1
 
-      if (n > 0) pull(in)
-      else setHandler(in, previous)
+      if (n > 0)
+        pull(in)
+      else
+        setHandler(in, previous)
 
       andThen(elem)
     }
@@ -782,13 +794,15 @@ abstract class GraphStageLogic private[stream] (
               elems,
               getNonEmittingHandler(out),
               andThen))
-        else andThen()
+        else
+          andThen()
       } else {
         setOrAddEmitting(
           out,
           new EmittingIterator(out, elems, getNonEmittingHandler(out), andThen))
       }
-    } else andThen()
+    } else
+      andThen()
 
   /**
     * Emit a sequence of elements through the given outlet, suspending execution if necessary.
@@ -870,8 +884,10 @@ abstract class GraphStageLogic private[stream] (
           case e: Emitting[_] ⇒ e.as[T].addFollowUps(this)
           case _ ⇒
             val next = dequeue()
-            if (next.isInstanceOf[EmittingCompletion[_]]) complete(out)
-            else setHandler(out, next)
+            if (next.isInstanceOf[EmittingCompletion[_]])
+              complete(out)
+            else
+              setHandler(out, next)
         }
       }
     }
@@ -959,17 +975,23 @@ abstract class GraphStageLogic private[stream] (
         val elem = grab(from)
         emit(to, elem, this)
       }
-      override def onUpstreamFinish(): Unit = if (doFinish) completeStage()
+      override def onUpstreamFinish(): Unit =
+        if (doFinish)
+          completeStage()
       override def onUpstreamFailure(ex: Throwable): Unit =
-        if (doFail) failStage(ex)
+        if (doFail)
+          failStage(ex)
     }
     val ph = new PassAlongHandler
     if (_interpreter != null) {
-      if (isAvailable(from)) emit(to, grab(from), ph)
-      if (doFinish && isClosed(from)) completeStage()
+      if (isAvailable(from))
+        emit(to, grab(from), ph)
+      if (doFinish && isClosed(from))
+        completeStage()
     }
     setHandler(from, ph)
-    if (doPull) tryPull(from)
+    if (doPull)
+      tryPull(from)
   }
 
   /**
@@ -1085,18 +1107,19 @@ abstract class GraphStageLogic private[stream] (
     private val _sink = new SubSink[T](
       name,
       getAsyncCallback[ActorSubscriberMessage] { msg ⇒
-        if (!closed) msg match {
-          case OnNext(e) ⇒
-            elem = e.asInstanceOf[T]
-            pulled = false
-            handler.onPush()
-          case OnComplete ⇒
-            closed = true
-            handler.onUpstreamFinish()
-          case OnError(ex) ⇒
-            closed = true
-            handler.onUpstreamFailure(ex)
-        }
+        if (!closed)
+          msg match {
+            case OnNext(e) ⇒
+              elem = e.asInstanceOf[T]
+              pulled = false
+              handler.onPush()
+            case OnComplete ⇒
+              closed = true
+              handler.onUpstreamFinish()
+            case OnError(ex) ⇒
+              closed = true
+              handler.onUpstreamFailure(ex)
+          }
       }.invoke _)
 
     def sink: Graph[SinkShape[T], NotUsed] = _sink
@@ -1170,7 +1193,8 @@ abstract class GraphStageLogic private[stream] (
       * Set the source into timed-out mode if it has not yet been materialized.
       */
     def timeout(d: FiniteDuration): Unit =
-      if (_source.timeout(d)) closed = true
+      if (_source.timeout(d))
+        closed = true
 
     /**
       * Get the Source for this dynamic output port.
@@ -1261,7 +1285,8 @@ abstract class TimerGraphStageLogic(_shape: Shape)
     val timerKey = scheduled.timerKey
     keyToTimers.get(timerKey) match {
       case Some(Timer(Id, _)) ⇒
-        if (!scheduled.repeating) keyToTimers -= timerKey
+        if (!scheduled.repeating)
+          keyToTimers -= timerKey
         onTimer(timerKey)
       case _ ⇒
     }
@@ -1478,6 +1503,7 @@ private[akka] trait CallbackWrapper[T] extends AsyncCallback[T] {
   private[this] def locked(body: ⇒ Unit): Unit = {
     lock.lock()
     try body
-    finally if (lock.isLocked) lock.unlock()
+    finally if (lock.isLocked)
+      lock.unlock()
   }
 }

@@ -20,7 +20,8 @@ class ScalaIfConditionFixer extends ScalaFixer {
       psiElement: PsiElement): OperationPerformed = {
     val ifStatement =
       PsiTreeUtil.getParentOfType(psiElement, classOf[ScIfStmt], false)
-    if (ifStatement == null) return NoOperation
+    if (ifStatement == null)
+      return NoOperation
 
     val doc = editor.getDocument
     val leftParenthesis = ifStatement.getLeftParenthesis.orNull

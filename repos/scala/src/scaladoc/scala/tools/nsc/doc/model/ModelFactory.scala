@@ -77,7 +77,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   }
 
   def optimize(str: String): String =
-    if (str.length < 16) str.intern else str
+    if (str.length < 16)
+      str.intern
+    else
+      str
 
   /* ============== IMPLEMENTATION PROVIDING ENTITY TYPES ============== */
 
@@ -102,8 +105,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
   trait TemplateImpl extends EntityImpl with TemplateEntity {
     override def qualifiedName: String =
-      if (inTemplate == null || inTemplate.isRootPackage) name
-      else optimize(inTemplate.qualifiedName + "." + name)
+      if (inTemplate == null || inTemplate.isRootPackage)
+        name
+      else
+        optimize(inTemplate.qualifiedName + "." + name)
     def isPackage = sym.hasPackageFlag
     def isTrait = sym.isTrait
     def isClass = sym.isClass && !sym.isTrait
@@ -111,8 +116,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def isCaseClass = sym.isCaseClass
     def isRootPackage = false
     def selfType =
-      if (sym.thisSym eq sym) None
-      else Some(makeType(sym.thisSym.typeOfThis, this))
+      if (sym.thisSym eq sym)
+        None
+      else
+        Some(makeType(sym.thisSym.typeOfThis, this))
   }
 
   abstract class MemberImpl(sym: Symbol, inTpl: DocTemplateImpl)
@@ -124,7 +131,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def linkTarget: DocTemplateImpl = inTpl
 
     lazy val comment = {
-      val documented = if (sym.hasAccessorFlag) sym.accessed else sym
+      val documented =
+        if (sym.hasAccessorFlag)
+          sym.accessed
+        else
+          sym
       thisFactory.comment(documented, linkTarget, inTpl)
     }
     def group = comment flatMap (_.group) getOrElse defaultGroup
@@ -138,15 +149,20 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           makeTemplate(inhSym.owner)
         })
     def visibility = {
-      if (sym.isPrivateLocal) PrivateInInstance()
-      else if (sym.isProtectedLocal) ProtectedInInstance()
+      if (sym.isPrivateLocal)
+        PrivateInInstance()
+      else if (sym.isProtectedLocal)
+        ProtectedInInstance()
       else {
         val qual =
           if (sym.hasAccessBoundary)
             Some(makeTemplate(sym.privateWithin))
-          else None
-        if (sym.isPrivate) PrivateInTemplate(inTpl)
-        else if (sym.isProtected) ProtectedInTemplate(qual getOrElse inTpl)
+          else
+            None
+        if (sym.isPrivate)
+          PrivateInTemplate(inTpl)
+        else if (sym.isProtected)
+          ProtectedInTemplate(qual getOrElse inTpl)
         else
           qual match {
             case Some(q) => PrivateInTemplate(q)
@@ -156,8 +172,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     }
     def flags = {
       val fgs = mutable.ListBuffer.empty[Paragraph]
-      if (sym.isImplicit) fgs += Paragraph(Text("implicit"))
-      if (sym.isSealed) fgs += Paragraph(Text("sealed"))
+      if (sym.isImplicit)
+        fgs += Paragraph(Text("implicit"))
+      if (sym.isSealed)
+        fgs += Paragraph(Text("sealed"))
       if (!sym.isTrait && (sym hasFlag Flags.ABSTRACT))
         fgs += Paragraph(Text("abstract"))
       /* Resetting the DEFERRED flag is a little trick here for refined types: (example from scala.collections)
@@ -171,7 +189,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         fgs += Paragraph(Text("abstract"))
       if (!sym.isModule && (sym hasFlag Flags.FINAL))
         fgs += Paragraph(Text("final"))
-      if (sym.isMacro) fgs += Paragraph(Text("macro"))
+      if (sym.isMacro)
+        fgs += Paragraph(Text("macro"))
       fgs.toList
     }
     def deprecation =
@@ -236,7 +255,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       def defParams(mbr: Any): String = mbr match {
         case d: MemberEntity with Def =>
           val paramLists: List[String] =
-            if (d.valueParams.isEmpty) Nil
+            if (d.valueParams.isEmpty)
+              Nil
             else
               d.valueParams map (ps =>
                 ps map (_.resultType.name) mkString ("(", ",", ")"))
@@ -310,7 +330,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def valueParams: List[List[ValueParam]] =
       Nil /** TODO, these are now only computed for DocTemplates */
     def parentTypes =
-      if (sym.hasPackageFlag || sym == AnyClass) List()
+      if (sym.hasPackageFlag || sym == AnyClass)
+        List()
       else {
         val tps = (this match {
           case a: AliasType => sym.tpe.dealias.parents
@@ -377,7 +398,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                   .quoteReplacement(substitute(m.group(1))))
             new java.net.URL(patchedString)
         }
-      else None
+      else
+        None
     }
 
     private def templateAndType(ancestor: Symbol): (TemplateImpl, TypeEntity) =
@@ -390,15 +412,20 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     /* Subclass cache */
     private lazy val subClassesCache =
       (
-        if (sym == AnyRefClass || sym == AnyClass) null
-        else mutable.ListBuffer[DocTemplateEntity]()
+        if (sym == AnyRefClass || sym == AnyClass)
+          null
+        else
+          mutable.ListBuffer[DocTemplateEntity]()
       )
     def registerSubClass(sc: DocTemplateEntity): Unit = {
       if (subClassesCache != null)
         subClassesCache += sc
     }
     def directSubClasses =
-      if (subClassesCache == null) Nil else subClassesCache.toList
+      if (subClassesCache == null)
+        Nil
+      else
+        subClassesCache.toList
 
     /* Implicitly convertible class cache */
     private var implicitlyConvertibleClassesCache
@@ -422,7 +449,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     // the implicit conversions are generated eagerly, but the members generated by implicit conversions are added
     // lazily, on completeModel
     val conversions: List[ImplicitConversionImpl] =
-      if (settings.docImplicits) makeImplicitConversions(sym, this) else Nil
+      if (settings.docImplicits)
+        makeImplicitConversions(sym, this)
+      else
+        Nil
 
     // members as given by the compiler
     lazy val memberSyms =
@@ -500,7 +530,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               }
               (template, tpe, conv)
           }
-        else List())
+        else
+          List())
 
     override def isDocTemplate = true
     private[this] lazy val companionSymbol =
@@ -533,23 +564,29 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       }
 
     def constructors: List[MemberImpl with Constructor] =
-      if (isClass) members collect {
-        case d: Constructor => d
-      }
-      else Nil
+      if (isClass)
+        members collect {
+          case d: Constructor => d
+        }
+      else
+        Nil
     def primaryConstructor: Option[MemberImpl with Constructor] =
-      if (isClass) constructors find {
-        _.isPrimary
-      }
-      else None
+      if (isClass)
+        constructors find {
+          _.isPrimary
+        }
+      else
+        None
     override def valueParams =
       // we don't want params on a class (non case class) signature
-      if (isCaseClass) primaryConstructor match {
-        case Some(const) =>
-          const.sym.paramss map (_ map (makeValueParam(_, this)))
-        case None => List()
-      }
-      else List.empty
+      if (isCaseClass)
+        primaryConstructor match {
+          case Some(const) =>
+            const.sym.paramss map (_ map (makeValueParam(_, this)))
+          case None => List()
+        }
+      else
+        List.empty
 
     // These are generated on-demand, make sure you don't call them more than once
     def inheritanceDiagram = makeInheritanceDiagram(this)
@@ -566,15 +603,24 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     def groupDescription(group: String): Option[Body] =
       groupSearch(_.groupDesc.get(group)) orElse {
-        if (group == defaultGroup) defaultGroupDesc else None
+        if (group == defaultGroup)
+          defaultGroupDesc
+        else
+          None
       }
     def groupPriority(group: String): Int =
       groupSearch(_.groupPrio.get(group)) getOrElse {
-        if (group == defaultGroup) defaultGroupPriority else 0
+        if (group == defaultGroup)
+          defaultGroupPriority
+        else
+          0
       }
     def groupName(group: String): String =
       groupSearch(_.groupNames.get(group)) getOrElse {
-        if (group == defaultGroup) defaultGroupName else group
+        if (group == defaultGroup)
+          defaultGroupName
+        else
+          group
       }
   }
 
@@ -604,7 +650,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       with NonTemplateMemberEntity {
     override lazy val comment = {
       def nonRootTemplate(sym: Symbol): Option[DocTemplateImpl] =
-        if (sym eq RootPackage) None else findTemplateMaybe(sym)
+        if (sym eq RootPackage)
+          None
+        else
+          findTemplateMaybe(sym)
       /* Variable precedence order for implicitly added members: Take the variable definitions from ...
        * 1. the target of the implicit conversion
        * 2. the definition template (owner)
@@ -660,7 +709,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           case (p, i) =>
             if (p.nameString contains "$")
               makeValueParam(p, inTpl, optimize("arg" + i))
-            else makeValueParam(p, inTpl)
+            else
+              makeValueParam(p, inTpl)
         }
       }
     }
@@ -785,7 +835,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       assert(!modelFinished, (aSym, inTpl))
 
       def createRootPackageComment: Option[Comment] =
-        if (settings.docRootContent.isDefault) None
+        if (settings.docRootContent.isDefault)
+          None
         else {
           import Streamable._
           Path(settings.docRootContent.value) match {
@@ -952,7 +1003,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 PolyType(ts, MethodType(List(cp), mt))
             }
             bSym.cloneSymbol.setPos(bSym.pos).setInfo(cSymInfo)
-          } else bSym
+          } else
+            bSym
         }
         Some(
           new NonTemplateParamMemberImpl(cSym, conversion, useCaseOf, inTpl)
@@ -1092,9 +1144,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       with HigherKindedImpl
       with TypeParam {
       def variance: String = {
-        if (sym hasFlag Flags.COVARIANT) "+"
-        else if (sym hasFlag Flags.CONTRAVARIANT) "-"
-        else ""
+        if (sym hasFlag Flags.COVARIANT)
+          "+"
+        else if (sym hasFlag Flags.CONTRAVARIANT)
+          "-"
+        else
+          ""
       }
     }
 
@@ -1129,7 +1184,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               }
             case _ => None
           }
-        } else None
+        } else
+          None
       def resultType =
         makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
       def isImplicit = aSym.isImplicit
@@ -1141,16 +1197,24 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       inTpl: TemplateImpl,
       dclSym: Symbol): TypeEntity = {
     def ownerTpl(sym: Symbol): Symbol =
-      if (sym.isClass || sym.isModule || sym == NoSymbol) sym
-      else ownerTpl(sym.owner)
+      if (sym.isClass || sym.isModule || sym == NoSymbol)
+        sym
+      else
+        ownerTpl(sym.owner)
     val tpe =
-      if (thisFactory.settings.useStupidTypes) aType
+      if (thisFactory.settings.useStupidTypes)
+        aType
       else {
         def ownerTpl(sym: Symbol): Symbol =
-          if (sym.isClass || sym.isModule || sym == NoSymbol) sym
-          else ownerTpl(sym.owner)
+          if (sym.isClass || sym.isModule || sym == NoSymbol)
+            sym
+          else
+            ownerTpl(sym.owner)
         val fixedSym =
-          if (inTpl.sym.isModule) inTpl.sym.moduleClass else inTpl.sym
+          if (inTpl.sym.isModule)
+            inTpl.sym.moduleClass
+          else
+            inTpl.sym
         aType.asSeenFrom(fixedSym.thisType, ownerTpl(dclSym))
       }
     makeType(tpe, inTpl)

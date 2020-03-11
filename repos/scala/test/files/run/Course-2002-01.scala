@@ -46,7 +46,11 @@ object M0 {
 
   //##########################################################################
 
-  def abs(x: Double) = if (x >= 0) x else -x;
+  def abs(x: Double) =
+    if (x >= 0)
+      x
+    else
+      -x;
 
   Console.println(abs(737));
   Console.println(abs(1));
@@ -57,8 +61,10 @@ object M0 {
   //##########################################################################
 
   def sqrtIter0(guess: Double, x: Double): Double =
-    if (isGoodEnough0(guess, x)) guess
-    else sqrtIter0(improve0(guess, x), x);
+    if (isGoodEnough0(guess, x))
+      guess
+    else
+      sqrtIter0(improve0(guess, x), x);
 
   def improve0(guess: Double, x: Double) =
     (guess + x / guess) / 2;
@@ -76,8 +82,10 @@ object M0 {
 
   def sqrt1(x: Double) = {
     def sqrtIter1(guess: Double, x: Double): Double =
-      if (isGoodEnough1(guess, x)) guess
-      else sqrtIter1(improve1(guess, x), x);
+      if (isGoodEnough1(guess, x))
+        guess
+      else
+        sqrtIter1(improve1(guess, x), x);
 
     def improve1(guess: Double, x: Double) =
       (guess + x / guess) / 2;
@@ -96,8 +104,10 @@ object M0 {
 
   def sqrt2(x: Double) = {
     def sqrtIter2(guess: Double): Double =
-      if (isGoodEnough2(guess)) guess
-      else sqrtIter2(improve2(guess));
+      if (isGoodEnough2(guess))
+        guess
+      else
+        sqrtIter2(improve2(guess));
 
     def improve2(guess: Double) =
       (guess + x / guess) / 2;
@@ -118,12 +128,18 @@ object M0 {
 //############################################################################
 
 object M1 {
-  def abs(x: Double) = if (x >= 0) x else -x;
+  def abs(x: Double) =
+    if (x >= 0)
+      x
+    else
+      -x;
 
   def sqrt(x: Double): Double = {
     def sqrtIter(prev: Double, guess: Double): Double =
-      if (isGoodEnough(prev, guess)) guess
-      else sqrtIter(guess, improve(guess));
+      if (isGoodEnough(prev, guess))
+        guess
+      else
+        sqrtIter(guess, improve(guess));
 
     def improve(guess: Double) = (guess + x / guess) / 2;
 
@@ -139,13 +155,19 @@ object M1 {
 //############################################################################
 
 object M2 {
-  def abs(x: Double) = if (x >= 0) x else -x;
+  def abs(x: Double) =
+    if (x >= 0)
+      x
+    else
+      -x;
 
   def sqrt(x: Double): Double = {
     def sqrtIter(guess: Double): Double = {
       val next = improve(guess);
-      if (isGoodEnough(guess, next)) next
-      else sqrtIter(next)
+      if (isGoodEnough(guess, next))
+        next
+      else
+        sqrtIter(next)
     }
 
     def improve(guess: Double) = (guess + x / guess) / 2;
@@ -162,13 +184,19 @@ object M2 {
 //############################################################################
 
 object M3 {
-  def abs(x: Double) = if (x >= 0) x else -x;
+  def abs(x: Double) =
+    if (x >= 0)
+      x
+    else
+      -x;
 
   def cbrt(x: Double): Double = {
     def cbrtIter(guess: Double): Double = {
       val next = improve(guess);
-      if (isGoodEnough(guess, next)) next
-      else cbrtIter(next)
+      if (isGoodEnough(guess, next))
+        next
+      else
+        cbrtIter(next)
     }
 
     def improve(y: Double) = (x / (y * y) + 2 * y) / 3;
@@ -186,8 +214,10 @@ object M3 {
 
 object M4 {
   def pascal(c: Int, l: Int): Int =
-    if (c <= 0 || c >= l) 1
-    else pascal(c - 1, l - 1) + pascal(c, l - 1);
+    if (c <= 0 || c >= l)
+      1
+    else
+      pascal(c - 1, l - 1) + pascal(c, l - 1);
 
   Console.print(pascal(0, 0));
   Console.println;

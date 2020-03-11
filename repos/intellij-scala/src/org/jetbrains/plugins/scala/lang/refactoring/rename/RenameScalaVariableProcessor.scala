@@ -62,7 +62,11 @@ class RenameScalaVariableProcessor
           for (method <- t.getBeanMethods) {
             val name = method.name
             val is = name.startsWith("is")
-            val prefix = if (is) "is" else name.substring(0, 3)
+            val prefix =
+              if (is)
+                "is"
+              else
+                name.substring(0, 3)
             val newBeanName = prefix + StringUtil.capitalize(newName)
             allRenames.put(method, newBeanName)
           }
@@ -76,7 +80,11 @@ class RenameScalaVariableProcessor
                   None)
                 val name = wrapper.getName
                 val is = name.startsWith("is")
-                val prefix = if (is) "is" else name.substring(0, 3)
+                val prefix =
+                  if (is)
+                    "is"
+                  else
+                    name.substring(0, 3)
                 val newBeanName = prefix + StringUtil.capitalize(
                   ScalaNamesUtil.toJavaName(newName))
                 allRenames.put(wrapper, newBeanName)

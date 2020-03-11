@@ -49,7 +49,8 @@ private object Json {
   }
 
   private def typeFromManifest(m: Manifest[_]): Type =
-    if (m.typeArguments.isEmpty) m.runtimeClass
+    if (m.typeArguments.isEmpty)
+      m.runtimeClass
     else
       new ParameterizedType {
         def getRawType = m.runtimeClass
@@ -267,34 +268,35 @@ class MetricsStatsReceiver(
       log.trace(s"Calling StatsReceiver.counter on $names")
     counterRequests.increment()
     var counter = counters.get(names)
-    if (counter == null) counters.synchronized {
-      counter = counters.get(names)
-      if (counter == null) {
-        counter = new Counter {
-          val metricsCounter = registry.createCounter(format(names))
-          def incr(delta: Int): Unit = {
-            metricsCounter.add(delta)
-            if (sink.recording) {
-              if (Trace.hasId) {
-                val traceId = Trace.id
-                sink.event(
-                  CounterIncr,
-                  objectVal = metricsCounter.getName(),
-                  longVal = delta,
-                  traceIdVal = traceId.traceId.self,
-                  spanIdVal = traceId.spanId.self)
-              } else {
-                sink.event(
-                  CounterIncr,
-                  objectVal = metricsCounter.getName(),
-                  longVal = delta)
+    if (counter == null)
+      counters.synchronized {
+        counter = counters.get(names)
+        if (counter == null) {
+          counter = new Counter {
+            val metricsCounter = registry.createCounter(format(names))
+            def incr(delta: Int): Unit = {
+              metricsCounter.add(delta)
+              if (sink.recording) {
+                if (Trace.hasId) {
+                  val traceId = Trace.id
+                  sink.event(
+                    CounterIncr,
+                    objectVal = metricsCounter.getName(),
+                    longVal = delta,
+                    traceIdVal = traceId.traceId.self,
+                    spanIdVal = traceId.spanId.self)
+                } else {
+                  sink.event(
+                    CounterIncr,
+                    objectVal = metricsCounter.getName(),
+                    longVal = delta)
+                }
               }
             }
           }
+          counters.put(names, counter)
         }
-        counters.put(names, counter)
       }
-    }
     counter
   }
 
@@ -306,38 +308,40 @@ class MetricsStatsReceiver(
       log.trace(s"Calling StatsReceiver.stat for $names")
     statRequests.increment()
     var stat = stats.get(names)
-    if (stat == null) stats.synchronized {
-      stat = stats.get(names)
-      if (stat == null) {
-        val doLog = loggedStats.contains(format(names))
-        stat = new Stat {
-          val histogram = histogramFactory(format(names))
-          registry.registerHistogram(histogram)
-          def add(value: Float): Unit = {
-            if (doLog) log.info(s"Stat ${histogram.getName()} observed $value")
-            val asLong = value.toLong
-            histogram.add(asLong)
-            if (sink.recording) {
-              if (Trace.hasId) {
-                val traceId = Trace.id
-                sink.event(
-                  StatAdd,
-                  objectVal = histogram.getName(),
-                  longVal = asLong,
-                  traceIdVal = traceId.traceId.self,
-                  spanIdVal = traceId.spanId.self)
-              } else {
-                sink.event(
-                  StatAdd,
-                  objectVal = histogram.getName(),
-                  longVal = asLong)
+    if (stat == null)
+      stats.synchronized {
+        stat = stats.get(names)
+        if (stat == null) {
+          val doLog = loggedStats.contains(format(names))
+          stat = new Stat {
+            val histogram = histogramFactory(format(names))
+            registry.registerHistogram(histogram)
+            def add(value: Float): Unit = {
+              if (doLog)
+                log.info(s"Stat ${histogram.getName()} observed $value")
+              val asLong = value.toLong
+              histogram.add(asLong)
+              if (sink.recording) {
+                if (Trace.hasId) {
+                  val traceId = Trace.id
+                  sink.event(
+                    StatAdd,
+                    objectVal = histogram.getName(),
+                    longVal = asLong,
+                    traceIdVal = traceId.traceId.self,
+                    spanIdVal = traceId.spanId.self)
+                } else {
+                  sink.event(
+                    StatAdd,
+                    objectVal = histogram.getName(),
+                    longVal = asLong)
+                }
               }
             }
           }
+          stats.put(names, stat)
         }
-        stats.put(names, stat)
       }
-    }
     stat
   }
 

@@ -32,9 +32,15 @@ trait BooleanOrder extends Order[Boolean] with Serializable {
   override def max(x: Boolean, y: Boolean): Boolean = x || y
   def compare(x: Boolean, y: Boolean): Int =
     if (x) {
-      if (y) 0 else 1
+      if (y)
+        0
+      else
+        1
     } else {
-      if (y) -1 else 0
+      if (y)
+        -1
+      else
+        0
     }
 }
 

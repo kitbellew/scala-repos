@@ -14,21 +14,29 @@ object Test {
     val frommin = Int.MinValue - n
 
     if (n > 0) {
-      if (frommax == 0) "MAX"
-      else if (frommax < 1000) "MAX-" + frommax
-      else "" + n
+      if (frommax == 0)
+        "MAX"
+      else if (frommax < 1000)
+        "MAX-" + frommax
+      else
+        "" + n
     } else {
-      if (frommin == 0) "MIN"
-      else if (frommin > -1000) "MIN+" + (-frommin)
-      else "" + n
+      if (frommin == 0)
+        "MIN"
+      else if (frommin > -1000)
+        "MIN+" + (-frommin)
+      else
+        "" + n
     }
   }
 
   def run[T](body: => Range): List[Any] = {
     try {
       val r = body;
-      if (r.isEmpty) List(r.length)
-      else List(num(r.length), num(r.head), num(r.last))
+      if (r.isEmpty)
+        List(r.length)
+      else
+        List(num(r.length), num(r.head), num(r.last))
     } catch {
       case e: IllegalArgumentException => List("---\n    " + e)
     }

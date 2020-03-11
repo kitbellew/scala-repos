@@ -266,7 +266,10 @@ object WorkflowUtils extends Logging {
     thirdPartyFiles.keys.toSeq.map { k: String =>
       sys.env.get(k) map { x =>
         val p = Seq(x, thirdPartyFiles(k)).mkString(File.separator)
-        if (new File(p).exists) Seq(p) else Seq[String]()
+        if (new File(p).exists)
+          Seq(p)
+        else
+          Seq[String]()
       } getOrElse Seq[String]()
     }.flatten
   }
@@ -285,8 +288,16 @@ object WorkflowUtils extends Logging {
   }
 
   def modifyLogging(verbose: Boolean): Unit = {
-    val rootLoggerLevel = if (verbose) Level.TRACE else Level.INFO
-    val chattyLoggerLevel = if (verbose) Level.INFO else Level.WARN
+    val rootLoggerLevel =
+      if (verbose)
+        Level.TRACE
+      else
+        Level.INFO
+    val chattyLoggerLevel =
+      if (verbose)
+        Level.INFO
+      else
+        Level.WARN
 
     LogManager.getRootLogger.setLevel(rootLoggerLevel)
 

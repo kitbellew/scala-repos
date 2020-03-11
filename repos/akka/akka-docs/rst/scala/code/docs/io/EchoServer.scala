@@ -116,8 +116,10 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
       context become buffering(ack)
 
     case PeerClosed =>
-      if (storage.isEmpty) context stop self
-      else context become closing
+      if (storage.isEmpty)
+        context stop self
+      else
+        context become closing
   }
   //#writing
 
@@ -141,10 +143,15 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
           } else {
             // then return to NACK-based again
             writeAll()
-            context become (if (peerClosed) closing else writing)
+            context become (if (peerClosed)
+                              closing
+                            else
+                              writing)
           }
-        } else if (peerClosed) context stop self
-        else context become writing
+        } else if (peerClosed)
+          context stop self
+        else
+          context become writing
     }
   }
   //#buffering
@@ -167,7 +174,8 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
 
     case Ack(ack) =>
       acknowledge(ack)
-      if (storage.isEmpty) context stop self
+      if (storage.isEmpty)
+        context stop self
   }
   //#closing
 
@@ -312,9 +320,12 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
     }
 
     if (storage.isEmpty) {
-      if (closing) context stop self
-      else context.unbecome()
-    } else connection ! Write(storage(0), Ack)
+      if (closing)
+        context stop self
+      else
+        context.unbecome()
+    } else
+      connection ! Write(storage(0), Ack)
   }
   //#simple-helpers
   //#storage-omitted

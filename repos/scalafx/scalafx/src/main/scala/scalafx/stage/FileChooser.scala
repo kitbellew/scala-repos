@@ -39,12 +39,18 @@ import scalafx.stage.FileChooser.ExtensionFilter
 
 object FileChooser {
   implicit def sfxFileChooser2jfx(fc: FileChooser): jfxs.FileChooser =
-    if (fc != null) fc.delegate else null
+    if (fc != null)
+      fc.delegate
+    else
+      null
 
   object ExtensionFilter {
     implicit def sfxExtensionFilter2jfx(
         ef: ExtensionFilter): jfxs.FileChooser.ExtensionFilter =
-      if (ef != null) ef.delegate else null
+      if (ef != null)
+        ef.delegate
+      else
+        null
   }
 
   class ExtensionFilter(override val delegate: jfxs.FileChooser.ExtensionFilter)
@@ -161,7 +167,10 @@ class FileChooser(
     */
   def showOpenMultipleDialog(ownerWindow: Window): Seq[File] = {
     val selection = delegate.showOpenMultipleDialog(ownerWindow)
-    if (selection != null) selection else null.asInstanceOf[Seq[File]]
+    if (selection != null)
+      selection
+    else
+      null.asInstanceOf[Seq[File]]
   }
 
   /**

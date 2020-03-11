@@ -35,7 +35,8 @@ class ScalaHighlightExitPointsHandler(
   def getTargets: util.List[PsiElement] = {
     val usages = fun.returnUsages()
     val res = new util.ArrayList[PsiElement](usages.length)
-    for (usage <- usages) res.add(usage)
+    for (usage <- usages)
+      res.add(usage)
     res.add(keyword)
     res
   }

@@ -178,7 +178,8 @@ class ThresholdFailureDetectorTest
     def ping() = {
       if (n.incrementAndGet() >= failAfter)
         Future.exception(new Exception("test"))
-      else Future.Done
+      else
+        Future.Done
     }
 
     val d = new ThresholdFailureDetector(

@@ -44,7 +44,8 @@ object Ascription {
         x = x + 1
       }
       annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
-      if (x == 0) builder error ScalaBundle.message("annotation.expected")
+      if (x == 0)
+        builder error ScalaBundle.message("annotation.expected")
     }
     ascriptionMarker.drop()
     true

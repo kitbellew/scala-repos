@@ -287,7 +287,8 @@ trait HashJoin {
           .exists { (row: InternalRow) =>
             boundCondition(joinedRow(current, row))
           })
-      if (r) numOutputRows += 1
+      if (r)
+        numOutputRows += 1
       r
     }
   }

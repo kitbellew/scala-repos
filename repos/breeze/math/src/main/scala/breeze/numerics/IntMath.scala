@@ -30,7 +30,8 @@ object IntMath {
     */
   def ipow(base: Int, exp: Int): Int = {
     var b = base
-    if (exp < 0 && base != 1) 0
+    if (exp < 0 && base != 1)
+      0
     else {
       var e = exp
       var result = 1
@@ -53,7 +54,8 @@ object IntMath {
     */
   def ipow(base: Long, exp: Long): Long = {
     var b = base
-    if (exp < 0 && base != 1) 0
+    if (exp < 0 && base != 1)
+      0
     else {
       var e = exp
       var result: Long = 1

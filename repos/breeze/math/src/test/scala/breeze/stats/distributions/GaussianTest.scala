@@ -40,7 +40,8 @@ class GaussianTest
          };
          std <- arbitrary[Double].map { x =>
            math.abs(x) % 8.0 + .1
-         }) yield (mean, std)
+         })
+      yield (mean, std)
   }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
@@ -77,7 +78,8 @@ class GaussianTest
          };
          std <- arbitrary[Double].map { x =>
            math.abs(x) % 8.0 + .1
-         }) yield new Gaussian(mean, std);
+         })
+      yield new Gaussian(mean, std);
   }
 
   def asDouble(x: Double) = x

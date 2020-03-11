@@ -36,7 +36,10 @@ trait StreamInstances {
         Now(fa).flatMap { s =>
           // Note that we don't use pattern matching to deconstruct the
           // stream, since that would needlessly force the tail.
-          if (s.isEmpty) lb else f(s.head, Eval.defer(foldRight(s.tail, lb)(f)))
+          if (s.isEmpty)
+            lb
+          else
+            f(s.head, Eval.defer(foldRight(s.tail, lb)(f)))
         }
 
       def traverse[G[_], A, B](fa: Stream[A])(f: A => G[B])(
@@ -66,7 +69,10 @@ trait StreamInstances {
   implicit def streamShow[A: Show]: Show[Stream[A]] =
     new Show[Stream[A]] {
       def show(fa: Stream[A]): String =
-        if (fa.isEmpty) "Stream()" else s"Stream(${fa.head.show}, ?)"
+        if (fa.isEmpty)
+          "Stream()"
+        else
+          s"Stream(${fa.head.show}, ?)"
     }
 
   // TODO: eventually use algebra's instances (which will deal with
@@ -80,8 +86,12 @@ trait StreamInstances {
             case Empty => ys.isEmpty
             case a #:: xs =>
               ys match {
-                case Empty    => false
-                case b #:: ys => if (ev.neqv(a, b)) false else loop(xs, ys)
+                case Empty => false
+                case b #:: ys =>
+                  if (ev.neqv(a, b))
+                    false
+                  else
+                    loop(xs, ys)
               }
           }
         loop(x, y)

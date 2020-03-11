@@ -84,10 +84,13 @@ object ScalaI18nUtil {
   def isI18nProperty(
       @NotNull project: Project,
       @NotNull expr: ScLiteral): Boolean = {
-    if (!isStringLiteral(expr)) return false
+    if (!isStringLiteral(expr))
+      return false
     val property: IProperty = expr.getUserData(CACHE)
-    if (property == NULL) return false
-    if (property != null) return true
+    if (property == NULL)
+      return false
+    if (property != null)
+      return true
     val annotationParams = new mutable.HashMap[String, AnyRef]
     annotationParams.put(
       AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
@@ -100,7 +103,8 @@ object ScalaI18nUtil {
   }
 
   private def isStringLiteral(expr: ScLiteral): Boolean = {
-    if (expr == null || expr.getText == null) return false
+    if (expr == null || expr.getText == null)
+      return false
     val text: String = expr.getText
     text.startsWith("\"") && text.endsWith("\"") && text.length > 2
   }
@@ -127,7 +131,8 @@ object ScalaI18nUtil {
       : Boolean = {
     val expression = getToplevelExpression(project, myExpression)
     val parent: PsiElement = expression.getParent
-    if (!parent.isInstanceOf[ScArgumentExprList]) return false
+    if (!parent.isInstanceOf[ScArgumentExprList])
+      return false
     var idx: Int = -1
     val args: Array[ScExpression] =
       parent.asInstanceOf[ScArgumentExprList].exprsArray
@@ -142,7 +147,8 @@ object ScalaI18nUtil {
       i += 1
       i
     }
-    if (idx == -1) return false
+    if (idx == -1)
+      return false
     val grParent: PsiElement = parent.getParent
     grParent match {
       case methodCall: ScMethodCall =>
@@ -202,7 +208,8 @@ object ScalaI18nUtil {
         case _ =>
       }
       expression = parent
-      if (expression.isInstanceOf[PsiAssignmentExpression]) flag = false
+      if (expression.isInstanceOf[PsiAssignmentExpression])
+        flag = false
       if (i > 10 && expression.isInstanceOf[PsiBinaryExpression]) {
         val value
             : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
@@ -225,7 +232,8 @@ object ScalaI18nUtil {
       : Boolean = {
     var processed = myProcessed
     if (processed != null) {
-      if (processed.contains(method)) return false
+      if (processed.contains(method))
+        return false
     } else {
       processed = new mutable.HashSet[PsiMethod]
     }
@@ -271,7 +279,8 @@ object ScalaI18nUtil {
             processed,
             annFqn,
             annotationAttributeValues,
-            null)) return true
+            null))
+        return true
     }
     false
   }
@@ -325,16 +334,20 @@ object ScalaI18nUtil {
 
   def getI18nMessage(@NotNull project: Project, literal: ScLiteral): String = {
     val property: IProperty = getI18nProperty(project, literal)
-    if (property == null) literal.getText
-    else formatI18nProperty(literal, property)
+    if (property == null)
+      literal.getText
+    else
+      formatI18nProperty(literal, property)
   }
 
   @Nullable def getI18nProperty(
       project: Project,
       literal: ScLiteral): IProperty = {
     val property: Property = literal.getUserData(CACHE).asInstanceOf[Property]
-    if (property eq NULL) return null
-    if (property != null && isValid(property, literal)) return property
+    if (property eq NULL)
+      return null
+    if (property != null && isValid(property, literal))
+      return property
     if (isI18nProperty(project, literal)) {
       val references: Array[PsiReference] = literal.getReferences
       for (reference <- references) {
@@ -365,11 +378,15 @@ object ScalaI18nUtil {
   }
 
   def formatI18nProperty(literal: ScLiteral, property: IProperty): String = {
-    if (property == null) literal.getText else "\"" + property.getValue + "\""
+    if (property == null)
+      literal.getText
+    else
+      "\"" + property.getValue + "\""
   }
 
   private def isValid(property: Property, literal: ScLiteral): Boolean = {
-    if (literal == null || property == null || !property.isValid) return false
+    if (literal == null || property == null || !property.isValid)
+      return false
     StringUtil.unquoteString(literal.getText) == property.getKey
   }
 
@@ -452,7 +469,8 @@ object ScalaI18nUtil {
           }
           return if (text.length > FOLD_MAX_LENGTH)
             text.substring(0, FOLD_MAX_LENGTH - 3) + "...\""
-          else text
+          else
+            text
         }
       }
     }
@@ -475,7 +493,8 @@ object ScalaI18nUtil {
             .getInstance(bundleName.getProject)
             .getConstantEvaluationHelper
             .computeConstantExpression(bundleName)
-          if (result == null) false
+          if (result == null)
+            false
           else {
             val bundleName = result.toString
             outResourceBundle.set(bundleName)
@@ -483,7 +502,8 @@ object ScalaI18nUtil {
           }
         case _ => false
       }
-    } else true
+    } else
+      true
   }
 
   def createProperty(
@@ -507,7 +527,8 @@ object ScalaI18nUtil {
   @Nullable def getSelectedRange(
       editor: Editor,
       psiFile: PsiFile): TextRange = {
-    if (editor == null) return null
+    if (editor == null)
+      return null
     val selectedText: String = editor.getSelectionModel.getSelectedText
     if (selectedText != null) {
       return new TextRange(

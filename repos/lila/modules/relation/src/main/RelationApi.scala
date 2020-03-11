@@ -122,7 +122,8 @@ final class RelationApi(
       sort = BSONDocument()).map(_.userId)
 
   def follow(u1: ID, u2: ID): Funit =
-    if (u1 == u2) funit
+    if (u1 == u2)
+      funit
     else
       followable(u2) flatMap {
         case false => funit
@@ -152,7 +153,8 @@ final class RelationApi(
   }
 
   def block(u1: ID, u2: ID): Funit =
-    if (u1 == u2) funit
+    if (u1 == u2)
+      funit
     else
       fetchBlocks(u1, u2) flatMap {
         case true => funit
@@ -165,7 +167,8 @@ final class RelationApi(
       }
 
   def unfollow(u1: ID, u2: ID): Funit =
-    if (u1 == u2) funit
+    if (u1 == u2)
+      funit
     else
       fetchFollows(u1, u2) flatMap {
         case true =>
@@ -181,7 +184,8 @@ final class RelationApi(
   def unfollowAll(u1: ID): Funit = RelationRepo.unfollowAll(u1)
 
   def unblock(u1: ID, u2: ID): Funit =
-    if (u1 == u2) funit
+    if (u1 == u2)
+      funit
     else
       fetchBlocks(u1, u2) flatMap {
         case true =>

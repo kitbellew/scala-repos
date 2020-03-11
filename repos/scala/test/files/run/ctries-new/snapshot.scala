@@ -10,7 +10,8 @@ object SnapshotSpec extends Spec {
       ctn.readOnlySnapshot()
 
       val ct = new TrieMap[Int, Int]
-      for (i <- 0 until 100) ct.put(i, i)
+      for (i <- 0 until 100)
+        ct.put(i, i)
       ct.snapshot()
       ct.readOnlySnapshot()
     }
@@ -23,14 +24,17 @@ object SnapshotSpec extends Spec {
           for (i <- 0 until sz) {
             assert(trie.remove(new Wrap(i)) == Some(i))
             for (j <- 0 until sz)
-              if (j <= i) assert(trie.get(new Wrap(j)) == None)
-              else assert(trie.get(new Wrap(j)) == Some(j))
+              if (j <= i)
+                assert(trie.get(new Wrap(j)) == None)
+              else
+                assert(trie.get(new Wrap(j)) == Some(j))
           }
         }
       }
 
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct.put(new Wrap(i), i)
+      for (i <- 0 until sz)
+        ct.put(new Wrap(i), i)
       val snapt = ct.snapshot()
 
       val original = new Worker(ct)
@@ -67,10 +71,11 @@ object SnapshotSpec extends Spec {
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
-          for (i <- 0 until sz) trie.get(new Wrap(i)) match {
-            case Some(i) => initial.put(new Wrap(i), i)
-            case None    => // do nothing
-          }
+          for (i <- 0 until sz)
+            trie.get(new Wrap(i)) match {
+              case Some(i) => initial.put(new Wrap(i), i)
+              case None    => // do nothing
+            }
 
           for (k <- 0 until N) {
             for (i <- 0 until sz) {
@@ -104,10 +109,11 @@ object SnapshotSpec extends Spec {
 
       override def run() {
         for (k <- 0 until rep) {
-          for (i <- 0 until sz) trie.putIfAbsent(new Wrap(i), i) match {
-            case Some(_) => trie.remove(new Wrap(i))
-            case None    => // do nothing
-          }
+          for (i <- 0 until sz)
+            trie.putIfAbsent(new Wrap(i), i) match {
+              case Some(_) => trie.remove(new Wrap(i))
+              case None    => // do nothing
+            }
         }
       }
     }
@@ -133,9 +139,12 @@ object SnapshotSpec extends Spec {
       val W = 10
 
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct(new Wrap(i)) = i
+      for (i <- 0 until sz)
+        ct(new Wrap(i)) = i
       val readonly = ct.readOnlySnapshot()
-      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
+      val threads =
+        for (i <- 0 until W)
+          yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       consistentReadOnly("qm", readonly, sz, N)
@@ -151,8 +160,11 @@ object SnapshotSpec extends Spec {
       val S = 5000
 
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct(new Wrap(i)) = i
-      val threads = for (i <- 0 until W) yield new Remover(ct, i, W, sz)
+      for (i <- 0 until sz)
+        ct(new Wrap(i)) = i
+      val threads =
+        for (i <- 0 until W)
+          yield new Remover(ct, i, W, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S)
@@ -167,8 +179,11 @@ object SnapshotSpec extends Spec {
       val S = 7000
 
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct(new Wrap(i)) = i
-      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
+      for (i <- 0 until sz)
+        ct(new Wrap(i)) = i
+      val threads =
+        for (i <- 0 until W)
+          yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S)
@@ -197,27 +212,37 @@ object SnapshotSpec extends Spec {
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
-          for (i <- 0 until sz) trie.get(new Wrap(i)) match {
-            case Some(i) => initial.put(new Wrap(i), i)
-            case None    => // do nothing
-          }
+          for (i <- 0 until sz)
+            trie.get(new Wrap(i)) match {
+              case Some(i) => initial.put(new Wrap(i), i)
+              case None    => // do nothing
+            }
 
           for (k <- 0 until N) {
             // modify
             for ((key, value) <- initial) {
-              val oldv = if (k % 2 == 0) value else -value
+              val oldv =
+                if (k % 2 == 0)
+                  value
+                else
+                  -value
               val newv = -oldv
               trie.replace(key, oldv, newv)
             }
 
             // check
-            for (i <- 0 until sz) if (initial.contains(new Wrap(i))) {
-              val expected = if (k % 2 == 0) -i else i
-              //println(trie.get(new Wrap(i)))
-              assert(trie.get(new Wrap(i)) == Some(expected))
-            } else {
-              assert(trie.get(new Wrap(i)) == None)
-            }
+            for (i <- 0 until sz)
+              if (initial.contains(new Wrap(i))) {
+                val expected =
+                  if (k % 2 == 0)
+                    -i
+                  else
+                    i
+                //println(trie.get(new Wrap(i)))
+                assert(trie.get(new Wrap(i)) == Some(expected))
+              } else {
+                assert(trie.get(new Wrap(i)) == None)
+              }
           }
         }
       }
@@ -239,8 +264,11 @@ object SnapshotSpec extends Spec {
       val S = 400
 
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct(new Wrap(i)) = i
-      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
+      for (i <- 0 until sz)
+        ct(new Wrap(i)) = i
+      val threads =
+        for (i <- 0 until W)
+          yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S) {
@@ -257,21 +285,28 @@ object SnapshotSpec extends Spec {
       val modifytimes = 1200
       val snaptimes = 600
       val ct = new TrieMap[Wrap, Int]
-      for (i <- 0 until sz) ct(new Wrap(i)) = i
+      for (i <- 0 until sz)
+        ct(new Wrap(i)) = i
 
       class Snapshooter extends Thread {
         setName("Snapshooter")
         override def run() {
           for (k <- 0 until snaptimes) {
             val snap = ct.snapshot()
-            for (i <- 0 until sz) snap.remove(new Wrap(i))
-            for (i <- 0 until sz) assert(!snap.contains(new Wrap(i)))
+            for (i <- 0 until sz)
+              snap.remove(new Wrap(i))
+            for (i <- 0 until sz)
+              assert(!snap.contains(new Wrap(i)))
           }
         }
       }
 
-      val mods = for (i <- 0 until W) yield new Modifier(ct, i, modifytimes, sz)
-      val shooters = for (i <- 0 until S) yield new Snapshooter
+      val mods =
+        for (i <- 0 until W)
+          yield new Modifier(ct, i, modifytimes, sz)
+      val shooters =
+        for (i <- 0 until S)
+          yield new Snapshooter
       val threads = mods ++ shooters
       threads.foreach(_.start())
       threads.foreach(_.join())

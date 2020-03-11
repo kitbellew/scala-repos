@@ -45,8 +45,10 @@ object CommonHelperFunctions {
         idx: Long,
         k: Int,
         isTraining: Boolean): Option[D] = {
-      if ((idx % k == foldIdx) ^ isTraining) Some(pt)
-      else None
+      if ((idx % k == foldIdx) ^ isTraining)
+        Some(pt)
+      else
+        None
     }
 
     (0 until evalK).map { foldIdx =>

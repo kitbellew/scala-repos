@@ -48,7 +48,8 @@ class ScalaDoc {
         new DocFactory(reporter, docSettings) document command.files
       } catch {
         case ex @ FatalError(msg) =>
-          if (docSettings.debug.value) ex.printStackTrace()
+          if (docSettings.debug.value)
+            ex.printStackTrace()
           reporter.error(null, "fatal error: " + msg)
       } finally reporter.printSummary()
 
@@ -80,6 +81,9 @@ object ScalaDoc extends ScalaDoc {
   }
 
   def main(args: Array[String]): Unit = sys exit {
-    if (process(args)) 0 else 1
+    if (process(args))
+      0
+    else
+      1
   }
 }

@@ -35,9 +35,16 @@ case class LineReader private (val lines: Seq[String], val lineCount: Int)
   /**should never be used anywhere, just a string that should stick out for better debugging*/
   private def eofLine = "EOF"
   def this(ls: Seq[String]) = this(ls, 1)
-  def first = if (lines.isEmpty) eofLine else lines.head
+  def first =
+    if (lines.isEmpty)
+      eofLine
+    else
+      lines.head
   def rest =
-    if (lines.isEmpty) this else new LineReader(lines.tail, lineCount + 1)
+    if (lines.isEmpty)
+      this
+    else
+      new LineReader(lines.tail, lineCount + 1)
   def atEnd = lines.isEmpty
   def pos = new Position {
     def line = lineCount
@@ -82,7 +89,10 @@ class LineTokenizer() extends Parsers {
     * by using the first char in a line as lookahead for which parsers to even try.
     */
   def firstChar(line: String): Char = {
-    if (line.length == 0) '\n' else line.charAt(0)
+    if (line.length == 0)
+      '\n'
+    else
+      line.charAt(0)
   }
 
   /**Finds the char in the given line that is the best indication of what kind of markdown line this is.
@@ -92,10 +102,13 @@ class LineTokenizer() extends Parsers {
   def indicatorChar(line: String): Char = {
     var i = 0
     //skip the first three spaces, if present
-    while (i < 3 && i < line.length && line.charAt(i) == ' ') i += 1
+    while (i < 3 && i < line.length && line.charAt(i) == ' ')
+      i += 1
     //return the next char after the spaces or a newline if there are no more
-    if (i == line.length) '\n'
-    else line.charAt(i)
+    if (i == line.length)
+      '\n'
+    else
+      line.charAt(i)
   }
 
   ////////////////////////

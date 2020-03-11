@@ -18,7 +18,10 @@ object Test {
       "%-45s %-30s %s".format(
         toString,
         resString,
-        if (failed) "<failed>" else rest.mkString(" "))
+        if (failed)
+          "<failed>"
+        else
+          rest.mkString(" "))
     }
     def and(g: Perturber): Perturber =
       new Perturber(this.labels ++ g.labels, f andThen g.f)
@@ -37,7 +40,10 @@ object Test {
   val toIS: Perturber = Perturber("toIndexedSeq", _.toIndexedSeq)
 
   def p(ps: Perturber*): Perturber =
-    if (ps.isEmpty) Id else ps.reduceLeft(_ and _)
+    if (ps.isEmpty)
+      Id
+    else
+      ps.reduceLeft(_ and _)
   def drop(n: Int): Perturber = Perturber("drop " + n, _.toIterator drop n)
   def take(n: Int): Perturber = Perturber("take " + n, _.toIterator take n)
   def slice(from: Int, until: Int): Perturber =

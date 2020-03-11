@@ -29,10 +29,12 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
       nearest: Boolean): SourcePosition = {
 
     val contextElement = PositionUtil.getContextElement(context)
-    if (contextElement == null) return null
+    if (contextElement == null)
+      return null
 
     val isScala = contextElement.getLanguage.isKindOf(ScalaLanguage.Instance)
-    if (!isScala) return null
+    if (!isScala)
+      return null
 
     descriptor match {
       case _: FieldDescriptor | _: LocalVariableDescriptor =>
@@ -50,8 +52,10 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
   private def resolveReferenceWithName(
       name: String,
       context: PsiElement): PsiElement = {
-    if (!ScalaNamesUtil.isIdentifier(name)) return null
-    if (name == "$outer" || name.startsWith("x$")) return null
+    if (!ScalaNamesUtil.isIdentifier(name))
+      return null
+    if (name == "$outer" || name.startsWith("x$"))
+      return null
 
     val ref = ScalaPsiElementFactory
       .createExpressionWithContextFromText(name, context, context)

@@ -143,7 +143,11 @@ private[graphx] class RoutingTablePartition(
     } else if (!includeSrc && !includeDst) {
       // Do nothing
     } else {
-      val relevantVids = if (includeSrc) srcVids else dstVids
+      val relevantVids =
+        if (includeSrc)
+          srcVids
+        else
+          dstVids
       relevantVids.iterator.foreach { i =>
         f(vidsCandidate(i))
       }

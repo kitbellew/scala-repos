@@ -177,8 +177,16 @@ private[scala] trait PropertiesTrait {
     f"Scala $command $versionString -- $copyrightString"
 
   def versionMsg = versionFor(propCategory)
-  def scalaCmd = if (isWin) "scala.bat" else "scala"
-  def scalacCmd = if (isWin) "scalac.bat" else "scalac"
+  def scalaCmd =
+    if (isWin)
+      "scala.bat"
+    else
+      "scala"
+  def scalacCmd =
+    if (isWin)
+      "scalac.bat"
+    else
+      "scalac"
 
   /** Compares the given specification version to the specification version of the platform.
     *
@@ -197,7 +205,8 @@ private[scala] trait PropertiesTrait {
   def isJavaAtLeast(version: String): Boolean = {
     def parts(x: String) = {
       val i = x.indexOf('.')
-      if (i < 0) throw new NumberFormatException("Not a version: " + x)
+      if (i < 0)
+        throw new NumberFormatException("Not a version: " + x)
       (x.substring(0, i), x.substring(i + 1, x.length))
     }
     val (v, _v) = parts(version)

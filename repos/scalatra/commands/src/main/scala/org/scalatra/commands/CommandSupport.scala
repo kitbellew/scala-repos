@@ -75,7 +75,10 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
       extends RouteMatcher {
 
     override def apply(requestPath: String) =
-      if (command[T].isValid) Some(MultiMap()) else None
+      if (command[T].isValid)
+        Some(MultiMap())
+      else
+        None
   }
 
   /**

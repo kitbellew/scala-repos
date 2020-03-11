@@ -172,7 +172,8 @@ object MurmurHash {
       k = nextMagicB(k)
       j += 2
     }
-    if (j < s.length) h = extendHash(h, s.charAt(j).toInt, c, k)
+    if (j < s.length)
+      h = extendHash(h, s.charAt(j).toInt, c, k)
     finalizeHash(h)
   }
 
@@ -187,7 +188,8 @@ object MurmurHash {
       val h = i.##
       a += h
       b ^= h
-      if (h != 0) c *= h
+      if (h != 0)
+        c *= h
       n += 1
     })
     var h = startHash(seed * n)

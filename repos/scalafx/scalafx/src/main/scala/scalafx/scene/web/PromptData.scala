@@ -43,7 +43,10 @@ object PromptData {
     * @return JavaFX PromptData
     */
   implicit def sfxPromptData2jfx(pd: PromptData): jfxsw.PromptData =
-    if (pd != null) pd.delegate else null
+    if (pd != null)
+      pd.delegate
+    else
+      null
 }
 
 /**

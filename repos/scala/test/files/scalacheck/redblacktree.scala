@@ -32,8 +32,10 @@ package scala.collection.immutable.redblacktree {
       iterator(tree).map(_._1) contains key
 
     def height(tree: Tree[_, _]): Int =
-      if (tree eq null) 0
-      else (1 + math.max(height(tree.left), height(tree.right)))
+      if (tree eq null)
+        0
+      else
+        (1 + math.max(height(tree.left), height(tree.right)))
 
     def mkTree(
         level: Int,
@@ -46,7 +48,10 @@ package scala.collection.immutable.redblacktree {
           oddOrEven <- choose(0, 2)
           tryRed = oddOrEven.sample.get % 2 == 0 // work around arbitrary[Boolean] bug
           isRed = parentIsBlack && tryRed
-          nextLevel = if (isRed) level else level - 1
+          nextLevel = if (isRed)
+            level
+          else
+            level - 1
           left <- mkTree(nextLevel, !isRed, label + "L")
           right <- mkTree(nextLevel, !isRed, label + "R")
         } yield {

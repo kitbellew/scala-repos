@@ -47,7 +47,11 @@ class ScalaChangeSignatureRowEditor(
     setLayout(new BorderLayout)
     addNameEditor()
     addTypeEditor()
-    val color = if (item.startsNewClause) separatorColor else backgroundColor
+    val color =
+      if (item.startsNewClause)
+        separatorColor
+      else
+        backgroundColor
     setBorder(new MatteBorder(2, 0, 0, 0, color))
 
     if (!item.isEllipsisType && item.parameter.getOldIndex == -1) {
@@ -120,10 +124,12 @@ class ScalaChangeSignatureRowEditor(
       return myNameEditor.getFocusTarget
     }
     val x: Double = me.getPoint.getX
-    if (x <= getNamesColumnWidth) myNameEditor.getFocusTarget
+    if (x <= getNamesColumnWidth)
+      myNameEditor.getFocusTarget
     else if (myDefaultValueEditor == null || x <= getTypesColumnWidth)
       myTypeEditor.getFocusTarget
-    else myDefaultValueEditor.getFocusTarget
+    else
+      myDefaultValueEditor.getFocusTarget
   }
 
   def getFocusableComponents: Array[JComponent] = {

@@ -35,7 +35,11 @@ object DenseGaussianMixture {
       println(
         "usage: DenseGmmEM <input file> <k> <convergenceTol> [maxIterations]")
     } else {
-      val maxIterations = if (args.length > 3) args(3).toInt else 100
+      val maxIterations =
+        if (args.length > 3)
+          args(3).toInt
+        else
+          100
       run(args(0), args(1).toInt, args(2).toDouble, maxIterations)
     }
   }

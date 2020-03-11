@@ -22,13 +22,17 @@ case class Text(s: String) extends StringPart {
   def withEscapedPercent(manager: PsiManager): List[StringPart] = {
     val literal =
       ScalaPsiElementFactory.createExpressionFromText("\"%\"", manager)
-    if (s == "%") List(Text(""), Injection(literal, None), Text(""))
+    if (s == "%")
+      List(Text(""), Injection(literal, None), Text(""))
     else {
       val splitted = s.split('%')
       val list = splitted
         .flatMap(text => List(Injection(literal, None), Text(text)))
         .toList
-      if (list.nonEmpty) list.tail else Nil
+      if (list.nonEmpty)
+        list.tail
+      else
+        Nil
     }
   }
 }

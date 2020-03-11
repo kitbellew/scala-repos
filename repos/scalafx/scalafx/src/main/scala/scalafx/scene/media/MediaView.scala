@@ -38,7 +38,10 @@ import scalafx.scene.Node
 
 object MediaView {
   implicit def sfxMediaView2jfx(mv: MediaView): jfxsm.MediaView =
-    if (mv != null) mv.delegate else null
+    if (mv != null)
+      mv.delegate
+    else
+      null
 }
 
 class MediaView(override val delegate: jfxsm.MediaView = new jfxsm.MediaView)

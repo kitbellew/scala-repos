@@ -34,7 +34,8 @@ trait JsonSupport[T] extends JsonOutput[T] {
         val bd = {
           if (ct == "application/x-www-form-urlencoded")
             multiParams.keys.headOption map readJsonFromBody getOrElse JNothing
-          else if (cacheRequestBodyAsString) readJsonFromBody(request.body)
+          else if (cacheRequestBodyAsString)
+            readJsonFromBody(request.body)
           else
             readJsonFromStreamWithCharset(
               request.inputStream,
@@ -45,11 +46,14 @@ trait JsonSupport[T] extends JsonOutput[T] {
         val bd = {
           if (ct == "application/x-www-form-urlencoded")
             multiParams.keys.headOption map readXmlFromBody getOrElse JNothing
-          else if (cacheRequestBodyAsString) readXmlFromBody(request.body)
-          else readXmlFromStream(request.inputStream)
+          else if (cacheRequestBodyAsString)
+            readXmlFromBody(request.body)
+          else
+            readXmlFromStream(request.inputStream)
         }
         transformRequestBody(bd)
-      } else JNothing
+      } else
+        JNothing
     } catch {
       case t: Throwable ⇒ {
         logger.error(s"Parsing the request body failed, because:", t)
@@ -81,14 +85,16 @@ trait JsonSupport[T] extends JsonOutput[T] {
     if (bd.nonBlank) {
       val JObject(JField(_, jv) :: Nil) = toJson(secureXML.loadString(bd))
       jv
-    } else JNothing
+    } else
+      JNothing
   }
   protected def readXmlFromStream(stream: InputStream): JValue = {
     val rdr = new InputStreamReader(stream)
     if (rdr.ready()) {
       val JObject(JField(_, jv) :: Nil) = toJson(secureXML.load(rdr))
       jv
-    } else JNothing
+    } else
+      JNothing
   }
   protected def transformRequestBody(body: JValue) = body
 

@@ -37,7 +37,8 @@ object IpAddress {
       discoveryInfo =
         if (proto.hasDiscoveryInfo)
           DiscoveryInfo.fromProto(proto.getDiscoveryInfo)
-        else DiscoveryInfo.empty
+        else
+          DiscoveryInfo.empty
     )
   }
 }

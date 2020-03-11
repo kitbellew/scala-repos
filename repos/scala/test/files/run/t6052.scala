@@ -8,7 +8,10 @@ object Test extends App {
     assert(gseq == gpar, (gseq, gpar))
   }
 
-  for (i <- 0 until 20) check(i, _ > 0)
-  for (i <- 0 until 20) check(i, _ % 2)
-  for (i <- 0 until 20) check(i, _ % 4)
+  for (i <- 0 until 20)
+    check(i, _ > 0)
+  for (i <- 0 until 20)
+    check(i, _ % 2)
+  for (i <- 0 until 20)
+    check(i, _ % 4)
 }

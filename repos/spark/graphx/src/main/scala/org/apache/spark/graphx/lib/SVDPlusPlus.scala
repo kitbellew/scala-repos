@@ -225,7 +225,10 @@ object SVDPlusPlus {
             vid: VertexId,
             vd: (Array[Double], Array[Double], Double, Double),
             msg: Option[Double]) =>
-          if (msg.isDefined) (vd._1, vd._2, vd._3, msg.get) else vd
+          if (msg.isDefined)
+            (vd._1, vd._2, vd._3, msg.get)
+          else
+            vd
       }
       .cache()
     materialize(gJoinT3)

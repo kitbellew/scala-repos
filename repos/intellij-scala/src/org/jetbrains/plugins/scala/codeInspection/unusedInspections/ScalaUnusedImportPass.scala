@@ -44,7 +44,8 @@ class ScalaUnusedImportPass(
       editor,
       if (file.getTextRange == null)
         throw new AssertionError(s"File text range is null: ${file.getClass}")
-      else file.getTextRange,
+      else
+        file.getTextRange,
       true,
       highlightInfoProcessor)
     with ScalaUnusedImportPassBase {
@@ -84,7 +85,8 @@ class ScalaUnusedImportPass(
   }
 
   override def applyInformationWithProgress(): Unit = {
-    if (myHighlights == null) return
+    if (myHighlights == null)
+      return
     highlightAll(myHighlights)
     ScalaUnusedImportPass.markFileUpToDate(file)
 
@@ -111,13 +113,16 @@ object ScalaUnusedImportPass {
     val project: Project = file.getProject
     val document: Document =
       PsiDocumentManager.getInstance(project).getDocument(file)
-    if (document == null) return
+    if (document == null)
+      return
     val stamp: Long = document.getModificationStamp
     ApplicationManager.getApplication.invokeLater(new Runnable {
       def run() {
-        if (project.isDisposed || document.getModificationStamp != stamp) return
+        if (project.isDisposed || document.getModificationStamp != stamp)
+          return
         val undoManager: UndoManager = UndoManager.getInstance(project)
-        if (undoManager.isUndoInProgress || undoManager.isRedoInProgress) return
+        if (undoManager.isUndoInProgress || undoManager.isRedoInProgress)
+          return
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         val beforeText: String = file.getText
         val oldStamp: Long = document.getModificationStamp
@@ -160,8 +165,10 @@ object ScalaUnusedImportPass {
     val codeAnalyzer: DaemonCodeAnalyzerEx =
       DaemonCodeAnalyzerEx.getInstanceEx(file.getProject)
     if (file == null || !codeAnalyzer.isHighlightingAvailable(file) || !file
-          .isInstanceOf[ScalaFile]) return false
-    if (!codeAnalyzer.isErrorAnalyzingFinished(file)) return false
+          .isInstanceOf[ScalaFile])
+      return false
+    if (!codeAnalyzer.isErrorAnalyzingFinished(file))
+      return false
     val errors: Boolean = containsErrorsPreventingOptimize(file)
     !errors && DaemonListeners.canChangeFileSilently(file)
   }
@@ -169,7 +176,8 @@ object ScalaUnusedImportPass {
   private def containsErrorsPreventingOptimize(file: PsiFile): Boolean = {
     val document: Document =
       PsiDocumentManager.getInstance(file.getProject).getDocument(file)
-    if (document == null) return true
+    if (document == null)
+      return true
     val hasErrorsExceptUnresolvedImports: Boolean =
       !DaemonCodeAnalyzerEx.processHighlights(
         document,

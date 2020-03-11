@@ -103,7 +103,8 @@ abstract class ScTypeDefinitionImpl protected (
         "scala.annotation.Annotation",
         getResolveScope,
         ScalaPsiManager.ClassCategory.TYPE)
-    if (annotation == null) return false
+    if (annotation == null)
+      return false
     ScalaPsiManager.instance(getProject).cachedDeepIsInheritor(this, annotation)
   }
 
@@ -149,8 +150,10 @@ abstract class ScTypeDefinitionImpl protected (
     def args: Seq[ScTypeParameterType] =
       typeParameters.map(new ScTypeParameterType(_, ScSubstitutor.empty))
     def innerType =
-      if (typeParameters.isEmpty) ScType.designator(this)
-      else ScParameterizedType(ScType.designator(this), args)
+      if (typeParameters.isEmpty)
+        ScType.designator(this)
+      else
+        ScParameterizedType(ScType.designator(this), args)
     val parentClazz = containingClass
     if (parentClazz != null) {
       val tpe: ScType =
@@ -161,14 +164,18 @@ abstract class ScTypeDefinitionImpl protected (
               thisProjections = false)
             .getOrElse(
               return Failure("Cannot resolve parent class", Some(this)))
-        else ScThisType(parentClazz)
+        else
+          ScThisType(parentClazz)
 
       val innerProjection = ScProjectionType(tpe, this, superReference = false)
       Success(
-        if (typeParameters.isEmpty) innerProjection
-        else ScParameterizedType(innerProjection, args),
+        if (typeParameters.isEmpty)
+          innerProjection
+        else
+          ScParameterizedType(innerProjection, args),
         Some(this))
-    } else Success(innerType, Some(this))
+    } else
+      Success(innerType, Some(this))
   }
 
   override def getModifierList: ScModifierList =
@@ -202,7 +209,8 @@ abstract class ScTypeDefinitionImpl protected (
       val classesIterator = classes.iterator
       while (classesIterator.hasNext) {
         val c = classesIterator.next()
-        if (name == c.name && hasSameScalaKind(c)) return c
+        if (name == c.name && hasSameScalaKind(c))
+          return c
       }
     } else {
       val parentSourceMirror =
@@ -246,8 +254,10 @@ abstract class ScTypeDefinitionImpl protected (
 
   override final def getQualifiedName: String = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScTemplateDefinitionStub].javaQualName
-    else javaQualName()
+    if (stub != null)
+      stub.asInstanceOf[ScTemplateDefinitionStub].javaQualName
+    else
+      javaQualName()
   }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
@@ -257,13 +267,16 @@ abstract class ScTypeDefinitionImpl protected (
       .map { s =>
         if (s.startsWith("`") && s.endsWith("`") && s.length > 2)
           s.drop(1).dropRight(1)
-        else s
+        else
+          s
       }
       .mkString(".")
     this match {
       case o: ScObject =>
-        if (o.isPackageObject) res = res + ".package$"
-        else res = res + "$"
+        if (o.isPackageObject)
+          res = res + ".package$"
+        else
+          res = res + "$"
       case _ =>
     }
     res
@@ -271,8 +284,10 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def qualifiedName: String = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScTemplateDefinitionStub].qualName
-    else qualName()
+    if (stub != null)
+      stub.asInstanceOf[ScTemplateDefinitionStub].qualName
+    else
+      qualName()
   }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
@@ -294,17 +309,20 @@ abstract class ScTypeDefinitionImpl protected (
       case _ =>
         if (this.isPackageObject)
           qualifiedName("", encodeName = true) + ".package"
-        else qualifiedName("$", encodeName = true)
+        else
+          qualifiedName("$", encodeName = true)
     }
   }
 
   protected def transformName(encodeName: Boolean, name: String): String = {
-    if (!encodeName) name
+    if (!encodeName)
+      name
     else {
       val deticked =
         if (name.startsWith("`") && name.endsWith("`") && name.length() > 1)
           name.substring(1, name.length() - 1)
-        else name
+        else
+          name
       NameTransformer.encode(deticked)
     }
   }
@@ -334,7 +352,11 @@ abstract class ScTypeDefinitionImpl protected (
         _packageName(p, ".", (s) => k(s + p.getPackageName + "."))
       case f: ScalaFile =>
         val pn = "";
-        k(if (pn.length > 0) pn + "." else "")
+        k(
+          if (pn.length > 0)
+            pn + "."
+          else
+            "")
       case _: PsiFile | null         => k("")
       case _: ScBlock                => k("")
       case parent: ScTemplateBody    => _packageName(parent, sep, k)
@@ -352,8 +374,10 @@ abstract class ScTypeDefinitionImpl protected (
       case o: ScObject if o.isPackageObject && o.name == "`package`" =>
         val packageName = o.qualifiedName.stripSuffix(".`package`")
         val index = packageName.lastIndexOf('.')
-        if (index < 0) packageName
-        else packageName.substring(index + 1, packageName.length)
+        if (index < 0)
+          packageName
+        else
+          packageName.substring(index + 1, packageName.length)
       case _ => name
     }
 
@@ -438,7 +462,8 @@ abstract class ScTypeDefinitionImpl protected (
     val direct = extendsBlock.supers.toArray
     val res = new ArrayBuffer[PsiClass]
     res ++= direct
-    for (sup <- direct if !res.contains(sup)) res ++= sup.getSupers
+    for (sup <- direct if !res.contains(sup))
+      res ++= sup.getSupers
     // return strict superclasses
     res.filter(_ != this).toArray
   }
@@ -450,7 +475,8 @@ abstract class ScTypeDefinitionImpl protected (
     (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers
             .getSignatures(this)
             .forName(name)
-            ._1) yield s) ++
+            ._1)
+      yield s) ++
       syntheticMethodsNoOverride
         .filter(_.name == name)
         .map(new PhysicalSignature(_, ScSubstitutor.empty))
@@ -467,7 +493,8 @@ abstract class ScTypeDefinitionImpl protected (
   override def getIcon(flags: Int): Icon = {
     val icon = getIconInner
     return icon //todo: remove, when performance issues will be fixed
-    if (!this.isValid) return icon //to prevent Invalid access: EA: 13535
+    if (!this.isValid)
+      return icon //to prevent Invalid access: EA: 13535
     val isLocked = (flags & Iconable.ICON_FLAG_READ_STATUS) != 0 && !isWritable
     val rowIcon = ElementBase.createLayeredIcon(
       this,
@@ -475,10 +502,12 @@ abstract class ScTypeDefinitionImpl protected (
       ElementPresentationUtil.getFlags(this, isLocked))
     if ((flags & Iconable.ICON_FLAG_VISIBILITY) != 0) {
       val accessLevel = {
-        if (hasModifierProperty("private")) PsiUtil.ACCESS_LEVEL_PRIVATE
+        if (hasModifierProperty("private"))
+          PsiUtil.ACCESS_LEVEL_PRIVATE
         else if (hasModifierProperty("protected"))
           PsiUtil.ACCESS_LEVEL_PROTECTED
-        else PsiUtil.ACCESS_LEVEL_PUBLIC
+        else
+          PsiUtil.ACCESS_LEVEL_PUBLIC
       }
       VisibilityIcons.setVisibilityIcon(accessLevel, rowIcon)
     }

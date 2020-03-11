@@ -168,7 +168,8 @@ trait StateRules {
       initial: T) = apply {
     // more compact using HoF but written this way so it's tail-recursive
     def rep(in: S, t: T): Result[S, T, X] = {
-      if (finished(t)) Success(in, t)
+      if (finished(t))
+        Success(in, t)
       else
         rule(in) match {
           case Success(out, f) =>

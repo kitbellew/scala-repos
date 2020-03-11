@@ -40,7 +40,8 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
       @inline
       @tailrec
       def loop(): CoderResult = {
-        if (in.remaining < 2) CoderResult.UNDERFLOW
+        if (in.remaining < 2)
+          CoderResult.UNDERFLOW
         else {
           val b1 = in.get() & 0xff
           val b2 = in.get() & 0xff
@@ -58,7 +59,8 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
               endianness = BigEndian
               false
             }
-          } else false
+          } else
+            false
 
           if (wasBOM) {
             loop()
@@ -66,7 +68,10 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
             val bigEndian = endianness == BigEndian
 
             @inline def bytes2char(hi: Int, lo: Int): Char =
-              (if (bigEndian) (hi << 8) | lo else (lo << 8) | hi).toChar
+              (if (bigEndian)
+                 (hi << 8) | lo
+               else
+                 (lo << 8) | hi).toChar
 
             val c1 = bytes2char(b1, b2)
 
@@ -119,7 +124,10 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
         2.0f,
         2.0f,
         // Character 0xfffd
-        if (endianness == LittleEndian) Array(-3, -1) else Array(-1, -3)) {
+        if (endianness == LittleEndian)
+          Array(-3, -1)
+        else
+          Array(-1, -3)) {
 
     private var needToWriteBOM: Boolean = endianness == AutoEndian
 
@@ -156,7 +164,8 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
       @inline
       @tailrec
       def loop(): CoderResult = {
-        if (in.remaining == 0) CoderResult.UNDERFLOW
+        if (in.remaining == 0)
+          CoderResult.UNDERFLOW
         else {
           val c1 = in.get()
 

@@ -36,7 +36,11 @@ trait CodegenFallback extends Expression {
     }
 
     // LeafNode does not need `input`
-    val input = if (this.isInstanceOf[LeafExpression]) "null" else ctx.INPUT_ROW
+    val input =
+      if (this.isInstanceOf[LeafExpression])
+        "null"
+      else
+        ctx.INPUT_ROW
     val idx = ctx.references.length
     ctx.references += this
     val objectTerm = ctx.freshName("obj")

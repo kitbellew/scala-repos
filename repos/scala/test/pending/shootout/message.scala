@@ -41,7 +41,10 @@ object message {
     }
 
     def actorChain(i: Int, a: Pid): Pid =
-      if (i > 0) actorChain(i - 1, new Incrementor(a).pid) else a
+      if (i > 0)
+        actorChain(i - 1, new Incrementor(a).pid)
+      else
+        a
 
     val firstActor = actorChain(nActors, null)
     var i = n;

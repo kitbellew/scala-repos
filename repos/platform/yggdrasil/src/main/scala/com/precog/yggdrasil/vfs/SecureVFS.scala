@@ -339,7 +339,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                   cachePath,
                   clock.instant()) map { pset =>
                   /// here, we just terminate the computation early if no write permissions are available.
-                  if (pset.nonEmpty) \/.right(PrecogUnit)
+                  if (pset.nonEmpty)
+                    \/.right(PrecogUnit)
                   else
                     \/.left(
                       storageError(

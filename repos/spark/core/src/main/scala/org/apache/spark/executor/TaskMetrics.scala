@@ -146,7 +146,10 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
 
   @deprecated("use updatedBlockStatuses instead", "2.0.0")
   def updatedBlocks: Option[Seq[(BlockId, BlockStatus)]] = {
-    if (updatedBlockStatuses.nonEmpty) Some(updatedBlockStatuses) else None
+    if (updatedBlockStatuses.nonEmpty)
+      Some(updatedBlockStatuses)
+    else
+      None
   }
 
   @deprecated("setting updated blocks is not allowed", "2.0.0")

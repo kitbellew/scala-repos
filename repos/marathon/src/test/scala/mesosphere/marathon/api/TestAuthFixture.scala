@@ -32,7 +32,11 @@ class TestAuthFixture extends Mockito {
   def auth: Auth = new Authorizer with Authenticator {
     override def authenticate(
         request: HttpRequest): Future[Option[Identity]] = {
-      Future.successful(if (authenticated) Some(identity) else None)
+      Future.successful(
+        if (authenticated)
+          Some(identity)
+        else
+          None)
     }
     override def handleNotAuthenticated(
         request: HttpRequest,

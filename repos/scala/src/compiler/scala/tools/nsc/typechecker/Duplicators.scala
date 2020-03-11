@@ -33,7 +33,8 @@ abstract class Duplicators extends Analyzer {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
-    } else resetClassOwners()
+    } else
+      resetClassOwners()
 
     envSubstitution = new SubstSkolemsTypeMap(
       env.keysIterator.toList,
@@ -62,8 +63,10 @@ abstract class Duplicators extends Analyzer {
   private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type])
       extends SubstTypeMap(from, to) {
     protected override def matches(sym1: Symbol, sym2: Symbol) =
-      if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
-      else sym1 eq sym2
+      if (sym2.isTypeSkolem)
+        sym2.deSkolemize eq sym1
+      else
+        sym1 eq sym2
   }
 
   private val invalidSyms: mutable.Map[Symbol, Tree] =
@@ -97,7 +100,8 @@ abstract class Duplicators extends Analyzer {
           if (sym1.exists) {
             debuglog(s"fixing $sym -> $sym1")
             typeRef(NoPrefix, sym1, mapOverArgs(args, sym1.typeParams))
-          } else super.mapOver(tpe)
+          } else
+            super.mapOver(tpe)
 
         case TypeRef(pre, sym, args) =>
           val newsym = updateSym(sym)
@@ -134,7 +138,8 @@ abstract class Duplicators extends Analyzer {
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
       val tpe3 = if (newClassOwner ne null) {
         tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
-      } else tpe2
+      } else
+        tpe2
       tpe3
     }
 
@@ -171,7 +176,8 @@ abstract class Duplicators extends Analyzer {
             vdef.symbol = newsym
             debuglog(
               "newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
-            if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
+            if (newsym.owner.isClass)
+              newsym.owner.info.decls enter newsym
 
           case DefDef(_, name, tparams, vparamss, _, rhs) =>
             // invalidate parameters
@@ -339,7 +345,8 @@ abstract class Duplicators extends Analyzer {
                         nameSelection
                     }
                 }
-              } else nameSelection
+              } else
+                nameSelection
             )
           super.typed(atPos(tree.pos)(newTree), mode, pt)
 
@@ -369,15 +376,16 @@ abstract class Duplicators extends Analyzer {
           val scrut1 = typedByValueExpr(scrut)
           val scrutTpe = scrut1.tpe.widen
           val cases1 = {
-            if (scrutTpe.isFinalType) cases filter {
-              case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
-                // the typed pattern is not incompatible with the scrutinee type
-                scrutTpe matchesPattern fixType(tpt.tpe)
-              case CaseDef(Typed(_, tpt), EmptyTree, body) =>
-                // the typed pattern is not incompatible with the scrutinee type
-                scrutTpe matchesPattern fixType(tpt.tpe)
-              case _ => true
-            }
+            if (scrutTpe.isFinalType)
+              cases filter {
+                case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
+                  // the typed pattern is not incompatible with the scrutinee type
+                  scrutTpe matchesPattern fixType(tpt.tpe)
+                case CaseDef(Typed(_, tpt), EmptyTree, body) =>
+                  // the typed pattern is not incompatible with the scrutinee type
+                  scrutTpe matchesPattern fixType(tpt.tpe)
+                case _ => true
+              }
             // Without this, AnyRef specializations crash on patterns like
             //   case _: Boolean => ...
             // Not at all sure this is safe.

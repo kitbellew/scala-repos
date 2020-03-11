@@ -200,8 +200,10 @@ private[math] object Primality {
     System.arraycopy(n.digits, 0, startPoint.digits, 0, n.numberLength)
 
     // To fix N to the "next odd number"
-    if (n.testBit(0)) Elementary.inplaceAdd(startPoint, 2)
-    else startPoint.digits(0) |= 1
+    if (n.testBit(0))
+      Elementary.inplaceAdd(startPoint, 2)
+    else
+      startPoint.digits(0) |= 1
 
     // To set the improved certainty of Miller-Rabin
     var certainty = 2
@@ -222,8 +224,10 @@ private[math] object Primality {
       for (i <- 0 until Primes.length) {
         modules(i) = (modules(i) + gapSize) % Primes(i)
         var j =
-          if (modules(i) == 0) 0
-          else (Primes(i) - modules(i))
+          if (modules(i) == 0)
+            0
+          else
+            (Primes(i) - modules(i))
         while (j < gapSize) {
           isDivisible(j) = true
           j += Primes(i)

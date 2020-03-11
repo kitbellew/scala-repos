@@ -29,7 +29,10 @@ package object parsing {
     byteAt(input, ix).toChar
 
   private[http] def byteAt(input: ByteString, ix: Int): Byte =
-    if (ix < input.length) input(ix) else throw NotEnoughDataException
+    if (ix < input.length)
+      input(ix)
+    else
+      throw NotEnoughDataException
 
   private[http] def asciiString(
       input: ByteString,
@@ -38,8 +41,14 @@ package object parsing {
     @tailrec def build(
         ix: Int = start,
         sb: JStringBuilder = new JStringBuilder(end - start)): String =
-      if (ix == end) sb.toString else build(ix + 1, sb.append(input(ix).toChar))
-    if (start == end) "" else build()
+      if (ix == end)
+        sb.toString
+      else
+        build(ix + 1, sb.append(input(ix).toChar))
+    if (start == end)
+      ""
+    else
+      build()
   }
 
   private[http] def logParsingError(
@@ -67,7 +76,11 @@ package parsing {
     def this(status: StatusCode, summary: String = "") =
       this(
         status,
-        ErrorInfo(if (summary.isEmpty) status.defaultMessage else summary))
+        ErrorInfo(
+          if (summary.isEmpty)
+            status.defaultMessage
+          else
+            summary))
     def this(summary: String) =
       this(StatusCodes.BadRequest, ErrorInfo(summary))
   }

@@ -132,7 +132,8 @@ trait CollectionFormats {
     private val CalcEval = "(\\d+)#(\\d+)" r
 
     def write(bs: collection.BitSet) =
-      if (bs.isEmpty) SexpNil
+      if (bs.isEmpty)
+        SexpNil
       else {
         val bigInt = BigIntConvertor.fromBitSet(bs)
         SexpString(Radix + "#" + bigInt.toString(Radix))

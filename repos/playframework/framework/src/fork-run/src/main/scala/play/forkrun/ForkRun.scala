@@ -159,10 +159,17 @@ object ForkRun {
       defaultHttpPort,
       defaultHttpAddress,
       devSettings)
-    val host = if (httpAddress == "0.0.0.0") "localhost" else httpAddress
-    if (httpPort.isDefined) s"http://$host:${httpPort.get}"
-    else if (httpsPort.isDefined) s"https://$host:${httpsPort.get}"
-    else s"http://$host:${address.getPort}"
+    val host =
+      if (httpAddress == "0.0.0.0")
+        "localhost"
+      else
+        httpAddress
+    if (httpPort.isDefined)
+      s"http://$host:${httpPort.get}"
+    else if (httpsPort.isDefined)
+      s"https://$host:${httpsPort.get}"
+    else
+      s"http://$host:${address.getPort}"
   }
 
   def askForReload(actor: ActorRef)(

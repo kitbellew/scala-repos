@@ -116,7 +116,11 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
 
   private def assertProblemsAre(preface: String, code: String)(
       pattern: PartialFunction[List[ApplicabilityProblem], Unit]) {
-    val line = if (preface.isEmpty) code else preface + "; " + code
+    val line =
+      if (preface.isEmpty)
+        code
+      else
+        preface + "; " + code
     val file = (Header + "\n" + line).parse
     Compatibility.seqClass = file.depthFirst.findByType(classOf[ScClass])
     try {
@@ -147,7 +151,8 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
     val Parameter = """(\w+):\s*([A-Za-z\[\]]+)""".r
 
     val types =
-      for (Parameter(_, t) <- Parameter.findAllIn(definition).toList) yield t
+      for (Parameter(_, t) <- Parameter.findAllIn(definition).toList)
+        yield t
     val ids = (1 to types.size).map("T" + _)
 
     val id = ids.toIterator

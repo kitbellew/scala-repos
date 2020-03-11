@@ -21,7 +21,11 @@ trait MemberHandlers {
     codegen(leadingPlus, (xs ++ Array("\n")): _*)
   private def codegenln(xs: String*): String = codegenln(true, xs: _*)
   private def codegen(leadingPlus: Boolean, xs: String*): String = {
-    val front = if (leadingPlus) "+ " else ""
+    val front =
+      if (leadingPlus)
+        "+ "
+      else
+        ""
     front + (xs map string2codeQuoted mkString " + ")
   }
   private implicit def name2string(name: Name) = name.toString
@@ -36,7 +40,8 @@ trait MemberHandlers {
       case Ident(name) =>
         // XXX this is obviously inadequate but it's going to require some effort
         // to get right.
-        if (name.toString startsWith "x$") ()
+        if (name.toString startsWith "x$")
+          ()
         else {
           importVars += name
           // Needed to import `xxx` during line 2 of:
@@ -85,7 +90,11 @@ trait MemberHandlers {
       Some(name.toTermName) filter (_ => name.isTermName)
     override def definesType: Option[TypeName] =
       Some(name.toTypeName) filter (_ => name.isTypeName)
-    override def definedSymbols = if (symbol.exists) symbol :: Nil else Nil
+    override def definedSymbols =
+      if (symbol.exists)
+        symbol :: Nil
+      else
+        Nil
   }
 
   /** Class to handle one member among all the members included
@@ -94,7 +103,11 @@ trait MemberHandlers {
   sealed abstract class MemberHandler(val member: Tree) {
     def name: Name = nme.NO_NAME
     def path = intp.originalPath(symbol)
-    def symbol = if (member.symbol eq null) NoSymbol else member.symbol
+    def symbol =
+      if (member.symbol eq null)
+        NoSymbol
+      else
+        member.symbol
     def definesImplicit = false
     def definesValue = false
 
@@ -122,7 +135,8 @@ trait MemberHandlers {
   def color(c: String, s: String) =
     if (replProps.colorOk)
       string2code(BOLD) + string2code(c) + s + string2code(RESET)
-    else s
+    else
+      s
 
   def colorName(s: String) =
     color(BLUE, string2code(s))
@@ -136,17 +150,21 @@ trait MemberHandlers {
 
     override def resultExtractionCode(req: Request): String = {
       val isInternal = isUserVarName(name) && req.lookupTypeOf(name) == "Unit"
-      if (!mods.isPublic || isInternal) ""
+      if (!mods.isPublic || isInternal)
+        ""
       else {
         // if this is a lazy val we avoid evaluating it here
         val resultString =
-          if (mods.isLazy) codegenln(false, "<lazy>")
-          else any2stringOf(path, maxStringElements)
+          if (mods.isLazy)
+            codegenln(false, "<lazy>")
+          else
+            any2stringOf(path, maxStringElements)
 
         val vidString =
           if (replProps.vids)
             s"""" + f"@$${System.identityHashCode($path)}%8x" + """"
-          else ""
+          else
+            ""
 
         val nameString = colorName(prettyName) + vidString
         val typeString = colorType(req typeOf name)
@@ -161,7 +179,10 @@ trait MemberHandlers {
     override def resultExtractionCode(req: Request) = {
       val nameString = colorName(name)
       val typeString = colorType(req typeOf name)
-      if (mods.isPublic) s""" + "$nameString: $typeString\\n"""" else ""
+      if (mods.isPublic)
+        s""" + "$nameString: $typeString\\n""""
+      else
+        ""
     }
   }
 
@@ -173,7 +194,10 @@ trait MemberHandlers {
     override def definesTerm: Option[TermName] = Some(name.toTermName)
     override def definesType: Option[TypeName] = None
     override def resultExtractionCode(req: Request) =
-      if (mods.isPublic) codegenln(notification(req)) else ""
+      if (mods.isPublic)
+        codegenln(notification(req))
+      else
+        ""
     def notification(req: Request): String
   }
 
@@ -252,7 +276,10 @@ trait MemberHandlers {
     lazy val individualSymbols: List[Symbol] = exitingTyper(
       importableTargetMembers filter (m => selectorNames(m.name)))
     lazy val wildcardSymbols: List[Symbol] = exitingTyper(
-      if (importsWildcard) importableTargetMembers else Nil)
+      if (importsWildcard)
+        importableTargetMembers
+      else
+        Nil)
 
     /** Complete list of names imported by a wildcard */
     lazy val wildcardNames: List[Name] = wildcardSymbols map (_.name)

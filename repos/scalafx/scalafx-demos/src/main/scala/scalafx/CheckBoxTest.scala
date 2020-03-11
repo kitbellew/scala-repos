@@ -44,8 +44,10 @@ object CheckBoxTest extends JFXApp {
   }
   check.onAction = (event: ActionEvent) => {
     lblCheckState.text =
-      if (check.indeterminate.get) "Indeterminate"
-      else check.selected.get().toString
+      if (check.indeterminate.get)
+        "Indeterminate"
+      else
+        check.selected.get().toString
   }
 
   val lblCheckState = new Label {

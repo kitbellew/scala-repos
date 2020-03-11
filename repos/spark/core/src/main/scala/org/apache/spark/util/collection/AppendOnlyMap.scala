@@ -257,7 +257,10 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
 
   private def nextPowerOf2(n: Int): Int = {
     val highBit = Integer.highestOneBit(n)
-    if (highBit == n) n else highBit << 1
+    if (highBit == n)
+      n
+    else
+      highBit << 1
   }
 
   /**
@@ -277,7 +280,11 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
       }
       keyIndex += 1
     }
-    assert(curSize == newIndex + (if (haveNullValue) 1 else 0))
+    assert(
+      curSize == newIndex + (if (haveNullValue)
+                               1
+                             else
+                               0))
 
     new Sorter(new KVArraySortDataFormat[K, AnyRef])
       .sort(data, 0, newIndex, keyComparator)

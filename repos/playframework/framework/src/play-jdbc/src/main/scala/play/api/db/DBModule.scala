@@ -41,8 +41,10 @@ final class DBModule extends Module {
   private def defaultDatabaseBinding(
       default: String,
       dbs: Set[String]): Seq[Binding[_]] = {
-    if (dbs.contains(default)) Seq(bind[Database].to(bindNamed(default)))
-    else Nil
+    if (dbs.contains(default))
+      Seq(bind[Database].to(bindNamed(default)))
+    else
+      Nil
   }
 }
 
@@ -86,7 +88,8 @@ class DBApiProvider @Inject() (
       PlayConfig(config)
         .getPrototypedMap(dbKey, "play.db.prototype")
         .mapValues(_.underlying)
-    } else Map.empty[String, Config]
+    } else
+      Map.empty[String, Config]
     val db = new DefaultDBApi(configs, pool, environment)
     lifecycle.addStopHook { () =>
       Future.successful(db.shutdown())

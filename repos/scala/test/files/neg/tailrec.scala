@@ -4,8 +4,10 @@ import scala.annotation.tailrec
 object Winners {
   @tailrec
   def facsucc(n: Int, acc: Int): Int =
-    if (n == 0) acc
-    else facsucc(n - 1, n * acc)
+    if (n == 0)
+      acc
+    else
+      facsucc(n - 1, n * acc)
 
   @tailrec def loopsucc1(x: Int): Int = loopsucc1(x - 1)
   @tailrec def loopsucc2[T](x: Int): Int = loopsucc2[T](x - 1)
@@ -41,8 +43,10 @@ class Winners {
 object Failures {
   @tailrec
   def facfail(n: Int): Int =
-    if (n == 0) 1
-    else n * facfail(n - 1)
+    if (n == 0)
+      1
+    else
+      n * facfail(n - 1)
 }
 
 class Failures {

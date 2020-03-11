@@ -47,7 +47,10 @@ object TablePosition {
     */
   implicit def sfxTablePosition2jfx[S, T](
       tp: TablePosition[S, T]): jfxsc.TablePosition[S, T] =
-    if (tp != null) tp.delegate else null
+    if (tp != null)
+      tp.delegate
+    else
+      null
 }
 
 /**

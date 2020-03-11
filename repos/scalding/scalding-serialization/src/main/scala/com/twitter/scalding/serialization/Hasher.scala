@@ -55,7 +55,11 @@ object Hasher {
       * We actually just use the exact same values as Java here.
       */
     @inline
-    def hash(i: Boolean) = if (i) 1231 else 1237
+    def hash(i: Boolean) =
+      if (i)
+        1231
+      else
+        1237
   }
   implicit val byte: Hasher[Byte] = new Hasher[Byte] {
     @inline

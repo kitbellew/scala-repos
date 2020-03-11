@@ -79,7 +79,8 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
   def mapChildren(f: Type => Type): StructType = {
     val ch = elements.map(_._2)
     val ch2 = ch.endoMap(f)
-    if (ch2 eq ch) this
+    if (ch2 eq ch)
+      this
     else
       StructType(elements.zip(ch2).map {
         case (e, t) => (e._1, t)
@@ -89,7 +90,10 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     case ElementSymbol(idx) => elements(idx - 1)._2
     case _ =>
       val i = elements.indexWhere(_._1 == sym)
-      if (i >= 0) elements(i)._2 else super.select(sym)
+      if (i >= 0)
+        elements(i)._2
+      else
+        super.select(sym)
   }
   def classTag = TupleSupport.classTagForArity(elements.length)
   override final def childrenForeach[R](f: Type => R): Unit =
@@ -117,8 +121,10 @@ object OptionType {
         def elementType = tpe
         def mapChildren(f: Type => Type): OptionType = {
           val e2 = f(elementType)
-          if (e2 eq elementType) this
-          else OptionType(e2)
+          if (e2 eq elementType)
+            this
+          else
+            OptionType(e2)
         }
       }
   }
@@ -149,7 +155,10 @@ final case class ProductType(elements: ConstArray[Type]) extends Type {
   override def toString = "(" + elements.mkString(", ") + ")"
   def mapChildren(f: Type => Type): ProductType = {
     val ch2 = elements.endoMap(f)
-    if (ch2 eq elements) this else ProductType(ch2)
+    if (ch2 eq elements)
+      this
+    else
+      ProductType(ch2)
   }
   override def select(sym: TermSymbol) = sym match {
     case ElementSymbol(i) if i <= elements.length => elements(i - 1)
@@ -166,8 +175,10 @@ final case class CollectionType(
   override def toString = cons + "[" + elementType + "]"
   def mapChildren(f: Type => Type): CollectionType = {
     val e2 = f(elementType)
-    if (e2 eq elementType) this
-    else CollectionType(cons, e2)
+    if (e2 eq elementType)
+      this
+    else
+      CollectionType(cons, e2)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(elementType)
   def children: ConstArray[Type] = ConstArray(elementType)
@@ -195,8 +206,10 @@ trait CollectionTypeConstructor {
   /** Return a CollectionTypeConstructor which builds a subtype of Iterable
     * but has the same properties otherwise. */
   def iterableSubstitute: CollectionTypeConstructor =
-    if (isUnique && !isSequential) TypedCollectionTypeConstructor.set
-    else TypedCollectionTypeConstructor.seq
+    if (isUnique && !isSequential)
+      TypedCollectionTypeConstructor.set
+    else
+      TypedCollectionTypeConstructor.seq
   //TODO We should have a better substitute for (isUnique && isSequential)
 }
 
@@ -262,8 +275,10 @@ final class MappedScalaType(
   override def toString = s"Mapped[$baseType]"
   def mapChildren(f: Type => Type): MappedScalaType = {
     val e2 = f(baseType)
-    if (e2 eq baseType) this
-    else new MappedScalaType(e2, mapper, classTag)
+    if (e2 eq baseType)
+      this
+    else
+      new MappedScalaType(e2, mapper, classTag)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(baseType)
   def children: ConstArray[Type] = ConstArray(baseType)
@@ -300,13 +315,18 @@ final case class NominalType(sym: TypeSymbol, structuralView: Type)
     extends Type {
   override def toString = s"$sym<$structuralView>"
   def withStructuralView(t: Type): NominalType =
-    if (t == structuralView) this else copy(structuralView = t)
+    if (t == structuralView)
+      this
+    else
+      copy(structuralView = t)
   override def structural: Type = structuralView.structural
   override def select(sym: TermSymbol): Type = structuralView.select(sym)
   def mapChildren(f: Type => Type): NominalType = {
     val struct2 = f(structuralView)
-    if (struct2 eq structuralView) this
-    else new NominalType(sym, struct2)
+    if (struct2 eq structuralView)
+      this
+    else
+      new NominalType(sym, struct2)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(structuralView)
   def children: ConstArray[Type] = ConstArray(structuralView)
@@ -324,8 +344,10 @@ trait TypedType[T] extends Type { self =>
     def scalaType = new ScalaOptionType[T](self.scalaType)
     def mapChildren(f: Type => Type): Type = {
       val e2 = f(elementType)
-      if (e2 eq elementType) this
-      else OptionType(e2)
+      if (e2 eq elementType)
+        this
+      else
+        OptionType(e2)
     }
   }
   def scalaType: ScalaType[T]
@@ -370,7 +392,8 @@ class TypeUtil(val tpe: Type) extends AnyVal {
     val b = ConstArray.newBuilder[T]()
     def f(n: Type): Unit = {
       val r = pf.applyOrElse(n, retNull)
-      if (r.asInstanceOf[AnyRef] ne null) b += r
+      if (r.asInstanceOf[AnyRef] ne null)
+        b += r
       n.childrenForeach(f)
     }
     f(tpe)
@@ -378,7 +401,8 @@ class TypeUtil(val tpe: Type) extends AnyVal {
   }
 
   def existsType(f: Type => Boolean): Boolean =
-    if (f(tpe)) true
+    if (f(tpe))
+      true
     else
       tpe match {
         case t: AtomicType => false
@@ -386,7 +410,8 @@ class TypeUtil(val tpe: Type) extends AnyVal {
       }
 
   def containsSymbol(tss: scala.collection.Set[TypeSymbol]): Boolean =
-    if (tss.isEmpty) false
+    if (tss.isEmpty)
+      false
     else
       tpe match {
         case NominalType(ts, exp) => tss.contains(ts) || exp.containsSymbol(tss)
@@ -433,15 +458,26 @@ class ScalaBaseType[T](implicit
     if (ordering eq null)
       throw new SlickException("No ordering defined for " + this)
     val base =
-      if (ord.direction == Ordering.Desc) ordering.reverse else ordering
-    val nullsFirst = if (ord.nulls == Ordering.NullsFirst) -1 else 1
+      if (ord.direction == Ordering.Desc)
+        ordering.reverse
+      else
+        ordering
+    val nullsFirst =
+      if (ord.nulls == Ordering.NullsFirst)
+        -1
+      else
+        1
     new scala.math.Ordering[T] {
       def compare(x: T, y: T): Int = {
         if ((x.asInstanceOf[AnyRef] eq null) && (y
-              .asInstanceOf[AnyRef] eq null)) 0
-        else if (x.asInstanceOf[AnyRef] eq null) nullsFirst
-        else if (y.asInstanceOf[AnyRef] eq null) -nullsFirst
-        else base.compare(x, y)
+              .asInstanceOf[AnyRef] eq null))
+          0
+        else if (x.asInstanceOf[AnyRef] eq null)
+          nullsFirst
+        else if (y.asInstanceOf[AnyRef] eq null)
+          -nullsFirst
+        else
+          base.compare(x, y)
       }
     }
   }
@@ -516,20 +552,30 @@ class ScalaOptionType[T](val elementType: ScalaType[T])
   def nullable = true
   def ordered = elementType.ordered
   def scalaOrderingFor(ord: Ordering) = {
-    val nullsFirst = if (ord.nulls == Ordering.NullsFirst) -1 else 1
+    val nullsFirst =
+      if (ord.nulls == Ordering.NullsFirst)
+        -1
+      else
+        1
     val base = elementType.scalaOrderingFor(ord)
     new scala.math.Ordering[Option[T]] {
       def compare(x: Option[T], y: Option[T]): Int = {
-        if (x == None && y == None) 0
-        else if (x == None) nullsFirst
-        else if (y == None) -nullsFirst
-        else base.compare(x.get, y.get)
+        if (x == None && y == None)
+          0
+        else if (x == None)
+          nullsFirst
+        else if (y == None)
+          -nullsFirst
+        else
+          base.compare(x.get, y.get)
       }
     }
   }
   def mapChildren(f: Type => Type): ScalaOptionType[T] = {
     val e2 = f(elementType)
-    if (e2 eq elementType) this
-    else e2.asInstanceOf[ScalaType[T]].optionType
+    if (e2 eq elementType)
+      this
+    else
+      e2.asInstanceOf[ScalaType[T]].optionType
   }
 }

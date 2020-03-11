@@ -64,7 +64,10 @@ object GameFilterMenu {
     val currentName = currentNameOption | info.hasSimul
       .fold(
         Playing,
-        if (!info.user.hasGames && info.nbImported > 0) Imported else All
+        if (!info.user.hasGames && info.nbImported > 0)
+          Imported
+        else
+          All
       )
       .name
 

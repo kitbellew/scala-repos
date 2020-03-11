@@ -104,7 +104,10 @@ object BasicCommands {
   }
   def runCompletions(state: State)(input: String): State = {
     Parser.completions(state.combinedParser, input, 9).get map { c =>
-      if (c.isEmpty) input else input + c.append
+      if (c.isEmpty)
+        input
+      else
+        input + c.append
     } foreach { c =>
       System.out.println("[completions] " + c.replaceAll("\n", " "))
     }
@@ -131,7 +134,11 @@ object BasicCommands {
 
   def ifLast =
     Command(IfLast, Help.more(IfLast, IfLastDetailed))(otherCommandParser) {
-      (s, arg) => if (s.remainingCommands.isEmpty) arg :: s else s
+      (s, arg) =>
+        if (s.remainingCommands.isEmpty)
+          arg :: s
+        else
+          s
     }
   def append =
     Command(AppendCommand, Help.more(AppendCommand, AppendLastDetailed))(
@@ -170,8 +177,10 @@ object BasicCommands {
   def popOnFailure = Command.command(PopOnFailure) { s =>
     val stack = s.get(OnFailureStack).getOrElse(Nil)
     val updated =
-      if (stack.isEmpty) s.remove(OnFailureStack)
-      else s.put(OnFailureStack, stack.tail)
+      if (stack.isEmpty)
+        s.remove(OnFailureStack)
+      else
+        s.put(OnFailureStack, stack.tail)
     updated.copy(onFailure = stack.headOption.flatten)
   }
 
@@ -189,11 +198,15 @@ object BasicCommands {
         val parentLoader = getClass.getClassLoader
         state.log.info(
           "Applying State transformations " + args
-            .mkString(", ") + (if (cp.isEmpty) ""
-                               else " from " + cp.mkString(File.pathSeparator)))
+            .mkString(", ") + (if (cp.isEmpty)
+                                 ""
+                               else
+                                 " from " + cp.mkString(File.pathSeparator)))
         val loader =
-          if (cp.isEmpty) parentLoader
-          else toLoader(cp.map(f => new File(f)), parentLoader)
+          if (cp.isEmpty)
+            parentLoader
+          else
+            toLoader(cp.map(f => new File(f)), parentLoader)
         val loaded = args.map(arg =>
           ModuleUtilities.getObject(arg, loader).asInstanceOf[State => State])
         (state /: loaded)((s, obj) => obj(s))
@@ -207,7 +220,10 @@ object BasicCommands {
       StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
     def single(s: String) = Completions.single(Completion.displayOnly(s))
     val compl = TokenCompletions.fixed((seen, level) =>
-      if (seen.startsWith("-")) Completions.nil else single("<class name>"))
+      if (seen.startsWith("-"))
+        Completions.nil
+      else
+        single("<class name>"))
     token(base, compl)
   }
   private[this] def classpathOptionParser: Parser[Seq[String]] =
@@ -224,8 +240,10 @@ object BasicCommands {
         s,
         Watched.Configuration,
         "Continuous execution not configured.") { w =>
-        val repeat = ContinuousExecutePrefix + (if (arg.startsWith(" ")) arg
-                                                else " " + arg)
+        val repeat = ContinuousExecutePrefix + (if (arg.startsWith(" "))
+                                                  arg
+                                                else
+                                                  " " + arg)
         Watched.executeContinuously(w, s, arg, repeat)
       }
     }
@@ -260,7 +278,10 @@ object BasicCommands {
             onFailure = Some(Shell),
             remainingCommands = line +: Shell +: s.remainingCommands)
           .setInteractive(true)
-        if (line.trim.isEmpty) newState else newState.clearGlobalLog
+        if (line.trim.isEmpty)
+          newState
+        else
+          newState.clearGlobalLog
       case None => s.setInteractive(false)
     }
   }
@@ -307,7 +328,10 @@ object BasicCommands {
     //   and this second connection starts the next communication
     xsbt.IPC.client(port) { ipc =>
       val message = ipc.receive
-      if (message eq null) None else Some(message)
+      if (message eq null)
+        None
+      else
+        Some(message)
     }
   }
 
@@ -339,7 +363,10 @@ object BasicCommands {
   def addAlias(s: State, name: String, value: String): State =
     if (Command validID name) {
       val removed = removeAlias(s, name)
-      if (value.isEmpty) removed else addAlias0(removed, name, value)
+      if (value.isEmpty)
+        removed
+      else
+        addAlias0(removed, name, value)
     } else {
       System.err.println("Invalid alias name '" + name + "'.")
       s.fail

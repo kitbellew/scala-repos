@@ -77,7 +77,11 @@ class ParquetQuerySuite
   test("self-join") {
     // 4 rows, cells of column 1 of row 2 and row 4 are null
     val data = (1 to 4).map { i =>
-      val maybeInt = if (i % 2 == 0) None else Some(i)
+      val maybeInt =
+        if (i % 2 == 0)
+          None
+        else
+          Some(i)
       (maybeInt, i.toString)
     }
 

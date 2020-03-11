@@ -125,10 +125,16 @@ object FakeKeyStore {
     val justName = isJavaAtLeast("1.8")
     certInfo.set(
       X509CertInfo.SUBJECT,
-      if (justName) owner else new CertificateSubjectName(owner))
+      if (justName)
+        owner
+      else
+        new CertificateSubjectName(owner))
     certInfo.set(
       X509CertInfo.ISSUER,
-      if (justName) owner else new CertificateIssuerName(owner))
+      if (justName)
+        owner
+      else
+        new CertificateIssuerName(owner))
 
     // Key and algorithm
     certInfo.set(X509CertInfo.KEY, new CertificateX509Key(keyPair.getPublic))

@@ -48,7 +48,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
   protected def typeParamString: String = {
     if (typeParameters.nonEmpty)
       typeParameters.map(ScalaPsiUtil.typeParamString).mkString("[", ", ", "]")
-    else ""
+    else
+      ""
   }
 
   def tooBigForUnapply: Boolean = constructor.exists(_.parameters.length > 22)
@@ -57,27 +58,43 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
     val typeParamStringRes =
       if (typeParameters.nonEmpty)
         typeParameters.map(_.name).mkString("[", ", ", "]")
-      else ""
+      else
+        ""
 
     val unapply: Option[String] =
-      if (tooBigForUnapply) None
+      if (tooBigForUnapply)
+        None
       else {
         val paramStringRes = constructor match {
           case Some(x: ScPrimaryConstructor) =>
             val clauses = x.parameterList.clauses
-            if (clauses.isEmpty) "scala.Boolean"
+            if (clauses.isEmpty)
+              "scala.Boolean"
             else {
               val params = clauses.head.parameters
-              if (params.isEmpty) "scala.Boolean"
+              if (params.isEmpty)
+                "scala.Boolean"
               else {
                 val strings = params.map(p =>
-                  (if (p.isRepeatedParameter) "scala.Seq[" else "") +
+                  (if (p.isRepeatedParameter)
+                     "scala.Seq["
+                   else
+                     "") +
                     p.typeElement.fold("scala.Any")(_.getText) +
-                    (if (p.isRepeatedParameter) "]" else ""))
+                    (if (p.isRepeatedParameter)
+                       "]"
+                     else
+                       ""))
                 strings.mkString(
-                  "scala.Option[" + (if (strings.length > 1) "(" else ""),
+                  "scala.Option[" + (if (strings.length > 1)
+                                       "("
+                                     else
+                                       ""),
                   ", ",
-                  (if (strings.length > 1) ")" else "") + "]")
+                  (if (strings.length > 1)
+                     ")"
+                   else
+                     "") + "]")
               }
             }
           case None => "scala.Boolean"
@@ -96,13 +113,16 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
       }
 
     val apply: Option[String] =
-      if (hasModifierProperty("abstract")) None
+      if (hasModifierProperty("abstract"))
+        None
       else {
         val paramString = constructor match {
           case Some(x: ScPrimaryConstructor) =>
             (if (x.parameterList.clauses.length == 1 &&
-                 x.parameterList.clauses.head.isImplicit) "()"
-             else "") + x.parameterList.clauses
+                 x.parameterList.clauses.head.isImplicit)
+               "()"
+             else
+               "") + x.parameterList.clauses
               .map(c =>
                 c.parameters
                   .map(p =>
@@ -110,9 +130,17 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                       p.typeElement.fold("Any")(_.getText) +
                       (if (p.isDefaultParam)
                          " = " + p.getDefaultExpression.fold("{}")(_.getText)
-                       else if (p.isRepeatedParameter) "*"
-                       else ""))
-                  .mkString(if (c.isImplicit) "(implicit " else "(", ", ", ")"))
+                       else if (p.isRepeatedParameter)
+                         "*"
+                       else
+                         ""))
+                  .mkString(
+                    if (c.isImplicit)
+                      "(implicit "
+                    else
+                      "(",
+                    ", ",
+                    ")"))
               .mkString("")
           case None => ""
         }

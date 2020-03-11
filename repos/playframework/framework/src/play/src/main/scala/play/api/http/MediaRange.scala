@@ -150,25 +150,36 @@ object MediaRange {
   implicit val ordering = new Ordering[play.api.http.MediaRange] {
 
     def compareQValues(x: Option[BigDecimal], y: Option[BigDecimal]) = {
-      if (x.isEmpty && y.isEmpty) 0
-      else if (x.isEmpty) 1
-      else if (y.isEmpty) -1
-      else x.get.compare(y.get)
+      if (x.isEmpty && y.isEmpty)
+        0
+      else if (x.isEmpty)
+        1
+      else if (y.isEmpty)
+        -1
+      else
+        x.get.compare(y.get)
     }
 
     def compare(a: play.api.http.MediaRange, b: play.api.http.MediaRange) = {
       val qCompare = compareQValues(a.qValue, b.qValue)
 
-      if (qCompare != 0) -qCompare
+      if (qCompare != 0)
+        -qCompare
       else if (a.mediaType == b.mediaType) {
         if (a.mediaSubType == b.mediaSubType)
           b.parameters.size - a.parameters.size
-        else if (a.mediaSubType == "*") 1
-        else if (b.mediaSubType == "*") -1
-        else 0
-      } else if (a.mediaType == "*") 1
-      else if (b.mediaType == "*") -1
-      else 0
+        else if (a.mediaSubType == "*")
+          1
+        else if (b.mediaSubType == "*")
+          -1
+        else
+          0
+      } else if (a.mediaType == "*")
+        1
+      else if (b.mediaType == "*")
+        -1
+      else
+        0
     }
   }
 

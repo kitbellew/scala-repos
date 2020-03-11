@@ -77,12 +77,14 @@ object CsvParser {
     // parse first line
     val firstLine = {
       val line = source.readLine
-      if (line == null) sys.error("No data to parse")
+      if (line == null)
+        sys.error("No data to parse")
       extractAllFields(line, params)
     }
 
     // what column locations to extract
-    if (locs.length == 0) locs = (0 until firstLine.length).toArray
+    if (locs.length == 0)
+      locs = (0 until firstLine.length).toArray
 
     // set up buffers to store parsed data
     val bufdata = for {
@@ -174,7 +176,11 @@ object CsvParser {
 
     // handle a final field which may/not be terminated with separChar
     if (locIdx < locs.length && curFld == locs(locIdx) && curBeg < slen) {
-      inQoff = if (carr(curEnd - 1) == quote && stripQuote) 1 else 0
+      inQoff =
+        if (carr(curEnd - 1) == quote && stripQuote)
+          1
+        else
+          0
       callback(String.valueOf(carr, curBeg, curEnd - curBeg - inQoff), locIdx)
       locIdx += 1
     }
@@ -239,7 +245,11 @@ object CsvParser {
 
     // handle final field, may/not be terminated with separChar
     if (curBeg < slen) {
-      inQoff = if (carr(curEnd - 1) == quote && stripQuote) 1 else 0
+      inQoff =
+        if (carr(curEnd - 1) == quote && stripQuote)
+          1
+        else
+          0
       result += String.valueOf(carr, curBeg, curEnd - curBeg - inQoff)
     }
 

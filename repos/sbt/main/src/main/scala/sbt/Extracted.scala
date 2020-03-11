@@ -33,8 +33,10 @@ final case class Extracted(
     structure.data.get(inCurrent(key), key.key)
 
   private[this] def inCurrent[T](key: SettingKey[T]): Scope =
-    if (key.scope.project == This) key.scope.copy(project = Select(currentRef))
-    else key.scope
+    if (key.scope.project == This)
+      key.scope.copy(project = Select(currentRef))
+    else
+      key.scope
 
   /**
     * Runs the task specified by `key` and returns the transformed State and the resulting value of the task.

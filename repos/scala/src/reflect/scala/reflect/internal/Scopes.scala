@@ -147,8 +147,10 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     def enterIfNew[T <: Symbol](sym: T): T = {
       val existing = lookupEntry(sym.name)
-      if (existing == null) enter(sym)
-      else existing.sym.asInstanceOf[T]
+      if (existing == null)
+        enter(sym)
+      else
+        existing.sym.asInstanceOf[T]
     }
 
     private def createHash() {
@@ -183,7 +185,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
             hashtable(index) = e1.tail
             e = e1
           } else {
-            while (e1.tail != null && e1.tail.sym != sym) e1 = e1.tail
+            while (e1.tail != null && e1.tail.sym != sym)
+              e1 = e1.tail
             if (e1.tail != null) {
               e = e1.tail
               e1.tail = e.tail
@@ -205,7 +208,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
         elems = e.next
       } else {
         var e1 = elems
-        while (e1.next != e) e1 = e1.next
+        while (e1.next != e)
+          e1 = e1.next
         e1.next = e.next
       }
       if (hashtable ne null) {
@@ -214,7 +218,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
         if (e1 == e) {
           hashtable(index) = e.tail
         } else {
-          while (e1.tail != e) e1 = e1.tail
+          while (e1.tail != e)
+            e1 = e1.tail
           e1.tail = e.tail
         }
       }
@@ -225,7 +230,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     def unlink(sym: Symbol) {
       var e = lookupEntry(sym.name)
       while (e ne null) {
-        if (e.sym == sym) unlink(e)
+        if (e.sym == sym)
+          unlink(e)
         e = lookupNextEntry(e)
       }
     }
@@ -245,8 +251,10 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       */
     def lookup(name: Name): Symbol = {
       val e = lookupEntry(name)
-      if (e eq null) NoSymbol
-      else if (lookupNextEntry(e) eq null) e.sym
+      if (e eq null)
+        NoSymbol
+      else if (lookupNextEntry(e) eq null)
+        e.sym
       else {
         // We shouldn't get here: until now this method was picking a random
         // symbol when there was more than one with the name, so this should
@@ -400,12 +408,16 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     override def foreach[U](p: Symbol => U): Unit = toList foreach p
 
     override def filterNot(p: Symbol => Boolean): Scope = (
-      if (toList exists p) newScopeWith(toList filterNot p: _*)
-      else this
+      if (toList exists p)
+        newScopeWith(toList filterNot p: _*)
+      else
+        this
     )
     override def filter(p: Symbol => Boolean): Scope = (
-      if (toList forall p) this
-      else newScopeWith(toList filter p: _*)
+      if (toList forall p)
+        this
+      else
+        newScopeWith(toList filter p: _*)
     )
     @deprecated("Use `toList.reverse` instead", "2.10.0") // Used in SBT 0.12.4
     def reverse: List[Symbol] = toList.reverse

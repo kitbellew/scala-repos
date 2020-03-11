@@ -73,8 +73,10 @@ trait BigDecimalIsField extends Field[BigDecimal] {
     val bVal = bJbd.unscaledValue.abs
     val bExp = -bJbd.scale
 
-    if (aExp < bExp) gcd0(aVal, aExp, bVal, bExp)
-    else gcd0(bVal, bExp, aVal, aExp)
+    if (aExp < bExp)
+      gcd0(aVal, aExp, bVal, bExp)
+    else
+      gcd0(bVal, bExp, aVal, aExp)
   }
 
   override def fromDouble(n: Double): BigDecimal =
@@ -107,7 +109,10 @@ trait BigDecimalIsNRoot extends NRoot[BigDecimal] {
           x.mc)
 
     @tailrec def loop(x: BigDecimal, y: BigDecimal): BigDecimal =
-      if (x == y) y else loop(y, ((n / y) + y) / two)
+      if (x == y)
+        y
+      else
+        loop(y, ((n / y) + y) / two)
 
     loop(BigDecimal(0, n.mc), approxSqrt(n))
   }

@@ -4,7 +4,9 @@
 
 class Counter {
   private var n: Int = 0;
-  def incrThen(b: Boolean) = if (b) n += 1;
+  def incrThen(b: Boolean) =
+    if (b)
+      n += 1;
   def value = n;
 }
 

@@ -62,7 +62,8 @@ abstract class ChangeSignatureTestBase
     val secondFile = if (checkSecond) {
       val secondFileText = getTextFromTestData(secondName)
       addFileToProject(secondName, secondFileText)
-    } else null
+    } else
+      null
 
     val fileName = mainFileName(testName)
     configureByFile(fileName)
@@ -120,8 +121,10 @@ abstract class ChangeSignatureTestBase
 
     val psiMethod = targetMethod.asInstanceOf[PsiMethod]
     val retType =
-      if (newReturnType != null) getPsiTypeFromText(newReturnType, psiMethod)
-      else psiMethod.getReturnType
+      if (newReturnType != null)
+        getPsiTypeFromText(newReturnType, psiMethod)
+      else
+        psiMethod.getReturnType
 
     val params =
       newParams.flatten.map(_.asInstanceOf[ParameterInfoImpl]).toArray
@@ -146,7 +149,8 @@ abstract class ChangeSignatureTestBase
       case fun: ScFunction =>
         if (newReturnType != null)
           ScalaPsiElementFactory.createTypeFromText(newReturnType, fun, fun)
-        else fun.returnType.getOrAny
+        else
+          fun.returnType.getOrAny
       case _ => types.Any
     }
 

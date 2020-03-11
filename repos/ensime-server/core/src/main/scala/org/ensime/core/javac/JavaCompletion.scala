@@ -42,7 +42,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       offset: Int,
       maxResultsArg: Int,
       caseSens: Boolean): CompletionInfoList = {
-    val maxResults = if (maxResultsArg == 0) Int.MaxValue else maxResultsArg
+    val maxResults =
+      if (maxResultsArg == 0)
+        Int.MaxValue
+      else
+        maxResultsArg
     val s = contentsAsString(info, DefaultCharset)
 
     val preceding = s.slice(Math.max(0, offset - 100), offset)
@@ -113,7 +117,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
            if (TypeNameRegex.findFirstMatchIn(defaultPrefix).isDefined) {
              Some(
                fetchTypeSearchCompletions(defaultPrefix, maxResults, indexer))
-           } else None
+           } else
+             None
 
          (scopeForPoint(info, indexAfterTarget) map {
            case (info: CompilationInfo, s: Scope) => {
@@ -192,7 +197,10 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
     // reward case case-sensitive matches
     val relevance =
-      if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
+      if (s.startsWith(prefix))
+        baseRelevance + 50
+      else
+        baseRelevance
 
     if (matchesPrefix(
           s,
@@ -205,11 +213,14 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
         case e: VariableElement if !typesOnly =>
           List(fieldInfo(e, relevance + 10))
         case e: TypeElement =>
-          if (constructors) constructorInfos(info, e, relevance + 5)
-          else List(typeInfo(e, relevance))
+          if (constructors)
+            constructorInfos(info, e, relevance + 5)
+          else
+            List(typeInfo(e, relevance))
         case _ => List()
       }
-    } else List()
+    } else
+      List()
   }
 
   private def scopeMemberCandidates(
@@ -363,7 +374,10 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val (front, back) = s.split("\\.").partition { s =>
       s.forall(Character.isLowerCase)
     }
-    if (back.isEmpty) s else back.mkString(".")
+    if (back.isEmpty)
+      s
+    else
+      back.mkString(".")
   }
 
   private def contentsAsString(sf: SourceFileInfo, charset: Charset) =

@@ -67,14 +67,19 @@ class ScheduleBenchmark {
     Await.ready(system.whenTerminated, 15.seconds)
   }
 
-  def op(idx: Int) = if (idx == winner) promise.trySuccess(idx) else idx
+  def op(idx: Int) =
+    if (idx == winner)
+      promise.trySuccess(idx)
+    else
+      idx
 
   @Benchmark
   def oneSchedule(): Unit = {
     val aIdx = new AtomicInteger(1)
     val tryWithNext = scheduler.schedule(0.millis, interval) {
       val idx = aIdx.getAndIncrement
-      if (idx <= to) op(idx)
+      if (idx <= to)
+        op(idx)
     }
     promise.future.onComplete {
       case _ ⇒

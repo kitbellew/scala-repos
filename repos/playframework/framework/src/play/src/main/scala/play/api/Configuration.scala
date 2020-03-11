@@ -212,7 +212,10 @@ case class Configuration(underlying: Config) {
     */
   private def readValue[T](path: String, v: => T): Option[T] = {
     try {
-      if (underlying.hasPathOrNull(path)) Some(v) else None
+      if (underlying.hasPathOrNull(path))
+        Some(v)
+      else
+        None
     } catch {
       case NonFatal(e) => throw reportError(path, e.getMessage, Some(e))
     }
@@ -877,8 +880,10 @@ case class Configuration(underlying: Config) {
       message: String,
       e: Option[Throwable] = None): PlayException = {
     Configuration.configError(
-      if (underlying.hasPath(path)) underlying.getValue(path).origin
-      else underlying.root.origin,
+      if (underlying.hasPath(path))
+        underlying.getValue(path).origin
+      else
+        underlying.root.origin,
       message,
       e)
   }
@@ -1084,7 +1089,8 @@ private[play] class PlayConfig(val underlying: Config) {
     val merged = if (underlying.hasPath(deprecated)) {
       reportDeprecation(path, deprecated)
       get[Config](deprecated).withFallback(config)
-    } else config
+    } else
+      config
     new PlayConfig(merged)
   }
 
@@ -1107,8 +1113,10 @@ private[play] class PlayConfig(val underlying: Config) {
       message: String,
       e: Option[Throwable] = None): PlayException = {
     Configuration.configError(
-      if (underlying.hasPath(path)) underlying.getValue(path).origin
-      else underlying.root.origin,
+      if (underlying.hasPath(path))
+        underlying.getValue(path).origin
+      else
+        underlying.root.origin,
       message,
       e)
   }
@@ -1173,7 +1181,8 @@ private[play] object ConfigLoader {
         FiniteDuration(
           config.getDuration(path, TimeUnit.MILLISECONDS),
           TimeUnit.MILLISECONDS)
-      else Duration.Inf)
+      else
+        Duration.Inf)
 
   implicit val finiteDurationLoader: ConfigLoader[FiniteDuration] =
     ConfigLoader(config => config.getDuration(_, TimeUnit.MILLISECONDS))
@@ -1207,7 +1216,8 @@ private[play] object ConfigLoader {
       implicit valueLoader: ConfigLoader[A]): ConfigLoader[Option[A]] =
     new ConfigLoader[Option[A]] {
       def load(config: Config, path: String): Option[A] = {
-        if (config.getIsNull(path)) None
+        if (config.getIsNull(path))
+          None
         else {
           val value = valueLoader.load(config, path)
           Some(value)

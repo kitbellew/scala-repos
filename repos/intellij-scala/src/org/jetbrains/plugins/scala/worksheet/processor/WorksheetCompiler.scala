@@ -58,7 +58,8 @@ class WorksheetCompiler {
     val contentManager =
       MessageView.SERVICE.getInstance(project).getContentManager
     val oldContent = contentManager findContent ERROR_CONTENT_NAME
-    if (oldContent != null) contentManager.removeContent(oldContent, true)
+    if (oldContent != null)
+      contentManager.removeContent(oldContent, true)
 
     WorksheetSourceProcessor.process(worksheetFile, ifEditor, iteration) match {
       case Left((code, name)) =>
@@ -98,7 +99,8 @@ class WorksheetCompiler {
               try {
                 val module = RunWorksheetAction getModuleFor worksheetFile
 
-                if (module == null) onError("Can't find Scala module to run")
+                if (module == null)
+                  onError("Can't find Scala module to run")
                 else
                   new RemoteServerConnector(
                     module,
@@ -124,7 +126,8 @@ class WorksheetCompiler {
           }
         )
       case Right(errorMessage: PsiErrorElement) =>
-        if (auto) return
+        if (auto)
+          return
         val pos = editor.offsetToLogicalPosition(errorMessage.getTextOffset)
 
         val treeError = new CompilerErrorTreeView(project, null)
@@ -132,7 +135,8 @@ class WorksheetCompiler {
         ApplicationManager.getApplication.invokeLater(new Runnable {
           override def run() {
             val file = errorMessage.getContainingFile.getVirtualFile
-            if (file == null || !file.isValid) return
+            if (file == null || !file.isValid)
+              return
 
             treeError.addMessage(
               MessageCategory.ERROR,
@@ -172,7 +176,8 @@ class WorksheetCompiler {
 
           val toolWindow =
             ToolWindowManager getInstance project getToolWindow ToolWindowId.MESSAGES_WINDOW
-          if (toolWindow != null) toolWindow.show(null)
+          if (toolWindow != null)
+            toolWindow.show(null)
         }
       },
       null,
@@ -209,7 +214,9 @@ object WorksheetCompiler extends WorksheetPerFileConfig {
     if (ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ENABLED) {
       if (ScalaProjectSettings.getInstance(project).isInProcessMode)
         InProcessServer
-      else OutOfProcessServer
-    } else NonServer
+      else
+        OutOfProcessServer
+    } else
+      NonServer
   }
 }

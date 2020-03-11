@@ -803,8 +803,14 @@ abstract class RDD[T: ClassTag](
       this,
       command,
       env,
-      if (printPipeContext ne null) sc.clean(printPipeContext) else null,
-      if (printRDDElement ne null) sc.clean(printRDDElement) else null,
+      if (printPipeContext ne null)
+        sc.clean(printPipeContext)
+      else
+        null,
+      if (printRDDElement ne null)
+        sc.clean(printRDDElement)
+      else
+        null,
       separateWorkingDir)
   }
 
@@ -1319,7 +1325,12 @@ abstract class RDD[T: ClassTag](
       relativeSD > 0.000017,
       s"accuracy ($relativeSD) must be greater than 0.000017")
     val p = math.ceil(2.0 * math.log(1.054 / relativeSD) / math.log(2)).toInt
-    countApproxDistinct(if (p < 4) 4 else p, 0)
+    countApproxDistinct(
+      if (p < 4)
+        4
+      else
+        p,
+      0)
   }
 
   /**
@@ -1832,7 +1843,10 @@ abstract class RDD[T: ClassTag](
       import Utils.bytesToString
 
       val persistence =
-        if (storageLevel != StorageLevel.NONE) storageLevel.description else ""
+        if (storageLevel != StorageLevel.NONE)
+          storageLevel.description
+        else
+          ""
       val storageInfo = rdd.context
         .getRDDStorageInfo(_.id == rdd.id)
         .map(info =>
@@ -1897,7 +1911,10 @@ abstract class RDD[T: ClassTag](
       val leftOffset = (partitionStr.length - 1) / 2
       val thisPrefix = prefix.replaceAll("\\|\\s+$", "")
       val nextPrefix = (thisPrefix
-        + (if (isLastChild) "  " else "| ")
+        + (if (isLastChild)
+             "  "
+           else
+             "| ")
         + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
 
       debugSelf(rdd).zipWithIndex.map {

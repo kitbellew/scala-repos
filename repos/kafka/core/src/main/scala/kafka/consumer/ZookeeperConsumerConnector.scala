@@ -274,7 +274,8 @@ private[kafka] class ZookeeperConsumerConnector(
             zkUtils = null
           }
 
-          if (offsetsChannel != null) offsetsChannel.disconnect()
+          if (offsetsChannel != null)
+            offsetsChannel.disconnect()
         } catch {
           case e: Throwable =>
             fatal("error during consumer connector shutdown", e)
@@ -410,7 +411,8 @@ private[kafka] class ZookeeperConsumerConnector(
       offsetsToCommit: immutable.Map[TopicAndPartition, OffsetAndMetadata],
       isAutoCommit: Boolean) {
     trace("OffsetMap: %s".format(offsetsToCommit))
-    var retriesRemaining = 1 + (if (isAutoCommit) 0
+    var retriesRemaining = 1 + (if (isAutoCommit)
+                                  0
                                 else
                                   config.offsetsCommitMaxRetries) // no retries for commits from auto-commit
     var done = false
@@ -464,7 +466,10 @@ private[kafka] class ZookeeperConsumerConnector(
                         errorCode == Errors.NOT_COORDINATOR_FOR_GROUP.code ||
                         errorCode == Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
                       // update error count
-                      folded._4 + (if (errorCode != Errors.NONE.code) 1 else 0))
+                      folded._4 + (if (errorCode != Errors.NONE.code)
+                                     1
+                                   else
+                                     0))
                 }
               }
               debug(errorCount + " errors in offset commit response.")
@@ -1068,7 +1073,10 @@ private[kafka] class ZookeeperConsumerConnector(
       }
       val hasPartitionOwnershipFailed =
         partitionOwnershipSuccessful.foldLeft(0)((sum, decision) =>
-          sum + (if (decision) 0 else 1))
+          sum + (if (decision)
+                   0
+                 else
+                   1))
       /* even if one of the partition ownership attempt has failed, return false */
       if (hasPartitionOwnershipFailed > 0) {
         // remove all paths that we have owned in ZK
@@ -1077,7 +1085,8 @@ private[kafka] class ZookeeperConsumerConnector(
             topicAndPartition._1,
             topicAndPartition._2))
         false
-      } else true
+      } else
+        true
     }
 
     private def addPartitionTopicInfo(

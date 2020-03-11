@@ -26,8 +26,10 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 6
-    else identifierFromConfig
+    if (system eq null)
+      6
+    else
+      identifierFromConfig
 
   def includeManifest: Boolean = false
 
@@ -85,7 +87,8 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
     val manifest =
       if (selectionEnvelope.hasMessageManifest)
         selectionEnvelope.getMessageManifest.toStringUtf8
-      else ""
+      else
+        ""
     val msg = serialization
       .deserialize(
         selectionEnvelope.getEnclosedMessage.toByteArray,
@@ -106,7 +109,8 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
     val wildcardFanOut =
       if (selectionEnvelope.hasWildcardFanOut)
         selectionEnvelope.getWildcardFanOut
-      else false
+      else
+        false
     ActorSelectionMessage(msg, elements, wildcardFanOut)
   }
 }

@@ -40,7 +40,8 @@ trait BytecodeWriters {
       clsName: String,
       suffix: String): AbstractFile = {
     def ensureDirectory(dir: AbstractFile): AbstractFile =
-      if (dir.isDirectory) dir
+      if (dir.isDirectory)
+        dir
       else
         throw new FileConflictException(
           s"${base.path}/$clsName$suffix: ${dir.path} is not a directory",
@@ -80,8 +81,10 @@ trait BytecodeWriters {
   class DirectToJarfileWriter(jfile: JFile) extends BytecodeWriter {
     val jarMainAttrs =
       (
-        if (settings.mainClass.isDefault) Nil
-        else List(Name.MAIN_CLASS -> settings.mainClass.value)
+        if (settings.mainClass.isDefault)
+          Nil
+        else
+          List(Name.MAIN_CLASS -> settings.mainClass.value)
       )
     val writer = new Jar(jfile).jarWriter(jarMainAttrs: _*)
 

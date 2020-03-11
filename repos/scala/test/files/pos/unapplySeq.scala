@@ -3,7 +3,8 @@ object FooSeq {
     if (x.isInstanceOf[Bar]) {
       val y = x.asInstanceOf[Bar]
       Some(y.size, y.name)
-    } else None
+    } else
+      None
   }
 
   def main(args: Array[String]) = {

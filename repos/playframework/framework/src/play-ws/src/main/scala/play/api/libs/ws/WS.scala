@@ -312,7 +312,8 @@ trait WSRequest {
   lazy val uri: URI = {
     val enc = (p: String) => java.net.URLEncoder.encode(p, "utf-8")
     new java.net.URI(
-      if (queryString.isEmpty) url
+      if (queryString.isEmpty)
+        url
       else {
         val qs = (for {
           (n, vs) <- queryString

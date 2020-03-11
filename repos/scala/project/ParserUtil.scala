@@ -36,26 +36,34 @@ object ParserUtil {
         }
       } else if (parent != null) {
         def ensureSuffix(s: String, suffix: String) =
-          if (s.endsWith(suffix)) s else s + suffix
+          if (s.endsWith(suffix))
+            s
+          else
+            s + suffix
         def pathOf(f: File): String = {
           val f1 =
-            if (preFile.getParentFile == null) f.relativeTo(cwd).getOrElse(f)
-            else f
+            if (preFile.getParentFile == null)
+              f.relativeTo(cwd).getOrElse(f)
+            else
+              f
           if (f1.isDirectory && !fileFilter.accept(f1))
             ensureSuffix(f1.getPath, "/")
-          else f1.getPath
+          else
+            f1.getPath
         }
         val childFilter = GlobFilter(
           preFile.name + "*") && ((IsDirectoryFilter && dirFilter) || fileFilter)
         val children = parent.*(childFilter).get
         children.map(pathOf).toList
-      } else Nil
+      } else
+        Nil
     }
     def displayPath = Completions.single(Completion.displayOnly("<path>"))
     token(
       StringBasic,
       TokenCompletions.fixed((seen, level) =>
-        if (seen.isEmpty) displayPath
+        if (seen.isEmpty)
+          displayPath
         else
           matching(seen) match {
             case Nil => displayPath

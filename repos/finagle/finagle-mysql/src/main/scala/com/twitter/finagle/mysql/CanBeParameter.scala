@@ -93,10 +93,14 @@ object CanBeParameter {
       def sizeOf(param: Array[Byte]) =
         Buffer.sizeOfLen(param.length) + param.length
       def typeCode(param: Array[Byte]) = {
-        if (param.length <= 255) Type.TinyBlob
-        else if (param.length <= 65535) Type.Blob
-        else if (param.length <= 16777215) Type.MediumBlob
-        else -1
+        if (param.length <= 255)
+          Type.TinyBlob
+        else if (param.length <= 65535)
+          Type.Blob
+        else if (param.length <= 16777215)
+          Type.MediumBlob
+        else
+          -1
       }
       def write(writer: BufferWriter, param: Array[Byte]) =
         writer.writeLengthCodedBytes(param)

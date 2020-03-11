@@ -70,7 +70,8 @@ class DeploymentManager(
             plan.id,
             if (conflictingDeployments.nonEmpty) {
               conflictingDeployments.map(_.plan).to[Seq]
-            } else Seq(plan))
+            } else
+              Seq(plan))
       }
 
     case CancelAllDeployments =>

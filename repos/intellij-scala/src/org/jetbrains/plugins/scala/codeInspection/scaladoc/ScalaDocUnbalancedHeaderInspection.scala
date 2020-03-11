@@ -48,7 +48,10 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
           while (sibl != null && sibl.getNode.getElementType != DOC_COMMENT_END &&
                  sibl.getNode.getElementType != DOC_WHITESPACE) {
             val highlightedElement =
-              if (s.getNextSibling != null) s.getNextSibling else s
+              if (s.getNextSibling != null)
+                s.getNextSibling
+              else
+                s
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
                 highlightedElement,
@@ -77,7 +80,8 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
   def doApplyFix(project: Project) {
     val op = getFirstElement
     val cl = getSecondElement
-    if (!op.isValid || !cl.isValid) return
+    if (!op.isValid || !cl.isValid)
+      return
     if (op.getNode.getElementType != ScalaDocTokenType.VALID_DOC_HEADER ||
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) {
@@ -98,7 +102,8 @@ class ScalaDocMoveTextToNewLineQuickFix(textData: PsiElement)
 
   def doApplyFix(project: Project) {
     val data = getElement
-    if (!data.isValid) return
+    if (!data.isValid)
+      return
 
     data.getParent.addBefore(
       ScalaPsiElementFactory.createDocWhiteSpace(data.getManager),

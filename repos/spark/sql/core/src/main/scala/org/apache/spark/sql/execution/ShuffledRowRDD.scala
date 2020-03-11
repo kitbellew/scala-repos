@@ -66,8 +66,10 @@ class CoalescedPartitioner(
     for (i <- 0 until partitionStartIndices.length) {
       val start = partitionStartIndices(i)
       val end =
-        if (i < partitionStartIndices.length - 1) partitionStartIndices(i + 1)
-        else n
+        if (i < partitionStartIndices.length - 1)
+          partitionStartIndices(i + 1)
+        else
+          n
       for (j <- start until end) {
         result(j) = i
       }

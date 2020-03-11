@@ -21,7 +21,8 @@ object eqeq extends testing.Benchmark {
     while (i < n) {
       var j = 0
       while (j < n) {
-        if (elems(i) == elems(j)) sum += 1
+        if (elems(i) == elems(j))
+          sum += 1
         j += 1
       }
       i += 1
@@ -34,7 +35,13 @@ object eqeq extends testing.Benchmark {
 
   def run() {
     var sum = 0
-    sum += eqeqtest(x => if (x == 0) obj1 else obj2, 2000)
+    sum += eqeqtest(
+      x =>
+        if (x == 0)
+          obj1
+        else
+          obj2,
+      2000)
     sum += eqeqtest(x => x, 1000)
     sum += eqeqtest(x => x.toChar, 550)
     sum += eqeqtest(x => x.toByte, 550)

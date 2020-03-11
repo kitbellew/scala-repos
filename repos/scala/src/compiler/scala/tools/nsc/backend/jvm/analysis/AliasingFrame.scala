@@ -53,7 +53,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     * The set of aliased values for a given entry in the `values` array.
     */
   def aliasesOf(entry: Int): AliasSet = {
-    if (aliases(entry) != null) aliases(entry)
+    if (aliases(entry) != null)
+      aliases(entry)
     else {
       val init = new AliasSet(new AliasSet.SmallBitSet(entry, -1, -1, -1), 1)
       aliases(entry) = init
@@ -215,8 +216,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
 
         if (aliases(top) != null) {
           val topAliases = aliases(top)
-          if (aliases(top - 1) != null) moveNextToTop()
-          else aliases(top) = null
+          if (aliases(top - 1) != null)
+            moveNextToTop()
+          else
+            aliases(top) = null
           // move top to next
           aliases(top - 1) = topAliases
           topAliases -= top
@@ -350,9 +353,12 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
 
   private def min(s: SmallBitSet) = {
     var r = s.a
-    if (s.b < r) r = s.b
-    if (s.c != -1 && s.c < r) r = s.c
-    if (s.d != -1 && s.d < r) r = s.d
+    if (s.b < r)
+      r = s.b
+    if (s.c != -1 && s.c < r)
+      r = s.c
+    if (s.d != -1 && s.d < r)
+      r = s.d
     r
   }
 
@@ -389,8 +395,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
             val newSet = set.clone()
             aliases(small.a) = newSet
             aliases(small.b) = newSet
-            if (small.c != -1) aliases(small.c) = newSet
-            if (small.d != -1) aliases(small.d) = newSet
+            if (small.c != -1)
+              aliases(small.c) = newSet
+            if (small.d != -1)
+              aliases(small.d) = newSet
           }
         } else {
           // the actual hot spot is the hash map operations here: this is where almost all of the 20%
@@ -398,7 +406,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
           // i also benchmarked an alternative implementation: keep an array of booleans for indexes
           // that already contain the cloned set. iterate through all elements of the cloned set and
           // assign the cloned set. this approach is 50% slower than using a hash map.
-          if (newSets contains set) aliases(i) = newSets(set)
+          if (newSets contains set)
+            aliases(i) = newSets(set)
           else {
             val newSet = set.clone()
             newSets(set) = newSet
@@ -577,10 +586,12 @@ object AliasSet {
   def bsEmpty: Array[Long] = new Array[Long](1)
 
   private def bsEnsureCapacity(set: Array[Long], index: Int): Array[Long] = {
-    if (index < set.length) set
+    if (index < set.length)
+      set
     else {
       var newLength = set.length
-      while (index >= newLength) newLength *= 2
+      while (index >= newLength)
+        newLength *= 2
       val newSet = new Array[Long](newLength)
       Array.copy(set, 0, newSet, 0, set.length)
       newSet
@@ -631,10 +642,14 @@ object AliasSet {
     val end = bits.length * 64
     while (i < end) {
       if (bsContains(bits, i)) {
-        if (a == -1) a = i
-        else if (b == -1) b = i
-        else if (c == -1) c = i
-        else return new SmallBitSet(a, b, c, i)
+        if (a == -1)
+          a = i
+        else if (b == -1)
+          b = i
+        else if (c == -1)
+          c = i
+        else
+          return new SmallBitSet(a, b, c, i)
       }
       i += 1
     }
@@ -686,7 +701,8 @@ object AliasSet {
     // for each value that exists both in this AND (&) the other bit, `thisAndOther` is set to true.
     // hacky side-effect, used for performance of AliasingFrame.merge.
     private def setThisAndOther(x: Int) =
-      if (thisAndOther != null) thisAndOther(x) = true
+      if (thisAndOther != null)
+        thisAndOther(x) = true
 
     private def checkABCD(x: Int, num: Int): Boolean = {
       // assert(x == a && num == 1 || x == b && num == 2 || ...)
@@ -695,8 +711,10 @@ object AliasSet {
           x == notA || x == notB || x == notC || x == notD || (notXs != null && bsContains(
             notXs,
             x))
-        if (otherHasA) setThisAndOther(x)
-        else abcdNext = x
+        if (otherHasA)
+          setThisAndOther(x)
+        else
+          abcdNext = x
         (num: @switch) match {
           case 1 => a = -1
           case 2 => b = -1
@@ -725,11 +743,13 @@ object AliasSet {
                      val otherHasI =
                        i == notA || i == notB || i == notC || i == notD || (notXs != null && index < notXs.length && (notXs(
                          index) & mask) != 0L)
-                     if (otherHasI) setThisAndOther(i)
+                     if (otherHasI)
+                       setThisAndOther(i)
                      otherHasI
                    }
                  }
-               }) i += 1
+               })
+          i += 1
 
         iValid = i < end
         iValid
@@ -756,7 +776,8 @@ object AliasSet {
           iValid = false;
           r
         }
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
     }
   }
 

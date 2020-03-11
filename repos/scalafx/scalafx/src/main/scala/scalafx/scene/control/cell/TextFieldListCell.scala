@@ -54,7 +54,10 @@ object TextFieldListCell {
     */
   implicit def sfxTextFieldListCell2jfx[T](
       cell: TextFieldListCell[T]): jfxscc.TextFieldListCell[T] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * $FLVINTI

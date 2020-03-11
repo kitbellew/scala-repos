@@ -99,11 +99,16 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
     val kn = alu.length;
 
     while (n > 0) {
-      val m = if (n < LineLength) n else LineLength
+      val m =
+        if (n < LineLength)
+          n
+        else
+          LineLength
 
       var i = 0
       while (i < m) {
-        if (k == kn) k = 0
+        if (k == kn)
+          k = 0
         val b = alu(k)
         if (count < buf.length) {
           buf(count) = b;
@@ -124,7 +129,11 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
   def writeRandomSequence(distribution: Array[Frequency], length: Int) = {
     var n = length
     while (n > 0) {
-      val m = if (n < LineLength) n else LineLength
+      val m =
+        if (n < LineLength)
+          n
+        else
+          LineLength
 
       var i = 0
       while (i < m) {
@@ -154,7 +163,8 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
 
     var i = 0
     while (i < n) {
-      if (r < distribution(i).percent) return distribution(i).code
+      if (r < distribution(i).percent)
+        return distribution(i).code
       i = i + 1
     }
     return distribution(n - 1).code

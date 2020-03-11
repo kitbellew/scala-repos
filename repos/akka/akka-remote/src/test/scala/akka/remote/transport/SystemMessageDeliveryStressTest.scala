@@ -100,7 +100,8 @@ object SystemMessageDeliveryStressTest {
         burstCounter += 1
 
         if (counter < msgCount) {
-          if (burstCounter < burstSize) self ! "sendnext"
+          if (burstCounter < burstSize)
+            self ! "sendnext"
           else {
             burstCounter = 0
             context.system.scheduler.scheduleOnce(burstDelay, self, "sendnext")

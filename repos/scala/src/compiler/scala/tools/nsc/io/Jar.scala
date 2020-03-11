@@ -44,7 +44,8 @@ class Jar(file: File) extends Iterable[JarEntry] {
   /** The manifest-defined classpath String if available. */
   def classPathString: Option[String] =
     for (m <- manifest;
-         cp <- m.attrs get Name.CLASS_PATH) yield cp
+         cp <- m.attrs get Name.CLASS_PATH)
+      yield cp
   def classPathElements: List[String] = classPathString match {
     case Some(s) => s split "\\s+" toList
     case _       => Nil
@@ -108,8 +109,10 @@ class JarWriter(val file: File, val manifest: Manifest) {
     addStream(entry, file.inputStream())
   }
   def addEntry(entry: Path, prefix: String) {
-    if (entry.isFile) addFile(entry.toFile, prefix)
-    else addDirectory(entry.toDirectory, prefix + entry.name + "/")
+    if (entry.isFile)
+      addFile(entry.toFile, prefix)
+    else
+      addDirectory(entry.toDirectory, prefix + entry.name + "/")
   }
   def addDirectory(entry: Directory, prefix: String) {
     entry.list foreach (p => addEntry(p, prefix))

@@ -203,7 +203,10 @@ private[persistence] trait Eventsourced
     }
 
   private def unstashInternally(all: Boolean): Unit =
-    if (all) internalStash.unstashAll() else internalStash.unstash()
+    if (all)
+      internalStash.unstashAll()
+    else
+      internalStash.unstash()
 
   private def startRecovery(recovery: Recovery): Unit = {
     changeState(recoveryStarted(recovery.replayMax))
@@ -636,7 +639,8 @@ private[persistence] trait Eventsourced
       eventBatch = Nil
     }
 
-    if (journalBatch.nonEmpty) flushJournalBatch()
+    if (journalBatch.nonEmpty)
+      flushJournalBatch()
   }
 
   private def peekApplyHandler(payload: Any): Unit =
@@ -695,7 +699,8 @@ private[persistence] trait Eventsourced
         }
       case WriteMessagesSuccessful ⇒
         writeInProgress = false
-        if (journalBatch.nonEmpty) flushJournalBatch()
+        if (journalBatch.nonEmpty)
+          flushJournalBatch()
 
       case WriteMessagesFailed(_) ⇒
         writeInProgress = false
@@ -713,7 +718,8 @@ private[persistence] trait Eventsourced
     override def toString: String = "processing commands"
 
     override def stateReceive(receive: Receive, message: Any) =
-      if (common.isDefinedAt(message)) common(message)
+      if (common.isDefinedAt(message))
+        common(message)
       else
         try {
           Eventsourced.super.aroundReceive(receive, message)
@@ -725,10 +731,13 @@ private[persistence] trait Eventsourced
         }
 
     private def aroundReceiveComplete(err: Boolean): Unit = {
-      if (eventBatch.nonEmpty) flushBatch()
+      if (eventBatch.nonEmpty)
+        flushBatch()
 
-      if (pendingStashingPersistInvocations > 0) changeState(persistingEvents)
-      else unstashInternally(all = err)
+      if (pendingStashingPersistInvocations > 0)
+        changeState(persistingEvents)
+      else
+        unstashInternally(all = err)
     }
 
     override def onWriteMessageComplete(err: Boolean): Unit = {
@@ -746,8 +755,10 @@ private[persistence] trait Eventsourced
     override def toString: String = "persisting events"
 
     override def stateReceive(receive: Receive, message: Any) =
-      if (common.isDefinedAt(message)) common(message)
-      else stashInternally(message)
+      if (common.isDefinedAt(message))
+        common(message)
+      else
+        stashInternally(message)
 
     override def onWriteMessageComplete(err: Boolean): Unit = {
       pendingInvocations.pop() match {

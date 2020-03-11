@@ -33,7 +33,9 @@ object Test {
 
   def scaladocSettings = ""
 
-  def test(b: Boolean, text: => String): Unit = if (!b) println(text)
+  def test(b: Boolean, text: => String): Unit =
+    if (!b)
+      println(text)
 
   def testModel(root: Package) = {
     import access._

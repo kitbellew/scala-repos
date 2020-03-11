@@ -18,8 +18,10 @@ object Test extends BytecodeTest {
   }
 
   def cmpInstructions(isa: List[Instruction], isb: List[Instruction]) = {
-    if (isa == isb) println("bytecode identical")
-    else diffInstructions(isa, isb)
+    if (isa == isb)
+      println("bytecode identical")
+    else
+      diffInstructions(isa, isb)
   }
 
   def isInvoke(node: Instruction): Boolean = {

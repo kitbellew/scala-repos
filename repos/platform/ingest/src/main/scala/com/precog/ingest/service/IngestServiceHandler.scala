@@ -227,8 +227,10 @@ class IngestServiceHandler(
               val errorHandling =
                 if (request.parameters
                       .get('mode)
-                      .exists(_ equalsIgnoreCase "batch")) IngestAllPossible
-                else StopOnFirstError
+                      .exists(_ equalsIgnoreCase "batch"))
+                  IngestAllPossible
+                else
+                  StopOnFirstError
 
               val durabilityM = request.method match {
                 case HttpMethods.POST =>
@@ -331,7 +333,10 @@ class IngestServiceHandler(
                         JobManager.channels.Info,
                         message) map { _ =>
                         HttpResponse[JValue](
-                          if (ingested == 0 && total > 0) BadRequest else OK,
+                          if (ingested == 0 && total > 0)
+                            BadRequest
+                          else
+                            OK,
                           content = Some(responseContent))
                       }
                   }

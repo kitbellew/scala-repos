@@ -25,7 +25,12 @@ object Sign {
 
   implicit def sign2int(s: Sign): Int = s.toInt
   implicit def apply(i: Int): Sign =
-    if (i == 0) Zero else if (i > 0) Positive else Negative
+    if (i == 0)
+      Zero
+    else if (i > 0)
+      Positive
+    else
+      Negative
 
   class SignAlgebra extends CMonoid[Sign] with Signed[Sign] with Order[Sign] {
     def id: Sign = Positive
@@ -33,7 +38,11 @@ object Sign {
 
     override def sign(a: Sign): Sign = a
     def signum(a: Sign): Int = a.toInt
-    def abs(a: Sign): Sign = if (a == Negative) Positive else a
+    def abs(a: Sign): Sign =
+      if (a == Negative)
+        Positive
+      else
+        a
 
     def compare(x: Sign, y: Sign): Int =
       java.lang.Integer.signum(x.toInt - y.toInt)

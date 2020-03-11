@@ -31,7 +31,8 @@ case class ScalaFieldEvaluator(
     if (classPrivateThisField) {
       import scala.collection.JavaConversions._
       for (field <- t.fields()) {
-        if (field.name().endsWith("$$" + fieldName)) return field
+        if (field.name().endsWith("$$" + fieldName))
+          return field
       }
     }
     var field = t.fieldByName(fieldName)
@@ -40,11 +41,13 @@ case class ScalaFieldEvaluator(
     }
     for (i <- 1 to 3) {
       field = t.fieldByName(fieldName + "$" + i)
-      if (field != null) return field
+      if (field != null)
+        return field
     }
     import scala.collection.JavaConversions._
     for (field <- t.fields()) {
-      if (field.name().startsWith(fieldName + "$")) return field
+      if (field.name().startsWith(fieldName + "$"))
+        return field
     }
     null
   }
@@ -53,7 +56,8 @@ case class ScalaFieldEvaluator(
     t match {
       case cls: ClassType =>
         val foundInClass = fieldByName(cls, fieldName)
-        if (foundInClass != null) return foundInClass
+        if (foundInClass != null)
+          return foundInClass
 
         import scala.collection.JavaConversions._
         for (interfaceType <- cls.interfaces) {
@@ -65,7 +69,8 @@ case class ScalaFieldEvaluator(
         return findField(cls.superclass, context)
       case iface: InterfaceType =>
         val foundInInteface = fieldByName(iface, fieldName)
-        if (foundInInteface != null) return foundInInteface
+        if (foundInInteface != null)
+          return foundInInteface
 
         import scala.collection.JavaConversions._
         for (interfaceType <- iface.superinterfaces) {
@@ -130,9 +135,16 @@ case class ScalaFieldEvaluator(
             DebuggerBundle
               .message("evaluation.error.no.instance.field", fieldName))
         }
-        myEvaluatedQualifier = if (field.isStatic) refType else objRef
+        myEvaluatedQualifier =
+          if (field.isStatic)
+            refType
+          else
+            objRef
         myEvaluatedField = field
-        if (field.isStatic) refType.getValue(field) else objRef.getValue(field)
+        if (field.isStatic)
+          refType.getValue(field)
+        else
+          objRef.getValue(field)
       case null => throw EvaluationException(new NullPointerException)
       case _ =>
         throw EvaluationException(

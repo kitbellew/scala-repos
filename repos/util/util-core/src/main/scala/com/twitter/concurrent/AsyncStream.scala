@@ -140,7 +140,8 @@ sealed abstract class AsyncStream[+A] {
       // We only invoke inputs().uncons if there is space for more work
       // to be started.
       val inputReady =
-        if (pending.size >= concurrencyLevel) Future.never
+        if (pending.size >= concurrencyLevel)
+          Future.never
         else
           inputs().uncons.flatMap {
             case None if pending.nonEmpty => Future.never
@@ -151,8 +152,10 @@ sealed abstract class AsyncStream[+A] {
       // wasted allocation of calling Future.select when we know that
       // there is more work that is ready to be started.
       val workDone =
-        if (pending.isEmpty || inputReady.isDefined) Future.never
-        else Future.select(pending).map(Right(_))
+        if (pending.isEmpty || inputReady.isDefined)
+          Future.never
+        else
+          Future.select(pending).map(Right(_))
 
       // Wait for either the next input to be ready (Left) or for some pending
       // work to complete (Right).
@@ -220,12 +223,17 @@ sealed abstract class AsyncStream[+A] {
       case Empty => empty
       case FromFuture(fa) =>
         Embed(fa.map { a =>
-          if (p(a)) this else empty
+          if (p(a))
+            this
+          else
+            empty
         })
       case Cons(fa, more) =>
         Embed(fa.map { a =>
-          if (p(a)) Cons(fa, () => more().takeWhile(p))
-          else more().takeWhile(p)
+          if (p(a))
+            Cons(fa, () => more().takeWhile(p))
+          else
+            more().takeWhile(p)
         })
       case Embed(fas) => Embed(fas.map(_.takeWhile(p)))
     }
@@ -244,12 +252,17 @@ sealed abstract class AsyncStream[+A] {
       case Empty => empty
       case FromFuture(fa) =>
         Embed(fa.map { a =>
-          if (p(a)) empty else this
+          if (p(a))
+            empty
+          else
+            this
         })
       case Cons(fa, more) =>
         Embed(fa.map { a =>
-          if (p(a)) more().dropWhile(p)
-          else Cons(fa, () => more().dropWhile(p))
+          if (p(a))
+            more().dropWhile(p)
+          else
+            Cons(fa, () => more().dropWhile(p))
         })
       case Embed(fas) => Embed(fas.map(_.dropWhile(p)))
     }
@@ -317,12 +330,17 @@ sealed abstract class AsyncStream[+A] {
       case Empty => empty
       case FromFuture(fa) =>
         Embed(fa.map { a =>
-          if (p(a)) this else empty
+          if (p(a))
+            this
+          else
+            empty
         })
       case Cons(fa, more) =>
         Embed(fa.map { a =>
-          if (p(a)) Cons(fa, () => more().filter(p))
-          else more().filter(p)
+          if (p(a))
+            Cons(fa, () => more().filter(p))
+          else
+            more().filter(p)
         })
       case Embed(fas) => Embed(fas.map(_.filter(p)))
     }
@@ -337,7 +355,8 @@ sealed abstract class AsyncStream[+A] {
     * `n` is larger than the number of elements in the stream.
     */
   def take(n: Int): AsyncStream[A] =
-    if (n < 1) empty
+    if (n < 1)
+      empty
     else
       this match {
         case Empty         => empty
@@ -358,7 +377,8 @@ sealed abstract class AsyncStream[+A] {
     * Note: this forces all of the intermediate dropped elements.
     */
   def drop(n: Int): AsyncStream[A] =
-    if (n < 1) this
+    if (n < 1)
+      this
     else
       this match {
         case Empty | FromFuture(_) => empty
@@ -556,7 +576,8 @@ sealed abstract class AsyncStream[+A] {
 
     def fillBuffer(sizeRemaining: Int)(
         s: => AsyncStream[A]): Future[(Seq[A], () => AsyncStream[A])] =
-      if (sizeRemaining < 1) Future.value((buffer, () => s))
+      if (sizeRemaining < 1)
+        Future.value((buffer, () => s))
       else
         s match {
           case Empty => Future.value((buffer, () => s))

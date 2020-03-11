@@ -54,7 +54,11 @@ object GenProductTypes {
       overrides: Boolean = false): Block = { tpe =>
     import tpe._
 
-    val over = if (overrides) "override " else ""
+    val over =
+      if (overrides)
+        "override "
+      else
+        ""
     args match {
       case Nil =>
         val call = (1 to arity) map { i =>

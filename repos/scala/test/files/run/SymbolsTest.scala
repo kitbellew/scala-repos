@@ -86,7 +86,8 @@ object Test {
   }
 
   def testForLoop {
-    for (i <- 0 until 100) List("Val" + i)
+    for (i <- 0 until 100)
+      List("Val" + i)
   }
 
   def testInnerClasses {
@@ -110,7 +111,8 @@ object Test {
     assert(map('WeirdKey1) == Symbol("WeirdVal1"))
 
     map.clear
-    for (i <- 0 until 100) map.put(Symbol("symKey" + i), Symbol("symVal" + i))
+    for (i <- 0 until 100)
+      map.put(Symbol("symKey" + i), Symbol("symVal" + i))
     assert(map(Symbol("symKey15")) == Symbol("symVal15"))
     assert(map('symKey22) == 'symVal22)
     assert(map('symKey73) == 'symVal73)
@@ -120,7 +122,8 @@ object Test {
 
   def testLists {
     var lst: List[Symbol] = Nil
-    for (i <- 0 until 100) lst ::= Symbol("lsym" + (99 - i))
+    for (i <- 0 until 100)
+      lst ::= Symbol("lsym" + (99 - i))
     assert(lst(0) == 'lsym0)
     assert(lst(10) == 'lsym10)
     assert(lst(30) == 'lsym30)

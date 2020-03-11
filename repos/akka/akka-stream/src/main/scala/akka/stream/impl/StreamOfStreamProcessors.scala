@@ -103,7 +103,8 @@ private[akka] object MultiStreamOutputProcessor {
           throw new IllegalStateException(
             "Attempted to double shutdown publisher")
         case Attached(sub) ⇒
-          if (subscriber eq null) tryOnSubscribe(sub, CancelledSubscription)
+          if (subscriber eq null)
+            tryOnSubscribe(sub, CancelledSubscription)
           closeSubscriber(sub, withState)
         case Open ⇒ // No action needed
       }

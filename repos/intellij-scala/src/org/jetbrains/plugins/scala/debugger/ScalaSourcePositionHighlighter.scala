@@ -16,6 +16,7 @@ class ScalaSourcePositionHighlighter extends SourcePositionHighlighter {
         .flatMap(DebuggerUtil.getContainingMethod)
         .map(_.getTextRange)
         .orNull
-    } else null
+    } else
+      null
   }
 }

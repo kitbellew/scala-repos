@@ -230,7 +230,8 @@ class CommitLogHook(
                 }
               }
               Some(commit)
-            } else None
+            } else
+              None
           }
 
           // record activity
@@ -297,17 +298,18 @@ class CommitLogHook(
           // call web hook
           callWebHookOf(owner, repository, WebHook.Push) {
             for (pusherAccount <- getAccountByUserName(pusher);
-                 ownerAccount <- getAccountByUserName(owner)) yield {
-              WebHookPushPayload(
-                git,
-                pusherAccount,
-                command.getRefName,
-                repositoryInfo,
-                newCommits,
-                ownerAccount,
-                newId = command.getNewId(),
-                oldId = command.getOldId())
-            }
+                 ownerAccount <- getAccountByUserName(owner))
+              yield {
+                WebHookPushPayload(
+                  git,
+                  pusherAccount,
+                  command.getRefName,
+                  repositoryInfo,
+                  newCommits,
+                  ownerAccount,
+                  newId = command.getNewId(),
+                  oldId = command.getOldId())
+              }
           }
 
           // call post-commit hook

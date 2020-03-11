@@ -37,7 +37,8 @@ class ScalaOptimizeImportsFix extends IntentionAction with HighPriorityAction {
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
-    if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+    if (!FileModificationService.getInstance.prepareFileForWrite(file))
+      return
 
     file match {
       case scalaPsi: ScalaFile =>
@@ -64,7 +65,8 @@ class ScalaEnableOptimizeImportsOnTheFlyFix extends IntentionAction {
     if (file.getManager.isInProject(file) && (file
           .isInstanceOf[ScalaFile] || ScalaLanguageDerivative
           .hasDerivativeOnFile(file))) {
-      if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
+      if (!FileModificationService.getInstance.prepareFileForWrite(file))
+        return
 
       file match {
         case scalaFile: ScalaFile =>

@@ -208,7 +208,8 @@ object ProcessKeeper {
     val logger = new ProcessLogger {
       def checkUp(out: String) = {
         log.info(s"$name: $out")
-        if (!up.isCompleted && upWhen(out)) up.trySuccess(ProcessIsUp)
+        if (!up.isCompleted && upWhen(out))
+          up.trySuccess(ProcessIsUp)
       }
       override def buffer[T](f: => T): T = f
       override def out(s: => String) = checkUp(s)

@@ -89,12 +89,16 @@ object ScalaOIUtil {
     val clazz = PsiTreeUtil.getParentOfType(
       elem,
       classOf[ScTemplateDefinition], /*strict = */ false)
-    if (clazz == null) return
+    if (clazz == null)
+      return
 
     val classMembers =
-      if (isImplement) getMembersToImplement(clazz, withSelfType = true)
-      else getMembersToOverride(clazz, withSelfType = true)
-    if (classMembers.isEmpty) return
+      if (isImplement)
+        getMembersToImplement(clazz, withSelfType = true)
+      else
+        getMembersToOverride(clazz, withSelfType = true)
+    if (classMembers.isEmpty)
+      return
 
     val selectedMembers = ListBuffer[ClassMember]()
     if (!ApplicationManager.getApplication.isUnitTestMode) {
@@ -107,15 +111,19 @@ object ScalaOIUtil {
         true,
         clazz)
       chooser.setTitle(
-        if (isImplement) ScalaBundle.message("select.method.implement")
-        else ScalaBundle.message("select.method.override"))
+        if (isImplement)
+          ScalaBundle.message("select.method.implement")
+        else
+          ScalaBundle.message("select.method.override"))
       if (isImplement)
         chooser.selectElements(classMembers.toArray[JClassMember])
       chooser.show()
 
       val elements = chooser.getSelectedElements
-      if (elements != null) selectedMembers ++= elements
-      if (selectedMembers.size == 0) return
+      if (elements != null)
+        selectedMembers ++= elements
+      if (selectedMembers.size == 0)
+        return
     } else {
       selectedMembers ++= classMembers.find {
         case named: ScalaNamedMember if named.name == methodName => true
@@ -145,7 +153,10 @@ object ScalaOIUtil {
         }
       },
       clazz.getProject,
-      if (isImplement) "Implement method" else "Override method"
+      if (isImplement)
+        "Implement method"
+      else
+        "Override method"
     )
   }
 
@@ -167,11 +178,14 @@ object ScalaOIUtil {
       m: PsiMethod,
       clazz: PsiClass,
       visited: HashSet[PsiClass] = new HashSet): Boolean = {
-    if (visited.contains(clazz)) return false
+    if (visited.contains(clazz))
+      return false
     clazz match {
       case td: ScTypeDefinition if td.isCase =>
-        if (m.name == "apply") return true
-        if (m.name == "canEqual") return true
+        if (m.name == "apply")
+          return true
+        if (m.name == "canEqual")
+          return true
         val clazz = m.containingClass
         clazz != null && clazz.qualifiedName == "scala.Product" &&
         (m.name match {
@@ -208,7 +222,8 @@ object ScalaOIUtil {
       withSelfType: Boolean): Iterable[Object] = {
     if (withSelfType)
       clazz.allMethodsIncludingSelfType ++ clazz.allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
-    else clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
+    else
+      clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
   }
 
   private def needOverride(
@@ -241,13 +256,14 @@ object ScalaOIUtil {
               case _             => method.getParameterList.getParametersCount == 0
             }) {
           for (pair <- clazz.allVals;
-               v = pair._1) if (v.name == method.name) {
-            ScalaPsiUtil.nameContext(v) match {
-              case x: ScValue if x.containingClass == clazz    => flag = true
-              case x: ScVariable if x.containingClass == clazz => flag = true
-              case _                                           =>
+               v = pair._1)
+            if (v.name == method.name) {
+              ScalaPsiUtil.nameContext(v) match {
+                case x: ScValue if x.containingClass == clazz    => flag = true
+                case x: ScVariable if x.containingClass == clazz => flag = true
+                case _                                           =>
+              }
             }
-          }
         }
         !flag
     }
@@ -258,7 +274,11 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withOwn: Boolean): Boolean = {
     val m = sign.method
-    val name = if (m == null) "" else m.name
+    val name =
+      if (m == null)
+        ""
+      else
+        m.name
     val place = clazz.extendsBlock
     m match {
       case _ if isProductAbstractMethod(m, clazz) => false
@@ -310,18 +330,20 @@ object ScalaOIUtil {
           signe.method match {
             case fun: ScFunction =>
               if (fun.parameters.length == 0 && declaredElements.exists(
-                    _.name == fun.name)) flag = true
+                    _.name == fun.name))
+                flag = true
             case _ => //todo: ScPrimaryConstructor?
           }
         }
         for (pair <- clazz.allVals;
-             v = pair._1) if (v.name == named.name) {
-          ScalaPsiUtil.nameContext(v) match {
-            case x: ScValue if x.containingClass == clazz    => flag = true
-            case x: ScVariable if x.containingClass == clazz => flag = true
-            case _                                           =>
+             v = pair._1)
+          if (v.name == named.name) {
+            ScalaPsiUtil.nameContext(v) match {
+              case x: ScValue if x.containingClass == clazz    => flag = true
+              case x: ScVariable if x.containingClass == clazz => flag = true
+              case _                                           =>
+            }
           }
-        }
         !flag
       case x: ScTypeAliasDefinition if x.containingClass != clazz => true
       case _                                                      => false
@@ -373,7 +395,10 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[PhysicalSignature] = {
     val all =
-      if (withSelfType) clazz.allMethodsIncludingSelfType else clazz.allMethods
+      if (withSelfType)
+        clazz.allMethodsIncludingSelfType
+      else
+        clazz.allMethods
     all.filter(needOverride(_, clazz))
   }
 }

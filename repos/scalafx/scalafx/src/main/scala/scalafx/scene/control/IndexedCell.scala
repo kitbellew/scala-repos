@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object IndexedCell {
   implicit def sfxIndexedCell2jfx[T](c: IndexedCell[T]): jfxsc.IndexedCell[T] =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class IndexedCell[T](

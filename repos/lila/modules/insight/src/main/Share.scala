@@ -11,7 +11,8 @@ final class Share(
   def getPrefId(insighted: User) = getPref(insighted.id) map (_.insightShare)
 
   def grant(insighted: User, to: Option[User]): Fu[Boolean] =
-    if (to ?? Granter(_.SeeInsight)) fuccess(true)
+    if (to ?? Granter(_.SeeInsight))
+      fuccess(true)
     else
       getPref(insighted.id) flatMap { pref =>
         pref.insightShare match {

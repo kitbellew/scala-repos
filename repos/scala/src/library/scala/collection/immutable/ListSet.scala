@@ -113,8 +113,10 @@ class ListSet[A]
     *  a new builder.
     */
   override def ++(xs: GenTraversableOnce[A]): ListSet[A] =
-    if (xs.isEmpty) this
-    else (new ListSet.ListSetBuilder(this) ++= xs.seq).result()
+    if (xs.isEmpty)
+      this
+    else
+      (new ListSet.ListSetBuilder(this) ++= xs.seq).result()
 
   private[ListSet] def unchecked_+(e: A): ListSet[A] = new Node(e)
   private[ListSet] def unchecked_outer: ListSet[A] =
@@ -133,7 +135,8 @@ class ListSet[A]
         val res = that.head
         that = that.tail
         res
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   /**
@@ -162,8 +165,10 @@ class ListSet[A]
       */
     override def size = sizeInternal(this, 0)
     @tailrec private def sizeInternal(n: ListSet[A], acc: Int): Int =
-      if (n.isEmpty) acc
-      else sizeInternal(n.unchecked_outer, acc + 1)
+      if (n.isEmpty)
+        acc
+      else
+        sizeInternal(n.unchecked_outer, acc + 1)
 
     /** Checks if this set is empty.
       *
@@ -182,12 +187,17 @@ class ListSet[A]
 
     /** This method creates a new set with an additional element.
       */
-    override def +(e: A): ListSet[A] = if (contains(e)) this else new Node(e)
+    override def +(e: A): ListSet[A] =
+      if (contains(e))
+        this
+      else
+        new Node(e)
 
     /** `-` can be used to remove a single element from a set.
       */
     override def -(e: A): ListSet[A] =
-      if (e == head) self
+      if (e == head)
+        self
       else {
         val tail = self - e;
         new tail.Node(head)

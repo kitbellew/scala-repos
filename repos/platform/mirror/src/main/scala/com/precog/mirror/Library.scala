@@ -95,8 +95,10 @@ trait LibraryModule extends Binder {
 
             val adjusted = n * scala.math.pow(10, digits)
             val rounded =
-              if (scala.math.abs(n) >= 4503599627370496.0) adjusted
-              else scala.math.round(adjusted)
+              if (scala.math.abs(n) >= 4503599627370496.0)
+                adjusted
+              else
+                scala.math.round(adjusted)
             JNum(rounded * scala.math.pow(10, -digits))
           }
         }

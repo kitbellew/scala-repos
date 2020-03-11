@@ -249,7 +249,10 @@ abstract class TailCalls extends Transform {
         def receiverIsSuper = ctx.enclosingType.widen <:< receiver.tpe.widen
         def isRecursiveCall = (ctx.method eq fun.symbol) && ctx.tailPos
         def transformArgs =
-          if (mustTransformArgs) noTailTransforms(args) else args
+          if (mustTransformArgs)
+            noTailTransforms(args)
+          else
+            args
         def matchesTypeArgs =
           ctx.tparams sameElements (targs map (_.tpe.typeSymbol))
 
@@ -259,12 +262,14 @@ abstract class TailCalls extends Transform {
         def fail(reason: String) = {
           debuglog(
             "Cannot rewrite recursive call at: " + fun.pos + " because: " + reason)
-          if (ctx.isMandatory) failReasons(ctx) = reason
+          if (ctx.isMandatory)
+            failReasons(ctx) = reason
           treeCopy.Apply(tree, noTailTransform(target), transformArgs)
         }
         /* Position of failure is that of the tree being considered. */
         def failHere(reason: String) = {
-          if (ctx.isMandatory) failPositions(ctx) = fun.pos
+          if (ctx.isMandatory)
+            failPositions(ctx) = fun.pos
           fail(reason)
         }
         def rewriteTailCall(recv: Tree): Tree = {
@@ -283,13 +288,16 @@ abstract class TailCalls extends Transform {
         else if (!isRecursiveCall) {
           if (ctx.isMandatory && receiverIsSuper) // OPT expensive check, avoid unless we will actually report the error
             failHere("it contains a recursive call targeting a supertype")
-          else failHere(defaultReason)
+          else
+            failHere(defaultReason)
         } else if (!matchesTypeArgs)
           failHere("it is called recursively with different type arguments")
-        else if (receiver == EmptyTree) rewriteTailCall(This(currentClass))
+        else if (receiver == EmptyTree)
+          rewriteTailCall(This(currentClass))
         else if (!receiverIsSame)
           failHere("it changes type of 'this' on a polymorphic recursive call")
-        else rewriteTailCall(receiver)
+        else
+          rewriteTailCall(receiver)
       }
 
       def isEligible(tree: DefDef) = {
@@ -360,7 +368,8 @@ abstract class TailCalls extends Transform {
           val transformedStats =
             if ((prologue eq transformedPrologue) && (cases eq transformedCases))
               stats // allow reuse of `tree` if the subtransform was an identity
-            else transformedPrologue ++ transformedCases
+            else
+              transformedPrologue ++ transformedCases
           treeCopy.Block(tree, transformedStats, transform(expr))
 
         // a translated casedef
@@ -476,7 +485,8 @@ abstract class TailCalls extends Transform {
       // we're looking for label(x){x} in tail position, since that means `a` is in tail position in a call `label(a)`
       case LabelDef(_, List(arg), body @ Ident(_))
           if arg.symbol == body.symbol =>
-        if (maybeTail) tailLabels += tree.symbol
+        if (maybeTail)
+          tailLabels += tree.symbol
 
       // jumps to matchEnd are transparent; need this case for nested matches
       // (and the translated match case below does things in reverse for this case's sake)

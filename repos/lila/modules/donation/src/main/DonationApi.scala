@@ -59,8 +59,10 @@ final class DonationApi(
       }
 
   def isDonor(userId: String) =
-    if (serverDonors contains userId) fuccess(true)
-    else donorCache(userId)
+    if (serverDonors contains userId)
+      fuccess(true)
+    else
+      donorCache(userId)
 
   def create(donation: Donation) = {
     coll insert donation recover

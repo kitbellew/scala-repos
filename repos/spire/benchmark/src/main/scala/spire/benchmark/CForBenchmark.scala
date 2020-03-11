@@ -25,8 +25,15 @@ class CForBenchmarks extends MyBenchmark {
   }
 
   @tailrec final def gcd(a: Long, b: Long): Long =
-    if (a % b == 0) b else gcd(b, a % b)
-  final def min(a: Long, b: Long): Long = if (a < b) a else b
+    if (a % b == 0)
+      b
+    else
+      gcd(b, a % b)
+  final def min(a: Long, b: Long): Long =
+    if (a < b)
+      a
+    else
+      b
   final def or(a: Long, b: Long): Long = a | b
 
   def timeWhileOr(reps: Int) = run(reps)(doWhileOr)

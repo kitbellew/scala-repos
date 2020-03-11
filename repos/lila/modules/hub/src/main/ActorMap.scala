@@ -31,7 +31,9 @@ trait ActorMap extends Actor {
     case Terminated(actor) =>
       context unwatch actor
       actors foreach {
-        case (id, a) => if (a == actor) actors -= id
+        case (id, a) =>
+          if (a == actor)
+            actors -= id
       }
   }
 

@@ -22,7 +22,11 @@ trait Reifiers { self: Quasiquotes =>
     lazy val typer = throw new UnsupportedOperationException
 
     def isReifyingPatterns: Boolean = !isReifyingExpressions
-    def action = if (isReifyingExpressions) "unquote" else "extract"
+    def action =
+      if (isReifyingExpressions)
+        "unquote"
+      else
+        "extract"
     def holesHaveTypes = isReifyingExpressions
 
     /** Map that stores freshly generated names linked to the corresponding names in the reified tree.
@@ -65,9 +69,15 @@ trait Reifiers { self: Quasiquotes =>
             assert(names.size == 1)
             val FreshName(prefix) = origname
             val nameTypeName =
-              if (origname.isTermName) tpnme.TermName else tpnme.TypeName
+              if (origname.isTermName)
+                tpnme.TermName
+              else
+                tpnme.TypeName
             val freshName =
-              if (origname.isTermName) nme.freshTermName else nme.freshTypeName
+              if (origname.isTermName)
+                nme.freshTermName
+              else
+                nme.freshTypeName
             // q"val ${names.head}: $u.$nameTypeName = $u.internal.reificationSupport.$freshName($prefix)"
             ValDef(
               NoMods,
@@ -210,13 +220,13 @@ trait Reifiers { self: Quasiquotes =>
       case This(SymbolPlaceholder(Hole(tree, _))) if isReifyingExpressions =>
         mirrorCall(nme.This, tree)
       case SyntacticTraitDef(
-          mods,
-          name,
-          tparams,
-          earlyDefs,
-          parents,
-          selfdef,
-          body) =>
+            mods,
+            name,
+            tparams,
+            earlyDefs,
+            parents,
+            selfdef,
+            body) =>
         reifyBuildCall(
           nme.SyntacticTraitDef,
           mods,
@@ -227,15 +237,15 @@ trait Reifiers { self: Quasiquotes =>
           selfdef,
           body)
       case SyntacticClassDef(
-          mods,
-          name,
-          tparams,
-          constrmods,
-          vparamss,
-          earlyDefs,
-          parents,
-          selfdef,
-          body) =>
+            mods,
+            name,
+            tparams,
+            constrmods,
+            vparamss,
+            earlyDefs,
+            parents,
+            selfdef,
+            body) =>
         mirrorBuildCall(
           nme.SyntacticClassDef,
           reify(mods),
@@ -348,8 +358,10 @@ trait Reifiers { self: Quasiquotes =>
         reifyBuildCall(nme.ScalaDot, name)
       case Select(qual, name) =>
         val ctor =
-          if (name.isTypeName) nme.SyntacticSelectType
-          else nme.SyntacticSelectTerm
+          if (name.isTypeName)
+            nme.SyntacticSelectType
+          else
+            nme.SyntacticSelectTerm
         reifyBuildCall(ctor, qual, name)
       case _ =>
         super.reifyTreeSyntactically(tree)
@@ -369,8 +381,12 @@ trait Reifiers { self: Quasiquotes =>
           n
         }
         def result(n: Name) =
-          if (isReifyingExpressions) Ident(n) else Bind(n, Ident(nme.WILDCARD))
-        if (isReifyingPatterns) result(introduceName())
+          if (isReifyingExpressions)
+            Ident(n)
+          else
+            Bind(n, Ident(nme.WILDCARD))
+        if (isReifyingPatterns)
+          result(introduceName())
         else
           result(
             nameMap
@@ -425,8 +441,10 @@ trait Reifiers { self: Quasiquotes =>
 
     def reifyVparamss(vparamss: List[List[ValDef]]) = {
       val build.ImplicitParams(paramss, implparams) = vparamss
-      if (implparams.isEmpty) reify(paramss)
-      else reifyBuildCall(nme.ImplicitParams, paramss, implparams)
+      if (implparams.isEmpty)
+        reify(paramss)
+      else
+        reifyBuildCall(nme.ImplicitParams, paramss, implparams)
     }
 
     /** Splits list into a list of groups where subsequent elements are considered
@@ -529,7 +547,11 @@ trait Reifiers { self: Quasiquotes =>
     def ensureNoExplicitFlags(m: Modifiers, pos: Position) = {
       // Traits automatically have ABSTRACT flag assigned to
       // them so in that case it's not an explicit flag
-      val flags = if (m.isTrait) m.flags & ~ABSTRACT else m.flags
+      val flags =
+        if (m.isTrait)
+          m.flags & ~ABSTRACT
+        else
+          m.flags
       if ((flags & nonOverloadedExplicitFlags) != 0L)
         c.abort(
           pos,
@@ -556,7 +578,8 @@ trait Reifiers { self: Quasiquotes =>
   class ApplyReifier extends Reifier(isReifyingExpressions = true) {
     def reifyHighRankList(xs: List[Any])(fill: PartialFunction[Any, Tree])(
         fallback: Any => Tree): Tree =
-      if (xs.isEmpty) mkList(Nil)
+      if (xs.isEmpty)
+        mkList(Nil)
       else {
         def reifyGroup(group: List[Any]): Tree = group match {
           case List(elem) if fill.isDefinedAt(elem) => fill(elem)
@@ -571,7 +594,8 @@ trait Reifiers { self: Quasiquotes =>
       }
 
     override def reifyModifiers(m: Modifiers) =
-      if (m == NoMods) super.reifyModifiers(m)
+      if (m == NoMods)
+        super.reifyModifiers(m)
       else {
         val (modsPlaceholders, annots) = m.annotations.partition {
           case ModsPlaceholder(_) => true
@@ -582,8 +606,10 @@ trait Reifiers { self: Quasiquotes =>
             case ModsPlaceholder(hole: ApplyHole) => hole
           }
           .partition { hole =>
-            if (hole.tpe <:< modsType) true
-            else if (hole.tpe <:< flagsType) false
+            if (hole.tpe <:< modsType)
+              true
+            else if (hole.tpe <:< flagsType)
+              false
             else
               c.abort(
                 hole.pos,
@@ -657,7 +683,8 @@ trait Reifiers { self: Quasiquotes =>
     }
 
     override def reifyModifiers(m: Modifiers) =
-      if (m == NoMods) super.reifyModifiers(m)
+      if (m == NoMods)
+        super.reifyModifiers(m)
       else {
         val mods = m.annotations.collect {
           case ModsPlaceholder(hole: UnapplyHole) => hole

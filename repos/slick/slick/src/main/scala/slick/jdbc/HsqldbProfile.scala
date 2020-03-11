@@ -110,12 +110,12 @@ trait HsqldbProfile extends JdbcProfile {
        * safely rearrange views. */
       j match {
         case Join(
-            ls,
-            rs,
-            l,
-            Join(ls2, rs2, l2, r2, JoinType.Inner, on2),
-            JoinType.Inner,
-            on) =>
+              ls,
+              rs,
+              l,
+              Join(ls2, rs2, l2, r2, JoinType.Inner, on2),
+              JoinType.Inner,
+              on) =>
           val on3 = (on, on2) match {
             case (a, LiteralNode(true)) => a
             case (LiteralNode(true), b) => b
@@ -167,7 +167,8 @@ trait HsqldbProfile extends JdbcProfile {
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
-      } else super.createIndex(idx)
+      } else
+        super.createIndex(idx)
     }
   }
 
@@ -177,7 +178,11 @@ trait HsqldbProfile extends JdbcProfile {
       import seq.integral._
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val start = seq._start.getOrElse(if (desc) -1 else 1)
+      val start = seq._start.getOrElse(
+        if (desc)
+          -1
+        else
+          1)
       val b =
         new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
           seq.name)
@@ -192,8 +197,10 @@ trait HsqldbProfile extends JdbcProfile {
       }
       /* The START value in Hsqldb defaults to 0 instead of the more
        * conventional 1/-1 so we rewrite it to make 1/-1 the default. */
-      if (start != 0) b append " START WITH " append start
-      if (seq._cycle) b append " CYCLE"
+      if (start != 0)
+        b append " START WITH " append start
+      if (seq._cycle)
+        b append " CYCLE"
       DDL(b.toString, "DROP SEQUENCE " + quoteIdentifier(seq.name))
     }
   }

@@ -332,16 +332,22 @@ object BigDecimalRootRefinement {
           val x2 = x1.add(delta)
           val y2 = evalExact(x2)
           val s2 = y2.sign
-          if (s2 == s1) loop0(lx, ly, rx, ry)
-          else if (s2 == ry.sign) loop(x1, y1, x2, y2, 2 * n)
-          else ExactRoot(x2)
+          if (s2 == s1)
+            loop0(lx, ly, rx, ry)
+          else if (s2 == ry.sign)
+            loop(x1, y1, x2, y2, 2 * n)
+          else
+            ExactRoot(x2)
         } else if (s1 == ry.sign) {
           val x0 = x1.subtract(delta)
           val y0 = evalExact(x0)
           val s0 = y0.sign
-          if (s0 == s1) loop0(lx, ly, rx, ry)
-          else if (s0 == ly.sign) loop(x0, y0, x1, y1, 2 * n)
-          else ExactRoot(x0)
+          if (s0 == s1)
+            loop0(lx, ly, rx, ry)
+          else if (s0 == ly.sign)
+            loop(x0, y0, x1, y1, 2 * n)
+          else
+            ExactRoot(x0)
         } else {
           ExactRoot(x1)
         }
@@ -356,11 +362,16 @@ object BigDecimalRootRefinement {
         x2: JBigDecimal,
         y2: JBigDecimal
     ): Approximation = {
-      if (y0.signum == 0) ExactRoot(x0)
-      else if (y1.signum == 0) ExactRoot(x1)
-      else if (y2.signum == 0) ExactRoot(x2)
-      else if (y0.sign != y1.sign) loop(x0, y0, x1, y1, 1)
-      else loop(x1, y1, x2, y2, 1)
+      if (y0.signum == 0)
+        ExactRoot(x0)
+      else if (y1.signum == 0)
+        ExactRoot(x1)
+      else if (y2.signum == 0)
+        ExactRoot(x2)
+      else if (y0.sign != y1.sign)
+        loop(x0, y0, x1, y1, 1)
+      else
+        loop(x1, y1, x2, y2, 1)
     }
 
     def loop0(

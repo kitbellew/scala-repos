@@ -70,8 +70,10 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
           throw new ProtocolException("Highest bit of 64bit length was set")
 
         val mask =
-          if (maskBit) Some(reader.readIntBE())
-          else None
+          if (maskBit)
+            Some(reader.readIntBE())
+          else
+            None
 
         def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
         val header =
@@ -89,8 +91,10 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
         val noMoreData = thisFrameData.length == length
 
         val nextState =
-          if (noMoreData) ReadFrameHeader
-          else new ReadData(length - thisFrameData.length)
+          if (noMoreData)
+            ReadFrameHeader
+          else
+            new ReadData(length - thisFrameData.length)
 
         ParseResult(
           Some(FrameStart(header, thisFrameData.compact)),
@@ -126,7 +130,8 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
 
   def mask(bytes: ByteString, mask: Int): (ByteString, Int) = {
     @tailrec def rec(bytes: Array[Byte], offset: Int, mask: Int): Int =
-      if (offset >= bytes.length) mask
+      if (offset >= bytes.length)
+        mask
       else {
         val newMask =
           Integer.rotateLeft(mask, 8) // we cycle through the mask in BE order
@@ -153,12 +158,14 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
         invalid(s"invalid close code '$code'")
       else if (message.isFailure)
         invalid("close reason message is invalid UTF8")
-      else Some((code, message.get))
+      else
+        Some((code, message.get))
     } else if (data.length == 1)
       invalid(
         "close code must be length 2 but was 1"
       ) // must be >= length 2 if not empty
-    else None
+    else
+      None
   }
 
   override def toString: String = "FrameEventParser"

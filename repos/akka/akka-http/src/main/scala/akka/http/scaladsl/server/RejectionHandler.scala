@@ -111,14 +111,22 @@ object RejectionHandler {
             cases(ix) match {
               case CaseHandler(pf) ⇒
                 val route = rejections collectFirst pf
-                if (route.isEmpty) rec(ix + 1) else route
+                if (route.isEmpty)
+                  rec(ix + 1)
+                else
+                  route
               case x @ TypeHandler(_, f) ⇒
                 val rejs = rejections collect x
-                if (rejs.isEmpty) rec(ix + 1) else Some(f(rejs))
+                if (rejs.isEmpty)
+                  rec(ix + 1)
+                else
+                  Some(f(rejs))
             }
-          } else None
+          } else
+            None
         rec(0)
-      } else notFound
+      } else
+        notFound
   }
 
   import Directives._
@@ -205,8 +213,8 @@ object RejectionHandler {
       }
       .handle {
         case UnsatisfiableRangeRejection(
-            unsatisfiableRanges,
-            actualEntityLength) ⇒
+              unsatisfiableRanges,
+              actualEntityLength) ⇒
           complete(
             (
               RequestedRangeNotSatisfiable,

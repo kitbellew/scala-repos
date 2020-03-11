@@ -43,7 +43,8 @@ class ConcurrentLinkedQueue[E]()
     add(e)
 
   override def poll(): E = {
-    if (isEmpty()) null.asInstanceOf[E]
+    if (isEmpty())
+      null.asInstanceOf[E]
     else {
       val oldHead = head
       head = oldHead.next
@@ -57,8 +58,10 @@ class ConcurrentLinkedQueue[E]()
   }
 
   override def peek(): E =
-    if (isEmpty()) null.asInstanceOf[E]
-    else head.value
+    if (isEmpty())
+      null.asInstanceOf[E]
+    else
+      head.value
 
   override def isEmpty(): Boolean =
     _size == 0
@@ -102,14 +105,18 @@ class ConcurrentLinkedQueue[E]()
 
       private var nextNode: Node[Node[E]] = {
         val originalHead: Node[Node[E]] =
-          if (head ne null) new Node(head)
-          else null
+          if (head ne null)
+            new Node(head)
+          else
+            null
 
         var current = originalHead
         while (current ne null) {
           val newNode: Node[Node[E]] =
-            if (current.value.next ne null) new Node(current.value.next)
-            else null
+            if (current.value.next ne null)
+              new Node(current.value.next)
+            else
+              null
 
           current.next = newNode
           current = newNode

@@ -145,7 +145,10 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def count[T: TupleConverter](fieldDef: (Fields, Fields))(
       fn: T => Boolean): Self = {
     mapPlusMap(fieldDef) { (arg: T) =>
-      if (fn(arg)) 1L else 0L
+      if (fn(arg))
+        1L
+      else
+        0L
     } { s =>
       s
     }
@@ -308,7 +311,10 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     mapReduceMap(fieldDef) { ctuple: CTuple =>
       Tuple1(ctuple)
     } { (oldVal, newVal) =>
-      if (select(oldVal._1, newVal._1)) oldVal else newVal
+      if (select(oldVal._1, newVal._1))
+        oldVal
+      else
+        newVal
     } { result =>
       result._1
     }

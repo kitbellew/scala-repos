@@ -154,8 +154,10 @@ class ScalaInplaceVariableIntroducer(
   }
 
   private def needInferType = forceInferType.getOrElse {
-    if (mySpecifyTypeChb != null) mySpecifyTypeChb.isSelected
-    else ScalaApplicationSettings.getInstance().INTRODUCE_VARIABLE_EXPLICIT_TYPE
+    if (mySpecifyTypeChb != null)
+      mySpecifyTypeChb.isSelected
+    else
+      ScalaApplicationSettings.getInstance().INTRODUCE_VARIABLE_EXPLICIT_TYPE
   }
 
   override def getInitialName: String = initialName
@@ -234,7 +236,8 @@ class ScalaInplaceVariableIntroducer(
             if (named.isDefined) {
               val nameRange = named.get.getNameIdentifier.getTextRange
               nameRange.getStartOffset == start && nameRange.getEndOffset <= end
-            } else false
+            } else
+              false
           }
 
           val writeAction = new WriteCommandAction[Unit](
@@ -309,7 +312,8 @@ class ScalaInplaceVariableIntroducer(
           writeAction.execute()
           ApplicationManager.getApplication.runReadAction(new Runnable {
             def run(): Unit = {
-              if (needInferType) resetGreedyToRightBack()
+              if (needInferType)
+                resetGreedyToRightBack()
             }
           })
         }
@@ -340,12 +344,15 @@ class ScalaInplaceVariableIntroducer(
     myLabelPanel.add(myLabel)
     myLabelPanel.add(Box.createHorizontalGlue())
 
-    if (!nameIsValid) myBalloonPanel add myLabelPanel
-    else myBalloonPanel add myChbPanel
+    if (!nameIsValid)
+      myBalloonPanel add myLabelPanel
+    else
+      myBalloonPanel add myChbPanel
   }
 
   private def resetBalloonPanel(nameIsValid: Boolean): Unit = {
-    if (myBalloon.isDisposed) return
+    if (myBalloon.isDisposed)
+      return
     if (!nameIsValid) {
       myBalloonPanel add myLabelPanel
       myBalloonPanel remove myChbPanel
@@ -398,7 +405,8 @@ class ScalaInplaceVariableIntroducer(
       for (occurrenceMarker <- getOccurrenceMarkers) {
         occurrenceMarker.dispose()
       }
-      if (getExprMarker != null) getExprMarker.dispose()
+      if (getExprMarker != null)
+        getExprMarker.dispose()
     }
   }
 

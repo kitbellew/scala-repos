@@ -47,7 +47,8 @@ object ColumnDefinitionProviderImpl {
       .zipWithIndex
       .flatMap {
         case (p, i) =>
-          if (!p.isParamWithDefault) None
+          if (!p.isParamWithDefault)
+            None
           else {
             val getterName = newTermName("apply$default$" + (i + 1))
             Some(

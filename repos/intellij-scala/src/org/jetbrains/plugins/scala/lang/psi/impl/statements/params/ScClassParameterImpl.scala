@@ -54,7 +54,8 @@ class ScClassParameterImpl private (
   }
 
   def isPrivateThis: Boolean = {
-    if (!isEffectiveVal) return true
+    if (!isEffectiveVal)
+      return true
     getModifierList.accessModifier match {
       case Some(am) =>
         am.isThis && am.isPrivate
@@ -72,16 +73,20 @@ class ScClassParameterImpl private (
 
   override def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
-    if (ccontainingClass == null) return this
+    if (ccontainingClass == null)
+      return this
     val originalClass: PsiClass =
       ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
-    if (ccontainingClass eq originalClass) return this
-    if (!originalClass.isInstanceOf[ScClass]) return this
+    if (ccontainingClass eq originalClass)
+      return this
+    if (!originalClass.isInstanceOf[ScClass])
+      return this
     val c = originalClass.asInstanceOf[ScClass]
     val iterator = c.parameters.iterator
     while (iterator.hasNext) {
       val param = iterator.next()
-      if (param.name == name) return param
+      if (param.name == name)
+        return param
     }
     this
   }

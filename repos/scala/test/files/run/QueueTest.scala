@@ -164,7 +164,8 @@ object Test {
 
   def testMoreEnqueues {
     val queue = new ExtQueue[Int]
-    for (i <- 0 until 10) queue.enqueue(i * 2)
+    for (i <- 0 until 10)
+      queue.enqueue(i * 2)
 
     for (i <- 0 until 10) {
       val top = queue.dequeue
@@ -174,7 +175,8 @@ object Test {
     assert(queue.isEmpty)
     assert(queue.length == 0)
 
-    for (i <- 0 until 10) queue.enqueue(i * i)
+    for (i <- 0 until 10)
+      queue.enqueue(i * i)
     assert(queue.length == 10)
     assert(queue.nonEmpty)
 
@@ -190,7 +192,8 @@ object Test {
     assert(queue.length == 0)
     assert(queue.isEmpty)
 
-    for (i <- 0 until 10) queue.enqueue(i)
+    for (i <- 0 until 10)
+      queue.enqueue(i)
     assert(queue.length == 10)
 
     val even = queue.dequeueAll(_ % 2 == 0)
@@ -206,7 +209,8 @@ object Test {
     assert(queue.isEmpty)
     assert(odd.sameElements(List(1, 3, 5, 7, 9)))
 
-    for (i <- 0 until 10) queue.enqueue(i * i)
+    for (i <- 0 until 10)
+      queue.enqueue(i * i)
     assert(queue.last == 81)
     assert(queue.head == 0)
     assert(queue.length == 10)
@@ -246,7 +250,8 @@ object Test {
     assert(queue.length == 0)
     assert(queue.isEmpty)
 
-    for (i <- 0 until 4) queue.enqueue(i)
+    for (i <- 0 until 4)
+      queue.enqueue(i)
     val interv = queue.dequeueAll(n => n > 0 && n < 3)
     assert(interv.sameElements(List(1, 2)))
     assert(queue.length == 2)
@@ -263,7 +268,8 @@ object Test {
     assert(queue.head == 9)
 
     queue.clear
-    for (i <- -100 until 100) queue.enqueue(i * i + i % 7 + 5)
+    for (i <- -100 until 100)
+      queue.enqueue(i * i + i % 7 + 5)
     assert(queue.length == 200)
 
     val manyodds = queue.dequeueAll(_ % 2 == 1)
@@ -272,7 +278,8 @@ object Test {
     queue.dequeueAll(_ > -10000)
     assert(queue.isEmpty)
 
-    for (i <- 0 until 100) queue.enqueue(i)
+    for (i <- 0 until 100)
+      queue.enqueue(i)
     val multof3 = queue.dequeueAll(_ % 3 == 0)
     assert(multof3.size == 34)
     assert(queue.size == 66)

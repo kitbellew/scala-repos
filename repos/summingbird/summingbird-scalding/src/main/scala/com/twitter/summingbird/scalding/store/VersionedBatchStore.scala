@@ -117,7 +117,10 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
         _._1 < exclusiveUB
       }
       .reduceOption { (a, b) =>
-        if (a._1 > b._1) a else b
+        if (a._1 > b._1)
+          a
+        else
+          b
       }
   }
 

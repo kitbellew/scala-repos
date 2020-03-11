@@ -228,7 +228,11 @@ class ExecuteRequest(
     bw.writeByte(flags)
     bw.writeInt(1) // iteration count - always 1
 
-    val newParamsBound: Byte = if (hasNewParams) 1 else 0
+    val newParamsBound: Byte =
+      if (hasNewParams)
+        1
+      else
+        0
 
     // convert parameters to binary representation.
     val sizeOfParams = sizeOfParameters(params)

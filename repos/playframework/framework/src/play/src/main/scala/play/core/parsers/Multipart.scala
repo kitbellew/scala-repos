@@ -253,7 +253,10 @@ object Multipart {
     byteAt(input, ix).toChar
 
   private def byteAt(input: ByteString, ix: Int): Byte =
-    if (ix < input.length) input(ix) else throw NotEnoughDataException
+    if (ix < input.length)
+      input(ix)
+    else
+      throw NotEnoughDataException
 
   private object NotEnoughDataException
       extends RuntimeException(null, null, false, false)
@@ -313,17 +316,23 @@ object Multipart {
         ctx: Context[RawPart]): SyncDirective =
       if (!terminated) {
         state(input)
-        if (output.nonEmpty) ctx.push(dequeue())
-        else if (!terminated) ctx.pull()
-        else ctx.finish()
-      } else ctx.finish()
+        if (output.nonEmpty)
+          ctx.push(dequeue())
+        else if (!terminated)
+          ctx.pull()
+        else
+          ctx.finish()
+      } else
+        ctx.finish()
 
     override def onPull(ctx: Context[RawPart]): SyncDirective = {
       if (output.nonEmpty)
         ctx.push(dequeue())
       else if (ctx.isFinishing) {
-        if (terminated) ctx.finish()
-        else ctx.pushAndFinish(Left(ParseError("Unexpected end of input")))
+        if (terminated)
+          ctx.finish()
+        else
+          ctx.pushAndFinish(Left(ParseError("Unexpected end of input")))
       } else
         ctx.pull()
     }
@@ -337,10 +346,14 @@ object Multipart {
       try {
         if (boundary(input, 0)) {
           val ix = boundaryLength
-          if (crlf(input, ix)) parseHeader(input, ix + 2, 0)
-          else if (doubleDash(input, ix)) terminate()
-          else parsePreamble(input, 0)
-        } else parsePreamble(input, 0)
+          if (crlf(input, ix))
+            parseHeader(input, ix + 2, 0)
+          else if (doubleDash(input, ix))
+            terminate()
+          else
+            parsePreamble(input, 0)
+        } else
+          parsePreamble(input, 0)
       } catch {
         case NotEnoughDataException ⇒
           continue(input, 0)((newInput, _) ⇒ tryParseInitialBoundary(newInput))
@@ -350,9 +363,12 @@ object Multipart {
       try {
         @tailrec def rec(index: Int): StateResult = {
           val needleEnd = boyerMoore.nextIndex(input, index) + needle.length
-          if (crlf(input, needleEnd)) parseHeader(input, needleEnd + 2, 0)
-          else if (doubleDash(input, needleEnd)) terminate()
-          else rec(needleEnd)
+          if (crlf(input, needleEnd))
+            parseHeader(input, needleEnd + 2, 0)
+          else if (doubleDash(input, needleEnd))
+            terminate()
+          else
+            rec(needleEnd)
         }
         rec(offset)
       } catch {
@@ -620,7 +636,10 @@ object Multipart {
       @tailrec def loop1(i: Int, lastPrefixPosition: Int): Unit =
         if (i >= 0) {
           val nextLastPrefixPosition =
-            if (isPrefix(i + 1, 0)) i + 1 else lastPrefixPosition
+            if (isPrefix(i + 1, 0))
+              i + 1
+            else
+              lastPrefixPosition
           table(nl1 - i) = nextLastPrefixPosition - i + nl1
           loop1(i - 1, nextLastPrefixPosition)
         }
@@ -629,7 +648,8 @@ object Multipart {
       @tailrec def suffixLength(i: Int, j: Int, result: Int): Int =
         if (i >= 0 && needle(i) == needle(j))
           suffixLength(i - 1, j - 1, result + 1)
-        else result
+        else
+          result
       @tailrec def loop2(i: Int): Unit =
         if (i < nl1) {
           val sl = suffixLength(i, nl1, 0)
@@ -648,8 +668,10 @@ object Multipart {
       @tailrec def rec(i: Int, j: Int): Int = {
         val byte = byteAt(haystack, i)
         if (needle(j) == byte) {
-          if (j == 0) i // found
-          else rec(i - 1, j - 1)
+          if (j == 0)
+            i // found
+          else
+            rec(i - 1, j - 1)
         } else
           rec(i + math.max(offsetTable(nl1 - j), charTable(byte & 0xff)), nl1)
       }

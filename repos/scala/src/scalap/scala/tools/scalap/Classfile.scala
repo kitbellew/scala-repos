@@ -101,8 +101,10 @@ class Classfile(in: ByteArrayReader) {
         // Double sized entry
         if (tag == CONSTANT_LONG || tag == CONSTANT_DOUBLE) {
           pool(i) =
-            if (tag == CONSTANT_LONG) LongConst(in.nextLong)
-            else DoubleConst(in.nextDouble)
+            if (tag == CONSTANT_LONG)
+              LongConst(in.nextLong)
+            else
+              DoubleConst(in.nextDouble)
           i = i + 1
           pool(i) = Empty
         } else

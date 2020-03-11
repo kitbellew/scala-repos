@@ -30,7 +30,11 @@ private[saddle] object VecImpl {
     while (i < v1.length) {
       val a = v1(i)
       val b = v2(i)
-      buf(i) = if (!b) a else value
+      buf(i) =
+        if (!b)
+          a
+        else
+          value
       i += 1
     }
     Vec(buf)
@@ -45,7 +49,11 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < v1.length) {
       val a = v1(i)
-      buf(i) = if (sa.isMissing(a) || !f(a)) a else value
+      buf(i) =
+        if (sa.isMissing(a) || !f(a))
+          a
+        else
+          value
       i += 1
     }
     Vec(buf)
@@ -60,7 +68,8 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < vec.length) {
       val v = vec(i)
-      if (sa.notMissing(v)) acc = f(acc, v)
+      if (sa.notMissing(v))
+        acc = f(acc, v)
       i += 1
     }
     acc
@@ -223,7 +232,11 @@ private[saddle] object VecImpl {
       Vec.empty[B]
     else {
       val len = vec.length
-      val win = if (winSz > len) len else winSz
+      val win =
+        if (winSz > len)
+          len
+        else
+          winSz
       if (len == 0)
         Vec.empty
       else {
@@ -244,7 +257,8 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < vec.length) {
       val v: A = vec(i)
-      if (sa.notMissing(v)) op(v)
+      if (sa.notMissing(v))
+        op(v)
       i += 1
     }
   }
@@ -255,7 +269,8 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < vec.length) {
       val v: A = vec(i)
-      if (sa.notMissing(v) && pred(v)) op(v)
+      if (sa.notMissing(v) && pred(v))
+        op(v)
       i += 1
     }
   }
@@ -267,7 +282,8 @@ private[saddle] object VecImpl {
     val buf = Buffer[Int]()
     while (i < vec.length) {
       val v: A = vec(i)
-      if (sa.notMissing(v) && pred(v)) buf.add(i)
+      if (sa.notMissing(v) && pred(v))
+        buf.add(i)
       i += 1
     }
     Vec(buf.toArray)
@@ -308,7 +324,10 @@ private[saddle] object VecImpl {
       ex = sa.notMissing(v) && pred(v)
       i += 1
     }
-    if (ex) i - 1 else -1
+    if (ex)
+      i - 1
+    else
+      -1
   }
 
   def filter[@spec(Boolean, Int, Long, Double) A: ST](vec: Vec[A])(
@@ -318,7 +337,8 @@ private[saddle] object VecImpl {
     val buf = Buffer[A]()
     while (i < vec.length) {
       val v: A = vec(i)
-      if (sa.notMissing(v) && pred(v)) buf.add(v)
+      if (sa.notMissing(v) && pred(v))
+        buf.add(v)
       i += 1
     }
     Vec(buf.toArray)
@@ -330,7 +350,8 @@ private[saddle] object VecImpl {
     val buf = Buffer[A]()
     while (i < vec.length) {
       val v: A = vec(i)
-      if (pred(i)) buf.add(v)
+      if (pred(i))
+        buf.add(v)
       i += 1
     }
     Vec(buf.toArray)
@@ -342,7 +363,8 @@ private[saddle] object VecImpl {
     val buf = Buffer[A]()
     while (i < vec.length) {
       val v: A = vec(i)
-      if (pred(i)) buf.add(v)
+      if (pred(i))
+        buf.add(v)
       i += 1
     }
     Vec(buf.toArray)
@@ -354,7 +376,11 @@ private[saddle] object VecImpl {
     if (vec.length == 0 || vec.length == 1)
       vec
     else {
-      val lim = if (atMost > 0) atMost else vec.length
+      val lim =
+        if (atMost > 0)
+          atMost
+        else
+          vec.length
       val sa = implicitly[ST[A]]
       val buf = array.empty[A](vec.length)
       buf(0) = vec(0)
@@ -366,7 +392,10 @@ private[saddle] object VecImpl {
           buf(i) = v
           c = lim
         } else {
-          if (c > 0) buf(i) = buf(i - 1) else buf(i) = v
+          if (c > 0)
+            buf(i) = buf(i - 1)
+          else
+            buf(i) = v
           c -= 1
         }
         i += 1
@@ -382,7 +411,8 @@ private[saddle] object VecImpl {
     val l = vec.length
     val s = implicitly[ST[A]]
     while (i < l) {
-      if (s.isMissing(buf(i))) buf(i) = f(i)
+      if (s.isMissing(buf(i)))
+        buf(i) = f(i)
       i += 1
     }
     Vec(buf)
@@ -397,7 +427,8 @@ private[saddle] object VecImpl {
     val l = vec.length
     val s = implicitly[ST[A]]
     while (i < l) {
-      if (s.isMissing(buf(i))) buf(i) = f(idx(i))
+      if (s.isMissing(buf(i)))
+        buf(i) = f(idx(i))
       i += 1
     }
     Vec(buf)

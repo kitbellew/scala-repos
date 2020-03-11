@@ -27,7 +27,8 @@ private[runtime] trait TwoWayCaches { self: SymbolTable =>
       def unapply[T](optRef: Option[WeakReference[T]]): Option[T] =
         if (optRef.nonEmpty) {
           Option(optRef.get.get)
-        } else None
+        } else
+          None
     }
 
     def toScala(key: J)(body: => S): S = gilSynchronized {
@@ -58,7 +59,8 @@ private[runtime] trait TwoWayCaches { self: SymbolTable =>
           Some(v)
         case _ =>
           val result = body
-          for (value <- result) enter(value, key)
+          for (value <- result)
+            enter(value, key)
           result
       }
     }

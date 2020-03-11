@@ -28,11 +28,13 @@ class RexBenchmarks extends MyBenchmark with BenchmarkData {
   def timeGeneric(reps: Int): Unit = run(reps)(runGeneric(fs, ds, 20))
 
   def runDirect(a: Array[Float], b: Array[Double], n: Int): Double = {
-    (for (i <- 2 to n by 2) yield nearlyMaxF(a, n) + nearlyMaxD(b, n)).sum
+    (for (i <- 2 to n by 2)
+      yield nearlyMaxF(a, n) + nearlyMaxD(b, n)).sum
   }
 
   def runGeneric(a: Array[Float], b: Array[Double], n: Int): Double = {
-    (for (i <- 2 to n by 2) yield nearlyMaxG(a, n) + nearlyMaxG(b, n)).sum
+    (for (i <- 2 to n by 2)
+      yield nearlyMaxG(a, n) + nearlyMaxG(b, n)).sum
   }
 
   def nearlyMaxF(
@@ -40,8 +42,16 @@ class RexBenchmarks extends MyBenchmark with BenchmarkData {
       k: Int,
       start: Int = 0,
       end: Int = -1): Float = {
-    val i0 = if (start >= 0) start else a.length + start
-    val i1 = if (end >= 0) end else a.length + end + 1
+    val i0 =
+      if (start >= 0)
+        start
+      else
+        a.length + start
+    val i1 =
+      if (end >= 0)
+        end
+      else
+        a.length + end + 1
     val ai = new Array[Float](max(k, 0) + 1)
     var i = i0 + 1
     var j = 0
@@ -72,8 +82,16 @@ class RexBenchmarks extends MyBenchmark with BenchmarkData {
       k: Int,
       start: Int = 0,
       end: Int = -1): Double = {
-    val i0 = if (start >= 0) start else a.length + start
-    val i1 = if (end >= 0) end else a.length + end + 1
+    val i0 =
+      if (start >= 0)
+        start
+      else
+        a.length + start
+    val i1 =
+      if (end >= 0)
+        end
+      else
+        a.length + end + 1
     val ai = new Array[Double](max(k, 0) + 1)
     var i = i0 + 1
     var j = 0
@@ -104,8 +122,16 @@ class RexBenchmarks extends MyBenchmark with BenchmarkData {
       k: Int,
       start: Int = 0,
       end: Int = -1): A = {
-    val i0 = if (start >= 0) start else a.length + start
-    val i1 = if (end >= 0) end else a.length + end + 1
+    val i0 =
+      if (start >= 0)
+        start
+      else
+        a.length + start
+    val i1 =
+      if (end >= 0)
+        end
+      else
+        a.length + end + 1
     val ai = new Array[A](max(k, 0) + 1)
     var i = i0 + 1
     var j = 0

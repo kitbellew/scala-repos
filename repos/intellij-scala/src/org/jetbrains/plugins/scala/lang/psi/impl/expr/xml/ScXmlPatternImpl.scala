@@ -54,7 +54,8 @@ class ScXmlPatternImpl(node: ASTNode)
       .instance(getProject)
       .getCachedClass(getResolveScope, "scala.xml.Node")
       .orNull
-    if (clazz == null) return Failure("not found scala.xml.Node", Some(this))
+    if (clazz == null)
+      return Failure("not found scala.xml.Node", Some(this))
     Success(ScDesignatorType(clazz), Some(this))
   }
 }

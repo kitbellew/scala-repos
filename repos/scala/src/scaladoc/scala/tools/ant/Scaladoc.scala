@@ -174,8 +174,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `origin`.
     */
   def setSrcdir(input: Path) {
-    if (origin.isEmpty) origin = Some(input)
-    else origin.get.append(input)
+    if (origin.isEmpty)
+      origin = Some(input)
+    else
+      origin.get.append(input)
   }
 
   /** Sets the `origin` as a nested src Ant parameter.
@@ -183,7 +185,8 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return An origin path to be configured.
     */
   def createSrc(): Path = {
-    if (origin.isEmpty) origin = Some(new Path(getProject))
+    if (origin.isEmpty)
+      origin = Some(new Path(getProject))
     origin.get.createPath()
   }
 
@@ -208,8 +211,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `classpath`.
     */
   def setClasspath(input: Path) {
-    if (classpath.isEmpty) classpath = Some(input)
-    else classpath.get.append(input)
+    if (classpath.isEmpty)
+      classpath = Some(input)
+    else
+      classpath.get.append(input)
   }
 
   /** Sets the `classpath` as a nested classpath Ant parameter.
@@ -217,7 +222,8 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return A class path to be configured.
     */
   def createClasspath(): Path = {
-    if (classpath.isEmpty) classpath = Some(new Path(getProject))
+    if (classpath.isEmpty)
+      classpath = Some(new Path(getProject))
     classpath.get.createPath()
   }
 
@@ -233,15 +239,18 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `sourcepath`.
     */
   def setSourcepath(input: Path) =
-    if (sourcepath.isEmpty) sourcepath = Some(input)
-    else sourcepath.get.append(input)
+    if (sourcepath.isEmpty)
+      sourcepath = Some(input)
+    else
+      sourcepath.get.append(input)
 
   /** Sets the `sourcepath` as a nested sourcepath Ant parameter.
     *
     *  @return A source path to be configured.
     */
   def createSourcepath(): Path = {
-    if (sourcepath.isEmpty) sourcepath = Some(new Path(getProject))
+    if (sourcepath.isEmpty)
+      sourcepath = Some(new Path(getProject))
     sourcepath.get.createPath()
   }
 
@@ -257,15 +266,18 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `bootclasspath`.
     */
   def setBootclasspath(input: Path) =
-    if (bootclasspath.isEmpty) bootclasspath = Some(input)
-    else bootclasspath.get.append(input)
+    if (bootclasspath.isEmpty)
+      bootclasspath = Some(input)
+    else
+      bootclasspath.get.append(input)
 
   /** Sets the `bootclasspath` as a nested `sourcepath` Ant parameter.
     *
     *  @return A source path to be configured.
     */
   def createBootclasspath(): Path = {
-    if (bootclasspath.isEmpty) bootclasspath = Some(new Path(getProject))
+    if (bootclasspath.isEmpty)
+      bootclasspath = Some(new Path(getProject))
     bootclasspath.get.createPath()
   }
 
@@ -282,8 +294,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `extdirs`.
     */
   def setExtdirs(input: Path) {
-    if (extdirs.isEmpty) extdirs = Some(input)
-    else extdirs.get.append(input)
+    if (extdirs.isEmpty)
+      extdirs = Some(input)
+    else
+      extdirs.get.append(input)
   }
 
   /** Sets the `extdirs` as a nested sourcepath Ant parameter.
@@ -291,7 +305,8 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return An extensions path to be configured.
     */
   def createExtdirs(): Path = {
-    if (extdirs.isEmpty) extdirs = Some(new Path(getProject))
+    if (extdirs.isEmpty)
+      extdirs = Some(new Path(getProject))
     extdirs.get.createPath()
   }
 
@@ -464,8 +479,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The class path as a list of files.
     */
   private def getClasspath: List[File] =
-    if (classpath.isEmpty) buildError("Member 'classpath' is empty.")
-    else classpath.get.list().toList map nameToFile
+    if (classpath.isEmpty)
+      buildError("Member 'classpath' is empty.")
+    else
+      classpath.get.list().toList map nameToFile
 
   /** Gets the value of the `origin` attribute in a Scala-friendly
     *  form.
@@ -473,8 +490,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The origin path as a list of files.
     */
   private def getOrigin: List[File] =
-    if (origin.isEmpty) buildError("Member 'origin' is empty.")
-    else origin.get.list().toList map nameToFile
+    if (origin.isEmpty)
+      buildError("Member 'origin' is empty.")
+    else
+      origin.get.list().toList map nameToFile
 
   /** Gets the value of the `destination` attribute in a
     *  Scala-friendly form.
@@ -482,8 +501,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The destination as a file.
     */
   private def getDestination: File =
-    if (destination.isEmpty) buildError("Member 'destination' is empty.")
-    else existing(getProject resolveFile destination.get.toString)
+    if (destination.isEmpty)
+      buildError("Member 'destination' is empty.")
+    else
+      existing(getProject resolveFile destination.get.toString)
 
   /** Gets the value of the `sourcepath` attribute in a
     *  Scala-friendly form.
@@ -491,8 +512,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The source path as a list of files.
     */
   private def getSourcepath: List[File] =
-    if (sourcepath.isEmpty) buildError("Member 'sourcepath' is empty.")
-    else sourcepath.get.list().toList map nameToFile
+    if (sourcepath.isEmpty)
+      buildError("Member 'sourcepath' is empty.")
+    else
+      sourcepath.get.list().toList map nameToFile
 
   /** Gets the value of the `bootclasspath` attribute in a
     *  Scala-friendly form.
@@ -500,8 +523,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The boot class path as a list of files.
     */
   private def getBootclasspath: List[File] =
-    if (bootclasspath.isEmpty) buildError("Member 'bootclasspath' is empty.")
-    else bootclasspath.get.list().toList map nameToFile
+    if (bootclasspath.isEmpty)
+      buildError("Member 'bootclasspath' is empty.")
+    else
+      bootclasspath.get.list().toList map nameToFile
 
   /** Gets the value of the `extdirs` attribute in a
     *  Scala-friendly form.
@@ -509,8 +534,10 @@ class Scaladoc extends ScalaMatchingTask {
     *  @return The extensions path as a list of files.
     */
   private def getExtdirs: List[File] =
-    if (extdirs.isEmpty) buildError("Member 'extdirs' is empty.")
-    else extdirs.get.list().toList map nameToFile
+    if (extdirs.isEmpty)
+      buildError("Member 'extdirs' is empty.")
+    else
+      extdirs.get.list().toList map nameToFile
 
   /*============================================================================*\
 **                       Compilation and support methods                      **
@@ -577,11 +604,14 @@ class Scaladoc extends ScalaMatchingTask {
   /** Initializes settings and source files */
   protected def initialize: Tuple2[Settings, List[File]] = {
     // Tests if all mandatory attributes are set and valid.
-    if (origin.isEmpty) buildError("Attribute 'srcdir' is not set.")
-    if (getOrigin.isEmpty) buildError("Attribute 'srcdir' is not set.")
+    if (origin.isEmpty)
+      buildError("Attribute 'srcdir' is not set.")
+    if (getOrigin.isEmpty)
+      buildError("Attribute 'srcdir' is not set.")
     if (!destination.isEmpty && !destination.get.isDirectory())
       buildError("Attribute 'destdir' does not refer to an existing directory.")
-    if (destination.isEmpty) destination = Some(getOrigin.head)
+    if (destination.isEmpty)
+      destination = Some(getOrigin.head)
 
     val mapper = new GlobPatternMapper()
     mapper setTo "*.html"
@@ -600,7 +630,10 @@ class Scaladoc extends ScalaMatchingTask {
           if (list.length > 0)
             log(
               "Documenting " + list.length + " source file" +
-                (if (list.length > 1) "s" else "") +
+                (if (list.length > 1)
+                   "s"
+                 else
+                   "") +
                 (" to " + getDestination.toString)
             )
           else
@@ -637,8 +670,10 @@ class Scaladoc extends ScalaMatchingTask {
       settings.sourcepath.value = origin.get.list()(0)*/
     if (!bootclasspath.isEmpty)
       docSettings.bootclasspath.value = asString(getBootclasspath)
-    if (!extdirs.isEmpty) docSettings.extdirs.value = asString(getExtdirs)
-    if (!encoding.isEmpty) docSettings.encoding.value = encoding.get
+    if (!extdirs.isEmpty)
+      docSettings.extdirs.value = asString(getExtdirs)
+    if (!encoding.isEmpty)
+      docSettings.encoding.value = encoding.get
     if (!doctitle.isEmpty)
       docSettings.doctitle.value = decodeEscapes(doctitle.get)
     if (!docfooter.isEmpty)
@@ -664,7 +699,8 @@ class Scaladoc extends ScalaMatchingTask {
     if (!docDiagramsDotPath.isEmpty)
       docSettings.docDiagramsDotPath.value = docDiagramsDotPath.get
 
-    if (!docgenerator.isEmpty) docSettings.docgenerator.value = docgenerator.get
+    if (!docgenerator.isEmpty)
+      docSettings.docgenerator.value = docgenerator.get
     if (!docrootcontent.isEmpty)
       docSettings.docRootContent.value = docrootcontent.get.getAbsolutePath()
     log("Scaladoc params = '" + addParams + "'", Project.MSG_DEBUG)
@@ -674,7 +710,10 @@ class Scaladoc extends ScalaMatchingTask {
   }
 
   def safeBuildError(message: String): Unit =
-    if (nofail) log(message) else buildError(message)
+    if (nofail)
+      log(message)
+    else
+      buildError(message)
 
   /** Performs the compilation. */
   override def execute() = {
@@ -688,13 +727,19 @@ class Scaladoc extends ScalaMatchingTask {
         safeBuildError(
           "Document failed with " +
             reporter.ERROR.count + " error" +
-            (if (reporter.ERROR.count > 1) "s" else "") +
+            (if (reporter.ERROR.count > 1)
+               "s"
+             else
+               "") +
             "; see the documenter error output for details.")
       else if (reporter.WARNING.count > 0)
         log(
           "Document succeeded with " +
             reporter.WARNING.count + " warning" +
-            (if (reporter.WARNING.count > 1) "s" else "") +
+            (if (reporter.WARNING.count > 1)
+               "s"
+             else
+               "") +
             "; see the documenter output for details.")
       reporter.printSummary()
     } catch {

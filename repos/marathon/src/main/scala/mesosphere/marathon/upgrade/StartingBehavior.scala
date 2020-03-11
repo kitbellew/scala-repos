@@ -53,8 +53,10 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   final override def receive: Receive = {
     val behavior =
-      if (withHealthChecks) checkForHealthy
-      else checkForRunning
+      if (withHealthChecks)
+        checkForHealthy
+      else
+        checkForRunning
     behavior orElse commonBehavior: PartialFunction[
       Any,
       Unit
@@ -71,17 +73,17 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   final def checkForRunning: Receive = {
     case MesosStatusUpdateEvent(
-        _,
-        taskId,
-        "TASK_RUNNING",
-        _,
-        app.`id`,
-        _,
-        _,
-        _,
-        VersionString,
-        _,
-        _)
+          _,
+          taskId,
+          "TASK_RUNNING",
+          _,
+          app.`id`,
+          _,
+          _,
+          _,
+          VersionString,
+          _,
+          _)
         if !startedRunningTasks(
           taskId.idString
         ) => // scalastyle:off line.size.limit
@@ -94,17 +96,17 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   def commonBehavior: Receive = {
     case MesosStatusUpdateEvent(
-        _,
-        taskId,
-        StartErrorState(_),
-        _,
-        app.`id`,
-        _,
-        _,
-        _,
-        VersionString,
-        _,
-        _
+          _,
+          taskId,
+          StartErrorState(_),
+          _,
+          app.`id`,
+          _,
+          _,
+          _,
+          VersionString,
+          _,
+          _
         ) => // scalastyle:off line.size.limit
       log.warning(
         s"New task [$taskId] failed during app ${app.id.toString} scaling, queueing another task")
@@ -127,8 +129,10 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   def checkFinished(): Unit = {
     val started =
-      if (withHealthChecks) atLeastOnceHealthyTasks.size
-      else startedRunningTasks.size
+      if (withHealthChecks)
+        atLeastOnceHealthyTasks.size
+      else
+        startedRunningTasks.size
     if (started == nrToStart) {
       success()
     }

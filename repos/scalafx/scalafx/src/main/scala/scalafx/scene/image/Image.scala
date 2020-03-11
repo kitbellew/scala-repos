@@ -40,7 +40,10 @@ import scalafx.delegate.SFXDelegate
 
 object Image {
   implicit def sfxImage2jfx(i: Image): jfxsi.Image =
-    if (i != null) i.delegate else null
+    if (i != null)
+      i.delegate
+    else
+      null
 }
 
 class Image(override val delegate: jfxsi.Image)

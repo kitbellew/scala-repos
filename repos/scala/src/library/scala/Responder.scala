@@ -44,13 +44,16 @@ object Responder {
 
   def loop[A](r: Responder[Unit]): Responder[Nothing] =
     for (_ <- r;
-         y <- loop(r)) yield y
+         y <- loop(r))
+      yield y
 
   def loopWhile[A](cond: => Boolean)(r: Responder[Unit]): Responder[Unit] =
     if (cond)
       for (_ <- r;
-           y <- loopWhile(cond)(r)) yield y
-    else constant(())
+           y <- loopWhile(cond)(r))
+        yield y
+    else
+      constant(())
 }
 
 /** Instances of responder are the building blocks of small programs
@@ -87,7 +90,11 @@ abstract class Responder[+A] extends Serializable {
 
   def filter(p: A => Boolean) = new Responder[A] {
     def respond(k: A => Unit) {
-      Responder.this.respond(x => if (p(x)) k(x) else ())
+      Responder.this.respond(x =>
+        if (p(x))
+          k(x)
+        else
+          ())
     }
   }
 

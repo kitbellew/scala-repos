@@ -47,7 +47,8 @@ trait KeyAuthentication {
               List()))
         }
 
-        if (passedKey.equals(ServerKey.get)) Right(ctx.request)
+        if (passedKey.equals(ServerKey.get))
+          Right(ctx.request)
         else
           Left(
             AuthenticationFailedRejection(

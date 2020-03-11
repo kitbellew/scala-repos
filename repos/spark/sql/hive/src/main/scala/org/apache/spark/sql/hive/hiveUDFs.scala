@@ -528,7 +528,11 @@ private[hive] case class HiveUDAFFunction(
   override def prettyName: String = name
 
   override def sql(isDistinct: Boolean): String = {
-    val distinct = if (isDistinct) "DISTINCT " else " "
+    val distinct =
+      if (isDistinct)
+        "DISTINCT "
+      else
+        " "
     s"$name($distinct${children.map(_.sql).mkString(", ")})"
   }
 }

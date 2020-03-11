@@ -5,9 +5,12 @@ case class Score(centipawns: Int) extends AnyVal {
   def showPawns: String = "%.2f" format pawns
 
   def ceiled =
-    if (centipawns > Score.CEILING) copy(Score.CEILING)
-    else if (centipawns < -Score.CEILING) copy(-Score.CEILING)
-    else this
+    if (centipawns > Score.CEILING)
+      copy(Score.CEILING)
+    else if (centipawns < -Score.CEILING)
+      copy(-Score.CEILING)
+    else
+      this
 
   def invert = copy(centipawns = -centipawns)
 }

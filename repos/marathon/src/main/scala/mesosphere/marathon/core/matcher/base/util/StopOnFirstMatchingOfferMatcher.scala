@@ -20,8 +20,10 @@ class StopOnFirstMatchingOfferMatcher(chained: OfferMatcher*)
         MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))) {
       case (matchedFuture, nextMatcher) =>
         matchedFuture.flatMap { matched =>
-          if (matched.ops.isEmpty) nextMatcher.matchOffer(deadline, offer)
-          else matchedFuture
+          if (matched.ops.isEmpty)
+            nextMatcher.matchOffer(deadline, offer)
+          else
+            matchedFuture
         }(ExecutionContext.global)
     }
   }

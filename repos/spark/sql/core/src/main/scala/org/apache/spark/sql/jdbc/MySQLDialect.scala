@@ -42,7 +42,8 @@ private case object MySQLDialect extends JdbcDialect {
       Option(LongType)
     } else if (sqlType == Types.BIT && typeName.equals("TINYINT")) {
       Option(BooleanType)
-    } else None
+    } else
+      None
   }
 
   override def quoteIdentifier(colName: String): String = {

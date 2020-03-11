@@ -72,7 +72,10 @@ object ButtonBar {
     * @return JavaFX ButtonBar
     */
   implicit def sfxButtonBar2jfx(v: ButtonBar): jfxsc.ButtonBar =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Sets the given ButtonData on the given button. If this button is

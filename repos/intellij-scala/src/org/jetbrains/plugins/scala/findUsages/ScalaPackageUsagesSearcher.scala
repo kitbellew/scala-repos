@@ -24,7 +24,8 @@ class ScalaPackageUsagesSearcher
       case _                => return
     }
     val name = scPack.name
-    if (name == null || StringUtil.isEmptyOrSpaces(name)) return
+    if (name == null || StringUtil.isEmptyOrSpaces(name))
+      return
     val scope: SearchScope =
       inReadAction(
         parameters.getEffectiveSearchScope
@@ -51,7 +52,8 @@ class ScalaPackageUsagesSearcher
       val reference: PsiReference = element.getReference
       if (reference == null || !reference.isReferenceTo(myTarget)) {
         true
-      } else consumer.process(reference)
+      } else
+        consumer.process(reference)
     }
   }
 }

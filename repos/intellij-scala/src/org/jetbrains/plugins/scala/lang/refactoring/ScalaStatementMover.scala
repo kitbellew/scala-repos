@@ -24,10 +24,13 @@ class ScalaStatementMover extends LineMover {
       file: PsiFile,
       info: MoveInfo,
       down: Boolean): Boolean = {
-    if (!super.checkAvailable(editor, file, info, down)) return false
-    if (editor.getSelectionModel.hasSelection) return false
+    if (!super.checkAvailable(editor, file, info, down))
+      return false
+    if (editor.getSelectionModel.hasSelection)
+      return false
 
-    if (!file.isInstanceOf[ScalaFile]) return false
+    if (!file.isInstanceOf[ScalaFile])
+      return false
 
     def aim(
         sourceClass: ElementClass,
@@ -35,7 +38,10 @@ class ScalaStatementMover extends LineMover {
         canUseLineAsTarget: Boolean = true): Option[(PsiElement, LineRange)] = {
       findSourceOf(sourceClass).map { source =>
         val targetRange = findTargetRangeFor(source, predicate).getOrElse {
-          if (canUseLineAsTarget) nextLineRangeFor(source) else null
+          if (canUseLineAsTarget)
+            nextLineRangeFor(source)
+          else
+            null
         }
         (source, targetRange)
       }
@@ -47,7 +53,11 @@ class ScalaStatementMover extends LineMover {
     def findTargetRangeFor(
         source: PsiElement,
         predicate: PsiElement => Boolean): Option[LineRange] = {
-      val siblings = if (down) source.nextSiblings else source.prevSiblings
+      val siblings =
+        if (down)
+          source.nextSiblings
+        else
+          source.prevSiblings
       siblings
         .filter(!_.isInstanceOf[PsiComment])
         .takeWhile(it =>
@@ -64,7 +74,8 @@ class ScalaStatementMover extends LineMover {
           editor.offsetToLogicalPosition(editor.getDocument.getTextLength).line
         if (range.endLine < maxLine)
           new LineRange(range.endLine, range.endLine + 1)
-        else null
+        else
+          null
       } else {
         new LineRange(range.startLine - 1, range.startLine)
       }

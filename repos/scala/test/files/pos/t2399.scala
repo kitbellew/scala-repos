@@ -9,7 +9,10 @@ trait T[A, This >: Null <: That1[A] with T[A, This]] extends That2[A, This] {
 
   def length: Int = {
     def loop(x: This, cnt: Int): Int =
-      if (x.isEmpty) cnt else loop(x.next, cnt + 1)
+      if (x.isEmpty)
+        cnt
+      else
+        loop(x.next, cnt + 1)
     loop(self, 0)
   }
 }

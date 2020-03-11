@@ -54,7 +54,8 @@ class ScFunctionDefinitionImpl protected (
           processor,
           state,
           lastParent,
-          place)) return false
+          place))
+      return false
 
     //do not process parameters for default parameters, only for function body
     //processing parameters for default parameters in ScParameters
@@ -68,7 +69,8 @@ class ScFunctionDefinitionImpl protected (
                 x.startOffsetInParent == lastParent.startOffsetInParent) =>
           for (p <- parameterIncludingSynthetic) {
             ProgressManager.checkCanceled()
-            if (!processor.execute(p, state)) return false
+            if (!processor.execute(p, state))
+              return false
           }
         case _ =>
       }
@@ -76,7 +78,8 @@ class ScFunctionDefinitionImpl protected (
       if (lastParent != null && lastParent.getContext != lastParent.getParent) {
         for (p <- parameterIncludingSynthetic) {
           ProgressManager.checkCanceled()
-          if (!processor.execute(p, state)) return false
+          if (!processor.execute(p, state))
+            return false
         }
       }
     }
@@ -99,14 +102,18 @@ class ScFunctionDefinitionImpl protected (
 
   def body: Option[ScExpression] = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScFunctionStub].getBodyExpression
-    else findChild(classOf[ScExpression])
+    if (stub != null)
+      stub.asInstanceOf[ScFunctionStub].getBodyExpression
+    else
+      findChild(classOf[ScExpression])
   }
 
   override def hasAssign: Boolean = {
     val stub = getStub
-    if (stub != null) stub.asInstanceOf[ScFunctionStub].hasAssign
-    else assignment.isDefined
+    if (stub != null)
+      stub.asInstanceOf[ScFunctionStub].hasAssign
+    else
+      assignment.isDefined
   }
 
   def assignment = Option(findChildByType[PsiElement](ScalaTokenTypes.tASSIGN))

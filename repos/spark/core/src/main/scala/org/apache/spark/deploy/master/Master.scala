@@ -119,7 +119,10 @@ private[deploy] class Master(
 
   private val masterPublicAddress = {
     val envVar = conf.getenv("SPARK_PUBLIC_DNS")
-    if (envVar != null) envVar else address.host
+    if (envVar != null)
+      envVar
+    else
+      address.host
   }
 
   private val masterUrl = address.toSparkURL
@@ -463,13 +466,13 @@ private[deploy] class Master(
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
     case RegisterWorker(
-        id,
-        workerHost,
-        workerPort,
-        workerRef,
-        cores,
-        memory,
-        workerWebUiUrl) => {
+          id,
+          workerHost,
+          workerPort,
+          workerRef,
+          cores,
+          memory,
+          workerWebUiUrl) => {
       logInfo("Registering worker %s:%d with %d cores, %s RAM"
         .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) {

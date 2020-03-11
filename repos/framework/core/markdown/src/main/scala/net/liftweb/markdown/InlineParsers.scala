@@ -117,9 +117,12 @@ trait InlineParsers extends BaseParsers {
             i += 1
           }
         }
-        if (start != i) result.append(s.subSequence(start, i).toString)
-        if (result.length == 0) Failure("No text consumed.", in)
-        else Success(result.toString(), in.drop(i - in.offset))
+        if (start != i)
+          result.append(s.subSequence(start, i).toString)
+        if (result.length == 0)
+          Failure("No text consumed.", in)
+        else
+          Success(result.toString(), in.drop(i - in.offset))
       }
   }
 
@@ -206,8 +209,10 @@ trait InlineParsers extends BaseParsers {
   /** Parses any xml tag and escapes attribute values.
     */
   val xmlTag: Parser[String] =
-    if (deco.allowVerbatimXml) (xmlEndTag | xmlStartOrEmptyTag)
-    else failure("Inline XML processing disabled.")
+    if (deco.allowVerbatimXml)
+      (xmlEndTag | xmlStartOrEmptyTag)
+    else
+      failure("Inline XML processing disabled.")
 
   /** A shortcut markdown link of the form <http://example.com>
     */
@@ -414,8 +419,10 @@ trait InlineParsers extends BaseParsers {
       val out = s.charAt(i)
       //if it is a an xml reserved char, xml escape it, else just add it
       val xmlEscape = escapeFastForXml(out)
-      if (xmlEscape != null) result.append(xmlEscape)
-      else result.append(out)
+      if (xmlEscape != null)
+        result.append(xmlEscape)
+      else
+        result.append(out)
       //advance a char
       i += 1
     }

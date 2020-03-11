@@ -84,7 +84,8 @@ private[akka] class RoutedActorCell(
       xs.filterNot(_ == x)
     }
     _router = r.withRoutees(newRoutees)
-    if (stopChild) routees foreach stopIfChild
+    if (stopChild)
+      routees foreach stopIfChild
   }
 
   private def watch(routee: Routee): Unit = routee match {
@@ -120,8 +121,10 @@ private[akka] class RoutedActorCell(
         // for binary backwards compatibility reasons
         val deprecatedNrOfInstances = pool.nrOfInstances
         val nrOfRoutees =
-          if (deprecatedNrOfInstances < 0) pool.nrOfInstances(system)
-          else deprecatedNrOfInstances
+          if (deprecatedNrOfInstances < 0)
+            pool.nrOfInstances(system)
+          else
+            deprecatedNrOfInstances
         if (nrOfRoutees > 0)
           addRoutees(
             Vector.fill(nrOfRoutees)(pool.newRoutee(routeeProps, this)))
@@ -130,7 +133,10 @@ private[akka] class RoutedActorCell(
         // for binary backwards compatibility reasons
         val deprecatedPaths = group.paths
         val paths =
-          if (deprecatedPaths == null) group.paths(system) else deprecatedPaths
+          if (deprecatedPaths == null)
+            group.paths(system)
+          else
+            deprecatedPaths
         if (paths.nonEmpty)
           addRoutees(
             paths.map(p ⇒ group.routeeFor(p, this))(collection.breakOut))

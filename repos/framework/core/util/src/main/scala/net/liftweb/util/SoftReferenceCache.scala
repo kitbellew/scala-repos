@@ -153,11 +153,12 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
     */
   def +=(tuple: (K, V)*) = {
     lock(writeLock) {
-      for (t <- tuple) yield {
-        cache.put(
-          t._1,
-          new SoftValue(t._1, t._2, this, SoftReferenceCache.refQueue));
-      }
+      for (t <- tuple)
+        yield {
+          cache.put(
+            t._1,
+            new SoftValue(t._1, t._2, this, SoftReferenceCache.refQueue));
+        }
     }
     this
   }

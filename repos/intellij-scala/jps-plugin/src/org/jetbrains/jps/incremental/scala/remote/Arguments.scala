@@ -64,26 +64,26 @@ object Arguments {
 
   def from(strings: Seq[String]): Arguments = strings match {
     case Seq(
-        PathToFile(interfaceJar),
-        PathToFile(sourceJar),
-        PathToFile(interfacesHome),
-        javaClassVersion,
-        StringToOption(compilerJarPaths),
-        StringToOption(javaHomePath),
-        PathsToFiles(sources),
-        PathsToFiles(classpath),
-        PathToFile(output),
-        StringToSequence(scalaOptions),
-        StringToSequence(javaOptions),
-        order,
-        PathToFile(cacheFile),
-        PathsToFiles(outputs),
-        PathsToFiles(caches),
-        incrementalTypeName,
-        PathsToFiles(sourceRoots),
-        PathsToFiles(outputDirs),
-        StringToSequence(worksheetClass),
-        sbtIncOptionsString) =>
+          PathToFile(interfaceJar),
+          PathToFile(sourceJar),
+          PathToFile(interfacesHome),
+          javaClassVersion,
+          StringToOption(compilerJarPaths),
+          StringToOption(javaHomePath),
+          PathsToFiles(sources),
+          PathsToFiles(classpath),
+          PathToFile(output),
+          StringToSequence(scalaOptions),
+          StringToSequence(javaOptions),
+          order,
+          PathToFile(cacheFile),
+          PathsToFiles(outputs),
+          PathsToFiles(caches),
+          incrementalTypeName,
+          PathsToFiles(sourceRoots),
+          PathsToFiles(outputDirs),
+          StringToSequence(worksheetClass),
+          sbtIncOptionsString) =>
       val sbtData =
         SbtData(interfaceJar, sourceJar, interfacesHome, javaClassVersion)
 
@@ -137,15 +137,23 @@ object Arguments {
   }
 
   private val PathsToFiles = extractor[String, Seq[File]] { paths: String =>
-    if (paths.isEmpty) Seq.empty
-    else paths.split(Delimiter).map(new File(_)).toSeq
+    if (paths.isEmpty)
+      Seq.empty
+    else
+      paths.split(Delimiter).map(new File(_)).toSeq
   }
 
   private val StringToOption = extractor[String, Option[String]] { s: String =>
-    if (s.isEmpty) None else Some(s)
+    if (s.isEmpty)
+      None
+    else
+      Some(s)
   }
 
   private val StringToSequence = extractor[String, Seq[String]] { s: String =>
-    if (s.isEmpty) Seq.empty else s.split(Delimiter).toSeq
+    if (s.isEmpty)
+      Seq.empty
+    else
+      s.split(Delimiter).toSeq
   }
 }

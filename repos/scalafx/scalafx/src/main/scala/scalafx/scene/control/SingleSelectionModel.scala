@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 object SingleSelectionModel {
   implicit def sfxSingleSelectionModel2jfx[T](
       v: SingleSelectionModel[T]): jfxsc.SingleSelectionModel[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Creates a new [[scalafx.scene.control.SingleSelectionModel]] from functions that defines a data

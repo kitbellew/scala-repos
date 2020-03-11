@@ -59,20 +59,25 @@ abstract class RunnableServiceConnector(activity: SActivity) {
   def updateUI(event: UpdateEvent)
 
   def start() {
-    if (runnableService.running) return
+    if (runnableService.running)
+      return
     runnableService.start()
     runOnUiThread(updateUI(ON_STARTED))
     startTimer()
   }
 
   def stop() {
-    if (!runnableService.running) return
+    if (!runnableService.running)
+      return
     runnableService.stop()
     runOnUiThread(updateUI(ON_STOPPED))
     timer.cancel()
   }
 
   def toggle() {
-    if (runnableService.running) stop() else start()
+    if (runnableService.running)
+      stop()
+    else
+      start()
   }
 }

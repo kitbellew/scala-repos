@@ -56,8 +56,10 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
         // configuration is ignored when called from ObjectMapper.valueToTree
         val raw = v.bigDecimal.stripTrailingZeros.toPlainString
 
-        if (raw contains ".") json.writeTree(new DecimalNode(new JBigDec(raw)))
-        else json.writeTree(new BigIntegerNode(new BigInteger(raw)))
+        if (raw contains ".")
+          json.writeTree(new DecimalNode(new JBigDec(raw)))
+        else
+          json.writeTree(new BigIntegerNode(new BigInteger(raw)))
       }
       case JsString(v)  => json.writeString(v)
       case JsBoolean(v) => json.writeBoolean(v)
@@ -227,7 +229,8 @@ private[jackson] class PlayDeserializers extends Deserializers.Base {
     val klass = javaType.getRawClass
     if (classOf[JsValue].isAssignableFrom(klass) || klass == JsNull.getClass) {
       new JsValueDeserializer(config.getTypeFactory, klass)
-    } else null
+    } else
+      null
   }
 
 }

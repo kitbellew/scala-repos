@@ -185,7 +185,11 @@ object Runner extends Logging {
       Nil
     }
 
-    val verbose = if (ca.common.verbose) Seq("--verbose") else Nil
+    val verbose =
+      if (ca.common.verbose)
+        Seq("--verbose")
+      else
+        Nil
 
     val sparkSubmit = Seq(
       sparkSubmitCommand,

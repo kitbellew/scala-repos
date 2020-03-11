@@ -45,7 +45,8 @@ final class Solver(n: Int) {
   }
 
   def findSolutions(): Unit = {
-    if (countdown == 0) return
+    if (countdown == 0)
+      return
 
     if (unplaced.size > 0) {
       val emptyCellIndex = board.firstEmptyCellIndex
@@ -60,7 +61,8 @@ final class Solver(n: Int) {
             for (j <- Iterator.range(0, Piece.size)) {
               if (board.add(j, emptyCellIndex, piece)) {
 
-                if (!shouldPrune) findSolutions
+                if (!shouldPrune)
+                  findSolutions
 
                 board.remove(piece)
               }
@@ -102,7 +104,8 @@ final class Solver(n: Int) {
       var indent = false
       var i = 0
       while (i < s.length) {
-        if (indent) Console.print(' ')
+        if (indent)
+          Console.print(' ')
         for (j <- Iterator.range(0, Board.cols)) {
           Console.print(s.charAt(i));
           Console.print(' ')
@@ -141,13 +144,17 @@ final class Board {
   val cellsPieceWillFill = new Array[BoardCell](Piece.size)
   var cellCount = 0
 
-  def unmark() = for (c <- cells) c.unmark
+  def unmark() =
+    for (c <- cells)
+      c.unmark
 
   def asString() =
     new String(
       cells map (c =>
-        if (c.piece == null) '-'.toByte
-        else (c.piece.number + 48).toByte))
+        if (c.piece == null)
+          '-'.toByte
+        else
+          (c.piece.number + 48).toByte))
 
   def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
 
@@ -160,24 +167,30 @@ final class Board {
     val boardHasSpace = cellCount == Piece.size &&
       cellsPieceWillFill.forall(c => c.isEmpty)
 
-    if (boardHasSpace) cellsPieceWillFill.foreach(c => c.piece = p)
+    if (boardHasSpace)
+      cellsPieceWillFill.foreach(c => c.piece = p)
 
     boardHasSpace
   }
 
-  def remove(piece: Piece) = for (c <- cells; if c.piece == piece) c.empty
+  def remove(piece: Piece) =
+    for (c <- cells; if c.piece == piece)
+      c.empty
 
   private def find(p: PieceCell, b: BoardCell): Unit = {
     if (p != null && !p.marked && b != null) {
       cellsPieceWillFill(cellCount) = b
       cellCount = cellCount + 1
       p.mark
-      for (i <- Iterator.range(0, Cell.sides)) find(p.next(i), b.next(i))
+      for (i <- Iterator.range(0, Cell.sides))
+        find(p.next(i), b.next(i))
     }
   }
 
   private def boardCells() = {
-    val a = for (i <- Array.range(0, Board.size)) yield new BoardCell(i)
+    val a =
+      for (i <- Array.range(0, Board.size))
+        yield new BoardCell(i)
     val m = (Board.size / Board.cols) - 1
 
     for (i <- Iterator.range(0, a.length)) {
@@ -187,24 +200,30 @@ final class Board {
       val c = a(i)
 
       if (row % 2 == 1) {
-        if (!isLast) c.next(Cell.NE) = a(i - (Board.cols - 1))
+        if (!isLast)
+          c.next(Cell.NE) = a(i - (Board.cols - 1))
         c.next(Cell.NW) = a(i - Board.cols)
         if (row != m) {
-          if (!isLast) c.next(Cell.SE) = a(i + (Board.cols + 1))
+          if (!isLast)
+            c.next(Cell.SE) = a(i + (Board.cols + 1))
           c.next(Cell.SW) = a(i + Board.cols)
         }
       } else {
         if (row != 0) {
-          if (!isFirst) c.next(Cell.NW) = a(i - (Board.cols + 1))
+          if (!isFirst)
+            c.next(Cell.NW) = a(i - (Board.cols + 1))
           c.next(Cell.NE) = a(i - Board.cols)
         }
         if (row != m) {
-          if (!isFirst) c.next(Cell.SW) = a(i + (Board.cols - 1))
+          if (!isFirst)
+            c.next(Cell.SW) = a(i + (Board.cols - 1))
           c.next(Cell.SE) = a(i + Board.cols)
         }
       }
-      if (!isFirst) c.next(Cell.W) = a(i - 1)
-      if (!isLast) c.next(Cell.E) = a(i + 1)
+      if (!isFirst)
+        c.next(Cell.W) = a(i - 1)
+      if (!isLast)
+        c.next(Cell.E) = a(i + 1)
     }
     a
   }
@@ -242,7 +261,9 @@ object Piece {
 
 final class Piece(_number: Int) {
   val number = _number
-  val cells = for (i <- Array.range(0, Piece.size)) yield new PieceCell()
+  val cells =
+    for (i <- Array.range(0, Piece.size))
+      yield new PieceCell()
 
   {
     number match {
@@ -259,15 +280,25 @@ final class Piece(_number: Int) {
     }
   }
 
-  def flip() = for (c <- cells) c.flip
-  def rotate() = for (c <- cells) c.rotate
-  def unmark() = for (c <- cells) c.unmark
+  def flip() =
+    for (c <- cells)
+      c.flip
+  def rotate() =
+    for (c <- cells)
+      c.rotate
+  def unmark() =
+    for (c <- cells)
+      c.unmark
 
   private var orientation = 0
 
   def nextOrientation() = {
-    if (orientation == Piece.orientations) orientation = 0
-    if (orientation % Piece.rotations == 0) flip else rotate
+    if (orientation == Piece.orientations)
+      orientation = 0
+    if (orientation % Piece.rotations == 0)
+      flip
+    else
+      rotate
     orientation = orientation + 1
     this
   }

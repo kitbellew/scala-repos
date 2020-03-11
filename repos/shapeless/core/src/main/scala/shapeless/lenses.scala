@@ -195,7 +195,11 @@ object OpticDefns {
   def setLens[E](e: E) =
     new Lens[Set[E], Boolean] {
       def get(s: Set[E]): Boolean = s contains e
-      def set(s: Set[E])(b: Boolean): Set[E] = if (b) s + e else s - e
+      def set(s: Set[E])(b: Boolean): Set[E] =
+        if (b)
+          s + e
+        else
+          s - e
     }
 
   def mapLens[K, V](k: K) =

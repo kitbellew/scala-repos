@@ -23,14 +23,16 @@ trait ScToplevelElement extends ScalaPsiElement {
   def typeDefinitions: Seq[ScTypeDefinition] = {
     val buff = new ArrayBuffer[ScTypeDefinition]
     buff ++= immediateTypeDefinitions
-    for (pack <- packagings) buff ++= pack.typeDefinitions
+    for (pack <- packagings)
+      buff ++= pack.typeDefinitions
     buff.toSeq
   }
 
   def typeDefinitionsArray: Array[ScTypeDefinition] = {
     val buff = new ArrayBuffer[ScTypeDefinition]
     buff ++= immediateTypeDefinitions
-    for (pack <- packagings) buff ++= pack.typeDefinitions
+    for (pack <- packagings)
+      buff ++= pack.typeDefinitions
     buff.toArray
   }
 
@@ -44,7 +46,8 @@ trait ScToplevelElement extends ScalaPsiElement {
       stub.getChildrenByType[ScTypeDefinition](
         TokenSets.TMPL_DEF_BIT_SET,
         JavaArrayFactoryUtil.ScTypeDefinitionFactory)
-    } else findChildrenByClassScala(classOf[ScTypeDefinition]).toSeq
+    } else
+      findChildrenByClassScala(classOf[ScTypeDefinition]).toSeq
   }
 
   def packagings: Seq[ScPackaging] = {

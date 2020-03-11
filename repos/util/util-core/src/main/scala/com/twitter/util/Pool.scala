@@ -75,7 +75,8 @@ private class HealthyQueue[A](
   }
 
   override def dequeue() = synchronized {
-    if (isEmpty) throw new NoSuchElementException("queue empty")
+    if (isEmpty)
+      throw new NoSuchElementException("queue empty")
 
     self.dequeue() flatMap { item =>
       if (isHealthy(item)) {

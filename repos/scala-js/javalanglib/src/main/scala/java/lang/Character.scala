@@ -219,9 +219,12 @@ object Character {
   def getType(ch: scala.Char): Int = getType(ch.toInt)
 
   def getType(codePoint: Int): Int = {
-    if (codePoint < 0) UNASSIGNED.toInt
-    else if (codePoint < 256) getTypeLT256(codePoint)
-    else getTypeGE256(codePoint)
+    if (codePoint < 0)
+      UNASSIGNED.toInt
+    else if (codePoint < 256)
+      getTypeLT256(codePoint)
+    else
+      getTypeGE256(codePoint)
   }
 
   @inline
@@ -251,7 +254,8 @@ object Character {
     else if (c >= '\uFF41' && c <= '\uFF5A' &&
              c - '\uFF41' < radix - 10)
       c - '\uFF21' + 10
-    else -1
+    else
+      -1
   }
 
   // ported from https://github.com/gwtproject/gwt/blob/master/user/super/com/google/gwt/emul/java/lang/Character.java
@@ -260,7 +264,11 @@ object Character {
       0
     } else {
       val overBaseTen = digit - 10
-      val result = if (overBaseTen < 0) '0' + digit else 'a' + overBaseTen
+      val result =
+        if (overBaseTen < 0)
+          '0' + digit
+        else
+          'a' + overBaseTen
       result.toChar
     }
   }
@@ -366,8 +374,10 @@ object Character {
     isTitleCase(c.toInt)
 
   def isTitleCase(cp: Int): scala.Boolean =
-    if (cp < 256) false
-    else isTitleCaseImpl(getTypeGE256(cp))
+    if (cp < 256)
+      false
+    else
+      isTitleCaseImpl(getTypeGE256(cp))
 
   @inline private[this] def isTitleCaseImpl(tpe: Int): scala.Boolean =
     tpe == TITLECASE_LETTER
@@ -376,8 +386,10 @@ object Character {
     isDigit(c.toInt)
 
   def isDigit(cp: Int): scala.Boolean =
-    if (cp < 256) '0' <= cp && cp <= '9'
-    else isDigitImpl(getTypeGE256(cp))
+    if (cp < 256)
+      '0' <= cp && cp <= '9'
+    else
+      isDigitImpl(getTypeGE256(cp))
 
   @inline private[this] def isDigitImpl(tpe: Int): scala.Boolean =
     tpe == DECIMAL_DIGIT_NUMBER
@@ -386,9 +398,12 @@ object Character {
     isDefined(c.toInt)
 
   def isDefined(c: scala.Int): scala.Boolean = {
-    if (c < 0) false
-    else if (c < 888) true
-    else getTypeGE256(c) != UNASSIGNED
+    if (c < 0)
+      false
+    else if (c < 888)
+      true
+    else
+      getTypeGE256(c) != UNASSIGNED
   }
 
   def isLetter(c: scala.Char): scala.Boolean = isLetter(c.toInt)

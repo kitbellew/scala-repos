@@ -28,8 +28,10 @@ class ServerAdmissionControlParams[A <: Stack.Parameterized[A]](
     */
   def concurrencyLimit(maxConcurrentRequests: Int, maxWaiters: Int): A = {
     val semaphore =
-      if (maxConcurrentRequests == Int.MaxValue) None
-      else Some(new AsyncSemaphore(maxConcurrentRequests, maxWaiters))
+      if (maxConcurrentRequests == Int.MaxValue)
+        None
+      else
+        Some(new AsyncSemaphore(maxConcurrentRequests, maxWaiters))
 
     self.configured(RequestSemaphoreFilter.Param(semaphore))
   }

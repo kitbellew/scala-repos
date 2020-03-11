@@ -171,7 +171,10 @@ trait IndexControllerBase extends ControllerBase {
         val page =
           try {
             val i = params.getOrElse("page", "1").toInt
-            if (i <= 0) 1 else i
+            if (i <= 0)
+              1
+            else
+              i
           } catch {
             case e: NumberFormatException => 1
           }

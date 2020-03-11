@@ -16,5 +16,6 @@ class SbtProjectTemplateFactory extends ProjectTemplatesFactory {
   override def createTemplates(group: String, context: WizardContext) =
     if (context.isCreatingNewProject)
       Array(new SbtProjectTemplate(), new ScalaActivatorProjectTemplate)
-    else Array.empty
+    else
+      Array.empty
 }

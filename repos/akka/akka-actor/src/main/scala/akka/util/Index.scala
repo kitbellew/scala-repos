@@ -68,11 +68,14 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
               retry = false
             }
           }
-        } else added = true
+        } else
+          added = true
       }
 
-      if (retry) spinPut(k, v)
-      else added
+      if (retry)
+        spinPut(k, v)
+      else
+        added
     }
 
     spinPut(key, value)
@@ -140,9 +143,11 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
             ) //We try to remove the key if it's mapped to an empty set
 
           true //Remove succeeded
-        } else false //Remove failed
+        } else
+          false //Remove failed
       }
-    } else false //Remove failed
+    } else
+      false //Remove failed
   }
 
   /**
@@ -162,7 +167,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         set.clear() // Clear the original set to signal to any pending writers that there was a conflict
         Some(ret)
       }
-    } else None //Remove failed
+    } else
+      None //Remove failed
   }
 
   /**

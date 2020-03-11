@@ -731,7 +731,11 @@ trait NodeResponse extends LiftResponse {
 
   protected def writeDocType(writer: Writer): Unit = {
     val doc: String = docType.map(_ + "\n") openOr ""
-    val encoding: String = if (!includeXmlVersion) "" else _encoding
+    val encoding: String =
+      if (!includeXmlVersion)
+        ""
+      else
+        _encoding
 
     if (flipDocTypeForIE6 && isIE6) {
       writer.append(doc)

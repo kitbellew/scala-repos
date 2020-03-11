@@ -859,8 +859,8 @@ trait StandardLiftables { self: Universe =>
 
     implicit def unliftScalaSymbol: Unliftable[scala.Symbol] = Unliftable {
       case Apply(
-          ScalaDot(stdnme.Symbol),
-          List(Literal(Constant(name: String)))) =>
+            ScalaDot(stdnme.Symbol),
+            List(Literal(Constant(name: String)))) =>
         scala.Symbol(name)
     }
 
@@ -886,7 +886,7 @@ trait StandardLiftables { self: Universe =>
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3]): Unliftable[Tuple3[T1, T2, T3]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: Nil) =>
         Tuple3(v1, v2, v3)
     }
     implicit def unliftTuple4[T1, T2, T3, T4](implicit
@@ -896,8 +896,8 @@ trait StandardLiftables { self: Universe =>
         UnliftT4: Unliftable[T4]): Unliftable[Tuple4[T1, T2, T3, T4]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: Nil) =>
           Tuple4(v1, v2, v3, v4)
       }
     implicit def unliftTuple5[T1, T2, T3, T4, T5](implicit
@@ -908,8 +908,8 @@ trait StandardLiftables { self: Universe =>
         UnliftT5: Unliftable[T5]): Unliftable[Tuple5[T1, T2, T3, T4, T5]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: Nil) =>
           Tuple5(v1, v2, v3, v4, v5)
       }
     implicit def unliftTuple6[T1, T2, T3, T4, T5, T6](implicit
@@ -921,8 +921,8 @@ trait StandardLiftables { self: Universe =>
         UnliftT6: Unliftable[T6]): Unliftable[Tuple6[T1, T2, T3, T4, T5, T6]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: UnliftT6(v6) :: Nil) =>
           Tuple6(v1, v2, v3, v4, v5, v6)
       }
     implicit def unliftTuple7[T1, T2, T3, T4, T5, T6, T7](implicit
@@ -935,8 +935,8 @@ trait StandardLiftables { self: Universe =>
         UnliftT7: Unliftable[T7])
         : Unliftable[Tuple7[T1, T2, T3, T4, T5, T6, T7]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: Nil) =>
         Tuple7(v1, v2, v3, v4, v5, v6, v7)
     }
     implicit def unliftTuple8[T1, T2, T3, T4, T5, T6, T7, T8](implicit
@@ -950,9 +950,9 @@ trait StandardLiftables { self: Universe =>
         UnliftT8: Unliftable[T8])
         : Unliftable[Tuple8[T1, T2, T3, T4, T5, T6, T7, T8]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: Nil) =>
         Tuple8(v1, v2, v3, v4, v5, v6, v7, v8)
     }
     implicit def unliftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](implicit
@@ -967,9 +967,9 @@ trait StandardLiftables { self: Universe =>
         UnliftT9: Unliftable[T9])
         : Unliftable[Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: Nil) =>
         Tuple9(v1, v2, v3, v4, v5, v6, v7, v8, v9)
     }
     implicit def unliftTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](implicit
@@ -986,9 +986,9 @@ trait StandardLiftables { self: Universe =>
         : Unliftable[Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+                v8) :: UnliftT9(v9) :: UnliftT10(v10) :: Nil) =>
           Tuple10(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)
       }
     implicit def unliftTuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](
@@ -1007,9 +1007,10 @@ trait StandardLiftables { self: Universe =>
         : Unliftable[Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(v11) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+                v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+                v11) :: Nil) =>
           Tuple11(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11)
       }
     implicit def unliftTuple12[
@@ -1039,10 +1040,10 @@ trait StandardLiftables { self: Universe =>
         UnliftT12: Unliftable[T12]): Unliftable[
       Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: Nil) =>
         Tuple12(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)
     }
     implicit def unliftTuple13[
@@ -1075,10 +1076,10 @@ trait StandardLiftables { self: Universe =>
       Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+                v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+                v11) :: UnliftT12(v12) :: UnliftT13(v13) :: Nil) =>
           Tuple13(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13)
       }
     implicit def unliftTuple14[
@@ -1113,11 +1114,11 @@ trait StandardLiftables { self: Universe =>
       Tuple14[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14]] =
       Unliftable {
         case SyntacticTuple(
-            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-              v14) :: Nil) =>
+              UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+                v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+                v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+                v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+                v14) :: Nil) =>
           Tuple14(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14)
       }
     implicit def unliftTuple15[
@@ -1167,11 +1168,11 @@ trait StandardLiftables { self: Universe =>
       T14,
       T15]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: Nil) =>
         Tuple15(
           v1,
           v2,
@@ -1239,11 +1240,11 @@ trait StandardLiftables { self: Universe =>
       T15,
       T16]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: Nil) =>
         Tuple16(
           v1,
           v2,
@@ -1315,12 +1316,12 @@ trait StandardLiftables { self: Universe =>
       T16,
       T17]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: Nil) =>
         Tuple17(
           v1,
           v2,
@@ -1396,12 +1397,12 @@ trait StandardLiftables { self: Universe =>
       T17,
       T18]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: UnliftT18(v18) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: UnliftT18(v18) :: Nil) =>
         Tuple18(
           v1,
           v2,
@@ -1481,12 +1482,12 @@ trait StandardLiftables { self: Universe =>
       T18,
       T19]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: UnliftT18(v18) :: UnliftT19(v19) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: UnliftT18(v18) :: UnliftT19(v19) :: Nil) =>
         Tuple19(
           v1,
           v2,
@@ -1570,13 +1571,13 @@ trait StandardLiftables { self: Universe =>
       T19,
       T20]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
-            v20) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
+              v20) :: Nil) =>
         Tuple20(
           v1,
           v2,
@@ -1664,13 +1665,13 @@ trait StandardLiftables { self: Universe =>
       T20,
       T21]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
-            v20) :: UnliftT21(v21) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
+              v20) :: UnliftT21(v21) :: Nil) =>
         Tuple21(
           v1,
           v2,
@@ -1762,13 +1763,13 @@ trait StandardLiftables { self: Universe =>
       T21,
       T22]] = Unliftable {
       case SyntacticTuple(
-          UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
-            v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
-            v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
-            v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
-            v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
-            v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
-            v20) :: UnliftT21(v21) :: UnliftT22(v22) :: Nil) =>
+            UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(
+              v4) :: UnliftT5(v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(
+              v8) :: UnliftT9(v9) :: UnliftT10(v10) :: UnliftT11(
+              v11) :: UnliftT12(v12) :: UnliftT13(v13) :: UnliftT14(
+              v14) :: UnliftT15(v15) :: UnliftT16(v16) :: UnliftT17(
+              v17) :: UnliftT18(v18) :: UnliftT19(v19) :: UnliftT20(
+              v20) :: UnliftT21(v21) :: UnliftT22(v22) :: Nil) =>
         Tuple22(
           v1,
           v2,

@@ -26,11 +26,14 @@ object NettyAdaptor extends Adaptor[netty.HttpRequest, netty.HttpResponse] {
     "this service doesn't support streaming")
 
   private[compat] def in(req: http.Request): Future[netty.HttpRequest] =
-    if (req.isChunked) Future.exception(NoStreaming)
-    else Future.value(req.httpRequest)
+    if (req.isChunked)
+      Future.exception(NoStreaming)
+    else
+      Future.value(req.httpRequest)
 
   private[compat] def out(r: netty.HttpResponse): Future[http.Response] =
-    if (r.isChunked) Future.exception(NoStreaming)
+    if (r.isChunked)
+      Future.exception(NoStreaming)
     else
       Future.value(new http.Response {
         val httpResponse = r
@@ -57,7 +60,8 @@ object NettyClientAdaptor
     "this client doesn't support streaming")
 
   private[compat] def in(req: netty.HttpRequest): Future[http.Request] =
-    if (req.isChunked) Future.exception(NoStreaming)
+    if (req.isChunked)
+      Future.exception(NoStreaming)
     else
       Future.value(new http.Request {
         val httpRequest = req
@@ -65,6 +69,8 @@ object NettyClientAdaptor
       })
 
   private[compat] def out(rep: http.Response): Future[netty.HttpResponse] =
-    if (rep.isChunked) Future.exception(NoStreaming)
-    else Future.value(rep.httpResponse)
+    if (rep.isChunked)
+      Future.exception(NoStreaming)
+    else
+      Future.value(rep.httpResponse)
 }

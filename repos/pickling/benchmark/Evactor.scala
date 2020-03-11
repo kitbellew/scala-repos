@@ -48,7 +48,9 @@ object EvactorPicklingBench extends scala.pickling.testing.PicklingBenchmark {
           time + Random.nextInt(100),
           Random.nextString(5))
 
-    val pickles = for (evt <- evts) yield evt.pickle
+    val pickles =
+      for (evt <- evts)
+        yield evt.pickle
 
     var i = 0
     while (i < size) {
@@ -79,16 +81,20 @@ object EvactorKryoBench extends scala.pickling.testing.PicklingBenchmark {
     ser = new KryoSerializer
     ser.kryo.register(evts(0).getClass)
 
-    val pickles = for (evt <- evts) yield {
-      val rnd: Int = Random.nextInt(10)
-      //val arr = Array.ofDim[Byte](32 * 2048 * 2048 + rnd)
-      val arr = Array.ofDim[Byte](32 * 2048 + rnd)
-      ser.toBytes(evt, arr)
-    }
+    val pickles =
+      for (evt <- evts)
+        yield {
+          val rnd: Int = Random.nextInt(10)
+          //val arr = Array.ofDim[Byte](32 * 2048 * 2048 + rnd)
+          val arr = Array.ofDim[Byte](32 * 2048 + rnd)
+          ser.toBytes(evt, arr)
+        }
 
-    val results = for (pickle <- pickles) yield {
-      ser.fromBytes[DataEvent](pickle)
-    }
+    val results =
+      for (pickle <- pickles)
+        yield {
+          ser.fromBytes[DataEvent](pickle)
+        }
   }
 }
 
@@ -109,16 +115,20 @@ object EvactorJavaBench extends scala.pickling.testing.PicklingBenchmark {
           time + Random.nextInt(100),
           Random.nextString(5))
 
-    val pickles = for (evt <- evts) yield {
-      out.writeObject(evt) // pickle evt
-      bos.toByteArray()
-    }
+    val pickles =
+      for (evt <- evts)
+        yield {
+          out.writeObject(evt) // pickle evt
+          bos.toByteArray()
+        }
 
-    val results = for (pickle <- pickles) yield {
-      //pickle.unpickle[DataEvent]
-      val bis = new ByteArrayInputStream(pickle)
-      val in = new ObjectInputStream(bis)
-      in.readObject.asInstanceOf[DataEvent]
-    }
+    val results =
+      for (pickle <- pickles)
+        yield {
+          //pickle.unpickle[DataEvent]
+          val bis = new ByteArrayInputStream(pickle)
+          val in = new ObjectInputStream(bis)
+          in.readObject.asInstanceOf[DataEvent]
+        }
   }
 }

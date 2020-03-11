@@ -174,11 +174,15 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def move(n: Int): Option[Zipper[A]] = {
     @tailrec
     def move0(z: Option[Zipper[A]], n: Int): Option[Zipper[A]] =
-      if (n > 0 && rights.isEmpty || n < 0 && lefts.isEmpty) None
+      if (n > 0 && rights.isEmpty || n < 0 && lefts.isEmpty)
+        None
       else {
-        if (n == 0) z
-        else if (n > 0) move0(z flatMap ((_: Zipper[A]).next), n - 1)
-        else move0(z flatMap ((_: Zipper[A]).previous), n + 1)
+        if (n == 0)
+          z
+        else if (n > 0)
+          move0(z flatMap ((_: Zipper[A]).next), n - 1)
+        else
+          move0(z flatMap ((_: Zipper[A]).previous), n + 1)
       }
     move0(Some(this), n)
   }
@@ -210,7 +214,8 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     * or None if no element matches.
     */
   def findZ(p: A => Boolean): Option[Zipper[A]] =
-    if (p(focus)) Some(this)
+    if (p(focus))
+      Some(this)
     else {
       val c = this.positions
       std.stream.interleave(c.lefts, c.rights).find((x => p(x.focus)))
@@ -231,8 +236,12 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     @tailrec
     def go(zopt: Option[Zipper[AA]]): Option[Zipper[AA]] = {
       zopt match {
-        case Some(z) => if (p(z.focus)) Some(z) else go(f(z))
-        case None    => None
+        case Some(z) =>
+          if (p(z.focus))
+            Some(z)
+          else
+            go(f(z))
+        case None => None
       }
     }
     go(f(this))

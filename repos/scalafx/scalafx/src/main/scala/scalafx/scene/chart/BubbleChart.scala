@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 object BubbleChart {
   implicit def sfxBubbleChart2jfx[X, Y](
       v: BubbleChart[X, Y]): jfxsc.BubbleChart[X, Y] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   def apply[X, Y](xAxis: Axis[X], yAxis: Axis[Y]) =
     new BubbleChart[X, Y](new jfxsc.BubbleChart[X, Y](xAxis, yAxis))

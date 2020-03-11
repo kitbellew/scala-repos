@@ -28,7 +28,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
           parameters: CompletionParameters,
           context: ProcessingContext,
           results: CompletionResultSet) {
-        if (parameters.getOriginalFile.getFileType.getName != Sbt.Name) return
+        if (parameters.getOriginalFile.getFileType.getName != Sbt.Name)
+          return
 
         val place = positionFromParameters(parameters)
         val infixExpr = place.getContext.getContext.asInstanceOf[ScInfixExpr]
@@ -37,7 +38,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
           Option(ScalaPsiUtil.fileContext(place)))
         val indexManager = SbtResolverIndexesManager()
         val indexes = resolversToUse.flatMap(indexManager.find).toSet
-        if (indexes.isEmpty) return
+        if (indexes.isEmpty)
+          return
 
         def addResult(result: String) =
           results.addElement(LookupElementBuilder.create(result))
@@ -63,7 +65,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
         }
 
         def completeVersion(group: String, artifact: String): Unit = {
-          if (group.isEmpty || artifact.isEmpty) return
+          if (group.isEmpty || artifact.isEmpty)
+            return
           indexes foreach (_.versions(group, artifact) foreach addResult)
           results.stopHere()
         }

@@ -43,7 +43,10 @@ import scalafx.scene.Node
 
 object TilePane {
   implicit def sfxTilePane2jfx(v: TilePane): jfxsl.TilePane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all hbox constraints from the child node.

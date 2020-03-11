@@ -19,7 +19,10 @@ trait ShortTextDescription {
 
   protected def shortText(element: PsiElement) = {
     val text = element.getText
-    if (text.length > 20) text.substring(0, 17) + "..." else text
+    if (text.length > 20)
+      text.substring(0, 17) + "..."
+    else
+      text
   }
 
   override def getDescription(e: PsiElement) =

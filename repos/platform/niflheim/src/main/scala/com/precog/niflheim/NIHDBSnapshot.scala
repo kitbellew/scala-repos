@@ -51,7 +51,10 @@ trait NIHDBSnapshot {
       None
     } else {
       val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse 0
-      if (i >= 0) Some(readers(i)) else None
+      if (i >= 0)
+        Some(readers(i))
+      else
+        None
     }
   }
 
@@ -59,13 +62,20 @@ trait NIHDBSnapshot {
       id0: Option[Long]): Option[StorageReader] = {
     // be careful! the semantics of findReaderAfter are somewhat subtle
     val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse -1
-    val j = if (i < 0) -i - 1 else i + 1
+    val j =
+      if (i < 0)
+        -i - 1
+      else
+        i + 1
     if (logger.isTraceEnabled) {
       logger.trace(
         "findReaderAfter(%s) has i = %d, j = %d with blockIds.length = %d"
           .format(id0, i, j, blockIds.length))
     }
-    if (j >= blockIds.length) None else Some(readers(j))
+    if (j >= blockIds.length)
+      None
+    else
+      Some(readers(j))
   }
 
   def getBlock(id0: Option[Long], cols: Option[Set[CPath]]): Option[Block] =

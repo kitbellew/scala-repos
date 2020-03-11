@@ -73,7 +73,8 @@ class ScTypeParamClauseImpl private (
       place: PsiElement): Boolean = {
     if (!processor.isInstanceOf[BaseProcessor]) {
       for (param <- typeParameters) {
-        if (!processor.execute(param, state)) return false
+        if (!processor.execute(param, state))
+          return false
       }
     }
     true

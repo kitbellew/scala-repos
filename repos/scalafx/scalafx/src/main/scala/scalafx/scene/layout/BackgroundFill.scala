@@ -36,7 +36,10 @@ import scalafx.scene.paint.Paint
 
 object BackgroundFill {
   implicit def sfxBackgroundFill2jfx(v: BackgroundFill): jfxsl.BackgroundFill =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

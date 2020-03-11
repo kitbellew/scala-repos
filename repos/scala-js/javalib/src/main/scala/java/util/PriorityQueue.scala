@@ -56,7 +56,8 @@ class PriorityQueue[E] protected (
     new mutable.PriorityQueue[Box[E]]()
 
   override def add(e: E): Boolean = {
-    if (e == null) throw new NullPointerException()
+    if (e == null)
+      throw new NullPointerException()
     else {
       inner += Box(e)
       true
@@ -75,13 +76,16 @@ class PriorityQueue[E] protected (
     @tailrec
     def takeLeft(
         part: mutable.PriorityQueue[Box[E]]): mutable.PriorityQueue[Box[E]] = {
-      if (inner.isEmpty) part
+      if (inner.isEmpty)
+        part
       else {
         val next = inner.dequeue
-        if (boxed == next) part
+        if (boxed == next)
+          part
         else if (BoxOrdering.compare(boxed, next) > 0)
           part += next
-        else takeLeft(part += next)
+        else
+          takeLeft(part += next)
       }
     }
 
@@ -124,8 +128,10 @@ class PriorityQueue[E] protected (
     inner.dequeueAll
 
   def poll(): E =
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.dequeue().inner
+    if (inner.isEmpty)
+      null.asInstanceOf[E]
+    else
+      inner.dequeue().inner
 
   def comparator(): Comparator[_ >: E] = _comparator
 }
@@ -135,8 +141,10 @@ object PriorityQueue {
   def safeGetOrdering[E](_comp: => Comparator[_]): Ordering[E] = {
     val comp: Comparator[_] = _comp
     val ord =
-      if (comp == null) defaultOrdering[E]
-      else Ordering.comparatorToOrdering(comp)
+      if (comp == null)
+        defaultOrdering[E]
+      else
+        Ordering.comparatorToOrdering(comp)
 
     ord.asInstanceOf[Ordering[E]]
   }

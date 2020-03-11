@@ -93,9 +93,15 @@ abstract class ModeledCustomHeaderCompanion[H <: ModeledCustomHeader[H]] {
 
   def unapply(h: HttpHeader): Option[String] = h match {
     case _: RawHeader ⇒
-      if (h.lowercaseName == lowercaseName) Some(h.value) else None
+      if (h.lowercaseName == lowercaseName)
+        Some(h.value)
+      else
+        None
     case _: CustomHeader ⇒
-      if (h.lowercaseName == lowercaseName) Some(h.value) else None
+      if (h.lowercaseName == lowercaseName)
+        Some(h.value)
+      else
+        None
     case _ ⇒ None
   }
 
@@ -207,7 +213,10 @@ final case class `Accept-Ranges`(rangeUnits: immutable.Seq[RangeUnit])
     with ResponseHeader {
   import `Accept-Ranges`.rangeUnitsRenderer
   def renderValue[R <: Rendering](r: R): r.type =
-    if (rangeUnits.isEmpty) r ~~ "none" else r ~~ rangeUnits
+    if (rangeUnits.isEmpty)
+      r ~~ "none"
+    else
+      r ~~ rangeUnits
   protected def companion = `Accept-Ranges`
 
   /** Java API */
@@ -414,9 +423,12 @@ final case class Connection(tokens: immutable.Seq[String])
   def append(tokens: immutable.Seq[String]) = Connection(this.tokens ++ tokens)
   @tailrec private def has(item: String, ix: Int = 0): Boolean =
     if (ix < tokens.length)
-      if (tokens(ix) equalsIgnoreCase item) true
-      else has(item, ix + 1)
-    else false
+      if (tokens(ix) equalsIgnoreCase item)
+        true
+      else
+        has(item, ix + 1)
+    else
+      false
   protected def companion = Connection
 
   /** Java API */
@@ -600,7 +612,10 @@ final case class Host(host: Uri.Host, port: Int = 0)
   require((port >> 16) == 0, "Illegal port: " + port)
   def isEmpty = host.isEmpty
   def renderValue[R <: Rendering](r: R): r.type =
-    if (port > 0) r ~~ host ~~ ':' ~~ port else r ~~ host
+    if (port > 0)
+      r ~~ host ~~ ':' ~~ port
+    else
+      r ~~ host
   protected def companion = Host
   def equalsIgnoreCase(other: Host): Boolean =
     host.equalsIgnoreCase(other.host) && port == other.port
@@ -718,7 +733,10 @@ final case class Origin(origins: immutable.Seq[HttpOrigin])
     extends jm.headers.Origin
     with RequestHeader {
   def renderValue[R <: Rendering](r: R): r.type =
-    if (origins.isEmpty) r ~~ "null" else r ~~ origins
+    if (origins.isEmpty)
+      r ~~ "null"
+    else
+      r ~~ origins
   protected def companion = Origin
 
   /** Java API */
@@ -991,7 +1009,8 @@ final case class `Strict-Transport-Security`(
     with ResponseHeader {
   def renderValue[R <: Rendering](r: R): r.type = {
     r ~~ "max-age=" ~~ maxAge
-    if (includeSubDomains) r ~~ "; includeSubDomains"
+    if (includeSubDomains)
+      r ~~ "; includeSubDomains"
     r
   }
   protected def companion = `Strict-Transport-Security`
@@ -1053,15 +1072,18 @@ final case class `Transfer-Encoding`(encodings: immutable.Seq[TransferEncoding])
   import `Transfer-Encoding`.encodingsRenderer
   def isChunked: Boolean = encodings.last == TransferEncodings.chunked
   def withChunked: `Transfer-Encoding` =
-    if (isChunked) this
-    else `Transfer-Encoding`(encodings :+ TransferEncodings.chunked)
+    if (isChunked)
+      this
+    else
+      `Transfer-Encoding`(encodings :+ TransferEncodings.chunked)
   def withChunkedPeeled: Option[`Transfer-Encoding`] =
     if (isChunked) {
       encodings.init match {
         case Nil ⇒ None
         case remaining ⇒ Some(`Transfer-Encoding`(remaining))
       }
-    } else Some(this)
+    } else
+      Some(this)
   def append(encodings: immutable.Seq[TransferEncoding]) =
     `Transfer-Encoding`(this.encodings ++ encodings)
   def renderValue[R <: Rendering](r: R): r.type = r ~~ encodings

@@ -199,8 +199,17 @@ class AlgebraicTest extends SpireProperties {
   def genBigInt: Gen[BigInt] =
     for {
       bytes <- Gen.listOf(arbitrary[Byte])
-      signum <- arbitrary[Boolean].map(n => if (n) -1 else 1)
-    } yield BigInt(signum, if (bytes.isEmpty) Array(0: Byte) else bytes.toArray)
+      signum <- arbitrary[Boolean].map(n =>
+        if (n)
+          -1
+        else
+          1)
+    } yield BigInt(
+      signum,
+      if (bytes.isEmpty)
+        Array(0: Byte)
+      else
+        bytes.toArray)
 
   def genRational: Gen[Rational] =
     for {
@@ -229,7 +238,8 @@ class AlgebraicTest extends SpireProperties {
     val MaxDepth = 3
 
     def genRationalAlgebraic(depth: Int): Gen[RationalAlgebraic] =
-      if (depth >= MaxDepth) genLeaf
+      if (depth >= MaxDepth)
+        genLeaf
       else
         Gen.frequency(
           (1, genAdd(depth + 1)),

@@ -147,7 +147,10 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val rdd = baseRdd(sqlContext, options, inputPaths)
     // Make sure firstLine is materialized before sending to executors
     val firstLine =
-      if (options.headerFlag) findFirstLine(options, rdd) else null
+      if (options.headerFlag)
+        findFirstLine(options, rdd)
+      else
+        null
     CSVRelation.univocityTokenizer(rdd, header, firstLine, options)
   }
 

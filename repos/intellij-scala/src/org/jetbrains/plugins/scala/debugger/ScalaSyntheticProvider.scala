@@ -21,7 +21,8 @@ object ScalaSyntheticProvider {
   def isSynthetic(typeComponent: TypeComponent): Boolean = {
     val isScala =
       DebuggerUtil.isScala(typeComponent.declaringType(), default = false)
-    if (!isScala) return false
+    if (!isScala)
+      return false
 
     typeComponent match {
       case m: Method
@@ -55,7 +56,8 @@ object ScalaSyntheticProvider {
 
   private def isDefaultArg(m: Method): Boolean = {
     val methodName = m.name()
-    if (!methodName.contains("$default$")) false
+    if (!methodName.contains("$default$"))
+      false
     else {
       val lastDefault =
         defaultArgPattern.findAllMatchIn(methodName).toSeq.lastOption
@@ -87,14 +89,17 @@ object ScalaSyntheticProvider {
     var i = 0
     while (i < bytecodes.length) {
       val instr = bytecodes(i)
-      if (BytecodeUtil.twoBytesLoadCodes.contains(instr)) i += 2
-      else if (BytecodeUtil.oneByteLoadCodes.contains(instr)) i += 1
+      if (BytecodeUtil.twoBytesLoadCodes.contains(instr))
+        i += 2
+      else if (BytecodeUtil.oneByteLoadCodes.contains(instr))
+        i += 1
       else if (instr == DecompilerUtil.Opcodes.invokeStatic) {
         val nextIdx = i + 3
         val nextInstr = bytecodes(nextIdx)
         return nextIdx == (bytecodes.length - 1) && BytecodeUtil.returnCodes
           .contains(nextInstr)
-      } else return false
+      } else
+        return false
     }
     false
   }

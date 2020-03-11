@@ -195,7 +195,11 @@ object TypedActor
           for (i ← 0 until ps.length) {
             val p = ps(i)
             val s = serialization.findSerializerFor(p)
-            val m = if (s.includeManifest) p.getClass else null
+            val m =
+              if (s.includeManifest)
+                p.getClass
+              else
+                null
             serializedParameters(i) = (
               s.identifier,
               m,
@@ -379,7 +383,8 @@ object TypedActor
     def receive = {
       case m: MethodCall ⇒
         withContext {
-          if (m.isOneWay) m(me)
+          if (m.isOneWay)
+            m(me)
           else {
             try {
               val s = sender()
@@ -523,7 +528,10 @@ object TypedActor
               }) match {
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
-                  if (m.returnsJOption) JOption.none[Any] else None
+                  if (m.returnsJOption)
+                    JOption.none[Any]
+                  else
+                    None
                 case Some(t: Try[_]) ⇒
                   t.get.asInstanceOf[AnyRef]
               }
@@ -576,8 +584,10 @@ object TypedProps {
     * or a sequence containing only itself, if itself is an interface.
     */
   def extractInterfaces(clazz: Class[_]): immutable.Seq[Class[_]] =
-    if (clazz.isInterface) immutableSingletonSeq(clazz)
-    else immutableSeq(clazz.getInterfaces)
+    if (clazz.isInterface)
+      immutableSingletonSeq(clazz)
+    else
+      immutableSeq(clazz.getInterfaces)
 
   /**
     * Uses the supplied class as the factory for the TypedActor implementation,
@@ -746,7 +756,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
   def actorProps(): Props =
     if (dispatcher == Props.default.dispatcher)
       Props.default.withDeploy(deploy)
-    else Props.default.withDispatcher(dispatcher).withDeploy(deploy)
+    else
+      Props.default.withDispatcher(dispatcher).withDeploy(deploy)
 }
 
 /**
@@ -843,5 +854,6 @@ class TypedActorExtension(val system: ExtendedActorSystem)
             case _ ⇒ null
           }
       }
-    else null
+    else
+      null
 }

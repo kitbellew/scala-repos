@@ -56,7 +56,8 @@ class ScalaAnnotatedMembersSearcher
             case ann: ScAnnotations =>
               ann.getParent match {
                 case member: PsiMember =>
-                  if (!consumer.process(member)) return false
+                  if (!consumer.process(member))
+                    return false
                 case _ =>
               }
             case _ =>

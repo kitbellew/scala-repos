@@ -211,7 +211,8 @@ class PersistentActorJournalProtocolSpec
         val w1 =
           expectWrite(subject, Vector.tabulate(30)(i ⇒ Msgs(s"a-$i")): _*)
         confirm(w1)
-        for (i ← 0 until 30) expectMsg(Done(i, 1))
+        for (i ← 0 until 30)
+          expectMsg(Done(i, 1))
         subject ! PoisonPill
         expectMsg(PostStop("test-4"))
         journal.msgAvailable should ===(false)
@@ -224,7 +225,8 @@ class PersistentActorJournalProtocolSpec
           (start until end).map(i ⇒ PersistAsync(i, s"a-$i-1", s"a-$i-2"))
         def expectDone(start: Int, end: Int) =
           for (i ← start until end;
-               j ← 1 to 2) expectMsg(Done(i, j))
+               j ← 1 to 2)
+            expectMsg(Done(i, j))
 
         val subject = startActor("test-5")
         subject ! PersistAsync(-1, "a" +: commands(20, 30): _*)

@@ -46,7 +46,8 @@ class RatComparisonBenchmarks extends MyBenchmark {
     }
 
     // set to true to verify that both methods produce the same result
-    if (false) assert(verify())
+    if (false)
+      assert(verify())
   }
 
   def spireToAp(r: Rational) = new Aprational(

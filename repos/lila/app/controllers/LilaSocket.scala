@@ -36,7 +36,8 @@ trait LilaSocket { self: LilaController =>
                 writeOut |>> i
                 e &> Enumeratee.mapInputM { in =>
                   consumer(ip).map { credit =>
-                    if (credit >= 0) in
+                    if (credit >= 0)
+                      in
                     else {
                       logger.info(
                         s"socket:$name socket close $ip $userInfo $in")

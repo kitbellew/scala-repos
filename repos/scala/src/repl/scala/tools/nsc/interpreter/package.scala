@@ -90,8 +90,10 @@ package object interpreter extends ReplConfig with ReplStrings {
       val filtered = intp.implicitSymbolsBySource filter {
         case (source, syms) =>
           (args contains "-v") || {
-            if (line == "") (source.fullName.toString != "scala.Predef")
-            else (args exists (source.name.toString contains _))
+            if (line == "")
+              (source.fullName.toString != "scala.Predef")
+            else
+              (args exists (source.name.toString contains _))
           }
       }
 
@@ -127,7 +129,10 @@ package object interpreter extends ReplConfig with ReplStrings {
               }
 
               val ownerMessage =
-                if (owner == source) " defined in " else " inherited from "
+                if (owner == source)
+                  " defined in "
+                else
+                  " inherited from "
               p("  /* " + members.size + ownerMessage + owner.fullName + " */")
 
               memberGroups foreach { group =>
@@ -196,13 +201,17 @@ package object interpreter extends ReplConfig with ReplStrings {
       reporter printUntruncatedMessage exitingTyper(msg)
 
     private def replInfo(sym: Symbol) =
-      if (sym.isAccessor) dropNullaryMethod(sym.info) else sym.info
+      if (sym.isAccessor)
+        dropNullaryMethod(sym.info)
+      else
+        sym.info
 
     def echoTypeStructure(sym: Symbol) =
       printAfterTyper("" + deconstruct.show(replInfo(sym)))
 
     def echoTypeSignature(sym: Symbol, verbose: Boolean) = {
-      if (verbose) echo("// Type signature")
+      if (verbose)
+        echo("// Type signature")
       printAfterTyper("" + replInfo(sym))
 
       if (verbose) {

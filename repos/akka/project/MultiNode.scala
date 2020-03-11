@@ -48,7 +48,10 @@ object MultiNode extends AutoPlugin {
       System.getProperties.propertyNames.asScala.toList.collect {
         case MultinodeJvmArgs(a, b) =>
           val value = System.getProperty("multinode." + a + b)
-          "-" + a + b + (if (value == "") "" else "=" + value)
+          "-" + a + b + (if (value == "")
+                           ""
+                         else
+                           "=" + value)
         case key: String if knownPrefix.exists(pre => key.startsWith(pre)) =>
           "-D" + key + "=" + System.getProperty(key)
       }
@@ -102,20 +105,24 @@ object MultiNodeScalaTest extends AutoPlugin {
     },
     scalatestOptions in MultiJvm := {
       Seq("-C", "org.scalatest.extra.QuietReporter") ++
-        (if (excludeTestTags.value.isEmpty) Seq.empty
+        (if (excludeTestTags.value.isEmpty)
+           Seq.empty
          else
            Seq(
              "-l",
              if (MultiNode.CliOptions.multiNode.get)
                excludeTestTags.value.mkString("\"", " ", "\"")
-             else excludeTestTags.value.mkString(" "))) ++
-        (if (onlyTestTags.value.isEmpty) Seq.empty
+             else
+               excludeTestTags.value.mkString(" "))) ++
+        (if (onlyTestTags.value.isEmpty)
+           Seq.empty
          else
            Seq(
              "-n",
              if (MultiNode.CliOptions.multiNode.get)
                onlyTestTags.value.mkString("\"", " ", "\"")
-             else onlyTestTags.value.mkString(" ")))
+             else
+               onlyTestTags.value.mkString(" ")))
     }
   )
 }

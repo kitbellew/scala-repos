@@ -279,8 +279,10 @@ private[metrics] class ClusterMetricsCollector extends Actor with ActorLogging {
 
   def selectRandomNode(
       addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None
-    else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
+    if (addresses.isEmpty)
+      None
+    else
+      Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
   /**
     * Publishes to the event stream.

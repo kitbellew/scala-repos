@@ -59,7 +59,10 @@ trait TextIncludes {
     * @return $SFX $FT
     */
   implicit def jfxFont2sfxFont(f: jfxst.Font): Font =
-    if (f != null) new Font(f) else null
+    if (f != null)
+      new Font(f)
+    else
+      null
 
   /**
     * $START$FP.html $FP$END
@@ -96,7 +99,10 @@ trait TextIncludes {
     * @return $SFX $TX
     */
   implicit def jfxText2sfxText(t: jfxst.Text): Text =
-    if (t != null) new Text(t) else null
+    if (t != null)
+      new Text(t)
+    else
+      null
 
   /**
     * $START$TA.html $TA$END
@@ -117,5 +123,8 @@ trait TextIncludes {
     TextBoundsType.jfxEnum2sfx(e)
 
   implicit def jfxTextFlow2sfx(tf: jfxst.TextFlow): TextFlow =
-    if (tf != null) new TextFlow(tf) else null
+    if (tf != null)
+      new TextFlow(tf)
+    else
+      null
 }

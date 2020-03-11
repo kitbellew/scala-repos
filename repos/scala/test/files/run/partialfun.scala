@@ -8,7 +8,8 @@ object Test {
     val repr: Repr = _this.asInstanceOf[Repr]
     val b = bf(repr)
     _this foreach { x =>
-      if (pf isDefinedAt x) b += pf(x)
+      if (pf isDefinedAt x)
+        b += pf(x)
     }
     b.result
   }
@@ -30,14 +31,20 @@ object Test {
   object Ex1 {
     def unapply(x: Int): Option[Int] = {
       cnt += 1
-      if ((x % 3) == 0) Some(-x) else None
+      if ((x % 3) == 0)
+        Some(-x)
+      else
+        None
     }
   }
 
   object Ex2 {
     def unapply(x: Int): Option[Int] = {
       //cnt += 1
-      if ((x % 5) == 0) Some(x) else None
+      if ((x % 5) == 0)
+        Some(x)
+      else
+        None
     }
   }
 

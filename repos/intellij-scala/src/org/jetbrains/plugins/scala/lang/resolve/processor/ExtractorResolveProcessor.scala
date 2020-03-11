@@ -33,7 +33,8 @@ class ExtractorResolveProcessor(
     val named = element.asInstanceOf[PsiNamedElement]
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
-      if (accessibility && !accessible) return true
+      if (accessibility && !accessible)
+        return true
 
       def resultsForTypedDef(obj: ScTypedDefinition) {
         def resultsFor(unapplyName: String) = {
@@ -118,15 +119,18 @@ class ExtractorResolveProcessor(
                 for (paramType <- clauses(0).parameters
                        .apply(0)
                        .getType(TypingContext.empty)
-                     if tp conforms r.substitutor.subst(paramType)) return true
+                     if tp conforms r.substitutor.subst(paramType))
+                  return true
               }
               false
             case _ => true
           }
         }
         val filtered = candidates.filter(t => isApplicable(t))
-        if (filtered.size == 0) candidates
-        else if (filtered.size == 1) filtered
+        if (filtered.size == 0)
+          candidates
+        else if (filtered.size == 1)
+          filtered
         else {
           new MostSpecificUtil(ref, 1).mostSpecificForResolveResult(
             filtered,

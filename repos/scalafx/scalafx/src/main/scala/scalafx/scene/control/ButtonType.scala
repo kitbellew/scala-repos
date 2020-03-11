@@ -46,7 +46,10 @@ object ButtonType {
     * @return JavaFX ButtonType
     */
   implicit def sfxButtonType2jfx(v: ButtonType): jfxsc.ButtonType =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * A pre-defined [[scalafx.scene.control.ButtonType]] that displays "Apply" and has a

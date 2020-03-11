@@ -16,8 +16,10 @@ class ExpandSums extends Phase {
     if (state
           .get(Phase.assignUniqueSymbols)
           .map(_.nonPrimitiveOption)
-          .getOrElse(true)) state.map(expandSums)
-    else state
+          .getOrElse(true))
+      state.map(expandSums)
+    else
+      state
 
   val Disc1 = LiteralNode(ScalaBaseType.optionDiscType.optionType, Option(1))
   val DiscNone = LiteralNode(ScalaBaseType.optionDiscType.optionType, None)
@@ -38,27 +40,27 @@ class ExpandSums extends Phase {
       val tree3 = tree2 match {
         // Expand multi-column null values in ELSE branches (used by Rep[Option].filter) with correct type
         case IfThenElse(
-            ConstArray(
-              pred,
-              then1 :@ tpe,
-              LiteralNode(None) :@ OptionType(ScalaBaseType.nullType))) =>
+              ConstArray(
+                pred,
+                then1 :@ tpe,
+                LiteralNode(None) :@ OptionType(ScalaBaseType.nullType))) =>
           multi = true
           IfThenElse(ConstArray(pred, then1, buildMultiColumnNone(tpe))) :@ tpe
 
         // Identity OptionFold/OptionApply combination -> remove
         case OptionFold(
-            from,
-            LiteralNode(None) :@ OptionType(ScalaBaseType.nullType),
-            oa @ OptionApply(Ref(s)),
-            gen) if s == gen =>
+              from,
+              LiteralNode(None) :@ OptionType(ScalaBaseType.nullType),
+              oa @ OptionApply(Ref(s)),
+              gen) if s == gen =>
           silentCast(oa.nodeType, from)
 
         // Primitive OptionFold representing GetOrElse -> translate to GetOrElse
         case OptionFold(
-            from :@ OptionType.Primitive(_),
-            LiteralNode(v),
-            Ref(s),
-            gen) if s == gen =>
+              from :@ OptionType.Primitive(_),
+              LiteralNode(v),
+              Ref(s),
+              gen) if s == gen =>
           GetOrElse(from, () => v).infer()
 
         // Primitive OptionFold -> translate to null check
@@ -98,7 +100,8 @@ class ExpandSums extends Phase {
                 },
                 keepType = true)
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
-              if (left == Disc1) ifDefined
+              if (left == Disc1)
+                ifDefined
               else
                 IfThenElse(
                   ConstArray(
@@ -141,7 +144,10 @@ class ExpandSums extends Phase {
     }
 
     val n2 = tr(n, Set.empty)
-    if (multi) expandConditionals(n2) else n2
+    if (multi)
+      expandConditionals(n2)
+    else
+      n2
   }
 
   /** Translate an Option-extended left outer, right outer or full outer join */
@@ -194,9 +200,15 @@ class ExpandSums extends Phase {
           case _             => Vector.empty
         }
       val local = find(t, Nil).sortBy { ss =>
-        (if (global contains ss) 3 else 1) * (ss.head match {
+        (if (global contains ss)
+           3
+         else
+           1) * (ss.head match {
           case f: FieldSymbol =>
-            if (f.options contains ColumnOption.PrimaryKey) -2 else -1
+            if (f.options contains ColumnOption.PrimaryKey)
+              -2
+            else
+              -1
           case _ => 0
         })
       }
@@ -239,17 +251,29 @@ class ExpandSums extends Phase {
     val (left2, right2, on2, jt2, ldisc, rdisc) = jt match {
       case JoinType.LeftOption =>
         val (right2, on2, rdisc) =
-          if (rComplex) extend(right, rsym, on) else (right, on, false)
+          if (rComplex)
+            extend(right, rsym, on)
+          else
+            (right, on, false)
         (left, right2, on2, JoinType.Left, false, rdisc)
       case JoinType.RightOption =>
         val (left2, on2, ldisc) =
-          if (lComplex) extend(left, lsym, on) else (left, on, false)
+          if (lComplex)
+            extend(left, lsym, on)
+          else
+            (left, on, false)
         (left2, right, on2, JoinType.Right, ldisc, false)
       case JoinType.OuterOption =>
         val (left2, on2, ldisc) =
-          if (lComplex) extend(left, lsym, on) else (left, on, false)
+          if (lComplex)
+            extend(left, lsym, on)
+          else
+            (left, on, false)
         val (right2, on3, rdisc) =
-          if (rComplex) extend(right, rsym, on2) else (right, on2, false)
+          if (rComplex)
+            extend(right, rsym, on2)
+          else
+            (right, on2, false)
         (left2, right2, on3, JoinType.Outer, ldisc, rdisc)
     }
 
@@ -269,7 +293,8 @@ class ExpandSums extends Phase {
             DiscNone,
             Disc1))
         ProductNode(ConstArray(disc, rest))
-      } else ref
+      } else
+        ref
       silentCast(trType(elemType.asInstanceOf[ProductType].children(idx)), v)
     }
     val ref = ProductNode(
@@ -345,10 +370,10 @@ class ExpandSums extends Phase {
   def fuse(n: Node): Node = n match {
     // Option.map
     case IfThenElse(
-        ConstArray(
-          Library.Not(Library.==(disc, LiteralNode(null))),
-          ProductNode(ConstArray(Disc1, map)),
-          ProductNode(ConstArray(DiscNone, _)))) =>
+          ConstArray(
+            Library.Not(Library.==(disc, LiteralNode(null))),
+            ProductNode(ConstArray(Disc1, map)),
+            ProductNode(ConstArray(DiscNone, _)))) =>
       ProductNode(ConstArray(disc, map)).infer()
     case n => n
   }
@@ -434,10 +459,10 @@ class ExpandSums extends Phase {
 
       // Optimize null-propagating single-column IfThenElse
       case IfThenElse(
-          ConstArray(
-            Library.==(r, LiteralNode(null)),
-            Library.SilentCast(LiteralNode(None)),
-            c @ Library.SilentCast(r2))) if r == r2 =>
+            ConstArray(
+              Library.==(r, LiteralNode(null)),
+              Library.SilentCast(LiteralNode(None)),
+              c @ Library.SilentCast(r2))) if r == r2 =>
         c
 
       // Fix Untyped nulls in else clauses

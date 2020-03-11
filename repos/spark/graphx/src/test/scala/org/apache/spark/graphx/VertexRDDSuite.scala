@@ -86,7 +86,13 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n).cache()
-      val flipEvens = verts.mapValues(x => if (x % 2 == 0) -x else x).cache()
+      val flipEvens = verts
+        .mapValues(x =>
+          if (x % 2 == 0)
+            -x
+          else
+            x)
+        .cache()
       // diff should keep only the changed vertices
       assert(
         verts.diff(flipEvens).map(_._2).collect().toSet === (2 to n by 2)
@@ -104,7 +110,11 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val verts = vertices(sc, n).cache()
       val flipEvens: RDD[(VertexId, Int)] =
         sc.parallelize(0L to 100L)
-          .map(id => if (id % 2 == 0) (id, -id.toInt) else (id, id.toInt))
+          .map(id =>
+            if (id % 2 == 0)
+              (id, -id.toInt)
+            else
+              (id, id.toInt))
           .cache()
       // diff should keep only the changed vertices
       assert(
@@ -230,7 +240,15 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val messages = sc.parallelize(messageTargets.map(x => (x.toLong, 1)))
       assert(
         verts.aggregateUsingIndex[Int](messages, _ + _).collect().toSet ===
-          (0 to n).map(x => (x.toLong, if (x % 2 == 0) 2 else 1)).toSet)
+          (0 to n)
+            .map(x =>
+              (
+                x.toLong,
+                if (x % 2 == 0)
+                  2
+                else
+                  1))
+            .toSet)
     }
   }
 

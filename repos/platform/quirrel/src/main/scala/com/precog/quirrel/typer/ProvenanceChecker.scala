@@ -78,8 +78,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
           val provenance = unified getOrElse NullProvenance
           (
             provenance,
-            if (unified.isDefined) Set()
-            else Set(Error(expr, OperationOnUnrelatedSets)),
+            if (unified.isDefined)
+              Set()
+            else
+              Set(Error(expr, OperationOnUnrelatedSets)),
             Set())
         }
       }
@@ -475,8 +477,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
           val (errors, constr) = loop(child, relations, constraints)
           val errorSet = constrErrors ++ errors
 
-          if (errorSet.nonEmpty) expr.provenance = NullProvenance
-          else expr.provenance = DynamicProvenance(currentId.getAndIncrement())
+          if (errorSet.nonEmpty)
+            expr.provenance = NullProvenance
+          else
+            expr.provenance = DynamicProvenance(currentId.getAndIncrement())
 
           (errorSet, constrConstr ++ constr)
         }
@@ -1035,7 +1039,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
     val lastErrors = {
       if (expr.provenance == InfiniteProvenance)
         Set(Error(expr, CannotUseDistributionWithoutSampling))
-      else Set()
+      else
+        Set()
     }
 
     errors ++ lastErrors
@@ -1378,26 +1383,37 @@ trait ProvenanceChecker extends parser.AST with Binder {
       def order(p1: Provenance, p2: Provenance): Ordering = (p1, p2) match {
         case (ParamProvenance(id1, let1), ParamProvenance(id2, let2)) => {
           if (id1.id == id2.id) {
-            if (let1 == let2) EQ
+            if (let1 == let2)
+              EQ
             else if (let1.loc.lineNum == let2.loc.lineNum) {
-              if (let1.loc.colNum == let2.loc.colNum) EQ // wtf??
-              else if (let1.loc.colNum < let2.loc.colNum) LT
-              else GT
-            } else if (let1.loc.lineNum < let2.loc.lineNum) LT
-            else GT
-          } else if (id1.id < id2.id) LT
-          else GT
+              if (let1.loc.colNum == let2.loc.colNum)
+                EQ // wtf??
+              else if (let1.loc.colNum < let2.loc.colNum)
+                LT
+              else
+                GT
+            } else if (let1.loc.lineNum < let2.loc.lineNum)
+              LT
+            else
+              GT
+          } else if (id1.id < id2.id)
+            LT
+          else
+            GT
         }
         case (ParamProvenance(_, _), _) => GT
         case (_, ParamProvenance(_, _)) => LT
 
         case (
-            ParametricDynamicProvenance(prov1, id1),
-            ParametricDynamicProvenance(prov2, id2)) => {
+              ParametricDynamicProvenance(prov1, id1),
+              ParametricDynamicProvenance(prov2, id2)) => {
           if (prov1 == prov2) {
-            if (id1 == id2) EQ
-            else if (id1 < id2) LT
-            else GT
+            if (id1 == id2)
+              EQ
+            else if (id1 < id2)
+              LT
+            else
+              GT
           } else {
             prov1 ?|? prov2
           }
@@ -1406,59 +1422,65 @@ trait ProvenanceChecker extends parser.AST with Binder {
         case (_, ParametricDynamicProvenance(_, _)) => LT
 
         case (
-            DerivedUnionProvenance(left1, right1),
-            DerivedUnionProvenance(left2, right2)) =>
+              DerivedUnionProvenance(left1, right1),
+              DerivedUnionProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedUnionProvenance(_, _), _) => GT
         case (_, DerivedUnionProvenance(_, _)) => LT
 
         case (
-            DerivedIntersectProvenance(left1, right1),
-            DerivedIntersectProvenance(left2, right2)) =>
+              DerivedIntersectProvenance(left1, right1),
+              DerivedIntersectProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedIntersectProvenance(_, _), _) => GT
         case (_, DerivedIntersectProvenance(_, _)) => LT
 
         case (
-            DerivedDifferenceProvenance(left1, right1),
-            DerivedDifferenceProvenance(left2, right2)) =>
+              DerivedDifferenceProvenance(left1, right1),
+              DerivedDifferenceProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedDifferenceProvenance(_, _), _) => GT
         case (_, DerivedDifferenceProvenance(_, _)) => LT
 
         case (
-            UnifiedProvenance(left1, right1),
-            UnifiedProvenance(left2, right2)) =>
+              UnifiedProvenance(left1, right1),
+              UnifiedProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (UnifiedProvenance(_, _), _) => GT
         case (_, UnifiedProvenance(_, _)) => LT
 
         case (
-            ProductProvenance(left1, right1),
-            ProductProvenance(left2, right2)) =>
+              ProductProvenance(left1, right1),
+              ProductProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (ProductProvenance(_, _), _) => GT
         case (_, ProductProvenance(_, _)) => LT
 
         case (
-            CoproductProvenance(left1, right1),
-            CoproductProvenance(left2, right2)) =>
+              CoproductProvenance(left1, right1),
+              CoproductProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (CoproductProvenance(_, _), _) => GT
         case (_, CoproductProvenance(_, _)) => LT
 
         case (StaticProvenance(v1), StaticProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
+          if (v1 == v2)
+            EQ
+          else if (v1 < v2)
+            LT
+          else
+            GT
         }
         case (StaticProvenance(_), _) => GT
         case (_, StaticProvenance(_)) => LT
 
         case (DynamicProvenance(v1), DynamicProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
+          if (v1 == v2)
+            EQ
+          else if (v1 < v2)
+            LT
+          else
+            GT
         }
         case (DynamicProvenance(_), _) => GT
         case (_, DynamicProvenance(_)) => LT

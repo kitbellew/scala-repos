@@ -93,7 +93,11 @@ final class MethodCall[T <: AnyRef] private[reflect] (
     methodProxy: MethodProxy)
     extends (() => AnyRef) {
 
-  lazy val target = if (targetRef ne null) Some(targetRef) else None
+  lazy val target =
+    if (targetRef ne null)
+      Some(targetRef)
+    else
+      None
 
   def clazz = method.getDeclaringClass
   def clazzName = clazz.getName
@@ -108,7 +112,10 @@ final class MethodCall[T <: AnyRef] private[reflect] (
   def returnsFuture = classOf[Future[_]] isAssignableFrom method.getReturnType
 
   private def getTarget =
-    if (targetRef ne null) targetRef else throw new NonexistentTargetException
+    if (targetRef ne null)
+      targetRef
+    else
+      throw new NonexistentTargetException
 
   def apply() = methodProxy.invoke(getTarget, args)
 

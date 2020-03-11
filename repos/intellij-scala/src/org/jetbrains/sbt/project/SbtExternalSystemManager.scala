@@ -135,7 +135,10 @@ object SbtExternalSystemManager {
   private def getUnitTestVmExecutable: File = {
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =
-      if (internalSdk == null) IdeaTestUtil.getMockJdk17 else internalSdk
+      if (internalSdk == null)
+        IdeaTestUtil.getMockJdk17
+      else
+        internalSdk
     val sdkType = sdk.getSdkType.asInstanceOf[JavaSdkType]
     new File(sdkType.getVMExecutablePath(sdk))
   }

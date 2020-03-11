@@ -51,7 +51,8 @@ class AddressTerminatedTopicBenchSpec extends AkkaSpec("akka.loglevel=INFO") {
           num,
           (System.nanoTime() - t2).nanos.toMillis)
       } finally {
-        if (!sys.isTerminated) shutdown(sys)
+        if (!sys.isTerminated)
+          shutdown(sys)
       }
     }
 

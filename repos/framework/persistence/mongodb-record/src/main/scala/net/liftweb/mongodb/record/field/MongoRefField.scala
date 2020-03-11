@@ -83,7 +83,10 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
   def emptyOptionLabel: String = ""
 
   def buildDisplayList: List[(Box[MyType], String)] = {
-    if (optional_?) (Empty, emptyOptionLabel) :: options else options
+    if (optional_?)
+      (Empty, emptyOptionLabel) :: options
+    else
+      options
   }
 
   private def elem =

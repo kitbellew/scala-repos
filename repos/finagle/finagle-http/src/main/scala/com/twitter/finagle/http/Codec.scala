@@ -216,8 +216,10 @@ case class Http(
         )
 
       override def newTraceInitializer =
-        if (_enableTracing) new HttpClientTraceInitializer[Request, Response]
-        else TraceInitializerFilter.empty[Request, Response]
+        if (_enableTracing)
+          new HttpClientTraceInitializer[Request, Response]
+        else
+          TraceInitializerFilter.empty[Request, Response]
     }
   }
 
@@ -295,8 +297,10 @@ case class Http(
       }
 
       override def newTraceInitializer =
-        if (_enableTracing) new HttpServerTraceInitializer[Request, Response]
-        else TraceInitializerFilter.empty[Request, Response]
+        if (_enableTracing)
+          new HttpServerTraceInitializer[Request, Response]
+        else
+          TraceInitializerFilter.empty[Request, Response]
     }
   }
 

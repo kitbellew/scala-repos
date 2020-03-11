@@ -27,7 +27,8 @@ object ScalastyleCodeInspection {
 
     def findIn(project: Project): Option[VirtualFile] = {
       val root = project.getBaseDir
-      if (root == null) return None
+      if (root == null)
+        return None
 
       val dirs =
         possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root
@@ -74,7 +75,8 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
         .getOrElse(Array.empty)
     }
 
-    if (!file.isInstanceOf[ScalaFile]) Array.empty
+    if (!file.isInstanceOf[ScalaFile])
+      Array.empty
     else
       withConfiguration { configuration =>
         val scalaFile = file.asInstanceOf[ScalaFile]
@@ -88,7 +90,11 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
             e: PsiElement,
             line: Int,
             column: Option[Int]): Boolean = {
-          val correctLine = if (line > 0) line - 1 else 0
+          val correctLine =
+            if (line > 0)
+              line - 1
+            else
+              0
           val sameLine = correctLine == document.getLineNumber(e.getTextOffset)
           column match {
             case Some(col) =>
@@ -117,14 +123,14 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
 
         result.flatMap {
           case StyleError(
-              _,
-              _,
-              key,
-              level,
-              args,
-              Some(line),
-              column,
-              customMessage) =>
+                _,
+                _,
+                key,
+                level,
+                args,
+                Some(line),
+                column,
+                customMessage) =>
             findPsiElement(line, column)
               .filter(e => e.isPhysical && !e.getTextRange.isEmpty)
               .map { e =>

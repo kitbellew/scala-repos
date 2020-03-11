@@ -33,7 +33,8 @@ class Channel[A] {
     lastWritten.elem = x
     lastWritten.next = new LinkedList[A]
     lastWritten = lastWritten.next
-    if (nreaders > 0) notify()
+    if (nreaders > 0)
+      notify()
   }
 
   /** Retrieve the next waiting object from the FIFO queue,

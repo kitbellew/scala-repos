@@ -218,7 +218,10 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
 
   test("Frequent Items") {
     val rows = Seq.tabulate(1000) { i =>
-      if (i % 3 == 0) (1, toLetter(1), -1.0) else (i, toLetter(i), i * -1.0)
+      if (i % 3 == 0)
+        (1, toLetter(1), -1.0)
+      else
+        (i, toLetter(i), i * -1.0)
     }
     val df = rows.toDF("numbers", "letters", "negDoubles")
 

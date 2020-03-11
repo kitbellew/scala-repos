@@ -102,7 +102,8 @@ private[twitter] class ClientSession(
       writeLk.lockInterruptibly()
       try {
         state =
-          if (outstanding.get() > 0) Draining
+          if (outstanding.get() > 0)
+            Draining
           else {
             if (log.isLoggable(Level.FINE))
               safeLog(s"Finished draining a connection to $name", Level.FINE)
@@ -133,11 +134,13 @@ private[twitter] class ClientSession(
   private[this] def processRmsg(msg: Message): Unit = msg match {
     case Message.Rping(Message.Tags.PingTag) =>
       val p = pingPromise.getAndSet(null)
-      if (p != null) p.setDone()
+      if (p != null)
+        p.setDone()
 
     case Message.Rerr(Message.Tags.PingTag, err) =>
       val p = pingPromise.getAndSet(null)
-      if (p != null) p.setException(ServerError(err))
+      if (p != null)
+        p.setException(ServerError(err))
 
     // Move the session to `Drained`, effectively closing the session,
     // if we were `Draining` our session.

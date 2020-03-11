@@ -35,9 +35,12 @@ class DelayedItem(delayMs: Long) extends Delayed with Logging {
   def compareTo(d: Delayed): Int = {
     val other = d.asInstanceOf[DelayedItem]
 
-    if (dueMs < other.dueMs) -1
-    else if (dueMs > other.dueMs) 1
-    else 0
+    if (dueMs < other.dueMs)
+      -1
+    else if (dueMs > other.dueMs)
+      1
+    else
+      0
   }
 
 }

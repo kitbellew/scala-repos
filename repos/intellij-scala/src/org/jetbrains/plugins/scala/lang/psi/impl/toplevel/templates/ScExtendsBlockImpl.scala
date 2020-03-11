@@ -115,9 +115,11 @@ class ScExtendsBlockImpl private (
 
     if (isUnderCaseClass) {
       val prod = scalaProduct
-      if (prod != null) buffer += prod
+      if (prod != null)
+        buffer += prod
       val ser = scalaSerializable
-      if (ser != null) buffer += ser
+      if (ser != null)
+        buffer += ser
     }
 
     if (!isScalaObject) {
@@ -188,22 +190,34 @@ class ScExtendsBlockImpl private (
 
   private def scalaProduct: ScType = {
     val sp = scalaProductClass
-    if (sp != null) ScType.designator(sp) else null
+    if (sp != null)
+      ScType.designator(sp)
+    else
+      null
   }
 
   private def scalaSerializable: ScType = {
     val sp = scalaSerializableClass
-    if (sp != null) ScType.designator(sp) else null
+    if (sp != null)
+      ScType.designator(sp)
+    else
+      null
   }
 
   private def scalaObject: ScDesignatorType = {
     val so = scalaObjectClass
-    if (so != null) ScDesignatorType(so) else null
+    if (so != null)
+      ScDesignatorType(so)
+    else
+      null
   }
 
   private def javaObject: ScDesignatorType = {
     val so = javaObjectClass
-    if (so != null) ScDesignatorType(so) else null
+    if (so != null)
+      ScDesignatorType(so)
+    else
+      null
   }
 
   def isAnonymousClass: Boolean = {
@@ -219,7 +233,8 @@ class ScExtendsBlockImpl private (
 
   @Cached(false, ModCount.getBlockModificationCount, this)
   def syntheticTypeElements: Seq[ScTypeElement] = {
-    if (templateParents.nonEmpty) return Seq.empty //will be handled separately
+    if (templateParents.nonEmpty)
+      return Seq.empty //will be handled separately
     getContext match {
       case td: ScTypeDefinition => SyntheticMembersInjector.injectSupers(td)
       case _                    => Seq.empty
@@ -246,13 +261,16 @@ class ScExtendsBlockImpl private (
     }
     if (isUnderCaseClass) {
       val prod = scalaProductClass
-      if (prod != null) buffer += prod
+      if (prod != null)
+        buffer += prod
       val ser = scalaSerializableClass
-      if (ser != null) buffer += ser
+      if (ser != null)
+        buffer += ser
     }
     if (!isScalaObject) {
       val obj = scalaObjectClass
-      if (obj != null && !obj.isDeprecated) buffer += obj
+      if (obj != null && !obj.isDeprecated)
+        buffer += obj
     }
     buffer.find {
       case s: ScSyntheticClass           => true
@@ -310,7 +328,8 @@ class ScExtendsBlockImpl private (
         underCaseClass: Boolean): Seq[String] =
       if (underCaseClass)
         res ++ Seq[String]("Product", "Serializable")
-      else res
+      else
+        res
 
     def search = productSerializable _ compose default
 
@@ -366,7 +385,8 @@ class ScExtendsBlockImpl private (
         TokenSets.TEMPLATE_PARENTS,
         JavaArrayFactoryUtil.ScTemplateParentsFactory)
       array.headOption
-    } else findChild(classOf[ScTemplateParents])
+    } else
+      findChild(classOf[ScTemplateParents])
   }
 
   def earlyDefinitions: Option[ScEarlyDefinitions] = {
@@ -376,7 +396,8 @@ class ScExtendsBlockImpl private (
         ScalaElementTypes.EARLY_DEFINITIONS,
         JavaArrayFactoryUtil.ScEarlyDefinitionsFactory)
       array.headOption
-    } else findChild(classOf[ScEarlyDefinitions])
+    } else
+      findChild(classOf[ScEarlyDefinitions])
   }
 
   override def addEarlyDefinitions(): ScEarlyDefinitions = {
@@ -394,9 +415,15 @@ class ScExtendsBlockImpl private (
         .find(_.getNode.getElementType == ScalaTokenTypes.kWITH)
         .get
       val firstElem =
-        if (templateParents.isEmpty) kExtends else kExtends.getNextSibling
+        if (templateParents.isEmpty)
+          kExtends
+        else
+          kExtends.getNextSibling
       val anchor =
-        if (templateParents.isEmpty) getFirstChild else templateParents.get
+        if (templateParents.isEmpty)
+          getFirstChild
+        else
+          templateParents.get
       this.addRangeBefore(firstElem, kWith, anchor)
 
       earlyDefinitions.get

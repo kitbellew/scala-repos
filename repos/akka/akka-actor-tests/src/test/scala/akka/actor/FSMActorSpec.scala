@@ -249,7 +249,8 @@ class FSMActorSpec
       })
 
       def checkTimersActive(active: Boolean) {
-        for (timer ← timerNames) fsmref.isTimerActive(timer) should ===(active)
+        for (timer ← timerNames)
+          fsmref.isTimerActive(timer) should ===(active)
         fsmref.isStateTimerActive should ===(active)
       }
 

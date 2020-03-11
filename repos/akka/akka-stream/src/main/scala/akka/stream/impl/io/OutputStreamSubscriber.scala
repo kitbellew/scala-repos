@@ -52,7 +52,8 @@ private[akka] class OutputStreamSubscriber(
         // blocking write
         os.write(bytes.toArray)
         bytesWritten += bytes.length
-        if (autoFlush) os.flush()
+        if (autoFlush)
+          os.flush()
       } catch {
         case ex: Exception ⇒
           completionPromise.success(IOResult(bytesWritten, Failure(ex)))
@@ -74,7 +75,8 @@ private[akka] class OutputStreamSubscriber(
 
   override def postStop(): Unit = {
     try {
-      if (os ne null) os.close()
+      if (os ne null)
+        os.close()
     } catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(bytesWritten, Failure(ex)))

@@ -13,7 +13,12 @@ trait BigDecimalInstances {
       def zero = 0L
 
       def order(x: BigDecimal, y: BigDecimal) =
-        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+        if (x < y)
+          Ordering.LT
+        else if (x == y)
+          Ordering.EQ
+        else
+          Ordering.GT
 
       def succ(b: BigDecimal) = b + 1
       def pred(b: BigDecimal) = b - 1

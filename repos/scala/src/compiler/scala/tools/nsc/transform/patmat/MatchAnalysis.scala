@@ -42,7 +42,8 @@ trait TreeAndTypeAnalysis extends Debugging {
       // do not contribute any type information (beyond the pattern's expected type)
       // e.g., in case x@Nil => x --> all we know about `x` is that it satisfies Nil == x, which could be anything
       case Ident(_) | Select(_, _) =>
-        if (settings.future) pt
+        if (settings.future)
+          pt
         else {
           // TODO: don't warn unless this unsound assumption is actually used in a cast
           // I tried annotating the type returned here with an internal annotation (`pat.tpe withAnnotation UnsoundAssumptionAnnotation`),
@@ -80,8 +81,13 @@ trait TreeAndTypeAnalysis extends Debugging {
     // this allows us to reuse subtyping as a model for implication between instanceOf tests
     // the latter don't see a difference between AnyRef, Object or Any when comparing non-value types -- SI-6022
     val tpImpliedNormalizedToAny =
-      if (tpImplied =:= (if (tpValue) AnyValTpe else AnyRefTpe)) AnyTpe
-      else tpImplied
+      if (tpImplied =:= (if (tpValue)
+                           AnyValTpe
+                         else
+                           AnyRefTpe))
+        AnyTpe
+      else
+        tpImplied
 
     tp <:< tpImpliedNormalizedToAny
   }
@@ -120,7 +126,8 @@ trait TreeAndTypeAnalysis extends Debugging {
             // We must only include subtypes of the parents that conform to `tp`.
             // See neg/virtpatmat_exhaust_compound.scala for an example.
             parentSubtypes map (_.filter(_ <:< tp))
-          } else Nil
+          } else
+            Nil
         // make sure it's not a primitive, else (5: Byte) match { case 5 => ... } sees no Byte
         case sym if sym.isSealed =>
           val tpApprox = typer.infer.approximateAbstracts(tp)
@@ -140,8 +147,10 @@ trait TreeAndTypeAnalysis extends Debugging {
               val subTpApprox =
                 typer.infer.approximateAbstracts(subTp) // TODO: needed?
               // debug.patmat("subtp"+(subTpApprox <:< tpApprox, subTpApprox, tpApprox))
-              if (subTpApprox <:< tpApprox) Some(checkableType(subTp))
-              else None
+              if (subTpApprox <:< tpApprox)
+                Some(checkableType(subTp))
+              else
+                None
             }
           }
 
@@ -320,8 +329,10 @@ trait MatchApproximation
             orig
           case _ =>
             trees += t
-            if (tpOverride != NoType) t setType tpOverride
-            else t
+            if (tpOverride != NoType)
+              t setType tpOverride
+            else
+              t
         }
 
       def uniqueTp(tp: Type): Type = tp match {
@@ -529,8 +540,10 @@ trait MatchAnalysis extends MatchApproximation {
         cases: List[List[TreeMaker]],
         pt: Type): Option[Int] = {
       val start =
-        if (Statistics.canEnable) Statistics.startTimer(patmatAnaReach)
-        else null
+        if (Statistics.canEnable)
+          Statistics.startTimer(patmatAnaReach)
+        else
+          null
 
       // use the same approximator so we share variables,
       // but need different conditions depending on whether we're conservatively looking for failure or success
@@ -575,7 +588,8 @@ trait MatchAnalysis extends MatchApproximation {
           val prefHead = prefixRest.head
           caseIndex += 1
           prefixRest = prefixRest.tail
-          if (prefixRest.isEmpty) reachable = true
+          if (prefixRest.isEmpty)
+            reachable = true
           else {
             prefix += prefHead
             current = current.tail
@@ -589,9 +603,13 @@ trait MatchAnalysis extends MatchApproximation {
           }
         }
 
-        if (Statistics.canEnable) Statistics.stopTimer(patmatAnaReach, start)
+        if (Statistics.canEnable)
+          Statistics.stopTimer(patmatAnaReach, start)
 
-        if (reachable) None else Some(caseIndex)
+        if (reachable)
+          None
+        else
+          Some(caseIndex)
       } catch {
         case ex: AnalysisBudget.Exception =>
           warn(prevBinder.pos, ex, "unreachability")
@@ -605,7 +623,8 @@ trait MatchAnalysis extends MatchApproximation {
         prevBinder: Symbol,
         cases: List[List[TreeMaker]],
         pt: Type): List[String] =
-      if (uncheckableType(prevBinder.info)) Nil
+      if (uncheckableType(prevBinder.info))
+        Nil
       else {
         // customize TreeMakersToProps (which turns a tree of tree makers into a more abstract DAG of tests)
         // - approximate the pattern `List()` (unapplySeq on List with empty length) as `Nil`,
@@ -614,8 +633,10 @@ trait MatchAnalysis extends MatchApproximation {
         //    - there are guards -->
         //    - there are extractor calls (that we can't secretly/soundly) rewrite
         val start =
-          if (Statistics.canEnable) Statistics.startTimer(patmatAnaExhaust)
-          else null
+          if (Statistics.canEnable)
+            Statistics.startTimer(patmatAnaExhaust)
+          else
+            null
         var backoff = false
 
         val approx = new TreeMakersToPropsIgnoreNullChecks(prevBinder)
@@ -635,7 +656,8 @@ trait MatchAnalysis extends MatchApproximation {
           }
         ) map caseWithoutBodyToProp
 
-        if (backoff) Nil
+        if (backoff)
+          Nil
         else {
           val prevBinderTree = approx.binderToUniqueTree(prevBinder)
 
@@ -764,8 +786,10 @@ trait MatchAnalysis extends MatchApproximation {
     case class ConstructorExample(cls: Symbol, ctorArgs: List[CounterExample])
         extends CounterExample {
       override def toString =
-        cls.decodedName + (if (cls.isModuleClass) ""
-                           else ctorArgs.mkString("(", ", ", ")"))
+        cls.decodedName + (if (cls.isModuleClass)
+                             ""
+                           else
+                             ctorArgs.mkString("(", ", ", ")"))
     }
 
     case object WildcardExample extends CounterExample {
@@ -951,7 +975,8 @@ trait MatchAnalysis extends MatchApproximation {
 
           val newCtor = unique(variable)
 
-          if (pre.isEmpty) newCtor
+          if (pre.isEmpty)
+            newCtor
           else {
             findVar(pre) foreach { preVar =>
               val outerCtor = this(preVar)
@@ -984,7 +1009,10 @@ trait MatchAnalysis extends MatchApproximation {
           case _                   => variable.staticTpCheckable
         }).typeSymbol.primaryConstructor
         private lazy val ctorParams =
-          if (ctor.paramss.isEmpty) Nil else ctor.paramss.head
+          if (ctor.paramss.isEmpty)
+            Nil
+          else
+            ctor.paramss.head
         private lazy val cls = ctor.safeOwner
         private lazy val caseFieldAccs = cls.caseFieldAccessors
 
@@ -992,7 +1020,8 @@ trait MatchAnalysis extends MatchApproximation {
           // SI-7669 Only register this field if if this class contains it.
           val shouldConstrainField =
             !symbol.isCaseAccessor || caseFieldAccs.contains(symbol)
-          if (shouldConstrainField) fields(symbol) = assign
+          if (shouldConstrainField)
+            fields(symbol) = assign
         }
 
         def allFieldAssignmentsLegal: Boolean =
@@ -1007,7 +1036,8 @@ trait MatchAnalysis extends MatchApproximation {
         // (thus statically impossible -- can we incorporate this into the formula?)
         // beBrief is used to suppress negative information nested in tuples -- it tends to get too noisy
         def toCounterExample(beBrief: Boolean = false): Option[CounterExample] =
-          if (!allFieldAssignmentsLegal) Some(NoExample)
+          if (!allFieldAssignmentsLegal)
+            Some(NoExample)
           else {
             debug.patmat(
               "describing " + (
@@ -1073,7 +1103,8 @@ trait MatchAnalysis extends MatchApproximation {
               // negative information
               case Nil if nonTrivialNonEqualTo.nonEmpty =>
                 // negation tends to get pretty verbose
-                if (beBrief) Some(WildcardExample)
+                if (beBrief)
+                  Some(WildcardExample)
                 else {
                   val eqTo = equalTo.headOption getOrElse TypeConst(
                     variable.staticTpCheckable)
@@ -1097,7 +1128,8 @@ trait MatchAnalysis extends MatchApproximation {
 
       // slurp in information from other variables
       varAssignment.keys.foreach { v =>
-        if (v != scrutVar) VariableAssignment(v)
+        if (v != scrutVar)
+          VariableAssignment(v)
       }
 
       // this is the variable we want a counter example for

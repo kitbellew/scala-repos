@@ -86,7 +86,8 @@ class ScPackageImpl private (val pack: PsiPackage)
             processor,
             state,
             lastParent,
-            place)) return false
+            place))
+        return false
     }
 
     //for Scala
@@ -110,7 +111,8 @@ class ScPackageImpl private (val pack: PsiPackage)
                   processor,
                   newState,
                   lastParent,
-                  place)) return false
+                  place))
+              return false
           case _ =>
         }
       } else {
@@ -125,7 +127,8 @@ class ScPackageImpl private (val pack: PsiPackage)
                   processor,
                   newState,
                   lastParent,
-                  place)) return false
+                  place))
+              return false
           case _ =>
         }
       }
@@ -151,7 +154,8 @@ class ScPackageImpl private (val pack: PsiPackage)
 
   override def getParentPackage: PsiPackageImpl = {
     val myQualifiedName = getQualifiedName
-    if (myQualifiedName.length == 0) return null
+    if (myQualifiedName.length == 0)
+      return null
     val lastDot: Int = myQualifiedName.lastIndexOf('.')
     if (lastDot < 0) {
       ScPackageImpl.findPackage(getProject, "")

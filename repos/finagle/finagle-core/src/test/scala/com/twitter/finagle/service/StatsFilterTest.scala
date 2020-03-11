@@ -225,8 +225,10 @@ class StatsFilterTest extends FunSuite {
   test("respects ResponseClassifier") {
     val sr = new InMemoryStatsReceiver()
     val svc = Service.mk { i: Int =>
-      if (i < 0) Future.exception(new RuntimeException(i.toString))
-      else Future(i)
+      if (i < 0)
+        Future.exception(new RuntimeException(i.toString))
+      else
+        Future(i)
     }
     val aClassifier: ResponseClassifier = {
       case ReqRep(_, Return(i: Int)) if i == 5         => ResponseClass.RetryableFailure

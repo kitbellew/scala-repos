@@ -72,11 +72,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
     d match {
       case InheritanceDiagram(
-          _thisNode,
-          _superClasses,
-          _subClasses,
-          _incomingImplicits,
-          _outgoingImplicits) =>
+            _thisNode,
+            _superClasses,
+            _subClasses,
+            _incomingImplicits,
+            _outgoingImplicits) =>
         def textTypeEntity(text: String) =
           new TypeEntity {
             val name = text
@@ -86,7 +86,10 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         // it seems dot chokes on node names over 8000 chars, so let's limit the size of the string
         // conservatively, we'll limit at 4000, to be sure:
         def limitSize(str: String) =
-          if (str.length > 4000) str.substring(0, 3996) + " ..." else str
+          if (str.length > 4000)
+            str.substring(0, 3996) + " ..."
+          else
+            str
 
         // avoid overcrowding the diagram:
         //   if there are too many super / sub / implicit nodes, represent
@@ -99,7 +102,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               NormalNode(
                 textTypeEntity(_superClasses.length + MultiSuffix),
                 None)(superClassesTooltip))
-          } else _superClasses
+          } else
+            _superClasses
 
         subClasses =
           if (_subClasses.length > settings.docDiagramsMaxNormalClasses.value) {
@@ -109,7 +113,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               NormalNode(
                 textTypeEntity(_subClasses.length + MultiSuffix),
                 None)(subClassesTooltip))
-          } else _subClasses
+          } else
+            _subClasses
 
         incomingImplicits =
           if (_incomingImplicits.length > settings.docDiagramsMaxImplicitClasses.value) {
@@ -119,7 +124,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               ImplicitNode(
                 textTypeEntity(_incomingImplicits.length + MultiSuffix),
                 None)(incomingImplicitsTooltip))
-          } else _incomingImplicits
+          } else
+            _incomingImplicits
 
         outgoingImplicits =
           if (_outgoingImplicits.length > settings.docDiagramsMaxImplicitClasses.value) {
@@ -129,7 +135,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               ImplicitNode(
                 textTypeEntity(_outgoingImplicits.length + MultiSuffix),
                 None)(outgoingImplicitsTooltip))
-          } else _outgoingImplicits
+          } else
+            _outgoingImplicits
 
         thisNode = _thisNode
         nodes = List()
@@ -147,7 +154,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     }
 
     val implicitsDot = {
-      if (!isInheritanceDiagram) ""
+      if (!isInheritanceDiagram)
+        ""
       else {
         // dot cluster containing thisNode
         val thisCluster = "subgraph clusterThis {\n" +
@@ -156,7 +164,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           "}"
         // dot cluster containing incoming implicit nodes, if any
         val incomingCluster = {
-          if (incomingImplicits.isEmpty) ""
+          if (incomingImplicits.isEmpty)
+            ""
           else
             "subgraph clusterIncoming {\n" +
               "style=\"invis\"\n" +
@@ -166,12 +175,14 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                    .map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else "") +
+               else
+                 "") +
               "}"
         }
         // dot cluster containing outgoing implicit nodes, if any
         val outgoingCluster = {
-          if (outgoingImplicits.isEmpty) ""
+          if (outgoingImplicits.isEmpty)
+            ""
           else
             "subgraph clusterOutgoing {\n" +
               "style=\"invis\"\n" +
@@ -181,7 +192,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                    .map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else "") +
+               else
+                 "") +
               "}"
         }
 
@@ -206,7 +218,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                n) + "_" + node2Index(
                thisNode) + "\", tooltip=\"" + incomingTooltip + "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterIncoming\", lhead=\"clusterThis\", label=\"implicitly\"];\n"
-           } else "") +
+           } else
+             "") +
           // outgoing implicit edge
           (if (!outgoingImplicits.isEmpty) {
              val n = outgoingImplicits.head
@@ -215,7 +228,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                thisNode) + "_" + node2Index(
                n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterThis\", lhead=\"clusterOutgoing\", label=\"implicitly\"];\n"
-           } else "") +
+           } else
+             "") +
           "}"
       }
     }
@@ -244,7 +258,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
                 "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
                                               " are subtypes of "
-                                            else " is a subtype of ") +
+                                            else
+                                              " is a subtype of ") +
                 to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
             })
             .mkString
@@ -304,11 +319,16 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     // HTML label
     var name = escape(node.name)
     var img =
-      if (node.isTraitNode) "trait_diagram.png"
-      else if (node.isClassNode) "class_diagram.png"
-      else if (node.isObjectNode) "object_diagram.png"
-      else if (node.isTypeNode) "type_diagram.png"
-      else ""
+      if (node.isTraitNode)
+        "trait_diagram.png"
+      else if (node.isClassNode)
+        "class_diagram.png"
+      else if (node.isObjectNode)
+        "object_diagram.png"
+      else if (node.isTypeNode)
+        "type_diagram.png"
+      else
+        ""
 
     if (!img.equals("")) {
       img =
@@ -436,7 +456,10 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     // add an id and class attribute to the SVG element
     case Elem(prefix, "svg", attribs, scope, child @ _*) => {
       val klass =
-        if (isInheritanceDiagram) "class-diagram" else "package-diagram"
+        if (isInheritanceDiagram)
+          "class-diagram"
+        else
+          "package-diagram"
       Elem(
         prefix,
         "svg",
@@ -508,7 +531,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
             "class",
             (g \ "@class").toString + " " + klass,
             Null)
-      } else res
+      } else
+        res
     }
     // remove titles
     case <title>{
@@ -528,10 +552,14 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
   }
 
   def getKind(klass: String): String =
-    if (klass.contains("class")) "class"
-    else if (klass.contains("trait")) "trait"
-    else if (klass.contains("object")) "object"
-    else ""
+    if (klass.contains("class"))
+      "class"
+    else if (klass.contains("trait"))
+      "trait"
+    else if (klass.contains("object"))
+      "object"
+    else
+      ""
 
   def getPosition(
       g: scala.xml.Node,

@@ -168,7 +168,8 @@ class BacktestingEvaluator(val params: BacktestingParams)
       val nav = cash + positions.values.sum
 
       val ret =
-        (if (dailyStats.isEmpty) 0
+        (if (dailyStats.isEmpty)
+           0
          else {
            val yestStats = dailyStats.last
            val yestNav = yestStats.nav

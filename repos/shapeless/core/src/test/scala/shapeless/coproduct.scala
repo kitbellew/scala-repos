@@ -410,7 +410,13 @@ class CoproductTests {
     def assertPOEquals(expected: Option[Int], l: ISB, r: ISB)(
         implicit po: PartialOrdering[ISB]) = {
       val actual = po.tryCompare(l, r) map { i =>
-        Some(if (i < 0) -1 else if (i > 0) 1 else 0)
+        Some(
+          if (i < 0)
+            -1
+          else if (i > 0)
+            1
+          else
+            0)
       }
       assertEquals(s"${l} ${r}", expected, actual getOrElse None)
     }

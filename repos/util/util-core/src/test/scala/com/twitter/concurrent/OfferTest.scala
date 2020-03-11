@@ -135,11 +135,13 @@ class OfferTest extends WordSpec with MockitoSugar {
 
     "when all txs are ready" should {
       class AllTxsReadyHelper extends OfferSpecHelper {
-        val txs = for (p <- pendingTxs) yield {
-          val tx = mock[Tx[Int]]
-          p.setValue(tx)
-          tx
-        }
+        val txs =
+          for (p <- pendingTxs)
+            yield {
+              val tx = mock[Tx[Int]]
+              p.setValue(tx)
+              tx
+            }
       }
 
       "shuffle winner" in Time.withTimeAt(Time.epoch) { tc =>

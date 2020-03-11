@@ -225,7 +225,8 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
     value = v
     ct = System.nanoTime()
 
-    if (changed) notifyDependents()
+    if (changed)
+      notifyDependents()
 
     value
   }
@@ -241,8 +242,10 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
   }
 
   override def hashCode(): Int = synchronized {
-    if (null.asInstanceOf[Object] eq value.asInstanceOf[Object]) 0
-    else value.hashCode()
+    if (null.asInstanceOf[Object] eq value.asInstanceOf[Object])
+      0
+    else
+      value.hashCode()
   }
 
   override def equals(other: Any): Boolean = synchronized {
@@ -265,7 +268,11 @@ final case class SeqCell[T](cells: Cell[T]*) extends Cell[Seq[T]] {
     */
   def currentValue: (Seq[T], Long) = {
     val tcv = cells.map(_.currentValue)
-    tcv.map(_._1) -> tcv.foldLeft(0L)((max, c) => if (max > c._2) max else c._2)
+    tcv.map(_._1) -> tcv.foldLeft(0L)((max, c) =>
+      if (max > c._2)
+        max
+      else
+        c._2)
   }
 
   /**
@@ -471,6 +478,9 @@ final case class FuncCell5[A, B, C, D, E, Z](
 
 private object WiringHelper {
   def max(a: Long, b: Long*): Long = b.foldLeft(a) { (v1, v2) =>
-    if (v1 > v2) v1 else v2
+    if (v1 > v2)
+      v1
+    else
+      v2
   }
 }

@@ -96,7 +96,8 @@ class InlinerSeparateCompilationTest {
       """.stripMargin
 
     val List(c, t, u) = compileClassesSeparately(List(codeA, codeB), args)
-    for (m <- List("t1", "t2", "t3")) assertNoInvoke(getSingleMethod(c, m))
+    for (m <- List("t1", "t2", "t3"))
+      assertNoInvoke(getSingleMethod(c, m))
   }
 
   @Test

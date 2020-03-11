@@ -53,8 +53,10 @@ object RawCompileLike {
       opt.dropWhile(!fileInputOpts.contains(_)) match {
         case List(_, fileOpt, tail @ _*) => {
           val file = new File(fileOpt)
-          if (file.isFile) loop(tail.toList, file :: result)
-          else loop(tail.toList, result)
+          if (file.isFile)
+            loop(tail.toList, file :: result)
+          else
+            loop(tail.toList, result)
         }
         case Nil | List(_) => result
       }

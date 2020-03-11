@@ -501,13 +501,19 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
         if (aIter.hasNext) {
           val aByte = aIter.nextByte()
           val bByte = bIter.nextByte()
-          if (aByte < bByte) -1
-          else if (aByte > bByte) 1
-          else findDiff()
-        } else 0
+          if (aByte < bByte)
+            -1
+          else if (aByte > bByte)
+            1
+          else
+            findDiff()
+        } else
+          0
       }
       findDiff()
-    } else if (aSize < bSize) -1
-    else 1
+    } else if (aSize < bSize)
+      -1
+    else
+      1
   }
 }

@@ -67,30 +67,48 @@ class TreeSet[A] private (tree: RB.Tree[A, Unit])(
   override def size = RB.count(tree)
 
   override def head = RB.smallest(tree).key
-  override def headOption = if (RB.isEmpty(tree)) None else Some(head)
+  override def headOption =
+    if (RB.isEmpty(tree))
+      None
+    else
+      Some(head)
   override def last = RB.greatest(tree).key
-  override def lastOption = if (RB.isEmpty(tree)) None else Some(last)
+  override def lastOption =
+    if (RB.isEmpty(tree))
+      None
+    else
+      Some(last)
 
   override def tail = new TreeSet(RB.delete(tree, firstKey))
   override def init = new TreeSet(RB.delete(tree, lastKey))
 
   override def drop(n: Int) = {
-    if (n <= 0) this
-    else if (n >= size) empty
-    else newSet(RB.drop(tree, n))
+    if (n <= 0)
+      this
+    else if (n >= size)
+      empty
+    else
+      newSet(RB.drop(tree, n))
   }
 
   override def take(n: Int) = {
-    if (n <= 0) empty
-    else if (n >= size) this
-    else newSet(RB.take(tree, n))
+    if (n <= 0)
+      empty
+    else if (n >= size)
+      this
+    else
+      newSet(RB.take(tree, n))
   }
 
   override def slice(from: Int, until: Int) = {
-    if (until <= from) empty
-    else if (from <= 0) take(until)
-    else if (until >= size) drop(from)
-    else newSet(RB.slice(tree, from, until))
+    if (until <= from)
+      empty
+    else if (from <= 0)
+      take(until)
+    else if (until >= size)
+      drop(from)
+    else
+      newSet(RB.slice(tree, from, until))
   }
 
   override def dropRight(n: Int) = take(size - math.max(n, 0))
@@ -100,7 +118,8 @@ class TreeSet[A] private (tree: RB.Tree[A, Unit])(
   private[this] def countWhile(p: A => Boolean): Int = {
     var result = 0
     val it = iterator
-    while (it.hasNext && p(it.next())) result += 1
+    while (it.hasNext && p(it.next()))
+      result += 1
     result
   }
   override def dropWhile(p: A => Boolean) = drop(countWhile(p))
@@ -140,8 +159,10 @@ class TreeSet[A] private (tree: RB.Tree[A, Unit])(
     *  @return        a new $coll containing all the elements of this $coll except `elem`.
     */
   def -(elem: A): TreeSet[A] =
-    if (!RB.contains(tree, elem)) this
-    else newSet(RB.delete(tree, elem))
+    if (!RB.contains(tree, elem))
+      this
+    else
+      newSet(RB.delete(tree, elem))
 
   /** Checks if this set contains element `elem`.
     *

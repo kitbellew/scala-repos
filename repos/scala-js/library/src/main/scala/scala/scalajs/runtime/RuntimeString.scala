@@ -85,10 +85,13 @@ private[runtime] object RuntimeString {
 
   @inline
   def compareTo(thiz: String, anotherString: String): Int = {
-    if (thiz.equals(anotherString)) 0
+    if (thiz.equals(anotherString))
+      0
     else if ((thiz.asInstanceOf[js.Dynamic] <
-               anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]) -1
-    else 1
+               anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean])
+      -1
+    else
+      1
   }
 
   def compareToIgnoreCase(thiz: String, str: String): Int =
@@ -96,7 +99,10 @@ private[runtime] object RuntimeString {
 
   @inline
   def equalsIgnoreCase(thiz: String, that: String): Boolean =
-    thiz.toLowerCase() == (if (that == null) null else that.toLowerCase())
+    thiz.toLowerCase() == (if (that == null)
+                             null
+                           else
+                             that.toLowerCase())
 
   @inline
   def concat(thiz: String, s: String): String =
@@ -173,8 +179,10 @@ private[runtime] object RuntimeString {
     thiz.lastIndexOf(fromCodePoint(ch))
 
   def lastIndexOf(thiz: String, ch: Int, fromIndex: Int): Int =
-    if (fromIndex < 0) -1
-    else thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
+    if (fromIndex < 0)
+      -1
+    else
+      thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
 
   @inline
   def lastIndexOf(thiz: String, str: String): Int =
@@ -182,8 +190,10 @@ private[runtime] object RuntimeString {
 
   @inline
   def lastIndexOf(thiz: String, str: String, fromIndex: Int): Int =
-    if (fromIndex < 0) -1
-    else thiz.jsLastIndexOf(str, fromIndex)
+    if (fromIndex < 0)
+      -1
+    else
+      thiz.jsLastIndexOf(str, fromIndex)
 
   @inline
   def length(thiz: String): Int =
@@ -215,7 +225,10 @@ private[runtime] object RuntimeString {
     } else {
       val left = thiz.substring(toffset, toffset + len)
       val right = other.substring(ooffset, ooffset + len)
-      if (ignoreCase) left.equalsIgnoreCase(right) else left == right
+      if (ignoreCase)
+        left.equalsIgnoreCase(right)
+      else
+        left == right
     }
   }
 
@@ -395,7 +408,10 @@ private[runtime] object RuntimeString {
   def valueOf(value: Double): String = value.toString()
 
   def valueOf(value: Object): String =
-    if (value eq null) "null" else value.toString()
+    if (value eq null)
+      "null"
+    else
+      value.toString()
 
   def valueOf(data: Array[Char]): String =
     valueOf(data, 0, data.length)
@@ -414,8 +430,10 @@ private[runtime] object RuntimeString {
 
   @inline
   private def checkNull(s: String): s.type =
-    if (s == null) throw new NullPointerException()
-    else s
+    if (s == null)
+      throw new NullPointerException()
+    else
+      s
 
   private def fromCodePoint(codePoint: Int): String = {
     if ((codePoint & ~Character.MAX_VALUE) == 0)

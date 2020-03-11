@@ -217,7 +217,8 @@ private[akka] trait Pump {
       case NonFatal(e) ⇒ pumpFailed(e)
     }
 
-    if (isPumpFinished) pumpFinished()
+    if (isPumpFinished)
+      pumpFinished()
   }
 
   protected def pumpFailed(e: Throwable): Unit

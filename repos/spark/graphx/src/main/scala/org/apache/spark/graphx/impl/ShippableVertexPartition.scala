@@ -130,7 +130,10 @@ private[graphx] class ShippableVertexPartition[VD: ClassTag](
       shipDst: Boolean): Iterator[(PartitionID, VertexAttributeBlock[VD])] = {
     Iterator.tabulate(routingTable.numEdgePartitions) { pid =>
       val initialSize =
-        if (shipSrc && shipDst) routingTable.partitionSize(pid) else 64
+        if (shipSrc && shipDst)
+          routingTable.partitionSize(pid)
+        else
+          64
       val vids = new PrimitiveVector[VertexId](initialSize)
       val attrs = new PrimitiveVector[VD](initialSize)
       var i = 0

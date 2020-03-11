@@ -49,7 +49,8 @@ class FlowStatefulMapConcatSpec extends AkkaSpec with ScriptedTest {
         .statefulMapConcat(() ⇒ {
           var prev: Option[Int] = None
           x ⇒ {
-            if (x % 3 == 0) throw ex
+            if (x % 3 == 0)
+              throw ex
             prev match {
               case Some(e) ⇒
                 prev = Some(x)
@@ -75,7 +76,8 @@ class FlowStatefulMapConcatSpec extends AkkaSpec with ScriptedTest {
         .statefulMapConcat(() ⇒ {
           var prev: Option[Int] = None
           x ⇒ {
-            if (x % 3 == 0) throw ex
+            if (x % 3 == 0)
+              throw ex
             prev match {
               case Some(e) ⇒
                 prev = Some(x)

@@ -41,14 +41,19 @@ trait Reshape {
         case toa @ TypedOrAnnotated(_) =>
           toPreTyperTypedOrAnnotated(toa)
         case ta @ TypeApply(_, _) if isCrossStageTypeBearer(ta) =>
-          if (reifyDebug) println("cross-stage type bearer, retaining: " + tree)
+          if (reifyDebug)
+            println("cross-stage type bearer, retaining: " + tree)
           ta
         case ta @ TypeApply(hk, ts) =>
           val discard = ts collect {
             case tt: TypeTree => tt
           } exists isDiscarded
-          if (reifyDebug && discard) println("discarding TypeApply: " + tree)
-          if (discard) hk else ta
+          if (reifyDebug && discard)
+            println("discarding TypeApply: " + tree)
+          if (discard)
+            hk
+          else
+            ta
         case classDef @ ClassDef(mods, name, params, impl) =>
           val Template(parents, self, body) = impl
           var body1 = trimAccessors(classDef, reshapeLazyVals(body))
@@ -78,7 +83,8 @@ trait Reshape {
         case unapply @ UnApply(
               Unapplied(Select(fun, nme.unapply | nme.unapplySeq)),
               args) =>
-          if (reifyDebug) println("unapplying unapply: " + tree)
+          if (reifyDebug)
+            println("unapplying unapply: " + tree)
           Apply(fun, args).copyAttrs(unapply)
         case _ =>
           tree
@@ -186,14 +192,16 @@ trait Reshape {
         if (reifyDebug)
           println(
             "TypeTree, non-essential: %s (%s)".format(tt.tpe, tt.tpe.kind))
-        if (reifyDebug) println("verdict: discarded")
+        if (reifyDebug)
+          println("verdict: discarded")
         TypeTree()
       }
     }
 
     private def toPreTyperCompoundTypeTree(ctt: CompoundTypeTree): Tree = {
       val CompoundTypeTree(tmpl @ Template(parents, self, stats)) = ctt
-      if (stats.nonEmpty) CannotReifyCompoundTypeTreeWithNonEmptyBody(ctt)
+      if (stats.nonEmpty)
+        CannotReifyCompoundTypeTreeWithNonEmptyBody(ctt)
       assert(self eq noSelfType, self)
       val att = tmpl.attachments.get[CompoundTypeTreeOriginalAttachment]
       val CompoundTypeTreeOriginalAttachment(parents1, stats1) =
@@ -203,7 +211,8 @@ trait Reshape {
 
     private def toPreTyperTypedOrAnnotated(tree: Tree): Tree = tree match {
       case ty @ Typed(expr1, tpt) =>
-        if (reifyDebug) println("reify typed: " + tree)
+        if (reifyDebug)
+          println("reify typed: " + tree)
         val original = tpt match {
           case tt @ TypeTree() => tt.original
           case tpt             => tpt
@@ -230,17 +239,20 @@ trait Reshape {
             toPreTyperTypedOrAnnotated(original)
           }
         } else {
-          if (reifyDebug) println("verdict: wasn't annotated, reify as usual")
+          if (reifyDebug)
+            println("verdict: wasn't annotated, reify as usual")
           ty
         }
       case at @ Annotated(annot, arg) =>
-        if (reifyDebug) println("reify type annotations for: " + tree)
+        if (reifyDebug)
+          println("reify type annotations for: " + tree)
         assert(
           at.tpe.isInstanceOf[AnnotatedType],
           "%s (%s)".format(at.tpe, at.tpe.kind))
         val annot1 = toPreTyperAnnotation(
           at.tpe.asInstanceOf[AnnotatedType].annotations(0))
-        if (reifyDebug) println("originals are: " + annot1)
+        if (reifyDebug)
+          println("originals are: " + annot1)
         Annotated(annot1, arg).copyAttrs(at)
     }
 
@@ -312,7 +324,8 @@ trait Reshape {
           if (defdef.name.startsWith(prefix)) {
             val name = defdef.name.toString.substring(prefix.length)
             def uncapitalize(s: String) =
-              if (s.length == 0) ""
+              if (s.length == 0)
+                ""
               else {
                 val chars = s.toCharArray;
                 chars(0) = chars(0).toLower;
@@ -338,7 +351,8 @@ trait Reshape {
             val ddef = accessors(vdef)(0) // any accessor will do
             val Modifiers(flags, _, annotations) = mods
             var flags1 = flags & ~LOCAL
-            if (!ddef.symbol.isPrivate) flags1 = flags1 & ~PRIVATE
+            if (!ddef.symbol.isPrivate)
+              flags1 = flags1 & ~PRIVATE
             val privateWithin1 = ddef.mods.privateWithin
             val annotations1 =
               accessors(vdef).foldLeft(annotations)((curr, acc) =>
@@ -363,7 +377,8 @@ trait Reshape {
           // lazy val accessors are removed in reshapeLazyVals
           // as they are needed to recreate lazy vals
           if (accessors.values.exists(_.contains(ddef))) {
-            if (reifyDebug) println("discarding accessor method: " + ddef)
+            if (reifyDebug)
+              println("discarding accessor method: " + ddef)
             None
           } else {
             Some(ddef)
@@ -398,14 +413,16 @@ trait Reshape {
                   println("couldn't find corresponding lazy val accessor")
                 vdef
             }
-            if (reifyDebug) println(s"reconstructed lazy val is $vdef1")
+            if (reifyDebug)
+              println(s"reconstructed lazy val is $vdef1")
             vdef1 :: Nil
           case ddef: DefDef if ddef.symbol.isLazy =>
             if (isUnitType(ddef.symbol.info)) {
               // since lazy values of type Unit don't have val's
               // we need to create them from scratch
               toPreTyperLazyVal(ddef) :: Nil
-            } else Nil
+            } else
+              Nil
           case _ => stat :: Nil
         })
     }

@@ -44,7 +44,8 @@ class ScalaVariableOfTypeMacro extends Macro {
       exprs: Array[String],
       context: ExpressionContext,
       showOne: Boolean): Array[LookupElement] = {
-    if (!validExprs(exprs)) return null
+    if (!validExprs(exprs))
+      return null
     val offset = context.getStartOffset
     val editor = context.getEditor
     val array = new ArrayBuffer[LookupElement]
@@ -62,7 +63,8 @@ class ScalaVariableOfTypeMacro extends Macro {
           .filter(r => {
             val clazz =
               PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
+            if (clazz == null)
+              true
             else {
               clazz.qualifiedName match {
                 case "scala.Predef" => false
@@ -87,14 +89,16 @@ class ScalaVariableOfTypeMacro extends Macro {
         }
       case _ =>
     }
-    if (array.length < 2 && !showOne) return null
+    if (array.length < 2 && !showOne)
+      return null
     array.toArray
   }
 
   def calculateResult(
       exprs: Array[Expression],
       context: ExpressionContext): Result = {
-    if (!validExprs(exprs)) return null
+    if (!validExprs(exprs))
+      return null
     val offset = context.getStartOffset
     val editor = context.getEditor
     val file = PsiDocumentManager
@@ -111,7 +115,8 @@ class ScalaVariableOfTypeMacro extends Macro {
           .filter(r => {
             val clazz =
               PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
+            if (clazz == null)
+              true
             else {
               clazz.qualifiedName match {
                 case "scala.Predef" => false

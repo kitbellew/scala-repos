@@ -23,8 +23,10 @@ scala>
 """
 
   override def eval() =
-    if (Javap.isAvailable()) super.eval()
-    else expectedOutput.lines
+    if (Javap.isAvailable())
+      super.eval()
+    else
+      expectedOutput.lines
 
   def code = """
     |object Bippy { class Dingus ; object Bop }

@@ -46,7 +46,11 @@ object union {
         type V = st.V
         def apply(u: H :+: T): Out = u match {
           case Inl(l) => None
-          case Inr(r) => if (st == null) None else st(r)
+          case Inr(r) =>
+            if (st == null)
+              None
+            else
+              st(r)
         }
       }
   }

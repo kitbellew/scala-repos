@@ -15,11 +15,27 @@ object Sender {
   def main(args: Array[String]): Unit = {
     val system = ActorSystem("Sys", ConfigFactory.load("calculator"))
 
-    val remoteHostPort = if (args.length >= 1) args(0) else "127.0.0.1:2553"
+    val remoteHostPort =
+      if (args.length >= 1)
+        args(0)
+      else
+        "127.0.0.1:2553"
     val remotePath = s"akka.tcp://Sys@$remoteHostPort/user/rcv"
-    val totalMessages = if (args.length >= 2) args(1).toInt else 500000
-    val burstSize = if (args.length >= 3) args(2).toInt else 5000
-    val payloadSize = if (args.length >= 4) args(3).toInt else 100
+    val totalMessages =
+      if (args.length >= 2)
+        args(1).toInt
+      else
+        500000
+    val burstSize =
+      if (args.length >= 3)
+        args(2).toInt
+      else
+        5000
+    val payloadSize =
+      if (args.length >= 4)
+        args(3).toInt
+      else
+        100
 
     system.actorOf(
       Sender.props(remotePath, totalMessages, burstSize, payloadSize),

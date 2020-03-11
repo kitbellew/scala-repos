@@ -95,9 +95,10 @@ private[akka] object Reflect {
     }
 
     val constructor: Constructor[T] =
-      if (args.isEmpty) Try {
-        clazz.getDeclaredConstructor()
-      } getOrElse (null)
+      if (args.isEmpty)
+        Try {
+          clazz.getDeclaredConstructor()
+        } getOrElse (null)
       else {
         val length = args.length
         val candidates =
@@ -115,17 +116,25 @@ private[akka] object Reflect {
           }
         if (candidates.hasNext) {
           val cstrtr = candidates.next()
-          if (candidates.hasNext) error("multiple matching constructors")
-          else cstrtr
-        } else null
+          if (candidates.hasNext)
+            error("multiple matching constructors")
+          else
+            cstrtr
+        } else
+          null
       }
 
-    if (constructor == null) error("no matching constructor")
-    else constructor
+    if (constructor == null)
+      error("no matching constructor")
+    else
+      constructor
   }
 
   private def safeGetClass(a: Any): Class[_] =
-    if (a == null) classOf[AnyRef] else a.getClass
+    if (a == null)
+      classOf[AnyRef]
+    else
+      a.getClass
 
   /**
     * INTERNAL API
@@ -138,7 +147,8 @@ private[akka] object Reflect {
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec def rec(curr: Class[_]): Type = {
       if (curr.getSuperclass != null && marker.isAssignableFrom(
-            curr.getSuperclass)) rec(curr.getSuperclass)
+            curr.getSuperclass))
+        rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {
           case c: Class[_] if marker isAssignableFrom c ⇒ c
@@ -149,10 +159,16 @@ private[akka] object Reflect {
           case None ⇒
             throw new IllegalArgumentException(
               s"cannot find [$marker] in ancestors of [$root]")
-          case Some(c: Class[_]) ⇒ if (c == marker) c else rec(c)
+          case Some(c: Class[_]) ⇒
+            if (c == marker)
+              c
+            else
+              rec(c)
           case Some(t: ParameterizedType) ⇒
-            if (t.getRawType == marker) t
-            else rec(t.getRawType.asInstanceOf[Class[_]])
+            if (t.getRawType == marker)
+              t
+            else
+              rec(t.getRawType.asInstanceOf[Class[_]])
           case _ ⇒ ??? // cannot happen due to collectFirst
         }
     }
@@ -177,8 +193,10 @@ private[akka] object Reflect {
           field.setAccessible(true)
           field.set(instance, value)
           true
-        } else clearFirst(fields, idx + 1)
-      } else false
+        } else
+          clearFirst(fields, idx + 1)
+      } else
+        false
 
     clearFirst(clazz.getDeclaredFields, 0) || {
       clazz.getSuperclass match {

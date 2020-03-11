@@ -10,7 +10,8 @@ object TempDir {
     var c = 0
     while (c < TEMP_DIR_ATTEMPTS) {
       val tempDir = new File(baseDir, baseName + c)
-      if (tempDir.mkdir()) return tempDir
+      if (tempDir.mkdir())
+        return tempDir
       c += 1
     }
     throw new IOException(s"Failed to create directory")

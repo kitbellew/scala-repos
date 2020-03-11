@@ -24,7 +24,10 @@ class BlacklistStatsReceiver(
     getStatsReceiver(name).addGauge(name: _*)(f)
 
   private[this] def getStatsReceiver(name: Seq[String]): StatsReceiver =
-    if (blacklisted(name)) NullStatsReceiver else underlying
+    if (blacklisted(name))
+      NullStatsReceiver
+    else
+      underlying
 
   override def toString: String =
     s"BlacklistStatsReceiver($underlying)"

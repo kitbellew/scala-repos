@@ -65,21 +65,25 @@ class ScParameterImpl protected (
 
   def deprecatedName: Option[String] = {
     val stub = getStub
-    if (stub != null) return stub.asInstanceOf[ScParameterStub].deprecatedName
+    if (stub != null)
+      return stub.asInstanceOf[ScParameterStub].deprecatedName
     annotations.find(_.typeElement.getText.contains("deprecatedName")) match {
       case Some(deprecationAnnotation) =>
         deprecationAnnotation.constructor.args.flatMap {
           case args =>
             val exprs = args.exprs
-            if (exprs.length != 1) None
+            if (exprs.length != 1)
+              None
             else {
               exprs(0) match {
                 case literal: ScLiteral
                     if literal.getNode.getFirstChildNode != null &&
                       literal.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tSYMBOL =>
                   val literalText = literal.getText
-                  if (literalText.length < 2) None
-                  else Some(literalText.substring(1))
+                  if (literalText.length < 2)
+                    None
+                  else
+                    Some(literalText.substring(1))
                 case _ => None
               }
             }
@@ -90,7 +94,10 @@ class ScParameterImpl protected (
 
   def nameId: PsiElement = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
-    if (id == null) findChildByType[PsiElement](ScalaTokenTypes.tUNDER) else id
+    if (id == null)
+      findChildByType[PsiElement](ScalaTokenTypes.tUNDER)
+    else
+      id
   }
 
   def getTypeElement = null

@@ -120,7 +120,10 @@ class JDBCLEvents(
         ${write(event.properties.toJObject)},
         ${event.eventTime},
         ${event.eventTime.getZone.getID},
-        ${if (event.tags.nonEmpty) Some(event.tags.mkString(",")) else None},
+        ${if (event.tags.nonEmpty)
+        Some(event.tags.mkString(","))
+      else
+        None},
         ${event.prId},
         ${event.creationTime},
         ${event.creationTime.getZone.getID}
@@ -204,10 +207,19 @@ class JDBCLEvents(
         .map(sqls.where(_))
         .getOrElse(sqls"")
       val orderByClause = reversed
-        .map(x => if (x) sqls"eventTime desc" else sqls"eventTime asc")
+        .map(x =>
+          if (x)
+            sqls"eventTime desc"
+          else
+            sqls"eventTime asc")
         .getOrElse(sqls"eventTime asc")
-      val limitClause =
-        limit.map(x => if (x < 0) sqls"" else sqls.limit(x)).getOrElse(sqls"")
+      val limitClause = limit
+        .map(x =>
+          if (x < 0)
+            sqls""
+          else
+            sqls.limit(x))
+        .getOrElse(sqls"")
       val q = sql"""
       select
         id,

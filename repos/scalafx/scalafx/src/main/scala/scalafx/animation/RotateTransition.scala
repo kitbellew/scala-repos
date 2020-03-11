@@ -52,7 +52,10 @@ object RotateTransition extends AnimationStatics {
     */
   implicit def sfxRotateTransition2jfx(
       v: RotateTransition): jfxa.RotateTransition =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
 }
 

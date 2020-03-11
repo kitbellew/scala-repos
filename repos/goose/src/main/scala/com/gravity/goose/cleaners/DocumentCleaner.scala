@@ -202,7 +202,8 @@ trait DocumentCleaner {
     * @param node the node to remove from the doc
     */
   private def removeNode(node: Element) {
-    if (node == null || node.parent == null) return
+    if (node == null || node.parent == null)
+      return
     node.remove()
   }
 
@@ -334,8 +335,10 @@ trait DocumentCleaner {
             nodesToRemove += prevSibNode
             prevSibNode.attr("grv-usedalready", "yes")
             prevSibNode =
-              if (prevSibNode.previousSibling() == null) null
-              else prevSibNode.previousSibling()
+              if (prevSibNode.previousSibling() == null)
+                null
+              else
+                prevSibNode.previousSibling()
           }
           // add the text of the node
           replacementText.append(replaceText)
@@ -349,8 +352,10 @@ trait DocumentCleaner {
             nodesToRemove += nextSibNode
             nextSibNode.attr("grv-usedalready", "yes")
             nextSibNode =
-              if (nextSibNode.nextSibling() == null) null
-              else nextSibNode.nextSibling()
+              if (nextSibNode.nextSibling() == null)
+                null
+              else
+                nextSibNode.nextSibling()
           }
 
         }

@@ -114,8 +114,10 @@ final class WeakHashSet[A <: AnyRef](
 
         @tailrec
         def linkedListLoop(prevEntry: Entry[A], entry: Entry[A]): Unit =
-          if (stale eq entry) remove(bucket, prevEntry, entry)
-          else if (entry != null) linkedListLoop(entry, entry.tail)
+          if (stale eq entry)
+            remove(bucket, prevEntry, entry)
+          else if (entry != null)
+            linkedListLoop(entry, entry.tail)
 
         linkedListLoop(null, table(bucket))
 
@@ -167,8 +169,10 @@ final class WeakHashSet[A <: AnyRef](
         case null => null.asInstanceOf[A]
         case _ => {
           val entryElem = entry.get
-          if (elem == entryElem) entryElem
-          else linkedListLoop(entry.tail)
+          if (elem == entryElem)
+            entryElem
+          else
+            linkedListLoop(entry.tail)
         }
       }
 
@@ -187,7 +191,8 @@ final class WeakHashSet[A <: AnyRef](
       def add() = {
         table(bucket) = new Entry(elem, hash, oldHead, queue)
         count += 1
-        if (count > threshold) resize()
+        if (count > threshold)
+          resize()
         elem
       }
 
@@ -196,8 +201,10 @@ final class WeakHashSet[A <: AnyRef](
         case null => add()
         case _ => {
           val entryElem = entry.get
-          if (elem == entryElem) entryElem
-          else linkedListLoop(entry.tail)
+          if (elem == entryElem)
+            entryElem
+          else
+            linkedListLoop(entry.tail)
         }
       }
 
@@ -217,7 +224,8 @@ final class WeakHashSet[A <: AnyRef](
       def add() {
         table(bucket) = new Entry(elem, hash, oldHead, queue)
         count += 1
-        if (count > threshold) resize()
+        if (count > threshold)
+          resize()
       }
 
       @tailrec
@@ -267,7 +275,9 @@ final class WeakHashSet[A <: AnyRef](
     count = 0
 
     // drain the queue - doesn't do anything because we're throwing away all the values anyway
-    @tailrec def queueLoop(): Unit = if (queue.poll() != null) queueLoop()
+    @tailrec def queueLoop(): Unit =
+      if (queue.poll() != null)
+        queueLoop()
     queueLoop()
   }
 
@@ -315,7 +325,8 @@ final class WeakHashSet[A <: AnyRef](
           entry = table(currentBucket)
         }
 
-        if (entry == null) false
+        if (entry == null)
+          false
         else {
           lookaheadelement = entry.get
           if (lookaheadelement == null) {

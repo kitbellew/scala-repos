@@ -271,7 +271,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
               timeout.duration) should ===(target)
         }
       }
-      for (target ← Seq(root, syst, user, system.deadLetters)) check(target)
+      for (target ← Seq(root, syst, user, system.deadLetters))
+        check(target)
     }
 
     "return deadLetters or EmptyLocalActorRef, respectively, for non-existing paths" in {
@@ -297,9 +298,11 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
                ), // test Java API
                LookupElems(Seq()) -> system.deadLetters,
                LookupElems(Seq("a")) -> empty(lookname + "a")
-             )) checkOne(looker, l, r)
+             ))
+          checkOne(looker, l, r)
       }
-      for (looker ← all) check(looker)
+      for (looker ← all)
+        check(looker)
     }
 
     "find temporary actors" in {

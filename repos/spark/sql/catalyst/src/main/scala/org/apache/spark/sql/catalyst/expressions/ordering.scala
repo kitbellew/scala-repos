@@ -39,9 +39,15 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
       if (left == null && right == null) {
         // Both null, continue looking.
       } else if (left == null) {
-        return if (order.direction == Ascending) -1 else 1
+        return if (order.direction == Ascending)
+          -1
+        else
+          1
       } else if (right == null) {
-        return if (order.direction == Ascending) 1 else -1
+        return if (order.direction == Ascending)
+          1
+        else
+          -1
       } else {
         val comparison = order.dataType match {
           case dt: AtomicType if order.direction == Ascending =>

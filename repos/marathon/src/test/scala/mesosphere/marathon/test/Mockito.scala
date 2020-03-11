@@ -41,7 +41,8 @@ trait Mockito extends MockitoSugar {
 
   implicit class Stubbed[T](c: => T) {
     def returns(t: T, t2: T*): OngoingStubbing[T] = {
-      if (t2.isEmpty) M.when(c).thenReturn(t)
+      if (t2.isEmpty)
+        M.when(c).thenReturn(t)
       else
         t2.foldLeft(M.when(c).thenReturn(t)) { (res, cur) =>
           res.thenReturn(cur)

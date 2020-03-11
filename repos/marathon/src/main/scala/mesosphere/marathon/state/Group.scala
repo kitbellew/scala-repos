@@ -40,17 +40,24 @@ case class Group(
   def findGroup(fn: Group => Boolean): Option[Group] = {
     def in(groups: List[Group]): Option[Group] = groups match {
       case head :: rest =>
-        if (fn(head)) Some(head) else in(rest).orElse(in(head.groups.toList))
+        if (fn(head))
+          Some(head)
+        else
+          in(rest).orElse(in(head.groups.toList))
       case Nil => None
     }
-    if (fn(this)) Some(this) else in(groups.toList)
+    if (fn(this))
+      Some(this)
+    else
+      in(groups.toList)
   }
 
   def app(appId: PathId): Option[AppDefinition] =
     group(appId.parent).flatMap(_.apps.find(_.id == appId))
 
   def group(gid: PathId): Option[Group] = {
-    if (id == gid) Some(this)
+    if (id == gid)
+      Some(this)
     else {
       val restPath = gid.restOf(id)
       groups.find(_.id.restOf(id).root == restPath.root).flatMap(_.group(gid))
@@ -65,13 +72,17 @@ case class Group(
     makeGroup(groupId).update(timestamp) { group =>
       if (group.id == groupId)
         group.putApplication(fn(group.apps.find(_.id == path)))
-      else group
+      else
+        group
     }
   }
 
   def update(path: PathId, fn: Group => Group, timestamp: Timestamp): Group = {
     makeGroup(path).update(timestamp) { group =>
-      if (group.id == path) fn(group) else group
+      if (group.id == path)
+        fn(group)
+      else
+        group
     }
   }
 
@@ -128,7 +139,8 @@ case class Group(
     copy(apps = apps.filter(_.id != appId))
 
   def makeGroup(gid: PathId): Group = {
-    if (gid.isEmpty) this //group already exists
+    if (gid.isEmpty)
+      this //group already exists
     else {
       val (change, remaining) =
         groups.partition(_.id.restOf(id).root == gid.root)
@@ -311,7 +323,8 @@ object Group {
                 None)
           }
 
-          if (ruleViolations.isEmpty) None
+          if (ruleViolations.isEmpty)
+            None
           else
             Some(
               GroupViolation(
@@ -321,8 +334,10 @@ object Group {
                 ruleViolations.toSet))
         }
 
-        if (groupViolations.isEmpty) Success
-        else Failure(groupViolations.toSet)
+        if (groupViolations.isEmpty)
+          Success
+        else
+          Failure(groupViolations.toSet)
       }
     }
   }

@@ -42,14 +42,18 @@ object TaskSerializer {
     def reservation: Option[Task.Reservation] =
       if (proto.hasReservation) {
         Some(ReservationSerializer.fromProto(proto.getReservation))
-      } else None
+      } else
+        None
 
     def appVersion = Timestamp(proto.getVersion)
 
     def taskStatus = Task.Status(
       stagedAt = Timestamp(proto.getStagedAt),
       startedAt =
-        if (proto.hasStartedAt) Some(Timestamp(proto.getStartedAt)) else None,
+        if (proto.hasStartedAt)
+          Some(Timestamp(proto.getStartedAt))
+        else
+          None,
       mesosStatus = opt(_.hasStatus, _.getStatus)
     )
 
@@ -222,7 +226,8 @@ private[impl] object ReservationSerializer {
       val timeout =
         if (proto.hasTimeout)
           Some(TimeoutSerializer.fromProto(proto.getTimeout))
-        else None
+        else
+          None
       proto.getType match {
         case ProtoState.Type.New       => State.New(timeout)
         case ProtoState.Type.Launched  => State.Launched

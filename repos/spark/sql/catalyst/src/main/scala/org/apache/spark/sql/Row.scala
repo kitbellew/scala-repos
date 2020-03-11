@@ -382,10 +382,12 @@ trait Row extends Serializable {
   }
 
   override def equals(o: Any): Boolean = {
-    if (!o.isInstanceOf[Row]) return false
+    if (!o.isInstanceOf[Row])
+      return false
     val other = o.asInstanceOf[Row]
 
-    if (other eq null) return false
+    if (other eq null)
+      return false
 
     if (length != other.length) {
       return false
@@ -482,5 +484,6 @@ trait Row extends Serializable {
   private def getAnyValAs[T <: AnyVal](i: Int): T =
     if (isNullAt(i))
       throw new NullPointerException(s"Value at index $i in null")
-    else getAs[T](i)
+    else
+      getAs[T](i)
 }

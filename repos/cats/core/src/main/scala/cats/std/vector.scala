@@ -43,7 +43,10 @@ trait VectorInstances {
       def foldRight[A, B](fa: Vector[A], lb: Eval[B])(
           f: (A, Eval[B]) => Eval[B]): Eval[B] = {
         def loop(i: Int): Eval[B] =
-          if (i < fa.length) f(fa(i), Eval.defer(loop(i + 1))) else lb
+          if (i < fa.length)
+            f(fa(i), Eval.defer(loop(i + 1)))
+          else
+            lb
         Eval.defer(loop(0))
       }
 
@@ -71,8 +74,10 @@ trait VectorInstances {
     new Eq[Vector[A]] {
       def eqv(x: Vector[A], y: Vector[A]): Boolean = {
         @tailrec def loop(to: Int): Boolean =
-          if (to == -1) true
-          else ev.eqv(x(to), y(to)) && loop(to - 1)
+          if (to == -1)
+            true
+          else
+            ev.eqv(x(to), y(to)) && loop(to - 1)
 
         (x.size == y.size) && loop(x.size - 1)
       }

@@ -115,7 +115,8 @@ private[finagle] object StabilizingAddr {
 
             loop(q, h, active, true, addr)
         },
-        if (h != Healthy || remq.isEmpty) Offer.never
+        if (h != Healthy || remq.isEmpty)
+          Offer.never
         else {
           // Note: remq is ordered by 'until' time.
           val ((elem, until), nextq) = remq.dequeue
@@ -123,7 +124,8 @@ private[finagle] object StabilizingAddr {
             loop(nextq, h, active - elem, true, srcAddr)
           }
         },
-        if (!needPush) Offer.never
+        if (!needPush)
+          Offer.never
         else {
           // We always bind if active is nonempty. Otherwise we
           // pass through the current active address.
@@ -132,8 +134,10 @@ private[finagle] object StabilizingAddr {
             case _                    => Addr.Metadata.empty
           }
           val addr =
-            if (active.nonEmpty) Addr.Bound(active, attrs)
-            else srcAddr
+            if (active.nonEmpty)
+              Addr.Bound(active, attrs)
+            else
+              srcAddr
           stabilized.send(addr) map { _ =>
             loop(remq, h, active, false, srcAddr)
           }

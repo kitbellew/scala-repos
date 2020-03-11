@@ -20,7 +20,8 @@ object IllegalInheritance extends AnnotatorPart[ScTemplateDefinition] {
       definition: ScTemplateDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (!typeAware) return
+    if (!typeAware)
+      return
 
     definition.selfTypeElement
       .flatMap(_.getType(TypingContext.empty).toOption)

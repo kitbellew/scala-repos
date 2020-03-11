@@ -83,8 +83,10 @@ private[spark] class ApplicationMaster(
     // avoid the integer overflow here.
     val defaultMaxNumExecutorFailures = math.max(
       3,
-      if (effectiveNumExecutors > Int.MaxValue / 2) Int.MaxValue
-      else (2 * effectiveNumExecutors))
+      if (effectiveNumExecutors > Int.MaxValue / 2)
+        Int.MaxValue
+      else
+        (2 * effectiveNumExecutors))
 
     sparkConf
       .get(MAX_EXECUTOR_FAILURES)
@@ -280,7 +282,8 @@ private[spark] class ApplicationMaster(
           logDebug("shutting down user thread")
           userClassThread.interrupt()
         }
-        if (!inShutdown) delegationTokenRenewerOption.foreach(_.stop())
+        if (!inShutdown)
+          delegationTokenRenewerOption.foreach(_.stop())
       }
     }
   }
@@ -316,7 +319,11 @@ private[spark] class ApplicationMaster(
         }
         .getOrElse("")
 
-    val _sparkConf = if (sc != null) sc.getConf else sparkConf
+    val _sparkConf =
+      if (sc != null)
+        sc.getConf
+      else
+        sparkConf
     val driverUrl = RpcEndpointAddress(
       _sparkConf.get("spark.driver.host"),
       _sparkConf.get("spark.driver.port").toInt,
@@ -677,9 +684,9 @@ private[spark] class ApplicationMaster(
     override def receiveAndReply(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       case RequestExecutors(
-          requestedTotal,
-          localityAwareTasks,
-          hostToLocalTaskCount) =>
+            requestedTotal,
+            localityAwareTasks,
+            hostToLocalTaskCount) =>
         Option(allocator) match {
           case Some(a) =>
             if (a.requestTotalExecutorsWithPreferredLocalities(

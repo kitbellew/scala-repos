@@ -50,7 +50,10 @@ object ProgressBarTableCell {
     */
   implicit def sfxProgressBarTableCell2jfx[S](
       cell: ProgressBarTableCell[S]): jfxscc.ProgressBarTableCell[S] =
-    if (cell != null) cell.delegate else null
+    if (cell != null)
+      cell.delegate
+    else
+      null
 
   /**
     * Provides a `ProgressBar` that allows easy visualisation of a Number value as it proceeds from 0.0 to 1.0.

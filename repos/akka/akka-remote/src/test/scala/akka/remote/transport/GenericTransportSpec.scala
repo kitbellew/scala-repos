@@ -50,7 +50,8 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
         system,
         new AkkaProtocolSettings(provider.remoteSettings.config),
         AkkaPduProtobufCodec)
-    } else transport
+    } else
+      transport
 
   def newTransportA(registry: AssociationRegistry): Transport =
     wrapTransport(freshTransport(new TestTransport(addressATest, registry)))
@@ -148,8 +149,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
 
       val payload = ByteString("PDU")
       val pdu =
-        if (withAkkaProtocol) AkkaPduProtobufCodec.constructPayload(payload)
-        else payload
+        if (withAkkaProtocol)
+          AkkaPduProtobufCodec.constructPayload(payload)
+        else
+          payload
 
       awaitCond(registry.existsAssociation(addressATest, addressBTest))
 

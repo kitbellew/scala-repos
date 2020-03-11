@@ -68,7 +68,8 @@ private[stream] class ConnectionSourceStage(
           case Bound(localAddress) ⇒
             listener = sender
             stageActor.watch(listener)
-            if (isAvailable(out)) listener ! ResumeAccepting(1)
+            if (isAvailable(out))
+              listener ! ResumeAccepting(1)
             val target = self
             bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
               target ! Unbind;
@@ -82,11 +83,13 @@ private[stream] class ConnectionSourceStage(
           case c: Connected ⇒
             push(out, connectionFor(c, sender))
           case Unbind ⇒
-            if (!isClosed(out) && (listener ne null)) tryUnbind()
+            if (!isClosed(out) && (listener ne null))
+              tryUnbind()
           case Unbound ⇒ // If we're unbound then just shut down
             if (connectionFlowsAwaitingInitialization.get() == 0)
               completeStage()
-            else scheduleOnce(BindShutdownTimer, bindShutdownTimeout)
+            else
+              scheduleOnce(BindShutdownTimer, bindShutdownTimeout)
           case Terminated(ref) if ref == listener ⇒
             failStage(
               new IllegalStateException(
@@ -99,7 +102,8 @@ private[stream] class ConnectionSourceStage(
         new OutHandler {
           override def onPull(): Unit = {
             // Ignore if still binding
-            if (listener ne null) listener ! ResumeAccepting(1)
+            if (listener ne null)
+              listener ! ResumeAccepting(1)
           }
 
           override def onDownstreamFinish(): Unit = tryUnbind()
@@ -252,7 +256,8 @@ private[stream] object TcpConnectionStage {
             self,
             keepOpenOnPeerClosed = true,
             useResumeWriting = false)
-          if (isAvailable(bytesOut)) connection ! ResumeReading
+          if (isAvailable(bytesOut))
+            connection ! ResumeReading
           pull(bytesIn)
       }
     }
@@ -278,10 +283,14 @@ private[stream] object TcpConnectionStage {
 
         case Received(data) ⇒
           // Keep on reading even when closed. There is no "close-read-side" in TCP
-          if (isClosed(bytesOut)) connection ! ResumeReading
-          else push(bytesOut, data)
+          if (isClosed(bytesOut))
+            connection ! ResumeReading
+          else
+            push(bytesOut, data)
 
-        case WriteAck ⇒ if (!isClosed(bytesIn)) pull(bytesIn)
+        case WriteAck ⇒
+          if (!isClosed(bytesIn))
+            pull(bytesIn)
       }
     }
 
@@ -291,7 +300,8 @@ private[stream] object TcpConnectionStage {
       }
 
       override def onDownstreamFinish(): Unit = {
-        if (!isClosed(bytesIn)) connection ! ResumeReading
+        if (!isClosed(bytesIn))
+          connection ! ResumeReading
         else {
           connection ! Abort
           completeStage()
@@ -311,10 +321,13 @@ private[stream] object TcpConnectionStage {
         override def onUpstreamFinish(): Unit = {
           // Reading has stopped before, either because of cancel, or PeerClosed, so just Close now
           // (or half-close is turned off)
-          if (isClosed(bytesOut) || !role.halfClose) connection ! Close
+          if (isClosed(bytesOut) || !role.halfClose)
+            connection ! Close
           // We still read, so we only close the write side
-          else if (connection != null) connection ! ConfirmedClose
-          else completeStage()
+          else if (connection != null)
+            connection ! ConfirmedClose
+          else
+            completeStage()
         }
 
         override def onUpstreamFailure(ex: Throwable): Unit = {
@@ -326,7 +339,8 @@ private[stream] object TcpConnectionStage {
                 ex.getStackTrace.mkString("\n"))
             }
             connection ! Abort
-          } else failStage(ex)
+          } else
+            failStage(ex)
         }
       }
     )

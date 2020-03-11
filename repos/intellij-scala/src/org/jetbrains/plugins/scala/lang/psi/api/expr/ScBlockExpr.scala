@@ -19,7 +19,8 @@ trait ScBlockExpr extends ScExpression with ScBlock with ScControlFlowOwner {
   def caseClauses: Option[ScCaseClauses] = findChild(classOf[ScCaseClauses])
 
   override def getControlFlow(policy: ScControlFlowPolicy): Seq[Instruction] = {
-    if (isAnonymousFunction) super.getControlFlow(policy)
+    if (isAnonymousFunction)
+      super.getControlFlow(policy)
     else {
       val parent =
         PsiTreeUtil.getParentOfType(this, classOf[ScControlFlowOwner])
@@ -27,5 +28,9 @@ trait ScBlockExpr extends ScExpression with ScBlock with ScControlFlowOwner {
     }
   }
 
-  override def controlFlowScope = if (isAnonymousFunction) caseClauses else None
+  override def controlFlowScope =
+    if (isAnonymousFunction)
+      caseClauses
+    else
+      None
 }

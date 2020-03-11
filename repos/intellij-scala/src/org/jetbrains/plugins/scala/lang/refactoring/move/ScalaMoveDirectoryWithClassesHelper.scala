@@ -181,8 +181,10 @@ class ScalaMoveDirectoryWithClassesHelper
   private def packageName(sf: ScalaFile) = {
     sf.typeDefinitions match {
       case Seq(obj: ScObject) if obj.isPackageObject =>
-        if (obj.name == "`package`") obj.qualifiedName.stripSuffix(".`package`")
-        else obj.qualifiedName
+        if (obj.name == "`package`")
+          obj.qualifiedName.stripSuffix(".`package`")
+        else
+          obj.qualifiedName
       case _ => sf.getPackageName
     }
   }

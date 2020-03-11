@@ -401,7 +401,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         val map = new JHashMap[K, V]
         iter.foreach { pair =>
           val old = map.get(pair._1)
-          map.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
+          map.put(
+            pair._1,
+            if (old == null)
+              pair._2
+            else
+              cleanedF(old, pair._2))
         }
         Iterator(map)
       }: Iterator[JHashMap[K, V]]
@@ -410,7 +415,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       {
         m2.asScala.foreach { pair =>
           val old = m1.get(pair._1)
-          m1.put(pair._1, if (old == null) pair._2 else cleanedF(old, pair._2))
+          m1.put(
+            pair._1,
+            if (old == null)
+              pair._2
+            else
+              cleanedF(old, pair._2))
         }
         m1
       }: JHashMap[K, V]
@@ -502,7 +512,13 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       s"accuracy ($relativeSD) must be greater than 0.000017")
     val p = math.ceil(2.0 * math.log(1.054 / relativeSD) / math.log(2)).toInt
     assert(p <= 32)
-    countApproxDistinctByKey(if (p < 4) 4 else p, 0, partitioner)
+    countApproxDistinctByKey(
+      if (p < 4)
+        4
+      else
+        p,
+      0,
+      partitioner)
   }
 
   /**
@@ -610,7 +626,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         .cogroup(other, partitioner)
         .flatMapValues(pair =>
           for (v <- pair._1.iterator;
-               w <- pair._2.iterator) yield (v, w))
+               w <- pair._2.iterator)
+            yield (v, w))
     }
 
   /**
@@ -627,7 +644,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         pair._1.iterator.map(v => (v, None))
       } else {
         for (v <- pair._1.iterator;
-             w <- pair._2.iterator) yield (v, Some(w))
+             w <- pair._2.iterator)
+          yield (v, Some(w))
       }
     }
   }
@@ -646,7 +664,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         pair._2.iterator.map(w => (None, w))
       } else {
         for (v <- pair._1.iterator;
-             w <- pair._2.iterator) yield (Some(v), w)
+             w <- pair._2.iterator)
+          yield (Some(v), w)
       }
     }
   }
@@ -668,7 +687,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         case (Seq(), ws) => ws.iterator.map(w => (None, Some(w)))
         case (vs, ws) =>
           for (v <- vs.iterator;
-               w <- ws.iterator) yield (Some(v), Some(w))
+               w <- ws.iterator)
+            yield (Some(v), Some(w))
       }
     }
 

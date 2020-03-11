@@ -66,7 +66,9 @@ trait Bootable {
 object Main {
   private val quiet = getBoolean("akka.kernel.quiet")
 
-  private def log(s: String) = if (!quiet) println(s)
+  private def log(s: String) =
+    if (!quiet)
+      println(s)
 
   def main(args: Array[String]) = {
     if (args.isEmpty) {

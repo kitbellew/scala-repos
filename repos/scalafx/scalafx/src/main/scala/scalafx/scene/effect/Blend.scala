@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Blend {
   implicit def sfxBlend2jfx(b: Blend): jfxse.Blend =
-    if (b != null) b.delegate else null
+    if (b != null)
+      b.delegate
+    else
+      null
 }
 
 class Blend(override val delegate: jfxse.Blend = new jfxse.Blend)

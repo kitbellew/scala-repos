@@ -153,7 +153,8 @@ trait IntegrationTest {
       root: AbstractTestProxy,
       names: Iterable[String]): Boolean = {
     import scala.collection.JavaConversions._
-    if (root.isLeaf && !names.contains(root.getName)) true
+    if (root.isLeaf && !names.contains(root.getName))
+      true
     else
       !names.contains(root.getName) && root.getChildren.toList
         .forall(checkResultTreeDoesNotHaveNodes(_, names))
@@ -187,11 +188,15 @@ trait IntegrationTest {
       allowTail: Boolean = false): Option[List[AbstractTestProxy]] = {
     import scala.collection.JavaConversions._
     if (conditions.isEmpty) {
-      if (allowTail) return Some(List()) else return None
+      if (allowTail)
+        return Some(List())
+      else
+        return None
     }
     if (conditions.head(root)) {
       val children = root.getChildren
-      if (children.isEmpty && conditions.size == 1) Some(List(root))
+      if (children.isEmpty && conditions.size == 1)
+        Some(List(root))
       else
         children.toList
           .map(getPathFromResultTree(_, conditions.tail, allowTail))

@@ -107,7 +107,8 @@ class AgentDocSpec extends AkkaSpec {
 
     def transfer(from: Agent[Int], to: Agent[Int], amount: Int): Boolean = {
       atomic { txn =>
-        if (from.get < amount) false
+        if (from.get < amount)
+          false
         else {
           from send (_ - amount)
           to send (_ + amount)
@@ -141,7 +142,9 @@ class AgentDocSpec extends AkkaSpec {
       println(value)
 
     // uses map
-    val agent3 = for (value <- agent1) yield value + 1
+    val agent3 =
+      for (value <- agent1)
+        yield value + 1
 
     // or using map directly
     val agent4 = agent1 map (_ + 1)

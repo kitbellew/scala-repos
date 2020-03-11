@@ -30,8 +30,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           tpe: Type): Tree = {
         val fieldPickler = c.fresh(newTermName("fieldPickler"))
         val elideHint =
-          if (isStaticallyElided) q"b.hintElidedType($fieldPickler.tag)"
-          else q""
+          if (isStaticallyElided)
+            q"b.hintElidedType($fieldPickler.tag)"
+          else
+            q""
         // NOTE; This will look up an IMPLICIT pickler for the value, based on the type.
         //       This is how we chain our macros to find all the valid types.
         q"""
@@ -62,7 +64,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
               q"$rTerm.asInstanceOf[$tpe]",
               staticallyElided,
               tpe)}"""
-            if (x.isScala) allowNonExistentField(logic) else logic
+            if (x.isScala)
+              allowNonExistentField(logic)
+            else
+              logic
           } else
             putField(
               q"picklee.${newTermName(x.fieldName)}",
@@ -121,8 +126,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         createRuntimePickler(q"builder"))
       // TODO - Figure out if we can handle runtime dispatch...
       val unknownDispatch =
-        if (x.lookupRuntime) List(runtimeDispatch)
-        else List(failDispatch)
+        if (x.lookupRuntime)
+          List(runtimeDispatch)
+        else
+          List(failDispatch)
 
       val picklerLookup = q"""
         val clazz = if (picklee != null) picklee.getClass else null
@@ -148,7 +155,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       val oid = c.fresh(newTermName("oid"))
       // TODO - hint known size
       val shareHint: List[c.Tree] =
-        if (shareNothing) List(q"()")
+        if (shareNothing)
+          List(q"()")
         else
           List(
             q"val $oid = _root_.scala.pickling.internal.`package`.lookupPicklee(picklee)",
@@ -236,7 +244,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     val staticHint =
       if (tpe.isEffectivelyFinal)
         q"$readerName.hintElidedType($unpicklerName.tag)"
-      else q"";
+      else
+        q"";
 
     val resultName = c.fresh(newTermName("result"))
     // TODO - may be able to drop locally.
@@ -272,7 +281,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     if (cons.requiresReflection)
       sys.error(s"Unable to reflectively call constructors, currently.")
     else {
-      if (cons.constructor.parameterNames.isEmpty) q"""new ${tpe}"""
+      if (cons.constructor.parameterNames.isEmpty)
+        q"""new ${tpe}"""
       else {
         q"new $tpe(...$argss)"
       }
@@ -320,7 +330,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
               q"""
                  result.${newTermName(x.methodName)}($read)
                """
-            } else reflectivelySet(newTermName("result"), x, read)
+            } else
+              reflectivelySet(newTermName("result"), x, read)
           case x =>
             sys.error(
               s"Cannot handle a setting method that does not take exactly one parameter, found parameters: $x")
@@ -333,7 +344,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           tpe.isEffectivelyFinal || tpe.isEffectivelyPrimitive
         if (x.isScala || !x.isPublic || x.isFinal) {
           reflectivelySet(newTermName("result"), x, read)
-        } else q"""result.${newTermName(x.fieldName)} = $read"""
+        } else
+          q"""result.${newTermName(x.fieldName)} = $read"""
     }
 
   }
@@ -520,8 +532,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     // Note: this makes it so modules work, things like foo.type.
     //       For some reason we get an issue with not having == defined on Class[_] otherwise.
     // TODO - fix this for certain primitive types, like Null, etc.
-    if (originalTpe.termSymbol.isModule) originalTpe.widen
-    else originalTpe
+    if (originalTpe.termSymbol.isModule)
+      originalTpe.widen
+    else
+      originalTpe
   }
 
   // -- Externalizable Hackery --
@@ -618,7 +632,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           value,
           field.tpe[c.universe.type](c.universe))})"""
         // Workaround for issues with not being able to accurate read scala symbols.
-        if (field.isScala) allowNonExistentField(result) else result
+        if (field.isScala)
+          allowNonExistentField(result)
+        else
+          result
       case mthd: IrMethod =>
         val methodTerm = c.fresh(newTermName("mthd"))
         // TODO - We should ensure types align.

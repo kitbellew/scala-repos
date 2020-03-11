@@ -175,9 +175,15 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       setStatus(Closed);
       false
     case s ⇒
-      val next = if (s < suspendUnit) s else s - suspendUnit
-      if (updateStatus(s, next)) next < suspendUnit
-      else resume()
+      val next =
+        if (s < suspendUnit)
+          s
+        else
+          s - suspendUnit
+      if (updateStatus(s, next))
+        next < suspendUnit
+      else
+        resume()
   }
 
   /**
@@ -192,8 +198,10 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       setStatus(Closed);
       false
     case s ⇒
-      if (updateStatus(s, s + suspendUnit)) s < suspendUnit
-      else suspend()
+      if (updateStatus(s, s + suspendUnit))
+        s < suspendUnit
+      else
+        suspend()
   }
 
   /**
@@ -218,8 +226,10 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
      * Only try to add Scheduled bit if pure Open/Suspended, not Closed or with
      * Scheduled bit already set.
      */
-    if ((s & shouldScheduleMask) != Open) false
-    else updateStatus(s, s | Scheduled) || setAsScheduled()
+    if ((s & shouldScheduleMask) != Open)
+      false
+    else
+      updateStatus(s, s | Scheduled) || setAsScheduled()
   }
 
   /**
@@ -301,11 +311,13 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       deadlineNs: Long =
         if (dispatcher.isThroughputDeadlineTimeDefined == true)
           System.nanoTime + dispatcher.throughputDeadlineTime.toNanos
-        else 0L): Unit =
+        else
+          0L): Unit =
     if (shouldProcessMessage) {
       val next = dequeue()
       if (next ne null) {
-        if (Mailbox.debug) println(actor.self + " processing message " + next)
+        if (Mailbox.debug)
+          println(actor.self + " processing message " + next)
         actor invoke next
         if (Thread.interrupted())
           throw new InterruptedException(
@@ -524,7 +536,8 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
   @tailrec
   final def systemEnqueue(receiver: ActorRef, message: SystemMessage): Unit = {
     assert(message.unlinked)
-    if (Mailbox.debug) println(receiver + " having enqueued " + message)
+    if (Mailbox.debug)
+      println(receiver + " having enqueued " + message)
     val currentList = systemQueueGet
     if (currentList.head == NoMessage) {
       if (actor ne null)
@@ -542,9 +555,12 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
   final def systemDrain(newContents: LatestFirstSystemMessageList)
       : EarliestFirstSystemMessageList = {
     val currentList = systemQueueGet
-    if (currentList.head == NoMessage) new EarliestFirstSystemMessageList(null)
-    else if (systemQueuePut(currentList, newContents)) currentList.reverse
-    else systemDrain(newContents)
+    if (currentList.head == NoMessage)
+      new EarliestFirstSystemMessageList(null)
+    else if (systemQueuePut(currentList, newContents))
+      currentList.reverse
+    else
+      systemDrain(newContents)
   }
 
   def hasSystemMessages: Boolean = systemQueueGet.head match {
@@ -625,7 +641,8 @@ trait BoundedQueueBasedMessageQueue
           .tell(
             DeadLetter(handle.message, handle.sender, receiver),
             handle.sender)
-    } else queue put handle
+    } else
+      queue put handle
 
   def dequeue(): Envelope = queue.poll()
 }
@@ -684,7 +701,8 @@ trait BoundedDequeBasedMessageQueue
           .tell(
             DeadLetter(handle.message, handle.sender, receiver),
             handle.sender)
-    } else queue put handle
+    } else
+      queue put handle
 
   def enqueueFirst(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
@@ -696,7 +714,8 @@ trait BoundedDequeBasedMessageQueue
           .tell(
             DeadLetter(handle.message, handle.sender, receiver),
             handle.sender)
-    } else queue putFirst handle
+    } else
+      queue putFirst handle
 
   def dequeue(): Envelope = queue.poll()
 }
@@ -1023,8 +1042,10 @@ trait ControlAwareMessageQueueSemantics extends QueueBasedMessageQueue {
   def dequeue(): Envelope = {
     val controlMsg = controlQueue.poll()
 
-    if (controlMsg ne null) controlMsg
-    else queue.poll()
+    if (controlMsg ne null)
+      controlMsg
+    else
+      queue.poll()
   }
 
   override def numberOfMessages: Int = controlQueue.size() + queue.size()
@@ -1126,7 +1147,8 @@ object BoundedControlAwareMailbox {
         if (size.compareAndSet(count, count - 1)) {
           val item = super.dequeue()
 
-          if (size.get < capacity) signalNotFull()
+          if (size.get < capacity)
+            signalNotFull()
 
           item
         } else {
@@ -1168,7 +1190,8 @@ object BoundedControlAwareMailbox {
             q.add(envelope)
             val c = size.incrementAndGet()
 
-            if (c < capacity) notFull.signal()
+            if (c < capacity)
+              notFull.signal()
 
             true
           }

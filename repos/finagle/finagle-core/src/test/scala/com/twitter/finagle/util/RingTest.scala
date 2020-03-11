@@ -66,7 +66,8 @@ class RingTest extends FunSuite {
     var count = 0
     val histo = run {
       val (a, b) = r.pick2(rng, (3L * W / 4L).toInt, W / 2)
-      if (a == b) count += 1
+      if (a == b)
+        count += 1
       Seq(a, b)
     }
     assert(histo.keySet == Set(0, 1, 2))

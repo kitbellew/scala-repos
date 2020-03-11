@@ -87,7 +87,13 @@ private[math] trait UIntOrder extends Order[UInt] {
   override def gteqv(x: UInt, y: UInt): Boolean = x >= y
   override def lt(x: UInt, y: UInt): Boolean = x < y
   override def lteqv(x: UInt, y: UInt): Boolean = x <= y
-  def compare(x: UInt, y: UInt): Int = if (x < y) -1 else if (x > y) 1 else 0
+  def compare(x: UInt, y: UInt): Int =
+    if (x < y)
+      -1
+    else if (x > y)
+      1
+    else
+      0
 }
 
 @SerialVersionUID(0L)

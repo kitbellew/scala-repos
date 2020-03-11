@@ -88,8 +88,10 @@ class CaseClassPickling(
               val errors = (reflectionErrorMessage(
                 pickle) ++ reflectionErrorMessage(unpickle))
               val errorString =
-                if (errors.isEmpty) "   unknown reason"
-                else errors.mkString("   - ", "\n   - ", "")
+                if (errors.isEmpty)
+                  "   unknown reason"
+                else
+                  errors.mkString("   - ", "\n   - ", "")
               AlgorithmFailure(
                 s"Cannot pickle case class, because reflection is not allowed and some members are protected/private.\n$errorString")
             } else
@@ -102,7 +104,8 @@ class CaseClassPickling(
         case _ =>
           AlgorithmFailure("case-class constructor is not public")
       }
-    } else AlgorithmFailure("class is not a case class")
+    } else
+      AlgorithmFailure("class is not a case class")
   }
 
   def checkFactoryImpl(
@@ -224,7 +227,8 @@ class CaseClassPickling(
                 .asInstanceOf[PickleUnpickleImplementation]
             }
         }
-      } else behavior
+      } else
+        behavior
     } else
       AlgorithmFailure(
         s"Cannot use case-class algorithm on non-case class $tpe")

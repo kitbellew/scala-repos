@@ -75,7 +75,9 @@ trait SnapshotStore extends Actor with ActorLogging {
         }
         .pipeTo(self)(senderPersistentActor())
         .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
+          case _ ⇒
+            if (publish)
+              context.system.eventStream.publish(d)
         }
 
     case evt: DeleteSnapshotSuccess ⇒
@@ -96,7 +98,9 @@ trait SnapshotStore extends Actor with ActorLogging {
         }
         .pipeTo(self)(senderPersistentActor())
         .onComplete {
-          case _ ⇒ if (publish) context.system.eventStream.publish(d)
+          case _ ⇒
+            if (publish)
+              context.system.eventStream.publish(d)
         }
 
     case evt: DeleteSnapshotsFailure ⇒
@@ -111,7 +115,8 @@ trait SnapshotStore extends Actor with ActorLogging {
   @inline private final def senderPersistentActor(): ActorRef = sender()
 
   private def tryReceivePluginInternal(evt: Any): Unit =
-    if (receivePluginInternal.isDefinedAt(evt)) receivePluginInternal(evt)
+    if (receivePluginInternal.isDefinedAt(evt))
+      receivePluginInternal(evt)
 
   //#snapshot-store-plugin-api
 

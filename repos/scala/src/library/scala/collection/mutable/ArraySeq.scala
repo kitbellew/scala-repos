@@ -56,12 +56,14 @@ class ArraySeq[A](override val length: Int)
   override def par = ParArray.handoff(array.asInstanceOf[Array[A]], length)
 
   def apply(idx: Int): A = {
-    if (idx >= length) throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= length)
+      throw new IndexOutOfBoundsException(idx.toString)
     array(idx).asInstanceOf[A]
   }
 
   def update(idx: Int, elem: A) {
-    if (idx >= length) throw new IndexOutOfBoundsException(idx.toString)
+    if (idx >= length)
+      throw new IndexOutOfBoundsException(idx.toString)
     array(idx) = elem.asInstanceOf[AnyRef]
   }
 
@@ -84,7 +86,8 @@ class ArraySeq[A](override val length: Int)
     */
   override def copyToArray[B >: A](xs: Array[B], start: Int, len: Int) {
     val len1 = len min (xs.length - start) min length
-    if (len1 > 0) Array.copy(array, 0, xs, start, len1)
+    if (len1 > 0)
+      Array.copy(array, 0, xs, start, len1)
   }
 
   override def clone(): ArraySeq[A] = {

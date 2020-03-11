@@ -73,7 +73,8 @@ trait CommentFactory extends base.CommentFactoryBase {
             typeParams0 = tplComment.typeParams,
             deprecated0 = tplComment.deprecated
           ))
-      else None
+      else
+        None
     }
 
     //other comment cases
@@ -87,7 +88,8 @@ trait CommentFactory extends base.CommentFactoryBase {
           global.docCommentPos(sym),
           linkTarget)
         Some(c)
-      } else None
+      } else
+        None
     }
 
   }
@@ -97,7 +99,11 @@ trait CommentFactory extends base.CommentFactoryBase {
       src: String,
       pos: Position,
       linkTarget: DocTemplateImpl): Comment = {
-    val sym = if (linkTarget eq null) NoSymbol else linkTarget.sym
+    val sym =
+      if (linkTarget eq null)
+        NoSymbol
+      else
+        linkTarget.sym
     parseAtSymbol(comment, src, pos, sym)
   }
 
@@ -108,7 +114,11 @@ trait CommentFactory extends base.CommentFactoryBase {
     *  - Removed all end-of-line whitespace.
     *  - Only `endOfLine` is used to mark line endings. */
   def parseWiki(string: String, pos: Position, inTpl: DocTemplateImpl): Body = {
-    val sym = if (inTpl eq null) NoSymbol else inTpl.sym
+    val sym =
+      if (inTpl eq null)
+        NoSymbol
+      else
+        inTpl.sym
     parseWikiAtSymbol(string, pos, sym)
   }
 }

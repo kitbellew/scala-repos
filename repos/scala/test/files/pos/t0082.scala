@@ -6,7 +6,11 @@ object Main {
 //      case x :: Nil => Some(x)
     case y :: ys =>
       (min0(less, ys): @unchecked) match {
-        case Some(m) => if (less(y, m)) Some(y) else Some(m)
+        case Some(m) =>
+          if (less(y, m))
+            Some(y)
+          else
+            Some(m)
       }
   }
 

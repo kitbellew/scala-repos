@@ -93,7 +93,10 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
           case (_, leftKeys, rightKeys, boundCondition, _, _) =>
             withSQLConf(SQLConf.SHUFFLE_PARTITIONS.key -> "1") {
               val buildSide =
-                if (joinType == LeftOuter) BuildRight else BuildLeft
+                if (joinType == LeftOuter)
+                  BuildRight
+                else
+                  BuildLeft
               checkAnswer2(
                 leftRows,
                 rightRows,

@@ -108,5 +108,10 @@ case class LogEntry(obj: Any, level: LogLevel = DebugLevel) {
 
 object LogEntry {
   def apply(obj: Any, marker: String, level: LogLevel): LogEntry =
-    LogEntry(if (marker.isEmpty) obj else marker + ": " + obj, level)
+    LogEntry(
+      if (marker.isEmpty)
+        obj
+      else
+        marker + ": " + obj,
+      level)
 }

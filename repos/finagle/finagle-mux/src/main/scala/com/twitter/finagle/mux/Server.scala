@@ -60,9 +60,12 @@ private class Tracker[T] {
   @tailrec
   private[this] def enter(): Boolean = {
     val n = state.get
-    if (n <= 0) false
-    else if (!state.compareAndSet(n, n + 1)) enter()
-    else true
+    if (n <= 0)
+      false
+    else if (!state.compareAndSet(n, n + 1))
+      enter()
+    else
+      true
   }
 
   /**
@@ -74,7 +77,8 @@ private class Tracker[T] {
     if (n < 0) {
       if (state.incrementAndGet() == -1)
         _drained.setDone()
-    } else if (!state.compareAndSet(n, n - 1)) exit()
+    } else if (!state.compareAndSet(n, n - 1))
+      exit()
   }
 
   /**
@@ -94,7 +98,8 @@ private class Tracker[T] {
     */
   def track(tag: Int, reply: Future[T])(
       process: Try[T] => Future[Unit]): Future[Unit] = {
-    if (!enter()) return reply.transform(process)
+    if (!enter())
+      return reply.transform(process)
 
     val f = reply.transform(process)
     pending.put(tag, f)
@@ -124,10 +129,13 @@ private class Tracker[T] {
   @tailrec
   final def drain(): Unit = {
     val n = state.get
-    if (n < 0) return
+    if (n < 0)
+      return
 
-    if (!state.compareAndSet(n, -n)) drain()
-    else if (n == 1) _drained.setDone()
+    if (!state.compareAndSet(n, -n))
+      drain()
+    else if (n == 1)
+      _drained.setDone()
   }
 
   /**
@@ -340,7 +348,8 @@ private[twitter] class ServerDispatcher(
   private[this] def hangup(deadline: Time): Future[Unit] = state.get match {
     case State.Closed => Future.Done
     case s @ (State.Draining | State.Open) =>
-      if (!state.compareAndSet(s, State.Closed)) hangup(deadline)
+      if (!state.compareAndSet(s, State.Closed))
+        hangup(deadline)
       else {
         trans.close(deadline)
       }

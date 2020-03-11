@@ -84,7 +84,8 @@ final private[stream] class OutputStreamSourceStage(
               downstreamStatus.set(Canceled)
               completeStage()
               unblockUpstream()
-            } else sendResponseIfNeed()
+            } else
+              sendResponseIfNeed()
         }
 
       private def unblockUpstream(): Boolean =
@@ -156,9 +157,12 @@ private[akka] class OutputStreamAdapter(
   @scala.throws(classOf[IOException])
   private[this] def send(sendAction: () ⇒ Unit): Unit = {
     if (isActive) {
-      if (isPublisherAlive) sendAction()
-      else throw publisherClosedException
-    } else throw new IOException("OutputStream is closed")
+      if (isPublisherAlive)
+        sendAction()
+      else
+        throw publisherClosedException
+    } else
+      throw new IOException("OutputStream is closed")
   }
 
   @scala.throws(classOf[IOException])

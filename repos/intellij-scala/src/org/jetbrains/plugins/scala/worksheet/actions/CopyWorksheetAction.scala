@@ -24,13 +24,15 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
     val editor =
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    if (editor == null) return
+    if (editor == null)
+      return
 
     val psiFile: PsiFile = PsiDocumentManager
       .getInstance(e.getProject)
       .getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
-    if (psiFile == null || viewer == null) return
+    if (psiFile == null || viewer == null)
+      return
 
     var s = createMerged(editor, viewer)
     s = StringUtil.convertLineSeparators(s)
@@ -90,21 +92,23 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
       case m: WorksheetFoldRegionDelegate =>
         (0 /: m.getWorksheetGroup.getCorrespondInfo) {
           case (
-              lastEnd,
-              (
-                rightStartOffset,
-                rightEndOffset,
-                leftOffset,
-                spaces,
-                leftLength)) =>
+                lastEnd,
+                (
+                  rightStartOffset,
+                  rightEndOffset,
+                  leftOffset,
+                  spaces,
+                  leftLength)) =>
             val leftStart = {
               var j = lastEnd
 
               while (getFromLeft(
                        j).trim.length == 0 && j < leftDocument.getLineCount)
                 j += 1
-              if (j == leftDocument.getLineCount) return result.toString()
-              else j
+              if (j == leftDocument.getLineCount)
+                return result.toString()
+              else
+                j
             }
             val currentLeftStart = leftDocument getLineNumber leftOffset
             val leftEnd = leftDocument getLineNumber leftOffset // + spaces
@@ -125,18 +129,19 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
                 " ")
             }
 
-            if (spaces > 0) for (j <- (spaces - 1).to(0, -1)) {
-              result append fullShift
-              result append "//"
-              result append {
-                rightDocument getText {
-                  new TextRange(
-                    rightDocument getLineStartOffset (rightEnd - j),
-                    rightDocument getLineEndOffset (rightEnd - j))
+            if (spaces > 0)
+              for (j <- (spaces - 1).to(0, -1)) {
+                result append fullShift
+                result append "//"
+                result append {
+                  rightDocument getText {
+                    new TextRange(
+                      rightDocument getLineStartOffset (rightEnd - j),
+                      rightDocument getLineEndOffset (rightEnd - j))
+                  }
                 }
+                result append lineSeparator
               }
-              result append lineSeparator
-            }
 
             lastLeftEnd = leftEnd + 1
             lastRightEnd = rightEnd + 1

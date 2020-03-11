@@ -56,7 +56,11 @@ abstract class DisallowJoinOfTwoClustersSpec
         cluster.join(c1)
       }
 
-      val expectedSize = if (myself == c1) 1 else 2
+      val expectedSize =
+        if (myself == c1)
+          1
+        else
+          2
       awaitMembersUp(numberOfMembers = expectedSize)
 
       enterBarrier("two-members")

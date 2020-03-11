@@ -29,7 +29,12 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   import stream._
 
   def this(stream: PrintStream, printPrivates: Boolean) =
-    this(stream: PrintStream, if (printPrivates) ShowAll else HideClassPrivate)
+    this(
+      stream: PrintStream,
+      if (printPrivates)
+        ShowAll
+      else
+        HideClassPrivate)
 
   private val currentTypeParameters: mutable.HashMap[TypeSymbol, String] =
     new mutable.HashMap[TypeSymbol, String]()
@@ -48,7 +53,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         val nameWithIndex: String = s"${t.name}_$$_$index"
         if (checkName(nameWithIndex)) {
           currentTypeParameters += ((t, nameWithIndex))
-        } else writeWithIndex(index + 1)
+        } else
+          writeWithIndex(index + 1)
       }
       writeWithIndex(1)
     }
@@ -74,13 +80,17 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         for (a <- t.attributes) {
           indent;
           print(toString(a))
-          if (onNewLine) print("\n") else print(" ")
+          if (onNewLine)
+            print("\n")
+          else
+            print(" ")
         }
       case _ =>
     }
 
   def printSymbol(level: Int, symbol: Symbol) {
-    if (symbol.isSynthetic) return
+    if (symbol.isSynthetic)
+      return
     val shouldPrint = {
       val accessibilityOk = verbosity match {
         case ShowAll => true
@@ -97,7 +107,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     }
     if (shouldPrint) {
       def indent() {
-        for (i <- 1 to level) print("  ")
+        for (i <- 1 to level)
+          print("  ")
       }
 
       printSymbolAttributes(symbol, onNewLine = true, indent())
@@ -169,13 +180,15 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             firstConsFiltered = true
           case _ => printSymbol(level + 1, child)
         }
-      else printSymbol(level + 1, child)
+      else
+        printSymbol(level + 1, child)
     }
   }
 
   def printWithIndent(level: Int, s: String) {
     def indent() {
-      for (i <- 1 to level) print("  ")
+      for (i <- 1 to level)
+        print("  ")
     }
     indent()
     print(s)
@@ -196,25 +209,36 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     // print private access modifier
     if (symbol.isPrivate) {
       print("private")
-      if (symbol.isLocal) print("[this] ")
-      else print(" ")
+      if (symbol.isLocal)
+        print("[this] ")
+      else
+        print(" ")
     } else if (symbol.isProtected) {
       print("protected")
-      if (symbol.isLocal) print("[this]")
-      else privateWithin foreach print
+      if (symbol.isLocal)
+        print("[this]")
+      else
+        privateWithin foreach print
       print(" ")
-    } else privateWithin.foreach(s => print("private" + s + " "))
+    } else
+      privateWithin.foreach(s => print("private" + s + " "))
 
-    if (symbol.isSealed) print("sealed ")
-    if (symbol.isImplicit) print("implicit ")
-    if (symbol.isFinal && !symbol.isInstanceOf[ObjectSymbol]) print("final ")
-    if (symbol.isOverride) print("override ")
-    if (symbol.isAbstract) symbol match {
-      case c @ (_: ClassSymbol | _: ObjectSymbol) if !c.isTrait =>
-        print("abstract ")
-      case _ => ()
-    }
-    if (symbol.isCase && !symbol.isMethod) print("case ")
+    if (symbol.isSealed)
+      print("sealed ")
+    if (symbol.isImplicit)
+      print("implicit ")
+    if (symbol.isFinal && !symbol.isInstanceOf[ObjectSymbol])
+      print("final ")
+    if (symbol.isOverride)
+      print("override ")
+    if (symbol.isAbstract)
+      symbol match {
+        case c @ (_: ClassSymbol | _: ObjectSymbol) if !c.isTrait =>
+          print("abstract ")
+        case _ => ()
+      }
+    if (symbol.isCase && !symbol.isMethod)
+      print("case ")
   }
 
   private def refinementClass(c: ClassSymbol) = c.name == "<refinement>"
@@ -229,8 +253,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     } else {
       printModifiers(c)
       val defaultConstructor =
-        if (!c.isTrait) getPrinterByConstructor(c) else ""
-      if (c.isTrait) print("trait ") else print("class ")
+        if (!c.isTrait)
+          getPrinterByConstructor(c)
+        else
+          ""
+      if (c.isTrait)
+        print("trait ")
+      else
+        print("class ")
       print(processName(c.name))
       val it = c.infoType
       val (classType, typeParams) = it match {
@@ -240,7 +270,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           (ClassInfoTypeWithCons(a, b, defaultConstructor), Seq.empty)
         case _ => (it, Seq.empty)
       }
-      for (param <- typeParams) addTypeParameter(param)
+      for (param <- typeParams)
+        addTypeParameter(param)
       printType(classType)
       try {
         print(" {")
@@ -255,7 +286,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         printChildren(level, c, !c.isTrait)
         printWithIndent(level, "}\n")
       } finally {
-        for (param <- typeParams) removeTypeParameter(param)
+        for (param <- typeParams)
+          removeTypeParameter(param)
       }
     }
   }
@@ -279,8 +311,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         val printer = new ScalaSigPrinter(stream, verbosity)
         printer.printPrimaryConstructor(m, c)
         val res = baos.toString
-        if (res.length() > 0 && res.charAt(0) != '(') " " + res
-        else res
+        if (res.length() > 0 && res.charAt(0) != '(')
+          " " + res
+        else
+          res
       case _ => ""
     }
   }
@@ -321,7 +355,11 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   private def methodSymbolAsMethodParam(ms: MethodSymbol): String = {
     val nameAndType =
       processName(ms.name) + " : " + toString(ms.infoType)(TypeFlags(true))
-    val default = if (ms.hasDefault) " = { /* compiled code */ }" else ""
+    val default =
+      if (ms.hasDefault)
+        " = { /* compiled code */ }"
+      else
+        ""
     nameAndType + default
   }
 
@@ -338,8 +376,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           if (!ms.isPrivate || !ms.isLocal) {
             printer.printSymbolAttributes(ms, onNewLine = false, ())
             printer.printModifiers(ms)
-            if (ms.isParamAccessor && ms.isMutable) stream.print("var ")
-            else if (ms.isParamAccessor) stream.print("val ")
+            if (ms.isParamAccessor && ms.isMutable)
+              stream.print("var ")
+            else if (ms.isParamAccessor)
+              stream.print("val ")
           }
           break = true
         case _ =>
@@ -348,7 +388,11 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
     val nameAndType = processName(msymb.name) + " : " + toString(
       msymb.infoType)(TypeFlags(true))
-    val default = if (msymb.hasDefault) " = { /* compiled code */ }" else ""
+    val default =
+      if (msymb.hasDefault)
+        " = { /* compiled code */ }"
+      else
+        ""
     stream.print(nameAndType + default)
     baos.toString
   }
@@ -397,12 +441,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case mt @ MethodType(resType, paramSymbols)         => _pmt(mt)
       case mt @ ImplicitMethodType(resType, paramSymbols) => _pmt(mt)
       case pt @ PolyType(mt, typeParams) =>
-        for (param <- typeParams) addTypeParameter(param)
+        for (param <- typeParams)
+          addTypeParameter(param)
         print(typeParamString(typeParams))
         try {
           printMethodType(mt, printResult)({})
         } finally {
-          for (param <- typeParams) removeTypeParameter(param)
+          for (param <- typeParams)
+            removeTypeParameter(param)
         }
       //todo consider another method types
       case x =>
@@ -416,21 +462,29 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
   def printMethod(level: Int, m: MethodSymbol, indent: () => Unit) {
     val n = m.name
-    if (underObject(m) && n == CONSTRUCTOR_NAME) return
-    if (underTrait(m) && n == INIT_NAME) return
+    if (underObject(m) && n == CONSTRUCTOR_NAME)
+      return
+    if (underTrait(m) && n == INIT_NAME)
+      return
     if (n.matches(".+\\$default\\$\\d+"))
       return // skip default function parameters
     if (n.startsWith("super$"))
       return // do not print auxiliary qualified super accessors
-    if (m.isAccessor && n.endsWith("_$eq")) return
-    if (m.isParamAccessor) return //do not print class parameters
+    if (m.isAccessor && n.endsWith("_$eq"))
+      return
+    if (m.isParamAccessor)
+      return //do not print class parameters
     indent()
     printModifiers(m)
     if (m.isAccessor) {
       val indexOfSetter = m.parent.get.children.indexWhere(x =>
         x.isInstanceOf[MethodSymbol] &&
           x.asInstanceOf[MethodSymbol].name == n + "_$eq")
-      print(if (indexOfSetter > 0) "var " else "val ")
+      print(
+        if (indexOfSetter > 0)
+          "var "
+        else
+          "val ")
     } else {
       print("def ")
     }
@@ -508,7 +562,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     case s: String =>
       if (s.contains("\n") || s.contains("\r")) {
         "\"\"\"" + s + "\"\"\""
-      } else "\"" + StringEscapeUtils.escapeJava(s) + "\""
+      } else
+        "\"" + StringEscapeUtils.escapeJava(s) + "\""
     case arr: Array[_] =>
       arr.map(valueToString).mkString("Array(", ", ", ")")
     case _ => value.toString
@@ -655,9 +710,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                   if refinementClass(classSymbol) =>
                 ""
               case (
-                  ThisType(typeSymbol: ClassSymbol),
-                  ExternalSymbol(_, Some(parent), _),
-                  _)
+                    ThisType(typeSymbol: ClassSymbol),
+                    ExternalSymbol(_, Some(parent), _),
+                    _)
                   if typeSymbol.path != parent.path && checkContainsSelf(
                     typeSymbol.selfType,
                     parent) =>
@@ -682,7 +737,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                   }
                 case _ => ""
               }
-            } else ""
+            } else
+              ""
             val ress = StringUtil.trimStart(res, "<empty>.") + typeArgString(
               typeArgs) + typeBounds
             ress
@@ -690,15 +746,25 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case TypeBoundsType(lower, upper) =>
         val lb = toString(lower)
         val ub = toString(upper)
-        val lbs = if (!lb.equals("scala.Nothing")) " >: " + lb else ""
-        val ubs = if (!ub.equals("scala.Any")) " <: " + ub else ""
+        val lbs =
+          if (!lb.equals("scala.Nothing"))
+            " >: " + lb
+          else
+            ""
+        val ubs =
+          if (!ub.equals("scala.Any"))
+            " <: " + ub
+          else
+            ""
         lbs + ubs
       case RefinedType(classSym: ClassSymbol, typeRefs) =>
         val classStr = getClassString(0, classSym)
         sep + typeRefs
           .map(toString)
-          .mkString("", " with ", "") + (if (classStr == " {\n}") ""
-                                         else classStr)
+          .mkString("", " with ", "") + (if (classStr == " {\n}")
+                                           ""
+                                         else
+                                           classStr)
       case RefinedType(classSym, typeRefs) =>
         sep + typeRefs.map(toString).mkString("", " with ", "")
       case ClassInfoType(symbol, typeRefs) =>
@@ -726,18 +792,29 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
         toString(typeRef, sep) + (if (refs.nonEmpty)
                                     refs.mkString(" forSome {", "; ", "}")
-                                  else "")
+                                  else
+                                    "")
       case _ => sep + t.toString
     }
   }
 
   def getVariance(t: TypeSymbol) =
-    if (t.isCovariant) "+" else if (t.isContravariant) "-" else ""
+    if (t.isCovariant)
+      "+"
+    else if (t.isContravariant)
+      "-"
+    else
+      ""
 
   def toString(symbol: Symbol): String = symbol match {
     case symbol: TypeSymbol =>
-      val attrs = (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
-      val atrs = if (attrs.length > 0) attrs.trim + " " else ""
+      val attrs = (for (a <- symbol.attributes)
+        yield toString(a)).mkString(" ")
+      val atrs =
+        if (attrs.length > 0)
+          attrs.trim + " "
+        else
+          ""
       val symbolType = symbol.infoType match {
         case PolyType(typeRef, symbols) =>
           PolyTypeWithCons(typeRef, symbols, "")
@@ -749,7 +826,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   def typeArgString(typeArgs: Seq[Type]): String =
-    if (typeArgs.isEmpty) ""
+    if (typeArgs.isEmpty)
+      ""
     else
       typeArgs
         .map(toString)
@@ -757,8 +835,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[TypeSymbol]): String =
-    if (params.isEmpty) ""
-    else params.map(toString).mkString("[", ", ", "]")
+    if (params.isEmpty)
+      ""
+    else
+      params.map(toString).mkString("[", ", ", "]")
 
   val _syms = Map(
     "\\$bar" -> "|",
@@ -781,7 +861,11 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     "\\$hash" -> "#"
   )
   val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
+    _syms.keys.foldLeft("")((x, y) =>
+      if (x == "")
+        y
+      else
+        x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private val keywordList =
@@ -829,7 +913,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
   private def stripPrivatePrefix(name: String) = {
     val i = name.lastIndexOf("$$")
-    if (i > 0) name.substring(i + 2) else name
+    if (i > 0)
+      name.substring(i + 2)
+    else
+      name
   }
 
   def processName(name: String): String = {
@@ -858,23 +945,29 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           case c => isSpecial(c)
         }
 
-        if (id.isEmpty) return false
+        if (id.isEmpty)
+          return false
         if (isIdentifierStart(id(0))) {
           if (id.indexWhere(c =>
                 !isIdentifierPart(c) && !isOperatorPart(c) && c != '_') >= 0)
             return false
           val index = id.indexWhere(isOperatorPart)
-          if (index < 0) return true
-          if (id(index - 1) != '_') return false
+          if (index < 0)
+            return true
+          if (id(index - 1) != '_')
+            return false
           id.drop(index).forall(isOperatorPart)
         } else if (isOperatorPart(id(0))) {
           id.forall(isOperatorPart)
-        } else false
+        } else
+          false
       }
       val result = NameTransformer.decode(name)
       if (!isIdentifier(result) || keywordList.contains(
-            result) || result == "=") "`" + result + "`"
-      else result
+            result) || result == "=")
+        "`" + result + "`"
+      else
+        result
     }
     val stripped = stripPrivatePrefix(name)
     val m = pattern.matcher(stripped)

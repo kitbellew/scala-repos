@@ -33,10 +33,12 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
 
   def abort(pov: Pov): Funit =
     blameable(pov.game) ?? {
-      if (pov.game olderThan 45) pov.game.playerWhoDidNotMove map {
-        Blame(_, Outcome.NoPlay)
-      }
-      else if (pov.game olderThan 15) none
+      if (pov.game olderThan 45)
+        pov.game.playerWhoDidNotMove map {
+          Blame(_, Outcome.NoPlay)
+        }
+      else if (pov.game olderThan 15)
+        none
       else
         pov.player.some map {
           Blame(_, Outcome.Abort)

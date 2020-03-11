@@ -43,11 +43,19 @@ class WrappedString(val self: String)
   override protected[this] def newBuilder = WrappedString.newBuilder
 
   override def slice(from: Int, until: Int): WrappedString = {
-    val start = if (from < 0) 0 else from
+    val start =
+      if (from < 0)
+        0
+      else
+        from
     if (until <= start || start >= repr.length)
       return new WrappedString("")
 
-    val end = if (until > length) length else until
+    val end =
+      if (until > length)
+        length
+      else
+        until
     new WrappedString(repr.substring(start, end))
   }
   override def length = self.length

@@ -43,12 +43,18 @@ import scalafx.event.Event
 
 object TreeView {
   implicit def sfxTreeView2jfx[T](v: TreeView[T]): jfxsc.TreeView[T] =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object EditEvent {
     implicit def sfxTreeViewEditEvent2jfx[T](
         v: EditEvent[T]): jfxsc.TreeView.EditEvent[T] =
-      if (v != null) v.delegate else null
+      if (v != null)
+        v.delegate
+      else
+        null
   }
 
   class EditEvent[T](override val delegate: jfxsc.TreeView.EditEvent[T])

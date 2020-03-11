@@ -38,7 +38,10 @@ import scalafx.scene.Node
 
 object FlowPane {
   implicit def sfxFlowPane2jfx(v: FlowPane): jfxsl.FlowPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all flowpane constraints from the child node.

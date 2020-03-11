@@ -35,7 +35,8 @@ object ModeledCustomHeaderSpec {
     override def parse(value: String) =
       if (value contains " ")
         Failure(new Exception("Contains illegal whitespace!"))
-      else Success(new DifferentHeader(value))
+      else
+        Success(new DifferentHeader(value))
   }
   final class DifferentHeader(token: String)
       extends ModeledCustomHeader[DifferentHeader] {

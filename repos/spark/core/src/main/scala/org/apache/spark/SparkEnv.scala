@@ -261,7 +261,11 @@ object SparkEnv extends Logging {
 
     val securityManager = new SecurityManager(conf)
 
-    val systemName = if (isDriver) driverSystemName else executorSystemName
+    val systemName =
+      if (isDriver)
+        driverSystemName
+      else
+        executorSystemName
     val rpcEnv = RpcEnv.create(
       systemName,
       hostname,

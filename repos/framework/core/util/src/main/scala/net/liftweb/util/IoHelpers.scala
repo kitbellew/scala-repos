@@ -42,7 +42,8 @@ trait IoHelpers {
           var line = ""
           while (line != null) {
             line = br.readLine
-            if (line != null) lines += line
+            if (line != null)
+              lines += line
           }
           br.close
           in.close
@@ -59,8 +60,10 @@ trait IoHelpers {
       val res = proc.waitFor
       t1.join
       t2.join
-      if (res == 0) Full(stdOut)
-      else Failure(stdErr, Empty, Empty)
+      if (res == 0)
+        Full(stdOut)
+      else
+        Failure(stdErr, Empty, Empty)
     } catch {
       case e: Throwable => Failure(e.getMessage, Full(e), Empty)
     }
@@ -76,8 +79,10 @@ trait IoHelpers {
 
     def readOnce {
       val len = in.read(ba)
-      if (len < 0) return
-      if (len > 0) bos.appendAll(ba, 0, len)
+      if (len < 0)
+        return
+      if (len > 0)
+        bos.appendAll(ba, 0, len)
       readOnce
     }
 
@@ -101,8 +106,10 @@ trait IoHelpers {
 
     def readOnce {
       val len = in.read(ba)
-      if (len > 0) bos.write(ba, 0, len)
-      if (len >= 0) readOnce
+      if (len > 0)
+        bos.write(ba, 0, len)
+      if (len >= 0)
+        readOnce
     }
 
     readOnce

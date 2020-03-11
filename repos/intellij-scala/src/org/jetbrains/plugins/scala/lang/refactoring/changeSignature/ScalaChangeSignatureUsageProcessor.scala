@@ -91,7 +91,8 @@ class ScalaChangeSignatureUsageProcessor
         (overriders ++ synthetics).foreach {
           case named: PsiNamedElement =>
             val usageInfo = ScalaNamedElementUsageInfo(named)
-            if (usageInfo != null) results += usageInfo
+            if (usageInfo != null)
+              results += usageInfo
 
             findMethodRefUsages(
               named,
@@ -163,7 +164,8 @@ class ScalaChangeSignatureUsageProcessor
         case _                   => return
       }
 
-      if (newParams.size <= 1) return
+      if (newParams.size <= 1)
+        return
 
       val cumulSize = newParams.scanLeft(0)(_ + _.size)
       def numberOfParamsToAdd(idx: Int) =

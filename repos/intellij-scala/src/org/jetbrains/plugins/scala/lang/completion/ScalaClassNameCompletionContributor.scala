@@ -126,7 +126,8 @@ object ScalaClassNameCompletionContributor {
           case ScAbstractType(_, lower, upper) => upper
           case tp                              => tp
         }
-      } else Array.empty
+      } else
+        Array.empty
     val (position, inString) = dummyPosition.getNode.getElementType match {
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
         val position = dummyPosition
@@ -143,7 +144,8 @@ object ScalaClassNameCompletionContributor {
     val invocationCount = parameters.getInvocationCount
     if (!inString && !ScalaPsiUtil
           .fileContext(position)
-          .isInstanceOf[ScalaFile]) return true
+          .isInstanceOf[ScalaFile])
+      return true
     val lookingForAnnotations: Boolean =
       psiElement.afterLeaf("@").accepts(position)
     val isInImport = ScalaPsiUtil.getContextOfType(
@@ -188,7 +190,8 @@ object ScalaClassNameCompletionContributor {
                 JavaCompletionUtil.isInExcludedPackage(classToImport, false)
               case TypeAliasToImport(alias) =>
                 val containingClass = alias.containingClass
-                if (containingClass == null) return false
+                if (containingClass == null)
+                  return false
                 JavaCompletionUtil.isInExcludedPackage(containingClass, false)
               case PrefixPackageToImport(pack) =>
                 JavaProjectCodeInsightSettings
@@ -197,7 +200,8 @@ object ScalaClassNameCompletionContributor {
             }
           }
         })
-      if (isExcluded) return
+      if (isExcluded)
+        return
 
       val isAccessible =
         invocationCount >= 2 || (typeToImport.element match {
@@ -205,9 +209,11 @@ object ScalaClassNameCompletionContributor {
             ResolveUtils.isAccessible(member, position, forCompletion = true)
           case _ => true
         })
-      if (!isAccessible) return
+      if (!isAccessible)
+        return
 
-      if (lookingForAnnotations && !typeToImport.isAnnotationType) return
+      if (lookingForAnnotations && !typeToImport.isAnnotationType)
+        return
       typeToImport.element match {
         case _: ScClass | _: ScTrait | _: ScTypeAlias
             if !isInImport && !onlyClasses =>
@@ -258,14 +264,17 @@ object ScalaClassNameCompletionContributor {
 
     val prefixMatcher = result.getPrefixMatcher
     AllClassesGetter.processJavaClasses(
-      if (lookingForAnnotations) parameters.withInvocationCount(2)
-      else parameters,
+      if (lookingForAnnotations)
+        parameters.withInvocationCount(2)
+      else
+        parameters,
       prefixMatcher,
       parameters.getInvocationCount <= 1,
       new Consumer[PsiClass] {
         def consume(psiClass: PsiClass) {
           //todo: filter according to position
-          if (psiClass.isInstanceOf[PsiClassWrapper]) return
+          if (psiClass.isInstanceOf[PsiClassWrapper])
+            return
           ScalaPsiUtil
             .getCompanionModule(psiClass)
             .foreach(clazz => addTypeForCompletion(ClassTypeToImport(clazz)))
@@ -296,7 +305,8 @@ object ScalaClassNameCompletionContributor {
       }
     }
 
-    if (inString) result.stopHere()
+    if (inString)
+      result.stopHere()
     false
   }
 }

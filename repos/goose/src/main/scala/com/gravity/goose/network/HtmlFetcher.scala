@@ -102,7 +102,10 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     // more info: http://stackoverflow.com/questions/4251841/400-error-with-httpclient-for-a-link-with-an-anchor
     val cleanUrl = {
       val foundAt = url.indexOf("#")
-      if (foundAt >= 0) url.substring(0, foundAt) else url
+      if (foundAt >= 0)
+        url.substring(0, foundAt)
+      else
+        url
     }
 
     try {
@@ -319,8 +322,10 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
         var n: Int = r.read(buf)
         bytesRead += 2048
 
-        if (n < 0) inLoop = false
-        if (inLoop) s.appendAll(buf, 0, n)
+        if (n < 0)
+          inLoop = false
+        if (inLoop)
+          s.appendAll(buf, 0, n)
       }
       return s.toString()
     } catch {

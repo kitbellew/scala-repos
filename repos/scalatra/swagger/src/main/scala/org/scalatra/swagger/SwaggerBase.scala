@@ -37,7 +37,8 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
     super.initialize(config)
     get("""/([^.]+)*(?:\.(\w+))?""".r) {
       val doc :: fmt :: Nil = multiParams("captures").toList
-      if (fmt != null) format = fmt
+      if (fmt != null)
+        format = fmt
       swagger.doc(doc) match {
         case Some(d) ⇒ renderDoc(d.asInstanceOf[ApiType])
         case _ ⇒ halt(404)
@@ -76,7 +77,11 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
 
   private[this] def dontAddOnEmpty(key: String, value: List[String])(
       json: JValue) = {
-    val v: JValue = if (value.nonEmpty) key -> value else JNothing
+    val v: JValue =
+      if (value.nonEmpty)
+        key -> value
+      else
+        JNothing
     json merge v
   }
 
@@ -90,7 +95,8 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
             includeServletPath = false,
             includeContextPath = false) + (if (includeFormatParameter)
                                              ".{format}"
-                                           else ""))) ~
+                                           else
+                                             ""))) ~
             ("description" -> doc.description)
         })) ~
       ("authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {

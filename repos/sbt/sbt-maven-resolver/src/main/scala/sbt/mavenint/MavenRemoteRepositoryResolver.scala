@@ -58,16 +58,28 @@ class MavenRemoteRepositoryResolver(
       .getOrElse(false)
   protected def addRepositories(
       request: AetherDescriptorRequest): AetherDescriptorRequest =
-    if (isUseCacheOnly) request else request.addRepository(aetherRepository)
+    if (isUseCacheOnly)
+      request
+    else
+      request.addRepository(aetherRepository)
   protected def addRepositories(
       request: AetherArtifactRequest): AetherArtifactRequest =
-    if (isUseCacheOnly) request else request.addRepository(aetherRepository)
+    if (isUseCacheOnly)
+      request
+    else
+      request.addRepository(aetherRepository)
   protected def addRepositories(
       request: AetherVersionRequest): AetherVersionRequest =
-    if (isUseCacheOnly) request else request.addRepository(aetherRepository)
+    if (isUseCacheOnly)
+      request
+    else
+      request.addRepository(aetherRepository)
   protected def addRepositories(
       request: AetherVersionRangeRequest): AetherVersionRangeRequest =
-    if (isUseCacheOnly) request else request.addRepository(aetherRepository)
+    if (isUseCacheOnly)
+      request
+    else
+      request.addRepository(aetherRepository)
 
   /** Actually publishes aether artifacts. */
   protected def publishArtifacts(artifacts: Seq[AetherArtifact]): Unit = {
@@ -85,7 +97,8 @@ class MavenRemoteRepositoryResolver(
         mrid.getRevision,
         MavenRepositoryResolver.MAVEN_METADATA_XML,
         Metadata.Nature.RELEASE_OR_SNAPSHOT))
-    if (!isUseCacheOnly) metadataRequest.setRepository(aetherRepository)
+    if (!isUseCacheOnly)
+      metadataRequest.setRepository(aetherRepository)
     val metadataResultOpt =
       try system
         .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))

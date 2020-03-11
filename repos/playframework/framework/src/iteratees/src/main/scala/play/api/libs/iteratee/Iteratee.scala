@@ -99,7 +99,10 @@ object Iteratee {
         val newS = executeFuture(f(s, e))(pec);
         flatten(newS.map[Iteratee[E, A]] {
           case (s1, done) =>
-            if (!done) Cont[E, A](step(s1)) else Done(s1, Input.Empty)
+            if (!done)
+              Cont[E, A](step(s1))
+            else
+              Done(s1, Input.Empty)
         }(dec))
       }
     }
@@ -187,7 +190,8 @@ object Iteratee {
     */
   def takeUpTo[E](n: Int): Iteratee[E, Seq[E]] = {
     def stepWith(accum: Seq[E]): Iteratee[E, Seq[E]] = {
-      if (accum.length >= n) Done(accum)
+      if (accum.length >= n)
+        Done(accum)
       else
         Cont {
           case Input.EOF =>

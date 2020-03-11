@@ -39,7 +39,8 @@ object Conneg {
         "\"%s\"" format value
           .replaceAllLiterally("\\", "\\\\")
           .replaceAllLiterally("\"", "\\\"")
-      else value
+      else
+        value
 
     private def mustEscape(c: Char): Boolean = {
       c < '\u0020' || c > '\u007E' || Separators.contains(c)
@@ -110,8 +111,10 @@ object Conneg {
       req: HttpServletRequest,
       format: Format[T]): List[Conneg[T]] = {
     val header = req.getHeader(name)
-    if (header == null) List()
-    else format.values(header.trim())
+    if (header == null)
+      List()
+    else
+      format.values(header.trim())
   }
 
   /** Retrieves the preferred supported value for the specified content-negotiation header. */
@@ -120,10 +123,14 @@ object Conneg {
       format: Format[T]): Option[T] = {
     val all = values(name)
 
-    if (all.isEmpty) None
+    if (all.isEmpty)
+      None
     else
       Some(all.reduce { (a, b) =>
-        if (a.q < b.q) b else a
+        if (a.q < b.q)
+          b
+        else
+          a
       }.value)
   }
 

@@ -42,8 +42,10 @@ class InMemoryStore(
           if (currentVersion.version != version)
             throw new StoreCommandFailedException("Concurrent updates!")
           val nextVersion = e.withNextVersion
-          if (entities.replace(id, currentVersion, nextVersion)) nextVersion
-          else throw new StoreCommandFailedException(s"Concurrent updates!")
+          if (entities.replace(id, currentVersion, nextVersion))
+            nextVersion
+          else
+            throw new StoreCommandFailedException(s"Concurrent updates!")
         case _ =>
           throw new IllegalArgumentException(s"Wrong entity type: $entity")
       }

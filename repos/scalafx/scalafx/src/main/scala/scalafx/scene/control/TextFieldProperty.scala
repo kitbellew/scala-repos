@@ -43,7 +43,10 @@ object TextFieldProperty {
     "8.0.60-R10")
   implicit def sfxTextFieldProperty2jfx(
       p: TextFieldProperty): jfxbp.ReadOnlyObjectProperty[jfxsc.TextField] =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 }
 
 @deprecated(

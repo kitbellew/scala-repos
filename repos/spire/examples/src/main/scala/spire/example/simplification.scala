@@ -26,23 +26,43 @@ object Simplification {
     } else {
       args(0) match {
         case "nrat" =>
-          val n = if (args.length == 1) 10 else args(1).toInt
+          val n =
+            if (args.length == 1)
+              10
+            else
+              args(1).toInt
           val r: Rational = rationals.drop(n - 1).head
           println("rational %d is %s" format (n, r.toString))
         case "rats" =>
-          val n = if (args.length == 1) 10 else args(1).toInt
+          val n =
+            if (args.length == 1)
+              10
+            else
+              args(1).toInt
           rationals.take(n).foreach(r => print(r.toString + ", "))
           println("...")
         case "nprime" =>
-          val n = if (args.length == 1) 10 else args(1).toInt
+          val n =
+            if (args.length == 1)
+              10
+            else
+              args(1).toInt
           val p: Int = primes.drop(n - 1).head
           println("rational %d is %s" format (n, p.toString))
         case "primes" =>
-          val n = if (args.length == 1) 10 else args(1).toInt
+          val n =
+            if (args.length == 1)
+              10
+            else
+              args(1).toInt
           primes.take(n).foreach(p => print(p.toString + ", "))
           println("...")
         case "snap" =>
-          val n = if (args.length == 1) 1.4142135623730951 else args(1).toDouble
+          val n =
+            if (args.length == 1)
+              1.4142135623730951
+            else
+              args(1).toDouble
           val (base, k, div) = snap(n)
           println("%s =~ nroot(%s, %s) / %s" format (n, base, k, div))
       }
@@ -123,7 +143,11 @@ object Simplification {
       } else {
         val x = math.pow(n * div, ex)
         val m = x % 1.0
-        val d = if (m < 0.5) m else m - 1.0
+        val d =
+          if (m < 0.5)
+            m
+          else
+            m - 1.0
         if (math.abs(d) < epsilon) {
           (x - m, ex, div)
         } else {
@@ -178,12 +202,18 @@ trait BigStream[A] extends Iterable[A] with IterableLike[A, BigStream[A]] {
   self =>
 
   override def take(n: Int): BigStream[A] =
-    if (isEmpty || n < 1) BigNil() else new BigCons(head, tail.take(n - 1))
+    if (isEmpty || n < 1)
+      BigNil()
+    else
+      new BigCons(head, tail.take(n - 1))
 
   override def drop(n: Int): BigStream[A] = {
     @tailrec
     def loop(stream: BigStream[A], i: Int): BigStream[A] =
-      if (isEmpty || i < 1) stream else loop(stream.tail, i - 1)
+      if (isEmpty || i < 1)
+        stream
+      else
+        loop(stream.tail, i - 1)
     loop(this, n)
   }
 

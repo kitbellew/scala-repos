@@ -20,8 +20,10 @@ sealed trait LanguageRange
   def matches(lang: Language): Boolean
   final def render[R <: Rendering](r: R): r.type = {
     r ~~ primaryTag
-    if (subTags.nonEmpty) subTags.foreach(r ~~ '-' ~~ _)
-    if (qValue < 1.0f) r ~~ ";q=" ~~ qValue
+    if (subTags.nonEmpty)
+      subTags.foreach(r ~~ '-' ~~ _)
+    if (qValue < 1.0f)
+      r ~~ ";q=" ~~ qValue
     r
   }
 
@@ -36,9 +38,12 @@ object LanguageRange {
     def subTags = Nil
     def matches(lang: Language) = true
     def withQValue(qValue: Float) =
-      if (qValue == 1.0f) `*`
-      else if (qValue != this.qValue) `*`(qValue.toFloat)
-      else this
+      if (qValue == 1.0f)
+        `*`
+      else if (qValue != this.qValue)
+        `*`(qValue.toFloat)
+      else
+        this
   }
   object `*` extends `*`(1.0f)
 
@@ -66,7 +71,8 @@ final case class Language(primaryTag: String, subTags: immutable.Seq[String])
   def withQValue(qValue: Float) = LanguageRange(this, qValue.toFloat)
   def render[R <: Rendering](r: R): r.type = {
     r ~~ primaryTag
-    if (subTags.nonEmpty) subTags.foreach(r ~~ '-' ~~ _)
+    if (subTags.nonEmpty)
+      subTags.foreach(r ~~ '-' ~~ _)
     r
   }
 
@@ -78,7 +84,8 @@ object Language {
     if (compoundTag.indexOf('-') >= 0) {
       val tags = compoundTag.split('-')
       new Language(tags.head, immutable.Seq(tags.tail: _*))
-    } else new Language(compoundTag, immutable.Seq.empty)
+    } else
+      new Language(compoundTag, immutable.Seq.empty)
   def apply(primaryTag: String, subTags: String*): Language =
     new Language(primaryTag, immutable.Seq(subTags: _*))
 }

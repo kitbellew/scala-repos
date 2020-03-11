@@ -60,11 +60,13 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
           Await.result(tup.map {
             case x @ (None, None, Some(o3), Some(last)) =>
               val r = o3 == v1 && (v1 + v2 == last)
-              if (!r) println(x)
+              if (!r)
+                println(x)
               r
             case x @ (Some(o1), Some(o2), Some(o3), Some(last)) =>
               val r = (o1 == o2) && (o2 + v1 == o3) && (o1 + v1 + v2 == last)
-              if (!r) println(x)
+              if (!r)
+                println(x)
               r
             case x =>
               println(x)

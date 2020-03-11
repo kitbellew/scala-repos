@@ -119,7 +119,8 @@ trait Offer[+T] { self =>
   def orElse[U >: T](other: Offer[U]): Offer[U] = new Offer[U] {
     def prepare() = {
       val ourTx = self.prepare()
-      if (ourTx.isDefined) ourTx
+      if (ourTx.isDefined)
+        ourTx
       else {
         ourTx foreach { tx =>
           tx.nack()
@@ -233,7 +234,8 @@ object Offer {
   private[concurrent] def choose[T](
       random: Option[Random],
       evs: Seq[Offer[T]]): Offer[T] = {
-    if (evs.isEmpty) Offer.never
+    if (evs.isEmpty)
+      Offer.never
     else
       new Offer[T] {
         def prepare(): Future[Tx[T]] = {
@@ -263,7 +265,8 @@ object Offer {
           var foundPos = -1
           while (foundPos < 0 && i < prepd.length) {
             val winner = prepd(i)
-            if (winner.isDefined) foundPos = i
+            if (winner.isDefined)
+              foundPos = i
             i += 1
           }
 
@@ -311,7 +314,8 @@ object Offer {
       private[this] val deadline = timeout.fromNow
 
       def prepare() = {
-        if (deadline <= Time.now) FutureTxUnit
+        if (deadline <= Time.now)
+          FutureTxUnit
         else {
           val p = new Promise[Tx[Unit]]
           val task = timer.schedule(deadline) {

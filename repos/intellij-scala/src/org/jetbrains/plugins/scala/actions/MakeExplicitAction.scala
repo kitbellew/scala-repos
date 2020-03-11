@@ -28,7 +28,8 @@ class MakeExplicitAction
       case s: Parameters => s
       case _             => null
     }
-    if (selectedItem == null || selectedItem.getNewExpression == null) return
+    if (selectedItem == null || selectedItem.getNewExpression == null)
+      return
     val function = selectedItem.getNewExpression match {
       case f: ScFunction => f
       case _             => null
@@ -37,9 +38,11 @@ class MakeExplicitAction
     val editor = selectedItem.getEditor
     val secondPart = selectedItem.getSecondPart
 
-    if (project == null || editor == null || secondPart == null) return
+    if (project == null || editor == null || secondPart == null)
+      return
     val file = PsiUtilBase.getPsiFileInEditor(editor, project)
-    if (!file.isInstanceOf[ScalaFile]) return
+    if (!file.isInstanceOf[ScalaFile])
+      return
 
     IntentionUtils.showMakeExplicitPopup(
       project,

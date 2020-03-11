@@ -47,7 +47,10 @@ object SFXPanel {
     * @return JavaFX JFXPanel
     */
   implicit def sfxPanel2jfx(panel: SFXPanel): jfxes.JFXPanel =
-    if (panel != null) panel.delegate else null
+    if (panel != null)
+      panel.delegate
+    else
+      null
 
 }
 

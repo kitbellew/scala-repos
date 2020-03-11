@@ -14,7 +14,11 @@ class ConcurrentBijection[A, B] extends MMap[A, B] {
   val forward = new ConcurrentHashMap[A, B]
   val reverse = new ConcurrentHashMap[B, A]
 
-  def toOpt[T](x: T) = if (x == null) None else Some(x)
+  def toOpt[T](x: T) =
+    if (x == null)
+      None
+    else
+      Some(x)
 
   def -=(key: A) = {
     synchronized {

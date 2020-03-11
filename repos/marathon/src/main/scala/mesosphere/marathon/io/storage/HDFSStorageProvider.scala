@@ -29,7 +29,8 @@ case class HDFSStorageItem(
 
   def moveTo(newPath: String): StorageItem = {
     val toPath = new Path(base, newPath)
-    if (fs.exists(toPath)) fs.delete(toPath, false)
+    if (fs.exists(toPath))
+      fs.delete(toPath, false)
     val result = fs.rename(fsPath, toPath)
     assert(result, s"HDFS file system could not move $fsPath to $newPath")
     HDFSStorageItem(fs, toPath, base, newPath)

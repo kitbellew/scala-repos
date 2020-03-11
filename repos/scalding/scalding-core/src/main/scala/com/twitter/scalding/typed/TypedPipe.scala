@@ -369,7 +369,10 @@ trait TypedPipe[+T] extends Serializable {
     */
   def filter(f: T => Boolean): TypedPipe[T] =
     flatMap { t =>
-      if (f(t)) Iterator(t) else Iterator.empty
+      if (f(t))
+        Iterator(t)
+      else
+        Iterator.empty
     }
 
   // This is just to appease for comprehension
@@ -1111,7 +1114,8 @@ class TypedPipeInst[T] private[scalding] (
         sys.error(
           "Invalid head: pipe has no previous, but there is no registered source.")
       }
-    } else None
+    } else
+      None
 
   def checkMode(m: Mode): Unit =
     // This check is not likely to fail unless someone does something really strange.

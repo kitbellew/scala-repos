@@ -45,17 +45,17 @@ trait StoppingBehavior extends Actor with ActorLogging {
 
   def receive: Receive = {
     case MesosStatusUpdateEvent(
-        _,
-        taskId,
-        taskFinished(_),
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _) if idsToKill(taskId) =>
+          _,
+          taskId,
+          taskFinished(_),
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _) if idsToKill(taskId) =>
       idsToKill.remove(taskId)
       log.info(
         s"Task $taskId has been killed. Waiting for ${idsToKill.size} more tasks to be killed.")

@@ -53,7 +53,11 @@ trait JavaConversionHelpers {
   def simpleClassName(s: String): String = s.split(Array('.', '#')).last
   def simpleClassName(c: Class[_]): String = simpleClassName(c.getName)
 
-  private def innerClassDelim(c: Class[_]) = if (isConcrete(c)) "#" else "."
+  private def innerClassDelim(c: Class[_]) =
+    if (isConcrete(c))
+      "#"
+    else
+      "."
 
   def toScalaType(_tpe: Type): ScalaType = {
     def step(tpe: Type, level: Int): ScalaType = {
@@ -114,9 +118,12 @@ trait JavaConversionHelpers {
     val javaName =
       _tpe match {
         case c: Class[_] =>
-          if (c.isArray) javaTypeName(c.getComponentType) + "[]"
-          else if (c.isPrimitive) _tpe.toString
-          else c.getCanonicalName
+          if (c.isArray)
+            javaTypeName(c.getComponentType) + "[]"
+          else if (c.isPrimitive)
+            _tpe.toString
+          else
+            c.getCanonicalName
 
         case _ => // TODO match generic types
           javaTypeName(_tpe)
@@ -127,7 +134,11 @@ trait JavaConversionHelpers {
 
   def toTypeStr(_tpe: Type, isVarArgs: Boolean, isLast: Boolean): String = {
     def step(tpe: Type): String = {
-      val arrayNotation = if (isLast && isVarArgs) "..." else "[]"
+      val arrayNotation =
+        if (isLast && isVarArgs)
+          "..."
+        else
+          "[]"
 
       tpe match {
         case ga: GenericArrayType =>

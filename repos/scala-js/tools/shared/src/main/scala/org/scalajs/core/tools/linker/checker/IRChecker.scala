@@ -29,11 +29,13 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
   private var errorCount: Int = 0
 
   private val classes: mutable.Map[String, CheckedClass] = {
-    val tups = for (classDef <- unit.classDefs) yield {
-      implicit val ctx = ErrorContext(classDef)
-      val c = new CheckedClass(classDef)
-      c.name -> c
-    }
+    val tups =
+      for (classDef <- unit.classDefs)
+        yield {
+          implicit val ctx = ErrorContext(classDef)
+          val c = new CheckedClass(classDef)
+          c.name -> c
+        }
     mutable.Map(tups: _*)
   }
 
@@ -130,8 +132,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       implicit val ctx = ErrorContext(classDef)
 
       def kindStr =
-        if (classDef.kind == ClassKind.HijackedClass) "Hijacked classes"
-        else "Interfaces"
+        if (classDef.kind == ClassKind.HijackedClass)
+          "Hijacked classes"
+        else
+          "Interfaces"
 
       if (classDef.fields.nonEmpty)
         reportError(s"$kindStr may not have fields")
@@ -213,8 +217,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     } else {
       // Concrete
       val thisType =
-        if (static) NoType
-        else ClassType(classDef.name.name)
+        if (static)
+          NoType
+        else
+          ClassType(classDef.name.name)
       val bodyEnv =
         Env.fromSignature(thisType, params, resultType, isConstructor)
       if (resultType == NoType)
@@ -268,8 +274,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       }
 
       val thisType =
-        if (classDef.kind.isJSClass) AnyType
-        else ClassType(classDef.name.name)
+        if (classDef.kind.isJSClass)
+          AnyType
+        else
+          ClassType(classDef.name.name)
 
       val bodyEnv = Env.fromSignature(thisType, params, resultType)
       typecheckExpect(body, bodyEnv, resultType)
@@ -332,8 +340,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
 
     val thisType =
-      if (classDef.kind.isJSClass) AnyType
-      else ClassType(classDef.name.name)
+      if (classDef.kind.isJSClass)
+        AnyType
+      else
+        ClassType(classDef.name.name)
 
     if (getterBody != EmptyTree) {
       val getterBodyEnv = Env.fromSignature(thisType, Nil, AnyType)
@@ -447,8 +457,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         if (!clazz.kind.hasModuleAccessor)
           reportError("StoreModule of non-module class $cls")
         val expectedType =
-          if (clazz.kind == ClassKind.JSModuleClass) AnyType
-          else ClassType(cls.className)
+          if (clazz.kind == ClassKind.JSModuleClass)
+            AnyType
+          else
+            ClassType(cls.className)
         typecheckExpect(value, env, expectedType)
         env
 
@@ -924,8 +936,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     val paramTypes = paramRefTypes.map(refTypeToType)
 
     val resultType = resultRefType.fold[Type] {
-      if (isConstructorName(encodedName)) NoType
-      else AnyType // reflective proxy
+      if (isConstructorName(encodedName))
+        NoType
+      else
+        AnyType // reflective proxy
     } { refType =>
       refTypeToType(refType)
     }
@@ -960,15 +974,19 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       NullType
     } else {
       val kind = tryLookupClass(encodedName).fold(_.kind, _.kind)
-      if (kind == ClassKind.RawJSType || kind.isJSClass) AnyType
-      else ClassType(encodedName)
+      if (kind == ClassKind.RawJSType || kind.isJSClass)
+        AnyType
+      else
+        ClassType(encodedName)
     }
   }
 
   private def arrayElemType(arrayType: ArrayType)(
       implicit ctx: ErrorContext): Type = {
-    if (arrayType.dimensions == 1) classNameToType(arrayType.baseClassName)
-    else ArrayType(arrayType.baseClassName, arrayType.dimensions - 1)
+    if (arrayType.dimensions == 1)
+      classNameToType(arrayType.baseClassName)
+    else
+      ArrayType(arrayType.baseClassName, arrayType.dimensions - 1)
   }
 
   private def reportError(msg: String)(implicit ctx: ErrorContext): Unit = {
@@ -1090,7 +1108,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       new Env(
         thisType,
         paramLocalDefs.toMap,
-        Map(None -> (if (resultType == NoType) AnyType else resultType)),
+        Map(
+          None -> (if (resultType == NoType)
+                     AnyType
+                   else
+                     resultType)),
         isConstructor)
     }
   }
@@ -1114,8 +1136,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         classDef.superClass.map(_.name),
         classDef.ancestors.toSet,
         classDef.jsName,
-        if (classDef.kind.isJSClass) Nil
-        else classDef.fields.map(CheckedClass.checkedField))
+        if (classDef.kind.isJSClass)
+          Nil
+        else
+          classDef.fields.map(CheckedClass.checkedField))
     }
 
     def isAncestorOfHijackedClass: Boolean =

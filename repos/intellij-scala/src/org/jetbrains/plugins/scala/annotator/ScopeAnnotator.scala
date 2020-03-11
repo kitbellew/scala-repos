@@ -36,7 +36,8 @@ trait ScopeAnnotator {
   private val TypeParameters = """\[.*\]""".r
 
   def annotateScope(element: PsiElement, holder: AnnotationHolder) {
-    if (!element.isScope) return
+    if (!element.isScope)
+      return
     def checkScope(elements: PsiElement*) {
       val (types, terms, parameters, caseClasses, objects) = definitionsIn(
         elements: _*)
@@ -81,16 +82,19 @@ trait ScopeAnnotator {
     var objects: Definitions = List()
     elements.foreach {
       case element =>
-        if (element.isInstanceOf[ScTemplateBody]) element match {
-          case Parent(Parent(aClass: ScClass)) =>
-            parameters :::= aClass.parameters.toList
-          case _ =>
-        }
+        if (element.isInstanceOf[ScTemplateBody])
+          element match {
+            case Parent(Parent(aClass: ScClass)) =>
+              parameters :::= aClass.parameters.toList
+            case _ =>
+          }
 
         element.children.foreach {
           _.depthFirst(!_.isScope).foreach {
-            case e: ScObject            => objects ::= e
-            case e: ScFunction          => if (e.typeParameters.isEmpty) terms ::= e
+            case e: ScObject => objects ::= e
+            case e: ScFunction =>
+              if (e.typeParameters.isEmpty)
+                terms ::= e
             case e: ScTypedDefinition   => terms ::= e
             case e: ScTypeAlias         => types ::= e
             case e: ScTypeParam         => types ::= e
@@ -126,13 +130,18 @@ trait ScopeAnnotator {
   }
 
   private def eraseType(s: String) =
-    if (s.startsWith("Array[") || s.startsWith("_root_.scala.Array[")) s
-    else TypeParameters.replaceFirstIn(s, "")
+    if (s.startsWith("Array[") || s.startsWith("_root_.scala.Array["))
+      s
+    else
+      TypeParameters.replaceFirstIn(s, "")
 
   private def format(parameters: Seq[ScParameter], types: Seq[ScType]) = {
     val parts = parameters.zip(types).map {
       case (p, t) =>
-        eraseType(t.canonicalText) + (if (p.isRepeatedParameter) "*" else "")
+        eraseType(t.canonicalText) + (if (p.isRepeatedParameter)
+                                        "*"
+                                      else
+                                        "")
     }
     "(%s)".format(parts.mkString(", "))
   }

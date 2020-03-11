@@ -46,7 +46,8 @@ final class Solver(n: Int) {
   }
 
   def findSolutions(): Unit = {
-    if (countdown == 0) return
+    if (countdown == 0)
+      return
 
     if (unplaced.size > 0) {
       val emptyCellIndex = board.firstEmptyCellIndex
@@ -64,7 +65,8 @@ final class Solver(n: Int) {
             while (j < Piece.size) {
               if (board.add(j, emptyCellIndex, piece)) {
 
-                if (!shouldPrune) findSolutions
+                if (!shouldPrune)
+                  findSolutions
 
                 board.remove(piece)
               }
@@ -102,7 +104,8 @@ final class Solver(n: Int) {
     board.unmark
     var i = 0
     while (i < board.cells.length) {
-      if (board.cells(i).contiguousEmptyCells % Piece.size != 0) return true
+      if (board.cells(i).contiguousEmptyCells % Piece.size != 0)
+        return true
       i = i + 1
     }
     false
@@ -114,7 +117,8 @@ final class Solver(n: Int) {
       var indent = false
       var i = 0
       while (i < s.length) {
-        if (indent) Console.print(' ')
+        if (indent)
+          Console.print(' ')
         var j = 0
         while (j < Board.cols) {
           Console.print(s.charAt(i));
@@ -168,8 +172,10 @@ final class Board {
   def asString() =
     new String(
       cells map (c =>
-        if (c.piece == null) '-'.toByte
-        else (c.piece.number + 48).toByte))
+        if (c.piece == null)
+          '-'.toByte
+        else
+          (c.piece.number + 48).toByte))
 
   def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
 
@@ -197,12 +203,14 @@ final class Board {
       a = cellsPieceWillFill.filter(c => true)
       cache(p.number)(p.orientation)(pieceIndex)(boardIndex) = a
     } else {
-      if (a == Board.noFit) return false
+      if (a == Board.noFit)
+        return false
     }
 
     var i = 0
     while (i < a.length) {
-      if (!a(i).isEmpty) return false
+      if (!a(i).isEmpty)
+        return false
       i = i + 1
     }
 
@@ -218,7 +226,8 @@ final class Board {
   def remove(piece: Piece) = {
     var i = 0
     while (i < cells.length) {
-      if (cells(i).piece == piece) cells(i).empty
+      if (cells(i).piece == piece)
+        cells(i).empty
       i = i + 1
     }
   }
@@ -238,7 +247,9 @@ final class Board {
   }
 
   private def boardCells() = {
-    val a = for (i <- Array.range(0, Board.size)) yield new BoardCell(i)
+    val a =
+      for (i <- Array.range(0, Board.size))
+        yield new BoardCell(i)
     val m = (Board.size / Board.cols) - 1
 
     for (i <- Iterator.range(0, a.length)) {
@@ -248,24 +259,30 @@ final class Board {
       val c = a(i)
 
       if (row % 2 == 1) {
-        if (!isLast) c.next(Cell.NE) = a(i - (Board.cols - 1))
+        if (!isLast)
+          c.next(Cell.NE) = a(i - (Board.cols - 1))
         c.next(Cell.NW) = a(i - Board.cols)
         if (row != m) {
-          if (!isLast) c.next(Cell.SE) = a(i + (Board.cols + 1))
+          if (!isLast)
+            c.next(Cell.SE) = a(i + (Board.cols + 1))
           c.next(Cell.SW) = a(i + Board.cols)
         }
       } else {
         if (row != 0) {
-          if (!isFirst) c.next(Cell.NW) = a(i - (Board.cols + 1))
+          if (!isFirst)
+            c.next(Cell.NW) = a(i - (Board.cols + 1))
           c.next(Cell.NE) = a(i - Board.cols)
         }
         if (row != m) {
-          if (!isFirst) c.next(Cell.SW) = a(i + (Board.cols - 1))
+          if (!isFirst)
+            c.next(Cell.SW) = a(i + (Board.cols - 1))
           c.next(Cell.SE) = a(i + Board.cols)
         }
       }
-      if (!isFirst) c.next(Cell.W) = a(i - 1)
-      if (!isLast) c.next(Cell.E) = a(i + 1)
+      if (!isFirst)
+        c.next(Cell.W) = a(i - 1)
+      if (!isLast)
+        c.next(Cell.E) = a(i + 1)
     }
     a
   }
@@ -327,15 +344,19 @@ final class Piece(_number: Int) {
   }
 
   private def pieceOrientation(k: Int) = {
-    val cells = for (i <- Array.range(0, Piece.size)) yield new PieceCell()
+    val cells =
+      for (i <- Array.range(0, Piece.size))
+        yield new PieceCell()
     makePiece(number, cells)
 
     var i = 0
     while (i < k) {
       if (i % Piece.rotations == 0)
-        for (c <- cells) c.flip
+        for (c <- cells)
+          c.flip
       else
-        for (c <- cells) c.rotate
+        for (c <- cells)
+          c.rotate
 
       i = i + 1
     }

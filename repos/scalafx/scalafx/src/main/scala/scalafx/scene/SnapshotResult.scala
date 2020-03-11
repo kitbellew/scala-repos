@@ -35,7 +35,10 @@ import scalafx.scene.image.WritableImage
 
 object SnapshotResult {
   implicit def sfxSnapshotResult2jfx(sr: SnapshotResult): jfxs.SnapshotResult =
-    if (sr != null) sr.delegate else null
+    if (sr != null)
+      sr.delegate
+    else
+      null
 }
 
 /**

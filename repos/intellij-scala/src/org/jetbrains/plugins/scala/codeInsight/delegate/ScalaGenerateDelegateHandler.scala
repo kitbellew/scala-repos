@@ -51,16 +51,20 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       @NotNull project: Project,
       @NotNull editor: Editor,
       @NotNull file: PsiFile) {
-    if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
+    if (!CodeInsightUtilBase.prepareEditorForWrite(editor))
+      return
     if (!FileDocumentManager.getInstance.requestWriting(
           editor.getDocument,
-          project)) return
+          project))
+      return
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
     val target = chooseTarget(file, editor, project)
-    if (target == null) return
+    if (target == null)
+      return
     val candidates = chooseMethods(target, file, editor, project)
-    if (candidates == null || candidates.length == 0) return
+    if (candidates == null || candidates.length == 0)
+      return
 
     val elementAtOffset = file.findElementAt(editor.getCaretModel.getOffset)
 
@@ -70,28 +74,32 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     inWriteCommandAction(project) {
       try {
         val aClass = classAtOffset(editor.getCaretModel.getOffset, file)
-        val generatedMethods = for (member <- candidates) yield {
-          val prototype: ScFunctionDefinition =
-            ScalaPsiElementFactory
-              .createMethodFromSignature(
-                member.sign,
-                aClass.getManager,
-                specifyType,
-                body = "???")
-              .asInstanceOf[ScFunctionDefinition]
-          prototype.setModifierProperty("override", value = member.isOverride)
-          val body = methodBody(target, prototype)
-          prototype.body.foreach(_.replace(body))
-          val genInfo = new ScalaGenerationInfo(member)
-          val added = aClass
-            .addMember(
-              prototype,
-              Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
-            .asInstanceOf[ScFunctionDefinition]
-          if (added.superMethod.nonEmpty)
-            added.setModifierProperty("override", value = true)
-          added
-        }
+        val generatedMethods =
+          for (member <- candidates)
+            yield {
+              val prototype: ScFunctionDefinition =
+                ScalaPsiElementFactory
+                  .createMethodFromSignature(
+                    member.sign,
+                    aClass.getManager,
+                    specifyType,
+                    body = "???")
+                  .asInstanceOf[ScFunctionDefinition]
+              prototype.setModifierProperty(
+                "override",
+                value = member.isOverride)
+              val body = methodBody(target, prototype)
+              prototype.body.foreach(_.replace(body))
+              val genInfo = new ScalaGenerationInfo(member)
+              val added = aClass
+                .addMember(
+                  prototype,
+                  Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
+                .asInstanceOf[ScFunctionDefinition]
+              if (added.superMethod.nonEmpty)
+                added.setModifierProperty("override", value = true)
+              added
+            }
 
         if (!generatedMethods.isEmpty) {
           val firstMethod = generatedMethods(0)
@@ -127,7 +135,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         prototype.parameters ++ prototype.returnTypeElement
       if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
-      } else ""
+      } else
+        ""
     }
     val dText: String = delegateText(delegate)
     val methodName = prototype.name
@@ -170,7 +179,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       delegateText(delegate),
       tBody,
       tBody.getFirstChild)
-    if (aClass == null) return null
+    if (aClass == null)
+      return null
     val processor = new CompletionProcessor(StdKinds.methodRef, place, false)
     processor.processType(delegateType, place)
     val candidates = processor.candidatesS
@@ -187,10 +197,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       chooser.setTitle(
         CodeInsightBundle.message("generate.delegate.method.chooser.title"))
       chooser.show()
-      if (chooser.getExitCode != DialogWrapper.OK_EXIT_CODE) return null
+      if (chooser.getExitCode != DialogWrapper.OK_EXIT_CODE)
+        return null
       chooser.getSelectedElements.toBuffer.toArray
-    } else if (members.nonEmpty) Array(members.head)
-    else Array()
+    } else if (members.nonEmpty)
+      Array(members.head)
+    else
+      Array()
   }
 
   private def toMethodMembers(
@@ -231,7 +244,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       editor: Editor,
       project: Project): ClassMember = {
     val elements: Array[ClassMember] = targetElements(file, editor)
-    if (elements == null || elements.length == 0) return null
+    if (elements == null || elements.length == 0)
+      return null
     if (!ApplicationManager.getApplication.isUnitTestMode) {
       val chooser = new ScalaMemberChooser(
         elements,
@@ -243,7 +257,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       chooser.setTitle(
         CodeInsightBundle.message("generate.delegate.target.chooser.title"))
       chooser.show()
-      if (chooser.getExitCode != DialogWrapper.OK_EXIT_CODE) return null
+      if (chooser.getExitCode != DialogWrapper.OK_EXIT_CODE)
+        return null
       val selectedElements = chooser.getSelectedElements
       if (selectedElements != null && selectedElements.size > 0)
         return selectedElements.get(0)
@@ -276,7 +291,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       m <- ScalaOIUtil.allMembers(clazz, withSelfType = true)
       cm <- ScalaOIUtil.toClassMember(m, isImplement = false)
     } {
-      if (canBeTargetInClass(cm, clazz)) return true
+      if (canBeTargetInClass(cm, clazz))
+        return true
     }
     false
   }
@@ -312,15 +328,18 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     val td = PsiTreeUtil.getContextOfType(
       file.findElementAt(offset),
       classOf[ScTemplateDefinition])
-    if (td == null || td.extendsBlock.templateBody.isEmpty) null
-    else td
+    if (td == null || td.extendsBlock.templateBody.isEmpty)
+      null
+    else
+      td
   }
 
   private def parentClasses(
       file: PsiFile,
       editor: Editor): Seq[ScTemplateDefinition] = {
     val closestClass = classAtOffset(editor.getCaretModel.getOffset, file)
-    if (closestClass == null) return Seq.empty
+    if (closestClass == null)
+      return Seq.empty
 
     closestClass +: closestClass.parentsInFile.toSeq.collect {
       case td: ScTemplateDefinition => td

@@ -109,8 +109,10 @@ package object util {
 
     leftPadded.zip(rightPadded).map {
       case (l, r) =>
-        (if (l == r) " "
-         else "!") + l + (" " * ((maxLeftSize - l.length) + 3)) + r
+        (if (l == r)
+           " "
+         else
+           "!") + l + (" " * ((maxLeftSize - l.length) + 3)) + r
     }
   }
 
@@ -122,7 +124,11 @@ package object util {
     new String(out.toByteArray, StandardCharsets.UTF_8)
   }
 
-  def stringOrNull(a: AnyRef): String = if (a == null) null else a.toString
+  def stringOrNull(a: AnyRef): String =
+    if (a == null)
+      null
+    else
+      a.toString
 
   def benchmark[A](f: => A): A = {
     val startTime = System.nanoTime()

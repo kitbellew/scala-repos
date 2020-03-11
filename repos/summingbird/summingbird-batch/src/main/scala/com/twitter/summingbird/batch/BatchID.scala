@@ -112,7 +112,11 @@ object BatchID {
 
   implicit val monoid: Monoid[BatchID] = new Monoid[BatchID] {
     override val zero = BatchID(Long.MinValue)
-    override def plus(l: BatchID, r: BatchID) = if (l >= r) l else r
+    override def plus(l: BatchID, r: BatchID) =
+      if (l >= r)
+        l
+      else
+        r
   }
 
   implicit val batchID2String: Injection[BatchID, String] =
@@ -142,8 +146,16 @@ case class BatchID(id: Long) extends AnyVal {
   def +(cnt: Long) = new BatchID(id + cnt)
 
   def -(cnt: Long) = new BatchID(id - cnt)
-  def max(b: BatchID) = if (this >= b) this else b
-  def min(b: BatchID) = if (this < b) this else b
+  def max(b: BatchID) =
+    if (this >= b)
+      this
+    else
+      b
+  def min(b: BatchID) =
+    if (this < b)
+      this
+    else
+      b
 
   override def toString = "BatchID." + id.toString
 }

@@ -102,7 +102,10 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     table = new Array(capacity(sizeForThreshold(_loadFactor, size)))
     threshold = newThreshold(_loadFactor, table.length)
 
-    if (smDefined) sizeMapInit(table.length) else sizemap = null
+    if (smDefined)
+      sizeMapInit(table.length)
+    else
+      sizemap = null
 
     var index = 0
     while (index < size) {
@@ -140,7 +143,8 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
 
   private[this] def findEntry0(key: A, h: Int): Entry = {
     var e = table(h).asInstanceOf[Entry]
-    while (e != null && !elemEquals(e.key, key)) e = e.next
+    while (e != null && !elemEquals(e.key, key))
+      e = e.next
     e
   }
 
@@ -172,7 +176,8 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   protected def findOrAddEntry[B](key: A, value: B): Entry = {
     val h = index(elemHashCode(key))
     val e = findEntry0(key, h)
-    if (e ne null) e
+    if (e ne null)
+      e
     else {
       addEntry0(createNewEntry(key, value), h);
       null
@@ -322,13 +327,17 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     "2.11.0")
   protected def nnSizeMapReset(tableLength: Int) = if (sizemap ne null) {
     val nsize = calcSizeMapSize(tableLength)
-    if (sizemap.length != nsize) sizemap = new Array[Int](nsize)
-    else java.util.Arrays.fill(sizemap, 0)
+    if (sizemap.length != nsize)
+      sizemap = new Array[Int](nsize)
+    else
+      java.util.Arrays.fill(sizemap, 0)
   }
 
   private[collection] final def totalSizeMapBuckets =
-    if (sizeMapBucketSize < table.length) 1
-    else table.length / sizeMapBucketSize
+    if (sizeMapBucketSize < table.length)
+      1
+    else
+      table.length / sizeMapBucketSize
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
@@ -353,8 +362,10 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     var bucketidx = 0
     val tbl = table
     var tableuntil = 0
-    if (tbl.length < sizeMapBucketSize) tableuntil = tbl.length
-    else tableuntil = sizeMapBucketSize
+    if (tbl.length < sizeMapBucketSize)
+      tableuntil = tbl.length
+    else
+      tableuntil = sizeMapBucketSize
     val totalbuckets = totalSizeMapBuckets
     while (bucketidx < totalbuckets) {
       var currbucketsize = 0
@@ -412,7 +423,8 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
       seedvalue = c.seedvalue
       sizemap = c.sizemap
     }
-    if (alwaysInitSizeMap && sizemap == null) sizeMapInitAndRebuild()
+    if (alwaysInitSizeMap && sizemap == null)
+      sizeMapInitAndRebuild()
   }
 
   private[collection] def hashTableContents = new HashTable.Contents(
@@ -440,7 +452,10 @@ private[collection] object HashTable {
     ((thr.toLong * loadFactorDenum) / _loadFactor).toInt
 
   private[collection] final def capacity(expectedSize: Int) =
-    if (expectedSize == 0) 1 else powerOfTwo(expectedSize)
+    if (expectedSize == 0)
+      1
+    else
+      powerOfTwo(expectedSize)
 
   trait HashUtils[KeyType] {
     protected final def sizeMapBucketBitSize = 5

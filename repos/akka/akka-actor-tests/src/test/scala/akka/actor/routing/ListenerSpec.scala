@@ -51,7 +51,8 @@ class ListenerSpec extends AkkaSpec {
 
       Await.ready(fooLatch, TestLatch.DefaultTimeout)
 
-      for (a ← List(broadcast, a1, a2, a3)) system.stop(a)
+      for (a ← List(broadcast, a1, a2, a3))
+        system.stop(a)
     }
   }
 }

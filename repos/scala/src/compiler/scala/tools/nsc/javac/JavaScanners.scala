@@ -139,8 +139,10 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** Convert name to token */
     def name2token(name: Name) = {
       val idx = name.start - kwOffset
-      if (idx >= 0 && idx < kwArray.length) kwArray(idx)
-      else IDENTIFIER
+      if (idx >= 0 && idx < kwArray.length)
+        kwArray(idx)
+      else
+        IDENTIFIER
     }
 
     /** Returns the string representation of given token. */
@@ -273,7 +275,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** read next token
       */
     private def fetchToken() {
-      if (token == EOF) return
+      if (token == EOF)
+        return
       lastPos = in.cpos - 1
       while (true) {
         in.ch match {
@@ -511,7 +514,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                   if (in.ch == '.') {
                     in.next()
                     token = DOTDOTDOT
-                  } else syntaxError("`.' character expected")
+                  } else
+                    syntaxError("`.' character expected")
                 }
                 return
 
@@ -556,7 +560,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                 return
 
               case SU =>
-                if (!in.hasNext) token = EOF
+                if (!in.hasNext)
+                  token = EOF
                 else {
                   syntaxError("illegal character")
                   in.next()
@@ -589,7 +594,10 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         case SU => incompleteInputError("unclosed comment")
         case '*' =>
           in.next;
-          if (in.ch == '/') in.next else skipJavaComment()
+          if (in.ch == '/')
+            in.next
+          else
+            skipJavaComment()
         case _ =>
           in.next;
           skipJavaComment()
@@ -729,12 +737,22 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       */
     def intVal(negated: Boolean): Long = {
       if (token == CHARLIT && !negated) {
-        if (name.length > 0) name.charAt(0).toLong else 0
+        if (name.length > 0)
+          name.charAt(0).toLong
+        else
+          0
       } else {
         var value: Long = 0
-        val divider = if (base == 10) 1 else 2
+        val divider =
+          if (base == 10)
+            1
+          else
+            2
         val limit: Long =
-          if (token == LONGLIT) Long.MaxValue else Int.MaxValue
+          if (token == LONGLIT)
+            Long.MaxValue
+          else
+            Int.MaxValue
         var i = 0
         val len = name.length
         while (i < len) {
@@ -753,7 +771,10 @@ trait JavaScanners extends ast.parser.ScannersCommon {
           value = value * base + d
           i += 1
         }
-        if (negated) -value else value
+        if (negated)
+          -value
+        else
+          value
       }
     }
 
@@ -761,13 +782,19 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       */
     def floatVal(negated: Boolean): Double = {
       val limit: Double =
-        if (token == DOUBLELIT) Double.MaxValue else Float.MaxValue
+        if (token == DOUBLELIT)
+          Double.MaxValue
+        else
+          Float.MaxValue
       try {
         val value: Double =
           java.lang.Double.valueOf(name.toString).doubleValue()
         if (value > limit)
           syntaxError("floating point number too large")
-        if (negated) -value else value
+        if (negated)
+          -value
+        else
+          value
       } catch {
         case _: NumberFormatException =>
           syntaxError("malformed floating point number")
@@ -778,7 +805,12 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** read a number into name and set base
       */
     protected def getNumber() {
-      while (digit2int(in.ch, if (base < 10) 10 else base) >= 0) {
+      while (digit2int(
+               in.ch,
+               if (base < 10)
+                 10
+               else
+                 base) >= 0) {
         putChar(in.ch)
         in.next()
       }

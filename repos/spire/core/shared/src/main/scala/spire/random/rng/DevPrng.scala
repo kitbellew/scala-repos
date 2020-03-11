@@ -46,7 +46,8 @@ class CycledFile(f: File) extends Generator { self =>
   }
 
   def reinit(): Unit = {
-    if (dis != null) dis.close()
+    if (dis != null)
+      dis.close()
     dis = new DataInputStream(new FileInputStream(f))
   }
 

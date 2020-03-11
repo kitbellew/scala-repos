@@ -48,7 +48,10 @@ object TableSelectionModel {
     */
   implicit def sfxTableSelectionModel2jfx[T](
       tsm: TableSelectionModel[T]): jfxsc.TableSelectionModel[T] =
-    if (tsm != null) tsm.delegate else null
+    if (tsm != null)
+      tsm.delegate
+    else
+      null
 
 }
 

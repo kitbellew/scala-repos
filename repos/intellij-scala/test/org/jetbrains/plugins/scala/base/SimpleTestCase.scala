@@ -71,7 +71,8 @@ abstract class SimpleTestCase extends UsefulTestCase {
     val content =
       if (root.isInstanceOf[LeafPsiElement])
         "\"%s\"".format(root.getText)
-      else root.getClass.getSimpleName
+      else
+        root.getClass.getSimpleName
     val title = "%s%s\n".format(indent, content)
     title + root.children.map(toString(_, level + 1)).mkString
   }

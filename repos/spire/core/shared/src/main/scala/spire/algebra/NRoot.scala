@@ -44,7 +44,10 @@ object NRoot {
     } else {
       (0 /: ((ceil - 1) to 0 by -1)) { (x, i) =>
         val y = x | (1 << i)
-        if (f(y)) y else x
+        if (f(y))
+          y
+        else
+          x
       }
     }
   }
@@ -67,7 +70,10 @@ object NRoot {
 
   /** Returns the digits of `x` in base `r`. */
   private def digitize(x: BigInt, r: Int, prev: List[Int] = Nil): List[Int] =
-    if (x == 0) prev else digitize(x / r, r, (x % r).toInt :: prev)
+    if (x == 0)
+      prev
+    else
+      digitize(x / r, r, (x % r).toInt :: prev)
 
   /** Converts a list of digits in base `r` to a `BigInt`. */
   private def undigitize(digits: Seq[Int], r: Int): BigInt =
@@ -104,7 +110,8 @@ object NRoot {
       val intPart = digitize(underlying / scale, radix)
       val fracPart = decDiv(underlying % scale, scale, radix) map (_.toInt)
       val leader =
-        if (intPart.size % k == 0) Stream.empty
+        if (intPart.size % k == 0)
+          Stream.empty
         else {
           Stream.fill(k - intPart.size % k)(0)
         }

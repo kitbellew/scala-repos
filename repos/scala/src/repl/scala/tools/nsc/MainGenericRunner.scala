@@ -20,8 +20,10 @@ object JarRunner extends CommonRunner {
       "Cannot find main class for jar: " + jarPath)
     val jarURLs = ClassPath expandManifestPath jarPath
     val urls =
-      if (jarURLs.isEmpty) File(jarPath).toURL +: settings.classpathURLs
-      else jarURLs
+      if (jarURLs.isEmpty)
+        File(jarPath).toURL +: settings.classpathURLs
+      else
+        jarURLs
 
     if (settings.Ylogcp) {
       Console.err.println("Running jar with these URLs as the classpath:")
@@ -41,7 +43,8 @@ class MainGenericRunner {
       str: String,
       e: Option[Throwable] = None,
       isFailure: Boolean = true): Boolean = {
-    if (str.nonEmpty) Console.err println str
+    if (str.nonEmpty)
+      Console.err println str
     e foreach (_.printStackTrace())
     !isFailure
   }
@@ -71,8 +74,16 @@ class MainGenericRunner {
         settings.Yreplsync.value = true
 
       def combinedCode = {
-        val files = if (isI) dashi map (file => File(file).slurp()) else Nil
-        val str = if (isE) List(dashe) else Nil
+        val files =
+          if (isI)
+            dashi map (file => File(file).slurp())
+          else
+            Nil
+        val str =
+          if (isE)
+            List(dashe)
+          else
+            Nil
 
         files ++ str mkString "\n\n"
       }
@@ -126,5 +137,7 @@ class MainGenericRunner {
 }
 
 object MainGenericRunner extends MainGenericRunner {
-  def main(args: Array[String]): Unit = if (!process(args)) sys.exit(1)
+  def main(args: Array[String]): Unit =
+    if (!process(args))
+      sys.exit(1)
 }

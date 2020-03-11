@@ -41,8 +41,11 @@ class BinarizerSuite
   }
 
   test("Binarize continuous features with default parameter") {
-    val defaultBinarized: Array[Double] =
-      data.map(x => if (x > 0.0) 1.0 else 0.0)
+    val defaultBinarized: Array[Double] = data.map(x =>
+      if (x > 0.0)
+        1.0
+      else
+        0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(data.zip(defaultBinarized))
       .toDF("feature", "expected")
@@ -65,8 +68,11 @@ class BinarizerSuite
 
   test("Binarize continuous features with setter") {
     val threshold: Double = 0.2
-    val thresholdBinarized: Array[Double] =
-      data.map(x => if (x > threshold) 1.0 else 0.0)
+    val thresholdBinarized: Array[Double] = data.map(x =>
+      if (x > threshold)
+        1.0
+      else
+        0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(data.zip(thresholdBinarized))
       .toDF("feature", "expected")
@@ -89,8 +95,11 @@ class BinarizerSuite
   }
 
   test("Binarize vector of continuous features with default parameter") {
-    val defaultBinarized: Array[Double] =
-      data.map(x => if (x > 0.0) 1.0 else 0.0)
+    val defaultBinarized: Array[Double] = data.map(x =>
+      if (x > 0.0)
+        1.0
+      else
+        0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(
         Seq(
@@ -114,8 +123,11 @@ class BinarizerSuite
 
   test("Binarize vector of continuous features with setter") {
     val threshold: Double = 0.2
-    val defaultBinarized: Array[Double] =
-      data.map(x => if (x > threshold) 1.0 else 0.0)
+    val defaultBinarized: Array[Double] = data.map(x =>
+      if (x > threshold)
+        1.0
+      else
+        0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(
         Seq(

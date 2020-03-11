@@ -31,9 +31,12 @@ class PackageCheck
     forAll { (n0: Byte, k0: Byte) =>
       val k = k0.toLong.abs
       val n = n0.toLong.abs
-      if (k > n) choose(n, k) shouldBe 0
-      else if (k == 0 || k == n) choose(n, k) shouldBe 1
-      else choose(n, k) shouldBe fact(n) / (fact(k) * fact(n - k))
+      if (k > n)
+        choose(n, k) shouldBe 0
+      else if (k == 0 || k == n)
+        choose(n, k) shouldBe 1
+      else
+        choose(n, k) shouldBe fact(n) / (fact(k) * fact(n - k))
     }
   }
 }

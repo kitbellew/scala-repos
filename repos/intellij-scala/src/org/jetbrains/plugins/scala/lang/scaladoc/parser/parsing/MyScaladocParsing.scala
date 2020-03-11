@@ -47,7 +47,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
   }
 
   private def parseCommentData(implicit builder: PsiBuilder): Boolean = {
-    if (isEndOfComment) return false
+    if (isEndOfComment)
+      return false
 
     builder.getTokenType match {
       case DOC_LINK_CLOSE_TAG =>
@@ -235,7 +236,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     import org.jetbrains.plugins.scala.lang.scaladoc.parser.parsing.MyScaladocParsing._
 
     val marker = builder.mark()
-    if (isInInlinedTag) ParserUtils.getToken(builder, DOC_INLINE_TAG_START)
+    if (isInInlinedTag)
+      ParserUtils.getToken(builder, DOC_INLINE_TAG_START)
 
     assert(
       builder.getTokenType eq DOC_TAG_NAME,
@@ -243,10 +245,13 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
         + builder.getTokenType + "  " + builder.getCurrentOffset)
 
     val tagName = builder.getTokenText
-    if (!isEndOfComment) builder.advanceLexer()
-    else builder.error("Unexpected end of tag body")
+    if (!isEndOfComment)
+      builder.advanceLexer()
+    else
+      builder.error("Unexpected end of tag body")
 
-    if (isInInlinedTag) builder.error("Inline tag")
+    if (isInInlinedTag)
+      builder.error("Inline tag")
     else {
       tagName match {
         case THROWS_TAG =>
@@ -261,7 +266,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           if (!ParserUtils.lookAhead(
                 builder,
                 builder.getTokenType,
-                DOC_TAG_VALUE_TOKEN)) builder.error("Missing tag param")
+                DOC_TAG_VALUE_TOKEN))
+            builder.error("Missing tag param")
         case SEE_TAG | AUTHOR_TAG | NOTE_TAG | RETURN_TAG | SINCE_TAG |
             VERSION_TAG | USECASE_TAG | EXAMPLE_TAG | TODO_TAG |
             INHERITDOC_TAG | CONSTRUCTOR_TAG =>
@@ -300,7 +306,11 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
         builder.advanceLexer()
       }
     }
-    marker.done(if (isInInlinedTag) DOC_INLINED_TAG else DOC_TAG)
+    marker.done(
+      if (isInInlinedTag)
+        DOC_INLINED_TAG
+      else
+        DOC_TAG)
     isInInlinedTag = false
 
     true

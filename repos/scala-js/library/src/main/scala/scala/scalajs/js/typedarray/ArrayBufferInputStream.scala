@@ -58,7 +58,8 @@ class ArrayBufferInputStream(
       val res = uintView(pos)
       pos += 1
       res
-    } else -1
+    } else
+      -1
   }
 
   override def read(b: Array[Byte], off: Int, reqLen: Int): Int = {

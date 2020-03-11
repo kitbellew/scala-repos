@@ -53,5 +53,8 @@ object QaComment extends QaController {
   }
 
   private def IfCanComment(block: => Fu[Result])(implicit ctx: Context) =
-    if (QaAuth.canComment) block else fuccess(Forbidden)
+    if (QaAuth.canComment)
+      block
+    else
+      fuccess(Forbidden)
 }

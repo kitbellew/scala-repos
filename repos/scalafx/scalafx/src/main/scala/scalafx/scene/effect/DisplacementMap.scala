@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object DisplacementMap {
   implicit def sfxDisplacementMap2jfx(
       dm: DisplacementMap): jfxse.DisplacementMap =
-    if (dm != null) dm.delegate else null
+    if (dm != null)
+      dm.delegate
+    else
+      null
 }
 
 class DisplacementMap(

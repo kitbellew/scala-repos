@@ -85,7 +85,8 @@ private[http] trait LiftMerge {
       val myMillis = millis
       snippetHashs.synchronized {
         if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs.values.toIterator
-              .contains(Empty)) ()
+              .contains(Empty))
+          ()
         else {
           snippetHashs.wait(waitUntil - myMillis)
           waitUntilSnippetsDone()
@@ -360,7 +361,8 @@ private[http] trait LiftMerge {
             (new RuleTransformer(rule)).transform(tmpRet)(0)
         }
 
-      } else tmpRet
+      } else
+        tmpRet
 
       ret
     }

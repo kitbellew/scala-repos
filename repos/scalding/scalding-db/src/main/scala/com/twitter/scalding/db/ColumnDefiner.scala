@@ -30,7 +30,10 @@ case object DOUBLE extends SqlType
 
 object IsNullable {
   def apply(isNullable: Boolean): IsNullable =
-    if (isNullable) Nullable else NotNullable
+    if (isNullable)
+      Nullable
+    else
+      NotNullable
 }
 
 sealed abstract class IsNullable(val toStr: String)

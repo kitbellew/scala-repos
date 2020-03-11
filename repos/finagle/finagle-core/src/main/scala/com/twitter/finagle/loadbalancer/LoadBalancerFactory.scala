@@ -134,8 +134,10 @@ object LoadBalancerFactory {
       // flag and the configured `HostStats` param. Report per-host stats
       // only when the flag is set.
       val hostStatsReceiver =
-        if (!perHostStats()) NullStatsReceiver
-        else params[LoadBalancerFactory.HostStats].hostStatsReceiver
+        if (!perHostStats())
+          NullStatsReceiver
+        else
+          params[LoadBalancerFactory.HostStats].hostStatsReceiver
 
       // Creates a ServiceFactory from the `next` in the stack and ensures
       // that `sockaddr` is an available param for `next`. Note, in the default
@@ -143,7 +145,8 @@ object LoadBalancerFactory {
       // in a connection being established when materialized.
       def newEndpoint(addr: Address): ServiceFactory[Req, Rep] = {
         val stats =
-          if (hostStatsReceiver.isNull) statsReceiver
+          if (hostStatsReceiver.isNull)
+            statsReceiver
           else {
             val scope = addr match {
               case Address.Inet(ia, _) =>
@@ -174,7 +177,8 @@ object LoadBalancerFactory {
           var isClosed = false
           def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
             synchronized {
-              if (isClosed) return Future.exception(new ServiceClosedException)
+              if (isClosed)
+                return Future.exception(new ServiceClosedException)
               if (underlying == null)
                 underlying = next.make(
                   params +
@@ -186,14 +190,19 @@ object LoadBalancerFactory {
           }
           def close(deadline: Time): Future[Unit] = synchronized {
             isClosed = true
-            if (underlying == null) Future.Done
-            else underlying.close(deadline)
+            if (underlying == null)
+              Future.Done
+            else
+              underlying.close(deadline)
           }
           override def status: Status = synchronized {
             if (underlying == null)
-              if (!isClosed) Status.Open
-              else Status.Closed
-            else underlying.status
+              if (!isClosed)
+                Status.Open
+              else
+                Status.Closed
+            else
+              underlying.status
           }
           override def toString: String = addr.toString
         }

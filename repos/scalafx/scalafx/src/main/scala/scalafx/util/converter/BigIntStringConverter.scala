@@ -33,7 +33,10 @@ import scala.language.implicitConversions
 object BigIntStringConverter {
   implicit def sfxBigIntStringConverter2jfx(
       c: BigIntStringConverter): jfxuc.BigIntegerStringConverter =
-    if (c != null) c.delegate else null
+    if (c != null)
+      c.delegate
+    else
+      null
 }
 
 class BigIntStringConverter(

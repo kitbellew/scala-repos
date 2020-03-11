@@ -28,9 +28,12 @@ class ChannelBufferBuf(protected val underlying: ChannelBuffer) extends Buf {
   def slice(i: Int, j: Int): Buf = {
     require(i >= 0 && j >= 0, "Index out of bounds")
 
-    if (j <= i || i >= length) Buf.Empty
-    else if (i == 0 && j >= length) this
-    else new ChannelBufferBuf(underlying.slice(i, (j - i) min (length - i)))
+    if (j <= i || i >= length)
+      Buf.Empty
+    else if (i == 0 && j >= length)
+      this
+    else
+      new ChannelBufferBuf(underlying.slice(i, (j - i) min (length - i)))
   }
 
   override def equals(other: Any): Boolean = other match {
@@ -45,7 +48,8 @@ class ChannelBufferBuf(protected val underlying: ChannelBuffer) extends Buf {
       val begin = underlying.arrayOffset + underlying.readerIndex
       val end = begin + underlying.readableBytes
       Some(new Buf.ByteArray(bytes, begin, end))
-    } else None
+    } else
+      None
 }
 
 object ChannelBufferBuf {

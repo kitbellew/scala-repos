@@ -37,9 +37,12 @@ object ScalaInsertHandler {
     item.element match {
       case fun: ScFunction =>
         val clauses = fun.paramClauses.clauses
-        if (clauses.isEmpty) (-1, null, false)
-        else if (clauses.head.isImplicit) (-1, null, false)
-        else (clauses.head.parameters.length, fun.name, false)
+        if (clauses.isEmpty)
+          (-1, null, false)
+        else if (clauses.head.isImplicit)
+          (-1, null, false)
+        else
+          (clauses.head.parameters.length, fun.name, false)
       case method: PsiMethod =>
         def isStringSpecialMethod: Boolean = {
           Set("hashCode", "length", "trim").contains(method.getName) &&
@@ -51,7 +54,8 @@ object ScalaInsertHandler {
           method.name,
           method.isAccessor || isStringSpecialMethod)
       case fun: ScFun =>
-        if (fun.paramClauses.isEmpty) (-1, null, false)
+        if (fun.paramClauses.isEmpty)
+          (-1, null, false)
         else {
           val clause = fun.paramClauses.head
           (clause.length, fun.asInstanceOf[ScSyntheticFunction].name, false)
@@ -64,7 +68,8 @@ object ScalaInsertHandler {
 class ScalaInsertHandler extends InsertHandler[LookupElement] {
   import org.jetbrains.plugins.scala.lang.completion.handlers.ScalaInsertHandler._
   override def handleInsert(context: InsertionContext, _item: LookupElement) {
-    if (!_item.isInstanceOf[ScalaLookupItem]) return
+    if (!_item.isInstanceOf[ScalaLookupItem])
+      return
     val item = _item.asInstanceOf[ScalaLookupItem]
 
     val editor = context.getEditor
@@ -86,7 +91,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       } else if (item.isInInterpolatedString) {
         val literal =
           context.getFile.findElementAt(contextStartOffset).getParent
-        if (!literal.isInstanceOf[ScInterpolated]) return
+        if (!literal.isInstanceOf[ScInterpolated])
+          return
         val index =
           literal.asInstanceOf[ScInterpolated].getInjections.lastIndexWhere {
             expr => expr.getTextRange.getEndOffset <= contextStartOffset
@@ -96,7 +102,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             literal.asInstanceOf[ScInterpolated],
             index,
             contextStartOffset - literal.getTextRange.getStartOffset)
-        if (res.isEmpty) return
+        if (res.isEmpty)
+          return
         val (startOffset, _) = res.get
         val tailOffset = context.getTailOffset
         document.insertString(tailOffset, "}")
@@ -105,7 +112,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
           "{")
         context.commitDocument()
         (startOffset + 1, tailOffset - startOffset)
-      } else (contextStartOffset, context.getTailOffset - contextStartOffset)
+      } else
+        (contextStartOffset, context.getTailOffset - contextStartOffset)
     var endOffset = startOffset + lookupStringLength
 
     val completionChar: Char = context.getCompletionChar
@@ -116,7 +124,11 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     }
 
     val some = item.someSmartCompletion
-    val someNum = if (some) 1 else 0
+    val someNum =
+      if (some)
+        1
+      else
+        0
     //val file = context.getFile //returns wrong file in evaluate expression in debugger (runtime type completion)
     val file =
       PsiDocumentManager.getInstance(context.getProject).getPsiFile(document)
@@ -137,7 +149,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             ref.getParent.replace(newRef).getFirstChild
           case elem => elem
         }
-      } else file.findElementAt(startOffset)
+      } else
+        file.findElementAt(startOffset)
     if (some) {
       var elem = element
       var parent = elem.getParent
@@ -191,12 +204,17 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       def shiftEndOffset(shift: Int, withSomeNum: Boolean = withSomeNum) {
         endOffset += shift
         editor.getCaretModel.moveToOffset(
-          endOffset + (if (withSomeNum) someNum else 0))
+          endOffset + (if (withSomeNum)
+                         someNum
+                       else
+                         0))
       }
       val documentText: String = document.getText
       val nextChar: Char =
-        if (endOffset < document.getTextLength) documentText.charAt(endOffset)
-        else 0.toChar
+        if (endOffset < document.getTextLength)
+          documentText.charAt(endOffset)
+        else
+          0.toChar
       if (!withSpace && nextChar != openChar) {
         if (CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
           document.insertString(endOffset, s"$openChar$closeChar")
@@ -310,9 +328,15 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {
                     val openChar =
-                      if (context.getCompletionChar == '{') '{' else '('
+                      if (context.getCompletionChar == '{')
+                        '{'
+                      else
+                        '('
                     val closeChar =
-                      if (context.getCompletionChar == '{') '}' else ')'
+                      if (context.getCompletionChar == '{')
+                        '}'
+                      else
+                        ')'
                     insertIfNeeded(
                       placeInto = true,
                       openChar = openChar,
@@ -385,9 +409,11 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                     .autoPopupParameterInfo(editor, element)
                 } else if (completionChar != ',') {
                   editor.getCaretModel.moveToOffset(endOffset + 1 + someNum)
-                } else moveCaretIfNeeded()
+                } else
+                  moveCaretIfNeeded()
             }
-          } else moveCaretIfNeeded()
+          } else
+            moveCaretIfNeeded()
         } else {
           context.setAddCompletionChar(false)
           insertIfNeeded(

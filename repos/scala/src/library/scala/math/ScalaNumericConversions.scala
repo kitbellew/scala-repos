@@ -92,8 +92,10 @@ trait ScalaNumericAnyConversions extends Any {
 
   protected def unifiedPrimitiveHashcode() = {
     val lv = toLong
-    if (lv >= Int.MinValue && lv <= Int.MaxValue) lv.toInt
-    else lv.##
+    if (lv >= Int.MinValue && lv <= Int.MaxValue)
+      lv.toInt
+    else
+      lv.##
   }
 
   /** Should only be called after all known non-primitive

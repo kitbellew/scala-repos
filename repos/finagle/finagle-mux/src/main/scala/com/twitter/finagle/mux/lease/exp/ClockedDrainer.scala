@@ -67,9 +67,12 @@ private[finagle] class ClockedDrainer(
   private[this] def calculateMaxWait: Duration = {
     val rate = coord.counter.rate
     val r = space.left
-    if (r <= StorageUnit.zero) Duration.Zero
-    else if (rate <= 0) 10.milliseconds
-    else (r.inBytes / rate).toLong.milliseconds
+    if (r <= StorageUnit.zero)
+      Duration.Zero
+    else if (rate <= 0)
+      10.milliseconds
+    else
+      (r.inBytes / rate).toLong.milliseconds
   }
 
   private object stats {
@@ -237,7 +240,8 @@ private[finagle] class ClockedDrainer(
       stats.pendingAtGc.add(n)
       stats.forcedGcs.incr()
     } else {
-      if (verbose) log.info("NATURAL-GC")
+      if (verbose)
+        log.info("NATURAL-GC")
       lr.record("byteLeft", -1.toString)
       stats.naturalGcs.incr()
     }
@@ -302,7 +306,10 @@ object nackOnExpiredLease
 private[finagle] object ClockedDrainer {
   private[this] val log = Logger.getLogger("ClockedDrainer")
   private[this] val lr =
-    if (drainerDebug()) new DedupingLogsReceiver(log) else NullLogsReceiver
+    if (drainerDebug())
+      new DedupingLogsReceiver(log)
+    else
+      NullLogsReceiver
 
   lazy val flagged: Lessor = if (drainerEnabled()) {
     Coordinator.create() match {

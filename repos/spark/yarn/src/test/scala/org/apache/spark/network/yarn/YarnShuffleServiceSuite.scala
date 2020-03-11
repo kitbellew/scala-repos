@@ -111,9 +111,12 @@ class YarnShuffleServiceSuite
 
     if (!execStateFile.exists()) {
       @tailrec def findExistingParent(file: File): File = {
-        if (file == null) file
-        else if (file.exists()) file
-        else findExistingParent(file.getParentFile())
+        if (file == null)
+          file
+        else if (file.exists())
+          file
+        else
+          findExistingParent(file.getParentFile())
       }
       val existingParent = findExistingParent(execStateFile)
       assert(

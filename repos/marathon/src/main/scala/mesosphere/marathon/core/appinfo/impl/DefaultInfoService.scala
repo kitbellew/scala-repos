@@ -117,7 +117,10 @@ private[appinfo] class DefaultInfoService(
             group.id,
             groupSelector.matches(group) || group.groups.exists(groupMatches))
         }
-        if (groupMatches(ref)) Some(GroupInfo(ref, apps, groups)) else None
+        if (groupMatches(ref))
+          Some(GroupInfo(ref, apps, groups))
+        else
+          None
       }
       queryGroup(group)
     }

@@ -81,7 +81,8 @@ object TimeTest {
   }
 
   private def runActuarius(markdown: String, iterations: Int) {
-    for (i <- 0 until iterations) actuariusProcessor(markdown)
+    for (i <- 0 until iterations)
+      actuariusProcessor(markdown)
   }
 
   def testRun(markdown: String, iterations: Int) {

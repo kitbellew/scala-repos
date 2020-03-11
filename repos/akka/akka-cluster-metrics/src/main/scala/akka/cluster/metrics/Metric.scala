@@ -33,16 +33,18 @@ final case class Metric private[metrics] (
     * Returns the updated metric.
     */
   def :+(latest: Metric): Metric =
-    if (this sameAs latest) average match {
-      case Some(avg) ⇒
-        copy(
-          value = latest.value,
-          average = Some(avg :+ latest.value.doubleValue))
-      case None if latest.average.isDefined ⇒
-        copy(value = latest.value, average = latest.average)
-      case _ ⇒ copy(value = latest.value)
-    }
-    else this
+    if (this sameAs latest)
+      average match {
+        case Some(avg) ⇒
+          copy(
+            value = latest.value,
+            average = Some(avg :+ latest.value.doubleValue))
+        case None if latest.average.isDefined ⇒
+          copy(value = latest.value, average = latest.average)
+        case _ ⇒ copy(value = latest.value)
+      }
+    else
+      this
 
   /**
     * The numerical value of the average, if defined, otherwise the latest value
@@ -85,7 +87,8 @@ object Metric extends MetricNumericConverter {
       decayFactor: Option[Double]): Option[Metric] =
     if (defined(value))
       Some(new Metric(name, value, createEWMA(value.doubleValue, decayFactor)))
-    else None
+    else
+      None
 
   /**
     * Creates a new Metric instance if the Try is successful and the value is valid,
@@ -219,12 +222,12 @@ object StandardMetrics {
     */
   def extractCpu(nodeMetrics: NodeMetrics): Cpu = nodeMetrics match {
     case Cpu(
-        address,
-        timestamp,
-        systemLoadAverage,
-        cpuCombined,
-        cpuStolen,
-        processors) ⇒
+          address,
+          timestamp,
+          systemLoadAverage,
+          cpuCombined,
+          cpuStolen,
+          processors) ⇒
       // note that above extractor returns tuple
       Cpu(
         address,
@@ -332,7 +335,8 @@ final case class NodeMetrics(
     require(
       address == that.address,
       s"merge only allowed for same address, [$address] != [$that.address]")
-    if (timestamp >= that.timestamp) this // that is older
+    if (timestamp >= that.timestamp)
+      this // that is older
     else {
       // equality is based on the name of the Metric and Set doesn't replace existing element
       copy(metrics = that.metrics union metrics, timestamp = that.timestamp)
@@ -348,7 +352,10 @@ final case class NodeMetrics(
       s"update only allowed for same address, [$address] != [$that.address]")
     // Apply sample ordering.
     val (latestNode, currentNode) =
-      if (this.timestamp >= that.timestamp) (this, that) else (that, this)
+      if (this.timestamp >= that.timestamp)
+        (this, that)
+      else
+        (that, this)
     // Average metrics present in both latest and current.
     val updated = for {
       latest ← latestNode.metrics

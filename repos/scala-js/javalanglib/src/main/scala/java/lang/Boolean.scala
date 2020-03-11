@@ -17,7 +17,10 @@ final class Boolean private () extends Comparable[Boolean] {
     this eq that.asInstanceOf[AnyRef]
 
   @inline override def hashCode(): Int =
-    if (booleanValue) 1231 else 1237
+    if (booleanValue)
+      1231
+    else
+      1237
 
   @inline override def compareTo(that: Boolean): Int =
     Boolean.compare(booleanValue, that.booleanValue)
@@ -57,5 +60,10 @@ object Boolean {
     "" + b
 
   @inline def compare(x: scala.Boolean, y: scala.Boolean): scala.Int =
-    if (x == y) 0 else if (x) 1 else -1
+    if (x == y)
+      0
+    else if (x)
+      1
+    else
+      -1
 }

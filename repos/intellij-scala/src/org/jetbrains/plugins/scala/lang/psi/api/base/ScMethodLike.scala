@@ -65,7 +65,8 @@ trait ScMethodLike extends ScMember with PsiMethod {
         case c: ScTypeDefinition => c.typeParametersClause
         case _                   => None
       }
-    } else None
+    } else
+      None
   }
 
   def effectiveParameterClauses: Seq[ScParameterClause]

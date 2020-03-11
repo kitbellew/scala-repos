@@ -97,7 +97,10 @@ object LambdaDeserializer {
       val isScalaFunction =
         functionalInterfaceClass.getName.startsWith("scala.Function")
       val markerInterface: Class[_] = loader.loadClass(
-        if (isScalaFunction) ScalaSerializable else JavaIOSerializable)
+        if (isScalaFunction)
+          ScalaSerializable
+        else
+          JavaIOSerializable)
 
       LambdaMetafactory.altMetafactory(
         lookup,

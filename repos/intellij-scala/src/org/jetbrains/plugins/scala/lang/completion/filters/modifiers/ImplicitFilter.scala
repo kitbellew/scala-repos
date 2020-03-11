@@ -16,7 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameter
   */
 class ImplicitFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val (leaf, _) = processPsiLeafForFilter(
       getLeafByOffset(context.getTextRange.getStartOffset, context))
 

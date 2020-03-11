@@ -34,11 +34,13 @@ object any extends UFunc {
 
         object Visitor extends ValuesVisitor[S] {
           def visit(a: S): Unit = {
-            if (f(a)) throw Found
+            if (f(a))
+              throw Found
           }
 
           def zeros(numZero: Int, zeroValue: S): Unit = {
-            if (numZero != 0 && f(zeroValue)) throw Found
+            if (numZero != 0 && f(zeroValue))
+              throw Found
           }
 
         }

@@ -58,7 +58,11 @@ case class Span(
     // fill in the host/service data for all the annotations
     annotations foreach { ann =>
       val a = ann.toThrift
-      val ep = if (a.isSetHost) a.getHost() else endpoint.boundEndpoint.toThrift
+      val ep =
+        if (a.isSetHost)
+          a.getHost()
+        else
+          endpoint.boundEndpoint.toThrift
       ep.setService_name(serviceName)
       a.setHost(ep)
       span.addToAnnotations(a)
@@ -66,7 +70,11 @@ case class Span(
 
     bAnnotations foreach { ann =>
       val a = ann.toThrift
-      val ep = if (a.isSetHost) a.getHost() else endpoint.boundEndpoint.toThrift
+      val ep =
+        if (a.isSetHost)
+          a.getHost()
+        else
+          endpoint.boundEndpoint.toThrift
       ep.setService_name(serviceName)
       a.setHost(ep)
       span.addToBinary_annotations(a)

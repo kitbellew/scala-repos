@@ -34,13 +34,18 @@ object ComparingUnrelatedTypesInspection {
   private val seqFunctions = Seq("contains", "indexOf", "lastIndexOf")
 
   def cannotBeCompared(type1: ScType, type2: ScType): Boolean = {
-    if (undefinedTypeAlias(type1) || undefinedTypeAlias(type2)) return false
+    if (undefinedTypeAlias(type1) || undefinedTypeAlias(type2))
+      return false
 
     val types = Seq(type1, type2).map(extractActualType)
     val Seq(unboxed1, unboxed2) =
-      if (types.contains(Null)) types else types.map(StdType.unboxedType)
+      if (types.contains(Null))
+        types
+      else
+        types.map(StdType.unboxedType)
 
-    if (isNumericType(unboxed1) && isNumericType(unboxed2)) return false
+    if (isNumericType(unboxed1) && isNumericType(unboxed2))
+      return false
 
     ComparingUtil.isNeverSubType(unboxed1, unboxed2) && ComparingUtil
       .isNeverSubType(unboxed2, unboxed1)
@@ -104,10 +109,10 @@ class ComparingUnrelatedTypesInspection
         }
       }
     case MethodRepr(
-        _,
-        Some(baseExpr),
-        Some(ResolvesTo(fun: ScFunction)),
-        Seq(arg, _*)) if mayNeedHighlighting(fun) =>
+          _,
+          Some(baseExpr),
+          Some(ResolvesTo(fun: ScFunction)),
+          Seq(arg, _*)) if mayNeedHighlighting(fun) =>
       for {
         ScParameterizedType(_, Seq(elemType)) <- baseExpr
           .getType()
@@ -145,7 +150,8 @@ class ComparingUnrelatedTypesInspection
   }
 
   private def mayNeedHighlighting(fun: ScFunction): Boolean = {
-    if (!seqFunctions.contains(fun.name)) return false
+    if (!seqFunctions.contains(fun.name))
+      return false
     val className = fun.containingClass.qualifiedName
     className.startsWith("scala.collection") && className.contains(
       "Seq") && seqFunctions.contains(fun.name) ||

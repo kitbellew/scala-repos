@@ -405,8 +405,10 @@ private[scala] class SerializedTypeTag(
         case se: SecurityException => null
       }
     val m = runtimeMirror(loader)
-    if (concrete) TypeTag(m, tpec)
-    else WeakTypeTag(m, tpec)
+    if (concrete)
+      TypeTag(m, tpec)
+    else
+      WeakTypeTag(m, tpec)
   }
 }
 

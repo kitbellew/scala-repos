@@ -76,7 +76,11 @@ class GroupsResource @Inject() (
     implicit identity =>
       import scala.concurrent.ExecutionContext.Implicits.global
 
-      val embeds = if (embed.isEmpty) defaultEmbeds else embed.asScala.toSet
+      val embeds =
+        if (embed.isEmpty)
+          defaultEmbeds
+        else
+          embed.asScala.toSet
       val (appEmbed, groupEmbed) = resolveAppGroup(embeds)
 
       //format:off

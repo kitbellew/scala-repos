@@ -65,7 +65,8 @@ case class InputState[T](state: T) {
       this.copy(counter = counter - by)
     }
     def incrBy(by: Int) = {
-      if (failed) throw new Exception("Cannot increment when already failed")
+      if (failed)
+        throw new Exception("Cannot increment when already failed")
       this.copy(counter = counter + by)
     }
     def incr = incrBy(1)

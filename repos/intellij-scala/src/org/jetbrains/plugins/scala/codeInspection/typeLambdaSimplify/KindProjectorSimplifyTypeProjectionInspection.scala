@@ -100,8 +100,10 @@ class KindProjectorSimplifyTypeProjectionInspection
               currentTypeParam match {
                 case Some(tpt) if ta.presentableText == tpt.name =>
                   currentTypeParam =
-                    if (typeParamIt.hasNext) Some(typeParamIt.next())
-                    else None
+                    if (typeParamIt.hasNext)
+                      Some(typeParamIt.next())
+                    else
+                      None
                   tpt.getText.replace(tpt.name, "?")
                 case _ => ta.presentableText
               }
@@ -109,8 +111,10 @@ class KindProjectorSimplifyTypeProjectionInspection
             if (!typeParamIt.hasNext && currentTypeParam.isEmpty) {
               Some(s"${paramType.designator}${newTypeArgs
                 .mkString(start = "[", sep = ",", end = "]")}")
-            } else None
-          } else None
+            } else
+              None
+          } else
+            None
         case _ => None
       }
     }
@@ -157,7 +161,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                               if (param.isCovariant || param.isContravariant || boundsDefined(
                                                     param)) {
                                                 s"`${param.getText}`"
-                                              } else param.getText
+                                              } else
+                                                param.getText
                                           }
                                           if (parameters.length > 1) {
                                             builder.append(
@@ -215,7 +220,8 @@ class KindProjectorSimplifyTypeProjectionQuickFix(
     extends AbstractFixOnPsiElement(inspectionName, e) {
   override def doApplyFix(project: Project): Unit = {
     val elem = getElement
-    if (!elem.isValid) return
+    if (!elem.isValid)
+      return
 
     val te = ScalaPsiElementFactory.createTypeElementFromText(
       replacement,

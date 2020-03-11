@@ -44,7 +44,10 @@ import scalafx.scene.shape.Shape
 
 object Region {
   implicit def sfxRegion2jfx(v: Region): jfxsl.Region =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Sentinel value which can be passed to a region's minWidth, minHeight, prefWidth, prefHeight,

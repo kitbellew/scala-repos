@@ -41,16 +41,19 @@ with AbstractTestConfigurationProducer {
       configuration: RunConfiguration,
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
-    if (element == null) return false
+    if (element == null)
+      return false
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
-      if (!configuration.isInstanceOf[UTestRunConfiguration]) return false
+      if (!configuration.isInstanceOf[UTestRunConfiguration])
+        return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
         configuration)
     }
     val (testClass, testClassName) = getLocationClassAndTest(location)
-    if (testClass == null) return false
+    if (testClass == null)
+      return false
     val testClassPath = testClass.qualifiedName
     configuration match {
       case configuration: UTestRunConfiguration
@@ -69,7 +72,8 @@ with AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement])
       : Option[(PsiElement, RunnerAndConfigurationSettings)] = {
     val element = location.getPsiElement
-    if (element == null) return None
+    if (element == null)
+      return None
 
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
@@ -88,20 +92,29 @@ with AbstractTestConfigurationProducer {
     }
 
     val (testClass, testName) = getLocationClassAndTest(location)
-    if (testClass == null) return None
+    if (testClass == null)
+      return None
     val testClassPath = testClass.qualifiedName
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
-          (if (testName != null) "\\" + testName else ""),
+          (if (testName != null)
+             "\\" + testName
+           else
+             ""),
         confFactory)
     val runConfiguration =
       settings.getConfiguration.asInstanceOf[UTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
-    if (testName != null) runConfiguration.setTestName(testName)
-    val kind = if (testName == null) TestKind.CLASS else TestKind.TEST_NAME
+    if (testName != null)
+      runConfiguration.setTestName(testName)
+    val kind =
+      if (testName == null)
+        TestKind.CLASS
+      else
+        TestKind.TEST_NAME
     runConfiguration.setTestKind(kind)
     try {
       val module = ScalaPsiUtil.getModule(element)
@@ -141,8 +154,12 @@ with AbstractTestConfigurationProducer {
                 .map(_._2)
                 .get
               val bindings = patternDef.bindings
-              if (bindings.size > index) Some(bindings(index).getName) else None
-            } else None
+              if (bindings.size > index)
+                Some(bindings(index).getName)
+              else
+                None
+            } else
+              None
           case _ => None
         }
       case _ => None
@@ -195,7 +212,8 @@ with AbstractTestConfigurationProducer {
     //first, check that containing type definition is a uTest suite
     var containingObject: ScTypeDefinition =
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
-    if (containingObject == null) return fail
+    if (containingObject == null)
+      return fail
     while (!containingObject
              .isInstanceOf[ScObject] && PsiTreeUtil.getParentOfType(
              containingObject,
@@ -206,7 +224,8 @@ with AbstractTestConfigurationProducer {
         classOf[ScTypeDefinition],
         true)
     }
-    if (!containingObject.isInstanceOf[ScObject]) return fail
+    if (!containingObject.isInstanceOf[ScObject])
+      return fail
     if (!suitePaths.exists(suitePath =>
           TestConfigurationUtil.isInheritor(containingObject, suitePath)))
       return (null, null)

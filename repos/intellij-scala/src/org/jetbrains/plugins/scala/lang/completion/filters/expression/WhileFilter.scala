@@ -15,7 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScDoStmt, ScExpression}
   */
 class WhileFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       var parent = leaf.getParent
@@ -36,7 +37,8 @@ class WhileFilter extends ElementFilter {
         if (doStmt == null) {
           while (parent != null && !parent.isInstanceOf[ScDoStmt])
             parent = parent.getParent
-          if (parent == null) return false
+          if (parent == null)
+            return false
           text = parent.getText
           text = Pattern
             .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)

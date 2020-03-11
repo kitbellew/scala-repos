@@ -92,7 +92,10 @@ object Reflector {
             }
           }
 
-          if (clazz != null) Some(clazz.asInstanceOf[Class[X]]) else None
+          if (clazz != null)
+            Some(clazz.asInstanceOf[Class[X]])
+          else
+            None
         } catch {
           case _: Throwable => None
         }
@@ -108,8 +111,10 @@ object Reflector {
     } else {
 
       val path =
-        if (tpe.rawFullName.endsWith("$")) tpe.rawFullName
-        else "%s$".format(tpe.rawFullName)
+        if (tpe.rawFullName.endsWith("$"))
+          tpe.rawFullName
+        else
+          "%s$".format(tpe.rawFullName)
       val c = resolveClass(path, Vector(getClass.getClassLoader))
       val companion = c flatMap { cl =>
         allCatch opt {
@@ -140,7 +145,8 @@ object Reflector {
                         if (cc == classOf[java.lang.Object])
                           Reflector.scalaTypeOf(
                             ScalaSigReader.readField(f.getName, clazz, i))
-                        else Reflector.scalaTypeOf(cc)
+                        else
+                          Reflector.scalaTypeOf(cc)
                     }
                   case _ => Nil
                 }
@@ -150,7 +156,8 @@ object Reflector {
               lb += PropertyDescriptor(decoded, f.getName, st, f)
             }
           }
-          if (clazz.getSuperclass != null) lb ++= fields(clazz.getSuperclass)
+          if (clazz.getSuperclass != null)
+            lb ++= fields(clazz.getSuperclass)
           lb.toList
         }
         fields(tpe.erasure)
@@ -174,7 +181,8 @@ object Reflector {
                 index,
                 ctorParameterNames)
               scalaTypeOf(r)
-            } else a
+            } else
+              a
           case v: ParameterizedType =>
             val st = scalaTypeOf(v)
             val actualArgs = v.getActualTypeArguments.toList.zipWithIndex map {
@@ -191,8 +199,10 @@ object Reflector {
             st.copy(typeArgs = actualArgs)
           case v: WildcardType =>
             val upper = v.getUpperBounds
-            if (upper != null && upper.size > 0) scalaTypeOf(upper(0))
-            else scalaTypeOf[AnyRef]
+            if (upper != null && upper.size > 0)
+              scalaTypeOf(upper(0))
+            else
+              scalaTypeOf[AnyRef]
           case x =>
             val st = scalaTypeOf(x)
             if (st.erasure == classOf[java.lang.Object]) {
@@ -202,7 +212,8 @@ object Reflector {
                   owner,
                   idxes getOrElse List(index),
                   ctorParameterNames))
-            } else st
+            } else
+              st
         }
       }
 

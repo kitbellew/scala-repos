@@ -73,7 +73,11 @@ private[persistence] trait InmemMessages {
   def update(pid: String, snr: Long)(f: PersistentRepr ⇒ PersistentRepr): Unit =
     messages = messages.get(pid) match {
       case Some(ms) ⇒
-        messages + (pid -> ms.map(sp ⇒ if (sp.sequenceNr == snr) f(sp) else sp))
+        messages + (pid -> ms.map(sp ⇒
+          if (sp.sequenceNr == snr)
+            f(sp)
+          else
+            sp))
       case None ⇒ messages
     }
 
@@ -103,5 +107,8 @@ private[persistence] trait InmemMessages {
   }
 
   private def safeLongToInt(l: Long): Int =
-    if (Int.MaxValue < l) Int.MaxValue else l.toInt
+    if (Int.MaxValue < l)
+      Int.MaxValue
+    else
+      l.toInt
 }

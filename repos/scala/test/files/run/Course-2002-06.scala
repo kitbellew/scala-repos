@@ -58,7 +58,8 @@ abstract class Graphics(_width: Double, _height: Double) {
 
   /** Draw a list of segments on the picture.*/
   def drawSegments(frm: Frame)(segments: List[Tuple2[Vector, Vector]]): Unit =
-    if (segments.isEmpty) ()
+    if (segments.isEmpty)
+      ()
     else {
       drawSegment(frm)(segments.head._1, segments.head._2);
       drawSegments(frm)(segments.tail)
@@ -216,7 +217,8 @@ object M0 {
   }
 
   def rightSplit(painter: Painter, n: Int): Painter = {
-    if (n == 0) painter
+    if (n == 0)
+      painter
     else {
       val smaller = rightSplit(painter, n - 1);
       beside(painter, below(smaller, smaller))

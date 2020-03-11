@@ -38,7 +38,10 @@ import scalafx.geometry.Side
 object TabPane {
 
   implicit def sfxTabPane2jfx(v: TabPane): jfxsc.TabPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   object TabClosingPolicy
       extends SFXEnumDelegateCompanion[

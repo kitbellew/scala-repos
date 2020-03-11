@@ -3,7 +3,11 @@ object Bar {
 }
 
 object Even {
-  def unapply(x: Int) = if (x % 2 == 0) Some(x / 2) else None;
+  def unapply(x: Int) =
+    if (x % 2 == 0)
+      Some(x / 2)
+    else
+      None;
 }
 
 object Test extends App {

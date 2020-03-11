@@ -60,7 +60,10 @@ class TimerStatsTest
     var count = 0
     val nextRunAt = () => {
       count += 1
-      if (count == 1) 1.millisecond else 5.minutes
+      if (count == 1)
+        1.millisecond
+      else
+        5.minutes
     }
     TimerStats.hashedWheelTimerInternals(hwt, nextRunAt, sr)
 

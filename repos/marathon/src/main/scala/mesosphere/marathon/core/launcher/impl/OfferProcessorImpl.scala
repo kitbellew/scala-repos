@@ -103,7 +103,10 @@ private[launcher] class OfferProcessorImpl(
       resendThisOffer: Boolean): Future[Unit] = {
     //if the offer should be resent, than we ignore the configured decline offer duration
     val duration: Option[Long] =
-      if (resendThisOffer) None else conf.declineOfferDuration.get
+      if (resendThisOffer)
+        None
+      else
+        conf.declineOfferDuration.get
     taskLauncher.declineOffer(offerId, duration)
     Future.successful(())
   }

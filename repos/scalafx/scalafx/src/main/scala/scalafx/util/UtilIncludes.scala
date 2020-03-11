@@ -87,7 +87,10 @@ trait UtilIncludes {
     * @return A JavaFX Pair generated from Scala Tuple2.
     */
   implicit def tuple22jfxPair[K, V](t: (K, V)): jfxu.Pair[K, V] =
-    if (t != null) new jfxu.Pair[K, V](t._1, t._2) else null
+    if (t != null)
+      new jfxu.Pair[K, V](t._1, t._2)
+    else
+      null
 
   /**
     * Converts a Double to a Duration.
@@ -107,7 +110,10 @@ trait UtilIncludes {
     * @return ScalaFX Duration
     */
   implicit def jfxDuration2sfx(d: jfxu.Duration): Duration =
-    if (d != null) new Duration(d) else null
+    if (d != null)
+      new Duration(d)
+    else
+      null
 
   /**
     * Converts a

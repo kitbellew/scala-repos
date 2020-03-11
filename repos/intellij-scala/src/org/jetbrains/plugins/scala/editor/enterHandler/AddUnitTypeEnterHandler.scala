@@ -31,7 +31,8 @@ class AddUnitTypeEnterHandler extends EnterHandlerDelegateAdapter {
     val offset = caretModel.getOffset
     val element = file.findElementAt(offset)
 
-    if (element == null) return Result.Continue
+    if (element == null)
+      return Result.Continue
 
     @inline def checkBlock2(block: ScBlockExpr) = {
       val children: Array[PsiElement] = block.getChildren

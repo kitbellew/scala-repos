@@ -123,7 +123,10 @@ private final class Streaming(
         streamerList.get foreach { all =>
           all foreach { streamer =>
             lila.mon.tv.stream.name(streamer.id) {
-              if (streams.exists(_ is streamer)) 1 else 0
+              if (streams.exists(_ is streamer))
+                1
+              else
+                0
             }
           }
         }

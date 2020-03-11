@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 
 object RadialGradient {
   implicit def sfxRadialGradient2jfx(rg: RadialGradient): jfxsp.RadialGradient =
-    if (rg != null) rg.delegate else null
+    if (rg != null)
+      rg.delegate
+    else
+      null
 
   /**
     * Creates a radial gradient value from a string representation.
@@ -51,7 +54,8 @@ object RadialGradient {
       cycleMethod: CycleMethod,
       stops: List[Stop]): RadialGradient = {
     val stopsList = new java.util.ArrayList[jfxsp.Stop](stops.length)
-    for (stop <- stops) stopsList.add(stop)
+    for (stop <- stops)
+      stopsList.add(stop)
     new RadialGradient(
       new jfxsp.RadialGradient(
         focusAngle,
@@ -79,7 +83,8 @@ object RadialGradient {
       cycleMethod: CycleMethod,
       stops: Stop*): RadialGradient = {
     val stopsList = new java.util.ArrayList[jfxsp.Stop](stops.length)
-    for (stop <- stops) stopsList.add(stop)
+    for (stop <- stops)
+      stopsList.add(stop)
     new RadialGradient(
       new jfxsp.RadialGradient(
         focusAngle,

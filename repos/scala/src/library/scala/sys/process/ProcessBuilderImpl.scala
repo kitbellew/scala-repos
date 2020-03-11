@@ -83,8 +83,10 @@ private[process] trait ProcessBuilderImpl {
       val outThread =
         Spawn(processOutput(process.getInputStream), daemonizeThreads)
       val errorThread =
-        if (p.redirectErrorStream) Nil
-        else List(Spawn(processError(process.getErrorStream), daemonizeThreads))
+        if (p.redirectErrorStream)
+          Nil
+        else
+          List(Spawn(processError(process.getErrorStream), daemonizeThreads))
 
       new SimpleProcess(process, inThread, outThread :: errorThread)
     }
@@ -150,8 +152,10 @@ private[process] trait ProcessBuilderImpl {
       val buffer = new StringBuffer
       val code = this ! BasicIO(withIn, buffer, log)
 
-      if (code == 0) buffer.toString
-      else scala.sys.error("Nonzero exit value: " + code)
+      if (code == 0)
+        buffer.toString
+      else
+        scala.sys.error("Nonzero exit value: " + code)
     }
 
     private[this] def lineStream(
@@ -217,7 +221,13 @@ private[process] trait ProcessBuilderImpl {
       first: ProcessBuilder,
       second: ProcessBuilder,
       toError: Boolean
-  ) extends SequentialBuilder(first, second, if (toError) "#|!" else "#|") {
+  ) extends SequentialBuilder(
+        first,
+        second,
+        if (toError)
+          "#|!"
+        else
+          "#|") {
 
     override def createProcess(io: ProcessIO) =
       new PipedProcesses(first, second, io, toError)

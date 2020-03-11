@@ -1729,8 +1729,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   Seq(true, false).foreach { enabled =>
-    val prefix =
-      (if (enabled) "With" else "Without") + " canonical native view: "
+    val prefix = (if (enabled)
+                    "With"
+                  else
+                    "Without") + " canonical native view: "
     test(s"$prefix correctly handle CREATE OR REPLACE VIEW") {
       withSQLConf(
         SQLConf.NATIVE_VIEW.key -> "true",

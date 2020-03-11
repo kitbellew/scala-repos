@@ -29,7 +29,11 @@ object SyntaxUsage extends App {
     typed[Option[Int]](x)
     typed[Option[Int]](x)
 
-    o1 >>= (x => if (x == 0) Some(0) else None)
+    o1 >>= (x =>
+      if (x == 0)
+        Some(0)
+      else
+        None)
     o2.join
   }
 
@@ -44,7 +48,11 @@ object SyntaxUsage extends App {
     // Implicit conversions from M[A] => BindV[M, A], etc.
     import syntax.monad._
 
-    o1 >>= (x => if (x == 0) Some(0) else None)
+    o1 >>= (x =>
+      if (x == 0)
+        Some(0)
+      else
+        None)
     o2.join
     l2.join
 
@@ -57,7 +65,11 @@ object SyntaxUsage extends App {
     // Import all type class instances
     import Scalaz._
 
-    o1 >>= (x => if (x == 0) Some(0) else None)
+    o1 >>= (x =>
+      if (x == 0)
+        Some(0)
+      else
+        None)
     o2.join
     l2.join
 

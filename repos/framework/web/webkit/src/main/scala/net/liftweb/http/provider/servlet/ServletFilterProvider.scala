@@ -69,7 +69,8 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
       req: ServletRequest,
       res: ServletResponse,
       chain: FilterChain) = {
-    if (LiftRules.ending) chain.doFilter(req, res)
+    if (LiftRules.ending)
+      chain.doFilter(req, res)
     else {
       LiftRules.reqCnt.incrementAndGet()
       try {
@@ -79,8 +80,8 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
             Empty,
             (req, res) match {
               case (
-                  httpReq: HttpServletRequest,
-                  httpRes: HttpServletResponse) =>
+                    httpReq: HttpServletRequest,
+                    httpRes: HttpServletResponse) =>
                 val httpRequest = new HTTPRequestServlet(httpReq, this)
                 val httpResponse = new HTTPResponseServlet(httpRes)
 

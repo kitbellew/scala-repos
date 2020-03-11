@@ -27,7 +27,8 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
   def filter(pred: A ⇒ Boolean)(
       implicit executor: ExecutionContext): Future[A] =
     flatMap { r ⇒
-      if (pred(r)) future
+      if (pred(r))
+        future
       else
         throw new NoSuchElementException(
           "Future.filter predicate is not satisfied"
@@ -70,7 +71,11 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
       implicit ec: ExecutionContext): Future[B] =
     transformWith(
       FastFuture.successful,
-      t ⇒ if (pf isDefinedAt t) FastFuture.successful(pf(t)) else future)
+      t ⇒
+        if (pf isDefinedAt t)
+          FastFuture.successful(pf(t))
+        else
+          future)
 
   def recoverWith[B >: A](pf: PartialFunction[Throwable, Future[B]])(
       implicit ec: ExecutionContext): Future[B] =
@@ -132,21 +137,25 @@ object FastFuture {
       executor: ExecutionContext): Future[M[T]] =
     in.foldLeft(successful(cbf(in))) { (fr, fa) ⇒
         for (r ← fr.fast;
-             a ← fa.asInstanceOf[Future[T]].fast) yield r += a
+             a ← fa.asInstanceOf[Future[T]].fast)
+          yield r += a
       }
       .fast
       .map(_.result())
 
   def fold[T, R](futures: TraversableOnce[Future[T]])(zero: R)(f: (R, T) ⇒ R)(
       implicit executor: ExecutionContext): Future[R] =
-    if (futures.isEmpty) successful(zero)
-    else sequence(futures).fast.map(_.foldLeft(zero)(f))
+    if (futures.isEmpty)
+      successful(zero)
+    else
+      sequence(futures).fast.map(_.foldLeft(zero)(f))
 
   def reduce[T, R >: T](futures: TraversableOnce[Future[T]])(op: (R, T) ⇒ R)(
       implicit executor: ExecutionContext): Future[R] =
     if (futures.isEmpty)
       failed(new NoSuchElementException("reduce attempted on empty collection"))
-    else sequence(futures).fast.map(_ reduceLeft op)
+    else
+      sequence(futures).fast.map(_ reduceLeft op)
 
   def traverse[A, B, M[_] <: TraversableOnce[_]](in: M[A])(fn: A ⇒ Future[B])(
       implicit
@@ -155,7 +164,8 @@ object FastFuture {
     in.foldLeft(successful(cbf(in))) { (fr, a) ⇒
         val fb = fn(a.asInstanceOf[A])
         for (r ← fr.fast;
-             b ← fb.fast) yield r += b
+             b ← fb.fast)
+          yield r += b
       }
       .fast
       .map(_.result())

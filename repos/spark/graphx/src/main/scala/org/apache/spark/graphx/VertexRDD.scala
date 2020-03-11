@@ -334,8 +334,10 @@ object VertexRDD {
       vPartitioned.zipPartitions(routingTables, preservesPartitioning = true) {
         (vertexIter, routingTableIter) =>
           val routingTable =
-            if (routingTableIter.hasNext) routingTableIter.next()
-            else RoutingTablePartition.empty
+            if (routingTableIter.hasNext)
+              routingTableIter.next()
+            else
+              RoutingTablePartition.empty
           Iterator(
             ShippableVertexPartition(
               vertexIter,
@@ -366,8 +368,10 @@ object VertexRDD {
     val vertexPartitions = routingTables.mapPartitions(
       { routingTableIter =>
         val routingTable =
-          if (routingTableIter.hasNext) routingTableIter.next()
-          else RoutingTablePartition.empty
+          if (routingTableIter.hasNext)
+            routingTableIter.next()
+          else
+            RoutingTablePartition.empty
         Iterator(
           ShippableVertexPartition(Iterator.empty, routingTable, defaultVal))
       },

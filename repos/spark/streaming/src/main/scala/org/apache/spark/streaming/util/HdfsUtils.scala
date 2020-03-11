@@ -54,7 +54,10 @@ private[streaming] object HdfsUtils {
           // If we are really unlucky, the file may be deleted as we're opening the stream.
           // This can happen as clean up is performed by daemon threads that may be left over from
           // previous runs.
-          if (!dfs.isFile(dfsPath)) null else throw e
+          if (!dfs.isFile(dfsPath))
+            null
+          else
+            throw e
       }
     } else {
       null

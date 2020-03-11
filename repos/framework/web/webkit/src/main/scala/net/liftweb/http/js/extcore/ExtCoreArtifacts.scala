@@ -90,7 +90,10 @@ object ExtCoreArtifacts extends JSArtifacts {
 	    // if the node doesn't exist or something else bad happens
 	  }
 	"""
-      if (js.isEmpty) ret else ret + " " + js.toJsCmd
+      if (js.isEmpty)
+        ret
+      else
+        ret + " " + js.toJsCmd
 
     }
   }

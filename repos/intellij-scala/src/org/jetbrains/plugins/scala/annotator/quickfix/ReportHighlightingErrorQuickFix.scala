@@ -17,7 +17,8 @@ object ReportHighlightingErrorQuickFix extends IntentionAction {
   def startInWriteAction: Boolean = false
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
-    if (file.isInstanceOf[ScalaCodeFragment]) return false
+    if (file.isInstanceOf[ScalaCodeFragment])
+      return false
     true
   }
 

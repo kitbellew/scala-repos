@@ -179,7 +179,8 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
         if (ii < used && cp == index(ii)) {
           ii += 1;
           ii - 1
-        } else ii)
+        } else
+          ii)
       assert(ii == used)
       new CSCMatrix[V](
         data,

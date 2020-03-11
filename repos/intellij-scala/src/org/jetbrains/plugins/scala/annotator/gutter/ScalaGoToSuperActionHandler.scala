@@ -91,7 +91,8 @@ private object ScalaGoToSuperActionHandler {
         true
       case _ => false
     }
-    while (element != null && !test(element)) element = element.getParent
+    while (element != null && !test(element))
+      element = element.getParent
 
     def templateSupers(template: ScTemplateDefinition): Array[PsiElement] = {
       def ignored =
@@ -115,12 +116,14 @@ private object ScalaGoToSuperActionHandler {
                .isInstanceOf[ScTypedDefinition] && el != elOrig))
         el = el.getParent
       val elements = d.declaredElements
-      if (elements.isEmpty) return empty
+      if (elements.isEmpty)
+        return empty
       val supers = mutable.HashSet[NavigatablePsiElement](
         (if (el != null && elements.contains(
                el.asInstanceOf[ScTypedDefinition])) {
            ScalaPsiUtil.superValsSignatures(el.asInstanceOf[ScTypedDefinition])
-         } else ScalaPsiUtil.superValsSignatures(elements.head))
+         } else
+           ScalaPsiUtil.superValsSignatures(elements.head))
           .flatMap(_.namedElement match {
             case n: NavigatablePsiElement => Some(n)
             case _                        => None

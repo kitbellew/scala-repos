@@ -103,7 +103,8 @@ private[cluster] class ClusterRemoteWatcher(
     }
 
   override def watchNode(watchee: InternalActorRef) =
-    if (!clusterNodes(watchee.path.address)) super.watchNode(watchee)
+    if (!clusterNodes(watchee.path.address))
+      super.watchNode(watchee)
 
   /**
     * When a cluster node is added this class takes over the

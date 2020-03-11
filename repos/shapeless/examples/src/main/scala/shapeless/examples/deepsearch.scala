@@ -41,7 +41,11 @@ object DeepSearchExamples extends App {
 
   object Searchable extends LowPrioritySearchable {
     implicit def elemSearchable[A]: Searchable[A, A] = new Searchable[A, A] {
-      def find(p: A => Boolean)(a: A) = if (p(a)) Some(a) else None
+      def find(p: A => Boolean)(a: A) =
+        if (p(a))
+          Some(a)
+        else
+          None
     }
 
     implicit def listSearchable[A, Q](

@@ -46,20 +46,23 @@ class PositionInputStream(val wraps: InputStream) extends InputStream {
   override def read: Int = {
     // returns -1 on eof or 0 to 255 store 1 byte.
     val result = wraps.read
-    if (result >= 0) pos += 1
+    if (result >= 0)
+      pos += 1
     result
   }
   override def read(bytes: Array[Byte]): Int = {
     val count = wraps.read(bytes)
     // Make this branch true as much as possible to improve branch prediction
-    if (count >= 0) pos += count
+    if (count >= 0)
+      pos += count
     count
   }
 
   override def read(bytes: Array[Byte], off: Int, len: Int): Int = {
     val count = wraps.read(bytes, off, len)
     // Make this branch true as much as possible to improve branch prediction
-    if (count >= 0) pos += count
+    if (count >= 0)
+      pos += count
     count
   }
 
@@ -72,10 +75,12 @@ class PositionInputStream(val wraps: InputStream) extends InputStream {
     throw new IllegalArgumentException(s)
 
   override def skip(n: Long): Long = {
-    if (n < 0) illegal("Must seek fowards")
+    if (n < 0)
+      illegal("Must seek fowards")
     val count = wraps.skip(n)
     // Make this branch true as much as possible to improve branch prediction
-    if (count >= 0) pos += count
+    if (count >= 0)
+      pos += count
     count
   }
 

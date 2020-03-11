@@ -97,7 +97,10 @@ private[spark] object BaggedPoint {
         while (subsampleIndex < numSubsamples) {
           val x = rng.nextDouble()
           subsampleWeights(subsampleIndex) = {
-            if (x < subsamplingRate) 1.0 else 0.0
+            if (x < subsamplingRate)
+              1.0
+            else
+              0.0
           }
           subsampleIndex += 1
         }

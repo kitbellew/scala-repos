@@ -49,7 +49,10 @@ abstract class RetryPolicy[-A]
     */
   def filter[B <: A](pred: B => Boolean): RetryPolicy[B] =
     RetryPolicy { e =>
-      if (!pred(e)) None else this(e)
+      if (!pred(e))
+        None
+      else
+        this(e)
     }
 
   /**

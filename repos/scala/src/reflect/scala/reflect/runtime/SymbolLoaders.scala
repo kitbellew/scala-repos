@@ -107,7 +107,8 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
     // this override does its best to guard against it
     override def enter[T <: Symbol](sym: T): T = {
       // workaround for SI-7728
-      if (isCompilerUniverse) super.enter(sym)
+      if (isCompilerUniverse)
+        super.enter(sym)
       else {
         val existing = super.lookupEntry(sym.name)
         def eitherIsMethod(sym1: Symbol, sym2: Symbol) =
@@ -121,8 +122,10 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
 
     override def enterIfNew[T <: Symbol](sym: T): T = {
       val existing = super.lookupEntry(sym.name)
-      if (existing == null) enter(sym)
-      else existing.sym.asInstanceOf[T]
+      if (existing == null)
+        enter(sym)
+      else
+        existing.sym.asInstanceOf[T]
     }
 
     // package scopes need to synchronize on the GIL
@@ -137,8 +140,10 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
         null
       else {
         val path =
-          if (pkgClass.isEmptyPackageClass) name.toString
-          else pkgClass.fullName + "." + name
+          if (pkgClass.isEmptyPackageClass)
+            name.toString
+          else
+            pkgClass.fullName + "." + name
         val currentMirror = mirrorThatLoaded(pkgClass)
         currentMirror.tryJavaClass(path) match {
           case Some(cls) =>
@@ -192,5 +197,8 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
   override def newPackageScope(pkgClass: Symbol) = new PackageScope(pkgClass)
 
   override def scopeTransform(owner: Symbol)(op: => Scope): Scope =
-    if (owner.isPackageClass) owner.info.decls else op
+    if (owner.isPackageClass)
+      owner.info.decls
+    else
+      op
 }

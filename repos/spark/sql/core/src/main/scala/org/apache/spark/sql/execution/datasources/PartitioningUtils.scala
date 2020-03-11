@@ -417,7 +417,10 @@ private[sql] object PartitioningUtils {
     val desiredType = {
       val topType = literals.map(_.dataType).maxBy(upCastingOrder.indexOf(_))
       // Falls back to string if all values of this column are null or empty string
-      if (topType == NullType) StringType else topType
+      if (topType == NullType)
+        StringType
+      else
+        topType
     }
 
     literals.map {

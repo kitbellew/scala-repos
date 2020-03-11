@@ -133,7 +133,8 @@ object CachesUtil {
                         if k == key =>
                       val fun = PsiTreeUtil
                         .getContextOfType(e, true, classOf[ScFunction])
-                      if (fun == null || fun.isProbablyRecursive) throw t
+                      if (fun == null || fun.isProbablyRecursive)
+                        throw t
                       else {
                         fun.setProbablyRecursive(true)
                         throw ProbablyRecursionException(ee, data, k, set + fun)
@@ -192,7 +193,8 @@ object CachesUtil {
       val result = RecursionManager.createGuard(id)
       guards.put(id, result)
       result
-    } else guard
+    } else
+      guard
   }
 
   /**
@@ -265,7 +267,8 @@ object CachesUtil {
                       if k == key =>
                     val fun =
                       PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
-                    if (fun == null || fun.isProbablyRecursive) throw t
+                    if (fun == null || fun.isProbablyRecursive)
+                      throw t
                     else {
                       fun.setProbablyRecursive(true)
                       throw ProbablyRecursionException(
@@ -386,7 +389,11 @@ object CachesUtil {
   def incrementModCountForFunsWithModifiedReturn(): Unit = {
     def checkFuns(): Unit = {
       @inline def nextElement =
-        doQueueWithLock(queue => if (queue.nonEmpty) queue.dequeue() else null)
+        doQueueWithLock(queue =>
+          if (queue.nonEmpty)
+            queue.dequeue()
+          else
+            null)
       @inline def checkSize = doQueueWithLock(queue => queue.size > 1)
       @inline def clearQueue() = doQueueWithLock(queue => queue.clear())
 

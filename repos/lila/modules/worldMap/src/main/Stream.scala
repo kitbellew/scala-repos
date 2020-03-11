@@ -65,8 +65,10 @@ object Stream {
   case class Game(id: String, points: List[Point]) {
 
     def withPoint(point: Point) =
-      if (points contains point) this
-      else copy(points = point :: points.take(1))
+      if (points contains point)
+        this
+      else
+        copy(points = point :: points.take(1))
   }
 
   private def truncate(d: Double) = lila.common.Maths.truncateAt(d, 4)

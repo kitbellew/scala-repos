@@ -209,7 +209,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       val pdu = AkkaProtocolMessage.parseFrom(raw.toArray)
       if (pdu.hasPayload)
         Payload(ByteString(pdu.getPayload.asReadOnlyByteBuffer()))
-      else if (pdu.hasInstruction) decodeControlPdu(pdu.getInstruction)
+      else if (pdu.hasInstruction)
+        decodeControlPdu(pdu.getInstruction)
       else
         throw new PduCodecException(
           "Error decoding Akka PDU: Neither message nor control message were contained",
@@ -232,7 +233,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
         Ack(
           SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
           ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
-    } else None
+    } else
+      None
 
     val messageOption = if (ackAndEnvelope.hasEnvelope) {
       val msgPdu = ackAndEnvelope.getEnvelope
@@ -249,12 +251,16 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
                 provider.resolveActorRefWithLocalAddress(
                   msgPdu.getSender.getPath,
                   localAddress))
-            else None,
+            else
+              None,
           seqOption =
-            if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq))
-            else None
+            if (msgPdu.hasSeq)
+              Some(SeqNo(msgPdu.getSeq))
+            else
+              None
         ))
-    } else None
+    } else
+      None
 
     (ackOption, messageOption)
   }
@@ -265,7 +271,10 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       case CommandType.ASSOCIATE if controlPdu.hasHandshakeInfo ⇒
         val handshakeInfo = controlPdu.getHandshakeInfo
         val cookie =
-          if (handshakeInfo.hasCookie) Some(handshakeInfo.getCookie) else None
+          if (handshakeInfo.hasCookie)
+            Some(handshakeInfo.getCookie)
+          else
+            None
         Associate(
           HandshakeInfo(
             decodeAddress(handshakeInfo.getOrigin),
@@ -313,8 +322,10 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       ref: ActorRef): ActorRefData = {
     ActorRefData.newBuilder
       .setPath(
-        if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
-        else ref.path.toSerializationFormatWithAddress(defaultAddress))
+        if (ref.path.address.host.isDefined)
+          ref.path.toSerializationFormat
+        else
+          ref.path.toSerializationFormatWithAddress(defaultAddress))
       .build()
   }
 

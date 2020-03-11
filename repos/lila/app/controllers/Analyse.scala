@@ -40,7 +40,8 @@ object Analyse extends LilaController {
   }
 
   def replay(pov: Pov, userTv: Option[lila.user.User])(implicit ctx: Context) =
-    if (HTTPRequest isBot ctx.req) replayBot(pov)
+    if (HTTPRequest isBot ctx.req)
+      replayBot(pov)
     else
       GameRepo initialFen pov.game.id flatMap { initialFen =>
         RedirectAtFen(pov, initialFen) {

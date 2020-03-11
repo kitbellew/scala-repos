@@ -49,7 +49,10 @@ final class OptionalThrowable(private val exception: Throwable)
   }
 
   override def hashCode(): Int =
-    if (exception == null) 0 else exception.hashCode()
+    if (exception == null)
+      0
+    else
+      exception.hashCode()
 
   override def toString(): String = {
     if (exception == null)

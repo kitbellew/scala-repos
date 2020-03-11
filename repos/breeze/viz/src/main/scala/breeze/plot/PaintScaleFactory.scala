@@ -25,8 +25,10 @@ case class GradientPaintScaleFactory[T](
     var max = items.head
     for (item <- items) {
       if (!view(item).isNaN) {
-        if (item < min) min = item
-        if (item > max) max = item
+        if (item < min)
+          min = item
+        if (item > max)
+          max = item
       }
     }
     GradientPaintScale(min, max, gradient)

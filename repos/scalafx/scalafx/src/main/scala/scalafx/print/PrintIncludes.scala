@@ -80,7 +80,10 @@ trait PrintIncludes {
     * @return $SFX $JS
     */
   implicit def jfxJobSettings2sfx(js: jfxp.JobSettings): JobSettings =
-    if (js != null) new JobSettings(js) else null
+    if (js != null)
+      new JobSettings(js)
+    else
+      null
 
   /**
     * $START$PL$.html $PL$END
@@ -89,7 +92,10 @@ trait PrintIncludes {
     * @return $SFX $PL
     */
   implicit def jfxPageLayout2sfx(pl: jfxp.PageLayout): PageLayout =
-    if (pl != null) new PageLayout(pl) else null
+    if (pl != null)
+      new PageLayout(pl)
+    else
+      null
 
   /**
     * $START$PO.html $PO$END
@@ -108,7 +114,10 @@ trait PrintIncludes {
     * @return $SFX $PR
     */
   implicit def jfxPageRange2sfx(pr: jfxp.PageRange): PageRange =
-    if (pr != null) new PageRange(pr) else null
+    if (pr != null)
+      new PageRange(pr)
+    else
+      null
 
   /**
     * $START$PP.html $PP$END
@@ -117,7 +126,10 @@ trait PrintIncludes {
     * @return $SFX $PP
     */
   implicit def jfxPaper2sfx(pp: jfxp.Paper): Paper =
-    if (pp != null) new Paper(pp) else null
+    if (pp != null)
+      new Paper(pp)
+    else
+      null
 
   /**
     * $START$PS.html $PS$END
@@ -126,7 +138,10 @@ trait PrintIncludes {
     * @return $SFX $PP
     */
   implicit def jfxPaperSource2sfx(ps: jfxp.PaperSource): PaperSource =
-    if (ps != null) new PaperSource(ps) else null
+    if (ps != null)
+      new PaperSource(ps)
+    else
+      null
 
   /**
     * $START$PC.html $PC$END
@@ -145,7 +160,10 @@ trait PrintIncludes {
     */
   implicit def jfxPrinterAttributes2sfx(
       pa: jfxp.PrinterAttributes): PrinterAttributes =
-    if (pa != null) new PrinterAttributes(pa) else null
+    if (pa != null)
+      new PrinterAttributes(pa)
+    else
+      null
 
   /**
     * $START$PRT.html $PRT$END
@@ -154,7 +172,10 @@ trait PrintIncludes {
     * @return $SFX $PRT
     */
   implicit def jfxPrinter2sfx(p: jfxp.Printer): Printer =
-    if (p != null) new Printer(p) else null
+    if (p != null)
+      new Printer(p)
+    else
+      null
 
   /**
     * $START$MT.html $MT$END
@@ -173,7 +194,10 @@ trait PrintIncludes {
     * @return $SFX $PJ
     */
   implicit def jfxPrintJob2sfx(pj: jfxp.PrinterJob): PrinterJob =
-    if (pj != null) new PrinterJob(pj) else null
+    if (pj != null)
+      new PrinterJob(pj)
+    else
+      null
 
   /**
     * $START$JS.html $JS$END
@@ -202,7 +226,10 @@ trait PrintIncludes {
     */
   implicit def jfxPrintResolution2sfx(
       pr: jfxp.PrintResolution): PrintResolution =
-    if (pr != null) new PrintResolution(pr) else null
+    if (pr != null)
+      new PrintResolution(pr)
+    else
+      null
 
   /**
     * $START$PS.html $PS$END

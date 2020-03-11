@@ -39,7 +39,10 @@ import scalafx.scene.Node.sfxNode2jfx
 
 object StackPane {
   implicit def sfxStackPane2jfx(v: StackPane): jfxsl.StackPane =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Removes all hbox constraints from the child node.

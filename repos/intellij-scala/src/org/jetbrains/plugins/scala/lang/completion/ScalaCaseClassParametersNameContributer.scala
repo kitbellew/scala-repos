@@ -35,11 +35,13 @@ class ScalaCaseClassParametersNameContributer
         val position = positionFromParameters(parameters)
         val scope =
           PsiTreeUtil.getContextOfType(position, classOf[ScCaseClause])
-        if (scope == null) return
+        if (scope == null)
+          return
 
         val constructorPattern =
           PsiTreeUtil.getContextOfType(position, classOf[ScConstructorPattern])
-        if (constructorPattern == null) return
+        if (constructorPattern == null)
+          return
 
         val classRef = constructorPattern.asInstanceOf[ScConstructorPattern].ref
         val caseClassParams = classRef.resolve() match {
@@ -52,7 +54,8 @@ class ScalaCaseClassParametersNameContributer
           case _ => return
         }
 
-        if (caseClassParams.isEmpty) return
+        if (caseClassParams.isEmpty)
+          return
 
         val parameterWithPosition =
           getCorrespondedParameterForPosition(position, caseClassParams)
@@ -106,8 +109,10 @@ class ScalaCaseClassParametersNameContributer
                   case param: ScParameter
                       if param.name == s.name /*not equals when name computed by type*/ =>
                     val positionInClassParameters = classParams.indexOf(param)
-                    if (currentPosition == positionInClassParameters) -1
-                    else math.abs(currentPosition - positionInClassParameters)
+                    if (currentPosition == positionInClassParameters)
+                      -1
+                    else
+                      math.abs(currentPosition - positionInClassParameters)
                   case _ => 0
                 }
               case _ => null
@@ -132,7 +137,8 @@ class ScalaCaseClassParametersNameContributer
           position: PsiElement,
           classParams: Seq[ScParameter]): ParameterWithPosition = {
         val me = PsiTreeUtil.getContextOfType(position, classOf[ScPattern])
-        if (me == null) return ParameterWithPosition(None, -1)
+        if (me == null)
+          return ParameterWithPosition(None, -1)
 
         val patterns = Option(
           PsiTreeUtil
@@ -149,7 +155,8 @@ class ScalaCaseClassParametersNameContributer
         val coresponedParameter =
           if ((myPosition >= 0) && (myPosition != classParams.length))
             Some(classParams.apply(myPosition))
-          else None
+          else
+            None
 
         ParameterWithPosition(coresponedParameter, myPosition)
       }

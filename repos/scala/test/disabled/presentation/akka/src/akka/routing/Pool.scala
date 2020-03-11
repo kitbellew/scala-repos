@@ -89,11 +89,12 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
     val newDelegates = requestedCapacity match {
       case qty if qty > 0 =>
         _delegates ++ {
-          for (i ← 0 until requestedCapacity) yield {
-            val delegate = instance()
-            self startLink delegate
-            delegate
-          }
+          for (i ← 0 until requestedCapacity)
+            yield {
+              val delegate = instance()
+              self startLink delegate
+              delegate
+            }
         }
       case qty if qty < 0 =>
         _delegates.splitAt(_delegates.length + requestedCapacity) match {
@@ -125,8 +126,10 @@ trait SmallestMailboxSelector {
   def select(delegates: Seq[ActorRef]): Tuple2[Iterator[ActorRef], Int] = {
     var set: Seq[ActorRef] = Nil
     var take =
-      if (partialFill) math.min(selectionCount, delegates.length)
-      else selectionCount
+      if (partialFill)
+        math.min(selectionCount, delegates.length)
+      else
+        selectionCount
 
     while (take > 0) {
       set = delegates
@@ -151,14 +154,17 @@ trait RoundRobinSelector {
   def select(delegates: Seq[ActorRef]): Tuple2[Iterator[ActorRef], Int] = {
     val length = delegates.length
     val take =
-      if (partialFill) math.min(selectionCount, length)
-      else selectionCount
+      if (partialFill)
+        math.min(selectionCount, length)
+      else
+        selectionCount
 
     val set =
-      for (i ← 0 until take) yield {
-        _last = (_last + 1) % length
-        delegates(_last)
-      }
+      for (i ← 0 until take)
+        yield {
+          _last = (_last + 1) % length
+          delegates(_last)
+        }
 
     (set.iterator, set.size)
   }
@@ -188,9 +194,12 @@ trait BoundedCapacitor {
     val delta = _eval(delegates)
     val proposed = current + delta
 
-    if (proposed < lowerBound) delta + (lowerBound - proposed)
-    else if (proposed > upperBound) delta - (proposed - upperBound)
-    else delta
+    if (proposed < lowerBound)
+      delta + (lowerBound - proposed)
+    else if (proposed > upperBound)
+      delta - (proposed - upperBound)
+    else
+      delta
   }
 
   protected def _eval(delegates: Seq[ActorRef]): Int
@@ -266,7 +275,10 @@ trait BasicRampup {
   def rampupRate: Double
 
   def rampup(pressure: Int, capacity: Int): Int =
-    if (pressure < capacity) 0 else math.ceil(rampupRate * capacity) toInt
+    if (pressure < capacity)
+      0
+    else
+      math.ceil(rampupRate * capacity) toInt
 }
 
 /**
@@ -279,7 +291,8 @@ trait BasicBackoff {
   def backoff(pressure: Int, capacity: Int): Int =
     if (capacity > 0 && pressure / capacity < backoffThreshold)
       math.ceil(-1.0 * backoffRate * capacity) toInt
-    else 0
+    else
+      0
 }
 
 /**
@@ -302,7 +315,8 @@ trait RunningMeanBackoff {
     if (capacity > 0 && pressure / capacity < backoffThreshold
         && _capacity > 0 && _pressure / _capacity < backoffThreshold) //Why does the entire clause need to be true?
       math.floor(-1.0 * backoffRate * (capacity - pressure)).toInt
-    else 0
+    else
+      0
   }
 
   def backoffReset {

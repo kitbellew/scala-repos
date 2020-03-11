@@ -51,7 +51,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
           case typedDeclaration: ScTypedDeclaration =>
             val result =
               typedDeclaration.declaredElements.headOption.map(_.name)
-            if (result.isDefined) textForPosition.put(position, result.get)
+            if (result.isDefined)
+              textForPosition.put(position, result.get)
             result
           case _ => None
         }
@@ -81,7 +82,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
           case _ => None
         }
 
-        if (result.isDefined) textForPosition.put(position, result.get)
+        if (result.isDefined)
+          textForPosition.put(position, result.get)
         result
       }
 
@@ -106,14 +108,18 @@ class ScalaByNameWeigher extends CompletionWeigher {
           MAX_DISTANCE,
           Math.ceil(Math.max(text.length, element.getName.length) / 2))
 
-        if (testEq(element.getName, text)) Some(0)
+        if (testEq(element.getName, text))
+          Some(0)
         // prevent computing distance on long non including strings
-        else if (Math.abs(text.length - element.getName.length) > maxDist) None
+        else if (Math.abs(text.length - element.getName.length) > maxDist)
+          None
         else {
           val distance =
             EditDistance.optimalAlignment(element.getName, text, false)
-          if (distance > maxDist) None
-          else Some(-distance)
+          if (distance > maxDist)
+            None
+          else
+            Some(-distance)
         }
       }
 
@@ -144,6 +150,7 @@ class ScalaByNameWeigher extends CompletionWeigher {
           }
         case _ => null
       }
-    } else null
+    } else
+      null
   }
 }

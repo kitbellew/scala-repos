@@ -42,23 +42,32 @@ trait PartialOrder[@sp A] extends Any with Eq[A] {
     */
   def tryCompare(x: A, y: A): Option[Int] = {
     val c = partialCompare(x, y)
-    if (c.isNaN) None else Some(c.signum)
+    if (c.isNaN)
+      None
+    else
+      Some(c.signum)
   }
 
   /** Returns Some(x) if x <= y, Some(y) if x > y, otherwise None. */
   def pmin(x: A, y: A): Option[A] = {
     val c = partialCompare(x, y)
-    if (c <= 0) Some(x)
-    else if (c > 0) Some(y)
-    else None
+    if (c <= 0)
+      Some(x)
+    else if (c > 0)
+      Some(y)
+    else
+      None
   }
 
   /** Returns Some(x) if x >= y, Some(y) if x < y, otherwise None. */
   def pmax(x: A, y: A): Option[A] = {
     val c = partialCompare(x, y)
-    if (c >= 0) Some(x)
-    else if (c < 0) Some(y)
-    else None
+    if (c >= 0)
+      Some(x)
+    else if (c < 0)
+      Some(y)
+    else
+      None
   }
 
   // The following should be overriden in priority for performance

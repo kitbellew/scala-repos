@@ -77,15 +77,18 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     if (row >= rows || col >= cols || row < 0 || col < 0)
       throw new IndexOutOfBoundsException()
     val ind = locate(row, col)
-    if (ind < 0) zero
-    else data(ind)
+    if (ind < 0)
+      zero
+    else
+      data(ind)
   }
 
   def update(row: Int, col: Int, v: V) {
     if (row >= rows || col >= cols || row < 0 || col < 0)
       throw new IndexOutOfBoundsException()
     val ind = locate(row, col)
-    if (ind >= 0) data(ind) = v
+    if (ind >= 0)
+      data(ind) = v
     else if (v != zero) {
       val insertPos = ~ind
       used += 1
@@ -308,16 +311,23 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
         while (xIter.hasNext && yIter.hasNext) {
           var xkeyval = xIter.next()
           var ykeyval = yIter.next()
-          while (xkeyval._2 == 0 && xIter.hasNext) xkeyval = xIter.next()
-          while (ykeyval._2 == 0 && yIter.hasNext) ykeyval = yIter.next()
-          if (xkeyval != ykeyval) return false
+          while (xkeyval._2 == 0 && xIter.hasNext)
+            xkeyval = xIter.next()
+          while (ykeyval._2 == 0 && yIter.hasNext)
+            ykeyval = yIter.next()
+          if (xkeyval != ykeyval)
+            return false
         }
         if (xIter.hasNext && !yIter.hasNext) {
-          while (xIter.hasNext) if (xIter.next()._2 != 0) return false
+          while (xIter.hasNext)
+            if (xIter.next()._2 != 0)
+              return false
         }
 
         if (!xIter.hasNext && yIter.hasNext) {
-          while (yIter.hasNext) if (yIter.next()._2 != 0) return false
+          while (yIter.hasNext)
+            if (yIter.next()._2 != 0)
+              return false
         }
       }
       return true
@@ -439,7 +449,8 @@ object CSCMatrix
         var zeroSeen = false
         def ff(v: V) = {
           val r = fn(v);
-          if (r == z) zeroSeen = true;
+          if (r == z)
+            zeroSeen = true;
           r
         }
         val newData = from.data.map(ff)
@@ -450,7 +461,8 @@ object CSCMatrix
           from.colPtrs.clone(),
           from.activeSize,
           from.rowIndices.clone)
-        if (zeroSeen) r.compact()
+        if (zeroSeen)
+          r.compact()
         r
       }
     }
@@ -587,11 +599,15 @@ object CSCMatrix
       val nnz = indices.length
 
       val _rows =
-        if (rows >= 0) rows
-        else indices.map(i => (i & 0xFFFFFFFFL).toInt).foldLeft(0)(_ max _) + 1
+        if (rows >= 0)
+          rows
+        else
+          indices.map(i => (i & 0xFFFFFFFFL).toInt).foldLeft(0)(_ max _) + 1
       val _cols =
-        if (cols >= 0) cols
-        else indices.map(i => (i >> 32).toInt).foldLeft(0)(_ max _) + 1
+        if (cols >= 0)
+          cols
+        else
+          indices.map(i => (i >> 32).toInt).foldLeft(0)(_ max _) + 1
 
       val outCols = new Array[Int](_cols + 1)
 

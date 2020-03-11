@@ -36,7 +36,10 @@ import scalafx.scene.Node
 
 object CheckMenuItem {
   implicit def sfxCheckMenuItem2jfx(m: CheckMenuItem): jfxsc.CheckMenuItem =
-    if (m != null) m.delegate else null
+    if (m != null)
+      m.delegate
+    else
+      null
 }
 
 /** A MenuItem that can be toggled between selected and unselected states. */

@@ -60,10 +60,12 @@ abstract class Attachments { self =>
     type Pos = self.Pos
   } = {
     val newAll = all filterNot matchesTag[T]
-    if (newAll.isEmpty) pos.asInstanceOf[Attachments {
-      type Pos = self.Pos
-    }]
-    else new NonemptyAttachments[Pos](this.pos, newAll)
+    if (newAll.isEmpty)
+      pos.asInstanceOf[Attachments {
+        type Pos = self.Pos
+      }]
+    else
+      new NonemptyAttachments[Pos](this.pos, newAll)
   }
 
   def isEmpty: Boolean = true

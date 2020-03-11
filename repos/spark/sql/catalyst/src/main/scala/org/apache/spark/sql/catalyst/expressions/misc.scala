@@ -284,14 +284,19 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
     def hashLong(l: Long): Int = Murmur3_x86_32.hashLong(l, seed)
 
     value match {
-      case null       => seed
-      case b: Boolean => hashInt(if (b) 1 else 0)
-      case b: Byte    => hashInt(b)
-      case s: Short   => hashInt(s)
-      case i: Int     => hashInt(i)
-      case l: Long    => hashLong(l)
-      case f: Float   => hashInt(java.lang.Float.floatToIntBits(f))
-      case d: Double  => hashLong(java.lang.Double.doubleToLongBits(d))
+      case null => seed
+      case b: Boolean =>
+        hashInt(
+          if (b)
+            1
+          else
+            0)
+      case b: Byte   => hashInt(b)
+      case s: Short  => hashInt(s)
+      case i: Int    => hashInt(i)
+      case l: Long   => hashLong(l)
+      case f: Float  => hashInt(java.lang.Float.floatToIntBits(f))
+      case d: Double => hashLong(java.lang.Double.doubleToLongBits(d))
       case d: Decimal =>
         val precision = dataType.asInstanceOf[DecimalType].precision
         if (precision <= Decimal.MAX_LONG_DIGITS) {

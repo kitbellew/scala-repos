@@ -17,7 +17,8 @@ class ScalaRunConfigurationRefactoringListenerProvider
     new PsiClassWrapper(td, td.qualifiedName, td.name)
   private def decorate(
       listener: RefactoringElementListener): RefactoringElementListener = {
-    if (listener == null) return null
+    if (listener == null)
+      return null
 
     new RefactoringElementListener {
       def elementMoved(newElement: PsiElement) = newElement match {

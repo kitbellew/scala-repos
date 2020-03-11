@@ -44,7 +44,10 @@ object PseudoClass {
     * @return JavaFX PseudoClass
     */
   implicit def sfxPseudoClass2jfx(v: PseudoClass): jfxcss.PseudoClass =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * There is only one PseudoClass instance for a given pseudoClass.

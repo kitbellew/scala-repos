@@ -29,7 +29,13 @@ class ParallelRangeCheck(val tasksupport: TaskSupport)
   override def instances(vals: Seq[Gen[Int]]): Gen[Seq[Int]] = sized { start =>
     sized { end =>
       sized { step =>
-        new Range(start, end, if (step != 0) step else 1)
+        new Range(
+          start,
+          end,
+          if (step != 0)
+            step
+          else
+            1)
       }
     }
   }
@@ -42,7 +48,8 @@ class ParallelRangeCheck(val tasksupport: TaskSupport)
     case _ =>
       val pa = new parallel.mutable.ParArray[Int](a.length)
       pa.tasksupport = tasksupport
-      for (i <- 0 until a.length) pa(i) = a(i)
+      for (i <- 0 until a.length)
+        pa(i) = a(i)
       pa
   }
 

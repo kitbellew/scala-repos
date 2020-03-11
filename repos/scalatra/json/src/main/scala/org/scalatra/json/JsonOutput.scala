@@ -68,13 +68,15 @@ trait JsonOutput[T] extends ApiFormats with JsonMethods[T] {
             contentType = formats("js")
             // Status must always be 200 on JSONP, since it's loaded in a <script> tag.
             status = 200
-            if (rosettaFlashGuard) writer.write("/**/")
+            if (rosettaFlashGuard)
+              writer.write("/**/")
             writer.write(
               "%s(%s);"
                 .format(some, compact(render(transformResponseBody(jv)))))
           case _ =>
             contentType = formats("json")
-            if (jsonVulnerabilityGuard) writer.write(VulnerabilityPrelude)
+            if (jsonVulnerabilityGuard)
+              writer.write(VulnerabilityPrelude)
             writeJson(transformResponseBody(jv), writer)
             ()
         }

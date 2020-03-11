@@ -32,7 +32,8 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
   def serialize(stub: ScTemplateParentsStub, dataStream: StubOutputStream) {
     val seq = stub.getTemplateParentsTypesTexts
     dataStream.writeInt(seq.length)
-    for (s <- seq) dataStream.writeName(s)
+    for (s <- seq)
+      dataStream.writeName(s)
     stub.getConstructor match {
       case Some(str) =>
         dataStream.writeBoolean(true)
@@ -62,7 +63,8 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
     val length = dataStream.readInt
     if (length >= 0) {
       val res = new ArrayBuffer[StringRef]
-      for (i <- 0 until length) res += dataStream.readName
+      for (i <- 0 until length)
+        res += dataStream.readName
       val constr = dataStream.readBoolean() match {
         case true  => Some(dataStream.readName())
         case false => None

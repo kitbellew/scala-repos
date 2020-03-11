@@ -24,8 +24,10 @@ object Assert {
     assertFalse(null, condition)
 
   def fail(message: String): Unit =
-    if (message eq null) throw new AssertionError()
-    else throw new AssertionError(message)
+    if (message eq null)
+      throw new AssertionError()
+    else
+      throw new AssertionError(message)
 
   def fail(): Unit =
     fail(null)
@@ -34,7 +36,11 @@ object Assert {
     if (!equalsRegardingNull(expected, actual)) {
       (expected, actual) match {
         case (expectedString: String, actualString: String) =>
-          val cleanMsg: String = if (message == null) "" else message
+          val cleanMsg: String =
+            if (message == null)
+              ""
+            else
+              message
           throw new ComparisonFailure(cleanMsg, expectedString, actualString)
 
         case _ =>
@@ -45,8 +51,10 @@ object Assert {
 
   @inline
   private def equalsRegardingNull(expected: Any, actual: Any): Boolean =
-    if (expected == null) actual == null
-    else isEquals(expected, actual)
+    if (expected == null)
+      actual == null
+    else
+      isEquals(expected, actual)
 
   @inline
   private def isEquals(expected: Any, actual: Any): Boolean =
@@ -68,8 +76,10 @@ object Assert {
 
   private def failEquals(message: String, actual: Any): Unit = {
     val checkedMessage = {
-      if (message != null) message
-      else "Values should be different"
+      if (message != null)
+        message
+      else
+        "Values should be different"
     }
     fail(s"$checkedMessage. Actual: $actual")
   }
@@ -275,7 +285,11 @@ object Assert {
     assertNull(null, obj)
 
   private def failNotNull(message: String, actual: AnyRef): Unit = {
-    val formatted = if (message != null) message + " " else ""
+    val formatted =
+      if (message != null)
+        message + " "
+      else
+        ""
     fail(s"${formatted}expected null, but was:<$actual}>")
   }
 
@@ -323,7 +337,11 @@ object Assert {
       message: String,
       expected: Any,
       actual: Any): String = {
-    val formatted = if (message != null && message != "") message + " " else ""
+    val formatted =
+      if (message != null && message != "")
+        message + " "
+      else
+        ""
     val expectedString = String.valueOf(expected)
     val actualString = String.valueOf(actual)
     if (expectedString == actualString) {
@@ -336,7 +354,11 @@ object Assert {
   }
 
   private def formatClassAndValue(value: Any, valueString: String): String = {
-    val className = if (value == null) "null" else value.getClass.getName
+    val className =
+      if (value == null)
+        "null"
+      else
+        value.getClass.getName
     s"$className<$valueString>"
   }
 

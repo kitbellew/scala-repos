@@ -68,7 +68,10 @@ private[columnar] class BasicColumnBuilder[JvmType](
       useCompression: Boolean = false): Unit = {
 
     val size =
-      if (initialSize == 0) DEFAULT_INITIAL_BUFFER_SIZE else initialSize
+      if (initialSize == 0)
+        DEFAULT_INITIAL_BUFFER_SIZE
+      else
+        initialSize
     this.columnName = columnName
 
     buffer = ByteBuffer.allocate(size * columnType.defaultSize)

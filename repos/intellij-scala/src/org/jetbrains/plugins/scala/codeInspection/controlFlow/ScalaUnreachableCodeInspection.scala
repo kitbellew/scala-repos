@@ -48,7 +48,8 @@ class ScalaUnreachableCodeInspection
 
   def getElementsRange(start: PsiElement, end: PsiElement): Seq[PsiElement] = {
     val commonParent = PsiTreeUtil.findCommonParent(start, end)
-    if (start == commonParent || end == commonParent) return Seq(commonParent)
+    if (start == commonParent || end == commonParent)
+      return Seq(commonParent)
 
     val startRange = start.getTextRange
     val endRange = end.getTextRange
@@ -61,7 +62,8 @@ class ScalaUnreachableCodeInspection
 
   private def fragments(
       instructions: Iterable[Instruction]): Iterable[Seq[PsiElement]] = {
-    if (instructions.isEmpty) return Seq.empty
+    if (instructions.isEmpty)
+      return Seq.empty
 
     @tailrec
     def getParentStmt(element: PsiElement): Option[PsiElement] = {
@@ -86,7 +88,8 @@ class ScalaUnreachableCodeInspection
   private def registerProblem(
       fragment: Seq[PsiElement],
       holder: ProblemsHolder) {
-    if (fragment.isEmpty) return
+    if (fragment.isEmpty)
+      return
 
     val descriptor = {
       val message = "Unreachable code"
@@ -120,13 +123,15 @@ class RemoveFragmentQuickFix(fragment: Seq[PsiElement])
       fragment.last) {
   override def doApplyFix(project: Project): Unit = {
     val startElement: PsiElement = getStartElement
-    if (startElement == null) return
+    if (startElement == null)
+      return
 
     val parent = startElement.getParent
     val endElem = getEndElement
     if (endElem != null)
       parent.deleteChildRange(startElement, getEndElement)
-    else startElement.delete()
+    else
+      startElement.delete()
   }
 }
 

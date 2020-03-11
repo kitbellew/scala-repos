@@ -10,7 +10,10 @@ class StringBuilder(private var content: String)
 
   def append(s: String): StringBuilder = {
     content += {
-      if (s == null) "null" else s
+      if (s == null)
+        "null"
+      else
+        s
     }
     this
   }
@@ -38,14 +41,18 @@ class StringBuilder(private var content: String)
   def append(d: scala.Double): StringBuilder = append(d.toString())
 
   def append(obj: AnyRef): StringBuilder = {
-    if (obj == null) append(null: String)
-    else append(obj.toString())
+    if (obj == null)
+      append(null: String)
+    else
+      append(obj.toString())
   }
 
   def append(csq: CharSequence): StringBuilder = append(csq: AnyRef)
   def append(csq: CharSequence, start: Int, end: Int): StringBuilder = {
-    if (csq == null) append("null", start, end)
-    else append(csq.subSequence(start, end).toString())
+    if (csq == null)
+      append("null", start, end)
+    else
+      append(csq.subSequence(start, end).toString())
   }
 
   def appendCodePoint(codePoint: Int): StringBuilder =
@@ -121,7 +128,11 @@ class StringBuilder(private var content: String)
         s"Illegal to replace substring at [$start - $end] in string of length $length")
     }
 
-    val realEnd = if (end > length) length else end // java api convention
+    val realEnd =
+      if (end > length)
+        length
+      else
+        end // java api convention
     content = content.substring(0, start) + str + content.substring(realEnd)
     this
   }

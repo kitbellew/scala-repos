@@ -88,38 +88,52 @@ private[http] class RequestContextImpl(
     FastFuture.failed(error)
 
   override def withRequest(request: HttpRequest): RequestContext =
-    if (request != this.request) copy(request = request) else this
+    if (request != this.request)
+      copy(request = request)
+    else
+      this
 
   override def withExecutionContext(
       executionContext: ExecutionContextExecutor): RequestContext =
     if (executionContext != this.executionContext)
       copy(executionContext = executionContext)
-    else this
+    else
+      this
 
   override def withMaterializer(materializer: Materializer): RequestContext =
-    if (materializer != this.materializer) copy(materializer = materializer)
-    else this
+    if (materializer != this.materializer)
+      copy(materializer = materializer)
+    else
+      this
 
   override def withLog(log: LoggingAdapter): RequestContext =
-    if (log != this.log) copy(log = log) else this
+    if (log != this.log)
+      copy(log = log)
+    else
+      this
 
   override def withRoutingSettings(
       routingSettings: RoutingSettings): RequestContext =
     if (routingSettings != this.settings)
       copy(routingSettings = routingSettings)
-    else this
+    else
+      this
 
   override def withParserSettings(
       parserSettings: ParserSettings): RequestContext =
     if (parserSettings != this.parserSettings)
       copy(parserSettings = parserSettings)
-    else this
+    else
+      this
 
   override def mapRequest(f: HttpRequest ⇒ HttpRequest): RequestContext =
     copy(request = f(request))
 
   override def withUnmatchedPath(path: Uri.Path): RequestContext =
-    if (path != unmatchedPath) copy(unmatchedPath = path) else this
+    if (path != unmatchedPath)
+      copy(unmatchedPath = path)
+    else
+      this
 
   override def mapUnmatchedPath(f: Uri.Path ⇒ Uri.Path): RequestContext =
     copy(unmatchedPath = f(unmatchedPath))
@@ -131,8 +145,13 @@ private[http] class RequestContextImpl(
           case `accept` ⇒
             val acceptAll =
               if (ranges.exists(_.isWildcard))
-                ranges.map(r ⇒ if (r.isWildcard) MediaRanges.`*/*;q=MIN` else r)
-              else ranges :+ MediaRanges.`*/*;q=MIN`
+                ranges.map(r ⇒
+                  if (r.isWildcard)
+                    MediaRanges.`*/*;q=MIN`
+                  else
+                    r)
+              else
+                ranges :+ MediaRanges.`*/*;q=MIN`
             accept.copy(mediaRanges = acceptAll)
           case x ⇒ x
         }))

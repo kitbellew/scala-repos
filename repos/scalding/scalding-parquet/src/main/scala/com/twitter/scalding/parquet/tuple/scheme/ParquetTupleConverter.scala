@@ -353,8 +353,10 @@ abstract class MapKeyValueConverter[K, V](parent: CollectionConverter[(K, V)])
     }
 
     override def getConverter(i: Int): Converter = {
-      if (i == 0) keyConverter
-      else if (i == 1) valueConverter
+      if (i == 0)
+        keyConverter
+      else if (i == 1)
+        valueConverter
       else
         throw new IllegalArgumentException(
           "key_value has only the key (0) and value (1) fields expected: " + i)

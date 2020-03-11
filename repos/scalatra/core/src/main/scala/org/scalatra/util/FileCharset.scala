@@ -54,7 +54,8 @@ object FileCharset {
     try {
       var idx = 0
       while (idx < barr.length && idx < CheckByteLength && !detector.isDone) {
-        if (idx > 0) detector.handleData(barr, 0, idx)
+        if (idx > 0)
+          detector.handleData(barr, 0, idx)
         idx += 1
       }
       detector.dataEnd()

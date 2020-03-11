@@ -19,7 +19,8 @@ class ScalaTestFinder extends JavaTestFinder {
   override def findTestsForClass(
       element: PsiElement): java.util.Collection[PsiElement] = {
     val klass: PsiClass = findSourceElement(element)
-    if (klass == null) return Collections.emptySet()
+    if (klass == null)
+      return Collections.emptySet()
     val klassName = klass.getName.replace("$", "\\$")
     val pattern =
       Pattern.compile(".*" + klassName + ".*", Pattern.CASE_INSENSITIVE)

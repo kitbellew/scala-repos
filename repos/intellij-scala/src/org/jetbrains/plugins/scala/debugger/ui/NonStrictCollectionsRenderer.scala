@@ -117,7 +117,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         actualRefType: ReferenceType,
         methodName: String): Value = {
       val suitableMethods = actualRefType methodsByName methodName
-      if (suitableMethods.size() == 0) return null
+      if (suitableMethods.size() == 0)
+        return null
 
       try {
         evaluationContext.getDebugProcess.invokeMethod(
@@ -239,7 +240,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         stringBuilder append (if (tpe != null)
                                 ScalaCollectionRenderer.transformName(
                                   tpe.name) + sizeString
-                              else "{...}")
+                              else
+                                "{...}")
       case _ => stringBuilder append "{...}"
     }
 

@@ -30,8 +30,14 @@ object FormData {
   val Empty = FormData(Uri.Query.Empty)
 
   def apply(fields: Map[String, String]): FormData =
-    if (fields.isEmpty) Empty else FormData(Uri.Query(fields))
+    if (fields.isEmpty)
+      Empty
+    else
+      FormData(Uri.Query(fields))
 
   def apply(fields: (String, String)*): FormData =
-    if (fields.isEmpty) Empty else FormData(Uri.Query(fields: _*))
+    if (fields.isEmpty)
+      Empty
+    else
+      FormData(Uri.Query(fields: _*))
 }

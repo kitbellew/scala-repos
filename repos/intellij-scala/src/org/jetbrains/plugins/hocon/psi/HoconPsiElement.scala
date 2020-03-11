@@ -259,7 +259,8 @@ final class HValuedField(ast: ASTNode)
   def endingField = this
 
   def subScopes =
-    if (isArrayAppend) Iterator.empty
+    if (isArrayAppend)
+      Iterator.empty
     else
       value
         .collect {
@@ -418,7 +419,11 @@ sealed trait HValue extends HoconPsiElement with HInnerElement {
     }
 
   def prefixingField: Option[HValuedField] = forParent(
-    vf => if (vf.isArrayAppend) None else Some(vf),
+    vf =>
+      if (vf.isArrayAppend)
+        None
+      else
+        Some(vf),
     arr => None,
     concat => concat.prefixingField
   )
@@ -489,9 +494,19 @@ sealed trait HString
 
   def unquote = stringType match {
     case HoconTokenType.QuotedString =>
-      getText.substring(1, getText.length - (if (isClosed) 1 else 0))
+      getText.substring(
+        1,
+        getText.length - (if (isClosed)
+                            1
+                          else
+                            0))
     case HoconTokenType.MultilineString =>
-      getText.substring(3, getText.length - (if (isClosed) 3 else 0))
+      getText.substring(
+        3,
+        getText.length - (if (isClosed)
+                            3
+                          else
+                            0))
     case HoconElementType.UnquotedString =>
       getText
   }

@@ -58,15 +58,24 @@ trait TransformIncludes {
     * @return $SFX $AF
     */
   implicit def jfxAffine2sfx(v: jfxst.Affine): Affine =
-    if (v != null) new Affine(v) else null
+    if (v != null)
+      new Affine(v)
+    else
+      null
 
   implicit def jfxMatrixType2sfx(v: jfxst.MatrixType): MatrixType =
-    if (v != null) new MatrixType(v) else null
+    if (v != null)
+      new MatrixType(v)
+    else
+      null
 
   implicit def jfxNonInvertibleTransformException2sfx(
       v: jfxst.NonInvertibleTransformException)
       : NonInvertibleTransformException =
-    if (v != null) new NonInvertibleTransformException(v) else null
+    if (v != null)
+      new NonInvertibleTransformException(v)
+    else
+      null
 
   /**
     * $START$RT.html $RT$END
@@ -75,7 +84,10 @@ trait TransformIncludes {
     * @return $SFX $RT
     */
   implicit def jfxRotate2sfx(v: jfxst.Rotate): Rotate =
-    if (v != null) new Rotate(v) else null
+    if (v != null)
+      new Rotate(v)
+    else
+      null
 
   /**
     * $START$SC.html $SC$END
@@ -84,7 +96,10 @@ trait TransformIncludes {
     * @return $SFX $SC
     */
   implicit def jfxScale2sfx(v: jfxst.Scale): Scale =
-    if (v != null) new Scale(v) else null
+    if (v != null)
+      new Scale(v)
+    else
+      null
 
   /**
     * $START$SH.html $SH$END
@@ -93,7 +108,10 @@ trait TransformIncludes {
     * @return $SFX $SH
     */
   implicit def jfxShear2sfx(v: jfxst.Shear): Shear =
-    if (v != null) new Shear(v) else null
+    if (v != null)
+      new Shear(v)
+    else
+      null
 
   /**
     * $START$TR.html $TR$END
@@ -102,12 +120,17 @@ trait TransformIncludes {
     * @return $SFX $TR
     */
   implicit def jfxTransform2sfx(v: jfxst.Transform): Transform =
-    if (v != null) new Transform(v) {}
-    else null
+    if (v != null)
+      new Transform(v) {}
+    else
+      null
 
   implicit def jfxTransformChangedEvent2sfx(
       v: jfxst.TransformChangedEvent): TransformChangedEvent =
-    if (v != null) new TransformChangedEvent(v) else null
+    if (v != null)
+      new TransformChangedEvent(v)
+    else
+      null
 
   /**
     * $START$TL.html $TL$END
@@ -116,6 +139,9 @@ trait TransformIncludes {
     * @return $SFX $TL
     */
   implicit def jfxTranslate2sfx(v: jfxst.Translate): Translate =
-    if (v != null) new Translate(v) else null
+    if (v != null)
+      new Translate(v)
+    else
+      null
 
 }

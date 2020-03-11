@@ -29,7 +29,11 @@ private[repl] trait SparkMemberHandlers {
 
   private def codegen(xs: String*): String = codegen(true, xs: _*)
   private def codegen(leadingPlus: Boolean, xs: String*): String = {
-    val front = if (leadingPlus) "+ " else ""
+    val front =
+      if (leadingPlus)
+        "+ "
+      else
+        ""
     front + (xs map string2codeQuoted mkString " + ")
   }
   private implicit def name2string(name: Name) = name.toString
@@ -44,8 +48,10 @@ private[repl] trait SparkMemberHandlers {
       case Ident(name) =>
         // XXX this is obviously inadequate but it's going to require some effort
         // to get right.
-        if (name.toString startsWith "x$") ()
-        else importVars += name
+        if (name.toString startsWith "x$")
+          ()
+        else
+          importVars += name
       case _ => super.traverse(ast)
     }
   }
@@ -71,7 +77,11 @@ private[repl] trait SparkMemberHandlers {
 
   sealed abstract class MemberDefHandler(override val member: MemberDef)
       extends MemberHandler(member) {
-    def symbol = if (member.symbol eq null) NoSymbol else member.symbol
+    def symbol =
+      if (member.symbol eq null)
+        NoSymbol
+      else
+        member.symbol
     def name: Name = member.name
     def mods: Modifiers = member.mods
     def keyword = member.keyword
@@ -82,7 +92,11 @@ private[repl] trait SparkMemberHandlers {
       Some(name.toTermName) filter (_ => name.isTermName)
     override def definesType: Option[TypeName] =
       Some(name.toTypeName) filter (_ => name.isTypeName)
-    override def definedSymbols = if (symbol eq NoSymbol) Nil else List(symbol)
+    override def definedSymbols =
+      if (symbol eq NoSymbol)
+        Nil
+      else
+        List(symbol)
   }
 
   /** Class to handle one member among all the members included
@@ -118,18 +132,22 @@ private[repl] trait SparkMemberHandlers {
 
     override def resultExtractionCode(req: Request): String = {
       val isInternal = isUserVarName(name) && req.lookupTypeOf(name) == "Unit"
-      if (!mods.isPublic || isInternal) ""
+      if (!mods.isPublic || isInternal)
+        ""
       else {
         // if this is a lazy val we avoid evaluating it here
         val resultString =
-          if (mods.isLazy) codegenln(false, "<lazy>")
-          else any2stringOf(req fullPath name, maxStringElements)
+          if (mods.isLazy)
+            codegenln(false, "<lazy>")
+          else
+            any2stringOf(req fullPath name, maxStringElements)
 
         val vidString =
           if (replProps.vids)
             """" + " @ " + "%%8x".format(System.identityHashCode(%s)) + " """.trim
               .format(req fullPath name)
-          else ""
+          else
+            ""
 
         """ + "%s%s: %s = " + %s""".format(
           string2code(prettyName),
@@ -146,7 +164,10 @@ private[repl] trait SparkMemberHandlers {
     // true if not a macro and 0-arity
     override def definesValue = !isMacro && flattensToEmpty(vparamss)
     override def resultExtractionCode(req: Request) =
-      if (mods.isPublic) codegenln(name, ": ", req.typeOf(name)) else ""
+      if (mods.isPublic)
+        codegenln(name, ": ", req.typeOf(name))
+      else
+        ""
   }
 
   class AssignHandler(member: Assign) extends MemberHandler(member) {
@@ -231,8 +252,10 @@ private[repl] trait SparkMemberHandlers {
       beforePickler(individualNames map (targetType nonPrivateMember _))
 
     lazy val wildcardSymbols: List[Symbol] =
-      if (importsWildcard) beforePickler(targetType.nonPrivateMembers.toList)
-      else Nil
+      if (importsWildcard)
+        beforePickler(targetType.nonPrivateMembers.toList)
+      else
+        Nil
 
     /** Complete list of names imported by a wildcard */
     lazy val wildcardNames: List[Name] = wildcardSymbols map (_.name)

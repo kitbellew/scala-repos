@@ -21,7 +21,10 @@ class CreateLightWorksheetAction extends AnAction {
     val project = e.getProject
     val editor = e getData CommonDataKeys.EDITOR
     val text = StringUtil.notNullize(
-      if (editor == null) null else editor.getSelectionModel.getSelectedText)
+      if (editor == null)
+        null
+      else
+        editor.getSelectionModel.getSelectedText)
 
     val f: VirtualFile = ScratchRootType.getInstance.createScratchFile(
       project,
@@ -29,7 +32,8 @@ class CreateLightWorksheetAction extends AnAction {
       ScalaFileType.SCALA_LANGUAGE,
       text,
       ScratchFileService.Option.create_new_always)
-    if (f != null) FileEditorManager.getInstance(project).openFile(f, true)
+    if (f != null)
+      FileEditorManager.getInstance(project).openFile(f, true)
   }
 
   override def update(e: AnActionEvent) {

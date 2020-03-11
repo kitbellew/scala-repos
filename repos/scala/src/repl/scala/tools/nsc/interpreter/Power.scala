@@ -59,8 +59,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def discarded = seen.size - keep.size
 
     def members(x: Symbol): List[Symbol] =
-      if (x.rawInfo.isComplete) x.info.members.toList
-      else Nil
+      if (x.rawInfo.isComplete)
+        x.info.members.toList
+      else
+        Nil
 
     var lastCount = -1
     var pass = 0
@@ -269,9 +271,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   class RichReplString(s: String) {
     // make an url out of the string
     def u: URL = (
-      if (s contains ":") new URL(s)
-      else if (new JFile(s) exists) new JFile(s).toURI.toURL
-      else new URL("http://" + s)
+      if (s contains ":")
+        new URL(s)
+      else if (new JFile(s) exists)
+        new JFile(s).toURI.toURL
+      else
+        new URL("http://" + s)
     )
   }
   class RichInputStream(in: InputStream)(implicit codec: Codec) {
@@ -296,9 +301,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     }
     object symbolSubtypeOrdering extends Ordering[Symbol] {
       def compare(s1: Symbol, s2: Symbol) =
-        if (s1 eq s2) 0
-        else if (s1 isLess s2) -1
-        else 1
+        if (s1 eq s2)
+          0
+        else if (s1 isLess s2)
+          -1
+        else
+          1
     }
     implicit lazy val powerSymbolOrdering: Ordering[Symbol] =
       Ordering[Name] on (_.name)
@@ -335,7 +343,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       }).mkString
 
     def strings(s: Seq[Byte]): List[String] = {
-      if (s.length == 0) Nil
+      if (s.length == 0)
+        Nil
       else
         s dropWhile (_.toChar.isControl) span (x => !x.toChar.isControl) match {
           case (next, rest) => next.map(_.toChar).mkString :: strings(rest)

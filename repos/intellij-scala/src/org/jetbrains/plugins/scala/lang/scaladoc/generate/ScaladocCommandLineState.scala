@@ -102,7 +102,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         scope: AnalysisScope,
         acc: mutable.MutableList[VirtualFile] = mutable
           .MutableList[VirtualFile]()): mutable.MutableList[VirtualFile] = {
-      if (file == null) return acc
+      if (file == null)
+        return acc
       if (file.isDirectory) {
         for (c <- file.getChildren) {
           visitInner(c, scope, acc)
@@ -135,7 +136,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         true
       case (_, param: String) =>
         if (!ScaladocCommandLineState.generatedParamsWithoutArgs.contains(
-              param)) result += param
+              param))
+          result += param
         false
     }
 

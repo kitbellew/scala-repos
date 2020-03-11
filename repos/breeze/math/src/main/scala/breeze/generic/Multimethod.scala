@@ -286,8 +286,10 @@ trait MMRegistry3[R] {
     ops((a, b, c)) = op
 
     def choicesFor(a: Class[_]) =
-      if (a.isPrimitive) Seq(a, ReflectionUtil.boxedFromPrimitive(a))
-      else Seq(a)
+      if (a.isPrimitive)
+        Seq(a, ReflectionUtil.boxedFromPrimitive(a))
+      else
+        Seq(a)
 
     for (ac <- choicesFor(a);
          bc <- choicesFor(b);
@@ -385,9 +387,10 @@ trait MMRegistry1[M] {
         val sa = a.getSuperclass +: a.getInterfaces.filterNot(checkedA)
         val allParents =
           for (aa <- sa; if aa != null;
-               m <- resolve(aa, newCA)) yield {
-            m
-          }
+               m <- resolve(aa, newCA))
+            yield {
+              m
+            }
         allParents.toMap
     }
 

@@ -39,7 +39,11 @@ private[repl] class SparkJLineReader(_completion: => Completion)
         _buf: String,
         cursor: Int,
         candidates: JList[CharSequence]): Int = {
-      val buf = if (_buf == null) "" else _buf
+      val buf =
+        if (_buf == null)
+          ""
+        else
+          _buf
       val Candidates(newCursor, newCandidates) = tc.complete(buf, cursor)
       newCandidates foreach (candidates add _)
       newCursor

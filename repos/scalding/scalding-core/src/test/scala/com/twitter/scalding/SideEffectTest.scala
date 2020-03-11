@@ -95,11 +95,12 @@ class ZipBuffer(args: Args) extends Job(args) {
       }.mapStream('line -> ('l1, 'l2)) { (accu, iter: Iterator[String]) =>
         {
           accu.lastLine = iter.next()
-          for (line <- iter) yield {
-            val result = (accu.lastLine, line)
-            accu.lastLine = line
-            result
-          }
+          for (line <- iter)
+            yield {
+              val result = (accu.lastLine, line)
+              accu.lastLine = line
+              result
+            }
         }
       }
     }

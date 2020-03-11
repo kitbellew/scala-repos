@@ -17,7 +17,8 @@ trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
     val bindHandler = TestProbe()
     val endpoint = temporaryServerAddress()
 
-    if (shouldBindServer) bindServer()
+    if (shouldBindServer)
+      bindServer()
 
     def bindServer(): Unit = {
       val bindCommander = TestProbe()

@@ -64,23 +64,27 @@ trait Scaling {
 
     // if we scalb by -value, then all doubles will be in the range we want.
     // note that minScale < 0 in general
-    if (maxScale == -10000) 0
+    if (maxScale == -10000)
+      0
     else if (maxScale > scaleConstant)
       scaleConstant * (maxScale / scaleConstant)
     else if (maxScale < -scaleConstant)
       scaleConstant * (maxScale / scaleConstant)
-    else 0
+    else
+      0
   }
 
   def determineScale(score: Double, oldScale: Int): Int = {
     if (score != 0.0) {
       val maxScale = java.lang.Math.getExponent(score)
-      if (maxScale == -10000) oldScale
+      if (maxScale == -10000)
+        oldScale
       else if (maxScale > scaleConstant)
         oldScale + scaleConstant * (maxScale / scaleConstant)
       else if (maxScale < -scaleConstant)
         oldScale + scaleConstant * (maxScale / scaleConstant)
-      else oldScale
+      else
+        oldScale
     } else {
       Int.MinValue
     }

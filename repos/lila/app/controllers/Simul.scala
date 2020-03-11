@@ -99,8 +99,10 @@ object Simul extends LilaController {
     NoEngine {
       fuccess {
         env.api.addApplicant(id, me, variant)
-        if (HTTPRequest isXhr ctx.req) Ok(Json.obj("ok" -> true)) as JSON
-        else Redirect(routes.Simul.show(id))
+        if (HTTPRequest isXhr ctx.req)
+          Ok(Json.obj("ok" -> true)) as JSON
+        else
+          Redirect(routes.Simul.show(id))
       }
     }
   }
@@ -108,8 +110,10 @@ object Simul extends LilaController {
   def withdraw(id: String) = Auth { implicit ctx => me =>
     fuccess {
       env.api.removeApplicant(id, me)
-      if (HTTPRequest isXhr ctx.req) Ok(Json.obj("ok" -> true)) as JSON
-      else Redirect(routes.Simul.show(id))
+      if (HTTPRequest isXhr ctx.req)
+        Ok(Json.obj("ok" -> true)) as JSON
+      else
+        Redirect(routes.Simul.show(id))
     }
   }
 

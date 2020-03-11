@@ -65,7 +65,8 @@ class HttpClientDispatcher(
       // Only set the content length if we are sure there is content. This
       // behavior complies with the specification that user agents should not
       // set the content length header for messages without a payload body.
-      if (len > 0) req.headerMap.set(Fields.ContentLength, len.toString)
+      if (len > 0)
+        req.headerMap.set(Fields.ContentLength, len.toString)
     }
 
     trans
@@ -76,8 +77,10 @@ class HttpClientDispatcher(
         Future
           .join(
             // 1. Drain the Request body into the Transport.
-            if (req.isChunked) streamChunks(trans, req.reader)
-            else Future.Done,
+            if (req.isChunked)
+              streamChunks(trans, req.reader)
+            else
+              Future.Done,
             // 2. Drain the Transport into Response body.
             trans.read() flatMap {
               case res: HttpResponse if HttpNackFilter.isNack(res) =>

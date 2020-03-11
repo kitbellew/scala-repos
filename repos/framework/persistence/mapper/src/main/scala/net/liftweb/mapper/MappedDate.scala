@@ -193,7 +193,10 @@ abstract class MappedDate[T <: Mapper[T]](val fieldOwner: T)
   }
 
   def real_convertToJDBCFriendly(value: Date): Object =
-    if (value == null) null else new java.sql.Date(value.getTime)
+    if (value == null)
+      null
+    else
+      new java.sql.Date(value.getTime)
 
   private def st(in: Box[Date]): Unit =
     in match {
@@ -226,7 +229,11 @@ abstract class MappedDate[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedDate[_] =>
-            f.st(if (isNull) Empty else Full(new Date(v)))
+            f.st(
+              if (isNull)
+                Empty
+              else
+                Full(new Date(v)))
         })
 
   def buildSetStringValue(
@@ -277,5 +284,9 @@ abstract class MappedDate[T <: Mapper[T]](val fieldOwner: T)
     case d    => d.getTime < millis
   }
 
-  override def toString: String = if (get == null) "NULL" else format(get)
+  override def toString: String =
+    if (get == null)
+      "NULL"
+    else
+      format(get)
 }

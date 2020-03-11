@@ -32,8 +32,10 @@ private[columnar] trait Encoder[T <: AtomicType] {
   def uncompressedSize: Int
 
   def compressionRatio: Double = {
-    if (uncompressedSize > 0) compressedSize.toDouble / uncompressedSize
-    else 1.0
+    if (uncompressedSize > 0)
+      compressedSize.toDouble / uncompressedSize
+    else
+      1.0
   }
 
   def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer

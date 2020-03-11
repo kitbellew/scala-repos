@@ -58,7 +58,10 @@ object Tooltip {
     * @return JavaFX Tooltip
     */
   implicit def sfxTooltip2jfx(v: Tooltip): jfxsc.Tooltip =
-    if (v == null) null else v.delegate
+    if (v == null)
+      null
+    else
+      v.delegate
 
   /**
     * Generates a Simple Tooltip with default properties from a text.

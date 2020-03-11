@@ -99,7 +99,13 @@ private[math] trait UByteOrder extends Order[UByte] {
   override def gteqv(x: UByte, y: UByte): Boolean = x >= y
   override def lt(x: UByte, y: UByte): Boolean = x < y
   override def lteqv(x: UByte, y: UByte): Boolean = x <= y
-  def compare(x: UByte, y: UByte): Int = if (x < y) -1 else if (x > y) 1 else 0
+  def compare(x: UByte, y: UByte): Int =
+    if (x < y)
+      -1
+    else if (x > y)
+      1
+    else
+      0
 }
 
 private[math] trait UByteIsSigned extends Signed[UByte] {

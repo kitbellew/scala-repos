@@ -88,10 +88,15 @@ object Logger {
   }
 
   def apply(cls: Class[_]): Logger =
-    if (ranSetup) new WrappedLogger(LoggerFactory.getLogger(loggerNameFor(cls)))
-    else null
+    if (ranSetup)
+      new WrappedLogger(LoggerFactory.getLogger(loggerNameFor(cls)))
+    else
+      null
   def apply(name: String): Logger =
-    if (ranSetup) new WrappedLogger(LoggerFactory.getLogger(name)) else null
+    if (ranSetup)
+      new WrappedLogger(LoggerFactory.getLogger(name))
+    else
+      null
 
   /**
     * Set the [[http://www.slf4j.org/manual.html#mdc Mapped Diagnostic Context]]
@@ -168,9 +173,12 @@ trait Logger {
   protected def _logger =
     if (Logger.ranSetup)
       LoggerFactory.getLogger(Logger.loggerNameFor(this.getClass))
-    else null
+    else
+      null
 
-  def assertLog(assertion: Boolean, msg: => String) = if (assertion) info(msg)
+  def assertLog(assertion: Boolean, msg: => String) =
+    if (assertion)
+      info(msg)
 
   /**
     * Log the value of v with trace and return v. Useful for tracing values in expressions
@@ -200,13 +208,17 @@ trait Logger {
   }
 
   def trace(msg: => AnyRef) =
-    if (logger.isTraceEnabled) logger.trace(String.valueOf(msg))
+    if (logger.isTraceEnabled)
+      logger.trace(String.valueOf(msg))
   def trace(msg: => AnyRef, t: Throwable) =
-    if (logger.isTraceEnabled) logger.trace(String.valueOf(msg), t)
+    if (logger.isTraceEnabled)
+      logger.trace(String.valueOf(msg), t)
   def trace(msg: => AnyRef, marker: Marker) =
-    if (logger.isTraceEnabled) logger.trace(marker, String.valueOf(msg))
+    if (logger.isTraceEnabled)
+      logger.trace(marker, String.valueOf(msg))
   def trace(msg: => AnyRef, t: Throwable, marker: => Marker) =
-    if (logger.isTraceEnabled) logger.trace(marker, String.valueOf(msg), t)
+    if (logger.isTraceEnabled)
+      logger.trace(marker, String.valueOf(msg), t)
   def isTraceEnabled = logger.isTraceEnabled
 
   /**
@@ -229,13 +241,17 @@ trait Logger {
   }
 
   def debug(msg: => AnyRef) =
-    if (logger.isDebugEnabled) logger.debug(String.valueOf(msg))
+    if (logger.isDebugEnabled)
+      logger.debug(String.valueOf(msg))
   def debug(msg: => AnyRef, t: Throwable) =
-    if (logger.isDebugEnabled) logger.debug(String.valueOf(msg), t)
+    if (logger.isDebugEnabled)
+      logger.debug(String.valueOf(msg), t)
   def debug(msg: => AnyRef, marker: Marker) =
-    if (logger.isDebugEnabled) logger.debug(marker, String.valueOf(msg))
+    if (logger.isDebugEnabled)
+      logger.debug(marker, String.valueOf(msg))
   def debug(msg: => AnyRef, t: Throwable, marker: Marker) =
-    if (logger.isDebugEnabled) logger.debug(marker, String.valueOf(msg), t)
+    if (logger.isDebugEnabled)
+      logger.debug(marker, String.valueOf(msg), t)
   def isDebugEnabled = logger.isDebugEnabled
 
   /**
@@ -257,13 +273,17 @@ trait Logger {
     }
   }
   def info(msg: => AnyRef) =
-    if (logger.isInfoEnabled) logger.info(String.valueOf(msg))
+    if (logger.isInfoEnabled)
+      logger.info(String.valueOf(msg))
   def info(msg: => AnyRef, t: => Throwable) =
-    if (logger.isInfoEnabled) logger.info(String.valueOf(msg), t)
+    if (logger.isInfoEnabled)
+      logger.info(String.valueOf(msg), t)
   def info(msg: => AnyRef, marker: Marker) =
-    if (logger.isInfoEnabled) logger.info(marker, String.valueOf(msg))
+    if (logger.isInfoEnabled)
+      logger.info(marker, String.valueOf(msg))
   def info(msg: => AnyRef, t: Throwable, marker: Marker) =
-    if (logger.isInfoEnabled) logger.info(marker, String.valueOf(msg), t)
+    if (logger.isInfoEnabled)
+      logger.info(marker, String.valueOf(msg), t)
   def isInfoEnabled = logger.isInfoEnabled
 
   /**
@@ -285,13 +305,17 @@ trait Logger {
     }
   }
   def warn(msg: => AnyRef) =
-    if (logger.isWarnEnabled) logger.warn(String.valueOf(msg))
+    if (logger.isWarnEnabled)
+      logger.warn(String.valueOf(msg))
   def warn(msg: => AnyRef, t: Throwable) =
-    if (logger.isWarnEnabled) logger.warn(String.valueOf(msg), t)
+    if (logger.isWarnEnabled)
+      logger.warn(String.valueOf(msg), t)
   def warn(msg: => AnyRef, marker: Marker) =
-    if (logger.isWarnEnabled) logger.warn(marker, String.valueOf(msg))
+    if (logger.isWarnEnabled)
+      logger.warn(marker, String.valueOf(msg))
   def warn(msg: => AnyRef, t: Throwable, marker: Marker) =
-    if (logger.isWarnEnabled) logger.warn(marker, String.valueOf(msg), t)
+    if (logger.isWarnEnabled)
+      logger.warn(marker, String.valueOf(msg), t)
   def isWarnEnabled = logger.isWarnEnabled
 
   /**
@@ -314,13 +338,17 @@ trait Logger {
   }
 
   def error(msg: => AnyRef) =
-    if (logger.isErrorEnabled) logger.error(String.valueOf(msg))
+    if (logger.isErrorEnabled)
+      logger.error(String.valueOf(msg))
   def error(msg: => AnyRef, t: Throwable) =
-    if (logger.isErrorEnabled) logger.error(String.valueOf(msg), t)
+    if (logger.isErrorEnabled)
+      logger.error(String.valueOf(msg), t)
   def error(msg: => AnyRef, marker: Marker) =
-    if (logger.isErrorEnabled) logger.error(marker, String.valueOf(msg))
+    if (logger.isErrorEnabled)
+      logger.error(marker, String.valueOf(msg))
   def error(msg: => AnyRef, t: Throwable, marker: Marker) =
-    if (logger.isErrorEnabled) logger.error(marker, String.valueOf(msg), t)
+    if (logger.isErrorEnabled)
+      logger.error(marker, String.valueOf(msg), t)
   def isErrorEnabled = logger.isErrorEnabled
 
 }

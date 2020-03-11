@@ -68,7 +68,10 @@ object ASMConverters {
 
   def opcodeToString(op: Int, default: Any = "?"): String = {
     import scala.tools.asm.util.Printer.OPCODES
-    if (OPCODES.isDefinedAt(op)) OPCODES(op) else default.toString
+    if (OPCODES.isDefinedAt(op))
+      OPCODES(op)
+    else
+      default.toString
   }
 
   sealed abstract class Instruction extends Product {
@@ -80,7 +83,8 @@ object ASMConverters {
       productPrefix + (
         if (printOpcode)
           Iterator(opcodeToString(opcode)) ++ productIterator.drop(1)
-        else productIterator
+        else
+          productIterator
       ).mkString("(", ", ", ")")
     }
   }
@@ -170,7 +174,10 @@ object ASMConverters {
     private def op(i: t.AbstractInsnNode): Int = i.getOpcode
 
     private def lst[T](xs: java.util.List[T]): List[T] =
-      if (xs == null) Nil else xs.asScala.toList
+      if (xs == null)
+        Nil
+      else
+        xs.asScala.toList
 
     // Heterogeneous List[Any] is used in FrameNode: type information about locals / stack values
     // are stored in a List[Any] (Integer, String or LabelNode), see Javadoc of MethodNode#visitFrame.
@@ -267,7 +274,8 @@ object ASMConverters {
       varMap: MMap[Int, Int] = MMap(),
       labelMap: MMap[Int, Int] = MMap()): Boolean = {
     def same(v1: Int, v2: Int, m: MMap[Int, Int]) = {
-      if (m contains v1) m(v1) == v2
+      if (m contains v1)
+        m(v1) == v2
       else if (m.valuesIterator contains v2)
         false // v2 is already associated with some different value v1
       else {
@@ -285,8 +293,10 @@ object ASMConverters {
       case (x, y)                 => x == y
     }
 
-    if (as.isEmpty) bs.isEmpty
-    else if (bs.isEmpty) false
+    if (as.isEmpty)
+      bs.isEmpty
+    else if (bs.isEmpty)
+      false
     else
       ((as.head, bs.head) match {
         case (VarOp(op1, v1), VarOp(op2, v2)) => op1 == op2 && sameVar(v1, v2)
@@ -296,14 +306,14 @@ object ASMConverters {
         case (l1 @ Label(_), l2 @ Label(_)) => sameLabel(l1, l2)
         case (Jump(op1, l1), Jump(op2, l2)) => op1 == op2 && sameLabel(l1, l2)
         case (
-            LookupSwitch(op1, l1, keys1, ls1),
-            LookupSwitch(op2, l2, keys2, ls2)) =>
+              LookupSwitch(op1, l1, keys1, ls1),
+              LookupSwitch(op2, l2, keys2, ls2)) =>
           op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 && sameLabels(
             ls1,
             ls2)
         case (
-            TableSwitch(op1, min1, max1, l1, ls1),
-            TableSwitch(op2, min2, max2, l2, ls2)) =>
+              TableSwitch(op1, min1, max1, l1, ls1),
+              TableSwitch(op2, min2, max2, l2, ls2)) =>
           op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(
             l1,
             l2) && sameLabels(ls1, ls2)

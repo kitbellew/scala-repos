@@ -88,7 +88,10 @@ object SerializationProperties extends Properties("SerializationProperties") {
   def serializeSequenceCompare[T: OrderedSerialization](g: Gen[T]): Prop =
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
-      val pairList = (if (list.size % 2 == 1) list.tail else list).grouped(2)
+      val pairList = (if (list.size % 2 == 1)
+                        list.tail
+                      else
+                        list).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {
@@ -114,7 +117,10 @@ object SerializationProperties extends Properties("SerializationProperties") {
   def serializeSequenceEquiv[T: Serialization](g: Gen[T]): Prop =
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
-      val pairList = (if (list.size % 2 == 1) list.tail else list).grouped(2)
+      val pairList = (if (list.size % 2 == 1)
+                        list.tail
+                      else
+                        list).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {

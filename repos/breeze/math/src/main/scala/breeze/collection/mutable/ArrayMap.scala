@@ -48,7 +48,11 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
       arr(i)
     }
   }
-  override def get(i: Int) = if (i < arr.length) Some(arr(i)) else None
+  override def get(i: Int) =
+    if (i < arr.length)
+      Some(arr(i))
+    else
+      None
   override def +=(k: (Int, V)): this.type = {
     update(k._1, k._2);
     this
@@ -69,7 +73,8 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
 
     if (i == arr.length)
       arr += v
-    else arr(i) = v;
+    else
+      arr(i) = v;
   }
 
   override def empty = new ArrayMap(defValue)
@@ -87,9 +92,17 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
   override def keys: Set[Int] = new Set[Int] {
     def iterator = keysIterator
 
-    def -(elem: Int) = if (!contains(elem)) this else Set.empty ++ keys - elem
+    def -(elem: Int) =
+      if (!contains(elem))
+        this
+      else
+        Set.empty ++ keys - elem
 
-    def +(elem: Int) = if (contains(elem)) this else Set.empty ++ keys + elem
+    def +(elem: Int) =
+      if (contains(elem))
+        this
+      else
+        Set.empty ++ keys + elem
 
     def contains(i: Int) = i < arr.length && i > 0
   }

@@ -190,7 +190,10 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
   }
 
   private def nullIfEmpty[T](array: Array[T]) =
-    if (array.size == 0) null else array
+    if (array.size == 0)
+      null
+    else
+      array
 
   override def toString = {
     s"CompositeX509KeyManager(keyManagers = [$keyManagers])"

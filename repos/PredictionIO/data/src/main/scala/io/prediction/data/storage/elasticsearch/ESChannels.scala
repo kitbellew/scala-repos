@@ -58,12 +58,17 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
     val id =
       if (channel.id == 0) {
         var roll = seq.genNext(seqName)
-        while (!get(roll).isEmpty) roll = seq.genNext(seqName)
+        while (!get(roll).isEmpty)
+          roll = seq.genNext(seqName)
         roll
-      } else channel.id
+      } else
+        channel.id
 
     val realChannel = channel.copy(id = id)
-    if (update(realChannel)) Some(id) else None
+    if (update(realChannel))
+      Some(id)
+    else
+      None
   }
 
   def get(id: Int): Option[Channel] = {

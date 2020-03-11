@@ -160,7 +160,13 @@ object MovieLensALS {
        * depending on whether r is positive or negative.
        */
       splits(1).map(x =>
-        Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
+        Rating(
+          x.user,
+          x.product,
+          if (x.rating > 0)
+            1.0
+          else
+            0.0))
     } else {
       splits(1)
     }.cache()
@@ -194,7 +200,10 @@ object MovieLensALS {
       implicitPrefs: Boolean): Double = {
 
     def mapPredictedRating(r: Double): Double = {
-      if (implicitPrefs) math.max(math.min(r, 1.0), 0.0) else r
+      if (implicitPrefs)
+        math.max(math.min(r, 1.0), 0.0)
+      else
+        r
     }
 
     val predictions: RDD[Rating] =

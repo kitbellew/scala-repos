@@ -22,8 +22,10 @@ object StatusPlugin extends AutoPlugin {
       }
     },
     publishStatus := {
-      if (isSnapshot.value) "snapshots"
-      else "releases"
+      if (isSnapshot.value)
+        "snapshots"
+      else
+        "releases"
     },
     commands += stampVersion
   )
@@ -42,7 +44,8 @@ object StatusPlugin extends AutoPlugin {
     val Snapshot = "-SNAPSHOT"
     if (v endsWith Snapshot)
       (v stripSuffix Snapshot) + "-" + timestampString(System.currentTimeMillis)
-    else sys.error("Release version '" + v + "' cannot be stamped")
+    else
+      sys.error("Release version '" + v + "' cannot be stamped")
   }
   def timestampString(time: Long): String = {
     val format = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss")

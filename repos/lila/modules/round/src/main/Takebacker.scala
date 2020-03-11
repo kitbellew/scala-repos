@@ -11,8 +11,10 @@ private[round] final class Takebacker(
   def yes(pov: Pov): Fu[Events] = IfAllowed(pov.game) {
     pov match {
       case Pov(game, _) if pov.opponent.isProposingTakeback =>
-        if (pov.opponent.proposeTakebackAt == pov.game.turns) single(game)
-        else double(game)
+        if (pov.opponent.proposeTakebackAt == pov.game.turns)
+          single(game)
+        else
+          double(game)
       case Pov(game, _) if pov.opponent.isAi => double(game)
       case Pov(game, color) if (game playerCanProposeTakeback color) =>
         messenger.system(game, _.takebackPropositionSent)
@@ -46,7 +48,8 @@ private[round] final class Takebacker(
   }
 
   def isAllowedByPrefs(game: Game): Fu[Boolean] =
-    if (game.hasAi) fuccess(true)
+    if (game.hasAi)
+      fuccess(true)
     else
       game.userIds.map { userId =>
         prefApi.getPref(userId, (p: Pref) => p.takeback)

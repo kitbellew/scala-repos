@@ -47,7 +47,10 @@ object DialogEvent {
     * @return JavaFX DialogEvent
     */
   implicit def sfxDialogEvent2jfx(v: DialogEvent): jfxsc.DialogEvent =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Common supertype for all dialog event types.

@@ -52,7 +52,10 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
   @inline
   final def apply(i: Int): V = {
     val offset = findOffset(i)
-    if (offset >= 0) data(offset) else default
+    if (offset >= 0)
+      data(offset)
+    else
+      default
   }
 
   /**
@@ -67,17 +70,24 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
 
   def get(i: Int): Option[V] = {
     val offset = findOffset(i)
-    if (offset >= 0) Some(data(offset)) else None
+    if (offset >= 0)
+      Some(data(offset))
+    else
+      None
   }
 
   def getOrElse(i: Int, value: => V): V = {
     val offset = findOffset(i)
-    if (offset >= 0) data(offset) else value
+    if (offset >= 0)
+      data(offset)
+    else
+      value
   }
 
   def getOrElseUpdate(i: Int, value: => V): V = {
     val offset = findOffset(i)
-    if (offset >= 0) data(offset)
+    if (offset >= 0)
+      data(offset)
     else {
       val v = value
       update(i, v)

@@ -492,7 +492,8 @@ private[niflheim] class NIHDBActor private (
         logger.warn(
           "Skipping insert with an empty batch on %s".format(
             baseDir.getCanonicalPath))
-        if (responseRequested) sender ! Skipped
+        if (responseRequested)
+          sender ! Skipped
       } else {
         val (skipValues, keepValues) =
           batch.partition(_.offset <= currentState.maxOffset)
@@ -500,7 +501,8 @@ private[niflheim] class NIHDBActor private (
           logger.warn(
             "Skipping entirely seen batch of %d rows prior to offset %d"
               .format(batch.flatMap(_.values).size, currentState.maxOffset))
-          if (responseRequested) sender ! Skipped
+          if (responseRequested)
+            sender ! Skipped
         } else {
           val values = keepValues.flatMap(_.values)
           val offset = keepValues.map(_.offset).max
@@ -539,7 +541,8 @@ private[niflheim] class NIHDBActor private (
           logger.debug(
             "Insert complete on %d rows at offset %d for %s"
               .format(values.length, offset, baseDir.getCanonicalPath))
-          if (responseRequested) sender ! Inserted(offset, values.length)
+          if (responseRequested)
+            sender ! Inserted(offset, values.length)
         }
       }
 

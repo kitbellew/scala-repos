@@ -141,8 +141,10 @@ class BasicAuthenticationFilter
                       Keys.Request.UserName,
                       account.userName)
                     true
-                  } else false
-                } else true
+                  } else
+                    false
+                } else
+                  true
 
               if (passed.getOrElse(false)) {
                 chain.doFilter(request, response)

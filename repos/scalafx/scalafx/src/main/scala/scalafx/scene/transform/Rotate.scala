@@ -38,7 +38,10 @@ import scalafx.geometry.Point3D._
 
 object Rotate {
   implicit def sfxRotate2jfx(v: Rotate): jfxst.Rotate =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /**
     * Specifies the X-axis as the axis of rotation.

@@ -203,11 +203,15 @@ trait SecurityHelpers {
         val msb = (b & 0xf0) >> 4
         val lsb = (b & 0x0f)
         sb.append(
-          (if (msb < 10) ('0' + msb).asInstanceOf[Char]
-           else ('a' + (msb - 10)).asInstanceOf[Char]))
+          (if (msb < 10)
+             ('0' + msb).asInstanceOf[Char]
+           else
+             ('a' + (msb - 10)).asInstanceOf[Char]))
         sb.append(
-          (if (lsb < 10) ('0' + lsb).asInstanceOf[Char]
-           else ('a' + (lsb - 10)).asInstanceOf[Char]))
+          (if (lsb < 10)
+             ('0' + lsb).asInstanceOf[Char]
+           else
+             ('a' + (lsb - 10)).asInstanceOf[Char]))
 
         addDigit(in, pos + 1, len, sb)
       }

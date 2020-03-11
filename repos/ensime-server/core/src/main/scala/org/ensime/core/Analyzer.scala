@@ -27,7 +27,11 @@ case class CompilerFatalError(e: Throwable)
   * particular type or type member.
   */
 case class DocFqn(pack: String, typeName: String) {
-  def mkString: String = if (pack.isEmpty) typeName else pack + "." + typeName
+  def mkString: String =
+    if (pack.isEmpty)
+      typeName
+    else
+      pack + "." + typeName
   def inPackage(prefix: String): Boolean =
     pack == prefix || pack.startsWith(prefix + ".")
   def javaStdLib: Boolean = inPackage("java") || inPackage("javax")
@@ -101,7 +105,8 @@ class Analyzer(
       "Initializing Analyzer. Please wait...")
 
     scalaCompiler.askNotifyWhenReady()
-    if (config.sourceMode) scalaCompiler.askReloadAllFiles()
+    if (config.sourceMode)
+      scalaCompiler.askReloadAllFiles()
   }
 
   protected def makeScalaCompiler() = new RichPresentationCompiler(
@@ -232,9 +237,9 @@ class Analyzer(
         scalaCompiler.askSymbolInfoAt(p).getOrElse(FalseResponse)
       }
     case SymbolByNameReq(
-        typeFullName: String,
-        memberName: Option[String],
-        signatureString: Option[String]) =>
+          typeFullName: String,
+          memberName: Option[String],
+          signatureString: Option[String]) =>
       sender ! scalaCompiler
         .askSymbolByName(typeFullName, memberName, signatureString)
         .getOrElse(FalseResponse)
@@ -243,9 +248,9 @@ class Analyzer(
       scalaCompiler.askLoadedTyped(p.source)
       sender() ! scalaCompiler.askDocSignatureAtPoint(p)
     case DocUriForSymbolReq(
-        typeFullName: String,
-        memberName: Option[String],
-        signatureString: Option[String]) =>
+          typeFullName: String,
+          memberName: Option[String],
+          signatureString: Option[String]) =>
       sender() ! scalaCompiler.askDocSignatureForSymbol(
         typeFullName,
         memberName,
@@ -317,8 +322,10 @@ class Analyzer(
   }
 
   def withExisting(x: SourceFileInfo)(f: => RpcResponse): RpcResponse =
-    if (FileUtils.exists(x)) f
-    else EnsimeServerError(s"File does not exist: ${x.file}")
+    if (FileUtils.exists(x))
+      f
+    else
+      EnsimeServerError(s"File does not exist: ${x.file}")
 
   def pos(file: File, range: OffsetRange): OffsetPosition =
     pos(createSourceFile(file), range)
@@ -329,8 +336,10 @@ class Analyzer(
   def pos(file: SourceFileInfo, offset: Int): OffsetPosition =
     pos(createSourceFile(file), offset)
   def pos(f: SourceFile, range: OffsetRange): OffsetPosition = {
-    if (range.from == range.to) new OffsetPosition(f, range.from)
-    else new RangePosition(f, range.from, range.from, range.to)
+    if (range.from == range.to)
+      new OffsetPosition(f, range.from)
+    else
+      new RangePosition(f, range.from, range.from, range.to)
   }
   def pos(f: SourceFile, offset: Int): OffsetPosition =
     new OffsetPosition(f, offset)

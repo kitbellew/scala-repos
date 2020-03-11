@@ -375,7 +375,8 @@ class MetastoreDataSourcesSuite
           TableIdentifier("ctasJsonTable"))
       val filesystemPath = new Path(expectedPath)
       val fs = filesystemPath.getFileSystem(sparkContext.hadoopConfiguration)
-      if (fs.exists(filesystemPath)) fs.delete(filesystemPath, true)
+      if (fs.exists(filesystemPath))
+        fs.delete(filesystemPath, true)
 
       // It is a managed table when we do not specify the location.
       sql(s"""CREATE TABLE ctasJsonTable

@@ -43,7 +43,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       val newBody = transformTrees(body)
       val templ = deriveTemplate(tree)(_ =>
         transformTrees(newStaticMembers.toList) ::: newBody)
-      try if (newStaticInits.isEmpty) templ
+      try if (newStaticInits.isEmpty)
+        templ
       else
         deriveTemplate(templ)(body =>
           staticConstructor(body, localTyper, templ.pos)(
@@ -69,7 +70,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
     /** The boxed type if it's a primitive; identity otherwise.
       */
     def toBoxedType(tp: Type) =
-      if (isJavaValueType(tp)) boxedClass(tp.typeSymbol).tpe else tp
+      if (isJavaValueType(tp))
+        boxedClass(tp.typeSymbol).tpe
+      else
+        tp
 
     def transformApplyDynamic(ad: ApplyDynamic) = {
       val qual0 = ad.qual
@@ -198,9 +202,12 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           name: Name): Option[(Symbol, Tree => Tree)] = {
         val methodName =
           (
-            if (params.isEmpty) nme.primitivePostfixMethodName(name)
-            else if (params.tail.isEmpty) nme.primitiveInfixMethodName(name)
-            else nme.NO_NAME
+            if (params.isEmpty)
+              nme.primitivePostfixMethodName(name)
+            else if (params.tail.isEmpty)
+              nme.primitiveInfixMethodName(name)
+            else
+              nme.NO_NAME
           )
         getDeclIfDefined(BoxesRunTimeClass, methodName) match {
           case NoSymbol => None
@@ -278,8 +285,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           def fixResult(tree: Tree, mustBeUnit: Boolean = false) =
             if (mustBeUnit || resultSym == UnitClass)
               BLOCK(tree, REF(BoxedUnit_UNIT)) // boxed unit
-            else if (resultSym == ObjectClass) tree // no cast necessary
-            else gen.mkCast(tree, boxedResType) // cast to expected type
+            else if (resultSym == ObjectClass)
+              tree // no cast necessary
+            else
+              gen.mkCast(tree, boxedResType) // cast to expected type
 
           /* Normal non-Array call */
           def genDefaultCall = {
@@ -363,11 +372,14 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             IF((qual1() GETCLASS ()) DOT nme.isArray) THEN genArrayCall ELSE genDefaultCall
 
           localTyper typed (
-            if (isMaybeBoxed && isJavaValueMethod) genValueCallWithTest
-            else if (isArrayMethodSignature && isDefinitelyArray) genArrayCall
+            if (isMaybeBoxed && isJavaValueMethod)
+              genValueCallWithTest
+            else if (isArrayMethodSignature && isDefinitelyArray)
+              genArrayCall
             else if (isArrayMethodSignature && isMaybeArray)
               genArrayCallWithTest
-            else genDefaultCall
+            else
+              genDefaultCall
           )
         }
       }
@@ -516,7 +528,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               REF(BoxedUnit_TYPE)
             else
               Select(REF(boxedModule(tpe.typeSymbol)), nme.TYPE_)
-          } else tree
+          } else
+            tree
         }
 
       /*
@@ -535,8 +548,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
        * have little in common.
        */
       case Apply(
-          fn @ Select(qual, _),
-          (arg @ Literal(Constant(symname: String))) :: Nil)
+            fn @ Select(qual, _),
+            (arg @ Literal(Constant(symname: String))) :: Nil)
           if treeInfo.isQualifierSafeToElide(
             qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
         super.transform(
@@ -551,17 +564,17 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       //
       // See SI-6611; we must *only* do this for literal vararg arrays.
       case Apply(
-          appMeth,
-          List(
-            Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
-            _))
+            appMeth,
+            List(
+              Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
+              _))
           if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
         super.transform(arg)
       case Apply(
-          appMeth,
-          List(
-            elem0,
-            Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
+            appMeth,
+            List(
+              elem0,
+              Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
           if wrapArrayMeth.symbol == Predef_wrapArray(
             elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(elemtpt.tpe) =>
         super.transform(

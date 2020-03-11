@@ -34,7 +34,10 @@ import scalafx.delegate.SFXDelegate
 
 object AudioTrack {
   implicit def sfxAudioTrack2jfx(at: AudioTrack): jfxsm.AudioTrack =
-    if (at != null) at.delegate else null
+    if (at != null)
+      at.delegate
+    else
+      null
 }
 
 class AudioTrack(override val delegate: jfxsm.AudioTrack)

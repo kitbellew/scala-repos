@@ -39,12 +39,13 @@ object DependencyResolver {
     val flatDeps = dependencyFilter(allFlatDeps)
     val includeList = createIncludeList(flatDeps)
 
-    for (info <- includeList) yield {
-      new ResolvedJSDependency(
-        availableLibs(info.relPath),
-        info.relPathMinified.map(availableLibs),
-        info)
-    }
+    for (info <- includeList)
+      yield {
+        new ResolvedJSDependency(
+          availableLibs(info.relPath),
+          info.relPathMinified.map(availableLibs),
+          info)
+      }
   }
 
   /** Collects all the resource names mentioned in the manifests.
@@ -127,8 +128,10 @@ object DependencyResolver {
         coll: List[ResolutionInfo],
         acc: List[ResolutionInfo]): List[ResolutionInfo] = {
 
-      if (coll.isEmpty) acc
-      else if (coll.tail.isEmpty) coll.head :: acc
+      if (coll.isEmpty)
+        acc
+      else if (coll.tail.isEmpty)
+        coll.head :: acc
       else {
         val (selected, pending) = coll.partition { x =>
           coll forall { y =>

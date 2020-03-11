@@ -64,7 +64,11 @@ sealed abstract class Option[A] extends java.lang.Iterable[A] {
   def isEmpty: Boolean
   def isDefined = !isEmpty
   def asScala: scala.Option[A]
-  def iterator = if (isEmpty) Iterator.empty else Iterator.single(get)
+  def iterator =
+    if (isEmpty)
+      Iterator.empty
+    else
+      Iterator.single(get)
 }
 
 object Option {
@@ -83,7 +87,11 @@ object Option {
     * <code>Option</code> factory that creates <code>None</code> if
     * <code>v</code> is <code>null</code>, <code>Some(v)</code> otherwise.
     */
-  def option[A](v: A): Option[A] = if (v == null) none else some(v)
+  def option[A](v: A): Option[A] =
+    if (v == null)
+      none
+    else
+      some(v)
 
   /**
     * Class <code>Some[A]</code> represents existing values of type

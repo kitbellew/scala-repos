@@ -1676,7 +1676,10 @@ class ThrowsErrorsJob(args: Args) extends Job(args) {
     .addTrap(Tsv("trapped"))
     .map(('letter, 'x) -> 'yPrime) { fields: Product =>
       val x = fields.productElement(1).asInstanceOf[Int]
-      if (x == 1) throw new Exception("Erroneous Ones") else x
+      if (x == 1)
+        throw new Exception("Erroneous Ones")
+      else
+        x
     }
     .write(Tsv("output"))
 }
@@ -1733,11 +1736,17 @@ class TypedThrowsErrorsJob(args: Args) extends Job(args) {
     }
     .addTrap(trap1)
     .map { tup =>
-      if (tup._2 == 1) throw new Exception("Oh no!") else trans2(tup)
+      if (tup._2 == 1)
+        throw new Exception("Oh no!")
+      else
+        trans2(tup)
     }
     .addTrap(trap2)
     .map { tup =>
-      if (tup._2 % 2 == 0) throw new Exception("Oh no!") else trans3(tup)
+      if (tup._2 % 2 == 0)
+        throw new Exception("Oh no!")
+      else
+        trans3(tup)
     }
     .write(output)
 }
@@ -1768,10 +1777,16 @@ class TypedThrowsErrorsJob2(args: Args) extends Job(args) {
     }
     .addTrap(trap)
     .map { tup =>
-      if (tup._2 == 1) throw new Exception("Oh no!") else trans2(tup)
+      if (tup._2 == 1)
+        throw new Exception("Oh no!")
+      else
+        trans2(tup)
     }
     .map { tup =>
-      if (tup._2 % 2 == 0) throw new Exception("Oh no!") else trans3(tup)
+      if (tup._2 % 2 == 0)
+        throw new Exception("Oh no!")
+      else
+        trans3(tup)
     }
     .write(output)
 }

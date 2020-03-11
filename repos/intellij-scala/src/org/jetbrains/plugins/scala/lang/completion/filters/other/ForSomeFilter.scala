@@ -15,11 +15,13 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScInfixTypeElement
   */
 class ForSomeFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
-    if (context.isInstanceOf[PsiComment]) return false
+    if (context.isInstanceOf[PsiComment])
+      return false
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
-      if (parent == null) return false
+      if (parent == null)
+        return false
       parent.getParent match {
         case _: ScInfixTypeElement => return true
         case _                     => return false

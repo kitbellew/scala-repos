@@ -194,7 +194,12 @@ trait TestEventService
     val svc = client
       .contentType[A](contentType)
       .query("receipt", sync.toString)
-      .query("mode", if (batch) "batch" else "stream")
+      .query(
+        "mode",
+        if (batch)
+          "batch"
+        else
+          "stream")
       .path("/ingest/v2/fs/")
 
     val queries = List(

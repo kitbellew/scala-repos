@@ -60,13 +60,21 @@ object JSDependencyManifest {
   implicit object JSDepManJSONSerializer
       extends JSONSerializer[JSDependencyManifest] {
     @inline def optList[T](x: List[T]): Option[List[T]] =
-      if (x.nonEmpty) Some(x) else None
+      if (x.nonEmpty)
+        Some(x)
+      else
+        None
 
     def serialize(x: JSDependencyManifest): JSON = {
       new JSONObjBuilder()
         .fld("origin", x.origin)
         .opt("libDeps", optList(x.libDeps))
-        .opt("requiresDOM", if (x.requiresDOM) Some(true) else None)
+        .opt(
+          "requiresDOM",
+          if (x.requiresDOM)
+            Some(true)
+          else
+            None)
         .opt("compliantSemantics", optList(x.compliantSemantics))
         .toJSON
     }

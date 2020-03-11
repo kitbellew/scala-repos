@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Border {
   implicit def sfxBorder2jfx(v: Border): jfxsl.Border =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 
   /** An empty Border, useful to use instead of null. */
   val Empty = jfxsl.Border.EMPTY

@@ -45,12 +45,16 @@ object ScoringSystem extends AbstractScoringSystem {
             case None =>
               Score(
                 None,
-                if (firstTwoAreWins(scores)) Double else Normal,
+                if (firstTwoAreWins(scores))
+                  Double
+                else
+                  Normal,
                 berserkValue)
             case Some(w) if (userId == w) =>
               Score(
                 Some(true),
-                if (firstTwoAreWins(scores)) Double
+                if (firstTwoAreWins(scores))
+                  Double
                 else if (scores.headOption ?? (_.flag == StreakStarter))
                   StreakStarter
                 else

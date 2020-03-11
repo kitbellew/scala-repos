@@ -36,7 +36,10 @@ import scalafx.scene.paint.Color
 
 object DropShadow {
   implicit def sfxDropShadow2jfx(ds: DropShadow): jfxse.DropShadow =
-    if (ds != null) ds.delegate else null
+    if (ds != null)
+      ds.delegate
+    else
+      null
 }
 
 class DropShadow(

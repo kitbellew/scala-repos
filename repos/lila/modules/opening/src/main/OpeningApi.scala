@@ -30,7 +30,8 @@ private[opening] final class OpeningApi(
       openingColl.find(BSONDocument("_id" -> id)).one[Opening]
 
     def importOne(json: JsValue, token: String): Fu[Opening.ID] =
-      if (token != apiToken) fufail("Invalid API token")
+      if (token != apiToken)
+        fufail("Invalid API token")
       else {
         import Generated.generatedJSONRead
         Try(json.as[Generated]) match {

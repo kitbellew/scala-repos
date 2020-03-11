@@ -106,7 +106,8 @@ trait ReceivePipeline extends Actor {
         default: A1 ⇒ B1): B1 = {
       val result = handler(m)
 
-      if (result == Undefined) default(m)
+      if (result == Undefined)
+        default(m)
     }
 
     private def evaluate(m: Any) = handler(m)

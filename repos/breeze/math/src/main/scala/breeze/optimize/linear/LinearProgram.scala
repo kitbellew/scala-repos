@@ -49,7 +49,8 @@ class LinearProgram {
         if (constraints.nonEmpty) {
           "\nsubject to  " + constraints.mkString(
             "\n" + " " * "subject to  ".length)
-        } else ""
+        } else
+          ""
       }
     )
   }
@@ -211,7 +212,8 @@ class LinearProgram {
 
     def coefficients = {
       val v = SparseVector.zeros[Double](variables.length)
-      for (i <- 0 until size) v(id + i) = 1.0
+      for (i <- 0 until size)
+        v(id + i) = 1.0
       v
     }
   }
@@ -223,7 +225,8 @@ class LinearProgram {
 
     def coefficients = {
       val v = SparseVector.zeros[Double](variables.length)
-      for (i <- 0 until size) v(id + i) = 1.0
+      for (i <- 0 until size)
+        v(id + i) = 1.0
       v
     }
   }
@@ -234,7 +237,8 @@ class LinearProgram {
 
     def coefficients = {
       val v = SparseVector.zeros[Double](variables.length)
-      for (i <- 0 until size) v(id + i) = 1.0
+      for (i <- 0 until size)
+        v(id + i) = 1.0
       v
     }
   }
@@ -326,13 +330,15 @@ object LinearProgram {
           throw new UnsupportedOperationException(
             "Apache Solver can only handle real-valued linear programs.")
 
-      val constraints = for (c: Constraint <- objective.constraints) yield {
-        val cs = c.standardize
-        new LinearConstraint(
-          cs.lhs.coefficients.toDenseVector.data,
-          relationToConstraintType(c.relation),
-          cs.rhs.scalarComponent)
-      }
+      val constraints =
+        for (c: Constraint <- objective.constraints)
+          yield {
+            val cs = c.standardize
+            new LinearConstraint(
+              cs.lhs.coefficients.toDenseVector.data,
+              relationToConstraintType(c.relation),
+              cs.rhs.scalarComponent)
+          }
       new LinearConstraintSet(constraints.asJava)
     }
   }

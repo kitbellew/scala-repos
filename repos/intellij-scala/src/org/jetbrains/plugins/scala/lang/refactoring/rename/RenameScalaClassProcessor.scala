@@ -180,7 +180,8 @@ class ScalaClassRenameDialog(
         .getOrElse(new JPanel(new BorderLayout()))
       panel.add(chbRenameCompanion, BorderLayout.WEST)
       panel
-    } else null
+    } else
+      null
   }
 
   override def performRename(newName: String) {

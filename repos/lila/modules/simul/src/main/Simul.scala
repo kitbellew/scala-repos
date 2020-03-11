@@ -44,7 +44,8 @@ case class Simul(
     if (!hasApplicant(applicant.player.user) && variants.contains(
           applicant.player.variant))
       copy(applicants = applicants :+ applicant)
-    else this
+    else
+      this
   }
 
   def removeApplicant(userId: String) = Created {
@@ -89,7 +90,8 @@ case class Simul(
         status = SimulStatus.Finished,
         finishedAt = DateTime.now.some,
         hostGameId = none)
-    else this
+    else
+      this
 
   def gameIds = pairings.map(_.gameId)
 
@@ -117,7 +119,11 @@ case class Simul(
 
   def isNotBrandNew = createdAt isBefore DateTime.now.minusSeconds(10)
 
-  private def Created(s: => Simul): Simul = if (isCreated) s else this
+  private def Created(s: => Simul): Simul =
+    if (isCreated)
+      s
+    else
+      this
 }
 
 object Simul {

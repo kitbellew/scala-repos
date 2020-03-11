@@ -26,17 +26,19 @@ object Test extends Properties("concurrent.TrieMap") {
   /* helpers */
 
   def inParallel[T](totalThreads: Int)(body: Int => T): Seq[T] = {
-    val threads = for (idx <- 0 until totalThreads) yield new Thread {
-      setName("ParThread-" + idx)
-      private var res: T = _
-      override def run() {
-        res = body(idx)
-      }
-      def result = {
-        this.join()
-        res
-      }
-    }
+    val threads =
+      for (idx <- 0 until totalThreads)
+        yield new Thread {
+          setName("ParThread-" + idx)
+          private var res: T = _
+          override def run() {
+            res = body(idx)
+          }
+          def result = {
+            this.join()
+            res
+          }
+        }
 
     threads foreach (_.start())
     threads map (_.result)
@@ -70,7 +72,10 @@ object Test extends Properties("concurrent.TrieMap") {
     val idx = threadIdx
     val p = totalThreads
     val start = (sz / p) * idx + math.min(idx, sz % p)
-    val elems = (sz / p) + (if (idx < sz % p) 1 else 0)
+    val elems = (sz / p) + (if (idx < sz % p)
+                              1
+                            else
+                              0)
     val end = start + elems
     (start until end)
   }
@@ -105,10 +110,14 @@ object Test extends Properties("concurrent.TrieMap") {
       val checker = spawn {
         def check(last: Map[Wrap, Int], iterationsLeft: Int): Boolean = {
           val current = ct.readOnlySnapshot()
-          if (!hasGrown(last, current)) false
-          else if (current.size >= sz) true
-          else if (iterationsLeft < 0) false
-          else check(current, iterationsLeft - 1)
+          if (!hasGrown(last, current))
+            false
+          else if (current.size >= sz)
+            true
+          else if (iterationsLeft < 0)
+            false
+          else
+            check(current, iterationsLeft - 1)
         }
         check(ct.readOnlySnapshot(), 500)
       }
@@ -130,7 +139,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
   property("update") = forAll(sizes) { (n: Int) =>
     val ct = new TrieMap[Int, Int]
-    for (i <- 0 until n) ct(i) = i
+    for (i <- 0 until n)
+      ct(i) = i
     (0 until n) forall {
       case i => ct(i) == i
     }
@@ -141,7 +151,8 @@ object Test extends Properties("concurrent.TrieMap") {
       val ct = new TrieMap[Wrap, Int]
 
       inParallel(p) { idx =>
-        for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
+        for (i <- elementRange(idx, p, sz))
+          ct(Wrap(i)) = i
       }
 
       (0 until sz) forall {
@@ -151,10 +162,12 @@ object Test extends Properties("concurrent.TrieMap") {
 
   property("concurrent remove") = forAll(threadCounts, sizes) { (p, sz) =>
     val ct = new TrieMap[Wrap, Int]
-    for (i <- 0 until sz) ct(Wrap(i)) = i
+    for (i <- 0 until sz)
+      ct(Wrap(i)) = i
 
     inParallel(p) { idx =>
-      for (i <- elementRange(idx, p, sz)) ct.remove(Wrap(i))
+      for (i <- elementRange(idx, p, sz))
+        ct.remove(Wrap(i))
     }
 
     (0 until sz) forall {
@@ -182,7 +195,8 @@ object Test extends Properties("concurrent.TrieMap") {
       val results = inParallel(p) { idx =>
         (0 until sz) foreach { i =>
           val v = ct.getOrElseUpdate(Wrap(i), idx + ":" + i)
-          if (v == idx + ":" + i) totalInserts.incrementAndGet()
+          if (v == idx + ":" + i)
+            totalInserts.incrementAndGet()
         }
       }
 

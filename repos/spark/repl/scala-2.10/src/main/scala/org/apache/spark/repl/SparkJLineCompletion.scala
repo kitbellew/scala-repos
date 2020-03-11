@@ -60,8 +60,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
   def resetVerbosity() = verbosity = 0
 
   private def getSymbol(name: String, isModule: Boolean) = (
-    if (isModule) getModuleIfDefined(name)
-    else getModuleIfDefined(name)
+    if (isModule)
+      getModuleIfDefined(name)
+    else
+      getModuleIfDefined(name)
   )
   private def getType(name: String, isModule: Boolean) =
     getSymbol(name, isModule).tpe
@@ -124,25 +126,34 @@ class SparkJLineCompletion(val intp: SparkIMain)
         }
         override def completions(verbosity: Int) = {
           super.completions(verbosity) ++ (
-            if (verbosity == 0) Nil
-            else upgrade.completions(verbosity)
+            if (verbosity == 0)
+              Nil
+            else
+              upgrade.completions(verbosity)
           )
         }
         override def follow(s: String) = super.follow(s) orElse {
-          if (upgraded) upgrade.follow(s)
-          else None
+          if (upgraded)
+            upgrade.follow(s)
+          else
+            None
         }
         override def alternativesFor(id: String) =
           super.alternativesFor(id) ++ (
-            if (upgraded) upgrade.alternativesFor(id)
-            else Nil
+            if (upgraded)
+              upgrade.alternativesFor(id)
+            else
+              Nil
           ) distinct
       }
     }
     def apply(tp: Type): TypeMemberCompletion = {
-      if (tp eq NoType) NoTypeCompletion
-      else if (tp.typeSymbol.isPackageClass) new PackageCompletion(tp)
-      else new TypeMemberCompletion(tp)
+      if (tp eq NoType)
+        NoTypeCompletion
+      else if (tp.typeSymbol.isPackageClass)
+        new PackageCompletion(tp)
+      else
+        new TypeMemberCompletion(tp)
     }
     def imported(tp: Type) = new ImportCompletion(tp)
   }
@@ -182,7 +193,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
         val alts = members filter (x =>
           x.isMethod && tos(x) == id) map methodSignatureString
 
-        if (alts.nonEmpty) "" :: alts else Nil
+        if (alts.nonEmpty)
+          "" :: alts
+        else
+          Nil
       }
 
     override def toString = "%s (%d members)".format(tp, members.size)
@@ -226,7 +240,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
       def default = Some(TypeMemberCompletion(tpe))
 
       // only rebinding vals in power mode for now.
-      if (!isReplPower) default
+      if (!isReplPower)
+        default
       else
         intp runtimeClassAndTypeOfTerm id match {
           case Some((clazz, runtimeType)) =>
@@ -235,7 +250,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
               val param =
                 new NamedParam.Untyped(id, intp valueOfTerm id getOrElse null)
               Some(TypeMemberCompletion(tpe, runtimeType, param))
-            } else default
+            } else
+              default
           case _ =>
             default
         }
@@ -338,7 +354,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
       *  ignored as a delimiter, but on .<tab> it needs to be propagated.
       */
     val xs = lastResult completionsFor parsed
-    if (parsed.isEmpty) xs map ("." + _) else xs
+    if (parsed.isEmpty)
+      xs map ("." + _)
+    else
+      xs
   }
 
   // generic interface for querying (e.g. interpreter loop, testing)
@@ -370,19 +389,25 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     // Longest common prefix
     def commonPrefix(xs: List[String]): String = {
-      if (xs.isEmpty || xs.contains("")) ""
+      if (xs.isEmpty || xs.contains(""))
+        ""
       else
         xs.head.head match {
           case ch =>
             if (xs.tail forall (_.head == ch))
               "" + ch + commonPrefix(xs map (_.tail))
-            else ""
+            else
+              ""
         }
     }
 
     // This is jline's entry point for completion.
     override def complete(buf: String, cursor: Int): Candidates = {
-      verbosity = if (isConsecutiveTabs(buf, cursor)) verbosity + 1 else 0
+      verbosity =
+        if (isConsecutiveTabs(buf, cursor))
+          verbosity + 1
+        else
+          0
       logDebug(
         "\ncomplete(%s, %d) last = (%s, %d), verbosity: %s"
           .format(buf, cursor, lastBuf, lastCursor, verbosity))
@@ -395,7 +420,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
         if (winners.isEmpty)
           return None
         val newCursor =
-          if (winners contains "") p.cursor
+          if (winners contains "")
+            p.cursor
           else {
             val advance = commonPrefix(winners)
             lastCursor = p.position + advance.length
@@ -415,8 +441,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
       // a single dot is special cased to completion on the previous result
       def lastResultCompletion =
-        if (!looksLikeInvocation(buf)) None
-        else tryCompletion(Parsed.dotted(buf drop 1, cursor), lastResultFor)
+        if (!looksLikeInvocation(buf))
+          None
+        else
+          tryCompletion(Parsed.dotted(buf drop 1, cursor), lastResultFor)
 
       def tryAll = (
         lastResultCompletion
@@ -441,8 +469,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
             "Error: complete(%s, %s) provoked".format(buf, cursor) + ex)
           Candidates(
             cursor,
-            if (isReplDebug) List("<error:" + ex + ">")
-            else Nil)
+            if (isReplDebug)
+              List("<error:" + ex + ">")
+            else
+              Nil)
       }
     }
   }

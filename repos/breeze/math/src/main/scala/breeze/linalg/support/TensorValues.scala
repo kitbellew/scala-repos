@@ -29,7 +29,10 @@ class TensorValues[K, V, +This](
   def size = tensor.size
 
   def iterator = {
-    if (active) tensor.activeValuesIterator else tensor.valuesIterator
+    if (active)
+      tensor.activeValuesIterator
+    else
+      tensor.valuesIterator
   }.filter(f)
 
   def foreach[U](fn: V => U) = iterator foreach fn

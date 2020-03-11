@@ -59,7 +59,8 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
       val pb = new PushbackReader(charReader)
       pb unread iter.next().toInt
       new BufferedReader(pb, bufferSize)
-    } else charReader
+    } else
+      charReader
   }
 
   class BufferedLineIterator
@@ -76,13 +77,16 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
     }
     override def next(): String = {
       val result = {
-        if (nextLine == null) lineReader.readLine
+        if (nextLine == null)
+          lineReader.readLine
         else
           try nextLine
           finally nextLine = null
       }
-      if (result == null) Iterator.empty.next()
-      else result
+      if (result == null)
+        Iterator.empty.next()
+      else
+        result
     }
   }
 
@@ -97,7 +101,8 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
     var n = 0
     while (n != -1) {
       n = allReader.read(buf)
-      if (n > 0) sb.appendAll(buf, 0, n)
+      if (n > 0)
+        sb.appendAll(buf, 0, n)
     }
     sb.result
   }

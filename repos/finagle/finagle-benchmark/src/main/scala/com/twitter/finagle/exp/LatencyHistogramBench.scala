@@ -22,7 +22,11 @@ class LatencyHistogramBench extends StdBenchAnnotations {
 
   @Setup
   def setup(): Unit = {
-    val err = if (error <= 0.0) 0.0 else error
+    val err =
+      if (error <= 0.0)
+        0.0
+      else
+        error
 
     histo = new LatencyHistogram(
       maxDurationMs,

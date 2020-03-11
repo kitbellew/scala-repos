@@ -227,11 +227,20 @@ private[math] trait ConvertableToSafeLong extends ConvertableTo[SafeLong] {
   def fromBigInt(a: BigInt): SafeLong = SafeLong(a)
   def fromBigDecimal(a: BigDecimal): SafeLong = SafeLong(a.toBigInt)
   def fromRational(a: Rational): SafeLong =
-    if (a.isValidInt) SafeLong(a.toInt) else SafeLong(a.toBigInt)
+    if (a.isValidInt)
+      SafeLong(a.toInt)
+    else
+      SafeLong(a.toBigInt)
   def fromAlgebraic(a: Algebraic): SafeLong =
-    if (a.isValidInt) SafeLong(a.toInt) else SafeLong(a.toBigInt)
+    if (a.isValidInt)
+      SafeLong(a.toInt)
+    else
+      SafeLong(a.toBigInt)
   def fromReal(a: Real): SafeLong =
-    if (a.isValidInt) SafeLong(a.toInt) else fromRational(a.toRational)
+    if (a.isValidInt)
+      SafeLong(a.toInt)
+    else
+      fromRational(a.toRational)
 
   def fromType[B: ConvertableFrom](b: B): SafeLong =
     SafeLong(ConvertableFrom[B].toBigInt(b))
@@ -266,11 +275,20 @@ private[math] trait ConvertableToNatural extends ConvertableTo[Natural] {
   def fromBigInt(a: BigInt): Natural = Natural(a)
   def fromBigDecimal(a: BigDecimal): Natural = Natural(a.toBigInt)
   def fromRational(a: Rational): Natural =
-    if (a.isValidInt) Natural(a.toInt) else Natural(a.toBigInt)
+    if (a.isValidInt)
+      Natural(a.toInt)
+    else
+      Natural(a.toBigInt)
   def fromAlgebraic(a: Algebraic): Natural =
-    if (a.isValidInt) Natural(a.toInt) else Natural(a.toBigInt)
+    if (a.isValidInt)
+      Natural(a.toInt)
+    else
+      Natural(a.toBigInt)
   def fromReal(a: Real): Natural =
-    if (a.isValidInt) Natural(a.toInt) else fromRational(a.toRational)
+    if (a.isValidInt)
+      Natural(a.toInt)
+    else
+      fromRational(a.toRational)
 
   def fromType[B: ConvertableFrom](b: B): Natural =
     Natural(ConvertableFrom[B].toBigInt(b))

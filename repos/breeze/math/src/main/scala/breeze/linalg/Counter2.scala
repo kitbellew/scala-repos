@@ -80,15 +80,18 @@ trait Counter2Like[
 
   override def keysIterator =
     for ((k1, m) <- data.iterator;
-         k2 <- m.keysIterator) yield (k1, k2)
+         k2 <- m.keysIterator)
+      yield (k1, k2)
 
   override def valuesIterator =
     for (m <- data.valuesIterator;
-         v <- m.valuesIterator) yield v
+         v <- m.valuesIterator)
+      yield v
 
   override def iterator =
     for ((k1, m) <- data.iterator;
-         (k2, v) <- m.iterator) yield (k1, k2) -> v
+         (k2, v) <- m.iterator)
+      yield (k1, k2) -> v
 
   def activeSize = size
 
@@ -143,7 +146,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
 
       def iterator: Iterator[(K1, K2)] =
         for ((k1, m) <- data.iterator;
-             k2 <- m.keysIterator) yield (k1, k2)
+             k2 <- m.keysIterator)
+          yield (k1, k2)
     }
   }
 

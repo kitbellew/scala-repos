@@ -135,8 +135,10 @@ class CSVIngestProcessing(
         (false, batch)
       } else {
         val nextRow = reader.readNext()
-        if (nextRow == null) (true, batch)
-        else readBatch(reader, batch :+ nextRow)
+        if (nextRow == null)
+          (true, batch)
+        else
+          readBatch(reader, batch :+ nextRow)
       }
     }
 
@@ -213,7 +215,10 @@ class CSVIngestProcessing(
                 authorities,
                 jvals,
                 jobId,
-                if (done) streamRef.terminate else streamRef) flatMap { _ =>
+                if (done)
+                  streamRef.terminate
+                else
+                  streamRef) flatMap { _ =>
                 if (done)
                   M.point(
                     BatchResult(

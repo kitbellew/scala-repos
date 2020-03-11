@@ -35,7 +35,10 @@ import scalafx.delegate.SFXDelegate
 
 object Box {
   implicit def sfxBox2jfx(v: Box): jfxss.Box =
-    if (v != null) v.delegate else null
+    if (v != null)
+      v.delegate
+    else
+      null
 }
 
 /**

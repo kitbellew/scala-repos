@@ -142,8 +142,10 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
         (math.min(pMin, dl), math.max(pMax, dp), pCt + 1)
     }
     val results =
-      if (pResults == initAcc) Array[(Double, Double, Double)]()
-      else Array(pResults)
+      if (pResults == initAcc)
+        Array[(Double, Double, Double)]()
+      else
+        Array(pResults)
     results.iterator
   }
 

@@ -90,7 +90,8 @@ class ScAccessModifierImpl private (
 
   override def getReference = {
     val text = idText
-    if (text.isEmpty) null
+    if (text.isEmpty)
+      null
     else
       new PsiReference {
         def getElement = ScAccessModifierImpl.this
@@ -137,7 +138,8 @@ class ScAccessModifierImpl private (
             var pack: PsiPackage = ScPackageImpl(
               JavaPsiFacade.getInstance(getProject).findPackage(qname))
             while (pack != null) {
-              if (pack.name == name) return pack
+              if (pack.name == name)
+                return pack
               pack = pack.getParentPackage
             }
             null
@@ -183,9 +185,13 @@ class ScAccessModifierImpl private (
 
   def access = {
     assert(isPrivate || isProtected)
-    if (isPrivate && isThis) ScAccessModifier.Type.THIS_PRIVATE
-    else if (isPrivate) ScAccessModifier.Type.PRIVATE
-    else if (isThis) ScAccessModifier.Type.THIS_PROTECTED
-    else ScAccessModifier.Type.PROTECTED
+    if (isPrivate && isThis)
+      ScAccessModifier.Type.THIS_PRIVATE
+    else if (isPrivate)
+      ScAccessModifier.Type.PRIVATE
+    else if (isThis)
+      ScAccessModifier.Type.THIS_PROTECTED
+    else
+      ScAccessModifier.Type.PROTECTED
   }
 }

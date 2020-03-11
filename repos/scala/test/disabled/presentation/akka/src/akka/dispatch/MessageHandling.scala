@@ -264,7 +264,8 @@ abstract class MessageDispatcherConfigurator {
   def mailboxType(config: Configuration): MailboxType = {
     val capacity =
       config.getInt("mailbox-capacity", Dispatchers.MAILBOX_CAPACITY)
-    if (capacity < 1) UnboundedMailbox()
+    if (capacity < 1)
+      UnboundedMailbox()
     else
       BoundedMailbox(
         capacity,

@@ -104,7 +104,8 @@ case class HttpDigestAuthentication(realmName: String)(
 
     protected def messageHandler = {
       case CheckAndPurge =>
-        if (keepPinging) doPing()
+        if (keepPinging)
+          doPing()
         nonceMap.foreach((entry) => {
           val ts = System.currentTimeMillis
           if ((ts - entry._2) > nonceValidityPeriod) {

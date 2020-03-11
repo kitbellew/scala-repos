@@ -405,8 +405,10 @@ private final class TrapExit(delegateManager: SecurityManager)
 
   private[this] def interruptAllThreads(app: App): Unit =
     app processThreads { t =>
-      if (!isSystemThread(t)) safeInterrupt(t, app.log)
-      else app.log.debug(s"Not interrupting system thread $t")
+      if (!isSystemThread(t))
+        safeInterrupt(t, app.log)
+      else
+        app.log.debug(s"Not interrupting system thread $t")
     }
 
   /** Gets the managed application associated with Thread `t` */

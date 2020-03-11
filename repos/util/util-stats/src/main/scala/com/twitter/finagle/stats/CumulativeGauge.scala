@@ -102,8 +102,10 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
       ) {
         val largeCgs = gauges.asScala.flatMap {
           case (ks, cg) =>
-            if (cg.totalSize >= 100000) Some(ks -> cg.totalSize)
-            else None
+            if (cg.totalSize >= 100000)
+              Some(ks -> cg.totalSize)
+            else
+              None
         }
         if (largeCgs.isEmpty) {
           Nil
@@ -137,7 +139,11 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
         }
       }
       val prev = gauges.putIfAbsent(name, insert)
-      cumulativeGauge = if (prev == null) insert else prev
+      cumulativeGauge =
+        if (prev == null)
+          insert
+        else
+          prev
     }
     cumulativeGauge.addGauge(f)
   }
@@ -152,8 +158,10 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
     */
   protected def numUnderlying(name: String*): Int = {
     val cumulativeGauge = gauges.get(name)
-    if (cumulativeGauge == null) 0
-    else cumulativeGauge.size
+    if (cumulativeGauge == null)
+      0
+    else
+      cumulativeGauge.size
   }
 
 }

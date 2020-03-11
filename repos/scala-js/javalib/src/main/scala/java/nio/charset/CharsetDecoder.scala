@@ -81,7 +81,11 @@ abstract class CharsetDecoder protected (
     if (status == FLUSHED || (!endOfInput && status == END))
       throw new IllegalStateException
 
-    status = if (endOfInput) END else ONGOING
+    status =
+      if (endOfInput)
+        END
+      else
+        ONGOING
 
     @inline
     @tailrec
@@ -110,8 +114,10 @@ abstract class CharsetDecoder protected (
         result2
       } else {
         val action =
-          if (result2.isUnmappable) unmappableCharacterAction
-          else malformedInputAction
+          if (result2.isUnmappable)
+            unmappableCharacterAction
+          else
+            malformedInputAction
 
         action match {
           case CodingErrorAction.REPLACE =>

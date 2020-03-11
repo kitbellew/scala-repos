@@ -78,7 +78,10 @@ trait EffectIncludes {
     * @return $SFX $BLE
     */
   implicit def jfxBlend2sfx(b: jfxse.Blend): Blend =
-    if (b != null) new Blend(b) else null
+    if (b != null)
+      new Blend(b)
+    else
+      null
 
   /**
     * $START$BLM.html $BLM$END
@@ -96,7 +99,10 @@ trait EffectIncludes {
     * @return $SFX $BLO
     */
   implicit def jfxBloom2sfx(b: jfxse.Bloom): Bloom =
-    if (b != null) new Bloom(b) else null
+    if (b != null)
+      new Bloom(b)
+    else
+      null
 
   /**
     * $START$BBL.html $BBL$END
@@ -105,7 +111,10 @@ trait EffectIncludes {
     * @return $SFX $BBL
     */
   implicit def jfxBoxBlur2sfx(bb: jfxse.BoxBlur): BoxBlur =
-    if (bb != null) new BoxBlur(bb) else null
+    if (bb != null)
+      new BoxBlur(bb)
+    else
+      null
 
   /**
     * $START$BLT.html $BLT$END
@@ -123,7 +132,10 @@ trait EffectIncludes {
     * @return $SFX $CLA
     */
   implicit def jfxColorAdjust2sfx(ca: jfxse.ColorAdjust): ColorAdjust =
-    if (ca != null) new ColorAdjust(ca) else null
+    if (ca != null)
+      new ColorAdjust(ca)
+    else
+      null
 
   /**
     * $START$CLI.html $CLI$END
@@ -132,7 +144,10 @@ trait EffectIncludes {
     * @return $SFX $CLI
     */
   implicit def jfxColorInput2sfx(ci: jfxse.ColorInput): ColorInput =
-    if (ci != null) new ColorInput(ci) else null
+    if (ci != null)
+      new ColorInput(ci)
+    else
+      null
 
   /**
     * $START$DSM.html $DSM$END
@@ -142,7 +157,10 @@ trait EffectIncludes {
     */
   implicit def jfxDisplacementMap2sfx(
       dm: jfxse.DisplacementMap): DisplacementMap =
-    if (dm != null) new DisplacementMap(dm) else null
+    if (dm != null)
+      new DisplacementMap(dm)
+    else
+      null
 
   /**
     * $START$EFF.html $EFF$END
@@ -151,8 +169,10 @@ trait EffectIncludes {
     * @return $SFX $EFF
     */
   implicit def jfxEffect2sfx(e: jfxse.Effect): Effect =
-    if (e != null) new Effect(e) {}
-    else null
+    if (e != null)
+      new Effect(e) {}
+    else
+      null
 
   /**
     * $START$DPS.html $DPS$END
@@ -161,7 +181,10 @@ trait EffectIncludes {
     * @return $SFX $DPS
     */
   implicit def jfxDropShadow2sfx(ds: jfxse.DropShadow): DropShadow =
-    if (ds != null) new DropShadow(ds) else null
+    if (ds != null)
+      new DropShadow(ds)
+    else
+      null
 
   /**
     * $START$FLM.html $FLM$END
@@ -170,7 +193,10 @@ trait EffectIncludes {
     * @return $SFX $FLM
     */
   implicit def jfxFloatMap2sfx(fm: jfxse.FloatMap): FloatMap =
-    if (fm != null) new FloatMap(fm) else null
+    if (fm != null)
+      new FloatMap(fm)
+    else
+      null
 
   /**
     * $START$GSB.html $GSB$END
@@ -179,7 +205,10 @@ trait EffectIncludes {
     * @return $SFX $GSB
     */
   implicit def jfxGaussianBlur2sfx(gb: jfxse.GaussianBlur): GaussianBlur =
-    if (gb != null) new GaussianBlur(gb) else null
+    if (gb != null)
+      new GaussianBlur(gb)
+    else
+      null
 
   /**
     * $START$GLW.html $GLW$END
@@ -188,7 +217,10 @@ trait EffectIncludes {
     * @return $SFX $GLW
     */
   implicit def jfxGlow2sfx(g: jfxse.Glow): Glow =
-    if (g != null) new Glow(g) else null
+    if (g != null)
+      new Glow(g)
+    else
+      null
 
   /**
     * $START$IIN.html $IIN$END
@@ -197,7 +229,10 @@ trait EffectIncludes {
     * @return $SFX $IIN
     */
   implicit def jfxImageInput2sfx(ii: jfxse.ImageInput): ImageInput =
-    if (ii != null) new ImageInput(ii) else null
+    if (ii != null)
+      new ImageInput(ii)
+    else
+      null
 
   /**
     * $START$INS.html $INS$END
@@ -206,7 +241,10 @@ trait EffectIncludes {
     * @return $SFX $INS
     */
   implicit def jfxInnerShadow2sfx(ii: jfxse.InnerShadow): InnerShadow =
-    if (ii != null) new InnerShadow(ii) else null
+    if (ii != null)
+      new InnerShadow(ii)
+    else
+      null
 
   /**
     * $START$LIG.html $LIG$END
@@ -215,8 +253,10 @@ trait EffectIncludes {
     * @return $SFX $LIG
     */
   implicit def jfxLight2sfx(l: jfxse.Light): Light =
-    if (l != null) new Light(l) {}
-    else null
+    if (l != null)
+      new Light(l) {}
+    else
+      null
 
   /**
     * $START$LDS.html $LDS$END
@@ -225,7 +265,10 @@ trait EffectIncludes {
     * @return $SFX $LDS
     */
   implicit def jfxLightDistant2sfx(d: jfxse.Light.Distant): Distant =
-    if (d != null) new Light.Distant(d) else null
+    if (d != null)
+      new Light.Distant(d)
+    else
+      null
 
   /**
     * $START$LPT.html $LPT$END
@@ -234,7 +277,10 @@ trait EffectIncludes {
     * @return $SFX $LPT
     */
   implicit def jfxLightPoint2sfx(p: jfxse.Light.Point): Point =
-    if (p != null) new Light.Point(p) else null
+    if (p != null)
+      new Light.Point(p)
+    else
+      null
 
   /**
     * $START$LSP.html $LSP$END
@@ -243,7 +289,10 @@ trait EffectIncludes {
     * @return $SFX $LSP
     */
   implicit def jfxLightSpot2sfx(s: jfxse.Light.Spot): Spot =
-    if (s != null) new Light.Spot(s) else null
+    if (s != null)
+      new Light.Spot(s)
+    else
+      null
 
   /**
     * $START$LIN.html $LIN$END
@@ -252,7 +301,10 @@ trait EffectIncludes {
     * @return $SFX $LIN
     */
   implicit def jfxLighting2sfx(l: jfxse.Lighting): Lighting =
-    if (l != null) new Lighting(l) else null
+    if (l != null)
+      new Lighting(l)
+    else
+      null
 
   /**
     * $START$MBL.html $MBL$END
@@ -261,7 +313,10 @@ trait EffectIncludes {
     * @return $SFX $MBL
     */
   implicit def jfxMotionBlur2sfx(mb: jfxse.MotionBlur): MotionBlur =
-    if (mb != null) new MotionBlur(mb) else null
+    if (mb != null)
+      new MotionBlur(mb)
+    else
+      null
 
   /**
     * $START$PTR.html $PTR$END
@@ -271,7 +326,10 @@ trait EffectIncludes {
     */
   implicit def jfxPerspectiveTransform2sfx(
       pt: jfxse.PerspectiveTransform): PerspectiveTransform =
-    if (pt != null) new PerspectiveTransform(pt) else null
+    if (pt != null)
+      new PerspectiveTransform(pt)
+    else
+      null
 
   /**
     * $START$RFL.html $RFL$END
@@ -280,7 +338,10 @@ trait EffectIncludes {
     * @return $SFX $RFL
     */
   implicit def jfxReflection2sfx(r: jfxse.Reflection): Reflection =
-    if (r != null) new Reflection(r) else null
+    if (r != null)
+      new Reflection(r)
+    else
+      null
 
   /**
     * $START$SPT.html $SPT$END
@@ -289,7 +350,10 @@ trait EffectIncludes {
     * @return $SFX $SPT
     */
   implicit def jfxSepiaTone2sfx(st: jfxse.SepiaTone): SepiaTone =
-    if (st != null) new SepiaTone(st) else null
+    if (st != null)
+      new SepiaTone(st)
+    else
+      null
 
   /**
     * $START$SHW.html $SHW$END
@@ -298,6 +362,9 @@ trait EffectIncludes {
     * @return $SFX $SHW
     */
   implicit def jfxShadow2sfx(s: jfxse.Shadow): Shadow =
-    if (s != null) new Shadow(s) else null
+    if (s != null)
+      new Shadow(s)
+    else
+      null
 
 }

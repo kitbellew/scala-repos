@@ -181,14 +181,17 @@ object Reflect {
       classLoader: ClassLoader): Class[_ <: T] = {
     val c = Class.forName(fqcn, false, classLoader).asInstanceOf[Class[_ <: T]]
     val t = implicitly[ClassTag[T]].runtimeClass
-    if (t.isAssignableFrom(c)) c
-    else throw new ClassCastException(t + " is not assignable from " + c)
+    if (t.isAssignableFrom(c))
+      c
+    else
+      throw new ClassCastException(t + " is not assignable from " + c)
   }
 
   def createInstance[T: ClassTag](clazz: Class[_]): T = {
     val o = clazz.newInstance
     val t = implicitly[ClassTag[T]].runtimeClass
-    if (t.isInstance(o)) o.asInstanceOf[T]
+    if (t.isInstance(o))
+      o.asInstanceOf[T]
     else
       throw new ClassCastException(
         clazz.getName + " is not an instance of " + t)

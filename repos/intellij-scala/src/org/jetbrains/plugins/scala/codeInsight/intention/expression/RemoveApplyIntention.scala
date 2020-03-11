@@ -47,7 +47,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val methodCallExpr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (methodCallExpr == null) return false
+    if (methodCallExpr == null)
+      return false
 
     methodCallExpr.getInvokedExpr match {
       case ref: ScReferenceExpression =>
@@ -56,7 +57,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
 
         if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
           return false
-        if (ref.isQualified && ref.nameId.getText == "apply") return true
+        if (ref.isQualified && ref.nameId.getText == "apply")
+          return true
       case _ =>
     }
 
@@ -81,7 +83,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
 
     val expr: ScMethodCall =
       PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
-    if (expr == null || !expr.isValid) return
+    if (expr == null || !expr.isValid)
+      return
 
     var start = expr.getInvokedExpr
       .asInstanceOf[ScReferenceExpression]

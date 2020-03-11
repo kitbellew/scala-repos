@@ -67,9 +67,15 @@ trait TypeDebugging {
 
     private val colorsOk = sys.props contains "scala.color"
     private def inColor(s: String, color: String) =
-      if (colorsOk && s != "") color + s + RESET else s
+      if (colorsOk && s != "")
+        color + s + RESET
+      else
+        s
     private def inBold(s: String, color: String) =
-      if (colorsOk && s != "") color + BOLD + s + RESET else s
+      if (colorsOk && s != "")
+        color + BOLD + s + RESET
+      else
+        s
 
     def inLightRed(s: String) = inColor(s, RED)
     def inLightGreen(s: String) = inColor(s, GREEN)
@@ -80,7 +86,11 @@ trait TypeDebugging {
     def inBlue(s: String): String = inBold(s, BLUE)
     def inCyan(s: String): String = inBold(s, CYAN)
     def inMagenta(s: String) = inBold(s, MAGENTA)
-    def resetColor(s: String): String = if (colorsOk) s + RESET else s
+    def resetColor(s: String): String =
+      if (colorsOk)
+        s + RESET
+      else
+        s
 
     private def to_s(x: Any): String = x match {
       // otherwise case classes are caught looking like products
@@ -90,7 +100,8 @@ trait TypeDebugging {
       case _                     => "" + x
     }
     def ptBlock(label: String, pairs: (String, Any)*): String = {
-      if (pairs.isEmpty) label + "{ }"
+      if (pairs.isEmpty)
+        label + "{ }"
       else {
         val width = (pairs map (_._1.length)).max
         val fmt = "%-" + (width + 1) + "s %s"
@@ -127,8 +138,16 @@ trait TypeDebugging {
         "class " + name + ptTypeParams(tparams)
       case td: TypeDef => ptTypeParam(td)
       case TypeBoundsTree(lo, hi) =>
-        val lo_s = if (noPrint(lo)) "" else " >: " + ptTree(lo)
-        val hi_s = if (noPrint(hi)) "" else " <: " + ptTree(hi)
+        val lo_s =
+          if (noPrint(lo))
+            ""
+          else
+            " >: " + ptTree(lo)
+        val hi_s =
+          if (noPrint(hi))
+            ""
+          else
+            " <: " + ptTree(hi)
         lo_s + hi_s
       case _ if (t.symbol eq null) || (t.symbol eq NoSymbol) => to_s(t)
       case _                                                 => "" + t.symbol.tpe
@@ -143,13 +162,24 @@ trait TypeDebugging {
     object str {
       def parentheses(xs: List[_]): String = xs.mkString("(", ", ", ")")
       def brackets(xs: List[_]): String =
-        if (xs.isEmpty) "" else xs.mkString("[", ", ", "]")
+        if (xs.isEmpty)
+          ""
+        else
+          xs.mkString("[", ", ", "]")
       def tparams(tparams: List[Type]): String = brackets(tparams map debug)
       def parents(ps: List[Type]): String = (ps map debug).mkString(" with ")
       def refine(defs: Scope): String = defs.toList.mkString("{", " ;\n ", "}")
       def bounds(lo: Type, hi: Type): String = {
-        val lo_s = if (typeIsNothing(lo)) "" else s" >: $lo"
-        val hi_s = if (typeIsAny(hi)) "" else s" <: $hi"
+        val lo_s =
+          if (typeIsNothing(lo))
+            ""
+          else
+            s" >: $lo"
+        val hi_s =
+          if (typeIsAny(hi))
+            ""
+          else
+            s" <: $hi"
         lo_s + hi_s
       }
     }

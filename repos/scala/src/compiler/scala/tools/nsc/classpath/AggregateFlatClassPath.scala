@@ -25,9 +25,12 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
     def find(aggregates: Seq[FlatClassPath]): Option[AbstractFile] =
       if (aggregates.nonEmpty) {
         val classFile = aggregates.head.findClassFile(className)
-        if (classFile.isDefined) classFile
-        else find(aggregates.tail)
-      } else None
+        if (classFile.isDefined)
+          classFile
+        else
+          find(aggregates.tail)
+      } else
+        None
 
     find(aggregates)
   }
@@ -44,9 +47,12 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
       if (aggregates.nonEmpty) {
         val entry = getEntries(aggregates.head)
           .find(_.name == simpleClassName)
-        if (entry.isDefined) entry
-        else findEntry(aggregates.tail, getEntries)
-      } else None
+        if (entry.isDefined)
+          entry
+        else
+          findEntry(aggregates.tail, getEntries)
+      } else
+        None
 
     val classEntry = findEntry(aggregates, classesGetter(pkg))
     val sourceEntry = findEntry(aggregates, sourcesGetter(pkg))

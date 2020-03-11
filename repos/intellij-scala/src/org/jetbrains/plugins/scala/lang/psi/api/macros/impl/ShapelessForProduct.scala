@@ -43,7 +43,8 @@ object ShapelessForProduct extends ScalaMacroTypeable {
   override def checkMacro(
       macros: ScFunction,
       context: MacroContext): Option[ScType] = {
-    if (!context.expectedType.isDefined) return None
+    if (!context.expectedType.isDefined)
+      return None
     val manager = ScalaPsiManager.instance(context.place.getProject)
     val clazz = manager.getCachedClass(
       "shapeless.Generic",
@@ -52,7 +53,8 @@ object ShapelessForProduct extends ScalaMacroTypeable {
     clazz match {
       case c: ScTypeDefinition =>
         val tpt = c.typeParameters
-        if (tpt.length == 0) return None
+        if (tpt.length == 0)
+          return None
         val undef = new ScUndefinedType(
           new ScTypeParameterType(tpt(0), ScSubstitutor.empty))
         val genericType = ScParameterizedType(ScDesignatorType(c), Seq(undef))
@@ -61,23 +63,27 @@ object ShapelessForProduct extends ScalaMacroTypeable {
           context.expectedType.get,
           Set.empty,
           new ScUndefinedSubstitutor())
-        if (!res) return None
+        if (!res)
+          return None
         undefSubst.getSubstitutor match {
           case Some(subst) =>
             val productLikeType = subst.subst(undef)
             val parts =
               ScPattern.extractProductParts(productLikeType, context.place)
-            if (parts.length == 0) return None
+            if (parts.length == 0)
+              return None
             val coloncolon = manager.getCachedClass(
               "shapeless.::",
               context.place.getResolveScope,
               ClassCategory.TYPE)
-            if (coloncolon == null) return None
+            if (coloncolon == null)
+              return None
             val hnil = manager.getCachedClass(
               "shapeless.HNil",
               context.place.getResolveScope,
               ClassCategory.TYPE)
-            if (hnil == null) return None
+            if (hnil == null)
+              return None
             val repr = parts.foldRight(ScDesignatorType(hnil): ScType) {
               case (part, resultType) =>
                 ScParameterizedType(
@@ -90,7 +96,8 @@ object ShapelessForProduct extends ScalaMacroTypeable {
                   case a: ScTypeAlias if a.name == "Aux" => true
                   case _                                 => false
                 }
-                if (!elem.isDefined) return None
+                if (!elem.isDefined)
+                  return None
                 Some(
                   ScParameterizedType(
                     ScProjectionType(

@@ -41,19 +41,27 @@ case class ScCompoundType(
         val rtDepth = tp.typeDepth
         if (sign.typeParams.nonEmpty) {
           (ScType.typeParamsDepth(sign.typeParams) + 1).max(rtDepth)
-        } else rtDepth
+        } else
+          rtDepth
     } ++ typesMap.map {
       case (s: String, sign: TypeAliasSignature) =>
         val boundsDepth =
           sign.lowerBound.typeDepth.max(sign.upperBound.typeDepth)
         if (sign.typeParams.nonEmpty) {
           (ScType.typeParamsDepth(sign.typeParams.toArray) + 1).max(boundsDepth)
-        } else boundsDepth
+        } else
+          boundsDepth
     }
     val ints = components.map(_.typeDepth)
-    val componentsDepth = if (ints.length == 0) 0 else ints.max
-    if (depths.nonEmpty) componentsDepth.max(depths.max + 1)
-    else componentsDepth
+    val componentsDepth =
+      if (ints.length == 0)
+        0
+      else
+        ints.max
+    if (depths.nonEmpty)
+      componentsDepth.max(depths.max + 1)
+    else
+      componentsDepth
   }
 
   override def removeAbstracts =
@@ -73,8 +81,10 @@ case class ScCompoundType(
           val pTypes: List[Seq[() => ScType]] =
             s.substitutedTypes.map(_.map(f => () => f().removeAbstracts))
           val tParams: Array[TypeParameter] =
-            if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-            else s.typeParams.map(updateTypeParam)
+            if (s.typeParams.length == 0)
+              TypeParameter.EMPTY_ARRAY
+            else
+              s.typeParams.map(updateTypeParam)
           val rt: ScType = tp.removeAbstracts
           (
             new Signature(
@@ -137,8 +147,10 @@ case class ScCompoundType(
                 s.substitutedTypes.map(_.map(f =>
                   () => f().recursiveUpdate(update, visited + this)))
               val tParams: Array[TypeParameter] =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(updateTypeParam)
+                if (s.typeParams.length == 0)
+                  TypeParameter.EMPTY_ARRAY
+                else
+                  s.typeParams.map(updateTypeParam)
               val rt: ScType = tp.recursiveUpdate(update, visited + this)
               (
                 new Signature(
@@ -199,8 +211,10 @@ case class ScCompoundType(
           signatureMap.map {
             case (s: Signature, tp) =>
               val tParams =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(updateTypeParam)
+                if (s.typeParams.length == 0)
+                  TypeParameter.EMPTY_ARRAY
+                else
+                  s.typeParams.map(updateTypeParam)
               (
                 new Signature(
                   s.name,
@@ -236,7 +250,8 @@ case class ScCompoundType(
     var undefinedSubst = uSubst
     r match {
       case r: ScCompoundType =>
-        if (r == this) return (true, undefinedSubst)
+        if (r == this)
+          return (true, undefinedSubst)
         if (components.length != r.components.length)
           return (false, undefinedSubst)
         val list = components.zip(r.components)
@@ -244,7 +259,8 @@ case class ScCompoundType(
         while (iterator.hasNext) {
           val (w1, w2) = iterator.next()
           val t = Equivalence.equivInner(w1, w2, undefinedSubst, falseUndef)
-          if (!t._1) return (false, undefinedSubst)
+          if (!t._1)
+            return (false, undefinedSubst)
           undefinedSubst = t._2
         }
 
@@ -258,14 +274,16 @@ case class ScCompoundType(
             case None => return (false, undefinedSubst)
             case Some(t1) =>
               val f = Equivalence.equivInner(t, t1, undefinedSubst, falseUndef)
-              if (!f._1) return (false, undefinedSubst)
+              if (!f._1)
+                return (false, undefinedSubst)
               undefinedSubst = f._2
           }
         }
 
         val types1 = typesMap
         val types2 = r.typesMap
-        if (types1.size != types2.size) (false, undefinedSubst)
+        if (types1.size != types2.size)
+          (false, undefinedSubst)
         else {
           val types1iterator = types1.iterator
           while (types1iterator.hasNext) {
@@ -278,14 +296,16 @@ case class ScCompoundType(
                   bounds2.lowerBound,
                   undefinedSubst,
                   falseUndef)
-                if (!t._1) return (false, undefinedSubst)
+                if (!t._1)
+                  return (false, undefinedSubst)
                 undefinedSubst = t._2
                 t = Equivalence.equivInner(
                   bounds1.upperBound,
                   bounds2.upperBound,
                   undefinedSubst,
                   falseUndef)
-                if (!t._1) return (false, undefinedSubst)
+                if (!t._1)
+                  return (false, undefinedSubst)
                 undefinedSubst = t._2
             }
           }
@@ -296,18 +316,22 @@ case class ScCompoundType(
           val filtered = components.filter {
             case psi.types.Any => false
             case psi.types.AnyRef =>
-              if (!r.conforms(psi.types.AnyRef)) return (false, undefinedSubst)
+              if (!r.conforms(psi.types.AnyRef))
+                return (false, undefinedSubst)
               false
             case ScDesignatorType(obj: PsiClass)
                 if obj.qualifiedName == "java.lang.Object" =>
-              if (!r.conforms(psi.types.AnyRef)) return (false, undefinedSubst)
+              if (!r.conforms(psi.types.AnyRef))
+                return (false, undefinedSubst)
               false
             case _ => true
           }
           if (filtered.length == 1)
             Equivalence.equivInner(filtered(0), r, undefinedSubst, falseUndef)
-          else (false, undefinedSubst)
-        } else (false, undefinedSubst)
+          else
+            (false, undefinedSubst)
+        } else
+          (false, undefinedSubst)
 
     }
   }
@@ -323,8 +347,10 @@ object ScCompoundType {
       new mutable.HashMap[Signature, ScType] {
         override def elemHashCode(s: Signature) = s.name.hashCode * 31 + {
           val length = s.paramLength
-          if (length.sum == 0) List(0).hashCode()
-          else length.hashCode()
+          if (length.sum == 0)
+            List(0).hashCode()
+          else
+            length.hashCode()
         }
       }
     val typesVal = new mutable.HashMap[String, TypeAliasSignature]

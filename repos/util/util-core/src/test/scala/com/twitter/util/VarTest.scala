@@ -357,7 +357,10 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
       1 / i
     }
     val result = x flatMap { i =>
-      if (i == 0) Var(0) else invertX
+      if (i == 0)
+        Var(0)
+      else
+        invertX
     }
 
     x() = 42

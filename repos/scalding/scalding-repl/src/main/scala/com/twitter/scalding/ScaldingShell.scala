@@ -76,7 +76,8 @@ trait BaseScaldingShell extends MainGenericRunner {
     command.settings.embeddedDefaults[TypedPipe[String]]
 
     // if running from the assembly, need to explicitly tell it to use java classpath
-    if (args.contains("--repl")) command.settings.usejavacp.value = true
+    if (args.contains("--repl"))
+      command.settings.usejavacp.value = true
 
     command.settings.classpath.append(System.getProperty("java.class.path"))
 

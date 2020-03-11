@@ -60,7 +60,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
   import CValueGenerators._
 
   def schema(depth: Int): Gen[JSchema] = {
-    if (depth <= 0) leafSchema
+    if (depth <= 0)
+      leafSchema
     else
       oneOf(1, 2, 3) flatMap {
         case 1 => objectSchema(depth, choose(1, 3))
@@ -186,14 +187,17 @@ trait CValueGenerators extends ArbitraryBigDecimal {
       case (acc, (selector, jv)) => acc.unsafeInsert(selector, jv)
     }
 
-    if (result != JUndefined || parts.isEmpty) result
-    else sys.error("Cannot build object from " + parts)
+    if (result != JUndefined || parts.isEmpty)
+      result
+    else
+      sys.error("Cannot build object from " + parts)
   }
 }
 
 trait SValueGenerators extends ArbitraryBigDecimal {
   def svalue(depth: Int): Gen[SValue] = {
-    if (depth <= 0) sleaf
+    if (depth <= 0)
+      sleaf
     else
       oneOf(1, 2, 3) flatMap { //it's much faster to lazily compute the subtrees
         case 1 => sobject(depth)

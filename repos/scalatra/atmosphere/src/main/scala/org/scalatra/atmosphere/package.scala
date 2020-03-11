@@ -60,7 +60,8 @@ package object atmosphere {
       promise: Promise[T],
       maybeTimeout: Option[Deadline] = None)(implicit system: ActorSystem) {
     implicit val execContext = system.dispatcher
-    if (maybeTimeout.exists(_.isOverdue())) javaFuture.cancel(true)
+    if (maybeTimeout.exists(_.isOverdue()))
+      javaFuture.cancel(true)
 
     if (javaFuture.isDone || javaFuture.isCancelled) {
       promise

@@ -54,7 +54,10 @@ private[spark] class ResultTask[T, U](
     with Serializable {
 
   @transient private[this] val preferredLocs: Seq[TaskLocation] = {
-    if (locs == null) Nil else locs.toSet.toSeq
+    if (locs == null)
+      Nil
+    else
+      locs.toSet.toSeq
   }
 
   override def runTask(context: TaskContext): U = {

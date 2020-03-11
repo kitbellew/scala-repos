@@ -78,8 +78,10 @@ private[akka] object NettySSLSupport {
       settings: SSLSettings,
       log: LoggingAdapter,
       isClient: Boolean): SslHandler =
-    if (isClient) initializeClientSSL(settings, log)
-    else initializeServerSSL(settings, log)
+    if (isClient)
+      initializeClientSSL(settings, log)
+    else
+      initializeServerSSL(settings, log)
 
   def initializeCustomSecureRandom(
       rngName: Option[String],
@@ -256,10 +258,10 @@ private[akka] object NettySSLSupport {
       settings.SSLKeyPassword,
       settings.SSLProtocol) match {
       case (
-          Some(keyStore),
-          Some(storePassword),
-          Some(keyPassword),
-          Some(protocol)) ⇒
+            Some(keyStore),
+            Some(storePassword),
+            Some(keyPassword),
+            Some(protocol)) ⇒
         constructServerContext(
           settings,
           log,

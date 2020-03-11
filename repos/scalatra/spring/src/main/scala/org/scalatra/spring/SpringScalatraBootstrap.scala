@@ -25,7 +25,8 @@ class SpringScalatraBootstrap
     resources.values().asScala.foreach {
       case servlet: ScalatraServlet =>
         var path = servlet.getClass.getAnnotation(classOf[Path]).value()
-        if (!path.startsWith("/")) path = "/" + path
+        if (!path.startsWith("/"))
+          path = "/" + path
         richContext.mount(servlet, path)
       case _ =>
     }

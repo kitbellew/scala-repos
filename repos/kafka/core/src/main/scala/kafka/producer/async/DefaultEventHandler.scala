@@ -318,7 +318,13 @@ class DefaultEventHandler[K, V](
           "; Valid values are in the inclusive range of [0, " + (numPartitions - 1) + "]")
     trace(
       "Assigning message of topic %s and key %s to a selected partition %d"
-        .format(topic, if (key == null) "[none]" else key.toString, partition))
+        .format(
+          topic,
+          if (key == null)
+            "[none]"
+          else
+            key.toString,
+          partition))
     partition
   }
 
@@ -379,8 +385,10 @@ class DefaultEventHandler[K, V](
               messagesPerTopic(m._1).foreach(message =>
                 trace(
                   "Successfully sent message: %s".format(
-                    if (message.message.isNull) null
-                    else message.message.toString()))))
+                    if (message.message.isNull)
+                      null
+                    else
+                      message.message.toString()))))
           }
           val failedPartitionsAndStatus =
             response.status.filter(_._2.error != Errors.NONE.code).toSeq

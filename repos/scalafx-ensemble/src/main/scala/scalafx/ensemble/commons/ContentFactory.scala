@@ -100,7 +100,11 @@ object ContentFactory {
 
     // Create HTML, for now do not embed SyntaxHighlighter scripts to avoid issues with auto-escaping,
     // just put placeholders @@...@@
-    val codeFont = if (isMac) "Ayuthaya" else "monospace"
+    val codeFont =
+      if (isMac)
+        "Ayuthaya"
+      else
+        "monospace"
     val html =
       <html>
         <head>

@@ -81,7 +81,9 @@ trait CommonStreamsTests {
     @Test def should_provide_available(): Unit = {
       val stream = newStream
 
-      def mySkip(n: Int) = for (_ <- 1 to n) assertNotEquals(stream.read(), -1)
+      def mySkip(n: Int) =
+        for (_ <- 1 to n)
+          assertNotEquals(stream.read(), -1)
       def check(n: Int) = assertEquals(n, stream.available)
 
       check(50)
@@ -128,7 +130,9 @@ trait CommonStreamsTests {
     @Test def should_provide_mark_and_reset(): Unit = {
       val stream = newStream
 
-      def read(range: Range) = for (i <- range) assertEquals(i, stream.read())
+      def read(range: Range) =
+        for (i <- range)
+          assertEquals(i, stream.read())
 
       read(1 to 10)
       stream.reset() // mark must be 0 at creation

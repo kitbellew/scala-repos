@@ -460,21 +460,29 @@ private[graphx] class EdgePartition[
       val localDstId = localDstIds(i)
       val dstId = local2global(localDstId)
       val edgeIsActive =
-        if (activeness == EdgeActiveness.Neither) true
-        else if (activeness == EdgeActiveness.SrcOnly) isActive(srcId)
-        else if (activeness == EdgeActiveness.DstOnly) isActive(dstId)
+        if (activeness == EdgeActiveness.Neither)
+          true
+        else if (activeness == EdgeActiveness.SrcOnly)
+          isActive(srcId)
+        else if (activeness == EdgeActiveness.DstOnly)
+          isActive(dstId)
         else if (activeness == EdgeActiveness.Both)
           isActive(srcId) && isActive(dstId)
         else if (activeness == EdgeActiveness.Either)
           isActive(srcId) || isActive(dstId)
-        else throw new Exception("unreachable")
+        else
+          throw new Exception("unreachable")
       if (edgeIsActive) {
         val srcAttr =
-          if (tripletFields.useSrc) vertexAttrs(localSrcId)
-          else null.asInstanceOf[VD]
+          if (tripletFields.useSrc)
+            vertexAttrs(localSrcId)
+          else
+            null.asInstanceOf[VD]
         val dstAttr =
-          if (tripletFields.useDst) vertexAttrs(localDstId)
-          else null.asInstanceOf[VD]
+          if (tripletFields.useDst)
+            vertexAttrs(localDstId)
+          else
+            null.asInstanceOf[VD]
         ctx.set(srcId, dstId, localSrcId, localDstId, srcAttr, dstAttr, data(i))
         sendMsg(ctx)
       }
@@ -513,34 +521,49 @@ private[graphx] class EdgePartition[
       val clusterLocalSrcId = localSrcIds(clusterPos)
 
       val scanCluster =
-        if (activeness == EdgeActiveness.Neither) true
-        else if (activeness == EdgeActiveness.SrcOnly) isActive(clusterSrcId)
-        else if (activeness == EdgeActiveness.DstOnly) true
-        else if (activeness == EdgeActiveness.Both) isActive(clusterSrcId)
-        else if (activeness == EdgeActiveness.Either) true
-        else throw new Exception("unreachable")
+        if (activeness == EdgeActiveness.Neither)
+          true
+        else if (activeness == EdgeActiveness.SrcOnly)
+          isActive(clusterSrcId)
+        else if (activeness == EdgeActiveness.DstOnly)
+          true
+        else if (activeness == EdgeActiveness.Both)
+          isActive(clusterSrcId)
+        else if (activeness == EdgeActiveness.Either)
+          true
+        else
+          throw new Exception("unreachable")
 
       if (scanCluster) {
         var pos = clusterPos
         val srcAttr =
-          if (tripletFields.useSrc) vertexAttrs(clusterLocalSrcId)
-          else null.asInstanceOf[VD]
+          if (tripletFields.useSrc)
+            vertexAttrs(clusterLocalSrcId)
+          else
+            null.asInstanceOf[VD]
         ctx.setSrcOnly(clusterSrcId, clusterLocalSrcId, srcAttr)
         while (pos < size && localSrcIds(pos) == clusterLocalSrcId) {
           val localDstId = localDstIds(pos)
           val dstId = local2global(localDstId)
           val edgeIsActive =
-            if (activeness == EdgeActiveness.Neither) true
-            else if (activeness == EdgeActiveness.SrcOnly) true
-            else if (activeness == EdgeActiveness.DstOnly) isActive(dstId)
-            else if (activeness == EdgeActiveness.Both) isActive(dstId)
+            if (activeness == EdgeActiveness.Neither)
+              true
+            else if (activeness == EdgeActiveness.SrcOnly)
+              true
+            else if (activeness == EdgeActiveness.DstOnly)
+              isActive(dstId)
+            else if (activeness == EdgeActiveness.Both)
+              isActive(dstId)
             else if (activeness == EdgeActiveness.Either)
               isActive(clusterSrcId) || isActive(dstId)
-            else throw new Exception("unreachable")
+            else
+              throw new Exception("unreachable")
           if (edgeIsActive) {
             val dstAttr =
-              if (tripletFields.useDst) vertexAttrs(localDstId)
-              else null.asInstanceOf[VD]
+              if (tripletFields.useDst)
+                vertexAttrs(localDstId)
+              else
+                null.asInstanceOf[VD]
             ctx.setRest(dstId, localDstId, dstAttr, data(pos))
             sendMsg(ctx)
           }

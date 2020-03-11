@@ -1,7 +1,8 @@
 class UnitReturnNoOutput {
   def foo(i: Int) {
     /*start*/
-    if (true) return
+    if (true)
+      return
     println(i)
     /*end*/
     println()

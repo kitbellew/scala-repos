@@ -58,7 +58,10 @@ abstract class Generator {
   def nextInt(n: Int): Int = {
     @tailrec def loop(b: Int): Int = {
       val v = b % n
-      if (b - v + (n - 1) < 0) loop(nextInt() >>> 1) else v
+      if (b - v + (n - 1) < 0)
+        loop(nextInt() >>> 1)
+      else
+        v
     }
 
     if (n < 1)
@@ -86,14 +89,21 @@ abstract class Generator {
     if (width == UInt(0)) {
       nextInt()
     } else {
-      val cap = if (width > UInt(Int.MinValue)) width else retryCap(width)
+      val cap =
+        if (width > UInt(Int.MinValue))
+          width
+        else
+          retryCap(width)
       if (cap == UInt(0)) {
         val x = UInt(nextInt())
         from + (x % width).signed
       } else {
         @tailrec def loop(): Int = {
           val x = UInt(nextInt())
-          if (x <= cap) (x % width).signed + from else loop()
+          if (x <= cap)
+            (x % width).signed + from
+          else
+            loop()
         }
         loop()
       }
@@ -106,7 +116,10 @@ abstract class Generator {
   def nextLong(n: Long): Long = {
     @tailrec def loop(b: Long): Long = {
       val v = b % n
-      if (b - v + (n - 1) < 0) loop(nextLong() >>> 1) else v
+      if (b - v + (n - 1) < 0)
+        loop(nextLong() >>> 1)
+      else
+        v
     }
 
     if (n < 1)
@@ -134,14 +147,21 @@ abstract class Generator {
     if (width == ULong(0)) {
       nextLong()
     } else {
-      val cap = if (width > ULong(Long.MinValue)) width else retryCap(width)
+      val cap =
+        if (width > ULong(Long.MinValue))
+          width
+        else
+          retryCap(width)
       if (cap == ULong(0)) {
         val x = ULong(nextLong())
         from + (x % width).signed
       } else {
         @tailrec def loop(): Long = {
           val x = ULong(nextLong())
-          if (x <= cap) (x % width).signed + from else loop()
+          if (x <= cap)
+            (x % width).signed + from
+          else
+            loop()
         }
         loop()
       }
@@ -251,7 +271,8 @@ abstract class Generator {
       i += 2
     }
 
-    if (len != llen) arr(i) = (nextInt() & 0xffff).toShort
+    if (len != llen)
+      arr(i) = (nextInt() & 0xffff).toShort
   }
 
   /**
@@ -333,7 +354,8 @@ abstract class Generator {
           chosen(i) = as(i)
         } else {
           val n: Int = gen.nextInt(i + 1)
-          if (n < size) chosen(n) = as(i)
+          if (n < size)
+            chosen(n) = as(i)
         }
         i += 1
       }
@@ -357,7 +379,8 @@ abstract class Generator {
         chosen(i) = a
       } else {
         val n: Int = gen.nextInt(i + 1)
-        if (n < size) chosen(n) = a
+        if (n < size)
+          chosen(n) = a
       }
       i += 1
     }
@@ -424,7 +447,8 @@ abstract class Generator {
       i += 2
     }
 
-    if (len < arr.length) arr(len) = nextGaussian() * stddev + mean
+    if (len < arr.length)
+      arr(len) = nextGaussian() * stddev + mean
   }
 
   def generateGaussians(n: Int): Array[Double] = {
@@ -460,7 +484,8 @@ abstract class LongBasedGenerator extends Generator { self =>
       i += 2
     }
 
-    if (len != llen) arr(i) = nextInt()
+    if (len != llen)
+      arr(i) = nextInt()
   }
 
   override def fillShorts(arr: Array[Short]): Unit = {

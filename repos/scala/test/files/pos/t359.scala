@@ -7,7 +7,10 @@ object Bug359 {
       } else {
         val a: C = null;
         val b: C = null;
-        if (xs.isEmpty) a else b
+        if (xs.isEmpty)
+          a
+        else
+          b
       }
     }
   }
@@ -16,7 +19,10 @@ object Bug359 {
       if (false) {
         val a: C = null;
         val b: C = null;
-        if (xs.isEmpty) a else b
+        if (xs.isEmpty)
+          a
+        else
+          b
       } else {
         f2(xs);
       }

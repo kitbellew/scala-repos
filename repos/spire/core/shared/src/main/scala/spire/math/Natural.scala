@@ -40,7 +40,11 @@ sealed abstract class Natural
 
   def getNumBits: Int = {
     @tailrec
-    def bit(n: UInt, b: Int): Int = if (n == UInt(0)) b else bit(n >>> 1, b + 1)
+    def bit(n: UInt, b: Int): Int =
+      if (n == UInt(0))
+        b
+      else
+        bit(n >>> 1, b + 1)
 
     @tailrec
     def recur(next: Natural, b: Int): Int = next match {
@@ -101,7 +105,10 @@ sealed abstract class Natural
     def recur(next: Natural): Natural = {
       next match {
         case Digit(n, tail) =>
-          if (n == UInt(0)) recur(tail) else next
+          if (n == UInt(0))
+            recur(tail)
+          else
+            next
         case End(n) =>
           next
       }
@@ -153,7 +160,10 @@ sealed abstract class Natural
       case End(n) =>
         n == UInt(0)
       case Digit(n, tail) =>
-        if (n == UInt(0)) recur(tail) else false
+        if (n == UInt(0))
+          recur(tail)
+        else
+          false
     }
     recur(this)
   }
@@ -173,10 +183,12 @@ sealed abstract class Natural
     import java.lang.Integer.highestOneBit
 
     def test(n: UInt): Int = {
-      if ((n.signed & -n.signed) != n.signed) return -1
+      if ((n.signed & -n.signed) != n.signed)
+        return -1
       // TODO: this could be better/faster
       var i = 1
-      while (i < 32 && (n >>> i) != UInt(0)) i += 1
+      while (i < 32 && (n >>> i) != UInt(0))
+        i += 1
       i - 1
     }
 
@@ -184,7 +196,12 @@ sealed abstract class Natural
     def recur(next: Natural, shift: Int, bit: Int): Int = next match {
       case End(n) =>
         val t = test(n)
-        if (t < 0) -1 else if (bit < 0) shift + t else -1
+        if (t < 0)
+          -1
+        else if (bit < 0)
+          shift + t
+        else
+          -1
       case Digit(n, tail) =>
         val t = test(n)
         if (t < 0)
@@ -199,17 +216,32 @@ sealed abstract class Natural
 
   def compare(rhs: UInt): Int = this match {
     case End(d) =>
-      if (d < rhs) -1 else if (d > rhs) 1 else 0
+      if (d < rhs)
+        -1
+      else if (d > rhs)
+        1
+      else
+        0
     case Digit(d, tail) =>
       if (tail.isZero)
-        if (d > rhs) 1 else if (d < rhs) -1 else 0
+        if (d > rhs)
+          1
+        else if (d < rhs)
+          -1
+        else
+          0
       else
         1
   }
 
   def compare(rhs: Natural): Int = {
     def cmp(a: UInt, b: UInt, c: Int): Int =
-      if (a < b) -1 else if (a > b) 1 else c
+      if (a < b)
+        -1
+      else if (a > b)
+        1
+      else
+        c
 
     @tailrec
     def recur(lhs: Natural, rhs: Natural, d: Int): Int = lhs match {
@@ -365,18 +397,24 @@ sealed abstract class Natural
 
   def pow(rhs: Natural): Natural = {
     @tailrec def _pow(t: Natural, b: Natural, e: Natural): Natural = {
-      if (e.isZero) t
-      else if (e.isOdd) _pow(t * b, b * b, e >> 1)
-      else _pow(t, b * b, e >> 1)
+      if (e.isZero)
+        t
+      else if (e.isOdd)
+        _pow(t * b, b * b, e >> 1)
+      else
+        _pow(t, b * b, e >> 1)
     }
     _pow(Natural(1), lhs, rhs)
   }
 
   def pow(rhs: UInt): Natural = {
     @tailrec def _pow(t: Natural, b: Natural, e: UInt): Natural = {
-      if (e == UInt(0)) t
-      else if ((e & UInt(1)) == UInt(1)) _pow(t * b, b * b, e >> 1)
-      else _pow(t, b * b, e >> 1)
+      if (e == UInt(0))
+        t
+      else if ((e & UInt(1)) == UInt(1))
+        _pow(t * b, b * b, e >> 1)
+      else
+        _pow(t, b * b, e >> 1)
     }
     _pow(Natural(1), lhs, rhs)
   }
@@ -586,7 +624,8 @@ object Natural extends NaturalInstances {
 
   // required in big-endian order
   def apply(us: UInt*): Natural = {
-    if (us.isEmpty) throw new IllegalArgumentException("invalid arguments")
+    if (us.isEmpty)
+      throw new IllegalArgumentException("invalid arguments")
     us.tail.foldLeft(End(us.head): Natural)((n, u) => Digit(u, n))
   }
 
@@ -775,7 +814,11 @@ private[math] trait NaturalOrder extends Order[Natural] {
 }
 
 private[math] trait NaturalIsSigned extends Signed[Natural] {
-  def signum(a: Natural): Int = if (a == Natural.zero) 0 else 1
+  def signum(a: Natural): Int =
+    if (a == Natural.zero)
+      0
+    else
+      1
   def abs(a: Natural): Natural = a
 }
 

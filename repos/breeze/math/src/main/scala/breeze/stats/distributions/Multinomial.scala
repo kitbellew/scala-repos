@@ -70,7 +70,8 @@ case class Multinomial[T, I](params: T)(implicit
     assert(!prob.isNaN, "NaN Probability!")
     for ((i, w) <- params.activeIterator) {
       prob -= w
-      if (prob <= 0) return i
+      if (prob <= 0)
+        return i
     }
     params.activeKeysIterator.next()
   }

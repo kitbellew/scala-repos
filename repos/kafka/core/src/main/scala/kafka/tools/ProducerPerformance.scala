@@ -340,8 +340,10 @@ object ProducerPerformance extends Logging {
         topic: String,
         messageId: Long): Array[Byte] = {
       val msgSize =
-        if (config.isFixedSize) config.messageSize
-        else 1 + rand.nextInt(config.messageSize)
+        if (config.isFixedSize)
+          config.messageSize
+        else
+          1 + rand.nextInt(config.messageSize)
       if (config.seqIdMode) {
         val seqId =
           config.initialMessageId + (messagesPerThread * threadId) + messageId

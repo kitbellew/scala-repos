@@ -112,7 +112,8 @@ object StabilizingGroup {
 
           loop(q, h)
         },
-        if (h != Healthy || remq.isEmpty) Offer.never
+        if (h != Healthy || remq.isEmpty)
+          Offer.never
         else {
           val ((elem, until), nextq) = remq.dequeue
           Offer.timeout(until - Time.now) map { _ =>

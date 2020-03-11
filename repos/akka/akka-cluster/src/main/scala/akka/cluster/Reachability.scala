@@ -85,8 +85,10 @@ private[cluster] class Reachability private (
           }
           mapBuilder += (r.observer -> m)
 
-          if (r.status == Unreachable) unreachableBuilder += r.subject
-          else if (r.status == Terminated) terminatedBuilder += r.subject
+          if (r.status == Unreachable)
+            unreachableBuilder += r.subject
+          else if (r.status == Terminated)
+            terminatedBuilder += r.subject
         }
 
         val observerRowsMap
@@ -101,8 +103,10 @@ private[cluster] class Reachability private (
     }
 
     val allUnreachableOrTerminated: Set[UniqueAddress] =
-      if (allTerminated.isEmpty) allUnreachable
-      else allUnreachable union allTerminated
+      if (allTerminated.isEmpty)
+        allUnreachable
+      else
+        allUnreachable union allTerminated
 
   }
 
@@ -192,7 +196,11 @@ private[cluster] class Reachability private (
       (this.observerRows(observer), other.observerRows(observer)) match {
         case (None, None) ⇒
         case (Some(rows1), Some(rows2)) ⇒
-          val rows = if (observerVersion1 > observerVersion2) rows1 else rows2
+          val rows =
+            if (observerVersion1 > observerVersion2)
+              rows1
+            else
+              rows2
           recordBuilder ++= rows.collect {
             case (_, r) if allowed(r.subject) ⇒ r
           }
@@ -223,7 +231,8 @@ private[cluster] class Reachability private (
     val nodesSet = nodes.to[immutable.HashSet]
     val newRecords =
       records.filterNot(r ⇒ nodesSet(r.observer) || nodesSet(r.subject))
-    if (newRecords.size == records.size) this
+    if (newRecords.size == records.size)
+      this
     else {
       val newVersions = versions -- nodes
       Reachability(newRecords, newVersions)
@@ -235,7 +244,8 @@ private[cluster] class Reachability private (
       this
     else {
       val newRecords = records.filterNot(r ⇒ nodes(r.observer))
-      if (newRecords.size == records.size) this
+      if (newRecords.size == records.size)
+        this
       else {
         val newVersions = versions -- nodes
         Reachability(newRecords, newVersions)
@@ -255,9 +265,12 @@ private[cluster] class Reachability private (
     }
 
   def status(node: UniqueAddress): ReachabilityStatus =
-    if (cache.allTerminated(node)) Terminated
-    else if (cache.allUnreachable(node)) Unreachable
-    else Reachable
+    if (cache.allTerminated(node))
+      Terminated
+    else if (cache.allUnreachable(node))
+      Unreachable
+    else
+      Reachable
 
   def isReachable(node: UniqueAddress): Boolean =
     isAllReachable || !allUnreachableOrTerminated.contains(node)

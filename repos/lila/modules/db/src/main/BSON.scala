@@ -189,16 +189,28 @@ object BSON {
   final class Writer {
 
     def boolO(b: Boolean): Option[BSONBoolean] =
-      if (b) Some(BSONBoolean(true)) else None
+      if (b)
+        Some(BSONBoolean(true))
+      else
+        None
     def str(s: String): BSONString = BSONString(s)
     def strO(s: String): Option[BSONString] =
-      if (s.nonEmpty) Some(BSONString(s)) else None
+      if (s.nonEmpty)
+        Some(BSONString(s))
+      else
+        None
     def int(i: Int): BSONInteger = BSONInteger(i)
     def intO(i: Int): Option[BSONInteger] =
-      if (i != 0) Some(BSONInteger(i)) else None
+      if (i != 0)
+        Some(BSONInteger(i))
+      else
+        None
     def date(d: DateTime): BSONDateTime = BSONJodaDateTimeHandler write d
     def byteArrayO(b: ByteArray): Option[BSONBinary] =
-      if (b.isEmpty) None else ByteArray.ByteArrayBSONHandler.write(b).some
+      if (b.isEmpty)
+        None
+      else
+        ByteArray.ByteArrayBSONHandler.write(b).some
     def bytesO(b: Array[Byte]): Option[BSONBinary] = byteArrayO(ByteArray(b))
     def listO(list: List[String]): Option[List[String]] = list match {
       case Nil          => None
@@ -208,13 +220,21 @@ object BSON {
       case full         => Some(full)
     }
     def docO(o: BSONDocument): Option[BSONDocument] =
-      if (o.isEmpty) None else Some(o)
+      if (o.isEmpty)
+        None
+      else
+        Some(o)
     def double(i: Double): BSONDouble = BSONDouble(i)
     def doubleO(i: Double): Option[BSONDouble] =
-      if (i != 0) Some(BSONDouble(i)) else None
+      if (i != 0)
+        Some(BSONDouble(i))
+      else
+        None
     def intsO(l: List[Int]): Option[BSONArray] =
-      if (l.isEmpty) None
-      else Some(BSONArray(l map BSONInteger.apply))
+      if (l.isEmpty)
+        None
+      else
+        Some(BSONArray(l map BSONInteger.apply))
 
     import scalaz.Functor
     def map[M[_]: Functor, A, B <: BSONValue](a: M[A])(

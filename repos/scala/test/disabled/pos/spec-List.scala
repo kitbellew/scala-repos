@@ -73,8 +73,10 @@ sealed trait List[@specialized +A]
     *  @ex <code>List(1, 2) ::: List(3, 4) = List(3, 4).:::(List(1, 2)) = List(1, 2, 3, 4)</code>
     */
   def :::[B >: A](prefix: List[B]): List[B] =
-    if (isEmpty) prefix
-    else (new ListBuffer[B] ++= prefix).prependToList(this)
+    if (isEmpty)
+      prefix
+    else
+      (new ListBuffer[B] ++= prefix).prependToList(this)
 
   /** Reverse the given prefix and append the current list to that.
     *  This function is equivalent to an application of <code>reverse</code>
@@ -116,7 +118,8 @@ sealed trait List[@specialized +A]
     */
   def mapConserve[B >: A](f: A => B): List[B] = {
     def loop(ys: List[A]): List[B] =
-      if (ys.isEmpty) this
+      if (ys.isEmpty)
+        this
       else {
         val head0 = ys.head
         val head1 = f(head0)
@@ -124,7 +127,8 @@ sealed trait List[@specialized +A]
           loop(ys.tail)
         } else {
           val ys1 = head1 :: ys.tail.mapConserve(f)
-          if (this eq ys) ys1
+          if (this eq ys)
+            ys1
           else {
             val b = new ListBuffer[B]
             var xc = this
@@ -147,8 +151,10 @@ sealed trait List[@specialized +A]
   override def ++[B >: A, That](xs: GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That = {
     val b = bf(this)
-    if (b.isInstanceOf[ListBuffer[_]]) (this ::: xs.toList).asInstanceOf[That]
-    else super.++(xs)
+    if (b.isInstanceOf[ListBuffer[_]])
+      (this ::: xs.toList).asInstanceOf[That]
+    else
+      super.++(xs)
   }
 
   /** Overrides the method in Iterable for efficiency.
@@ -172,8 +178,10 @@ sealed trait List[@specialized +A]
       b += these.head
       these = these.tail
     }
-    if (these.isEmpty) this
-    else b.toList
+    if (these.isEmpty)
+      this
+    else
+      b.toList
   }
 
   /** Returns the list without its <code>n</code> first elements.
@@ -200,7 +208,8 @@ sealed trait List[@specialized +A]
     */
   override def slice(start: Int, end: Int): List[A] = {
     var len = end
-    if (start > 0) len -= start
+    if (start > 0)
+      len -= start
     drop(start) take len
   }
 
@@ -266,8 +275,10 @@ sealed trait List[@specialized +A]
   override def dropWhile(p: A => Boolean): List[A] = {
     @tailrec
     def loop(xs: List[A]): List[A] =
-      if (xs.isEmpty || !p(xs.head)) xs
-      else loop(xs.tail)
+      if (xs.isEmpty || !p(xs.head))
+        xs
+      else
+        loop(xs.tail)
 
     loop(this)
   }
@@ -304,8 +315,10 @@ sealed trait List[@specialized +A]
   override def stringPrefix = "List"
 
   override def toStream: Stream[A] =
-    if (isEmpty) Stream.Empty
-    else new Stream.Cons(head, tail.toStream)
+    if (isEmpty)
+      Stream.Empty
+    else
+      new Stream.Cons(head, tail.toStream)
 
   // !!! todo: work in patch
 
@@ -321,7 +334,8 @@ sealed trait List[@specialized +A]
     val b = new ListBuffer[B]
     var these = this
     while (!these.isEmpty) {
-      if (!that.contains(these.head)) b += these.head
+      if (!that.contains(these.head))
+        b += these.head
       these = these.tail
     }
     b.toList
@@ -339,7 +353,8 @@ sealed trait List[@specialized +A]
     val b = new ListBuffer[B]
     var these = this
     while (!these.isEmpty) {
-      if (these.head != x) b += these.head
+      if (these.head != x)
+        b += these.head
       these = these.tail
     }
     b.toList
@@ -475,15 +490,16 @@ final case class ::[@specialized B](
     hd = in.readObject.asInstanceOf[B]
     assert(hd != ListSerializeEnd)
     var current: ::[B] = this
-    while (true) in.readObject match {
-      case ListSerializeEnd =>
-        current.tl = Nil
-        return
-      case a: Any =>
-        val list: ::[B] = new ::(a.asInstanceOf[B], Nil)
-        current.tl = list
-        current = list
-    }
+    while (true)
+      in.readObject match {
+        case ListSerializeEnd =>
+          current.tl = Nil
+          return
+        case a: Any =>
+          val list: ::[B] = new ::(a.asInstanceOf[B], Nil)
+          current.tl = list
+          current = list
+      }
   }
 }
 
@@ -723,7 +739,8 @@ object List extends SeqFactory[List] {
   @deprecated("use `xs.mapConserve(f)' instead")
   def mapConserve[A <: AnyRef](xs: List[A])(f: A => A): List[A] = {
     def loop(ys: List[A]): List[A] =
-      if (ys.isEmpty) xs
+      if (ys.isEmpty)
+        xs
       else {
         val head0 = ys.head
         val head1 = f(head0)
@@ -731,7 +748,8 @@ object List extends SeqFactory[List] {
           loop(ys.tail)
         } else {
           val ys1 = head1 :: mapConserve(ys.tail)(f)
-          if (xs eq ys) ys1
+          if (xs eq ys)
+            ys1
           else {
             val b = new ListBuffer[A]
             var xc = xs
@@ -808,7 +826,8 @@ object List extends SeqFactory[List] {
     var xc = xs
     var yc = ys
     while (!xc.isEmpty && !yc.isEmpty) {
-      if (!f(xc.head, yc.head)) return false
+      if (!f(xc.head, yc.head))
+        return false
       xc = xc.tail
       yc = yc.tail
     }
@@ -830,7 +849,8 @@ object List extends SeqFactory[List] {
     var xc = xs
     var yc = ys
     while (!xc.isEmpty && !yc.isEmpty) {
-      if (f(xc.head, yc.head)) return true
+      if (f(xc.head, yc.head))
+        return true
       xc = xc.tail
       yc = yc.tail
     }

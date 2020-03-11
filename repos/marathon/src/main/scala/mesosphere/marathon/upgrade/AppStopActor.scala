@@ -25,6 +25,7 @@ class AppStopActor(
 
   def initializeStop(): Unit = {
     eventBus.subscribe(self, classOf[MesosStatusUpdateEvent])
-    for (id <- idsToKill) driver.killTask(id.mesosTaskId)
+    for (id <- idsToKill)
+      driver.killTask(id.mesosTaskId)
   }
 }

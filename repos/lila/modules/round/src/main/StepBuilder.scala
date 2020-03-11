@@ -27,7 +27,8 @@ object StepBuilder {
         val openingOf: String => Option[FullOpening] =
           if (withOpening && Variant.openingSensibleVariants(variant))
             FullOpeningDB.findByFen
-          else _ => None
+          else
+            _ => None
         val steps = games.map { g =>
           val fen = Forsyth >> g
           Step(
@@ -92,7 +93,8 @@ object StepBuilder {
             nag = ad.nag.symbol.some,
             comments = ad.makeComment(false, true) :: after.comments,
             variations =
-              if (ad.info.variation.isEmpty) after.variations
+              if (ad.info.variation.isEmpty)
+                after.variations
               else
                 makeVariation(
                   gameId,
@@ -134,7 +136,11 @@ object StepBuilder {
 
   private val logChessError = (id: String) =>
     (err: String) => {
-      val path = if (id == "synthetic") "analysis" else id
+      val path =
+        if (id == "synthetic")
+          "analysis"
+        else
+          id
       logger.info(
         s"http://lichess.org/$path ${err.lines.toList.headOption | "?"}")
     }

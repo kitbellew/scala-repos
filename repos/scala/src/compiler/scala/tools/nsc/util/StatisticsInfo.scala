@@ -32,8 +32,10 @@ abstract class StatisticsInfo {
     val quants =
       if (phase.name == "parser")
         Seq(treeNodeCount, nodeByType, retainedCount, retainedByType)
-      else Statistics.allQuantities
+      else
+        Statistics.allQuantities
 
-    for (q <- quants if q.showAt(phase.name)) inform(q.line)
+    for (q <- quants if q.showAt(phase.name))
+      inform(q.line)
   }
 }

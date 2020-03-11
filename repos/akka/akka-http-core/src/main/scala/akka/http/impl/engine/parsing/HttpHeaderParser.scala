@@ -258,9 +258,12 @@ private[engine] final class HttpHeaderParser private (
       nodeIx: Int = 0,
       colonIx: Int = 0): Unit = {
     val char =
-      if (cursor < colonIx) CharUtils.toLowerCase(input(cursor).toChar)
-      else if (cursor < endIx) input(cursor).toChar
-      else '\u0000'
+      if (cursor < colonIx)
+        CharUtils.toLowerCase(input(cursor).toChar)
+      else if (cursor < endIx)
+        input(cursor).toChar
+      else
+        '\u0000'
     val node = nodes(nodeIx)
     if (char == node)
       insert(input, value)(
@@ -333,7 +336,11 @@ private[engine] final class HttpHeaderParser private (
     val newNodeIx = newNodeIndex
     if (cursor < endIx) {
       val c = input(cursor).toChar
-      val char = if (cursor < colonIx) CharUtils.toLowerCase(c) else c
+      val char =
+        if (cursor < colonIx)
+          CharUtils.toLowerCase(c)
+        else
+          c
       nodes(newNodeIx) = char
       insertRemainingCharsAsNewNodes(input, value)(
         cursor + 1,
@@ -361,7 +368,8 @@ private[engine] final class HttpHeaderParser private (
         nodes = copyOf(nodes, math.min(index * 3 / 2, Short.MaxValue))
       nodeCount = index + 1
       index
-    } else throw OutOfTrieSpaceException
+    } else
+      throw OutOfTrieSpaceException
   }
 
   private def newBranchDataRowIndex: Int = {
@@ -375,7 +383,8 @@ private[engine] final class HttpHeaderParser private (
     if (index < values.length) {
       valueCount = index + 1
       index
-    } else throw OutOfTrieSpaceException
+    } else
+      throw OutOfTrieSpaceException
   }
 
   private def rowIx(msb: Int) = (msb - 1) * 3
@@ -395,7 +404,12 @@ private[engine] final class HttpHeaderParser private (
         val (lines, mainIx) = recurse(subNodeIx)
         val prefixedLines = lines.zipWithIndex map {
           case (line, ix) ⇒
-            (if (ix < mainIx) p1 else if (ix > mainIx) p3 else p2) :: line
+            (if (ix < mainIx)
+               p1
+             else if (ix > mainIx)
+               p3
+             else
+               p2) :: line
         }
         prefixedLines -> mainIx
       }
@@ -428,8 +442,16 @@ private[engine] final class HttpHeaderParser private (
               val rix = rowIx(msb)
               val preLines = branchLines(rix, "  ", "┌─", "| ")
               val postLines = branchLines(rix + 2, "| ", "└─", "  ")
-              val p1 = if (preLines.nonEmpty) "| " else "  "
-              val p3 = if (postLines.nonEmpty) "| " else "  "
+              val p1 =
+                if (preLines.nonEmpty)
+                  "| "
+                else
+                  "  "
+              val p3 =
+                if (postLines.nonEmpty)
+                  "| "
+                else
+                  "  "
               val (matchLines, mainLineIx) =
                 recurseAndPrefixLines(branchData(rix + 1), p1, char + '-', p3)
               (preLines ++ matchLines ++ postLines, mainLineIx + preLines.size)
@@ -440,7 +462,11 @@ private[engine] final class HttpHeaderParser private (
     val (lines, mainLineIx) = recurse()
     lines.zipWithIndex foreach {
       case (line, ix) ⇒
-        sb.append(if (ix == mainLineIx) '-' else ' ')
+        sb.append(
+          if (ix == mainLineIx)
+            '-'
+          else
+            ' ')
         line foreach (s ⇒ sb.append(s))
         sb.append('\n')
     }
@@ -463,7 +489,10 @@ private[engine] final class HttpHeaderParser private (
           }
         case msb ⇒
           def branch(ix: Int): Map[String, Int] =
-            if (ix > 0) build(ix) else Map.empty
+            if (ix > 0)
+              build(ix)
+            else
+              Map.empty
           val rix = rowIx(msb)
           branch(branchData(rix + 0)) ++ branch(branchData(rix + 1)) ++ branch(
             branchData(rix + 2))
@@ -477,8 +506,10 @@ private[engine] final class HttpHeaderParser private (
     */
   def formatRawTrie: String = {
     def char(c: Char) =
-      (c >> 8).toString + (if ((c & 0xFF) > 0) "/" + (c & 0xFF).toChar
-                           else "/Ω")
+      (c >> 8).toString + (if ((c & 0xFF) > 0)
+                             "/" + (c & 0xFF).toChar
+                           else
+                             "/Ω")
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
       s"branchData: ${branchData take branchDataCount grouped 3 map {
         case Array(a, b, c) ⇒ s"$a/$b/$c"
@@ -509,8 +540,12 @@ private[engine] final class HttpHeaderParser private (
     val result =
       if (coderResult.isUnderflow & charBuffer.hasRemaining) {
         val c = charBuffer.get()
-        if (charBuffer.hasRemaining) (charBuffer.get() << 16) | c else c
-      } else -1
+        if (charBuffer.hasRemaining)
+          (charBuffer.get() << 16) | c
+        else
+          c
+      } else
+        -1
     byteBuffer.clear()
     charBuffer.clear()
     result
@@ -572,7 +607,8 @@ private[http] object HttpHeaderParser {
               parser.insertRemainingCharsAsNewNodes(
                 ByteString(insertName),
                 valueParser)()
-            else parser.insert(ByteString(insertName), valueParser)()
+            else
+              parser.insert(ByteString(insertName), valueParser)()
           case header: String ⇒
             parser.parseHeaderLine(ByteString(header + "\r\nx"))()
         }
@@ -677,11 +713,15 @@ private[http] object HttpHeaderParser {
       start: Int,
       limit: Int)(sb: JStringBuilder = null, ix: Int = start): (String, Int) = {
     def appended(c: Char) =
-      (if (sb != null) sb
-       else new JStringBuilder(asciiString(input, start, ix))).append(c)
+      (if (sb != null)
+         sb
+       else
+         new JStringBuilder(asciiString(input, start, ix))).append(c)
     def appended2(c: Int) =
-      if ((c >> 16) != 0) appended(c.toChar).append((c >> 16).toChar)
-      else appended(c.toChar)
+      if ((c >> 16) != 0)
+        appended(c.toChar).append((c >> 16).toChar)
+      else
+        appended(c.toChar)
     if (ix < limit)
       byteChar(input, ix) match {
         case '\t' ⇒
@@ -691,21 +731,29 @@ private[http] object HttpHeaderParser {
             scanHeaderValue(hhp, input, start, limit)(appended(' '), ix + 3)
           else
             (
-              if (sb != null) sb.toString else asciiString(input, start, ix),
+              if (sb != null)
+                sb.toString
+              else
+                asciiString(input, start, ix),
               ix + 2)
         case c ⇒
           var nix = ix + 1
           val nsb =
             if (' ' <= c && c <= '\u007F')
-              if (sb != null) sb.append(c) else null // legal 7-Bit ASCII
+              if (sb != null)
+                sb.append(c)
+              else
+                null // legal 7-Bit ASCII
             else if ((c & 0xE0) == 0xC0) { // 2-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
               hhp.byteBuffer.put(byteAt(input, ix + 1))
               nix = ix + 2
               hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
                 case -1 ⇒
-                  if (sb != null) sb.append(c).append(byteChar(input, ix + 1))
-                  else null
+                  if (sb != null)
+                    sb.append(c).append(byteChar(input, ix + 1))
+                  else
+                    null
                 case cc ⇒ appended2(cc)
               }
             } else if ((c & 0xF0) == 0xE0) { // 3-byte UTF-8 sequence?
@@ -719,7 +767,8 @@ private[http] object HttpHeaderParser {
                     sb.append(c)
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
-                  else null
+                  else
+                    null
                 case cc ⇒ appended2(cc)
               }
             } else if ((c & 0xF8) == 0xF0) { // 4-byte UTF-8 sequence?
@@ -735,10 +784,12 @@ private[http] object HttpHeaderParser {
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
                       .append(byteChar(input, ix + 3))
-                  else null
+                  else
+                    null
                 case cc ⇒ appended2(cc)
               }
-            } else fail(s"Illegal character '${escape(c)}' in header value")
+            } else
+              fail(s"Illegal character '${escape(c)}' in header value")
           scanHeaderValue(hhp, input, start, limit)(nsb, nix)
       }
     else

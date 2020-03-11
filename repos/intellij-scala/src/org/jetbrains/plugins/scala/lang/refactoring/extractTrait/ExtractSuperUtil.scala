@@ -171,7 +171,8 @@ object ExtractSuperUtil {
       ExtractSuperUtil.getDirUnderSameSourceRoot(sourceClass, dirs)
     val cantCreateFile: String =
       RefactoringMessageUtil.checkCanCreateFile(dir, targetClassName + ".scala")
-    if (cantCreateFile != null) return cantCreateFile
+    if (cantCreateFile != null)
+      return cantCreateFile
 
     null
   }

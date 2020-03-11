@@ -36,7 +36,10 @@ import scalafx.delegate.SFXDelegate
 object TableCell {
   implicit def sfxTableCell2jfx[S, T](
       tc: TableCell[S, T]): jfxsc.TableCell[S, T] =
-    if (tc != null) tc.delegate else null
+    if (tc != null)
+      tc.delegate
+    else
+      null
 }
 
 /**

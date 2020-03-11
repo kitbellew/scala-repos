@@ -49,7 +49,8 @@ class ScalaEvaluatorCache(project: Project)
   }
 
   def get(position: SourcePosition, element: PsiElement): Option[Evaluator] = {
-    if (position == null) return None
+    if (position == null)
+      return None
 
     val file = position.getFile
     val offset = position.getOffset

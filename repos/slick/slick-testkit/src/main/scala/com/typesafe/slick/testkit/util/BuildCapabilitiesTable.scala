@@ -23,7 +23,8 @@ object BuildCapabilitiesTable extends App {
   }
 
   val profileNames =
-    if (args.length > 1) args(1).split(",")
+    if (args.length > 1)
+      args(1).split(",")
     else
       Array(
         "slick.jdbc.DB2Profile",
@@ -54,7 +55,10 @@ object BuildCapabilitiesTable extends App {
   val capabilities = for {
     (caps, linkBase) <- profileCapabilities
     cap <- caps.toVector.sortBy(c =>
-      if (c.toString.endsWith(".other")) "" else c.toString)
+      if (c.toString.endsWith(".other"))
+        ""
+      else
+        c.toString)
   } yield (
     cap,
     linkBase + cap.toString
@@ -70,7 +74,11 @@ object BuildCapabilitiesTable extends App {
       val flags = profiles.map(d => d.capabilities.contains(cap))
       wr.println(
         s":api:`$cap <$link>`," + flags
-          .map(b => if (b) "Yes" else "")
+          .map(b =>
+            if (b)
+              "Yes"
+            else
+              "")
           .mkString(","))
     }
     wr.flush()

@@ -30,7 +30,8 @@ object SwaggerCommandSupport {
             .isEmpty) {
         val f = fld.invoke(obj).asInstanceOf[Field[Any]]
         // remove if statement below to include header params in description again
-        if (f.valueSource == ValueSource.Header) lst
+        if (f.valueSource == ValueSource.Header)
+          lst
         else {
           Parameter(
             f.displayName | f.name,
@@ -38,15 +39,20 @@ object SwaggerCommandSupport {
             f.description.blankOption,
             f.notes.blankOption,
             paramtypeMapping(f.valueSource),
-            if (f.isRequired) None
-            else f.defaultValue.flatMap(_.toString.blankOption),
-            if (f.allowableValues.nonEmpty) AllowableValues(f.allowableValues)
-            else AllowableValues.AnyValue,
+            if (f.isRequired)
+              None
+            else
+              f.defaultValue.flatMap(_.toString.blankOption),
+            if (f.allowableValues.nonEmpty)
+              AllowableValues(f.allowableValues)
+            else
+              AllowableValues.AnyValue,
             required = f.isRequired,
             position = f.position
           ) :: lst
         }
-      } else lst
+      } else
+        lst
     }
   }
 
@@ -65,7 +71,8 @@ object SwaggerCommandSupport {
           ParamType.Body,
           None)
       (bodyParam :: parameters, Some(model))
-    } else (parameters, None)
+    } else
+      (parameters, None)
   }
 
   private[this] def modelFromCommand[T <: Command](

@@ -67,7 +67,8 @@ class ImportPanelConverterProvider
     new ProjectConverter {
       override def isConversionNeeded: Boolean = {
         import com.intellij.openapi.components.StorageScheme
-        if (context.getStorageScheme == StorageScheme.DEFAULT) return false
+        if (context.getStorageScheme == StorageScheme.DEFAULT)
+          return false
         getElements.nonEmpty
       }
 

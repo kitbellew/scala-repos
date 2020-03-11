@@ -7,6 +7,11 @@ object JavaArrayType {
   def foo(x: String) = "text"
 
   /*start*/
-  foo(if (true) sink.listFiles() else "text") /*end*/
+  foo(
+    if (true)
+      sink.listFiles()
+    else
+      "text"
+  ) /*end*/
 }
 //Int

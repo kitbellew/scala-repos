@@ -37,8 +37,10 @@ class FixedInetResolverTest extends FunSuite {
 
     def resolve(host: String): Future[Seq[InetAddress]] = {
       numLookups += 1
-      if (shouldFail) Future.exception(new UnknownHostException())
-      else Future.value(Seq[InetAddress](InetAddress.getLoopbackAddress))
+      if (shouldFail)
+        Future.exception(new UnknownHostException())
+      else
+        Future.value(Seq[InetAddress](InetAddress.getLoopbackAddress))
     }
 
     val resolver = new FixedInetResolver(statsReceiver, Some(resolve))

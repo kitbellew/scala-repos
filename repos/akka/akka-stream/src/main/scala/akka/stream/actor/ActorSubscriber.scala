@@ -63,7 +63,10 @@ trait RequestStrategy {
   */
 case object OneByOneRequestStrategy extends RequestStrategy {
   def requestDemand(remainingRequested: Int): Int =
-    if (remainingRequested == 0) 1 else 0
+    if (remainingRequested == 0)
+      1
+    else
+      0
 
   /**
     * Java API: get the singleton instance
@@ -115,7 +118,8 @@ final case class WatermarkRequestStrategy(highWatermark: Int, lowWatermark: Int)
   def requestDemand(remainingRequested: Int): Int =
     if (remainingRequested < lowWatermark)
       highWatermark - remainingRequested
-    else 0
+    else
+      0
 }
 
 /**
@@ -142,7 +146,8 @@ abstract class MaxInFlightRequestStrategy(max: Int) extends RequestStrategy {
     val batch = math.min(batchSize, max)
     if ((remainingRequested + inFlightInternally) <= (max - batch))
       math.max(0, max - remainingRequested - inFlightInternally)
-    else 0
+    else
+      0
   }
 }
 
@@ -254,7 +259,8 @@ trait ActorSubscriber extends Actor {
     */
   protected[akka] override def aroundPostStop(): Unit = {
     state.remove(self)
-    if (!_canceled) subscription.foreach(_.cancel())
+    if (!_canceled)
+      subscription.foreach(_.cancel())
     super.aroundPostStop()
   }
 
@@ -295,8 +301,10 @@ trait ActorSubscriber extends Actor {
   protected def remainingRequested: Int = longToIntMax(requested)
 
   private def longToIntMax(n: Long): Int =
-    if (n > Int.MaxValue) Int.MaxValue
-    else n.toInt
+    if (n > Int.MaxValue)
+      Int.MaxValue
+    else
+      n.toInt
 }
 
 /**

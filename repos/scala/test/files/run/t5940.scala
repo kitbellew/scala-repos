@@ -46,7 +46,10 @@ object Test extends DirectTest {
     log("Compiling Macros_1...")
     if (compileMacros()) {
       log("Compiling Test_2...")
-      if (compileTest()) log("Success!") else log("Failed...")
+      if (compileTest())
+        log("Success!")
+      else
+        log("Failed...")
     }
   }
 }

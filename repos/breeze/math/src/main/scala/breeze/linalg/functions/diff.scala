@@ -16,7 +16,10 @@ object diff extends UFunc with diffLowPrio {
       : Impl2[DenseVector[T], Int, DenseVector[T]] = {
     new Impl2[DenseVector[T], Int, DenseVector[T]] {
       def apply(v: DenseVector[T], n: Int): DenseVector[T] = {
-        if (n <= 0) v else this.apply(diff(v), n - 1)
+        if (n <= 0)
+          v
+        else
+          this.apply(diff(v), n - 1)
       }
     }
 
@@ -28,7 +31,8 @@ object diff extends UFunc with diffLowPrio {
       : Impl[DenseVector[T], DenseVector[T]] = {
     new Impl[DenseVector[T], DenseVector[T]] {
       def apply(v: DenseVector[T]): DenseVector[T] = {
-        if (v.length <= 1) DenseVector[T]()
+        if (v.length <= 1)
+          DenseVector[T]()
         else
           DenseVector.tabulate(v.length - 1)(index => v(index + 1) - v(index))
       }
@@ -45,7 +49,8 @@ sealed trait diffLowPrio { this: diff.type =>
       ring: Ring[T]): Impl[Vec, DenseVector[T]] = {
     new Impl[Vec, DenseVector[T]] {
       override def apply(v: Vec): DenseVector[T] = {
-        if (v.length <= 1) DenseVector[T]()
+        if (v.length <= 1)
+          DenseVector[T]()
         else
           DenseVector.tabulate(v.length - 1)(index =>
             ring.-(v(index + 1), v(index)))

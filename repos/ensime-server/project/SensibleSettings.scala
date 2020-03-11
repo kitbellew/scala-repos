@@ -31,12 +31,16 @@ object Sensible {
       //"-Ywarn-value-discard", // will require a lot of work
       "-Xfuture"
     ) ++ {
-      if (scalaVersion.value.startsWith("2.11")) Seq("-Ywarn-unused-import")
-      else Nil
+      if (scalaVersion.value.startsWith("2.11"))
+        Seq("-Ywarn-unused-import")
+      else
+        Nil
     } ++ {
       // fatal warnings can get in the way during the DEV cycle
-      if (sys.env.contains("CI")) Seq("-Xfatal-warnings")
-      else Nil
+      if (sys.env.contains("CI"))
+        Seq("-Xfatal-warnings")
+      else
+        Nil
     },
     javacOptions in (Compile, compile) ++= Seq(
       "-source",
@@ -115,8 +119,10 @@ object Sensible {
       "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   )
   def shapeless(scalaVersion: String) = {
-    if (scalaVersion.startsWith("2.10.")) macroParadise
-    else Nil
+    if (scalaVersion.startsWith("2.10."))
+      macroParadise
+    else
+      Nil
   } :+ "com.chuusai" %% "shapeless" % "2.3.0"
   val logback = Seq(
     "ch.qos.logback" % "logback-classic" % "1.1.5",

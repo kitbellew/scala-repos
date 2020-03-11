@@ -806,11 +806,11 @@ object SwankProtocolRequest {
     def write(v: PatchOp): Sexp = ???
     def read(sexp: Sexp): PatchOp = sexp match {
       case SexpList(
-          SexpString("+") :: SexpNumber(i) :: SexpString(text) :: Nil) =>
+            SexpString("+") :: SexpNumber(i) :: SexpString(text) :: Nil) =>
         PatchInsert(i.intValue, text)
       case SexpList(
-          SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
-            text) :: Nil) =>
+            SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
+              text) :: Nil) =>
         PatchReplace(i.intValue, j.intValue, text)
       case SexpList(SexpString("-") :: SexpNumber(i) :: SexpNumber(j) :: Nil) =>
         PatchDelete(i.intValue, j.intValue)
@@ -844,10 +844,10 @@ object SwankProtocolRequest {
           .toList
           .sortBy(_._1.symbol.name) match {
           case List(
-              (Loc.End, SexpNumber(end)),
-              (Loc.File, SexpString(f)),
-              (Loc.NewName, SexpString(newName)),
-              (Loc.Start, SexpNumber(start))
+                (Loc.End, SexpNumber(end)),
+                (Loc.File, SexpString(f)),
+                (Loc.NewName, SexpString(newName)),
+                (Loc.Start, SexpNumber(start))
               ) =>
             RenameRefactorDesc(
               newName,
@@ -856,10 +856,10 @@ object SwankProtocolRequest {
               end.intValue)
 
           case List(
-              (Loc.End, SexpNumber(end)),
-              (Loc.File, SexpString(f)),
-              (Loc.MethodName, SexpString(methodName)),
-              (Loc.Start, SexpNumber(start))
+                (Loc.End, SexpNumber(end)),
+                (Loc.File, SexpString(f)),
+                (Loc.MethodName, SexpString(methodName)),
+                (Loc.Start, SexpNumber(start))
               ) =>
             ExtractMethodRefactorDesc(
               methodName,
@@ -868,10 +868,10 @@ object SwankProtocolRequest {
               end.intValue)
 
           case List(
-              (Loc.End, SexpNumber(end)),
-              (Loc.File, SexpString(f)),
-              (Loc.Name, SexpString(name)),
-              (Loc.Start, SexpNumber(start))
+                (Loc.End, SexpNumber(end)),
+                (Loc.File, SexpString(f)),
+                (Loc.Name, SexpString(name)),
+                (Loc.Start, SexpNumber(start))
               ) =>
             ExtractLocalRefactorDesc(
               name,
@@ -880,28 +880,28 @@ object SwankProtocolRequest {
               end.intValue)
 
           case List(
-              (Loc.End, SexpNumber(end)),
-              (Loc.File, SexpString(f)),
-              (Loc.Start, SexpNumber(start))
+                (Loc.End, SexpNumber(end)),
+                (Loc.File, SexpString(f)),
+                (Loc.Start, SexpNumber(start))
               ) =>
             InlineLocalRefactorDesc(File(f).canon, start.intValue, end.intValue)
 
           case List(
-              (Loc.File, SexpString(f))
+                (Loc.File, SexpString(f))
               ) =>
             OrganiseImportsRefactorDesc(File(f).canon)
 
           case List(
-              (Loc.End, SexpNumber(_)),
-              (Loc.File, SexpString(f)),
-              (Loc.QualifiedName, SexpString(qualifiedName)),
-              (Loc.Start, SexpNumber(_))
+                (Loc.End, SexpNumber(_)),
+                (Loc.File, SexpString(f)),
+                (Loc.QualifiedName, SexpString(qualifiedName)),
+                (Loc.Start, SexpNumber(_))
               ) =>
             AddImportRefactorDesc(qualifiedName, File(f).canon)
 
           case List(
-              (Loc.File, SexpString(f)),
-              (Loc.QualifiedName, SexpString(qualifiedName))
+                (Loc.File, SexpString(f)),
+                (Loc.QualifiedName, SexpString(qualifiedName))
               ) =>
             AddImportRefactorDesc(qualifiedName, File(f).canon)
 
@@ -1063,7 +1063,7 @@ object SwankProtocolRequest {
     def write(env: RpcRequestEnvelope): Sexp = ???
     def read(sexp: Sexp): RpcRequestEnvelope = sexp match {
       case SexpList(
-          SexpSymbol(":swank-rpc") :: form :: SexpNumber(callIdBI) :: Nil) =>
+            SexpSymbol(":swank-rpc") :: form :: SexpNumber(callIdBI) :: Nil) =>
         val callId = callIdBI.intValue()
         Try(form.convertTo[RpcRequest]) match {
           case Success(v) =>

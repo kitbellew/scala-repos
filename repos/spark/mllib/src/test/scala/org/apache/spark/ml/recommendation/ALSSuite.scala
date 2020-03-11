@@ -294,7 +294,11 @@ class ALSSuite
     for ((userId, userFactor) <- userFactors;
          (itemId, itemFactor) <- itemFactors) {
       val rating = blas.sdot(rank, userFactor, 1, itemFactor, 1)
-      val threshold = if (rating > 0) positiveFraction else negativeFraction
+      val threshold =
+        if (rating > 0)
+          positiveFraction
+        else
+          negativeFraction
       val observed = random.nextDouble() < threshold
       if (observed) {
         val x = random.nextDouble()

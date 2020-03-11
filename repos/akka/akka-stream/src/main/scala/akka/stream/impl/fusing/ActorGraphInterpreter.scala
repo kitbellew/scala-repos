@@ -46,8 +46,10 @@ private[stream] final case class GraphModule(
     CopiedModule(shape.deepCopy(), Attributes.none, this)
 
   override final def replaceShape(newShape: Shape): Module =
-    if (newShape != shape) CompositeModule(this, newShape)
-    else this
+    if (newShape != shape)
+      CompositeModule(this, newShape)
+    else
+      this
 
   override def toString: String =
     s"""GraphModule
@@ -192,7 +194,8 @@ private[stream] object ActorGraphInterpreter {
       downstreamCanceled = true
       if (!upstreamCompleted) {
         upstreamCompleted = true
-        if (upstream ne null) tryCancel(upstream)
+        if (upstream ne null)
+          tryCancel(upstream)
         clear()
       }
     }
@@ -205,7 +208,8 @@ private[stream] object ActorGraphInterpreter {
           (nextInputElementCursor + inputBufferElements) & IndexMask) =
           elem.asInstanceOf[AnyRef]
         inputBufferElements += 1
-        if (isAvailable(out)) push(out, dequeue())
+        if (isAvailable(out))
+          push(out, dequeue())
       }
     }
 
@@ -222,13 +226,15 @@ private[stream] object ActorGraphInterpreter {
       if (!(upstreamCompleted || downstreamCanceled) && (upstream ne null)) {
         upstream.cancel()
       }
-      if (!isClosed(out)) onError(e)
+      if (!isClosed(out))
+        onError(e)
     }
 
     def onComplete(): Unit =
       if (!upstreamCompleted) {
         upstreamCompleted = true
-        if (inputBufferElements == 0) complete(out)
+        if (inputBufferElements == 0)
+          complete(out)
       }
 
     def onSubscribe(subscription: Subscription): Unit = {
@@ -249,12 +255,14 @@ private[stream] object ActorGraphInterpreter {
       out,
       new OutHandler {
         override def onPull(): Unit = {
-          if (inputBufferElements > 1) push(out, dequeue())
+          if (inputBufferElements > 1)
+            push(out, dequeue())
           else if (inputBufferElements == 1) {
             if (upstreamCompleted) {
               push(out, dequeue())
               complete(out)
-            } else push(out, dequeue())
+            } else
+              push(out, dequeue())
           } else if (upstreamCompleted) {
             complete(out)
           }
@@ -298,8 +306,10 @@ private[stream] object ActorGraphInterpreter {
       // No need to complete if had already been cancelled, or we closed earlier
       if (!(upstreamCompleted || downstreamCompleted)) {
         upstreamCompleted = true
-        if (exposedPublisher ne null) exposedPublisher.shutdown(None)
-        if (subscriber ne null) tryOnComplete(subscriber)
+        if (exposedPublisher ne null)
+          exposedPublisher.shutdown(None)
+        if (subscriber ne null)
+          tryOnComplete(subscriber)
       }
     }
 
@@ -308,7 +318,8 @@ private[stream] object ActorGraphInterpreter {
       if (!(downstreamCompleted || upstreamCompleted)) {
         upstreamCompleted = true
         upstreamFailed = Some(e)
-        if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
+        if (exposedPublisher ne null)
+          exposedPublisher.shutdown(Some(e))
         if ((subscriber ne null) && !e.isInstanceOf[SpecViolation])
           tryOnError(subscriber, e)
       }
@@ -319,8 +330,10 @@ private[stream] object ActorGraphInterpreter {
       new InHandler {
         override def onPush(): Unit = {
           onNext(grab(in))
-          if (downstreamCompleted) cancel(in)
-          else if (downstreamDemand > 0) pull(in)
+          if (downstreamCompleted)
+            cancel(in)
+          else if (downstreamDemand > 0)
+            pull(in)
         }
 
         override def onUpstreamFinish(): Unit = complete()
@@ -348,7 +361,8 @@ private[stream] object ActorGraphInterpreter {
         case _: Some[_] ⇒
           publisher.shutdown(upstreamFailed)
         case _ ⇒
-          if (upstreamCompleted) publisher.shutdown(None)
+          if (upstreamCompleted)
+            publisher.shutdown(None)
       }
     }
 
@@ -362,7 +376,8 @@ private[stream] object ActorGraphInterpreter {
         if (downstreamDemand < 0)
           downstreamDemand =
             Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
-        if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
+        if (!hasBeenPulled(in) && !isClosed(in))
+          pull(in)
       }
     }
 
@@ -411,7 +426,8 @@ private[stream] final class GraphInterpreterShell(
       val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
       if (currentInterpreter == null || (currentInterpreter.context ne self))
         self ! asyncInput
-      else enqueueToShortCircuit(asyncInput)
+      else
+        enqueueToShortCircuit(asyncInput)
     },
     settings.fuzzingMode,
     self)
@@ -478,11 +494,13 @@ private[stream] final class GraphInterpreterShell(
         case ExposedPublisher(_, id, publisher) ⇒
           outputs(id).exposedPublisher(publisher)
           publishersPending -= 1
-          if (canShutDown) _isTerminated = true
+          if (canShutDown)
+            _isTerminated = true
         case OnSubscribe(_, _, sub) ⇒
           tryCancel(sub)
           subscribesPending -= 1
-          if (canShutDown) _isTerminated = true
+          if (canShutDown)
+            _isTerminated = true
         case Abort(_) ⇒
           tryAbort(new TimeoutException(
             "Streaming actor has been already stopped processing (normally), but not all of its " +
@@ -504,14 +522,19 @@ private[stream] final class GraphInterpreterShell(
           outputs(id).requestMore(demand)
           runBatch(eventLimit)
         case Resume(_) ⇒
-          if (GraphInterpreter.Debug) println(s"${interpreter.Name}  resume")
-          if (interpreter.isSuspended) runBatch(eventLimit) else eventLimit
+          if (GraphInterpreter.Debug)
+            println(s"${interpreter.Name}  resume")
+          if (interpreter.isSuspended)
+            runBatch(eventLimit)
+          else
+            eventLimit
         case AsyncInput(_, logic, event, handler) ⇒
           interpreter.runAsyncInput(logic, event, handler)
           if (eventLimit == 1 && interpreter.isSuspended) {
             sendResume(true)
             0
-          } else runBatch(eventLimit - 1)
+          } else
+            runBatch(eventLimit - 1)
 
         // Initialization and completion messages
         case OnError(_, id: Int, cause: Throwable) ⇒
@@ -556,8 +579,10 @@ private[stream] final class GraphInterpreterShell(
 
   def sendResume(sendResume: Boolean): Unit = {
     resumeScheduled = true
-    if (sendResume) self ! resume
-    else enqueueToShortCircuit(resume)
+    if (sendResume)
+      self ! resume
+    else
+      enqueueToShortCircuit(resume)
   }
 
   def runBatch(actorEventLimit: Int): Int = {
@@ -567,7 +592,8 @@ private[stream] final class GraphInterpreterShell(
         interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
       if (interpreter.isCompleted) {
         // Cannot stop right away if not completely subscribed
-        if (canShutDown) _isTerminated = true
+        if (canShutDown)
+          _isTerminated = true
         else {
           waitingForShutdown = true
           mat.scheduleOnce(
@@ -580,8 +606,10 @@ private[stream] final class GraphInterpreterShell(
       } else if (interpreter.isSuspended && !resumeScheduled)
         sendResume(!usingShellLimit)
 
-      if (usingShellLimit) actorEventLimit - shellEventLimit + remainingQuota
-      else remainingQuota
+      if (usingShellLimit)
+        actorEventLimit - shellEventLimit + remainingQuota
+      else
+        remainingQuota
     } catch {
       case NonFatal(e) ⇒
         tryAbort(e)
@@ -640,7 +668,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
       if (GraphInterpreter.Debug)
         println(
           s"registering new shell in ${_initial}\n  ${shell.toString.replace("\n", "\n  ")}")
-      if (shell.isTerminated) false
+      if (shell.isTerminated)
+        false
       else {
         activeInterpreters += shell
         true
@@ -678,21 +707,26 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
    */
   @tailrec private def finishShellRegistration(): Unit =
     newShells match {
-      case Nil ⇒ if (activeInterpreters.isEmpty) context.stop(self)
+      case Nil ⇒
+        if (activeInterpreters.isEmpty)
+          context.stop(self)
       case shell :: tail ⇒
         newShells = tail
         if (shell.isInitialized) {
           // yes, this steals another shell’s Resume, but that’s okay because extra ones will just not do anything
           finishShellRegistration()
         } else if (!tryInit(shell)) {
-          if (activeInterpreters.isEmpty) finishShellRegistration()
+          if (activeInterpreters.isEmpty)
+            finishShellRegistration()
         }
     }
 
   override def preStart(): Unit = {
     tryInit(_initial)
-    if (activeInterpreters.isEmpty) context.stop(self)
-    else if (shortCircuitBuffer != null) shortCircuitBatch()
+    if (activeInterpreters.isEmpty)
+      context.stop(self)
+    else if (shortCircuitBuffer != null)
+      shortCircuitBatch()
   }
 
   private def shortCircuitBatch(): Unit = {
@@ -701,7 +735,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
         case b: BoundaryEvent ⇒ processEvent(b)
         case Resume ⇒ finishShellRegistration()
       }
-    if (!shortCircuitBuffer.isEmpty && currentLimit == 0) self ! Resume
+    if (!shortCircuitBuffer.isEmpty && currentLimit == 0)
+      self ! Resume
   }
 
   private def processEvent(b: BoundaryEvent): Unit = {
@@ -710,7 +745,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
       currentLimit = shell.receive(b, currentLimit)
       if (shell.isTerminated) {
         activeInterpreters -= shell
-        if (activeInterpreters.isEmpty && newShells.isEmpty) context.stop(self)
+        if (activeInterpreters.isEmpty && newShells.isEmpty)
+          context.stop(self)
       }
     }
   }
@@ -719,11 +755,13 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
     case b: BoundaryEvent ⇒
       currentLimit = eventLimit
       processEvent(b)
-      if (shortCircuitBuffer != null) shortCircuitBatch()
+      if (shortCircuitBuffer != null)
+        shortCircuitBatch()
 
     case Resume ⇒
       currentLimit = eventLimit
-      if (shortCircuitBuffer != null) shortCircuitBatch()
+      if (shortCircuitBuffer != null)
+        shortCircuitBatch()
 
     case StreamSupervisor.PrintDebugDump ⇒
       val builder =
@@ -744,6 +782,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
     val ex = AbruptTerminationException(self)
     activeInterpreters.foreach(_.tryAbort(ex))
     activeInterpreters = Set.empty[GraphInterpreterShell]
-    newShells.foreach(s ⇒ if (tryInit(s)) s.tryAbort(ex))
+    newShells.foreach(s ⇒
+      if (tryInit(s))
+        s.tryAbort(ex))
   }
 }

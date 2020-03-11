@@ -80,7 +80,8 @@ final case class AdaptiveLoadBalancingRoutingLogic(
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
+    if (routees.isEmpty)
+      NoRoutee
     else {
 
       def updateWeightedRoutees(): Option[WeightedRoutees] = {
@@ -98,13 +99,16 @@ final case class AdaptiveLoadBalancingRoutingLogic(
             oldValue,
             (routees, oldMetrics, weightedRoutees))
           weightedRoutees
-        } else oldWeightedRoutees
+        } else
+          oldWeightedRoutees
       }
 
       updateWeightedRoutees() match {
         case Some(weighted) ⇒
-          if (weighted.isEmpty) NoRoutee
-          else weighted(ThreadLocalRandom.current.nextInt(weighted.total) + 1)
+          if (weighted.isEmpty)
+            NoRoutee
+          else
+            weighted(ThreadLocalRandom.current.nextInt(weighted.total) + 1)
         case None ⇒
           routees(ThreadLocalRandom.current.nextInt(routees.size))
       }
@@ -208,7 +212,8 @@ final case class AdaptiveLoadBalancingPool(
     * if this RouterConfig doesn't have one
     */
   override def withFallback(other: RouterConfig): RouterConfig =
-    if (this.supervisorStrategy ne Pool.defaultSupervisorStrategy) this
+    if (this.supervisorStrategy ne Pool.defaultSupervisorStrategy)
+      this
     else
       other match {
         case _: FromConfig | _: NoRouter ⇒
@@ -216,7 +221,8 @@ final case class AdaptiveLoadBalancingPool(
         case otherRouter: AdaptiveLoadBalancingPool ⇒
           if (otherRouter.supervisorStrategy eq Pool.defaultSupervisorStrategy)
             this
-          else this.withSupervisorStrategy(otherRouter.supervisorStrategy)
+          else
+            this.withSupervisorStrategy(otherRouter.supervisorStrategy)
         case _ ⇒
           throw new IllegalArgumentException(
             "Expected AdaptiveLoadBalancingPool, got [%s]".format(other))
@@ -506,7 +512,8 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
     * the node with lowest capacity.
     */
   def weights(capacity: Map[Address, Double]): Map[Address, Int] = {
-    if (capacity.isEmpty) Map.empty[Address, Int]
+    if (capacity.isEmpty)
+      Map.empty[Address, Int]
     else {
       val (_, min) = capacity.minBy {
         case (_, c) ⇒ c
@@ -554,7 +561,10 @@ private[cluster] class WeightedRoutees(
     }
     val buckets = Array.ofDim[Int](routees.size)
     val meanWeight =
-      if (weights.isEmpty) 1 else weights.values.sum / weights.size
+      if (weights.isEmpty)
+        1
+      else
+        weights.values.sum / weights.size
     val w =
       weights.withDefaultValue(
         meanWeight
@@ -591,13 +601,15 @@ private[cluster] class WeightedRoutees(
     * see documentation of Arrays.binarySearch for what it returns
     */
   private def idx(i: Int): Int = {
-    if (i >= 0) i // exact match
+    if (i >= 0)
+      i // exact match
     else {
       val j = math.abs(i + 1)
       if (j >= buckets.length)
         throw new IndexOutOfBoundsException(
           "Requested index [%s] is > max index [%s]".format(i, buckets.length))
-      else j
+      else
+        j
     }
   }
 }

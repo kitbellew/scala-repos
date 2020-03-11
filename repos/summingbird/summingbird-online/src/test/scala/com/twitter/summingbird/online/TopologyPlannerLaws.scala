@@ -82,7 +82,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       producersWithoutNOP.forall { p =>
         val inError =
           (p.isInstanceOf[Summer[_, _, _]] && producersWithoutNOP.size != 1)
-        if (inError) dumpGraph(dag)
+        if (inError)
+          dumpGraph(dag)
         !inError
       }
     }
@@ -107,7 +108,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val inError = n.members.last.isInstanceOf[NamedProducer[_, _]]
-        if (inError) dumpGraph(dag)
+        if (inError)
+          dumpGraph(dag)
         !inError
       }
     }
@@ -124,7 +126,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
               case _                    => (seenMergeProducer, (inError || seenMergeProducer))
             }
         }
-        if (inError) dumpGraph(dag)
+        if (inError)
+          dumpGraph(dag)
         !inError
       }
     }
@@ -154,7 +157,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
           case _: SourceNode[_] => true
           case _                => dag.dependenciesOf(n).size > 0
         }
-        if (!success) dumpGraph(dag)
+        if (!success)
+          dumpGraph(dag)
         success
       }
   }
@@ -168,7 +172,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
             dag.dependenciesOf(n).size == 0 && dag.dependantsOf(n).size > 0
           case _ => true
         }
-        if (!success) dumpGraph(dag)
+        if (!success)
+          dumpGraph(dag)
         success
       }
     }
@@ -184,7 +189,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
             }
           case _ => true
         }
-        if (!success) dumpGraph(dag)
+        if (!success)
+          dumpGraph(dag)
         success
       }
   }
@@ -199,7 +205,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
             }
           case _ => true
         }
-        if (!success) dumpGraph(dag)
+        if (!success)
+          dumpGraph(dag)
         success
       }
   }

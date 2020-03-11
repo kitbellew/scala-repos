@@ -94,7 +94,8 @@ private[http] object WebSocket {
             else if (inMessage)
               ctx.fail(new ProtocolException(
                 s"Truncated message, peer closed connection in the middle of message."))
-            else ctx.finish()
+            else
+              ctx.finish()
           case ActivelyCloseWithCode(code, reason) ⇒
             if (code.exists(Protocol.CloseCodes.isError))
               ctx.fail(
@@ -247,7 +248,8 @@ private[http] object WebSocket {
           override def apply(): Unit = tryPull(from)
           override def onPush(): Unit = emit(out, grab(from), this)
           override def onUpstreamFinish(): Unit =
-            if (isClosed(bypass) && isClosed(user)) completeStage()
+            if (isClosed(bypass) && isClosed(user))
+              completeStage()
         }
         setHandler(bypass, new PassAlong(bypass))
         setHandler(user, new PassAlong(user))

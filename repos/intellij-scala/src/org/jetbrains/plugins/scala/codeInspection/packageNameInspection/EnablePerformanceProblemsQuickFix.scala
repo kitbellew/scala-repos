@@ -16,11 +16,17 @@ class EnablePerformanceProblemsQuickFix(project: Project)
     settings.setIgnorePerformance(!ignoreSettings)
   }
 
-  val enable: String = if (!ignoreSettings) "Enable" else "Disable"
+  val enable: String =
+    if (!ignoreSettings)
+      "Enable"
+    else
+      "Disable"
   def getName: String =
     enable + " setting, solving resolve problems " + (
-      if (!ignoreSettings) "(this can cause editor performance problems"
-      else "(this can improve editor performance"
+      if (!ignoreSettings)
+        "(this can cause editor performance problems"
+      else
+        "(this can improve editor performance"
     ) + ")."
 
   def getFamilyName: String = enable + " setting"

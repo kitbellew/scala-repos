@@ -53,8 +53,10 @@ object CompilationData {
       .getProjectSettings(module.getProject)
       .getCompilerSettings(chunk)
     val noBootCp =
-      if (CompilerData.isDotty(chunk)) Nil
-      else Seq("-nobootcp", "-javabootclasspath", File.pathSeparator)
+      if (CompilerData.isDotty(chunk))
+        Nil
+      else
+        Seq("-nobootcp", "-javabootclasspath", File.pathSeparator)
     val scalaOptions = noBootCp ++: compilerSettings.getCompilerOptions
     val order = compilerSettings.getCompileOrder
 
@@ -211,7 +213,8 @@ object CompilationData {
         "Output path %s is shared between: %s".format(output, targetNames)
     }
 
-    if (errors.isEmpty) None
+    if (errors.isEmpty)
+      None
     else
       Some(
         errors.mkString("\n") +

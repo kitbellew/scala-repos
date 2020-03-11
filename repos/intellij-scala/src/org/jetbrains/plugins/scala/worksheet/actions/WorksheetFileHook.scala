@@ -63,14 +63,17 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
           override def exitDumbMode() {
             val editor =
               FileEditorManager.getInstance(project).getSelectedTextEditor
-            if (editor == null) return
+            if (editor == null)
+              return
 
             val file = PsiDocumentManager.getInstance(
               project) getPsiFile editor.getDocument
-            if (file == null) return
+            if (file == null)
+              return
 
             val vFile = file.getVirtualFile
-            if (vFile == null) return
+            if (vFile == null)
+              return
 
             WorksheetFileHook getPanel vFile foreach {
               case ref =>
@@ -93,7 +96,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       file: VirtualFile,
       run: Boolean,
       exec: Option[CompilationProcess] = None) {
-    if (project.isDisposed) return
+    if (project.isDisposed)
+      return
 
     val myFileEditorManager = FileEditorManager.getInstance(project)
     val editors = myFileEditorManager.getAllEditors(file)
@@ -105,7 +109,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
 
           ApplicationManager.getApplication.invokeLater(new Runnable {
             override def run() {
-              if (p != null) myFileEditorManager.removeTopComponent(editor, p)
+              if (p != null)
+                myFileEditorManager.removeTopComponent(editor, p)
             }
           })
       }
@@ -129,8 +134,10 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
   def enableRun(file: VirtualFile, hasErrors: Boolean) {
     cleanAndAdd(file, Some(new RunWorksheetAction))
     statusDisplay.foreach(display =>
-      if (hasErrors) display.onFailedCompiling()
-      else display.onSuccessfulCompiling())
+      if (hasErrors)
+        display.onFailedCompiling()
+      else
+        display.onSuccessfulCompiling())
   }
 
   private def cleanAndAdd(
@@ -141,7 +148,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
         val panel = panelRef.get()
         if (panel != null) {
           val c = panel getComponent 0
-          if (c != null) panel remove c
+          if (c != null)
+            panel remove c
           action foreach (_.init(panel))
         }
     }
@@ -156,8 +164,10 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       }
 
     private def isPluggable(file: VirtualFile): Boolean = {
-      if (ScalaFileType.WORKSHEET_EXTENSION == file.getExtension) return true
-      if (!file.isValid) return false
+      if (ScalaFileType.WORKSHEET_EXTENSION == file.getExtension)
+        return true
+      if (!file.isValid)
+        return false
 
       PsiManager.getInstance(project).findFile(file) match {
         case _: ScalaFile
@@ -173,7 +183,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
     override def selectionChanged(event: FileEditorManagerEvent) {}
 
     override def fileClosed(source: FileEditorManager, file: VirtualFile) {
-      if (!isPluggable(file)) return
+      if (!isPluggable(file))
+        return
 
       val d = doc(source, file)
       if (d != null)
@@ -181,7 +192,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
     }
 
     override def fileOpened(source: FileEditorManager, file: VirtualFile) {
-      if (!isPluggable(file)) return
+      if (!isPluggable(file))
+        return
 
       WorksheetFileHook.this.initTopComponent(file, run = true)
       loadEvaluationResult(source, file)

@@ -671,11 +671,11 @@ private[hive] class HiveMetastoreCatalog(
       plan transformUp {
         // Write path
         case InsertIntoTable(
-            r: MetastoreRelation,
-            partition,
-            child,
-            overwrite,
-            ifNotExists)
+              r: MetastoreRelation,
+              partition,
+              child,
+              overwrite,
+              ifNotExists)
             // Inserting into partitioned table is not supported in Parquet data source (yet).
             if !r.hiveQlTable.isPartitioned && hive.convertMetastoreParquet &&
               r.tableDesc.getSerdeClassName.toLowerCase.contains("parquet") =>
@@ -689,11 +689,11 @@ private[hive] class HiveMetastoreCatalog(
 
         // Write path
         case InsertIntoHiveTable(
-            r: MetastoreRelation,
-            partition,
-            child,
-            overwrite,
-            ifNotExists)
+              r: MetastoreRelation,
+              partition,
+              child,
+              overwrite,
+              ifNotExists)
             // Inserting into partitioned table is not supported in Parquet data source (yet).
             if !r.hiveQlTable.isPartitioned && hive.convertMetastoreParquet &&
               r.tableDesc.getSerdeClassName.toLowerCase.contains("parquet") =>
@@ -770,7 +770,10 @@ private[hive] class HiveMetastoreCatalog(
           }
 
           val mode =
-            if (allowExisting) SaveMode.Ignore else SaveMode.ErrorIfExists
+            if (allowExisting)
+              SaveMode.Ignore
+            else
+              SaveMode.ErrorIfExists
           CreateTableUsingAsSelect(
             TableIdentifier(desc.name.table),
             conf.defaultDataSourceName,

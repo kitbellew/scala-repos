@@ -54,12 +54,14 @@ object BoxTest extends JFXApp {
           },
           new VBox {
             spacing = 10
-            children = for (i <- 0 until 3) yield new Circle {
-              radius = 25
-              fill = Color.Blue
-              stroke = Color.Blue.brighter
-              strokeWidth = 3
-            }
+            children =
+              for (i <- 0 until 3)
+                yield new Circle {
+                  radius = 25
+                  fill = Color.Blue
+                  stroke = Color.Blue.brighter
+                  strokeWidth = 3
+                }
           },
           new Arc {
             radiusX = 25

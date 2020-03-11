@@ -255,7 +255,8 @@ class RegressionTest {
       : Unit = {
     @tailrec
     def foo(x: Int, y: Int): Unit = {
-      if (x < y) foo(y, x)
+      if (x < y)
+        foo(y, x)
       else {
         assertEquals(4, x)
         assertEquals(2, y)
@@ -369,7 +370,8 @@ class RegressionTest {
           v, {
             // This must be a true block
             var x = 1
-            while (x < 5) x += 1
+            while (x < 5)
+              x += 1
             x
           })
       }
@@ -393,9 +395,12 @@ class RegressionTest {
         y = y0
         var res = 0
         while (x > 0 || y > 0 || z > 0) {
-          if (x > 0) x -= 1
-          else if (y > 0) y -= 1
-          else z -= 1
+          if (x > 0)
+            x -= 1
+          else if (y > 0)
+            y -= 1
+          else
+            z -= 1
           res += 1
         }
         res
@@ -501,7 +506,8 @@ object RegressionTest {
         case 2 if e =>
       }
 
-      if (false) ()
+      if (false)
+        ()
     }
   }
 }

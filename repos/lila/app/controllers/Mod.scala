@@ -66,7 +66,8 @@ object Mod extends LilaController {
             username,
             mod = false)
       )
-    else fuccess(authorizationFailed(ctx.req))
+    else
+      fuccess(authorizationFailed(ctx.req))
   }
 
   def setEmail(username: String) = AuthBody { implicit ctx => me =>
@@ -83,7 +84,8 @@ object Mod extends LilaController {
                 user.username,
                 mod = true)
           )
-      else fuccess(authorizationFailed(ctx.req))
+      else
+        fuccess(authorizationFailed(ctx.req))
     }
   }
 

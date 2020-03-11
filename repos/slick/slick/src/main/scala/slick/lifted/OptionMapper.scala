@@ -21,7 +21,10 @@ trait OptionMapper[BR, R] extends (Rep[BR] => Rep[R]) {
   }
 
   def liftedType(implicit bt: TypedType[BR]): TypedType[R] =
-    (if (lift) bt.optionType else bt).asInstanceOf[TypedType[R]]
+    (if (lift)
+       bt.optionType
+     else
+       bt).asInstanceOf[TypedType[R]]
 }
 
 @implicitNotFound(

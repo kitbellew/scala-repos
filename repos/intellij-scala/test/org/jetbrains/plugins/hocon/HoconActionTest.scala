@@ -19,10 +19,14 @@ abstract class HoconActionTest(actionId: String, subpath: String)
       extends DataContext
       with DataProvider {
     def getData(dataId: String): AnyRef =
-      if (LangDataKeys.LANGUAGE is dataId) file.getLanguage
-      else if (CommonDataKeys.PROJECT is dataId) file.getProject
-      else if (CommonDataKeys.EDITOR is dataId) editor
-      else null
+      if (LangDataKeys.LANGUAGE is dataId)
+        file.getLanguage
+      else if (CommonDataKeys.PROJECT is dataId)
+        file.getProject
+      else if (CommonDataKeys.EDITOR is dataId)
+        editor
+      else
+        null
   }
 
   protected def transform(data: Seq[String]): String = {

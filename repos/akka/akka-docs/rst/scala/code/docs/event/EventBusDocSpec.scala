@@ -108,7 +108,12 @@ object EventBusDocSpec {
     override protected def compareClassifiers(
         a: Classifier,
         b: Classifier): Int =
-      if (a < b) -1 else if (a == b) 0 else 1
+      if (a < b)
+        -1
+      else if (a == b)
+        0
+      else
+        1
 
     // is needed for storing subscribers in an ordered collection
     override protected def compareSubscribers(

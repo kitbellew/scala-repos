@@ -91,7 +91,8 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
     (iteratorWithSize(snd), newIterator(fst))
   }
   private[this] def splitArray(ad: Array[Iterable[T]]): SplitIterators =
-    if (ad.length > 1) arrayToIterators(ad)
+    if (ad.length > 1)
+      arrayToIterators(ad)
     else
       ad(0) match {
         case _: HashMapCollision1[_, _] | _: HashSetCollision1[_] =>
@@ -211,8 +212,10 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
           // 3a) positioned at the last element of arrayD
           val m = arrayD(posD)
           arrayToIterators(
-            if (isTrie(m)) getElems(m)
-            else collisionToArray(m)
+            if (isTrie(m))
+              getElems(m)
+            else
+              collisionToArray(m)
           )
         } else {
           // 3b) arrayD has more free elements

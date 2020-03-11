@@ -274,7 +274,8 @@ class ContinuousQueryManagerSuite
               .asInstanceOf[StreamExecution]
           } catch {
             case NonFatal(e) =>
-              if (query != null) query.stop()
+              if (query != null)
+                query.stop()
               throw e
           }
           query

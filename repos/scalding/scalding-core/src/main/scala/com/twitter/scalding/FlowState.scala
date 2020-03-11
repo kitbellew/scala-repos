@@ -82,5 +82,6 @@ object FlowStateMap {
           sys.error(
             "Could not find a flowState for flowDef: %s".format(flowDef)))
         .validateSources(mode)
-    } else ()
+    } else
+      ()
 }

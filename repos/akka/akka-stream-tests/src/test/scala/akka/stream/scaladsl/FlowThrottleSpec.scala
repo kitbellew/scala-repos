@@ -111,7 +111,8 @@ class FlowThrottleSpec extends AkkaSpec {
         downstream.expectNext(1)
         downstream.request(5)
         downstream.expectNoMsg(1200.millis)
-        for (i ← 2 to 6) upstream.sendNext(i)
+        for (i ← 2 to 6)
+          upstream.sendNext(i)
         downstream.receiveWithin(300.millis, 5) should be(2 to 6)
         downstream.cancel()
       }
@@ -129,7 +130,8 @@ class FlowThrottleSpec extends AkkaSpec {
       downstream.expectNext(1)
       downstream.expectNoMsg(500.millis) //wait to receive 2 in burst afterwards
       downstream.request(5)
-      for (i ← 2 to 4) upstream.sendNext(i)
+      for (i ← 2 to 4)
+        upstream.sendNext(i)
       downstream.receiveWithin(100.millis, 2) should be(Seq(2, 3))
       downstream.cancel()
     }
@@ -240,7 +242,8 @@ class FlowThrottleSpec extends AkkaSpec {
         downstream.expectNext(1)
         downstream.request(5)
         downstream.expectNoMsg(1200.millis)
-        for (i ← 2 to 6) upstream.sendNext(i)
+        for (i ← 2 to 6)
+          upstream.sendNext(i)
         downstream.receiveWithin(300.millis, 5) should be(2 to 6)
         downstream.cancel()
       }
@@ -250,7 +253,16 @@ class FlowThrottleSpec extends AkkaSpec {
       val downstream = TestSubscriber.probe[Int]()
       Source
         .fromPublisher(upstream)
-        .throttle(2, 400.millis, 5, (e) ⇒ if (e < 4) 1 else 20, Shaping)
+        .throttle(
+          2,
+          400.millis,
+          5,
+          (e) ⇒
+            if (e < 4)
+              1
+            else
+              20,
+          Shaping)
         .runWith(Sink.fromSubscriber(downstream))
       downstream.request(1)
       upstream.sendNext(1)
@@ -258,7 +270,8 @@ class FlowThrottleSpec extends AkkaSpec {
       downstream.expectNext(1)
       downstream.expectNoMsg(500.millis) //wait to receive 2 in burst afterwards
       downstream.request(5)
-      for (i ← 2 to 4) upstream.sendNext(i)
+      for (i ← 2 to 4)
+        upstream.sendNext(i)
       downstream.receiveWithin(200.millis, 2) should be(Seq(2, 3))
       downstream.cancel()
     }

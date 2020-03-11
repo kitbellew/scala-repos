@@ -15,14 +15,20 @@ private[http] class Timestamp private (val timestampNanos: Long)
     extends AnyVal {
 
   def +(period: Duration): Timestamp =
-    if (isNever) this
-    else if (!period.isFinite()) Timestamp.never
-    else new Timestamp(timestampNanos + period.toNanos)
+    if (isNever)
+      this
+    else if (!period.isFinite())
+      Timestamp.never
+    else
+      new Timestamp(timestampNanos + period.toNanos)
 
   def -(other: Timestamp): Duration =
-    if (isNever) Duration.Inf
-    else if (other.isNever) Duration.MinusInf
-    else (timestampNanos - other.timestampNanos).nanos
+    if (isNever)
+      Duration.Inf
+    else if (other.isNever)
+      Duration.MinusInf
+    else
+      (timestampNanos - other.timestampNanos).nanos
 
   def isPast: Boolean = System.nanoTime() >= timestampNanos
   def isPast(now: Timestamp): Boolean = now.timestampNanos >= timestampNanos

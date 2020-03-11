@@ -71,7 +71,11 @@ class LPMaxFlow[N](val g: FlowGraph[N]) {
   }
 
   def minCostFlow(minimumFlow: Double = -1) = {
-    val mf = if (minimumFlow < 0) maxFlow._2 else minimumFlow
+    val mf =
+      if (minimumFlow < 0)
+        maxFlow._2
+      else
+        minimumFlow
 
     val queue = collection.mutable.Queue[N]()
     queue += g.source

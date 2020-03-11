@@ -54,8 +54,10 @@ object TypedActorSpec {
           case xs ⇒ xs
         }
 
-        if (current.compareAndSet(currentItems, newItems.tail)) newItems.head
-        else findNext
+        if (current.compareAndSet(currentItems, newItems.tail))
+          newItems.head
+        else
+          findNext
       }
 
       findNext
@@ -204,13 +206,19 @@ object TypedActorSpec {
     override def preStart(): Unit = ensureContextAvailable(latch.countDown())
 
     override def postStop(): Unit =
-      ensureContextAvailable(for (i ← 1 to 3) latch.countDown())
+      ensureContextAvailable(
+        for (i ← 1 to 3)
+          latch.countDown())
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit =
-      ensureContextAvailable(for (i ← 1 to 5) latch.countDown())
+      ensureContextAvailable(
+        for (i ← 1 to 5)
+          latch.countDown())
 
     override def postRestart(reason: Throwable): Unit =
-      ensureContextAvailable(for (i ← 1 to 7) latch.countDown())
+      ensureContextAvailable(
+        for (i ← 1 to 7)
+          latch.countDown())
 
     override def onReceive(msg: Any, sender: ActorRef): Unit = {
       ensureContextAvailable(msg match {
@@ -224,7 +232,10 @@ object TypedActorSpec {
   }
   class FI extends F {
     def f(pow: Boolean): Int =
-      if (pow) throw new IllegalStateException("expected") else 1
+      if (pow)
+        throw new IllegalStateException("expected")
+      else
+        1
   }
 }
 
@@ -343,7 +354,9 @@ class TypedActorSpec
     "be able to call multiple Future-returning methods non-blockingly" in within(
       timeout.duration) {
       val t = newFooBar
-      val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
+      val futures =
+        for (i ← 1 to 20)
+          yield (i, t.futurePigdog(20 millis, i))
       for ((i, f) ← futures) {
         Await.result(f, remaining) should ===("Pigdog" + i)
       }
@@ -467,15 +480,19 @@ class TypedActorSpec
 
     "be able to use balancing dispatcher" in within(timeout.duration) {
       val thais =
-        for (i ← 1 to 60) yield newFooBar("pooled-dispatcher", 6 seconds)
+        for (i ← 1 to 60)
+          yield newFooBar("pooled-dispatcher", 6 seconds)
       val iterator = new CyclicIterator(thais)
 
       val results =
-        for (i ← 1 to 120) yield (i, iterator.next.futurePigdog(200 millis, i))
+        for (i ← 1 to 120)
+          yield (i, iterator.next.futurePigdog(200 millis, i))
 
-      for ((i, r) ← results) Await.result(r, remaining) should ===("Pigdog" + i)
+      for ((i, r) ← results)
+        Await.result(r, remaining) should ===("Pigdog" + i)
 
-      for (t ← thais) mustStop(t)
+      for (t ← thais)
+        mustStop(t)
     }
 
     "be able to serialize and deserialize invocations" in {

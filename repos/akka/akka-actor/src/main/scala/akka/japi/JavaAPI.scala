@@ -167,7 +167,10 @@ sealed abstract class Option[A] extends java.lang.Iterable[A] {
   def isDefined: Boolean = !isEmpty
   def asScala: scala.Option[A]
   def iterator: java.util.Iterator[A] =
-    if (isEmpty) emptyList[A].iterator else singletonList(get).iterator
+    if (isEmpty)
+      emptyList[A].iterator
+    else
+      singletonList(get).iterator
 }
 
 object Option {
@@ -186,7 +189,11 @@ object Option {
     * <code>Option</code> factory that creates <code>None</code> if
     * <code>v</code> is <code>null</code>, <code>Some(v)</code> otherwise.
     */
-  def option[A](v: A): Option[A] = if (v == null) none else some(v)
+  def option[A](v: A): Option[A] =
+    if (v == null)
+      none
+    else
+      some(v)
 
   /**
     * Converts a Scala Option to a Java Option
@@ -220,7 +227,10 @@ object Option {
 
   implicit def java2ScalaOption[A](o: Option[A]): scala.Option[A] = o.asScala
   implicit def scala2JavaOption[A](o: scala.Option[A]): Option[A] =
-    if (o.isDefined) some(o.get) else none
+    if (o.isDefined)
+      some(o.get)
+    else
+      none
 }
 
 /**
@@ -244,7 +254,10 @@ object Util {
     * Turns an array into an immutable Scala sequence (by copying it).
     */
   def immutableSeq[T](arr: Array[T]): immutable.Seq[T] =
-    if ((arr ne null) && arr.length > 0) Vector(arr: _*) else Nil
+    if ((arr ne null) && arr.length > 0)
+      Vector(arr: _*)
+    else
+      Nil
 
   /**
     * Turns an [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
@@ -262,7 +275,8 @@ object Util {
           } while (i.hasNext)
 
           builder.result()
-        } else EmptyImmutableSeq
+        } else
+          EmptyImmutableSeq
     }
 
   def immutableSingletonSeq[T](value: T): immutable.Seq[T] = value :: Nil

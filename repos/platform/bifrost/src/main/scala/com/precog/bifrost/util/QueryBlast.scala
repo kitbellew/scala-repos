@@ -128,7 +128,10 @@ object QueryBlast extends AkkaDefaults {
   }
 
   def main(args: Array[String]) {
-    if (args.size == 0) usage() else runTest(loadConfig(args))
+    if (args.size == 0)
+      usage()
+    else
+      runTest(loadConfig(args))
   }
 
   def usage() {
@@ -148,12 +151,14 @@ verboseErrors - whether to print verbose error messages (default: false)
 """
 
   def loadConfig(args: Array[String]): Properties = {
-    if (args.length != 1) usage()
+    if (args.length != 1)
+      usage()
 
     val config = new Properties()
     val file = new File(args(0))
 
-    if (!file.exists) usage()
+    if (!file.exists)
+      usage()
 
     config.load(new FileReader(file))
     config

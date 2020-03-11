@@ -106,7 +106,8 @@ trait PhaseAssembly {
           s"Cycle in phase dependencies detected at ${node.phasename}, created phase-cycle.dot")
       }
 
-      if (node.level < lvl) node.level = lvl
+      if (node.level < lvl)
+        node.level = lvl
 
       var hls = Nil ++ node.before.filter(_.hard)
       while (hls.size > 0) {
@@ -115,7 +116,8 @@ trait PhaseAssembly {
           node.before = hl.frm.before
           nodes -= hl.frm.phasename
           edges -= hl
-          for (edge <- node.before) edge.to = node
+          for (edge <- node.before)
+            edge.to = node
         }
         hls = Nil ++ node.before.filter(_.hard)
       }
@@ -288,12 +290,19 @@ trait PhaseAssembly {
     for (edge <- graph.edges) {
       sbuf.append(
         "\"" + edge.frm.allPhaseNames + "(" + edge.frm.level + ")" + "\"->\"" + edge.to.allPhaseNames + "(" + edge.to.level + ")" + "\"")
-      if (!edge.frm.phaseobj.get.head.internal) extnodes += edge.frm
+      if (!edge.frm.phaseobj.get.head.internal)
+        extnodes += edge.frm
       edge.frm.phaseobj foreach (phobjs =>
-        if (phobjs.tail.nonEmpty) fatnodes += edge.frm)
+        if (phobjs.tail.nonEmpty)
+          fatnodes += edge.frm)
       edge.to.phaseobj foreach (phobjs =>
-        if (phobjs.tail.nonEmpty) fatnodes += edge.to)
-      val color = if (edge.hard) "#0000ff" else "#000000"
+        if (phobjs.tail.nonEmpty)
+          fatnodes += edge.to)
+      val color =
+        if (edge.hard)
+          "#0000ff"
+        else
+          "#000000"
       sbuf.append(s""" [color="$color"]\n""")
     }
     for (node <- extnodes) {

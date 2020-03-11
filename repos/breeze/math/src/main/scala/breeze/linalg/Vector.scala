@@ -300,7 +300,8 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
           var max = 0.0
           activeValuesIterator foreach (v => {
             val nn = canNormS(v);
-            if (nn > max) max = nn
+            if (nn > max)
+              max = nn
           })
           max
         } else {
@@ -833,7 +834,8 @@ trait VectorOps { this: Vector.type =>
     new TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type] {
       override def bindingMissing(a: Vector[V], s: V, b: Vector[V]) {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (s == 0) return
+        if (s == 0)
+          return
 
         var i = 0
         for ((k, v) <- b.activeIterator) {
@@ -850,7 +852,8 @@ trait VectorOps { this: Vector.type =>
       val sr = implicitly[Semiring[V]]
       override def bindingMissing(a: Vector[V], s: V, b: Vector[V]) {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (s == 0) return
+        if (s == 0)
+          return
 
         var i = 0
         for ((k, v) <- b.activeIterator) {
@@ -909,7 +912,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[Vector[T], Vector[T]] = {
     new OpAdd.InPlaceImpl2[Vector[T], Vector[T]] {
       override def apply(v: Vector[T], v2: Vector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2(i))
       }
     }
 
@@ -921,7 +925,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[Vector[T], Vector[T]] = {
     new OpSub.InPlaceImpl2[Vector[T], Vector[T]] {
       override def apply(v: Vector[T], v2: Vector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2(i))
       }
     }
 
@@ -933,7 +938,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[Vector[T], Vector[T]] = {
     new OpMulScalar.InPlaceImpl2[Vector[T], Vector[T]] {
       override def apply(v: Vector[T], v2: Vector[T]) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2(i))
       }
     }
 
@@ -945,7 +951,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[Vector[T], Vector[T]] = {
     new OpDiv.InPlaceImpl2[Vector[T], Vector[T]] {
       override def apply(v: Vector[T], v2: Vector[T]) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2(i))
       }
     }
 
@@ -957,7 +964,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[Vector[T], Vector[T]] = {
     new OpPow.InPlaceImpl2[Vector[T], Vector[T]] {
       override def apply(v: Vector[T], v2: Vector[T]) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2(i))
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2(i))
       }
     }
 
@@ -969,7 +977,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[Vector[T], T] = {
     new OpAdd.InPlaceImpl2[Vector[T], T] {
       override def apply(v: Vector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.+(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.+(v(i), v2)
       }
     }
 
@@ -1011,7 +1020,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpSub.InPlaceImpl2[Vector[T], T] = {
     new OpSub.InPlaceImpl2[Vector[T], T] {
       override def apply(v: Vector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.-(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.-(v(i), v2)
       }
     }
 
@@ -1023,7 +1033,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[Vector[T], T] = {
     new OpMulScalar.InPlaceImpl2[Vector[T], T] {
       override def apply(v: Vector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field.*(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field.*(v(i), v2)
       }
     }
   }
@@ -1034,7 +1045,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[Vector[T], T] = {
     new OpDiv.InPlaceImpl2[Vector[T], T] {
       override def apply(v: Vector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = field./(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = field./(v(i), v2)
       }
     }
   }
@@ -1045,7 +1057,8 @@ trait VectorOps { this: Vector.type =>
       ct: ClassTag[T]): OpPow.InPlaceImpl2[Vector[T], T] = {
     new OpPow.InPlaceImpl2[Vector[T], T] {
       override def apply(v: Vector[T], v2: T) = {
-        for (i <- 0 until v.length) v(i) = pow(v(i), v2)
+        for (i <- 0 until v.length)
+          v(i) = pow(v(i), v2)
       }
     }
   }
@@ -1155,7 +1168,8 @@ trait VectorConstructors[Vec[T] <: Vector[T]] {
       apply(values.toArray.asInstanceOf[Array[Float]]).asInstanceOf[Vec[V]]
     else if (man == manifest[Int])
       apply(values.toArray.asInstanceOf[Array[Int]]).asInstanceOf[Vec[V]]
-    else apply(values.toArray)
+    else
+      apply(values.toArray)
 //     apply(values.toArray)
   }
 

@@ -58,7 +58,8 @@ class RemoteServerConnector(
         worksheetClassName,
         runnersJar.getAbsolutePath,
         output.getAbsolutePath) ++ outputDirs
-    else Array.empty[String]
+    else
+      Array.empty[String]
 
   def compileAndRun(
       callback: Runnable,
@@ -104,7 +105,8 @@ class RemoteServerConnector(
             })
       }
 
-      if (worksheetProcess == null) return ExitCode.ABORT
+      if (worksheetProcess == null)
+        return ExitCode.ABORT
 
       worksheetHook.disableRun(originalFile, Some(worksheetProcess))
       worksheetProcess.addTerminationCallback({
@@ -161,11 +163,16 @@ object RemoteServerConnector {
       val differ = if (linesLength > 2) {
         val i = lines(
           linesLength - 2) indexOf WorksheetSourceProcessor.END_GENERATED_MARKER
-        if (i > -1) i + length else 0
-      } else 0
+        if (i > -1)
+          i + length
+        else
+          0
+      } else
+        0
 
       val finalText =
-        if (differ == 0) text
+        if (differ == 0)
+          text
         else {
           val buffer = new StringBuilder
 
@@ -177,7 +184,8 @@ object RemoteServerConnector {
           buffer append lines(linesLength - 2)
             .substring(differ) append "\n" append (if (lines1.length > differ)
                                                      lines1.substring(differ)
-                                                   else lines1) append "\n"
+                                                   else
+                                                     lines1) append "\n"
           buffer.toString()
         }
 
@@ -206,7 +214,8 @@ object RemoteServerConnector {
     }
 
     override def compilationEnd() {
-      if (!hasErrors) callback.run()
+      if (!hasErrors)
+        callback.run()
     }
 
     override def worksheetOutput(text: String) {
@@ -229,7 +238,8 @@ object RemoteServerConnector {
       auto: Boolean = false)
       extends OuterCompilerInterface {
     override def progress(text: String, done: Option[Float]) {
-      if (auto) return
+      if (auto)
+        return
       val taskIndicator = ProgressManager.getInstance().getProgressIndicator
 
       if (taskIndicator != null) {
@@ -239,7 +249,8 @@ object RemoteServerConnector {
     }
 
     override def message(message: CompilerMessageImpl) {
-      if (auto) return
+      if (auto)
+        return
       task addMessage message
     }
 

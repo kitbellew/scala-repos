@@ -45,10 +45,12 @@ object TypeArgs {
                         typeParameterMarker.drop()
                         false
                     }
-                  } else false
+                  } else
+                    false
                 case _ => false
               }
-            } else false
+            } else
+              false
           }
 
           if (checkTypeVariable || Type.parse(builder)) {
@@ -56,9 +58,11 @@ object TypeArgs {
             while (builder.getTokenType == ScalaTokenTypes.tCOMMA && parsedType) {
               builder.advanceLexer()
               parsedType = checkTypeVariable || Type.parse(builder)
-              if (!parsedType) builder error ScalaBundle.message("wrong.type")
+              if (!parsedType)
+                builder error ScalaBundle.message("wrong.type")
             }
-          } else builder error ScalaBundle.message("wrong.type")
+          } else
+            builder error ScalaBundle.message("wrong.type")
 
           builder.getTokenType match {
             case ScalaTokenTypes.tRSQBRACKET =>

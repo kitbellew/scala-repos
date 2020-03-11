@@ -812,8 +812,16 @@ class LinearAlgebraTest
 
     def checkCols(m1: DenseMatrix[Double], m2: DenseMatrix[Double]) = {
       for (i <- 0 until m1.cols) {
-        val v1 = if (m1(::, i).valueAt(0) > 0) m1(::, i) else -m1(::, i)
-        val v2 = if (m2(::, i).valueAt(0) > 0) m2(::, i) else -m2(::, i)
+        val v1 =
+          if (m1(::, i).valueAt(0) > 0)
+            m1(::, i)
+          else
+            -m1(::, i)
+        val v2 =
+          if (m2(::, i).valueAt(0) > 0)
+            m2(::, i)
+          else
+            -m2(::, i)
         assert(max(abs(v1 - v2)) < 1e-5)
         assert(abs(norm(v1) - 1.0) < 1e-5)
         assert(abs(norm(v2) - 1.0) < 1e-5)
@@ -927,9 +935,15 @@ class LinearAlgebraTest
   test("diag test") {
     val testDV = DenseVector(0.1, 1.1, 2.1, 3.1, 4.1)
     val testDM = DenseMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c) r.toDouble + 0.1 else 0.0)
+      if (r == c)
+        r.toDouble + 0.1
+      else
+        0.0)
     val testCSC = CSCMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c) r.toDouble + 0.1 else 0.0)
+      if (r == c)
+        r.toDouble + 0.1
+      else
+        0.0)
     val testSV = SparseVector(0.1, 1.1, 2.1, 3.1, 4.1)
 
     assert(diag(testDV) === testDM)

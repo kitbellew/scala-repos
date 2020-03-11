@@ -161,7 +161,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       checkImplicits: Boolean): Boolean = {
     def lastRepeated(params: Seq[Parameter]): Boolean = {
       val lastOption: Option[Parameter] = params.lastOption
-      if (lastOption == None) return false
+      if (lastOption == None)
+        return false
       lastOption.get.isRepeated
     }
     (r1.element, r2.element) match {
@@ -175,8 +176,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           tp match {
             case ScMethodType(_, params, _) => Left(params)
             case ScTypePolymorphicType(
-                ScMethodType(_, params, _),
-                typeParams) =>
+                  ScMethodType(_, params, _),
+                  typeParams) =>
               if (!existential) {
                 val s: ScSubstitutor =
                   typeParams.foldLeft(ScSubstitutor.empty) {
@@ -280,15 +281,21 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                       p.isDefault,
                       isRepeated = false,
                       isByName = p.isByName)
-                  } else p
+                  } else
+                    p
                 case p => p
               }
             val i: Int =
-              if (params1.length > 0) 0.max(length - params1.length) else 0
+              if (params1.length > 0)
+                0.max(length - params1.length)
+              else
+                0
             val default: Expression =
               new Expression(
-                if (params1.length > 0) params1.last.paramType
-                else types.Nothing,
+                if (params1.length > 0)
+                  params1.last.paramType
+                else
+                  types.Nothing,
                 elem)
             val exprs: Seq[Expression] =
               params1.map(p => new Expression(p.paramType, elem)) ++
@@ -312,7 +319,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         }
 
         var u = conformance._2
-        if (!conformance._1) return false
+        if (!conformance._1)
+          return false
 
         t2 match {
           case ScTypePolymorphicType(_, typeParams) =>
@@ -374,7 +382,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
     element match {
       case memb: PsiMember =>
         val clazz = memb.containingClass
-        if (clazz == null) None else Some(clazz)
+        if (clazz == null)
+          None
+        else
+          Some(clazz)
       case _ => None
     }
   }
@@ -388,8 +399,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
   def isDerived(c1: Option[PsiClass], c2: Option[PsiClass]): Boolean = {
     (c1, c2) match {
       case (Some(clazz1), Some(clazz2)) =>
-        if (clazz1 == clazz2) return false
-        if (ScalaPsiUtil.cachedDeepIsInheritor(clazz1, clazz2)) return true
+        if (clazz1 == clazz2)
+          return false
+        if (ScalaPsiUtil.cachedDeepIsInheritor(clazz1, clazz2))
+          return true
         (clazz1, clazz2) match {
           case (clazz1: ScObject, _) =>
             isDerived(ScalaPsiUtil.getCompanionModule(clazz1), Some(clazz2))
@@ -405,8 +418,16 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       r1: InnerScalaResolveResult[T],
       r2: InnerScalaResolveResult[T],
       checkImplicits: Boolean): Int = {
-    val s1 = if (isAsSpecificAs(r1, r2, checkImplicits)) 1 else 0
-    val s2 = if (isDerived(getClazz(r1), getClazz(r2))) 1 else 0
+    val s1 =
+      if (isAsSpecificAs(r1, r2, checkImplicits))
+        1
+      else
+        0
+    val s2 =
+      if (isDerived(getClazz(r1), getClazz(r2)))
+        1
+      else
+        0
     s1 + s2
   }
 
@@ -417,7 +438,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
     ProgressManager.checkCanceled()
     (r1.implicitConversionClass, r2.implicitConversionClass) match {
       case (Some(t1), Some(t2)) =>
-        if (ScalaPsiUtil.cachedDeepIsInheritor(t1, t2)) return true
+        if (ScalaPsiUtil.cachedDeepIsInheritor(t1, t2))
+          return true
       case _ =>
     }
     if (r1.callByNameImplicit ^ r2.callByNameImplicit)
@@ -438,15 +460,19 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         val a2iterator = applicable.iterator
         while (a2iterator.hasNext && !break) {
           val a2 = a2iterator.next()
-          if (a1 != a2 && !isMoreSpecific(a1, a2, checkImplicits)) break = true
+          if (a1 != a2 && !isMoreSpecific(a1, a2, checkImplicits))
+            break = true
         }
-        if (!break) return Some(a1)
+        if (!break)
+          return Some(a1)
       }
       None
     }
     val result = calc(checkImplicits = false)
-    if (!noImplicit && result.isEmpty) calc(checkImplicits = true)
-    else result
+    if (!noImplicit && result.isEmpty)
+      calc(checkImplicits = true)
+    else
+      result
   }
 
   private def nextLayerSpecificGeneric[T](
@@ -459,8 +485,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       case Some(r) => rest.filter(!isMoreSpecific(r, _, checkImplicits = false))
       case _       => rest
     }
-    if (filteredRest.isEmpty) return (None, Seq.empty)
-    if (filteredRest.length == 1) return (Some(filteredRest.head), Seq.empty)
+    if (filteredRest.isEmpty)
+      return (None, Seq.empty)
+    if (filteredRest.length == 1)
+      return (Some(filteredRest.head), Seq.empty)
     var found = filteredRest.head
     val iter = filteredRest.tail.iterator
     val out: ArrayBuffer[InnerScalaResolveResult[T]] =
@@ -471,7 +499,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       if (isDerived(getClazz(res), getClazz(found))) {
         out += found
         found = res
-      } else out += res
+      } else
+        out += res
     }
     (Some(found), out.toSeq)
   }

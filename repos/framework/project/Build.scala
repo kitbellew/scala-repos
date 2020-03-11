@@ -271,7 +271,11 @@ object BuildDef extends Build {
   def liftProject(base: String, prefix: String = "lift-")(
       module: String): Project =
     liftProject(
-      id = if (module.startsWith(prefix)) module else prefix + module,
+      id =
+        if (module.startsWith(prefix))
+          module
+        else
+          prefix + module,
       base = file(base) / module.stripPrefix(prefix))
 
   def liftProject(id: String, base: File): Project = {

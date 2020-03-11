@@ -135,7 +135,10 @@ object Traversable {
             } &> k(Input.El(prefix))
           case (prefix, suffix) =>
             Done(
-              if (prefix.isEmpty) Cont(k) else k(Input.El(prefix)),
+              if (prefix.isEmpty)
+                Cont(k)
+              else
+                k(Input.El(prefix)),
               Input.El(suffix.drop(1)))
         }(dec))
 
@@ -167,7 +170,10 @@ object Traversable {
                 case i if i > 0 => Cont(step(it, left))
                 case i =>
                   val toPass =
-                    if (i < 0) Input.El(e.drop(leftToDrop)) else Input.Empty
+                    if (i < 0)
+                      Input.El(e.drop(leftToDrop))
+                    else
+                      Input.Empty
                   it.pureFlatFold {
                     case Step.Cont(k) => Enumeratee.passAlong.applyOn(k(toPass))
                     case _            => Done(it, toPass)

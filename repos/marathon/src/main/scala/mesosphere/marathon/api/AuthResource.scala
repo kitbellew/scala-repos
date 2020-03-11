@@ -62,8 +62,10 @@ trait AuthResource extends RestResource {
 
   def checkAuthorization[A, B >: A](action: AuthorizedAction[B], resource: A)(
       implicit identity: Identity): A = {
-    if (authorizer.isAuthorized(identity, action, resource)) resource
-    else throw AccessDeniedException()
+    if (authorizer.isAuthorized(identity, action, resource))
+      resource
+    else
+      throw AccessDeniedException()
   }
 
   def isAuthorized[T](action: AuthorizedAction[T], resource: T)(

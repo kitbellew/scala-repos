@@ -33,7 +33,10 @@ import scalafx.delegate.SFXDelegate
 
 object Popup {
   implicit def sfxPopup2jfx(p: Popup): jfxs.Popup =
-    if (p != null) p.delegate else null
+    if (p != null)
+      p.delegate
+    else
+      null
 }
 
 class Popup(override val delegate: jfxs.Popup = new jfxs.Popup)

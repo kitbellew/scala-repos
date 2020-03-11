@@ -51,7 +51,10 @@ object Local {
       return None
 
     val v = ctx(i)
-    if (v == null) None else v
+    if (v == null)
+      None
+    else
+      v
   }
 
   private def clear(i: Int): Unit =

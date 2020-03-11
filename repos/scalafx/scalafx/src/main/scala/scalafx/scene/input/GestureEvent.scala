@@ -36,7 +36,10 @@ import scalafx.event.{Event, EventType}
 
 object GestureEvent {
   implicit def sfxGestureEvent2jfx(ge: GestureEvent): jfxsi.GestureEvent =
-    if (ge != null) ge.delegate else null
+    if (ge != null)
+      ge.delegate
+    else
+      null
 
   /**
     * Common supertype for all gestures.

@@ -63,7 +63,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
       client ! SbtClientProxy.SetDaemon(true, self)
       context become awaitingDaemon(client, pending)
     case SbtConnectionProxy.NewClientResponse.Error(recoverable, error) =>
-      if (!recoverable) fail(new Exception(error), pending)
+      if (!recoverable)
+        fail(new Exception(error), pending)
     case request: SbtRequest =>
       context become connecting(pending :+ request)
     case Shutdown => shutdown()
@@ -129,7 +130,8 @@ class SbtEvents(logger: Logger) extends Actor {
 
   def receive = {
     case TaskLogEvent(id, LogMessage(level, message)) =>
-      if (accepted(message)) logger.log(level, message)
+      if (accepted(message))
+        logger.log(level, message)
   }
 
   // log events from sbt server currently have duplicates that are
@@ -159,7 +161,8 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
     case SbtClientProxy.LookupScopedKeyResponse(name, Success(keys)) =>
       if (keys.isEmpty)
         fail(new Exception(s"No sbt key found for $name"), pending)
-      else client ! SbtClientProxy.WatchTask(TaskKey(keys.head), self)
+      else
+        client ! SbtClientProxy.WatchTask(TaskKey(keys.head), self)
     case SbtClientProxy.LookupScopedKeyResponse(name, Failure(error)) =>
       fail(error, pending)
     case SbtClientProxy.WatchingTask(taskKey) =>

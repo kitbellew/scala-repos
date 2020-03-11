@@ -39,7 +39,8 @@ object RemoteAddress {
     def toIP = Some(this)
     def render[R <: Rendering](r: R): r.type = {
       r ~~ ip.getHostAddress
-      if (port.isDefined) r ~~ ":" ~~ port.get
+      if (port.isDefined)
+        r ~~ ":" ~~ port.get
 
       r
     }

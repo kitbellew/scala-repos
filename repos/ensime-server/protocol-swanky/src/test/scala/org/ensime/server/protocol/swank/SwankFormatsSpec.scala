@@ -19,7 +19,7 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     }
     val sexp = envelope.toSexp match {
       case SexpList(
-          SexpSymbol(":return") ::
+            SexpSymbol(":return") ::
             SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
             SexpNumber(callId) :: Nil
           ) if callId == 666 =>

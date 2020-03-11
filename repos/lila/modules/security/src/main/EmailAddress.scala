@@ -48,8 +48,10 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
 
   val acceptableConstraint = Constraint[String]("constraint.email_acceptable") {
     e =>
-      if (isValid(e)) Valid
-      else Invalid(ValidationError("error.email_acceptable"))
+      if (isValid(e))
+        Valid
+      else
+        Invalid(ValidationError("error.email_acceptable"))
   }
 
   def uniqueConstraint(forUser: Option[User]) =

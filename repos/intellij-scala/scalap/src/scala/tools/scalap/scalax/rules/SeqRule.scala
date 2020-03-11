@@ -72,19 +72,22 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
 
   def ~>?[B >: A, X2 >: X](f: => Rule[S, S, B => B, X2]) =
     for (a <- rule;
-         fs <- f ?) yield fs.foldLeft[B](a) { (b, f) =>
-      f(b)
-    }
+         fs <- f ?)
+      yield fs.foldLeft[B](a) { (b, f) =>
+        f(b)
+      }
 
   def ~>*[B >: A, X2 >: X](f: => Rule[S, S, B => B, X2]) =
     for (a <- rule;
-         fs <- f *) yield fs.foldLeft[B](a) { (b, f) =>
-      f(b)
-    }
+         fs <- f *)
+      yield fs.foldLeft[B](a) { (b, f) =>
+        f(b)
+      }
 
   def ~*~[B >: A, X2 >: X](join: => Rule[S, S, (B, B) => B, X2]) = {
     this ~>* (for (f <- join;
-                   a <- rule) yield f(_: B, a))
+                   a <- rule)
+      yield f(_: B, a))
   }
 
   /** Repeats this rule one or more times with a separator (which is discarded) */
@@ -101,7 +104,8 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
     val result = new collection.mutable.ArraySeq[A](num)
     // more compact using HoF but written this way so it's tail-recursive
     def rep(i: Int, in: S): Result[S, Seq[A], X] = {
-      if (i == num) Success(in, result)
+      if (i == num)
+        Success(in, result)
       else
         rule(in) match {
           case Success(out, a) => {

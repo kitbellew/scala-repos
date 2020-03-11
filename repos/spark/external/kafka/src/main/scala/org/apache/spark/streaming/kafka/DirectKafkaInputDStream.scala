@@ -112,7 +112,8 @@ private[streaming] class DirectKafkaInputDStream[
               val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
               tp -> (if (maxRateLimitPerPartition > 0) {
                        Math.min(backpressureRate, maxRateLimitPerPartition)
-                     } else backpressureRate)
+                     } else
+                       backpressureRate)
           }
         case None =>
           offsets.map {

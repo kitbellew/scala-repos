@@ -160,7 +160,11 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
   private def testUnpersistTorrentBroadcast(
       distributed: Boolean,
       removeFromDriver: Boolean) {
-    val numSlaves = if (distributed) 2 else 0
+    val numSlaves =
+      if (distributed)
+        2
+      else
+        0
 
     // Verify that blocks are persisted only on the driver
     def afterCreation(broadcastId: Long, bmm: BlockManagerMaster) {
@@ -187,12 +191,20 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     // is true.
     def afterUnpersist(broadcastId: Long, bmm: BlockManagerMaster) {
       var blockId = BroadcastBlockId(broadcastId)
-      var expectedNumBlocks = if (removeFromDriver) 0 else 1
+      var expectedNumBlocks =
+        if (removeFromDriver)
+          0
+        else
+          1
       var statuses = bmm.getBlockStatus(blockId, askSlaves = true)
       assert(statuses.size === expectedNumBlocks)
 
       blockId = BroadcastBlockId(broadcastId, "piece0")
-      expectedNumBlocks = if (removeFromDriver) 0 else 1
+      expectedNumBlocks =
+        if (removeFromDriver)
+          0
+        else
+          1
       statuses = bmm.getBlockStatus(blockId, askSlaves = true)
       assert(statuses.size === expectedNumBlocks)
     }

@@ -92,7 +92,8 @@ private[lease] class BytesAlarm(counter: ByteCounter, bytes: () => StorageUnit)
   def sleeptime: Duration = {
     val currentRate = counter.rate() // bytes per millisecond
     val targetMs =
-      if (currentRate <= 0) P
+      if (currentRate <= 0)
+        P
       else {
         // 80% of what's predicted by rate()
         // 800 == 8 / 10 * 1000

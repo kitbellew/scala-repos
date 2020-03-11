@@ -22,7 +22,11 @@ object Test extends DirectTest {
           case _: Double => "d"
           case _         => ""
         })
-      val op = if (equal) "==" else "!="
+      val op =
+        if (equal)
+          "=="
+        else
+          "!="
       println(f"${show(c1)}%12s $op ${show(c2)}")
 
       val hash1 = const1.hashCode

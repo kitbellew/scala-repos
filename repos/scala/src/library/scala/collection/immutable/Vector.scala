@@ -90,8 +90,10 @@ final class Vector[+A] private[immutable] (
 
   private[collection] final def initIterator[B >: A](s: VectorIterator[B]) {
     s.initFrom(this)
-    if (dirty) s.stabilize(focus)
-    if (s.depth > 1) s.gotoPos(startIndex, startIndex ^ focus)
+    if (dirty)
+      s.stabilize(focus)
+    if (s.depth > 1)
+      s.gotoPos(startIndex, startIndex ^ focus)
   }
 
   override def iterator: VectorIterator[A] = {
@@ -109,7 +111,8 @@ final class Vector[+A] private[immutable] (
       if (0 < i) {
         i -= 1
         self(i)
-      } else Iterator.empty.next()
+      } else
+        Iterator.empty.next()
   }
 
   // TODO: reverse
@@ -145,21 +148,24 @@ final class Vector[+A] private[immutable] (
     if (isDefaultCBF[A, B, That](bf))
       updateAt(index, elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
-    else super.updated(index, elem)(bf)
+    else
+      super.updated(index, elem)(bf)
 
   override def +:[B >: A, That](elem: B)(
       implicit bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF[A, B, That](bf))
       appendFront(elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
-    else super.+:(elem)(bf)
+    else
+      super.+:(elem)(bf)
 
   override def :+[B >: A, That](elem: B)(
       implicit bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF(bf))
       appendBack(elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
-    else super.:+(elem)(bf)
+    else
+      super.:+(elem)(bf)
 
   override def take(n: Int): Vector[A] = {
     if (n <= 0)
@@ -198,22 +204,26 @@ final class Vector[+A] private[immutable] (
   }
 
   override /*IterableLike*/ def head: A = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.head")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.head")
     apply(0)
   }
 
   override /*TraversableLike*/ def tail: Vector[A] = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.tail")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.tail")
     drop(1)
   }
 
   override /*TraversableLike*/ def last: A = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.last")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.last")
     apply(length - 1)
   }
 
   override /*TraversableLike*/ def init: Vector[A] = {
-    if (isEmpty) throw new UnsupportedOperationException("empty.init")
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.init")
     dropRight(1)
   }
 
@@ -229,27 +239,35 @@ final class Vector[+A] private[immutable] (
     if (isDefaultCBF(bf)) {
       // We are sure we will create a Vector, so let's do it efficiently
       import Vector.{Log2ConcatFaster, TinyAppendFaster}
-      if (that.isEmpty) this.asInstanceOf[That]
+      if (that.isEmpty)
+        this.asInstanceOf[That]
       else {
-        val again = if (!that.isTraversableAgain) that.toVector else that.seq
+        val again =
+          if (!that.isTraversableAgain)
+            that.toVector
+          else
+            that.seq
         again.size match {
           // Often it's better to append small numbers of elements (or prepend if RHS is a vector)
           case n
               if n <= TinyAppendFaster || n < (this.size >> Log2ConcatFaster) =>
             var v: Vector[B] = this
-            for (x <- again) v = v :+ x
+            for (x <- again)
+              v = v :+ x
             v.asInstanceOf[That]
           case n
               if this.size < (n >> Log2ConcatFaster) && again
                 .isInstanceOf[Vector[_]] =>
             var v = again.asInstanceOf[Vector[B]]
             val ri = this.reverseIterator
-            while (ri.hasNext) v = ri.next +: v
+            while (ri.hasNext)
+              v = ri.next +: v
             v.asInstanceOf[That]
           case _ => super.++(again)
         }
       }
-    } else super.++(that.seq)
+    } else
+      super.++(that.seq)
   }
 
   // semi-private api
@@ -641,13 +659,20 @@ final class Vector[+A] private[immutable] (
   }
 
   private def requiredDepth(xor: Int) = {
-    if (xor < (1 << 5)) 1
-    else if (xor < (1 << 10)) 2
-    else if (xor < (1 << 15)) 3
-    else if (xor < (1 << 20)) 4
-    else if (xor < (1 << 25)) 5
-    else if (xor < (1 << 30)) 6
-    else throw new IllegalArgumentException()
+    if (xor < (1 << 5))
+      1
+    else if (xor < (1 << 10))
+      2
+    else if (xor < (1 << 15))
+      3
+    else if (xor < (1 << 20))
+      4
+    else if (xor < (1 << 25))
+      5
+    else if (xor < (1 << 30))
+      6
+    else
+      throw new IllegalArgumentException()
   }
 
   private def dropFront0(cutIndex: Int): Vector[A] = {
@@ -717,7 +742,8 @@ class VectorIterator[+A](_startIndex: Int, endIndex: Int)
   private var _hasNext = blockIndex + lo < endIndex
 
   def next(): A = {
-    if (!_hasNext) throw new NoSuchElementException("reached iterator end")
+    if (!_hasNext)
+      throw new NoSuchElementException("reached iterator end")
 
     val res = display0(lo).asInstanceOf[A]
     lo += 1
@@ -1249,7 +1275,8 @@ private[immutable] trait VectorPointer[T] {
         depth += 1
       }
       display1 = display2((newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
-      if (display1 == null) display1 = new Array(32)
+      if (display1 == null)
+        display1 = new Array(32)
       display0 = new Array(32)
     } else if (xor < (1 << 20)) { // level = 3
       if (depth == 3) {
@@ -1258,9 +1285,11 @@ private[immutable] trait VectorPointer[T] {
         depth += 1
       }
       display2 = display3((newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
-      if (display2 == null) display2 = new Array(32)
+      if (display2 == null)
+        display2 = new Array(32)
       display1 = display2((newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
-      if (display1 == null) display1 = new Array(32)
+      if (display1 == null)
+        display1 = new Array(32)
       display0 = new Array(32)
     } else if (xor < (1 << 25)) { // level = 4
       if (depth == 4) {
@@ -1269,11 +1298,14 @@ private[immutable] trait VectorPointer[T] {
         depth += 1
       }
       display3 = display4((newIndex >> 20) & 31).asInstanceOf[Array[AnyRef]]
-      if (display3 == null) display3 = new Array(32)
+      if (display3 == null)
+        display3 = new Array(32)
       display2 = display3((newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
-      if (display2 == null) display2 = new Array(32)
+      if (display2 == null)
+        display2 = new Array(32)
       display1 = display2((newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
-      if (display1 == null) display1 = new Array(32)
+      if (display1 == null)
+        display1 = new Array(32)
       display0 = new Array(32)
     } else if (xor < (1 << 30)) { // level = 5
       if (depth == 5) {
@@ -1282,13 +1314,17 @@ private[immutable] trait VectorPointer[T] {
         depth += 1
       }
       display4 = display5((newIndex >> 25) & 31).asInstanceOf[Array[AnyRef]]
-      if (display4 == null) display4 = new Array(32)
+      if (display4 == null)
+        display4 = new Array(32)
       display3 = display4((newIndex >> 20) & 31).asInstanceOf[Array[AnyRef]]
-      if (display3 == null) display3 = new Array(32)
+      if (display3 == null)
+        display3 = new Array(32)
       display2 = display3((newIndex >> 15) & 31).asInstanceOf[Array[AnyRef]]
-      if (display2 == null) display2 = new Array(32)
+      if (display2 == null)
+        display2 = new Array(32)
       display1 = display2((newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
-      if (display1 == null) display1 = new Array(32)
+      if (display1 == null)
+        display1 = new Array(32)
       display0 = new Array(32)
     } else { // level = 6
       throw new IllegalArgumentException()

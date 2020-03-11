@@ -24,7 +24,8 @@ case class Pareto(scale: Double, shape: Double)(implicit rand: RandBasis = Rand)
   def variance: Double = {
     if (shape <= 1)
       throw new IllegalArgumentException("undefined variance for shape < 1")
-    else if (shape <= 2) Double.PositiveInfinity
+    else if (shape <= 2)
+      Double.PositiveInfinity
     else {
       pow(scale / (shape - 1.0), 2.0) * shape / (shape - 2.0)
     }

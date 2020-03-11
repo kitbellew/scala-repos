@@ -64,7 +64,8 @@ class ScalaMemberInplaceRenamer(
   protected override def getCommandName: String = {
     if (myInitialName != null)
       RefactoringBundle.message("renaming.command.name", myInitialName)
-    else "Rename"
+    else
+      "Rename"
   }
 
   override def collectRefs(
@@ -102,7 +103,8 @@ class ScalaMemberInplaceRenamer(
   }
 
   override def revertState() {
-    if (myOldName == null) return
+    if (myOldName == null)
+      return
 
     CommandProcessor.getInstance.executeCommand(
       myProject,
@@ -156,7 +158,8 @@ class ScalaMemberInplaceRenamer(
       if (myElementToRename != null && myElementToRename.isValid && oldName == ScalaNamesUtil
             .scalaName(myElementToRename))
         myElementToRename
-      else null
+      else
+        null
     }
   }
 
@@ -164,7 +167,8 @@ class ScalaMemberInplaceRenamer(
 
   override def getSubstituted: PsiElement = {
     val subst = super.getSubstituted
-    if (subst != null && subst.getText == substituted.getText) subst
+    if (subst != null && subst.getText == substituted.getText)
+      subst
     else {
       val psiFile: PsiFile = PsiDocumentManager
         .getInstance(myProject)
@@ -173,7 +177,8 @@ class ScalaMemberInplaceRenamer(
         PsiTreeUtil.getParentOfType(
           psiFile.findElementAt(substitutorOffset),
           classOf[PsiNameIdentifierOwner])
-      else null
+      else
+        null
     }
 
   }

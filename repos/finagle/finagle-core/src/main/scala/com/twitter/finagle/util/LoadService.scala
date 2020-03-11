@@ -57,7 +57,8 @@ private object ClassPath {
   }
 
   private def ifaceOfName(name: String) =
-    if (!(name contains "META-INF")) None
+    if (!(name contains "META-INF"))
+      None
     else
       name.split("/").takeRight(3) match {
         case Array("META-INF", "services", iface) => Some(iface)
@@ -192,9 +193,16 @@ private object ClassPath {
     try {
       source.getLines().toArray.flatMap { line =>
         val commentIdx = line.indexOf('#')
-        val end = if (commentIdx != -1) commentIdx else line.length
+        val end =
+          if (commentIdx != -1)
+            commentIdx
+          else
+            line.length
         val str = line.substring(0, end).trim
-        if (str.isEmpty) Nil else Seq(str)
+        if (str.isEmpty)
+          Nil
+        else
+          Seq(str)
       }
     } catch {
       case ex: MalformedInputException =>
