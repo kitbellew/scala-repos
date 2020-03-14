@@ -392,8 +392,8 @@ class Range(val start: Int, val end: Int, val step: Int)
           else // this is non-empty...
             x.nonEmpty && start == x.start && { // ...so other must contain something and have same start
               val l0 = last
-              (l0 == x.last && (// And same end
-              start == l0 || step == x.step // And either the same step, or not take any steps
+              (l0 == x.last && ( // And same end
+                start == l0 || step == x.step // And either the same step, or not take any steps
               ))
             }
         }

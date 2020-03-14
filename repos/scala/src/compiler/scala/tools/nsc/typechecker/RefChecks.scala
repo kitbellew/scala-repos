@@ -1784,12 +1784,12 @@ abstract class RefChecks
           case TypeApply(fun, targs) =>
             isClassTypeAccessible(fun)
           case Select(module, apply) =>
-            (// SI-4859 `CaseClass1().InnerCaseClass2()` must not be rewritten to `new InnerCaseClass2()`;
-            //          {expr; Outer}.Inner() must not be rewritten to `new Outer.Inner()`.
-            treeInfo.isQualifierSafeToElide(module) &&
-              // SI-5626 Classes in refinement types cannot be constructed with `new`. In this case,
-              // the companion class is actually not a ClassSymbol, but a reference to an abstract type.
-              module.symbol.companionClass.isClass)
+            ( // SI-4859 `CaseClass1().InnerCaseClass2()` must not be rewritten to `new InnerCaseClass2()`;
+              //          {expr; Outer}.Inner() must not be rewritten to `new Outer.Inner()`.
+              treeInfo.isQualifierSafeToElide(module) &&
+                // SI-5626 Classes in refinement types cannot be constructed with `new`. In this case,
+                // the companion class is actually not a ClassSymbol, but a reference to an abstract type.
+                module.symbol.companionClass.isClass)
         }
 
       sym.isSourceMethod &&
